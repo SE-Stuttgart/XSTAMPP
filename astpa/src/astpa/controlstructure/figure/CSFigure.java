@@ -1,0 +1,230 @@
+/*******************************************************************************
+ * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
+ * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
+ * Zotov).
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ *******************************************************************************/
+
+package astpa.controlstructure.figure;
+
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
+
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.ConnectionAnchor;
+import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+
+import astpa.controlstructure.utilities.CSTextLabel;
+
+/**
+ * 
+ * CSFigure is an abstract class which describes the basic Behavior and the
+ * structure of a Component in this editor
+ * 
+ * @version 1.0
+ * @author Lukas Balzer
+ * 
+ */
+public class CSFigure extends Figure implements IControlStructureFigure {
+	
+	private CSTextLabel textLabel;
+	private final UUID componentID;
+	protected static final int CENTER_COMPENSATION = 2;
+	
+	/**
+	 * the xOrientations array which stores the locations on the x-axis as
+	 * values between 0 and 1 where the user should be able to create a CSAnchor
+	 */
+	public static final float[] X_ORIENTATIONS = {0.25f, 0.5f, 0.75f};
+	/**
+	 * the yOrientations array which stores the locations on the y-axis as
+	 * values between 0 and 1 where the user should be able to create a CSAnchor
+	 */
+	public static final float[] Y_ORIENTATIONS = {0.25f, 0.5f, 0.75f};
+	
+	
+	/**
+	 * The CSFigure constructor creates a new <code>XYLayout</code> instance and
+	 * sets the Layout manager for the Components
+	 * 
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 */
+	protected CSFigure(UUID id) {
+		this.componentID = id;
+		this.setLayoutManager(new XYLayout());
+		this.textLabel = new CSTextLabel(this);
+		this.add(this.textLabel);
+		this.setConstraint(this.textLabel, new Rectangle(0, 1, -1, -1));
+		this.setOpaque(true);
+		this.setBackgroundColor(ColorConstants.white);
+	}
+	
+	@Override
+	public void setText(String text) {
+		this.textLabel.setText(text);
+	}
+	
+	@Override
+	public String getText() {
+		return this.textLabel.getText();
+	}
+	
+	@Override
+	public CSTextLabel getTextField() {
+		return this.textLabel;
+	}
+	
+	@Override
+	public void setLayout(Rectangle rect) {
+		int height = rect.height;
+		// int width = this.getBounds().width;
+		if (this.getChildren().size() > 1) {
+			// the height of the rectangle is set to the ideal height for the
+			// given width
+			getTextField().setSize(getBounds().width, getTextField().getTextBounds().getSize().height);
+			this.setConstraint(this.textLabel, new Rectangle(1, 1, rect.width, -1));
+		} else {
+			getTextField().setSize(new Dimension(getBounds().width, height));
+			this.setConstraint(this.textLabel, new Rectangle(1, 1, rect.width, rect.height));
+		}
+		
+		this.getTextField().repaint();
+		this.getParent().setConstraint(this, rect);
+		this.getTextField().repaint();
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @author Aliaksei Babkovich, Lukas Balzer
+	 * @param ref The Point of the request
+	 * @return The Anchor on which Graphical_Nodes can link with
+	 * @see org.eclipse.gef.NodeEditPart
+	 */
+	public ConnectionAnchor getConnectionAnchor(Point ref) {
+		
+		CSAnchor temp = new CSAnchor(this, ref);
+		
+		return temp;
+	}
+	
+	/**
+	 * This private method refreshes the Anchor points which are located on the
+	 * sides of the Component, left anchors are stored at even numbers
+	 * 
+	 * @author Lukas Balzer, Aliaksei Babkovich
+	 * @return the Map which contains all AnchorPoints mapped to an anchor
+	 *         number
+	 * 
+	 */
+	public final Map<Integer, Point> getAnchors() {
+		Map<Integer, Point> anchorPoints = new TreeMap<Integer, Point>();
+		
+		int anchorNr = 0;
+		for (float factor : CSFigure.X_ORIENTATIONS) {
+			// for each entry in the array two anchorPoints are created for
+			// the top and the bottom
+			Point positionTop = new Point();
+			positionTop.x = (int) (this.getBounds().x + (this.getBounds().width * factor));
+			positionTop.y = this.getBounds().y;
+			anchorPoints.put(anchorNr, positionTop);
+			anchorNr++;
+			Point positionBottom = new Point();
+			positionBottom.x = positionTop.x;
+			positionBottom.y = positionTop.y + this.getBounds().height;
+			anchorPoints.put(anchorNr, positionBottom);
+			
+			anchorNr++;
+		}
+		for (float factor : CSFigure.Y_ORIENTATIONS) {
+			// for each entry in the array two anchorPoints are created for
+			// the left and the right side
+			Point positionLeft = new Point();
+			positionLeft.x = this.getBounds().x;
+			positionLeft.y = (int) (this.getBounds().y + (this.getBounds().height * factor));
+			
+			anchorPoints.put(anchorNr, positionLeft);
+			anchorNr++;
+			Point positionRight = new Point();
+			positionRight.x = positionLeft.x + this.getBounds().width;
+			positionRight.y = positionLeft.y;
+			anchorPoints.put(anchorNr, positionRight);
+			anchorNr++;
+		}
+		
+		return anchorPoints;
+	}
+	
+	/**
+	 * adds a anchor Feedback Rectangle to the Root, the Root has only on
+	 * Feedback Rectangle which can be added at Points currently to be
+	 * highlighted
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param ref the anchorPoint for which a feedback should be created
+	 */
+	@Override
+	public void addHighlighter(Point ref) {
+		((RootFigure) this.getParent()).addHighlighter(ref);
+	}
+	
+	/**
+	 * removes the Feedback Recangle from the editor
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 */
+	@Override
+	public void removeHighlighter() {
+		if (this.getParent() == null) {
+			return;
+		}
+		((RootFigure) this.getParent()).removeHighlighter();
+	}
+	
+	@Override
+	public void setForegroundColor(Color newColor) {
+		this.textLabel.setForegroundColor(newColor);
+	}
+	
+	@Override
+	public Color getForegroundColor() {
+		return this.textLabel.getForegroundColor();
+	}
+	
+	@Override
+	public UUID getId() {
+		return this.componentID;
+	}
+	
+	@Override
+	protected boolean useLocalCoordinates() {
+		return true;
+	}
+	
+	@Override
+	public void disableOffset() {
+		((IControlStructureFigure) this.getParent()).disableOffset();
+	}
+	
+	@Override
+	public void enableOffset() {
+		((IControlStructureFigure) this.getParent()).enableOffset();
+	}
+	
+}

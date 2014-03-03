@@ -1,0 +1,8 @@
+target/
+bin/
+!.project
+!.classpath
+.settings/
+*.classpath
+astpa/ExportTest/foppdf.pdf
+*.exe

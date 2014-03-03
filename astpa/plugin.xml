@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="astpa.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="astpa_product_id"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="astpa.application"
+            name="A-STPA">
+         <property
+               name="appName"
+               value="A-STPA">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="2,275,445,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+        </property>
+  <property
+        name="windowImages"
+        value="icons/branding/i16.png,icons/branding/i32.png,icons/branding/i48.png,icons/branding/i64.png,icons/branding/i128.png">
+  </property>
+  <property
+        name="aboutImage"
+        value="icons/Logo.png">
+  </property>
+  <property
+        name="aboutText"
+        value="A-STPA&#x0A;&#x0A;StuPro 2013 - 2014&#x0A;&#x0A;Development-Team: Adam Grahovac, Aleksander Zotov, Aliaksei Babkovich, Benedikt Markt, Fabian Toth, Jarkko Heidenwag, Jaqueline Patzek, Lukas Balzer, Patrick Wickenhäuser, Sebastian Sieber">
+  </property>
+      	</product>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="astpa.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="astpa.Perspective"
+            id="astpa.perspective"
+            name="A-STPA perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="astpa.ui.common.ViewContainer"
+            id="astpa.ui.common.viewcontainer"
+            name="View Container"
+            restorable="true">
+      </view>ension
+         point="org.eclipse.ui.editors">
+   </extension>
+   <extension
+         name="window"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="fileMenu"
+               label="File">
+            <command
+                  commandId="astpa.newproject"
+                  label="Create New Project"
+                  style="push"
+                  tooltip="Create a new STPA Project">
+            </command>
+            <command
+                  commandId="astpa.load"
+                  label="Load Project..."
+                  style="push"
+                  tooltip="Loa">
+            </command>
+            <separator
+                  name="Separator 1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="astpa.save"
+                  label="Save Project"
+                  style="push"
+                  tooltip="Save file">
+            </command>
+            <command
+                  commandId="astpa.saveas"
+                  label="Save Project As..."
+                  style="push"
+                  tooltip="Save file as...">
+            </command>
+            <command
+                  commandId="astpa.exportas"
+                  label="Export As..."
+                  style="push"
+                  tooltip="Save file as...">
+            </command>
+            <separator
+                  name="Separator 2"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="astpa.exit"
+                  label="Exit Application"
+                  style="push"
+                  tooltip="Exits the application">
+            </command>
+         </menu>
+         <menu
+               id="editMenu"
+               label="Edit">
+            <command
+                  commandId="astpa.preferencepage"
+                  helpContextId="Opens the preference page"
+                  label="Preferences"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               id="helpMenu"
+               label="Help">
+            <command
+                  commandId="Welcome"
+                  style="push"
+                  tooltip="Shows the welcome page">
+            </command>
+            <command
+            
+            commandId="astpa.about" 
+			icon="icons/Logo_small.png" 
+			id="x.ex.about" 
+			style="push" 
+			tooltip="Shows the about dialog">
+            </command>
+            <command
+                  commandId="astpa.update"
+                  label="Update"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <sourceProvider
+            provider="astpa.ui.menu.file.commands.SaveState">
+         <variable
+               name="astpa.ui.menu.file.commands.savestate"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="astpa.ui.menu.file.commands.Save"
+            commandId="astpa.save">
+         <enabledWhen>
+            <with
+                  variable="astpa.ui.menu.file.commands.savestate">
+               <equals
+                     value="ENABLED">
+               </equals>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="astpa.ui.menu.file.commands.SaveAs"
+            commandId="astpa.saveas">
+         <enabledWhen>
+            <with
+                  variable="astpa.ui.menu.file.commands.savestate">
+               <equals
+                     value="ENABLED">
+               </equals>
+            </with>
+         </enabledWhen>
+      </handler>ler>
+      <handler
+            class="astpa.ui.menu.file.commands.ExportAs"
+            commandId="astpa.exportas">
+         <enabledWhen>
+            <with
+                  variable="astpa.ui.menu.file.commands.savestate">
+               <equals
+                     value="ENABLED">
+               </equals>
+            </with>
+         </enabledWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="astpa.ui.menu.file.commands.NewProject"
+            id="astpa.newproject"
+            name="New Project">
+      </command>
+      <command
+            defaultHandler="astpa.ui.menu.file.commands.ExitApplication"
+            id="astpa.exit"
+            name="Exit Application">
+      </command>
+      <command
+            id="astpa.saveas"
+            name="Save As...">
+      </command>
+      <command
+            id="astpa.exportas"
+            name="Export As...">
+      </command>
+      <command
+            id="astpa.save"
+            name="Save">
+      </command>
+      <command
+            defaultHandler="astpa.ui.menu.file.commands.Load"
+            id="astpa.load"
+            name="Load">
+      </command>
+      <command
+            defaultHandler="astpa.ui.menu.file.commands.Welcome"
+            id="Welcome"
+            name="Welcome">
+      </command>
+      <command
+            defaultHandler="astpa.update.UpdateHandler"
+            id="astpa.update"
+            name="Update">
+      </command>
+      <command
+            defaultHandler="astpa.ui.menu.file.commands.AboutHandler"
+            id="astpa.about"
+            name="About">
+      </command>
+      <command
+            defaultHandler="astpa.ui.menu.file.commands.Preferences"
+            id="astpa.preferencepage"
+            name="Preferences">
+      </command>
+   </extension>
+   
+<!-- WELCOME-PAGE Author: Jaqueline Patzek -->
+   
+<extension
+      point="org.eclipse.ui.bindings">
+   <key
+         commandId="astpa.newproject"
+         schemeId="bindingscheme"
+         sequence="M1+N">
+   </key>
+   <scheme
+         id="bindingscheme"
+         name="bindingscheme">
+   </scheme>
+   <key
+         commandId="astpa.load"
+         schemeId="bindingscheme"
+         sequence="M1+O">
+   </key>
+   <key
+         commandId="astpa.exit"
+         schemeId="bindingscheme"
+         sequence="M1+W">
+   </key>
+   <key
+         commandId="astpa.save"
+         schemeId="bindingscheme"
+         sequence="M1+S">
+   </key>
+   <key
+         commandId="astpa.saveas"
+         schemeId="bindingscheme"
+         sequence="M1+M2+S">
+   </key>
+   <key
+         commandId="astpa.exportas"
+         schemeId="bindingscheme"
+         sequence="M1+E">
+   </key>
+   <key
+         commandId="astpa.exit"
+         schemeId="bindingscheme"
+         sequence="M1+Q">
+   </key>
+</extension>
+<extension
+      point="org.eclipse.ui.preferencePages">
+   <page
+         class="astpa.preferences.PreferencePageColorAndFont"
+         id="astpa.preferencePageColors"
+         name="Colors and Fonts">
+   </page>
+   <page
+         class="astpa.preferences.PreferencePageExport"
+         id="astpa.preferencePageExport"
+         name="Export">
+   </page>
+   <page
+         class="astpa.preferences.PreferencePageUpdate"
+         id="astpa.preferencePageUpdate"
+         name="Update">
+   </page>
+</extension>
+<extension
+      point="org.eclipse.ui.exportWizards">
+   <wizard
+         class="astpa.export.ExportWizard"
+         id="astpa.wizardExport"
+         name="ExportWizard">
+   </wizard>
+</extension>
+
+</plugin>

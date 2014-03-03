@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests
+Bundle-SymbolicName: astpa.tests
+Bundle-Version: 1.0.1.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: astpa,
+ org.junit,
+ org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-RegisterBuddy: org.apache.log4j
+Import-Package: org.eclipse.draw2d.geometry
