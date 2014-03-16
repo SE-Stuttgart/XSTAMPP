@@ -19,6 +19,7 @@ import org.eclipse.draw2d.Viewport;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.palette.PaletteListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.ui.ISelectionListener;
@@ -31,7 +32,7 @@ import astpa.ui.common.IViewBase;
  * 
  */
 public interface IControlStructureEditor extends CommandStackListener, ISelectionListener, MouseListener,
-	PaletteListener, IViewBase, SelectionListener, ZoomListener, PropertyChangeListener {
+	PaletteListener, IViewBase, SelectionListener, ZoomListener, PropertyChangeListener,ISelectionChangedListener {
 	
 	/**
 	 * makes sure that the both layouts of step 1 and 3 are only synchronized on

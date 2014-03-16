@@ -191,7 +191,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 			for (int deltaY = 0; deltaY < ((2 * RootFigure.COMP_OFFSET) + 1); deltaY++) {
 				tmpDescendant = super.findFigureAt(tmpX + deltaX, tmpY + deltaY, search);
 				if (tmpDescendant instanceof ComponentFigure) {
-					System.out.println(tmpDescendant);
 					return tmpDescendant;
 				}
 			}

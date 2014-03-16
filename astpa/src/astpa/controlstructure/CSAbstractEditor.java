@@ -70,10 +70,10 @@ import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
-import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.gef.ui.views.palette.PalettePage;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
@@ -152,7 +152,6 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	private ActionRegistry actionRegistry;
 	private IControlStructureEditorDataModel modelInterface;
 	private DefaultEditDomain editDomain;
-	private SelectionSynchronizer synchronizer;
 	private List<String> selectionActions = new ArrayList<String>();
 	private List<String> stackActions = new ArrayList<String>();
 	private List<String> propertyActions = new ArrayList<String>();
@@ -218,7 +217,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		data.bottom = new FormAttachment(this.toolBar);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		this.workSite.getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+		System.out.println(this.workSite);
 		this.splitter =
 			new FlyoutPaletteComposite(editorComposite, SWT.CENTER, this.workSite.getPage(),
 				this.getPaletteViewerProvider(), this.getPalettePreferences());
@@ -238,7 +237,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	protected void createGraphicalViewer(Composite parent) {
 		
 		GraphicalViewer viewer = new ScrollingGraphicalViewer();
-		
+		viewer.addSelectionChangedListener(this);
 		viewer.addPropertyChangeListener(this);
 		
 		viewer.createControl(parent);
@@ -367,7 +366,6 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	 * ISelectionProvider for the Editor's PartSite.
 	 */
 	protected void hookGraphicalViewer() {
-		this.getSelectionSynchronizer().addViewer(this.getGraphicalViewer());
 		this.workSite.setSelectionProvider(this.getGraphicalViewer());
 		
 	}
@@ -497,6 +495,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// If not the active editor, ignore selection changed.
+		System.out.println();
 		this.updateActions(this.selectionActions);
 	}
 	
@@ -654,31 +653,6 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		return this.actionRegistry;
 	}
 	
-	/**
-	 * Returns the selection synchronizer object. The synchronizer can be used
-	 * to sync the selection of 2 or more EditPartViewers.
-	 * 
-	 * @return the synchronizer
-	 */
-	protected SelectionSynchronizer getSelectionSynchronizer() {
-		if (this.synchronizer == null) {
-			this.synchronizer = new SelectionSynchronizer();
-		}
-		return this.synchronizer;
-	}
-	
-	/**
-	 * sets SelectionSynchronizer so the PaletteViewer and GraphicalViewer are
-	 * synchronized
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param synchronizer The SelectionSynchronizer which synchronizes the two
-	 *            viewers
-	 */
-	public void setSynchronizer(SelectionSynchronizer synchronizer) {
-		this.synchronizer = synchronizer;
-	}
 	
 	@Override
 	public void setFocus() {
@@ -864,11 +838,10 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		this.printViewer(path, imageType);
 	}
 	
+	
 	@Override
 	public void onActivateView() {
 		this.setFocus();
-		this.workSite.setSelectionProvider(this.getGraphicalViewer());
-		this.workSite.getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 		this.getGraphicalViewer().getRootEditPart().deactivate();
 		this.getGraphicalViewer().getEditPartRegistry().clear();
 		
@@ -883,11 +856,14 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			this.manager.getViewport().validate();
 			
 		}
-		
 		int level = (int) (this.getZoomLevel() * CSAbstractEditor.FULL_SCALE);
 		this.scale.setSelection(level);
 		this.label.setText(level + "%"); //$NON-NLS-1$
-	}
+		this.setFocus();
+		this.workSite.setSelectionProvider(null);
+		this.workSite.setSelectionProvider(this.getGraphicalViewer());
+		this.workSite.getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+		}
 	
 	@Override
 	public void setDataModelInterface(IDataModel dataInterface) {
@@ -1098,5 +1074,10 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		// shouldn't do anything
 		// because there is no EditorInput
 		
+	}
+	
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		this.updateActions(this.selectionActions);
 	}
 }
