@@ -8,7 +8,7 @@
 	<name>A-STPA Application</name>
 
 	<parent>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.1</version>
 		<groupId>astpa.group</groupId>
 		<artifactId>parent</artifactId>
 	</parent>
