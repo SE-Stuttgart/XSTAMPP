@@ -83,7 +83,10 @@ public class ControlActionController {
 	 * @author Fabian Toth
 	 */
 	public boolean removeControlAction(UUID controlActionId) {
-		ITableModel controlAction = this.getControlAction(controlActionId);
+		ControlAction controlAction = this.getInternalControlAction(controlActionId);
+		for (IUnsafeControlAction unsafeControlAction : controlAction.getUnsafeControlActions()) {
+			this.removeAllLinks(unsafeControlAction.getId());
+		}
 		int index = this.controlActions.indexOf(controlAction);
 		this.controlActions.remove(index);
 		for (; index < this.controlActions.size(); index++) {

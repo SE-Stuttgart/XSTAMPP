@@ -945,9 +945,9 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if ((unsafeControlActionId == null) || (hazardId == null)) {
 			return false;
 		}
-		
+		boolean result = this.controlActionController.removeUCAHazardLink(unsafeControlActionId, hazardId);
 		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
-		return this.controlActionController.removeUCAHazardLink(unsafeControlActionId, hazardId);
+		return result;
 	}
 	
 	@Override
