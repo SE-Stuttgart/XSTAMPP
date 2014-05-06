@@ -377,6 +377,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 		
 		this.linkField =
 			new AutoCompleteField(this.linkEditor, new TextContentAdapter(), options, labels, descriptions);
+		
 		// Listener for Proposal Selection to instantly link if proposal is
 		// selected
 		this.linkField.getContentProposalAdapter().addContentProposalListener(new PropopsalListener());

@@ -47,6 +47,7 @@ public class AutoCompleteField {
 			new LinkingCommandAdapter(control, controlContentAdapter, this.contentProposalProvider, null, null, false);
 		this.contentProposalAdapter.setPropagateKeys(true);
 		this.contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+		
 	}
 	
 	/**

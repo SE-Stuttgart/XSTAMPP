@@ -14,9 +14,14 @@
 package astpa.ui.common.grid;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 
 /**
@@ -27,6 +32,7 @@ import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
  * 
  */
 public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
+	
 	
 	/**
 	 * 
@@ -45,21 +51,27 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 		boolean installDecoration) {
 		super(control, controlContentAdapter, proposalProvider, commandId, autoActivationCharacters, installDecoration);
 		
-		this.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+		this.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_INSERT);
 		this.setFilterStyle(ContentProposalAdapter.FILTER_NONE);
-		this.setAutoActivationCharacters(null);
+		this.setAutoActivationCharacters(autoActivationCharacters);
 		this.setAutoActivationDelay(0);
 		this.setPropagateKeys(false);
+		
 	}
 	
 	@Override
 	public void closeProposalPopup() {
 		super.closeProposalPopup();
+		
 	}
 	
 	@Override
 	public void openProposalPopup() {
 		super.openProposalPopup();
+		this.setProposalPopupFocus();
+		
 	}
+	
+	
 	
 }
