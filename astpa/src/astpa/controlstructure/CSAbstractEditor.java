@@ -14,6 +14,8 @@
 package astpa.controlstructure;
 
 import java.awt.Event;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -105,9 +107,11 @@ import org.eclipse.ui.part.EditorPart;
 
 import astpa.controlstructure.controller.editParts.CSAbstractEditPart;
 import astpa.controlstructure.controller.editParts.CSConnectionEditPart;
+import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
 import astpa.controlstructure.controller.editParts.RootEditPart;
 import astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import astpa.controlstructure.figure.IControlStructureFigure;
+import astpa.controlstructure.figure.RootFigure;
 import astpa.controlstructure.utilities.CSContextMenuProvider;
 import astpa.controlstructure.utilities.CSPalettePage;
 import astpa.controlstructure.utilities.CSPalettePreferences;
@@ -933,18 +937,47 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	public final void printViewer(String path, int imageType) {
 		GraphicalViewer viewer = this.getGraphicalViewer();
 		ScalableRootEditPart rootEditPart = (ScalableRootEditPart) viewer.getRootEditPart();
+		boolean isFirst = true;
+		IFigure printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
 		
-		IFigure printableFigure = rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
-		Rectangle rootFigureBounds =
-			printableFigure.getBounds().expand(CSAbstractEditor.IMG_EXPAND, CSAbstractEditor.IMG_EXPAND);
-		
-		Image img = new Image(null, rootFigureBounds.width, rootFigureBounds.height);
-		GC imageGC = new GC(img);
+		Rectangle clipRectangle = new Rectangle();
+		for(Object layers: printableFigure.getChildren()){
+			//Layer&ConnectionLayer
+			for(Object part: ((IFigure)layers).getChildren()){
+				if(part instanceof RootFigure){
+					for(Object child: ((IFigure)part).getChildren()){
+						if(isFirst){
+							isFirst= false;
+							clipRectangle =new Rectangle(((IFigure)child).getBounds());
+						}else{
+							clipRectangle.union(((IFigure)child).getBounds());
+						}
+					}
+				}
+				else{
+					clipRectangle.union(((IFigure)part).getBounds());
+				}
+			}
+			
+		}
+
+		clipRectangle.expand(IMG_EXPAND, IMG_EXPAND);
+		Image srcImage = new Image(null, printableFigure.getBounds().width,
+								printableFigure.getBounds().height);
+		GC imageGC = new GC(srcImage);
 		Graphics graphics = new SWTGraphics(imageGC);
 		printableFigure.paint(graphics);
 		
-		ImageLoader imgLoader = new ImageLoader();
-		imgLoader.data = new ImageData[] {img.getImageData()};
+		Image scaledImage = new Image(null,clipRectangle.width,
+        											  clipRectangle.height);
+		imageGC = new GC(scaledImage);
+		graphics = new SWTGraphics(imageGC);
+		graphics.drawImage(srcImage, clipRectangle, 
+				new Rectangle(0, 0, clipRectangle.width, clipRectangle.height));
+       
+        ImageLoader imgLoader = new ImageLoader();
+		imgLoader.data = new ImageData[] {scaledImage.getImageData()};
+		
 		imgLoader.save(path, imageType);
 		
 	}
