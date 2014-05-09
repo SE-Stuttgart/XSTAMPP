@@ -30,7 +30,7 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class ProcessValueEditPart extends CSAbstractEditPart {
 	
-	private static final int TOP_OFFSET = 2;
+	private static final int TOP_OFFSET = 4;
 	
 	
 	/**

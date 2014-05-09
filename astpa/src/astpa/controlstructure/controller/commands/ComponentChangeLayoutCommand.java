@@ -85,10 +85,6 @@ public class ComponentChangeLayoutCommand extends ControlStructureAbstractComman
 	
 	@Override
 	public boolean canExecute() {
-		if ((this.model.getComponentType() == ComponentType.PROCESS_VALUE)
-			|| (this.model.getComponentType() == ComponentType.PROCESS_VARIABLE)) {
-			return false;
-		}
 		return true;
 	}
 	

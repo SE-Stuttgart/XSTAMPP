@@ -40,7 +40,8 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * 
- * CSEditPolicy
+ * CSEditPolicy manages the positioning/creation of the components inside their parents
+ * 
  * 
  * @version 1.0
  * @author Lukas Balzer, Aliaksei Babkovich
@@ -75,7 +76,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	 * 
 	 * @author Lukas Balzer
 	 * 
-	 * @param rect the rectanglwe to translate
+	 * @param rect the rectangle to translate
 	 */
 	public void getAbsoluteLayout(Translatable rect) {
 		
@@ -109,6 +110,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			command.setRootModel(rootModel);
 			command.setComponentModel(compModel);
 			
+	
 			if (request.getNewObject() instanceof IComponent) {
 				
 				Rectangle constraint = (Rectangle) this.getConstraintFor(request);
@@ -161,6 +163,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			return dim;
 		}
 	}
+	
 	
 	private Rectangle addProcessModelConstraint(Rectangle constraint, IRectangleComponent rootModel,
 		IRectangleComponent compModel) {

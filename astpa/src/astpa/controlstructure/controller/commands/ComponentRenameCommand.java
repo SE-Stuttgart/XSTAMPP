@@ -95,7 +95,7 @@ public class ComponentRenameCommand extends ControlStructureAbstractCommand {
 	 * @author Lukas Balzer
 	 * 
 	 * @param newLayout this rectangle only differs from the oldLayout if the
-	 *            text has outranged it
+	 *            text has goes over its bounds it
 	 */
 	public void setNewLayout(Rectangle newLayout) {
 		

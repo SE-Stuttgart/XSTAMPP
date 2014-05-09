@@ -31,7 +31,7 @@ public class ProcessFigure extends CSFigure {
 	 * @author Lukas Balzer
 	 */
 	private static final int PROCESS_MODEL_COLUMN = 10;
-	
+	private static final int ROW_OFFSET=4;
 	private final int topOffset;
 	
 	
@@ -48,25 +48,29 @@ public class ProcessFigure extends CSFigure {
 		this.topOffset = top;
 	}
 	
+	
+	
 	@Override
 	public void setLayout(Rectangle rect) {
 		rect.setX(ProcessFigure.PROCESS_MODEL_COLUMN);
 		
-		rect.setWidth(this.getParent().getBounds().width - (2 * ProcessFigure.PROCESS_MODEL_COLUMN)
-			- CSFigure.CENTER_COMPENSATION);
+//		rect.setWidth(this.getParent().getBounds().width - (2 * ProcessFigure.PROCESS_MODEL_COLUMN)
+//			- CSFigure.CENTER_COMPENSATION);
 		this.getTextField().setSize(this.getBounds().width, this.getTextField().getTextBounds().getSize().height);
 		this.getTextField().revalidate();
 		this.setConstraint(this.getTextField(), new Rectangle(1, 1, rect.width, -1));
+		
 		// the component is drawn right below its previous child
 		int previousIndex = this.getParent().getChildren().indexOf(this) - 1;
 		if (previousIndex < 0) {
 			rect.setY(((IControlStructureFigure) this.getParent()).getTextField().getBounds().height + this.topOffset);
 		} else {
 			IFigure previousChild = (IFigure) this.getParent().getChildren().get(previousIndex);
-			rect.setY(previousChild.getBounds().y + previousChild.getBounds().height);
+			rect.setY(previousChild.getBounds().y + previousChild.getBounds().height + ROW_OFFSET);
 		}
-		
+	
 		this.getParent().setConstraint(this, rect);
+		
 		this.getTextField().repaint();
 	}
 	
