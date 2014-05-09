@@ -66,6 +66,7 @@ public class ComponentChangeLayoutCommand extends ControlStructureAbstractComman
 	 * @param rect the new layout constraint
 	 */
 	public void setConstraint(Rectangle rect) {
+		this.layout = new Rectangle();
 		this.layout.width =Math.max(rect.width,ComponentChangeLayoutCommand.MIN_WIDTH);
 		this.layout.height = Math.max(rect.height, ComponentChangeLayoutCommand.MIN_HEIGHT);
 		this.layout.x= Math.max(rect.x,0);
