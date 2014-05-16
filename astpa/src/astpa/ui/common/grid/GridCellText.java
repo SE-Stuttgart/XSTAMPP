@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Text;
 
 import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
@@ -42,7 +43,7 @@ public class GridCellText extends AbstractGridCell {
 	 * 
 	 */
 	public GridCellText() {
-		this.text = "NONE"; //$NON-NLS-1$
+		this.text= "NONE"; //$NON-NLS-1$
 	}
 	
 	/**
@@ -54,7 +55,7 @@ public class GridCellText extends AbstractGridCell {
 	 * 
 	 */
 	public GridCellText(String text) {
-		this.text = text;
+		this.text=text;
 	}
 	
 	@Override
@@ -77,7 +78,7 @@ public class GridCellText extends AbstractGridCell {
 	}
 	
 	protected void setText(String text) {
-		this.text = text;
+		this.text= text;
 	}
 	
 	@Override

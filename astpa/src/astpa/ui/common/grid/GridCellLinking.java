@@ -336,7 +336,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 		this.linkEditor.addKeyListener(new LinkEditorKeyListener());
 		
 		final Point mousePoint = new Point(event.x, event.y);
-		
+		System.out.println(mousePoint);
 		final GridEditor editor = new GridEditor(this.grid.getGrid());
 		editor.setEditor(this.linkEditor);
 		editor.setItem(this.grid.getGrid().getItem(mousePoint));
@@ -385,10 +385,13 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 		this.linkEditor.setMessage(Messages.StartTyping);
 		
 		this.linkField.getContentProposalAdapter().addContentProposalListener(new PopupListener());
+		this.linkField.setPopupPosition(relativeMouse, cellBounds,cellBounds.height);
 		this.linkField.openPopup();
-		final ToolTip tip = new ToolTip(this.grid.getGrid().getShell(), SWT.ICON_INFORMATION);
-		tip.setMessage(Messages.TypeHere);
-		tip.setVisible(true);
+//		final ToolTip tip = new ToolTip(this.grid.getGrid().getShell(), SWT.ICON_INFORMATION);
+//		tip.setMessage(Messages.TypeHere);
+//		tip.setLocation(mousePoint.x- tip.getMessage().length(),mousePoint.y);
+//		tip.setAutoHide(true);
+//		tip.setVisible(true);
 	}
 	
 	@Override

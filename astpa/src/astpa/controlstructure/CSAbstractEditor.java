@@ -14,8 +14,6 @@
 package astpa.controlstructure;
 
 import java.awt.Event;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -107,7 +105,6 @@ import org.eclipse.ui.part.EditorPart;
 
 import astpa.controlstructure.controller.editParts.CSAbstractEditPart;
 import astpa.controlstructure.controller.editParts.CSConnectionEditPart;
-import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
 import astpa.controlstructure.controller.editParts.RootEditPart;
 import astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import astpa.controlstructure.figure.IControlStructureFigure;
@@ -940,6 +937,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		boolean isFirst = true;
 		IFigure printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
 		
+		//create a clip rectangle to cut the unnecessary whitespace
 		Rectangle clipRectangle = new Rectangle();
 		for(Object layers: printableFigure.getChildren()){
 			//Layer&ConnectionLayer
@@ -947,6 +945,8 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 				if(part instanceof RootFigure){
 					for(Object child: ((IFigure)part).getChildren()){
 						if(isFirst){
+							//the first component which is found by the loop is added
+							//as starting Point for the rectangle
 							isFirst= false;
 							clipRectangle =new Rectangle(((IFigure)child).getBounds());
 						}else{
@@ -962,19 +962,22 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		}
 
 		clipRectangle.expand(IMG_EXPAND, IMG_EXPAND);
-		Image srcImage = new Image(null, printableFigure.getBounds().width,
-								printableFigure.getBounds().height);
+		//a plain Image is created on which we can draw any graphics
+		Image srcImage = new Image(null, printableFigure.getBounds().width+ IMG_EXPAND,
+								printableFigure.getBounds().height + IMG_EXPAND);
 		GC imageGC = new GC(srcImage);
 		Graphics graphics = new SWTGraphics(imageGC);
 		printableFigure.paint(graphics);
 		
+		//this additional Image is created with the actual Bounds
+		//and the first one is clipped inside the scaled image
 		Image scaledImage = new Image(null,clipRectangle.width,
         											  clipRectangle.height);
 		imageGC = new GC(scaledImage);
 		graphics = new SWTGraphics(imageGC);
 		graphics.drawImage(srcImage, clipRectangle, 
 				new Rectangle(0, 0, clipRectangle.width, clipRectangle.height));
-       
+
         ImageLoader imgLoader = new ImageLoader();
 		imgLoader.data = new ImageData[] {scaledImage.getImageData()};
 		

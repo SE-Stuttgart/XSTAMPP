@@ -14,6 +14,7 @@
 
 package astpa.ui.causalfactors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
@@ -22,8 +23,10 @@ import messages.Messages;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalListener;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.PopupList;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.GC;
@@ -35,6 +38,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import astpa.model.ISafetyConstraint;
 import astpa.model.ObserverValue;
@@ -43,6 +47,7 @@ import astpa.model.causalfactor.ICausalFactor;
 import astpa.model.interfaces.ICausalFactorDataModel;
 import astpa.model.interfaces.IDataModel;
 import astpa.ui.common.IViewBase;
+import astpa.ui.common.grid.AutoCompleteField;
 import astpa.ui.common.grid.CellButton;
 import astpa.ui.common.grid.GridCellButton;
 import astpa.ui.common.grid.GridCellColored;
@@ -181,42 +186,55 @@ public class CausalFactorsView implements IViewBase {
 	
 	private class ImportButton extends CellButton {
 		
-		private GridWrapper gridWrapper = null;
+	
 		private ICausalFactor factor = null;
 		
 		
-		public ImportButton(Rectangle rect, Image image, ICausalFactor factor, GridWrapper grid) {
+		public ImportButton(Rectangle rect, Image image, ICausalFactor factor) {
 			super(rect, image);
 			
 			this.factor = factor;
-			this.gridWrapper = grid;
 		}
 		
 		@Override
 		public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
 			List<ISafetyConstraint> safetyConstraints =
 				CausalFactorsView.this.dataInterface.getCorrespondingSafetyConstraints();
-			
+			Text selectedString = new Text(CausalFactorsView.this.grid.getGrid(), SWT.PUSH);
 			if (safetyConstraints.size() <= 0) {
 				return;
 			}
-			
-			PopupList list = new PopupList(this.gridWrapper.getGrid().getShell());
-			
-			String[] items = new String[safetyConstraints.size()];
+			List<String> labels = new ArrayList<>();
+			List<String> description = new ArrayList<>();
+			List<String> literals =new ArrayList<>();
+			String tmp;
 			for (int i = 0; i < safetyConstraints.size(); i++) {
-				items[i] = safetyConstraints.get(i).getText();
-				
+					tmp = safetyConstraints.get(i).getText();
+					if(tmp.length()>= 1){
+						labels.add(tmp.substring(0, Math.min(tmp.length(), 20)));
+						description.add(tmp);
+						literals.add("");
+					}
 			}
-			list.setItems(items);
 			
-			String selected =
-				list.open(new Rectangle(this.gridWrapper.getGrid().getShell().getBounds().x + cellBounds.x
-					+ (cellBounds.width), this.gridWrapper.getGrid().getShell().getBounds().y + cellBounds.y
-					+ (cellBounds.height * 2), cellBounds.width, cellBounds.height));
 			
-			CausalFactorsView.this.dataInterface.setCausalSafetyConstraintText(this.factor.getSafetyConstraint()
-				.getId(), selected);
+			AutoCompleteField scLinking= new AutoCompleteField(selectedString, new TextContentAdapter(),
+																literals.toArray(new String[0]),	
+																labels.toArray(new String[0]),
+																description.toArray(new String[0]));
+			scLinking.getContentProposalAdapter().addContentProposalListener(new IContentProposalListener() {
+				
+				@Override
+				public void proposalAccepted(IContentProposal proposal) {
+					CausalFactorsView.this.dataInterface.setCausalSafetyConstraintText(ImportButton.this.factor.getSafetyConstraint()
+							.getId(), proposal.getDescription());
+					
+				}
+			});
+			
+			scLinking.setPopupPosition(relativeMouse, cellBounds,0);
+			scLinking.openPopup();
+			
 		}
 	}
 	
@@ -367,8 +385,7 @@ public class CausalFactorsView implements IViewBase {
 					constraintsCell.addCellButton(new ImportButton(new Rectangle(
 						CausalFactorsView.ADD_BUTTON_COORDINATE.x, CausalFactorsView.ADD_BUTTON_COORDINATE.y,
 						GridWrapper.getLinkButton16().getBounds().width,
-						GridWrapper.getLinkButton16().getBounds().height), GridWrapper.getLinkButton16(), factor,
-						this.grid));
+						GridWrapper.getLinkButton16().getBounds().height), GridWrapper.getLinkButton16(), factor));
 					childRow.addCell(constraintsCell);
 				} else {
 					childRow.addCell(new SafetyConstraintEditorCell(this.grid, factor.getSafetyConstraint().getText(),

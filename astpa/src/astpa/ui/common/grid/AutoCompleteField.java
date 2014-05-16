@@ -15,6 +15,8 @@ package astpa.ui.common.grid;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -80,6 +82,26 @@ public class AutoCompleteField {
 		return this.contentProposalProvider;
 	}
 	
+	/**
+	 * This function calculates a position by merging two Point and sets it as the popups Position
+	 * @author Lukas Balzer
+	 *
+	 * @param relativeMouse
+	 * 		the position of the mouse relative to the active cell
+	 * @param cellPosition
+	 * 		the position of the cell relativ to the parent grid
+	 * @param topOffset 
+	 * 		an offset which cann be set to move the dialog relative to the mouse
+	 */
+	public void setPopupPosition(Point relativeMouse, Rectangle cellPosition,int topOffset){
+		Point mouseLoc= new Point(0, 0);
+		//translate the mouseLocation manually by subtract the the locations
+		//and the Constant for the menubar
+		mouseLoc.x = relativeMouse.x +  cellPosition.x;
+		mouseLoc.y = relativeMouse.y +  cellPosition.y- topOffset;
+		
+		this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
+	}
 	/**
 	 * 
 	 * @author Benedikt Markt
