@@ -88,7 +88,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
 		this.stepID = (String) this.getHost().getViewer().getProperty(CSAbstractEditor.STEP_EDITOR);
 		ComponentChangeLayoutCommand command =
-			new ComponentChangeLayoutCommand(this.getHost().getIdMap(), this.dataModel, this.stepID);
+			new ComponentChangeLayoutCommand(this.dataModel, this.stepID);
 		
 		command.setModel(child.getModel());
 		command.setConstraint((Rectangle) constraint);
@@ -102,7 +102,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 		if ((request.getType() == RequestConstants.REQ_CREATE)) {
 			
 			ComponentCreateCommand command =
-				new ComponentCreateCommand(this.getHost().getIdMap(), this.dataModel, this.stepID);
+				new ComponentCreateCommand(this.dataModel, this.stepID);
 			command.setFeedbackLayer(this.getFeedbackLayer());
 			IRectangleComponent rootModel = (IRectangleComponent) this.getHost().getModel();
 			IRectangleComponent compModel = (IRectangleComponent) request.getNewObject();

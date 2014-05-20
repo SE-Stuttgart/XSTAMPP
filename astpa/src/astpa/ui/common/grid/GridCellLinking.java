@@ -336,7 +336,6 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 		this.linkEditor.addKeyListener(new LinkEditorKeyListener());
 		
 		final Point mousePoint = new Point(event.x, event.y);
-		System.out.println(mousePoint);
 		final GridEditor editor = new GridEditor(this.grid.getGrid());
 		editor.setEditor(this.linkEditor);
 		editor.setItem(this.grid.getGrid().getItem(mousePoint));

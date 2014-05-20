@@ -120,6 +120,21 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	boolean removeComponent(UUID componentId);
 	
 	/**
+	 *This methode recovers a Component which was deleted before,
+	 *from the componentTrash
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param parentId the id of the parent
+	 * @param componentId the id of the component to recover
+	 * @return
+	 * 		whether the component could be recoverd or not
+	 */
+	public boolean recoverComponent(UUID parentId,UUID componentId);
+	
+	
+	
+	/**
 	 * Searches recursively for the component with the given id
 	 * 
 	 * @param componentId the id of the child
@@ -206,6 +221,19 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * @author Fabian Toth
 	 */
 	boolean removeConnection(UUID connectionId);
+	
+
+	/**
+	 *This methode recovers a Connection which was deleted before,
+	 *from the connectionTrash
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param connectionId the id of the component to recover
+	 * @return
+	 * 		whether the Connection could be recovered or not
+	 */
+	public boolean recoverConnection(UUID connectionId);
 	
 	/**
 	 * Gets the connection with the given id

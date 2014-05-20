@@ -15,7 +15,6 @@ package astpa.controlstructure.controller.editParts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -306,14 +305,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 		return this.dataModel;
 	}
 	
-	@Override
-	public Map<UUID, UUID> getIdMap() {
-		Map<UUID, UUID> undoRedoIdMap = ((IControlStructureEditPart) this.getParent()).getIdMap();
-		if (!undoRedoIdMap.containsKey(this.getId())) {
-			undoRedoIdMap.put(this.getId(), this.getId());
-		}
-		return undoRedoIdMap;
-	}
+
 	
 	@Override
 	public UUID getId() {

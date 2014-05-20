@@ -13,13 +13,11 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
+
 import java.util.UUID;
 
-import astpa.model.controlstructure.components.Anchor;
+
 import astpa.model.controlstructure.components.CSConnection;
-import astpa.model.controlstructure.components.ConnectionType;
-import astpa.model.controlstructure.interfaces.IAnchor;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -31,20 +29,17 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	
-	private CSConnection connectionModel;
-	private UUID connenctionID;
+	private UUID connectionId;
 	
 	
 	/**
 	 * 
 	 * @author Lukas Balzer
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
 	 * 
 	 * @param model The DataModel which contains all model classes
 	 */
-	public ConnectionDeleteCommand(Map<UUID, UUID> idMap, IControlStructureEditorDataModel model) {
-		super(idMap, model, null);
+	public ConnectionDeleteCommand(IControlStructureEditorDataModel model) {
+		super(model, null);
 	}
 	
 	/**
@@ -56,14 +51,13 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	 * 
 	 */
 	public void setLink(CSConnection model) {
-		this.connectionModel = model;
-		this.connenctionID = model.getId();
+		this.connectionId = model.getId();
 		
 	}
 	
 	@Override
 	public boolean canExecute() {
-		if (this.connenctionID == null) {
+		if (this.connectionId == null) {
 			return false;
 		}
 		return true;
@@ -71,12 +65,12 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public void execute() {
-		this.getDataModel().removeConnection(this.connenctionID);
+		this.getDataModel().removeConnection(this.connectionId);
 	}
 	
 	@Override
 	public boolean canUndo() {
-		if (this.connenctionID == null) {
+		if (this.connectionId == null) {
 			return false;
 		}
 		return true;
@@ -84,10 +78,7 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public void undo() {
-		IAnchor source = this.connectionModel.getSourceAnchor();
-		IAnchor target = this.connectionModel.getTargetAnchor();
-		ConnectionType type = this.connectionModel.getConnectionType();
-		this.getDataModel().addConnection((Anchor) source, (Anchor) target, type);
+		this.getDataModel().recoverConnection(this.connectionId);
 	}
 	
 }

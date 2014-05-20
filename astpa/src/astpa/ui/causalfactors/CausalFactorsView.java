@@ -211,7 +211,7 @@ public class CausalFactorsView implements IViewBase {
 			for (int i = 0; i < safetyConstraints.size(); i++) {
 					tmp = safetyConstraints.get(i).getText();
 					if(tmp.length()>= 1){
-						labels.add(tmp.substring(0, Math.min(tmp.length(), 20)));
+						labels.add(tmp.substring(0, Math.min(tmp.length(), 40)) + "...");
 						description.add(tmp);
 						literals.add("");
 					}

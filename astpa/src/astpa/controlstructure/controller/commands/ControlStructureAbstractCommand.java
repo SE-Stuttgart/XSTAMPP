@@ -13,8 +13,7 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
-import java.util.UUID;
+
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.commands.Command;
@@ -29,7 +28,6 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
 public abstract class ControlStructureAbstractCommand extends Command {
 	
 	private final IControlStructureEditorDataModel dataModel;
-	private final Map<UUID, UUID> componentIdMap;
 	private IFigure feedbackLayer;
 	private final String stepID;
 	
@@ -37,16 +35,13 @@ public abstract class ControlStructureAbstractCommand extends Command {
 	/**
 	 * 
 	 * @author Lukas Balzer
-	 * 
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
+	 *
 	 * @param model The DataModel which contains all model classes
 	 * @param stepID the stepEditor ID
 	 */
-	public ControlStructureAbstractCommand(Map<UUID, UUID> idMap, IControlStructureEditorDataModel model, String stepID) {
+	public ControlStructureAbstractCommand(IControlStructureEditorDataModel model, String stepID) {
 		super();
 		this.dataModel = model;
-		this.componentIdMap = idMap;
 		this.stepID = stepID;
 	}
 	
@@ -60,17 +55,7 @@ public abstract class ControlStructureAbstractCommand extends Command {
 		return this.dataModel;
 	}
 	
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return the map in which all components are mapped so that a delete and a
-	 *         change of the id can be tracked
-	 */
-	protected Map<UUID, UUID> getComponentIdMap() {
-		return this.componentIdMap;
-	}
-	
+
 	/**
 	 * 
 	 * @author Lukas Balzer

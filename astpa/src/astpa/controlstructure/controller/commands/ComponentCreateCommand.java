@@ -13,7 +13,6 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -41,7 +40,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	private IRectangleComponent compModel;
 	private IRectangleComponent constraintModel;
 	private UUID componentId;
-	private UUID oldComponentId;
 	private UUID rootId;
 	private Rectangle layout;
 	private Rectangle rootLayout;
@@ -53,14 +51,12 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	 * so the Component has no root when this command is called
 	 * 
 	 * @author Lukas Balzer, Aliaksei Babkovich
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
 	 * @param model The dataModel which contains all model classes
 	 * @param stepID the stepEditor ID
 	 * 
 	 */
-	public ComponentCreateCommand(Map<UUID, UUID> idMap, IControlStructureEditorDataModel model, String stepID) {
-		super(idMap, model, stepID);
+	public ComponentCreateCommand(IControlStructureEditorDataModel model, String stepID) {
+		super(model, stepID);
 		this.constraintModel = new Component();
 		this.compModel = null;
 		this.rootModel = null;
@@ -162,23 +158,8 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		this.componentId =
 			this.getDataModel().addComponent(this.rootModel.getId(), this.layout, this.compModel.getText(),
 				this.compModel.getComponentType());
-		this.getDataModel().changeComponentLayout(this.rootId, this.rootLayout, this.getStepID().equals(CSEditor.ID));
-		this.compModel = this.getDataModel().getComponent(this.componentId);
+		updateParentConstraint();
 		
-		Rectangle conflict = this.rootLayout;
-		// this loop updates all children of the constraint component
-		for (IRectangleComponent child : this.constraintModel.getChildren()) {
-			Rectangle constrainRect = child.getLayout(this.getStepID().equals(CSEditor.ID)).getCopy();
-			// if the conflict intersects the child than the layout is moved
-			// down
-			if (conflict.intersects(constrainRect) && !child.equals(this.rootModel)) {
-				constrainRect.y += conflict.getIntersection(constrainRect).height;
-				this.getDataModel().changeComponentLayout(child.getId(), constrainRect,
-					this.getStepID().equals(CSEditor.ID));
-				conflict = constrainRect;
-			}
-		}
-		this.getComponentIdMap().put(this.componentId, this.componentId);
 	}
 	
 	@Override
@@ -195,12 +176,32 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		this.getDataModel().removeComponent(this.componentId);
 		this.getDataModel()
 			.changeComponentLayout(this.rootId, this.oldRootLayout, this.getStepID().equals(CSEditor.ID));
-		this.oldComponentId = this.componentId;
+		
 	}
 	
 	@Override
 	public void redo() {
-		this.execute();
-		this.getComponentIdMap().put(this.oldComponentId, this.componentId);
+		this.getDataModel().recoverComponent(this.rootId, this.compModel.getId());
+		updateParentConstraint();
+		
+	}
+	
+	private void updateParentConstraint(){
+		this.getDataModel().changeComponentLayout(this.rootId, this.rootLayout, this.getStepID().equals(CSEditor.ID));
+		this.compModel = this.getDataModel().getComponent(this.componentId);
+		
+		Rectangle conflict = this.rootLayout;
+		// this loop updates all children of the constraint component
+		for (IRectangleComponent child : this.constraintModel.getChildren()) {
+			Rectangle constrainRect = child.getLayout(this.getStepID().equals(CSEditor.ID)).getCopy();
+			// if the conflict intersects the child than the layout is moved
+			// down
+			if (conflict.intersects(constrainRect) && !child.equals(this.rootModel)) {
+				constrainRect.y += conflict.getIntersection(constrainRect).height;
+				this.getDataModel().changeComponentLayout(child.getId(), constrainRect,
+					this.getStepID().equals(CSEditor.ID));
+				conflict = constrainRect;
+			}
+		}
 	}
 }

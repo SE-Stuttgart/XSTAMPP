@@ -74,7 +74,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 	@Override
 	protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
 		((IControlStructureFigure) this.getHostFigure()).enableOffset();
-		ConnectionCreateCommand cmd = new ConnectionCreateCommand(this.getHost().getIdMap(), this.dataModel);
+		ConnectionCreateCommand cmd = new ConnectionCreateCommand(this.dataModel);
 		ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost()).getSourceConnectionAnchor(request);
 		cmd.setConnectionType(((ConnectionType) request.getNewObjectType()));
 		
@@ -92,7 +92,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost()).getSourceConnectionAnchor(request);
 		ConnectionAnchor targetAnchor = ((CSConnectionEditPart) request.getConnectionEditPart()).getTargetAnchor();
 		ConnectionReconnectCommand cmd =
-			new ConnectionReconnectCommand(conn, this.getHost().getIdMap(), this.dataModel);
+			new ConnectionReconnectCommand(conn,this.dataModel);
 		
 		cmd.setNewSourceNode((IAnchorFigure) targetAnchor, (IAnchorFigure) sourceAnchor);
 		
@@ -107,7 +107,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost()).getTargetConnectionAnchor(request);
 		
 		ConnectionReconnectCommand cmd =
-			new ConnectionReconnectCommand(conn, this.getHost().getIdMap(), this.dataModel);
+			new ConnectionReconnectCommand(conn,this.dataModel);
 		
 		cmd.setNewTargetNode((IAnchorFigure) targetAnchor, (IAnchorFigure) sourceAnchor);
 		return cmd;

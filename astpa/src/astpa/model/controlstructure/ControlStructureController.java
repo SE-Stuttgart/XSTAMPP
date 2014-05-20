@@ -14,7 +14,9 @@
 package astpa.model.controlstructure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -46,7 +48,9 @@ public class ControlStructureController {
 	@XmlElementWrapper(name = "connections")
 	@XmlElement(name = "connection")
 	private List<CSConnection> connections;
-	
+	private final Map<UUID,IRectangleComponent> componentTrash;
+	private final Map<UUID,IConnection> connectionTrash;
+	private final Map<UUID,List<UUID>> removedLinks;
 	
 	/**
 	 * Constructor of the control structure controller
@@ -55,6 +59,9 @@ public class ControlStructureController {
 	 */
 	public ControlStructureController() {
 		this.connections = new ArrayList<>();
+		this.componentTrash= new HashMap<>();
+		this.connectionTrash= new HashMap<>();
+		this.removedLinks= new HashMap<>();
 	}
 	
 	/**
@@ -139,8 +146,38 @@ public class ControlStructureController {
 	 * @author Fabian Toth
 	 */
 	public boolean removeComponent(UUID componentId) {
+		Component component = this.getInternalComponent(componentId);
 		this.removeAllLinks(componentId);
+		this.componentTrash.put(componentId, component);
 		return this.root.removeChild(componentId);
+	}
+	
+	/**
+	 *This methode recovers a Component which was deleted before,
+	 *from the componentTrash
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param parentId the id of the parent
+	 * @param componentId the id of the component to recover
+	 * @return
+	 * 		whether the component could be recoverd or not
+	 */
+	public boolean recoverComponent(UUID parentId,UUID componentId){
+		if(this.componentTrash.containsKey(componentId)){
+			Component parent = this.getInternalComponent(parentId);
+			boolean success = parent.addChild((Component)this.componentTrash.get(componentId));
+			this.componentTrash.remove(componentId);
+			if(this.removedLinks.containsKey(componentId)){
+				for(UUID connectionId: this.removedLinks.get(componentId)){
+					this.recoverConnection(connectionId);
+				}
+			}
+			return success;
+		}
+		
+		return false;
+		
 	}
 	
 	/**
@@ -251,9 +288,33 @@ public class ControlStructureController {
 	 * @author Fabian Toth
 	 */
 	public boolean removeConnection(UUID connectionId) {
-		return this.connections.remove(this.getConnection(connectionId));
+		IConnection connection = this.getConnection(connectionId);
+		if(this.connections.remove(connection)){
+			this.connectionTrash.put(connectionId, connection);
+			return true;
+		}
+		return false;
 	}
 	
+	/**
+	 *This methode recovers a Connection which was deleted before,
+	 *from the connectionTrash
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param connectionId the id of the component to recover
+	 * @return
+	 * 		whether the Connection could be recovered or not
+	 */
+	public boolean recoverConnection(UUID connectionId){
+		if(this.connectionTrash.containsKey(connectionId)){
+			boolean success = this.connections.add((CSConnection)this.connectionTrash.get(connectionId));
+			this.connectionTrash.remove(connectionId);
+			return success;
+		}
+		return false;
+		
+	}
 	/**
 	 * Gets the connection with the given id
 	 * 
@@ -289,19 +350,23 @@ public class ControlStructureController {
 	/**
 	 * Removes all links that are connected to the component with the given id
 	 * 
-	 * @author Fabian Toth
+	 * @author Fabian Toth,Lukas Balzer
 	 * 
 	 * @param componentId the id of the component
 	 * @return true if the connections have been deleted
 	 */
 	private boolean removeAllLinks(UUID componentId) {
-		List<CSConnection> toRemove = new ArrayList<>();
+		List<IConnection> connectionList = new ArrayList<>();
+		this.removedLinks.put(componentId, new ArrayList<UUID>());
 		for (CSConnection connection : this.connections) {
 			if (connection.connectsComponent(componentId)) {
-				toRemove.add(connection);
+					UUID tmpID=connection.getId();
+					connectionList.add(connection);
+					this.connectionTrash.put(tmpID, connection);
+					this.removedLinks.get(componentId).add(tmpID);
 			}
 		}
-		return this.connections.removeAll(toRemove);
+		return this.connections.removeAll(connectionList);
 	}
 	
 	/**

@@ -13,7 +13,6 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
 import java.util.UUID;
 
 import astpa.controlstructure.figure.CSAnchor;
@@ -48,14 +47,12 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 	/**
 	 * 
 	 * @author Lukas Balzer
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
 	 * 
 	 * @param model the
 	 * 
 	 */
-	public ConnectionCreateCommand(Map<UUID, UUID> idMap, IControlStructureEditorDataModel model) {
-		super(idMap, model, null);
+	public ConnectionCreateCommand(IControlStructureEditorDataModel model) {
+		super(model, null);
 	}
 	
 	/**
@@ -167,17 +164,10 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 		return true;
 	}
 	
-	private void updateAnchor() {
-		UUID newId = this.getComponentIdMap().get(this.sourceAnchorModel.getOwnerId());
-		this.sourceAnchorModel.setOwnerId(newId);
-		
-		newId = this.getComponentIdMap().get(this.targetAnchorModel.getOwnerId());
-		this.targetAnchorModel.setOwnerId(newId);
-	}
+	
 	
 	@Override
 	public void execute() {
-		// this.adjust();
 		this.connectionId =
 			this.getDataModel().addConnection(this.sourceAnchorModel, this.targetAnchorModel, this.connectionType);
 		
@@ -193,8 +183,7 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public void redo() {
-		this.updateAnchor();
-		this.execute();
+		this.getDataModel().recoverConnection(this.connectionId);
 	}
 	
 	@Override

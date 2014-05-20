@@ -13,9 +13,7 @@
 
 package astpa.controlstructure.controller.editParts;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+
 
 import messages.Messages;
 
@@ -44,8 +42,6 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
  * 
  */
 public class RootEditPart extends CSAbstractEditPart {
-	
-	private Map<UUID, UUID> undoRedoIdMap = new HashMap<UUID, UUID>();
 	
 	
 	/**
@@ -101,10 +97,6 @@ public class RootEditPart extends CSAbstractEditPart {
 		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel()));
 	}
 	
-	@Override
-	public Map<UUID, UUID> getIdMap() {
-		return this.undoRedoIdMap;
-	}
 	
 	@Override
 	public void translateToRoot(Translatable t) {

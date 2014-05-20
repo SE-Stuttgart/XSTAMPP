@@ -14,14 +14,9 @@
 package astpa.ui.common.grid;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 
 /**
@@ -53,7 +48,7 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 		
 		this.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_INSERT);
 		this.setFilterStyle(ContentProposalAdapter.FILTER_NONE);
-		this.setAutoActivationCharacters(autoActivationCharacters);
+		this.setAutoActivationCharacters(null);
 		this.setAutoActivationDelay(0);
 		this.setPropagateKeys(false);
 		
@@ -68,7 +63,7 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 	@Override
 	public void openProposalPopup() {
 		super.openProposalPopup();
-		this.setProposalPopupFocus();
+//		this.setProposalPopupFocus();
 		
 	}
 	

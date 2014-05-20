@@ -13,7 +13,6 @@
 
 package astpa.controlstructure.controller.editParts;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -167,10 +166,6 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		return ((IConnection) this.getModel()).getId();
 	}
 	
-	@Override
-	public Map<UUID, UUID> getIdMap() {
-		return ((IControlStructureEditPart) this.getTarget()).getIdMap();
-	}
 	
 	@Override
 	public void translateToRoot(Translatable t) {

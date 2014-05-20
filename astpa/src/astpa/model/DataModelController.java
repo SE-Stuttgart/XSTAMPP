@@ -1138,5 +1138,25 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		
 		return this.exportInformation.setCspmImagePath(path);
 	}
+
+	@Override
+	public boolean recoverComponent(UUID parentId, UUID componentId) {
+		if(parentId == null || componentId == null){
+			return false;
+		}
+		boolean result = this.controlStructureController.recoverComponent(parentId, componentId);
+		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		return result;
+	}
+
+	@Override
+	public boolean recoverConnection(UUID connectionId) {
+		if(connectionId == null){
+			return false;
+		}
+		boolean result = this.controlStructureController.recoverConnection(connectionId);
+		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		return result;
+	}
 	
 }

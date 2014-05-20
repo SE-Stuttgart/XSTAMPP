@@ -44,7 +44,7 @@ public class CSDeletePolicy extends ComponentEditPolicy {
 	
 	@Override
 	protected Command createDeleteCommand(GroupRequest deleteRequest) {
-		DeleteCommand command = new DeleteCommand(this.getHost().getIdMap(), this.dataModel);
+		DeleteCommand command = new DeleteCommand(this.dataModel);
 		command.setModel((IRectangleComponent) this.getHost().getModel());
 		
 		command.setParentModel(this.getHost().getParent().getModel());

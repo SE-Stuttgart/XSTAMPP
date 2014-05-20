@@ -70,7 +70,7 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 		String stepID = (String) this.getHost().getViewer().getProperty(CSAbstractEditor.STEP_EDITOR);
 		
 		ComponentRenameCommand command =
-			new ComponentRenameCommand(this.oldName, this.getHost().getIdMap(), this.dataModel, stepID);
+			new ComponentRenameCommand(this.oldName, this.dataModel, stepID);
 		this.oldName = null;
 		// The method getHost() calls the componentModel which makes the
 		// requests

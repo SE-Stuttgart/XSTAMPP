@@ -13,8 +13,6 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
-import java.util.UUID;
 
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -35,13 +33,11 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	/**
 	 * 
 	 * @author Lukas Balzer
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
 	 * 
 	 * @param model The DataModel which contains all model classes
 	 */
-	public DeleteCommand(Map<UUID, UUID> idMap, IControlStructureEditorDataModel model) {
-		super(idMap, model, null);
+	public DeleteCommand(IControlStructureEditorDataModel model) {
+		super(model, null);
 	}
 	
 	@Override
@@ -84,11 +80,7 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public void undo() {
-		UUID tmpID =
-			this.getDataModel().addComponent(this.parentModel.getId(), this.model.getLayout(true),
-				this.model.getText(), this.model.getComponentType());
-		this.getDataModel().changeComponentLayout(tmpID, this.model.getLayout(false), false);
-		
+		this.getDataModel().recoverComponent(this.parentModel.getId(), this.model.getId());		
 	}
 	
 }

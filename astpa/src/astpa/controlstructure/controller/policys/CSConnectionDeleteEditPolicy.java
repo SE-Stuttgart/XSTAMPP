@@ -47,7 +47,7 @@ public class CSConnectionDeleteEditPolicy extends ConnectionEditPolicy implement
 	
 	@Override
 	protected Command getDeleteCommand(GroupRequest arg0) {
-		ConnectionDeleteCommand command = new ConnectionDeleteCommand(this.getHost().getIdMap(), this.dataModel);
+		ConnectionDeleteCommand command = new ConnectionDeleteCommand(this.dataModel);
 		command.setLink((CSConnection) this.getHost().getModel());
 		return command;
 	}

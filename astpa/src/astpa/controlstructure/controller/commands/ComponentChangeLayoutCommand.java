@@ -13,13 +13,10 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import astpa.controlstructure.CSEditor;
-import astpa.model.controlstructure.components.ComponentType;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -41,15 +38,12 @@ public class ComponentChangeLayoutCommand extends ControlStructureAbstractComman
 	
 	/**
 	 * 
-	 * @author Lukas
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
-	 * 
+	 * @author Lukas Balzer
 	 * @param model The dataModel which contains all model classes
 	 * @param stepID the stepEditor ID
 	 */
-	public ComponentChangeLayoutCommand(Map<UUID, UUID> idMap, IControlStructureEditorDataModel model, String stepID) {
-		super(idMap, model, stepID);
+	public ComponentChangeLayoutCommand(IControlStructureEditorDataModel model, String stepID) {
+		super(model, stepID);
 	}
 	
 	@Override

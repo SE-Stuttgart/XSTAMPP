@@ -13,8 +13,6 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -46,14 +44,12 @@ public class ComponentRenameCommand extends ControlStructureAbstractCommand {
 	 * @author Lukas Balzer
 	 * 
 	 * @param name The text which shall be changed
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
 	 * @param stepID the stepEditor ID
 	 * @param model The DataModel which contains all model classes
 	 */
-	public ComponentRenameCommand(String name, Map<UUID, UUID> idMap, IControlStructureEditorDataModel model,
+	public ComponentRenameCommand(String name, IControlStructureEditorDataModel model,
 		String stepID) {
-		super(idMap, model, stepID);
+		super(model, stepID);
 		this.oldName = name;
 	}
 	

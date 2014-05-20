@@ -13,7 +13,6 @@
 
 package astpa.controlstructure.controller.commands;
 
-import java.util.Map;
 import java.util.UUID;
 
 import astpa.controlstructure.figure.CSAnchor;
@@ -46,12 +45,10 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 	 * @author Lukas Balzer, Aliaksei Babkovich
 	 * 
 	 * @param conn The Connection to manipulate
-	 * @param idMap the map in which all components are mapped so that a delete
-	 *            and a change of the id can be tracked
 	 * @param model The DataModel which contains all model classes
 	 */
-	public ConnectionReconnectCommand(CSConnection conn, Map<UUID, UUID> idMap, IControlStructureEditorDataModel model) {
-		super(idMap, model, null);
+	public ConnectionReconnectCommand(CSConnection conn, IControlStructureEditorDataModel model) {
+		super(model, null);
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}

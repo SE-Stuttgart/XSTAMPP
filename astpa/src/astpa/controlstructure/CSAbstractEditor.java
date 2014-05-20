@@ -218,7 +218,6 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		data.bottom = new FormAttachment(this.toolBar);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		System.out.println(this.workSite);
 		this.splitter =
 			new FlyoutPaletteComposite(editorComposite, SWT.CENTER, this.workSite.getPage(),
 				this.getPaletteViewerProvider(), this.getPalettePreferences());
@@ -496,7 +495,6 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// If not the active editor, ignore selection changed.
-		System.out.println();
 		this.updateActions(this.selectionActions);
 	}
 	
@@ -975,8 +973,11 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
         											  clipRectangle.height);
 		imageGC = new GC(scaledImage);
 		graphics = new SWTGraphics(imageGC);
+		clipRectangle.x= Math.max(0, clipRectangle.x);
+		clipRectangle.y= Math.max(0, clipRectangle.y);
 		graphics.drawImage(srcImage, clipRectangle, 
-				new Rectangle(0, 0, clipRectangle.width, clipRectangle.height));
+				new Rectangle(0, 0, clipRectangle.width,
+									clipRectangle.height ));
 
         ImageLoader imgLoader = new ImageLoader();
 		imgLoader.data = new ImageData[] {scaledImage.getImageData()};
