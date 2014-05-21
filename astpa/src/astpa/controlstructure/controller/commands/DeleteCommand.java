@@ -81,6 +81,13 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	@Override
 	public void undo() {
 		this.getDataModel().recoverComponent(this.parentModel.getId(), this.model.getId());		
+		this.getDataModel().changeComponentLayout(this.model.getId(), this.model.getLayout(false), false);
+	}
+	
+	@Override
+	public void redo() {
+		execute();
+		
 	}
 	
 }

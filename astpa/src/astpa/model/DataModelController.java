@@ -80,47 +80,46 @@ import astpa.model.sds.SystemGoal;
  * 
  */
 @XmlRootElement(namespace = "astpa.model")
-public class DataModelController extends Observable implements ILinkingViewDataModel, INavigationViewDataModel,
-	ISystemDescriptionViewDataModel, IAccidentViewDataModel, IHazardViewDataModel, IStatusLineDataModel,
-	IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel, ISystemGoalViewDataModel,
-	IControlActionViewDataModel, IControlStructureEditorDataModel, IUnsafeControlActionDataModel,
-	ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel {
-	
+public class DataModelController extends Observable implements
+		ILinkingViewDataModel, INavigationViewDataModel,
+		ISystemDescriptionViewDataModel, IAccidentViewDataModel,
+		IHazardViewDataModel, IStatusLineDataModel,
+		IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel,
+		ISystemGoalViewDataModel, IControlActionViewDataModel,
+		IControlStructureEditorDataModel, IUnsafeControlActionDataModel,
+		ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel {
+
 	private static final Logger LOGGER = Logger.getRootLogger();
-	
-	Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-	Dictionary<?, ?> dictionary = this.bundle.getHeaders();
-	String versionWithQualifier = (String) this.dictionary.get(Messages.BundleVersion);
+
 	@XmlAttribute(name = "astpaversion")
-	private String astpaVersion = this.versionWithQualifier.substring(0, this.versionWithQualifier.lastIndexOf('.'));
-	
+	private String astpaVersion;
+
 	@XmlElement(name = "exportinformation")
 	private ExportInformation exportInformation;
-	
+
 	@XmlElement(name = "projectdata")
 	private ProjectDataController projectDataManager;
-	
+
 	@XmlElement(name = "hazacc")
 	private HazAccController hazAccController;
-	
+
 	@XmlElement(name = "sds")
 	private SDSController sdsController;
-	
+
 	@XmlElement(name = "controlstructure")
 	private ControlStructureController controlStructureController;
-	
+
 	@XmlElement(name = "cac")
 	private ControlActionController controlActionController;
-	
+
 	@XmlElement(name = "causalfactor")
 	private CausalFactorController causalFactorController;
-	
+
 	/**
 	 * Shows if there are unsaved changes or not
 	 */
 	private boolean unsavedChanges;
-	
-	
+
 	/**
 	 * Constructor of the DataModel Controller
 	 * 
@@ -135,27 +134,36 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		this.controlActionController = new ControlActionController();
 		this.causalFactorController = new CausalFactorController();
 		this.unsavedChanges = false;
+		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+		if (bundle != null) {
+			Dictionary<?, ?> dictionary = bundle.getHeaders();
+			String versionWithQualifier = (String) dictionary
+					.get(Messages.BundleVersion);
+			this.astpaVersion = versionWithQualifier.substring(0,
+					versionWithQualifier.lastIndexOf('.'));
+		}
 	}
-	
+
 	/**
 	 * Triggers an update of the given value
 	 * 
 	 * @author Fabian Toth
 	 * 
-	 * @param value the given value to update
+	 * @param value
+	 *            the given value to update
 	 */
-	
+
 	public void updateValue(ObserverValue value) {
 		DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
 		this.setChanged();
 		this.notifyObservers(value);
 	}
-	
+
 	@Override
 	public boolean hasUnsavedChanges() {
 		return this.unsavedChanges;
 	}
-	
+
 	/**
 	 * Sets that there are no unsaved changes
 	 * 
@@ -166,7 +174,7 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		this.setChanged();
 		this.notifyObservers(ObserverValue.UNSAVED_CHANGES);
 	}
-	
+
 	/**
 	 * Prepares the data model for the export
 	 * 
@@ -177,12 +185,12 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		this.hazAccController.prepareForExport();
 		this.controlActionController.prepareForExport(this.hazAccController);
 		this.causalFactorController.prepareForExport(this.hazAccController,
-			this.controlStructureController.getInternalComponents());
+				this.controlStructureController.getInternalComponents());
 		this.exportInformation = new ExportInformation();
 		this.updateValue(ObserverValue.SAVE);
 		this.updateValue(ObserverValue.EXPORT);
 	}
-	
+
 	/**
 	 * Removes the preparations that were made for the export
 	 * 
@@ -192,17 +200,19 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 	public void prepareForSave() {
 		this.hazAccController.prepareForSave();
 		this.controlActionController.prepareForSave();
-		this.causalFactorController.prepareForSave(this.controlStructureController.getInternalComponents());
+		this.causalFactorController
+				.prepareForSave(this.controlStructureController
+						.getInternalComponents());
 		this.exportInformation = null;
 		this.updateValue(ObserverValue.SAVE);
 	}
-	
+
 	@XmlTransient
 	@Override
 	public String getProjectName() {
 		return this.projectDataManager.getProjectName();
 	}
-	
+
 	@Override
 	public boolean setProjectName(String projectName) {
 		if (projectName == null) {
@@ -212,13 +222,13 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		this.setUnsavedAndChanged(ObserverValue.PROJECT_NAME);
 		return true;
 	}
-	
+
 	@XmlTransient
 	@Override
 	public String getProjectDescription() {
 		return this.projectDataManager.getProjectDescription();
 	}
-	
+
 	@Override
 	public boolean setProjectDescription(String projectDescription) {
 		if (projectDescription == null) {
@@ -228,7 +238,7 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		this.setUnsavedAndChanged(ObserverValue.PROJECT_DESCRIPTION);
 		return true;
 	}
-	
+
 	@Override
 	public boolean addStyleRange(StyleRange styleRange) {
 		if (styleRange == null) {
@@ -237,22 +247,22 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		boolean result = this.projectDataManager.addStyleRange(styleRange);
 		return result;
 	}
-	
+
 	@Override
 	public List<StyleRange> getStyleRanges() {
 		return this.projectDataManager.getStyleRanges();
 	}
-	
+
 	@Override
 	public StyleRange[] getStyleRangesAsArray() {
 		return this.projectDataManager.getStyleRangesAsArray();
 	}
-	
+
 	@Override
 	public List<ITableModel> getAllAccidents() {
 		return this.hazAccController.getAllAccidents();
 	}
-	
+
 	@Override
 	public ITableModel getAccident(UUID accidentId) {
 		if (accidentId == null) {
@@ -262,30 +272,30 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(accident instanceof Accident)) {
 			return null;
 		}
-		
+
 		return accident;
 	}
-	
+
 	@Override
 	public List<ITableModel> getLinkedHazards(UUID accidentId) {
 		if (accidentId == null) {
 			return null;
 		}
-		
+
 		return this.hazAccController.getLinkedHazards(accidentId);
 	}
-	
+
 	@Override
 	public UUID addAccident(String title, String description) {
 		if ((title == null) || (description == null)) {
 			return null;
 		}
-		
+
 		UUID id = this.hazAccController.addAccident(title, description);
 		this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
 		return id;
 	}
-	
+
 	@Override
 	public boolean removeAccident(UUID accidentId) {
 		if (accidentId == null) {
@@ -294,12 +304,12 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		
+
 		boolean result = this.hazAccController.removeAccident(accidentId);
 		this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
 		return result;
 	}
-	
+
 	@Override
 	public boolean setAccidentDescription(UUID accidentId, String description) {
 		if ((accidentId == null) || (description == null)) {
@@ -308,12 +318,13 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		((Accident) this.hazAccController.getAccident(accidentId)).setDescription(description);
-		
+		((Accident) this.hazAccController.getAccident(accidentId))
+				.setDescription(description);
+
 		this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
 		return true;
 	}
-	
+
 	@Override
 	public boolean setAccidentTitle(UUID accidentId, String title) {
 		if ((accidentId == null) || (title == null)) {
@@ -322,17 +333,18 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		((Accident) this.hazAccController.getAccident(accidentId)).setTitle(title);
-		
+		((Accident) this.hazAccController.getAccident(accidentId))
+				.setTitle(title);
+
 		this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
 		return true;
 	}
-	
+
 	@Override
 	public List<ITableModel> getAllHazards() {
 		return this.hazAccController.getAllHazards();
 	}
-	
+
 	@Override
 	public ITableModel getHazard(UUID hazardId) {
 		if (hazardId == null) {
@@ -344,16 +356,16 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		}
 		return hazard;
 	}
-	
+
 	@Override
 	public List<ITableModel> getLinkedAccidents(UUID hazardId) {
 		if (hazardId == null) {
 			return null;
 		}
-		
+
 		return this.hazAccController.getLinkedAccidents(hazardId);
 	}
-	
+
 	@Override
 	public boolean removeHazard(UUID hazardId) {
 		if (hazardId == null) {
@@ -368,18 +380,18 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		this.setUnsavedAndChanged(ObserverValue.HAZARD);
 		return result;
 	}
-	
+
 	@Override
 	public UUID addHazard(String title, String description) {
 		if ((title == null) || (description == null)) {
 			return null;
 		}
-		
+
 		UUID id = this.hazAccController.addHazard(title, description);
 		this.setUnsavedAndChanged(ObserverValue.HAZARD);
 		return id;
 	}
-	
+
 	@Override
 	public boolean setHazardTitle(UUID hazardId, String title) {
 		if ((title == null) || (hazardId == null)) {
@@ -388,12 +400,12 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-		
+
 		((Hazard) this.hazAccController.getHazard(hazardId)).setTitle(title);
 		this.setUnsavedAndChanged(ObserverValue.HAZARD);
 		return true;
 	}
-	
+
 	@Override
 	public boolean setHazardDescription(UUID hazardId, String description) {
 		if ((description == null) || (hazardId == null)) {
@@ -402,12 +414,13 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-		
-		((Hazard) this.hazAccController.getHazard(hazardId)).setDescription(description);
+
+		((Hazard) this.hazAccController.getHazard(hazardId))
+				.setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.HAZARD);
 		return true;
 	}
-	
+
 	@Override
 	public boolean addLink(UUID accidentId, UUID hazardId) {
 		if ((accidentId == null) || (hazardId == null)) {
@@ -419,39 +432,39 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		
+
 		this.hazAccController.addLink(accidentId, hazardId);
 		this.setUnsavedAndChanged(ObserverValue.HAZ_ACC_LINK);
 		return true;
 	}
-	
+
 	@Override
 	public boolean deleteLink(UUID accidentId, UUID hazardId) {
 		if ((accidentId == null) || (hazardId == null)) {
 			return false;
 		}
-		
+
 		boolean result = this.hazAccController.deleteLink(accidentId, hazardId);
 		this.setUnsavedAndChanged(ObserverValue.HAZ_ACC_LINK);
 		return result;
 	}
-	
+
 	@Override
 	public List<ITableModel> getAllDesignRequirements() {
 		return this.sdsController.getAllDesignRequirements();
 	}
-	
+
 	@Override
 	public UUID addDesignRequirement(String title, String description) {
 		if ((title == null) || (description == null)) {
 			return null;
 		}
-		
+
 		UUID id = this.sdsController.addDesignRequirement(title, description);
 		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
 		return id;
 	}
-	
+
 	@Override
 	public boolean removeDesignRequirement(UUID designRequirementId) {
 		if (designRequirementId == null) {
@@ -460,67 +473,74 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.sdsController.getDesignRequirement(designRequirementId) instanceof DesignRequirement)) {
 			return false;
 		}
-		boolean result = this.sdsController.removeDesignRequirement(designRequirementId);
+		boolean result = this.sdsController
+				.removeDesignRequirement(designRequirementId);
 		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
 		return result;
 	}
-	
+
 	@Override
-	public boolean setDesignRequirementTitle(UUID designRequirementId, String title) {
+	public boolean setDesignRequirementTitle(UUID designRequirementId,
+			String title) {
 		if ((title == null) || (designRequirementId == null)) {
 			return false;
 		}
 		if (!(this.sdsController.getDesignRequirement(designRequirementId) instanceof DesignRequirement)) {
 			return false;
 		}
-		
-		((DesignRequirement) this.sdsController.getDesignRequirement(designRequirementId)).setTitle(title);
+
+		((DesignRequirement) this.sdsController
+				.getDesignRequirement(designRequirementId)).setTitle(title);
 		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
 		return true;
 	}
-	
+
 	@Override
-	public boolean setDesignRequirementDescription(UUID designRequirementId, String description) {
+	public boolean setDesignRequirementDescription(UUID designRequirementId,
+			String description) {
 		if ((description == null) || (designRequirementId == null)) {
 			return false;
 		}
 		if (!(this.sdsController.getDesignRequirement(designRequirementId) instanceof DesignRequirement)) {
 			return false;
 		}
-		
-		((DesignRequirement) this.sdsController.getDesignRequirement(designRequirementId)).setDescription(description);
+
+		((DesignRequirement) this.sdsController
+				.getDesignRequirement(designRequirementId))
+				.setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
 		return true;
 	}
-	
+
 	@Override
 	public ITableModel getDesignRequirement(UUID designRequirementId) {
 		if (designRequirementId == null) {
 			return null;
 		}
-		ITableModel designRequirement = this.sdsController.getDesignRequirement(designRequirementId);
+		ITableModel designRequirement = this.sdsController
+				.getDesignRequirement(designRequirementId);
 		if (!(designRequirement instanceof DesignRequirement)) {
 			return null;
 		}
 		return designRequirement;
 	}
-	
+
 	@Override
 	public List<ITableModel> getAllSafetyConstraints() {
 		return this.sdsController.getAllSafetyConstraints();
 	}
-	
+
 	@Override
 	public UUID addSafetyConstraint(String title, String description) {
 		if ((title == null) || (description == null)) {
 			return null;
 		}
-		
+
 		UUID id = this.sdsController.addSafetyConstraint(title, description);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return id;
 	}
-	
+
 	@Override
 	public boolean removeSafetyConstraint(UUID safetyConstraintId) {
 		if (safetyConstraintId == null) {
@@ -529,40 +549,46 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
 			return false;
 		}
-		
-		boolean result = this.sdsController.removeSafetyConstraint(safetyConstraintId);
+
+		boolean result = this.sdsController
+				.removeSafetyConstraint(safetyConstraintId);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return result;
 	}
-	
+
 	@Override
-	public boolean setSafetyConstraintTitle(UUID safetyConstraintId, String title) {
+	public boolean setSafetyConstraintTitle(UUID safetyConstraintId,
+			String title) {
 		if ((title == null) || (safetyConstraintId == null)) {
 			return false;
 		}
 		if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
 			return false;
 		}
-		
-		((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId)).setTitle(title);
+
+		((SafetyConstraint) this.sdsController
+				.getSafetyConstraint(safetyConstraintId)).setTitle(title);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return true;
 	}
-	
+
 	@Override
-	public boolean setSafetyConstraintDescription(UUID safetyConstraintId, String description) {
+	public boolean setSafetyConstraintDescription(UUID safetyConstraintId,
+			String description) {
 		if ((description == null) || (safetyConstraintId == null)) {
 			return false;
 		}
 		if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
 			return false;
 		}
-		
-		((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId)).setDescription(description);
+
+		((SafetyConstraint) this.sdsController
+				.getSafetyConstraint(safetyConstraintId))
+				.setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return true;
 	}
-	
+
 	@Override
 	public ITableModel getSafetyConstraint(UUID safetyConstraintId) {
 		if (safetyConstraintId == null) {
@@ -571,26 +597,26 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
 			return null;
 		}
-		
+
 		return this.sdsController.getSafetyConstraint(safetyConstraintId);
 	}
-	
+
 	@Override
 	public List<ITableModel> getAllSystemGoals() {
 		return this.sdsController.getAllSystemGoals();
 	}
-	
+
 	@Override
 	public UUID addSystemGoal(String title, String description) {
 		if ((title == null) || (description == null)) {
 			return null;
 		}
-		
+
 		UUID id = this.sdsController.addSystemGoal(title, description);
 		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
 		return id;
 	}
-	
+
 	@Override
 	public boolean removeSystemGoal(UUID systemGoalId) {
 		if (systemGoalId == null) {
@@ -599,12 +625,12 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
 			return false;
 		}
-		
+
 		boolean result = this.sdsController.removeSystemGoal(systemGoalId);
 		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
 		return result;
 	}
-	
+
 	@Override
 	public boolean setSystemGoalTitle(UUID systemGoalId, String title) {
 		if ((systemGoalId == null) || (title == null)) {
@@ -613,26 +639,29 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
 			return false;
 		}
-		
-		((SystemGoal) this.sdsController.getSystemGoal(systemGoalId)).setTitle(title);
+
+		((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
+				.setTitle(title);
 		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
 		return true;
 	}
-	
+
 	@Override
-	public boolean setSystemGoalDescription(UUID systemGoalId, String description) {
+	public boolean setSystemGoalDescription(UUID systemGoalId,
+			String description) {
 		if ((systemGoalId == null) || (description == null)) {
 			return false;
 		}
 		if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
 			return false;
 		}
-		
-		((SystemGoal) this.sdsController.getSystemGoal(systemGoalId)).setDescription(description);
+
+		((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
+				.setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
 		return true;
 	}
-	
+
 	@Override
 	public ITableModel getSystemGoal(UUID systemGoalId) {
 		if (systemGoalId == null) {
@@ -641,26 +670,27 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
 			return null;
 		}
-		
+
 		return this.sdsController.getSystemGoal(systemGoalId);
 	}
-	
+
 	@Override
 	public List<ITableModel> getAllControlActions() {
 		return this.controlActionController.getAllControlActions();
 	}
-	
+
 	@Override
 	public UUID addControlAction(String title, String description) {
 		if ((title == null) || (description == null)) {
 			return null;
 		}
-		
-		UUID id = this.controlActionController.addControlAction(title, description);
+
+		UUID id = this.controlActionController.addControlAction(title,
+				description);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return id;
 	}
-	
+
 	@Override
 	public boolean removeControlAction(UUID controlActionId) {
 		if (controlActionId == null) {
@@ -669,12 +699,13 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return false;
 		}
-		
-		boolean result = this.controlActionController.removeControlAction(controlActionId);
+
+		boolean result = this.controlActionController
+				.removeControlAction(controlActionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return result;
 	}
-	
+
 	@Override
 	public boolean setControlActionTitle(UUID controlActionId, String title) {
 		if ((controlActionId == null) || (title == null)) {
@@ -683,26 +714,29 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return false;
 		}
-		
-		((ControlAction) this.controlActionController.getControlAction(controlActionId)).setTitle(title);
+
+		((ControlAction) this.controlActionController
+				.getControlAction(controlActionId)).setTitle(title);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return true;
 	}
-	
+
 	@Override
-	public boolean setControlActionDescription(UUID controlActionId, String description) {
+	public boolean setControlActionDescription(UUID controlActionId,
+			String description) {
 		if ((controlActionId == null) || (description == null)) {
 			return false;
 		}
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return false;
 		}
-		
-		((ControlAction) this.controlActionController.getControlAction(controlActionId)).setDescription(description);
+
+		((ControlAction) this.controlActionController
+				.getControlAction(controlActionId)).setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return true;
 	}
-	
+
 	@Override
 	public ITableModel getControlAction(UUID controlActionId) {
 		if (controlActionId == null) {
@@ -711,217 +745,237 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return null;
 		}
-		
+
 		return this.controlActionController.getControlAction(controlActionId);
 	}
-	
+
 	@Override
-	public UUID addComponent(UUID parentId, Rectangle layout, String text, ComponentType type) {
-		if ((parentId == null) || (layout == null) || (text == null) || (type == null)) {
+	public UUID addComponent(UUID parentId, Rectangle layout, String text,
+			ComponentType type) {
+		if ((parentId == null) || (layout == null) || (text == null)
+				|| (type == null)) {
 			return null;
 		}
 		if (!(this.getComponent(parentId) instanceof Component)) {
 			return null;
 		}
-		
-		UUID result = this.controlStructureController.addComponent(parentId, layout, text, type);
+
+		UUID result = this.controlStructureController.addComponent(parentId,
+				layout, text, type);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public UUID setRoot(Rectangle layout, String text) {
 		if ((layout == null) || (text == null)) {
 			return null;
 		}
-		
+
 		UUID result = this.controlStructureController.setRoot(layout, text);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
-	public boolean changeComponentLayout(UUID componentId, Rectangle layout, boolean step1) {
+	public boolean changeComponentLayout(UUID componentId, Rectangle layout,
+			boolean step1) {
 		if ((componentId == null) || (layout == null)) {
 			return false;
 		}
-		
-		boolean result = this.controlStructureController.changeComponentLayout(componentId, layout, step1);
+
+		boolean result = this.controlStructureController.changeComponentLayout(
+				componentId, layout, step1);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public boolean synchronizeLayouts() {
 		if (this.getRoot() == null) {
 			return false;
 		}
-		
+
 		boolean result = true;
 		for (IRectangleComponent child : this.getRoot().getChildren()) {
-			result = result && this.controlStructureController.sychronizeLayout(child.getId());
+			result = result
+					&& this.controlStructureController.sychronizeLayout(child
+							.getId());
 		}
 		return result;
 	}
-	
+
 	@Override
 	public boolean changeComponentText(UUID componentId, String text) {
 		if ((componentId == null) || (text == null)) {
 			return false;
 		}
-		
-		boolean result = this.controlStructureController.changeComponentText(componentId, text);
+
+		boolean result = this.controlStructureController.changeComponentText(
+				componentId, text);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public boolean removeComponent(UUID componentId) {
 		if ((componentId == null)) {
 			return false;
 		}
-		
-		boolean result = this.controlStructureController.removeComponent(componentId);
+
+		boolean result = this.controlStructureController
+				.removeComponent(componentId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public IRectangleComponent getComponent(UUID componentId) {
 		if ((componentId == null)) {
 			return null;
 		}
-		
+
 		return this.controlStructureController.getComponent(componentId);
 	}
-	
+
 	@Override
 	public IRectangleComponent getRoot() {
 		return this.controlStructureController.getRoot();
 	}
-	
+
 	@Override
-	public UUID addConnection(Anchor sourceAnchor, Anchor targetAnchor, ConnectionType connectionType) {
-		if ((sourceAnchor == null) || (targetAnchor == null) || (connectionType == null)) {
+	public UUID addConnection(Anchor sourceAnchor, Anchor targetAnchor,
+			ConnectionType connectionType) {
+		if ((sourceAnchor == null) || (targetAnchor == null)
+				|| (connectionType == null)) {
 			return null;
 		}
-		
-		UUID result = this.controlStructureController.addConnection(sourceAnchor, targetAnchor, connectionType);
+
+		UUID result = this.controlStructureController.addConnection(
+				sourceAnchor, targetAnchor, connectionType);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
-	public boolean changeConnectionType(UUID connectionId, ConnectionType connectionType) {
+	public boolean changeConnectionType(UUID connectionId,
+			ConnectionType connectionType) {
 		if ((connectionId == null) || (connectionType == null)) {
 			return false;
 		}
-		
-		boolean result = this.controlStructureController.changeConnectionType(connectionId, connectionType);
+
+		boolean result = this.controlStructureController.changeConnectionType(
+				connectionId, connectionType);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor) {
 		if ((connectionId == null) || (targetAnchor == null)) {
 			return false;
 		}
-		
-		boolean result = this.controlStructureController.changeConnectionTarget(connectionId, targetAnchor);
+
+		boolean result = this.controlStructureController
+				.changeConnectionTarget(connectionId, targetAnchor);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor) {
 		if ((connectionId == null) || (sourceAnchor == null)) {
 			return false;
 		}
-		
-		boolean result = this.controlStructureController.changeConnectionSource(connectionId, sourceAnchor);
+
+		boolean result = this.controlStructureController
+				.changeConnectionSource(connectionId, sourceAnchor);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public boolean removeConnection(UUID connectionId) {
 		if (connectionId == null) {
 			return false;
 		}
-		
-		boolean result = this.controlStructureController.removeConnection(connectionId);
+
+		boolean result = this.controlStructureController
+				.removeConnection(connectionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 	@Override
 	public IConnection getConnection(UUID connectionId) {
 		if (connectionId == null) {
 			return null;
 		}
-		
+
 		return this.controlStructureController.getConnection(connectionId);
 	}
-	
+
 	@Override
 	public List<IConnection> getConnections() {
 		return this.controlStructureController.getConnections();
 	}
-	
+
 	@Override
 	public List<IControlAction> getAllControlActionsU() {
 		return this.controlActionController.getAllControlActionsU();
 	}
-	
+
 	@Override
 	public IControlAction getControlActionU(UUID controlActionId) {
 		if (controlActionId == null) {
 			return null;
 		}
-		
+
 		return this.controlActionController.getControlActionU(controlActionId);
 	}
-	
+
 	@Override
-	public UUID addUnsafeControlAction(UUID controlActionId, String description,
-		UnsafeControlActionType unsafeControlActionType) {
-		if ((controlActionId == null) || (description == null) || (unsafeControlActionType == null)) {
+	public UUID addUnsafeControlAction(UUID controlActionId,
+			String description, UnsafeControlActionType unsafeControlActionType) {
+		if ((controlActionId == null) || (description == null)
+				|| (unsafeControlActionType == null)) {
 			return null;
 		}
-		
-		UUID result =
-			this.controlActionController.addUnsafeControlAction(controlActionId, description, unsafeControlActionType);
+
+		UUID result = this.controlActionController.addUnsafeControlAction(
+				controlActionId, description, unsafeControlActionType);
 		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 		return result;
 	}
-	
+
 	@Override
 	public boolean removeUnsafeControlAction(UUID unsafeControlActionId) {
 		if (unsafeControlActionId == null) {
 			return false;
 		}
-		
+
 		this.controlActionController.removeAllLinks(unsafeControlActionId);
-		boolean result = this.controlActionController.removeUnsafeControlAction(unsafeControlActionId);
+		boolean result = this.controlActionController
+				.removeUnsafeControlAction(unsafeControlActionId);
 		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 		return result;
 	}
-	
+
 	@Override
 	public List<ITableModel> getLinkedHazardsOfUCA(UUID unsafeControlActionId) {
 		if (unsafeControlActionId == null) {
 			return null;
 		}
-		
-		List<IUCAHazLink> links = this.controlActionController.getLinksOfUCA(unsafeControlActionId);
+
+		List<IUCAHazLink> links = this.controlActionController
+				.getLinksOfUCA(unsafeControlActionId);
 		List<ITableModel> result = new ArrayList<>();
 		for (IUCAHazLink link : links) {
 			result.add(this.getHazard(link.getHazardId()));
 		}
 		return result;
 	}
-	
+
 	@Override
 	public boolean addUCAHazardLink(UUID unsafeControlActionId, UUID hazardId) {
 		if ((unsafeControlActionId == null) || (hazardId == null)) {
@@ -930,87 +984,97 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-		if (this.controlActionController.getInternalUnsafeControlAction(unsafeControlActionId) == null) {
+		if (this.controlActionController
+				.getInternalUnsafeControlAction(unsafeControlActionId) == null) {
 			return false;
 		}
-		
-		boolean result = this.controlActionController.addUCAHazardLink(unsafeControlActionId, hazardId);
-		
+
+		boolean result = this.controlActionController.addUCAHazardLink(
+				unsafeControlActionId, hazardId);
+
 		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 		return result;
 	}
-	
+
 	@Override
 	public boolean removeUCAHazardLink(UUID unsafeControlActionId, UUID hazardId) {
 		if ((unsafeControlActionId == null) || (hazardId == null)) {
 			return false;
 		}
-		boolean result = this.controlActionController.removeUCAHazardLink(unsafeControlActionId, hazardId);
+		boolean result = this.controlActionController.removeUCAHazardLink(
+				unsafeControlActionId, hazardId);
 		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 		return result;
 	}
-	
+
 	@Override
-	public boolean setUcaDescription(UUID unsafeControlActionId, String description) {
+	public boolean setUcaDescription(UUID unsafeControlActionId,
+			String description) {
 		if ((unsafeControlActionId == null) || (description == null)) {
 			return false;
 		}
-		
-		boolean result = this.controlActionController.setUcaDescription(unsafeControlActionId, description);
+
+		boolean result = this.controlActionController.setUcaDescription(
+				unsafeControlActionId, description);
 		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 		return result;
 	}
-	
+
 	@Override
 	public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
 		return this.controlActionController.getAllUnsafeControlActions();
 	}
-	
+
 	@Override
-	public UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId, String safetyConstraintDescription) {
-		if ((unsafeControlActionId == null) || (safetyConstraintDescription == null)) {
+	public UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+			String safetyConstraintDescription) {
+		if ((unsafeControlActionId == null)
+				|| (safetyConstraintDescription == null)) {
 			return null;
 		}
-		
-		UUID id =
-			this.controlActionController.setCorrespondingSafetyConstraint(unsafeControlActionId,
-				safetyConstraintDescription);
+
+		UUID id = this.controlActionController
+				.setCorrespondingSafetyConstraint(unsafeControlActionId,
+						safetyConstraintDescription);
 		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 		return id;
 	}
-	
+
 	@Override
 	public List<ICausalComponent> getCausalComponents() {
 		return this.controlStructureController.getCausalComponents();
 	}
-	
+
 	@Override
 	public UUID addCausalFactor(UUID causalComponentId, String causalFactorText) {
 		if ((causalComponentId == null) || (causalFactorText == null)) {
 			return null;
 		}
-		
-		UUID id =
-			this.causalFactorController.addCausalFactor(this.controlStructureController.getInternalComponents(),
+
+		UUID id = this.causalFactorController.addCausalFactor(
+				this.controlStructureController.getInternalComponents(),
 				causalComponentId, causalFactorText);
 		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		return id;
 	}
-	
+
 	@Override
-	public boolean setCausalFactorText(UUID causalFactorId, String causalFactorText) {
+	public boolean setCausalFactorText(UUID causalFactorId,
+			String causalFactorText) {
 		if ((causalFactorId == null) || (causalFactorText == null)) {
 			return false;
 		}
-		List<Component> components = this.controlStructureController.getInternalComponents();
+		List<Component> components = this.controlStructureController
+				.getInternalComponents();
 		if (components == null) {
 			return false;
 		}
-		boolean result = this.causalFactorController.setCausalFactorText(components, causalFactorId, causalFactorText);
+		boolean result = this.causalFactorController.setCausalFactorText(
+				components, causalFactorId, causalFactorText);
 		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		return result;
 	}
-	
+
 	@Override
 	public boolean addCausalFactorHazardLink(UUID causalFactorId, UUID hazardId) {
 		if ((causalFactorId == null) || (hazardId == null)) {
@@ -1019,14 +1083,16 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-		List<Component> components = this.controlStructureController.getInternalComponents();
+		List<Component> components = this.controlStructureController
+				.getInternalComponents();
 		if (components == null) {
 			return false;
 		}
-		
+
 		boolean found = false;
 		for (Component component : components) {
-			for (CausalFactor causalFactor : component.getInternalCausalFactors()) {
+			for (CausalFactor causalFactor : component
+					.getInternalCausalFactors()) {
 				if (causalFactor.getId().equals(causalFactorId)) {
 					found = true;
 				}
@@ -1035,128 +1101,140 @@ public class DataModelController extends Observable implements ILinkingViewDataM
 		if (!found) {
 			return false;
 		}
-		
-		boolean result = this.causalFactorController.addCausalFactorHazardLink(causalFactorId, hazardId);
+
+		boolean result = this.causalFactorController.addCausalFactorHazardLink(
+				causalFactorId, hazardId);
 		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		return result;
 	}
-	
+
 	@Override
 	public List<ITableModel> getLinkedHazardsOfCf(UUID causalFactorId) {
 		if (causalFactorId == null) {
 			return null;
 		}
-		
-		List<UUID> hazardIds = this.causalFactorController.getLinkedHazardsOfCf(causalFactorId);
+
+		List<UUID> hazardIds = this.causalFactorController
+				.getLinkedHazardsOfCf(causalFactorId);
 		List<ITableModel> linkedHazards = new ArrayList<>();
 		for (UUID id : hazardIds) {
 			linkedHazards.add(this.hazAccController.getHazard(id));
 		}
-		
+
 		return linkedHazards;
 	}
-	
+
 	@Override
-	public boolean removeCausalFactorHazardLink(UUID causalFactorId, UUID hazardId) {
+	public boolean removeCausalFactorHazardLink(UUID causalFactorId,
+			UUID hazardId) {
 		if ((causalFactorId == null) || (hazardId == null)) {
 			return false;
 		}
-		
-		boolean result = this.causalFactorController.removeCausalFactorHazardLink(causalFactorId, hazardId);
+
+		boolean result = this.causalFactorController
+				.removeCausalFactorHazardLink(causalFactorId, hazardId);
 		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		return result;
 	}
-	
+
 	@Override
 	public boolean removeCausalFactor(UUID causalFactorId) {
 		if (causalFactorId == null) {
 			return false;
 		}
-		boolean result = this.controlStructureController.removeCausalFactor(causalFactorId);
+		boolean result = this.controlStructureController
+				.removeCausalFactor(causalFactorId);
 		this.causalFactorController.removeAllLinks(causalFactorId);
 		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		return result;
 	}
-	
+
 	@Override
 	public List<ISafetyConstraint> getCorrespondingSafetyConstraints() {
 		return this.controlActionController.getCorrespondingSafetyConstraints();
 	}
-	
+
 	@Override
-	public boolean setCausalSafetyConstraintText(UUID causalSafetyCosntraintId, String causalSafetyConstraintText) {
-		if ((causalSafetyCosntraintId == null) || (causalSafetyConstraintText == null)) {
+	public boolean setCausalSafetyConstraintText(UUID causalSafetyCosntraintId,
+			String causalSafetyConstraintText) {
+		if ((causalSafetyCosntraintId == null)
+				|| (causalSafetyConstraintText == null)) {
 			return false;
 		}
-		List<Component> components = this.controlStructureController.getInternalComponents();
+		List<Component> components = this.controlStructureController
+				.getInternalComponents();
 		if (components == null) {
 			return false;
 		}
-		
-		boolean result =
-			this.causalFactorController.setCausalSafetyConstraintText(components, causalSafetyCosntraintId,
-				causalSafetyConstraintText);
+
+		boolean result = this.causalFactorController
+				.setCausalSafetyConstraintText(components,
+						causalSafetyCosntraintId, causalSafetyConstraintText);
 		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		return result;
 	}
-	
+
 	@Override
 	public boolean setNoteText(UUID causalFactorId, String noteText) {
 		if ((causalFactorId == null) || (noteText == null)) {
 			return false;
 		}
-		List<Component> components = this.controlStructureController.getInternalComponents();
+		List<Component> components = this.controlStructureController
+				.getInternalComponents();
 		if (components == null) {
 			return false;
 		}
-		
-		boolean result = this.causalFactorController.setCausalFactorNoteText(components, causalFactorId, noteText);
+
+		boolean result = this.causalFactorController.setCausalFactorNoteText(
+				components, causalFactorId, noteText);
 		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		return result;
 	}
-	
+
 	private void setUnsavedAndChanged(ObserverValue value) {
 		this.unsavedChanges = true;
 		this.updateValue(value);
 		this.updateValue(ObserverValue.UNSAVED_CHANGES);
 	}
-	
+
 	@Override
 	public boolean setCSImagePath(String path) {
 		if (this.exportInformation == null) {
 			return false;
 		}
-		
+
 		return this.exportInformation.setCsImagePath(path);
 	}
-	
+
 	@Override
 	public boolean setCSPMImagePath(String path) {
 		if (this.exportInformation == null) {
 			return false;
 		}
-		
+
 		return this.exportInformation.setCspmImagePath(path);
 	}
 
 	@Override
 	public boolean recoverComponent(UUID parentId, UUID componentId) {
-		if(parentId == null || componentId == null){
+		if (parentId == null || componentId == null) {
 			return false;
 		}
-		boolean result = this.controlStructureController.recoverComponent(parentId, componentId);
+		boolean result = this.controlStructureController.recoverComponent(
+				parentId, componentId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
 
 	@Override
 	public boolean recoverConnection(UUID connectionId) {
-		if(connectionId == null){
+		if (connectionId == null) {
 			return false;
 		}
-		boolean result = this.controlStructureController.recoverConnection(connectionId);
+		boolean result = this.controlStructureController
+				.recoverConnection(connectionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-	
+
 }

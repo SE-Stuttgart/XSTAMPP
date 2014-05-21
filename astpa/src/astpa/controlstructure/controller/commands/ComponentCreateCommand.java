@@ -160,6 +160,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 				this.compModel.getComponentType());
 		updateParentConstraint();
 		
+		
 	}
 	
 	@Override
@@ -182,7 +183,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	@Override
 	public void redo() {
 		this.getDataModel().recoverComponent(this.rootId, this.compModel.getId());
-		updateParentConstraint();
+//		updateParentConstraint();
 		
 	}
 	
