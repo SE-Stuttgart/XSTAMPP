@@ -66,6 +66,14 @@ public class ControlStructureControllerTest {
 		Assert.assertNotNull(id4);
 		Assert.assertNotNull(dataModel.addComponent(id1, layout, "Textfield 2", ComponentType.TEXTFIELD));
 		
+		//check the recover function
+		Assert.assertFalse(dataModel.recoverComponent(null, null));
+		Assert.assertFalse(dataModel.recoverComponent(null, UUID.randomUUID()));
+		Assert.assertFalse(dataModel.recoverComponent(UUID.randomUUID(),null));
+		Assert.assertFalse(dataModel.recoverComponent(id1, null));
+		Assert.assertFalse(dataModel.recoverComponent(null, id2));
+		Assert.assertFalse(dataModel.recoverComponent(id1, id2));
+		
 		// Check the get method with the first component
 		IRectangleComponent component = dataModel.getComponent(id1);
 		Assert.assertNotNull(component);
@@ -121,11 +129,14 @@ public class ControlStructureControllerTest {
 		
 		// Remove the last component
 		Assert.assertTrue(dataModel.removeComponent(id5));
-		Assert.assertNull(dataModel.getComponent(id5));
+		Assert.assertTrue(dataModel.getComponentTrashSize() == 1);
 		
+		Assert.assertNull(dataModel.getComponent(id5));
+		Assert.assertTrue(dataModel.recoverComponent(id4, id5));
+		Assert.assertNotNull(dataModel.getComponent(id5));
 		// check if the connections were also removed
-		Assert.assertNull(dataModel.getConnection(cId1));
-		Assert.assertNull(dataModel.getConnection(cId2));
+		Assert.assertNotNull(dataModel.getConnection(cId1));
+		Assert.assertNotNull(dataModel.getConnection(cId2));
 		Assert.assertNotNull(dataModel.getConnection(cId3));
 		
 		// Remove a component that does not exist
@@ -157,6 +168,20 @@ public class ControlStructureControllerTest {
 		Assert.assertNotNull(id2);
 		Assert.assertEquals(2, dataModel.getConnections().size());
 		
+		//check the recover function
+				Assert.assertFalse(dataModel.recoverConnection(null));
+				Assert.assertFalse(dataModel.recoverConnection(UUID.randomUUID()));
+				Assert.assertFalse(dataModel.recoverConnection(id1));
+				Assert.assertEquals(0,dataModel.getConnectionTrashSize());
+				Assert.assertTrue(dataModel.removeConnection(id2));
+				Assert.assertTrue(dataModel.removeConnection(id1));
+				Assert.assertEquals(2,dataModel.getConnectionTrashSize());
+				Assert.assertTrue(dataModel.recoverConnection(id1));
+				Assert.assertTrue(dataModel.recoverConnection(id2));
+				Assert.assertNotNull(dataModel.getConnection(id2));
+				Assert.assertNotNull(dataModel.getConnection(id1));
+				
+				
 		// Get the connections back
 		IConnection connection = dataModel.getConnection(id1);
 		Assert.assertNotNull(connection);
@@ -180,13 +205,16 @@ public class ControlStructureControllerTest {
 		Assert.assertFalse(dataModel.changeConnectionTarget(id3, source));
 		Assert.assertFalse(dataModel.changeConnectionType(id3, ConnectionType.ARROW_DASHED));
 		
-		// remove both connections
+		// remove both connections and check the Trash function
+		Assert.assertEquals(0,dataModel.getConnectionTrashSize());
 		Assert.assertTrue(dataModel.removeConnection(id2));
 		Assert.assertNull(dataModel.getConnection(id2));
 		Assert.assertTrue(dataModel.removeConnection(id1));
 		Assert.assertNull(dataModel.getConnection(id1));
+		Assert.assertEquals(2,dataModel.getConnectionTrashSize());
 		Assert.assertEquals(0, dataModel.getConnections().size());
-		
+		Assert.assertTrue(dataModel.recoverConnection(id1));
+		Assert.assertNotNull(dataModel.getConnection(id1));
 		// remove a connection that does not exist
 		Assert.assertFalse(dataModel.removeConnection(id3));
 	}
