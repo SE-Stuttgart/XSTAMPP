@@ -11,23 +11,24 @@
  * 
  *******************************************************************************/
 
-package astpa.controlstructure.controller.editParts;
+package astpa.controlstructure.controller.editparts;
+
+import messages.Messages;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
+import org.eclipse.gef.EditPolicy;
 
-import astpa.controlstructure.figure.IControlStructureFigure;
-import astpa.controlstructure.figure.TextFieldFigure;
+import astpa.controlstructure.controller.policys.CSConnectionPolicy;
+import astpa.controlstructure.figure.ComponentFigure;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
- * 
- * TextFieldEditPart
- * 
+ * @author Aliaksei Babkovich
  * @version 1.0
- * @author Lukas Balzer
  * 
  */
-public class TextFieldEditPart extends CSAbstractEditPart {
+public class SensorEditPart extends CSAbstractEditPart {
 	
 	/**
 	 * this constuctor sets the unique ID of this EditPart which is the same in
@@ -37,15 +38,22 @@ public class TextFieldEditPart extends CSAbstractEditPart {
 	 * 
 	 * @param model The DataModel which contains all model classes
 	 */
-	public TextFieldEditPart(IControlStructureEditorDataModel model) {
+	public SensorEditPart(IControlStructureEditorDataModel model) {
 		super(model);
 	}
 	
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new TextFieldFigure(this.getId());
+		ComponentFigure tmpFigure = new ComponentFigure(this.getId());
 		tmpFigure.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setToolTip(new Label(Messages.Sensor));
 		return tmpFigure;
+	}
+	
+	@Override
+	protected void createEditPolicies() {
+		super.createEditPolicies();
+		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel()));
 	}
 	
 }

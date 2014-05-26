@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package astpa.controlstructure.controller.editParts;
+package astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
@@ -25,10 +25,9 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * @author Aliaksei Babkovich
- * @version 1.0
  * 
  */
-public class SensorEditPart extends CSAbstractEditPart {
+public class ControllerEditPart extends CSAbstractEditPart {
 	
 	/**
 	 * this constuctor sets the unique ID of this EditPart which is the same in
@@ -38,7 +37,7 @@ public class SensorEditPart extends CSAbstractEditPart {
 	 * 
 	 * @param model The DataModel which contains all model classes
 	 */
-	public SensorEditPart(IControlStructureEditorDataModel model) {
+	public ControllerEditPart(IControlStructureEditorDataModel model) {
 		super(model);
 	}
 	
@@ -46,7 +45,7 @@ public class SensorEditPart extends CSAbstractEditPart {
 	protected IFigure createFigure() {
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId());
 		tmpFigure.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
-		tmpFigure.setToolTip(new Label(Messages.Sensor));
+		tmpFigure.setToolTip(new Label(Messages.Controller));
 		return tmpFigure;
 	}
 	

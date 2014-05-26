@@ -450,4 +450,26 @@ public class ControlStructureController {
 	public boolean sychronizeLayout(UUID id) {
 		return this.root.getChild(id).sychronizeLayout();
 	}
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return
+	 * 		the amount of components currently in the trash
+	 */
+	public int getComponentTrashSize() {
+		return this.componentTrash.size();
+	}
+
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return
+	 * 		the amount of components currently in the trash
+	 */
+	public int getConnectionTrashSize() {
+		return this.connectionTrash.size();
+	}
 }

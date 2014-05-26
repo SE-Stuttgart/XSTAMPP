@@ -25,7 +25,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSAbstractEditor;
-import astpa.controlstructure.controller.editParts.RootEditPart;
+import astpa.controlstructure.controller.editparts.RootEditPart;
 import astpa.controlstructure.figure.CSAnchor;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 

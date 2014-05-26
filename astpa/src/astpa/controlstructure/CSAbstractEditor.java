@@ -103,9 +103,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 
-import astpa.controlstructure.controller.editParts.CSAbstractEditPart;
-import astpa.controlstructure.controller.editParts.CSConnectionEditPart;
-import astpa.controlstructure.controller.editParts.RootEditPart;
+import astpa.controlstructure.controller.editparts.CSAbstractEditPart;
+import astpa.controlstructure.controller.editparts.CSConnectionEditPart;
+import astpa.controlstructure.controller.editparts.RootEditPart;
 import astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import astpa.controlstructure.figure.IControlStructureFigure;
 import astpa.controlstructure.figure.RootFigure;
@@ -941,7 +941,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			//Layer&ConnectionLayer
 			for(Object part: ((IFigure)layers).getChildren()){
 				if(part instanceof RootFigure){
-					for(Object child: ((IFigure)part).getChildren()){
+					for(final Object child: ((IFigure)part).getChildren()){
 						if(isFirst){
 							//the first component which is found by the loop is added
 							//as starting Point for the rectangle
@@ -975,10 +975,14 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		graphics = new SWTGraphics(imageGC);
 		clipRectangle.x= Math.max(0, clipRectangle.x);
 		clipRectangle.y= Math.max(0, clipRectangle.y);
-		graphics.drawImage(srcImage, clipRectangle, 
+		if(clipRectangle.x != 0 || clipRectangle.y !=0){
+		
+			graphics.drawImage(srcImage, clipRectangle, 
 				new Rectangle(0, 0, clipRectangle.width,
 									clipRectangle.height ));
-
+		}else{
+			graphics.drawImage(srcImage, 0, 0);
+		}
         ImageLoader imgLoader = new ImageLoader();
 		imgLoader.data = new ImageData[] {scaledImage.getImageData()};
 		

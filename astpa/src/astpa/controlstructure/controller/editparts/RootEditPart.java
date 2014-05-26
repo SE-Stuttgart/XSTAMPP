@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package astpa.controlstructure.controller.editParts;
+package astpa.controlstructure.controller.editparts;
 
 
 

@@ -18,7 +18,7 @@ import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 
 import astpa.controlstructure.controller.commands.ConnectionDeleteCommand;
-import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
+import astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import astpa.model.controlstructure.components.CSConnection;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 

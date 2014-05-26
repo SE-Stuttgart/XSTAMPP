@@ -22,7 +22,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
 
 import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.controller.commands.ComponentRenameCommand;
-import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
+import astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import astpa.controlstructure.figure.CSFigure;
 import astpa.controlstructure.utilities.CSDirectEditor;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;

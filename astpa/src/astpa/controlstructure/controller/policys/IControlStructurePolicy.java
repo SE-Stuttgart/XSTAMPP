@@ -15,7 +15,7 @@ package astpa.controlstructure.controller.policys;
 
 import org.eclipse.gef.EditPolicy;
 
-import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
+import astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 
 /**
  * 

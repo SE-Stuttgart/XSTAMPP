@@ -22,9 +22,9 @@ import org.eclipse.gef.requests.ReconnectRequest;
 
 import astpa.controlstructure.controller.commands.ConnectionCreateCommand;
 import astpa.controlstructure.controller.commands.ConnectionReconnectCommand;
-import astpa.controlstructure.controller.editParts.CSAbstractEditPart;
-import astpa.controlstructure.controller.editParts.CSConnectionEditPart;
-import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
+import astpa.controlstructure.controller.editparts.CSAbstractEditPart;
+import astpa.controlstructure.controller.editparts.CSConnectionEditPart;
+import astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import astpa.controlstructure.figure.IAnchorFigure;
 import astpa.controlstructure.figure.IControlStructureFigure;
 import astpa.model.controlstructure.components.ConnectionType;

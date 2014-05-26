@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package astpa.controlstructure.controller.editParts;
+package astpa.controlstructure.controller.editparts;
 
 import java.util.ArrayList;
 import java.util.List;

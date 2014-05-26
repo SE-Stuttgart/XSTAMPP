@@ -11,48 +11,54 @@
  * 
  *******************************************************************************/
 
-package astpa.controlstructure.controller.editParts;
+package astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.gef.EditPolicy;
+import org.eclipse.draw2d.geometry.Translatable;
+import org.eclipse.swt.SWT;
 
-import astpa.controlstructure.controller.policys.CSConnectionPolicy;
-import astpa.controlstructure.figure.ComponentFigure;
+import astpa.controlstructure.figure.IControlStructureFigure;
+import astpa.controlstructure.figure.ProcessFigure;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
- * @author Aliaksei Babkovich
+ * 
+ * @author Lukas
  * 
  */
-public class ControllerEditPart extends CSAbstractEditPart {
+public class ProcessVariableEditPart extends CSAbstractEditPart {
+	
+	private static final int TOP_OFFSET = 5;
+	
 	
 	/**
-	 * this constuctor sets the unique ID of this EditPart which is the same in
-	 * its model and figure
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
 	 */
-	public ControllerEditPart(IControlStructureEditorDataModel model) {
+	public ProcessVariableEditPart(IControlStructureEditorDataModel model) {
 		super(model);
+		
 	}
 	
 	@Override
 	protected IFigure createFigure() {
-		ComponentFigure tmpFigure = new ComponentFigure(this.getId());
+		IControlStructureFigure tmpFigure = new ProcessFigure(this.getId(), ProcessVariableEditPart.TOP_OFFSET);
+		tmpFigure.setBorder(null);
+		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
 		tmpFigure.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
-		tmpFigure.setToolTip(new Label(Messages.Controller));
+		tmpFigure.setToolTip(new Label(Messages.ProcessVariable));
 		return tmpFigure;
 	}
 	
 	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel()));
+	public void translateToRoot(Translatable t) {
+		this.getFigure().getParent().translateFromParent(t);
+		this.getFigure().getParent().getParent().translateFromParent(t);
 	}
 	
 }

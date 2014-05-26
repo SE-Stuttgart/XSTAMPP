@@ -1237,4 +1237,14 @@ public class DataModelController extends Observable implements
 		return result;
 	}
 
+	@Override
+	public int getComponentTrashSize() {
+		return this.controlStructureController.getComponentTrashSize();
+	}
+
+	@Override
+	public int getConnectionTrashSize() {
+		return this.controlStructureController.getConnectionTrashSize();
+	}
+
 }

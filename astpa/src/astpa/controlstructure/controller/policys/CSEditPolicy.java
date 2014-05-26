@@ -29,7 +29,7 @@ import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.controller.commands.ComponentChangeLayoutCommand;
 import astpa.controlstructure.controller.commands.ComponentCreateCommand;
-import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
+import astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import astpa.controlstructure.figure.ComponentFigure;
 import astpa.controlstructure.figure.IControlStructureFigure;
 import astpa.controlstructure.figure.TextFieldFigure;

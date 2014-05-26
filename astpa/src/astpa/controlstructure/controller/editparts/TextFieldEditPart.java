@@ -11,54 +11,41 @@
  * 
  *******************************************************************************/
 
-package astpa.controlstructure.controller.editParts;
-
-import messages.Messages;
+package astpa.controlstructure.controller.editparts;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.geometry.Translatable;
-import org.eclipse.swt.SWT;
 
 import astpa.controlstructure.figure.IControlStructureFigure;
-import astpa.controlstructure.figure.ProcessFigure;
+import astpa.controlstructure.figure.TextFieldFigure;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * 
- * @author Lukas
+ * TextFieldEditPart
+ * 
+ * @version 1.0
+ * @author Lukas Balzer
  * 
  */
-public class ProcessVariableEditPart extends CSAbstractEditPart {
-	
-	private static final int TOP_OFFSET = 5;
-	
+public class TextFieldEditPart extends CSAbstractEditPart {
 	
 	/**
+	 * this constuctor sets the unique ID of this EditPart which is the same in
+	 * its model and figure
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
 	 */
-	public ProcessVariableEditPart(IControlStructureEditorDataModel model) {
+	public TextFieldEditPart(IControlStructureEditorDataModel model) {
 		super(model);
-		
 	}
 	
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ProcessFigure(this.getId(), ProcessVariableEditPart.TOP_OFFSET);
-		tmpFigure.setBorder(null);
-		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
+		IControlStructureFigure tmpFigure = new TextFieldFigure(this.getId());
 		tmpFigure.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
-		tmpFigure.setToolTip(new Label(Messages.ProcessVariable));
 		return tmpFigure;
-	}
-	
-	@Override
-	public void translateToRoot(Translatable t) {
-		this.getFigure().getParent().translateFromParent(t);
-		this.getFigure().getParent().getParent().translateFromParent(t);
 	}
 	
 }

@@ -275,4 +275,22 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * @return true, if the value has been set
 	 */
 	boolean setCSPMImagePath(String path);
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return
+	 * 		the amount of components currently in the trash
+	 */
+	public int getComponentTrashSize();
+
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return
+	 * 		the amount of components currently in the trash
+	 */
+	public int getConnectionTrashSize();
 }

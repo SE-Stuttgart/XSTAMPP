@@ -18,7 +18,7 @@ import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 
 import astpa.controlstructure.controller.commands.DeleteCommand;
-import astpa.controlstructure.controller.editParts.IControlStructureEditPart;
+import astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
