@@ -748,7 +748,7 @@ public class LinkingView implements IViewBase {
 	
 	@Override
 	public String getTitle() {
-		return Messages.Links;
+		return Messages.LinkingOfAccidentsAndHazards;
 	}
 	
 	@Override
