@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: A-STPA
 Bundle-SymbolicName: astpa; singleton:=true
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3.qualifier
 Bundle-Activator: astpa.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
