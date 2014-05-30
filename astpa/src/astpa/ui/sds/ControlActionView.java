@@ -439,4 +439,10 @@ public class ControlActionView extends CommonTableView {
 	public commonTableType getCommonTableType() {
 		return commonTableType.ControlActionsView;
 	}
+	
+	@Override
+	public boolean triggerExport() {
+		this.exportAsCSV(this.dataInterface.getAllControlActions());
+		return true;
+	}
 }

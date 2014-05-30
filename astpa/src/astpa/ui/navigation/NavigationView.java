@@ -296,4 +296,10 @@ public class NavigationView implements IViewBase {
 	public void setPojectCreated() {
 		this.projectCreated = true;
 	}
+
+	@Override
+	public boolean triggerExport() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

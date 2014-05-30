@@ -441,4 +441,10 @@ public class SystemGoalView extends CommonTableView {
 	public commonTableType getCommonTableType() {
 		return commonTableType.SystemGoalsView;
 	}
+	
+	@Override
+	public boolean triggerExport() {
+		this.exportAsCSV(this.dataInterface.getAllSystemGoals());
+		return true;
+	}
 }

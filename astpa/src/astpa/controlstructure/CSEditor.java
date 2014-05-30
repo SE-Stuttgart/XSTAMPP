@@ -154,5 +154,7 @@ public class CSEditor extends CSAbstractEditor {
 	public void setViewport(Viewport view) {
 		this.viewLocation = view;
 	}
+
+
 	
 }

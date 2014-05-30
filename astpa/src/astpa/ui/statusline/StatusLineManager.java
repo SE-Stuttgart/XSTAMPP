@@ -160,4 +160,10 @@ public final class StatusLineManager implements IViewBase {
 	public void createPartControl(Composite parent) {
 		// Nothing to do here.
 	}
+
+	@Override
+	public boolean triggerExport() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

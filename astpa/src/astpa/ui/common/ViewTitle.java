@@ -99,8 +99,7 @@ class ViewTitlePaintListener implements PaintListener {
 		Display display = Display.getCurrent();
 		e.gc.setFont(new Font(display, "Arial", //$NON-NLS-1$
 			ViewTitlePaintListener.FONT_SIZE, SWT.BOLD));
-		e.gc.setBackground(new Color(Display.getCurrent(), PreferenceConverter.getColor(this.store,
-			IPreferenceConstants.SPLITTER_BACKGROUND)));
+		
 		e.gc.setForeground(new Color(Display.getCurrent(), PreferenceConverter.getColor(this.store,
 			IPreferenceConstants.SPLITTER_FOREGROUND)));
 		e.gc.fillGradientRectangle(0, 0, clientArea.width, clientArea.height, false);
@@ -108,5 +107,6 @@ class ViewTitlePaintListener implements PaintListener {
 			IPreferenceConstants.SPLITTER_FONT)));
 		e.gc.drawText(this.viewTitle.getText(), ViewTitlePaintListener.TEXT_POSITION_X,
 			ViewTitlePaintListener.TEXT_POSITION_Y, true);
+	
 	}
 }

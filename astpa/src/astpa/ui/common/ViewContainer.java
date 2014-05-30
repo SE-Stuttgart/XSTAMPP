@@ -59,18 +59,33 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.xml.sax.SAXException;
 
@@ -82,6 +97,7 @@ import astpa.controlstructure.IControlStructureEditor;
 import astpa.export.ExportWizard;
 import astpa.model.DataModelController;
 import astpa.model.ObserverValue;
+import astpa.preferences.IPreferenceConstants;
 import astpa.ui.acchaz.AccidentsView;
 import astpa.ui.acchaz.HazardsView;
 import astpa.ui.causalfactors.CausalFactorsView;
@@ -110,6 +126,7 @@ import astpa.ui.welcome.WelcomeView;
  */
 public class ViewContainer extends ViewPart {
 	
+	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 	/**
 	 * The log4j logger
 	 */
@@ -217,6 +234,20 @@ public class ViewContainer extends ViewPart {
 		}
 		
 		/**
+		 * this method triggers an signal to the view to start the export
+		 * if available
+		 *
+		 * @author Lukas Balzer
+		 *
+		 */
+		public void export(){
+			if(!this.viewInstance.triggerExport()){
+				String msg= "Sorry but there's no Export available for" + this.getTitle();
+				MessageDialog.openInformation(PlatformUI.createDisplay().getActiveShell(), "No Export Available", msg);
+			}
+		}
+		
+		/**
 		 * Perform the actions before the view will be hidden
 		 * 
 		 * @author Fabian Toth
@@ -266,10 +297,23 @@ public class ViewContainer extends ViewPart {
 	/**
 	 * The title bar.
 	 * 
+	 * @author Lukas Balzer
+	 */
+	private Composite titleComposite;
+	
+	
+	/**
+	 * The title Label.
+	 * 
 	 * @author Patrick Wickenhaeuser
 	 */
 	private ViewTitle titleLabel;
 	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 */
+	private Button exportButton;
 	/**
 	 * The root composite for everythings
 	 */
@@ -392,23 +436,60 @@ public class ViewContainer extends ViewPart {
 		this.navigationRoot.setVisible(false);
 		ViewContainer.LOGGER.info("Navigation has been initialized"); //$NON-NLS-1$
 		
+		this.titleComposite = new Composite(this.parentComposite, SWT.BORDER);
+		FormData titleCompositeData= new FormData();
+		titleCompositeData.height = ViewContainer.TITLE_HEIGHT;
+		titleCompositeData.top = new FormAttachment(0);
+		titleCompositeData.left = new FormAttachment(this.navigationRoot);
+		titleCompositeData.right = new FormAttachment(ViewContainer.FULL_SIZE);
+		this.titleComposite.setLayoutData(titleCompositeData);
+		this.titleComposite.setLayout(new FormLayout());
+		this.titleComposite.setVisible(false);
+		
+		this.exportButton = new Button(this.titleComposite, SWT.PUSH);
+		this.exportButton.setText(Messages.Export);
+		FormData exportButtonData = new FormData();
+		exportButtonData.height = ViewContainer.TITLE_HEIGHT;
+		exportButtonData.right = new FormAttachment(ViewContainer.FULL_SIZE);
+		this.exportButton.setLayoutData(exportButtonData);
+		this.exportButton.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseUp(MouseEvent e) {
+				ViewContainer.this.activeView.export();
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				//do nothing when mouse is clicked
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				// Do nothing when double clicked
+			}
+		});
+		
 		// the title of the current view
-		FormData viewTitleData = new FormData();
-		viewTitleData.height = ViewContainer.TITLE_HEIGHT;
-		viewTitleData.top = new FormAttachment(0);
-		viewTitleData.left = new FormAttachment(this.navigationRoot);
-		viewTitleData.right = new FormAttachment(ViewContainer.FULL_SIZE);
-		this.titleLabel = new ViewTitle(this.parentComposite, SWT.BORDER, ""); //$NON-NLS-1$
-		this.titleLabel.setLayoutData(viewTitleData);
+		this.titleLabel = new ViewTitle(this.titleComposite, SWT.NONE, ""); //$NON-NLS-1$
+		FormData titleLabelData= new FormData();
+		titleLabelData.height = ViewContainer.TITLE_HEIGHT;
+		titleLabelData.top = new FormAttachment(0);
+		titleLabelData.left = new FormAttachment(this.navigationRoot);
+		titleLabelData.right = new FormAttachment(this.exportButton);
+		
+		this.titleLabel.setLayoutData(titleLabelData);
 		this.titleLabel.setVisible(false);
 		ViewContainer.LOGGER.info("View title has been initialized"); //$NON-NLS-1$
+		
+		
 		
 		// the root element of the view area. This is where the views are
 		// displayed.
 		FormData viewAreaData = new FormData();
 		viewAreaData.left = new FormAttachment(this.navigationRoot);
 		viewAreaData.right = new FormAttachment(ViewContainer.FULL_SIZE);
-		viewAreaData.top = new FormAttachment(this.titleLabel);
+		viewAreaData.top = new FormAttachment(this.titleComposite);
 		viewAreaData.bottom = new FormAttachment(ViewContainer.FULL_SIZE);
 		this.viewAreaRoot = new Composite(this.parentComposite, SWT.BORDER);
 		this.viewAreaRoot.setLayoutData(viewAreaData);
@@ -480,6 +561,7 @@ public class ViewContainer extends ViewPart {
 		if (this.firstStartUp) {
 			this.navigationRoot.setVisible(true);
 			this.titleLabel.setVisible(true);
+			this.titleComposite.setVisible(true);
 			this.viewAreaRoot.setVisible(true);
 			this.setShowNavigationView(true);
 			this.firstStartUp = false;
@@ -582,6 +664,10 @@ public class ViewContainer extends ViewPart {
 	 */
 	protected void setViewTitle(String title) {
 		this.titleLabel.setText(title);
+		this.titleComposite.setBackground(new Color(Display.getCurrent(), PreferenceConverter.getColor(this.store,
+				IPreferenceConstants.SPLITTER_BACKGROUND)));
+
+		this.exportButton.setBackground(this.titleComposite.getBackground());
 	}
 	
 	/**

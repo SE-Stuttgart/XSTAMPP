@@ -353,4 +353,11 @@ public class CSCView implements IViewBase {
 			CSCView.this.tableViewer.setInput(CSCView.this.dataInterface.getAllUnsafeControlActions());
 		}
 	}
+
+
+	@Override
+	public boolean triggerExport() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

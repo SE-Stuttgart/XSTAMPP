@@ -15,6 +15,7 @@ package astpa.controlstructure.controller.policys;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -89,7 +90,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 		this.stepID = (String) this.getHost().getViewer().getProperty(CSAbstractEditor.STEP_EDITOR);
 		ComponentChangeLayoutCommand command =
 			new ComponentChangeLayoutCommand(this.dataModel, this.stepID);
-		
+		IFigure childFigure = ((IControlStructureEditPart)child).getFigure();
+		command.setMinConstraint(((IControlStructureFigure)childFigure).getTextField().getMinimumSize());
 		command.setModel(child.getModel());
 		command.setConstraint((Rectangle) constraint);
 		return command;
@@ -104,7 +106,10 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			ComponentCreateCommand command =
 				new ComponentCreateCommand(this.dataModel, this.stepID);
 			command.setFeedbackLayer(this.getFeedbackLayer());
+			//the root Edit Part is the EditPart on which this policy is installed
 			IRectangleComponent rootModel = (IRectangleComponent) this.getHost().getModel();
+			//the EditPart on shall be created is the newObject which is given by the request,
+			//which is send from the ModelCreationFactory
 			IRectangleComponent compModel = (IRectangleComponent) request.getNewObject();
 			
 			command.setRootModel(rootModel);
@@ -114,6 +119,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			if (request.getNewObject() instanceof IComponent) {
 				
 				Rectangle constraint = (Rectangle) this.getConstraintFor(request);
+				//if the components are ment for ProcessModel
 				if (rootModel.getComponentType() == ComponentType.PROCESS_VARIABLE
 					|| rootModel.getComponentType() == ComponentType.PROCESS_MODEL) {
 					command.addConstraint(this.getHost().getParent().getModel());

@@ -14,9 +14,11 @@
 package astpa.controlstructure.controller.commands;
 
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import astpa.controlstructure.CSEditor;
+import astpa.controlstructure.figure.IControlStructureFigure;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -34,8 +36,8 @@ public class ComponentChangeLayoutCommand extends ControlStructureAbstractComman
 	private Rectangle oldLayout;
 	private static final int MIN_WIDTH = 80;
 	private static final int MIN_HEIGHT = 25;
-	
-	
+	private int heightConstraint;	
+	private int	widthConstraint;	
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -44,6 +46,8 @@ public class ComponentChangeLayoutCommand extends ControlStructureAbstractComman
 	 */
 	public ComponentChangeLayoutCommand(IControlStructureEditorDataModel model, String stepID) {
 		super(model, stepID);
+		this.heightConstraint = MIN_HEIGHT;
+		this.widthConstraint =MIN_WIDTH;
 	}
 	
 	@Override
@@ -52,7 +56,19 @@ public class ComponentChangeLayoutCommand extends ControlStructureAbstractComman
 			.changeComponentLayout(this.model.getId(), this.layout, this.getStepID().equals(CSEditor.ID));
 		
 	}
+
 	
+	/**
+	 * set the minimum width/height for the component
+	 * @author Lukas Balzer
+	 *
+	 * @param constraint
+	 * 			the minimum width and height to which the component can be scaled
+	 */
+	public void setMinConstraint(Dimension constraint){
+		this.widthConstraint = constraint.width;
+		this.heightConstraint = constraint.height;
+	}
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -61,8 +77,8 @@ public class ComponentChangeLayoutCommand extends ControlStructureAbstractComman
 	 */
 	public void setConstraint(Rectangle rect) {
 		this.layout = new Rectangle();
-		this.layout.width =Math.max(rect.width,ComponentChangeLayoutCommand.MIN_WIDTH);
-		this.layout.height = Math.max(rect.height, ComponentChangeLayoutCommand.MIN_HEIGHT);
+		this.layout.width =Math.max(rect.width,this.widthConstraint);
+		this.layout.height = Math.max(rect.height, this.heightConstraint);
 		this.layout.x= Math.max(rect.x,0);
 		this.layout.y = Math.max(rect.y, 0);
 	}

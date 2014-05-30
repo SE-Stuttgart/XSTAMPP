@@ -446,4 +446,10 @@ public class DesignRequirementView extends CommonTableView {
 	public commonTableType getCommonTableType() {
 		return commonTableType.DesignRequirementsView;
 	}
+	
+	@Override
+	public boolean triggerExport() {
+		this.exportAsCSV(this.dataInterface.getAllDesignRequirements());
+		return true;
+	}
 }

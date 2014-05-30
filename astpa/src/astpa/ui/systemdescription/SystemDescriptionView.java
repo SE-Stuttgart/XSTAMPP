@@ -1487,5 +1487,11 @@ public class SystemDescriptionView implements IViewBase {
 	public static String[] getFontSizes() {
 		return FONT_SIZES;
 	}
+
+	@Override
+	public boolean triggerExport() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

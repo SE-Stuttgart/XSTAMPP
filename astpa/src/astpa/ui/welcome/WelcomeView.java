@@ -534,4 +534,10 @@ public class WelcomeView implements IViewBase {
 	public static String getShowWelcomeOnStartupPreferences() {
 		return IPreferenceConstants.SHOW_WELCOME_ON_STARTUP_PREFERENCES;
 	}
+
+	@Override
+	public boolean triggerExport() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -1121,4 +1121,11 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	public void selectionChanged(SelectionChangedEvent event) {
 		this.updateActions(this.selectionActions);
 	}
+	
+	@Override
+	public boolean triggerExport() {
+		this.doSave(null);
+		return true;
+	}
 }
+

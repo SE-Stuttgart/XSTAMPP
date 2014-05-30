@@ -13,6 +13,13 @@
 
 package astpa.ui.acchaz;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.List;
 import java.util.Observable;
 
 import messages.Messages;
@@ -44,11 +51,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import astpa.Activator;
+import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.model.interfaces.IDataModel;
 import astpa.preferences.IPreferenceConstants;
@@ -66,6 +76,17 @@ public abstract class CommonTableView implements IViewBase {
 	
 	private Label itemsLabel, filterLabel, descriptionLabel;
 	
+	private Composite tableContainer;
+	
+	private Composite buttonComposite;
+	private Text descriptionWidget;
+	private TableColumnLayout tableColumnLayout;
+	private TableViewerColumn idColumn;
+	private TableViewerColumn titleColumn;
+	private Button addNewItemButton;
+	private Button deleteItemsButton;
+	private ATableFilter filter;
+	private Text filterTextField;
 	
 	/**
 	 * 
@@ -131,8 +152,7 @@ public abstract class CommonTableView implements IViewBase {
 		this.tableViewer = tableViewer;
 	}
 	
-	
-	private Composite tableContainer;
+
 	
 	
 	/**
@@ -316,17 +336,6 @@ public abstract class CommonTableView implements IViewBase {
 	}
 	
 	
-	private Composite buttonComposite;
-	private Text descriptionWidget;
-	private TableColumnLayout tableColumnLayout;
-	private TableViewerColumn idColumn;
-	private TableViewerColumn titleColumn;
-	private Button addNewItemButton;
-	private Button deleteItemsButton;
-	private ATableFilter filter;
-	private Text filterTextField;
-	
-	
 	/**
 	 * @author Jarkko Heidenwag
 	 * 
@@ -403,6 +412,7 @@ public abstract class CommonTableView implements IViewBase {
 		this.tableColumnLayout = new TableColumnLayout();
 		tableComposite.setLayout(this.tableColumnLayout);
 		
+		//the add and delete buttons are arranged in a composite with a 2x1 GridLayout
 		this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
 		this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		this.buttonComposite.setLayout(new GridLayout(2, true));
@@ -439,6 +449,7 @@ public abstract class CommonTableView implements IViewBase {
 		this.descriptionLabel.setFont(new Font(Display.getCurrent(), PreferenceConverter.getFontData(IViewBase.STORE,
 			IPreferenceConstants.DEFAULT_FONT)));
 		this.descriptionLabel.setText(Messages.DescriptionNotes);
+		
 		
 		Text invisibleTextField = new Text(rightHeadComposite, SWT.SINGLE | SWT.BORDER);
 		invisibleTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -525,24 +536,7 @@ public abstract class CommonTableView implements IViewBase {
 		Control[] controls = {leftHeadComposite, this.buttonComposite, tableComposite};
 		this.tableContainer.setTabList(controls);
 	}
-	
-	/**
-	 * deleting all selected items
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
-	public void deleteItems() {
-		// to be implemented by the sub class
-	}
-	
-	/**
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
-	public void updateTable() {
-		// to be implemented by the sub class
-	}
+
 	
 	/**
 	 * @author Jarkko Heidenwag
@@ -568,10 +562,40 @@ public abstract class CommonTableView implements IViewBase {
 		return Messages.CommonTable;
 	}
 	
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		// to be implemented by the sub class
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param models
+	 * 			the data which shall be exported as CSV
+	 */
+	protected void exportAsCSV(List<ITableModel> models){
+		FileDialog dlg = new FileDialog(PlatformUI.createDisplay().getActiveShell(), SWT.SAVE);
+		dlg.setText(Messages.ExportImage);
+		dlg.setOverwrite(true);
+		
+		File tableCSV = new File(dlg.open());
+		try {
+			BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));
+			
+			csvWriter.write("ID ;");
+			csvWriter.write("Name ;");
+			csvWriter.write("Description");
+			csvWriter.newLine();
+			for(ITableModel data: models){
+				csvWriter.write(data.getNumber() + ";");
+				csvWriter.write(data.getTitle() + ";");
+				csvWriter.write(data.getDescription());
+				csvWriter.newLine();
+			}
+			csvWriter.close();
+		}catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
+	
 	
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
@@ -602,4 +626,26 @@ public abstract class CommonTableView implements IViewBase {
 		return commonTableType.UNDEFINED;
 	}
 	
+	/**
+	 * deleting all selected items
+	 * 
+	 * @author Jarkko Heidenwag
+	 * 
+	 */
+	public abstract void deleteItems();
+	
+	/**
+	 * @author Jarkko Heidenwag
+	 * 
+	 */
+	public abstract void updateTable();
+	
+	@Override
+	public abstract void setDataModelInterface(IDataModel dataInterface);
+	
+	@Override
+	public boolean triggerExport() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

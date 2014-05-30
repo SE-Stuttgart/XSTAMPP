@@ -470,4 +470,10 @@ public class HazardsView extends CommonTableView {
 	public commonTableType getCommonTableType() {
 		return commonTableType.HazardsView;
 	}
+
+	@Override
+	public boolean triggerExport() {
+		this.exportAsCSV(this.dataInterface.getAllHazards());
+		return true;
+	}
 }

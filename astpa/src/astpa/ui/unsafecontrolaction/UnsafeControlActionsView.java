@@ -445,5 +445,11 @@ public class UnsafeControlActionsView implements IViewBase {
 			break;
 		}
 	}
+
+	@Override
+	public boolean triggerExport() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

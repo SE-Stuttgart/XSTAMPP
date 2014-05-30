@@ -86,6 +86,17 @@ public interface IViewBase extends Observer {
 	 */
 	void setDataModelInterface(IDataModel dataInterface);
 	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 * @return 
+	 * 		whether there is an export available or not
+	 *
+	 */
+	boolean triggerExport();
+	
 	@Override
 	void update(Observable dataModelController, Object updatedValue);
+	
+	
 }

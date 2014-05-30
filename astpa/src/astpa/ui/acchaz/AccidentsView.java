@@ -469,4 +469,10 @@ public class AccidentsView extends CommonTableView {
 	public commonTableType getCommonTableType() {
 		return commonTableType.AccidentsView;
 	}
+
+	@Override
+	public boolean triggerExport() {
+		this.exportAsCSV(this.dataInterface.getAllAccidents());
+		return true;
+	}
 }
