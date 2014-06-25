@@ -45,9 +45,10 @@ public class AutoCompleteField {
 		final String[] literals, final String[] labels, final String[] descriptions) {
 		this.contentProposalProvider = new ContentProposalProvider(literals.clone(), labels, descriptions);
 		this.contentProposalProvider.setFiltering(true);
+		
 		this.contentProposalAdapter =
 			new LinkingCommandAdapter(control, controlContentAdapter, this.contentProposalProvider, null, null, false);
-
+		
 	}
 	
 	/**

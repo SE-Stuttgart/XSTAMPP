@@ -644,7 +644,7 @@ public abstract class CommonTableView implements IViewBase {
 	public abstract void setDataModelInterface(IDataModel dataInterface);
 	
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		// TODO Auto-generated method stub
 		return false;
 	}

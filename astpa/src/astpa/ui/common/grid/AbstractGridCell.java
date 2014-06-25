@@ -13,11 +13,13 @@
 
 package astpa.ui.common.grid;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Composite;
 
 import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
@@ -116,6 +118,7 @@ public abstract class AbstractGridCell implements IGridCell {
 	
 	@Override
 	public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
+		
 		this.paintFrame(renderer, gc, item);
 	}
 	

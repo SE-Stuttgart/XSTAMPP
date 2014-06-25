@@ -45,7 +45,7 @@ public class GridCellButton extends AbstractGridCell {
 	 * @author Patrick Wickenhaeuser
 	 * 
 	 */
-	public GridCellButton() {
+	public GridCellButton(){
 		this.text = Messages.GridCellButton_None;
 	}
 	
@@ -57,7 +57,8 @@ public class GridCellButton extends AbstractGridCell {
 	 * @param text set the initial text in the cell.
 	 * 
 	 */
-	public GridCellButton(String text) {
+	public GridCellButton( String text) {
+		
 		this.text = text;
 	}
 	

@@ -448,7 +448,7 @@ public class DesignRequirementView extends CommonTableView {
 	}
 	
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		this.exportAsCSV(this.dataInterface.getAllDesignRequirements());
 		return true;
 	}

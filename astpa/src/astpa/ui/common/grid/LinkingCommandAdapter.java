@@ -52,6 +52,7 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 		this.setAutoActivationDelay(0);
 		this.setPropagateKeys(false);
 		
+		
 	}
 	
 	@Override

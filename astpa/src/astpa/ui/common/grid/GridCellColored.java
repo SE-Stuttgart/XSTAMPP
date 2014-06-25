@@ -46,8 +46,9 @@ public class GridCellColored extends AbstractGridCell {
 	 * @param b blue color value from 0 to 255 of the background.
 	 * 
 	 */
-	public GridCellColored(Device device, int r, int g, int b) {
-		this.backgroundColor = new Color(device, r, g, b);
+	public GridCellColored(GridWrapper grid, int r, int g, int b) {
+		
+		this.backgroundColor = new Color(grid.getGrid().getDisplay(), r, g, b);
 	}
 	
 	/**
@@ -59,8 +60,9 @@ public class GridCellColored extends AbstractGridCell {
 	 * @param color the color of the background.
 	 * 
 	 */
-	public GridCellColored(Device device, RGB color) {
-		this.backgroundColor = new Color(device, color.red, color.green, color.blue);
+	public GridCellColored(GridWrapper grid, RGB color) {
+		
+		this.backgroundColor = new Color(grid.getGrid().getDisplay(), color.red, color.green, color.blue);
 	}
 	
 	/**

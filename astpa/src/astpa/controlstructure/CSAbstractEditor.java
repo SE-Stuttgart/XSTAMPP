@@ -26,6 +26,10 @@ import messages.Messages;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CoordinateListener;
 import org.eclipse.draw2d.FigureCanvas;
@@ -814,15 +818,20 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		int imageType;
 		FileDialog dlg = new FileDialog(PlatformUI.createDisplay().getActiveShell(), SWT.SAVE);
 		dlg.setText(Messages.ExportImage);
 		dlg.setOverwrite(true);
 		dlg.setFileName(this.getId());
 		dlg.setFilterExtensions(new String[] {"*.jpg", "*.png", ".bmp"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String path = dlg.open();
+		
+		this.printStructure(path, "", "");
+	}
+	
+	protected boolean printStructure(String path,String name,String processName){
+		int imageType;
 		if (path == null) {
-			return;
+			return false;
 		} else if (path.endsWith("png")) { //$NON-NLS-1$
 		
 			imageType = SWT.IMAGE_PNG;
@@ -831,10 +840,13 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		} else if (path.endsWith("jpg")) { //$NON-NLS-1$
 			imageType = SWT.IMAGE_JPEG;
 		} else {
-			return;
+			return false;
 		}
 		
-		this.printViewer(path, imageType);
+		Job exportJob = new PrintJob(name,processName, path, imageType);
+		exportJob.schedule();
+		exportJob.addJobChangeListener(new JobChangeAdapter());
+		return true;
 	}
 	
 	
@@ -1122,10 +1134,99 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		this.updateActions(this.selectionActions);
 	}
 	
-	@Override
-	public boolean triggerExport() {
-		this.doSave(null);
-		return true;
+
+	
+	private class PrintJob extends Job{
+		
+		private final String path;
+		private final int imageType;
+		private final String process;
+		
+		/**
+		 * this constructor creates a new Job to print the current Control Structure
+		 * 
+		 * @author Lukas Balzer
+		 * @param name The name of the job
+		 * @param process The name which shall be displayed in the process window
+		 * @param path the path defined as a String
+		 * @param imageType The SWT constant which says in which format the img
+		 *            should be stored
+		 * @see GC
+		 * @see ImageLoader
+		 * @see SWT#IMAGE_PNG
+		 * @see SWT#IMAGE_JPEG
+		 */
+		public PrintJob(String name,String process,String path, int imageType){
+			super(name);
+			this.imageType=imageType;
+			this.path=path;
+			this.process=process;
+		}
+		
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			monitor.beginTask(this.process, IProgressMonitor.UNKNOWN);
+		
+			GraphicalViewer viewer = CSAbstractEditor.this.getGraphicalViewer();
+			ScalableRootEditPart rootEditPart = (ScalableRootEditPart) viewer.getRootEditPart();
+			boolean isFirst = true;
+			IFigure printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
+			
+			//create a clip rectangle to cut the unnecessary whitespace
+			Rectangle clipRectangle = new Rectangle();
+			for(Object layers: printableFigure.getChildren()){
+				//Layer&ConnectionLayer
+				for(Object part: ((IFigure)layers).getChildren()){
+					if(part instanceof RootFigure){
+						for(final Object child: ((IFigure)part).getChildren()){
+							if(isFirst){
+								//the first component which is found by the loop is added
+								//as starting Point for the rectangle
+								isFirst= false;
+								clipRectangle =new Rectangle(((IFigure)child).getBounds());
+							}else{
+								clipRectangle.union(((IFigure)child).getBounds());
+							}
+						}
+					}
+					else{
+						clipRectangle.union(((IFigure)part).getBounds());
+					}
+				}
+				
+			}
+
+			clipRectangle.expand(IMG_EXPAND, IMG_EXPAND);
+			//a plain Image is created on which we can draw any graphics
+			Image srcImage = new Image(null, printableFigure.getBounds().width+ IMG_EXPAND,
+									printableFigure.getBounds().height + IMG_EXPAND);
+			GC imageGC = new GC(srcImage);
+			Graphics graphics = new SWTGraphics(imageGC);
+			printableFigure.paint(graphics);
+			
+			//this additional Image is created with the actual Bounds
+			//and the first one is clipped inside the scaled image
+			Image scaledImage = new Image(null,clipRectangle.width,
+	        											  clipRectangle.height);
+			imageGC = new GC(scaledImage);
+			graphics = new SWTGraphics(imageGC);
+			clipRectangle.x= Math.max(0, clipRectangle.x);
+			clipRectangle.y= Math.max(0, clipRectangle.y);
+			if(clipRectangle.x != 0 || clipRectangle.y !=0){
+			
+				graphics.drawImage(srcImage, clipRectangle, 
+					new Rectangle(0, 0, clipRectangle.width,
+										clipRectangle.height ));
+			}else{
+				graphics.drawImage(srcImage, 0, 0);
+			}
+	        ImageLoader imgLoader = new ImageLoader();
+			imgLoader.data = new ImageData[] {scaledImage.getImageData()};
+			
+			imgLoader.save(this.path, this.imageType);
+			return Status.OK_STATUS;
+			
+		}
 	}
 }
 

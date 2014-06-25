@@ -13,6 +13,8 @@
 
 package astpa.preferences;
 
+import messages.Messages;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -118,7 +120,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		// Export
 		this.store.setDefault(IPreferenceConstants.COMPANY_NAME, ""); //$NON-NLS-1$
 		this.store.setDefault(IPreferenceConstants.COMPANY_LOGO, ""); //$NON-NLS-1$
-		
+		this.store.setDefault(IPreferenceConstants.PROJECT_NAME, Messages.NewProject);
 		PreferenceConverter.setDefault(this.store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR, Display.getCurrent()
 			.getSystemColor(SWT.COLOR_DARK_BLUE).getRGB());
 		

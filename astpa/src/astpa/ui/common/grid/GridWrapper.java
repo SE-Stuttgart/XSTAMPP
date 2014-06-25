@@ -31,6 +31,8 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -413,7 +415,7 @@ public class GridWrapper {
 		this.cellRenderer = new GridCellRenderer(this);
 		
 		this.setColumnLabels(columnLabels);
-		
+	
 		this.actualGrid.addControlListener(new ControlListener() {
 			
 			@Override
@@ -467,6 +469,7 @@ public class GridWrapper {
 	public void reloadTable() {
 		this.clearTable();
 		this.fillTable();
+		
 	}
 	
 	/**
@@ -547,9 +550,12 @@ public class GridWrapper {
 		}
 		
 		// update the labels
-		if (this.columnLabels != null) {
-			for (int i = 0; i < Math.min(this.columnLabels.length, this.actualGrid.getColumnCount()); i++) {
-				this.actualGrid.getColumn(i).setText(this.columnLabels[i]);
+		if (GridWrapper.this.columnLabels != null) {
+			for (int i = 0; i < Math.min(GridWrapper.this.columnLabels.length,
+										GridWrapper.this.actualGrid.getColumnCount()); i++) {
+				GridWrapper.this.actualGrid.getColumn(i).setText(GridWrapper.this.columnLabels[i]);
+				
+				
 			}
 		}
 		
@@ -702,7 +708,10 @@ public class GridWrapper {
 	 */
 	public void resizeRows() {
 		for (int i = 0; i < this.nebulaRows.size(); i++) {
-			this.nebulaRows.get(i).setHeight(this.nebulaRows.get(i).getGridRow().getPreferredHeight());
+			if(!this.nebulaRows.get(i).isDisposed()){
+				
+				this.nebulaRows.get(i).setHeight(this.nebulaRows.get(i).getGridRow().getPreferredHeight());
+			}
 		}
 	}
 	

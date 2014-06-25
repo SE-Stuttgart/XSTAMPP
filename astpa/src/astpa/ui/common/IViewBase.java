@@ -93,7 +93,7 @@ public interface IViewBase extends Observer {
 	 * 		whether there is an export available or not
 	 *
 	 */
-	boolean triggerExport();
+	boolean triggerExport(String path);
 	
 	@Override
 	void update(Observable dataModelController, Object updatedValue);

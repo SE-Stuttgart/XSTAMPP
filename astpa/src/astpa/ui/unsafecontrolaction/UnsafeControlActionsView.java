@@ -13,6 +13,8 @@
 
 package astpa.ui.unsafecontrolaction;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
@@ -20,6 +22,8 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -32,14 +36,19 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.PlatformUI;
 
 import astpa.model.ObserverValue;
 import astpa.model.controlaction.UnsafeControlActionType;
@@ -48,6 +57,7 @@ import astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import astpa.model.interfaces.IDataModel;
 import astpa.model.interfaces.IUnsafeControlActionDataModel;
 import astpa.ui.common.IViewBase;
+import astpa.ui.common.grid.GridCellBlank;
 import astpa.ui.common.grid.GridCellButton;
 import astpa.ui.common.grid.GridCellColored;
 import astpa.ui.common.grid.GridCellEditor;
@@ -295,16 +305,17 @@ public class UnsafeControlActionsView implements IViewBase {
 			GridRow controlActionRow = new GridRow();
 			this.grid.addRow(controlActionRow);
 			
-			GridCellText descriptionItem = new GridCellText(cAction.getTitle());
+			GridCellEditor descriptionItem = new GridCellEditor(this.grid,cAction.getTitle());
+			descriptionItem.getTextEditor().setEditable(false);
 			controlActionRow.addCell(descriptionItem);
 			
-			controlActionRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			controlActionRow.addCell(new GridCellColored(this.grid,
 				UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-			controlActionRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			controlActionRow.addCell(new GridCellColored(this.grid,
 				UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-			controlActionRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			controlActionRow.addCell(new GridCellColored(this.grid,
 				UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-			controlActionRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			controlActionRow.addCell(new GridCellColored(this.grid,
 				UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
 			
 			List<IUnsafeControlAction> allNotGiven = cAction.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);
@@ -335,13 +346,13 @@ public class UnsafeControlActionsView implements IViewBase {
 						this.ucaContentProvider, this.grid, UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allNotGiven.size() == i) {
 					// add placeholder
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 					linkRow.addCell(new AddUcaButton(cAction, Messages.AddNotGivenUCA,
 						UnsafeControlActionType.NOT_GIVEN));
 				} else {
 					// add placeholders
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
-					linkRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
+					linkRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 				}
 				
 				if (allIncorrect.size() > i) {
@@ -352,13 +363,13 @@ public class UnsafeControlActionsView implements IViewBase {
 						this.ucaContentProvider, this.grid, UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allIncorrect.size() == i) {
 					// add placeholder
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 					linkRow.addCell(new AddUcaButton(cAction, Messages.AddGivenIncorrectlyUCA,
 						UnsafeControlActionType.GIVEN_INCORRECTLY));
 				} else {
 					// add placeholders
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
-					linkRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
+					linkRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 				}
 				
 				if (allWrongTiming.size() > i) {
@@ -369,13 +380,13 @@ public class UnsafeControlActionsView implements IViewBase {
 						this.grid, UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allWrongTiming.size() == i) {
 					// add placeholder
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 					linkRow.addCell(new AddUcaButton(cAction, Messages.AddWrongTimingUCA,
 						UnsafeControlActionType.WRONG_TIMING));
 				} else {
 					// add placeholders
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
-					linkRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
+					linkRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 				}
 				
 				if (allTooSoon.size() > i) {
@@ -386,13 +397,13 @@ public class UnsafeControlActionsView implements IViewBase {
 						this.ucaContentProvider, this.grid, UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allTooSoon.size() == i) {
 					// add placeholder
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 					linkRow.addCell(new AddUcaButton(cAction, Messages.AddStoppedTooSoonUCA,
 						UnsafeControlActionType.STOPPED_TOO_SOON));
 				} else {
 					// add placeholders
-					ucaRow.addCell(new GridCellText("")); //$NON-NLS-1$
-					linkRow.addCell(new GridCellText("")); //$NON-NLS-1$
+					ucaRow.addCell(new GridCellBlank()); //$NON-NLS-1$
+					linkRow.addCell(new GridCellBlank()); //$NON-NLS-1$
 				}
 			}
 		}
@@ -442,14 +453,25 @@ public class UnsafeControlActionsView implements IViewBase {
 			break;
 		
 		default:
+				this.reloadTable();
 			break;
 		}
 	}
 
 	@Override
-	public boolean triggerExport() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean triggerExport(String path) {
+		
+		
+		Image srcImage =new Image(null,this.grid.getGrid().getBounds());
+		GC imageGC = new GC(srcImage);
+		Graphics graphics = new SWTGraphics(imageGC);
+		this.grid.getGrid().print(imageGC);
+		ImageLoader imgLoader = new ImageLoader();
+		imgLoader.data = new ImageData[] {srcImage.getImageData()};
+			
+		imgLoader.save(path, SWT.IMAGE_PNG);
+		
+		return true;
 	}
 	
 }

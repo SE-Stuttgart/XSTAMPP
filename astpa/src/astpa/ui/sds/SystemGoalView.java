@@ -443,7 +443,7 @@ public class SystemGoalView extends CommonTableView {
 	}
 	
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		this.exportAsCSV(this.dataInterface.getAllSystemGoals());
 		return true;
 	}

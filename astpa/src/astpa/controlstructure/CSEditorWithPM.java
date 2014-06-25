@@ -123,4 +123,8 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		this.viewLocation = view;
 	}
 	
+	@Override
+	public boolean triggerExport(String path) {
+		return this.printStructure(path,Messages.ExportCSwithPM, Messages.ExportingCSwithPM);
+	}
 }

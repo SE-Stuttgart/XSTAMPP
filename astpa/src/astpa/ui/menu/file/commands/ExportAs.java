@@ -19,6 +19,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
 import astpa.ui.common.ViewContainer;
+import astpa.ui.common.ViewContainer.ExportConstants;
 
 /**
  * Handler for the export as command.
@@ -33,6 +34,6 @@ public class ExportAs extends AbstractHandler {
 		ViewContainer viewContainer =
 			(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 				.findView(ViewContainer.ID);
-		return viewContainer.openExportWizard();
+		return viewContainer.openExportWizard(ExportConstants.PDF);
 	}
 }

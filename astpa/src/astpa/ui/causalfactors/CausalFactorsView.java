@@ -358,14 +358,16 @@ public class CausalFactorsView implements IViewBase {
 	private void fillTable(List<ICausalComponent> components) {
 		for (ICausalComponent component : components) {
 			GridRow csRow = new GridRow();
-			csRow.addCell(new GridCellText(component.getText()));
-			csRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			GridCellEditor causalComp = new GridCellEditor(this.grid,component.getText());
+			causalComp.getTextEditor().setEditable(false);
+			csRow.addCell(causalComp);
+			csRow.addCell(new GridCellColored(this.grid,
 				CausalFactorsView.PARENT_BACKGROUND_COLOR));
-			csRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			csRow.addCell(new GridCellColored(this.grid,
 				CausalFactorsView.PARENT_BACKGROUND_COLOR));
-			csRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			csRow.addCell(new GridCellColored(this.grid,
 				CausalFactorsView.PARENT_BACKGROUND_COLOR));
-			csRow.addCell(new GridCellColored(this.grid.getGrid().getDisplay(),
+			csRow.addCell(new GridCellColored(this.grid,
 				CausalFactorsView.PARENT_BACKGROUND_COLOR));
 			this.grid.addRow(csRow);
 			
@@ -378,7 +380,7 @@ public class CausalFactorsView implements IViewBase {
 					this.grid, CausalFactorsView.HAZARD_ID_PREFIX));
 				
 				if (factor.getSafetyConstraint().getText().equals("")) { //$NON-NLS-1$
-					GridCellText constraintsCell = new GridCellText(""); //$NON-NLS-1$
+					GridCellText constraintsCell = new GridCellText(this.grid,""); //$NON-NLS-1$
 					constraintsCell.addCellButton(new NewButton(new Rectangle(4, 1, GridWrapper.getAddButton16()
 						.getBounds().width, GridWrapper.getAddButton16().getBounds().height), GridWrapper
 						.getAddButton16(), factor));
@@ -433,9 +435,12 @@ public class CausalFactorsView implements IViewBase {
 		}
 	}
 
+	/**
+	 * please use the CausalFactorsTable Wizard for he export function
+	 */
 	@Override
-	public boolean triggerExport() {
-		// TODO Auto-generated method stub
+	public boolean triggerExport(String path) {
+		// not used in this view
 		return false;
 	}
 }

@@ -154,7 +154,11 @@ public class CSEditor extends CSAbstractEditor {
 	public void setViewport(Viewport view) {
 		this.viewLocation = view;
 	}
-
+	
+	@Override
+	public boolean triggerExport(String path) {
+		return this.printStructure(path,Messages.ExportCS, Messages.ExportingCS);
+	}
 
 	
 }

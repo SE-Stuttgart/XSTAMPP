@@ -103,4 +103,9 @@ public interface IPreferenceConstants {
 	 */
 	String UPDATE_LINK = "updateLink"; //$NON-NLS-1$
 	
+	/**
+	 * Constant for the project name.
+	 */
+	String PROJECT_NAME = "projectName"; //$NON-NLS-1$
+	
 }

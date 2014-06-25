@@ -157,6 +157,9 @@ public class GridCellEditor extends GridCellComposite {
 	
 	@Override
 	public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
+		if(this.isDisposed()){
+			return;
+		}
 		this.compositeArea.setBounds(0, 0, renderer.getDrawBounds().width - 1, renderer.getDrawBounds().height);
 		
 		if (this.hasFocus) {
@@ -190,6 +193,9 @@ public class GridCellEditor extends GridCellComposite {
 		
 		// lower limit
 		int minHeight = AbstractGridCell.DEFAULT_CELL_HEIGHT * 2;
+		if(this.description.isDisposed()){
+			return minHeight;
+		}
 		int textSize = this.description.getSize().x;
 		if (textSize == 0) {
 			this.description.setSize(new Point((this.grid.getGrid().getColumn(1).getWidth() - 33), 0));
@@ -235,8 +241,10 @@ public class GridCellEditor extends GridCellComposite {
 	 * 
 	 * @return the text editor.
 	 */
-	protected Text getTextEditor() {
+	public Text getTextEditor() {
+		
 		return this.description;
 	}
+	
 	
 }

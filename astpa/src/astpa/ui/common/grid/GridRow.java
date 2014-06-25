@@ -137,6 +137,7 @@ public class GridRow {
 	public int getPreferredHeight() {
 		int height = 0;
 		for (int cellI = 0; cellI < this.cells.size(); cellI++) {
+			
 			int cellHeight = this.cells.get(cellI).getPreferredHeight();
 			height = Math.max(height, cellHeight);
 		}

@@ -13,6 +13,10 @@
 
 package astpa;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import messages.Messages;
 
 import org.apache.log4j.Logger;
@@ -27,6 +31,10 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
+import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
+import org.eclipse.ui.wizards.IWizardCategory;
+import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.osgi.framework.ServiceReference;
 
 import astpa.ui.common.ViewContainer;
@@ -69,6 +77,20 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	}
 	
 	@Override
+	public void postWindowOpen() {
+		
+		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)PlatformUI.getWorkbench().getNewWizardRegistry();
+		IWizardCategory[] categories = PlatformUI.getWorkbench().getExportWizardRegistry().getRootCategory().getCategories();
+		for(IWizardDescriptor wizard : getAllWizards(categories)){
+			
+		    if(wizard.getCategory().getId().matches("org.eclipse.ui.Basic")){
+		    
+		        WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+		        wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
+		    }
+		}
+	}
+	@Override
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = this.getWindowConfigurer();
 		configurer.setInitialSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
@@ -76,8 +98,18 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setShowStatusLine(true);
 		configurer.setShowProgressIndicator(true);
 		configurer.setTitle(Messages.ASTPA);
-	}
+		
 	
+	}
+
+private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
+  List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
+  for(IWizardCategory wizardCategory : categories){
+    results.addAll(Arrays.asList(wizardCategory.getWizards()));
+    results.addAll(Arrays.asList(getAllWizards(wizardCategory.getCategories())));
+  }
+  return results.toArray(new IWizardDescriptor[0]);
+}
 	@Override
 	public void postWindowCreate() {
 		super.postWindowCreate();

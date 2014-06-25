@@ -13,11 +13,15 @@
 
 package astpa.ui.common.grid;
 
+
 import java.util.UUID;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
@@ -29,10 +33,10 @@ import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
  * @author Patrick Wickenhaeuser
  * 
  */
-public class GridCellText extends AbstractGridCell {
+public class GridCellText extends GridCellComposite{
 	
-	private String text;
-	
+	private Text text;
+	private Composite textComp;
 	private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0, 0, 0);
 	
 	
@@ -43,7 +47,7 @@ public class GridCellText extends AbstractGridCell {
 	 * 
 	 */
 	public GridCellText() {
-		this.text= "NONE"; //$NON-NLS-1$
+		this(null,"NONE");
 	}
 	
 	/**
@@ -54,31 +58,46 @@ public class GridCellText extends AbstractGridCell {
 	 * @param text the intial text in the cell.
 	 * 
 	 */
-	public GridCellText(String text) {
-		this.text=text;
+	public GridCellText(GridWrapper grid,String text) {
+		super(grid,SWT.FILL);
+		this.textComp= new Composite(this, SWT.FILL);
+		this.textComp.setLayout(new FillLayout(SWT.HORIZONTAL));
+		this.text= new Text(this.textComp, SWT.WRAP);
+		this.text.setText(text);
+		this.text.pack();
+		this.textComp.setVisible(true);
+		this.text.setEditable(false);
 	}
 	
 	@Override
 	public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
-		super.paint(renderer, gc, item);
-		Color bgColor = gc.getBackground();
-		
-		Rectangle bounds = renderer.getDrawBounds();
-		
-		gc.setBackground(this.getBackgroundColor(renderer, gc));
-		
+//		super.paint(renderer, gc, item);
+//		Color bgColor = gc.getBackground();
+//		
+//		Rectangle bounds = renderer.getDrawBounds();
+//		
+//		gc.setBackground(this.getBackgroundColor(renderer, gc));
+//		
 		Color fgColor = gc.getForeground();
 		gc.setForeground(TEXT_COLOR);
-		gc.drawString(this.text, bounds.x + 2, bounds.y);
+		this.textComp.setBounds(0,0,renderer.getDrawBounds().width,renderer.getDrawBounds().height);
+		this.text.setBackground(this.getBackgroundColor(renderer, gc));
+		this.setBounds(renderer.getDrawBounds());
+		
+//		for(int i=0;i<lines.length;i++){
+//			gc.drawString(lines[i], bounds.x + 2,
+//					      bounds.y+ i*this.text.getLineHeight());
+//			System.out.println(i);
+//		}
 		
 		// restore bg color
-		gc.setBackground(bgColor);
+//		gc.setBackground(bgColor);
 		// restore fg color
-		gc.setForeground(fgColor);
+//		gc.setForeground(fgColor);
 	}
 	
 	protected void setText(String text) {
-		this.text= text;
+		this.text.setText(text);
 	}
 	
 	@Override
@@ -91,16 +110,7 @@ public class GridCellText extends AbstractGridCell {
 		return AbstractGridCell.DEFAULT_CELL_HEIGHT;
 	}
 	
-	@Override
-	public void addCellButton(CellButton button) {
-		this.getButtonContainer().addCellButton(button);
-	}
-	
-	@Override
-	public void clearCellButtons() {
-		this.getButtonContainer().clearButtons();
-	}
-	
+
 	@Override
 	public UUID getUUID() {
 		return null;

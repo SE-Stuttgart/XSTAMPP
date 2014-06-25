@@ -441,7 +441,7 @@ public class ControlActionView extends CommonTableView {
 	}
 	
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		this.exportAsCSV(this.dataInterface.getAllControlActions());
 		return true;
 	}

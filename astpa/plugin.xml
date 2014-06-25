@@ -105,12 +105,6 @@
                   style="push"
                   tooltip="Save file as...">
             </command>
-            <command
-                  commandId="astpa.exportas"
-                  label="Export As..."
-                  style="push"
-                  tooltip="Save file as...">
-            </command>
             <separator
                   name="Separator 2"
                   visible="true">
@@ -120,6 +114,10 @@
                   label="Exit Application"
                   style="push"
                   tooltip="Exits the application">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.export"
+                  style="push">
             </command>
          </menu>
          <menu
@@ -204,6 +202,10 @@
             </with>
          </enabledWhen>
       </handler>
+      <handler
+            class="astpa.ui.menu.file.commands.ExportUCATable"
+            commandId="astpa.ExportUCATable">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -253,6 +255,10 @@
             defaultHandler="astpa.ui.menu.file.commands.Preferences"
             id="astpa.preferencepage"
             name="Preferences">
+      </command>
+      <command
+            id="astpa.ExportUCATable"
+            name="export Table">
       </command>
    </extension>
    
@@ -320,10 +326,85 @@
 </extension>
 <extension
       point="org.eclipse.ui.exportWizards">
+   <category
+         id="astpa.mainCategory"
+         name="STPA">
+   </category>
+   <category
+         id="astpa.steps"
+         name="Steps">
+   </category>
    <wizard
-         class="astpa.export.ExportWizard"
+         category="astpa.mainCategory"
+         class="astpa.export.PdfExportWizard"
+         icon="icons/Logo_small.png"
          id="astpa.wizardExport"
-         name="ExportWizard">
+         name="PDF Report">
+      <description>
+         The whole STPA Analysis in as PDF Report
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.UCATableExportWizard"
+         icon="icons/buttons/navigation/STEP2_2.png"
+         id="astpa.wizard2_2"
+         name="2.2 Unsafe Control Actions Table">
+      <description>
+         The Unsafe Control Actions Table as single Export , provided as PNG
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.CausalFactorsTableWizard"
+         icon="icons/buttons/navigation/STEP3_2.png"
+         id="astpa.3_2"
+         name="3.2 Causal Factors Table">
+      <description>
+         The Causal Factors Table as single Export , provided as PNG
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.ControlStructureWizard"
+         icon="icons/buttons/navigation/STEP1_8.png"
+         id="astpa.wizard1_8"
+         name="1.8 Control Structure">
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.SafetyConstraintsWizard"
+         icon="icons/buttons/navigation/STEP1_5.png"
+         id="astpa.wizard1_5"
+         name="1.5 Safety Constraints">
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.AccidentsWizard"
+         icon="icons/buttons/navigation/STEP1_2.png"
+         id="astpa.wizard1_2"
+         name="1.2 Accidents">
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.HazardsWizard"
+         icon="icons/buttons/navigation/STEP1_3.png"
+         id="astpa.wizard1_3"
+         name="1.3 Hazards">
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.SystemGoalsWizard"
+         icon="icons/buttons/navigation/STEP1_6.png"
+         id="astpa.wizard1_6"
+         name="1.6 System Goals">
+   </wizard>
+   <wizard
+         category="astpa.steps"
+         class="astpa.export.ControlActionsWizard"
+         icon="icons/buttons/navigation/STEP2_1.png"
+         id="astpa.wizard2_1"
+         name="2.1 Control Actions">
    </wizard>
 </extension>
 

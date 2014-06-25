@@ -356,7 +356,7 @@ public class CSCView implements IViewBase {
 
 
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		// TODO Auto-generated method stub
 		return false;
 	}

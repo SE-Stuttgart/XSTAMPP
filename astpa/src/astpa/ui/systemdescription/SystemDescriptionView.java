@@ -20,6 +20,7 @@ import java.util.Observable;
 
 import messages.Messages;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -143,6 +144,7 @@ public class SystemDescriptionView implements IViewBase {
 		}
 	}
 	
+	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 	
 	/**
 	 * Display current caret and line number.
@@ -264,6 +266,7 @@ public class SystemDescriptionView implements IViewBase {
 	 */
 	private void applyProjectNameToDataModel() {
 		this.dataInterface.setProjectName(this.projectNameText.getText());
+		this.store.setValue(IPreferenceConstants.PROJECT_NAME, this.projectNameText.getText());
 	}
 	
 	/**
@@ -1489,7 +1492,7 @@ public class SystemDescriptionView implements IViewBase {
 	}
 
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		// TODO Auto-generated method stub
 		return false;
 	}

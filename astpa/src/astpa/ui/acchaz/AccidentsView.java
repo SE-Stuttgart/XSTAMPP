@@ -471,7 +471,7 @@ public class AccidentsView extends CommonTableView {
 	}
 
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		this.exportAsCSV(this.dataInterface.getAllAccidents());
 		return true;
 	}

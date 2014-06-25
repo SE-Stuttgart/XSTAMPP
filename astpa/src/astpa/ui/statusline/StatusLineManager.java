@@ -162,7 +162,7 @@ public final class StatusLineManager implements IViewBase {
 	}
 
 	@Override
-	public boolean triggerExport() {
+	public boolean triggerExport(String path) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -421,9 +421,25 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String ExportingPdf;
 	@SuppressWarnings("javadoc")
+	public static String ExportingCS;
+	@SuppressWarnings("javadoc")
+	public static String ExportingCSwithPM;
+	@SuppressWarnings("javadoc")
+	public static String ExportingUCATable;
+	@SuppressWarnings("javadoc")
+	public static String ExportingCFTable;
+	@SuppressWarnings("javadoc")
 	public static String Export;
 	@SuppressWarnings("javadoc")
 	public static String ExportPdf;
+	@SuppressWarnings("javadoc")
+	public static String ExportCS;
+	@SuppressWarnings("javadoc")
+	public static String ExportCSwithPM;
+	@SuppressWarnings("javadoc")
+	public static String ExportUCATable;
+	@SuppressWarnings("javadoc")
+	public static String ExportCFTable;
 	@SuppressWarnings("javadoc")
 	public static String ExportPreferences;
 	@SuppressWarnings("javadoc")

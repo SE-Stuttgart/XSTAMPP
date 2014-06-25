@@ -39,6 +39,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -51,39 +52,35 @@ import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
+import org.apache.fop.area.AreaTreeModel;
+import org.apache.fop.area.AreaTreeParser;
+import org.apache.fop.area.Span;
 import org.apache.log4j.Logger;
-import org.apache.xmlgraphics.util.MimeConstants;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -94,7 +91,8 @@ import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSEditorWithPM;
 import astpa.controlstructure.IControlStructureEditor;
-import astpa.export.ExportWizard;
+import astpa.export.PdfExportWizard;
+import astpa.export.UCATableExportWizard;
 import astpa.model.DataModelController;
 import astpa.model.ObserverValue;
 import astpa.preferences.IPreferenceConstants;
@@ -168,7 +166,20 @@ public class ViewContainer extends ViewPart {
 	
 	private boolean initCSWithProcessModel;
 	
-	
+	public enum ExportConstants{
+		/**
+		 * Enum value for the Pdf Export
+		 * 
+		 * @author Lukas Balzer
+		 */
+		PDF,
+		
+		/**
+		 * Enum constant for exporting the UCA tabel
+		 * @author Lukas Balzer
+		 */
+		UCA_TABLE;
+	}
 	/**
 	 * Class used to manage references to views.
 	 * 
@@ -241,7 +252,7 @@ public class ViewContainer extends ViewPart {
 		 *
 		 */
 		public void export(){
-			if(!this.viewInstance.triggerExport()){
+			if(!this.viewInstance.triggerExport("")){
 				String msg= "Sorry but there's no Export available for" + this.getTitle();
 				MessageDialog.openInformation(PlatformUI.createDisplay().getActiveShell(), "No Export Available", msg);
 			}
@@ -816,24 +827,66 @@ public class ViewContainer extends ViewPart {
 	 * @return boolean true
 	 * 
 	 */
-	public boolean openExportWizard() {
+	public boolean openExportWizard(ExportConstants type) {
+		Wizard wizard = null;
+		switch(type){
+		case PDF:
+			wizard = new PdfExportWizard(
+					this.dataModelController.getProjectName());
+			break;
+		case UCA_TABLE:
+			wizard = new UCATableExportWizard();
+			break;
+		}
 		// call wizard
 		WizardDialog dialog =
-			new WizardDialog(this.parentComposite.getShell(), new ExportWizard(
-				this.dataModelController.getProjectName()));
+			new WizardDialog(this.parentComposite.getShell(), wizard);
 		dialog.open();
 		return true;
+	}
+	
+	
+	/**
+	 * Exports the PDF document.
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param filePath String
+	 * @return whether exporting succeeded.
+	 */
+	public boolean export(String filePath){
+		return export(filePath, org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, "/fopxsl.xsl",false);//$NON-NLS-1$
+	}
+			
+	/**
+	 * calls the Export function in the given view.
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param filePath String
+	 * @param viewId specifies the view for which the export should be triggered
+	 * @return whether exporting succeeded.
+	 */
+	public boolean exportView(String filePath,String viewId){
+		IViewReference viewRef;
+		
+		viewRef = this.initializedViews.get(viewId);
+		return viewRef.viewInstance.triggerExport(filePath);
+	
 	}
 	
 	/**
 	 * Exports the PDF document.
 	 * 
-	 * @author Sebastian Sieber
+	 * @author Sebastian Sieber,Lukas Balzer
 	 * 
 	 * @param filePath String
+	 * @param xslName the name of the file in which the xsl file is stored which should be used
+	 * @param type the file type which shall be exported
+	 * @param asOne true if all content shall be exported on a single page
 	 * @return whether exporting succeeded.
 	 */
-	public boolean export(String filePath) {
+	public boolean export(String filePath,String type,String xslName, boolean asOne) {
 		this.dataModelController.prepareForExport();
 		// put the xml jaxb content into an output stream
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -854,7 +907,7 @@ public class ViewContainer extends ViewPart {
 		}
 		this.dataModelController.prepareForSave();
 		// start the job, that exports the pdf from the JAXB stream
-		Job exportJob = new ExportJob(Messages.ExportingPdf, filePath, outStream);
+		Job exportJob = new ExportJob(Messages.ExportingPdf, filePath, outStream,type,xslName,asOne);
 		exportJob.schedule();
 		exportJob.addJobChangeListener(new ExportJobChangeAdapter());
 		return true;
@@ -1012,26 +1065,35 @@ public class ViewContainer extends ViewPart {
  */
 class ExportJob extends Job {
 	
+	private static final float MP_TO_INCH = 72270f;
 	private static final Logger LOGGER = Logger.getRootLogger();
 	private String filePath;
 	private ByteArrayOutputStream outStream;
-	
+	private final  String fileType;
+	private final String xslName;
+	private final boolean asOne;
 	
 	/**
 	 * Constructor of the export job
 	 * 
-	 * @author Fabian Toth
+	 * @author Fabian Toth, Lukas Balzer
 	 * 
 	 * @param name the name of the job
 	 * @param filePath the path to the pdf file
-	 * @param outStream the xml as stream
+	 * @param outStream the haz-xml as stream
+	 * @param xslName the name of the file in which the xsl file is stored which should be used
+	 * @param type the file type which shall be exported
+	 * @param asOne true if all content shall be exported on a single page
 	 */
-	public ExportJob(String name, String filePath, ByteArrayOutputStream outStream) {
+	public ExportJob(String name, String filePath, ByteArrayOutputStream outStream, String type, String xslName, boolean asOne) {
 		super(name);
 		this.filePath = filePath;
 		this.outStream = outStream;
+		this.fileType = type;
+		this.xslName = xslName;
+		this.asOne = asOne;
 	}
-	
+	 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.ExportPdf, IProgressMonitor.UNKNOWN);
@@ -1041,16 +1103,22 @@ class ExportJob extends Job {
 		
 		ByteArrayOutputStream pdfoutStream = new ByteArrayOutputStream();
 		
-		StreamSource source = new StreamSource(new ByteArrayInputStream(this.outStream.toByteArray()));
+		
+		StreamSource informationSource = new StreamSource(new ByteArrayInputStream(this.outStream.toByteArray()));
+		
+		/**
+		 * the xslfoTransormer is beeing related to the xsl which describes the pdf export
+		 */
 		Transformer xslfoTransformer;
 		try {
-			URL xslUrl = this.getClass().getResource("/fopxsl.xsl"); //$NON-NLS-1$
+			URL xslUrl = this.getClass().getResource(this.xslName);
 			
 			if (xslUrl == null) {
 				ExportJob.LOGGER.error("Fop xsl file not found"); //$NON-NLS-1$
 				return Status.CANCEL_STATUS;
 			}
-			StreamSource transformSource = new StreamSource(xslUrl.openStream());
+			
+			StreamSource transformXSLSource = new StreamSource(xslUrl.openStream());
 			
 			File pdfFile = new File(this.filePath);
 			if (!pdfFile.exists()) {
@@ -1058,27 +1126,67 @@ class ExportJob extends Job {
 			}
 			
 			TransformerFactory transfact = TransformerFactory.newInstance();
+			transfact.setURIResolver(
+			        new URIResolver() {
+			            @Override
+						public Source resolve(String href, String base) {
+			                return new StreamSource(this.getClass().getClassLoader().getResourceAsStream("/"+href)); //$NON-NLS-1$
+			            }
+			        });
+			xslfoTransformer = transfact.newTransformer(transformXSLSource);
 			
-			xslfoTransformer = transfact.newTransformer(transformSource);
 			try (OutputStream out = new BufferedOutputStream(new FileOutputStream(pdfFile));
 				FileOutputStream str = new FileOutputStream(pdfFile);) {
+				if(this.asOne){
+					fopFactory.setPageHeight(getFirstDocumentSpan(xslfoTransformer));
+				}
+		        
 				Fop fop;
-				fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, pdfoutStream);
+				fop = fopFactory.newFop(this.fileType, foUserAgent, pdfoutStream);
 				Result res = new SAXResult(fop.getDefaultHandler());
 				
-				xslfoTransformer.transform(source, res);
+				//transform the informationSource with the transformXSLSource
+				xslfoTransformer.transform(informationSource, res);
+				
 				str.write(pdfoutStream.toByteArray());
 				str.close();
-				
 				if (pdfFile.exists()) {
 					if (Desktop.isDesktopSupported()) {
 						Desktop.getDesktop().open(pdfFile);
 					}
 				}
-			}
-		} catch (IOException | FOPException | TransformerException e) {
+			} 
+		} catch (SAXException | IOException | TransformerException e) {
 			return Status.CANCEL_STATUS;
 		}
 		return Status.OK_STATUS;
+	}
+	
+	private String getFirstDocumentSpan(Transformer xslTransformer)
+		throws TransformerException, FOPException{
+		FopFactory fopFactory = FopFactory.newInstance();
+		FOUserAgent userAgent = fopFactory.newFOUserAgent();
+		StreamSource informationSource = new StreamSource(new ByteArrayInputStream(this.outStream.toByteArray()));	
+		ByteArrayOutputStream areaTreeStream = new ByteArrayOutputStream();
+		Fop fop;
+		
+		//creae a new fop as areaTree
+		fop = fopFactory.newFop(MimeConstants.MIME_FOP_AREA_TREE, userAgent, areaTreeStream);
+		Result areaTreeResult = new SAXResult(fop.getDefaultHandler());
+	
+		//transform the informationSource with the transformXSLSource
+		//the areaTreeResult is a complete description of the export dokument
+		xslTransformer.transform(informationSource, areaTreeResult);
+		
+		StreamSource treeSource= new StreamSource(new ByteArrayInputStream(areaTreeStream.toByteArray()));
+		
+		AreaTreeModel treeModel=new AreaTreeModel();
+		AreaTreeParser areaTreeParser= new AreaTreeParser();
+		areaTreeParser.parse(treeSource, treeModel, userAgent);
+		Span span=(Span) treeModel.getCurrentPageSequence().getPage(0).getBodyRegion().getMainReference().getSpans().get(0);
+		float pageHeight= span.getBPD()/MP_TO_INCH;
+		return Float.toString(pageHeight) + "in";//$NON-NLS-1$
+		
+		
 	}
 }
