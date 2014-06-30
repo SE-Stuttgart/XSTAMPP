@@ -105,6 +105,10 @@
                   style="push"
                   tooltip="Save file as...">
             </command>
+            <command
+                  commandId="org.eclipse.ui.file.export"
+                  style="push">
+            </command>
             <separator
                   name="Separator 2"
                   visible="true">
@@ -114,10 +118,6 @@
                   label="Exit Application"
                   style="push"
                   tooltip="Exits the application">
-            </command>
-            <command
-                  commandId="org.eclipse.ui.file.export"
-                  style="push">
             </command>
          </menu>
          <menu
@@ -296,14 +296,14 @@
          sequence="M1+M2+S">
    </key>
    <key
-         commandId="astpa.exportas"
-         schemeId="bindingscheme"
-         sequence="M1+E">
-   </key>
-   <key
          commandId="astpa.exit"
          schemeId="bindingscheme"
          sequence="M1+Q">
+   </key>
+   <key
+         commandId="org.eclipse.ui.file.export"
+         schemeId="bindingscheme"
+         sequence="M1+E">
    </key>
 </extension>
 <extension
@@ -328,15 +328,19 @@
       point="org.eclipse.ui.exportWizards">
    <category
          id="astpa.mainCategory"
-         name="STPA">
+         name="STPA Report">
    </category>
    <category
-         id="astpa.steps"
-         name="Steps">
+         id="astpa.stepData"
+         name="STPA Data Sheets">
+   </category>
+   <category
+         id="astpa.stepImages"
+         name="STPA Images">
    </category>
    <wizard
          category="astpa.mainCategory"
-         class="astpa.export.PdfExportWizard"
+         class="astpa.export.stepImages.PdfExportWizard"
          icon="icons/Logo_small.png"
          id="astpa.wizardExport"
          name="PDF Report">
@@ -345,66 +349,116 @@
       </description>
    </wizard>
    <wizard
-         category="astpa.steps"
-         class="astpa.export.UCATableExportWizard"
+         category="astpa.stepData"
+         class="astpa.export.stepData.AccidentsWizard"
+         icon="icons/buttons/navigation/STEP1_2.png"
+         id="astpa.wizard1_2data"
+         name="Accidents">
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.HazardsWizard"
+         icon="icons/buttons/navigation/STEP1_3.png"
+         id="astpa.wizard1_3data"
+         name="Hazards">
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.DesignRequirementsWizard"
+         icon="icons/buttons/navigation/STEP1_7.png"
+         id="astpa.wizard1_7data"
+         name="Design Requirements">
+   </wizard>
+   <wizard
+         category="astpa.stepImages"
+         class="astpa.export.stepImages.ControlStructureWizard"
+         icon="icons/buttons/navigation/STEP1_8.png"
+         id="astpa.wizard1_8"
+         name="Control Structure">
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.ControlActionsWizard"
+         icon="icons/buttons/navigation/STEP2_1.png"
+         id="astpa.wizard2_1data"
+         name="Control Actions">
+   </wizard>
+   <wizard
+         category="astpa.stepImages"
+         class="astpa.export.stepImages.UCATableExportWizard"
          icon="icons/buttons/navigation/STEP2_2.png"
          id="astpa.wizard2_2"
-         name="2.2 Unsafe Control Actions Table">
+         name="Unsafe Control Actions Table">
       <description>
          The Unsafe Control Actions Table as single Export , provided as PNG
       </description>
    </wizard>
    <wizard
-         category="astpa.steps"
-         class="astpa.export.CausalFactorsTableWizard"
+         category="astpa.stepData"
+         class="astpa.export.stepData.CSCWizard"
+         icon="icons/buttons/navigation/STEP2_3.png"
+         id="astpa.wizard2_3data"
+         name="Corresponding Safety Constraints">
+   </wizard>
+   <wizard
+         category="astpa.stepImages"
+         class="astpa.export.stepImages.ControlStructureWithPMWizard"
+         icon="icons/buttons/navigation/STEP3_1.png"
+         id="astpa.wizard3_1"
+         name="ControlStructure With Process Model">
+   </wizard>
+   <wizard
+         category="astpa.stepImages"
+         class="astpa.export.stepImages.CausalFactorsTableWizard"
          icon="icons/buttons/navigation/STEP3_2.png"
          id="astpa.3_2"
-         name="3.2 Causal Factors Table">
+         name="Causal Factors Table">
       <description>
          The Causal Factors Table as single Export , provided as PNG
       </description>
    </wizard>
    <wizard
-         category="astpa.steps"
-         class="astpa.export.ControlStructureWizard"
-         icon="icons/buttons/navigation/STEP1_8.png"
-         id="astpa.wizard1_8"
-         name="1.8 Control Structure">
-   </wizard>
-   <wizard
-         category="astpa.steps"
-         class="astpa.export.SafetyConstraintsWizard"
+         category="astpa.stepData"
+         class="astpa.export.stepData.SafetyConstraintsWizard"
          icon="icons/buttons/navigation/STEP1_5.png"
-         id="astpa.wizard1_5"
-         name="1.5 Safety Constraints">
+         id="astpa.wizard1_5data"
+         name="Safety Constraints">
+      <selection
+            class="astpa.Selection1">
+      </selection>
    </wizard>
    <wizard
-         category="astpa.steps"
-         class="astpa.export.AccidentsWizard"
-         icon="icons/buttons/navigation/STEP1_2.png"
-         id="astpa.wizard1_2"
-         name="1.2 Accidents">
-   </wizard>
-   <wizard
-         category="astpa.steps"
-         class="astpa.export.HazardsWizard"
-         icon="icons/buttons/navigation/STEP1_3.png"
-         id="astpa.wizard1_3"
-         name="1.3 Hazards">
-   </wizard>
-   <wizard
-         category="astpa.steps"
-         class="astpa.export.SystemGoalsWizard"
+         category="astpa.stepData"
+         class="astpa.export.stepData.SystemGoalsWizard"
          icon="icons/buttons/navigation/STEP1_6.png"
-         id="astpa.wizard1_6"
-         name="1.6 System Goals">
+         id="astpa.wizard1_6data"
+         name="System Goals">
    </wizard>
    <wizard
-         category="astpa.steps"
-         class="astpa.export.ControlActionsWizard"
-         icon="icons/buttons/navigation/STEP2_1.png"
-         id="astpa.wizard2_1"
-         name="2.1 Control Actions">
+         category="astpa.stepData"
+         class="astpa.export.stepData.UnsafeControlActionsDataWizard"
+         icon="icons/buttons/navigation/STEP2_2.png"
+         id="astpa.wizard2_2data"
+         name="Unsafe Control Actions Table">
+      <description>
+         The Unsafe Control Actions Table as single Export , provided as PNG
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.CausalFactorsDataWizard"
+         icon="icons/buttons/navigation/STEP3_2.png"
+         id="astpa.wizard3_2data"
+         name="Causal Factors Table">
+      <description>
+         The Causal Factors Table as single Export , provided as PNG
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.STPAdataWizard"
+         id="astpa.datawizard"
+         name="Default Data">
    </wizard>
 </extension>
 

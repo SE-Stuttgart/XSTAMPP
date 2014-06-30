@@ -23,6 +23,9 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -71,14 +74,22 @@ public class PdfExportPage extends AbstractExportPage {
 	
 	@Override
 	public void createControl(Composite parent) {
+		FormData data;
 		this.container = new Composite(parent, SWT.NONE);
-		this.container.setLayout(null);
-		Label labelCompany = new Label(this.container, SWT.NONE);
-		labelCompany.setBounds(LABEL_COLUMN, 8, 55, 15);
+		this.container.setLayout(new FormLayout());
+		
+		Composite labelComposite= new Composite(this.container, SWT.NONE);
+		data=new FormData();
+		data.top = new FormAttachment(COMPONENT_OFFSET);
+		data.height = 25;
+		labelComposite.setLayoutData(data);
+		labelComposite.setLayout(null);
+		Label labelCompany = new Label(labelComposite, SWT.NONE);
+		labelCompany.setBounds(LABEL_COLUMN, 0, 55, 15);
 		labelCompany.setText(Messages.Company);
 		
-		this.textCompany = new Text(this.container, SWT.BORDER | SWT.SINGLE);
-		this.textCompany.setBounds(127, 5, 345, 21);
+		this.textCompany = new Text(labelComposite, SWT.BORDER | SWT.SINGLE);
+		this.textCompany.setBounds(127, 0, 345, 21);
 		
 		String companyName = this.store.getString(IPreferenceConstants.COMPANY_NAME);
 		if (companyName != null) {
@@ -88,12 +99,17 @@ public class PdfExportPage extends AbstractExportPage {
 			this.textCompany.setText(""); //$NON-NLS-1$
 		}
 		
-		Label labelLogo = new Label(this.container, SWT.NONE);
-		labelLogo.setBounds(LABEL_COLUMN, 34, 107, 15);
+		Composite logoComposite= new Composite(this.container, SWT.NONE);
+		data=new FormData();
+		data.top = new FormAttachment(labelComposite,COMPONENT_OFFSET);
+		logoComposite.setLayoutData(data);
+		logoComposite.setLayout(null);
+		Label labelLogo = new Label(logoComposite, SWT.NONE);
+		labelLogo.setBounds(LABEL_COLUMN, 0, 107, 15);
 		labelLogo.setText(Messages.Logo);
 		
-		this.textLogo = new Text(this.container, SWT.BORDER | SWT.SINGLE);
-		this.textLogo.setBounds(127, 31, 297, 21);
+		this.textLogo = new Text(logoComposite, SWT.BORDER | SWT.SINGLE);
+		this.textLogo.setBounds(127, 0, 297, 21);
 		this.textLogo.setEditable(false);
 		
 		String companyLogo = this.store.getString(IPreferenceConstants.COMPANY_LOGO);
@@ -104,8 +120,8 @@ public class PdfExportPage extends AbstractExportPage {
 			this.textLogo.setText(""); //$NON-NLS-1$
 		}
 		
-		this.buttonLogo = new Button(this.container, SWT.NONE);
-		this.buttonLogo.setBounds(BUTTON_COLUMN, 29, 42, 25);
+		this.buttonLogo = new Button(logoComposite, SWT.NONE);
+		this.buttonLogo.setBounds(BUTTON_COLUMN, 0, 42, 25);
 		this.buttonLogo.setText("..."); //$NON-NLS-1$
 		this.buttonLogo.addSelectionListener(new SelectionListener() {
 			
@@ -120,89 +136,28 @@ public class PdfExportPage extends AbstractExportPage {
 			}
 		});
 		
-		Label labelBackgroundColor = new Label(this.container, SWT.NONE);
-		labelBackgroundColor.setText(Messages.BackgroundColor);
-		labelBackgroundColor.setBounds(LABEL_COLUMN, 61, 107, 15);
+		ColorChooser bgChooser=new ColorChooser(this.container, SWT.NONE, Messages.BackgroundColor,
+											IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
+		data=new FormData();
+		data.top = new FormAttachment(logoComposite,COMPONENT_OFFSET);
+		data.height = 25;
+		bgChooser.setLayoutData(data);
+		bgChooser.setVisible(true);
 		
-		this.textBackgroundColor = new Text(this.container, SWT.BORDER);
-		this.textBackgroundColor.setBounds(156, 58, 268, 21);
-		this.textBackgroundColor.setEditable(false);
+		ColorChooser fontChooser=new ColorChooser(this.container, SWT.NONE,Messages.FontColor,
+				IPreferenceConstants.COMPANY_FONT_COLOR);
+		data=new FormData();
+		data.top = new FormAttachment(bgChooser,COMPONENT_OFFSET);
+		data.height = 25;
+		fontChooser.setLayoutData(data);
+		fontChooser.setVisible(true);
 		
-		String companyBackgroundColor =
-			PreferenceConverter.getColor(this.store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR).toString();
-		
-		if (companyBackgroundColor != null) {
-			this.textBackgroundColor.setText(companyBackgroundColor);
-			this.textBackgroundColor.setSelection(companyBackgroundColor.length());
-		} else {
-			this.textBackgroundColor.setText(""); //$NON-NLS-1$
-		}
-		
-		this.lbBackgroundIcon = new Label(this.container, SWT.NONE);
-		this.lbBackgroundIcon.setBounds(127, 58, 23, 23);
-		this.setLabelIcon(this.lbBackgroundIcon,
-			PreferenceConverter.getColor(this.store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR),
-			this.getBackgroundState());
-		
-		this.buttonBackgroundColor = new Button(this.container, SWT.NONE);
-		this.buttonBackgroundColor.setText("..."); //$NON-NLS-1$
-		this.buttonBackgroundColor.setBounds(BUTTON_COLUMN, 56, 42, 25);
-		this.buttonBackgroundColor.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				PdfExportPage.this.openColorDialog(PdfExportPage.this.buttonBackgroundColor,
-					PdfExportPage.this.textBackgroundColor, PdfExportPage.this.lbBackgroundIcon,
-					PdfExportPage.this.getBackgroundState());
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// no-op
-			}
-		});
-		
-		Label labelFontColor = new Label(this.container, SWT.NONE);
-		labelFontColor.setText(Messages.FontColor);
-		labelFontColor.setBounds(5, 88, 107, 15);
-		
-		this.textFontColor = new Text(this.container, SWT.BORDER);
-		this.textFontColor.setBounds(156, 85, 268, 21);
-		this.textFontColor.setEditable(false);
-		
-		String companyFontColor =
-			PreferenceConverter.getColor(this.store, IPreferenceConstants.COMPANY_FONT_COLOR).toString();
-		if (companyFontColor != null) {
-			this.textFontColor.setText(companyFontColor);
-			this.textFontColor.setSelection(companyFontColor.length());
-		} else {
-			this.textFontColor.setText(""); //$NON-NLS-1$
-		}
-		
-		this.lbFontIcon = new Label(this.container, SWT.NONE);
-		this.lbFontIcon.setBounds(127, 85, 23, 23);
-		this.setLabelIcon(this.lbFontIcon,
-			PreferenceConverter.getColor(this.store, IPreferenceConstants.COMPANY_FONT_COLOR), this.getFontState());
-		
-		this.buttonFontColor = new Button(this.container, SWT.NONE);
-		this.buttonFontColor.setText("..."); //$NON-NLS-1$
-		this.buttonFontColor.setBounds(BUTTON_COLUMN, 83, 42, 25);
-		this.buttonFontColor.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				PdfExportPage.this.openColorDialog(PdfExportPage.this.buttonFontColor, PdfExportPage.this.textFontColor,
-					PdfExportPage.this.lbFontIcon, PdfExportPage.this.getFontState());
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// no-op
-			}
-		});
 		
 		PathComposite path= new PathComposite(null,this.container, SWT.NONE);
-		path.setBounds(LABEL_COLUMN, 115, 480, 25);
+		data=new FormData();
+		data.top = new FormAttachment(fontChooser,COMPONENT_OFFSET);
+		data.height = 25;
+		path.setLayoutData(data);
 		path.setVisible(true);
 		this.textExportPath= path.getText();
 		
@@ -328,5 +283,10 @@ public class PdfExportPage extends AbstractExportPage {
 	@Override
 	public void setExportPath(String path) {
 		this.textExportPath.setText(path);
+	}
+
+	@Override
+	public boolean asOne() {
+		return false;
 	}
 }

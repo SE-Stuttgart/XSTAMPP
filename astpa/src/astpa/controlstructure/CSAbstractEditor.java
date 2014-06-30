@@ -13,9 +13,11 @@
 
 package astpa.controlstructure;
 
+import java.awt.Desktop;
 import java.awt.Event;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
@@ -822,7 +824,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		dlg.setText(Messages.ExportImage);
 		dlg.setOverwrite(true);
 		dlg.setFileName(this.getId());
-		dlg.setFilterExtensions(new String[] {"*.jpg", "*.png", ".bmp"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		dlg.setFilterExtensions(new String[] { "*.png", "*.jpg",".bmp"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String path = dlg.open();
 		
 		this.printStructure(path, "", "");
@@ -843,7 +845,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			return false;
 		}
 		
-		Job exportJob = new PrintJob(name,processName, path, imageType);
+		Job exportJob = new PrintJob(name,processName, path, imageType, getGraphicalViewer());
 		exportJob.schedule();
 		exportJob.addJobChangeListener(new JobChangeAdapter());
 		return true;
@@ -1134,13 +1136,16 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		this.updateActions(this.selectionActions);
 	}
 	
-
+}
 	
-	private class PrintJob extends Job{
+class PrintJob extends Job{
 		
+
+		private static final int IMG_EXPAND = 10;
 		private final String path;
 		private final int imageType;
 		private final String process;
+		private final GraphicalViewer viewer;
 		
 		/**
 		 * this constructor creates a new Job to print the current Control Structure
@@ -1151,24 +1156,25 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		 * @param path the path defined as a String
 		 * @param imageType The SWT constant which says in which format the img
 		 *            should be stored
+		 * @param viewer 
 		 * @see GC
 		 * @see ImageLoader
 		 * @see SWT#IMAGE_PNG
 		 * @see SWT#IMAGE_JPEG
 		 */
-		public PrintJob(String name,String process,String path, int imageType){
+		public PrintJob(String name,String process,String path, int imageType, GraphicalViewer viewer){
 			super(name);
 			this.imageType=imageType;
 			this.path=path;
 			this.process=process;
+			this.viewer=viewer;
 		}
 		
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			monitor.beginTask(this.process, IProgressMonitor.UNKNOWN);
 		
-			GraphicalViewer viewer = CSAbstractEditor.this.getGraphicalViewer();
-			ScalableRootEditPart rootEditPart = (ScalableRootEditPart) viewer.getRootEditPart();
+			ScalableRootEditPart rootEditPart = (ScalableRootEditPart) this.viewer.getRootEditPart();
 			boolean isFirst = true;
 			IFigure printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
 			
@@ -1224,9 +1230,21 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			imgLoader.data = new ImageData[] {scaledImage.getImageData()};
 			
 			imgLoader.save(this.path, this.imageType);
+			
+			
+			File imageFile= new File(this.path);
+			if (imageFile.exists()) {
+				if (Desktop.isDesktopSupported()) {
+					try {
+						Desktop.getDesktop().open(imageFile);
+					} catch (IOException e) {
+						return Status.CANCEL_STATUS;
+					}
+				}
+			}
 			return Status.OK_STATUS;
 			
 		}
-	}
+	
 }
 

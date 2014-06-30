@@ -447,7 +447,7 @@ public class SafetyConstraintView extends CommonTableView {
 	}
 	@Override
 	public boolean triggerExport(String path) {
-		this.exportAsCSV(this.dataInterface.getAllSafetyConstraints());
+		this.exportAsCSV(this.dataInterface.getAllSafetyConstraints(),path);
 		return true;
 	}
 }

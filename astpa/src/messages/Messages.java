@@ -29,15 +29,75 @@ public final class Messages extends NLS {
 	}
 	private static final String BUNDLE_NAME = "messages.messages"; //$NON-NLS-1$
 	@SuppressWarnings("javadoc")
+	public static String Accidents;
+	@SuppressWarnings("javadoc")
+	public static String AccidentsAvailableForLinking;
+	@SuppressWarnings("javadoc")
+	public static String Confirm;
+	@SuppressWarnings("javadoc")
+	public static String CantOverride;
+	@SuppressWarnings("javadoc")
+	public static String Delete_accidents;
+	@SuppressWarnings("javadoc")
+	public static String DotASTPA;
+	@SuppressWarnings("javadoc")
 	public static String DescriptionNotes;
 	@SuppressWarnings("javadoc")
-	public static String StartTyping;
+	public static String DoubleClickToEditTitle;
 	@SuppressWarnings("javadoc")
-	public static String StatusLine;
+	public static String DoYouWishToDeleteTheAccident;
 	@SuppressWarnings("javadoc")
-	public static String ThereAreUnsafedChanges;
+	public static String DeleteSystemGoals;
 	@SuppressWarnings("javadoc")
-	public static String UpdatingASTPA;
+	public static String DeleteUnsafeControlAction;
+	@SuppressWarnings("javadoc")
+	public static String DeleteUnsafeControlActions;
+	@SuppressWarnings("javadoc")
+	public static String DevelopmentTeam;
+	@SuppressWarnings("javadoc")
+	public static String DoYouWishToDeleteTheSystemGoal;
+	@SuppressWarnings("javadoc")
+	public static String ConfirmSaveAs;
+	@SuppressWarnings("javadoc")
+	public static String CurrentlyLinkedAccidents;
+	@SuppressWarnings("javadoc")
+	public static String CurrentlyLinkedHazards;
+	@SuppressWarnings("javadoc")
+	public static String DoYouReallyWantToOverwriteTheFile;
+	@SuppressWarnings("javadoc")
+	public static String ExitASTPA;
+	@SuppressWarnings("javadoc")
+	public static String ExportImage;
+	@SuppressWarnings("javadoc")
+	public static String ExportingPdf;
+	@SuppressWarnings("javadoc")
+	public static String ExportingCS;
+	@SuppressWarnings("javadoc")
+	public static String ExportingCSwithPM;
+	@SuppressWarnings("javadoc")
+	public static String ExportingUCATable;
+	@SuppressWarnings("javadoc")
+	public static String ExportingCFTable;
+	@SuppressWarnings("javadoc")
+	public static String Export;
+	@SuppressWarnings("javadoc")
+	public static String ExportPdf;
+	@SuppressWarnings("javadoc")
+	public static String ExportCS;
+	@SuppressWarnings("javadoc")
+	public static String ExportCSwithPM;
+	@SuppressWarnings("javadoc")
+	public static String ExportUCATable;
+	@SuppressWarnings("javadoc")
+	public static String ExportCFTable;
+	@SuppressWarnings("javadoc")
+	public static String ExportPreferences;
+	@SuppressWarnings("javadoc")
+	public static String GivenIncorrectly;
+	@SuppressWarnings("javadoc")
+	public static String GridCellButton_None;
+	@SuppressWarnings("javadoc")
+	public static String GridWrapper_Column;
 	@SuppressWarnings("javadoc")
 	public static String NoUpdatesForTheCurrentInstallationHaveBeenFound;
 	@SuppressWarnings("javadoc")
@@ -54,20 +114,6 @@ public final class Messages extends NLS {
 	public static String ReallyInstallUpdates;
 	@SuppressWarnings("javadoc")
 	public static String UpdateFromIDE;
-	@SuppressWarnings("javadoc")
-	public static String Accidents;
-	@SuppressWarnings("javadoc")
-	public static String AccidentsAvailableForLinking;
-	@SuppressWarnings("javadoc")
-	public static String Delete_accidents;
-	@SuppressWarnings("javadoc")
-	public static String DotASTPA;
-	@SuppressWarnings("javadoc")
-	public static String DoubleClickToEditTitle;
-	@SuppressWarnings("javadoc")
-	public static String DoYouWishToDeleteTheAccident;
-	@SuppressWarnings("javadoc")
-	public static String Confirm;
 	@SuppressWarnings("javadoc")
 	public static String PleaseConfirmTheDeletionOfTheFollowingAccidents;
 	@SuppressWarnings("javadoc")
@@ -397,57 +443,13 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String TypeHere;
 	@SuppressWarnings("javadoc")
-	public static String DeleteSystemGoals;
+	public static String StartTyping;
 	@SuppressWarnings("javadoc")
-	public static String DeleteUnsafeControlAction;
+	public static String StatusLine;
 	@SuppressWarnings("javadoc")
-	public static String DeleteUnsafeControlActions;
+	public static String ThereAreUnsafedChanges;
 	@SuppressWarnings("javadoc")
-	public static String DevelopmentTeam;
-	@SuppressWarnings("javadoc")
-	public static String DoYouWishToDeleteTheSystemGoal;
-	@SuppressWarnings("javadoc")
-	public static String ConfirmSaveAs;
-	@SuppressWarnings("javadoc")
-	public static String CurrentlyLinkedAccidents;
-	@SuppressWarnings("javadoc")
-	public static String CurrentlyLinkedHazards;
-	@SuppressWarnings("javadoc")
-	public static String DoYouReallyWantToOverwriteTheFile;
-	@SuppressWarnings("javadoc")
-	public static String ExitASTPA;
-	@SuppressWarnings("javadoc")
-	public static String ExportImage;
-	@SuppressWarnings("javadoc")
-	public static String ExportingPdf;
-	@SuppressWarnings("javadoc")
-	public static String ExportingCS;
-	@SuppressWarnings("javadoc")
-	public static String ExportingCSwithPM;
-	@SuppressWarnings("javadoc")
-	public static String ExportingUCATable;
-	@SuppressWarnings("javadoc")
-	public static String ExportingCFTable;
-	@SuppressWarnings("javadoc")
-	public static String Export;
-	@SuppressWarnings("javadoc")
-	public static String ExportPdf;
-	@SuppressWarnings("javadoc")
-	public static String ExportCS;
-	@SuppressWarnings("javadoc")
-	public static String ExportCSwithPM;
-	@SuppressWarnings("javadoc")
-	public static String ExportUCATable;
-	@SuppressWarnings("javadoc")
-	public static String ExportCFTable;
-	@SuppressWarnings("javadoc")
-	public static String ExportPreferences;
-	@SuppressWarnings("javadoc")
-	public static String GivenIncorrectly;
-	@SuppressWarnings("javadoc")
-	public static String GridCellButton_None;
-	@SuppressWarnings("javadoc")
-	public static String GridWrapper_Column;
+	public static String UpdatingASTPA;
 	@SuppressWarnings("javadoc")
 	public static String Version;
 	@SuppressWarnings("javadoc")

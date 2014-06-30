@@ -13,6 +13,10 @@
 
 package astpa.ui.sds;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Observable;
 
 import messages.Messages;
@@ -46,6 +50,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
@@ -357,7 +362,24 @@ public class CSCView implements IViewBase {
 
 	@Override
 	public boolean triggerExport(String path) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		File tableCSV = new File(path);
+		try(BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));) {
+	
+			csvWriter.write(Messages.UnsafeControlActions+" ;");
+			csvWriter.write(Messages.CorrespondingSafetyConstraints+" ;");
+			csvWriter.newLine();
+			for(ICorrespondingUnsafeControlAction data: this.dataInterface.getAllUnsafeControlActions()){
+				csvWriter.write(data.getDescription() + ";");
+				csvWriter.write(data.getCorrespondingSafetyConstraint().getText() + ";");
+				csvWriter.newLine();
+			}
+			csvWriter.close();
+		}catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	
+		return true;
 	}
 }

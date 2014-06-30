@@ -473,7 +473,7 @@ public class HazardsView extends CommonTableView {
 
 	@Override
 	public boolean triggerExport(String path) {
-		this.exportAsCSV(this.dataInterface.getAllHazards());
+		this.exportAsCSV(this.dataInterface.getAllHazards(),path);
 		return true;
 	}
 }

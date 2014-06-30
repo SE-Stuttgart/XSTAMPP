@@ -91,8 +91,9 @@ import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSEditorWithPM;
 import astpa.controlstructure.IControlStructureEditor;
-import astpa.export.PdfExportWizard;
-import astpa.export.UCATableExportWizard;
+import astpa.export.stepData.STPAdataWizard;
+import astpa.export.stepImages.PdfExportWizard;
+import astpa.export.stepImages.UCATableExportWizard;
 import astpa.model.DataModelController;
 import astpa.model.ObserverValue;
 import astpa.preferences.IPreferenceConstants;
@@ -121,6 +122,11 @@ import astpa.ui.welcome.WelcomeView;
  * 
  * @author Patrick Wickenhaeuser, Fabian Toth, Sebastian Sieber
  * 
+ */
+/**
+ *
+ * @author Lukas Balzer
+ *
  */
 public class ViewContainer extends ViewPart {
 	
@@ -824,6 +830,7 @@ public class ViewContainer extends ViewPart {
 	 * Open wizard with export values.
 	 * 
 	 * @author Sebastian Sieber
+	 * @param type 
 	 * @return boolean true
 	 * 
 	 */
@@ -863,16 +870,24 @@ public class ViewContainer extends ViewPart {
 	 * 
 	 * @author Lukas Balzer
 	 * 
-	 * @param filePath String
-	 * @param viewId specifies the view for which the export should be triggered
+	 * @param filePath
+	 *            String
+	 * @param viewIds
+	 *            specifies the view for which the export should be triggered
 	 * @return whether exporting succeeded.
 	 */
-	public boolean exportView(String filePath,String viewId){
-		IViewReference viewRef;
+	public boolean exportViewData(String filePath, String[] viewIds) {
 		
-		viewRef = this.initializedViews.get(viewId);
-		return viewRef.viewInstance.triggerExport(filePath);
-	
+		IViewReference viewRef;
+		boolean worked = true;
+		
+		for(String id: viewIds){
+			viewRef = this.initializedViews.get(id);
+			worked= viewRef.viewInstance.triggerExport(filePath);
+		}
+		
+		return worked;
+		
 	}
 	
 	/**
@@ -1055,6 +1070,23 @@ public class ViewContainer extends ViewPart {
 		this.dataModelController.updateValue(value);
 	}
 	
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return
+	 * 		a Map with the view Titles mapped to their ids
+	 */
+	public Map<String, String> getInitializedViews(){
+		Map<String,String> steps= new HashMap<>();
+		for(String tmp: this.initializedViews.keySet().toArray(new String[0])){
+			if(!tmp.equals(CSEditor.ID) && !tmp.equals(CSEditorWithPM.ID)){
+				steps.put(tmp, this.initializedViews.get(tmp).getTitle());
+			}
+		}
+		return steps;
+	}
 }
 
 /**
@@ -1189,4 +1221,6 @@ class ExportJob extends Job {
 		
 		
 	}
+	
+	
 }

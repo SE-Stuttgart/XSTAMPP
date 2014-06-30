@@ -13,12 +13,17 @@
 
 package astpa.ui.acchaz;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -569,30 +574,41 @@ public abstract class CommonTableView implements IViewBase {
 	 * @param models
 	 * 			the data which shall be exported as CSV
 	 */
-	protected void exportAsCSV(List<ITableModel> models){
-		FileDialog dlg = new FileDialog(PlatformUI.createDisplay().getActiveShell(), SWT.SAVE);
-		dlg.setText(Messages.ExportImage);
-		dlg.setOverwrite(true);
-		
-		File tableCSV = new File(dlg.open());
-		try {
-			BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));
-			
-			csvWriter.write("ID ;");
-			csvWriter.write("Name ;");
-			csvWriter.write("Description");
-			csvWriter.newLine();
-			for(ITableModel data: models){
-				csvWriter.write(data.getNumber() + ";");
-				csvWriter.write(data.getTitle() + ";");
-				csvWriter.write(data.getDescription());
+	protected void exportAsCSV(List<ITableModel> models,String filePath){
+		String line;
+		List<String> keptLines=new ArrayList<>();
+		File tableCSV = new File(filePath);
+		try(BufferedReader csvReader= new BufferedReader(new FileReader(tableCSV))){
+			while((line =csvReader.readLine()) != null){
+				keptLines.add(line);
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try(BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));) {
+			for(String tmp: keptLines){
+				csvWriter.write(tmp);
 				csvWriter.newLine();
 			}
+			csvWriter.newLine();
+			csvWriter.append("ID ;");
+			csvWriter.append("Name ;");
+			csvWriter.append("Description");
+			csvWriter.newLine();
+			for(ITableModel data: models){
+				csvWriter.append(data.getNumber() + ";");
+				csvWriter.append(data.getTitle() + ";");
+				csvWriter.append(data.getDescription());
+				csvWriter.newLine();
+			}
+			
 			csvWriter.close();
 		}catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	
 		
 	}
 	

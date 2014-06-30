@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package astpa.export;
+package astpa.export.stepImages;
 
 import messages.Messages;
 
@@ -20,6 +20,7 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.ui.PlatformUI;
 
 import astpa.export.pages.PdfExportPage;
+import astpa.export.stepData.AbstractExportWizard;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.common.ViewContainer;
 
@@ -29,7 +30,7 @@ import astpa.ui.common.ViewContainer;
  * @author Sebastian Sieber
  * 
  */
-public class PdfExportWizard extends AbstractExportWizard{
+public class PdfExportWizard extends AbstractImageExportWizard{
 	
 	
 	/**
@@ -39,6 +40,7 @@ public class PdfExportWizard extends AbstractExportWizard{
 	 */
 	public PdfExportWizard(){
 		super();
+		setFopName("/fopxsl.xsl");
 		String projectName= this.getStore().getString(IPreferenceConstants.PROJECT_NAME);
 		setExportPage(new PdfExportPage(Messages.ExportPreferences, projectName));
 	}
