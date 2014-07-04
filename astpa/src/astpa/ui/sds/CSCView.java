@@ -359,27 +359,24 @@ public class CSCView implements IViewBase {
 		}
 	}
 
+	@Override
+	public boolean writeCSVData(BufferedWriter csvWriter, char seperator) throws IOException {
+		
+		csvWriter.write(Messages.UnsafeControlActions+" ;");
+		csvWriter.write(Messages.CorrespondingSafetyConstraints+" ;");
+		csvWriter.newLine();
+		for(ICorrespondingUnsafeControlAction data: this.dataInterface.getAllUnsafeControlActions()){
+			csvWriter.write(data.getDescription() + ";");
+			csvWriter.write(data.getCorrespondingSafetyConstraint().getText() + ";");
+			csvWriter.newLine();
+		}
+		return true;
+	}
 
 	@Override
 	public boolean triggerExport(String path) {
-		
-		File tableCSV = new File(path);
-		try(BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));) {
-	
-			csvWriter.write(Messages.UnsafeControlActions+" ;");
-			csvWriter.write(Messages.CorrespondingSafetyConstraints+" ;");
-			csvWriter.newLine();
-			for(ICorrespondingUnsafeControlAction data: this.dataInterface.getAllUnsafeControlActions()){
-				csvWriter.write(data.getDescription() + ";");
-				csvWriter.write(data.getCorrespondingSafetyConstraint().getText() + ";");
-				csvWriter.newLine();
-			}
-			csvWriter.close();
-		}catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-	
-		return true;
+		// nothing to export here
+		return false;
 	}
+
 }

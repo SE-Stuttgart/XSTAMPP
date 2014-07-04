@@ -14,6 +14,8 @@
 
 package astpa.ui.causalfactors;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -441,6 +443,12 @@ public class CausalFactorsView implements IViewBase {
 	@Override
 	public boolean triggerExport(String path) {
 		// not used in this view
+		return false;
+	}
+
+	@Override
+	public boolean writeCSVData(BufferedWriter wirter, char seperator) throws IOException {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

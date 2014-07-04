@@ -13,6 +13,8 @@
 
 package astpa.ui.linking;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -781,6 +783,12 @@ public class LinkingView implements IViewBase {
 
 	@Override
 	public boolean triggerExport(String path) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean writeCSVData(BufferedWriter wirter, char seperator) throws IOException {
 		// TODO Auto-generated method stub
 		return false;
 	}

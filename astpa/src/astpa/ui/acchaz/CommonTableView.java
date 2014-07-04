@@ -573,44 +573,25 @@ public abstract class CommonTableView implements IViewBase {
 	 *
 	 * @param models
 	 * 			the data which shall be exported as CSV
+	 * @param seperator TODO
+	 * @throws IOException 
 	 */
-	protected void exportAsCSV(List<ITableModel> models,String filePath){
-		String line;
-		List<String> keptLines=new ArrayList<>();
-		File tableCSV = new File(filePath);
-		try(BufferedReader csvReader= new BufferedReader(new FileReader(tableCSV))){
-			while((line =csvReader.readLine()) != null){
-				keptLines.add(line);
-			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try(BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));) {
-			for(String tmp: keptLines){
-				csvWriter.write(tmp);
-				csvWriter.newLine();
-			}
+	protected void exportAsCSV(List<ITableModel> models,BufferedWriter csvWriter, char seperator) throws IOException{
 			csvWriter.newLine();
-			csvWriter.append("ID ;");
-			csvWriter.append("Name ;");
-			csvWriter.append("Description");
+			csvWriter.write(this.getTitle());
+			csvWriter.newLine();
+			csvWriter.write("ID ;");
+			csvWriter.write("Name ;");
+			csvWriter.write("Description");
 			csvWriter.newLine();
 			for(ITableModel data: models){
-				csvWriter.append(data.getNumber() + ";");
-				csvWriter.append(data.getTitle() + ";");
-				csvWriter.append(data.getDescription());
+				csvWriter.write(data.getNumber() + seperator);
+				csvWriter.write(data.getTitle() + seperator);
+				csvWriter.write(data.getDescription());
 				csvWriter.newLine();
 			}
-			
-			csvWriter.close();
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	
-		
 	}
+	
 	
 	
 	@Override

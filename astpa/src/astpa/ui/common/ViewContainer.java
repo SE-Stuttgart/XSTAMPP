@@ -15,12 +15,14 @@ package astpa.ui.common;
 
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
@@ -95,6 +97,7 @@ import astpa.export.stepData.STPAdataWizard;
 import astpa.export.stepImages.PdfExportWizard;
 import astpa.export.stepImages.UCATableExportWizard;
 import astpa.model.DataModelController;
+import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.acchaz.AccidentsView;
@@ -861,10 +864,25 @@ public class ViewContainer extends ViewPart {
 	 * @param filePath String
 	 * @return whether exporting succeeded.
 	 */
-	public boolean export(String filePath){
+	public boolean exportFromXSL(String filePath){
 		return export(filePath, org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, "/fopxsl.xsl",false);//$NON-NLS-1$
 	}
 			
+	/**
+	 * Exports the PDF document.
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param filePath String
+	 * @param id the if of the view which shall be exported
+	 * @return whether exporting succeeded.
+	 */
+	public boolean export(String filePath, String id){
+		IViewReference viewRef;
+		viewRef = this.initializedViews.get(id);
+	
+		return viewRef.viewInstance.triggerExport(filePath);
+	}
 	/**
 	 * calls the Export function in the given view.
 	 * 
@@ -880,10 +898,21 @@ public class ViewContainer extends ViewPart {
 		
 		IViewReference viewRef;
 		boolean worked = true;
+		String line;
+		File tableCSV = new File(filePath);
 		
-		for(String id: viewIds){
-			viewRef = this.initializedViews.get(id);
-			worked= viewRef.viewInstance.triggerExport(filePath);
+		try(BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));) {
+			for(String id: viewIds){
+				viewRef = this.initializedViews.get(id);
+				worked= viewRef.viewInstance.writeCSVData(csvWriter, ';');
+			}	
+			csvWriter.close();
+			File imageFile= new File(filePath);
+			if (imageFile.exists() && Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(imageFile);
+			}
+		}catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		return worked;

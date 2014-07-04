@@ -13,6 +13,8 @@
 
 package astpa.ui.sds;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -443,8 +445,8 @@ public class SystemGoalView extends CommonTableView {
 	}
 	
 	@Override
-	public boolean triggerExport(String path) {
-		this.exportAsCSV(this.dataInterface.getAllSystemGoals(),path);
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllSystemGoals(),writer, seperator);
 		return true;
 	}
 }

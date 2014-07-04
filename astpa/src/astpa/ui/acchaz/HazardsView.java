@@ -13,6 +13,8 @@
 
 package astpa.ui.acchaz;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -472,8 +474,8 @@ public class HazardsView extends CommonTableView {
 	}
 
 	@Override
-	public boolean triggerExport(String path) {
-		this.exportAsCSV(this.dataInterface.getAllHazards(),path);
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllHazards(),writer, seperator);
 		return true;
 	}
 }

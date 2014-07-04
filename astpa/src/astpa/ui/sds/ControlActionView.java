@@ -13,6 +13,8 @@
 
 package astpa.ui.sds;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -440,9 +442,10 @@ public class ControlActionView extends CommonTableView {
 		return commonTableType.ControlActionsView;
 	}
 	
+
 	@Override
-	public boolean triggerExport(String path) {
-		this.exportAsCSV(this.dataInterface.getAllControlActions(),path);
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllControlActions(),writer, seperator);
 		return true;
 	}
 }

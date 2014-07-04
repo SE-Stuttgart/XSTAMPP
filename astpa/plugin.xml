@@ -460,6 +460,20 @@
          id="astpa.datawizard"
          name="Default Data">
    </wizard>
+   <wizard
+         category="astpa.stepImages"
+         class="astpa.export.stepImages.SystemDecriptionWizard"
+         icon="icons/buttons/navigation/STEP1_1.png"
+         id="astpa.wizard1_1"
+         name="System Decription">
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.SystemDecriptionDataWizard"
+         icon="icons/buttons/navigation/STEP1_1.png"
+         id="astpa.wizard1_1data"
+         name="System Decription">
+   </wizard>
 </extension>
 
 </plugin>

@@ -16,6 +16,7 @@ package astpa.controlstructure;
 import java.awt.Desktop;
 import java.awt.Event;
 import java.beans.PropertyChangeEvent;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1136,6 +1137,12 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		this.updateActions(this.selectionActions);
 	}
 	
+	@Override
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+		// There's no need for any additional export as csv, use triggerExport or save
+		return false;
+	}
+	
 }
 	
 class PrintJob extends Job{
@@ -1245,6 +1252,6 @@ class PrintJob extends Job{
 			return Status.OK_STATUS;
 			
 		}
-	
+
 }
 

@@ -13,6 +13,10 @@
 
 package astpa.ui.systemdescription;
 
+import java.awt.Desktop;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +24,9 @@ import java.util.Observable;
 
 import messages.Messages;
 
+import org.eclipse.core.runtime.Status;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -46,11 +53,17 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.GlyphMetrics;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.printing.Printer;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -1493,8 +1506,57 @@ public class SystemDescriptionView implements IViewBase {
 
 	@Override
 	public boolean triggerExport(String path) {
-		// TODO Auto-generated method stub
-		return false;
+		Rectangle rect= this.descriptionText.getTextBounds(0, this.descriptionText.getText().length()-1);
+		rect.width +=10;
+		Image srcImage = new Image(null, rect);
+		GC imageGC = new GC(srcImage);
+		Graphics graphics = new SWTGraphics(imageGC);
+		if(this.descriptionText.getHorizontalBar() != null){
+			this.descriptionText.getHorizontalBar().setVisible(false);
+		}
+		if(this.descriptionText.getVerticalBar() != null){
+			this.descriptionText.getVerticalBar().setVisible(false);
+		}
+		
+		this.descriptionText.print(imageGC);
+		
+		ImageLoader imgLoader = new ImageLoader();
+		imgLoader.data = new ImageData[] {srcImage.getImageData()};
+			
+		imgLoader.save(path, SWT.IMAGE_PNG);
+			
+			
+			File imageFile= new File(path);
+			if (imageFile.exists()) {
+				if (Desktop.isDesktopSupported()) {
+					
+						try {
+							Desktop.getDesktop().open(imageFile);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					
+				}
+			}
+			if(this.descriptionText.getHorizontalBar() != null){
+				this.descriptionText.getHorizontalBar().setVisible(true);
+			}
+			if(this.descriptionText.getVerticalBar() != null){
+				this.descriptionText.getVerticalBar().setVisible(true);
+			}
+		return true;
+	}
+
+	@Override
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+
+		writer.newLine();
+		writer.write(this.getTitle() +" - "); ////$NON-NLS-1$
+		writer.write(this.dataInterface.getProjectName());
+		writer.newLine();
+		writer.write(this.dataInterface.getProjectDescription());
+		return true;
 	}
 	
 }

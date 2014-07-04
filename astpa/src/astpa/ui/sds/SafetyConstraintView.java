@@ -13,6 +13,8 @@
 
 package astpa.ui.sds;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -445,9 +447,10 @@ public class SafetyConstraintView extends CommonTableView {
 	public commonTableType getCommonTableType() {
 		return commonTableType.SafetyConstraintsView;
 	}
+	
 	@Override
-	public boolean triggerExport(String path) {
-		this.exportAsCSV(this.dataInterface.getAllSafetyConstraints(),path);
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllSafetyConstraints(),writer, seperator);
 		return true;
 	}
 }

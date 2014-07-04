@@ -19,7 +19,6 @@ import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -33,6 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
+import astpa.export.AbstractExportPage;
 import astpa.preferences.IPreferenceConstants;
 
 /**
@@ -46,12 +46,11 @@ public class PdfExportPage extends AbstractExportPage {
 
 	private Composite container;
 	private Text textCompany, textLogo, textBackgroundColor, textFontColor,textExportPath;
-	private Button buttonLogo, buttonBackgroundColor, buttonFontColor, buttonExportPath;
+	private Button buttonLogo;
 	
 	
 	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 	
-	private Label lbBackgroundIcon, lbFontIcon;
 	
 	
 	
@@ -206,7 +205,9 @@ public class PdfExportPage extends AbstractExportPage {
 		
 	
 	
-	@Override
+	/**
+	 * @return the textCompany
+	 */
 	public Text getTextCompany() {
 		return this.textCompany;
 	}
@@ -221,7 +222,9 @@ public class PdfExportPage extends AbstractExportPage {
 	}
 	
 	
-	@Override
+	/**
+	 * @return path of the Logo img
+	 */
 	public Text getTextLogo() {
 		return this.textLogo;
 	}
@@ -233,8 +236,9 @@ public class PdfExportPage extends AbstractExportPage {
 		this.textLogo = textLogo;
 	}
 	
-
-	@Override
+	/**
+	 * @return the backgroundColor as an rgb string
+	 */
 	public Text getTextBackgroundColor() {
 		return this.textBackgroundColor;
 	}
@@ -247,7 +251,9 @@ public class PdfExportPage extends AbstractExportPage {
 	}
 	
 	
-	@Override
+	/**
+	 * @return fontColor as an rgb string
+	 */
 	public Text getTextFontColor() {
 		return this.textFontColor;
 	}

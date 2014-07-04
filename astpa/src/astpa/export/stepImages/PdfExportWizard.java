@@ -13,14 +13,13 @@
 
 package astpa.export.stepImages;
 
-import messages.Messages;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
+import astpa.export.AbstractExportWizard;
 import astpa.export.pages.PdfExportPage;
-import astpa.export.stepData.AbstractExportWizard;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.common.ViewContainer;
 
@@ -30,9 +29,9 @@ import astpa.ui.common.ViewContainer;
  * @author Sebastian Sieber
  * 
  */
-public class PdfExportWizard extends AbstractImageExportWizard{
+public class PdfExportWizard extends AbstractExportWizard{
 	
-	
+	private final PdfExportPage page;
 	/**
 	 *
 	 * @author Lukas Balzer
@@ -40,9 +39,9 @@ public class PdfExportWizard extends AbstractImageExportWizard{
 	 */
 	public PdfExportWizard(){
 		super();
-		setFopName("/fopxsl.xsl");
 		String projectName= this.getStore().getString(IPreferenceConstants.PROJECT_NAME);
-		setExportPage(new PdfExportPage(Messages.ExportPreferences, projectName));
+		this.page=new PdfExportPage(Messages.ExportPreferences, projectName);
+		setExportPage(this.page);
 	}
 	/**
 	 * Constructor.
@@ -52,33 +51,22 @@ public class PdfExportWizard extends AbstractImageExportWizard{
 	 * 
 	 */
 	public PdfExportWizard(String projectName) {
-		super();
-		setExportPage(new PdfExportPage(Messages.ExportPreferences, projectName));
+		this();
 	}
 	
 	@Override
 	public boolean performFinish() {
-		this.getStore().setValue(IPreferenceConstants.COMPANY_NAME, this.getExportPage().getTextCompany().getText());
+		this.getStore().setValue(IPreferenceConstants.COMPANY_NAME, this.page.getTextCompany().getText());
 		
-		this.getStore().setValue(IPreferenceConstants.COMPANY_LOGO, this.getExportPage().getTextLogo().getText());
+		this.getStore().setValue(IPreferenceConstants.COMPANY_LOGO, this.page.getTextLogo().getText());
 		
 		PreferenceConverter.setValue(this.getStore(), IPreferenceConstants.COMPANY_BACKGROUND_COLOR,
-			this.toRGB(this.getExportPage().getTextBackgroundColor().getText()));
+			this.toRGB(this.page.getTextBackgroundColor().getText()));
 		
 		PreferenceConverter.setValue(this.getStore(), IPreferenceConstants.COMPANY_FONT_COLOR,
-			this.toRGB(this.getExportPage().getTextFontColor().getText()));
+			this.toRGB(this.page.getTextFontColor().getText()));
 		
-		String filePath = this.getExportPage().getExportPath();
-		if ((filePath != null) && !filePath.isEmpty()) {
-			ViewContainer viewContainer =
-				(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-					.findView(ViewContainer.ID);
-			viewContainer.export(filePath);
-		} else {
-			MessageDialog.openWarning(this.getShell(), Messages.Warning, Messages.ChooseTheDestination);
-			return false;
-		}
-		return true;
+		return performXSLExport("/fopxsl.xsl"); //$NON-NLS-1$
 	}
 	
 

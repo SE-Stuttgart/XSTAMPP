@@ -13,6 +13,7 @@
 
 package astpa.ui.unsafecontrolaction;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
+import org.apache.xml.utils.StopParseException;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.jface.action.Action;
@@ -50,6 +52,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
 
+import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.model.controlaction.UnsafeControlActionType;
 import astpa.model.controlaction.interfaces.IControlAction;
@@ -471,6 +474,59 @@ public class UnsafeControlActionsView implements IViewBase {
 			
 		imgLoader.save(path, SWT.IMAGE_PNG);
 		
+		return true;
+	}
+
+	@Override
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+		int length;
+		List<IUnsafeControlAction> notGiven;
+		List<IUnsafeControlAction> givenInc;
+		List<IUnsafeControlAction> wrongTiming;
+		List<IUnsafeControlAction> stoppedTooSoon;
+		writer.newLine();
+		writer.write(this.getTitle());
+		writer.newLine();
+		writer.write(Messages.ControlAction + seperator);
+		writer.write(Messages.NotGiven + seperator);
+		writer.write(Messages.GivenIncorrectly + seperator);
+		writer.write(Messages.WrongTiming + seperator);
+		writer.write(Messages.StoppedTooSoon + seperator);
+		for(IControlAction action : this.ucaInterface.getAllControlActionsU()){
+			notGiven = action.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);
+			givenInc = action.getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY);
+			wrongTiming = action.getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING);
+			stoppedTooSoon = action.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
+			length = Math.max(notGiven.size(), givenInc.size());
+			length = Math.max(length, wrongTiming.size());
+			length = Math.max(length, stoppedTooSoon.size());
+			
+			writer.write(action.getTitle() + seperator);
+			for(int i=0;i<length;){
+				writer.write(notGiven.get(i).getDescription() + seperator);
+				writer.write(givenInc.get(i).getDescription() + seperator);
+				writer.write(wrongTiming.get(i).getDescription() + seperator);
+				writer.write(stoppedTooSoon.get(i).getDescription() + seperator);
+				writer.newLine();
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(notGiven.get(i).getId())){
+					writer.write("[H-"+haz.getNumber()+"]");
+				}
+				writer.write(seperator);
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(givenInc.get(i).getId())){
+					writer.write("[H-"+haz.getNumber()+"]");
+				}
+				writer.write(seperator);
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(wrongTiming.get(i).getId())){
+					writer.write("[H-"+haz.getNumber()+"]");
+				}
+				writer.write(seperator);
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(stoppedTooSoon.get(i).getId())){
+					writer.write("[H-"+haz.getNumber()+"]");
+				}
+				writer.write(seperator);
+				writer.newLine();
+			}
+		}
 		return true;
 	}
 	

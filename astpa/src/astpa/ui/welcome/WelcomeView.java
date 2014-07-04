@@ -13,6 +13,8 @@
 
 package astpa.ui.welcome;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Observable;
 
 import messages.Messages;
@@ -537,6 +539,12 @@ public class WelcomeView implements IViewBase {
 
 	@Override
 	public boolean triggerExport(String path) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
 		// TODO Auto-generated method stub
 		return false;
 	}

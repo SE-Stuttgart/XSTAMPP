@@ -13,6 +13,8 @@
 
 package astpa.ui.acchaz;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -470,9 +472,10 @@ public class AccidentsView extends CommonTableView {
 		return commonTableType.AccidentsView;
 	}
 
+
 	@Override
-	public boolean triggerExport(String path) {
-		this.exportAsCSV(this.dataInterface.getAllAccidents(),path);
+	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllAccidents(),writer, seperator);
 		return true;
 	}
 }

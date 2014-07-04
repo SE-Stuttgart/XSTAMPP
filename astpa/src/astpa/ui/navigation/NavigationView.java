@@ -13,6 +13,8 @@
 
 package astpa.ui.navigation;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Observable;
 
 import messages.Messages;
@@ -299,7 +301,13 @@ public class NavigationView implements IViewBase {
 
 	@Override
 	public boolean triggerExport(String path) {
-		// TODO Auto-generated method stub
+		// nothing to export in this view
+		return false;
+	}
+
+	@Override
+	public boolean writeCSVData(BufferedWriter wirter, char seperator) throws IOException {
+		// nothing to export in this view
 		return false;
 	}
 }
