@@ -20,12 +20,13 @@ import messages.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -41,18 +42,13 @@ import astpa.preferences.IPreferenceConstants;
  * @author Sebastian Sieber, Lukas Balzer
  * 
  */
-public class PdfExportPage extends AbstractExportPage {
+public class PdfExportPage extends AbstractExportPage implements ModifyListener{
 	
-
 	private Composite container;
-	private Text textCompany, textLogo, textBackgroundColor, textFontColor,textExportPath;
-	private Button buttonLogo;
-	
-	
+	private Text textCompany, textLogo,textExportPath;
+	private ColorChooser bgChooser,fontChooser;
+	private Composite sampleComp;
 	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-	
-	
-	
 	
 	
 	/**
@@ -67,8 +63,6 @@ public class PdfExportPage extends AbstractExportPage {
 		super(pageName,projectName);
 		this.setTitle(Messages.Export);
 		this.setDescription(Messages.SetValuesForTheExportFile);
-		
-		
 	}
 	
 	@Override
@@ -77,20 +71,22 @@ public class PdfExportPage extends AbstractExportPage {
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setLayout(new FormLayout());
 		
+		
 		Composite labelComposite= new Composite(this.container, SWT.NONE);
 		data=new FormData();
 		data.top = new FormAttachment(COMPONENT_OFFSET);
 		data.height = 25;
 		labelComposite.setLayoutData(data);
 		labelComposite.setLayout(null);
-		Label labelCompany = new Label(labelComposite, SWT.NONE);
+		Label labelCompany = new Label(labelComposite, SWT.SHADOW_IN);
 		labelCompany.setBounds(LABEL_COLUMN, 0, 55, 15);
 		labelCompany.setText(Messages.Company);
 		
-		this.textCompany = new Text(labelComposite, SWT.BORDER | SWT.SINGLE);
-		this.textCompany.setBounds(127, 0, 345, 21);
+		this.textCompany = new Text(labelComposite,SWT.BORDER | SWT.SINGLE);
+		this.textCompany.setBounds(TEXT_COLUMN, 0, 345, 21);
 		
 		String companyName = this.store.getString(IPreferenceConstants.COMPANY_NAME);
+
 		if (companyName != null) {
 			this.textCompany.setText(companyName);
 			this.textCompany.setSelection(companyName.length());
@@ -98,31 +94,15 @@ public class PdfExportPage extends AbstractExportPage {
 			this.textCompany.setText(""); //$NON-NLS-1$
 		}
 		
-		Composite logoComposite= new Composite(this.container, SWT.NONE);
+		PathComposite logoComposite= new PathComposite(this.container, SWT.NONE, Messages.Logo);
 		data=new FormData();
 		data.top = new FormAttachment(labelComposite,COMPONENT_OFFSET);
+		data.height = 25;
 		logoComposite.setLayoutData(data);
-		logoComposite.setLayout(null);
-		Label labelLogo = new Label(logoComposite, SWT.NONE);
-		labelLogo.setBounds(LABEL_COLUMN, 0, 107, 15);
-		labelLogo.setText(Messages.Logo);
+		this.textLogo = logoComposite.getText();
+		logoComposite.setVisible(true);
 		
-		this.textLogo = new Text(logoComposite, SWT.BORDER | SWT.SINGLE);
-		this.textLogo.setBounds(127, 0, 297, 21);
-		this.textLogo.setEditable(false);
-		
-		String companyLogo = this.store.getString(IPreferenceConstants.COMPANY_LOGO);
-		if (companyLogo != null) {
-			this.textLogo.setText(companyLogo);
-			this.textLogo.setSelection(companyLogo.length());
-		} else {
-			this.textLogo.setText(""); //$NON-NLS-1$
-		}
-		
-		this.buttonLogo = new Button(logoComposite, SWT.NONE);
-		this.buttonLogo.setBounds(BUTTON_COLUMN, 0, 42, 25);
-		this.buttonLogo.setText("..."); //$NON-NLS-1$
-		this.buttonLogo.addSelectionListener(new SelectionListener() {
+		logoComposite.addButtonListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -135,30 +115,50 @@ public class PdfExportPage extends AbstractExportPage {
 			}
 		});
 		
-		ColorChooser bgChooser=new ColorChooser(this.container, SWT.NONE, Messages.BackgroundColor,
+		this.bgChooser=new ColorChooser(this.container, SWT.NONE, Messages.BackgroundColor,
 											IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
 		data=new FormData();
 		data.top = new FormAttachment(logoComposite,COMPONENT_OFFSET);
 		data.height = 25;
-		bgChooser.setLayoutData(data);
-		bgChooser.setVisible(true);
+		this.bgChooser.setLayoutData(data);
+		this.bgChooser.setVisible(true);
+		this.bgChooser.addColorChangeListener(this);
 		
-		ColorChooser fontChooser=new ColorChooser(this.container, SWT.NONE,Messages.FontColor,
+		this.fontChooser=new ColorChooser(this.container, SWT.NONE,Messages.FontColor,
 				IPreferenceConstants.COMPANY_FONT_COLOR);
 		data=new FormData();
-		data.top = new FormAttachment(bgChooser,COMPONENT_OFFSET);
+		data.top = new FormAttachment(this.bgChooser,COMPONENT_OFFSET);
 		data.height = 25;
-		fontChooser.setLayoutData(data);
-		fontChooser.setVisible(true);
+		this.fontChooser.setLayoutData(data);
+		this.fontChooser.setVisible(true);
+		this.fontChooser.addColorChangeListener(this);
 		
-		
-		PathComposite path= new PathComposite(null,this.container, SWT.NONE);
+		PathComposite path= new PathComposite(this.container, SWT.NONE, Messages.Destination);
 		data=new FormData();
-		data.top = new FormAttachment(fontChooser,COMPONENT_OFFSET);
+		data.top = new FormAttachment(this.fontChooser,COMPONENT_OFFSET);
 		data.height = 25;
 		path.setLayoutData(data);
 		path.setVisible(true);
+		path.addButtonListener(new SelectionListener(){
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PdfExportPage.this.openExportDialog(new String[]{"*.pdf"},new String[]{"A-STPA Report *.pdf"});
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// no-op
+			}
+		});
 		this.textExportPath= path.getText();
+		
+		this.sampleComp= new DemoCanvas(this.container, SWT.NONE);
+		data=new FormData();
+		data.top= new FormAttachment(path, COMPONENT_OFFSET);
+		data.height = DEMOCANVAS_HEIGHT;
+		data.width = parent.getBounds().width;
+		this.sampleComp.setLayoutData(data);
 		
 		// Required to avoid an error in the system
 		this.setControl(this.container);
@@ -177,7 +177,7 @@ public class PdfExportPage extends AbstractExportPage {
 			"PNG (*.png)", "TIFF (*.tif;*.tiff)", "GIF (*.gif)", "Bitmap (*.bmp;*.dib)", "SVG (*.svg;*.svgz)"};//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		final String[] filterExtensions = {"*.jpg", "*.png", "*.jpe", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			"*.jfif", "*.jpeg", "*.tif", "*.tiff", "*.gif", "*.bmp", "*.dib", "*.svg", "*.svgz"};//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
-		FileDialog dlg = new FileDialog(PdfExportPage.this.buttonLogo.getShell(), SWT.OPEN);
+		FileDialog dlg = new FileDialog(PdfExportPage.this.getShell(), SWT.OPEN);
 		dlg.setFilterExtensions(filterExtensions);
 		dlg.setFilterNames(filterNames);
 		dlg.setText(Messages.Open);
@@ -239,47 +239,18 @@ public class PdfExportPage extends AbstractExportPage {
 	/**
 	 * @return the backgroundColor as an rgb string
 	 */
-	public Text getTextBackgroundColor() {
-		return this.textBackgroundColor;
-	}
-	
-	/**
-	 * @param textBackgroundColor the textColor to set
-	 */
-	public void setTextColor(Text textBackgroundColor) {
-		this.textBackgroundColor = textBackgroundColor;
+	public String getTextBackgroundColor() {
+		return this.bgChooser.getColorString();
 	}
 	
 	
 	/**
 	 * @return fontColor as an rgb string
 	 */
-	public Text getTextFontColor() {
-		return this.textFontColor;
-	}
-	
-	/**
-	 * @param textFontColor the textColor to set
-	 */
-	public void setTextFontColor(Text textFontColor) {
-		this.textFontColor = textFontColor;
+	public String getTextFontColor() {
+		return this.fontChooser.getColorString();
 	}
 
-
-
-	@Override
-	protected void openExportDialog(String[] filters) {
-	
-		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
-		fileDialog.setFilterExtensions(new String[] {"*.pdf"}); //$NON-NLS-1$
-		fileDialog.setFilterNames(new String[] {"A-STPA report (*.pdf)"}); //$NON-NLS-1$
-		fileDialog.setFileName(this.getProjectName());
-		String filePath = fileDialog.open();
-		if (filePath != null) {
-			this.setExportPath(filePath);
-		}
-	
-	}
 
 	@Override
 	public String getExportPath() {
@@ -294,5 +265,10 @@ public class PdfExportPage extends AbstractExportPage {
 	@Override
 	public boolean asOne() {
 		return false;
+	}
+
+	@Override
+	public void modifyText(ModifyEvent e) {
+		this.sampleComp.redraw();
 	}
 }

@@ -13,8 +13,6 @@
 
 package astpa.ui.statusline;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.Observable;
 
 import messages.Messages;
@@ -164,14 +162,9 @@ public final class StatusLineManager implements IViewBase {
 	}
 
 	@Override
-	public boolean triggerExport(String path) {
+	public boolean triggerExport(Object[] values) {
 		// nothing to export here
 		return false;
 	}
 
-	@Override
-	public boolean writeCSVData(BufferedWriter wirter, char seperator) throws IOException {
-		// nothing to export here
-		return false;
-	}
 }

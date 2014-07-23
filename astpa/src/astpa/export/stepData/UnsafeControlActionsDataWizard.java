@@ -2,7 +2,7 @@ package astpa.export.stepData;
 
 import messages.Messages;
 import astpa.export.AbstractExportWizard;
-import astpa.export.pages.SimpleExportPage;
+import astpa.export.pages.CSVExportPage;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
 
@@ -21,7 +21,7 @@ public class UnsafeControlActionsDataWizard extends AbstractExportWizard{
 	public UnsafeControlActionsDataWizard() {
 		super(UnsafeControlActionsView.ID);
 		String[] filters= new String[] {"*.csv"}; //$NON-NLS-1$
-		setExportPage(new SimpleExportPage(filters,Messages.ExportPreferences,
+		setExportPage(new CSVExportPage(filters,Messages.UnsafeControlActions,
 										this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 	}
 

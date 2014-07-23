@@ -6,24 +6,28 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.export.AbstractExportPage;
 
 /**
  *A Simple implementation of the ApstactExportPage
- *containing only basic elements 
+ *containing elements for the control structure export
  *
  * @author Lukas Balzer
  *
  */
-public class SimpleExportPage extends AbstractExportPage{
+public class ControlStructureExportPage extends AbstractExportPage{
 
 	private Text pathText;
 	private Composite control;
 	private String[] filters;
-
+	private Spinner spinner;
 	/**
 	 * @author Lukas Balzer
 	 * @param filters
@@ -33,7 +37,7 @@ public class SimpleExportPage extends AbstractExportPage{
 	 * @param projectName 
 	 * 			The Name of the project
 	 */
-	public SimpleExportPage(String[] filters,String pageName,String projectName) {
+	public ControlStructureExportPage(String[] filters,String pageName,String projectName) {
 		super(pageName, projectName);
 		this.setTitle(pageName);
 		this.filters=filters;
@@ -45,11 +49,22 @@ public class SimpleExportPage extends AbstractExportPage{
 		this.control = new Composite(parent,SWT.NONE);
 		this.control.setLayout(new FormLayout());
 		
-		
-		PathComposite pathChooser= new PathComposite(this.filters,this.control, SWT.NONE);
-		
+		Composite offsetComposite = new Composite(this.control, SWT.NONE);
 		FormData data= new FormData();
 		data.top= new FormAttachment(COMPONENT_OFFSET);
+		offsetComposite.setLayoutData(data);
+		offsetComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		Label offsetLabel= new Label(offsetComposite, SWT.NONE);
+		offsetLabel.setText(Messages.OffsetValue);
+		RowData rowData= new RowData(LABEL_WIDTH, 25);
+		offsetLabel.setLayoutData(rowData);
+		this.spinner = new Spinner(offsetComposite, SWT.BORDER);
+	    this.spinner.setSelection(10);
+	
+		PathComposite pathChooser= new PathComposite(this.filters,this.control, SWT.NONE);
+		
+		data= new FormData();
+		data.top= new FormAttachment(offsetComposite,COMPONENT_OFFSET);
 		pathChooser.setLayoutData(data);
 		this.pathText=pathChooser.getText();
 
@@ -74,6 +89,13 @@ public class SimpleExportPage extends AbstractExportPage{
 	@Override
 	public boolean asOne() {
 		return true;
+	}
+
+	/**
+	 * @return the spinner value
+	 */
+	public int getImgOffset() {
+		return this.spinner.getSelection();
 	}
 
 }

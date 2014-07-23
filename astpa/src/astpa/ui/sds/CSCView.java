@@ -13,9 +13,6 @@
 
 package astpa.ui.sds;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
 
@@ -50,7 +47,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-import astpa.model.ITableModel;
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.CSCWizard;
+import astpa.export.stepData.IDataExport;
 import astpa.model.ObserverValue;
 import astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
@@ -63,7 +62,7 @@ import astpa.ui.common.IViewBase;
  * @author Jarkko Heidenwag
  * 
  */
-public class CSCView implements IViewBase {
+public class CSCView implements IViewBase,IDataExport {
 	
 	/**
 	 * @author Jarkko Heidenwag
@@ -360,7 +359,7 @@ public class CSCView implements IViewBase {
 	}
 
 	@Override
-	public boolean writeCSVData(BufferedWriter csvWriter, char seperator) throws IOException {
+	public boolean writeCSVData(BufferedCSVWriter csvWriter) throws IOException {
 		
 		csvWriter.write(Messages.UnsafeControlActions+" ;");
 		csvWriter.write(Messages.CorrespondingSafetyConstraints+" ;");
@@ -374,9 +373,15 @@ public class CSCView implements IViewBase {
 	}
 
 	@Override
-	public boolean triggerExport(String path) {
+	public boolean triggerExport(Object[] values) {
 		// nothing to export here
 		return false;
 	}
 
+	@Override
+	public Class<?> getExportWizard() {
+		return CSCWizard.class;
+	}
+
+	
 }

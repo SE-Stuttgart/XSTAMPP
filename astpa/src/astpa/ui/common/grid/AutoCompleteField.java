@@ -14,6 +14,8 @@
 package astpa.ui.common.grid;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -48,7 +50,14 @@ public class AutoCompleteField {
 		
 		this.contentProposalAdapter =
 			new LinkingCommandAdapter(control, controlContentAdapter, this.contentProposalProvider, null, null, false);
-		
+		this.contentProposalAdapter.addContentProposalListener(new IContentProposalListener() {
+			
+			@Override
+			public void proposalAccepted(IContentProposal proposal) {
+				AutoCompleteField.this.closePopup();
+				
+			}
+		});
 	}
 	
 	/**
@@ -119,7 +128,16 @@ public class AutoCompleteField {
 	 */
 	public void openPopup() {
 		this.contentProposalAdapter.openProposalPopup();
-		
+	}
+	
+	/**
+	 * Closes the proposal popup immediately
+	 * 
+	 * @author Benedikt Markt
+	 * 
+	 */
+	public void closePopup() {
+		this.contentProposalAdapter.closeProposalPopup();
 	}
 	
 }

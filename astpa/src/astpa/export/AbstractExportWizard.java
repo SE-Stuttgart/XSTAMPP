@@ -5,10 +5,8 @@ import java.io.IOException;
 
 import messages.Messages;
 
-import org.apache.xmlgraphics.util.MimeConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.graphics.RGB;
@@ -17,8 +15,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 import astpa.Activator;
+import astpa.export.pages.CSVExportPage;
 import astpa.export.pages.IExportPage;
-import astpa.preferences.IPreferenceConstants;
 import astpa.ui.common.ViewContainer;
 
 /**
@@ -43,8 +41,9 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 	 * @author Lukas Balzer
 	 */
 	public AbstractExportWizard() {
-		this(new String[]{""}); //$NON-NLS-3$
+		this(new String[]{""}); //$NON-NLS-1$
 	}
+
 	
 	/**
 	 *
@@ -66,9 +65,9 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 	 */
 	public AbstractExportWizard(String[] viewId) {
 		super();
+		this.setHelpAvailable(true);
 		this.viewId=viewId;
 	}
-
 	protected boolean performCSVExport() {
 		String filePath = this.exportPage.getExportPath();
 		try {
@@ -76,7 +75,7 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 				ViewContainer viewContainer =
 					(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 						.findView(ViewContainer.ID);
-				viewContainer.exportViewData(filePath,this.viewId);
+				viewContainer.exportViewData(filePath,this.viewId,((CSVExportPage) this.exportPage).getSeperator());
 			} else {
 				return false;
 			}
@@ -87,14 +86,20 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 		return true;
 	}
 	
+	
 	protected boolean performNormalExport() {
+		return performNormalExport(null);
+	}
+		
+	protected boolean performNormalExport(Object value) {
 		String filePath = this.getExportPage().getExportPath();
+		Object[] newValues= new Object[]{filePath,value};
 		try {
 			if(checkError(checkPath(filePath))) {
 				ViewContainer viewContainer =
 					(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 						.findView(ViewContainer.ID);
-				viewContainer.export(filePath,this.getExportedViews()[0]);
+				viewContainer.export(newValues,this.getExportedViews()[0]);
 			} else {
 				return false;
 			}
@@ -105,14 +110,14 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 		return true;
 	}
 	
-	protected boolean performXSLExport(String fopName){
+	protected boolean performXSLExport(String fopName, String jobMessage){
 		
 		String filePath = this.getExportPage().getExportPath();
 		if ((filePath != null) && !filePath.isEmpty()) {
 			ViewContainer viewContainer =
 				(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.findView(ViewContainer.ID);
-			viewContainer.export(filePath, getMimeConstant(filePath), fopName,getExportPage().asOne());
+			viewContainer.export(filePath, getMimeConstant(filePath), fopName,getExportPage().asOne(),jobMessage);
 		} else {
 			MessageDialog.openWarning(this.getShell(), Messages.Warning, Messages.ChooseTheDestination);
 			return false;

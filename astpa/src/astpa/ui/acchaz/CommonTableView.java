@@ -13,17 +13,7 @@
 
 package astpa.ui.acchaz;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -56,13 +46,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 import astpa.Activator;
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.IDataExport;
 import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.model.interfaces.IDataModel;
@@ -73,7 +63,7 @@ import astpa.ui.common.IViewBase;
  * @author Jarkko Heidenwag
  * 
  */
-public abstract class CommonTableView implements IViewBase {
+public abstract class CommonTableView implements IViewBase,IDataExport {
 	
 	private static String id;
 	
@@ -573,20 +563,22 @@ public abstract class CommonTableView implements IViewBase {
 	 *
 	 * @param models
 	 * 			the data which shall be exported as CSV
-	 * @param seperator TODO
 	 * @throws IOException 
 	 */
-	protected void exportAsCSV(List<ITableModel> models,BufferedWriter csvWriter, char seperator) throws IOException{
+	protected void exportAsCSV(List<ITableModel> models,BufferedCSVWriter csvWriter) throws IOException{
 			csvWriter.newLine();
 			csvWriter.write(this.getTitle());
 			csvWriter.newLine();
-			csvWriter.write("ID ;");
-			csvWriter.write("Name ;");
+			csvWriter.writeCell("ID");
+			csvWriter.writeCell("Name");
 			csvWriter.write("Description");
 			csvWriter.newLine();
+			int i=0;
 			for(ITableModel data: models){
-				csvWriter.write(data.getNumber() + seperator);
-				csvWriter.write(data.getTitle() + seperator);
+				i++;
+				csvWriter.writeCell(Integer.toString(i));
+				
+				csvWriter.writeCell(data.getTitle());
 				csvWriter.write(data.getDescription());
 				csvWriter.newLine();
 			}
@@ -641,7 +633,7 @@ public abstract class CommonTableView implements IViewBase {
 	public abstract void setDataModelInterface(IDataModel dataInterface);
 	
 	@Override
-	public boolean triggerExport(String path) {
+	public boolean triggerExport(Object[] values) {
 		// TODO Auto-generated method stub
 		return false;
 	}

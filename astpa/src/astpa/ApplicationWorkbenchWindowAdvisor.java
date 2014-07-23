@@ -76,18 +76,31 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		return new ApplicationActionBarAdvisor(configurer);
 	}
 	
+	@SuppressWarnings("restriction")
 	@Override
 	public void postWindowOpen() {
 		
-		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)PlatformUI.getWorkbench().getNewWizardRegistry();
-		IWizardCategory[] categories = PlatformUI.getWorkbench().getExportWizardRegistry().getRootCategory().getCategories();
+		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)PlatformUI.getWorkbench().getExportWizardRegistry();
+		IWizardCategory[] categories = wizardRegistry.getRootCategory().getCategories();
 		for(IWizardDescriptor wizard : getAllWizards(categories)){
 			
-		    if(wizard.getCategory().getId().matches("org.eclipse.ui.Basic")){
+		    if(wizard.getCategory().getId().matches("org.eclipse.ui.Basic") || //$NON-NLS-1$
+		    		wizard.getCategory().getId().endsWith("category")){ //$NON-NLS-1$
 		    
 		        WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-		        wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
+		        if(!wizardElement.getId().matches("org.eclipse.ui.wizards.export.Preferences")) { //$NON-NLS-1$
+		        	wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
+		        }
 		    }
+		}
+		
+		wizardRegistry = (AbstractExtensionWizardRegistry)PlatformUI.getWorkbench().getImportWizardRegistry();
+		categories = wizardRegistry.getRootCategory().getCategories();
+		for(IWizardDescriptor wizard : getAllWizards(categories)){
+	        WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+	        if(!wizardElement.getId().matches("org.eclipse.ui.wizards.import.Preferences")) { //$NON-NLS-1$
+	        	wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
+	        }
 		}
 	}
 	@Override

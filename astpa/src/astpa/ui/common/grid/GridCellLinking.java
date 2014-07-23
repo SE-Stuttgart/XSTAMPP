@@ -40,7 +40,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolTip;
 
 import astpa.model.ITableModel;
 import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;

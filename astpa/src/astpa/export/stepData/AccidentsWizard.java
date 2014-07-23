@@ -6,7 +6,7 @@ package astpa.export.stepData;
 
 import messages.Messages;
 import astpa.export.AbstractExportWizard;
-import astpa.export.pages.SimpleExportPage;
+import astpa.export.pages.CSVExportPage;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.acchaz.AccidentsView;
 
@@ -25,7 +25,7 @@ public class AccidentsWizard extends AbstractExportWizard {
 	public AccidentsWizard()  {
 		super(AccidentsView.ID);
 		String[] filters= new String[] {"*.csv"}; //$NON-NLS-1$
-		setExportPage(new SimpleExportPage(filters,Messages.ExportPreferences,
+		setExportPage(new CSVExportPage(filters,Messages.Accidents,
 										this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 	}
 

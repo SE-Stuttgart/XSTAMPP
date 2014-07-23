@@ -708,6 +708,7 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public boolean setControlActionTitle(UUID controlActionId, String title) {
+		System.out.println(controlActionId);
 		if ((controlActionId == null) || (title == null)) {
 			return false;
 		}
@@ -759,7 +760,7 @@ public class DataModelController extends Observable implements
 		if (!(this.getComponent(parentId) instanceof Component)) {
 			return null;
 		}
-
+		
 		UUID result = this.controlStructureController.addComponent(parentId,
 				layout, text, type);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
@@ -1245,6 +1246,23 @@ public class DataModelController extends Observable implements
 	@Override
 	public int getConnectionTrashSize() {
 		return this.controlStructureController.getConnectionTrashSize();
+	}
+
+	@Override
+	public UUID addComponent(UUID controlActionId, UUID parentId,
+			Rectangle layout, String text, ComponentType type) {
+		if ((parentId == null) || (layout == null) || (text == null)
+				|| (type == null)) {
+			return null;
+		}
+		if (!(this.getComponent(parentId) instanceof Component)) {
+			return null;
+		}
+		
+		UUID result = this.controlStructureController.addComponent(controlActionId,parentId,
+				layout, text, type);
+		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		return result;
 	}
 
 }

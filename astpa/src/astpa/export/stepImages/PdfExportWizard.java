@@ -13,15 +13,10 @@
 
 package astpa.export.stepImages;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.ui.PlatformUI;
-
 import messages.Messages;
 import astpa.export.AbstractExportWizard;
 import astpa.export.pages.PdfExportPage;
 import astpa.preferences.IPreferenceConstants;
-import astpa.ui.common.ViewContainer;
 
 /**
  * Creates wizard for export.
@@ -40,18 +35,8 @@ public class PdfExportWizard extends AbstractExportWizard{
 	public PdfExportWizard(){
 		super();
 		String projectName= this.getStore().getString(IPreferenceConstants.PROJECT_NAME);
-		this.page=new PdfExportPage(Messages.ExportPreferences, projectName);
+		this.page=new PdfExportPage("PDF Report", projectName);
 		setExportPage(this.page);
-	}
-	/**
-	 * Constructor.
-	 * 
-	 * @author Sebastian Sieber
-	 * @param projectName the name of the project
-	 * 
-	 */
-	public PdfExportWizard(String projectName) {
-		this();
 	}
 	
 	@Override
@@ -59,14 +44,8 @@ public class PdfExportWizard extends AbstractExportWizard{
 		this.getStore().setValue(IPreferenceConstants.COMPANY_NAME, this.page.getTextCompany().getText());
 		
 		this.getStore().setValue(IPreferenceConstants.COMPANY_LOGO, this.page.getTextLogo().getText());
-		
-		PreferenceConverter.setValue(this.getStore(), IPreferenceConstants.COMPANY_BACKGROUND_COLOR,
-			this.toRGB(this.page.getTextBackgroundColor().getText()));
-		
-		PreferenceConverter.setValue(this.getStore(), IPreferenceConstants.COMPANY_FONT_COLOR,
-			this.toRGB(this.page.getTextFontColor().getText()));
-		
-		return performXSLExport("/fopxsl.xsl"); //$NON-NLS-1$
+
+		return performXSLExport("/fopxsl.xsl",Messages.ExportingPdf); //$NON-NLS-1$
 	}
 	
 

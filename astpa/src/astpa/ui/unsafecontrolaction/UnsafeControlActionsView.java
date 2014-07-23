@@ -13,9 +13,8 @@
 
 package astpa.ui.unsafecontrolaction;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
@@ -23,9 +22,6 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
-import org.apache.xml.utils.StopParseException;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -38,20 +34,18 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.PlatformUI;
 
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.IDataExport;
+import astpa.export.stepImages.UCATableExportWizard;
 import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.model.controlaction.UnsafeControlActionType;
@@ -66,7 +60,6 @@ import astpa.ui.common.grid.GridCellColored;
 import astpa.ui.common.grid.GridCellEditor;
 import astpa.ui.common.grid.GridCellLinking;
 import astpa.ui.common.grid.GridCellRenderer;
-import astpa.ui.common.grid.GridCellText;
 import astpa.ui.common.grid.GridRow;
 import astpa.ui.common.grid.GridWrapper;
 import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
@@ -77,7 +70,7 @@ import astpa.ui.common.grid.IGridCell;
  * 
  * @author Benedikt Markt, Patrick Wickenhaeuser
  */
-public class UnsafeControlActionsView implements IViewBase {
+public class UnsafeControlActionsView implements IViewBase,IDataExport {
 	
 	/**
 	 * ViewPart ID.
@@ -462,72 +455,108 @@ public class UnsafeControlActionsView implements IViewBase {
 	}
 
 	@Override
-	public boolean triggerExport(String path) {
+	public boolean triggerExport(Object[] values) {
 		
-		
-		Image srcImage =new Image(null,this.grid.getGrid().getBounds());
-		GC imageGC = new GC(srcImage);
-		Graphics graphics = new SWTGraphics(imageGC);
-		this.grid.getGrid().print(imageGC);
-		ImageLoader imgLoader = new ImageLoader();
-		imgLoader.data = new ImageData[] {srcImage.getImageData()};
-			
-		imgLoader.save(path, SWT.IMAGE_PNG);
-		
-		return true;
+		return false;
 	}
 
 	@Override
-	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+	public boolean writeCSVData(BufferedCSVWriter writer) throws IOException {
 		int length;
-		List<IUnsafeControlAction> notGiven;
-		List<IUnsafeControlAction> givenInc;
-		List<IUnsafeControlAction> wrongTiming;
-		List<IUnsafeControlAction> stoppedTooSoon;
+		
+		WriterList notGiven =new WriterList();
+		WriterList givenInc =new WriterList();
+		WriterList wrongTiming =new WriterList();
+		WriterList stoppedTooSoon =new WriterList();
+		
+		//the First two Rows are filled with the view- and the Column-titles
 		writer.newLine();
 		writer.write(this.getTitle());
 		writer.newLine();
-		writer.write(Messages.ControlAction + seperator);
-		writer.write(Messages.NotGiven + seperator);
-		writer.write(Messages.GivenIncorrectly + seperator);
-		writer.write(Messages.WrongTiming + seperator);
-		writer.write(Messages.StoppedTooSoon + seperator);
+		writer.writeCell(Messages.ControlAction);
+		writer.writeCell(Messages.NotGiven);
+		writer.writeCell(Messages.GivenIncorrectly);
+		writer.writeCell(Messages.WrongTiming);
+		writer.write(Messages.StoppedTooSoon);
+		writer.newLine();
+		writer.newLine();
 		for(IControlAction action : this.ucaInterface.getAllControlActionsU()){
-			notGiven = action.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);
-			givenInc = action.getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY);
-			wrongTiming = action.getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING);
-			stoppedTooSoon = action.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
+			//for each controlAction the lists are filled with its uca's
+			notGiven.setList(action.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN));
+			givenInc.setList(action.getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY));
+			wrongTiming.setList(action.getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING));
+			stoppedTooSoon.setList(action.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON));
+			
 			length = Math.max(notGiven.size(), givenInc.size());
 			length = Math.max(length, wrongTiming.size());
 			length = Math.max(length, stoppedTooSoon.size());
 			
-			writer.write(action.getTitle() + seperator);
-			for(int i=0;i<length;){
-				writer.write(notGiven.get(i).getDescription() + seperator);
-				writer.write(givenInc.get(i).getDescription() + seperator);
-				writer.write(wrongTiming.get(i).getDescription() + seperator);
-				writer.write(stoppedTooSoon.get(i).getDescription() + seperator);
+			//this loop writes two lines 
+			for(int i=0;i<length;i++){
+				if(i == 0){
+					writer.writeCell(action.getTitle());
+				}else{
+					writer.writeCell();
+				}
+				//write the Descriptions in one line
+				writer.writeCell(notGiven.getUCADescription(i));
+				writer.writeCell(givenInc.getUCADescription(i));
+				writer.writeCell(wrongTiming.getUCADescription(i));
+				writer.write(stoppedTooSoon.getUCADescription(i));
 				writer.newLine();
-				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(notGiven.get(i).getId())){
+				
+				//the hazard line starting with an empty cell
+				writer.writeCell();
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(notGiven.getUCAId(i))){
 					writer.write("[H-"+haz.getNumber()+"]");
 				}
-				writer.write(seperator);
-				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(givenInc.get(i).getId())){
+				writer.writeCell();
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(givenInc.getUCAId(i))){
 					writer.write("[H-"+haz.getNumber()+"]");
 				}
-				writer.write(seperator);
-				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(wrongTiming.get(i).getId())){
+				writer.writeCell();
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(wrongTiming.getUCAId(i))){
 					writer.write("[H-"+haz.getNumber()+"]");
 				}
-				writer.write(seperator);
-				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(stoppedTooSoon.get(i).getId())){
+				writer.writeCell();
+				for(ITableModel haz: this.ucaInterface.getLinkedHazardsOfUCA(stoppedTooSoon.getUCAId(i))){
 					writer.write("[H-"+haz.getNumber()+"]");
 				}
-				writer.write(seperator);
 				writer.newLine();
 			}
 		}
 		return true;
 	}
 	
+	private class WriterList{
+		List<IUnsafeControlAction> list;
+		
+		public WriterList(){
+			this.list=new ArrayList<>();
+		}
+		public void setList(List<IUnsafeControlAction> list){
+			this.list=list;
+		}
+		public int size() {
+			return this.list.size();
+		}
+		public String getUCADescription(int i){
+			if(this.list.size() > i){
+				return this.list.get(i).getDescription();
+			}
+			return "";
+		}
+		public UUID getUCAId(int i){
+			if(this.list.size() > i){
+				return this.list.get(i).getId();
+			}
+			return UUID.randomUUID();
+		}
+		
+	}
+	
+	@Override
+	public Class<?> getExportWizard() {
+		return UCATableExportWizard.class;
+	}
 }

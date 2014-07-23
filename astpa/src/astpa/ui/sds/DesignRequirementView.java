@@ -13,7 +13,6 @@
 
 package astpa.ui.sds;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
@@ -48,6 +47,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.DesignRequirementsWizard;
 import astpa.model.interfaces.IDataModel;
 import astpa.model.interfaces.IDesignRequirementViewDataModel;
 import astpa.model.sds.DesignRequirement;
@@ -451,8 +452,13 @@ public class DesignRequirementView extends CommonTableView {
 	
 
 	@Override
-	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
-		this.exportAsCSV(this.dataInterface.getAllDesignRequirements(),writer, seperator);
+	public boolean writeCSVData(BufferedCSVWriter writer) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllDesignRequirements(),writer);
 		return true;
+	}
+
+	@Override
+	public Class<?> getExportWizard() {
+		return DesignRequirementsWizard.class;
 	}
 }

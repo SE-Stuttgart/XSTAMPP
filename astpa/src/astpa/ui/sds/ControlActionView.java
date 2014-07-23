@@ -13,7 +13,6 @@
 
 package astpa.ui.sds;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
@@ -48,6 +47,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
+import astpa.export.BufferedCSVWriter;
 import astpa.model.controlaction.ControlAction;
 import astpa.model.interfaces.IControlActionViewDataModel;
 import astpa.model.interfaces.IDataModel;
@@ -170,6 +170,7 @@ public class ControlActionView extends CommonTableView {
 				
 			}
 		});
+		
 		
 		// Listener for the Description
 		this.getDescriptionWidget().addModifyListener(new ModifyListener() {
@@ -444,8 +445,18 @@ public class ControlActionView extends CommonTableView {
 	
 
 	@Override
-	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
-		this.exportAsCSV(this.dataInterface.getAllControlActions(),writer, seperator);
+	public boolean writeCSVData(BufferedCSVWriter writer) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllControlActions(),writer);
 		return true;
+	}
+	
+	@Override
+	public Class<?> getExportWizard() {
+		return ControlAction.class;
+	}
+	
+	@Override
+	public void onActivateView() {
+		this.updateTable();
 	}
 }

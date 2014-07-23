@@ -16,7 +16,6 @@ package astpa.ui.common.grid;
 import java.util.UUID;
 
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
@@ -40,7 +39,7 @@ public class GridCellColored extends AbstractGridCell {
 	 * 
 	 * @author Patrick Wickenhaeuser
 	 * 
-	 * @param device the swt device.
+	 * @param grid the swt device.
 	 * @param r red color value from 0 to 255 of the background.
 	 * @param g green color value from 0 to 255 of the background.
 	 * @param b blue color value from 0 to 255 of the background.
@@ -56,7 +55,7 @@ public class GridCellColored extends AbstractGridCell {
 	 * 
 	 * @author Patrick Wickenhaeuser
 	 * 
-	 * @param device the swt device.
+	 * @param grid the swt device.
 	 * @param color the color of the background.
 	 * 
 	 */

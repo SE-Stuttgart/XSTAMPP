@@ -2,7 +2,7 @@ package astpa.export.stepData;
 
 import messages.Messages;
 import astpa.export.AbstractExportWizard;
-import astpa.export.pages.SimpleExportPage;
+import astpa.export.pages.CSVExportPage;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.causalfactors.CausalFactorsView;
 
@@ -22,7 +22,7 @@ public class CausalFactorsDataWizard extends AbstractExportWizard{
 	public CausalFactorsDataWizard() {
 		super(CausalFactorsView.ID);
 		String[] filters= new String[] {"*.csv"}; //$NON-NLS-1$
-		setExportPage(new SimpleExportPage(filters,Messages.ExportPreferences,
+		setExportPage(new CSVExportPage(filters,Messages.CausalFactors,
 										this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 	}
 

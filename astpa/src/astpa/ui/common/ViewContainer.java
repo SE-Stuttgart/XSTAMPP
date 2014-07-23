@@ -15,7 +15,6 @@ package astpa.ui.common;
 
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -71,15 +70,12 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -93,16 +89,16 @@ import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSEditorWithPM;
 import astpa.controlstructure.IControlStructureEditor;
-import astpa.export.stepData.STPAdataWizard;
-import astpa.export.stepImages.PdfExportWizard;
-import astpa.export.stepImages.UCATableExportWizard;
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.IDataExport;
+import astpa.export.stepData.IExportView;
 import astpa.model.DataModelController;
-import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.acchaz.AccidentsView;
 import astpa.ui.acchaz.HazardsView;
 import astpa.ui.causalfactors.CausalFactorsView;
+import astpa.ui.common.ViewContainer.ReferenceList;
 import astpa.ui.linking.LinkingView;
 import astpa.ui.menu.file.commands.Welcome;
 import astpa.ui.navigation.NavigationView;
@@ -175,20 +171,7 @@ public class ViewContainer extends ViewPart {
 	
 	private boolean initCSWithProcessModel;
 	
-	public enum ExportConstants{
-		/**
-		 * Enum value for the Pdf Export
-		 * 
-		 * @author Lukas Balzer
-		 */
-		PDF,
-		
-		/**
-		 * Enum constant for exporting the UCA tabel
-		 * @author Lukas Balzer
-		 */
-		UCA_TABLE;
-	}
+	
 	/**
 	 * Class used to manage references to views.
 	 * 
@@ -253,19 +236,7 @@ public class ViewContainer extends ViewPart {
 			this.viewInstance.onActivateView();
 		}
 		
-		/**
-		 * this method triggers an signal to the view to start the export
-		 * if available
-		 *
-		 * @author Lukas Balzer
-		 *
-		 */
-		public void export(){
-			if(!this.viewInstance.triggerExport("")){
-				String msg= "Sorry but there's no Export available for" + this.getTitle();
-				MessageDialog.openInformation(PlatformUI.createDisplay().getActiveShell(), "No Export Available", msg);
-			}
-		}
+		
 		
 		/**
 		 * Perform the actions before the view will be hidden
@@ -288,6 +259,53 @@ public class ViewContainer extends ViewPart {
 		}
 	}
 	
+	/**
+	 * an instance of ReferenceList provides a ArrayList of #{@link IViewReference}
+	 * @author Lukas Balzer
+	 *
+	 */
+	@SuppressWarnings("javadoc")
+	public class ReferenceList{
+		private final List<IViewReference> references;
+
+		/**
+		 * 
+		 * @author Lukas Balzer
+		 *
+		 */
+		public ReferenceList() {
+			this.references = new ArrayList<>();
+		}
+		
+		/**
+		 *
+		 * @author Lukas Balzer
+		 *
+		 * @param ref
+		 * 			aReference object to a view Site
+		 */
+		public void add(IViewReference ref){
+			this.references.add(ref);
+		}
+		
+		/**
+		 * calls the method writeCSVData for all view that are stored in this list
+		 * and implement the interface {@link IDataExport}
+		 * @author Lukas Balzer
+		 *
+		 * @param csvWriter the Writer where the informations are passed to
+		 * @return whether exporting succeeded.
+		 * @throws IOException is thrown if the data could not be written
+		 */
+		public boolean writeCSV(BufferedCSVWriter csvWriter) throws IOException{
+			boolean worked = true;
+			for(IViewReference reference: this.references){
+				worked= worked && ((IDataExport)reference.viewInstance).writeCSVData(csvWriter);
+			}	
+			return worked;
+		}
+	}
+
 	private class ExportJobChangeAdapter extends JobChangeAdapter {
 		
 		@Override
@@ -329,11 +347,7 @@ public class ViewContainer extends ViewPart {
 	 */
 	private ViewTitle titleLabel;
 	
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 */
-	private Button exportButton;
+	
 	/**
 	 * The root composite for everythings
 	 */
@@ -466,29 +480,6 @@ public class ViewContainer extends ViewPart {
 		this.titleComposite.setLayout(new FormLayout());
 		this.titleComposite.setVisible(false);
 		
-		this.exportButton = new Button(this.titleComposite, SWT.PUSH);
-		this.exportButton.setText(Messages.Export);
-		FormData exportButtonData = new FormData();
-		exportButtonData.height = ViewContainer.TITLE_HEIGHT;
-		exportButtonData.right = new FormAttachment(ViewContainer.FULL_SIZE);
-		this.exportButton.setLayoutData(exportButtonData);
-		this.exportButton.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent e) {
-				ViewContainer.this.activeView.export();
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent e) {
-				//do nothing when mouse is clicked
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// Do nothing when double clicked
-			}
-		});
 		
 		// the title of the current view
 		this.titleLabel = new ViewTitle(this.titleComposite, SWT.NONE, ""); //$NON-NLS-1$
@@ -496,7 +487,7 @@ public class ViewContainer extends ViewPart {
 		titleLabelData.height = ViewContainer.TITLE_HEIGHT;
 		titleLabelData.top = new FormAttachment(0);
 		titleLabelData.left = new FormAttachment(this.navigationRoot);
-		titleLabelData.right = new FormAttachment(this.exportButton);
+		titleLabelData.right = new FormAttachment(FULL_SIZE);
 		
 		this.titleLabel.setLayoutData(titleLabelData);
 		this.titleLabel.setVisible(false);
@@ -581,7 +572,6 @@ public class ViewContainer extends ViewPart {
 		if (this.firstStartUp) {
 			this.navigationRoot.setVisible(true);
 			this.titleLabel.setVisible(true);
-			this.titleComposite.setVisible(true);
 			this.viewAreaRoot.setVisible(true);
 			this.setShowNavigationView(true);
 			this.firstStartUp = false;
@@ -596,6 +586,7 @@ public class ViewContainer extends ViewPart {
 				this.savedFile = null;
 			}
 		}
+		this.titleComposite.setVisible(true);
 		this.initControlStructure = false;
 		this.initCSWithProcessModel = false;
 		// close welcome site
@@ -627,6 +618,7 @@ public class ViewContainer extends ViewPart {
 			return false;
 		}
 		
+		
 		// save the previous view
 		if (this.activeView != null) {
 			this.activeView.onCloseView();
@@ -636,6 +628,7 @@ public class ViewContainer extends ViewPart {
 		if (this.activeView != null) {
 			this.activeView.setVisible(false);
 		}
+		
 		
 		// refresh the new view
 		if (viewName == CSEditorWithPM.ID) {
@@ -687,7 +680,6 @@ public class ViewContainer extends ViewPart {
 		this.titleComposite.setBackground(new Color(Display.getCurrent(), PreferenceConverter.getColor(this.store,
 				IPreferenceConstants.SPLITTER_BACKGROUND)));
 
-		this.exportButton.setBackground(this.titleComposite.getBackground());
 	}
 	
 	/**
@@ -796,6 +788,7 @@ public class ViewContainer extends ViewPart {
 						// The .haz is invalid!
 						MessageDialog.openInformation(this.getSite().getShell(), Messages.Information,
 							Messages.ThisHazFileIsInvalid);
+						
 						ViewContainer.LOGGER.error(e.getMessage(), e);
 						return false;
 					} catch (IOException e) {
@@ -810,6 +803,7 @@ public class ViewContainer extends ViewPart {
 					// Show all views
 					this.navigationRoot.setVisible(true);
 					this.titleLabel.setVisible(true);
+					this.titleComposite.setVisible(true);
 					this.viewAreaRoot.setVisible(true);
 					this.setShowNavigationView(true);
 					this.initControlStructure = true;
@@ -832,21 +826,22 @@ public class ViewContainer extends ViewPart {
 	/**
 	 * Open wizard with export values.
 	 * 
-	 * @author Sebastian Sieber
-	 * @param type 
+	 * @author Sebastian Sieber,Lukas Balzer
 	 * @return boolean true
 	 * 
 	 */
-	public boolean openExportWizard(ExportConstants type) {
+	public boolean openExportWizard() {
 		Wizard wizard = null;
-		switch(type){
-		case PDF:
-			wizard = new PdfExportWizard(
-					this.dataModelController.getProjectName());
-			break;
-		case UCA_TABLE:
-			wizard = new UCATableExportWizard();
-			break;
+		if(this.activeView.viewInstance instanceof IExportView){
+			try {
+				wizard = (Wizard) ((IExportView)this.activeView.viewInstance).getExportWizard().newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}else{
+			MessageDialog.openInformation(PlatformUI.createDisplay().
+									getActiveShell(),Messages.Warning, Messages.NoExportAvailable);
+			return false;
 		}
 		// call wizard
 		WizardDialog dialog =
@@ -865,7 +860,7 @@ public class ViewContainer extends ViewPart {
 	 * @return whether exporting succeeded.
 	 */
 	public boolean exportFromXSL(String filePath){
-		return export(filePath, org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, "/fopxsl.xsl",false);//$NON-NLS-1$
+		return export(filePath, org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, "/fopxsl.xsl",false,"");//$NON-NLS-1$ //$NON-NLS-2$
 	}
 			
 	/**
@@ -873,15 +868,16 @@ public class ViewContainer extends ViewPart {
 	 * 
 	 * @author Lukas Balzer
 	 * 
-	 * @param filePath String
+	 * @param values an array with optional export attributes, if an attribute is needed by the
+	 * export function it is tested in particular if it is given correctly
 	 * @param id the if of the view which shall be exported
 	 * @return whether exporting succeeded.
 	 */
-	public boolean export(String filePath, String id){
+	public boolean export(Object[] values, String id){
 		IViewReference viewRef;
 		viewRef = this.initializedViews.get(id);
 	
-		return viewRef.viewInstance.triggerExport(filePath);
+		return viewRef.viewInstance.triggerExport(values);
 	}
 	/**
 	 * calls the Export function in the given view.
@@ -892,30 +888,18 @@ public class ViewContainer extends ViewPart {
 	 *            String
 	 * @param viewIds
 	 *            specifies the view for which the export should be triggered
+	 * @param seperator the character which is inserted in the csv to seperate two cells
 	 * @return whether exporting succeeded.
 	 */
-	public boolean exportViewData(String filePath, String[] viewIds) {
+	public boolean exportViewData(String filePath, String[] viewIds, char seperator) {
 		
-		IViewReference viewRef;
-		boolean worked = true;
-		String line;
-		File tableCSV = new File(filePath);
-		
-		try(BufferedWriter csvWriter= new BufferedWriter(new FileWriter(tableCSV));) {
-			for(String id: viewIds){
-				viewRef = this.initializedViews.get(id);
-				worked= viewRef.viewInstance.writeCSVData(csvWriter, ';');
-			}	
-			csvWriter.close();
-			File imageFile= new File(filePath);
-			if (imageFile.exists() && Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().open(imageFile);
-			}
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return worked;
+		ReferenceList list= new ReferenceList();
+		for(String id: viewIds){
+			list.add(this.initializedViews.get(id));
+		}	
+		CSVExportJob csvJob= new CSVExportJob(Messages.ExportCSV, filePath, seperator, list);
+		csvJob.schedule();
+		return true;
 		
 	}
 	
@@ -928,9 +912,10 @@ public class ViewContainer extends ViewPart {
 	 * @param xslName the name of the file in which the xsl file is stored which should be used
 	 * @param type the file type which shall be exported
 	 * @param asOne true if all content shall be exported on a single page
+	 * @param jobMessage the job message which is shown in the progress bar
 	 * @return whether exporting succeeded.
 	 */
-	public boolean export(String filePath,String type,String xslName, boolean asOne) {
+	public boolean export(String filePath,String type,String xslName, boolean asOne,String jobMessage) {
 		this.dataModelController.prepareForExport();
 		// put the xml jaxb content into an output stream
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -951,7 +936,7 @@ public class ViewContainer extends ViewPart {
 		}
 		this.dataModelController.prepareForSave();
 		// start the job, that exports the pdf from the JAXB stream
-		Job exportJob = new ExportJob(Messages.ExportingPdf, filePath, outStream,type,xslName,asOne);
+		Job exportJob = new ExportJob(jobMessage, filePath, outStream,type,xslName,asOne);
 		exportJob.schedule();
 		exportJob.addJobChangeListener(new ExportJobChangeAdapter());
 		return true;
@@ -1066,6 +1051,7 @@ public class ViewContainer extends ViewPart {
 	public void showWelcomePage() {
 		this.navigationRoot.setVisible(false);
 		this.titleLabel.setVisible(false);
+		this.titleComposite.setVisible(false);
 		this.setShowNavigationView(false);
 		this.viewAreaRoot.setVisible(false);
 		
@@ -1082,6 +1068,7 @@ public class ViewContainer extends ViewPart {
 	public void hideWelcomePage() {
 		this.navigationRoot.setVisible(true);
 		this.titleLabel.setVisible(true);
+		this.titleComposite.setVisible(true);
 		this.setShowNavigationView(true);
 		this.viewAreaRoot.setVisible(true);
 		
@@ -1109,12 +1096,55 @@ public class ViewContainer extends ViewPart {
 	 */
 	public Map<String, String> getInitializedViews(){
 		Map<String,String> steps= new HashMap<>();
-		for(String tmp: this.initializedViews.keySet().toArray(new String[0])){
-			if(!tmp.equals(CSEditor.ID) && !tmp.equals(CSEditorWithPM.ID)){
-				steps.put(tmp, this.initializedViews.get(tmp).getTitle());
+		for(IViewReference tmp: this.initializedViews.values()){
+			IViewBase instance= tmp.viewInstance;
+			if(instance instanceof IDataExport){
+				steps.put(instance.getId(), tmp.getTitle());
 			}
 		}
 		return steps;
+	}
+}
+class CSVExportJob extends Job{
+	
+	private final char seperator;
+	private final String path;
+	private final ReferenceList referenceList;
+	/**
+	 * calls the Export function in the given view.
+	 * 
+	 * @author Lukas Balzer
+	 * @param name the name of the job
+	 * @param filePath
+	 *            String
+	 * @param list
+	 *            specifies the view for which the export should be triggered
+	 * @param seperator the seperator with which the cells in the csv are seperated by
+	 */
+	public CSVExportJob(String name,String filePath, char seperator,ReferenceList list) {
+		super(name);
+		this.path= filePath;
+		this.seperator = seperator;
+		this.referenceList= list;
+	}
+	
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
+		monitor.beginTask(Messages.ExportingCSV, IProgressMonitor.UNKNOWN);
+		File tableCSV = new File(this.path);
+		
+		try(BufferedCSVWriter csvWriter= new BufferedCSVWriter(new FileWriter(tableCSV),this.seperator);) {
+			this.referenceList.writeCSV(csvWriter);	
+			csvWriter.close();
+			if (tableCSV.exists() && Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(tableCSV);
+			}
+		}catch (IOException e) {
+			return Status.CANCEL_STATUS;
+		}
+		
+		return Status.OK_STATUS;
+		
 	}
 }
 
@@ -1253,3 +1283,6 @@ class ExportJob extends Job {
 	
 	
 }
+
+
+

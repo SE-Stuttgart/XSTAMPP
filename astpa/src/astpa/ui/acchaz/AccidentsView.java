@@ -13,7 +13,6 @@
 
 package astpa.ui.acchaz;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +50,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.AccidentsWizard;
 import astpa.model.ITableModel;
 import astpa.model.hazacc.Accident;
 import astpa.model.interfaces.IAccidentViewDataModel;
@@ -474,8 +475,13 @@ public class AccidentsView extends CommonTableView {
 
 
 	@Override
-	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
-		this.exportAsCSV(this.dataInterface.getAllAccidents(),writer, seperator);
+	public boolean writeCSVData(BufferedCSVWriter writer) throws IOException {
+		this.exportAsCSV(this.dataInterface.getAllAccidents(),writer);
 		return true;
+	}
+	
+	@Override
+	public Class<?> getExportWizard() {
+		return AccidentsWizard.class;
 	}
 }

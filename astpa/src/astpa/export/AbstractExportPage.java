@@ -4,14 +4,21 @@ import java.util.ArrayList;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -20,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
 import astpa.export.pages.IExportPage;
+import astpa.preferences.IPreferenceConstants;
 
 /**
  *a class to prevent code cloning in the export Pages
@@ -29,11 +37,17 @@ import astpa.export.pages.IExportPage;
  */
 public abstract class AbstractExportPage extends WizardPage implements IExportPage{
 	
+	/**
+	 * if a input field is essential for the Export
+	 */
+	public static final String ESSENTIAL="*"; //$NON-NLS-1$
 	private String projectName;
+	protected static final int DEMOCANVAS_HEIGHT=60;
 	protected static final int COMPONENT_OFFSET = 10;
 	private static final String IMAGE_PATH = "/icons/buttons/export"; //$NON-NLS-1$
 	protected static final int LABEL_COLUMN= 5;
-	protected static final int TEXT_COLUMN= 108;
+	protected static final int LABEL_WIDTH = 107;
+	protected static final int TEXT_COLUMN= LABEL_COLUMN + LABEL_WIDTH+1;
 	protected static final int BUTTON_COLUMN= 430;
 	private int fontState = 0;
 	
@@ -105,8 +119,6 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 		
 	}
 	
-
-
 	
 
 	/**
@@ -118,14 +130,16 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 	 * @param srcText Text
 	 * @param srcLbl Label
 	 * @param state Integer
+	 * @param constant 
 	 */
-	protected void openColorDialog(Button srcBtn, Text srcText, Label srcLbl, int state) {
+	protected void openColorDialog(Button srcBtn, Text srcText, Label srcLbl, int state, String constant) {
 		ColorDialog colorDialog = new ColorDialog(srcBtn.getShell());
 		colorDialog.setText(Messages.SelectColor);
 		RGB selectedColor = colorDialog.open();
 		if (selectedColor == null) {
 			return;
 		}
+		PreferenceConverter.setValue(this.store, constant,selectedColor);
 		srcText.setText(selectedColor.toString());
 		this.setLabelIcon(srcLbl, selectedColor, state);
 	}
@@ -282,10 +296,10 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 	 * 			the file extensions, which shall be excepted by in the dialog
 	 *
 	 */
-	protected void openExportDialog(String[] filters) {
+	protected void openExportDialog(String[] filters,String[] names) {
 		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
 		fileDialog.setFilterExtensions(filters); 
-		fileDialog.setFilterNames(filters); 
+		fileDialog.setFilterNames(names); 
 		fileDialog.setFileName(this.getProjectName());
 		String filePath = fileDialog.open();
 		if (filePath != null) {
@@ -294,54 +308,69 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 		this.setPageComplete(true);
 	}
 	
+	/**
+	 *
+	 * @author Sebastian Sieber,Lukas Balzer
+	 * @param filters
+	 * 			the file extensions, which shall be excepted by in the dialog
+	 */
+	protected void openExportDialog(String[] filters) {
+		openExportDialog(filters, filters);
+	}
 	protected final class PathComposite extends Composite{
-
+		private Button pathButton;
 		private Text path;
-		private final String[] filters;
 		
 		/**
 		 * This constructor constructs a Composite which contains
 		 * a basic ui for choosing a path
 		 * 
 		 * @author Lukas Balzer
-		 *
-		 * @param filters the file extensions which are to accept
 		 * @param parent a widget which will be the parent of the new instance (cannot be null)
 		 * @param style the style of widget to construct 
-		 * 
+		 * @param name the name which specifies the path to be chosen
+		 *
 		 * @see Composite#Composite(Composite, int)
 		 */
-		public PathComposite(String[] filters,Composite parent, int style) {
+		public PathComposite(Composite parent, int style, String name) {
 			super(parent, style);
-			this.filters=filters;
 			this.setLayout(null);
 			Label labelExport = new Label(this, SWT.NONE);
-			labelExport.setText(Messages.Destination);
-			labelExport.setBounds(0, 0, 107, 15);
+			labelExport.setText(name);
+			labelExport.setBounds(LABEL_COLUMN, 0, LABEL_WIDTH, 15);
 			
 			
 			this.path= new Text(this, SWT.BORDER|SWT.SINGLE);
-			this.path.setBounds(TEXT_COLUMN-LABEL_COLUMN, 0, 297, 21);
+			this.path.setBounds(TEXT_COLUMN, 0, 297, 21);
 			this.path.setText(""); //$NON-NLS-1$
 			this.path.setEditable(false);
 			
-			Button pathButton = new Button(this, SWT.NONE);
-			pathButton.setBounds(BUTTON_COLUMN-LABEL_COLUMN, 0, 42, 25);
-			pathButton.setText("..."); //$NON-NLS-1$
-			pathButton.addSelectionListener(new SelectionListener() {
+			this.pathButton = new Button(this, SWT.NONE);
+			this.pathButton.setBounds(BUTTON_COLUMN, 0, 42, 25);
+			this.pathButton.setText("..."); //$NON-NLS-1$
+
+		}
+		
+		public PathComposite(final String[] filter,Composite parent, int style){
+			this(parent, style, Messages.Destination);
+			addButtonListener(new SelectionListener() {
 				
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					AbstractExportPage.this.openExportDialog(PathComposite.this.filters);
+					AbstractExportPage.this.openExportDialog(filter);
+					
 				}
 				
 				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
-					// no-op
+					// nothing
+					
 				}
 			});
 		}
-		
+		public void addButtonListener(SelectionListener listener){
+			this.pathButton.addSelectionListener(listener);
+		}
 		public Text getText(){
 			return this.path;
 		}
@@ -349,6 +378,9 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 	}
 	
 	protected final class ColorChooser extends Composite{
+
+		
+
 
 		private Text colorText;
 		private Button	colorButton;
@@ -367,17 +399,16 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 		 * 
 		 * @see Composite#Composite(Composite, int)
 		 */
-		public ColorChooser(Composite parent,int style,String text,String constant) {
-			super(parent, style);
+		public ColorChooser(Composite parent,int style,String text,final String constant) {
+			super(parent, style); 
 			Label labelBackgroundColor = new Label(this, SWT.NONE);
 			labelBackgroundColor.setText(text);
-			labelBackgroundColor.setBounds(LABEL_COLUMN, 0, 107, 15);
+			labelBackgroundColor.setBounds(LABEL_COLUMN, 0, LABEL_WIDTH, 15);
 			
 			//create the Text which says what color is selected at the moment
 			this.colorText = new Text(this, SWT.BORDER);
 			this.colorText.setBounds(TEXT_COLUMN + 30, 0, 268, 21);
 			this.colorText.setEditable(false);
-			
 			String companyBackgroundColor =
 				PreferenceConverter.getColor(AbstractExportPage.this.store, constant).toString();
 			
@@ -402,8 +433,7 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					AbstractExportPage.this.openColorDialog(ColorChooser.this.colorButton,
-							ColorChooser.this.colorText, ColorChooser.this.colorIcon,
-						1);
+							ColorChooser.this.colorText, ColorChooser.this.colorIcon,1,constant);
 				}
 				
 				@Override
@@ -412,7 +442,60 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 				}
 			});
 		}
+		/**
+		 * @return the colorText
+		 */
+		public String getColorString() {
+			return this.colorText.getText();
+		}
 		
+		public void addColorChangeListener(ModifyListener listener){
+			this.colorText.addModifyListener(listener);
+		}
+	}
+	
+	protected class DemoCanvas extends Canvas{
+		private final Text sampleTitle;
+		private final Font normalFont=new Font(null, "normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
+		private final Font previewFont=new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+		
+		public DemoCanvas(Composite parent, int style) {
+			super(parent, style);
+			this.sampleTitle=new Text(DemoCanvas.this, SWT.NONE);
+			this.sampleTitle.setFont(this.previewFont);
+			this.sampleTitle.setVisible(false);
+			this.sampleTitle.setText( AbstractExportPage.this.store.getString(IPreferenceConstants.PROJECT_NAME));
+			this.sampleTitle.pack();
+			this.addPaintListener(new PaintListener() {
+				private Color fontColor;
+				private Color bgColor;
+				private final int string_xPos=10;
+				private final int string_yPos=0;
+				private final int bgRec_yPos=7;
+				private final int preview_xPos=8;
+				private final int preview_yPos=19;
+				@Override
+				public void paintControl(PaintEvent e) {
+					e.gc.setBackground(ColorConstants.white);
+					e.gc.fillRectangle(0, this.bgRec_yPos, 400, 40);
+					
+					this.fontColor= new Color(null,PreferenceConverter.getColor(AbstractExportPage.this.store,
+							IPreferenceConstants.COMPANY_FONT_COLOR));
+					this.bgColor=new Color(null,PreferenceConverter.getColor(AbstractExportPage.this.store,
+						IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
+					e.gc.setForeground(this.fontColor);
+					e.gc.setFont(DemoCanvas.this.previewFont);
+					e.gc.setBackground(this.bgColor);
+					e.gc.drawString(DemoCanvas.this.sampleTitle.getText(), this.preview_xPos, this.preview_yPos, false);
+					
+					e.gc.setForeground(ColorConstants.black);
+					e.gc.setFont(DemoCanvas.this.normalFont);
+					e.gc.drawText(Messages.Preview, this.string_xPos, this.string_yPos,true);
+				}
+			});
+		}
+		
+	
 	}
 	
 	/**
@@ -439,4 +522,5 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 	public void setBackgroundState(int backgroundState) {
 		this.backgroundState = backgroundState;
 	}
+	
 }

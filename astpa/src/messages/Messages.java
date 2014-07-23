@@ -72,6 +72,7 @@ public final class Messages extends NLS {
 	public static String ExportingPdf;
 	@SuppressWarnings("javadoc")
 	public static String ExportingCS;
+	public static String ExportingCSV;
 	@SuppressWarnings("javadoc")
 	public static String ExportingCSwithPM;
 	@SuppressWarnings("javadoc")
@@ -84,6 +85,7 @@ public final class Messages extends NLS {
 	public static String ExportPdf;
 	@SuppressWarnings("javadoc")
 	public static String ExportCS;
+	public static String ExportCSV;
 	@SuppressWarnings("javadoc")
 	public static String ExportCSwithPM;
 	@SuppressWarnings("javadoc")
@@ -100,6 +102,8 @@ public final class Messages extends NLS {
 	public static String GridWrapper_Column;
 	@SuppressWarnings("javadoc")
 	public static String NoUpdatesForTheCurrentInstallationHaveBeenFound;
+	@SuppressWarnings("javadoc")
+	public static String Tabulator;
 	@SuppressWarnings("javadoc")
 	public static String TheUpdateRoutineDoesNotWorkWhenASTPAIsExecutedFromTheIDE;
 	@SuppressWarnings("javadoc")
@@ -154,6 +158,7 @@ public final class Messages extends NLS {
 	public static String Filter;
 	@SuppressWarnings("javadoc")
 	public static String FontColor;
+	public static String Comma;
 	@SuppressWarnings("javadoc")
 	public static String CommonTable;
 	@SuppressWarnings("javadoc")
@@ -186,6 +191,8 @@ public final class Messages extends NLS {
 	public static String Controller;
 	@SuppressWarnings("javadoc")
 	public static String CreateController;
+	public static String PrepareDataExport;
+	public static String Preview;
 	@SuppressWarnings("javadoc")
 	public static String ProcessModel;
 	@SuppressWarnings("javadoc")
@@ -213,6 +220,8 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String DashedArrows;
 	@SuppressWarnings("javadoc")
+	public static String OffsetValue;
+	@SuppressWarnings("javadoc")
 	public static String Others;
 	@SuppressWarnings("javadoc")
 	public static String TextBox;
@@ -235,7 +244,11 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String SelectedNavItem;
 	@SuppressWarnings("javadoc")
+	public static String Semicolon;
+	@SuppressWarnings("javadoc")
 	public static String Sensor;
+	@SuppressWarnings("javadoc")
+	public static String SeperatorCharacter;
 	@SuppressWarnings("javadoc")
 	public static String SetValuesForTheExportFile;
 	@SuppressWarnings("javadoc")
@@ -248,6 +261,7 @@ public final class Messages extends NLS {
 	public static String PleaseConfirmTheDeletionOfAllSelectedDesignRequirements;
 	@SuppressWarnings("javadoc")
 	public static String NoDesignRequirementSelected;
+	public static String NoExportAvailable;
 	@SuppressWarnings("javadoc")
 	public static String DescriptionOfThisDesignReq;
 	@SuppressWarnings("javadoc")

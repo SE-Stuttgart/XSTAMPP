@@ -22,13 +22,13 @@ public class CausalFactorsTableWizard extends AbstractExportWizard{
 	public CausalFactorsTableWizard() {
 		super(CausalFactorsView.ID);
 		String[] filters= new String[] {"*.png"}; //$NON-NLS-1$
-		setExportPage(new TableExportPage(filters,Messages.ExportPreferences,
+		setExportPage(new TableExportPage(filters,Messages.CausalFactorsTable,
 										getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 	}
 
 
 	@Override
 	public boolean performFinish() {
-		return this.performXSLExport("/fopcausal.xsl");
+		return this.performXSLExport("/fopcausal.xsl",Messages.ExportingCFTable);
 	}
 }

@@ -1,7 +1,5 @@
 package astpa.export.stepData;
 
-import messages.Messages;
-
 import org.eclipse.ui.PlatformUI;
 
 import astpa.export.AbstractExportWizard;
@@ -30,7 +28,7 @@ public class STPAdataWizard extends AbstractExportWizard{
 		ViewContainer viewContainer =
 				(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.findView(ViewContainer.ID);
-		this.site=new STPADataPage(filters,viewContainer.getInitializedViews(),Messages.ExportPreferences,
+		this.site=new STPADataPage(filters,viewContainer.getInitializedViews(),"Custom Data",
 				this.getStore().getString(IPreferenceConstants.PROJECT_NAME));
 		setExportPage(this.site);
 	}

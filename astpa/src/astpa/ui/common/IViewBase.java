@@ -13,8 +13,6 @@
 
 package astpa.ui.common;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -91,27 +89,18 @@ public interface IViewBase extends Observer {
 	/**
 	 *
 	 * @author Lukas Balzer
+	 * @param values  an array with optional export attributes, if an attribute is needed by the
+	 * export function it is tested in particular if it is given correctly
 	 * @return 
 	 * 		whether there is an export available or not
 	 *
 	 */
-	boolean triggerExport(String path);
+	boolean triggerExport(Object[] values);
 	
-	/**
-	 * writes all data provided by this view in the given writer object
-	 * @author Lukas Balzer
-	 *
-	 * @param writer 
-	 * 			the Writer where the informations are passed to
-	 * @param seperator TODO
-	 * @return
-	 * 			whether the process was successful or not
-	 * @throws IOException 
-	 */
-	boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException;
 	
 	@Override
 	void update(Observable dataModelController, Object updatedValue);
 	
+
 	
 }

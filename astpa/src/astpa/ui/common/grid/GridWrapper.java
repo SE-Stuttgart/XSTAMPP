@@ -31,8 +31,6 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -492,6 +490,7 @@ public class GridWrapper {
 	 * @author Patrick Wickenhaeuser
 	 * 
 	 */
+	@SuppressWarnings("deprecation")
 	public void clearTable() {
 		this.actualGrid.removeAll();
 	}

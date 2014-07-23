@@ -16,6 +16,8 @@ package astpa.ui.common.grid;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 
@@ -64,8 +66,19 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 	@Override
 	public void openProposalPopup() {
 		super.openProposalPopup();
-//		this.setProposalPopupFocus();
-		
+		super.getControl().addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				closeProposalPopup();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// do nothing if the focus is gained
+				
+			}
+		});
 	}
 	
 	

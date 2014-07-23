@@ -14,7 +14,6 @@
 
 package astpa.ui.causalfactors;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.IDataExport;
+import astpa.export.stepImages.CausalFactorsTableWizard;
 import astpa.model.ISafetyConstraint;
+import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.model.causalfactor.ICausalComponent;
 import astpa.model.causalfactor.ICausalFactor;
@@ -67,7 +70,7 @@ import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
  * 
  * @author Benedikt Markt, Patrick Wickenhaeuser
  */
-public class CausalFactorsView implements IViewBase {
+public class CausalFactorsView implements IViewBase,IDataExport {
 	
 	private static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 	private static final Point ADD_BUTTON_COORDINATE = new Point(40, 1);
@@ -188,9 +191,8 @@ public class CausalFactorsView implements IViewBase {
 	
 	private class ImportButton extends CellButton {
 		
-	
+	 
 		private ICausalFactor factor = null;
-		
 		
 		public ImportButton(Rectangle rect, Image image, ICausalFactor factor) {
 			super(rect, image);
@@ -230,7 +232,6 @@ public class CausalFactorsView implements IViewBase {
 				public void proposalAccepted(IContentProposal proposal) {
 					CausalFactorsView.this.dataInterface.setCausalSafetyConstraintText(ImportButton.this.factor.getSafetyConstraint()
 							.getId(), proposal.getDescription());
-					
 				}
 			});
 			
@@ -238,6 +239,7 @@ public class CausalFactorsView implements IViewBase {
 			scLinking.openPopup();
 			
 		}
+
 	}
 	
 	private class NewButton extends CellButton {
@@ -382,7 +384,7 @@ public class CausalFactorsView implements IViewBase {
 					this.grid, CausalFactorsView.HAZARD_ID_PREFIX));
 				
 				if (factor.getSafetyConstraint().getText().equals("")) { //$NON-NLS-1$
-					GridCellText constraintsCell = new GridCellText(this.grid,""); //$NON-NLS-1$
+					GridCellText constraintsCell = new GridCellText(""); //$NON-NLS-1$
 					constraintsCell.addCellButton(new NewButton(new Rectangle(4, 1, GridWrapper.getAddButton16()
 						.getBounds().width, GridWrapper.getAddButton16().getBounds().height), GridWrapper
 						.getAddButton16(), factor));
@@ -441,14 +443,53 @@ public class CausalFactorsView implements IViewBase {
 	 * please use the CausalFactorsTable Wizard for he export function
 	 */
 	@Override
-	public boolean triggerExport(String path) {
+	public boolean triggerExport(Object[] values) {
 		// not used in this view
 		return false;
 	}
 
 	@Override
-	public boolean writeCSVData(BufferedWriter wirter, char seperator) throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean writeCSVData(BufferedCSVWriter writer) throws IOException {
+		
+		//the First two Rows are filled with the view- and the Column-titles
+		writer.newLine();
+		writer.write(this.getTitle());
+		writer.newLine();
+		writer.writeCell(Messages.Component);
+		writer.writeCell(Messages.CausalFactors);
+		writer.writeCell(Messages.HazardLinks);
+		writer.writeCell(Messages.SafetyConstraints);
+		writer.write(Messages.NotesSlashRationale);
+		writer.newLine();
+		writer.newLine();
+		for(ICausalComponent action : this.dataInterface.getCausalComponents()){
+			ICausalFactor factor;
+			
+			//this loop writes two lines 
+			for(int index=0;index<action.getCausalFactors().size();index++){
+				factor= action.getCausalFactors().get(index);
+				if(index ==0){
+					writer.writeCell(action.getText());
+				}else{
+					writer.writeCell();
+				}
+				
+				//write the Descriptions in one line
+				writer.writeCell(factor.getText());
+				for(ITableModel haz: this.dataInterface.getLinkedHazardsOfCf(factor.getId())){
+					writer.write("[H-"+haz.getNumber()+"]");
+				}
+				writer.writeCell();
+				writer.writeCell(factor.getSafetyConstraint().getText());
+				writer.writeCell(factor.getNote());
+				writer.newLine();
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public Class<?> getExportWizard() {
+		return CausalFactorsTableWizard.class;
 	}
 }

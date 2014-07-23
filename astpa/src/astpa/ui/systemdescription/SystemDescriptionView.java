@@ -14,7 +14,6 @@
 package astpa.ui.systemdescription;
 
 import java.awt.Desktop;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,9 +23,6 @@ import java.util.Observable;
 
 import messages.Messages;
 
-import org.eclipse.core.runtime.Status;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -63,7 +59,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.printing.Printer;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -83,6 +78,9 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 
 import astpa.Activator;
+import astpa.export.BufferedCSVWriter;
+import astpa.export.stepData.IDataExport;
+import astpa.export.stepData.SystemDecriptionDataWizard;
 import astpa.model.ObserverValue;
 import astpa.model.interfaces.IDataModel;
 import astpa.model.interfaces.ISystemDescriptionViewDataModel;
@@ -94,7 +92,7 @@ import astpa.ui.common.IViewBase;
  * 
  * @author Patrick Wickenhaeuser, Sebastian Sieber
  */
-public class SystemDescriptionView implements IViewBase {
+public class SystemDescriptionView implements IViewBase,IDataExport {
 	
 	/**
 	 * ViewPart ID.
@@ -321,6 +319,7 @@ public class SystemDescriptionView implements IViewBase {
 		String projectName = this.dataInterface.getProjectName();
 		if (projectName != null) {
 			this.projectNameText.setText(projectName);
+			this.store.setValue(IPreferenceConstants.PROJECT_NAME, projectName);
 		} else {
 			this.projectNameText.setText(""); //$NON-NLS-1$
 		}
@@ -1505,12 +1504,14 @@ public class SystemDescriptionView implements IViewBase {
 	}
 
 	@Override
-	public boolean triggerExport(String path) {
+	public boolean triggerExport(Object[] values) {
+		if(values.length <1|| !(values[0] instanceof String)){
+			return false;
+		}
 		Rectangle rect= this.descriptionText.getTextBounds(0, this.descriptionText.getText().length()-1);
 		rect.width +=10;
 		Image srcImage = new Image(null, rect);
 		GC imageGC = new GC(srcImage);
-		Graphics graphics = new SWTGraphics(imageGC);
 		if(this.descriptionText.getHorizontalBar() != null){
 			this.descriptionText.getHorizontalBar().setVisible(false);
 		}
@@ -1523,17 +1524,16 @@ public class SystemDescriptionView implements IViewBase {
 		ImageLoader imgLoader = new ImageLoader();
 		imgLoader.data = new ImageData[] {srcImage.getImageData()};
 			
-		imgLoader.save(path, SWT.IMAGE_PNG);
+		imgLoader.save((String) values[0], SWT.IMAGE_PNG);
 			
 			
-			File imageFile= new File(path);
+			File imageFile= new File((String) values[0]);
 			if (imageFile.exists()) {
 				if (Desktop.isDesktopSupported()) {
 					
 						try {
 							Desktop.getDesktop().open(imageFile);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					
@@ -1549,14 +1549,23 @@ public class SystemDescriptionView implements IViewBase {
 	}
 
 	@Override
-	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
+	public boolean writeCSVData(BufferedCSVWriter writer) throws IOException {
 
 		writer.newLine();
 		writer.write(this.getTitle() +" - "); ////$NON-NLS-1$
 		writer.write(this.dataInterface.getProjectName());
 		writer.newLine();
-		writer.write(this.dataInterface.getProjectDescription());
+		String description=this.dataInterface.getProjectDescription();
+		for(int length=200;length<=description.length();length += 200){
+			writer.writeCell(description.substring(length- 200, length-1));
+			writer.newLine();
+		}
 		return true;
+	}
+
+	@Override
+	public Class<?> getExportWizard() {
+		return SystemDecriptionDataWizard.class;
 	}
 	
 }

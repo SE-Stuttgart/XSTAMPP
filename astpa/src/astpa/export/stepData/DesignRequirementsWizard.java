@@ -2,7 +2,7 @@ package astpa.export.stepData;
 
 import messages.Messages;
 import astpa.export.AbstractExportWizard;
-import astpa.export.pages.SimpleExportPage;
+import astpa.export.pages.CSVExportPage;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.sds.DesignRequirementView;
 
@@ -21,7 +21,7 @@ public class DesignRequirementsWizard extends AbstractExportWizard{
 	public DesignRequirementsWizard() {
 		super(DesignRequirementView.ID);
 		String[] filters= new String[] {"*.csv"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		setExportPage(new SimpleExportPage(filters,Messages.ExportPreferences,
+		setExportPage(new CSVExportPage(filters,Messages.DesignRequirements,
 										this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 	}
 

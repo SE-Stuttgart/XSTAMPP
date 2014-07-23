@@ -87,7 +87,7 @@
                   commandId="astpa.load"
                   label="Load Project..."
                   style="push"
-                  tooltip="Loa">
+                  tooltip="Load">
             </command>
             <separator
                   name="Separator 1"
@@ -106,7 +106,13 @@
                   tooltip="Save file as...">
             </command>
             <command
+                  commandId="org.eclipse.ui.file.import"
+                  label="Import..."
+                  style="push">
+            </command>
+            <command
                   commandId="org.eclipse.ui.file.export"
+                  label="Export..."
                   style="push">
             </command>
             <separator
@@ -190,22 +196,6 @@
             </with>
          </enabledWhen>
       </handler>ler>
-      <handler
-            class="astpa.ui.menu.file.commands.ExportAs"
-            commandId="astpa.exportas">
-         <enabledWhen>
-            <with
-                  variable="astpa.ui.menu.file.commands.savestate">
-               <equals
-                     value="ENABLED">
-               </equals>
-            </with>
-         </enabledWhen>
-      </handler>
-      <handler
-            class="astpa.ui.menu.file.commands.ExportUCATable"
-            commandId="astpa.ExportUCATable">
-      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -325,18 +315,11 @@
    </page>
 </extension>
 <extension
+      name="Pdf Export Wizard"
       point="org.eclipse.ui.exportWizards">
    <category
          id="astpa.mainCategory"
          name="STPA Report">
-   </category>
-   <category
-         id="astpa.stepData"
-         name="STPA Data Sheets">
-   </category>
-   <category
-         id="astpa.stepImages"
-         name="STPA Images">
    </category>
    <wizard
          category="astpa.mainCategory"
@@ -348,40 +331,139 @@
          The whole STPA Analysis in as PDF Report
       </description>
    </wizard>
+</extension>
+<extension
+      id="astpa.export"
+      point="org.eclipse.ui.exportWizards">
+   <category
+         id="astpa.stepData"
+         name="STPA Data Sheets">
+   </category>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.STPAdataWizard"
+         id="astpa.datawizard"
+         name=" All Data">
+      <description>
+         opens a Wizard where you can choose multiple of the provided data sheets to be exported as CSV
+      </description>
+   </wizard>
    <wizard
          category="astpa.stepData"
          class="astpa.export.stepData.AccidentsWizard"
          icon="icons/buttons/navigation/STEP1_2.png"
          id="astpa.wizard1_2data"
-         name="Accidents">
+         name="List of Accidents">
+      <description>
+         The Accidents as data sheet
+      </description>
    </wizard>
    <wizard
          category="astpa.stepData"
          class="astpa.export.stepData.HazardsWizard"
          icon="icons/buttons/navigation/STEP1_3.png"
          id="astpa.wizard1_3data"
-         name="Hazards">
+         name="List of Hazards">
+      <description>
+         The Hazards as data sheet
+      </description>
    </wizard>
    <wizard
          category="astpa.stepData"
          class="astpa.export.stepData.DesignRequirementsWizard"
          icon="icons/buttons/navigation/STEP1_7.png"
          id="astpa.wizard1_7data"
-         name="Design Requirements">
-   </wizard>
-   <wizard
-         category="astpa.stepImages"
-         class="astpa.export.stepImages.ControlStructureWizard"
-         icon="icons/buttons/navigation/STEP1_8.png"
-         id="astpa.wizard1_8"
-         name="Control Structure">
+         name="List of Design Requirements">
+      <description>
+         The Design Requirements as data sheet
+      </description>
    </wizard>
    <wizard
          category="astpa.stepData"
          class="astpa.export.stepData.ControlActionsWizard"
          icon="icons/buttons/navigation/STEP2_1.png"
          id="astpa.wizard2_1data"
-         name="Control Actions">
+         name="List of Control Actions">
+      <description>
+         The Control Actions as data sheet
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.CSCWizard"
+         icon="icons/buttons/navigation/STEP2_3.png"
+         id="astpa.wizard2_3data"
+         name="List of Corresponding Safety Constraints">
+      <description>
+         The corresponding Safety Constrints defined in step two as data sheet
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.SafetyConstraintsWizard"
+         icon="icons/buttons/navigation/STEP1_5.png"
+         id="astpa.wizard1_5data"
+         name="List of Safety Constraints">
+      <description>
+         The Safety Constraint defined in step one as data sheet
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.SystemGoalsWizard"
+         icon="icons/buttons/navigation/STEP1_6.png"
+         id="astpa.wizard1_6data"
+         name="List of System Goals">
+      <description>
+         The System Goals as data sheet
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.UnsafeControlActionsDataWizard"
+         icon="icons/buttons/navigation/STEP2_2.png"
+         id="astpa.wizard2_2data"
+         name="Unsafe Control Actions Table">
+      <description>
+         The Unsafe Control Actions Table data Exported as data sheet
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.CausalFactorsDataWizard"
+         icon="icons/buttons/navigation/STEP3_2.png"
+         id="astpa.wizard3_2data"
+         name="Causal Factors Table">
+      <description>
+         The Causal Factors Table data Exported as data sheet
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepData"
+         class="astpa.export.stepData.SystemDecriptionDataWizard"
+         icon="icons/buttons/navigation/STEP1_1.png"
+         id="astpa.wizard1_1data"
+         name="System Decription">
+      <description>
+         description body text
+      </description>
+   </wizard>
+</extension>
+<extension
+      point="org.eclipse.ui.exportWizards">
+   <category
+         id="astpa.stepImages"
+         name="STPA Images">
+   </category>
+   <wizard
+         category="astpa.stepImages"
+         class="astpa.export.stepImages.ControlStructureWizard"
+         icon="icons/buttons/navigation/STEP1_8.png"
+         id="astpa.wizard1_8"
+         name="Control Structure">
+      <description>
+         Export the Control Structure as picture
+      </description>
    </wizard>
    <wizard
          category="astpa.stepImages"
@@ -394,18 +476,24 @@
       </description>
    </wizard>
    <wizard
-         category="astpa.stepData"
-         class="astpa.export.stepData.CSCWizard"
-         icon="icons/buttons/navigation/STEP2_3.png"
-         id="astpa.wizard2_3data"
-         name="Corresponding Safety Constraints">
-   </wizard>
-   <wizard
          category="astpa.stepImages"
          class="astpa.export.stepImages.ControlStructureWithPMWizard"
          icon="icons/buttons/navigation/STEP3_1.png"
          id="astpa.wizard3_1"
          name="ControlStructure With Process Model">
+      <description>
+         Export the Control Structure with process model as picture
+      </description>
+   </wizard>
+   <wizard
+         category="astpa.stepImages"
+         class="astpa.export.stepImages.SystemDecriptionWizard"
+         icon="icons/buttons/navigation/STEP1_1.png"
+         id="astpa.wizard1_1"
+         name="System Decription">
+      <description>
+         Export the description either as picture or as pdf file
+      </description>
    </wizard>
    <wizard
          category="astpa.stepImages"
@@ -416,63 +504,6 @@
       <description>
          The Causal Factors Table as single Export , provided as PNG
       </description>
-   </wizard>
-   <wizard
-         category="astpa.stepData"
-         class="astpa.export.stepData.SafetyConstraintsWizard"
-         icon="icons/buttons/navigation/STEP1_5.png"
-         id="astpa.wizard1_5data"
-         name="Safety Constraints">
-      <selection
-            class="astpa.Selection1">
-      </selection>
-   </wizard>
-   <wizard
-         category="astpa.stepData"
-         class="astpa.export.stepData.SystemGoalsWizard"
-         icon="icons/buttons/navigation/STEP1_6.png"
-         id="astpa.wizard1_6data"
-         name="System Goals">
-   </wizard>
-   <wizard
-         category="astpa.stepData"
-         class="astpa.export.stepData.UnsafeControlActionsDataWizard"
-         icon="icons/buttons/navigation/STEP2_2.png"
-         id="astpa.wizard2_2data"
-         name="Unsafe Control Actions Table">
-      <description>
-         The Unsafe Control Actions Table as single Export , provided as PNG
-      </description>
-   </wizard>
-   <wizard
-         category="astpa.stepData"
-         class="astpa.export.stepData.CausalFactorsDataWizard"
-         icon="icons/buttons/navigation/STEP3_2.png"
-         id="astpa.wizard3_2data"
-         name="Causal Factors Table">
-      <description>
-         The Causal Factors Table as single Export , provided as PNG
-      </description>
-   </wizard>
-   <wizard
-         category="astpa.stepData"
-         class="astpa.export.stepData.STPAdataWizard"
-         id="astpa.datawizard"
-         name="Default Data">
-   </wizard>
-   <wizard
-         category="astpa.stepImages"
-         class="astpa.export.stepImages.SystemDecriptionWizard"
-         icon="icons/buttons/navigation/STEP1_1.png"
-         id="astpa.wizard1_1"
-         name="System Decription">
-   </wizard>
-   <wizard
-         category="astpa.stepData"
-         class="astpa.export.stepData.SystemDecriptionDataWizard"
-         icon="icons/buttons/navigation/STEP1_1.png"
-         id="astpa.wizard1_1data"
-         name="System Decription">
    </wizard>
 </extension>
 

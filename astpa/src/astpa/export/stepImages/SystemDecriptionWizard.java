@@ -2,7 +2,7 @@ package astpa.export.stepImages;
 
 import messages.Messages;
 import astpa.export.AbstractExportWizard;
-import astpa.export.pages.SimpleExportPage;
+import astpa.export.pages.SystemDescriptionExportPage;
 import astpa.preferences.IPreferenceConstants;
 import astpa.ui.systemdescription.SystemDescriptionView;
 
@@ -21,13 +21,13 @@ public class SystemDecriptionWizard  extends AbstractExportWizard{
 		public SystemDecriptionWizard() {
 			super(SystemDescriptionView.ID);
 			String[] filters= new String[] {"*.png","*.pdf"}; //$NON-NLS-1$ //$NON-NLS-2$
-			setExportPage(new SimpleExportPage(filters,Messages.ExportPreferences,
+			setExportPage(new SystemDescriptionExportPage(filters,Messages.ExportPreferences,
 											this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 		}
 		
 
 		@Override
 		public boolean performFinish() {
-			return this.performXSLExport("/fopDesc.xsl"); //$NON-NLS-1$
+			return this.performXSLExport("/fopDesc.xsl",Messages.ExportingPdf); //$NON-NLS-1$
 		}
 }
