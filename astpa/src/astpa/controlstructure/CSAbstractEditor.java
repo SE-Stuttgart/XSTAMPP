@@ -16,7 +16,6 @@ package astpa.controlstructure;
 import java.awt.Desktop;
 import java.awt.Event;
 import java.beans.PropertyChangeEvent;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CoordinateListener;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -158,7 +158,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	 * @see CSAbstractEditor#createActions()
 	 */
 	private ActionRegistry actionRegistry;
-	private IControlStructureEditorDataModel modelInterface;
+	protected IControlStructureEditorDataModel modelInterface;
 	private DefaultEditDomain editDomain;
 	private List<String> selectionActions = new ArrayList<String>();
 	private List<String> stackActions = new ArrayList<String>();
@@ -179,7 +179,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	private static final int SCALE_WIDTH = 200;
 	private static final int SCLAE_TEXT_WIDTH = 150;
 	private static final int SCALE_FONT = 10;
-	private static final int IMG_EXPAND = 10;
+	protected static final int IMG_EXPAND = 10;
 	
 	private ToolBar toolBar;
 	private ZoomManager manager;
@@ -307,7 +307,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		
 		viewer.setRootEditPart(rootEditPart);
-		viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(viewer));
+		viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(viewer,this.modelInterface));
 		
 		this.manager = rootEditPart.getZoomManager();
 		
@@ -828,10 +828,10 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		dlg.setFilterExtensions(new String[] { "*.png", "*.jpg",".bmp"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String path = dlg.open();
 		
-		this.printStructure(path, "", "");
+		this.printStructure(path,10, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	
-	protected boolean printStructure(String path,String name,String processName){
+
+	protected boolean printStructure(String path,int imgOffset,String name,String processName){
 		int imageType;
 		if (path == null) {
 			return false;
@@ -846,7 +846,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			return false;
 		}
 		
-		Job exportJob = new PrintJob(name,processName, path, imageType, getGraphicalViewer());
+		Job exportJob = new PrintJob(name,processName, path, imageType, getGraphicalViewer(), imgOffset);
 		exportJob.schedule();
 		exportJob.addJobChangeListener(new JobChangeAdapter());
 		return true;
@@ -1137,22 +1137,16 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		this.updateActions(this.selectionActions);
 	}
 	
-	@Override
-	public boolean writeCSVData(BufferedWriter writer, char seperator) throws IOException {
-		// There's no need for any additional export as csv, use triggerExport or save
-		return false;
-	}
 	
 }
 	
 class PrintJob extends Job{
-		
 
-		private static final int IMG_EXPAND = 10;
 		private final String path;
 		private final int imageType;
 		private final String process;
 		private final GraphicalViewer viewer;
+		private final int imgOffset;
 		
 		/**
 		 * this constructor creates a new Job to print the current Control Structure
@@ -1163,24 +1157,25 @@ class PrintJob extends Job{
 		 * @param path the path defined as a String
 		 * @param imageType The SWT constant which says in which format the img
 		 *            should be stored
-		 * @param viewer 
+		 * @param viewer the viewer Object of the editor
+		 * @param imgOffset the amount of pixels which are added as Border
 		 * @see GC
 		 * @see ImageLoader
 		 * @see SWT#IMAGE_PNG
 		 * @see SWT#IMAGE_JPEG
 		 */
-		public PrintJob(String name,String process,String path, int imageType, GraphicalViewer viewer){
+		public PrintJob(String name,String process,String path, int imageType, GraphicalViewer viewer, int imgOffset){
 			super(name);
 			this.imageType=imageType;
 			this.path=path;
 			this.process=process;
 			this.viewer=viewer;
+			this.imgOffset= imgOffset;
 		}
 		
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			monitor.beginTask(this.process, IProgressMonitor.UNKNOWN);
-		
 			ScalableRootEditPart rootEditPart = (ScalableRootEditPart) this.viewer.getRootEditPart();
 			boolean isFirst = true;
 			IFigure printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
@@ -1192,7 +1187,10 @@ class PrintJob extends Job{
 				for(Object part: ((IFigure)layers).getChildren()){
 					if(part instanceof RootFigure){
 						for(final Object child: ((IFigure)part).getChildren()){
-							if(isFirst){
+							if(child.getClass().equals(Figure.class)){
+								//skip children which are not instances of a CS class
+								}
+							else if(isFirst){
 								//the first component which is found by the loop is added
 								//as starting Point for the rectangle
 								isFirst= false;
@@ -1208,31 +1206,30 @@ class PrintJob extends Job{
 				}
 				
 			}
+			clipRectangle.width=clipRectangle.width + Math.min(0, clipRectangle.x);
+			clipRectangle.height=clipRectangle.height + Math.min(0, clipRectangle.y);
+			clipRectangle.x= Math.max(0, clipRectangle.x);
+			clipRectangle.y= Math.max(0, clipRectangle.y);
 
-			clipRectangle.expand(IMG_EXPAND, IMG_EXPAND);
+//			clipRectangle.expand(this.imgOffset, this.imgOffset);
 			//a plain Image is created on which we can draw any graphics
-			Image srcImage = new Image(null, printableFigure.getBounds().width+ IMG_EXPAND,
-									printableFigure.getBounds().height + IMG_EXPAND);
+			Image srcImage = new Image(null, printableFigure.getBounds().width,
+									printableFigure.getBounds().height);
 			GC imageGC = new GC(srcImage);
 			Graphics graphics = new SWTGraphics(imageGC);
 			printableFigure.paint(graphics);
 			
 			//this additional Image is created with the actual Bounds
 			//and the first one is clipped inside the scaled image
-			Image scaledImage = new Image(null,clipRectangle.width,
-	        											  clipRectangle.height);
+			Image scaledImage = new Image(null,clipRectangle.width+2*this.imgOffset,
+	        											  clipRectangle.height+2*this.imgOffset);
 			imageGC = new GC(scaledImage);
 			graphics = new SWTGraphics(imageGC);
-			clipRectangle.x= Math.max(0, clipRectangle.x);
-			clipRectangle.y= Math.max(0, clipRectangle.y);
-			if(clipRectangle.x != 0 || clipRectangle.y !=0){
-			
-				graphics.drawImage(srcImage, clipRectangle, 
-					new Rectangle(0, 0, clipRectangle.width,
+		
+			graphics.drawImage(srcImage, clipRectangle, 
+					new Rectangle(this.imgOffset, this.imgOffset, clipRectangle.width,
 										clipRectangle.height ));
-			}else{
-				graphics.drawImage(srcImage, 0, 0);
-			}
+		
 	        ImageLoader imgLoader = new ImageLoader();
 			imgLoader.data = new ImageData[] {scaledImage.getImageData()};
 			

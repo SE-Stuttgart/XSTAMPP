@@ -20,6 +20,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSEditorWithPM;
+import astpa.model.ITableModel;
 import astpa.model.controlstructure.components.Anchor;
 import astpa.model.controlstructure.components.ComponentType;
 import astpa.model.controlstructure.components.ConnectionType;
@@ -51,6 +52,35 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	UUID addComponent(UUID parentId, Rectangle layout, String text, ComponentType type);
 	
 	/**
+	 * Adds a new component to a root component with the given values. <br>
+	 * Triggers an update for
+	 * {@link astpa.model.ObserverValue#CONTROL_STRUCTURE}
+	 * 
+	 * @param parentId the id of the parent
+	 * @param layout the layout of the new component
+	 * @param text the text of the new component
+	 * @param type the type of the new component
+	 * @return the id of the created component. Null when the component could
+	 *         not be added
+	 * 
+	 * @author Fabian Toth
+	 * @param controlActionId 
+	 */
+	UUID addComponent(UUID controlActionId, UUID parentId, Rectangle layout, String text, ComponentType type);
+	
+	/**
+	 * Removes a control action. <br>
+	 * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
+	 * 
+	 * @author Jarkko Heidenwag
+	 * 
+	 * @param controlActionId The ID of the control action which has to be
+	 *            deleted
+	 * @return true if the control action has been removed
+	 */
+	boolean removeControlAction(UUID controlActionId);
+	
+	/**
 	 * Adds a new root component with the given values. <br>
 	 * Triggers an update for
 	 * {@link astpa.model.ObserverValue#CONTROL_STRUCTURE}
@@ -63,6 +93,50 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * @author Fabian Toth
 	 */
 	UUID setRoot(Rectangle layout, String text);
+	
+	/**
+	 * Adds a control action. <br>
+	 * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
+	 * 
+	 * @author Jarkko Heidenwag
+	 * 
+	 * @param description The description of the new control action
+	 * @param title The title of the new control action
+	 * @return String ID of the new control action
+	 */
+	UUID addControlAction(String title, String description);
+	
+	/**
+	 * Setter for the title of a control action. <br>
+	 * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
+	 * 
+	 * @author Jarkko Heidenwag
+	 * @param controlActionId The control action's id
+	 * 
+	 * @param title The control action's new title
+	 * @return true if the title has been set
+	 */
+	boolean setControlActionTitle(UUID controlActionId, String title);
+	
+	
+	/**
+	 * Getter for all existing control actions
+	 * 
+	 * @author Jarkko Heidenwag
+	 * 
+	 * @return All control actions
+	 */
+	List<ITableModel> getAllControlActions();
+	
+	/**
+	 * Get a control action by it's ID.
+	 * 
+	 * @author Jarkko Heidenwag, Patrick Wickenhaeuser
+	 * @param controlActionId the ID of the control action.
+	 * 
+	 * @return the control action.
+	 */
+	ITableModel getControlAction(UUID controlActionId);
 	
 	/**
 	 * Searches for the component with the given id and changes the layout of
@@ -293,4 +367,6 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * 		the amount of components currently in the trash
 	 */
 	public int getConnectionTrashSize();
+
+	
 }

@@ -156,7 +156,8 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	public void execute() {
 		this.deleteFeedback();
 		this.componentId =
-			this.getDataModel().addComponent(this.rootModel.getId(), this.layout, this.compModel.getText(),
+			this.getDataModel().addComponent(this.compModel.getControlActionLink(),
+				this.rootModel.getId(), this.layout, this.compModel.getText(),
 				this.compModel.getComponentType());
 		updateParentConstraint();
 		

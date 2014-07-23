@@ -16,7 +16,7 @@ package astpa.model.controlstructure.interfaces;
 import astpa.model.controlstructure.components.ComponentType;
 
 /**
- * This Class is used to address the CSComponents impendent from the ModelClass
+ * This interface is used to address the Components without showing their exact structure
  * 
  * @author Lukas
  * 
@@ -25,7 +25,7 @@ public interface IComponent {
 	
 	/**
 	 * 
-	 * @return The CSComponent which is stored in the CSModel
+	 * @return The ComponentType which is stored in the model
 	 * 
 	 * @author Lukas Balzer
 	 */

@@ -30,16 +30,16 @@ public interface IAnchor {
 	boolean isFlying();
 	
 	/**
-	 * @return the xOrientation
+	 * @return the x coordintes on the parent component
 	 * 
-	 * @author Fabian Toth
+	 * @author Fabian Toth, Lukas Balzer
 	 */
 	int getxOrientation();
 	
 	/**
-	 * @return the yOrientation
+	 * @return the y coordintes on the parent component
 	 * 
-	 * @author Fabian Toth
+	 * @author Fabian Toth, Lukas Balzer
 	 */
 	int getyOrientation();
 	

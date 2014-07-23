@@ -119,7 +119,8 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 			this.referencePoint.x =
 				(int) (this.refLayout.x + this.refLayout.width * (float) this.anchorFactor.x / MAX_PERCENT);
 		}
-		
+		this.referencePoint.x = Math.max(0, this.referencePoint.x);
+		this.referencePoint.y = Math.max(0, this.referencePoint.y);
 		return this.referencePoint;
 	}
 	

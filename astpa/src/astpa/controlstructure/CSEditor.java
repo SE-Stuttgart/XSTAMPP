@@ -13,9 +13,6 @@
 
 package astpa.controlstructure;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-
 import messages.Messages;
 
 import org.eclipse.draw2d.Viewport;
@@ -31,6 +28,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import astpa.Activator;
 import astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
+import astpa.export.stepImages.ControlStructureWizard;
 import astpa.model.controlstructure.components.ComponentType;
 import astpa.model.controlstructure.components.ConnectionType;
 
@@ -90,20 +88,24 @@ public class CSEditor extends CSAbstractEditor {
 		
 		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/controller_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.Controller, Messages.CreateController,
-			ComponentType.CONTROLLER, new CSModelCreationFactory(ComponentType.CONTROLLER), imgDesc, imgDesc));
+			ComponentType.CONTROLLER, new CSModelCreationFactory(ComponentType.CONTROLLER,this.modelInterface), imgDesc, imgDesc));
 		
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/actuator_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.Actuator, Messages.CreateActuator,
-			ComponentType.ACTUATOR, new CSModelCreationFactory(ComponentType.ACTUATOR), imgDesc, imgDesc));
+			ComponentType.ACTUATOR, new CSModelCreationFactory(ComponentType.ACTUATOR,this.modelInterface), imgDesc, imgDesc));
 		
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.ControlledProcess,
 			Messages.CreateControlledProcess, ComponentType.CONTROLLED_PROCESS, new CSModelCreationFactory(
-				ComponentType.CONTROLLED_PROCESS), imgDesc, imgDesc));
+				ComponentType.CONTROLLED_PROCESS,this.modelInterface), imgDesc, imgDesc));
 		
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/sensor_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.Sensor, Messages.CreateSensor,
-			ComponentType.SENSOR, new CSModelCreationFactory(ComponentType.SENSOR), imgDesc, imgDesc));
+			ComponentType.SENSOR, new CSModelCreationFactory(ComponentType.SENSOR,this.modelInterface), imgDesc, imgDesc));
+		
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
+		componentElements.add(new CombinedTemplateCreationEntry(Messages.ControlAction, "Create Control Action Component",
+			ComponentType.CONTROLACTION, new CSModelCreationFactory(ComponentType.CONTROLACTION,this.modelInterface), imgDesc, imgDesc));
 		
 		root.add(separator);
 		PaletteDrawer connectionElements = new PaletteDrawer(Messages.ConnectingElements);
@@ -122,7 +124,7 @@ public class CSEditor extends CSAbstractEditor {
 		root.add(otherElements);
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_40.png"); //$NON-NLS-1$
 		otherElements.add(new CombinedTemplateCreationEntry(Messages.TextBox, Messages.CreateTextBox,
-			ComponentType.TEXTFIELD, new CSModelCreationFactory(ComponentType.TEXTFIELD), imgDesc, imgDesc));
+			ComponentType.TEXTFIELD, new CSModelCreationFactory(ComponentType.TEXTFIELD,this.modelInterface), imgDesc, imgDesc));
 		
 		return root;
 	}
@@ -158,9 +160,29 @@ public class CSEditor extends CSAbstractEditor {
 		this.viewLocation = view;
 	}
 	
+	/**
+	 * @param values <ol>
+	 * <li> [0] must be the filePath
+	 * <li> [1] if there is a second value, it is assumed as the offset
+	 * </ol>
+	 */
 	@Override
-	public boolean triggerExport(String path) {
-		return this.printStructure(path,Messages.ExportCS, Messages.ExportingCS);
+	public boolean triggerExport(Object[] values) {
+		int offset;
+		if(values[0] ==null || !(values[0] instanceof String)){
+			return false;
+		}
+		if(values.length < 2 || values[1] == null || !(values[1] instanceof Integer)){
+			offset = IMG_EXPAND;
+		}else{
+			offset = (int) values[1];
+		}
+		return this.printStructure((String) values[0],offset,Messages.ExportCS, Messages.ExportingCS);
+	}
+
+	@Override
+	public Class<?> getExportWizard() {
+		return ControlStructureWizard.class;
 	}
 
 

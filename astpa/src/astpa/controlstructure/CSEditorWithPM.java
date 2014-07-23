@@ -26,6 +26,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import astpa.Activator;
 import astpa.controlstructure.controller.factorys.CSModelCreationFactory;
+import astpa.export.stepImages.ControlStructureWithPMWizard;
 import astpa.model.controlstructure.components.ComponentType;
 
 /**
@@ -75,7 +76,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		
 		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_model_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.ProcessModel, Messages.CreateProcessModel,
-			ComponentType.PROCESS_MODEL, new CSModelCreationFactory(ComponentType.PROCESS_MODEL), imgDesc, imgDesc));
+			ComponentType.PROCESS_MODEL, new CSModelCreationFactory(ComponentType.PROCESS_MODEL,this.modelInterface), imgDesc, imgDesc));
 		
 		PaletteDrawer additionalElements = new PaletteDrawer(Messages.Others);
 		root.add(additionalElements);
@@ -83,11 +84,12 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_variable.png"); //$NON-NLS-1$
 		additionalElements.add(new CombinedTemplateCreationEntry(Messages.ProcessVariable,
 			Messages.CreateProcessVariable, ComponentType.PROCESS_VARIABLE, new CSModelCreationFactory(
-				ComponentType.PROCESS_VARIABLE), imgDesc, imgDesc));
+				ComponentType.PROCESS_VARIABLE,this.modelInterface), imgDesc, imgDesc));
 		
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_value.png"); //$NON-NLS-1$
 		additionalElements.add(new CombinedTemplateCreationEntry(Messages.ProcessValue, Messages.CreateProcessValue,
-			ComponentType.PROCESS_VALUE, new CSModelCreationFactory(ComponentType.PROCESS_VALUE), imgDesc, imgDesc));
+			ComponentType.PROCESS_VALUE, new CSModelCreationFactory(ComponentType.PROCESS_VALUE,this.modelInterface)
+											, imgDesc, imgDesc));
 		
 		return root;
 	}
@@ -124,7 +126,21 @@ public class CSEditorWithPM extends CSAbstractEditor {
 	}
 	
 	@Override
-	public boolean triggerExport(String path) {
-		return this.printStructure(path,Messages.ExportCSwithPM, Messages.ExportingCSwithPM);
+	public boolean triggerExport(Object[] values) {
+		int offset;
+		if(values[0] ==null || !(values[0] instanceof String)){
+			return false;
+		}
+		if(values.length < 2 || values[1] == null || !(values[1] instanceof Integer)){
+			offset = IMG_EXPAND;
+		}else{
+			offset = (int) values[1];
+		}
+		return this.printStructure((String) values[0],offset,Messages.ExportCSwithPM, Messages.ExportingCSwithPM);
+	}
+
+	@Override
+	public Class<?> getExportWizard() {
+		return ControlStructureWithPMWizard.class;
 	}
 }

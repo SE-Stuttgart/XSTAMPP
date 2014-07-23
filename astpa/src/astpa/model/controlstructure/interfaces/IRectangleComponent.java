@@ -54,6 +54,24 @@ public interface IRectangleComponent extends IComponent {
 	UUID getId();
 	
 	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return returns the link to the related ControlAction or null
+	 * 	if there is no relation
+	 */
+	UUID getControlActionLink();
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 * @param id must be the id of a ControlAction
+	 * @return whether the linking was successful 
+	 *
+	 */
+	boolean linktoControlAction(UUID id);
+	
+	/**
 	 * Getter for the children
 	 * 
 	 * @return the children
@@ -61,5 +79,7 @@ public interface IRectangleComponent extends IComponent {
 	 * @author Fabian Toth
 	 */
 	List<IRectangleComponent> getChildren();
+	
+	
 	
 }

@@ -13,6 +13,8 @@
 
 package astpa.controlstructure.controller.factorys;
 
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -20,6 +22,7 @@ import org.eclipse.gef.requests.CreationFactory;
 
 import astpa.model.controlstructure.components.Component;
 import astpa.model.controlstructure.components.ComponentType;
+import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * 
@@ -33,6 +36,7 @@ import astpa.model.controlstructure.components.ComponentType;
 public class CSModelCreationFactory implements CreationFactory {
 	
 	private ComponentType type;
+	private final IControlStructureEditorDataModel dataModel;
 	
 	
 	/**
@@ -40,10 +44,12 @@ public class CSModelCreationFactory implements CreationFactory {
 	 * 
 	 * @author Lukas Balzer, Aliaksei Babkovich
 	 * @param type the Type of the model which should be constructed
+	 * @param model The DataModel which contains all model classes
 	 * 
 	 */
-	public CSModelCreationFactory(ComponentType type) {
+	public CSModelCreationFactory(ComponentType type,IControlStructureEditorDataModel model) {
 		this.type = type;
+		this.dataModel = model;
 	}
 	
 	/**
@@ -55,6 +61,11 @@ public class CSModelCreationFactory implements CreationFactory {
 		String text;
 		
 		switch (this.type) {
+		case CONTROLACTION:{
+			text = Messages.ControlAction;
+			UUID caLink= this.dataModel.addControlAction(text, Messages.DescriptionOfThisControlAction);
+			return new Component(caLink, text, new Rectangle(), this.type);
+		}
 		case ACTUATOR: {
 			text = Messages.Actuator;
 			break;

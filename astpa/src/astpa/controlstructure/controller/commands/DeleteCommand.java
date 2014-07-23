@@ -14,6 +14,7 @@
 package astpa.controlstructure.controller.commands;
 
 
+import astpa.model.ITableModel;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -28,6 +29,7 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	
 	private IRectangleComponent model;
 	private IRectangleComponent parentModel;
+	private String controlActionDescription;
 	
 	
 	/**
@@ -44,6 +46,7 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	public void execute() {
 		
 		this.getDataModel().removeComponent(this.model.getId());
+		this.getDataModel().removeControlAction(this.model.getControlActionLink());
 		
 	}
 	
@@ -62,6 +65,10 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	 */
 	public void setModel(IRectangleComponent model) {
 		this.model = model;
+		ITableModel action;
+		if((action = getDataModel().getControlAction(model.getControlActionLink())) != null){
+			this.controlActionDescription = action.getDescription();
+			}
 		
 	}
 	
@@ -82,6 +89,7 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	public void undo() {
 		this.getDataModel().recoverComponent(this.parentModel.getId(), this.model.getId());		
 		this.getDataModel().changeComponentLayout(this.model.getId(), this.model.getLayout(false), false);
+		this.getDataModel().addControlAction(this.model.getControlActionLink().toString(), this.controlActionDescription);
 	}
 	
 	@Override

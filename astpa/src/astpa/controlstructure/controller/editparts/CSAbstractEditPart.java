@@ -142,6 +142,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 			// increase the number of refreshes so the logic updates exactly
 			for (int i = 0; i <= 2; i++) {
 				figureTemp.setText(modelTemp.getText());
+				
 				figureTemp.setLayout(modelTemp.getLayout(stepID.equals(CSEditor.ID)));
 			}
 			

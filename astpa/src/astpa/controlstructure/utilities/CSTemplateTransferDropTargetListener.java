@@ -19,6 +19,7 @@ import org.eclipse.gef.requests.CreationFactory;
 
 import astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import astpa.model.controlstructure.components.ComponentType;
+import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * 
@@ -30,20 +31,24 @@ import astpa.model.controlstructure.components.ComponentType;
  */
 public class CSTemplateTransferDropTargetListener extends TemplateTransferDropTargetListener {
 	
+	private final IControlStructureEditorDataModel dataModel;
+
 	/**
 	 * 
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param viewer the EditPartViewer to which it shall drop
+	 * @param model The data model Controller
 	 */
-	public CSTemplateTransferDropTargetListener(EditPartViewer viewer) {
+	public CSTemplateTransferDropTargetListener(EditPartViewer viewer,IControlStructureEditorDataModel model) {
 		super(viewer);
+		this.dataModel = model;
 	}
 	
 	@Override
 	protected CreationFactory getFactory(Object template) {
-		return new CSModelCreationFactory((ComponentType) template);
+		return new CSModelCreationFactory((ComponentType) template,this.dataModel);
 	}
 	
 }

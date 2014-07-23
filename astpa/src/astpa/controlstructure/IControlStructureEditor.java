@@ -24,6 +24,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.ui.ISelectionListener;
 
+import astpa.export.stepData.IExportView;
 import astpa.ui.common.IViewBase;
 
 /**
@@ -32,7 +33,7 @@ import astpa.ui.common.IViewBase;
  * 
  */
 public interface IControlStructureEditor extends CommandStackListener, ISelectionListener, MouseListener,
-	PaletteListener, IViewBase, SelectionListener, ZoomListener, PropertyChangeListener,ISelectionChangedListener {
+	PaletteListener, IViewBase, SelectionListener, ZoomListener, PropertyChangeListener,ISelectionChangedListener,IExportView {
 	
 	/**
 	 * makes sure that the both layouts of step 1 and 3 are only synchronized on

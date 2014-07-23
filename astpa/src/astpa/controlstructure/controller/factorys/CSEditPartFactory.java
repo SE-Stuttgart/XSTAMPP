@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
@@ -25,6 +27,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import astpa.controlstructure.controller.editparts.ActuatorEditPart;
 import astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import astpa.controlstructure.controller.editparts.CSConnectionEditPart;
+import astpa.controlstructure.controller.editparts.ControlActionEditPart;
 import astpa.controlstructure.controller.editparts.ControllerEditPart;
 import astpa.controlstructure.controller.editparts.ProcessEditPart;
 import astpa.controlstructure.controller.editparts.ProcessModelEditPart;
@@ -50,7 +53,7 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
  * connection between a given model and a EditPart which is defined in these
  * class
  * 
- * @version 1.1
+ * @version 1.0.3
  * @author Lukas Balzer, Aliaksei Babkovich
  * 
  */
@@ -77,6 +80,16 @@ public class CSEditPartFactory implements EditPartFactory {
 		AbstractGraphicalEditPart part = null;
 		UUID id;
 		switch (((IComponent) model).getComponentType()) {
+		case CONTROLACTION:{
+			part = new ControlActionEditPart(this.dataModel);
+			id = ((IRectangleComponent) model).getId();
+			UUID caId=((IRectangleComponent) model).getControlActionLink();
+			if(this.dataModel.getControlAction(caId)== null || caId == null){
+				UUID newLinkId=this.dataModel.addControlAction(Messages.ControlAction, Messages.DescriptionOfThisControlAction);
+				((IRectangleComponent) model).linktoControlAction(newLinkId);
+			}
+			break;
+		}
 		case ACTUATOR: {
 			part = new ActuatorEditPart(this.dataModel);
 			id = ((IRectangleComponent) model).getId();

@@ -18,7 +18,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import astpa.controlstructure.CSEditor;
-import astpa.controlstructure.figure.IControlStructureFigure;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 

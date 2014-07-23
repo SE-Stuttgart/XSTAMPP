@@ -96,7 +96,8 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements IAnchorFigu
 			}
 			
 		}
-		
+		this.lastRef.x = Math.max(0, this.lastRef.x);
+		this.lastRef.y = Math.max(0, this.lastRef.y);
 		return this.lastRef;
 	}
 	

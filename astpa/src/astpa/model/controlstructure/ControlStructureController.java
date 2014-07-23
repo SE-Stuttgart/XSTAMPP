@@ -84,6 +84,27 @@ public class ControlStructureController {
 	}
 	
 	/**
+	 * Adds a new component to a parent with the given values.
+	 * 
+	 * @param parentId the id of the parent
+	 * @param layout the layout of the new component
+	 * @param text the text of the new component
+	 * @param type the type of the new component
+	 * @return the id of the created component. Null if the component could not
+	 *         be added
+	 * @param controlActionId an id of a ControlAction
+	 * 
+	 * @author Fabian Toth,Lukas Balzer
+	 */
+	public UUID addComponent(UUID controlActionId,UUID parentId, Rectangle layout, String text, ComponentType type) {
+		Component newComp = new Component(controlActionId,text, layout, type);
+		Component parent = this.getInternalComponent(parentId);
+		parent.addChild(newComp);
+		
+		return newComp.getId();
+	}
+	
+	/**
 	 * Creates a new root with the given values.
 	 * 
 	 * @param layout the layout of the new component

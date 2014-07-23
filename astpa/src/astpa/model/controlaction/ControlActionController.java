@@ -15,7 +15,9 @@ package astpa.model.controlaction;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -46,7 +48,7 @@ public class ControlActionController {
 	@XmlElement(name = "link")
 	private List<UCAHazLink> links;
 	
-	
+	private final Map<UUID,ControlAction> trash;
 	/**
 	 * Constructor for the controller
 	 * 
@@ -54,6 +56,7 @@ public class ControlActionController {
 	 * 
 	 */
 	public ControlActionController() {
+		this.trash = new HashMap<>();
 		this.controlActions = new ArrayList<>();
 		this.links = new ArrayList<>();
 	}
@@ -89,12 +92,26 @@ public class ControlActionController {
 		}
 		int index = this.controlActions.indexOf(controlAction);
 		this.controlActions.remove(index);
+		this.trash.put(controlActionId, controlAction);
 		for (; index < this.controlActions.size(); index++) {
 			this.controlActions.get(index).setNumber(index + 1);
 		}
 		return true;
 	}
 	
+	/**
+	 * This function pops ControlActions out of a Trash
+	 * @author Lukas Balzer
+	 *
+	 * @param id the id of the ControlAction which shall be recovered
+	 * @return whether the ControlAction has been recovered or not
+	 */
+	public boolean recoverControlAction(UUID id){
+		if(this.trash.size() >0 && this.trash.containsKey(id)){
+			return this.controlActions.add(this.trash.get(id));
+		}
+		return false;
+	}
 	/**
 	 * Searches for an Accident with given ID returns null if there is no one
 	 * with this id

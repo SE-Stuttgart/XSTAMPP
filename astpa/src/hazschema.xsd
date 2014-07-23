@@ -178,8 +178,9 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="0.15
       <xs:element type="xs:string" name="id"/>
       <xs:element type="xs:string" name="text"/>
       <xs:element type="xs:string" name="componentType"/>
+      <xs:element type="xs:string" name="controlActionId" minOccurs="0" maxOccurs="1"/>
       <xs:element name="layout" type="Q1:layoutType"/>
-      <xs:element name="layoutPM" type="Q1:layoutType"/>
+      <xs:element name="layoutPM" type="Q1:layoutType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="children">
         <xs:complexType>
           <xs:sequence>

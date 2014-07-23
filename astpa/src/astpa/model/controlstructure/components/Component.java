@@ -39,10 +39,11 @@ import astpa.model.controlstructure.interfaces.IRectangleComponent;
  */
 @XmlRootElement(name = "component")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"id", "text", "componentType", "layout", "layoutPM", "children", "causalFactors"})
+@XmlType(propOrder = {"id", "text", "componentType","controlActionId", "layout", "layoutPM", "children", "causalFactors"})
 public class Component implements IRectangleComponent, ICausalComponent {
 	
 	private UUID id;
+	private UUID controlActionId;
 	private String text;
 	private Rectangle layout;
 	private Rectangle layoutPM;
@@ -68,6 +69,7 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	 */
 	public Component(String text, Rectangle layout, ComponentType type) {
 		this.id = UUID.randomUUID();
+		this.controlActionId=null;
 		this.text = text;
 		this.layout = layout;
 		this.layoutPM = layout;
@@ -76,6 +78,27 @@ public class Component implements IRectangleComponent, ICausalComponent {
 		this.causalFactors = new ArrayList<>();
 	}
 	
+	/**
+	 *Constructs a new component if the component is a ControlAction 
+	 *this constructor will link the given caId as referenced control action
+	 * 
+	 * @author Lukas Balzer
+	 *
+	 * @param caId the id of the linked ControlAction
+	 * @param text the text of the new component
+	 * @param layout the layout of the new component
+	 * @param type the type of the component
+	 */
+	public Component(UUID caId,String text, Rectangle layout, ComponentType type) {
+		this(text, layout, type);
+		
+		if(type != ComponentType.CONTROLACTION){
+			this.controlActionId= null;
+		}else{
+			
+			this.controlActionId= caId;
+		}
+	}
 	/**
 	 * Empty constructor used for JAXB. Do not use it!
 	 * 
@@ -93,6 +116,7 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	public UUID getId() {
 		return this.id;
 	}
+	
 	
 	/**
 	 * @param id the id to set
@@ -118,6 +142,10 @@ public class Component implements IRectangleComponent, ICausalComponent {
 		if (step1) {
 			return this.layout;
 		}
+		if(this.layoutPM.isEmpty()){
+			this.sychronizeLayout();
+		}
+		System.out.println(this.layoutPM);
 		return this.layoutPM;
 		
 	}
@@ -268,6 +296,18 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	 */
 	public boolean sychronizeLayout() {
 		this.layoutPM = this.layout;
+		return true;
+	}
+
+	@Override
+	public UUID getControlActionLink() {
+		return this.controlActionId;
+		
+	}
+
+	@Override
+	public boolean linktoControlAction(UUID controlActionid) {
+		this.controlActionId= controlActionid;
 		return true;
 	}
 }

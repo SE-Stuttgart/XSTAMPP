@@ -26,6 +26,11 @@ public enum ComponentType {
 	TEXTFIELD,
 	
 	/**
+	 * This type is used to create/store a visualization of a cointroloAction 
+	 */
+	CONTROLACTION,
+	
+	/**
 	 * This constant is used to create Controller
 	 */
 	CONTROLLER,
