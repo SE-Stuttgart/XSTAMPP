@@ -152,6 +152,7 @@ public final class Messages extends NLS {
 	public static String Abort;
 	@SuppressWarnings("javadoc")
 	public static String About;
+	public static String AboutKontakt;
 	@SuppressWarnings("javadoc")
 	public static String File;
 	@SuppressWarnings("javadoc")

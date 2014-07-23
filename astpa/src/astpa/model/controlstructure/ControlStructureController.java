@@ -419,7 +419,8 @@ public class ControlStructureController {
 		}
 		
 		for (Component component : this.root.getInternalChildren()) {
-			if (!component.getComponentType().equals(ComponentType.TEXTFIELD)) {
+			if (!component.getComponentType().equals(ComponentType.TEXTFIELD) &&
+					!component.getComponentType().equals(ComponentType.CONTROLACTION)) {
 				result.add(component);
 			}
 		}

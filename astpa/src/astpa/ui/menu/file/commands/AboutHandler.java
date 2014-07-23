@@ -113,7 +113,6 @@ public class AboutHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
 		Shell parentShell = HandlerUtil.getActiveShell(event);
-		
 		String dialogMessage = this.getDialogMessage();
 		AboutDialog dialog =
 			new AboutDialog(parentShell, AboutHandler.DIALOG_TITLE, AboutHandler.DIALOG_IMAGE, dialogMessage,
@@ -133,13 +132,14 @@ public class AboutHandler extends AbstractHandler {
 		
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		Dictionary<?, ?> dictionary = bundle.getHeaders();
+		String visitLine= Messages.AboutKontakt +": "+"https://sourceforge.net/projects/astpa/"; //$NON-NLS-2$ //$NON-NLS-3$
 		
 		String versionLine = this.getVersionLine((String) dictionary.get(Messages.BundleVersion));
 		String team = Messages.DevelopmentTeam + "\t  " + "Aleksander Zotov, Aliaksei Babkovich, Benedikt Markt," //$NON-NLS-1$//$NON-NLS-2$ 
 			+ "\n\t\t  " + "Fabian Toth, Jarkko Heidenwag, Jaqueline Patzek, Adam " //$NON-NLS-1$ //$NON-NLS-2$
 			+ "\n\t\t  " + "Grahovac, Lukas Balzer, Patrick Wickenhäuser, Sebastian Sieber"; //$NON-NLS-1$ //$NON-NLS-2$
 		return AboutHandler.DIALOG_MESSAGE_TITLE + "\n" + versionLine + "\n\n" + AboutHandler.COPYRIGHT_LINE //$NON-NLS-1$ //$NON-NLS-2$
-			+ "\n\n" + team; //$NON-NLS-1$
+			+ "\n\n" + team+ "\n\n" + visitLine; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
