@@ -72,6 +72,7 @@ public final class Messages extends NLS {
 	public static String ExportingPdf;
 	@SuppressWarnings("javadoc")
 	public static String ExportingCS;
+	@SuppressWarnings("javadoc")
 	public static String ExportingCSV;
 	@SuppressWarnings("javadoc")
 	public static String ExportingCSwithPM;
@@ -85,6 +86,7 @@ public final class Messages extends NLS {
 	public static String ExportPdf;
 	@SuppressWarnings("javadoc")
 	public static String ExportCS;
+	@SuppressWarnings("javadoc")
 	public static String ExportCSV;
 	@SuppressWarnings("javadoc")
 	public static String ExportCSwithPM;
@@ -158,6 +160,7 @@ public final class Messages extends NLS {
 	public static String Filter;
 	@SuppressWarnings("javadoc")
 	public static String FontColor;
+	@SuppressWarnings("javadoc")
 	public static String Comma;
 	@SuppressWarnings("javadoc")
 	public static String CommonTable;
@@ -191,7 +194,9 @@ public final class Messages extends NLS {
 	public static String Controller;
 	@SuppressWarnings("javadoc")
 	public static String CreateController;
+	@SuppressWarnings("javadoc")
 	public static String PrepareDataExport;
+	@SuppressWarnings("javadoc")
 	public static String Preview;
 	@SuppressWarnings("javadoc")
 	public static String ProcessModel;
@@ -261,6 +266,7 @@ public final class Messages extends NLS {
 	public static String PleaseConfirmTheDeletionOfAllSelectedDesignRequirements;
 	@SuppressWarnings("javadoc")
 	public static String NoDesignRequirementSelected;
+	@SuppressWarnings("javadoc")
 	public static String NoExportAvailable;
 	@SuppressWarnings("javadoc")
 	public static String DescriptionOfThisDesignReq;
