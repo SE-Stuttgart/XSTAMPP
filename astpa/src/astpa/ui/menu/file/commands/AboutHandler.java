@@ -133,13 +133,13 @@ public class AboutHandler extends AbstractHandler {
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		Dictionary<?, ?> dictionary = bundle.getHeaders();
 		String visitLine= Messages.AboutKontakt +": "+"https://sourceforge.net/projects/astpa/"; //$NON-NLS-2$ //$NON-NLS-3$
-		
+		String contactPerson= "Contact Person : Asim Abdulkhaleq \n Email: Asim.Abdulkhaleq@informatik.uni-stuttgart.de";
 		String versionLine = this.getVersionLine((String) dictionary.get(Messages.BundleVersion));
 		String team = Messages.DevelopmentTeam + "\t  " + "Aleksander Zotov, Aliaksei Babkovich, Benedikt Markt," //$NON-NLS-1$//$NON-NLS-2$ 
 			+ "\n\t\t  " + "Fabian Toth, Jarkko Heidenwag, Jaqueline Patzek, Adam " //$NON-NLS-1$ //$NON-NLS-2$
 			+ "\n\t\t  " + "Grahovac, Lukas Balzer, Patrick Wickenhäuser, Sebastian Sieber"; //$NON-NLS-1$ //$NON-NLS-2$
 		return AboutHandler.DIALOG_MESSAGE_TITLE + "\n" + versionLine + "\n\n" + AboutHandler.COPYRIGHT_LINE //$NON-NLS-1$ //$NON-NLS-2$
-			+ "\n\n" + team+ "\n\n" + visitLine; //$NON-NLS-1$ //$NON-NLS-2$
+			+ "\n\n" + team+ "\n\n" + visitLine+ "\n\n" +contactPerson; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
@@ -150,8 +150,6 @@ public class AboutHandler extends AbstractHandler {
 	 * @return the version part, i.e. "v.m.n"
 	 */
 	private String getVersionLine(String bundleVersion) {
-		int index = bundleVersion.lastIndexOf('.');
-		
-		return Messages.Version + bundleVersion.substring(0, index);
+		return Messages.Version + bundleVersion;
 	}
 }

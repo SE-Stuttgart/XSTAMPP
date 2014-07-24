@@ -908,8 +908,10 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			}
 			
 			String path = this.workspacePath + File.separator + this.getId() + ".png";//$NON-NLS-1$
-			
-			this.printViewer(path, SWT.IMAGE_PNG);
+		
+			Job exportJob = new PrintJob(path, SWT.IMAGE_BMP, getGraphicalViewer(), IMG_EXPAND);
+			exportJob.schedule();
+			exportJob.addJobChangeListener(new JobChangeAdapter());
 			this.imagePath = path;
 			File tmpImg = new File(path);
 			path = tmpImg.toURI().toString();
@@ -932,78 +934,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		
 	}
 	
-	/**
-	 * this function prints the current contents of the CSGraphicalEditor
-	 * 
-	 * @author Lukas Balzer
-	 * @param path the path defined as a String
-	 * @param imageType The SWT constant which says in which format the img
-	 *            should be stored
-	 * @see GC
-	 * @see ImageLoader
-	 * @see SWT#IMAGE_PNG
-	 * @see SWT#IMAGE_JPEG
-	 */
-	public final void printViewer(String path, int imageType) {
-		GraphicalViewer viewer = this.getGraphicalViewer();
-		ScalableRootEditPart rootEditPart = (ScalableRootEditPart) viewer.getRootEditPart();
-		boolean isFirst = true;
-		IFigure printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
-		
-		//create a clip rectangle to cut the unnecessary whitespace
-		Rectangle clipRectangle = new Rectangle();
-		for(Object layers: printableFigure.getChildren()){
-			//Layer&ConnectionLayer
-			for(Object part: ((IFigure)layers).getChildren()){
-				if(part instanceof RootFigure){
-					for(final Object child: ((IFigure)part).getChildren()){
-						if(isFirst){
-							//the first component which is found by the loop is added
-							//as starting Point for the rectangle
-							isFirst= false;
-							clipRectangle =new Rectangle(((IFigure)child).getBounds());
-						}else{
-							clipRectangle.union(((IFigure)child).getBounds());
-						}
-					}
-				}
-				else{
-					clipRectangle.union(((IFigure)part).getBounds());
-				}
-			}
-			
-		}
-
-		clipRectangle.expand(IMG_EXPAND, IMG_EXPAND);
-		//a plain Image is created on which we can draw any graphics
-		Image srcImage = new Image(null, printableFigure.getBounds().width+ IMG_EXPAND,
-								printableFigure.getBounds().height + IMG_EXPAND);
-		GC imageGC = new GC(srcImage);
-		Graphics graphics = new SWTGraphics(imageGC);
-		printableFigure.paint(graphics);
-		
-		//this additional Image is created with the actual Bounds
-		//and the first one is clipped inside the scaled image
-		Image scaledImage = new Image(null,clipRectangle.width,
-        											  clipRectangle.height);
-		imageGC = new GC(scaledImage);
-		graphics = new SWTGraphics(imageGC);
-		clipRectangle.x= Math.max(0, clipRectangle.x);
-		clipRectangle.y= Math.max(0, clipRectangle.y);
-		if(clipRectangle.x != 0 || clipRectangle.y !=0){
-		
-			graphics.drawImage(srcImage, clipRectangle, 
-				new Rectangle(0, 0, clipRectangle.width,
-									clipRectangle.height ));
-		}else{
-			graphics.drawImage(srcImage, 0, 0);
-		}
-        ImageLoader imgLoader = new ImageLoader();
-		imgLoader.data = new ImageData[] {scaledImage.getImageData()};
-		
-		imgLoader.save(path, imageType);
-		
-	}
+	
 	
 	@Override
 	public void mouseDoubleClick(MouseEvent e) {
@@ -1147,6 +1078,7 @@ class PrintJob extends Job{
 		private final String process;
 		private final GraphicalViewer viewer;
 		private final int imgOffset;
+		private final boolean showPreview;
 		
 		/**
 		 * this constructor creates a new Job to print the current Control Structure
@@ -1171,8 +1103,32 @@ class PrintJob extends Job{
 			this.process=process;
 			this.viewer=viewer;
 			this.imgOffset= imgOffset;
+			this.showPreview=true;
 		}
 		
+		/**
+		 * this constructor creates a new Job to print the current Control Structure
+		 * 
+		 * @author Lukas Balzer
+		 * @param path the path defined as a String
+		 * @param imageType The SWT constant which says in which format the img
+		 *            should be stored
+		 * @param viewer the viewer Object of the editor
+		 * @param imgOffset the amount of pixels which are added as Border
+		 * @see GC
+		 * @see ImageLoader
+		 * @see SWT#IMAGE_PNG
+		 * @see SWT#IMAGE_JPEG
+		 */
+		public PrintJob(String path, int imageType, GraphicalViewer viewer, int imgOffset){
+			super(Messages.ExportPdf);
+			this.imageType=imageType;
+			this.path=path;
+			this.process=Messages.ExportingPdf;
+			this.viewer=viewer;
+			this.imgOffset= imgOffset;
+			this.showPreview=false;
+		}
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			monitor.beginTask(this.process, IProgressMonitor.UNKNOWN);
@@ -1213,8 +1169,8 @@ class PrintJob extends Job{
 
 //			clipRectangle.expand(this.imgOffset, this.imgOffset);
 			//a plain Image is created on which we can draw any graphics
-			Image srcImage = new Image(null, printableFigure.getBounds().width,
-									printableFigure.getBounds().height);
+			Image srcImage = new Image(null, Math.max(printableFigure.getBounds().width,1),
+									Math.max(printableFigure.getBounds().height,1));
 			GC imageGC = new GC(srcImage);
 			Graphics graphics = new SWTGraphics(imageGC);
 			printableFigure.paint(graphics);
@@ -1237,7 +1193,7 @@ class PrintJob extends Job{
 			
 			
 			File imageFile= new File(this.path);
-			if (imageFile.exists()) {
+			if (imageFile.exists() && this.showPreview) {
 				if (Desktop.isDesktopSupported()) {
 					try {
 						Desktop.getDesktop().open(imageFile);

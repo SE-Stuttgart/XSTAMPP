@@ -106,7 +106,7 @@ public class CSVExportPage extends AbstractExportPage {
 		
 		FormData data= new FormData();
 		data.top= new FormAttachment(COMPONENT_OFFSET);
-		data.width = Dialog.DIALOG_DEFAULT_BOUNDS;
+		data.width= parent.getBounds().width;
 		seperatorGroup.setLayoutData(data);
 		
 		PathComposite pathChooser= new PathComposite(this.filters,control, SWT.NONE);

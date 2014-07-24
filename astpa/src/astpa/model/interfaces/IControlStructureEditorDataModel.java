@@ -80,6 +80,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 */
 	boolean removeControlAction(UUID controlActionId);
 	
+	
 	/**
 	 * Adds a new root component with the given values. <br>
 	 * Triggers an update for
@@ -207,6 +208,14 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	public boolean recoverComponent(UUID parentId,UUID componentId);
 	
 	
+	/**
+	 * This function pops ControlActions out of a Trash
+	 * @author Lukas Balzer
+	 *
+	 * @param id the id of the ControlAction which shall be recovered
+	 * @return whether the ControlAction has been recovered or not
+	 */
+	public boolean recoverControlAction(UUID id);
 	
 	/**
 	 * Searches recursively for the component with the given id

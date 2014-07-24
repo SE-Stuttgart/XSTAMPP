@@ -58,6 +58,7 @@ public class AutoCompleteField {
 				
 			}
 		});
+		
 	}
 	
 	/**

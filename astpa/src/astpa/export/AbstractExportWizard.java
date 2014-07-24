@@ -114,10 +114,22 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 		
 		String filePath = this.getExportPage().getExportPath();
 		if ((filePath != null) && !filePath.isEmpty()) {
+			File newPDF=new File(filePath);
+			if(newPDF.isFile() && !MessageDialog.openConfirm(this.getShell(), Messages.Warning,
+									String.format(Messages.DoYouReallyWantToOverwriteTheFile,newPDF.getName()))){
+				return false;
+			}
+			if(!newPDF.canWrite()){
+				MessageDialog.openWarning(this.getShell(), Messages.Warning, Messages.CantOverride);
+					return false;
+			}
 			ViewContainer viewContainer =
 				(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.findView(ViewContainer.ID);
-			viewContainer.export(filePath, getMimeConstant(filePath), fopName,getExportPage().asOne(),jobMessage);
+			if(!viewContainer.export(filePath, getMimeConstant(filePath), fopName,getExportPage().asOne(),jobMessage)){
+				MessageDialog.openWarning(this.getShell(), Messages.Warning, Messages.CantOverride);
+				return false;
+			}
 		} else {
 			MessageDialog.openWarning(this.getShell(), Messages.Warning, Messages.ChooseTheDestination);
 			return false;

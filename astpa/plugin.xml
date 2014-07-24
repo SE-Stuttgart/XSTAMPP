@@ -342,8 +342,9 @@
    <wizard
          category="astpa.stepData"
          class="astpa.export.stepData.STPAdataWizard"
+         icon="icons/logo.ico"
          id="astpa.datawizard"
-         name=" All Data">
+         name=" All STPA Data">
       <description>
          opens a Wizard where you can choose multiple of the provided data sheets to be exported as CSV
       </description>

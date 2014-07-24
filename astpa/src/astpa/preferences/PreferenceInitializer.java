@@ -47,7 +47,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	
 	private static final int DEFAULT_HOVER_ITEM = SWT.COLOR_TITLE_BACKGROUND_GRADIENT;
 	
-	private static final int DEFAULT_SPLITTER_FOREGROUND = SWT.COLOR_DARK_BLUE;
+	private static final int DEFAULT_SPLITTER_FOREGROUND = SWT.COLOR_BLUE;
 	
 	private static final int DEFAULT_SPLITTER_BACKGROUND = SWT.COLOR_DARK_BLUE;
 	

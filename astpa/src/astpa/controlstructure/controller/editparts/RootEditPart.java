@@ -29,6 +29,8 @@ import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import astpa.controlstructure.controller.policys.CSEditPolicy;
 import astpa.controlstructure.figure.RootFigure;
+import astpa.model.controlstructure.components.ComponentType;
+import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -80,13 +82,26 @@ public class RootEditPart extends CSAbstractEditPart {
 	}
 	
 	@Override
+	public void refresh() {
+		super.refresh();
+		for(IRectangleComponent f: getModelChildren()){
+			if(f.getComponentType() == ComponentType.CONTROLACTION 
+					&& getDataModel().getControlAction(f.getControlActionLink()) == null){
+				getDataModel().removeComponent(f.getId());
+			}
+		}
+	}
+	
+	@Override
 	protected void refreshVisuals() {
+		
 		this.refreshChildren();
 		this.refreshConnections();
 		for (Object child : this.getChildren()) {
 			((CSAbstractEditPart) child).refreshVisuals();
 		}
 	}
+	
 	
 	@Override
 	protected void createEditPolicies() {

@@ -47,6 +47,7 @@ import astpa.controlstructure.figure.IControlStructureFigure;
 import astpa.controlstructure.utilities.CSCellEditorLocator;
 import astpa.controlstructure.utilities.CSDirectEditor;
 import astpa.controlstructure.utilities.CSTextLabel;
+import astpa.model.controlstructure.components.ComponentType;
 import astpa.model.controlstructure.interfaces.IConnection;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -158,6 +159,12 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 	
 	@Override
 	public void refresh() {
+		for(IRectangleComponent f: getModelChildren()){
+			if(f.getComponentType() == ComponentType.CONTROLACTION 
+					&& getDataModel().getControlAction(f.getControlActionLink()) == null){
+				getDataModel().removeComponent(f.getId());
+			}
+		}
 		this.refreshVisuals();
 	}
 	

@@ -70,12 +70,12 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
-				closeProposalPopup();
+				//do nothing
 			}
 			
 			@Override
 			public void focusGained(FocusEvent e) {
-				// do nothing if the focus is gained
+				LinkingCommandAdapter.this.setProposalPopupFocus();
 				
 			}
 		});

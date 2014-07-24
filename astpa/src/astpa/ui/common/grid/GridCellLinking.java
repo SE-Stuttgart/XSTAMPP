@@ -187,7 +187,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 	 * @param prefix the prefix for item indices, like 'H-' for hazards
 	 */
 	public GridCellLinking(final UUID assignedId, final T publicInterface, final GridWrapper grid, final String prefix) {
-		
+		super();
 		
 		this.assignedId = assignedId;
 		this.publicInterface = publicInterface;

@@ -1237,7 +1237,13 @@ public class DataModelController extends Observable implements
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
-
+	
+	@Override
+	public boolean recoverControlAction(UUID id){
+		return this.controlActionController.recoverControlAction(id);
+		
+	}
+	
 	@Override
 	public int getComponentTrashSize() {
 		return this.controlStructureController.getComponentTrashSize();
