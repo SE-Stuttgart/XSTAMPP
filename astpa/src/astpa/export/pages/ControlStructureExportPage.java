@@ -8,6 +8,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
@@ -28,6 +29,7 @@ public class ControlStructureExportPage extends AbstractExportPage{
 	private Composite control;
 	private String[] filters;
 	private Spinner spinner;
+	private Button dekoSwitch;
 	/**
 	 * @author Lukas Balzer
 	 * @param filters
@@ -56,15 +58,25 @@ public class ControlStructureExportPage extends AbstractExportPage{
 		offsetComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		Label offsetLabel= new Label(offsetComposite, SWT.NONE);
 		offsetLabel.setText(Messages.OffsetValue);
-		RowData rowData= new RowData(LABEL_WIDTH, 25);
+		RowData rowData= new RowData(LABEL_WIDTH, LABEL_HEIGHT);
 		offsetLabel.setLayoutData(rowData);
 		this.spinner = new Spinner(offsetComposite, SWT.BORDER);
 	    this.spinner.setSelection(10);
 	
-		PathComposite pathChooser= new PathComposite(this.filters,this.control, SWT.NONE);
-		
+	    Composite decoSwitchComposite = new Composite(this.control, SWT.NONE);
 		data= new FormData();
 		data.top= new FormAttachment(offsetComposite,COMPONENT_OFFSET);
+		decoSwitchComposite.setLayoutData(data);
+		decoSwitchComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		Label decoLabel= new Label(decoSwitchComposite, SWT.NONE);
+		decoLabel.setText("Decoration");
+		decoLabel.setLayoutData(rowData);
+		this.dekoSwitch= new Button(decoSwitchComposite, SWT.CHECK);
+		
+		
+		PathComposite pathChooser= new PathComposite(this.filters,this.control, SWT.NONE);
+		data= new FormData();
+		data.top= new FormAttachment(decoSwitchComposite,COMPONENT_OFFSET);
 		pathChooser.setLayoutData(data);
 		this.pathText=pathChooser.getText();
 
@@ -96,6 +108,14 @@ public class ControlStructureExportPage extends AbstractExportPage{
 	 */
 	public int getImgOffset() {
 		return this.spinner.getSelection();
+	}
+	
+	/**
+	 *
+	 * @return if the structure is being decorated 
+	 */
+	public boolean getDecoChoice(){
+		return this.dekoSwitch.getSelection();
 	}
 
 }

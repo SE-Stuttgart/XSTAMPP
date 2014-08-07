@@ -44,7 +44,6 @@ public class ProcessFigure extends CSFigure {
 		super(id);
 		
 		this.setOpaque(false);
-		this.setBorder(null);
 		this.topOffset = top;
 	}
 	
@@ -74,4 +73,13 @@ public class ProcessFigure extends CSFigure {
 		this.getTextField().repaint();
 	}
 	
+	@Override
+	public void enableDeco() {
+		//there's no decoration on process components
+	}
+
+	@Override
+	public void disableDeco() {
+		//there's no decoration on process components
+	}
 }

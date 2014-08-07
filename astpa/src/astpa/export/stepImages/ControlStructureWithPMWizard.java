@@ -2,7 +2,6 @@ package astpa.export.stepImages;
 
 import messages.Messages;
 import astpa.controlstructure.CSEditorWithPM;
-import astpa.export.AbstractExportWizard;
 import astpa.export.pages.ControlStructureExportPage;
 import astpa.preferences.IPreferenceConstants;
 
@@ -11,7 +10,7 @@ import astpa.preferences.IPreferenceConstants;
  * @author Lukas Balzer
  *
  */
-public class ControlStructureWithPMWizard extends AbstractExportWizard{
+public class ControlStructureWithPMWizard extends ControlStructureWizard{
 	
 	/**
 	 *
@@ -25,10 +24,5 @@ public class ControlStructureWithPMWizard extends AbstractExportWizard{
 										this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 	}
 
-	@Override
-	public boolean performFinish() {
-		int offset=((ControlStructureExportPage) this.getExportPage()).getImgOffset();
-		return performNormalExport(offset);
-	}
 
 }

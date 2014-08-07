@@ -15,6 +15,7 @@ package astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
@@ -61,7 +62,7 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 	
 	@Override
 	public void deactivate() {
-		((IControlStructureEditPart) this.getParent()).getFigure().setBorder(new LineBorder(1));
+		((IControlStructureEditPart) this.getParent()).getFigure().setBorder(new LineBorder(ColorConstants.blue,1));
 		super.deactivate();
 	}
 	
@@ -71,7 +72,7 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 		tmpFigure.setBorder(new LineBorder(1));
 		
 		tmpFigure.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
-		((CSAbstractEditPart) this.getParent()).getFigure().setBorder(new LineBorder(2));
+		((CSAbstractEditPart) this.getParent()).getFigure().setBorder(new LineBorder(ColorConstants.blue,2));
 		tmpFigure.setToolTip(new Label(Messages.ProcessModel));
 		return tmpFigure;
 	}

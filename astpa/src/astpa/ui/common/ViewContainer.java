@@ -860,7 +860,7 @@ public class ViewContainer extends ViewPart {
 	 * @return whether exporting succeeded.
 	 */
 	public boolean exportFromXSL(String filePath){
-		return export(filePath, org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, "/fopxsl.xsl",false,"");//$NON-NLS-1$ //$NON-NLS-2$
+		return export(filePath, org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, "/fopxsl.xsl",false,"",false);//$NON-NLS-1$ //$NON-NLS-2$
 	}
 			
 	/**
@@ -915,7 +915,13 @@ public class ViewContainer extends ViewPart {
 	 * @param jobMessage the job message which is shown in the progress bar
 	 * @return whether exporting succeeded.
 	 */
-	public boolean export(String filePath,String type,String xslName, boolean asOne,String jobMessage) {
+	public boolean export(String filePath,String type,String xslName, boolean asOne,String jobMessage,boolean forceCSDeco) {
+		if(forceCSDeco){
+			IViewReference ref=this.initializedViews.get(CSEditor.ID);
+			((CSEditor) ref.viewInstance).forceDecoration();
+			ref=this.initializedViews.get(CSEditorWithPM.ID);
+			((CSEditorWithPM) ref.viewInstance).forceDecoration();
+		}
 		this.dataModelController.prepareForExport();
 		// put the xml jaxb content into an output stream
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();

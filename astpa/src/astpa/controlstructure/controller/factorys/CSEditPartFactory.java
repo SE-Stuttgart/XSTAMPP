@@ -29,7 +29,7 @@ import astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import astpa.controlstructure.controller.editparts.CSConnectionEditPart;
 import astpa.controlstructure.controller.editparts.ControlActionEditPart;
 import astpa.controlstructure.controller.editparts.ControllerEditPart;
-import astpa.controlstructure.controller.editparts.ProcessEditPart;
+import astpa.controlstructure.controller.editparts.ControlledProcessEditPart;
 import astpa.controlstructure.controller.editparts.ProcessModelEditPart;
 import astpa.controlstructure.controller.editparts.ProcessValueEditPart;
 import astpa.controlstructure.controller.editparts.ProcessVariableEditPart;
@@ -106,7 +106,7 @@ public class CSEditPartFactory implements EditPartFactory {
 			break;
 		}
 		case CONTROLLED_PROCESS: {
-			part = new ProcessEditPart(this.dataModel);
+			part = new ControlledProcessEditPart(this.dataModel);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}

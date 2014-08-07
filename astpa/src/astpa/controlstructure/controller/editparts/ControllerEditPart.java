@@ -15,10 +15,16 @@ package astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
+import astpa.Activator;
 import astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import astpa.controlstructure.figure.ComponentFigure;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -43,7 +49,10 @@ public class ControllerEditPart extends CSAbstractEditPart {
 	
 	@Override
 	protected IFigure createFigure() {
-		ComponentFigure tmpFigure = new ComponentFigure(this.getId());
+		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/controller_icon.png"); //$NON-NLS-1$
+		Image img= imgDesc.createImage(null);
+		ComponentFigure tmpFigure = new ComponentFigure(this.getId(),img,Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+		
 		tmpFigure.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
 		tmpFigure.setToolTip(new Label(Messages.Controller));
 		return tmpFigure;

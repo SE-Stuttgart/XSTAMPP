@@ -107,4 +107,8 @@ public interface IControlStructureFigure extends IFigure {
 	 * 
 	 */
 	public void enableOffset();
+	
+	public void enableDeco();
+	public void disableDeco();
+	public boolean hasDeco();
 }

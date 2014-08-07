@@ -74,22 +74,25 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		PaletteDrawer componentElements = new PaletteDrawer(Messages.ComponentElements);
 		root.add(componentElements);
 		
-		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_model_40.png"); //$NON-NLS-1$
+		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_model_32.png"); //$NON-NLS-1$
+		ImageDescriptor imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_model_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.ProcessModel, Messages.CreateProcessModel,
-			ComponentType.PROCESS_MODEL, new CSModelCreationFactory(ComponentType.PROCESS_MODEL,this.modelInterface), imgDesc, imgDesc));
+			ComponentType.PROCESS_MODEL, new CSModelCreationFactory(ComponentType.PROCESS_MODEL,this.modelInterface), imgDesc, imgDescLarge));
 		
 		PaletteDrawer additionalElements = new PaletteDrawer(Messages.Others);
 		root.add(additionalElements);
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_variable.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_variable_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_variable.png"); //$NON-NLS-1$
 		additionalElements.add(new CombinedTemplateCreationEntry(Messages.ProcessVariable,
 			Messages.CreateProcessVariable, ComponentType.PROCESS_VARIABLE, new CSModelCreationFactory(
-				ComponentType.PROCESS_VARIABLE,this.modelInterface), imgDesc, imgDesc));
+				ComponentType.PROCESS_VARIABLE,this.modelInterface), imgDesc, imgDescLarge));
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_value.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_value_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_value.png"); //$NON-NLS-1$
 		additionalElements.add(new CombinedTemplateCreationEntry(Messages.ProcessValue, Messages.CreateProcessValue,
 			ComponentType.PROCESS_VALUE, new CSModelCreationFactory(ComponentType.PROCESS_VALUE,this.modelInterface)
-											, imgDesc, imgDesc));
+											, imgDesc, imgDescLarge));
 		
 		return root;
 	}
@@ -125,18 +128,17 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		this.viewLocation = view;
 	}
 	
+	/**
+	 * @param values <ol>
+	 * <li> [0] must be the filePath
+	 * <li> [1] if there is a second value it is assumed as the offset if not a default value is used
+	 * <li> [3] if there is a third value it is assumed as the boolean 
+	 * 			deciding the decoration if there is no such value decoration is turned off
+	 * </ol>
+	 */
 	@Override
 	public boolean triggerExport(Object[] values) {
-		int offset;
-		if(values[0] ==null || !(values[0] instanceof String)){
-			return false;
-		}
-		if(values.length < 2 || values[1] == null || !(values[1] instanceof Integer)){
-			offset = IMG_EXPAND;
-		}else{
-			offset = (int) values[1];
-		}
-		return this.printStructure((String) values[0],offset,Messages.ExportCSwithPM, Messages.ExportingCSwithPM);
+		return initExport(Messages.ExportCSwithPM, Messages.ExportingCSwithPM,values);
 	}
 
 	@Override

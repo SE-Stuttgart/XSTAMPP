@@ -17,14 +17,18 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 
 import astpa.controlstructure.utilities.CSTextLabel;
 
@@ -37,11 +41,20 @@ import astpa.controlstructure.utilities.CSTextLabel;
  * @author Lukas Balzer
  * 
  */
-public class CSFigure extends Figure implements IControlStructureFigure {
+public abstract class CSFigure extends Figure implements IControlStructureFigure {
 	
-	private CSTextLabel textLabel;
+	private final CSTextLabel textLabel;
+	private final Image image;
 	private final UUID componentID;
+	private int leftMargin =0;
 	protected static final int CENTER_COMPENSATION = 2;
+	/**
+	 * The border which is normally shown as decoration
+	 * @author Lukas Balzer
+	 */
+	public static final Color STANDARD_BORDER_COLOR=ColorConstants.black;
+	private boolean withIcon;
+	
 	
 	/**
 	 * the xOrientations array which stores the locations on the x-axis as
@@ -53,7 +66,7 @@ public class CSFigure extends Figure implements IControlStructureFigure {
 	 * values between 0 and 1 where the user should be able to create a CSAnchor
 	 */
 	public static final float[] Y_ORIENTATIONS = {0.25f, 0.5f, 0.75f};
-	
+	private static final int IMG_WIDTH= 24;  
 	
 	/**
 	 * The CSFigure constructor creates a new <code>XYLayout</code> instance and
@@ -66,13 +79,54 @@ public class CSFigure extends Figure implements IControlStructureFigure {
 	protected CSFigure(UUID id) {
 		this.componentID = id;
 		this.setLayoutManager(new XYLayout());
+		this.image=null;
+		
 		this.textLabel = new CSTextLabel(this);
 		this.add(this.textLabel);
-		this.setConstraint(this.textLabel, new Rectangle(0, 1, -1, -1));
+		
+		this.setConstraint(this.textLabel, new Rectangle(1, 1, -1, -1));
 		this.setOpaque(true);
 		this.setBackgroundColor(ColorConstants.white);
 	}
 	
+	/**
+	 * The CSFigure constructor creates a new <code>XYLayout</code> instance and
+	 * sets the Layout manager for the Components
+	 * 
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 */
+	protected CSFigure(UUID id,Image img) {
+		this.componentID = id;
+		this.setLayoutManager(new XYLayout());
+		this.image=img;
+		
+		this.textLabel = new CSTextLabel(this);
+		this.add(this.textLabel);
+		
+		this.setConstraint(this.textLabel, new Rectangle(1, 1, -1, -1));
+		this.setOpaque(true);
+		this.setBackgroundColor(ColorConstants.white);
+	}
+	
+	@Override
+	public void paintChildren(Graphics graphics) {
+		if(this.image != null && this.withIcon){
+			double newPos=IMG_WIDTH/graphics.getAbsoluteScale();
+			Rectangle rect= (Rectangle) this.getLayoutManager().getConstraint(this.textLabel);
+			this.setConstraint(this.textLabel, new Rectangle((int) newPos, rect.y, rect.width, rect.height));
+			double scale= 1.0/ graphics.getAbsoluteScale();
+			double zoom = graphics.getAbsoluteScale();
+			graphics.scale(scale);
+			graphics.drawImage(this.image, 1, 1);
+			graphics.scale(zoom);
+		}
+		super.paintChildren(graphics);
+	}
+		
+	
+
 	@Override
 	public void setText(String text) {
 		this.textLabel.setText(text);
@@ -88,6 +142,21 @@ public class CSFigure extends Figure implements IControlStructureFigure {
 		return this.textLabel;
 	}
 	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param color the Color of the new Border
+	 */
+	public void setBorder(Color color) {
+		Border border;
+		if(this.getChildren().size() >1){
+			border = new LineBorder(color, 2);
+		}else{
+			border = new LineBorder(color, 1);
+		}
+		super.setBorder(border);
+	}
 	@Override
 	public void setLayout(Rectangle rect) {
 		int height = rect.height;
@@ -95,13 +164,14 @@ public class CSFigure extends Figure implements IControlStructureFigure {
 		if (this.getChildren().size() > 1) {
 			// the height of the rectangle is set to the ideal height for the
 			// given width
-			getTextField().setSize(getBounds().width, getTextField().getTextBounds().getSize().height);
-			this.setConstraint(this.textLabel, new Rectangle(1, 1, rect.width, -1));
+			getTextField().setSize(getBounds().width-this.leftMargin, getTextField().getTextBounds().getSize().height);
+			this.setConstraint(this.textLabel, new Rectangle(this.leftMargin, 1, getBounds().width -this.leftMargin, -1));
 		} else {
-			getTextField().setSize(new Dimension(getBounds().width, height));
-			this.setConstraint(this.textLabel, new Rectangle(1, 1, rect.width, rect.height));
+			
+			getTextField().setSize(new Dimension(rect.width -this.leftMargin, rect.height));
+			this.setConstraint(this.textLabel, new Rectangle(this.leftMargin, 1, rect.width -this.leftMargin, rect.height));
 		}
-		
+//		rect.width += this.leftMargin;
 		this.getTextField().repaint();
 		this.getParent().setConstraint(this, rect);
 		this.getTextField().repaint();
@@ -227,4 +297,17 @@ public class CSFigure extends Figure implements IControlStructureFigure {
 		((IControlStructureFigure) this.getParent()).enableOffset();
 	}
 	
+	protected void setDecoration(boolean withDeco){
+		this.withIcon=withDeco;
+		if(withDeco){
+			this.leftMargin=IMG_WIDTH;
+		}else{
+			this.leftMargin=0;
+		}
+	}
+	
+	@Override
+	public boolean hasDeco() {
+		return this.withIcon;
+	}
 }

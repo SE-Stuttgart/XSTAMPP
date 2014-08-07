@@ -45,7 +45,7 @@ public class PdfExportWizard extends AbstractExportWizard{
 		
 		this.getStore().setValue(IPreferenceConstants.COMPANY_LOGO, this.page.getTextLogo().getText());
 
-		return performXSLExport("/fopxsl.xsl",Messages.ExportingPdf); //$NON-NLS-1$
+		return performXSLExport("/fopxsl.xsl",Messages.ExportingPdf,this.page.getDecoChoice()); //$NON-NLS-1$
 	}
 	
 

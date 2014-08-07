@@ -51,6 +51,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	
 	private List<IFigure> componentList = new ArrayList<>();
 	private boolean generalEnable = false;
+	private boolean hasDeco;
 	
 	
 	/**
@@ -63,7 +64,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	 */
 	public RootFigure(UUID id) {
 		super(id);
-		this.setBorder(null);
+		this.hasDeco=true;
 		this.addMouseMotionListener(this);
 	}
 	
@@ -265,5 +266,31 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	@Override
 	public void mouseMoved(MouseEvent me) {
 		// // Does nothing by default
+	}
+
+	@Override
+	public void enableDeco() {
+		this.hasDeco=true;
+		for(Object child:this.getChildren()){
+			if(child instanceof IControlStructureFigure){
+				((IControlStructureFigure) child).enableDeco();
+			}
+		}
+		
+	}
+
+	@Override
+	public void disableDeco() {
+		this.hasDeco=false;
+		for(Object child:this.getChildren()){
+			if(child instanceof IControlStructureFigure){
+				((IControlStructureFigure) child).disableDeco();
+			}
+		}
+	}
+	
+	@Override
+	public boolean hasDeco() {
+		return this.hasDeco;
 	}
 }

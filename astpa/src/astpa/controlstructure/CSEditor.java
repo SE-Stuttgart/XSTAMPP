@@ -86,45 +86,53 @@ public class CSEditor extends CSAbstractEditor {
 		PaletteDrawer componentElements = new PaletteDrawer(Messages.ComponentElements);
 		root.add(componentElements);
 		
-		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/controller_40.png"); //$NON-NLS-1$
+		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/controller_32.png"); //$NON-NLS-1$
+		ImageDescriptor imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/controller_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.Controller, Messages.CreateController,
-			ComponentType.CONTROLLER, new CSModelCreationFactory(ComponentType.CONTROLLER,this.modelInterface), imgDesc, imgDesc));
+			ComponentType.CONTROLLER, new CSModelCreationFactory(ComponentType.CONTROLLER,this.modelInterface), imgDesc, imgDescLarge));
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/actuator_40.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/actuator_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/actuator_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.Actuator, Messages.CreateActuator,
-			ComponentType.ACTUATOR, new CSModelCreationFactory(ComponentType.ACTUATOR,this.modelInterface), imgDesc, imgDesc));
+			ComponentType.ACTUATOR, new CSModelCreationFactory(ComponentType.ACTUATOR,this.modelInterface), imgDesc, imgDescLarge));
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_40.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.ControlledProcess,
 			Messages.CreateControlledProcess, ComponentType.CONTROLLED_PROCESS, new CSModelCreationFactory(
-				ComponentType.CONTROLLED_PROCESS,this.modelInterface), imgDesc, imgDesc));
+				ComponentType.CONTROLLED_PROCESS,this.modelInterface), imgDesc, imgDescLarge));
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/sensor_40.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/sensor_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/sensor_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.Sensor, Messages.CreateSensor,
-			ComponentType.SENSOR, new CSModelCreationFactory(ComponentType.SENSOR,this.modelInterface), imgDesc, imgDesc));
+			ComponentType.SENSOR, new CSModelCreationFactory(ComponentType.SENSOR,this.modelInterface), imgDesc, imgDescLarge));
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(Messages.ControlAction, "Create Control Action Component",
-			ComponentType.CONTROLACTION, new CSModelCreationFactory(ComponentType.CONTROLACTION,this.modelInterface), imgDesc, imgDesc));
+			ComponentType.CONTROLACTION, new CSModelCreationFactory(ComponentType.CONTROLACTION,this.modelInterface), imgDesc, imgDescLarge));
 		
 		root.add(separator);
 		PaletteDrawer connectionElements = new PaletteDrawer(Messages.ConnectingElements);
 		root.add(connectionElements);
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/arrow_simple_40.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/arrow_simple_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/arrow_simple_40.png"); //$NON-NLS-1$
 		connectionElements.add(new ConnectionCreationToolEntry(Messages.Arrow, Messages.CreateConnections,
-			new ConnectionCreationFactory(ConnectionType.ARROW_SIMPLE), imgDesc, imgDesc));
+			new ConnectionCreationFactory(ConnectionType.ARROW_SIMPLE), imgDesc, imgDescLarge));
 		
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/arrow_dashed_40.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/arrow_dashed_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/arrow_dashed_40.png"); //$NON-NLS-1$
 		connectionElements.add(new ConnectionCreationToolEntry(Messages.DashedArrows, Messages.CreateConnections,
-			new ConnectionCreationFactory(ConnectionType.ARROW_DASHED), imgDesc, imgDesc));
+			new ConnectionCreationFactory(ConnectionType.ARROW_DASHED), imgDesc, imgDescLarge));
 		
 		root.add(separator);
 		PaletteDrawer otherElements = new PaletteDrawer(Messages.Others);
 		root.add(otherElements);
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_40.png"); //$NON-NLS-1$
+		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_40.png"); //$NON-NLS-1$
 		otherElements.add(new CombinedTemplateCreationEntry(Messages.TextBox, Messages.CreateTextBox,
-			ComponentType.TEXTFIELD, new CSModelCreationFactory(ComponentType.TEXTFIELD,this.modelInterface), imgDesc, imgDesc));
+			ComponentType.TEXTFIELD, new CSModelCreationFactory(ComponentType.TEXTFIELD,this.modelInterface), imgDesc, imgDescLarge));
 		
 		return root;
 	}
@@ -163,21 +171,14 @@ public class CSEditor extends CSAbstractEditor {
 	/**
 	 * @param values <ol>
 	 * <li> [0] must be the filePath
-	 * <li> [1] if there is a second value, it is assumed as the offset
+	 * <li> [1] if there is a second value it is assumed as the offset if not a default value is used
+	 * <li> [3] if there is a third value it is assumed as the boolean 
+	 * 			deciding the decoration if there is no such value decoration is turned off
 	 * </ol>
 	 */
 	@Override
 	public boolean triggerExport(Object[] values) {
-		int offset;
-		if(values[0] ==null || !(values[0] instanceof String)){
-			return false;
-		}
-		if(values.length < 2 || values[1] == null || !(values[1] instanceof Integer)){
-			offset = IMG_EXPAND;
-		}else{
-			offset = (int) values[1];
-		}
-		return this.printStructure((String) values[0],offset,Messages.ExportCS, Messages.ExportingCS);
+		return initExport(Messages.ExportCS, Messages.ExportingCS,values);
 	}
 
 	@Override

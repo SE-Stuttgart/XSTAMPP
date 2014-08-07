@@ -47,6 +47,7 @@ public abstract class AbstractExportPage extends WizardPage implements IExportPa
 	private static final String IMAGE_PATH = "/icons/buttons/export"; //$NON-NLS-1$
 	protected static final int LABEL_COLUMN= 5;
 	protected static final int LABEL_WIDTH = 107;
+	protected static final int LABEL_HEIGHT = 25;
 	protected static final int TEXT_COLUMN= LABEL_COLUMN + LABEL_WIDTH+1;
 	protected static final int BUTTON_COLUMN= 430;
 	private int fontState = 0;

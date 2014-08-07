@@ -15,9 +15,12 @@ package astpa.controlstructure.figure;
 
 import java.util.UUID;
 
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * 
@@ -34,7 +37,7 @@ public class ComponentFigure extends CSFigure {
 	 * bounds
 	 */
 	public static final Dimension COMPONENT_FIGURE_DEFSIZE = new Dimension(120, 40);
-	
+	private final Color decoBorderColor; 
 	
 	/**
 	 * 
@@ -48,7 +51,40 @@ public class ComponentFigure extends CSFigure {
 		super(id);
 		this.setForegroundColor(ColorConstants.black);
 		this.setBorder(new LineBorder(1));
+		this.decoBorderColor=STANDARD_BORDER_COLOR;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @author Lukas Balzer
+	 * @param id the id which the figure inherits from its model
+	 * @param img his Image will be displayed in the upper left corner of the component
+	 * @param color the Color of the Border
+	 * 
+	 */
+	public ComponentFigure(UUID id,Image img,Color color) {
+		
+		super(id,img);
+		this.setForegroundColor(ColorConstants.black);
+		this.decoBorderColor= color;
+		enableDeco();
+		
 		
 	}
+
+	@Override
+	public void enableDeco() {
+		setDecoration(true);
+		setBorder(this.decoBorderColor);
+	}
+
+	@Override
+	public void disableDeco() {
+		setDecoration(false);
+		setBorder(STANDARD_BORDER_COLOR);
+	}
+	
+	
 	
 }

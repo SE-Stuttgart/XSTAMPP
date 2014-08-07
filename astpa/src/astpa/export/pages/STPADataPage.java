@@ -134,7 +134,6 @@ public class STPADataPage extends CSVExportPage {
 		for(Button stepSelector: this.steps.keySet()){
 			if(stepSelector.getSelection()){
 				stepArray.add(this.steps.get(stepSelector));
-				System.out.println(this.steps.get(stepSelector));
 			}
 		}
 		

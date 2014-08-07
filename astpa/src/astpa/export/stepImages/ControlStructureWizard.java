@@ -1,5 +1,8 @@
 package astpa.export.stepImages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import messages.Messages;
 import astpa.controlstructure.CSEditor;
 import astpa.export.AbstractExportWizard;
@@ -25,10 +28,17 @@ public class ControlStructureWizard extends AbstractExportWizard{
 										this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
 	}
 
+	protected ControlStructureWizard(String id) {
+		super(id);
+	}
+
 	@Override
 	public boolean performFinish() {
-		int offset=((ControlStructureExportPage) this.getExportPage()).getImgOffset();
-		return performNormalExport(offset);
+		List<Object> values= new ArrayList<>();
+		values.add(this.getExportPage().getExportPath());
+		values.add(((ControlStructureExportPage) this.getExportPage()).getImgOffset());
+		values.add(((ControlStructureExportPage) this.getExportPage()).getDecoChoice());
+		return performNormalExport(values.toArray());
 	}
 	
 	

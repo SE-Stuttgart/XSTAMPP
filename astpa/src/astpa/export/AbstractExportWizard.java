@@ -91,15 +91,16 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 		return performNormalExport(null);
 	}
 		
-	protected boolean performNormalExport(Object value) {
-		String filePath = this.getExportPage().getExportPath();
-		Object[] newValues= new Object[]{filePath,value};
+	protected boolean performNormalExport(Object[] values) {
+		for(Object o: values){
+			System.out.println(o);
+		}
 		try {
-			if(checkError(checkPath(filePath))) {
+			if(checkError(checkPath((String) values[0]))) {
 				ViewContainer viewContainer =
 					(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 						.findView(ViewContainer.ID);
-				viewContainer.export(newValues,this.getExportedViews()[0]);
+				viewContainer.export(values,this.getExportedViews()[0]);
 			} else {
 				return false;
 			}
@@ -110,7 +111,7 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 		return true;
 	}
 	
-	protected boolean performXSLExport(String fopName, String jobMessage){
+	protected boolean performXSLExport(String fopName, String jobMessage, boolean forceCSDeco){
 		
 		String filePath = this.getExportPage().getExportPath();
 		if ((filePath != null) && !filePath.isEmpty()) {
@@ -119,6 +120,13 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 									String.format(Messages.DoYouReallyWantToOverwriteTheFile,newPDF.getName()))){
 				return false;
 			}
+			
+			try {
+				newPDF.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
 			if(!newPDF.canWrite()){
 				MessageDialog.openWarning(this.getShell(), Messages.Warning, Messages.CantOverride);
 					return false;
@@ -126,7 +134,7 @@ public abstract class AbstractExportWizard extends Wizard implements IExportWiza
 			ViewContainer viewContainer =
 				(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.findView(ViewContainer.ID);
-			if(!viewContainer.export(filePath, getMimeConstant(filePath), fopName,getExportPage().asOne(),jobMessage)){
+			if(!viewContainer.export(filePath, getMimeConstant(filePath), fopName,getExportPage().asOne(),jobMessage,forceCSDeco)){
 				MessageDialog.openWarning(this.getShell(), Messages.Warning, Messages.CantOverride);
 				return false;
 			}

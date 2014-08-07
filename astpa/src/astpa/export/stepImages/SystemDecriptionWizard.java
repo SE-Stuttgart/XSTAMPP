@@ -28,6 +28,6 @@ public class SystemDecriptionWizard  extends AbstractExportWizard{
 
 		@Override
 		public boolean performFinish() {
-			return this.performXSLExport("/fopDesc.xsl",Messages.ExportingPdf); //$NON-NLS-1$
+			return this.performXSLExport("/fopDesc.xsl",Messages.ExportingPdf,false); //$NON-NLS-1$
 		}
 }

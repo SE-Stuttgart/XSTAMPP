@@ -708,7 +708,6 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public boolean setControlActionTitle(UUID controlActionId, String title) {
-		System.out.println(controlActionId);
 		if ((controlActionId == null) || (title == null)) {
 			return false;
 		}

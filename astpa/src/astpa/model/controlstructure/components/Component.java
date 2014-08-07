@@ -145,7 +145,6 @@ public class Component implements IRectangleComponent, ICausalComponent {
 		if(this.layoutPM.isEmpty()){
 			this.sychronizeLayout();
 		}
-		System.out.println(this.layoutPM);
 		return this.layoutPM;
 		
 	}

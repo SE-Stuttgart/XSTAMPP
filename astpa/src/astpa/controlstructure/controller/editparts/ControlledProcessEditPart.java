@@ -15,10 +15,17 @@ package astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
+import astpa.Activator;
 import astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import astpa.controlstructure.figure.ComponentFigure;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -28,7 +35,7 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
  * @version 1.0
  * 
  */
-public class ProcessEditPart extends CSAbstractEditPart {
+public class ControlledProcessEditPart extends CSAbstractEditPart {
 	
 	/**
 	 * this constuctor sets the unique ID of the {@link ProcessEditPart} which
@@ -38,13 +45,15 @@ public class ProcessEditPart extends CSAbstractEditPart {
 	 * 
 	 * @param model The DataModel which contains all model classes
 	 */
-	public ProcessEditPart(IControlStructureEditorDataModel model) {
+	public ControlledProcessEditPart(IControlStructureEditorDataModel model) {
 		super(model);
 	}
 	
 	@Override
 	protected IFigure createFigure() {
-		ComponentFigure tmpFigure = new ComponentFigure(this.getId());
+		ImageDescriptor imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_icon.png"); //$NON-NLS-1$
+		Image img= imgDesc.createImage(null);
+		ComponentFigure tmpFigure = new ComponentFigure(this.getId(),img,Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA));
 		tmpFigure.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
 		tmpFigure.setToolTip(new Label(Messages.ControlledProcess));
 		return tmpFigure;

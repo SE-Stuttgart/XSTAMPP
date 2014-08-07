@@ -29,6 +29,6 @@ public class CausalFactorsTableWizard extends AbstractExportWizard{
 
 	@Override
 	public boolean performFinish() {
-		return this.performXSLExport("/fopcausal.xsl",Messages.ExportingCFTable);
+		return this.performXSLExport("/fopcausal.xsl",Messages.ExportingCFTable,false);
 	}
 }

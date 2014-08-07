@@ -16,6 +16,7 @@ package astpa.controlstructure.utilities;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -61,21 +62,20 @@ public class CSTextLabel extends FlowPage {
 	public CSTextLabel(IControlStructureFigure csFigure) {
 		super();
 		setParent(csFigure);
-		
-		BlockFlow blockflow = new BlockFlow();
-		add(blockflow);
 		this.content = new TextFlow();
+		this.content.setBackgroundColor(ColorConstants.white);
 		this.content.setFont(new Font(null, "Arial", INITIAL_TEXT_SIZE, SWT.NORMAL)); //$NON-NLS-1$
 		
-		this.content.setParent(this);
 		this.content.setLayoutManager(new ParagraphTextLayout(this.content, ParagraphTextLayout.WORD_WRAP_SOFT));
-		this.content.setLocation(new Point(CENTER_COMPENSATION, 0));
+		this.content.setLocation(new Point(0, 0));
 		this.content.setForegroundColor(ColorConstants.black);
 		this.content.setVisible(true);
 		this.setOpaque(true);
-		blockflow.add(this.content);
-		
+		this.content.setOpaque(true);
+		add(this.content);
+
 	}
+	
 	
 	/**
 	 * 
@@ -164,15 +164,10 @@ public class CSTextLabel extends FlowPage {
 	@Override
 	public void setBounds(Rectangle rect) {
 		super.setBounds(rect);
+		rect.setLocation(0, 0);
 		this.content.setBounds(rect);
 	}
-	
-	@Override
-	public Rectangle getBounds() {
-		Rectangle rect = super.getBounds().getCopy();
-		
-		return rect;
-	}
+
 	
 	/**
 	 * 
@@ -188,4 +183,8 @@ public class CSTextLabel extends FlowPage {
 		this.content.getUpdateManager().performUpdate();
 	}
 	
+	@Override
+	public void paint(Graphics graphics) {
+		super.paint(graphics);
+	}
 }

@@ -27,6 +27,9 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -49,6 +52,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener{
 	private ColorChooser bgChooser,fontChooser;
 	private Composite sampleComp;
 	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+	private Button decoSwitch;
 	
 	
 	/**
@@ -153,9 +157,20 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener{
 		});
 		this.textExportPath= path.getText();
 		
+		Composite decoSwitchComposite = new Composite(this.container, SWT.NONE);
+		data= new FormData();
+		data.top= new FormAttachment(path,COMPONENT_OFFSET);
+		decoSwitchComposite.setLayoutData(data);
+		decoSwitchComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		Label decoLabel= new Label(decoSwitchComposite, SWT.NONE);
+		decoLabel.setText("Control Structure Decoration");
+		decoLabel.setToolTipText("Here you can choose whether you want a Decoration in the Control Structure or not");
+		decoLabel.setLayoutData(new RowData(LABEL_WIDTH, LABEL_HEIGHT));
+		this.decoSwitch= new Button(decoSwitchComposite, SWT.CHECK);
+		
 		this.sampleComp= new DemoCanvas(this.container, SWT.NONE);
 		data=new FormData();
-		data.top= new FormAttachment(path, COMPONENT_OFFSET);
+		data.top= new FormAttachment(decoSwitchComposite, COMPONENT_OFFSET);
 		data.height = DEMOCANVAS_HEIGHT;
 		data.width = parent.getBounds().width;
 		this.sampleComp.setLayoutData(data);
@@ -270,5 +285,13 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener{
 	@Override
 	public void modifyText(ModifyEvent e) {
 		this.sampleComp.redraw();
+	}
+	
+	/**
+	 *
+	 * @return if the structure is being decorated 
+	 */
+	public boolean getDecoChoice(){
+		return this.decoSwitch.getSelection();
 	}
 }

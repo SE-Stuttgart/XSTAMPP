@@ -84,6 +84,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -95,7 +96,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
@@ -114,7 +114,6 @@ import astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import astpa.controlstructure.controller.editparts.CSConnectionEditPart;
 import astpa.controlstructure.controller.editparts.RootEditPart;
 import astpa.controlstructure.controller.factorys.CSEditPartFactory;
-import astpa.controlstructure.figure.IControlStructureFigure;
 import astpa.controlstructure.figure.RootFigure;
 import astpa.controlstructure.utilities.CSContextMenuProvider;
 import astpa.controlstructure.utilities.CSPalettePage;
@@ -124,6 +123,7 @@ import astpa.model.ObserverValue;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 import astpa.model.interfaces.IDataModel;
+import astpa.ui.common.ViewContainer;
 
 /**
  * 
@@ -187,11 +187,14 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	private Slider scale;
 	private Button redo;
 	private Button undo;
-	
+	//this bool can be set if a decoration in the next Image is wished
+	private boolean forceDecoration;
 	private int timeOfLastChange = 0;
 	
 	private final String workspacePath;
 	private String imagePath;
+
+	private Button decoSwitch;
 	
 	
 	/**
@@ -401,28 +404,35 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		
 		// adding the undo/redo Buttons
 		this.undo = new Button(this.toolBar, SWT.BUTTON_MASK);
-		data = new FormData(CSAbstractEditor.TOOL_HEIGHT, CSAbstractEditor.TOOL_HEIGHT);
+		data = new FormData(TOOL_HEIGHT, TOOL_HEIGHT);
 		data.left = new FormAttachment(0);
 		this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
 		this.undo.setLayoutData(data);
 		this.redo = new Button(this.toolBar, SWT.BUTTON1);
-		data = new FormData(CSAbstractEditor.TOOL_HEIGHT, CSAbstractEditor.TOOL_HEIGHT);
+		data = new FormData(TOOL_HEIGHT, TOOL_HEIGHT);
 		data.left = new FormAttachment(this.undo);
 		this.redo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
 		this.redo.setLayoutData(data);
 		
+		this.decoSwitch= new Button(this.toolBar, SWT.TOGGLE);
+		data = new FormData();
+		data.height= TOOL_HEIGHT;
+		data.left= new FormAttachment(this.redo,30);
+		this.decoSwitch.setLayoutData(data);
+		this.decoSwitch.addSelectionListener(new DecoSwitch(this.decoSwitch));
+		
 		data = new FormData();
 		data.top = new FormAttachment(0);
-		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
-		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
+		data.bottom = new FormAttachment(FULL_SCALE);
+		data.right = new FormAttachment(FULL_SCALE);
 		this.scale = new Slider(this.toolBar, SWT.HORIZONTAL);
-		this.scale.setBounds(0, 0, CSAbstractEditor.SCALE_WIDTH, CSAbstractEditor.TOOL_HEIGHT);
-		this.scale.setMaximum(CSAbstractEditor.MAX_SCALE);
-		this.scale.setMinimum(CSAbstractEditor.MIN_SCALE);
-		this.scale.setPageIncrement(CSAbstractEditor.SCALE_STEP);
-		this.scale.setIncrement(CSAbstractEditor.SCALE_STEP);
+		this.scale.setBounds(0, 0, SCALE_WIDTH, TOOL_HEIGHT);
+		this.scale.setMaximum(MAX_SCALE);
+		this.scale.setMinimum(MIN_SCALE);
+		this.scale.setPageIncrement(SCALE_STEP);
+		this.scale.setIncrement(SCALE_STEP);
 		this.scale.setToolTipText(Messages.ZoomItem);
-		this.scale.setSelection(CSAbstractEditor.FULL_SCALE);
+		this.scale.setSelection(FULL_SCALE);
 		this.scale.addSelectionListener(this);
 		this.scale.setLayoutData(data);
 		
@@ -821,17 +831,14 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		FileDialog dlg = new FileDialog(PlatformUI.createDisplay().getActiveShell(), SWT.SAVE);
-		dlg.setText(Messages.ExportImage);
-		dlg.setOverwrite(true);
-		dlg.setFileName(this.getId());
-		dlg.setFilterExtensions(new String[] { "*.png", "*.jpg",".bmp"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		String path = dlg.open();
 		
-		this.printStructure(path,10, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		ViewContainer viewContainer =
+				(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.findView(ViewContainer.ID);
+		viewContainer.openExportWizard();
 	}
 
-	protected boolean printStructure(String path,int imgOffset,String name,String processName){
+	protected boolean printStructure(String path,int imgOffset,String name,String processName,boolean decorate){
 		int imageType;
 		if (path == null) {
 			return false;
@@ -846,7 +853,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			return false;
 		}
 		
-		Job exportJob = new PrintJob(name,processName, path, imageType, getGraphicalViewer(), imgOffset);
+		Job exportJob = new PrintJob(name,processName, path, imageType, getGraphicalViewer(), imgOffset, true,decorate);
 		exportJob.schedule();
 		exportJob.addJobChangeListener(new JobChangeAdapter());
 		return true;
@@ -877,7 +884,12 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		this.workSite.setSelectionProvider(null);
 		this.workSite.setSelectionProvider(this.getGraphicalViewer());
 		this.workSite.getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+		if(this.decoSwitch.getSelection()){
+			enableDecoration();
+		}else{
+			disableDecoration();
 		}
+	}
 	
 	@Override
 	public void setDataModelInterface(IDataModel dataInterface) {
@@ -908,8 +920,9 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			}
 			
 			String path = this.workspacePath + File.separator + this.getId() + ".png";//$NON-NLS-1$
-		
-			Job exportJob = new PrintJob(path, SWT.IMAGE_BMP, getGraphicalViewer(), IMG_EXPAND);
+			
+			Job exportJob = new PrintJob(path, SWT.IMAGE_BMP, getGraphicalViewer(), IMG_EXPAND,this.forceDecoration);
+			this.forceDecoration=false;
 			exportJob.schedule();
 			exportJob.addJobChangeListener(new JobChangeAdapter());
 			this.imagePath = path;
@@ -1019,7 +1032,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			((RootEditPart) this.getGraphicalViewer().getContents()).enableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents()).addAnchorsGrid();
 		} else {
-			((IControlStructureFigure) ((RootEditPart) this.getGraphicalViewer().getContents()).getFigure())
+			((RootEditPart) this.getGraphicalViewer().getContents()).getFigure()
 				.removeHighlighter();
 			((RootEditPart) this.getGraphicalViewer().getContents()).disableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents()).removeAnchorsGrid();
@@ -1063,12 +1076,97 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		
 	}
 	
+	/**
+	 * @param values <ol>
+	 * <li> [0] must be the filePath
+	 * <li> [1] if there is a second value it is assumed as the offset if not a default value is used
+	 * <li> [3] if there is a third value it is assumed as the boolean 
+	 * 			deciding the decoration if there is no such value decoration is turned off
+	 * </ol>
+	 */
+	protected boolean initExport(String name,String processName,Object[] values) {
+		int offset;
+		boolean decorate;
+		//these if-blocks check whether there are appropriate values, and if it's the right one if not it sets a default value 
+		if(values[0] ==null || !(values[0] instanceof String)){
+			return false;
+		}
+		
+		if(values.length < 2 || values[1] == null || !(values[1] instanceof Integer)){
+			offset = IMG_EXPAND;
+		}else{
+			offset = (int) values[1];
+		}
+		
+		if(values.length < 3 || values[2] == null || !(values[2] instanceof Boolean)){
+			decorate=false;
+		}else{
+			decorate =  (boolean) values[2];
+		}
+		return this.printStructure((String) values[0],offset,name, processName,decorate);
+	}
+	
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		this.updateActions(this.selectionActions);
 	}
 	
+	void enableDecoration(){
+		RootEditPart root = (RootEditPart) this.getGraphicalViewer().getContents();
+		root.getFigure().enableDeco();
+		root.refresh();
+	}
 	
+	void disableDecoration(){
+		RootEditPart root = (RootEditPart) this.getGraphicalViewer().getContents();
+		root.getFigure().disableDeco();
+		root.removeAnchorsGrid();
+		root.refresh();
+	}
+	
+	/**
+	 *This method sets a boolean to tell the export to make the decoration visible in the next call
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
+	public void forceDecoration(){
+		this.forceDecoration=true;
+	}
+	
+	
+	private class DecoSwitch implements SelectionListener{
+		private boolean decoration;
+		private final Button switchButton;
+		
+		public DecoSwitch(Button button){
+			this.switchButton=button;
+
+			this.switchButton.setText("Decoration is On");
+			this.decoration= true;
+			this.switchButton.setSelection(true);
+		}
+		@Override
+		public void widgetDefaultSelected(SelectionEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			if(this.decoration){
+				this.decoration=false;
+				this.switchButton.setText("Decoration is Off");
+				CSAbstractEditor.this.disableDecoration();
+			}else{
+				this.decoration=true;
+				this.switchButton.setText("Decoration is On");
+				CSAbstractEditor.this.enableDecoration();
+			}
+			
+		}
+		
+	}
 }
 	
 class PrintJob extends Job{
@@ -1079,6 +1177,8 @@ class PrintJob extends Job{
 		private final GraphicalViewer viewer;
 		private final int imgOffset;
 		private final boolean showPreview;
+		private final IFigure printableFigure;
+		private final Image srcImage;
 		
 		/**
 		 * this constructor creates a new Job to print the current Control Structure
@@ -1091,19 +1191,47 @@ class PrintJob extends Job{
 		 *            should be stored
 		 * @param viewer the viewer Object of the editor
 		 * @param imgOffset the amount of pixels which are added as Border
+		 * @param showPreview if the file should be opened after the export
+		 * @param decorate whether the structure should be printed with decoration
 		 * @see GC
 		 * @see ImageLoader
 		 * @see SWT#IMAGE_PNG
 		 * @see SWT#IMAGE_JPEG
 		 */
-		public PrintJob(String name,String process,String path, int imageType, GraphicalViewer viewer, int imgOffset){
+		public PrintJob(String name,
+						String process,	
+						String path, 	
+						int imageType, 	
+						GraphicalViewer viewer, 	
+						int imgOffset, 	
+						boolean showPreview,
+						boolean decorate){
 			super(name);
 			this.imageType=imageType;
 			this.path=path;
 			this.process=process;
 			this.viewer=viewer;
 			this.imgOffset= imgOffset;
-			this.showPreview=true;
+			this.showPreview=showPreview;
+			
+			
+			ScalableRootEditPart rootEditPart = (ScalableRootEditPart) this.viewer.getRootEditPart();
+			boolean setDeco=((RootEditPart)rootEditPart.getContents()).getFigure().hasDeco();
+			if(setDeco && !decorate){
+				((RootEditPart)rootEditPart.getContents()).getFigure().disableDeco();
+				((RootEditPart)rootEditPart.getContents()).refresh();
+			}
+			this.printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
+			//a plain Image is created on which we can draw any graphics
+			this.srcImage = new Image(null, Math.max(this.printableFigure.getBounds().width,1),
+									Math.max(this.printableFigure.getBounds().height,1));
+			GC imageGC = new GC(this.srcImage);
+			Graphics graphics = new SWTGraphics(imageGC);
+			this.printableFigure.paint(graphics);
+			if(setDeco && !decorate){
+				((RootEditPart)rootEditPart.getContents()).getFigure().enableDeco();
+				((RootEditPart)rootEditPart.getContents()).refresh();
+			}
 		}
 		
 		/**
@@ -1115,30 +1243,25 @@ class PrintJob extends Job{
 		 *            should be stored
 		 * @param viewer the viewer Object of the editor
 		 * @param imgOffset the amount of pixels which are added as Border
+		 * @param forcedDeco this bool can be set if a decoration in the next Image is wished
 		 * @see GC
 		 * @see ImageLoader
 		 * @see SWT#IMAGE_PNG
 		 * @see SWT#IMAGE_JPEG
 		 */
-		public PrintJob(String path, int imageType, GraphicalViewer viewer, int imgOffset){
-			super(Messages.ExportPdf);
-			this.imageType=imageType;
-			this.path=path;
-			this.process=Messages.ExportingPdf;
-			this.viewer=viewer;
-			this.imgOffset= imgOffset;
-			this.showPreview=false;
+		public PrintJob(String path, int imageType, GraphicalViewer viewer, int imgOffset,boolean forcedDeco){
+			this(Messages.ExportPdf, Messages.ExportingPdf, path, imageType, viewer, imgOffset, false,forcedDeco);
 		}
+		
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			monitor.beginTask(this.process, IProgressMonitor.UNKNOWN);
-			ScalableRootEditPart rootEditPart = (ScalableRootEditPart) this.viewer.getRootEditPart();
 			boolean isFirst = true;
-			IFigure printableFigure =rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
+			
 			
 			//create a clip rectangle to cut the unnecessary whitespace
 			Rectangle clipRectangle = new Rectangle();
-			for(Object layers: printableFigure.getChildren()){
+			for(Object layers: this.printableFigure.getChildren()){
 				//Layer&ConnectionLayer
 				for(Object part: ((IFigure)layers).getChildren()){
 					if(part instanceof RootFigure){
@@ -1168,21 +1291,16 @@ class PrintJob extends Job{
 			clipRectangle.y= Math.max(0, clipRectangle.y);
 
 //			clipRectangle.expand(this.imgOffset, this.imgOffset);
-			//a plain Image is created on which we can draw any graphics
-			Image srcImage = new Image(null, Math.max(printableFigure.getBounds().width,1),
-									Math.max(printableFigure.getBounds().height,1));
-			GC imageGC = new GC(srcImage);
-			Graphics graphics = new SWTGraphics(imageGC);
-			printableFigure.paint(graphics);
+			
 			
 			//this additional Image is created with the actual Bounds
 			//and the first one is clipped inside the scaled image
 			Image scaledImage = new Image(null,clipRectangle.width+2*this.imgOffset,
 	        											  clipRectangle.height+2*this.imgOffset);
-			imageGC = new GC(scaledImage);
-			graphics = new SWTGraphics(imageGC);
+			GC imageGC = new GC(scaledImage);
+			 Graphics graphics = new SWTGraphics(imageGC);
 		
-			graphics.drawImage(srcImage, clipRectangle, 
+			graphics.drawImage(this.srcImage, clipRectangle, 
 					new Rectangle(this.imgOffset, this.imgOffset, clipRectangle.width,
 										clipRectangle.height ));
 		

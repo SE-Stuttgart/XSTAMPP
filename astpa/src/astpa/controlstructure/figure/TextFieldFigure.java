@@ -43,7 +43,7 @@ public class TextFieldFigure extends CSFigure {
 	public TextFieldFigure(UUID id) {
 		super(id);
 		this.setOpaque(false);
-		this.setBorder(null);
+		getTextField().setOpaque(false);
 	}
 	
 	/**
@@ -67,6 +67,16 @@ public class TextFieldFigure extends CSFigure {
 		
 		super.setLayout(rect);
 		getTextField().repaint();
+	}
+
+	@Override
+	public void enableDeco() {
+		//there's no decoration in textbox
+	}
+
+	@Override
+	public void disableDeco() {
+		//there's no decoration in textbox
 	}
 	
 }

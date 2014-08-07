@@ -78,7 +78,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 	 * @param model The DataModel which contains all model classes
 	 */
 	public CSAbstractEditPart(IControlStructureEditorDataModel model) {
-		
+		 
 		this.dataModel = model;
 		this.connectionRegisty = new ArrayList<IConnection>();
 	}
@@ -325,4 +325,9 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 		this.getFigure().translateToAbsolute(t);
 	}
 	
+	@Override
+	public IControlStructureFigure getFigure() {
+		// TODO Auto-generated method stub
+		return (IControlStructureFigure) super.getFigure();
+	}
 }
