@@ -43,16 +43,18 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 	private String oldName = null;
 	private String value = null;
 	private IControlStructureEditorDataModel dataModel;
-	
+	private final String stepID;
 	
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public CSDirectEditPolicy(IControlStructureEditorDataModel model) {
+	public CSDirectEditPolicy(IControlStructureEditorDataModel model, String stepId) {
 		super();
+		this.stepID=stepId;
 		
 		this.dataModel = model;
 	}

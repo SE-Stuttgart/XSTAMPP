@@ -53,9 +53,10 @@ public class RootEditPart extends CSAbstractEditPart {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public RootEditPart(IControlStructureEditorDataModel model) {
-		super(model);
+	public RootEditPart(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 		
 	}
 	
@@ -108,8 +109,8 @@ public class RootEditPart extends CSAbstractEditPart {
 		this.installEditPolicy(Messages.SnapFeedback, new SnapFeedbackPolicy());
 		// this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new
 		// CSDeletePolicy(this.getDataModel()));
-		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(this.getDataModel()));
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel()));
+		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(this.getDataModel(), getStepId()));
+		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel(), getStepId()));
 	}
 	
 	

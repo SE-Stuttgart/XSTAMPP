@@ -48,6 +48,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	private IAnchorFigure sourceAnchor;
 	private IControlStructureEditorDataModel dataModel;
 	private final UUID ownID;
+	private final String stepId;
 	
 	
 	/**
@@ -59,10 +60,12 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	 * @param source the source anchor which is given from the Anchor Model
 	 * @param target the target anchor which is given from the Anchor Model
 	 * @param id the UUID which is given from the model
+	 * @param stepId this steps id
 	 */
 	public CSConnectionEditPart(IControlStructureEditorDataModel model, IAnchorFigure source, IAnchorFigure target,
-		UUID id) {
+		UUID id, String stepId) {
 		super();
+		this.stepId=stepId;
 		this.registerAccessibility();
 		this.activate();
 		this.dataModel = model;
@@ -117,7 +120,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	
 	@Override
 	protected void createEditPolicies() {
-		this.installEditPolicy(EditPolicy.CONNECTION_ROLE, new CSConnectionDeleteEditPolicy(this.dataModel));
+		this.installEditPolicy(EditPolicy.CONNECTION_ROLE, new CSConnectionDeleteEditPolicy(this.dataModel, this.stepId));
 		this.installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
 	}
 	

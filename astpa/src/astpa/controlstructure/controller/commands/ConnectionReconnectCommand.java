@@ -15,6 +15,7 @@ package astpa.controlstructure.controller.commands;
 
 import java.util.UUID;
 
+import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.figure.CSAnchor;
 import astpa.controlstructure.figure.CSFlyAnchor;
 import astpa.controlstructure.figure.IAnchorFigure;
@@ -46,9 +47,10 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 	 * 
 	 * @param conn The Connection to manipulate
 	 * @param model The DataModel which contains all model classes
+	 * @param stepID the stepEditor ID
 	 */
-	public ConnectionReconnectCommand(CSConnection conn, IControlStructureEditorDataModel model) {
-		super(model, null);
+	public ConnectionReconnectCommand(CSConnection conn, IControlStructureEditorDataModel model, String stepID) {
+		super(model, stepID);
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}
@@ -66,7 +68,7 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 		} else if (this.newTargetAnchorModel != null) {
 			return this.checkTargetReconnection();
 		}
-		return false;
+		return this.getStepID().equals(CSEditor.ID);
 	}
 	
 	private boolean checkSourceReconnection() {

@@ -32,22 +32,24 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
 public class CSConnectionDeleteEditPolicy extends ConnectionEditPolicy implements IControlStructurePolicy {
 	
 	private final IControlStructureEditorDataModel dataModel;
-	
+	private final String stepId;
 	
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId this steps id
 	 */
-	public CSConnectionDeleteEditPolicy(IControlStructureEditorDataModel model) {
+	public CSConnectionDeleteEditPolicy(IControlStructureEditorDataModel model, String stepId) {
 		super();
+		this.stepId=stepId;
 		this.dataModel = model;
 	}
 	
 	@Override
 	protected Command getDeleteCommand(GroupRequest arg0) {
-		ConnectionDeleteCommand command = new ConnectionDeleteCommand(this.dataModel);
+		ConnectionDeleteCommand command = new ConnectionDeleteCommand(this.dataModel, this.stepId);
 		command.setLink((CSConnection) this.getHost().getModel());
 		return command;
 	}

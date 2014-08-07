@@ -37,9 +37,10 @@ public class ProcessValueEditPart extends CSAbstractEditPart {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public ProcessValueEditPart(IControlStructureEditorDataModel model) {
-		super(model);
+	public ProcessValueEditPart(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 		
 	}
 	

@@ -17,11 +17,14 @@ import java.io.File;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
@@ -30,6 +33,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -165,8 +169,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener{
 		Label decoLabel= new Label(decoSwitchComposite, SWT.NONE);
 		decoLabel.setText("Control Structure Decoration");
 		decoLabel.setToolTipText("Here you can choose whether you want a Decoration in the Control Structure or not");
-		decoLabel.setLayoutData(new RowData(LABEL_WIDTH, LABEL_HEIGHT));
+		decoLabel.setLayoutData(new RowData(160, LABEL_HEIGHT));
 		this.decoSwitch= new Button(decoSwitchComposite, SWT.CHECK);
+		
 		
 		this.sampleComp= new DemoCanvas(this.container, SWT.NONE);
 		data=new FormData();

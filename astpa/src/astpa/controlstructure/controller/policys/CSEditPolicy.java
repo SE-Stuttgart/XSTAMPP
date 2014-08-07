@@ -52,7 +52,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	
 	private IControlStructureEditorDataModel dataModel;
 	private Figure parentFeedback;
-	private String stepID;
+	private final String stepID;
 	/**
 	 * the offset of the process variables and values
 	 * 
@@ -66,9 +66,11 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public CSEditPolicy(IControlStructureEditorDataModel model) {
+	public CSEditPolicy(IControlStructureEditorDataModel model, String stepId) {
 		super();
+		this.stepID=stepId;
 		
 		this.dataModel = model;
 	}
@@ -87,7 +89,6 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	
 	@Override
 	protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
-		this.stepID = (String) this.getHost().getViewer().getProperty(CSAbstractEditor.STEP_EDITOR);
 		ComponentChangeLayoutCommand command =
 			new ComponentChangeLayoutCommand(this.dataModel, this.stepID);
 		IFigure childFigure = ((IControlStructureEditPart)child).getFigure();
@@ -99,8 +100,6 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
-		this.stepID = (String) this.getHost().getViewer().getProperty(CSAbstractEditor.STEP_EDITOR);
-		
 		if ((request.getType() == RequestConstants.REQ_CREATE)) {
 			
 			ComponentCreateCommand command =

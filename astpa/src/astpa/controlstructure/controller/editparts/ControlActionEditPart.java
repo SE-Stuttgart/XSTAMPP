@@ -26,9 +26,10 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public ControlActionEditPart(IControlStructureEditorDataModel model) {
-		super(model);
+	public ControlActionEditPart(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 		
 	}
 	

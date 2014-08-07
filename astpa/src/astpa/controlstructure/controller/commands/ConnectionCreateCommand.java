@@ -49,10 +49,11 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model the
+	 * @param stepID the step Editors id
 	 * 
 	 */
-	public ConnectionCreateCommand(IControlStructureEditorDataModel model) {
-		super(model, null);
+	public ConnectionCreateCommand(IControlStructureEditorDataModel model, String stepID) {
+		super(model, stepID);
 	}
 	
 	/**

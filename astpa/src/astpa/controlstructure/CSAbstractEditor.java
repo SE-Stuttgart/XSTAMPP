@@ -247,6 +247,8 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	protected void createGraphicalViewer(Composite parent) {
 		
 		GraphicalViewer viewer = new ScrollingGraphicalViewer();
+
+		viewer.setProperty(STEP_EDITOR, this.getId());
 		viewer.addSelectionChangedListener(this);
 		viewer.addPropertyChangeListener(this);
 		
@@ -256,7 +258,6 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		this.hookGraphicalViewer();
 		this.initializeGraphicalViewer();
 		viewer.getControl().addMouseListener(this);
-		viewer.setProperty(STEP_EDITOR, this.getId());
 		
 	}
 	
@@ -270,7 +271,6 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		
 		GraphicalViewer viewer = this.getGraphicalViewer();
 		this.splitter.hookDropTargetListener(viewer);
-		viewer.setEditPartFactory(new CSEditPartFactory(this.modelInterface));
 		
 		viewer.setContents(this.createRoot());
 		viewer.getContents().refresh();
@@ -305,7 +305,7 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 		
 		GraphicalViewer viewer = this.getGraphicalViewer();
 		
-		viewer.setEditPartFactory(new CSEditPartFactory(this.modelInterface));
+		viewer.setEditPartFactory(new CSEditPartFactory(this.modelInterface,getId()));
 		// zooming
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		
@@ -1227,6 +1227,7 @@ class PrintJob extends Job{
 									Math.max(this.printableFigure.getBounds().height,1));
 			GC imageGC = new GC(this.srcImage);
 			Graphics graphics = new SWTGraphics(imageGC);
+			
 			this.printableFigure.paint(graphics);
 			if(setDeco && !decorate){
 				((RootEditPart)rootEditPart.getContents()).getFigure().enableDeco();

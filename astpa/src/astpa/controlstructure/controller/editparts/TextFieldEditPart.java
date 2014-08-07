@@ -36,9 +36,10 @@ public class TextFieldEditPart extends CSAbstractEditPart {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public TextFieldEditPart(IControlStructureEditorDataModel model) {
-		super(model);
+	public TextFieldEditPart(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 	}
 	
 	@Override

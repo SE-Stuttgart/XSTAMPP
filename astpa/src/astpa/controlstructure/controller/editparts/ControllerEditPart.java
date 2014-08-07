@@ -15,7 +15,6 @@ package astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
@@ -42,9 +41,10 @@ public class ControllerEditPart extends CSAbstractEditPart {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId this steps id
 	 */
-	public ControllerEditPart(IControlStructureEditorDataModel model) {
-		super(model);
+	public ControllerEditPart(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class ControllerEditPart extends CSAbstractEditPart {
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel()));
+		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel(), getStepId()));
 	}
 	
 }

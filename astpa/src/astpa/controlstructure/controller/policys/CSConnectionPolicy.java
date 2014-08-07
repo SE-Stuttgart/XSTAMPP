@@ -20,6 +20,7 @@ import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 
+import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.controller.commands.ConnectionCreateCommand;
 import astpa.controlstructure.controller.commands.ConnectionReconnectCommand;
 import astpa.controlstructure.controller.editparts.CSAbstractEditPart;
@@ -41,16 +42,18 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
 public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 	
 	private IControlStructureEditorDataModel dataModel;
-	
+	private final String stepID;
 	
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public CSConnectionPolicy(IControlStructureEditorDataModel model) {
+	public CSConnectionPolicy(IControlStructureEditorDataModel model, String stepId) {
 		super();
+		this.stepID=stepId;
 		this.dataModel = model;
 	}
 	
@@ -74,7 +77,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 	@Override
 	protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
 		((IControlStructureFigure) this.getHostFigure()).enableOffset();
-		ConnectionCreateCommand cmd = new ConnectionCreateCommand(this.dataModel);
+		ConnectionCreateCommand cmd = new ConnectionCreateCommand(this.dataModel,this.stepID);
 		ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost()).getSourceConnectionAnchor(request);
 		cmd.setConnectionType(((ConnectionType) request.getNewObjectType()));
 		
@@ -92,7 +95,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost()).getSourceConnectionAnchor(request);
 		ConnectionAnchor targetAnchor = ((CSConnectionEditPart) request.getConnectionEditPart()).getTargetAnchor();
 		ConnectionReconnectCommand cmd =
-			new ConnectionReconnectCommand(conn,this.dataModel);
+			new ConnectionReconnectCommand(conn,this.dataModel,this.stepID);
 		
 		cmd.setNewSourceNode((IAnchorFigure) targetAnchor, (IAnchorFigure) sourceAnchor);
 		
@@ -107,7 +110,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost()).getTargetConnectionAnchor(request);
 		
 		ConnectionReconnectCommand cmd =
-			new ConnectionReconnectCommand(conn,this.dataModel);
+			new ConnectionReconnectCommand(conn,this.dataModel,this.stepID);
 		
 		cmd.setNewTargetNode((IAnchorFigure) targetAnchor, (IAnchorFigure) sourceAnchor);
 		return cmd;

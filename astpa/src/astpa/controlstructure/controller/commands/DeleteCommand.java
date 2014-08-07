@@ -30,14 +30,17 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	private IRectangleComponent parentModel;
 	
 	
+																				
+	
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepID the id which tells the command in which step he is
 	 */
-	public DeleteCommand(IControlStructureEditorDataModel model) {
-		super(model, null);
+	public DeleteCommand(IControlStructureEditorDataModel model, String stepID) {
+		super(model, stepID);
 	}
 	
 	@Override
@@ -50,7 +53,9 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public boolean canExecute() {
-		return ((this.model != null) && (this.parentModel != null));
+		boolean isDeleteAllowed = COMPONENTS_MAP.get(this.getStepID()).contains(this.model.getComponentType());
+		
+		return ((this.model != null) && (this.parentModel != null)) && isDeleteAllowed;
 	}
 	
 	/**

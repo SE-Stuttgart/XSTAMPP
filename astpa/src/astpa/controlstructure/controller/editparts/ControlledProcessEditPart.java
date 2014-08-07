@@ -15,13 +15,11 @@ package astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -38,15 +36,16 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
 public class ControlledProcessEditPart extends CSAbstractEditPart {
 	
 	/**
-	 * this constuctor sets the unique ID of the {@link ProcessEditPart} which
+	 * this constuctor sets the unique ID of the {@link ControlledProcessEditPart} which
 	 * is the same in its model and figure
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId this steps id
 	 */
-	public ControlledProcessEditPart(IControlStructureEditorDataModel model) {
-		super(model);
+	public ControlledProcessEditPart(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 	}
 	
 	@Override
@@ -62,7 +61,7 @@ public class ControlledProcessEditPart extends CSAbstractEditPart {
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel()));
+		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel(), getStepId()));
 	}
 	
 }

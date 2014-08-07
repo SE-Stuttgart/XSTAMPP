@@ -16,7 +16,7 @@ package astpa.controlstructure.controller.commands;
 
 import java.util.UUID;
 
-
+import astpa.controlstructure.CSEditor;
 import astpa.model.controlstructure.components.CSConnection;
 import astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -37,9 +37,10 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public ConnectionDeleteCommand(IControlStructureEditorDataModel model) {
-		super(model, null);
+	public ConnectionDeleteCommand(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 	}
 	
 	/**
@@ -60,7 +61,7 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 		if (this.connectionId == null) {
 			return false;
 		}
-		return true;
+		return this.getStepID().equals(CSEditor.ID);
 	}
 	
 	@Override

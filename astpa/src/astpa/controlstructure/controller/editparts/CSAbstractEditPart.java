@@ -66,7 +66,7 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart implements IControlStructureEditPart,
 	NodeEditPart {
-	
+	private final String stepId;
 	private IControlStructureEditorDataModel dataModel;
 	private List<IConnection> connectionRegisty;
 	
@@ -76,9 +76,10 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId this steps id
 	 */
-	public CSAbstractEditPart(IControlStructureEditorDataModel model) {
-		 
+	public CSAbstractEditPart(IControlStructureEditorDataModel model, String stepId) {
+		this.stepId=stepId; 
 		this.dataModel = model;
 		this.connectionRegisty = new ArrayList<IConnection>();
 	}
@@ -110,9 +111,9 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 		 * performRequest(EditPolicy.constant) is called
 		 */
 		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
-		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new CSDirectEditPolicy(this.dataModel));
-		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(this.dataModel));
-		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(this.dataModel));
+		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new CSDirectEditPolicy(this.dataModel, this.stepId));
+		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(this.dataModel, this.stepId));
+		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(this.dataModel, this.stepId));
 	}
 	
 	/**
@@ -136,7 +137,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 		if (this.dataModel.getComponent(this.getId()) == null) {
 			this.getViewer().getEditPartRegistry().remove(this);
 		} else {
-			IControlStructureFigure figureTemp = ((CSFigure) this.getFigure());
+			IControlStructureFigure figureTemp = this.getFigure();
 			IRectangleComponent modelTemp = this.dataModel.getComponent(this.getId());
 			String stepID = (String) this.getViewer().getProperty(CSAbstractEditor.STEP_EDITOR);
 			
@@ -327,7 +328,13 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart imple
 	
 	@Override
 	public IControlStructureFigure getFigure() {
-		// TODO Auto-generated method stub
 		return (IControlStructureFigure) super.getFigure();
+	}
+
+	/**
+	 * @return the stepId
+	 */
+	public String getStepId() {
+		return this.stepId;
 	}
 }

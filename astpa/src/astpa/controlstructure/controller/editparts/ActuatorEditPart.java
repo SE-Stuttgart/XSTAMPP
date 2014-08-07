@@ -41,9 +41,10 @@ public class ActuatorEditPart extends CSAbstractEditPart {
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId this steps id
 	 */
-	public ActuatorEditPart(IControlStructureEditorDataModel model) {
-		super(model);
+	public ActuatorEditPart(IControlStructureEditorDataModel model, String stepId) {
+		super(model, stepId);
 	}
 	
 	@Override
@@ -59,7 +60,7 @@ public class ActuatorEditPart extends CSAbstractEditPart {
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel()));
+		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CSConnectionPolicy(this.getDataModel(), getStepId()));
 	}
 	
 }

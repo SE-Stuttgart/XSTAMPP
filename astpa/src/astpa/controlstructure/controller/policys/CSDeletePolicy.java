@@ -17,6 +17,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 
+import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.controller.commands.DeleteCommand;
 import astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -29,6 +30,7 @@ import astpa.model.interfaces.IControlStructureEditorDataModel;
 public class CSDeletePolicy extends ComponentEditPolicy {
 	
 	private IControlStructureEditorDataModel dataModel;
+	private final String stepID;
 	
 	
 	/**
@@ -36,15 +38,17 @@ public class CSDeletePolicy extends ComponentEditPolicy {
 	 * @author Lukas
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId TODO
 	 */
-	public CSDeletePolicy(IControlStructureEditorDataModel model) {
+	public CSDeletePolicy(IControlStructureEditorDataModel model, String stepId) {
 		super();
+		this.stepID=stepId;
 		this.dataModel = model;
 	}
 	
 	@Override
 	protected Command createDeleteCommand(GroupRequest deleteRequest) {
-		DeleteCommand command = new DeleteCommand(this.dataModel);
+		DeleteCommand command = new DeleteCommand(this.dataModel,this.stepID);
 		command.setModel((IRectangleComponent) this.getHost().getModel());
 		
 		command.setParentModel(this.getHost().getParent().getModel());

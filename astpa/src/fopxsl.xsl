@@ -241,7 +241,7 @@
 						</fo:block>
 						<fo:block>
 						<xsl:if test="exportinformation/csImagePath">
-							<fo:external-graphic inline-progression-dimension.maximum="100%" 
+							<fo:external-graphic inline-progression-dimension.maximum="90%" 
                      content-height="scale-down-to-fit" 
                      content-width="scale-down-to-fit">
 								<xsl:attribute name="src">
@@ -291,7 +291,7 @@
 						</fo:block>
 						<fo:block >
 						<xsl:if test="exportinformation/cspmImagePath">
-							<fo:external-graphic inline-progression-dimension.maximum="100%" 
+							<fo:external-graphic inline-progression-dimension.maximum="95%" 
                      content-height="scale-down-to-fit" 
                      content-width="scale-down-to-fit">
 								<xsl:attribute name="src">

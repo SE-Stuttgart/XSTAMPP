@@ -61,16 +61,18 @@ public class CSEditPartFactory implements EditPartFactory {
 	
 	private IControlStructureEditorDataModel dataModel;
 	private Map<UUID, EditPart> editPartMap = new HashMap<UUID, EditPart>();
-	
+	private final String stepId;
 	
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param model The DataModel which contains all model classes
+	 * @param stepId this steps id
 	 */
-	public CSEditPartFactory(IControlStructureEditorDataModel model) {
+	public CSEditPartFactory(IControlStructureEditorDataModel model,String stepId) {
 		this.dataModel = model;
+		this.stepId=stepId;
 	}
 	
 	@Override
@@ -81,7 +83,7 @@ public class CSEditPartFactory implements EditPartFactory {
 		UUID id;
 		switch (((IComponent) model).getComponentType()) {
 		case CONTROLACTION:{
-			part = new ControlActionEditPart(this.dataModel);
+			part = new ControlActionEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			UUID caId=((IRectangleComponent) model).getControlActionLink();
 			if(this.dataModel.getControlAction(caId)== null || caId == null){
@@ -91,37 +93,37 @@ public class CSEditPartFactory implements EditPartFactory {
 			break;
 		}
 		case ACTUATOR: {
-			part = new ActuatorEditPart(this.dataModel);
+			part = new ActuatorEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case SENSOR: {
-			part = new SensorEditPart(this.dataModel);
+			part = new SensorEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case CONTROLLER: {
-			part = new ControllerEditPart(this.dataModel);
+			part = new ControllerEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case CONTROLLED_PROCESS: {
-			part = new ControlledProcessEditPart(this.dataModel);
+			part = new ControlledProcessEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case PROCESS_MODEL: {
-			part = new ProcessModelEditPart(this.dataModel);
+			part = new ProcessModelEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case PROCESS_VARIABLE: {
-			part = new ProcessVariableEditPart(this.dataModel);
+			part = new ProcessVariableEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case PROCESS_VALUE: {
-			part = new ProcessValueEditPart(this.dataModel);
+			part = new ProcessValueEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
@@ -131,12 +133,12 @@ public class CSEditPartFactory implements EditPartFactory {
 			break;
 		}
 		case TEXTFIELD: {
-			part = new TextFieldEditPart(this.dataModel);
+			part = new TextFieldEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		default: {
-			part = new RootEditPart(this.dataModel);
+			part = new RootEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 		}
 		}
@@ -170,7 +172,7 @@ public class CSEditPartFactory implements EditPartFactory {
 			sourceAnchor = new CSAnchor(sourceFigure, sourceModel);
 			targetAnchor = new CSAnchor(targetFigure, targetModel);
 		}
-		CSConnectionEditPart part = new CSConnectionEditPart(this.dataModel, sourceAnchor, targetAnchor, model.getId());
+		CSConnectionEditPart part = new CSConnectionEditPart(this.dataModel, sourceAnchor, targetAnchor, model.getId(), this.stepId);
 		part.setModel(model);
 		part.setSource(source);
 		part.setTarget(target);
@@ -189,6 +191,6 @@ public class CSEditPartFactory implements EditPartFactory {
 		if (this.editPartMap.get(id) != null) {
 			return this.editPartMap.get(id);
 		}
-		return new ActuatorEditPart(null);
+		return new ActuatorEditPart(null, this.stepId);
 	}
 }
