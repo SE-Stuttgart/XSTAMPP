@@ -241,7 +241,9 @@
 						</fo:block>
 						<fo:block>
 						<xsl:if test="exportinformation/csImagePath">
-							<fo:external-graphic content-width="190mm">
+							<fo:external-graphic inline-progression-dimension.maximum="100%" 
+                     content-height="scale-down-to-fit" 
+                     content-width="scale-down-to-fit">
 								<xsl:attribute name="src">
 								<!-- Path of the Control Structure via haz-file -->
 								<xsl:value-of select="exportinformation/csImagePath" />
@@ -287,9 +289,11 @@
 							Control Structure Diagram
 							with Process Model
 						</fo:block>
-						<fo:block>
+						<fo:block >
 						<xsl:if test="exportinformation/cspmImagePath">
-							<fo:external-graphic content-width="190mm">
+							<fo:external-graphic inline-progression-dimension.maximum="100%" 
+                     content-height="scale-down-to-fit" 
+                     content-width="scale-down-to-fit">
 								<xsl:attribute name="src">
 								<!-- Path of the Control Structure with Process-Model via haz-file -->
 								<xsl:value-of select="exportinformation/cspmImagePath" />
