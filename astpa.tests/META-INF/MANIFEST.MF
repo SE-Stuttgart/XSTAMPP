@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: astpa.tests
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: astpa,
  org.junit,

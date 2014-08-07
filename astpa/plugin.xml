@@ -334,6 +334,7 @@
 </extension>
 <extension
       id="astpa.export"
+      name="Data Sheet"
       point="org.eclipse.ui.exportWizards">
    <category
          id="astpa.stepData"
@@ -342,7 +343,7 @@
    <wizard
          category="astpa.stepData"
          class="astpa.export.stepData.STPAdataWizard"
-         icon="icons/logo.ico"
+         icon="icons/Logo_small.png"
          id="astpa.datawizard"
          name=" All STPA Data">
       <description>
@@ -451,6 +452,7 @@
    </wizard>
 </extension>
 <extension
+      name="imageExports"
       point="org.eclipse.ui.exportWizards">
    <category
          id="astpa.stepImages"
