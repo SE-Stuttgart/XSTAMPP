@@ -58,10 +58,12 @@ import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.Span;
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.State;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -323,7 +325,49 @@ public class ViewContainer extends ViewPart {
 		}
 		
 	}
+	private class LoadJobChangeAdapter extends JobChangeAdapter{
+		
+		final private String name;
+
+		public LoadJobChangeAdapter(String filename){
+			this.name= filename;
+		}
+		
+		@Override
+		public void done(IJobChangeEvent event) {
+			if (event.getResult().isOK()) {
+				Display.getDefault().syncExec(new LoadRunnable(event));
+				super.done(event);
+			}
+		}
+	}
 	
+	private class LoadRunnable implements Runnable {
+		final IJobChangeEvent event;
+		
+		public LoadRunnable(IJobChangeEvent event){
+			this.event=event;
+		}
+		@Override
+		public void run() {
+			
+			
+			ViewContainer.this.dataModelController = ((LoadJob)this.event.getJob()).controller;
+			ViewContainer.this.setNewDataModel();
+			Welcome.shutWelcome();
+			
+			// Show all views
+			ViewContainer.this.navigationRoot.setVisible(true);
+			ViewContainer.this.titleLabel.setVisible(true);
+			ViewContainer.this.titleComposite.setVisible(true);
+			ViewContainer.this.viewAreaRoot.setVisible(true);
+			ViewContainer.this.setShowNavigationView(true);
+			ViewContainer.this.initControlStructure = true;
+			ViewContainer.this.initCSWithProcessModel = true;
+			ViewContainer.this.activateView(SystemDescriptionView.ID);
+			ViewContainer.this.navigationView.activateSystemDescription();
+		}
+	}
 	
 	/**
 	 * The list of the initialized views.
@@ -708,21 +752,8 @@ public class ViewContainer extends ViewPart {
 			}
 		}
 		this.savedFile = file;
-		this.dataModelController.prepareForSave();
-		JAXBContext context;
-		try {
-			context = JAXBContext.newInstance(DataModelController.class);
-			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			
-			// Write to file
-			m.marshal(this.dataModelController, this.savedFile);
-		} catch (JAXBException e) {
-			ViewContainer.LOGGER.error(e.getMessage(), e);
-			return false;
-		}
-		this.dataModelController.setStored();
-		return true;
+		
+		return this.saveDataModel();
 	}
 	
 	/**
@@ -737,20 +768,26 @@ public class ViewContainer extends ViewPart {
 		if (this.savedFile == null) {
 			return this.saveDataModelAs();
 		}
+
 		this.dataModelController.prepareForSave();
-		JAXBContext context;
-		try {
-			context = JAXBContext.newInstance(DataModelController.class);
-			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		Job save= new SaveJob(this.savedFile, ViewContainer.LOGGER, this.dataModelController);
+		save.addJobChangeListener(new JobChangeAdapter(){
 			
-			// Write to file
-			m.marshal(this.dataModelController, this.savedFile);
-		} catch (JAXBException e) {
-			ViewContainer.LOGGER.error(e.getMessage(), e);
-			return false;
-		}
-		this.dataModelController.setStored();
+			@Override
+			public void done(IJobChangeEvent event){
+				if (event.getResult().isOK()) {
+			
+					Display.getDefault().syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							ViewContainer.this.dataModelController.setStored();
+						}
+					});
+				super.done(event);
+			}
+			}
+		});
 		return true;
 	}
 	
@@ -767,57 +804,16 @@ public class ViewContainer extends ViewPart {
 			FileDialog fileDialog = new FileDialog(this.parentComposite.getShell(), SWT.OPEN);
 			fileDialog.setFilterExtensions(new String[] {"*.haz"}); //$NON-NLS-1$
 			fileDialog.setFilterNames(new String[] {"A-STPA project file (*.haz)"}); //$NON-NLS-1$
-			try {
-				JAXBContext context = JAXBContext.newInstance(DataModelController.class);
-				Unmarshaller um = context.createUnmarshaller();
+		
 				String file = fileDialog.open();
 				if (file != null) {
 					this.savedFile = new File(file);
+					Job load=new LoadJob(file,ViewContainer.LOGGER);
+					load.schedule();
+					load.addJobChangeListener(new LoadJobChangeAdapter(file));
 					
-					// validate the file
-					URL schemaFile = this.getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
-					Source xmlFile = new StreamSource(this.savedFile);
-					
-					SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-					Schema schema = schemaFactory.newSchema(schemaFile);
-					
-					Validator validator = schema.newValidator();
-					try {
-						validator.validate(xmlFile);
-					} catch (SAXException e) {
-						// The .haz is invalid!
-						MessageDialog.openInformation(this.getSite().getShell(), Messages.Information,
-							Messages.ThisHazFileIsInvalid);
-						
-						ViewContainer.LOGGER.error(e.getMessage(), e);
-						return false;
-					} catch (IOException e) {
-						ViewContainer.LOGGER.error(e.getMessage(), e);
-						return false;
-					}
-					
-					this.dataModelController = (DataModelController) um.unmarshal(new FileReader(file));
-					this.setNewDataModel();
-					Welcome.shutWelcome();
-					
-					// Show all views
-					this.navigationRoot.setVisible(true);
-					this.titleLabel.setVisible(true);
-					this.titleComposite.setVisible(true);
-					this.viewAreaRoot.setVisible(true);
-					this.setShowNavigationView(true);
-					this.initControlStructure = true;
-					this.initCSWithProcessModel = true;
-					this.activateView(SystemDescriptionView.ID);
-					this.navigationView.activateSystemDescription();
 				}
-			} catch (JAXBException | FileNotFoundException e) {
-				ViewContainer.LOGGER.error(e.getMessage(), e);
-				return false;
-			} catch (SAXException e) {
-				ViewContainer.LOGGER.error(e.getMessage(), e);
-				return false;
-			}
+		
 		}
 		
 		return true;
@@ -1290,5 +1286,92 @@ class ExportJob extends Job {
 	
 }
 
+class LoadJob extends Job{
+	final File file;
+	final String filename;
+	final Logger log;
+	public DataModelController controller;
+	
+	public LoadJob(String filename, Logger log) {
+		super("load haz");
+		this.file =new File(filename);
+		this.log=log;
+		this.filename=filename;
+	}
+	
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
+		monitor.beginTask("loading STPA Analysis",2 );
+		
+		try {
+			// validate the file
+			URL schemaFile = this.getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
+			Source xmlFile = new StreamSource(this.file);
+			
+			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = schemaFactory.newSchema(schemaFile);
+			
+			
+			Validator validator = schema.newValidator();
+			monitor.worked(1);
+			validator.validate(xmlFile);
+			
+			JAXBContext context = JAXBContext.newInstance(DataModelController.class);
+			
+			Unmarshaller um = context.createUnmarshaller();
+					
+			this.controller = (DataModelController) um.unmarshal(new FileReader(this.filename));
+			monitor.worked(2);
+			monitor.done();
+			
+		} catch (SAXException e) {
+			// The .haz is invalid!
+			MessageDialog.openInformation(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages.Information,
+				Messages.ThisHazFileIsInvalid);
+			
+			this.log.error(e.getMessage(), e);
+			return Status.CANCEL_STATUS;
+		} catch (IOException e) {
+			this.log.error(e.getMessage(), e);
+			return Status.CANCEL_STATUS;
+		} catch (JAXBException e) {
+			e.printStackTrace();
+			return Status.CANCEL_STATUS;
+			
+		}
+		return Status.OK_STATUS;
+	}
+}
 
+class SaveJob extends Job{
+	
+	final File file;
+	final Logger log;
+	final DataModelController controller;
+	
+	public SaveJob(File file, Logger log,DataModelController controller) {
+		super("save haz");
+		this.file =file;
+		this.log=log;
+		this.controller= controller;
+	}
+	
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
+		monitor.beginTask("saving STPA Analysis",IProgressMonitor.UNKNOWN);
+		JAXBContext context;
+		try {
+			context = JAXBContext.newInstance(DataModelController.class);
+			Marshaller m = context.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
+			// Write to file
+			m.marshal(this.controller, this.file);
+		} catch (JAXBException e) {
+			this.log.error(e.getMessage(), e);
+			return Status.CANCEL_STATUS;
+		}
+		return Status.OK_STATUS;
+	}
+}
 
