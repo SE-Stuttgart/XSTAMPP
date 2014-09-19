@@ -13,8 +13,12 @@
 
 package astpa.ui.navigation;
 
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -65,7 +69,7 @@ public class NavigationItemSplitter extends Canvas {
 	}
 }
 
-class NavigationItemSplitterPaintListener implements PaintListener {
+class NavigationItemSplitterPaintListener implements PaintListener, IPropertyChangeListener {
 	
 	private static final int TEXT_POSITION_X = 5;
 	private static final int TEXT_POSITION_Y = 5;
@@ -77,6 +81,7 @@ class NavigationItemSplitterPaintListener implements PaintListener {
 	
 	public NavigationItemSplitterPaintListener(NavigationItemSplitter splitter) {
 		this.splitter = splitter;
+		this.store.addPropertyChangeListener(this);
 	}
 	
 	@Override
@@ -93,6 +98,12 @@ class NavigationItemSplitterPaintListener implements PaintListener {
 			IPreferenceConstants.SPLITTER_FONT)));
 		e.gc.drawText(this.splitter.getText(), NavigationItemSplitterPaintListener.TEXT_POSITION_X,
 			NavigationItemSplitterPaintListener.TEXT_POSITION_Y, true);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		this.splitter.redraw();
+		
 	}
 	
 }

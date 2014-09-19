@@ -1198,19 +1198,22 @@ public class DataModelController extends Observable implements
 	}
 
 	@Override
-	public boolean setCSImagePath(String path) {
+	public boolean setCSImagePath(String path,org.eclipse.swt.graphics.Rectangle bounds) {
 		if (this.exportInformation == null) {
 			return false;
 		}
-
+		this.exportInformation.setCsImageWidth(String.valueOf(bounds.width));
+		this.exportInformation.setCsImageHeight(String.valueOf(bounds.height));
 		return this.exportInformation.setCsImagePath(path);
 	}
 
 	@Override
-	public boolean setCSPMImagePath(String path) {
+	public boolean setCSPMImagePath(String path,org.eclipse.swt.graphics.Rectangle bounds) {
 		if (this.exportInformation == null) {
 			return false;
 		}
+		this.exportInformation.setCsPmImageWidth(String.valueOf(bounds.width));
+		this.exportInformation.setCsPmImageHeight(String.valueOf(bounds.height));
 
 		return this.exportInformation.setCspmImagePath(path);
 	}

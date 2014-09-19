@@ -459,6 +459,10 @@ public final class Messages extends NLS {
 	public static String DescriptionOfThisSystemGoal;
 	@SuppressWarnings("javadoc")
 	public static String Destination;
+	public static String loadHaz;
+	public static String loadingHaz;
+	public static String saveHaz;
+	public static String savingHaz;
 	@SuppressWarnings("javadoc")
 	public static String ThisHazFileIsInvalid;
 	@SuppressWarnings("javadoc")

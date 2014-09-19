@@ -15,6 +15,8 @@ package astpa.ui.common;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -37,7 +39,7 @@ import astpa.preferences.IPreferenceConstants;
 public class ViewTitle extends Canvas {
 	
 	private String text;
-	
+	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 	
 	/**
 	 * Constructor of the splitter
@@ -50,6 +52,14 @@ public class ViewTitle extends Canvas {
 	 */
 	public ViewTitle(Composite parent, int style, String text) {
 		super(parent, style);
+		this.store.addPropertyChangeListener(new IPropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				ViewTitle.this.redraw();
+				
+			}
+		});
 		this.text = text;
 		this.addPaintListener(new ViewTitlePaintListener(this));
 	}

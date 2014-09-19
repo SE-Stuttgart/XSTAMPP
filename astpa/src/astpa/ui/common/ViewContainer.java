@@ -18,7 +18,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -58,12 +57,10 @@ import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.Span;
 import org.apache.log4j.Logger;
-import org.eclipse.core.commands.State;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -1293,7 +1290,7 @@ class LoadJob extends Job{
 	public DataModelController controller;
 	
 	public LoadJob(String filename, Logger log) {
-		super("load haz");
+		super(Messages.loadHaz);
 		this.file =new File(filename);
 		this.log=log;
 		this.filename=filename;
@@ -1301,7 +1298,7 @@ class LoadJob extends Job{
 	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("loading STPA Analysis",2 );
+		monitor.beginTask(Messages.loadingHaz,2 );
 		
 		try {
 			// validate the file
@@ -1343,14 +1340,29 @@ class LoadJob extends Job{
 	}
 }
 
+/**
+ * a runtime job which is stores a DataModel in a given File
+ *
+ * @author Lukas Balzer
+ *
+ */
 class SaveJob extends Job{
 	
 	final File file;
 	final Logger log;
 	final DataModelController controller;
 	
+	/**
+	 * 
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param file	the file in which the job should store the results
+	 * @param log	the logger in which all messeges are written
+	 * @param controller	the Data model which should be stored, this must be a JAXBContext
+	 */
 	public SaveJob(File file, Logger log,DataModelController controller) {
-		super("save haz");
+		super(Messages.saveHaz);
 		this.file =file;
 		this.log=log;
 		this.controller= controller;
@@ -1358,7 +1370,7 @@ class SaveJob extends Job{
 	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("saving STPA Analysis",IProgressMonitor.UNKNOWN);
+		monitor.beginTask(Messages.savingHaz,IProgressMonitor.UNKNOWN);
 		JAXBContext context;
 		try {
 			context = JAXBContext.newInstance(DataModelController.class);

@@ -346,7 +346,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * @param path the path to the image
 	 * @return true, if the path has been set
 	 */
-	boolean setCSImagePath(String path);
+	boolean setCSImagePath(String path,org.eclipse.swt.graphics.Rectangle bounds);
 	
 	/**
 	 * Sets the path to the picture of the control structure with process model
@@ -357,7 +357,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * @param path the path to the image
 	 * @return true, if the value has been set
 	 */
-	boolean setCSPMImagePath(String path);
+	boolean setCSPMImagePath(String path,org.eclipse.swt.graphics.Rectangle bounds);
 	
 	/**
 	 *

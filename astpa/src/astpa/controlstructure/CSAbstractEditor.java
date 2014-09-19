@@ -30,6 +30,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.draw2d.ColorConstants;
@@ -96,6 +97,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
@@ -921,19 +923,29 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			
 			String path = this.workspacePath + File.separator + this.getId() + ".png";//$NON-NLS-1$
 			
-			Job exportJob = new PrintJob(path, SWT.IMAGE_BMP, getGraphicalViewer(), IMG_EXPAND,this.forceDecoration);
+			Job exportJob = new PrintJob(path, SWT.IMAGE_PNG, getGraphicalViewer(), IMG_EXPAND,this.forceDecoration);
 			this.forceDecoration=false;
 			exportJob.schedule();
-			exportJob.addJobChangeListener(new JobChangeAdapter());
 			this.imagePath = path;
-			File tmpImg = new File(path);
-			path = tmpImg.toURI().toString();
-			if (this instanceof CSEditor) {
+			exportJob.addJobChangeListener(new JobChangeAdapter(){
+			
+				@Override
+				public void done(final IJobChangeEvent event) {
 				
-				this.modelInterface.setCSImagePath(path);
-			} else {
-				this.modelInterface.setCSPMImagePath(path);
-			}
+					File tmpImg = new File(CSAbstractEditor.this.imagePath);
+					Image img= new Image(null, CSAbstractEditor.this.imagePath);
+					System.out.println(img.getBounds());
+					String path = tmpImg.toURI().toString();
+					if (CSAbstractEditor.this instanceof CSEditor) {
+						
+						CSAbstractEditor.this.modelInterface.setCSImagePath(path,img.getBounds());
+					} else {
+						CSAbstractEditor.this.modelInterface.setCSPMImagePath(path,img.getBounds());
+					}
+					}
+			});
+			
+		
 			break;
 		}
 		case EXPORT_FINISHED: {
@@ -1290,7 +1302,7 @@ class PrintJob extends Job{
 			clipRectangle.height=clipRectangle.height + Math.min(0, clipRectangle.y);
 			clipRectangle.x= Math.max(0, clipRectangle.x);
 			clipRectangle.y= Math.max(0, clipRectangle.y);
-
+			System.out.println(clipRectangle.getSize());
 //			clipRectangle.expand(this.imgOffset, this.imgOffset);
 			
 			
@@ -1300,11 +1312,11 @@ class PrintJob extends Job{
 	        											  clipRectangle.height+2*this.imgOffset);
 			GC imageGC = new GC(scaledImage);
 			 Graphics graphics = new SWTGraphics(imageGC);
-		
+			 
 			graphics.drawImage(this.srcImage, clipRectangle, 
 					new Rectangle(this.imgOffset, this.imgOffset, clipRectangle.width,
 										clipRectangle.height ));
-		
+			
 	        ImageLoader imgLoader = new ImageLoader();
 			imgLoader.data = new ImageData[] {scaledImage.getImageData()};
 			

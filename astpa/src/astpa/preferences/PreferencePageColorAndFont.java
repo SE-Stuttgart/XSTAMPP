@@ -71,7 +71,7 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage implem
 		addField(this.splitterForegroundColor);
 		
 		this.splitterBackgroundColor =
-			new ColorFieldEditor(IPreferenceConstants.SPLITTER_FOREGROUND, Messages.SplitterBackgColor,
+			new ColorFieldEditor(IPreferenceConstants.SPLITTER_BACKGROUND, Messages.SplitterBackgColor,
 				getFieldEditorParent());
 		addField(this.splitterBackgroundColor);
 		

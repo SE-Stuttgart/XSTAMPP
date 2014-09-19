@@ -2,7 +2,7 @@
 
 <xsl:stylesheet version="1.0" xmlns:fo="http://www.w3.org/1999/XSL/Format"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<!-- author: Jaqueline Patzek, Patrick Wickenhäuser -->
+	<!-- author: Jaqueline Patzek, Patrick Wickenhäuser,Lukas Balzer -->
 	<!-- StuPro 2013 / 2014 -->
 	
 	<!-- Note: This xsl gathers all the informations from the .haz-file -->
@@ -241,14 +241,28 @@
 						</fo:block>
 						<fo:block>
 						<xsl:if test="exportinformation/csImagePath">
-							<fo:external-graphic inline-progression-dimension.maximum="90%" 
-                     content-height="scale-down-to-fit" 
-                     content-width="scale-down-to-fit">
-								<xsl:attribute name="src">
-								<!-- Path of the Control Structure via haz-file -->
-								<xsl:value-of select="exportinformation/csImagePath" />
-							</xsl:attribute>
-							</fo:external-graphic>
+							<xsl:choose>
+							<xsl:when test="exportinformation/csImageWidth &gt;= 600 or exportinformation/csImageHeight &gt;= 701">
+								<fo:external-graphic inline-progression-dimension.maximum="90%" 
+                     				content-height="scale-down-to-fit" 
+                    				content-width="scale-down-to-fit">
+                    				<xsl:attribute name="src">
+									<!-- Path of the Control Structure via haz-file -->
+									<xsl:value-of select="exportinformation/csImagePath" />
+								</xsl:attribute>
+								</fo:external-graphic>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:external-graphic inline-progression-dimension.maximum="90%" 
+                     				content-height="75%" 
+                    				content-width="75%">
+                    					<xsl:attribute name="src">
+										<!-- Path of the Control Structure via haz-file -->
+										<xsl:value-of select="exportinformation/csImagePath" />
+								</xsl:attribute>
+								</fo:external-graphic>
+							</xsl:otherwise>
+							</xsl:choose>
 						</xsl:if>	
 						</fo:block>
 					</fo:block>
@@ -285,20 +299,38 @@
 
 					<!-- *************** Control Structure Diagram with Process Model ***************-->
 					<fo:block page-break-after="always">
+						
 						<fo:block font-size="24pt" space-after="5pt" page-break-after="avoid">
 							Control Structure Diagram
 							with Process Model
 						</fo:block>
 						<fo:block >
+						
+						
 						<xsl:if test="exportinformation/cspmImagePath">
-							<fo:external-graphic inline-progression-dimension.maximum="95%" 
-                     content-height="scale-down-to-fit" 
-                     content-width="scale-down-to-fit">
-								<xsl:attribute name="src">
-								<!-- Path of the Control Structure with Process-Model via haz-file -->
-								<xsl:value-of select="exportinformation/cspmImagePath" />
-							</xsl:attribute>
-							</fo:external-graphic>
+							<xsl:choose>
+							<xsl:when test="exportinformation/csPmImageWidth &gt;= 600 or exportinformation/csPmImageHeight &gt;= 701">
+								<fo:external-graphic inline-progression-dimension.maximum="90%" 
+                     				content-height="scale-down-to-fit" 
+                    				content-width="scale-down-to-fit">
+                    				<xsl:attribute name="src">
+									<!-- Path of the Control Structure with Process-Model via haz-file -->
+									<xsl:value-of select="exportinformation/cspmImagePath" />
+								</xsl:attribute>
+								</fo:external-graphic>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:external-graphic inline-progression-dimension.maximum="90%" 
+                     				content-height="75%" 
+                    				content-width="75%">
+                    					<xsl:attribute name="src">
+										<!-- Path of the Control Structure with Process-Model via haz-file -->
+										<xsl:value-of select="exportinformation/cspmImagePath" />
+								</xsl:attribute>
+								</fo:external-graphic>
+							</xsl:otherwise>
+							</xsl:choose>
+								
 						</xsl:if>
 						</fo:block>
 					</fo:block>

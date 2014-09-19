@@ -37,6 +37,10 @@ public class ExportInformation {
 	private Date creationDate;
 	private String csImagePath;
 	private String cspmImagePath;
+	private String csImageWidth;
+	private String csImageHeight;
+	private String csPmImageWidth;
+	private String csPmImageHeight;
 	private String logoPath;
 	private String company;
 	private String colorBackground;
@@ -190,6 +194,62 @@ public class ExportInformation {
 			blueHexadecimal = "0" + blueHexadecimal; //$NON-NLS-1$
 		}
 		return "#" + redHexadecimal + greenHexadecimal + blueHexadecimal; //$NON-NLS-1$
+	}
+
+	/**
+	 * @return the csImageWidth
+	 */
+	public String getCsImageWidth() {
+		return csImageWidth;
+	}
+
+	/**
+	 * @param csImageWidth the csImageWidth to set
+	 */
+	public void setCsImageWidth(String csImageWidth) {
+		this.csImageWidth = csImageWidth;
+	}
+
+	/**
+	 * @return the csImageheight
+	 */
+	public String getCsImageHeight() {
+		return csImageHeight;
+	}
+
+	/**
+	 * @param csImageheight the csImageheight to set
+	 */
+	public void setCsImageHeight(String csImageheight) {
+		this.csImageHeight = csImageheight;
+	}
+
+	/**
+	 * @return the csPmImageWidth
+	 */
+	public String getCsPmImageWidth() {
+		return csPmImageWidth;
+	}
+
+	/**
+	 * @param csPmImageWidth the csPmImageWidth to set
+	 */
+	public void setCsPmImageWidth(String csPmImageWidth) {
+		this.csPmImageWidth = csPmImageWidth;
+	}
+
+	/**
+	 * @return the csPmImageheight
+	 */
+	public String getCsPmImageHeight() {
+		return csPmImageHeight;
+	}
+
+	/**
+	 * @param csPmImageheight the csPmImageheight to set
+	 */
+	public void setCsPmImageHeight(String csPmImageheight) {
+		this.csPmImageHeight = csPmImageheight;
 	}
 	
 }

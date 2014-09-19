@@ -18,7 +18,10 @@ import java.util.Observable;
 import messages.Messages;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -30,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
+import astpa.Activator;
 import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSEditorWithPM;
 import astpa.model.ObserverValue;
@@ -302,4 +306,5 @@ public class NavigationView implements IViewBase {
 		// nothing to export in this view
 		return false;
 	}
+
 }
