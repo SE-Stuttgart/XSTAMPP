@@ -925,22 +925,25 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 			
 			Job exportJob = new PrintJob(path, SWT.IMAGE_PNG, getGraphicalViewer(), IMG_EXPAND,this.forceDecoration);
 			this.forceDecoration=false;
+
+			this.imagePath = new String(path.getBytes());
 			exportJob.schedule();
-			this.imagePath = path;
 			exportJob.addJobChangeListener(new JobChangeAdapter(){
 			
 				@Override
 				public void done(final IJobChangeEvent event) {
-				
+					
 					File tmpImg = new File(CSAbstractEditor.this.imagePath);
-					Image img= new Image(null, CSAbstractEditor.this.imagePath);
-					System.out.println(img.getBounds());
-					String path = tmpImg.toURI().toString();
-					if (CSAbstractEditor.this instanceof CSEditor) {
+					if(tmpImg.isFile()){
+						Image img= new Image(null, CSAbstractEditor.this.imagePath);
+						System.out.println(img.getBounds());
+						String path = tmpImg.toURI().toString();
+						if (CSAbstractEditor.this instanceof CSEditor) {
 						
-						CSAbstractEditor.this.modelInterface.setCSImagePath(path,img.getBounds());
-					} else {
-						CSAbstractEditor.this.modelInterface.setCSPMImagePath(path,img.getBounds());
+							CSAbstractEditor.this.modelInterface.setCSImagePath(path,img.getBounds());
+						} else {
+							CSAbstractEditor.this.modelInterface.setCSPMImagePath(path,img.getBounds());
+						}
 					}
 					}
 			});
@@ -1302,7 +1305,13 @@ class PrintJob extends Job{
 			clipRectangle.height=clipRectangle.height + Math.min(0, clipRectangle.y);
 			clipRectangle.x= Math.max(0, clipRectangle.x);
 			clipRectangle.y= Math.max(0, clipRectangle.y);
-			System.out.println(clipRectangle.getSize());
+			
+			if(clipRectangle.height + clipRectangle.y > this.srcImage.getBounds().height){
+				clipRectangle.height = this.srcImage.getBounds().height - clipRectangle.y;
+			}
+			if(clipRectangle.width + clipRectangle.x > this.srcImage.getBounds().width){
+				clipRectangle.width = this.srcImage.getBounds().width - clipRectangle.x;
+			}
 //			clipRectangle.expand(this.imgOffset, this.imgOffset);
 			
 			
@@ -1312,11 +1321,11 @@ class PrintJob extends Job{
 	        											  clipRectangle.height+2*this.imgOffset);
 			GC imageGC = new GC(scaledImage);
 			 Graphics graphics = new SWTGraphics(imageGC);
-			 
-			graphics.drawImage(this.srcImage, clipRectangle, 
-					new Rectangle(this.imgOffset, this.imgOffset, clipRectangle.width,
-										clipRectangle.height ));
-			
+			if(this.srcImage.getBounds().width  >=0 && scaledImage.getBounds().width >= 0){ 
+				graphics.drawImage(this.srcImage, clipRectangle, 
+						new Rectangle(this.imgOffset, this.imgOffset, clipRectangle.width,
+											clipRectangle.height ));
+			}
 	        ImageLoader imgLoader = new ImageLoader();
 			imgLoader.data = new ImageData[] {scaledImage.getImageData()};
 			
