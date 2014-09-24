@@ -897,6 +897,8 @@ public abstract class CSAbstractEditor extends EditorPart implements IControlStr
 	public void setDataModelInterface(IDataModel dataInterface) {
 		this.modelInterface = (IControlStructureEditorDataModel) dataInterface;
 		this.modelInterface.addObserver(this);
+
+		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 	}
 	
 	@Override

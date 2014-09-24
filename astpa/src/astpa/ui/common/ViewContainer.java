@@ -785,6 +785,7 @@ public class ViewContainer extends ViewPart {
 			}
 			}
 		});
+		save.schedule();
 		return true;
 	}
 	
