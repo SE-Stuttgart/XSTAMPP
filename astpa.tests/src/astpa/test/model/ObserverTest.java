@@ -156,8 +156,8 @@ public class ObserverTest implements Observer {
 		this.initialize();
 		
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
-		this.dataModel.setCSImagePath("");
-		this.dataModel.setCSPMImagePath("");
+		this.dataModel.setCSImagePath("",new org.eclipse.swt.graphics.Rectangle(0,0,0,0));
+		this.dataModel.setCSPMImagePath("",new org.eclipse.swt.graphics.Rectangle(0,0,0,0));
 		Assert.assertEquals(this.nominal, this.actual);
 		
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
