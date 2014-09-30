@@ -31,6 +31,8 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -405,11 +407,9 @@ public class GridWrapper {
 		this.actualGrid.setHeaderVisible(true);
 		this.actualGrid.setCellSelectionEnabled(true);
 		this.actualGrid.setLinesVisible(false);
-		
 		this.actualGrid.addMouseListener(new GridMouseListener(this));
 		this.actualGrid.addMouseMoveListener(new GridMouseMoveListener(this));
 		this.actualGrid.addFocusListener(new GridFocusListener(this));
-		
 		this.cellRenderer = new GridCellRenderer(this);
 		
 		this.setColumnLabels(columnLabels);

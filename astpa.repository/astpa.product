@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="A-STPA" uid="A-STPA" id="astpa.astpa_product_id" application="astpa.application" version="1.0.4" useFeatures="true" includeLaunchers="true">
+<product name="A-STPA" uid="A-STPA" id="astpa.astpa_product_id" application="astpa.application" version="1.0.5.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/astpa/icons/Logo.png"/>

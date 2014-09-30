@@ -2,7 +2,7 @@
 <feature
       id="astpa.feature"
       label="A-STPA feature"
-      version="1.0.4">
+      version="1.0.5.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,7 +18,7 @@
 
    <includes
          id="org.eclipse.gef"
-         version="3.9.1"/>
+         version="0.0.0"/>
 
    <requires>
       <import plugin="org.eclipse.ui"/>
@@ -29,7 +29,7 @@
          id="astpa"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="1.0.5.qualifier"
          unpack="false"/>
 
 </feature>

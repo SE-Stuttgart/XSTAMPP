@@ -157,6 +157,10 @@
                   label="Update"
                   style="push">
             </command>
+            <command
+                  commandId="org.eclipse.ui.help.helpContents"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -508,6 +512,16 @@
          The Causal Factors Table as single Export , provided as PNG
       </description>
    </wizard>
+</extension>
+<extension
+      point="org.eclipse.help.toc">
+   <toc
+         file="toc.xml"
+         primary="true">
+   </toc>
+   <toc
+         file="tocusingastpa.xml">
+   </toc>
 </extension>
 
 </plugin>

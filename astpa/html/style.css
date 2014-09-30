@@ -1,0 +1,25 @@
+body
+{
+	font-family: Arial,Helvetica,sans-serif;
+}
+h1
+{
+	color:black;
+}
+h3
+{
+	color:black;
+}
+h5
+{
+	color:black;
+}
+a{
+	color:white;
+}
+body{
+	padding-top:200px;
+	background-image: url('../astpa.intro/graphics/design/header.png');
+	background-repeat:no-repeat;
+	background-color:#5d7cd4;
+}

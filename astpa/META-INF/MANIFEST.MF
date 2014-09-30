@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: A-STPA
 Bundle-SymbolicName: astpa; singleton:=true
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5.qualifier
 Bundle-Activator: astpa.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -21,7 +21,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.equinox.p2.operations,
  org.eclipse.equinox.p2.metadata.repository,
  org.eclipse.e4.ui.di,
- org.eclipse.core.resources;bundle-version="3.8.100"
+ org.eclipse.core.resources;bundle-version="3.8.100",
+ org.eclipse.help,
+ org.eclipse.help.webapp;bundle-version="3.6.200",
+ org.eclipse.help.ui;bundle-version="4.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: astpa.controlstructure,astpa.model,astpa.model.causalf
