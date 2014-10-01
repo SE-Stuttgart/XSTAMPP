@@ -29,7 +29,7 @@ Development-Team: Adam Grahovac, Aleksander Zotov, Aliaksei Babkovich, Benedikt 
    <launcher name="A-STPA">
       <solaris/>
       <win useIco="true">
-         <ico path="/astpa/icons/logo.ico"/>
+         <ico path="icons/logo.ico"/>
          <bmp/>
       </win>
    </launcher>
