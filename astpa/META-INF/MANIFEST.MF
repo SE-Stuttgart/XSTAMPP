@@ -24,7 +24,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.8.100",
  org.eclipse.help,
  org.eclipse.help.webapp;bundle-version="3.6.200",
- org.eclipse.help.ui;bundle-version="4.0.1"
+ org.eclipse.help.ui;bundle-version="4.0.1",
+ org.eclipse.jetty.util;bundle-version="8.1.10"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: astpa.controlstructure,astpa.model,astpa.model.causalf

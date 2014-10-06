@@ -29,7 +29,7 @@ Development-Team: Adam Grahovac, Aleksander Zotov, Aliaksei Babkovich, Benedikt 
    <launcher name="A-STPA">
       <solaris/>
       <win useIco="true">
-         <ico path="icons/logo.ico"/>
+         <ico path="/astpa/icons/logo.ico"/>
          <bmp/>
       </win>
    </launcher>
@@ -129,6 +129,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.gef"/>
+      <feature id="org.eclipse.help" version="2.0.2.v20140221-1700"/>
    </features>
 
    <configurations>
