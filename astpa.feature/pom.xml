@@ -7,7 +7,7 @@
 	<name>A-STPA Feature</name>
 
 	<parent>
-		<version>1.0.5-SNAPSHOT</version>
+		<version>1.0.5</version>
 		<groupId>astpa.group</groupId>
 		<artifactId>parent</artifactId>
 	</parent>
