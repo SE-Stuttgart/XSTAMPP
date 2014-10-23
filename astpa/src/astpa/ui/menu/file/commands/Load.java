@@ -28,9 +28,21 @@ import astpa.ui.common.ViewContainer;
  * 
  */
 public class Load extends AbstractHandler {
+	private String recentPath=""; ////$NON-NLS-1$
+	
+	/**
+	 * the Data Model will now load from this path 
+	 * @author Lukas Balzer
+	 *
+	 * @param path the recentPath which sould be loaded
+	 */
+	public void setRecentPath(String path){
+		this.recentPath=path;
+	}
 	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+	
 		ViewContainer viewContainer =
 			(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 				.findView(ViewContainer.ID);
@@ -39,7 +51,12 @@ public class Load extends AbstractHandler {
 			(ISourceProviderService) PlatformUI.getWorkbench().getService(ISourceProviderService.class);
 		SaveState saveStateService = (SaveState) sourceProviderService.getSourceProvider(SaveState.STATE);
 		saveStateService.setEnabled();
-		return viewContainer.loadDataModel();
+		this.recentPath=	event.getParameter("loadRecentProject");
+		System.out.println(this.recentPath);
+		if(this.recentPath == null){
+			return viewContainer.loadDataModel();
+		}
+		return viewContainer.loadDataModelFile(recentPath);
 	}
 	
 }

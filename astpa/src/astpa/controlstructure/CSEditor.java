@@ -28,9 +28,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import astpa.Activator;
 import astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
-import astpa.export.stepImages.ControlStructureWizard;
 import astpa.model.controlstructure.components.ComponentType;
 import astpa.model.controlstructure.components.ConnectionType;
+import astpa.wizards.stepImages.ControlStructureWizard;
 
 /**
  * The Graphical Editor is responsible for creating the manipulatable content of

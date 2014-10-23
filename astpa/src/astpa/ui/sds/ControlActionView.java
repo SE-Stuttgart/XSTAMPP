@@ -47,12 +47,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
-import astpa.export.BufferedCSVWriter;
 import astpa.model.controlaction.ControlAction;
 import astpa.model.interfaces.IControlActionViewDataModel;
 import astpa.model.interfaces.IDataModel;
 import astpa.ui.acchaz.ATableFilter;
 import astpa.ui.acchaz.CommonTableView;
+import astpa.wizards.BufferedCSVWriter;
 
 /**
  * @author Jarkko Heidenwag

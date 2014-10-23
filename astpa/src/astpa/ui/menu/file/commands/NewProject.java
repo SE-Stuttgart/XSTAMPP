@@ -45,7 +45,14 @@ public class NewProject extends AbstractHandler {
 			NewProject.LOGGER.error("View container not found"); //$NON-NLS-1$
 			return null;
 		}
-		viewContainer.startUp();
+		
+		Object nameParam=event.getParameter("astpa.projectName");
+		Object pathParam=event.getParameter("astpa.projectPath");
+		if(nameParam != null && nameParam instanceof String && pathParam != null && pathParam instanceof String){
+			viewContainer.startUp((String)nameParam, (String) pathParam);
+		}else{
+			viewContainer.startUp();
+		}
 		
 		// Enable the save entries in the menu
 		ISourceProviderService sourceProviderService =

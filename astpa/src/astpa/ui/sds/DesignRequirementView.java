@@ -47,13 +47,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
-import astpa.export.BufferedCSVWriter;
-import astpa.export.stepData.DesignRequirementsWizard;
 import astpa.model.interfaces.IDataModel;
 import astpa.model.interfaces.IDesignRequirementViewDataModel;
 import astpa.model.sds.DesignRequirement;
 import astpa.ui.acchaz.ATableFilter;
 import astpa.ui.acchaz.CommonTableView;
+import astpa.wizards.BufferedCSVWriter;
+import astpa.wizards.stepData.DesignRequirementsWizard;
 
 /**
  * @author Jarkko Heidenwag

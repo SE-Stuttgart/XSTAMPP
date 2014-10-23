@@ -50,12 +50,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import astpa.Activator;
-import astpa.export.BufferedCSVWriter;
-import astpa.export.stepData.AccidentsWizard;
 import astpa.model.ITableModel;
 import astpa.model.hazacc.Accident;
 import astpa.model.interfaces.IAccidentViewDataModel;
 import astpa.model.interfaces.IDataModel;
+import astpa.wizards.BufferedCSVWriter;
+import astpa.wizards.stepData.AccidentsWizard;
 
 /**
  * @author Jarkko Heidenwag

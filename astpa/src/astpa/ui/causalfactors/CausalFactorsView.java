@@ -41,9 +41,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import astpa.export.BufferedCSVWriter;
-import astpa.export.stepData.IDataExport;
-import astpa.export.stepImages.CausalFactorsTableWizard;
 import astpa.model.ISafetyConstraint;
 import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
@@ -63,6 +60,9 @@ import astpa.ui.common.grid.GridCellText;
 import astpa.ui.common.grid.GridRow;
 import astpa.ui.common.grid.GridWrapper;
 import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
+import astpa.wizards.BufferedCSVWriter;
+import astpa.wizards.stepData.IDataExport;
+import astpa.wizards.stepImages.CausalFactorsTableWizard;
 
 /**
  * The view to add causal factors to control structure components, edit them and

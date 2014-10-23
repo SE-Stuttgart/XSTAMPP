@@ -65,6 +65,12 @@
             id="astpa.ui.common.viewcontainer"
             name="View Container"
             restorable="true">
+      </view>
+      <view
+            class="astpa.ui.welcome.WelcomeView"
+            id="astpa.view1"
+            name="name"
+            restorable="true">
       </view>ension
          point="org.eclipse.ui.editors">
    </extension>
@@ -78,10 +84,13 @@
                id="fileMenu"
                label="File">
             <command
-                  commandId="astpa.newproject"
+                  commandId="org.eclipse.ui.newWizard"
                   label="Create New Project"
                   style="push"
                   tooltip="Create a new STPA Project">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
             </command>
             <command
                   commandId="astpa.load"
@@ -207,6 +216,17 @@
             defaultHandler="astpa.ui.menu.file.commands.NewProject"
             id="astpa.newproject"
             name="New Project">
+         <commandParameter
+               id="astpa.projectName"
+               name="Project name"
+               optional="true"
+               values="org.eclipse.ui.internal.registry.WizardParameterValues$New">
+         </commandParameter>
+         <commandParameter
+               id="astpa.projectPath"
+               name="Project Path"
+               optional="true">
+         </commandParameter>
       </command>
       <command
             defaultHandler="astpa.ui.menu.file.commands.ExitApplication"
@@ -229,6 +249,11 @@
             defaultHandler="astpa.ui.menu.file.commands.Load"
             id="astpa.load"
             name="Load">
+         <commandParameter
+               id="loadRecentProject"
+               name="recentProject"
+               optional="true">
+         </commandParameter>
       </command>
       <command
             defaultHandler="astpa.ui.menu.file.commands.Welcome"
@@ -327,7 +352,7 @@
    </category>
    <wizard
          category="astpa.mainCategory"
-         class="astpa.export.stepImages.PdfExportWizard"
+         class="astpa.wizards.stepImages.PdfExportWizard"
          icon="icons/Logo_small.png"
          id="astpa.wizardExport"
          name="PDF Report">
@@ -346,7 +371,7 @@
    </category>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.STPAdataWizard"
+         class="astpa.wizards.stepData.STPAdataWizard"
          icon="icons/Logo_small.png"
          id="astpa.datawizard"
          name=" All STPA Data">
@@ -356,7 +381,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.AccidentsWizard"
+         class="astpa.wizards.stepData.AccidentsWizard"
          icon="icons/buttons/navigation/STEP1_2.png"
          id="astpa.wizard1_2data"
          name="List of Accidents">
@@ -366,7 +391,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.HazardsWizard"
+         class="astpa.wizards.stepData.HazardsWizard"
          icon="icons/buttons/navigation/STEP1_3.png"
          id="astpa.wizard1_3data"
          name="List of Hazards">
@@ -376,7 +401,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.DesignRequirementsWizard"
+         class="astpa.wizards.stepData.DesignRequirementsWizard"
          icon="icons/buttons/navigation/STEP1_7.png"
          id="astpa.wizard1_7data"
          name="List of Design Requirements">
@@ -386,7 +411,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.ControlActionsWizard"
+         class="astpa.wizards.stepData.ControlActionsWizard"
          icon="icons/buttons/navigation/STEP2_1.png"
          id="astpa.wizard2_1data"
          name="List of Control Actions">
@@ -396,7 +421,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.CSCWizard"
+         class="astpa.wizards.stepData.CSCWizard"
          icon="icons/buttons/navigation/STEP2_3.png"
          id="astpa.wizard2_3data"
          name="List of Corresponding Safety Constraints">
@@ -406,7 +431,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.SafetyConstraintsWizard"
+         class="astpa.wizards.stepData.SafetyConstraintsWizard"
          icon="icons/buttons/navigation/STEP1_5.png"
          id="astpa.wizard1_5data"
          name="List of Safety Constraints">
@@ -416,7 +441,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.SystemGoalsWizard"
+         class="astpa.wizards.stepData.SystemGoalsWizard"
          icon="icons/buttons/navigation/STEP1_6.png"
          id="astpa.wizard1_6data"
          name="List of System Goals">
@@ -426,7 +451,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.UnsafeControlActionsDataWizard"
+         class="astpa.wizards.stepData.UnsafeControlActionsDataWizard"
          icon="icons/buttons/navigation/STEP2_2.png"
          id="astpa.wizard2_2data"
          name="Unsafe Control Actions Table">
@@ -436,7 +461,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.CausalFactorsDataWizard"
+         class="astpa.wizards.stepData.CausalFactorsDataWizard"
          icon="icons/buttons/navigation/STEP3_2.png"
          id="astpa.wizard3_2data"
          name="Causal Factors Table">
@@ -446,7 +471,7 @@
    </wizard>
    <wizard
          category="astpa.stepData"
-         class="astpa.export.stepData.SystemDecriptionDataWizard"
+         class="astpa.wizards.stepData.SystemDecriptionDataWizard"
          icon="icons/buttons/navigation/STEP1_1.png"
          id="astpa.wizard1_1data"
          name="System Decription">
@@ -464,7 +489,7 @@
    </category>
    <wizard
          category="astpa.stepImages"
-         class="astpa.export.stepImages.ControlStructureWizard"
+         class="astpa.wizards.stepImages.ControlStructureWizard"
          icon="icons/buttons/navigation/STEP1_8.png"
          id="astpa.wizard1_8"
          name="Control Structure">
@@ -474,7 +499,7 @@
    </wizard>
    <wizard
          category="astpa.stepImages"
-         class="astpa.export.stepImages.UCATableExportWizard"
+         class="astpa.wizards.stepImages.UCATableExportWizard"
          icon="icons/buttons/navigation/STEP2_2.png"
          id="astpa.wizard2_2"
          name="Unsafe Control Actions Table">
@@ -484,7 +509,7 @@
    </wizard>
    <wizard
          category="astpa.stepImages"
-         class="astpa.export.stepImages.ControlStructureWithPMWizard"
+         class="astpa.wizards.stepImages.ControlStructureWithPMWizard"
          icon="icons/buttons/navigation/STEP3_1.png"
          id="astpa.wizard3_1"
          name="ControlStructure With Process Model">
@@ -494,7 +519,7 @@
    </wizard>
    <wizard
          category="astpa.stepImages"
-         class="astpa.export.stepImages.SystemDecriptionWizard"
+         class="astpa.wizards.stepImages.SystemDecriptionWizard"
          icon="icons/buttons/navigation/STEP1_1.png"
          id="astpa.wizard1_1"
          name="System Decription">
@@ -504,7 +529,7 @@
    </wizard>
    <wizard
          category="astpa.stepImages"
-         class="astpa.export.stepImages.CausalFactorsTableWizard"
+         class="astpa.wizards.stepImages.CausalFactorsTableWizard"
          icon="icons/buttons/navigation/STEP3_2.png"
          id="astpa.3_2"
          name="Causal Factors Table">
@@ -522,6 +547,20 @@
    <toc
          file="tocusingastpa.xml">
    </toc>
+</extension>
+<extension
+      point="org.eclipse.ui.newWizards">
+   <category
+         id="astpa"
+         name="STPA Projects">
+   </category>
+   <wizard
+         category="astpa"
+         class="astpa.wizards.NewProjectWizard"
+         icon="icons/Logo_small.png"
+         id="astpa.wizards.SampleNewWizard"
+         name="A-STPA Project">
+   </wizard>
 </extension>
 
 </plugin>

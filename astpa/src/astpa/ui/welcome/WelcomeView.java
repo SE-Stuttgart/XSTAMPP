@@ -13,6 +13,9 @@
 
 package astpa.ui.welcome;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 import messages.Messages;
@@ -23,13 +26,21 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
@@ -37,10 +48,13 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.services.ISourceProviderService;
 
@@ -60,19 +74,24 @@ import astpa.ui.menu.file.commands.Welcome;
  */
 public class WelcomeView implements IViewBase {
 	
+	
 	// private static final String SHOW_WELCOME_ON_STARTUP_PREFERENCES =
 	// "SHOW_WELCOME_ON_STARTUP";
 	
-	private static final String NEW_PROJECT_ICON = "/astpa.intro/graphics/icons/new.png"; //$NON-NLS-1$
-	private static final String NEW_PROJECT_ICON_HOVERED = "/astpa.intro/graphics/icons/new_a.png"; //$NON-NLS-1$
-	private static final String LOAD_PROJECT_ICON = "/astpa.intro/graphics/icons/load.png"; //$NON-NLS-1$
-	private static final String LOAD_PROJECT_ICON_HOVERED = "/astpa.intro/graphics/icons/load_a.png"; //$NON-NLS-1$
+	private static final String NEW_PROJECT_ICON = "/astpa.intro/graphics/icons/new_s.png"; //$NON-NLS-1$
+	private static final String NEW_PROJECT_ICON_HOVERED = "/astpa.intro/graphics/icons/new_a-s.png"; //$NON-NLS-1$
+	private static final String LOAD_PROJECT_ICON = "/astpa.intro/graphics/icons/load_s.png"; //$NON-NLS-1$
+	private static final String LOAD_PROJECT_ICON_HOVERED = "/astpa.intro/graphics/icons/load_a-s.png"; //$NON-NLS-1$
 	private static final String EXIT_ICON = "/astpa.intro/graphics/icons/exit.png"; //$NON-NLS-1$
 	private static final String EXIT_ICON_HOVERED = "/astpa.intro/graphics/icons/exit_a.png"; //$NON-NLS-1$
-	private static final String BACKGROUND_IMAGE = "/astpa.intro/graphics/design/background.png"; //$NON-NLS-1$
+	private static final String HELP_ICON = "/astpa.intro/graphics/icons/help_s.png"; //$NON-NLS-1$
+	private static final String HELP_ICON_HOVERED = "/astpa.intro/graphics/icons/help_a-s.png"; //$NON-NLS-1$
+	private static final String SETTINGS_ICON = "/astpa.intro/graphics/icons/preferences_s.png"; //$NON-NLS-1$
+	private static final String SETTINGS_ICON_HOVERED = "/astpa.intro/graphics/icons/preferences_a-s.png"; //$NON-NLS-1$
+	private static final String BACKGROUND_IMAGE = "/astpa.intro/graphics/design/background_recent.png"; //$NON-NLS-1$
 	private static final String LOGO_IMAGE = "/astpa.intro/graphics/design/header.png"; //$NON-NLS-1$
 	private static final String CLOSE_IMAGE = "/icons/buttons/commontables/remove.png"; //$NON-NLS-1$
-	private static final String CLOSE_IMAGE_HOVERED = "/icons/buttons/commontables/remove_hovered.png"; //$NON-NLS-1$
+	private static final String CLOSE_IMAGE_HOVERED = "/icons/buttons/commontables/remove_hovered.png"; //$NON-NLS-1$	
 	
 	private static Image newProjectImage = null;
 	private static Image newProjectImageHovered = null;
@@ -84,15 +103,431 @@ public class WelcomeView implements IViewBase {
 	private static Image logoImage = null;
 	private static Image closeImage = null;
 	private static Image closeImageHovered = null;
+	private static Image settingsImage = null;
+	private static Image settingsImageHovered = null;
+	private static Image helpImage = null;
+	private static Image helpImageHovered = null;
 	
 	private static final String NEW_PROJECT_TOOLTIP = Messages.CreateNewProject;
 	private static final String LOAD_PROJECT_TOOLTIP = Messages.LoadProject;
 	private static final String EXIT_PROJECT_TOOLTIP = Messages.ExitASTPA;
 	private static final String CLOSE_TOOLTIP = Messages.CloseWelcomeView;
-	
+	private static final FontData TitleFont = new FontData("Calibri",16,SWT.NORMAL); //$NON-NLS-1$
+	private static final FontData DefaultFont = new FontData("Calibri",11,SWT.NORMAL); //$NON-NLS-1$
 	private Label close;
+	private RecentProjectLabel[] recentProjectsList;
+	private Label quickHelp;
+
+	
+	/**
+	 * The ID.
+	 */
+	public static final String ID = "WelcomeView"; //$NON-NLS-1$
 	
 	
+	@Override
+	public String getId() {
+		return WelcomeView.ID;
+	}
+	
+	@Override
+	public String getTitle() {
+		return Messages.WelcomeView;
+	}
+	
+	@Override
+	public void onActivateView() {
+		ISourceProviderService sourceProviderService =
+			(ISourceProviderService) PlatformUI.getWorkbench().getService(ISourceProviderService.class);
+		SaveState saveStateService = (SaveState) sourceProviderService.getSourceProvider(SaveState.STATE);
+		
+		boolean closeEnabled = saveStateService.getCurrentState().get(SaveState.STATE) == SaveState.S_ENABLED;
+		this.close.setVisible(closeEnabled);
+		
+		this.updateRecentProjects();
+	}
+	private Object executeCommand(String commandId) {
+		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
+		ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
+		Command command = commandService.getCommand(commandId);
+		if (command != null) {
+			try {
+				return command.executeWithChecks(new ExecutionEvent());
+			} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
+				Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		} else {
+			Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		return null;
+	}
+	
+	private Object executeParaCommand(String commandId,Map<String,String> params) {
+		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
+		ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
+		IHandlerService handlerService=(IHandlerService) serviceLocator.getService(IHandlerService.class);
+		Command command = commandService.getCommand(commandId);
+		
+		
+		ParameterizedCommand paraCommand=ParameterizedCommand.generateCommand(command, params);
+		if (command != null) {
+			try {
+				return handlerService.executeCommand(paraCommand, null);
+				
+			} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
+				Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		} else {
+			Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+			return null;
+		}
+		return null;
+	}
+
+	/**
+	 * adds a list of recent projects to the welcome view, 
+	 * 
+	 * </p><i>the position is fix due to the static background image </i>
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param parent the composite on which this component will be shown
+	 */
+	private void addRecentProjects(Composite parent){
+		Composite recentComp= new Composite(parent, SWT.NONE);
+		FormData data= new FormData();
+		data.left= new FormAttachment(0,80);
+		data.top= new FormAttachment(0,286);
+		data.width= 227;
+		data.height= 350;
+		recentComp.setLayoutData(data);
+		recentComp.setLayout(new FormLayout());
+		
+		Label recentLabel = new Label(recentComp, SWT.NONE);
+		
+		recentLabel.setFont(new Font(Display.getCurrent(),TitleFont));
+		recentLabel.setText(Messages.RecentProjects);
+		recentLabel.setForeground(ColorConstants.white);
+		recentLabel.setVisible(true);
+		data =new FormData();
+		data.top=new FormAttachment(0,2);
+		data.left=new FormAttachment(0,2);
+		data.width= 227;
+		data.height= 30;
+		recentLabel.setLayoutData(data);
+		
+		Label lastLabel= recentLabel;
+		RecentProjectLabel manager;
+		this.recentProjectsList = new RecentProjectLabel[8];
+		for(int i=0; i<8;i++){
+			data =new FormData();
+			data.top=new FormAttachment(lastLabel,5);
+			data.left=new FormAttachment(0,10);
+			data.width= 200;
+			data.height= 30;
+			
+			manager = new RecentProjectLabel(recentComp, "", data); //$NON-NLS-1$
+			lastLabel=manager.getLabel();
+			lastLabel.setLayoutData(data);
+			lastLabel.setVisible(false);
+			this.recentProjectsList[i]= manager;
+		}
+	}
+	@Override
+	public void createPartControl(final Composite parent) {
+		parent.setLayout(new FormLayout());
+		
+		Composite background = new Composite(parent, SWT.NONE);
+		GridData layout = new GridData();
+		layout.grabExcessHorizontalSpace = true;
+		layout.grabExcessVerticalSpace = true;
+		background.setLayoutData(layout);
+		
+		FormData backgroundFormData = new FormData();
+		backgroundFormData.top = new FormAttachment(0);
+		backgroundFormData.left = new FormAttachment(0);
+		backgroundFormData.width = WelcomeView.getBackgroundImage().getBounds().width;
+		backgroundFormData.height = WelcomeView.getBackgroundImage().getBounds().height;
+		background.setLayoutData(backgroundFormData);
+		
+		background.setLayout(new FormLayout());
+		background.setBackgroundImage(WelcomeView.getBackgroundImage());
+		
+		Label logo = new Label(background, SWT.PUSH);
+		logo.setImage(WelcomeView.getLogoImage());
+		
+		FormData logoFormData = new FormData();
+		logoFormData.top = new FormAttachment(5);
+		logoFormData.left = new FormAttachment(2);
+		logoFormData.width = WelcomeView.getLogoImage().getBounds().width;
+		logoFormData.height = WelcomeView.getLogoImage().getBounds().height;
+		logo.setLayoutData(logoFormData);
+		
+		
+		this.addRecentProjects(background);
+		
+		/*
+		 * ----Create Quick start icons----------------------------------------------
+		 */
+		final Canvas newProject =this.addHoveredLabel(background,WelcomeView.getNewProjectIcon(),"Opens a Window where you can choose between all currently installed Project Types",
+													  new Point(380, 330),
+													  Messages.CreateNew,
+													  "org.eclipse.ui.newWizard"); //$NON-NLS-1$
+		newProject.setToolTipText(WelcomeView.NEW_PROJECT_TOOLTIP);
+		
+		final Canvas loadProject =this.addHoveredLabel(background, WelcomeView.getLoadProjectIcon(),"Opens a file chooser where you can choose a *.haz project on your system",
+													   new Point(380, 390),
+													   Messages.LoadExistingProject,
+													   "astpa.load"); //$NON-NLS-1$
+		loadProject.setToolTipText(WelcomeView.LOAD_PROJECT_TOOLTIP);
+	
+		final Canvas help = this.addHoveredLabel(background, WelcomeView.getHelpImage(),"Opens the a browser with where you can find help Topics and search for keywords",
+												 new Point(380,450),
+												 Messages.HelpContents,
+												 "org.eclipse.ui.help.helpContents"); //$NON-NLS-1$
+		help.setToolTipText(Messages.HelpToolTip);
+		
+		
+		final Canvas settings =this.addHoveredLabel(background, WelcomeView.getSettingsImage(),"Opens the Preference Window where you can edit the plugin custumization settings",
+													new Point(380,510),
+													Messages.Preferences,
+													"astpa.preferencepage"); //$NON-NLS-1$
+		settings.setToolTipText(Messages.PreferencesToolTip);
+			
+		
+		/*
+		 * ----Creates a button to close the welcome view which is only visible if the user has allready opend a project---- 
+		 */
+		ISourceProviderService sourceProviderService =
+			(ISourceProviderService) PlatformUI.getWorkbench().getService(ISourceProviderService.class);
+		SaveState saveStateService = (SaveState) sourceProviderService.getSourceProvider(SaveState.STATE);
+		
+		boolean closeEnabled = saveStateService.getCurrentState().get(SaveState.STATE) == SaveState.S_ENABLED;
+		
+		this.close =this.addHoveredLabel(background, WelcomeView.getCloseImage(), WelcomeView.getCloseImageHovered(),new Point(30, 0));
+		this.close.setToolTipText(WelcomeView.CLOSE_TOOLTIP);
+		this.close.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseUp(MouseEvent e) {
+				Welcome.shutWelcome();
+				
+			}
+			
+		});
+		
+		this.close.setVisible(closeEnabled);
+		
+		/*
+		 * ----adds the interactive help panel which is displayed to the right of the quickstart Buttons
+		 */
+		this.quickHelp= new Label(background,SWT.WRAP | SWT.READ_ONLY);
+		FormData data = new FormData();
+		data.top = new FormAttachment(0,325);
+		data.left = new FormAttachment(newProject,15);
+		data.width = 250;
+		data.height = 300;
+		this.quickHelp.setLayoutData(data);
+		this.quickHelp.setFont(new Font(null,DefaultFont));
+		
+		/*
+		 * ---- adds a checkbox with which the user can set the whether or not to display the welcome view on startup
+		 */
+		final Button checkBox = new Button(background, SWT.CHECK);
+		checkBox.setText(Messages.ShowPageOnStartup);
+		checkBox.setToolTipText(Messages.ShowPageOnStartup);
+		checkBox.setSelection(Activator.getDefault().getPreferenceStore()
+			.getBoolean(WelcomeView.getShowWelcomeOnStartupPreferences()));
+		
+		final ViewContainer viewContainer =
+			(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.findView(ViewContainer.ID);
+		viewContainer.updateStatus(""); //$NON-NLS-1$
+		
+		checkBox.addMouseTrackListener(new MouseTrackListener() {
+			
+			@Override
+			public void mouseHover(MouseEvent e) {
+				// intentionally empty
+			}
+			
+			@Override
+			public void mouseExit(MouseEvent e) {
+				viewContainer.updateStatus(""); //$NON-NLS-1$
+			}
+			
+			@Override
+			public void mouseEnter(MouseEvent e) {
+				viewContainer.updateStatus(checkBox.getToolTipText());
+			}
+		});
+		
+		boolean state =
+			Activator.getDefault().getPreferenceStore().getBoolean(WelcomeView.getShowWelcomeOnStartupPreferences());
+		
+		checkBox.setSelection(state);
+		checkBox.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// store new state in preferences
+				Activator.getDefault().getPreferenceStore()
+					.setValue(WelcomeView.getShowWelcomeOnStartupPreferences(), checkBox.getSelection());
+			}
+		});
+		
+		FormData checkBoxFormData = new FormData();
+		checkBoxFormData.left = new FormAttachment(2);
+		checkBoxFormData.right = new FormAttachment(15);
+		checkBoxFormData.top = new FormAttachment(100);
+		checkBoxFormData.bottom = new FormAttachment(47);
+		checkBox.setLayoutData(checkBoxFormData);
+	}
+
+
+	private Canvas addHoveredLabel(Composite parent, final Image icon,final String helpText,
+									Point relativePosition, final String text, final String command) {
+		final Canvas newLabel = new Canvas(parent, SWT.NONE);
+		
+		FormData formData = new FormData();
+		formData.left = new FormAttachment(0,relativePosition.x);
+		formData.top = new FormAttachment(0,relativePosition.y);
+		formData.width = 230;
+		formData.height = WelcomeView.getNewProjectIcon().getBounds().height;
+		newLabel.setLayoutData(formData);
+		
+		newLabel.addPaintListener(new PaintListener() {
+			
+			@Override
+			public void paintControl(PaintEvent e) {
+				e.gc.drawImage(icon, 0, 0);
+				e.gc.setFont(new Font(null, TitleFont));
+				e.gc.drawString(text, icon.getBounds().width + 10, icon.getBounds().height/2 -12, true);
+				
+			}
+		});
+
+
+		final ViewContainer viewContainer =
+				(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.findView(ViewContainer.ID);
+			viewContainer.updateStatus(""); //$NON-NLS-1$
+			
+		newLabel.addMouseTrackListener(new MouseTrackAdapter() {
+			
+			@Override
+			public void mouseExit(MouseEvent e) {
+				newLabel.setBackground(null);
+				viewContainer.updateStatus(""); //$NON-NLS-1$
+				WelcomeView.this.quickHelp.setText(""); //$NON-NLS-1$
+			}
+			
+			@Override
+			public void mouseEnter(MouseEvent e) {
+				newLabel.setBackground(ColorConstants.lightBlue);
+				viewContainer.updateStatus(newLabel.getToolTipText());
+				WelcomeView.this.quickHelp.setText(helpText);
+				
+			}
+		});
+
+
+		newLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				
+				if(command.equals("")){ //$NON-NLS-1$
+					Welcome.shutWelcome();
+				}else{
+					WelcomeView.this.executeCommand(command);
+				}
+			}
+		});
+		return newLabel;
+	}
+
+
+	private Label addHoveredLabel(Composite parent, final Image icon, final Image hoveredIcon,
+									Point relativePosition) {
+		final Label newLabel = new Label(parent, SWT.PUSH);
+		newLabel.setImage(icon);
+		
+		FormData formData = new FormData();
+		formData.left = new FormAttachment(0,relativePosition.x);
+		formData.top = new FormAttachment(0,relativePosition.y);
+		formData.width = WelcomeView.getNewProjectIcon().getBounds().width;
+		formData.height = WelcomeView.getNewProjectIcon().getBounds().height;
+		newLabel.setLayoutData(formData);
+		
+		final ViewContainer viewContainer =
+			(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.findView(ViewContainer.ID);
+		viewContainer.updateStatus(""); //$NON-NLS-1$
+		
+		newLabel.addMouseTrackListener(new MouseTrackAdapter() {
+		
+			@Override
+			public void mouseExit(MouseEvent e) {
+				newLabel.setImage(icon);
+				viewContainer.updateStatus(""); //$NON-NLS-1$
+			}
+			
+			@Override
+			public void mouseEnter(MouseEvent e) {
+				newLabel.setImage(hoveredIcon);
+				viewContainer.updateStatus(newLabel.getToolTipText());
+			}
+		});
+		
+		return newLabel;
+	}
+
+	/**
+	 * The String of the variable in the prefernces, in which the boolean is
+	 * stored that controls whether the welcome page is shown on startup.
+	 * 
+	 * @author Patrick Wickenhaeuser
+	 * 
+	 * @return the String of the variable in the prefernces.
+	 */
+	public static String getShowWelcomeOnStartupPreferences() {
+		return IPreferenceConstants.SHOW_WELCOME_ON_STARTUP_PREFERENCES;
+	}
+
+	@Override
+	public boolean triggerExport(Object[] values) {
+		// no export available
+		return false;
+	}
+
+	private void updateRecentProjects(){
+		RecentProjectLabel newRecentEntry;
+		String recentProjectsTest= Activator.getDefault().getPreferenceStore().getString(IPreferenceConstants.RECENT_PROJECTS);
+		String[] projects= recentProjectsTest.split(";"); //$NON-NLS-1$
+		
+		for(int i=0; i<8;i++){
+			if(i <projects.length && !projects[i].equals("")){ //$NON-NLS-1$
+				final String temp=projects[i];
+				newRecentEntry= this.recentProjectsList[i];
+				newRecentEntry.setLink(temp);
+				newRecentEntry.getLabel().setVisible(true);
+				
+			}
+			else{
+				this.recentProjectsList[i].getLabel().setVisible(false);
+			}
+		}
+	}
+	
+	@Override
+	public void setDataModelInterface(IDataModel dataInterface) {
+		// intentionally empty
+	}
+	
+	@Override
+	public void update(Observable dataModelController, Object updatedValue) {
+		// intentionally empty
+	}
 	/**
 	 * Get the image for the new project button.
 	 * 
@@ -245,302 +680,131 @@ public class WelcomeView implements IViewBase {
 		return WelcomeView.closeImageHovered;
 	}
 	
-	
 	/**
-	 * The ID.
+	 * Get the settings image.
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @return the settings image.
 	 */
-	public static final String ID = "WelcomeView"; //$NON-NLS-1$
-	
-	
-	@Override
-	public String getId() {
-		return WelcomeView.ID;
-	}
-	
-	@Override
-	public String getTitle() {
-		return Messages.WelcomeView;
-	}
-	
-	@Override
-	public void onActivateView() {
-		// intentionally empty
-		
-		ISourceProviderService sourceProviderService =
-			(ISourceProviderService) PlatformUI.getWorkbench().getService(ISourceProviderService.class);
-		SaveState saveStateService = (SaveState) sourceProviderService.getSourceProvider(SaveState.STATE);
-		
-		boolean closeEnabled = saveStateService.getCurrentState().get(SaveState.STATE) == SaveState.S_ENABLED;
-		
-		this.close.setVisible(closeEnabled);
-	}
-	
-	private void executeCommand(String commandId) {
-		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
-		ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
-		Command command = commandService.getCommand(commandId);
-		if (command != null) {
-			try {
-				command.executeWithChecks(new ExecutionEvent());
-			} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
-				Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		} else {
-			Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+	public static final Image getSettingsImage() {
+		if (WelcomeView.settingsImage == null) {
+			WelcomeView.settingsImage = Activator.getImageDescriptor(WelcomeView.SETTINGS_ICON).createImage();
 		}
+		
+		return WelcomeView.settingsImage;
 	}
 	
-	@Override
-	public void createPartControl(final Composite parent) {
-		parent.setLayout(new FormLayout());
-		
-		Composite background = new Composite(parent, SWT.NONE);
-		GridData layout = new GridData();
-		layout.grabExcessHorizontalSpace = true;
-		layout.grabExcessVerticalSpace = true;
-		background.setLayoutData(layout);
-		
-		FormData backgroundFormData = new FormData();
-		backgroundFormData.top = new FormAttachment(0);
-		backgroundFormData.left = new FormAttachment(0);
-		backgroundFormData.width = WelcomeView.getBackgroundImage().getBounds().width;
-		backgroundFormData.height = WelcomeView.getBackgroundImage().getBounds().height;
-		background.setLayoutData(backgroundFormData);
-		
-		background.setLayout(new FormLayout());
-		background.setBackgroundImage(WelcomeView.getBackgroundImage());
-		
-		Label logo = new Label(background, SWT.PUSH);
-		logo.setImage(WelcomeView.getLogoImage());
-		
-		FormData logoFormData = new FormData();
-		logoFormData.top = new FormAttachment(5);
-		logoFormData.left = new FormAttachment(2);
-		logoFormData.width = WelcomeView.getLogoImage().getBounds().width;
-		logoFormData.height = WelcomeView.getLogoImage().getBounds().height;
-		logo.setLayoutData(logoFormData);
-		
-		final Label newProject =
-			this.addHoveredLabel(background, WelcomeView.getNewProjectIcon(), WelcomeView.getNewProjectIconHovered(),
-				new Point(30, 40));
-		newProject.setToolTipText(WelcomeView.NEW_PROJECT_TOOLTIP);
-		
-		newProject.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent e) {
-				WelcomeView.this.executeCommand("astpa.newproject"); //$NON-NLS-1$
-				Welcome.shutWelcome();
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// intentionally empty
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// intentionally empty
-			}
-		});
-		
-		final Label loadProject =
-			this.addHoveredLabel(background, WelcomeView.getLoadProjectIcon(), WelcomeView.getLoadProjectIconHovered(),
-				new Point(40, 40));
-		loadProject.setToolTipText(WelcomeView.LOAD_PROJECT_TOOLTIP);
-		
-		loadProject.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent e) {
-				WelcomeView.this.executeCommand("astpa.load"); //$NON-NLS-1$
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// intentionally empty
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// intentionally empty
-			}
-		});
-		
-		final Label exit =
-			this.addHoveredLabel(background, WelcomeView.getExitIcon(), WelcomeView.getExitIconHovered(), new Point(50,
-				40));
-		exit.setToolTipText(WelcomeView.EXIT_PROJECT_TOOLTIP);
-		
-		exit.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent e) {
-				WelcomeView.this.executeCommand("astpa.exit"); //$NON-NLS-1$
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// intentionally empty
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// intentionally empty
-			}
-		});
-		
-		ISourceProviderService sourceProviderService =
-			(ISourceProviderService) PlatformUI.getWorkbench().getService(ISourceProviderService.class);
-		SaveState saveStateService = (SaveState) sourceProviderService.getSourceProvider(SaveState.STATE);
-		
-		boolean closeEnabled = saveStateService.getCurrentState().get(SaveState.STATE) == SaveState.S_ENABLED;
-		
-		this.close =
-			this.addHoveredLabel(background, WelcomeView.getCloseImage(), WelcomeView.getCloseImageHovered(),
-				new Point(60, 0));
-		this.close.setToolTipText(WelcomeView.CLOSE_TOOLTIP);
-		
-		this.close.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent e) {
-				Welcome.shutWelcome();
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// intentionally empty
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// intentionally empty
-			}
-		});
-		
-		this.close.setVisible(closeEnabled);
-		
-		final Button checkBox = new Button(background, SWT.CHECK);
-		checkBox.setText(Messages.ShowPageOnStartup);
-		checkBox.setToolTipText(Messages.ShowPageOnStartup);
-		checkBox.setSelection(Activator.getDefault().getPreferenceStore()
-			.getBoolean(WelcomeView.getShowWelcomeOnStartupPreferences()));
-		
-		final ViewContainer viewContainer =
-			(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.findView(ViewContainer.ID);
-		viewContainer.updateStatus(""); //$NON-NLS-1$
-		
-		checkBox.addMouseTrackListener(new MouseTrackListener() {
-			
-			@Override
-			public void mouseHover(MouseEvent e) {
-				// intentionally empty
-			}
-			
-			@Override
-			public void mouseExit(MouseEvent e) {
-				viewContainer.updateStatus(""); //$NON-NLS-1$
-			}
-			
-			@Override
-			public void mouseEnter(MouseEvent e) {
-				viewContainer.updateStatus(checkBox.getToolTipText());
-			}
-		});
-		
-		boolean state =
-			Activator.getDefault().getPreferenceStore().getBoolean(WelcomeView.getShowWelcomeOnStartupPreferences());
-		
-		checkBox.setSelection(state);
-		checkBox.addSelectionListener(new SelectionAdapter() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// store new state in preferences
-				Activator.getDefault().getPreferenceStore()
-					.setValue(WelcomeView.getShowWelcomeOnStartupPreferences(), checkBox.getSelection());
-			}
-		});
-		
-		FormData checkBoxFormData = new FormData();
-		checkBoxFormData.left = new FormAttachment(2);
-		checkBoxFormData.right = new FormAttachment(15);
-		checkBoxFormData.top = new FormAttachment(45);
-		checkBoxFormData.bottom = new FormAttachment(47);
-		checkBox.setLayoutData(checkBoxFormData);
-	}
 	
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		// intentionally empty
-	}
-	
-	@Override
-	public void update(Observable dataModelController, Object updatedValue) {
-		// intentionally empty
-	}
-	
-	private Label addHoveredLabel(Composite parent, final Image icon, final Image hoveredIcon, Point relativePosition) {
-		final Label newLabel = new Label(parent, SWT.PUSH);
-		newLabel.setImage(icon);
+	/**
+	 * Get the hovered settings image.
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @return the hovered settings image.
+	 */
+	public static final Image getSettingsImageHovered() {
+		if (WelcomeView.settingsImageHovered == null) {
+			WelcomeView.settingsImageHovered = Activator.getImageDescriptor(WelcomeView.SETTINGS_ICON_HOVERED).createImage();
+		}
 		
-		FormData formData = new FormData();
-		formData.left = new FormAttachment(relativePosition.x);
-		formData.top = new FormAttachment(relativePosition.y);
-		formData.width = WelcomeView.getNewProjectIcon().getBounds().width;
-		formData.height = WelcomeView.getNewProjectIcon().getBounds().height;
-		newLabel.setLayoutData(formData);
-		
-		final ViewContainer viewContainer =
-			(ViewContainer) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.findView(ViewContainer.ID);
-		viewContainer.updateStatus(""); //$NON-NLS-1$
-		
-		newLabel.addMouseTrackListener(new MouseTrackListener() {
-			
-			@Override
-			public void mouseHover(MouseEvent e) {
-				// intentionally empty
-			}
-			
-			@Override
-			public void mouseExit(MouseEvent e) {
-				newLabel.setImage(icon);
-				
-				viewContainer.updateStatus(""); //$NON-NLS-1$
-			}
-			
-			@Override
-			public void mouseEnter(MouseEvent e) {
-				newLabel.setImage(hoveredIcon);
-				
-				viewContainer.updateStatus(newLabel.getToolTipText());
-			}
-		});
-		
-		return newLabel;
+		return WelcomeView.settingsImageHovered;
 	}
 	
 	/**
-	 * The String of the variable in the prefernces, in which the boolean is
-	 * stored that controls whether the welcome page is shown on startup.
+	 * Get the help image.
 	 * 
-	 * @author Patrick Wickenhaeuser
+	 * @author Lukas Balzer
 	 * 
-	 * @return the String of the variable in the prefernces.
+	 * @return the help image.
 	 */
-	public static String getShowWelcomeOnStartupPreferences() {
-		return IPreferenceConstants.SHOW_WELCOME_ON_STARTUP_PREFERENCES;
+	public static final Image getHelpImage() {
+		if (WelcomeView.helpImage == null) {
+			WelcomeView.helpImage = Activator.getImageDescriptor(WelcomeView.HELP_ICON).createImage();
+		}
+		
+		return WelcomeView.helpImage;
+	}
+	
+	/**
+	 * Get the hovered help image.
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @return the hovered help image.
+	 */
+	public static final Image getHelpImageHovered() {
+		if (WelcomeView.helpImageHovered == null) {
+			WelcomeView.helpImageHovered = Activator.getImageDescriptor(WelcomeView.HELP_ICON_HOVERED).createImage();
+		}
+		
+		return WelcomeView.helpImageHovered;
 	}
 
-	@Override
-	public boolean triggerExport(Object[] values) {
-		// no export available
-		return false;
+	
+	private class RecentProjectLabel implements MouseListener,MouseTrackListener{
+		private String link;
+		private Label label;
+		
+		RecentProjectLabel(Composite parent, String path, FormData data){
+				
+			
+			this.label= new Label(parent,SWT.NONE);
+	
+	        
+			Font recentFont= new Font(Display.getCurrent(), DefaultFont);
+			
+			this.label.setFont(recentFont);
+			this.label.setLayoutData(data);
+			this.label.addMouseTrackListener(this); 
+			this.label.addMouseListener(this);
+		}
+		
+		public Label getLabel(){
+			return this.label;
+		}
+		public void setLink(String link){
+			this.link= link;
+			int pathSplitter= Math.max(0, link.lastIndexOf(File.separator));
+			this.label.setText(link.substring(pathSplitter));
+			this.label.setToolTipText(Messages.LoadProject + ": "+link); //$NON-NLS-1$
+			
+		}
+		@Override
+		public void mouseHover(MouseEvent e) {
+			//
+		}
+		
+		@Override
+		public void mouseExit(MouseEvent e) {
+			this.label.setBackground(null);
+		}
+		
+		@Override
+		public void mouseEnter(MouseEvent e) {
+			this.label.setBackground(ColorConstants.lightBlue);
+		}
+
+		@Override
+		public void mouseDoubleClick(MouseEvent arg0) {
+			// Do nothing on this event
+			
+		}
+
+		@Override
+		public void mouseDown(MouseEvent e) {
+			Map<String,String> values= new HashMap<>();
+			values.put("loadRecentProject","astpa.load"); //$NON-NLS-1$ //$NON-NLS-2$
+			WelcomeView.this.executeParaCommand(this.link,values);
+		}
+
+		@Override
+		public void mouseUp(MouseEvent e) {
+			// Do nothing on this event
+			
+		}
+		
+		
 	}
-
-
 
 }

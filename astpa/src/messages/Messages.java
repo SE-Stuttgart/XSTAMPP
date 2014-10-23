@@ -118,6 +118,7 @@ public final class Messages extends NLS {
 	public static String NoUpdate;
 	@SuppressWarnings("javadoc")
 	public static String ReallyInstallUpdates;
+	public static String RecentProjects;
 	@SuppressWarnings("javadoc")
 	public static String UpdateFromIDE;
 	@SuppressWarnings("javadoc")
@@ -195,6 +196,8 @@ public final class Messages extends NLS {
 	public static String Controller;
 	@SuppressWarnings("javadoc")
 	public static String CreateController;
+	public static String Preferences;
+	public static String PreferencesToolTip;
 	@SuppressWarnings("javadoc")
 	public static String PrepareDataExport;
 	@SuppressWarnings("javadoc")
@@ -243,6 +246,7 @@ public final class Messages extends NLS {
 	public static String ComponentElements;
 	@SuppressWarnings("javadoc")
 	public static String CreateActuator;
+	public static String CreateNew;
 	@SuppressWarnings("javadoc")
 	public static String CreateNewProject;
 	@SuppressWarnings("javadoc")
@@ -281,6 +285,8 @@ public final class Messages extends NLS {
 	public static String Hazards;
 	@SuppressWarnings("javadoc")
 	public static String HazardsAvailableForLinking;
+	public static String HelpContents;
+	public static String HelpToolTip;
 	@SuppressWarnings("javadoc")
 	public static String Hover;
 	@SuppressWarnings("javadoc")
@@ -343,6 +349,7 @@ public final class Messages extends NLS {
 	public static String CorrespondingSafetyConstraints;
 	@SuppressWarnings("javadoc")
 	public static String ThreeCausalAnalysis;
+	public static String ControlStructureDeco;
 	@SuppressWarnings("javadoc")
 	public static String ControlStructureDiagramWithProcessModel;
 	@SuppressWarnings("javadoc")
@@ -377,6 +384,7 @@ public final class Messages extends NLS {
 	public static String SystemGoals;
 	@SuppressWarnings("javadoc")
 	public static String NewProject;
+	public static String NewProjectPath1;
 	@SuppressWarnings("javadoc")
 	public static String NewSafetyConstraint;
 	@SuppressWarnings("javadoc")
@@ -405,6 +413,7 @@ public final class Messages extends NLS {
 	public static String ClickToEdit;
 	@SuppressWarnings("javadoc")
 	public static String CloseWelcomeView;
+	public static String CSDecoToolTip;
 	@SuppressWarnings("javadoc")
 	public static String DecreaseFontSize;
 	@SuppressWarnings("javadoc")
@@ -437,6 +446,7 @@ public final class Messages extends NLS {
 	public static String BackSlashSpaceOffset;
 	@SuppressWarnings("javadoc")
 	public static String Line;
+	public static String LoadExistingProject;
 	@SuppressWarnings("javadoc")
 	public static String LoadProject;
 	@SuppressWarnings("javadoc")

@@ -26,8 +26,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import astpa.Activator;
 import astpa.controlstructure.controller.factorys.CSModelCreationFactory;
-import astpa.export.stepImages.ControlStructureWithPMWizard;
 import astpa.model.controlstructure.components.ComponentType;
+import astpa.wizards.stepImages.ControlStructureWithPMWizard;
 
 /**
  * 

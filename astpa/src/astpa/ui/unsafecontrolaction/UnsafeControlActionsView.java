@@ -43,9 +43,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 
-import astpa.export.BufferedCSVWriter;
-import astpa.export.stepData.IDataExport;
-import astpa.export.stepImages.UCATableExportWizard;
 import astpa.model.ITableModel;
 import astpa.model.ObserverValue;
 import astpa.model.controlaction.UnsafeControlActionType;
@@ -64,6 +61,9 @@ import astpa.ui.common.grid.GridRow;
 import astpa.ui.common.grid.GridWrapper;
 import astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import astpa.ui.common.grid.IGridCell;
+import astpa.wizards.BufferedCSVWriter;
+import astpa.wizards.stepData.IDataExport;
+import astpa.wizards.stepImages.UCATableExportWizard;
 
 /**
  * View used to handle the unsafe control actions.

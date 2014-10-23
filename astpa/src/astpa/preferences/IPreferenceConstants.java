@@ -94,6 +94,11 @@ public interface IPreferenceConstants {
 	String COMPANY_FONT_COLOR = "companyFontColor"; //$NON-NLS-1$
 	
 	/**
+	 * Constant for a List with all recent projects
+	 */
+	String RECENT_PROJECTS="recentProjects";
+	
+	/**
 	 * Constant for show welcome screen on startup option.
 	 */
 	String SHOW_WELCOME_ON_STARTUP_PREFERENCES = "SHOW_WELCOME_ON_STARTUP"; //$NON-NLS-1$

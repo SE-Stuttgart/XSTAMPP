@@ -57,6 +57,7 @@ import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.Span;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -88,9 +89,6 @@ import astpa.controlstructure.CSAbstractEditor;
 import astpa.controlstructure.CSEditor;
 import astpa.controlstructure.CSEditorWithPM;
 import astpa.controlstructure.IControlStructureEditor;
-import astpa.export.BufferedCSVWriter;
-import astpa.export.stepData.IDataExport;
-import astpa.export.stepData.IExportView;
 import astpa.model.DataModelController;
 import astpa.model.ObserverValue;
 import astpa.preferences.IPreferenceConstants;
@@ -110,6 +108,9 @@ import astpa.ui.statusline.StatusLineManager;
 import astpa.ui.systemdescription.SystemDescriptionView;
 import astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
 import astpa.ui.welcome.WelcomeView;
+import astpa.wizards.BufferedCSVWriter;
+import astpa.wizards.stepData.IDataExport;
+import astpa.wizards.stepData.IExportView;
 
 /**
  * The view container contains the navigation view and the view area.
@@ -129,6 +130,7 @@ import astpa.ui.welcome.WelcomeView;
 public class ViewContainer extends ViewPart {
 	
 	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+	
 	/**
 	 * The log4j logger
 	 */
@@ -178,7 +180,7 @@ public class ViewContainer extends ViewPart {
 	 * 
 	 */
 	private class IViewReference {
-		
+	
 		/**
 		 * The parent composite of the view.
 		 */
@@ -323,11 +325,8 @@ public class ViewContainer extends ViewPart {
 		
 	}
 	private class LoadJobChangeAdapter extends JobChangeAdapter{
-		
-		final private String name;
-
+	
 		public LoadJobChangeAdapter(String filename){
-			this.name= filename;
 		}
 		
 		@Override
@@ -605,6 +604,22 @@ public class ViewContainer extends ViewPart {
 	}
 	
 	/**
+	 * creates a new project in the given location
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param projectName he name of the new project
+	 * @param path the path where the new project is stored
+	 */
+	public void startUp(String projectName, String path) {
+		startUp();
+		this.dataModelController.setProjectName(projectName);
+		this.dataModelController.updateValue(ObserverValue.PROJECT_NAME);
+		this.savedFile=new File(path);
+	}
+	
+	/**
+	 *
 	 * Starts the view container and makes it visible
 	 * 
 	 * @author Fabian Toth
@@ -766,6 +781,7 @@ public class ViewContainer extends ViewPart {
 			return this.saveDataModelAs();
 		}
 
+		this.addRecentProject(this.savedFile.getAbsolutePath());
 		this.dataModelController.prepareForSave();
 		Job save= new SaveJob(this.savedFile, ViewContainer.LOGGER, this.dataModelController);
 		save.addJobChangeListener(new JobChangeAdapter(){
@@ -805,6 +821,27 @@ public class ViewContainer extends ViewPart {
 		
 				String file = fileDialog.open();
 				if (file != null) {
+					loadDataModelFile(file);
+					
+				}
+		
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Loads the data model from a file if it is valid
+	 * 
+	 * @author Lukas Balzer
+	 * @param file the file which contains the dataModel
+	 * 
+	 * @return whether the operation was successful or not
+	 */
+	public boolean loadDataModelFile(String file) {
+		if (this.overwriteDataModel()) {
+			
+				if (file != null) {
 					this.savedFile = new File(file);
 					Job load=new LoadJob(file,ViewContainer.LOGGER);
 					load.schedule();
@@ -816,6 +853,7 @@ public class ViewContainer extends ViewPart {
 		
 		return true;
 	}
+	
 	
 	/**
 	 * Open wizard with export values.
@@ -1103,6 +1141,24 @@ public class ViewContainer extends ViewPart {
 			}
 		}
 		return steps;
+	}
+	
+	private void addRecentProject(String path){
+		String projectString= this.store.getString(IPreferenceConstants.RECENT_PROJECTS);
+		if(projectString.contains(path)){
+			return;
+		}
+		new ArrayList<>();
+		projectString= path + ";" + this.store.getString(IPreferenceConstants.RECENT_PROJECTS);
+		String[] projects = projectString.split(";");
+		
+		projectString= new String();
+		
+		for(int i=0;i<Math.min(projects.length, 8);i++){
+			projectString=projectString + projects[i]  + ";";
+		}
+		
+		this.store.setValue(IPreferenceConstants.RECENT_PROJECTS, projectString);
 	}
 }
 class CSVExportJob extends Job{
