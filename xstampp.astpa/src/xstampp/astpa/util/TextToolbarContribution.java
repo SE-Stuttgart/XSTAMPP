@@ -120,7 +120,8 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 				params.put(FONT_NAME_PARAMETER,TextToolbarContribution.this.fontCombo.getText());
 				params.put(FONT_SIZE_PARAMETER,TextToolbarContribution.this.fontSizeCombo.getText());
 				if(params.get(FONT_NAME_PARAMETER) == null || !getFontNames().contains(params.get(FONT_NAME_PARAMETER))){
-					params.replace(FONT_NAME_PARAMETER, getFontNames().get(0));
+					
+					params.put(FONT_NAME_PARAMETER, getFontNames().get(0));
 				}
 				if(params.get(FONT_SIZE_PARAMETER).equals("")){
 					params.replace(FONT_SIZE_PARAMETER, FONT_SIZES[0]);
