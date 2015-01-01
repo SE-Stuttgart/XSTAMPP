@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
+import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 
 /**
  * Test class for corresponding safety constraints

@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.sds.SafetyConstraint;
+import xstampp.astpa.model.sds.SafetyConstraint;
 
 /**
  * Test class for safety constraints

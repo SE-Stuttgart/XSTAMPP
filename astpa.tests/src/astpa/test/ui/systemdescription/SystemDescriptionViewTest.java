@@ -3,7 +3,7 @@ package astpa.test.ui.systemdescription;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.ui.systemdescription.SystemDescriptionView;
+import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
 
 /**
  * Test class for system description view.

@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.hazacc.Hazard;
+import xstampp.astpa.model.hazacc.Hazard;
 
 /**
  * Test class for a hazards

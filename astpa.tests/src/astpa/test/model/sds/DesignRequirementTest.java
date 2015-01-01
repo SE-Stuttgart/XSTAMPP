@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.sds.DesignRequirement;
+import xstampp.astpa.model.sds.DesignRequirement;
 
 /**
  * Test class for design requirements

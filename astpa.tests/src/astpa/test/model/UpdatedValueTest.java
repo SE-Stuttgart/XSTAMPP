@@ -2,7 +2,7 @@ package astpa.test.model;
 
 import org.junit.Test;
 
-import astpa.model.ObserverValue;
+import xstampp.model.ObserverValue;
 
 /**
  * 

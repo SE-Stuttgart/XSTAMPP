@@ -5,10 +5,10 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.controlstructure.components.Anchor;
-import astpa.model.controlstructure.components.ComponentType;
-import astpa.model.controlstructure.components.CSConnection;
-import astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.controlstructure.components.Anchor;
+import xstampp.astpa.model.controlstructure.components.CSConnection;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.components.ConnectionType;
 
 /**
  * Class that tests connections

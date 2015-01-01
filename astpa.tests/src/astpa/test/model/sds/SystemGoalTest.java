@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.sds.SystemGoal;
+import xstampp.astpa.model.sds.SystemGoal;
 
 /**
  * Test class for system goals

@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.controlaction.UnsafeControlAction;
-import astpa.model.controlaction.UnsafeControlActionType;
-import astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
+import xstampp.astpa.model.controlaction.UnsafeControlAction;
+import xstampp.astpa.model.controlaction.UnsafeControlActionType;
+import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 
 /**
  * Test class for unsafe control action

@@ -6,10 +6,10 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.DataModelController;
-import astpa.model.ITableModel;
-import astpa.model.interfaces.IAccidentViewDataModel;
-import astpa.model.interfaces.IHazardViewDataModel;
+import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
+import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 
 /**
  * Class that tests the HazAccController

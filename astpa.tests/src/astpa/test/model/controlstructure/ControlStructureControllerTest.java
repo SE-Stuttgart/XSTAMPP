@@ -6,13 +6,13 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.DataModelController;
-import astpa.model.controlstructure.components.Anchor;
-import astpa.model.controlstructure.components.ComponentType;
-import astpa.model.controlstructure.components.ConnectionType;
-import astpa.model.controlstructure.interfaces.IConnection;
-import astpa.model.controlstructure.interfaces.IRectangleComponent;
-import astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.controlstructure.components.Anchor;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.controlstructure.interfaces.IConnection;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * Class that tests the ControlStructureController

@@ -5,7 +5,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.projectdata.StyleRangeAdapter;
+import xstampp.astpa.model.projectdata.StyleRangeAdapter;
 
 /**
  * Test class for the style range adapter

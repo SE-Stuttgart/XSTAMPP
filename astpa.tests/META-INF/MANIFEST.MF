@@ -2,11 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: astpa.tests
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: astpa,
+Require-Bundle: xstampp.astpa,
+ xstampp,
  org.junit,
- org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.ui
 Eclipse-RegisterBuddy: org.apache.log4j
-Import-Package: org.eclipse.draw2d.geometry
+Import-Package: org.eclipse.draw2d.geometry,
+ xstampp.astpa.model,
+ xstampp.astpa.model.causalfactor,
+ xstampp.astpa.model.controlaction,
+ xstampp.astpa.model.controlstructure.components

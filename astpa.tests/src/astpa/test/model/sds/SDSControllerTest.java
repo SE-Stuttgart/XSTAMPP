@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.DataModelController;
-import astpa.model.ITableModel;
-import astpa.model.interfaces.IDesignRequirementViewDataModel;
-import astpa.model.interfaces.ISafetyConstraintViewDataModel;
-import astpa.model.interfaces.ISystemGoalViewDataModel;
+import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
+import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
+import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 
 /**
  * Class that tests the SDSController

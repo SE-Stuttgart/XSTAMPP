@@ -10,26 +10,26 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.DataModelController;
-import astpa.model.ObserverValue;
-import astpa.model.controlaction.UnsafeControlActionType;
-import astpa.model.controlstructure.components.Anchor;
-import astpa.model.controlstructure.components.ComponentType;
-import astpa.model.controlstructure.components.ConnectionType;
-import astpa.model.interfaces.IAccidentViewDataModel;
-import astpa.model.interfaces.ICausalFactorDataModel;
-import astpa.model.interfaces.IControlActionViewDataModel;
-import astpa.model.interfaces.IControlStructureEditorDataModel;
-import astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
-import astpa.model.interfaces.IDesignRequirementViewDataModel;
-import astpa.model.interfaces.IHazardViewDataModel;
-import astpa.model.interfaces.ILinkingViewDataModel;
-import astpa.model.interfaces.INavigationViewDataModel;
-import astpa.model.interfaces.ISafetyConstraintViewDataModel;
-import astpa.model.interfaces.IStatusLineDataModel;
-import astpa.model.interfaces.ISystemDescriptionViewDataModel;
-import astpa.model.interfaces.ISystemGoalViewDataModel;
-import astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.controlaction.UnsafeControlActionType;
+import xstampp.astpa.model.controlstructure.components.Anchor;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
+import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
+import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
+import xstampp.astpa.model.interfaces.IHazardViewDataModel;
+import xstampp.astpa.model.interfaces.ILinkingViewDataModel;
+import xstampp.astpa.model.interfaces.INavigationViewDataModel;
+import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
+import xstampp.astpa.model.interfaces.IStatusLineDataModel;
+import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
+import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
+import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.model.ObserverValue;
 
 /**
  * Test class for the observers
@@ -156,8 +156,8 @@ public class ObserverTest implements Observer {
 		this.initialize();
 		
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
-		this.dataModel.setCSImagePath("",new org.eclipse.swt.graphics.Rectangle(0,0,0,0));
-		this.dataModel.setCSPMImagePath("",new org.eclipse.swt.graphics.Rectangle(0,0,0,0));
+		this.dataModel.setCSImagePath("");
+		this.dataModel.setCSPMImagePath("");
 		Assert.assertEquals(this.nominal, this.actual);
 		
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());

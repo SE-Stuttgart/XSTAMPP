@@ -6,10 +6,15 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.DataModelController;
-import astpa.model.causalfactor.ICausalComponent;
-import astpa.model.causalfactor.ICausalFactor;
-import astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.causalfactor.ICausalComponent;
+import xstampp.astpa.model.causalfactor.ICausalFactor;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
+
+
+
+
+
 
 /**
  * Test class for the causal factor controller

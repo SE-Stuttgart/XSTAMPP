@@ -2,7 +2,7 @@ package astpa.test.model.controlstructure;
 
 import org.junit.Test;
 
-import astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.controlstructure.components.ConnectionType;
 
 /**
  * 

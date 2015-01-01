@@ -2,7 +2,7 @@
 <feature
       id="astpa.feature"
       label="A-STPA feature"
-      version="2.0.0.qualifier">
+      version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -26,10 +26,24 @@
    </requires>
 
    <plugin
-         id="astpa"
+         id="xstampp"
          download-size="0"
          install-size="0"
-         version="2.0.0.qualifier"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="astpa.extension"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="xstampp.astpa"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

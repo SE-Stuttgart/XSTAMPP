@@ -4,7 +4,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.DataModelController;
+import xstampp.astpa.model.DataModelController;
 
 /**
  * Class tahat tests the ProjectDataController

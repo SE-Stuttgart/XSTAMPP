@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.controlstructure.components.Anchor;
+import xstampp.astpa.model.controlstructure.components.Anchor;
 
 /**
  * Class that tests anchors

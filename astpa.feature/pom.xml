@@ -7,8 +7,8 @@
 	<name>A-STPA Feature</name>
 
 	<parent>
-		<version>2.0.0-SNAPSHOT</version>
-		<groupId>astpa.group</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+		<groupId>xstampp.group</groupId>
 		<artifactId>parent</artifactId>
 	</parent>
 

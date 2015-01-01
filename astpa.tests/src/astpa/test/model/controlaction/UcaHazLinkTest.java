@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.controlaction.UCAHazLink;
-import astpa.model.hazacc.Accident;
+import xstampp.astpa.model.controlaction.UCAHazLink;
+import xstampp.astpa.model.hazacc.Accident;
 
 /**
  * Test class for links

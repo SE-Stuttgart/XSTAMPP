@@ -6,8 +6,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.controlstructure.components.Component;
-import astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.components.Component;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 
 /**
  * Class that tests the components

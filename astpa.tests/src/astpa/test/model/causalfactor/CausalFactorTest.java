@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import astpa.model.causalfactor.CausalFactor;
-import astpa.model.causalfactor.CausalSafetyConstraint;
+import xstampp.astpa.model.causalfactor.CausalFactor;
+import xstampp.astpa.model.causalfactor.CausalSafetyConstraint;
 
 /**
  * Test class for a causal factor
