@@ -260,7 +260,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private void addOrReplaceStep(String selectionId,
 			IProjectSelection selector, TreeItem item) {
 		if (this.selectionIdToSelector.containsKey(selectionId)) {
-			this.treeItemToStepId.remove(this.selectionIdToSelector.get(selectionId).getItem(),selectionId);
+			this.treeItemToStepId.remove(this.selectionIdToSelector.get(selectionId).getItem());
 			this.treeItemToStepId.put(item, selectionId);
 			this.selectionIdToSelector.get(selectionId).changeItem(item);
 			

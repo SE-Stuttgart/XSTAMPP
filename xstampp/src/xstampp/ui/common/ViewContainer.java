@@ -334,9 +334,9 @@ public class ViewContainer implements IProcessController {
 					outer));
 					BufferedWriter writer = new BufferedWriter(new FileWriter(
 							copy))) {
-				for (Object line : reader.lines().toArray()) {
+				while(reader.readLine() != null) {
 
-					writer.append((CharSequence) line);
+					writer.append(reader.readLine());
 				}
 				reader.close();
 				writer.close();
