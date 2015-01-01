@@ -33,6 +33,8 @@ public interface IProjectSelection extends ISelection {
 
 	public void changeItem(TreeItem item);
 	
+	public TreeItem getItem();
+	
 
 	/**
 	 *	tells the selector that he is active so that he can update the header 
@@ -52,4 +54,5 @@ public interface IProjectSelection extends ISelection {
 	void setPathHistory(String pathHistory);
 	
 	void cleanUp();
+	
 }

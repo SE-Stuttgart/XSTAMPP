@@ -71,7 +71,10 @@ public abstract class AbstractSelector implements IProjectSelection {
 		this.pathHistory = pathHistory;
 	}
 
-
+	@Override
+	public TreeItem getItem(){
+		return this.treeItem;
+	}
 
 	
 	

@@ -40,7 +40,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	private static final int STACK = 8;
 	private static final String SEPERATOR = ","; //$NON-NLS-1$
 	private static final String WS_IDENTIFIER = "stamp"; //$NON-NLS-1$
-	private static Preferences LocalPreferences = Preferences
+	private static final Preferences LOCAL_PREFERENCES = Preferences
 			.userNodeForPackage(ChooseWorkLocation.class);
 
 	/**
@@ -56,7 +56,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	public ChooseWorkLocation(Shell parentShell) {
 		super(parentShell);
 		this.recentLocs = new ArrayList<>();
-		String recentLocations = ChooseWorkLocation.LocalPreferences.get(
+		String recentLocations = ChooseWorkLocation.LOCAL_PREFERENCES.get(
 				IPreferenceConstants.WS_RECENT, null);
 		if (recentLocations != null) {
 			String[] pathArray = recentLocations
@@ -138,7 +138,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 		this.rememeberWS = new Button(inner, SWT.CHECK);
 		this.rememeberWS.setText(Messages.RememberWorkspace);
 		this.rememeberWS.setLayoutData(data);
-		this.rememeberWS.setSelection(ChooseWorkLocation.LocalPreferences
+		this.rememeberWS.setSelection(ChooseWorkLocation.LOCAL_PREFERENCES
 				.getBoolean(IPreferenceConstants.WS_REMEMBER, false));
 		
 		return inner;
@@ -151,13 +151,13 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	 * @return the last workspace location or null
 	 */
 	public static String getLastWSLocation() {
-		return ChooseWorkLocation.LocalPreferences.get(
+		return ChooseWorkLocation.LOCAL_PREFERENCES.get(
 				IPreferenceConstants.WS_LAST_LOCATION, null);
 	}
 
 	@Override
 	protected void okPressed() {
-		ChooseWorkLocation.LocalPreferences.putBoolean(
+		ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(
 				IPreferenceConstants.WS_REMEMBER,
 				this.rememeberWS.getSelection());
 		if (!this.addRecentWS(this.workspacePathCombo.getText())) {
@@ -182,7 +182,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 				this.recentLocs.remove(i);
 			}
 		}
-		ChooseWorkLocation.LocalPreferences.put(IPreferenceConstants.WS_RECENT,
+		ChooseWorkLocation.LOCAL_PREFERENCES.put(IPreferenceConstants.WS_RECENT,
 				this.recentWsString());
 		return true;
 	}
@@ -289,7 +289,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	 *         workspace is available
 	 */
 	public static String getLastUsedWorkspace() {
-		String lastWorkspace = ChooseWorkLocation.LocalPreferences.get(
+		String lastWorkspace = ChooseWorkLocation.LOCAL_PREFERENCES.get(
 				IPreferenceConstants.WS_RECENT, null);
 		if (lastWorkspace == null) {
 			return null;
@@ -311,7 +311,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	 *         choice is recognised
 	 */
 	public static boolean shouldRememberWS() {
-		return ChooseWorkLocation.LocalPreferences.getBoolean(
+		return ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(
 				IPreferenceConstants.WS_REMEMBER, false);
 	}
 }
