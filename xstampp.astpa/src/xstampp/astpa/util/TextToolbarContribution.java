@@ -124,7 +124,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 					params.put(FONT_NAME_PARAMETER, getFontNames().get(0));
 				}
 				if(params.get(FONT_SIZE_PARAMETER).equals("")){
-					params.replace(FONT_SIZE_PARAMETER, FONT_SIZES[0]);
+					params.put(FONT_SIZE_PARAMETER, FONT_SIZES[0]);
 				}
 				STPAPluginUtils.executeParaCommand(CHANGE_FONT_COMMAND, params);
 			}
