@@ -20,19 +20,19 @@
 ;General
 
 	;Name and file
-	Name "A-STPA"
-	OutFile "A-STPA_Setup_64bit.exe"
+	Name "XSTAMPP"
+	OutFile "XSTAMPP_Setup_64bit.exe"
 	Icon "logo.ico"
 
 ;--------------------------------
 ; Define Values
-	!define EXEC "A-STPA.exe"
-	!define APPNAME "A-STPA"
+	!define EXEC "XSTAMPP.exe"
+	!define APPNAME "XSTAMPP"
 	!define COMPANYNAME "Stupro Team"
-	!define DESCRIPTION "A simple tool to create a STPA analysis"
+	!define DESCRIPTION "An extensible platform supporting STAMP based plug-ins"
 	; These three must be integers
-	!define VERSIONMAJOR 0
-	!define VERSIONMINOR 12
+	!define VERSIONMAJOR 1
+	!define VERSIONMINOR 0
 	!define VERSIONBUILD 0
 	; These will be displayed by the "Click here for support information" link in "Add/Remove Programs"
 	; It is possible to use "mailto:" links in here to open the email client
@@ -82,7 +82,7 @@ Section "A-STPA" SecDummy
 	file "logo.ico"
 	
 	;Generate a list of files to be installed
-	!system 'java -jar astpa.listfiles.jar "./../astpa.repository/target/products/A-STPA/win32/win32/x86_64" "list.txt" "unlist.txt"'
+	!system 'java -jar astpa.listfiles.jar "./../astpa.repository/target/products/xstampp_product/win32/win32/x86_64" "list.txt" "unlist.txt"'
 	!include list.txt
 	!system 'del list.txt'
 
