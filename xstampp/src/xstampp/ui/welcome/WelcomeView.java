@@ -63,20 +63,20 @@ public class WelcomeView extends ViewPart implements IViewBase {
 	// "SHOW_WELCOME_ON_STARTUP";
 
 	private static final int MAIN_ICONS_COLUMN = 120;
-	private static final String NEW_PROJECT_ICON = "/astpa.intro/graphics/icons/new_s.png"; //$NON-NLS-1$
-	private static final String NEW_PROJECT_ICON_HOVERED = "/astpa.intro/graphics/icons/new_a-s.png"; //$NON-NLS-1$
-	private static final String LOAD_PROJECT_ICON = "/astpa.intro/graphics/icons/load_s.png"; //$NON-NLS-1$
-	private static final String LOAD_PROJECT_ICON_HOVERED = "/astpa.intro/graphics/icons/load_a-s.png"; //$NON-NLS-1$
-	private static final String EXIT_ICON = "/astpa.intro/graphics/icons/exit-s.png"; //$NON-NLS-1$
-	private static final String EXIT_ICON_HOVERED = "/astpa.intro/graphics/icons/exit_a.png"; //$NON-NLS-1$
-	private static final String HELP_ICON = "/astpa.intro/graphics/icons/help_s.png"; //$NON-NLS-1$
-	private static final String HELP_ICON_HOVERED = "/astpa.intro/graphics/icons/help_a-s.png"; //$NON-NLS-1$
-	private static final String SETTINGS_ICON = "/astpa.intro/graphics/icons/preferences_s.png"; //$NON-NLS-1$
-	private static final String SETTINGS_ICON_HOVERED = "/astpa.intro/graphics/icons/preferences_a-s.png"; //$NON-NLS-1$
-	private static final String BACKGROUND_IMAGE = "/astpa.intro/graphics/design/background_recent.png"; //$NON-NLS-1$
-	private static final String LOGO_IMAGE = "/astpa.intro/graphics/design/header.png"; //$NON-NLS-1$
-	private static final String CLOSE_IMAGE = "/astpa.intro/graphics/icons/ToWorkbench.png"; //$NON-NLS-1$
-	private static final String CLOSE_IMAGE_HOVERED = "/astpa.intro/graphics/icons/ToWorkbench_hovered.png"; //$NON-NLS-1$	
+	private static final String NEW_PROJECT_ICON = "/xstampp.intro/graphics/icons/new_s.png"; //$NON-NLS-1$
+	private static final String NEW_PROJECT_ICON_HOVERED = "/xstampp.intro/graphics/icons/new_a-s.png"; //$NON-NLS-1$
+	private static final String LOAD_PROJECT_ICON = "/xstampp.intro/graphics/icons/load_s.png"; //$NON-NLS-1$
+	private static final String LOAD_PROJECT_ICON_HOVERED = "/xstampp.intro/graphics/icons/load_a-s.png"; //$NON-NLS-1$
+	private static final String EXIT_ICON = "/xstampp.intro/graphics/icons/exit-s.png"; //$NON-NLS-1$
+	private static final String EXIT_ICON_HOVERED = "/xstampp.intro/graphics/icons/exit_a.png"; //$NON-NLS-1$
+	private static final String HELP_ICON = "/xstampp.intro/graphics/icons/help_s.png"; //$NON-NLS-1$
+	private static final String HELP_ICON_HOVERED = "/xstampp.intro/graphics/icons/help_a-s.png"; //$NON-NLS-1$
+	private static final String SETTINGS_ICON = "/xstampp.intro/graphics/icons/preferences_s.png"; //$NON-NLS-1$
+	private static final String SETTINGS_ICON_HOVERED = "/xstampp.intro/graphics/icons/preferences_a-s.png"; //$NON-NLS-1$
+	private static final String BACKGROUND_IMAGE = "/xstampp.intro/graphics/design/background_recent.png"; //$NON-NLS-1$
+	private static final String LOGO_IMAGE = "/xstampp.intro/graphics/design/header.png"; //$NON-NLS-1$
+	private static final String CLOSE_IMAGE = "/xstampp.intro/graphics/icons/ToWorkbench.png"; //$NON-NLS-1$
+	private static final String CLOSE_IMAGE_HOVERED = "/xstampp.intro/graphics/icons/ToWorkbench_hovered.png"; //$NON-NLS-1$	
 
 	private static Image newProjectImage = null;
 	private static Image newProjectImageHovered = null;
@@ -229,7 +229,7 @@ public class WelcomeView extends ViewPart implements IViewBase {
 						WelcomeView.getLoadProjectIcon(),
 						"Opens a file chooser where you can choose a *.haz project on your system",
 						new Point(WelcomeView.MAIN_ICONS_COLUMN, 390),
-						Messages.LoadExistingProject, "astpa.load"); //$NON-NLS-1$
+						Messages.LoadExistingProject, "xstampp.command.load"); //$NON-NLS-1$
 		loadProject.setToolTipText(WelcomeView.LOAD_PROJECT_TOOLTIP);
 
 		final Canvas help = this

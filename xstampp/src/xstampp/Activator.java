@@ -53,11 +53,11 @@ public class Activator extends AbstractUIPlugin {
 		super.start(newContext);
 		Activator.context = newContext;
 		Activator.plugin = this;
-		for (Bundle bundle : Activator.plugin.getBundle().getBundleContext()
-				.getBundles()) {
-			Activator.plugin.getBundle().getBundleContext()
-					.installBundle(bundle.getLocation());
-		}
+//		for (Bundle bundle : Activator.plugin.getBundle().getBundleContext()
+//				.getBundles()) {
+//			Activator.plugin.getBundle().getBundleContext()
+//					.installBundle(bundle.getLocation());
+//		}
 	}
 
 	/*

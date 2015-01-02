@@ -116,7 +116,7 @@
                   style="push">
             </command>
             <command
-                  commandId="astpa.saveall"
+                  commandId="xstampp.saveall"
                   style="push">
             </command>
             <command
