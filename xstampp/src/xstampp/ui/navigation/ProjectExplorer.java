@@ -383,7 +383,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		this.extensions = new HashMap<>();
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
-				.getConfigurationElementsFor("xstampp.extension.steppedProcess")) {
+				.getConfigurationElementsFor("astpa.extension.steppedProcess")) {
 			String ext = extElement.getAttribute("extension");
 
 			this.extensions.put(ext, extElement);

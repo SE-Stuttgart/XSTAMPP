@@ -366,7 +366,7 @@ public class ViewContainer implements IProcessController {
 		IDataModel dataModel = null;
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
-				.getConfigurationElementsFor("xstampp.extension.steppedProcess")) {
+				.getConfigurationElementsFor("astpa.extension.steppedProcess")) {
 			if(file.endsWith(extElement.getAttribute("extension"))){
 				dataModel = (IDataModel) STPAPluginUtils.executeCommand(extElement.getAttribute("controller"));
 			}

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="false">
+<product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/xstampp/icons/branding/xstampp/logo.png"/>
@@ -36,7 +36,7 @@ Development-Team: Adam Grahovac, Aleksander Zotov, Aliaksei Babkovich, Benedikt 
    <splash
       location="xstampp"
       startupProgressRect="2,275,445,15" />
-   <launcher>
+   <launcher name="XSTAMPP">
       <solaris/>
       <win useIco="true">
          <ico path="/xstampp/icons/logo.ico"/>
@@ -143,9 +143,9 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </features>
 
    <configurations>
-      <plugin id="org.eclipse.core.runtime" autoStart="false" startLevel="4" />
-      <plugin id="org.eclipse.equinox.common" autoStart="false" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="false" startLevel="2" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
    </configurations>
 
 </product>

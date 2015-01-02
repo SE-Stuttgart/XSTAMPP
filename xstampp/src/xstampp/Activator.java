@@ -57,7 +57,6 @@ public class Activator extends AbstractUIPlugin {
 				.getBundles()) {
 			Activator.plugin.getBundle().getBundleContext()
 					.installBundle(bundle.getLocation());
-
 		}
 	}
 
