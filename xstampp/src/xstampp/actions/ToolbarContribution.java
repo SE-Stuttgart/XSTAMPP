@@ -29,7 +29,6 @@ public class ToolbarContribution extends ExtensionContributionFactory {
 	@Override
 	public void createContributionItems(IServiceLocator arg0,
 			IContributionRoot arg1) {
-		System.out.println("created");
 		IToolBarManager manager = new ToolBarManager() {
 			@Override
 			public ToolBar createControl(Composite parent) {

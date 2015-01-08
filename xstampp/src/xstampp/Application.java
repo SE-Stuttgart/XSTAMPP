@@ -60,6 +60,7 @@ public class Application implements IApplication {
 		Display display = PlatformUI.createDisplay();
 		Logger logger = Logger.getRootLogger();
 		try {
+			
 			// Choose a reasonable workspace Location
 			Location instanceLoc = Platform.getInstanceLocation();
 			if (!ChooseWorkLocation.shouldRememberWS() && !instanceLoc.isSet()) {

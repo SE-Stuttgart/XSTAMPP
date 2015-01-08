@@ -7,6 +7,7 @@ import java.util.prefs.Preferences;
 
 import messages.Messages;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -272,6 +273,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 			File wsMarker = new File(workspaceFile.getAbsolutePath()
 					+ File.separator + ChooseWorkLocation.WS_IDENTIFIER);
 			wsMarker.createNewFile();
+			
 		} catch (Exception err) {
 			return Messages.CannotCreateDir;
 		}

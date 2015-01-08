@@ -456,8 +456,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				CSAbstractEditor.SCALE_FONT, SWT.NORMAL));
 		this.label.setText(Integer.toString(this.scale.getSelection()) + "%"); //$NON-NLS-1$
 		this.label.setLayoutData(data);
-		IToolBarManager manager = new ToolBarManager(this.toolBar);
-		ToolBarContributionItem item = new ToolBarContributionItem(manager);
+		IToolBarManager toolManager = new ToolBarManager(this.toolBar);
+		ToolBarContributionItem item = new ToolBarContributionItem(toolManager);
 		this.getEditorSite().getActionBars().getToolBarManager().add(item);
 	}
 

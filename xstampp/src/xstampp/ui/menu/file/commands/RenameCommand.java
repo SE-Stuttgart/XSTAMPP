@@ -29,7 +29,7 @@ public class RenameCommand extends AbstractHandler {
 					currentString, new ProjectNameValidator(projectId));
 			if (renameDiag.open() == Window.OK) {
 				ViewContainer.getContainerInstance().renameProject(projectId,
-						currentString);
+						renameDiag.getValue());
 			}
 		}
 		return null;

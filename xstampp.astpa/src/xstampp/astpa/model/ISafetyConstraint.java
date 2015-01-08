@@ -19,7 +19,7 @@ import java.util.UUID;
  * Interface for a safety constraint in the second and third step
  * 
  * @author Fabian Toth
- * @since 2.1
+ * @since 2.0
  * 
  */
 public interface ISafetyConstraint {

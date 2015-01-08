@@ -51,7 +51,6 @@ import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.IViewBase;
 import xstampp.ui.common.ViewContainer;
 import xstampp.util.StandartEditorPart;
 
@@ -60,7 +59,7 @@ import xstampp.util.StandartEditorPart;
  * @author Jarkko Heidenwag
  * 
  */
-public class CSCView extends StandartEditorPart implements IViewBase {
+public class CSCView extends StandartEditorPart{
 
 	/**
 	 * @author Jarkko Heidenwag

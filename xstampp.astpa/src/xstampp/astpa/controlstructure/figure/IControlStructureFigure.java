@@ -84,7 +84,7 @@ public interface IControlStructureFigure extends IFigure {
 	 * @param ref
 	 *            the anchorPoint for which a feedback should be created
 	 */
-	public void addHighlighter(Point ref);
+	void addHighlighter(Point ref);
 
 	/**
 	 * removes the Feedback Recangle from the editor
@@ -92,7 +92,7 @@ public interface IControlStructureFigure extends IFigure {
 	 * @author Lukas Balzer
 	 * 
 	 */
-	public void removeHighlighter();
+	void removeHighlighter();
 
 	/**
 	 * This method disables the use of the offset area around the figures bounds
@@ -100,7 +100,7 @@ public interface IControlStructureFigure extends IFigure {
 	 * @author Lukas Balzer
 	 * 
 	 */
-	public void disableOffset();
+	void disableOffset();
 
 	/**
 	 * this method enables an offset around the child figures to find connection
@@ -109,9 +109,9 @@ public interface IControlStructureFigure extends IFigure {
 	 * @author Lukas Balzer
 	 * 
 	 */
-	public void enableOffset();
+	void enableOffset();
 
-	public void setDeco(boolean deco);
+	void setDeco(boolean deco);
 
-	public boolean hasDeco();
+	boolean hasDeco();
 }

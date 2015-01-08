@@ -36,7 +36,6 @@ public class STPAEditorInput implements IEditorInput {
 	public STPAEditorInput(UUID projectId, String editorId) {
 		this.projectId = projectId;
 		this.stepEditorId = editorId;
-		System.out.println("Editor input for step "+projectId.toString()+" of " + editorId);
 		this.id= UUID.randomUUID();
 		this.stepName="";
 

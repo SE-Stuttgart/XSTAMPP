@@ -35,7 +35,7 @@ public class WizardParameterConverter extends AbstractParameterValueConverter{
 			throws ParameterValueConversionException {
 		//the method searches for for export, import and news wizards
 		IWorkbenchWizard wizard = null;
-		System.out.println(parameterValue);
+	
 		IWizardDescriptor wizardDescriptor= PlatformUI.getWorkbench().getExportWizardRegistry().findWizard(parameterValue);
 		if(wizardDescriptor == null){
 			wizardDescriptor= PlatformUI.getWorkbench().getNewWizardRegistry().findWizard(parameterValue);

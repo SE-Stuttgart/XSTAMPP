@@ -73,6 +73,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 			final static int _160 = 160;
 	@Override
 	protected Control createControl(Composite arg0) {
+		
 		this.foregroundColor=new RGB(_0, _0, _0);
 		this.backgroundColor=new RGB(_255, _255, _255);
 		Composite comp=new Composite(arg0, SWT.None);

@@ -19,7 +19,7 @@ import java.util.UUID;
  * Interface for elements which can be shown in a table
  * 
  * @author Fabian Toth
- * @since 2.1
+ * @since 2.0
  * 
  */
 public interface ITableModel extends Comparable<ITableModel> {

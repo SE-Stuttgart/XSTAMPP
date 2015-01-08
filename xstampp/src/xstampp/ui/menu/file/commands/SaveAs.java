@@ -32,7 +32,6 @@ public class SaveAs extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		UUID saveModel = UUID.fromString(event.getParameter("saveAsProjectId")); //$NON-NLS-1$
-		System.out.println(saveModel);
 		return ViewContainer.getContainerInstance().saveDataModelAs(saveModel);
 	}
 }

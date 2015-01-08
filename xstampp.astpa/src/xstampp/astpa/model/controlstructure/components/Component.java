@@ -26,8 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.astpa.controlstructure.CSEditor;
-import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.causalfactor.CausalFactor;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;

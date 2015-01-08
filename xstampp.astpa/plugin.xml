@@ -375,8 +375,8 @@
             category="astpa"
             class="xstampp.astpa.wizards.NewProjectWizard"
             icon="icons/Logo_small.png"
-            id="astpa.wizards.SampleNewWizard"
-            name="A-STPA Project">
+            id="astpa.wizards.NewWizard"
+            name="STPA Project">
       </wizard>
    </extension>
    <extension
@@ -536,11 +536,6 @@
                   value="astpa.wizard1_8">
             </parameter>
          </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            class="xstampp.astpa.util.FontFamilyContribution"
-            locationURI="menu:test">
       </menuContribution>
    </extension>
    <extension

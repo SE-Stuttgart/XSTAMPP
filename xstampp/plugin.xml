@@ -311,10 +311,6 @@
             </parameter>
          </command>
       </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=xstampp.main.toolbar">
-      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.services">
