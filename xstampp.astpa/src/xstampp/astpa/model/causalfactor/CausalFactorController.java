@@ -225,7 +225,8 @@ public class CausalFactorController {
 	public List<UUID> getLinkedHazardsOfCf(UUID causalFactorId) {
 		List<UUID> linkedHazardIds = new ArrayList<UUID>();
 		for (CausalFactorHazardLink causalFactorHazardLink : this.links) {
-			if (causalFactorHazardLink.getCausalFactorId() == causalFactorId) {
+			if (causalFactorHazardLink.getCausalFactorId().equals(causalFactorId)&&
+					!linkedHazardIds.contains(causalFactorHazardLink.getHazardId())){
 				linkedHazardIds.add(causalFactorHazardLink.getHazardId());
 			}
 		}

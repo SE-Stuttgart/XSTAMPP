@@ -388,7 +388,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.projectNameLabel.setText(Messages.ProjectName);
 		this.projectNameLabel.setFont(labelFont);
 
-		this.projectNameText = new Text(composite, SWT.BORDER);
+		this.projectNameText = new Text(composite, SWT.READ_ONLY);
 		this.gridData = new GridData();
 		this.gridData.horizontalAlignment = SWT.FILL;
 		this.gridData.grabExcessHorizontalSpace = true;
