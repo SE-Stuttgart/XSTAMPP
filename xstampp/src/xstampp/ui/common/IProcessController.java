@@ -58,7 +58,7 @@ public interface IProcessController {
 	 * 
 	 * @return whether the operation was successful or not
 	 */
-	public abstract boolean loadDataModel();
+	public abstract boolean importDataModel();
 
 	/**
 	 * Loads the data model from a file if it is valid

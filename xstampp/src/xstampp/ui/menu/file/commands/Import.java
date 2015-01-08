@@ -29,7 +29,7 @@ import xstampp.ui.common.ViewContainer;
  * @author Fabian Toth
  * 
  */
-public class Load extends AbstractHandler {
+public class Import extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -51,7 +51,7 @@ public class Load extends AbstractHandler {
 					.getActivePage().setPerspective(descriptor);
 		}
 		if (recentPath == null) {
-			return viewContainer.loadDataModel();
+			return viewContainer.importDataModel();
 		}
 
 		return viewContainer.loadDataModelFile(recentPath);

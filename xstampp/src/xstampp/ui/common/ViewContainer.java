@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -227,8 +228,10 @@ public class ViewContainer implements IProcessController {
 	public boolean renameProject(UUID projectId, String projectName) {
 
 		File projectFile = this.projectSaveFiles.get(projectId);
-		File newNameFile = new File(projectFile, projectName);
-		if (projectFile.renameTo(newNameFile)) {
+		
+		Path newPath=projectFile.toPath().getParent();
+		File newNameFile = new File(newPath.toFile(),projectName + ".haz");
+		if (projectFile.renameTo(newNameFile) || !projectFile.exists()) {
 			return this.projectDataMap.get(projectId).setProjectName(
 					projectName);
 		}
@@ -308,7 +311,7 @@ public class ViewContainer implements IProcessController {
 	}
 
 	@Override
-	public boolean loadDataModel() {
+	public boolean importDataModel() {
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
 				.getDisplay().getActiveShell(), SWT.OPEN);
 		fileDialog.setFilterExtensions(new String[] { "*.haz" }); //$NON-NLS-1$
@@ -334,9 +337,10 @@ public class ViewContainer implements IProcessController {
 					outer));
 					BufferedWriter writer = new BufferedWriter(new FileWriter(
 							copy))) {
-				while(reader.readLine() != null) {
-
-					writer.append(reader.readLine());
+				String currentLine;
+				while((currentLine = reader.readLine()) != null) {
+					writer.append(currentLine);
+					writer.newLine();
 				}
 				reader.close();
 				writer.close();
@@ -742,7 +746,6 @@ class SaveJob extends Job {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
 		try {
-			System.out.println(this.controller.getClass());
 			context = JAXBContext.newInstance(this.controller.getClass());
 			Marshaller m = context.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

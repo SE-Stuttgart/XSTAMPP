@@ -103,9 +103,9 @@
             </command>
             <command
                   commandId="xstampp.command.load"
-                  label="Load Project..."
+                  label="Import Project..."
                   style="push"
-                  tooltip="Load">
+                  tooltip="Imports the project file">
             </command>
             <separator
                   name="Separator 1"
@@ -407,9 +407,9 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="xstampp.ui.menu.file.commands.Load"
+            defaultHandler="xstampp.ui.menu.file.commands.Import"
             id="xstampp.command.load"
-            name="Load">
+            name="Import">
          <commandParameter
                id="loadRecentProject"
                name="recentProject"
