@@ -208,6 +208,7 @@ public final class Messages extends NLS {
 	public static String Controller;
 	@SuppressWarnings("javadoc")
 	public static String CreateController;
+	public static String PreferedWSDoNotExist;
 	@SuppressWarnings("javadoc")
 	public static String Preferences;
 	@SuppressWarnings("javadoc")

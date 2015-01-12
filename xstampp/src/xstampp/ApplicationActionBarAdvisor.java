@@ -62,6 +62,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		ToolbarContribution cont = new ToolbarContribution();
 		coolBar.setLockLayout(false);
 		coolBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		super.fillCoolBar(coolBar);
 	}
 
 	@Override

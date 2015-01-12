@@ -40,6 +40,7 @@ import org.osgi.framework.ServiceReference;
 import xstampp.ui.common.IProcessController;
 import xstampp.ui.common.ViewContainer;
 import xstampp.update.UpdateJob;
+import xstampp.util.ChooseWorkLocation;
 
 /**
  * Configures the workbench window.
@@ -82,7 +83,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	@SuppressWarnings("restriction")
 	@Override
 	public void postWindowOpen() {
-
+		if(ChooseWorkLocation.initiateWorkspace()){
+			PlatformUI.getWorkbench().restart();
+		}
 		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
 				.getWorkbench().getExportWizardRegistry();
 		IWizardCategory[] categories = wizardRegistry.getRootCategory()

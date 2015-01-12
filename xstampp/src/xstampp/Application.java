@@ -63,7 +63,7 @@ public class Application implements IApplication {
 			
 			// Choose a reasonable workspace Location
 			Location instanceLoc = Platform.getInstanceLocation();
-			if (!ChooseWorkLocation.shouldRememberWS() && !instanceLoc.isSet()) {
+			if (!ChooseWorkLocation.shouldRememberWS(true) && !instanceLoc.isSet()) {
 				ChooseWorkLocation chooser = new ChooseWorkLocation(
 						display.getActiveShell());
 				if (chooser.open() == Window.CANCEL) {
@@ -75,6 +75,8 @@ public class Application implements IApplication {
 					System.exit(0);
 					return IApplication.EXIT_OK;
 				}
+			}else{
+				ChooseWorkLocation.initializeWS();
 			}
 
 			if (ChooseWorkLocation.getLastUsedWorkspace() != null) {
@@ -82,8 +84,10 @@ public class Application implements IApplication {
 						new URL(Messages.File, null, ChooseWorkLocation
 								.getLastUsedWorkspace()), false);
 			}
+			
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.info(Messages.TheWorkspaceCannotBeChangedWhen
 					+ Messages.UsuallyTheIDEStarts);
 		}
@@ -94,6 +98,7 @@ public class Application implements IApplication {
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
 			}
+			
 			return IApplication.EXIT_OK;
 		} finally {
 			display.dispose();

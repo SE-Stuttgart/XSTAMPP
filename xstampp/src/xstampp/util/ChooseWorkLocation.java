@@ -13,6 +13,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -27,6 +30,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.common.ViewContainer;
 
 /**
  * 
@@ -38,6 +42,11 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	private List<String> recentLocs;
 	private Combo workspacePathCombo;
 	private Button rememeberWS;
+	/*
+	 * Flag set when the workbench need to be restarted to create a new workspace
+	 * to store the remember workspace preferences
+	 */
+	private static final String INIT_WORKSPACE="initialize Workspace"; //$NON-NLS-1$
 	private static final int STACK = 8;
 	private static final String SEPERATOR = ","; //$NON-NLS-1$
 	private static final String WS_IDENTIFIER = "stamp"; //$NON-NLS-1$
@@ -141,7 +150,17 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 		this.rememeberWS.setLayoutData(data);
 		this.rememeberWS.setSelection(ChooseWorkLocation.LOCAL_PREFERENCES
 				.getBoolean(IPreferenceConstants.WS_REMEMBER, false));
-		
+		this.rememeberWS.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				ChooseWorkLocation.LOCAL_PREFERENCES
+				.putBoolean(IPreferenceConstants.WS_REMEMBER, 
+						ChooseWorkLocation.this.rememeberWS.getSelection());
+				
+			}
+			
+		});
 		return inner;
 
 	}
@@ -169,7 +188,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 
 	private boolean addRecentWS(String path) {
 		String error = ChooseWorkLocation.checkWorkspaceDirectory(
-				this.getShell(), path, true, true);
+				this.getShell(), path, true);
 		if (error != null) {
 			this.setErrorMessage(error);
 			return false;
@@ -215,22 +234,19 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	 * @param askCreate
 	 *            Whether to ask if to create the workspace in this location or
 	 *            not if it does not exist already
-	 * @param fromDialog
-	 *            Whether this method was called from a dialog or from somewhere
-	 *            else just to check a location
 	 * @return null if everything is ok, or an error message if not
 	 */
 	public static String checkWorkspaceDirectory(Shell parentShell,
-			String workspaceLocation, boolean askCreate, boolean fromDialog) {
+			String workspaceLocation, boolean askCreate) {
 		File wsFile = new File(workspaceLocation);
 		if (!wsFile.exists()) {
-			if (askCreate) {
-				boolean create = MessageDialog.openConfirm(parentShell,
+			if (askCreate && MessageDialog.openConfirm(parentShell,
 						Messages.NewDir, Messages.DirDoesNotExist
-								+ ", " + Messages.DoYouWantToCreateIt); //$NON-NLS-1$
-				if (create) {
+								+ ", " + Messages.DoYouWantToCreateIt)){ //$NON-NLS-1$
 					ChooseWorkLocation.createWorkspace(wsFile);
-				}
+				
+			}else{
+				return Messages.PathIsNoDir;
 			}
 		}
 
@@ -247,19 +263,19 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 		// whether the selected path is a workspace or not
 		File wsMarkerTest = new File(workspaceLocation + File.separator
 				+ ChooseWorkLocation.WS_IDENTIFIER);
-		if (fromDialog && !wsMarkerTest.exists()) {
-			boolean create = MessageDialog.openConfirm(parentShell,
-					Messages.WorkspaceNew, String.format(
-							Messages.WorkspaceIsNoWorkspaceYet,
-							workspaceLocation));
-			if (create) {
+		
+		if(!wsMarkerTest.exists()){
+			if (askCreate && MessageDialog.openConfirm(parentShell,
+						Messages.WorkspaceNew, String.format(
+								Messages.WorkspaceIsNoWorkspaceYet,
+								workspaceLocation))){
+				
 				ChooseWorkLocation.createWorkspace(wsFile);
 			} else {
 				return Messages.WorkspaceSetDesc;
 			}
-
-			return null;
 		}
+
 
 		return null;
 	}
@@ -273,6 +289,12 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 			File wsMarker = new File(workspaceFile.getAbsolutePath()
 					+ File.separator + ChooseWorkLocation.WS_IDENTIFIER);
 			wsMarker.createNewFile();
+			//if remember workspace is set false, initWorkspce stores to reset it
+			//once the workspace is initialized
+			ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(
+					INIT_WORKSPACE, !shouldRememberWS());
+			ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(
+						IPreferenceConstants.WS_REMEMBER, true);
 			
 		} catch (Exception err) {
 			return Messages.CannotCreateDir;
@@ -280,9 +302,28 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 		if (!workspaceFile.exists()) {
 			return Messages.DirDoesNotExist;
 		}
+		
 		return null;
 	}
+	/**
+	 *method to reset the 'remember workspace' preferences after initializing a workspace
+	 * @author Lukas Balzer
+	 *
+	 */
+	public static void initializeWS(){
+		if(ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(
+				INIT_WORKSPACE, false)){
+			ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(
+					INIT_WORKSPACE, false);
+			ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(
+					IPreferenceConstants.WS_REMEMBER, false);
 
+		}
+	}
+	public static boolean initiateWorkspace(){
+		return ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(
+				INIT_WORKSPACE, false);
+	}
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -313,7 +354,28 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	 *         choice is recognised
 	 */
 	public static boolean shouldRememberWS() {
+		
 		return ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(
 				IPreferenceConstants.WS_REMEMBER, false);
+		
+	}
+	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 * @param check if the function should check the workspace instead of just returning the preference
+	 * 
+	 * @return whether application should remember the ws or not, false if no
+	 *         choice is recognised
+	 */
+	public static boolean shouldRememberWS(boolean check) {
+		if(check && shouldRememberWS()){
+			if(checkWorkspaceDirectory(null, getLastUsedWorkspace(), false) != null){
+				ViewContainer.getLOGGER().debug(Messages.PreferedWSDoNotExist);
+				return false;
+			}
+		}
+		return shouldRememberWS();
+		
 	}
 }
