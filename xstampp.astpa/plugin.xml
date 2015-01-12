@@ -513,16 +513,6 @@
                   class="xstampp.util.SeperatorContribution">
             </control>
          </toolbar>
-         <toolbar
-               id="xstampp.astpa.toolbar.textedit">
-            <control
-                  class="xstampp.astpa.util.TextToolbarContribution"
-                  id="test">
-            </control>
-            <control
-                  class="xstampp.util.SeperatorContribution">
-            </control>
-         </toolbar>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -536,6 +526,16 @@
                   value="astpa.wizard1_8">
             </parameter>
          </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
+         <toolbar
+               id="xstampp.astpa.toolbar1">
+            <control
+                  class="xstampp.astpa.util.TextToolbarContribution">
+            </control>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension

@@ -34,6 +34,7 @@ import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.Span;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -41,6 +42,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.xml.sax.SAXException;
 
+import xstampp.Activator;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
@@ -102,7 +104,7 @@ public class ExportJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.ExportPdf, IProgressMonitor.UNKNOWN);
-		String workspacePath = Platform.getInstanceLocation().toString();
+		String workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
 		String csPath = workspacePath + File.separator
 				+ Messages.ControlStructure + ".png";
 		String csPmPath = workspacePath + File.separator

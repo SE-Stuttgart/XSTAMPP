@@ -232,11 +232,22 @@ public class CSExportJob extends Job {
 				viewer.getContents().refresh();
 				IFigure tmpFigure = rootEditPart
 						.getLayer(LayerConstants.PRINTABLE_LAYERS);
+				
+				// create a rectangle to guarantee that the src image 
+				Rectangle srcRectangle = tmpFigure.getBounds();
+				for (Object layers : tmpFigure.getChildren()) {
+					// Layer&ConnectionLayer
+					for (Object part : ((IFigure) layers).getChildren()) {
+						srcRectangle.union(((IFigure) part).getBounds());
+					}
+
+				}
+				
 				// a plain Image is created on which we can draw any graphics
 				CSExportJob.this.srcImage = new Image(null, (int) Math.max(
-						CSExportJob.this.factor * tmpFigure.getBounds().width,
+						CSExportJob.this.factor * srcRectangle.width,
 						1), (int) Math.max(
-						CSExportJob.this.factor * tmpFigure.getBounds().height,
+						CSExportJob.this.factor * srcRectangle.height,
 						1));
 				GC imageGC = new GC(CSExportJob.this.srcImage);
 				Graphics graphics = new SWTGraphics(imageGC);
@@ -293,7 +304,7 @@ public class CSExportJob extends Job {
 		// the clipRectangle is minimally located at (0,0)
 		clipRectangle.x = Math.max(0, clipRectangle.x);
 		clipRectangle.y = Math.max(0, clipRectangle.y);
-
+		clipRectangle.scale(this.factor);
 		if ((clipRectangle.height + clipRectangle.y) > this.srcImage
 				.getBounds().height) {
 			clipRectangle.height = this.srcImage.getBounds().height
@@ -303,7 +314,7 @@ public class CSExportJob extends Job {
 			clipRectangle.width = this.srcImage.getBounds().width
 					- clipRectangle.x;
 		}
-		clipRectangle.scale(this.factor);
+		
 
 		// this additional Image is created with the actual Bounds
 		// and the first one is clipped inside the scaled image
@@ -312,6 +323,9 @@ public class CSExportJob extends Job {
 				+ (2 * this.imgOffset));
 		GC imageGC = new GC(scaledImage);
 		Graphics graphics = new SWTGraphics(imageGC);
+		org.eclipse.swt.graphics.Rectangle r1=this.srcImage.getBounds();
+		org.eclipse.swt.graphics.Rectangle r2=scaledImage.getBounds();
+		
 		if ((this.srcImage.getBounds().width >= 0)
 				&& (scaledImage.getBounds().width >= 0)) {
 			graphics.drawImage(this.srcImage, clipRectangle, new Rectangle(
