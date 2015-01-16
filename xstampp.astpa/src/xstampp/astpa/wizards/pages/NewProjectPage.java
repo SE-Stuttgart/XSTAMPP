@@ -32,8 +32,8 @@ import xstampp.ui.common.ViewContainer;
 public class NewProjectPage extends AbstractWizardPage implements
 		ModifyListener {
 
-	private static int DEFAULT_MARGIN = 10;
-	private static int DEFAULT_HEIGHT = 30;
+	private final static int DEFAULT_MARGIN = 10;
+	private final static int DEFAULT_HEIGHT = 30;
 
 	private Text newProjectName;
 	private PathComposite pathComposite;

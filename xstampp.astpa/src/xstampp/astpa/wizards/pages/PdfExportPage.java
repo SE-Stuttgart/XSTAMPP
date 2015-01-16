@@ -44,6 +44,7 @@ import xstampp.preferences.IPreferenceConstants;
  */
 public class PdfExportPage extends AbstractExportPage implements ModifyListener {
 
+	private static final int ENTRY_HEIGTH = 25;
 	private Composite container;
 	private Text textCompany;
 	private ColorChooser bgChooser, fontChooser;
@@ -92,7 +93,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data = new FormData();
 		data.top = new FormAttachment(projectChooser,
 				AbstractWizardPage.COMPONENT_OFFSET);
-		data.height = 25;
+		data.height = ENTRY_HEIGTH;
 		labelComposite.setLayoutData(data);
 		labelComposite.setLayout(null);
 		Label labelCompany = new Label(labelComposite, SWT.SHADOW_IN);
@@ -118,7 +119,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data = new FormData();
 		data.top = new FormAttachment(labelComposite,
 				AbstractWizardPage.COMPONENT_OFFSET);
-		data.height = 25;
+		data.height = ENTRY_HEIGTH;
 		this.logoComposite.setLayoutData(data);
 		this.logoComposite.setVisible(true);
 
@@ -130,7 +131,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data = new FormData();
 		data.top = new FormAttachment(this.logoComposite,
 				AbstractWizardPage.COMPONENT_OFFSET);
-		data.height = 25;
+		data.height = ENTRY_HEIGTH;
 		this.bgChooser.setLayoutData(data);
 		this.bgChooser.setVisible(true);
 		this.bgChooser.addColorChangeListener(this);
@@ -142,7 +143,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data = new FormData();
 		data.top = new FormAttachment(this.bgChooser,
 				AbstractWizardPage.COMPONENT_OFFSET);
-		data.height = 25;
+		data.height = ENTRY_HEIGTH;
 		this.fontChooser.setLayoutData(data);
 		this.fontChooser.setVisible(true);
 		this.fontChooser.addColorChangeListener(this);
@@ -154,7 +155,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data = new FormData();
 		data.top = new FormAttachment(this.fontChooser,
 				AbstractWizardPage.COMPONENT_OFFSET);
-		data.height = 25;
+		data.height = ENTRY_HEIGTH;
 		this.pathChooser.setLayoutData(data);
 		this.pathChooser.setVisible(true);
 

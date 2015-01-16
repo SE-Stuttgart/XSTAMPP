@@ -101,7 +101,7 @@ public class StpaCSVExport extends Job {
 			}
 			if (this.type
 					.contains(ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS)) {
-				this.writeCSC_CSV(csvWriter);
+				this.writeCscCSV(csvWriter);
 			}
 			if (this.type.contains(ICSVExportConstants.UNSAFE_CONTROL_ACTION)) {
 				this.writeUCACSV(csvWriter, Messages.UnsafeControlActionsTable);
@@ -200,6 +200,7 @@ public class StpaCSVExport extends Job {
 		writer.newLine();
 		String description = this.model.getProjectDescription();
 		for (int length = 200; length <= description.length(); length += 200) {
+			writer.writeCell();
 			writer.writeCell(description.substring(length - 200, length - 1));
 			writer.newLine();
 		}
@@ -314,16 +315,15 @@ public class StpaCSVExport extends Job {
 
 	}
 
-	private void writeCSC_CSV(BufferedCSVWriter csvWriter) throws IOException {
+	private void writeCscCSV(BufferedCSVWriter csvWriter) throws IOException {
 
-		csvWriter.write(Messages.UnsafeControlActions + " ;");
-		csvWriter.write(Messages.CorrespondingSafetyConstraints + " ;");
+		csvWriter.writeCell(Messages.CorrespondingSafetyConstraints);
 		csvWriter.newLine();
 		for (ICorrespondingUnsafeControlAction data : this.model
 				.getAllUnsafeControlActions()) {
-			csvWriter.write(data.getDescription() + ";");
-			csvWriter.write(data.getCorrespondingSafetyConstraint().getText()
-					+ ";");
+			csvWriter.writeCell();
+			csvWriter.writeCell(data.getDescription() );
+			csvWriter.writeCell(data.getCorrespondingSafetyConstraint().getText());
 			csvWriter.newLine();
 		}
 	}

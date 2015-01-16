@@ -537,6 +537,19 @@
             </control>
          </toolbar>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:astpa.steps.step3_1">
+         <command
+               commandId="xstampp.command.openWizard"
+               label="Export Image"
+               style="push">
+            <parameter
+                  name="xstampp.commandParameter.openwizard"
+                  value="astpa.wizard3_1">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.help.toc">

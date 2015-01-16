@@ -7,6 +7,11 @@ import org.eclipse.gef.editparts.ZoomManager;
 public interface IZoomContributor {
 
 	/**
+	 * constant used for propargating the deco state of the graphical editor content
+	 * @author Lukas Balzer
+	 */
+	public static final String IS_DECORATED="decorated"; //$NON-NLS-1$
+	/**
 	 * 
 	 *
 	 * @author Lukas Balzer
@@ -24,7 +29,7 @@ public interface IZoomContributor {
 	ZoomManager getZoomManager();
 	
 	void addPropertyListener(PropertyChangeListener listener);
-	void setDecoration(boolean deco);
 
-	void firePropertyChange(String property, boolean value);
+	void fireToolPropertyChange(String property, Object value);
+	Object getProperty(String propertyString);
 }

@@ -4,40 +4,51 @@ import java.beans.PropertyChangeListener;
 
 import org.eclipse.gef.editparts.ZoomManager;
 
+/**
+ * An empty implementation of IZoomContributor serving as a null-object
+ * in case that the activeView is no IZoomContributor
+ *
+ * @author Lukas Balzer
+ *
+ */
 public class EmptyZoomContributor implements IZoomContributor {
 
 	public EmptyZoomContributor() {
-		// TODO Auto-generated constructor stub
+		// null-object
 	}
 
 	@Override
 	public void updateZoom(double zoom) {
-		// TODO Auto-generated method stub
+		// null-object
 
 	}
 
 	@Override
 	public ZoomManager getZoomManager() {
-		// TODO Auto-generated method stub
+		// null-object
 		return null;
 	}
 
 	@Override
 	public void addPropertyListener(PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
+		// null-object
+
+	}
+
+
+
+	@Override
+	public void fireToolPropertyChange(String property, Object value) {
+		// null-object
 
 	}
 
 	@Override
-	public void setDecoration(boolean deco) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void firePropertyChange(String property, boolean value) {
-		// TODO Auto-generated method stub
-
+	public Object getProperty(String propertyString) {
+		if(propertyString.equals(IS_DECORATED)){
+			return false;
+		}
+		return null;
 	}
 
 }

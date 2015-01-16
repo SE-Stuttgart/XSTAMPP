@@ -253,6 +253,8 @@ public final class Messages extends NLS {
 	public static String CreateTextBox;
 	@SuppressWarnings("javadoc")
 	public static String ControlStructure;
+	public static String ControlStructure_DecoOff;
+	public static String ControlStructure_DecoOn;
 	@SuppressWarnings("javadoc")
 	public static String Company;
 	@SuppressWarnings("javadoc")

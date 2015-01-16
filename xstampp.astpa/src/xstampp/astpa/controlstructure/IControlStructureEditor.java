@@ -46,7 +46,7 @@ public interface IControlStructureEditor extends CommandStackListener,
 	 */
 	public static final String STEP_EDITOR = "step"; //$NON-NLS-1$
 	
-	public static final String IS_DECORATED="decorated"; //$NON-NLS-1$
+	
 	/**
 	 * makes sure that the both layouts of step 1 and 3 are only synchronized on
 	 * their initial call

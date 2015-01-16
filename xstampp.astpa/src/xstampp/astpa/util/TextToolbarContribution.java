@@ -38,13 +38,14 @@ import xstampp.ui.editors.interfaces.ITextEditor;
 import xstampp.ui.editors.interfaces.StyledTextSelection;
 import xstampp.util.STPAPluginUtils;
 
-/**
- *
+/**This toolbar can be activated/used by implementing the ITextEditor Interface
+ * 
  * @author Lukas Balzer
  *
  *@since version 2.0.0
  */
-public class TextToolbarContribution extends WorkbenchWindowControlContribution implements ISelectionListener,IPartListener, ITextEditContribution{
+public class TextToolbarContribution extends WorkbenchWindowControlContribution implements 
+										ISelectionListener,IPartListener, ITextEditContribution{
 
 	/**
 	 * Contains different font sizes.

@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.swt.SWT;
@@ -29,25 +30,36 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
-
+/**
+* This toolbar Contribution provides tools for a graphical editor
+* Editors can interact with this contribution by implementing IZoomContributior<p/>
+* The provided decoration switch can be used by using  {@link IZoomContributor#IS_DECORATED}
+* 
+* @author Lukas Balzer
+* @since 2.0.0
+*/
 public class EditorContribution extends WorkbenchWindowControlContribution implements ZoomListener,PropertyChangeListener,IPartListener{
 
+	private static final int STANDART_ZOOM = 100;
 	private final static String[] ZOOM_LEVEL= new String[]{"25","50","75","100","150","200","250"};
+	private final static Point ZOOM_SLIDER_RANGE=new Point(10, 300);
 	private Combo zoomLabel;
 	private ZoomManager zoomManager;
 	private Slider zoomSlider;
 	private Label decoButton;
-	Button zoomInButton;
+	private Button zoomInButton;
 	private Button zoomOutButton;
 	private IZoomContributor contributor;
+	/**
+	 * the value of isDecorated is used to store the content of the
+	 * {@link IZoomContributor#IS_DECORATED} property
+	 */
 	private boolean isDecorated;
 	
 	@Override
 	protected Control createControl(Composite parent) {
 		this.isDecorated=false;
 		this.contributor = new EmptyZoomContributor();
-		ISharedImages sharedImages = PlatformUI.getWorkbench()
-				.getSharedImages();
 		
 		// Create a composite to place the label in
 		Composite comp = new Composite(parent, SWT.NONE);
@@ -67,19 +79,21 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 			
 			@Override
 			public void mouseUp(MouseEvent arg0) {
-				setDecoSelection(!EditorContribution.this.isDecorated);
+				EditorContribution.this.contributor.fireToolPropertyChange(IZoomContributor.IS_DECORATED,
+																	   !EditorContribution.this.isDecorated);
+				
 			}
 		});
 		//adding a zoomslider to the toolbar
 		data= new FormData(SWT.DEFAULT, SWT.DEFAULT);
 		data.left= new FormAttachment(this.decoButton,2);
 		this.zoomSlider= new Slider(comp, SWT.HORIZONTAL);
-		this.zoomSlider.setMinimum(10);
-		this.zoomSlider.setMaximum(300);
+		this.zoomSlider.setMinimum(ZOOM_SLIDER_RANGE.x);
+		this.zoomSlider.setMaximum(ZOOM_SLIDER_RANGE.y);
 		this.zoomSlider.setIncrement(10);
 		this.zoomSlider.setLayoutData(data);
 		this.zoomSlider.setDragDetect(true);
-		this.zoomSlider.setSelection(100);
+		this.zoomSlider.setSelection(STANDART_ZOOM);
 		
 		this.zoomSlider.addSelectionListener(new SelectionAdapter() {
 			
@@ -87,9 +101,9 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 			public void widgetSelected(SelectionEvent e) {
 				
 				int zoom=EditorContribution.this.zoomSlider.getSelection();
-				if(Math.abs(zoom -100.0) < 9){
-					EditorContribution.this.zoomSlider.setSelection(100);
-					zoom = 100;
+				if(Math.abs(zoom -STANDART_ZOOM) < 9){
+					EditorContribution.this.zoomSlider.setSelection(STANDART_ZOOM);
+					zoom = STANDART_ZOOM;
 				}
 				EditorContribution.this.updateLabel();
 				if(EditorContribution.this.zoomManager != null){
@@ -190,7 +204,8 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	private void setEnabled(boolean enabled){
 		this.zoomLabel.setEnabled(enabled);
 		this.zoomSlider.setEnabled(enabled);
-		this.setDecoSelection(false);
+		this.setDecoSelection((boolean) this.contributor.getProperty(IZoomContributor.IS_DECORATED));
+		System.out.println((boolean) this.contributor.getProperty(IZoomContributor.IS_DECORATED));
 		this.decoButton.setEnabled(enabled);
 		this.zoomInButton.setEnabled(enabled);
 		this.zoomOutButton.setEnabled(enabled);
@@ -198,7 +213,6 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 
 	private void setDecoSelection(boolean enabled){
 		this.isDecorated=enabled;
-		this.contributor.firePropertyChange(IControlStructureEditor.IS_DECORATED, enabled);
 		if(enabled){
 			this.decoButton.setImage(Activator.getImageDescriptor("icons/buttons/controlstructure/DecoButton_Selected.png").createImage()); //$NON-NLS-1$
 		}else{
@@ -208,7 +222,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		if(arg0.getPropertyName().equals(IControlStructureEditor.IS_DECORATED)){
+		if(arg0.getPropertyName().equals(IZoomContributor.IS_DECORATED)){
 			this.setDecoSelection((boolean) arg0.getNewValue());
 		}
 	}

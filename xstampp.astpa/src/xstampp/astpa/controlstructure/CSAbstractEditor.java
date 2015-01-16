@@ -229,18 +229,18 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	protected void createGraphicalViewer(Composite parent) {
 
 		GraphicalViewer viewer = new ScrollingGraphicalViewer();
-
-		viewer.setProperty(CSAbstractEditor.STEP_EDITOR, this.getId());
-		viewer.setProperty(IS_DECORATED, true);
+		this.setGraphicalViewer(viewer);
+		viewer.setProperty(STEP_EDITOR, this.getId());
+		viewer.setProperty(IS_DECORATED, this.decoSwitch.getSelection());
 		viewer.addSelectionChangedListener(this);
-		viewer.addPropertyChangeListener(this);
 
 		viewer.createControl(parent);
-		this.setGraphicalViewer(viewer);
 		this.configureGraphicalViewer();
 		this.hookGraphicalViewer();
 		this.initializeGraphicalViewer();
 		viewer.getControl().addMouseListener(this);
+
+		
 
 	}
 
@@ -428,7 +428,14 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
 		data.left = new FormAttachment(this.redo, 30);
 		this.decoSwitch.setLayoutData(data);
-		this.decoSwitch.addSelectionListener(new DecoSwitch(this.decoSwitch));
+		setDecoration(true);
+		this.decoSwitch.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+					CSAbstractEditor.this.setDecoration(((Button)e.getSource()).getSelection());
+
+			}
+		});
 
 		data = new FormData();
 		data.top = new FormAttachment(0);
@@ -854,7 +861,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 		Job exportJob = new CSExportJob(path, imgOffset,
 				(String) this.getGraphicalViewer().getProperty(
-						CSAbstractEditor.STEP_EDITOR), this.getProjectID(),
+						IControlStructureEditor.STEP_EDITOR), this.getProjectID(),
 				true, decorate);
 		exportJob.schedule();
 		exportJob.addJobChangeListener(new JobChangeAdapter());
@@ -890,13 +897,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getSite().setSelectionProvider(this.getGraphicalViewer());
 		this.getSite().getWorkbenchWindow().getSelectionService()
 				.addSelectionListener(this);
-		if (this.decoSwitch.getSelection()) {
-			this.setDecoration(true);
-			getGraphicalViewer().setProperty(IS_DECORATED, true);
-		} else {
-			this.setDecoration(false);
-			getGraphicalViewer().setProperty(IS_DECORATED, false);
-		}
+		setDecoration(this.decoSwitch.getSelection());
 	}
 
 	public void setDataModelInterface(IDataModel dataInterface) {
@@ -1001,12 +1002,20 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-
-		if ((event.getPropertyName() == CSAbstractEditor.STEP_EDITOR)
+		if(event.getPropertyName().equals(IZoomContributor.IS_DECORATED)){
+			this.decoSwitch.notifyListeners(SWT.Selection, null);
+			this.decoSwitch.setSelection((boolean) event.getNewValue());
+		}
+		if ((event.getPropertyName() == IControlStructureEditor.STEP_EDITOR)
 				&& (this.getGraphicalViewer() != null)) {
 			this.getGraphicalViewer().getContents().refresh();
 		}
 
+	}
+	
+	@Override
+	public Object getProperty(String propertyString){
+		return getGraphicalViewer().getProperty(propertyString);
 	}
 
 	@Override
@@ -1080,15 +1089,24 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.updateActions(this.selectionActions);
 	}
 
-	@Override
-	public void setDecoration(boolean deco){
-		this.graphicalViewer.setProperty(IS_DECORATED, deco);
-		RootEditPart root = (RootEditPart) this.getGraphicalViewer()
-				.getContents();
-		root.getFigure().setDeco(deco);
-		root.setAnchorsGrid(deco);
-		root.refresh();
+	private void setDecoration(boolean deco){
+		if(getGraphicalViewer() != null){
+			this.graphicalViewer.setProperty(IS_DECORATED, deco);
+			RootEditPart root = (RootEditPart) this.getGraphicalViewer()
+					.getContents();
+			root.getFigure().setDeco(deco);
+			root.setAnchorsGrid(deco);
+			root.refresh();
+		}
+		this.decoSwitch.setSelection(deco);
+		if(deco){
+			this.decoSwitch.setText(Messages.ControlStructure_DecoOn);
+		}else{
+			this.decoSwitch.setText(Messages.ControlStructure_DecoOff);
+		}
+		
 	}
+	
 	@Override
 	public void updateZoom(double zoom) {
 		this.zoomManager.setZoom(zoom);
@@ -1104,38 +1122,17 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getGraphicalViewer().addPropertyChangeListener(listener);
 		
 	}
-
+	
 	@Override
-	public void firePropertyChange(String property, boolean value){
-		this.setDecoration(value);
-	}
-	private class DecoSwitch extends SelectionAdapter {
-		private boolean decoration;
-		private final Button switchButton;
-
-		public DecoSwitch(Button button) {
-			this.switchButton = button;
-
-			this.switchButton.setText("Decoration is On");
-			this.decoration = true;
-			this.switchButton.setSelection(true);
+	public void fireToolPropertyChange(String property, Object value){
+		if(property.equals(IS_DECORATED) && value instanceof Boolean){
+			this.setDecoration((boolean) value);
+			
 		}
-
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-			if (this.decoration) {
-				this.decoration = false;
-				this.switchButton.setText("Decoration is Off");
-				CSAbstractEditor.this.setDecoration(false);
-			} else {
-				this.decoration = true;
-				this.switchButton.setText("Decoration is On");
-				CSAbstractEditor.this.setDecoration(true);
-			}
-
-		}
-
+		
 	}
+	
+	
 }
 
 
