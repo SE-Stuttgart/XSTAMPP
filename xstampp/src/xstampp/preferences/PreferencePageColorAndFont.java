@@ -15,6 +15,7 @@ package xstampp.preferences;
 
 import messages.Messages;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FontFieldEditor;
@@ -34,9 +35,11 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 
 	private ColorFieldEditor navigationSelectedColor,
 			navigationUnselectedColor, hoverColor, splitterForegroundColor,
-			splitterBackgroundColor, splitterFontColor;
+			splitterBackgroundColor, CSFontColor;
 
 	private FontFieldEditor navigationTitel, defaultFont;
+
+	private BooleanFieldEditor useNavigationColor;
 
 	/**
 	 * Constructor using grid layout.
@@ -53,6 +56,9 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 
 	@Override
 	protected void createFieldEditors() {
+		this.useNavigationColor=new BooleanFieldEditor(IPreferenceConstants.USE_NAVIGATION_COLORS,
+				"Highlight selected step items?", this.getFieldEditorParent());
+		this.addField(useNavigationColor);
 		this.navigationSelectedColor = new ColorFieldEditor(
 				IPreferenceConstants.NAVIGATION_ITEM_SELECTED,
 				Messages.SelectedNavItem, this.getFieldEditorParent());
@@ -63,24 +69,24 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 				Messages.UnselectedNavItem, this.getFieldEditorParent());
 		this.addField(this.navigationUnselectedColor);
 
-		this.hoverColor = new ColorFieldEditor(IPreferenceConstants.HOVER_ITEM,
-				Messages.Hover, this.getFieldEditorParent());
-		this.addField(this.hoverColor);
+//		this.hoverColor = new ColorFieldEditor(IPreferenceConstants.HOVER_ITEM,
+//				Messages.Hover, this.getFieldEditorParent());
+		//this.addField(this.hoverColor);
 
-		this.splitterForegroundColor = new ColorFieldEditor(
-				IPreferenceConstants.SPLITTER_FOREGROUND,
-				Messages.SplitterForegColor, this.getFieldEditorParent());
-		this.addField(this.splitterForegroundColor);
+//		this.splitterForegroundColor = new ColorFieldEditor(
+//				IPreferenceConstants.SPLITTER_FOREGROUND,
+//				Messages.SplitterForegColor, this.getFieldEditorParent());
+		//this.addField(this.splitterForegroundColor);
 
-		this.splitterBackgroundColor = new ColorFieldEditor(
-				IPreferenceConstants.SPLITTER_BACKGROUND,
-				Messages.SplitterBackgColor, this.getFieldEditorParent());
-		this.addField(this.splitterBackgroundColor);
+//		this.splitterBackgroundColor = new ColorFieldEditor(
+//				IPreferenceConstants.SPLITTER_BACKGROUND,
+//				Messages.SplitterBackgColor, this.getFieldEditorParent());
+		//this.addField(this.splitterBackgroundColor);
 
-		this.splitterFontColor = new ColorFieldEditor(
-				IPreferenceConstants.SPLITTER_FONT, Messages.SplitterFontColor,
+		this.CSFontColor = new ColorFieldEditor(
+				IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR, Messages.ControlStructureFontColor,
 				this.getFieldEditorParent());
-		this.addField(this.splitterFontColor);
+		this.addField(this.CSFontColor);
 
 		// Fonts
 		this.navigationTitel = new FontFieldEditor(
@@ -103,10 +109,10 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 	protected void performDefaults() {
 		this.navigationSelectedColor.loadDefault();
 		this.navigationUnselectedColor.loadDefault();
-		this.hoverColor.loadDefault();
-		this.splitterForegroundColor.loadDefault();
-		this.splitterBackgroundColor.loadDefault();
-		this.splitterFontColor.loadDefault();
+//		this.hoverColor.loadDefault();
+//		this.splitterForegroundColor.loadDefault();
+//		this.splitterBackgroundColor.loadDefault();
+		this.CSFontColor.loadDefault();
 		this.navigationTitel.loadDefault();
 		this.defaultFont.loadDefault();
 
@@ -116,10 +122,10 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 	public boolean performOk() {
 		this.navigationSelectedColor.store();
 		this.navigationUnselectedColor.store();
-		this.hoverColor.store();
-		this.splitterForegroundColor.store();
-		this.splitterBackgroundColor.store();
-		this.splitterFontColor.store();
+//		this.hoverColor.store();
+//		this.splitterForegroundColor.store();
+//		this.splitterBackgroundColor.store();
+		this.CSFontColor.store();
 		this.navigationTitel.store();
 		this.defaultFont.store();
 

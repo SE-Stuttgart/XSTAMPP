@@ -53,10 +53,10 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		// remove default preference page for Install/Update and Security
 		PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
 
-		//		pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.ProvisioningPreferencePage"); //$NON-NLS-1$
-		//		pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.SitesPreferencePage "); //$NON-NLS-1$
-		//		pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdatesPreferencePage"); //$NON-NLS-1$
-		//		pm.remove("org.eclipse.equinox.security.ui.category"); //$NON-NLS-1$
-		//		pm.remove("org.eclipse.equinox.security.ui.storage"); //$NON-NLS-1$
+				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.ProvisioningPreferencePage"); //$NON-NLS-1$
+				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.SitesPreferencePage "); //$NON-NLS-1$
+				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdatesPreferencePage"); //$NON-NLS-1$
+				pm.remove("org.eclipse.equinox.security.ui.category"); //$NON-NLS-1$
+				pm.remove("org.eclipse.equinox.security.ui.storage"); //$NON-NLS-1$
 	}
 }

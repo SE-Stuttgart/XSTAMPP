@@ -38,7 +38,8 @@ import xstampp.astpa.controlstructure.IControlStructureEditor;
 * @author Lukas Balzer
 * @since 2.0.0
 */
-public class EditorContribution extends WorkbenchWindowControlContribution implements ZoomListener,PropertyChangeListener,IPartListener{
+public class EditorContribution extends WorkbenchWindowControlContribution implements ZoomListener,
+																	PropertyChangeListener,IPartListener{
 
 	private static final int STANDART_ZOOM = 100;
 	private final static String[] ZOOM_LEVEL= new String[]{"25","50","75","100","150","200","250"};

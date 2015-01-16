@@ -406,7 +406,7 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String SplitterBackgColor;
 	@SuppressWarnings("javadoc")
-	public static String SplitterFontColor;
+	public static String ControlStructureFontColor;
 	@SuppressWarnings("javadoc")
 	public static String SplitterForegColor;
 	@SuppressWarnings("javadoc")

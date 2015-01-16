@@ -11,6 +11,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -30,7 +32,7 @@ import xstampp.ui.common.ViewContainer;
  * 
  */
 public abstract class StandartEditorPart extends EditorPart implements
-		IViewBase {
+		IViewBase,IPartListener {
 
 	private UUID projectID;
 	private boolean dirty;
@@ -57,6 +59,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 		this.setSite(site);
 		this.setInput(input);
 		this.setProjectID(((STPAEditorInput) input).getProjectID());
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
 
 	}
 
@@ -130,4 +133,40 @@ public abstract class StandartEditorPart extends EditorPart implements
 		}
 
 	}
+
+	@Override
+	public void partActivated(IWorkbenchPart arg0) {
+		if(arg0.equals(this)){
+			((STPAEditorInput)getEditorInput()).activate();
+		}else{
+			((STPAEditorInput)getEditorInput()).deactivate();
+		}
+		
+	}
+
+	@Override
+	public void partBroughtToTop(IWorkbenchPart arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void partClosed(IWorkbenchPart arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void partDeactivated(IWorkbenchPart arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void partOpened(IWorkbenchPart arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }

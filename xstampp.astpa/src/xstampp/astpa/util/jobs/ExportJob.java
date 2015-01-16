@@ -188,15 +188,14 @@ public class ExportJob extends Job {
 					fopFactory.setPageHeight(this
 							.getFirstDocumentSpan(xslfoTransformer));
 				}
-
 				Fop fop;
 				fop = fopFactory.newFop(this.fileType, foUserAgent,
 						pdfoutStream);
+				
 				Result res = new SAXResult(fop.getDefaultHandler());
-
 				// transform the informationSource with the transformXSLSource
 				xslfoTransformer.transform(informationSource, res);
-
+				
 				str.write(pdfoutStream.toByteArray());
 				str.close();
 				if (pdfFile.exists()) {

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ViewContainer;
 

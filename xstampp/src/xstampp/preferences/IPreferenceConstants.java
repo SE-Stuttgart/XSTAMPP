@@ -23,6 +23,11 @@ public interface IPreferenceConstants {
 
 	// Colors
 	/**
+	 * 
+	 * @author Lukas Balzer
+	 */
+	String USE_NAVIGATION_COLORS="usenavigationcolors"; //$NON-NLS-1$
+	/**
 	 * Constant for the navigation item selected color.
 	 */
 	String NAVIGATION_ITEM_SELECTED = "navigationItemSelectedColor"; //$NON-NLS-1$
@@ -50,7 +55,7 @@ public interface IPreferenceConstants {
 	/**
 	 * Constant for the splitter font color.
 	 */
-	String SPLITTER_FONT = "splitterFontColor"; //$NON-NLS-1$
+	String CONTROLSTRUCTURE_FONT_COLOR = "splitterFontColor"; //$NON-NLS-1$
 
 	// Fonts
 	/**

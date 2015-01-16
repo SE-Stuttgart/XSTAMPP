@@ -27,9 +27,14 @@ public class StepSelector extends AbstractSelector implements IProjectSelection 
 		this.availableEditor = editorId;
 		this.isLocked = false;
 		this.input=null;
-		this.setEditorInput(new STPAEditorInput(projectId, editorId));
+		this.setEditorInput(new STPAEditorInput(projectId, editorId,item));
 	}
 	
+	@Override
+	public void changeItem(TreeItem item) {
+		input.setStepItem(item);
+		super.changeItem(item);
+	}
 
 	/**
 	 * adds a editor which is registered for the step, the first editor which is

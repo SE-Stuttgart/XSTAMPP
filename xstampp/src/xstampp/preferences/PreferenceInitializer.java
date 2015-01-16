@@ -20,6 +20,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.Activator;
@@ -71,7 +72,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	private static final Font DEFAUL_FONT = new Font(Display.getCurrent(),
 			Display.getCurrent().getSystemFont().getFontData().toString(), 9,
-			SWT.BOLD);
+			SWT.NORMAL);
 
 	/**
 	 * Constructor.
@@ -140,11 +141,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		PreferenceConverter.setDefault(
 				this.store,
-				IPreferenceConstants.SPLITTER_FONT,
-				Display.getCurrent()
-						.getSystemColor(
-								PreferenceInitializer.DEFAULT_SPLITTER_FONT)
-						.getRGB());
+				IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR,
+				new RGB(0, 0, 0));
 
 		// Fonts
 		PreferenceConverter.setDefault(this.store,

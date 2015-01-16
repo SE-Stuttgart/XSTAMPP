@@ -15,6 +15,9 @@ package xstampp.astpa.controlstructure.utilities;
 
 import java.util.List;
 
+
+
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -26,12 +29,19 @@ import org.eclipse.draw2d.text.FlowBox;
 import org.eclipse.draw2d.text.FlowPage;
 import org.eclipse.draw2d.text.ParagraphTextLayout;
 import org.eclipse.draw2d.text.TextFlow;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
+import xstampp.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
+import xstampp.preferences.IPreferenceConstants;
 
 /**
  * 
@@ -41,12 +51,12 @@ import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
  * @author Lukas Balzer
  * 
  */
-public class CSTextLabel extends FlowPage {
-
+public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	private static final int INITIAL_TEXT_SIZE = 10;
 	private TextFlow content;
 	private static final int CENTER_COMPENSATION = 2;
-
+	private final IPreferenceStore store = Activator.getDefault()
+			.getPreferenceStore();
 	/**
 	 * This constructor initializes the <code>blockFlow</code> and the
 	 * <code>content</code> It also sets the Layout Manager to
@@ -63,8 +73,11 @@ public class CSTextLabel extends FlowPage {
 		this.setParent(csFigure);
 		this.content = new TextFlow();
 		this.content.setBackgroundColor(ColorConstants.white);
+		store.addPropertyChangeListener( this);
+		FontData data= PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
+		
 		this.content.setFont(new Font(null,
-				"Arial", CSTextLabel.INITIAL_TEXT_SIZE, SWT.NORMAL)); //$NON-NLS-1$
+				data.getName(), CSTextLabel.INITIAL_TEXT_SIZE, SWT.NORMAL)); //$NON-NLS-1$
 
 		this.content.setLayoutManager(new ParagraphTextLayout(this.content,
 				ParagraphTextLayout.WORD_WRAP_SOFT));
@@ -190,5 +203,19 @@ public class CSTextLabel extends FlowPage {
 	@Override
 	public void paint(Graphics graphics) {
 		super.paint(graphics);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if(event.getProperty().equals(IPreferenceConstants.DEFAULT_FONT)){
+			FontData data= PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
+			this.content.setFont(new Font(null,
+					data)); //$NON-NLS-1$
+		}else if(event.getProperty().equals(IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR)){
+			Color fontColor = new Color(Display.getCurrent(), PreferenceConverter
+					.getColor(this.store, IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR));
+			setForeground(fontColor);
+		}
+		
 	}
 }

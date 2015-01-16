@@ -120,7 +120,7 @@ class ViewTitlePaintListener implements PaintListener {
 		e.gc.fillGradientRectangle(0, 0, clientArea.width, clientArea.height,
 				false);
 		e.gc.setForeground(new Color(Display.getCurrent(), PreferenceConverter
-				.getColor(this.store, IPreferenceConstants.SPLITTER_FONT)));
+				.getColor(this.store, IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR)));
 		e.gc.drawText(this.viewTitle.getText(),
 				ViewTitlePaintListener.TEXT_POSITION_X,
 				ViewTitlePaintListener.TEXT_POSITION_Y, true);

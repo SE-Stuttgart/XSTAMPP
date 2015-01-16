@@ -15,6 +15,7 @@ package xstampp.astpa.wizards.pages;
 
 import messages.Messages;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -31,7 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.astpa.wizards.AbstractExportPage;
 import xstampp.astpa.wizards.AbstractWizardPage;
 import xstampp.preferences.IPreferenceConstants;
@@ -116,6 +117,12 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		// ----Create the logo path chooser composite---------------------------
 		this.logoComposite = new PathComposite(null, null, this.container,
 				PathComposite.LOGO_DIALOG, Messages.Logo);
+		String logoName = this.store
+				.getString(IPreferenceConstants.COMPANY_LOGO);
+
+		if (logoName != null) {
+			this.textCompany.setText(logoName);
+		}
 		data = new FormData();
 		data.top = new FormAttachment(labelComposite,
 				AbstractWizardPage.COMPONENT_OFFSET);

@@ -527,7 +527,7 @@
                optional="true">
          </commandParameter>
          <commandParameter
-               id="xstampp.commandParametercolor.green"
+               id="xstampp.commandParameter.color.green"
                name="name"
                optional="true">
          </commandParameter>
@@ -620,24 +620,19 @@
 </extension>
 <extension point="org.eclipse.ui.preferencePages">
    <page
-         class="astpa.preferences.PreferencePageColorAndFont"
+         class="xstampp.preferences.PreferencePageColorAndFont"
          id="astpa.preferencePageColors"
          name="Colors and Fonts">
    </page>
    <page
-         class="astpa.preferences.PreferencePageExport"
+         class="xstampp.preferences.PreferencePageExport"
          id="astpa.preferencePageExport"
          name="Export">
    </page>
    <page
-         class="astpa.preferences.PreferencePageUpdate"
+         class="xstampp.preferences.PreferencePageUpdate"
          id="astpa.preferencePageUpdate"
          name="Update">
-   </page>
-   <page
-         class="org.eclipse.ui.internal.ide.dialogs.IDEWorkspacePreferencePage"
-         id="org.eclipse.ui.preferencePages.Startup.Workspaces"
-         name="name">
    </page>
 </extension>
 <extension

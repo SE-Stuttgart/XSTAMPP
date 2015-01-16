@@ -1,14 +1,23 @@
 package xstampp.util;
 
+
 import java.util.UUID;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.Activator;
+import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ViewContainer;
 
 /**
@@ -19,12 +28,14 @@ import xstampp.ui.common.ViewContainer;
  * @see IEditorInput
  */
 public class STPAEditorInput implements IEditorInput {
-
+	private final IPreferenceStore store = Activator.getDefault()
+			.getPreferenceStore();
 	private UUID projectId;
 	private String stepEditorId;
 	private UUID id;
 	private String stepName;
 	private String pathHistory;
+	private TreeItem stepItem;
 	/**
 	 * The
 	 * 
@@ -32,8 +43,11 @@ public class STPAEditorInput implements IEditorInput {
 	 * 
 	 * @param projectId
 	 *            the id of the project which is related to this input
+	 * @param editorId 
+	 * @param refItem 
 	 */
-	public STPAEditorInput(UUID projectId, String editorId) {
+	public STPAEditorInput(UUID projectId, String editorId, TreeItem refItem) {
+		this.stepItem=refItem;
 		this.projectId = projectId;
 		this.stepEditorId = editorId;
 		this.id= UUID.randomUUID();
@@ -67,7 +81,7 @@ public class STPAEditorInput implements IEditorInput {
 
 	@Override
 	public String getToolTipText() {
-		return stepName + " - " + ViewContainer.getContainerInstance().getTitle(this.projectId);
+		return this.stepName + " - " + ViewContainer.getContainerInstance().getTitle(this.projectId);
 	}
 	
 	/**
@@ -128,7 +142,33 @@ public class STPAEditorInput implements IEditorInput {
 	}
 	
 	public void activate() {
+		
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().
 									setText(Messages.PlatformName + " -" +this.pathHistory);
+		if(!store.getBoolean(IPreferenceConstants.USE_NAVIGATION_COLORS)){
+			return;
+		}
+		Color navigationColor = new Color(Display.getCurrent(), PreferenceConverter
+				.getColor(this.store, IPreferenceConstants.NAVIGATION_ITEM_SELECTED));
+		this.stepItem.setBackground(navigationColor);
+		if(!this.stepItem.getParentItem().getExpanded()){
+			
+			this.stepItem.getParentItem().setBackground(ColorConstants.lightGray);
+		}
+		if(!this.stepItem.getParentItem().getParentItem().getExpanded()){
+			this.stepItem.getParentItem().getParentItem().setBackground(ColorConstants.lightGray);
+		}
+	}
+
+	public void deactivate() {
+		this.stepItem.setBackground(null);
+		
+		this.stepItem.getParentItem().setBackground(null);
+		this.stepItem.getParentItem().getParentItem().setBackground(null);
+	}
+
+	public void setStepItem(TreeItem item) {
+		this.stepItem=item;
+		
 	}
 }
