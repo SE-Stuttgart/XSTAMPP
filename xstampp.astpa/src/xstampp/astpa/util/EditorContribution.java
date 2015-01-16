@@ -205,7 +205,6 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 		this.zoomLabel.setEnabled(enabled);
 		this.zoomSlider.setEnabled(enabled);
 		this.setDecoSelection((boolean) this.contributor.getProperty(IZoomContributor.IS_DECORATED));
-		System.out.println((boolean) this.contributor.getProperty(IZoomContributor.IS_DECORATED));
 		this.decoButton.setEnabled(enabled);
 		this.zoomInButton.setEnabled(enabled);
 		this.zoomOutButton.setEnabled(enabled);

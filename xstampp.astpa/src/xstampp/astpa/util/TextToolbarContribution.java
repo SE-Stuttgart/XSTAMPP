@@ -47,6 +47,14 @@ import xstampp.util.STPAPluginUtils;
 public class TextToolbarContribution extends WorkbenchWindowControlContribution implements 
 										ISelectionListener,IPartListener, ITextEditContribution{
 
+	private static final String XSTAMPP_COMMAND_CHOOSECOLOR = "xstampp.command.choosecolor"; //$NON-NLS-1$
+	private static final String XSTAMPP_COMMAND_PARAMETER_COLOR_BLUE = "xstampp.commandParameter.color.blue"; //$NON-NLS-1$
+	private static final String XSTAMPP_COMMAND_PARAMETER_COLOR_GREEN = "xstampp.commandParameter.color.green"; //$NON-NLS-1$
+	private static final String XSTAMPP_COMMAND_PARAMETER_COLOR_RED = "xstampp.commandParameter.color.red"; //$NON-NLS-1$
+	private static final String XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE = "xstampp.commandParameter.color.type"; //$NON-NLS-1$
+	private final static String FONT_SIZE_PARAMETER="xstampp.commandParameter.fontsize"; //$NON-NLS-1$
+	private final static String FONT_NAME_PARAMETER="xstampp.commandParameter.fontfamily"; //$NON-NLS-1$
+	private final static String CHANGE_FONT_COMMAND="xstampp.command.choosefont"; //$NON-NLS-1$
 	/**
 	 * Contains different font sizes.
 	 */
@@ -59,9 +67,6 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	foregroundControl, backgroundControl, baselineUpControl,
 	baselineDownControl, underlineControl, bulletListControl;
 	private SelectionListener listener;
-	private final static String FONT_SIZE_PARAMETER="xstampp.commandParameter.fontsize"; //$NON-NLS-1$
-	private final static String FONT_NAME_PARAMETER="xstampp.commandParameter.fontfamily"; //$NON-NLS-1$
-	private final static String CHANGE_FONT_COMMAND="xstampp.command.choosefont"; //$NON-NLS-1$
 	private RGB foregroundColor;
 	private RGB backgroundColor;
 	
@@ -254,16 +259,16 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				Map<String,String> values = new HashMap<>();
-				values.put("xstampp.commandParameter.color.type",ITextEditor.FOREGROUND);
+				values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE,ITextEditor.FOREGROUND);
 				if(event.detail == SWT.NORMAL){
-					values.put("xstampp.commandParameter.color.red",
+					values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_RED,
 								String.valueOf(TextToolbarContribution.this.foregroundColor.red));
-					values.put("xstampp.commandParameter.color.green",
+					values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_GREEN,
 								String.valueOf(TextToolbarContribution.this.foregroundColor.green));
-					values.put("xstampp.commandParameter.color.blue",
+					values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_BLUE,
 								String.valueOf(TextToolbarContribution.this.foregroundColor.blue));
 				}
-				Object obj=STPAPluginUtils.executeParaCommand("xstampp.command.choosecolor", values);
+				Object obj=STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
 				if(obj instanceof RGB){
 					TextToolbarContribution.this.foregroundColor=(RGB) obj;
 					setToolItemIcon(TextToolbarContribution.this.foregroundControl, (RGB) obj, ITextEditor.FOREGROUND);
@@ -284,16 +289,16 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				Map<String,String> values = new HashMap<>();
-				values.put("xstampp.commandParameter.color.",ITextEditor.BACKGROUND);
+				values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE,ITextEditor.BACKGROUND);
 				if(event.detail == SWT.NORMAL){
-					values.put("xstampp.commandParameter.color.red",
+					values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_RED,
 								String.valueOf(TextToolbarContribution.this.backgroundColor.red));
-					values.put("xstampp.commandParameter.color.green",
+					values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_GREEN,
 								String.valueOf(TextToolbarContribution.this.backgroundColor.green));
-					values.put("xstampp.commandParameter.color.blue",
+					values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_BLUE,
 								String.valueOf(TextToolbarContribution.this.backgroundColor.blue));
 				}
-				Object obj=STPAPluginUtils.executeParaCommand("xstampp.command.choosecolor", values);
+				Object obj=STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
 				if(obj instanceof RGB){
 					TextToolbarContribution.this.backgroundColor=(RGB) obj;
 					setToolItemIcon(TextToolbarContribution.this.backgroundControl, (RGB) obj, ITextEditor.BACKGROUND);

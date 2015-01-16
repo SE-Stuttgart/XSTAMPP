@@ -185,7 +185,6 @@ public class CSEditor extends CSAbstractEditor {
 
 	@Override
 	public double getZoomLevel() {
-		System.out.println(this.zoomLevel);
 		return this.zoomLevel;
 	}
 
