@@ -199,9 +199,10 @@ public class StpaCSVExport extends Job {
 		writer.write(this.model.getProjectName());
 		writer.newLine();
 		String description = this.model.getProjectDescription();
-		for (int length = 200; length <= description.length(); length += 200) {
+		for (int length = 0; length < description.length(); length += 200) {
 			writer.writeCell();
-			writer.writeCell(description.substring(length - 200, length - 1));
+			writer.writeCell(description.substring(length, 
+												Math.min(description.length(),length +199)));
 			writer.newLine();
 		}
 	}
