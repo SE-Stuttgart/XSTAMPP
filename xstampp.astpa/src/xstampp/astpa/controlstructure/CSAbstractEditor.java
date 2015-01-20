@@ -18,8 +18,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 import messages.Messages;
@@ -78,6 +80,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -86,6 +89,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorPart;
@@ -94,6 +98,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
@@ -113,6 +119,7 @@ import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ViewContainer;
 import xstampp.ui.menu.file.commands.CommandState;
+import xstampp.util.STPAPluginUtils;
 import xstampp.util.StandartEditorPart;
 
 /**
@@ -179,16 +186,26 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private Button decoSwitch;
 
+	private boolean asExport;
+
 	/**
 	 * This constructor defines the Domain where the editable content should be
 	 * displayed in
 	 */
 	public CSAbstractEditor() {
 		this.setEditDomain(this);
+		this.asExport=false;
 	}
 
+	public void prepareForExport(){
+		this.asExport=true;
+	}
 	@Override
 	public void createPartControl(Composite parent) {
+		int noBack=SWT.NO_BACKGROUND;
+		int doubleBuff=SWT.DOUBLE_BUFFERED;
+		int none=SWT.None;
+		int EMBEDDED=SWT.NO_FOCUS;
 		this.setDataModelInterface(ViewContainer.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		FormLayout layout = new FormLayout();
@@ -201,8 +218,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-
-		this.createToolBar(editorComposite, data);
+		if(!asExport){
+			this.createToolBar(editorComposite, data);
+		}
 		this.getCommandStack().addCommandStackListener(this);
 
 		data = new FormData();
@@ -235,9 +253,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		viewer.addSelectionChangedListener(this);
 
 		viewer.createControl(parent);
-		this.configureGraphicalViewer();
+		this.configureGraphicalViewer(viewer);
 		this.hookGraphicalViewer();
-		this.initializeGraphicalViewer();
+		this.initializeGraphicalViewer(viewer);
 		viewer.getControl().addMouseListener(this);
 
 		
@@ -250,9 +268,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * @author Lukas Balzer
 	 * 
 	 */
-	private void initializeGraphicalViewer() {
+	private void initializeGraphicalViewer(GraphicalViewer viewer) {
 
-		GraphicalViewer viewer = this.getGraphicalViewer();
 		this.splitter.hookDropTargetListener(viewer);
 
 		viewer.setContents(this.createRoot());
@@ -280,14 +297,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * This is where the root editpart should be configured. Subclasses should
 	 * extend or override this method as needed.
 	 */
-	private void configureGraphicalViewer() {
-		this.getGraphicalViewer().getControl()
+	public void configureGraphicalViewer(GraphicalViewer viewer) {
+		viewer.getControl()
 				.setBackground(ColorConstants.listBackground);
 
 		double[] zoomLevel = new double[CSAbstractEditor.ZOOM_LEVEL];
 		ArrayList<String> zoomContributions;
 
-		GraphicalViewer viewer = this.getGraphicalViewer();
 
 		viewer.setEditPartFactory(new CSEditPartFactory(this.modelInterface,
 				this.getId()));
@@ -437,6 +453,28 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			}
 		});
 
+		final Button preferenceButton= new Button(this.toolBar, SWT.PUSH);
+		preferenceButton.setText("Preferenes");
+		data = new FormData();
+		data.height = CSAbstractEditor.TOOL_HEIGHT;
+		data.left = new FormAttachment(this.decoSwitch, 30);
+		preferenceButton.setLayoutData(data);
+		preferenceButton.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Map<String,String> values=new HashMap<>();
+				values.put("xstampp.command.preferencePage", "xstampp.astpa.preferencepage.cs");
+				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		data = new FormData();
 		data.top = new FormAttachment(0);
 		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
@@ -875,8 +913,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getGraphicalViewer().getRootEditPart().deactivate();
 		this.getGraphicalViewer().getEditPartRegistry().clear();
 
-		this.configureGraphicalViewer();
-		this.initializeGraphicalViewer();
+		this.configureGraphicalViewer(this.getGraphicalViewer());
+		this.initializeGraphicalViewer(this.getGraphicalViewer());
 
 		this.zoomManager.setZoom(this.getZoomLevel());
 		if (this.getViewport() != null) {

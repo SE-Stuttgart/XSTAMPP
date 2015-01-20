@@ -36,11 +36,11 @@
   </property>
   <property
         name="aboutImage"
-        value="icons/branding/xstampp/logo.png">
+        value="icons/xstampp/logox128.png">
   </property>
   <property
         name="aboutText"
-        value="XSTAMPP - An eXtensible STAMP Platform for Safety Engineering&#x0A;&#x0A;©2014 - 2015&#x0A;&#x0A;Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner&#x0A;Institute of Software Technology, Software Engineering Group&#x0A;University of Stuttgart, Gremany&#x0A;&#x0A;- &#x0A;&#x0A;A-STPA&#x0A;&#x0A;StuPro 2013 - 2014&#x0A;&#x0A;Development-Team: Adam Grahovac, Aleksander Zotov, Aliaksei Babkovich, Benedikt Markt, Fabian Toth, Jarkko Heidenwag, Jaqueline Patzek, Lukas Balzer, Patrick Wickenhäuser, Sebastian Sieber">
+        value="XSTAMPP - An eXtensible STAMP Platform for Safety Engineering&#x0D;&#x0A;&#x0D;&#x0A;©2014 - 2015&#x0D;&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html&#x0D;&#x0A;&#x0D;&#x0A;Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner&#x0D;&#x0A;Institute of Software Technology, Software Engineering Group&#x0D;&#x0A;University of Stuttgart, Gremany">
   </property>
       	</product>
    </extension>
@@ -435,6 +435,11 @@
             defaultHandler="xstampp.ui.menu.file.commands.Preferences"
             id="astpa.preferencepage"
             name="Preferences">
+         <commandParameter
+               id="xstampp.command.preferencePage"
+               name="preference page"
+               optional="true">
+         </commandParameter>
       </command>
       <command
             id="astpa.ExportUCATable"

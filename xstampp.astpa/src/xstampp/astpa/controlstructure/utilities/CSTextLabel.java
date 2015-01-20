@@ -18,6 +18,7 @@ import java.util.List;
 
 
 
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -39,8 +40,9 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.Activator;
+import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
+import xstampp.astpa.preferences.IAstpaPreferences;
 import xstampp.preferences.IPreferenceConstants;
 
 /**
@@ -54,6 +56,7 @@ import xstampp.preferences.IPreferenceConstants;
 public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	private static final int INITIAL_TEXT_SIZE = 10;
 	private TextFlow content;
+	private FontData currentFont;
 	private static final int CENTER_COMPENSATION = 2;
 	private final IPreferenceStore store = Activator.getDefault()
 			.getPreferenceStore();
@@ -73,14 +76,12 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		this.setParent(csFigure);
 		this.content = new TextFlow();
 		this.content.setBackgroundColor(ColorConstants.white);
-		store.addPropertyChangeListener( this);
-		FontData data= PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
-		
-		this.content.setFont(new Font(null,
-				data.getName(), CSTextLabel.INITIAL_TEXT_SIZE, SWT.NORMAL)); //$NON-NLS-1$
+		this.store.addPropertyChangeListener( this);
+		syncProperty(IAstpaPreferences.CONTROLSTRUCTURE_FONT);
+		syncProperty(IAstpaPreferences.CONTROLSTRUCTURE_FONT_COLOR);
 
 		this.content.setLayoutManager(new ParagraphTextLayout(this.content,
-				ParagraphTextLayout.WORD_WRAP_SOFT));
+				ParagraphTextLayout.WORD_WRAP_TRUNCATE));
 		this.content.setLocation(new Point(0, 0));
 		this.content.setForegroundColor(ColorConstants.black);
 		this.content.setVisible(true);
@@ -102,7 +103,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	 */
 	public void setFontStyle(int style) {
 		this.content.setFont(new Font(null,
-				"Arial", CSTextLabel.INITIAL_TEXT_SIZE, style)); //$NON-NLS-1$
+				this.currentFont.getName(), this.currentFont.getHeight(), style)); //$NON-NLS-1$
 	}
 
 	@Override
@@ -207,13 +208,17 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if(event.getProperty().equals(IPreferenceConstants.DEFAULT_FONT)){
-			FontData data= PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
+		syncProperty(event.getProperty());
+	}
+	
+	private void syncProperty(String property){
+		if(property.equals(IAstpaPreferences.CONTROLSTRUCTURE_FONT)){
+			this.currentFont= PreferenceConverter.getFontData(this.store, property);
 			this.content.setFont(new Font(null,
-					data)); //$NON-NLS-1$
-		}else if(event.getProperty().equals(IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR)){
+					this.currentFont)); //$NON-NLS-1$
+		}else if(property.equals(IAstpaPreferences.CONTROLSTRUCTURE_FONT_COLOR)){
 			Color fontColor = new Color(Display.getCurrent(), PreferenceConverter
-					.getColor(this.store, IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR));
+					.getColor(this.store, property));
 			setForeground(fontColor);
 		}
 		

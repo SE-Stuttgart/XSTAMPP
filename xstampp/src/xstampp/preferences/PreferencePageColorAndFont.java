@@ -63,30 +63,7 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 				IPreferenceConstants.NAVIGATION_ITEM_SELECTED,
 				Messages.SelectedNavItem, this.getFieldEditorParent());
 		this.addField(this.navigationSelectedColor);
-
-		this.navigationUnselectedColor = new ColorFieldEditor(
-				IPreferenceConstants.NAVIGATION_ITEM_UNSELECTED,
-				Messages.UnselectedNavItem, this.getFieldEditorParent());
-		this.addField(this.navigationUnselectedColor);
-
-//		this.hoverColor = new ColorFieldEditor(IPreferenceConstants.HOVER_ITEM,
-//				Messages.Hover, this.getFieldEditorParent());
-		//this.addField(this.hoverColor);
-
-//		this.splitterForegroundColor = new ColorFieldEditor(
-//				IPreferenceConstants.SPLITTER_FOREGROUND,
-//				Messages.SplitterForegColor, this.getFieldEditorParent());
-		//this.addField(this.splitterForegroundColor);
-
-//		this.splitterBackgroundColor = new ColorFieldEditor(
-//				IPreferenceConstants.SPLITTER_BACKGROUND,
-//				Messages.SplitterBackgColor, this.getFieldEditorParent());
-		//this.addField(this.splitterBackgroundColor);
-
-		this.CSFontColor = new ColorFieldEditor(
-				IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR, Messages.ControlStructureFontColor,
-				this.getFieldEditorParent());
-		this.addField(this.CSFontColor);
+		
 
 		// Fonts
 		this.navigationTitel = new FontFieldEditor(
@@ -108,11 +85,6 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 	@Override
 	protected void performDefaults() {
 		this.navigationSelectedColor.loadDefault();
-		this.navigationUnselectedColor.loadDefault();
-//		this.hoverColor.loadDefault();
-//		this.splitterForegroundColor.loadDefault();
-//		this.splitterBackgroundColor.loadDefault();
-		this.CSFontColor.loadDefault();
 		this.navigationTitel.loadDefault();
 		this.defaultFont.loadDefault();
 
@@ -121,11 +93,6 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 	@Override
 	public boolean performOk() {
 		this.navigationSelectedColor.store();
-		this.navigationUnselectedColor.store();
-//		this.hoverColor.store();
-//		this.splitterForegroundColor.store();
-//		this.splitterBackgroundColor.store();
-		this.CSFontColor.store();
 		this.navigationTitel.store();
 		this.defaultFont.store();
 

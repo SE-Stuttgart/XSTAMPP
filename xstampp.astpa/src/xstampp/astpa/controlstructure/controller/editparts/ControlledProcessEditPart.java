@@ -27,6 +27,7 @@ import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.preferences.IAstpaPreferences;
 
 /**
  * @author Aliaksei Babkovich, Lukas Balzer
@@ -58,7 +59,7 @@ public class ControlledProcessEditPart extends CSAbstractEditPart {
 				.getImageDescriptor("/icons/buttons/controlstructure/process_icon.png"); //$NON-NLS-1$
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
-				Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA));
+				IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_COLOR);
 		tmpFigure
 				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
 		tmpFigure.setToolTip(new Label(Messages.ControlledProcess));

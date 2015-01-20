@@ -27,12 +27,15 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import xstampp.astpa.controlstructure.figure.RootFigure;
@@ -59,51 +62,9 @@ public class CSExportJob extends Job {
 	private Image srcImage;
 	private IControlStructureEditorDataModel model;
 	private final double factor = 4.0;
+	private UUID projectID;
 
-	private class CSJobAdapter extends JobChangeAdapter {
-		@Override
-		public void scheduled(IJobChangeEvent event) {
-			Display.getDefault().syncExec(new Runnable() {
-
-				@Override
-				public void run() {
-					FigureCanvas canvas = new FigureCanvas(new Shell());
-					ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-					if (!CSExportJob.this.editorId.equals(CSEditor.ID)
-							&& !CSExportJob.this.editorId
-									.equals(CSEditorWithPM.ID)) {
-						// the editor id must be one of CSEditor or
-						// CSEditorWithPM
-						return;
-					}
-
-					viewer.setControl(canvas);
-					viewer.setEditPartFactory(new CSEditPartFactory(
-							CSExportJob.this.model, CSExportJob.this.editorId));
-					viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
-							CSExportJob.this.editorId);
-
-					ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
-					viewer.setRootEditPart(rootEditPart);
-					IRectangleComponent root = CSExportJob.this.model.getRoot();
-
-					if (root == null) {
-						CSExportJob.this.model.setRoot(new Rectangle(),
-								new String());
-						root = CSExportJob.this.model.getRoot();
-					}
-					viewer.setContents(root);
-					viewer.getContents().refresh();
-					((RootEditPart) rootEditPart.getContents()).getFigure()
-							.setDeco(CSExportJob.this.deco);
-					viewer.getContents().refresh();
-					CSExportJob.this.printableFigure = rootEditPart
-							.getLayer(LayerConstants.PRINTABLE_LAYERS);
-				}
-			});
-
-		}
-	}
+	
 
 	/**
 	 * this constructor creates a new Job to print the current Control Structure
@@ -129,6 +90,7 @@ public class CSExportJob extends Job {
 	public CSExportJob(String path, int imgOffset, String editorId,
 			UUID projectId, boolean showPreview, boolean decorate) {
 		super(Messages.ExportCS);
+		this.projectID=projectId;
 		this.model = (IControlStructureEditorDataModel) ViewContainer
 				.getContainerInstance().getDataModel(projectId);
 		this.path = path;
@@ -202,7 +164,8 @@ public class CSExportJob extends Job {
 
 			@Override
 			public void run() {
-				FigureCanvas canvas = new FigureCanvas(new Shell());
+				Shell shell=new Shell();
+				Composite canvas = new Composite(shell,33554432);
 				ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
 				if (!CSExportJob.this.editorId.equals(CSEditor.ID)
 						&& !CSExportJob.this.editorId.equals(CSEditorWithPM.ID)) {
@@ -210,7 +173,7 @@ public class CSExportJob extends Job {
 					return;
 				}
 
-				viewer.setControl(canvas);
+				viewer.createControl(canvas);
 				viewer.setEditPartFactory(new CSEditPartFactory(
 						CSExportJob.this.model, CSExportJob.this.editorId));
 				viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
@@ -229,10 +192,15 @@ public class CSExportJob extends Job {
 				viewer.getContents().refresh();
 				((RootEditPart) rootEditPart.getContents()).getFigure()
 						.setDeco(CSExportJob.this.deco);
+
 				viewer.getContents().refresh();
+				
 				IFigure tmpFigure = rootEditPart
 						.getLayer(LayerConstants.PRINTABLE_LAYERS);
-				
+//				CSEditor editor= new CSEditor();
+//				editor.setProjectID(CSExportJob.this.projectID);
+//				editor.createPartControl(shell);
+//				tmpFigure=((ScalableRootEditPart) editor.getGraphicalViewer().getRootEditPart()).getLayer(LayerConstants.PRINTABLE_LAYERS);
 				// create a rectangle to guarantee that the src image 
 				Rectangle srcRectangle = tmpFigure.getBounds();
 				for (Object layers : tmpFigure.getChildren()) {

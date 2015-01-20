@@ -163,6 +163,7 @@ public class ViewContainer implements IProcessController {
 			File saveFile = ((LoadJob) this.event.getJob()).getFile();
 			ViewContainer.getContainerInstance().projectSaveFiles.put(
 					projectId, saveFile);
+			ViewContainer.getContainerInstance().synchronizeProjectName(projectId);
 		}
 	}
 
@@ -310,6 +311,11 @@ public class ViewContainer implements IProcessController {
 		return temp;
 	}
 
+	private void synchronizeProjectName(UUID projectID){
+		File saveFile=this.projectSaveFiles.get(projectID);
+		String projName= this.getTitle(projectID);
+		renameProject(projectID, saveFile.getName().split("\\.")[0]);
+	}
 	@Override
 	public boolean importDataModel() {
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
@@ -453,6 +459,7 @@ public class ViewContainer implements IProcessController {
 	private void setNewDataModel(UUID id) {
 		for (ObserverValue value : ObserverValue.values()) {
 			this.projectDataMap.get(id).updateValue(value);
+			synchronizeProjectName(id);
 		}
 		this.saveDataModel(id);
 		this.projectDataMap.get(id).setStored();

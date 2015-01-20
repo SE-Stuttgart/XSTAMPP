@@ -1,0 +1,109 @@
+package xstampp.astpa.preferences;
+
+import messages.Messages;
+
+import org.eclipse.jface.preference.ColorFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FontFieldEditor;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FontDialog;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import xstampp.astpa.Activator;
+
+
+/**
+*
+* @author Lukas Balzer
+* @since 2.0.0
+*
+*/
+public class ControlStructurePreferences extends FieldEditorPreferencePage
+implements IWorkbenchPreferencePage {
+
+	private ColorFieldEditor CSFontColor;
+	private FontFieldEditor csLabelFont;
+	private ColorFieldEditor CSSensorDeco;
+	private ColorFieldEditor CSProcessDeco;
+	private ColorFieldEditor CSActuatorDeco;
+	private ColorFieldEditor CSControllerDeco;
+
+	public ControlStructurePreferences() {
+		super(FieldEditorPreferencePage.GRID);
+	}
+
+	@Override
+	public void init(IWorkbench workbench) {
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setDescription("Preferences for both the control structure and the control structure with process model editor");
+		
+	}
+
+	@Override
+	protected void createFieldEditors() {
+		this.CSFontColor = new ColorFieldEditor(
+				IAstpaPreferences.CONTROLSTRUCTURE_FONT_COLOR, Messages.ControlStructureFontColor,
+				this.getFieldEditorParent());
+		this.addField(this.CSFontColor);
+		this.csLabelFont = new FontFieldEditor(
+				IAstpaPreferences.CONTROLSTRUCTURE_FONT, Messages.DefaultFont,
+				this.getFieldEditorParent());
+		
+		this.addField(this.csLabelFont);
+
+		this.CSControllerDeco = new ColorFieldEditor(
+				IAstpaPreferences.CONTROLSTRUCTURE_CONTROLLER_COLOR, Messages.Controller,
+				this.getFieldEditorParent());
+		this.addField(this.CSControllerDeco);
+		
+		this.CSActuatorDeco = new ColorFieldEditor(
+				IAstpaPreferences.CONTROLSTRUCTURE_ACTUATOR_COLOR, Messages.Actuator,
+				this.getFieldEditorParent());
+		this.addField(this.CSActuatorDeco);
+		
+		this.CSProcessDeco = new ColorFieldEditor(
+				IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_COLOR, Messages.ControlledProcess,
+				this.getFieldEditorParent());
+		this.addField(this.CSProcessDeco);
+		
+		this.CSSensorDeco = new ColorFieldEditor(
+				IAstpaPreferences.CONTROLSTRUCTURE_SENSOR_COLOR, Messages.Sensor,
+				this.getFieldEditorParent());
+		this.addField(this.CSSensorDeco);
+		
+	}
+
+	@Override
+	public boolean performOk() {
+		this.CSFontColor.store();
+		this.csLabelFont.store();
+		this.CSProcessDeco.store();
+		this.CSControllerDeco.store();
+		this.CSSensorDeco.store();
+		this.CSActuatorDeco.store();
+		return super.performOk();
+	}
+	
+	@Override
+	protected void performDefaults() {
+		this.CSFontColor.loadDefault();
+		this.csLabelFont.loadDefault();
+		this.CSProcessDeco.loadDefault();
+		this.CSControllerDeco.loadDefault();
+		this.CSSensorDeco.loadDefault();
+		this.CSActuatorDeco.loadDefault();
+	}
+	@Override
+	protected void performApply() {
+		this.CSFontColor.store();
+		this.csLabelFont.store();
+		this.CSProcessDeco.store();
+		this.CSControllerDeco.store();
+		this.CSSensorDeco.store();
+		this.CSActuatorDeco.store();
+	}
+}

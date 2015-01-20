@@ -33,7 +33,12 @@ public class Preferences extends AbstractHandler {
 		Shell shell;
 		shell = HandlerUtil.getActiveWorkbenchWindowChecked(event).getShell();
 
-		PreferencesUtil.createPreferenceDialogOn(shell, null, null, null)
+		String pageId= event.getParameter("xstampp.command.preferencePage");
+		String[] pages=null;
+		if(pageId != null){
+			pages = new String[]{pageId};
+		}
+		PreferencesUtil.createPreferenceDialogOn(shell, pageId, pages, null)
 				.open();
 		return null;
 	}

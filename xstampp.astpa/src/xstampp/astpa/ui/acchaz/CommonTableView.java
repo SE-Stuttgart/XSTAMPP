@@ -47,8 +47,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -59,8 +61,7 @@ import xstampp.util.StandartEditorPart;
  * @author Jarkko Heidenwag
  * 
  */
-public abstract class CommonTableView extends StandartEditorPart implements
-		IViewBase {
+public abstract class CommonTableView extends StandartEditorPart {
 
 	private static String id;
 
@@ -79,6 +80,8 @@ public abstract class CommonTableView extends StandartEditorPart implements
 	private Button deleteItemsButton;
 	private ATableFilter filter;
 	private Text filterTextField;
+
+	private Composite parent;
 
 	/**
 	 * 
@@ -362,29 +365,8 @@ public abstract class CommonTableView extends StandartEditorPart implements
 	 *            Type of item, e.g. "Accidents"
 	 */
 	public void createCommonTableView(Composite parent, String tableHeader) {
-
-		Activator.getDefault().getPreferenceStore()
-				.addPropertyChangeListener(new IPropertyChangeListener() {
-
-					@Override
-					public void propertyChange(PropertyChangeEvent event) {
-						CommonTableView.this.itemsLabel.setFont(new Font(
-								Display.getCurrent(),
-								PreferenceConverter.getFontData(
-										IViewBase.STORE,
-										IPreferenceConstants.DEFAULT_FONT)));
-						CommonTableView.this.filterLabel.setFont(new Font(
-								Display.getCurrent(),
-								PreferenceConverter.getFontData(
-										IViewBase.STORE,
-										IPreferenceConstants.DEFAULT_FONT)));
-						CommonTableView.this.descriptionLabel.setFont(new Font(
-								Display.getCurrent(),
-								PreferenceConverter.getFontData(
-										IViewBase.STORE,
-										IPreferenceConstants.DEFAULT_FONT)));
-					}
-				});
+		System.out.println("commonTableView created");
+		this.parent = parent;
 
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
 
@@ -648,4 +630,27 @@ public abstract class CommonTableView extends StandartEditorPart implements
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public void partActivated(IWorkbenchPart arg0) {
+		if(arg0 == this){
+			CommonTableView.this.itemsLabel.setFont(new Font(
+					Display.getCurrent(),
+					PreferenceConverter.getFontData(
+							IViewBase.STORE,
+							IPreferenceConstants.DEFAULT_FONT)));
+			CommonTableView.this.filterLabel.setFont(new Font(
+					Display.getCurrent(),
+					PreferenceConverter.getFontData(
+							IViewBase.STORE,
+							IPreferenceConstants.DEFAULT_FONT)));
+			CommonTableView.this.descriptionLabel.setFont(new Font(
+					Display.getCurrent(),
+					PreferenceConverter.getFontData(
+							IViewBase.STORE,
+							IPreferenceConstants.DEFAULT_FONT)));
+		}
+		super.partActivated(arg0);
+	}
+
+
 }

@@ -81,10 +81,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
+import xstampp.astpa.ui.acchaz.CommonTableView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -1817,5 +1819,20 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	@Override
 	public void setEditToolContributor(ITextEditContribution contributor) {
 		this.toolContributor=contributor;
+	}
+	
+	@Override
+	public void partActivated(IWorkbenchPart arg0) {
+		this.projectNameLabel.setFont(new Font(
+				Display.getCurrent(),
+				PreferenceConverter.getFontData(
+						IViewBase.STORE,
+						IPreferenceConstants.DEFAULT_FONT)));
+		this.statusBar.setFont(new Font(
+				Display.getCurrent(),
+				PreferenceConverter.getFontData(
+						IViewBase.STORE,
+						IPreferenceConstants.DEFAULT_FONT)));
+		super.partActivated(arg0);
 	}
 }

@@ -27,6 +27,7 @@ import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.preferences.IAstpaPreferences;
 
 /**
  * @author Aliaksei Babkovich
@@ -56,7 +57,7 @@ public class ControllerEditPart extends CSAbstractEditPart {
 				.getImageDescriptor("/icons/buttons/controlstructure/controller_icon.png"); //$NON-NLS-1$
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
-				Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+				IAstpaPreferences.CONTROLSTRUCTURE_CONTROLLER_COLOR);
 
 		tmpFigure
 				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());

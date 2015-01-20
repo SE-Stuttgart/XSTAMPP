@@ -64,6 +64,11 @@ public abstract class StandartEditorPart extends EditorPart implements
 	}
 
 	@Override
+	public void dispose() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+		super.dispose();
+	}
+	@Override
 	public boolean isDirty() {
 		if (ViewContainer.getContainerInstance().getUnsavedChanges(
 				this.projectID)) {
@@ -136,6 +141,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
+		
 		if(arg0.equals(this)){
 			((STPAEditorInput)getEditorInput()).activate();
 		}else{

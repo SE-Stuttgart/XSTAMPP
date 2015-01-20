@@ -37,6 +37,7 @@ import org.eclipse.gef.requests.ReconnectRequest;
 
 import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditManager;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
@@ -147,7 +148,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 			IRectangleComponent modelTemp = this.dataModel.getComponent(this
 					.getId());
 			String stepID = (String) this.getViewer().getProperty(
-					CSAbstractEditor.STEP_EDITOR);
+					IControlStructureEditor.STEP_EDITOR);
 
 			// increase the number of refreshes so the logic updates exactly
 			for (int i = 0; i <= 2; i++) {

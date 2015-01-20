@@ -4,23 +4,16 @@
 <product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/xstampp/icons/branding/xstampp/logo.png"/>
+      <image path="/xstampp/icons/xstampp/logox128.png"/>
       <text>
          XSTAMPP - An eXtensible STAMP Platform for Safety Engineering
 
 ©2014 - 2015
+http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html
 
 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
 Institute of Software Technology, Software Engineering Group
 University of Stuttgart, Gremany
-
-- 
-
-A-STPA
-
-StuPro 2013 - 2014
-
-Development-Team: Adam Grahovac, Aleksander Zotov, Aliaksei Babkovich, Benedikt Markt, Fabian Toth, Jarkko Heidenwag, Jaqueline Patzek, Lukas Balzer, Patrick Wickenhäuser, Sebastian Sieber
       </text>
    </aboutInfo>
 
@@ -31,7 +24,7 @@ Development-Team: Adam Grahovac, Aleksander Zotov, Aliaksei Babkovich, Benedikt 
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/xstampp/icons/branding/i16.png" i32="/xstampp/icons/branding/i32.png" i48="/xstampp/icons/branding/i48.png" i64="/xstampp/icons/branding/i64.png" i128="/xstampp/icons/branding/i128.png"/>
+   <windowImages i16="/xstampp/icons/xstampp/logox16.png" i32="/xstampp/icons/xstampp/logox32.png" i48="/xstampp/icons/xstampp/logox48.png" i64="/xstampp/icons/xstampp/logox64.png" i128="/xstampp/icons/xstampp/logox128.png"/>
 
    <splash
       location="xstampp"

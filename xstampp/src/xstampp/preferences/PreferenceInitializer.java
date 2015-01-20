@@ -58,7 +58,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	/**
 	 * Link to update the application.
 	 */
-	private static final String DEFAULT_UPDATE_LINK = "https://sourceforge.net/projects/astpa/files/updatesite/"; //$NON-NLS-1$
+	private static final String DEFAULT_UPDATE_LINK = "https://sourceforge.net/projects/xstampp/files/updatesite/"; //$NON-NLS-1$
 
 	/**
 	 * Title font used by navigation title, view title and splitter title.

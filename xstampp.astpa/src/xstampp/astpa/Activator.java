@@ -29,7 +29,8 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		Activator.plugin = this;
+		plugin = this;
+		
 	}
 
 	/*
@@ -41,7 +42,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		Activator.plugin = null;
+		plugin = null;
 		super.stop(context);
 	}
 
@@ -51,7 +52,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		return Activator.plugin;
+		return plugin;
 	}
 
 	/**

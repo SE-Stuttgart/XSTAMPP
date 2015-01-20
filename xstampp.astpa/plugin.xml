@@ -526,6 +526,15 @@
                   value="astpa.wizard1_8">
             </parameter>
          </command>
+         <command
+               commandId="astpa.preferencepage"
+               label="Preferences"
+               style="push">
+            <parameter
+                  name="xstampp.command.preferencePage"
+                  value="xstampp.astpa.preferencepage.cs">
+            </parameter>
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -549,6 +558,15 @@
                   value="astpa.wizard3_1">
             </parameter>
          </command>
+         <command
+               commandId="astpa.preferencepage"
+               label="Preferences"
+               style="push">
+            <parameter
+                  name="xstampp.command.preferencePage"
+                  value="xstampp.astpa.preferencepage.cs">
+            </parameter>
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -561,6 +579,26 @@
             file="tocusingastpa.xml"
             primary="false">
       </toc>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="xstampp.astpa.preferences.StpaPreferenceInitializor">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="xstampp.astpa.preferences.StpaPreferencePage"
+            id="xstampp.astpa.preferencepage"
+            name="A-STPA Preferences">
+      </page>
+      <page
+            category="xstampp.astpa.preferencepage"
+            class="xstampp.astpa.preferences.ControlStructurePreferences"
+            id="xstampp.astpa.preferencepage.cs"
+            name="Control Structure">
+      </page>
    </extension>
 
 </plugin>
