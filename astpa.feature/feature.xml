@@ -5,18 +5,22 @@
       version="1.0.0.qualifier"
       plugin="xstampp.astpa">
 
-   <description url="http://www.example.com/description">
-      A plug-in which provides editors to execute, document and store a STPA analysis
+   <description>
+      A plug-in which provides editors to execute, document and store
+a STPA analysis
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- Zotov).
+   <copyright>
+      Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer,
+Adam
+Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek,
+Sebastian
+Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich,
+Aleksander
+Zotov).
    </copyright>
 
-   <license url="">
+   <license url="https://www.eclipse.org/legal/epl-v10.html">
       Eclipse Public License - v 1.0
 
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE PUBLIC LICENSE (&quot;AGREEMENT&quot;). ANY USE, REPRODUCTION OR DISTRIBUTION OF THE PROGRAM CONSTITUTES RECIPIENT&apos;S ACCEPTANCE OF THIS AGREEMENT.
