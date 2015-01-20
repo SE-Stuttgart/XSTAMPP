@@ -233,6 +233,8 @@ public class ViewContainer implements IProcessController {
 		Path newPath=projectFile.toPath().getParent();
 		File newNameFile = new File(newPath.toFile(),projectName + ".haz");
 		if (projectFile.renameTo(newNameFile) || !projectFile.exists()) {
+			this.projectSaveFiles.remove(projectId);
+			this.projectSaveFiles.put(projectId, newNameFile);
 			return this.projectDataMap.get(projectId).setProjectName(
 					projectName);
 		}

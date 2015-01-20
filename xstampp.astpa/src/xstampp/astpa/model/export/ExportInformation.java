@@ -20,7 +20,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
 
 /**

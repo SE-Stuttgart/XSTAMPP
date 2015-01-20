@@ -103,7 +103,7 @@ import xstampp.util.StandartEditorPart;
  * @author Patrick Wickenhaeuser, Sebastian Sieber
  * @since 2.0
  */
-public class SystemDescriptionView extends StandartEditorPart implements ITextEditor {
+public class SystemDescriptionView extends StandartEditorPart implements ITextEditor,IPropertyChangeListener {
 	
 	private final IPreferenceStore store = Activator.getDefault()
 			.getPreferenceStore();
@@ -199,23 +199,9 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	public void createPartControl(Composite parent) {
 		this.setDataModelInterface(ViewContainer.getContainerInstance()
 				.getDataModel(this.getProjectID()));
+		
 		Activator.getDefault().getPreferenceStore()
-				.addPropertyChangeListener(new IPropertyChangeListener() {
-
-					@Override
-					public void propertyChange(PropertyChangeEvent event) {
-						SystemDescriptionView.this.statusBar.setFont(new Font(
-								Display.getCurrent(),
-								PreferenceConverter.getFontData(
-										IViewBase.STORE,
-										IPreferenceConstants.DEFAULT_FONT)));
-						SystemDescriptionView.this.projectNameLabel.setFont(new Font(
-								Display.getCurrent(),
-								PreferenceConverter.getFontData(
-										IViewBase.STORE,
-										IPreferenceConstants.DEFAULT_FONT)));
-					}
-				});
+				.addPropertyChangeListener(this);
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
 
@@ -1738,6 +1724,8 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	@Override
 	public void dispose() {
 		this.dataInterface.deleteObserver(this);
+		Activator.getDefault().getPreferenceStore()
+		.removePropertyChangeListener(this);
 		super.dispose();
 	}
 
@@ -1835,4 +1823,21 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 						IPreferenceConstants.DEFAULT_FONT)));
 		super.partActivated(arg0);
 	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		SystemDescriptionView.this.statusBar.setFont(new Font(
+				Display.getCurrent(),
+				PreferenceConverter.getFontData(
+						IViewBase.STORE,
+						IPreferenceConstants.DEFAULT_FONT)));
+		SystemDescriptionView.this.projectNameLabel.setFont(new Font(
+				Display.getCurrent(),
+				PreferenceConverter.getFontData(
+						IViewBase.STORE,
+						IPreferenceConstants.DEFAULT_FONT)));
+		
+	}
+
+	
 }

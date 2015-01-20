@@ -309,6 +309,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				}
 			}
 		}
+		
 	}
 
 	/**

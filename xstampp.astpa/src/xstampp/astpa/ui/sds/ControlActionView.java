@@ -14,6 +14,7 @@
 package xstampp.astpa.ui.sds;
 
 import java.util.Iterator;
+import java.util.Observable;
 import java.util.UUID;
 
 import messages.Messages;
@@ -51,6 +52,7 @@ import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.astpa.ui.acchaz.CommonTableView;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ViewContainer;
 
 /**
@@ -471,7 +473,19 @@ public class ControlActionView extends CommonTableView {
 		ControlActionView.this.getTableViewer().setInput(
 				this.dataInterface.getAllControlActions());
 	}
-
+	
+	@Override
+	public void update(Observable dataModelController, Object updatedValue) {
+		super.update(dataModelController, updatedValue);
+		ObserverValue type = (ObserverValue) updatedValue;
+		switch (type) {
+		case CONTROL_ACTION:
+			this.updateTable();
+			break;
+		default:
+			break;
+		}
+	}
 	@Override
 	public String getId() {
 		return ControlActionView.ID;
