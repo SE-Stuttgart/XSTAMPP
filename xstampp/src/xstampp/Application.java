@@ -95,7 +95,7 @@ public class Application implements IApplication {
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(display,
 					new ApplicationWorkbenchAdvisor());
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
 			}

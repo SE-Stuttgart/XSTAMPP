@@ -7,11 +7,10 @@
    <name>A-STPA Plugin</name>
 
    <parent>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
       <groupId>xstampp.group</groupId>
       <artifactId>parent</artifactId>
    </parent>
 
-   <version>2.0.0-SNAPSHOT</version>
-   <groupId>xstampp.group</groupId>
+   <version>2.0.0</version>
 </project>

@@ -40,7 +40,7 @@
   </property>
   <property
         name="aboutText"
-        value="XSTAMPP - An eXtensible STAMP Platform for Safety Engineering&#x0D;&#x0A;&#x0D;&#x0A;©2014 - 2015&#x0D;&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html&#x0D;&#x0A;&#x0D;&#x0A;Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner&#x0D;&#x0A;Institute of Software Technology, Software Engineering Group&#x0D;&#x0A;University of Stuttgart, Gremany">
+        value="XSTAMPP - An eXtensible STAMP Platform for Safety Engineering&#x0A;&#x0A;©2014 - 2015&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html&#x0A;&#x0A;Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner&#x0A;Institute of Software Technology, Software Engineering Group&#x0A;University of Stuttgart, Gremany">
   </property>
       	</product>
    </extension>
