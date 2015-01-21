@@ -85,6 +85,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	public void postWindowOpen() {
 		if(ChooseWorkLocation.initiateWorkspace()){
 			PlatformUI.getWorkbench().restart();
+			ViewContainer.getLOGGER().debug("restarted Workbench");
 		}
 		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
 				.getWorkbench().getExportWizardRegistry();

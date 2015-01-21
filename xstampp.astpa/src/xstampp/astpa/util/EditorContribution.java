@@ -203,12 +203,16 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	 * @param enabled if components should be enabled
 	 */
 	private void setEnabled(boolean enabled){
+		try{
 		this.zoomLabel.setEnabled(enabled);
 		this.zoomSlider.setEnabled(enabled);
 		this.setDecoSelection((boolean) this.contributor.getProperty(IZoomContributor.IS_DECORATED));
 		this.decoButton.setEnabled(enabled);
 		this.zoomInButton.setEnabled(enabled);
 		this.zoomOutButton.setEnabled(enabled);
+		}catch(Exception e){
+			return;
+		}
 	}
 
 	private void setDecoSelection(boolean enabled){
