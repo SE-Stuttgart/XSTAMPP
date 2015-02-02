@@ -160,9 +160,10 @@ public class ViewContainer implements IProcessController {
 		public void run() {
 			UUID projectId = ViewContainer.getContainerInstance()
 					.addProjectData(((LoadJob) this.event.getJob()).getController());
-			File saveFile = ((LoadJob) this.event.getJob()).getFile();
+			File saveFile = ((LoadJob) this.event.getJob()).getSaveFile();
 			ViewContainer.getContainerInstance().projectSaveFiles.put(
 					projectId, saveFile);
+			ViewContainer.getContainerInstance().saveDataModel(projectId);
 			ViewContainer.getContainerInstance().synchronizeProjectName(projectId);
 		}
 	}
@@ -341,23 +342,25 @@ public class ViewContainer implements IProcessController {
 							Messages.DoYouReallyWantToOverwriteTheFile)) {
 				return false;
 			}
-			try (BufferedReader reader = new BufferedReader(new FileReader(
-					outer));
-					BufferedWriter writer = new BufferedWriter(new FileWriter(
-							copy))) {
-				String currentLine;
-				while((currentLine = reader.readLine()) != null) {
-					writer.append(currentLine);
-					writer.newLine();
-				}
-				reader.close();
-				writer.close();
-				return this.loadDataModelFile(copy.getPath());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+//			
+//			try (BufferedReader reader = new BufferedReader(new FileReader(
+//					outer));
+//					BufferedWriter writer = new BufferedWriter(new FileWriter(
+//							copy))) {
+//				String currentLine;
+//				while((currentLine = reader.readLine()) != null) {
+//					writer.append(currentLine);
+//					writer.newLine();
+//				}
+//				reader.close();
+//				writer.close();
+//				return this.loadDataModelFile(copy.getPath());
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+			this.loadDataModelFile(file,copy.getPath());
 		} else if (file != null) {
-			return this.loadDataModelFile(file);
+			return this.loadDataModelFile(file,file);
 
 		}
 
@@ -374,7 +377,7 @@ public class ViewContainer implements IProcessController {
 	 * @return whether the operation was successful or not
 	 */
 	@Override
-	public boolean loadDataModelFile(String file) {
+	public boolean loadDataModelFile(String file,String saveFile) {
 		IDataModel dataModel = null;
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
@@ -385,7 +388,7 @@ public class ViewContainer implements IProcessController {
 		}
 		// if (this.overwriteDataModel()) {
 		if (file != null && dataModel != null) {
-			Job load = new LoadJob(dataModel,file, ViewContainer.getLOGGER());
+			Job load = new LoadJob(dataModel,file,saveFile, ViewContainer.getLOGGER());
 			load.schedule();
 			load.addJobChangeListener(new LoadJobChangeAdapter());
 			return true;
@@ -644,10 +647,12 @@ class LoadJob extends Job {
 	private final Logger log;
 	private IDataModel controller;
 	private Class<?> clazz;
+	private File saveFile;
 
-	public LoadJob(IDataModel dataModel,String filename, Logger log) {
+	public LoadJob(IDataModel dataModel,String filename, String savePath, Logger log) {
 		super(Messages.loadHaz);
 		this.file = new File(filename);
+		this.saveFile=new File(savePath);
 		this.log = log;
 		this.filename = filename;
 		this.controller=dataModel;
@@ -713,6 +718,13 @@ class LoadJob extends Job {
 	 */
 	public File getFile() {
 		return this.file;
+	}
+	
+	/**
+	 * @return the file
+	 */
+	public File getSaveFile() {
+		return this.saveFile;
 	}
 }
 

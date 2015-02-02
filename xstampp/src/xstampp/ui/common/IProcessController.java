@@ -69,7 +69,7 @@ public interface IProcessController {
 	 * 
 	 * @return whether the operation was successful or not
 	 */
-	public abstract boolean loadDataModelFile(String file);
+	public abstract boolean loadDataModelFile(String file,String saveFile);
 
 	/**
 	 * Calls the observer of the data model with the given value

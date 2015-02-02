@@ -252,6 +252,13 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	}
 	
 	@Override
+	public void dispose() {
+		
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+		super.dispose();
+	}
+	
+	@Override
 	public void partOpened(IWorkbenchPart part) {
 		// TODO Auto-generated method stub
 		

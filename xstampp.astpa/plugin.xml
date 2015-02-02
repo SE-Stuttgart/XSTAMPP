@@ -40,7 +40,7 @@
                   editorId="astpa.steps.step1_3"
                   icon="icons/buttons/navigation/STEP1_3(16).png"
                   id="astpa.navigation.step1_3"
-                  name="Hazzards">
+                  name="Hazards">
                <stepEditor
                      id="astpa.steps.step1_3"
                      isDefault="true"
@@ -84,7 +84,7 @@
                   editorId="astpa.steps.step1_7"
                   icon="icons/buttons/navigation/STEP1_7(16).png"
                   id="astpa.navigation.step1_7"
-                  name="Design Requironment">
+                  name="Design Requirenments">
                <stepEditor
                      id="astpa.steps.step1_7"
                      isDefault="true"

@@ -54,7 +54,7 @@ public class Import extends AbstractHandler {
 			return viewContainer.importDataModel();
 		}
 
-		return viewContainer.loadDataModelFile(recentPath);
+		return viewContainer.loadDataModelFile(recentPath,recentPath);
 
 	}
 

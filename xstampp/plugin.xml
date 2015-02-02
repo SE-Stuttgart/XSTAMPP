@@ -103,7 +103,7 @@
             </command>
             <command
                   commandId="xstampp.command.load"
-                  label="Import Project..."
+                  label="Load Project..."
                   style="push"
                   tooltip="Imports the project file">
             </command>
