@@ -44,10 +44,11 @@ public interface IProcessController {
 	 * @author Fabian Toth,Lukas Balzer
 	 * @param projectId
 	 *            the id of the project
+	 * @param isUIcall TODO
 	 * 
 	 * @return whether the operation was successful or not
 	 */
-	public abstract boolean saveDataModel(UUID projectId);
+	public abstract boolean saveDataModel(UUID projectId, boolean isUIcall);
 
 	/**
 	 * Loads the data model from a file if it is valid

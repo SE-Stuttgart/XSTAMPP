@@ -141,7 +141,7 @@ public class ViewContainer implements IProcessController {
 			File saveFile = ((LoadJob) this.event.getJob()).getSaveFile();
 			ViewContainer.getContainerInstance().projectSaveFiles.put(
 					projectId, saveFile);
-			ViewContainer.getContainerInstance().saveDataModel(projectId);
+			ViewContainer.getContainerInstance().saveDataModel(projectId, false);
 			ViewContainer.getContainerInstance().synchronizeProjectName(projectId);
 		}
 	}
@@ -176,7 +176,7 @@ public class ViewContainer implements IProcessController {
 			newController.updateValue(ObserverValue.PROJECT_NAME);
 			UUID projectId = this.addProjectData(newController);
 			this.projectSaveFiles.put(projectId, new File(path));
-			this.saveDataModel(projectId);
+			this.saveDataModel(projectId, false);
 			return projectId;
 		} catch (InstantiationException | IllegalAccessException e) {
 			// TODO Auto-generated catch block
@@ -236,11 +236,11 @@ public class ViewContainer implements IProcessController {
 			}
 		}
 
-		return this.saveDataModel(projectId);
+		return this.saveDataModel(projectId, false);
 	}
 
 	@Override
-	public boolean saveDataModel(UUID projectId) {
+	public boolean saveDataModel(UUID projectId, boolean isUIcall) {
 		if (this.projectSaveFiles.get(projectId) == null) {
 			return this.saveDataModelAs(projectId);
 		}
@@ -249,7 +249,7 @@ public class ViewContainer implements IProcessController {
 		tmpController.prepareForSave();
 		
 		Job save = tmpController.doSave(this.projectSaveFiles.get(projectId),
-				ViewContainer.getLOGGER(), tmpController);
+				ViewContainer.getLOGGER(), isUIcall);
 		save.addJobChangeListener(new JobChangeAdapter() {
 
 			@Override
@@ -280,7 +280,7 @@ public class ViewContainer implements IProcessController {
 	public boolean saveAllDataModels() {
 		boolean temp = true;
 		for (UUID id : this.getProjectKeys()) {
-			temp = temp && this.saveDataModel(id);
+			temp = temp && this.saveDataModel(id, false);
 		}
 		return temp;
 	}
@@ -444,7 +444,7 @@ public class ViewContainer implements IProcessController {
 			this.projectDataMap.get(id).updateValue(value);
 			synchronizeProjectName(id);
 		}
-		this.saveDataModel(id);
+		this.saveDataModel(id, false);
 		this.projectDataMap.get(id).setStored();
 	}
 
@@ -668,8 +668,9 @@ class LoadJob extends Job {
 			JAXBContext context = JAXBContext.newInstance(this.controller.getClass());
 
 			Unmarshaller um = context.createUnmarshaller();
-		
-			this.setController((IDataModel) um.unmarshal(new StringReader(buffer.toString())));
+			StringReader stringReader=new StringReader(buffer.toString());
+			this.setController((IDataModel) um.unmarshal(stringReader));
+			reader.close();
 			monitor.worked(2);
 			monitor.done();
 			 System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize");

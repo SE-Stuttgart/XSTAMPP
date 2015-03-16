@@ -197,10 +197,6 @@ public class CSExportJob extends Job {
 				
 				IFigure tmpFigure = rootEditPart
 						.getLayer(LayerConstants.PRINTABLE_LAYERS);
-//				CSEditor editor= new CSEditor();
-//				editor.setProjectID(CSExportJob.this.projectID);
-//				editor.createPartControl(shell);
-//				tmpFigure=((ScalableRootEditPart) editor.getGraphicalViewer().getRootEditPart()).getLayer(LayerConstants.PRINTABLE_LAYERS);
 				// create a rectangle to guarantee that the src image 
 				Rectangle srcRectangle = tmpFigure.getBounds();
 				for (Object layers : tmpFigure.getChildren()) {

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ViewContainer;
@@ -37,6 +38,8 @@ public class SaveJob extends Job {
 
 	final File file;
 	final IDataModel controller;
+	private boolean compatibilityMode;
+	private boolean ready = false;
 
 	/**
 	 * 
@@ -51,6 +54,7 @@ public class SaveJob extends Job {
 	 */
 	public SaveJob(File file, IDataModel controller) {
 		super(Messages.saveHaz);
+		this.compatibilityMode = false;
 		this.file = file;
 		this.controller = controller;
 		
@@ -68,10 +72,20 @@ public class SaveJob extends Job {
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			// Write to file
 			m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-
-			PrintWriter printWriter = new PrintWriter(new FileWriter(this.file));
-			DataWriter dataWriter = new DataWriter(printWriter, "UTF-8", new MyEscapeHandler());
-			m.marshal(this.controller,dataWriter);
+			FileWriter writer = new FileWriter(this.file);
+			
+			if(this.compatibilityMode){
+				m.marshal(this.controller,writer);
+			}
+			else{
+				PrintWriter printWriter = new PrintWriter(writer);
+				DataWriter dataWriter = new DataWriter(printWriter, "UTF-8", new MyEscapeHandler());
+				m.marshal(this.controller,dataWriter);
+				printWriter.close();
+				
+			}
+			writer.close();
+			
 		} catch (JAXBException e) {
 			ViewContainer.getLOGGER().error(e.getMessage(), e);
 			return Status.CANCEL_STATUS;
@@ -88,6 +102,14 @@ public class SaveJob extends Job {
 		return Status.OK_STATUS;
 	}
 
+	public void setCompabillityMode(boolean compatibilityMode) {
+		this.compatibilityMode = compatibilityMode;
+		this.ready=true;
+	}
+	public boolean isReady() {
+		return this.ready;
+	}
+	
 }
 
 class MyEscapeHandler implements CharacterEscapeHandler{

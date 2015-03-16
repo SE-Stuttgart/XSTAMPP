@@ -31,8 +31,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 import xstampp.astpa.Activator;
@@ -75,8 +77,8 @@ import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
+import xstampp.astpa.util.SaveRunnable;
 import xstampp.astpa.util.jobs.SaveJob;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ViewContainer;
 
@@ -1282,8 +1284,18 @@ public class DataModelController extends Observable implements
 	}
 
 	@Override
-	public Job doSave(File file, Logger log, IDataModel controller) {
-		return new SaveJob(file,controller);
+	public Job doSave(final File file, Logger log, boolean isUIcall) {
+		SaveJob job= new SaveJob(file,this);
+		if(isUIcall){
+			Runnable question = new SaveRunnable(job);
+			
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay().syncExec(question);
+			while(!job.isReady()){
+				//wait till the user desided whether or not to store on compatibility  mode
+			}
+			
+		}
+		return job;
 	}
 
 	@Override

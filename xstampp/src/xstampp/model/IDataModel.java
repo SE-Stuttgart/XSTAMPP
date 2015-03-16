@@ -58,11 +58,11 @@ public interface IDataModel {
 	 *            the file in which the job should store the results
 	 * @param log
 	 *            the logger in which all messeges are written
-	 * @param controller
+	 * @param isUIcall
 	 *            the Data model which should be stored, this must be a
 	 *            JAXBContext
 	 */
-	Job doSave(File file, Logger log, IDataModel controller);
+	Job doSave(final File file, Logger log, boolean isUIcall);
 	
 	/**
 	 * Returns the number of observers of this Observable object.
