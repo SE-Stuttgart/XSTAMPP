@@ -36,7 +36,7 @@ public class ConnectionTest {
 		
 		// check empty constructor
 		connection = new CSConnection();
-		connection.setSourceFigureId(source);
+		connection.setSourceAnchor(source);
 		Assert.assertEquals(source, connection.getSourceAnchor());
 		connection.setTargetAnchor(target);
 		Assert.assertEquals(target, connection.getTargetAnchor());

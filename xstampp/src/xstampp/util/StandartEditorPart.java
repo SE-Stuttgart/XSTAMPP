@@ -65,6 +65,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void dispose() {
+		ViewContainer.getLOGGER().debug("Editor: " + getTitle() + " closed");
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
 		super.dispose();
 	}

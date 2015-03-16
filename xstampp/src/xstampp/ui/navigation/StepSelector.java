@@ -16,7 +16,7 @@ import xstampp.util.STPAEditorInput;
  * @author Lukas Balzer
  * 
  */
-public class StepSelector extends AbstractSelector implements IProjectSelection {
+public class StepSelector extends AbstractSelector {
 
 	private String availableEditor;
 	private boolean isLocked;
@@ -60,10 +60,10 @@ public class StepSelector extends AbstractSelector implements IProjectSelection 
 	public void getDefaultEditor() throws PartInitException {
 
 		if ((this.getEditorInput() != null) && (this.availableEditor != null)) {
-			
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage()
 					.openEditor(this.getEditorInput(), this.availableEditor);
+			
 		}
 	}
 
@@ -73,6 +73,13 @@ public class StepSelector extends AbstractSelector implements IProjectSelection 
 		this.input.setPathHistory(pathHistory);
 		super.setPathHistory(pathHistory);
 	}
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return the input which is used by the selector 
+	 */
 	public IEditorInput getEditorInput() {
 		return this.input;
 	}
@@ -81,6 +88,12 @@ public class StepSelector extends AbstractSelector implements IProjectSelection 
 		this.input=input;
 	}
 	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param name the name for the step editor 
+	 */
 	public void setEditorName(String name){
 		this.input.setStepName(name);
 	}

@@ -41,6 +41,7 @@ import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
@@ -197,6 +198,9 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		if(this.toolContributor== null){
+			this.toolContributor= new EmptyTextContributor();
+		}
 		this.setDataModelInterface(ViewContainer.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		
@@ -347,13 +351,18 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 * @author Patrick Wickenhaeuser, Sebastian Sieber
 	 */
 	private void resetProjectDescription() {
+		
 		String projectDesc = this.dataInterface.getProjectDescription();
 		StyleRange[] ranges = this.dataInterface.getStyleRangesAsArray();
 		if (projectDesc != null) {
+			projectDesc = projectDesc.replaceAll("\n", " \n");
 			this.descriptionText.setText(projectDesc);
 			if (ranges != null) {
 				this.descriptionText.setStyleRanges(ranges);
 			}
+
+			projectDesc = projectDesc.replaceAll(" \n", "\n");
+			this.descriptionText.setText(projectDesc);
 		} else {
 			this.descriptionText.setText(""); //$NON-NLS-1$
 		}
@@ -430,6 +439,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 					public void modifyText(ExtendedModifyEvent event) {
 						SystemDescriptionView.this
 								.handleDescriptionModify(event);
+						
 						SystemDescriptionView.this.setStyle(event.widget);
 					}
 				});

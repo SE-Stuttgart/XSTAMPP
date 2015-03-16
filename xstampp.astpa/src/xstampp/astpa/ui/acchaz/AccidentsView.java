@@ -356,7 +356,7 @@ public class AccidentsView extends CommonTableView {
 				String accident = newline + num + ": " + title; //$NON-NLS-1$
 				accidents = accidents + accident;
 			}
-			String confirmation = Messages.PleaseConfirmTheDeletionOfTheFollowingAccidents
+			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingAccidents
 					+ accidents;
 			boolean b = MessageDialog.openQuestion(this.getTableContainer()
 					.getShell(), Messages.Confirm, confirmation);
@@ -373,7 +373,7 @@ public class AccidentsView extends CommonTableView {
 			// if many accidents are selected
 			boolean b = MessageDialog.openQuestion(this.getTableContainer()
 					.getShell(), Messages.Confirm,
-					Messages.PleaseConfirmTheDeletionOfAllSelectedAccidents);
+					Messages.ConfirmTheDeletionOfAllSelectedAccidents);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				AccidentsView.this.displayedAccident = null;

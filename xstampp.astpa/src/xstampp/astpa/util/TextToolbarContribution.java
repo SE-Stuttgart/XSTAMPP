@@ -550,7 +550,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 			
 			this.fontSizeCombo.setText(((StyledTextSelection) selection).getFontSize() + "");
 			if(((StyledTextSelection) selection).getFontSize() < 0){
-				System.out.println(String.valueOf(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
+				
 				this.fontSizeCombo.setText(String.valueOf(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
 			}
 			this.fontCombo.setText(((StyledTextSelection) selection).getFontName());

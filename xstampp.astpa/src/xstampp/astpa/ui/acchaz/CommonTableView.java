@@ -365,7 +365,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 	 *            Type of item, e.g. "Accidents"
 	 */
 	public void createCommonTableView(Composite parent, String tableHeader) {
-		System.out.println("commonTableView created");
+		
 		this.parent = parent;
 
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);

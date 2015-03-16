@@ -13,7 +13,11 @@
 
 package xstampp.model;
 
+import java.io.File;
 import java.util.Observer;
+
+import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * Interface for the DataModel which defines the methods to handle the Observer
@@ -44,7 +48,22 @@ public interface IDataModel {
 	 *            the observer to be deleted.
 	 */
 	void deleteObserver(Observer observer);
-
+	
+	/**
+	 * 
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param file
+	 *            the file in which the job should store the results
+	 * @param log
+	 *            the logger in which all messeges are written
+	 * @param controller
+	 *            the Data model which should be stored, this must be a
+	 *            JAXBContext
+	 */
+	Job doSave(File file, Logger log, IDataModel controller);
+	
 	/**
 	 * Returns the number of observers of this Observable object.
 	 * 
@@ -89,4 +108,12 @@ public interface IDataModel {
 
 	boolean setProjectName(String projectName);
 
+	/**
+	 * This method is only to be called the first time the projekt is started
+	 * to perform initial actions like "not visited" flags or so
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
+	void initializeProject();
 }

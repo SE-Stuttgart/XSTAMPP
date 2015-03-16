@@ -29,6 +29,7 @@ import messages.Messages;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
@@ -74,13 +75,16 @@ import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
+import xstampp.astpa.util.jobs.SaveJob;
+import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
+import xstampp.ui.common.ViewContainer;
 
 /**
  * Data Model controller class
  * 
  * @author Fabian Toth
- * @since 2.1
+ * @since 2.0
  * 
  */
 @XmlRootElement(namespace = "astpa.model")
@@ -93,7 +97,7 @@ public class DataModelController extends Observable implements
 		IControlStructureEditorDataModel, IUnsafeControlActionDataModel,
 		ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel {
 
-	private static final Logger LOGGER = Logger.getRootLogger();
+	private static final Logger LOGGER = ViewContainer.getLOGGER();
 
 	@XmlAttribute(name = "astpaversion")
 	private String astpaVersion;
@@ -124,6 +128,8 @@ public class DataModelController extends Observable implements
 	 */
 	private boolean unsavedChanges;
 
+	
+	private int initialCalls;
 	/**
 	 * Constructor of the DataModel Controller
 	 * 
@@ -1273,6 +1279,16 @@ public class DataModelController extends Observable implements
 				controlActionId, parentId, layout, text, type);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
+	}
+
+	@Override
+	public Job doSave(File file, Logger log, IDataModel controller) {
+		return new SaveJob(file,controller);
+	}
+
+	@Override
+	public void initializeProject() {
+		this.controlStructureController.initializeCSS();
 	}
 
 }

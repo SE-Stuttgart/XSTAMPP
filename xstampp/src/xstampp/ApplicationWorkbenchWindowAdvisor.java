@@ -179,30 +179,30 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		ViewContainer viewContainerViewPart = ViewContainer
 				.getContainerInstance();
 
-		if (viewContainerViewPart instanceof ViewContainer) {
-			ViewContainer viewContainer = viewContainerViewPart;
-			if (viewContainer.getUnsavedChanges()) {
-				MessageDialog dialog = new MessageDialog(Display.getCurrent()
-						.getActiveShell(), Messages.PlatformName, null,
-						Messages.ThereAreUnsafedChangesDoYouWantToStoreThem,
-						MessageDialog.CONFIRM, new String[] { Messages.Store,
-								Messages.Discard, Messages.Abort }, 0);
-				int resultNum = dialog.open();
-				switch (resultNum) {
-				case -1:
-					return false;
-				case 0:
-					return viewContainer.saveAllDataModels();
-				case 1:
-					return true;
-				case 2:
-					return false;
-				default:
-					break;
-				}
+		ViewContainer viewContainer = viewContainerViewPart;
+		if (viewContainer.getUnsavedChanges()) {
+			MessageDialog dialog = new MessageDialog(Display.getCurrent()
+					.getActiveShell(), Messages.PlatformName, null,
+					Messages.ThereAreUnsafedChangesDoYouWantToStoreThem,
+					MessageDialog.CONFIRM, new String[] { Messages.Store,
+							Messages.Discard, Messages.Abort }, 0);
+			int resultNum = dialog.open();
+			switch (resultNum) {
+			case -1:
+				return false;
+			case 0:
+				return viewContainer.saveAllDataModels();
+			case 1:
+				return true;
+			case 2:
+				return false;
+			default:
+				break;
 			}
 		}
+		
 		this.updateJob.cancel();
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		return true;
 	}
 }

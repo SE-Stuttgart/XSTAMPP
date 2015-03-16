@@ -11,7 +11,7 @@ public class ASTPAPerspective implements IPerspectiveFactory {
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		ASTPAPerspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
-		layout.setFixed(false);
+		layout.setFixed(true);
 		
 		layout.setEditorAreaVisible(true);
 		layout.addView(

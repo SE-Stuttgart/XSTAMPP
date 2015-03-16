@@ -334,7 +334,7 @@ public class ControlActionView extends CommonTableView {
 				String controlAction = newline + num + ": " + title; //$NON-NLS-1$
 				controlActions = controlActions + controlAction;
 			}
-			String confirmation = Messages.PleaseConfirmTheDeletionOfTheFollowingControlActions
+			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingControlActions
 					+ controlActions;
 			boolean b = MessageDialog.openQuestion(this.getTableContainer()
 					.getShell(), Messages.Confirm, confirmation);
@@ -354,7 +354,7 @@ public class ControlActionView extends CommonTableView {
 					.openQuestion(
 							this.getTableContainer().getShell(),
 							Messages.Confirm,
-							Messages.PleaseConfirmTheDeletionOfAllSelectedControlActions);
+							Messages.ConfirmTheDeletionOfAllSelectedControlActions);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				ControlActionView.this.displayedControlAction = null;

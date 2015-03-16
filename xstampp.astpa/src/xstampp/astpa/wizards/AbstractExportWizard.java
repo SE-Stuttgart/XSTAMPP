@@ -200,6 +200,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 					Messages.ChooseTheDestination);
 			break;
 		case CANT_OVERWRITE:
+			
 			MessageDialog.openWarning(this.getShell(), Messages.Warning,
 					Messages.CantOverride);
 			break;

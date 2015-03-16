@@ -339,7 +339,7 @@ public class SafetyConstraintView extends CommonTableView {
 				String safetyConstraint = newline + num + ": " + title; //$NON-NLS-1$
 				safetyConstraints = safetyConstraints + safetyConstraint;
 			}
-			String confirmation = Messages.PleaseConfirmTheDeletionOfTheFollowingSafetyConstraints
+			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingSafetyConstraints
 					+ safetyConstraints;
 			boolean b = MessageDialog.openQuestion(this.getTableContainer()
 					.getShell(), Messages.Confirm, confirmation);
@@ -359,7 +359,7 @@ public class SafetyConstraintView extends CommonTableView {
 					.openQuestion(
 							this.getTableContainer().getShell(),
 							Messages.Confirm,
-							Messages.PleaseConfirmTheDeletionOfAllSelectedSafetyConstraints);
+							Messages.ConfirmTheDeletionOfAllSelectedSafetyConstraints);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.displayedSafetyConstraint = null;

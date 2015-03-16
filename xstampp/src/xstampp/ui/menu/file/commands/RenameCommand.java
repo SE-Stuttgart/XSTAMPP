@@ -2,11 +2,14 @@ package xstampp.ui.menu.file.commands;
 
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -27,9 +30,10 @@ public class RenameCommand extends AbstractHandler {
 			InputDialog renameDiag = new InputDialog(Display.getCurrent()
 					.getActiveShell(), "Rename Project", "New Project Name: ",
 					currentString, new ProjectNameValidator(projectId));
-			if (renameDiag.open() == Window.OK) {
+			if (renameDiag.open() == Window.OK &&
 				ViewContainer.getContainerInstance().renameProject(projectId,
-						renameDiag.getValue());
+						renameDiag.getValue())){
+				MessageDialog.openError(null, Messages.Error, "Project cannot be renamed!");
 			}
 		}
 		return null;

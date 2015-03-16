@@ -14,11 +14,11 @@
 package xstampp.ui.common;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -30,7 +30,6 @@ import java.util.UUID;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -40,27 +39,24 @@ import javax.xml.validation.Validator;
 
 import messages.Messages;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.xml.sax.SAXException;
 
-import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.navigation.ProjectExplorer;
@@ -95,23 +91,7 @@ public class ViewContainer implements IProcessController {
 	 */
 	public static final String ID = "astpa.ui.common.viewcontainer"; //$NON-NLS-1$
 
-	private final IPreferenceStore store = Activator.getDefault()
-			.getPreferenceStore();
 
-	/**
-	 * The width of the navigation
-	 */
-	private static final int NAVIGATION_WIDTH = 250;
-
-	/**
-	 * Constant for the full size of the form layout
-	 */
-	private static final int FULL_SIZE = 100;
-
-	/**
-	 * The height of the title label
-	 */
-	private static final int TITLE_HEIGHT = 30;
 
 	/**
 	 * The message which the dialog shows
@@ -120,25 +100,23 @@ public class ViewContainer implements IProcessController {
 
 	private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheFile;
 
-	/**
-	 * should be set when the control structure has been initially build
-	 */
-	private boolean initControlStructure;
-
-	private boolean initCSWithProcessModel;
+	private Map<UUID, IDataModel> projectDataMap;
+	private Map<UUID, File> projectSaveFiles;
+	
 
 	private class LoadJobChangeAdapter extends JobChangeAdapter {
 
 		@Override
 		public void done(IJobChangeEvent event) {
 			if (event.getResult() == Status.CANCEL_STATUS) {
+				final String name = ((LoadJob) event.getJob()).getFile().getName();
 				Display.getDefault().syncExec(new Runnable() {
 
 					@Override
 					public void run() {
 						MessageDialog.openInformation(Display.getDefault()
 								.getActiveShell(), Messages.Information,
-								Messages.ThisHazFileIsInvalid);
+								String.format(Messages.ThisHazFileIsInvalid,name));
 					}
 				});
 			}
@@ -168,15 +146,8 @@ public class ViewContainer implements IProcessController {
 		}
 	}
 
-	private Map<UUID, IDataModel> projectDataMap;
-	private Map<UUID, File> projectSaveFiles;
 
-	/**
-	 * The title Label.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 */
-	private ViewTitle titleLabel;
+
 
 	/**
 	 * defines if this is the first start up
@@ -193,8 +164,6 @@ public class ViewContainer implements IProcessController {
 
 		this.projectDataMap = new HashMap<>();
 		this.projectSaveFiles = new HashMap<>();
-		this.initControlStructure = false;
-		this.initCSWithProcessModel = false;
 	}
 
 	@Override
@@ -203,9 +172,8 @@ public class ViewContainer implements IProcessController {
 		try {
 			newController = (IDataModel) controller.newInstance();
 			newController.setProjectName(projectName);
+			newController.initializeProject();
 			newController.updateValue(ObserverValue.PROJECT_NAME);
-			this.initControlStructure = false;
-			this.initCSWithProcessModel = false;
 			UUID projectId = this.addProjectData(newController);
 			this.projectSaveFiles.put(projectId, new File(path));
 			this.saveDataModel(projectId);
@@ -233,7 +201,9 @@ public class ViewContainer implements IProcessController {
 		
 		Path newPath=projectFile.toPath().getParent();
 		File newNameFile = new File(newPath.toFile(),projectName + ".haz");
+		
 		if (projectFile.renameTo(newNameFile) || !projectFile.exists()) {
+			
 			this.projectSaveFiles.remove(projectId);
 			this.projectSaveFiles.put(projectId, newNameFile);
 			return this.projectDataMap.get(projectId).setProjectName(
@@ -277,7 +247,8 @@ public class ViewContainer implements IProcessController {
 		final IDataModel tmpController = this.projectDataMap.get(projectId);
 
 		tmpController.prepareForSave();
-		Job save = new SaveJob(this.projectSaveFiles.get(projectId),
+		
+		Job save = tmpController.doSave(this.projectSaveFiles.get(projectId),
 				ViewContainer.getLOGGER(), tmpController);
 		save.addJobChangeListener(new JobChangeAdapter() {
 
@@ -335,12 +306,19 @@ public class ViewContainer implements IProcessController {
 			File outer = new File(file);
 			File copy = new File(Platform.getInstanceLocation().getURL()
 					.getPath(), outer.getName());
-			if (copy.isFile()
-					&& !MessageDialog.openQuestion(PlatformUI.getWorkbench()
+			if (copy.isFile()){
+				if(!MessageDialog.openQuestion(PlatformUI.getWorkbench()	
 							.getDisplay().getActiveShell(),
-							Messages.FileExists,
-							Messages.DoYouReallyWantToOverwriteTheFile)) {
+							Messages.FileExists,String.format(Messages.DoYouReallyWantToOverwriteTheFile,outer.getName()))) {
 				return false;
+				}
+				for(UUID id: this.projectSaveFiles.keySet()){
+					if(this.projectSaveFiles.get(id).equals(copy) && !removeProjectData(id)){
+						MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
+						return false;
+					}
+				}
+				
 			}
 //			
 //			try (BufferedReader reader = new BufferedReader(new FileReader(
@@ -589,7 +567,7 @@ public class ViewContainer implements IProcessController {
 			IViewPart explorer = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 									.getActivePage().findView("astpa.explorer");
 			((ProjectExplorer)explorer).update(null, ObserverValue.DELETE);
-			return this.projectDataMap.containsKey(projectId);
+			return !this.projectDataMap.containsKey(projectId);
 		}
 
 		return false;
@@ -658,6 +636,7 @@ class LoadJob extends Job {
 		this.controller=dataModel;
 	}
 
+	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.loadingHaz, 2);
@@ -665,24 +644,35 @@ class LoadJob extends Job {
 		try {
 			// validate the file
 			URL schemaFile = this.getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
-			Source xmlFile = new StreamSource(this.getFile());
-
+			BufferedReader reader= new BufferedReader(new FileReader(this.getFile()));
+			StringBuffer buffer = new StringBuffer();
+			String line;
+			while((line = reader.readLine()) != null){
+				line = StringEscapeUtils.unescapeHtml4(line);
+				buffer.append(line);
+				buffer.append("\n");
+			}
+			reader.close();
+			
+			Reader stream= new StringReader(buffer.toString()); 
+			Source xmlFile = new StreamSource(stream,getFile().toURI().toASCIIString());
+			
 			SchemaFactory schemaFactory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(schemaFile);
-
+	
 			Validator validator = schema.newValidator();
 			monitor.worked(1);
 			validator.validate(xmlFile);
-
+			System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
 			JAXBContext context = JAXBContext.newInstance(this.controller.getClass());
 
 			Unmarshaller um = context.createUnmarshaller();
-
-			this.setController((IDataModel) um.unmarshal(new FileReader(
-					this.filename)));
+		
+			this.setController((IDataModel) um.unmarshal(new StringReader(buffer.toString())));
 			monitor.worked(2);
 			monitor.done();
+			 System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize");
 
 		} catch (SAXException e) {
 
@@ -728,55 +718,4 @@ class LoadJob extends Job {
 	}
 }
 
-/**
- * a runtime job which is stores a DataModel in a given File
- * 
- * @author Lukas Balzer
- * 
- */
-class SaveJob extends Job {
 
-	final File file;
-	final Logger log;
-	final IDataModel controller;
-
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param file
-	 *            the file in which the job should store the results
-	 * @param log
-	 *            the logger in which all messeges are written
-	 * @param controller
-	 *            the Data model which should be stored, this must be a
-	 *            JAXBContext
-	 */
-	public SaveJob(File file, Logger log, IDataModel controller) {
-		super(Messages.saveHaz);
-		this.file = file;
-		this.log = log;
-		this.controller = controller;
-		
-	}
-	
-
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
-		JAXBContext context;
-		try {
-			context = JAXBContext.newInstance(this.controller.getClass());
-			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-			// Write to file
-			m.marshal(this.controller, this.file);
-		} catch (JAXBException e) {
-			this.log.error(e.getMessage(), e);
-			return Status.CANCEL_STATUS;
-		}
-		return Status.OK_STATUS;
-	}
-}

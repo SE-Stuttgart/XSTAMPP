@@ -93,7 +93,7 @@ public class ProjectDataController {
 	 * @author Jaqueline Patzek
 	 */
 	public void setProjectDescription(String projectDescription) {
-		this.projectDescription = projectDescription;
+		this.projectDescription =projectDescription;
 	}
 
 	/**

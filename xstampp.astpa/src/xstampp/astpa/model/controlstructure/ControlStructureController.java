@@ -51,7 +51,8 @@ public class ControlStructureController {
 	private final Map<UUID, IRectangleComponent> componentTrash;
 	private final Map<UUID, IConnection> connectionTrash;
 	private final Map<UUID, List<UUID>> removedLinks;
-
+	private boolean initiateStep1;
+	private boolean initiateStep2;
 	/**
 	 * Constructor of the control structure controller
 	 * 
@@ -63,6 +64,8 @@ public class ControlStructureController {
 		this.connectionTrash = new HashMap<>();
 		this.removedLinks = new HashMap<>();
 		this.setRoot(new Rectangle(), new String());
+		this.initiateStep1=false;
+		this.initiateStep2=false;
 	}
 
 	/**
@@ -152,6 +155,18 @@ public class ControlStructureController {
 			boolean step1) {
 		Component component = this.getInternalComponent(componentId);
 		if (component != null) {
+			//every time the layout is changed the controller checks if both
+			//steps have been initialized and if not synchronizes the two layouts
+			if		(step1 && this.initiateStep1){
+				this.initiateStep2=true;
+				component.setLayout(layout, false);
+			}
+			else if	(step1 && !this.initiateStep1){
+				this.initiateStep2=false;
+			}
+			else if	(!step1 &&this.initiateStep2){
+				this.initiateStep1=false;
+			}
 			component.setLayout(layout, step1);
 			return true;
 		}
@@ -330,7 +345,7 @@ public class ControlStructureController {
 	public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor) {
 		IConnection connection = this.getConnection(connectionId);
 		if (connection != null) {
-			((CSConnection) connection).setSourceFigureId(sourceAnchor);
+			((CSConnection) connection).setSourceAnchor(sourceAnchor);
 			return true;
 		}
 		return false;
@@ -538,4 +553,19 @@ public class ControlStructureController {
 	public int getConnectionTrashSize() {
 		return this.connectionTrash.size();
 	}
+	
+	/**
+	 * is called the first time the cs is opened sets a boolean which indicates 
+	 * that the 1. step must be initialized 	
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
+	 public void initializeCSS(){
+			this.initiateStep1=true;
+	 }
+	 
+
+	 
+	 
 }

@@ -77,8 +77,8 @@ public class Component implements IRectangleComponent, ICausalComponent {
 		this.id = UUID.randomUUID();
 		this.controlActionId = null;
 		this.text = text;
-		this.layout = layout;
-		this.layoutPM = layout;
+		this.layout = layout.getCopy();
+		this.layoutPM = layout.getCopy();
 		this.componentType = type;
 		this.children = new ArrayList<>();
 		this.causalFactors = new ArrayList<>();
@@ -154,9 +154,6 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	public Rectangle getLayout(boolean step1) {
 		if (step1) {
 			return this.layout;
-		}
-		if (this.layoutPM.isEmpty()) {
-			this.sychronizeLayout();
 		}
 		return this.layoutPM;
 
@@ -307,7 +304,7 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	}
 
 	/**
-	 * Sets the layout data of both Steps to the same value;
+	 * Sets the layout data of both Steps to the value of step 1.8
 	 * 
 	 * @author Lukas Balzer
 	 * 

@@ -338,7 +338,7 @@ public class DesignRequirementView extends CommonTableView {
 				String designRequirement = newline + num + ": " + title; //$NON-NLS-1$
 				designRequirements = designRequirements + designRequirement;
 			}
-			String confirmation = Messages.PleaseConfirmTheDeletionOfTheFollowingDesignRequirements
+			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingDesignRequirements
 					+ designRequirements;
 			boolean b = MessageDialog.openQuestion(this.getTableContainer()
 					.getShell(), Messages.Confirm, confirmation);
@@ -359,7 +359,7 @@ public class DesignRequirementView extends CommonTableView {
 					.openQuestion(
 							this.getTableContainer().getShell(),
 							Messages.Confirm,
-							Messages.PleaseConfirmTheDeletionOfAllSelectedDesignRequirements);
+							Messages.ConfirmTheDeletionOfAllSelectedDesignRequirements);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				DesignRequirementView.this.displayedDesignRequirement = null;

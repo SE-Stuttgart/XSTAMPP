@@ -31,7 +31,7 @@ public class Delete extends AbstractHandler {
 					Display.getCurrent().getActiveShell(),
 					Messages.DeleteProject,
 					String.format(Messages.DeleteProjectConfirmMsg, projName))
-					&& ViewContainer.getContainerInstance().removeProjectData(
+					&& !ViewContainer.getContainerInstance().removeProjectData(
 							projectId)) {
 				MessageDialog.openError(Display.getCurrent().getActiveShell(),
 						Messages.Error, Messages.DeleteFailedMsg);

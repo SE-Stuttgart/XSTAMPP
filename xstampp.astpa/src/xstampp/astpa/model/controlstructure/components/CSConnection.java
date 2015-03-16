@@ -32,11 +32,9 @@ import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 public class CSConnection implements IConnection {
 
 	private UUID id;
-	@XmlElement(name = "sourceAnchor")
-	private Anchor sourceAnchor;
-	@XmlElement(name = "targetAnchor")
-	private Anchor targetAnchor;
 	private ConnectionType connectionType;
+	private Anchor sourceAnchor;
+	private Anchor targetAnchor;
 
 	/**
 	 * Constructs a new connection
@@ -68,7 +66,7 @@ public class CSConnection implements IConnection {
 	}
 
 	@Override
-	public IAnchor getSourceAnchor() {
+	public Anchor getSourceAnchor() {
 		return this.sourceAnchor;
 	}
 
@@ -76,12 +74,12 @@ public class CSConnection implements IConnection {
 	 * @param sourceAnchor
 	 *            the sourceFigureId to set
 	 */
-	public void setSourceFigureId(Anchor sourceAnchor) {
+	public void setSourceAnchor(Anchor sourceAnchor) {
 		this.sourceAnchor = sourceAnchor;
 	}
 
 	@Override
-	public IAnchor getTargetAnchor() {
+	public Anchor getTargetAnchor() {
 		return this.targetAnchor;
 	}
 
@@ -89,8 +87,8 @@ public class CSConnection implements IConnection {
 	 * @param targetAnchor
 	 *            the targetFigureId to set
 	 */
-	public void setTargetAnchor(Anchor targetAnchor) {
-		this.targetAnchor = targetAnchor;
+	public void setTargetAnchor(Anchor target) {
+		this.targetAnchor = target;
 	}
 
 	@Override

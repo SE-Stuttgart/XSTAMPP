@@ -330,7 +330,7 @@ public class SystemGoalView extends CommonTableView {
 				String systemGoal = newline + num + ": " + title; //$NON-NLS-1$
 				systemGoals = systemGoals + systemGoal;
 			}
-			String confirmation = Messages.PleaseConfirmTheDeletionOfTheFollowingSystemGoals
+			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingSystemGoals
 					+ systemGoals;
 			boolean b = MessageDialog.openQuestion(this.getTableContainer()
 					.getShell(), Messages.Confirm, confirmation);
@@ -347,7 +347,7 @@ public class SystemGoalView extends CommonTableView {
 			// if many system goals are selected
 			boolean b = MessageDialog.openQuestion(this.getTableContainer()
 					.getShell(), Messages.Confirm,
-					Messages.PleaseConfirmTheDeletionOfAllSelectedSystemGoals);
+					Messages.ConfirmTheDeletionOfAllSelectedSystemGoals);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				SystemGoalView.this.displayedSystemGoal = null;

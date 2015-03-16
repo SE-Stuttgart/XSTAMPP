@@ -415,4 +415,5 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 */
 	public int getConnectionTrashSize();
 
+	
 }

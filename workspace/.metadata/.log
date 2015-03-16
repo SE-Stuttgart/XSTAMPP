@@ -18,3 +18,84 @@ Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tych
 !MESSAGE From: STAMP Platform 1.0.0.201412221659 (xstampp_product 1.0.0.201412221659)
 !SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-22 17:59:09.771
 !MESSAGE To: tooling.osgi.bundle.default [1.0.0]
+!SESSION 2015-03-03 13:40:38.000 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho2626999272170388112secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho2626999272170388112secure_storage
+
+!ENTRY org.eclipse.equinox.p2.core 4 0 2015-03-03 13:40:38.000
+!MESSAGE Provisioning exception
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: Unable to read repository at http://download.eclipse.org/releases/luna/201502271000/content.jar.
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.updateCache(CacheManager.java:371)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:208)
+	at org.eclipse.tycho.p2.remote.RemoteRepositoryCacheManager.createCache(RemoteRepositoryCacheManager.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:768)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:668)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager.loadRepository(RemoteMetadataRepositoryManager.java:59)
+	at org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager.loadRepository(RemoteMetadataRepositoryManager.java:52)
+	at org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository.addChild(CompositeMetadataRepository.java:166)
+	at org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository.<init>(CompositeMetadataRepository.java:106)
+	at org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepositoryFactory.load(CompositeMetadataRepositoryFactory.java:122)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:768)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:668)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager.loadRepository(RemoteMetadataRepositoryManager.java:59)
+	at org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager.loadRepository(RemoteMetadataRepositoryManager.java:52)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.loadMetadataRepository(TargetPlatformFactoryImpl.java:297)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.gatherExternalInstallableUnits(TargetPlatformFactoryImpl.java:269)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.createTargetPlatform(TargetPlatformFactoryImpl.java:174)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.createTargetPlatform(TargetPlatformFactoryImpl.java:126)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.createTargetPlatform(TargetPlatformFactoryImpl.java:1)
+	at org.eclipse.tycho.p2.manager.ReactorRepositoryManagerImpl.computePreliminaryTargetPlatform(ReactorRepositoryManagerImpl.java:82)
+	at org.eclipse.tycho.p2.resolver.P2DependencyResolver.computePreliminaryTargetPlatform(P2DependencyResolver.java:215)
+	at org.eclipse.tycho.core.resolver.DefaultTychoResolver.resolveProject(DefaultTychoResolver.java:99)
+	at org.eclipse.tycho.core.maven.TychoMavenLifecycleParticipant.afterProjectsRead(TychoMavenLifecycleParticipant.java:75)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:317)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:155)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:584)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:213)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:157)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:289)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:229)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:415)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:356)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at org.apache.http.impl.io.AbstractSessionInputBuffer.read(AbstractSessionInputBuffer.java:204)
+	at org.apache.http.impl.io.ContentLengthInputStream.read(ContentLengthInputStream.java:182)
+	at org.apache.http.conn.EofSensorInputStream.read(EofSensorInputStream.java:138)
+	at java.io.FilterInputStream.read(Unknown Source)
+	at java.io.FilterInputStream.read(Unknown Source)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer$1.performFileTransfer(AbstractRetrieveFileTransfer.java:178)
+	at org.eclipse.ecf.filetransfer.FileTransferJob.run(FileTransferJob.java:73)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 1 org.eclipse.equinox.p2.transport.ecf 4 1002 2015-03-03 13:40:38.000
+!MESSAGE Unable to read repository at http://download.eclipse.org/releases/luna/201502271000/content.jar.
+!STACK 0
+java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at org.apache.http.impl.io.AbstractSessionInputBuffer.read(AbstractSessionInputBuffer.java:204)
+	at org.apache.http.impl.io.ContentLengthInputStream.read(ContentLengthInputStream.java:182)
+	at org.apache.http.conn.EofSensorInputStream.read(EofSensorInputStream.java:138)
+	at java.io.FilterInputStream.read(Unknown Source)
+	at java.io.FilterInputStream.read(Unknown Source)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer$1.performFileTransfer(AbstractRetrieveFileTransfer.java:178)
+	at org.eclipse.ecf.filetransfer.FileTransferJob.run(FileTransferJob.java:73)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)

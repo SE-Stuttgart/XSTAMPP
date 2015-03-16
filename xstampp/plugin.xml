@@ -60,9 +60,9 @@
       </perspective>
       <perspective
             class="xstampp.ASTPAPerspective"
-            fixed="false"
+            fixed="true"
             id="astpa.astpaPerspective"
-            name="Project Perspective">
+            name="A-STPA Perspective">
       </perspective>
    </extension>
    <extension
@@ -153,6 +153,28 @@
                   commandId="astpa.preferencepage"
                   helpContextId="Opens the preference page"
                   label="Preferences"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               label="Window">
+            <command
+                  commandId="org.eclipse.ui.window.switchToEditor"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  style="pulldown">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.perspectives.showPerspective"
+                  style="pulldown">
+            </command>
+            <separator
+                  name="xstampp.separator1">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.resetPerspective"
                   style="push">
             </command>
          </menu>
@@ -664,6 +686,27 @@
    <toc
          file="tocgettingstarted.xml">
    </toc>
+</extension>
+<extension
+      point="org.eclipse.ui.importWizards">
+   <wizard
+         category="xstampp.category.general"
+         class="org.eclipse.ui.internal.wizards.preferences.PreferencesImportWizard"
+         id="xstampp.importwizard.preferences"
+         name="Preferences">
+   </wizard>
+   <category
+         id="xstampp.category.general"
+         name="General">
+   </category>
+</extension>
+<extension
+      point="org.eclipse.ui.exportWizards">
+   <wizard
+         class="org.eclipse.ui.internal.wizards.preferences.PreferencesExportWizard"
+         id="xstampp..exportwizard.preferences"
+         name="Preferences">
+   </wizard>
 </extension>
 
 

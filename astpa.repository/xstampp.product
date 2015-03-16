@@ -13,7 +13,7 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html
 
 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
 Institute of Software Technology, Software Engineering Group
-University of Stuttgart, Gremany
+University of Stuttgart, Germany
       </text>
    </aboutInfo>
 
@@ -36,6 +36,7 @@ University of Stuttgart, Gremany
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
