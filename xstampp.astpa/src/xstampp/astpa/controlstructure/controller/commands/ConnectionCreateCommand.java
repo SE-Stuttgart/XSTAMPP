@@ -121,14 +121,16 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 				|| (this.targetAnchorModel == null)) {
 			this.parent.removeHighlighter();
 			return false;
-		} else if (this.sourceAnchorModel.getOwnerId().equals(
-				this.targetAnchorModel.getOwnerId())) {
-			this.parent.removeHighlighter();
-			return false;
-		} else if (!this.checkConnection(this.sourceAnchorModel,
-				this.targetAnchorModel)) {
-			return false;
-		}
+		} 
+//		else if (this.sourceAnchorModel.getOwnerId().equals(
+//				this.targetAnchorModel.getOwnerId())) {
+//			this.parent.removeHighlighter();
+//			return false;
+//		}
+//		else if (!this.checkConnection(this.sourceAnchorModel,
+//				this.targetAnchorModel)) {
+//			return false;
+//		}
 		return true;
 	}
 

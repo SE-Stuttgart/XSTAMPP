@@ -647,8 +647,22 @@ class LoadJob extends Job {
 			BufferedReader reader= new BufferedReader(new FileReader(this.getFile()));
 			StringBuffer buffer = new StringBuffer();
 			String line;
+			
 			while((line = reader.readLine()) != null){
+				if(line.contains("<") || line.contains(">")){
+					//gt and lt are replaced by null chars for the time of unescaping
+					line = line.replace(">", "\0\0");
+					line = line.replace("<", "\0");
+				}
 				line = StringEscapeUtils.unescapeHtml4(line);
+				//now all gt/lt signs left after the unescaping are not part of the xml
+				//syntax and get back escaped to assure the correct xml parsing
+				line = line.replace("&", "&amp;");
+				line = line.replace(">", "&gt;");
+				line = line.replace("<", "&lt;");
+
+				line = line.replace("\0\0",">");
+				line = line.replace("\0","<");
 				buffer.append(line);
 				buffer.append("\n");
 			}
@@ -676,7 +690,6 @@ class LoadJob extends Job {
 			 System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize");
 
 		} catch (SAXException e) {
-
 			this.log.error(e.getMessage(), e);
 			return Status.CANCEL_STATUS;
 		} catch (IOException e) {

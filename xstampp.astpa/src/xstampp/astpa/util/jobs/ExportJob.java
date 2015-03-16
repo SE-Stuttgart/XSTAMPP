@@ -103,7 +103,7 @@ public class ExportJob extends Job {
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(Messages.ExportPdf, IProgressMonitor.UNKNOWN);
+		monitor.beginTask(Messages.ExportPdf, 5);
 		String workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
 		String csPath = workspacePath + File.separator
 				+ Messages.ControlStructure + ".png";
@@ -115,8 +115,9 @@ public class ExportJob extends Job {
 		CSExportJob csPmExport = new CSExportJob(csPmPath, CSEditorWithPM.ID,
 				this.id, 10, this.decorate);
 
-		csExport.getPrintableRoot(monitor);
-		csPmExport.getPrintableRoot(monitor);
+		csExport.getPrintableRoot();
+		csPmExport.getPrintableRoot();
+		monitor.worked(1);
 
 		IDataModel model = ViewContainer.getContainerInstance().getDataModel(
 				this.id);
@@ -141,10 +142,10 @@ public class ExportJob extends Job {
 					.error("Report cannot be exported: Invalid file path"); //$NON-NLS-1$
 			return Status.CANCEL_STATUS;
 		}
+		monitor.worked(1);
 
 		FopFactory fopFactory = FopFactory.newInstance();
 		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-
 		ByteArrayOutputStream pdfoutStream = new ByteArrayOutputStream();
 
 		StreamSource informationSource = new StreamSource(
@@ -171,6 +172,7 @@ public class ExportJob extends Job {
 				pdfFile.createNewFile();
 			}
 
+			monitor.worked(1);
 			TransformerFactory transfact = TransformerFactory.newInstance();
 			transfact.setURIResolver(new URIResolver() {
 				@Override
@@ -188,6 +190,8 @@ public class ExportJob extends Job {
 					fopFactory.setPageHeight(this
 							.getFirstDocumentSpan(xslfoTransformer));
 				}
+
+				monitor.worked(1);
 				Fop fop;
 				fop = fopFactory.newFop(this.fileType, foUserAgent,
 						pdfoutStream);
@@ -195,9 +199,10 @@ public class ExportJob extends Job {
 				Result res = new SAXResult(fop.getDefaultHandler());
 				// transform the informationSource with the transformXSLSource
 				xslfoTransformer.transform(informationSource, res);
-				
 				str.write(pdfoutStream.toByteArray());
 				str.close();
+
+				monitor.worked(1);
 				if (pdfFile.exists()) {
 					if (Desktop.isDesktopSupported()) {
 						Desktop.getDesktop().open(pdfFile);
@@ -234,9 +239,11 @@ public class ExportJob extends Job {
 		AreaTreeModel treeModel = new AreaTreeModel();
 		AreaTreeParser areaTreeParser = new AreaTreeParser();
 		areaTreeParser.parse(treeSource, treeModel, userAgent);
+		
 		Span span = (Span) treeModel.getCurrentPageSequence().getPage(0)
 				.getBodyRegion().getMainReference().getSpans().get(0);
 		float pageHeight = span.getBPD() / ExportJob.MP_TO_INCH;
+		
 		return Float.toString(pageHeight) + "in";//$NON-NLS-1$
 
 	}

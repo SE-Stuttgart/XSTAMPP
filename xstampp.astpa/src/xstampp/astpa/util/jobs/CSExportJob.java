@@ -145,7 +145,7 @@ public class CSExportJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 
-		this.getPrintableRoot(monitor);
+		this.getPrintableRoot();
 
 		return Status.OK_STATUS;
 
@@ -158,8 +158,7 @@ public class CSExportJob extends Job {
 	 * 
 	 * @return
 	 */
-	public IStatus getPrintableRoot(IProgressMonitor monitor) {
-		monitor.beginTask(this.process, 3);
+	public IStatus getPrintableRoot() {
 		Runnable run = new Runnable() {
 
 			@Override
@@ -225,7 +224,6 @@ public class CSExportJob extends Job {
 		while (this.printableFigure == null) {
 			// wait
 		}
-		monitor.worked(1);
 
 		if (this.imageType < 0) {
 			return Status.CANCEL_STATUS;
@@ -259,7 +257,6 @@ public class CSExportJob extends Job {
 			}
 
 		}
-		monitor.worked(2);
 		// cut off negative x-/y-parts
 		clipRectangle.width = clipRectangle.width
 				+ Math.min(0, clipRectangle.x);
@@ -300,7 +297,6 @@ public class CSExportJob extends Job {
 		imgLoader.data = new ImageData[] { scaledImage.getImageData() };
 
 		imgLoader.save(this.path, this.imageType);
-		monitor.worked(3);
 		File imageFile = new File(this.path);
 		if (imageFile.exists() && this.showPreview) {
 			if (Desktop.isDesktopSupported()) {
