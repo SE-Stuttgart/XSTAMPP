@@ -68,7 +68,7 @@ import xstampp.util.StandartEditorPart;
  * @author Patrick Wickenhaeuser
  * @author Jarkko Heidenwag
  */
-public class LinkingView extends StandartEditorPart implements IViewBase {
+public class LinkingView extends StandartEditorPart implements IViewBase,IPropertyChangeListener {
 
 	/**
 	 * Identifier of the view
@@ -477,27 +477,7 @@ public class LinkingView extends StandartEditorPart implements IViewBase {
 		this.setDataModelInterface(ViewContainer.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		Activator.getDefault().getPreferenceStore()
-				.addPropertyChangeListener(new IPropertyChangeListener() {
-
-					@Override
-					public void propertyChange(PropertyChangeEvent event) {
-						LinkingView.this.lblSelected.setFont(new Font(Display
-								.getCurrent(), PreferenceConverter.getFontData(
-								IViewBase.STORE,
-								IPreferenceConstants.DEFAULT_FONT)));
-						LinkingView.this.lblAvailableForLinking.setFont(new Font(
-								Display.getCurrent(),
-								PreferenceConverter.getFontData(
-										IViewBase.STORE,
-										IPreferenceConstants.DEFAULT_FONT)));
-
-						LinkingView.this.lblCurrentlyLinked.setFont(new Font(
-								Display.getCurrent(),
-								PreferenceConverter.getFontData(
-										IViewBase.STORE,
-										IPreferenceConstants.DEFAULT_FONT)));
-					}
-				});
+				.addPropertyChangeListener(this);
 
 		// font used for the labels over the tables
 		Font labelFont = new Font(Display.getCurrent(),
@@ -856,6 +836,26 @@ public class LinkingView extends StandartEditorPart implements IViewBase {
 	@Override
 	public void dispose() {
 		this.dataInterface.deleteObserver(this);
+		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		super.dispose();
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		LinkingView.this.lblSelected.setFont(new Font(Display
+				.getCurrent(), PreferenceConverter.getFontData(
+				IViewBase.STORE,
+				IPreferenceConstants.DEFAULT_FONT)));
+		LinkingView.this.lblAvailableForLinking.setFont(new Font(
+				Display.getCurrent(),
+				PreferenceConverter.getFontData(
+						IViewBase.STORE,
+						IPreferenceConstants.DEFAULT_FONT)));
+
+		LinkingView.this.lblCurrentlyLinked.setFont(new Font(
+				Display.getCurrent(),
+				PreferenceConverter.getFontData(
+						IViewBase.STORE,
+						IPreferenceConstants.DEFAULT_FONT)));
 	}
 }

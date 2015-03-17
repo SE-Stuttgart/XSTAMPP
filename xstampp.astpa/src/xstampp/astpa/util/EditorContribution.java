@@ -177,8 +177,11 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 			}
 		});
 		
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
-
+		try{
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
+		}catch(NullPointerException e){
+			// if there is a nullpointer one one cant do anything
+		}
 		this.setEnabled(false);
 		return comp;
 	}
@@ -253,8 +256,11 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	
 	@Override
 	public void dispose() {
-		
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+		try{
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+		}catch(NullPointerException e){
+			// if there is a nullpointer one can't delete anything
+		}
 		super.dispose();
 	}
 	

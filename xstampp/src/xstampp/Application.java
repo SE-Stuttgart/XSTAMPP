@@ -101,7 +101,7 @@ public class Application implements IApplication {
 			}
 			
 			return IApplication.EXIT_OK;
-		} finally {
+		}finally {
 			display.dispose();
 		}
 

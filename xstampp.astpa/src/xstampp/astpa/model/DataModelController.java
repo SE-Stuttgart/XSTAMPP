@@ -230,6 +230,7 @@ public class DataModelController extends Observable implements
 		if (projectDescription == null) {
 			return false;
 		}
+		
 		this.projectDataManager.setProjectDescription(projectDescription);
 		this.setUnsavedAndChanged(ObserverValue.PROJECT_DESCRIPTION);
 		return true;

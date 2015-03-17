@@ -312,7 +312,8 @@ public class ViewContainer implements IProcessController {
 							Messages.FileExists,String.format(Messages.DoYouReallyWantToOverwriteTheFile,outer.getName()))) {
 				return false;
 				}
-				for(UUID id: this.projectSaveFiles.keySet()){
+				Set<UUID> idSet =this.projectSaveFiles.keySet();
+				for(UUID id: idSet){
 					if(this.projectSaveFiles.get(id).equals(copy) && !removeProjectData(id)){
 						MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
 						return false;

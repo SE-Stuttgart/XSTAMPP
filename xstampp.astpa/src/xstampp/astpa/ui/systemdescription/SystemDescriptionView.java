@@ -355,14 +355,14 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		String projectDesc = this.dataInterface.getProjectDescription();
 		StyleRange[] ranges = this.dataInterface.getStyleRangesAsArray();
 		if (projectDesc != null) {
-			projectDesc = projectDesc.replaceAll("\n", " \n");
+			if(!projectDesc.contains("\r")){
+				projectDesc = projectDesc.replaceAll("\n", "\r\n");
+			}
 			this.descriptionText.setText(projectDesc);
 			if (ranges != null) {
 				this.descriptionText.setStyleRanges(ranges);
 			}
-
-			projectDesc = projectDesc.replaceAll(" \n", "\n");
-			this.descriptionText.setText(projectDesc);
+			
 		} else {
 			this.descriptionText.setText(""); //$NON-NLS-1$
 		}
@@ -432,6 +432,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				SystemDescriptionView.this.updateStatusBar();
 			}
 		});
+
 		this.descriptionText
 				.addExtendedModifyListener(new ExtendedModifyListener() {
 

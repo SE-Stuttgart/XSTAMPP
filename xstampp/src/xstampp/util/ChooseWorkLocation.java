@@ -275,8 +275,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 				return Messages.WorkspaceSetDesc;
 			}
 		}
-
-
+		
+		
 		return null;
 	}
 
