@@ -73,6 +73,11 @@ public class CSModelCreationFactory implements CreationFactory {
 			text = Messages.Actuator;
 			break;
 		}
+		case DASHEDBOX:  {
+
+			text = Messages.DashedBox;
+			break;
+		}
 		case CONTROLLER: {
 			text = Messages.Controller;
 			break;

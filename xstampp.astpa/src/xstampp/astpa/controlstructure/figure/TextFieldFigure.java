@@ -15,8 +15,17 @@ package xstampp.astpa.controlstructure.figure;
 
 import java.util.UUID;
 
+import org.apache.fop.render.txt.border.DashedBorderElement;
+import org.eclipse.draw2d.Border;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
+
 
 /**
  * 
@@ -36,6 +45,7 @@ public class TextFieldFigure extends CSFigure {
 	public static final Dimension TEXTBOX_FIGURE_DEFSIZE = new Dimension(100,
 			15);
 
+	private boolean isDashed;
 	/**
 	 * @author Lukas Balzer
 	 * @param id
@@ -43,6 +53,7 @@ public class TextFieldFigure extends CSFigure {
 	 */
 	public TextFieldFigure(UUID id) {
 		super(id);
+		this.isDashed = false;
 		this.setOpaque(false);
 		this.getTextField().setOpaque(false);
 	}
@@ -66,15 +77,21 @@ public class TextFieldFigure extends CSFigure {
 		this.getTextField().repaint();
 		// the height of the rectangle is set to the ideal height for the given
 		// width
-		rect.height = this.getTextField().getPreferredSize(width, -1).height;
+		if(!this.isDashed){
+			rect.height = this.getTextField().getPreferredSize(width, -1).height;
+		}
 
 		super.setLayout(rect);
 		this.getTextField().repaint();
 	}
 
 	@Override
-	public void setDeco(boolean deco) {
-		// there's no decoration in textbox
+	public void setDeco(boolean deco) 
+	{
+		if(deco){
+			this.isDashed = true;
+			setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH)); 
+		}
 	}
 
 }

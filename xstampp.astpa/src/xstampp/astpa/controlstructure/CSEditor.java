@@ -131,7 +131,7 @@ public class CSEditor extends CSAbstractEditor {
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
 		componentElements.add(new CombinedTemplateCreationEntry(
-				Messages.ControlAction, "Create Control Action Component",
+				Messages.ControlAction, Messages.CreateControlAction,
 				ComponentType.CONTROLACTION, new CSModelCreationFactory(
 						ComponentType.CONTROLACTION, this.modelInterface),
 				imgDesc, imgDescLarge));
@@ -168,6 +168,15 @@ public class CSEditor extends CSAbstractEditor {
 		otherElements.add(new CombinedTemplateCreationEntry(Messages.TextBox,
 				Messages.CreateTextBox, ComponentType.TEXTFIELD,
 				new CSModelCreationFactory(ComponentType.TEXTFIELD,
+						this.modelInterface), imgDesc, imgDescLarge));
+		
+		imgDesc = Activator
+				.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator
+				.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_40.png"); //$NON-NLS-1$
+		otherElements.add(new CombinedTemplateCreationEntry(Messages.DashedBox,
+				Messages.CreateDashedBox, ComponentType.DASHEDBOX,
+				new CSModelCreationFactory(ComponentType.DASHEDBOX,
 						this.modelInterface), imgDesc, imgDescLarge));
 
 		return root;

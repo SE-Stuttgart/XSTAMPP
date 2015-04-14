@@ -17,6 +17,7 @@ package xstampp.astpa.model.controlstructure.components;
  * Enum for the type of components
  * 
  * @author Lukas Balzer
+ * @since 2.0
  * 
  */
 public enum ComponentType {
@@ -24,6 +25,11 @@ public enum ComponentType {
 	 * This constant is used to create Text Fields
 	 */
 	TEXTFIELD,
+
+	/**
+	 * This constant is used to create Dashed Boxes
+	 */
+	DASHEDBOX,
 
 	/**
 	 * This type is used to create/store a visualization of a cointroloAction

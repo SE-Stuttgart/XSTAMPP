@@ -30,6 +30,7 @@ import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ControlActionEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ControlledProcessEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ControllerEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.DashedBoxEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessModelEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessValueEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessVariableEditPart;
@@ -140,6 +141,11 @@ public class CSEditPartFactory implements EditPartFactory {
 		}
 		case TEXTFIELD: {
 			part = new TextFieldEditPart(this.dataModel, this.stepId);
+			id = ((IRectangleComponent) model).getId();
+			break;
+		}
+		case DASHEDBOX: {
+			part = new DashedBoxEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
