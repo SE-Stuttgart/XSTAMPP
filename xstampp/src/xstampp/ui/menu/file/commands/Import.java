@@ -26,7 +26,7 @@ import xstampp.ui.common.ViewContainer;
 /**
  * Handler that loads a analysis from the file system
  * 
- * @author Fabian Toth
+ * @author Fabian Toth,Lukas Balzer
  * 
  */
 public class Import extends AbstractHandler {

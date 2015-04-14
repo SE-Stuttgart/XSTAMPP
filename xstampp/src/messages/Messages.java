@@ -105,6 +105,7 @@ public final class Messages extends NLS {
 	public static String CommonTable;
 	@SuppressWarnings("javadoc")
 	public static String Controller;
+	public static String CreateControlAction;
 	@SuppressWarnings("javadoc")
 	public static String CreateController;
 	@SuppressWarnings("javadoc")
@@ -175,6 +176,7 @@ public final class Messages extends NLS {
 	public static String ComponentElements;
 	@SuppressWarnings("javadoc")
 	public static String CreateActuator;
+	public static String CreateDashedBox;
 	@SuppressWarnings("javadoc")
 	public static String CreateNew;
 	@SuppressWarnings("javadoc")
@@ -276,6 +278,7 @@ public final class Messages extends NLS {
 	public static String DesignRequirements;
 	@SuppressWarnings("javadoc")
 	public static String DashedArrows;
+	public static String DashedBox;
 	/*
 	 * ------E-------------------------------------------------------------------*
 	 */

@@ -19,6 +19,8 @@ import java.util.Observer;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.jobs.Job;
 
+import xstampp.util.AbstractLoadJob;
+
 /**
  * Interface for the DataModel which defines the methods to handle the Observer
  * pattern. All other interfaces for the data model should extend this interface
@@ -116,4 +118,6 @@ public interface IDataModel {
 	 *
 	 */
 	void initializeProject();
+	
+	AbstractLoadJob getLoadJob(String filename, String savePath,Logger log);
 }

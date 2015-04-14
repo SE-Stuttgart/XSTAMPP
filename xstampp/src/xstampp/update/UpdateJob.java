@@ -79,6 +79,7 @@ public class UpdateJob extends Job {
 	public UpdateJob(String name, IProvisioningAgent agent, Shell parent,
 			IProcessController viewContainer, boolean startUp) {
 		super(name);
+		ViewContainer.getLOGGER().debug("Search " + UpdateJob.REPOSITORY_LOC + " for updates");
 		this.agent = agent;
 		this.parent = parent;
 		this.viewContainer = ViewContainer.getContainerInstance();

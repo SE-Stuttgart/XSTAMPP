@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -60,6 +61,7 @@ import org.xml.sax.SAXException;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.navigation.ProjectExplorer;
+import xstampp.util.AbstractLoadJob;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -109,7 +111,7 @@ public class ViewContainer implements IProcessController {
 		@Override
 		public void done(IJobChangeEvent event) {
 			if (event.getResult() == Status.CANCEL_STATUS) {
-				final String name = ((LoadJob) event.getJob()).getFile().getName();
+				final String name = ((AbstractLoadJob) event.getJob()).getFile().getName();
 				Display.getDefault().syncExec(new Runnable() {
 
 					@Override
@@ -137,8 +139,8 @@ public class ViewContainer implements IProcessController {
 		@Override
 		public void run() {
 			UUID projectId = ViewContainer.getContainerInstance()
-					.addProjectData(((LoadJob) this.event.getJob()).getController());
-			File saveFile = ((LoadJob) this.event.getJob()).getSaveFile();
+					.addProjectData(((AbstractLoadJob) this.event.getJob()).getController());
+			File saveFile = ((AbstractLoadJob) this.event.getJob()).getSaveFile();
 			ViewContainer.getContainerInstance().projectSaveFiles.put(
 					projectId, saveFile);
 			ViewContainer.getContainerInstance().saveDataModel(projectId, false);
@@ -294,10 +296,20 @@ public class ViewContainer implements IProcessController {
 	public boolean importDataModel() {
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
 				.getDisplay().getActiveShell(), SWT.OPEN);
-		fileDialog.setFilterExtensions(new String[] { "*.haz" }); //$NON-NLS-1$
-		fileDialog
-				.setFilterNames(new String[] { "A-STPA project file (*.haz)" }); //$NON-NLS-1$
-
+		String tmpExt;
+		ArrayList<String> extensions= new ArrayList<>();
+		ArrayList<String> names= new ArrayList<>();
+		for (IConfigurationElement extElement : Platform
+				.getExtensionRegistry()
+				.getConfigurationElementsFor("astpa.extension.steppedProcess")) { //$NON-NLS-1$
+			tmpExt = "*." + extElement.getAttribute("extension");  //$NON-NLS-1$
+			extensions.add(tmpExt);
+			names.add(extElement.getAttribute("name") + "(" +tmpExt+ ")");  //$NON-NLS-1$  //$NON-NLS-2$  //$NON-NLS-3$
+		}
+			
+		fileDialog.setFilterExtensions(extensions.toArray(new String[]{}));
+		fileDialog.setFilterNames(names.toArray(new String[]{}));
+		
 		String file = fileDialog.open();
 		if ((file != null)
 				&& !file.contains(Platform.getInstanceLocation().getURL()
@@ -365,15 +377,14 @@ public class ViewContainer implements IProcessController {
 				dataModel = (IDataModel) STPAPluginUtils.executeCommand(extElement.getAttribute("controller"));
 			}
 		}
-		// if (this.overwriteDataModel()) {
+		
 		if (file != null && dataModel != null) {
-			Job load = new LoadJob(dataModel,file,saveFile, ViewContainer.getLOGGER());
+			Job load = dataModel.getLoadJob(file,saveFile, ViewContainer.getLOGGER());
 			load.schedule();
 			load.addJobChangeListener(new LoadJobChangeAdapter());
 			return true;
 		}
 
-		// }
 
 		return false;
 	}
@@ -620,117 +631,5 @@ public class ViewContainer implements IProcessController {
 
 }
 
-class LoadJob extends Job {
-	private final File file;
-	private final String filename;
-	private final Logger log;
-	private IDataModel controller;
-	private Class<?> clazz;
-	private File saveFile;
-
-	public LoadJob(IDataModel dataModel,String filename, String savePath, Logger log) {
-		super(Messages.loadHaz);
-		this.file = new File(filename);
-		this.saveFile=new File(savePath);
-		this.log = log;
-		this.filename = filename;
-		this.controller=dataModel;
-	}
-
-	
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(Messages.loadingHaz, 2);
-
-		try {
-			// validate the file
-			URL schemaFile = this.getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
-			BufferedReader reader= new BufferedReader(new FileReader(this.getFile()));
-			StringBuffer buffer = new StringBuffer();
-			String line;
-			
-			while((line = reader.readLine()) != null){
-				if(line.contains("<") || line.contains(">")){
-					//gt and lt are replaced by null chars for the time of unescaping
-					line = line.replace(">", "\0\0");
-					line = line.replace("<", "\0");
-				}
-				line = StringEscapeUtils.unescapeHtml4(line);
-				//now all gt/lt signs left after the unescaping are not part of the xml
-				//syntax and get back escaped to assure the correct xml parsing
-				line = line.replace("&", "&amp;");
-				line = line.replace(">", "&gt;");
-				line = line.replace("<", "&lt;");
-
-				line = line.replace("\0\0",">");
-				line = line.replace("\0","<");
-				buffer.append(line);
-				buffer.append("\n");
-			}
-			reader.close();
-			
-			Reader stream= new StringReader(buffer.toString()); 
-			Source xmlFile = new StreamSource(stream,getFile().toURI().toASCIIString());
-			
-			SchemaFactory schemaFactory = SchemaFactory
-					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = schemaFactory.newSchema(schemaFile);
-	
-			Validator validator = schema.newValidator();
-			monitor.worked(1);
-			validator.validate(xmlFile);
-			System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
-			JAXBContext context = JAXBContext.newInstance(this.controller.getClass());
-
-			Unmarshaller um = context.createUnmarshaller();
-			StringReader stringReader=new StringReader(buffer.toString());
-			this.setController((IDataModel) um.unmarshal(stringReader));
-			reader.close();
-			monitor.worked(2);
-			monitor.done();
-			 System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize");
-
-		} catch (SAXException e) {
-			this.log.error(e.getMessage(), e);
-			return Status.CANCEL_STATUS;
-		} catch (IOException e) {
-			this.log.error(e.getMessage(), e);
-			return Status.CANCEL_STATUS;
-		} catch (JAXBException e) {
-			e.printStackTrace();
-			return Status.CANCEL_STATUS;
-
-		}
-		return Status.OK_STATUS;
-	}
-
-	/**
-	 * @return the controller
-	 */
-	public IDataModel getController() {
-		return this.controller;
-	}
-
-	/**
-	 * @param controller the controller to set
-	 */
-	public void setController(IDataModel controller) {
-		this.controller = controller;
-	}
-
-	/**
-	 * @return the file
-	 */
-	public File getFile() {
-		return this.file;
-	}
-	
-	/**
-	 * @return the file
-	 */
-	public File getSaveFile() {
-		return this.saveFile;
-	}
-}
 
 
