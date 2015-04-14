@@ -90,7 +90,7 @@ public interface IDataModel {
 	 * @author Fabian Toth
 	 * 
 	 */
-	public void prepareForSave();
+	void prepareForSave();
 
 	/**
 	 * Triggers an update of the given value
@@ -102,12 +102,27 @@ public interface IDataModel {
 	 */
 	void updateValue(ObserverValue delete);
 
-	public String getProjectName();
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return returns the project Name <b>must not be null</b>
+	 */
+	String getProjectName();
 
 	void setStored();
 
 	boolean hasUnsavedChanges();
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param projectName
+	 * 	The name of the project
+	 * @return
+	 * 	if the name has succesfullly been changed
+	 */
 	boolean setProjectName(String projectName);
 
 	/**
@@ -119,5 +134,16 @@ public interface IDataModel {
 	 */
 	void initializeProject();
 	
-	AbstractLoadJob getLoadJob(String filename, String savePath,Logger log);
+	/**
+	 * 
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return
+	 * 		the extension which is stored in the stepped process for this DataModel <b> must not return null!</b>
+	 */
+	String getFileExtension();
+	
+	String getPluginID();
+		
 }

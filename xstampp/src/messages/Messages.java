@@ -350,6 +350,8 @@ public final class Messages extends NLS {
 	//*-------I-------------------------------------------------------------------*
 	@SuppressWarnings("javadoc")
 	public static String Information;
+	public static String InvalidPluginCommand;
+	public static String InvalidSchemaFile;
 	@SuppressWarnings("javadoc")
 	public static String ID;
 	@SuppressWarnings("javadoc")
@@ -369,6 +371,7 @@ public final class Messages extends NLS {
 	public static String Line;
 	@SuppressWarnings("javadoc")
 	public static String LoadExistingProject;
+	public static String LoadFailed;
 	@SuppressWarnings("javadoc")
 	public static String LoadProject;
 	@SuppressWarnings("javadoc")

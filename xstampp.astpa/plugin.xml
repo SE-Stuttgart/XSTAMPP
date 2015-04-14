@@ -4,7 +4,7 @@
    <extension
          point="astpa.extension.steppedProcess">
       <process
-            controller="astpa.command.load"
+            command="astpa.command.load"
             editorId="astpa.steps.step1_1"
             extension="haz"
             icon="icons/branding/project16.png"

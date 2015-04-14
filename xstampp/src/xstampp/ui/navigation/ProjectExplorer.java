@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import xstampp.Activator;
 import xstampp.model.ObserverValue;
@@ -57,9 +59,9 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 	private static final String EXTENSION = "extension";
 	private final static String PATH_SEPERATOR="->";
-	private Map<UUID, TreeItem> projects;
-	private Map<TreeItem, String> treeItemToStepId;
-	private Map<String, IProjectSelection> selectionIdToSelector;
+	private Map<UUID, TreeItem> treeItemsToProjectIDs;
+	private Map<TreeItem, String> stepIdsToTreeItems;
+	private Map<String, IProjectSelection> selectorsToSelectionId;
 	private Tree tree;
 	private Listener listener;
 	private TreeViewer treeViewer;
@@ -81,35 +83,21 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 	private List<ISelectionChangedListener> selectionListener;
 
-	@SuppressWarnings("unused")
-	private class OpenEditorAction extends Action {
-
-		/**
-		 * @see org.eclipse.jface.action.Action#Action(String text,
-		 *      ImageDescriptor image)
-		 * 
-		 */
-		public OpenEditorAction(String text, ImageDescriptor image) {
-			super(text, image);
-		}
-
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setBackground(null);
-		this.extensions = new HashMap<>();
-		this.treeItemToStepId = new HashMap<>();
-		this.selectionIdToSelector = new HashMap<>();
+		this.stepIdsToTreeItems = new HashMap<>();
+		this.selectorsToSelectionId = new HashMap<>();
 		this.selectionListener = new ArrayList<>();
-		this.searchExtensions();
-		this.projects = new HashMap<>();
+		this.treeItemsToProjectIDs = new HashMap<>();
+		
 		Composite container = new Composite(parent, SWT.None);
 		container.setBackground(null);
 		container.setLayout(new FillLayout());
 		this.tree = new Tree(container, SWT.NONE);
 		this.treeViewer = new TreeViewer(this.tree, SWT.FULL_SELECTION);
-		this.contextMenu = new MenuManager("#PopupMenu");
+		this.contextMenu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		this.contextMenu.addMenuListener(this);
 		this.contextMenu.setRemoveAllWhenShown(true);
 		Menu context = this.contextMenu.createContextMenu(this.tree);
@@ -158,6 +146,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				
 			}
 		});
+
+		this.searchExtensions();
 		File wsPath = new File(Platform.getInstanceLocation().getURL()
 				.getPath());
 		if (wsPath.isDirectory()) {
@@ -165,6 +155,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				if (f.getName().startsWith(".")) { //$NON-NLS-1$
 					continue;
 				}
+				
 				String[] fileSegments = f.getName().split("\\."); //$NON-NLS-1$
 				if ((fileSegments.length > 1)
 						&& this.extensions.containsKey(fileSegments[1])) {
@@ -185,8 +176,10 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 * @author Lukas Balzer
 	 * 
 	 */
-	private void buildTree(final UUID projectID) {
-		IConfigurationElement projectExt = this.extensions.get("haz");
+	private void buildTree(final UUID projectID,String pluginID) {
+		IConfigurationElement projectExt = this.extensions.get(ViewContainer.
+																getContainerInstance().
+																getProjectExtension(projectID));
 		String selectionId = projectID.toString();
 		String projectName=projectExt.getAttribute("name") 
 							+ PATH_SEPERATOR 
@@ -201,11 +194,12 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
 		projectItem.setText(ViewContainer.getContainerInstance().getTitle(
 				projectID));
-		ImageDescriptor imgDesc = Activator.getImageDescriptor(projectExt
+		
+		ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginID, projectExt
 				.getAttribute("icon")); //$NON-NLS-1$
 		projectItem.setImage(imgDesc.createImage());
 		selector.setPathHistory(projectName);
-		this.projects.put(projectID, projectItem);
+		this.treeItemsToProjectIDs.put(projectID, projectItem);
 	
 		for (IConfigurationElement categoryExt : projectExt.getChildren()) {
 			categoryName=projectName + PATH_SEPERATOR + categoryExt.getAttribute("name");
@@ -217,7 +211,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			this.addOrReplaceStep(selectionId, selector, categoryItem);
 			categoryItem.setText(categoryExt.getAttribute("name"));//$NON-NLS-1$
 			categoryItem.addListener(SWT.SELECTED, this.listener);
-			this.addImage(categoryItem, categoryExt.getAttribute("icon"));//$NON-NLS-1$
+			this.addImage(categoryItem, categoryExt.getAttribute("icon"), pluginID);//$NON-NLS-1$
 
 			for (IConfigurationElement stepExt : categoryExt.getChildren()) {
 
@@ -226,7 +220,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 						| SWT.MULTI | SWT.V_SCROLL);
 				stepItem.addListener(SWT.SELECTED, this.listener);
 				stepItem.setText(stepExt.getAttribute("name"));//$NON-NLS-1$
-				this.addImage(stepItem, stepExt.getAttribute("icon"));//$NON-NLS-1$
+				this.addImage(stepItem, stepExt.getAttribute("icon"), pluginID);//$NON-NLS-1$
 				selector = new StepSelector(stepItem, projectID,
 						stepExt.getAttribute("editorId"));
 				((StepSelector)selector).setEditorName(stepExt.getAttribute("name")); //$NON-NLS-1$
@@ -259,25 +253,25 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 */
 	private void addOrReplaceStep(String selectionId,
 			IProjectSelection selector, TreeItem item) {
-		if (this.selectionIdToSelector.containsKey(selectionId)) {
-			this.treeItemToStepId.remove(this.selectionIdToSelector.get(selectionId).getItem());
-			this.treeItemToStepId.put(item, selectionId);
-			this.selectionIdToSelector.get(selectionId).changeItem(item);
+		if (this.selectorsToSelectionId.containsKey(selectionId)) {
+			this.stepIdsToTreeItems.remove(this.selectorsToSelectionId.get(selectionId).getItem());
+			this.stepIdsToTreeItems.put(item, selectionId);
+			this.selectorsToSelectionId.get(selectionId).changeItem(item);
 			
 			
 		} else {
-			this.treeItemToStepId.put(item, selectionId);
-			this.selectionIdToSelector.put(selectionId, selector);
+			this.stepIdsToTreeItems.put(item, selectionId);
+			this.selectorsToSelectionId.put(selectionId, selector);
 		}
 	}
 
-	private void addImage(TreeItem item, String path) {
+	private void addImage(TreeItem item, String path, String pluginId) {
 		ImageDescriptor imgDesc;
 		if ((path == null) || path.equals("")) {
 			item.setImage(PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJ_FILE));
 		} else {
-			imgDesc = Activator.getImageDescriptor(path);
+			imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginId, path);
 			item.setImage(imgDesc.createImage());
 		}
 	}
@@ -293,19 +287,20 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			item.dispose();
 		}
 		this.tree.clearAll(true);
-		Set<UUID> oldProjects=this.projects.keySet();
-		this.projects= new HashMap<>();
+		Set<UUID> oldProjects=this.treeItemsToProjectIDs.keySet();
+		this.treeItemsToProjectIDs= new HashMap<>();
 		for (UUID id : ViewContainer.getContainerInstance().getProjectKeys()) {
 			ViewContainer.getContainerInstance().getDataModel(id)
 					.addObserver(this);
-			this.buildTree(id);
+			String plugin = ViewContainer.getContainerInstance().getDataModel(id).getPluginID();
+			this.buildTree(id,plugin);
 			this.updateProject(id);
 			oldProjects.remove(id);
 		}
 		for(UUID unusedId:oldProjects){
-			for(String idEntry: this.selectionIdToSelector.keySet()){
+			for(String idEntry: this.selectorsToSelectionId.keySet()){
 				if(idEntry.contains(unusedId.toString())){
-					this.selectionIdToSelector.get(idEntry).cleanUp();
+					this.selectorsToSelectionId.get(idEntry).cleanUp();
 				}
 			}
 		}
@@ -338,9 +333,9 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	public void updateProject(UUID projectID) {
 		String temp = ViewContainer.getContainerInstance().getTitle(projectID);
 
-		if (this.projects.containsKey(projectID)
-				&& !this.projects.get(projectID).equals(temp)) {
-			this.projects.get(projectID).setText(temp);
+		if (this.treeItemsToProjectIDs.containsKey(projectID)
+				&& !this.treeItemsToProjectIDs.get(projectID).equals(temp)) {
+			this.treeItemsToProjectIDs.get(projectID).setText(temp);
 		}
 	}
 
@@ -380,15 +375,25 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 	}
 
+	/**
+	 * searches the registered plugins for any extensions of the type
+	 * <code>"astpa.extension.steppedProcess"</code>
+	 * and for each maps the declared file extension to the IConfigurationElement
+	 * 
+	 * @see IConfigurationElement
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
 	private void searchExtensions() {
 		this.extensions = new HashMap<>();
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
-				.getConfigurationElementsFor("astpa.extension.steppedProcess")) {
-			String ext = extElement.getAttribute("extension");
+				.getConfigurationElementsFor("astpa.extension.steppedProcess")) { //$NON-NLS-1$
+			String ext = extElement.getAttribute("extension"); //$NON-NLS-1$
 
 			this.extensions.put(ext, extElement);
-			ProjectExplorer.LOGGER.debug("registered extension: " + ext);
+			ProjectExplorer.LOGGER.debug("registered extension: " + ext); //$NON-NLS-1$
 		}
 	}
 
@@ -401,10 +406,10 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	@Override
 	public ISelection getSelection() {
 		if ((this.tree.getSelectionCount() > 0)
-				&& this.treeItemToStepId.containsKey(this.tree.getSelection()[0])) {
-			String stepId = this.treeItemToStepId.get(this.tree.getSelection()[0]);
-			this.selectionIdToSelector.get(stepId).activate();
-			return this.selectionIdToSelector.get(stepId);
+				&& this.stepIdsToTreeItems.containsKey(this.tree.getSelection()[0])) {
+			String stepId = this.stepIdsToTreeItems.get(this.tree.getSelection()[0]);
+			this.selectorsToSelectionId.get(stepId).activate();
+			return this.selectorsToSelectionId.get(stepId);
 		}
 		return new TreeSelection();
 	}

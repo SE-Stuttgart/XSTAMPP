@@ -18,7 +18,7 @@ Each step can be categoriesed and muliple editors where the Step can be progress
          </appinfo>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
+         <choice>
             <element ref="process"/>
          </choice>
          <attribute name="point" type="string" use="required">
@@ -190,20 +190,21 @@ Each step can be categoriesed and muliple editors where the Step can be progress
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="controller" type="string" use="required">
+         <attribute name="command" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  This Field should contain the name of a command which returns the Load Job of this process.
+The Load job is resposible for creating a IDataModel which contains the project data
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.ui.commands/command/@id"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="icon" type="string">
+         <attribute name="icon" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  an icon which represents the project in the project explorer
                </documentation>
                <appinfo>
                   <meta.attribute kind="resource"/>

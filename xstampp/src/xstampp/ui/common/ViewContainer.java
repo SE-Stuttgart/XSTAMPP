@@ -102,8 +102,9 @@ public class ViewContainer implements IProcessController {
 
 	private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheFile;
 
-	private Map<UUID, IDataModel> projectDataMap;
-	private Map<UUID, File> projectSaveFiles;
+	private Map<UUID, IDataModel> projectDataToUUID;
+	private Map<UUID, File> projectSaveFilesToUUID;
+	private Map<UUID, String> extensionsToUUID;
 	
 
 	private class LoadJobChangeAdapter extends JobChangeAdapter {
@@ -111,14 +112,18 @@ public class ViewContainer implements IProcessController {
 		@Override
 		public void done(IJobChangeEvent event) {
 			if (event.getResult() == Status.CANCEL_STATUS) {
-				final String name = ((AbstractLoadJob) event.getJob()).getFile().getName();
+				final AbstractLoadJob job = (AbstractLoadJob) event.getJob();
+				final String name = job.getFile().getName();
 				Display.getDefault().syncExec(new Runnable() {
 
 					@Override
 					public void run() {
+						StringBuffer msg = new StringBuffer(Messages.LoadFailed + name);
+						for(String error : job.getErrors()){
+							msg.append("\n" + error); //$NON-NLS-1$
+						}
 						MessageDialog.openInformation(Display.getDefault()
-								.getActiveShell(), Messages.Information,
-								String.format(Messages.ThisHazFileIsInvalid,name));
+								.getActiveShell(), Messages.Information,msg.toString());
 					}
 				});
 			}
@@ -130,18 +135,19 @@ public class ViewContainer implements IProcessController {
 	}
 
 	private class LoadRunnable implements Runnable {
-		private final IJobChangeEvent event;
+		private final AbstractLoadJob job;
 
 		public LoadRunnable(IJobChangeEvent event) {
-			this.event = event;
+			this.job = (AbstractLoadJob) event.getJob();
 		}
 
 		@Override
 		public void run() {
 			UUID projectId = ViewContainer.getContainerInstance()
-					.addProjectData(((AbstractLoadJob) this.event.getJob()).getController());
-			File saveFile = ((AbstractLoadJob) this.event.getJob()).getSaveFile();
-			ViewContainer.getContainerInstance().projectSaveFiles.put(
+					.addProjectData(this.job.getController());
+			File saveFile = this.job.getSaveFile();
+			
+			ViewContainer.getContainerInstance().projectSaveFilesToUUID.put(
 					projectId, saveFile);
 			ViewContainer.getContainerInstance().saveDataModel(projectId, false);
 			ViewContainer.getContainerInstance().synchronizeProjectName(projectId);
@@ -163,9 +169,9 @@ public class ViewContainer implements IProcessController {
 	 * @author Patrick Wickenhaeuser
 	 */
 	public ViewContainer() {
-
-		this.projectDataMap = new HashMap<>();
-		this.projectSaveFiles = new HashMap<>();
+		this.extensionsToUUID = new HashMap<>();
+		this.projectDataToUUID = new HashMap<>();
+		this.projectSaveFilesToUUID = new HashMap<>();
 	}
 
 	@Override
@@ -177,7 +183,7 @@ public class ViewContainer implements IProcessController {
 			newController.initializeProject();
 			newController.updateValue(ObserverValue.PROJECT_NAME);
 			UUID projectId = this.addProjectData(newController);
-			this.projectSaveFiles.put(projectId, new File(path));
+			this.projectSaveFilesToUUID.put(projectId, new File(path));
 			this.saveDataModel(projectId, false);
 			return projectId;
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -188,7 +194,8 @@ public class ViewContainer implements IProcessController {
 	}
 
 	/**
-	 * 
+	 * renames the store file to the given name,
+	 * if a such a file doesn't already exist
 	 * @author Lukas Balzer
 	 * 
 	 * @param projectId
@@ -199,16 +206,16 @@ public class ViewContainer implements IProcessController {
 	 */
 	public boolean renameProject(UUID projectId, String projectName) {
 
-		File projectFile = this.projectSaveFiles.get(projectId);
+		File projectFile = this.projectSaveFilesToUUID.get(projectId);
 		
 		Path newPath=projectFile.toPath().getParent();
-		File newNameFile = new File(newPath.toFile(),projectName + ".haz");
+		File newNameFile = new File(newPath.toFile(),projectName + ".haz"); //$NON-NLS-1$
 		
 		if (projectFile.renameTo(newNameFile) || !projectFile.exists()) {
 			
-			this.projectSaveFiles.remove(projectId);
-			this.projectSaveFiles.put(projectId, newNameFile);
-			return this.projectDataMap.get(projectId).setProjectName(
+			this.projectSaveFilesToUUID.remove(projectId);
+			this.projectSaveFilesToUUID.put(projectId, newNameFile);
+			return this.projectDataToUUID.get(projectId).setProjectName(
 					projectName);
 		}
 		return false;
@@ -217,7 +224,7 @@ public class ViewContainer implements IProcessController {
 	@Override
 	public boolean saveDataModelAs(final UUID projectId) {
 
-		IDataModel tmpController = this.projectDataMap.get(projectId);
+		IDataModel tmpController = this.projectDataToUUID.get(projectId);
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getShell(), SWT.SAVE);
 		fileDialog.setFilterExtensions(new String[] { "*.haz" }); //$NON-NLS-1$
@@ -243,14 +250,14 @@ public class ViewContainer implements IProcessController {
 
 	@Override
 	public boolean saveDataModel(UUID projectId, boolean isUIcall) {
-		if (this.projectSaveFiles.get(projectId) == null) {
+		if (this.projectSaveFilesToUUID.get(projectId) == null) {
 			return this.saveDataModelAs(projectId);
 		}
-		final IDataModel tmpController = this.projectDataMap.get(projectId);
+		final IDataModel tmpController = this.projectDataToUUID.get(projectId);
 
 		tmpController.prepareForSave();
 		
-		Job save = tmpController.doSave(this.projectSaveFiles.get(projectId),
+		Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId),
 				ViewContainer.getLOGGER(), isUIcall);
 		save.addJobChangeListener(new JobChangeAdapter() {
 
@@ -288,10 +295,11 @@ public class ViewContainer implements IProcessController {
 	}
 
 	private void synchronizeProjectName(UUID projectID){
-		File saveFile=this.projectSaveFiles.get(projectID);
+		File saveFile=this.projectSaveFilesToUUID.get(projectID);
 		String projName= this.getTitle(projectID);
-		renameProject(projectID, saveFile.getName().split("\\.")[0]);
+		renameProject(projectID, saveFile.getName().split("\\.")[0]); //$NON-NLS-1$
 	}
+	
 	@Override
 	public boolean importDataModel() {
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
@@ -302,7 +310,7 @@ public class ViewContainer implements IProcessController {
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
 				.getConfigurationElementsFor("astpa.extension.steppedProcess")) { //$NON-NLS-1$
-			tmpExt = "*." + extElement.getAttribute("extension");  //$NON-NLS-1$
+			tmpExt = "*." + extElement.getAttribute("extension");  //$NON-NLS-1$ //$NON-NLS-2$
 			extensions.add(tmpExt);
 			names.add(extElement.getAttribute("name") + "(" +tmpExt+ ")");  //$NON-NLS-1$  //$NON-NLS-2$  //$NON-NLS-3$
 		}
@@ -324,9 +332,9 @@ public class ViewContainer implements IProcessController {
 							Messages.FileExists,String.format(Messages.DoYouReallyWantToOverwriteTheFile,outer.getName()))) {
 				return false;
 				}
-				Set<UUID> idSet =this.projectSaveFiles.keySet();
+				Set<UUID> idSet =this.projectSaveFilesToUUID.keySet();
 				for(UUID id: idSet){
-					if(this.projectSaveFiles.get(id).equals(copy) && !removeProjectData(id)){
+					if(this.projectSaveFilesToUUID.get(id).equals(copy) && !removeProjectData(id)){
 						MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
 						return false;
 					}
@@ -369,20 +377,30 @@ public class ViewContainer implements IProcessController {
 	 */
 	@Override
 	public boolean loadDataModelFile(String file,String saveFile) {
-		IDataModel dataModel = null;
+		Object jobObject = null;
+		String pluginName = ""; //$NON-NLS-1$
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
-				.getConfigurationElementsFor("astpa.extension.steppedProcess")) {
-			if(file.endsWith(extElement.getAttribute("extension"))){
-				dataModel = (IDataModel) STPAPluginUtils.executeCommand(extElement.getAttribute("controller"));
+				.getConfigurationElementsFor("astpa.extension.steppedProcess")) { //$NON-NLS-1$
+			if(file.endsWith(extElement.getAttribute("extension"))){ //$NON-NLS-1$
+				pluginName = extElement.getAttribute("id"); //$NON-NLS-1$
+				jobObject = STPAPluginUtils.executeCommand(extElement.getAttribute("command")); //$NON-NLS-1$
+				
 			}
 		}
 		
-		if (file != null && dataModel != null) {
-			Job load = dataModel.getLoadJob(file,saveFile, ViewContainer.getLOGGER());
-			load.schedule();
-			load.addJobChangeListener(new LoadJobChangeAdapter());
+		if (file != null && jobObject != null && jobObject instanceof AbstractLoadJob) {
+			((AbstractLoadJob) jobObject).setFile(file);
+			((AbstractLoadJob) jobObject).setSaveFile(saveFile);
+			((AbstractLoadJob) jobObject).schedule();
+			((AbstractLoadJob) jobObject).addJobChangeListener(new LoadJobChangeAdapter());
 			return true;
+		}
+		else if(jobObject == null){
+			LOGGER.error(Messages.FileFormatNotSupported + ": " + file); //$NON-NLS-1$
+		}
+		else if(!(jobObject instanceof AbstractLoadJob)){
+			LOGGER.error(String.format(Messages.InvalidPluginCommand,pluginName));
 		}
 
 
@@ -406,7 +424,7 @@ public class ViewContainer implements IProcessController {
 	 * @return whether exporting succeeded.
 	 */
 	public boolean export(Job exportJob, UUID projectId) {
-		this.projectDataMap.get(projectId).prepareForExport();
+		this.projectDataToUUID.get(projectId).prepareForExport();
 
 		// start the job, that exports the pdf from the JAXB stream
 
@@ -426,7 +444,7 @@ public class ViewContainer implements IProcessController {
 	 */
 	public boolean getUnsavedChanges(UUID projectId) {
 
-		return this.projectDataMap.get(projectId).hasUnsavedChanges();
+		return this.projectDataToUUID.get(projectId).hasUnsavedChanges();
 	}
 
 	/**
@@ -438,7 +456,7 @@ public class ViewContainer implements IProcessController {
 	 */
 	public boolean getUnsavedChanges() {
 		for (UUID id : this.getProjectKeys()) {
-			if (this.projectDataMap.get(id).hasUnsavedChanges()) {
+			if (this.projectDataToUUID.get(id).hasUnsavedChanges()) {
 				return true;
 			}
 		}
@@ -453,11 +471,11 @@ public class ViewContainer implements IProcessController {
 	 */
 	private void setNewDataModel(UUID id) {
 		for (ObserverValue value : ObserverValue.values()) {
-			this.projectDataMap.get(id).updateValue(value);
+			this.projectDataToUUID.get(id).updateValue(value);
 			synchronizeProjectName(id);
 		}
 		this.saveDataModel(id, false);
-		this.projectDataMap.get(id).setStored();
+		this.projectDataToUUID.get(id).setStored();
 	}
 
 	/**
@@ -470,7 +488,7 @@ public class ViewContainer implements IProcessController {
 	 */
 	@Deprecated
 	private boolean overwriteDataModel() {
-		if (!this.projectDataMap.get(1).hasUnsavedChanges()) {
+		if (!this.projectDataToUUID.get(1).hasUnsavedChanges()) {
 			return true;
 		}
 		MessageDialog dialog = new MessageDialog(
@@ -499,7 +517,7 @@ public class ViewContainer implements IProcessController {
 	@Override
 	public void callObserverValue(ObserverValue value) {
 		for (UUID id : this.getProjectKeys()) {
-			this.projectDataMap.get(id).updateValue(value);
+			this.projectDataToUUID.get(id).updateValue(value);
 		}
 	}
 
@@ -515,8 +533,8 @@ public class ViewContainer implements IProcessController {
 
 	@Override
 	public IDataModel getDataModel(UUID projectId) {
-		if (this.projectDataMap.containsKey(projectId)) {
-			return this.projectDataMap.get(projectId);
+		if (this.projectDataToUUID.containsKey(projectId)) {
+			return this.projectDataToUUID.get(projectId);
 		}
 		return null;
 	}
@@ -530,9 +548,9 @@ public class ViewContainer implements IProcessController {
 	 * @return the id or null
 	 */
 	public UUID getProjectID(Observable controller) {
-		if (this.projectDataMap.containsValue(controller)) {
-			for (UUID id : this.projectDataMap.keySet()) {
-				if (this.projectDataMap.get(id) == controller) {
+		if (this.projectDataToUUID.containsValue(controller)) {
+			for (UUID id : this.projectDataToUUID.keySet()) {
+				if (this.projectDataToUUID.get(id) == controller) {
 					return id;
 				}
 			}
@@ -542,15 +560,16 @@ public class ViewContainer implements IProcessController {
 
 	@Override
 	public String getTitle(UUID projectId) {
-		if (this.projectDataMap.containsKey(projectId)) {
-			return this.projectDataMap.get(projectId).getProjectName();
+		if (this.projectDataToUUID.containsKey(projectId)) {
+			return this.projectDataToUUID.get(projectId).getProjectName();
 		}
 		return Messages.NewProject;
 	}
 
 	public UUID addProjectData(IDataModel controller) {
 		UUID id = UUID.randomUUID();
-		this.projectDataMap.put(id, controller);
+		this.extensionsToUUID.put(id, controller.getFileExtension());
+		this.projectDataToUUID.put(id, controller);
 		IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage().findView("astpa.explorer"); //$NON-NLS-1$
 		if (navi != null) {
@@ -572,14 +591,14 @@ public class ViewContainer implements IProcessController {
 	 */
 	public boolean removeProjectData(UUID projectId) {
 
-		File projectFile = this.projectSaveFiles.get(projectId);
+		File projectFile = this.projectSaveFilesToUUID.get(projectId);
 		if (projectFile.delete()) {
-			this.projectDataMap.remove(projectId);
-			this.projectSaveFiles.remove(projectId);
+			this.projectDataToUUID.remove(projectId);
+			this.projectSaveFilesToUUID.remove(projectId);
 			IViewPart explorer = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-									.getActivePage().findView("astpa.explorer");
+									.getActivePage().findView("astpa.explorer"); //$NON-NLS-1$
 			((ProjectExplorer)explorer).update(null, ObserverValue.DELETE);
-			return !this.projectDataMap.containsKey(projectId);
+			return !this.projectDataToUUID.containsKey(projectId);
 		}
 
 		return false;
@@ -592,9 +611,12 @@ public class ViewContainer implements IProcessController {
 	 * @return a Set with all UUID's of the currently loaded projects
 	 */
 	public Set<UUID> getProjectKeys() {
-		return this.projectDataMap.keySet();
+		return this.projectDataToUUID.keySet();
 	}
 
+	public String getProjectExtension(UUID id) {
+		return this.extensionsToUUID.get(id);
+	}
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -603,8 +625,8 @@ public class ViewContainer implements IProcessController {
 	 */
 	public Map<UUID, String> getProjects() {
 		Map<UUID, String> map = new HashMap<>();
-		for (UUID id : this.projectDataMap.keySet()) {
-			map.put(id, this.projectDataMap.get(id).getProjectName());
+		for (UUID id : this.projectDataToUUID.keySet()) {
+			map.put(id, this.projectDataToUUID.get(id).getProjectName());
 		}
 		return map;
 	}

@@ -1,5 +1,39 @@
 Change Log:
 
+A-STPA 2.0.1
+
+	Features:
+	- Font in Control Structure (Step 1.8/3.1) now changable in Preferences
+
+	Bugfixes:
+	- fixed bug that caused special characters to be stored in a wrong format
+	- added compability mode for disabeling the above bugfix to guaranty compabillity with older versions
+	  (in this mode the bug still exists so its not recommended to store special characters with it!!)
+	- disabled connection constraints to enable the users to set connections in the control structure
+	  at will
+	- fixed bug with dublicated toolbars
+	
+
+
+XSTAMPP 1.0.0/A-STPA 2.0.0
+	Since this version A-STPA is now part of the eXtensible STAMP Platform (XSTAMPP)
+	it is now provided as fully integrated plug-in.
+ 	Due to this A-STPA has now got a whole new appearance which should enable the user
+	to use it in a far more flexible way. Features: •Possibility of managing multiple projects
+	at the same time thanks to the XSTAMPP project explorer 
+
+	Features:
+	- Font in Control Structure (Step 1.8/3.1) now changable in Preferences
+	- toolbars now provided in the main toolbar of the workbench 
+	- Renaming Projects directly in the project explorer 
+	- Preference Option to highlight selected step in Edit/Preferences/Color and Fonts
+
+	Bugfixes:
+	- controlstructure images are now exported in higher quality
+	- Fixed Bug that links between causal factors and hazards were not stored
+	- 
+	
+
 
 1.0.5:
 

@@ -78,9 +78,11 @@ import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.util.SaveRunnable;
+import xstampp.astpa.util.jobs.STPALoadJob;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ViewContainer;
+import xstampp.util.AbstractLoadJob;
 
 /**
  * Data Model controller class
@@ -1304,4 +1306,12 @@ public class DataModelController extends Observable implements
 		this.controlStructureController.initializeCSS();
 	}
 
+	@Override
+	public String getFileExtension() {
+		return "haz";
+	}
+	@Override
+	public String getPluginID() {
+		return Activator.PLUGIN_ID;
+	}
 }
