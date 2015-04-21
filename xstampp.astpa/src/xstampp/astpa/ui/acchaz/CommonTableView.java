@@ -570,10 +570,6 @@ public abstract class CommonTableView extends StandartEditorPart {
 		return CommonTableView.id;
 	}
 
-	@Override
-	public void onActivateView() {
-		// intentionally empty
-	}
 
 	@Override
 	public String getTitle() {
@@ -625,11 +621,6 @@ public abstract class CommonTableView extends StandartEditorPart {
 
 	public abstract void setDataModelInterface(IDataModel dataInterface);
 
-	@Override
-	public boolean triggerExport(Object[] values) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
 		if(arg0 == this){

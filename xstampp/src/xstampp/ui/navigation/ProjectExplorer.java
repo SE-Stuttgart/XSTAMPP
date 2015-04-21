@@ -13,7 +13,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -24,9 +23,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -41,7 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import xstampp.Activator;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ViewContainer;
 import xstampp.util.STPAPluginUtils;
@@ -58,7 +54,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		Observer, ISelectionProvider {
 
 	private static final String EXTENSION = "extension";
-	private final static String PATH_SEPERATOR="->";
+	private static final String PATH_SEPERATOR="->";
 	private Map<UUID, TreeItem> treeItemsToProjectIDs;
 	private Map<TreeItem, String> stepIdsToTreeItems;
 	private Map<String, IProjectSelection> selectorsToSelectionId;
@@ -66,7 +62,6 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private Listener listener;
 	private TreeViewer treeViewer;
 	private MenuManager contextMenu;
-	private final static String CUSTOM_MENU = "customPart";
 	/**
 	 * Interface to communicate with the data model.
 	 */
@@ -143,7 +138,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				
+				//not used by this implementation
 			}
 		});
 
@@ -180,12 +175,13 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		IConfigurationElement projectExt = this.extensions.get(ViewContainer.
 																getContainerInstance().
 																getProjectExtension(projectID));
+		/**
+		 * The selection id iedentifies each step in the current runtime
+		 */
 		String selectionId = projectID.toString();
 		String projectName=projectExt.getAttribute("name") 
 							+ PATH_SEPERATOR 
 							+ ViewContainer.getContainerInstance().getTitle(projectID);
-		String categoryName="";
-		String stepName="";
 		final TreeItem projectItem = new TreeItem(this.tree, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
 		IProjectSelection selector = new ProjectSelector(projectItem, projectID);
@@ -200,18 +196,21 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		projectItem.setImage(imgDesc.createImage());
 		selector.setPathHistory(projectName);
 		this.treeItemsToProjectIDs.put(projectID, projectItem);
-	
+		//this two for-loops construct the process tree which consists out of 
+		//steps grouped by categorys, each step or category is represented by a treeItem 
+		//which is accosiated with a Step/CategorySelector which handles the linking to the step editor
+		String categoryPath;
 		for (IConfigurationElement categoryExt : projectExt.getChildren()) {
-			categoryName=projectName + PATH_SEPERATOR + categoryExt.getAttribute("name");
 			selectionId = categoryExt.getAttribute("id") + projectID.toString();
+			categoryPath=projectName + PATH_SEPERATOR + categoryExt.getAttribute("name");
 			TreeItem categoryItem = new TreeItem(projectItem, SWT.BORDER
 					| SWT.MULTI | SWT.V_SCROLL);
-			selector = new CategorySelector(categoryItem, projectID);
-			selector.setPathHistory(categoryName);
-			this.addOrReplaceStep(selectionId, selector, categoryItem);
 			categoryItem.setText(categoryExt.getAttribute("name"));//$NON-NLS-1$
 			categoryItem.addListener(SWT.SELECTED, this.listener);
 			this.addImage(categoryItem, categoryExt.getAttribute("icon"), pluginID);//$NON-NLS-1$
+			selector = new CategorySelector(categoryItem, projectID);
+			selector.setPathHistory(categoryPath);
+			this.addOrReplaceStep(selectionId, selector, categoryItem);
 
 			for (IConfigurationElement stepExt : categoryExt.getChildren()) {
 
@@ -224,7 +223,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				selector = new StepSelector(stepItem, projectID,
 						stepExt.getAttribute("editorId"));
 				((StepSelector)selector).setEditorName(stepExt.getAttribute("name")); //$NON-NLS-1$
-				selector.setPathHistory(categoryName + PATH_SEPERATOR + stepItem.getText());
+				selector.setPathHistory(categoryPath + PATH_SEPERATOR + stepItem.getText());
 				this.addOrReplaceStep(selectionId, selector, stepItem);
 
 			}
@@ -416,9 +415,9 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 	@Override
 	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
-		if (this.selectionListener.contains(listener)) {
-			this.selectionListener.remove(listener);
+			ISelectionChangedListener selectListener) {
+		if (this.selectionListener.contains(selectListener)) {
+			this.selectionListener.remove(selectListener);
 		}
 
 	}

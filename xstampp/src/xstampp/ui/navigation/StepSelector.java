@@ -18,21 +18,28 @@ import xstampp.util.STPAEditorInput;
  */
 public class StepSelector extends AbstractSelector {
 
-	private String availableEditor;
-	private boolean isLocked;
+	private String editorId;
 	private STPAEditorInput input;
 
+	/**
+	 * constructs a step selector which manages the selection and interaction with a 
+	 * step item in the project tree
+	 * @author Lukas Balzer
+	 *
+	 * @param item {@link AbstractSelector#getItem()}
+	 * @param projectId {@link AbstractSelector#getProjectId()}
+	 * @param editorId the editor id as defined in the plugin.xml
+	 */
 	public StepSelector(TreeItem item, UUID projectId, String editorId) {
 		super(item, projectId);
-		this.availableEditor = editorId;
-		this.isLocked = false;
+		this.editorId = editorId;
 		this.input=null;
 		this.setEditorInput(new STPAEditorInput(projectId, editorId,item));
 	}
 	
 	@Override
 	public void changeItem(TreeItem item) {
-		input.setStepItem(item);
+		this.input.setStepItem(item);
 		super.changeItem(item);
 	}
 
@@ -47,7 +54,7 @@ public class StepSelector extends AbstractSelector {
 	 *            <code>plugin.xml</code>
 	 */
 	public void addStepEditor(String id) {
-		this.availableEditor = id;
+		this.editorId = id;
 	}
 
 	/**
@@ -59,10 +66,10 @@ public class StepSelector extends AbstractSelector {
 	 */
 	public void getDefaultEditor() throws PartInitException {
 
-		if ((this.getEditorInput() != null) && (this.availableEditor != null)) {
+		if ((this.getEditorInput() != null) && (this.editorId != null)) {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage()
-					.openEditor(this.getEditorInput(), this.availableEditor);
+					.openEditor(this.getEditorInput(), this.editorId);
 			
 		}
 	}
@@ -99,15 +106,14 @@ public class StepSelector extends AbstractSelector {
 	}
 	
 	/**
-	 * Setter for the editor name
+	 * 
 	 * @author Lukas Balzer
-	 *
-	 * @param name the editor name
 	 * @return string
 	 */
 	public String getEditorName(){
 		return this.input.getStepName();
 	}
+	
 	
 	@Override
 	public void cleanUp(){
@@ -115,6 +121,20 @@ public class StepSelector extends AbstractSelector {
 		.getActivePage().findEditor(this.input);
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 		.getActivePage().closeEditor(part, false);
+	}
+
+	/**
+	 * @return the editorId
+	 */
+	public String getEditorId() {
+		return this.editorId;
+	}
+
+	/**
+	 * @param editorId the availableEditor to set
+	 */
+	public void setEditorId(String editorId) {
+		this.editorId = editorId;
 	}
 	
 	

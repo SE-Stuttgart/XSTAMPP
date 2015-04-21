@@ -17,7 +17,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Composite;
 
 import xstampp.Activator;
 
@@ -56,36 +55,6 @@ public interface IViewBase extends Observer {
 	 * @return the title of the view.
 	 */
 	String getTitle();
-
-	/**
-	 * Gets called by the view manager whenever the view is activated.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 */
-	void onActivateView();
-
-	/**
-	 * Initializes the gui elements. Used for lazy intialization - Do not call
-	 * this function manually.
-	 * 
-	 * @param parent
-	 *            the parent composite of the view container.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 */
-	void createPartControl(Composite parent);
-
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * @param values
-	 *            an array with optional export attributes, if an attribute is
-	 *            needed by the export function it is tested in particular if it
-	 *            is given correctly
-	 * @return whether there is an export available or not
-	 * 
-	 */
-	boolean triggerExport(Object[] values);
 
 	@Override
 	void update(Observable dataModelController, Object updatedValue);

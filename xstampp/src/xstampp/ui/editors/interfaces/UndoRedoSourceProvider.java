@@ -8,10 +8,15 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.ui.AbstractSourceProvider;
 
+/**
+ * a class for managing undo redo content
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class UndoRedoSourceProvider extends AbstractSourceProvider implements CommandStackListener{
 
-	public final static String CAN_UNDO="xstampp.handler.canUndo";
-	public final static String CAN_REDO="xstampp.handler.canRedo";
+	private static final String CAN_UNDO="xstampp.handler.canUndo";
+	private static final String CAN_REDO="xstampp.handler.canRedo";
 	private Map<String,Boolean> stringToBool;
 	/**
 	 *
@@ -42,6 +47,12 @@ public class UndoRedoSourceProvider extends AbstractSourceProvider implements Co
 		return this.stringToBool.keySet().toArray(new String[0]);
 	}
 
+	/**
+	 * adds this object as stack listener to the given stack
+	 * @author Lukas Balzer
+	 *
+	 * @param commandStack the stack which want to listen
+	 */
 	public void registerStack(CommandStack commandStack){
 		commandStack.addCommandStackListener(this);
 		
@@ -49,7 +60,7 @@ public class UndoRedoSourceProvider extends AbstractSourceProvider implements Co
 	@Override
 	public void commandStackChanged(EventObject event) {
 		
-		
+		//TODO
 	}
 
 }

@@ -19,8 +19,6 @@ import java.util.Observer;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.jobs.Job;
 
-import xstampp.util.AbstractLoadJob;
-
 /**
  * Interface for the DataModel which defines the methods to handle the Observer
  * pattern. All other interfaces for the data model should extend this interface
@@ -63,6 +61,7 @@ public interface IDataModel {
 	 * @param isUIcall
 	 *            the Data model which should be stored, this must be a
 	 *            JAXBContext
+	 * @return a Job that handles the saving of the project
 	 */
 	Job doSave(final File file, Logger log, boolean isUIcall);
 	
@@ -100,7 +99,7 @@ public interface IDataModel {
 	 * @param value
 	 *            the given value to update
 	 */
-	void updateValue(ObserverValue delete);
+	void updateValue(ObserverValue value);
 
 	/**
 	 *
@@ -110,8 +109,20 @@ public interface IDataModel {
 	 */
 	String getProjectName();
 
+	/**
+	 * sets the state of the dataModel to saved 
+	 * @author Lukas Balzer
+	 *
+	 */
 	void setStored();
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return returns wether the currrent state of the dataModel is stored or
+	 * 			unstored
+	 */
 	boolean hasUnsavedChanges();
 
 	/**
@@ -144,6 +155,13 @@ public interface IDataModel {
 	 */
 	String getFileExtension();
 	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return
+	 * 		the id for the Plugin which is used by the DataModel
+	 */
 	String getPluginID();
 		
 }

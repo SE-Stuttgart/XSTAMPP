@@ -13,9 +13,6 @@
 
 package xstampp.astpa.ui.systemdescription;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,7 +38,6 @@ import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
@@ -55,14 +51,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.GlyphMetrics;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.ColorDialog;
@@ -87,7 +78,6 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
-import xstampp.astpa.ui.acchaz.CommonTableView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -772,7 +762,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				SystemDescriptionView.this.changeFontNameAndSize(SystemDescriptionView.this.fontNameControl.getText(),-1);
+				SystemDescriptionView.this.setFont(SystemDescriptionView.this.fontNameControl.getText(),-1);
 				SystemDescriptionView.this.setStyle(event.widget);
 			}
 		};
@@ -1566,20 +1556,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		}
 	}
 
-	/**
-	 * Called if font name or size changed by combo box.
-	 * 
-	 * @param fontName
-	 *            the name of the font family 
-	 */
-	public void changeFontNameAndSize(String fontName,int size) {
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		int newSize=size;
-		if(size < 0){
-			newSize = Integer.parseInt(this.fontSizeControl.getText());
-		}
-		this.textFont = new Font(display, fontName, newSize, SWT.NORMAL);
-	}
 
 	/**
 	 * Set a bullet to TextField.
@@ -1687,50 +1663,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		return SystemDescriptionView.FONT_SIZES;
 	}
 
-	@Override
-	public boolean triggerExport(Object[] values) {
-		if ((values.length < 1) || !(values[0] instanceof String)) {
-			return false;
-		}
-		Rectangle rect = this.descriptionText.getTextBounds(0,
-				this.descriptionText.getText().length() - 1);
-		rect.width += 10;
-		Image srcImage = new Image(null, rect);
-		GC imageGC = new GC(srcImage);
-		if (this.descriptionText.getHorizontalBar() != null) {
-			this.descriptionText.getHorizontalBar().setVisible(false);
-		}
-		if (this.descriptionText.getVerticalBar() != null) {
-			this.descriptionText.getVerticalBar().setVisible(false);
-		}
 
-		this.descriptionText.print(imageGC);
-
-		ImageLoader imgLoader = new ImageLoader();
-		imgLoader.data = new ImageData[] { srcImage.getImageData() };
-
-		imgLoader.save((String) values[0], SWT.IMAGE_PNG);
-
-		File imageFile = new File((String) values[0]);
-		if (imageFile.exists()) {
-			if (Desktop.isDesktopSupported()) {
-
-				try {
-					Desktop.getDesktop().open(imageFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-			}
-		}
-		if (this.descriptionText.getHorizontalBar() != null) {
-			this.descriptionText.getHorizontalBar().setVisible(true);
-		}
-		if (this.descriptionText.getVerticalBar() != null) {
-			this.descriptionText.getVerticalBar().setVisible(true);
-		}
-		return true;
-	}
 
 	@Override
 	public void dispose() {
@@ -1743,15 +1676,19 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	@Override
 	public void setFont(String fontString,int fontSize) {
 		getSelection();
-		changeFontNameAndSize(fontString,fontSize);
+		Display display = PlatformUI.getWorkbench().getDisplay();
+		int newSize=fontSize;
+		if(fontSize < 0){
+			newSize = Integer.parseInt(this.fontSizeControl.getText());
+		}
+		this.textFont = new Font(display, fontString, newSize, SWT.NORMAL);
 		setStyle(FONT_FAMILY);
 		
 	}
 
 	@Override
 	public void setFontSize(String style, int fontSize) {
-		
-	
+		this.textFont.getFontData()[0].setHeight(fontSize);	
 		setStyle(FONT_FAMILY);
 	}
 
@@ -1762,7 +1699,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		StyleRange[] selctedRanges=this.descriptionText.getStyleRanges(selection.x, selection.y);
 		int size=-1;
 		String fontName="";
-		boolean bold=false;
 		for(StyleRange range:selctedRanges){
 			if(range.font != null){
 				for(FontData data:range.font.getFontData()){
@@ -1804,11 +1740,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		return SystemDescriptionView.ID;
 	}
 
-	@Override
-	public void onActivateView() {
-		this.resetFromDataModel();
-		this.resetStyleButtons();
-	}
 
 	@Override
 	public String getTitle() {

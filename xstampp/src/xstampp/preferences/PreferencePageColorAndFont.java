@@ -33,9 +33,7 @@ import xstampp.Activator;
 public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 
-	private ColorFieldEditor navigationSelectedColor,
-			navigationUnselectedColor, hoverColor, splitterForegroundColor,
-			splitterBackgroundColor, CSFontColor;
+	private ColorFieldEditor navigationSelectedColor;
 
 	private FontFieldEditor navigationTitel, defaultFont;
 
@@ -58,7 +56,7 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 	protected void createFieldEditors() {
 		this.useNavigationColor=new BooleanFieldEditor(IPreferenceConstants.USE_NAVIGATION_COLORS,
 				"Highlight selected step items?", this.getFieldEditorParent());
-		this.addField(useNavigationColor);
+		this.addField(this.useNavigationColor);
 		this.navigationSelectedColor = new ColorFieldEditor(
 				IPreferenceConstants.NAVIGATION_ITEM_SELECTED,
 				Messages.SelectedNavItem, this.getFieldEditorParent());

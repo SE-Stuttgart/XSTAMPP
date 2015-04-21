@@ -1,21 +1,22 @@
 package xstampp.ui.menu.file.commands;
 
-import messages.Messages;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.ParameterValueConversionException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 
-import xstampp.ui.navigation.StepSelector;
-
+/**
+ * this hander provides a command that opens a wizard by its id given in the 
+ * plugin.xml and passed in the parameter <code>xstampp.commandParameter.openwizard</code>
+ * 
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class OpenWizardHandler extends AbstractHandler {
 
 	@Override
@@ -49,6 +50,7 @@ public class OpenWizardHandler extends AbstractHandler {
 	 * 			must be a wizard id which is registered for a import, export or newWizard  extension
 	 * @return 
 	 * 		a new instance of a IWorkbenchWizard, or null if no wizard for the given id could be found
+	 * @throws ParameterValueConversionException if an incorrect value has been given
 	 */
 	public Object convertToObject(String parameterValue)
 			throws ParameterValueConversionException {

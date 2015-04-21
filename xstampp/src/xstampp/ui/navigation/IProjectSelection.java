@@ -5,8 +5,13 @@ import java.util.UUID;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorInput;
 
+/**
+ * Describes a project item selection in a tree
+ * and provides an interface for the interaction with it  
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public interface IProjectSelection extends ISelection {
 	/**
 	 * @param id
@@ -15,12 +20,12 @@ public interface IProjectSelection extends ISelection {
 	 * @param manager
 	 *            the MenuManager of the contextMenu
 	 */
-	public void addOpenEntry(String id, IMenuManager manager);
+	void addOpenEntry(String id, IMenuManager manager);
 
 	/**
 	 * @return the projectId
 	 */
-	public UUID getProjectId();
+	UUID getProjectId();
 
 	/**
 	 * 
@@ -29,11 +34,23 @@ public interface IProjectSelection extends ISelection {
 	 * @param expand
 	 *            expand or not
 	 */
-	public void expandTree(boolean expand);
+	void expandTree(boolean expand);
 
-	public void changeItem(TreeItem item);
+	/**
+	 * changes the related tree item to the given
+	 * @author Lukas Balzer
+	 *
+	 * @param item {@link #getItem()}
+	 */
+	void changeItem(TreeItem item);
 	
-	public TreeItem getItem();
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return the item representing the project in the tree 
+	 */
+	TreeItem getItem();
 	
 
 	/**
@@ -41,7 +58,7 @@ public interface IProjectSelection extends ISelection {
 	 * @author Lukas Balzer
 	 *
 	 */
-	public void activate();
+	void activate();
 	
 	/**
 	 *Setter for the path history which is shown in the shell title
@@ -53,6 +70,11 @@ public interface IProjectSelection extends ISelection {
 	 */
 	void setPathHistory(String pathHistory);
 	
+	/**
+	 * is called when the selection(e.g. the project data) is removed 
+	 * @author Lukas Balzer
+	 *
+	 */
 	void cleanUp();
 	
 }

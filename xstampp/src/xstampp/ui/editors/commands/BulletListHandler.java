@@ -7,11 +7,17 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.editors.interfaces.ITextEditor;
 
+/**
+ * this Handler adds a Bullet List to a selection of text
+ * this is done by calling {@link ITextEditor#setBullet(String)}
+ * with the value of the parameter <code>xstampp.commandParameter.bulletlist</Code>
+ * @author Lukas Balzer
+ * 
+ * @see ITextEditor
+ * @since 1.0
+ */
 public class BulletListHandler extends AbstractHandler {
 
-	public BulletListHandler() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {

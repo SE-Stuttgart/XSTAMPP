@@ -1,13 +1,24 @@
 package xstampp.ui.editors.interfaces;
 
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ *	defines a set of functions and constants to communcate with a TextEditor
+ * @author Lukas Balzer
+ *
+ */
 public interface ITextEditor extends ISelectionProvider{
 
+	/**
+	 * a constant for Incresing e.g. the font size
+	 * @author Lukas Balzer
+	 */
 	String INCREASE="INCREASE";
+	/**
+	 * a constant for decreasing sth.
+	 * @author Lukas Balzer
+	 */
 	String DECREASE="DECREASE";
 	/**
 	 * constant for applying an italic style to some text 
@@ -42,14 +53,19 @@ public interface ITextEditor extends ISelectionProvider{
 	 */
 	String NUM_LIST="NUM_LIST";
 	
+	@SuppressWarnings("javadoc")
 	String FONT_SIZE="FONT_SIZE";
 	
+	@SuppressWarnings("javadoc")
 	String FONT_FAMILY = "FONT_FAMILY";
 	
+	@SuppressWarnings("javadoc")
 	String FONT_SIZE_UP ="FONT_SIZE_UP";
 	
+	@SuppressWarnings("javadoc")
 	String FONT_SIZE_DOWN= "FONT_SIZE_DOWN";
 	
+	@SuppressWarnings("javadoc")
 	String DESCRIPTION ="DESCRIPTION";
 	/**
 	 * Set style to chosen format if text gets modified or toolBar item pressed.
@@ -73,6 +89,7 @@ public interface ITextEditor extends ISelectionProvider{
 	 * @author Lukas Balzer
 	 *
 	 * @param fontString the name of the new Font
+	 * @param fontSize the Size in points
 	 */
 	void setFont(String fontString,int fontSize);
 	
@@ -94,6 +111,12 @@ public interface ITextEditor extends ISelectionProvider{
 	 */
 	void setBullet(String type);
 	
+	/**
+	 * registers the contributor by the editor so that the editor can react to its calls 
+	 * @author Lukas Balzer
+	 *
+	 * @param contributor the contributor, with which the user can manipulate the Text
+	 */
 	void setEditToolContributor(ITextEditContribution contributor);
 
 }

@@ -513,10 +513,6 @@ public class ControlActionView extends CommonTableView {
 		return commonTableType.ControlActionsView;
 	}
 
-	@Override
-	public void onActivateView() {
-		this.updateTable();
-	}
 
 	@Override
 	public void dispose() {

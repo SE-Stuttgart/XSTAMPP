@@ -36,7 +36,6 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.IProcessController;
 import xstampp.ui.common.ViewContainer;
 
 /**
@@ -71,13 +70,10 @@ public class UpdateJob extends Job {
 	 *            the provisioning agent
 	 * @param parent
 	 *            the parent shell
-	 * @param viewContainer
-	 *            the view container
 	 * @param startUp
 	 *            true, if this is the check at the startup
 	 */
-	public UpdateJob(String name, IProvisioningAgent agent, Shell parent,
-			IProcessController viewContainer, boolean startUp) {
+	public UpdateJob(String name, IProvisioningAgent agent, Shell parent,boolean startUp) {
 		super(name);
 		ViewContainer.getLOGGER().debug("Search " + UpdateJob.REPOSITORY_LOC + " for updates");
 		this.agent = agent;
@@ -136,15 +132,13 @@ public class UpdateJob extends Job {
 		// 3. Ask if updates should be installed and run installation
 		if (status.isOK() && (status.getSeverity() != IStatus.ERROR)) {
 			Display.getDefault().syncExec(new Runnable() {
-
 				@Override
 				public void run() {
 					String updates = ""; //$NON-NLS-1$
-					Update[] possibleUpdates = operation.getPossibleUpdates();
-					for (Update update : possibleUpdates) {
+					for (Update update : operation.getPossibleUpdates()) {
 						updates += update.toString().replaceAll("==>", "to") + "\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					}
-					if (possibleUpdates.length > 0) {
+					if (operation.getPossibleUpdates().length > 0) {
 						UpdateJob.this.doInstall = MessageDialog.openQuestion(
 								UpdateJob.this.parent,
 								Messages.ReallyInstallUpdates, updates);
@@ -192,24 +186,20 @@ class UpdateJobChangeAdapter extends JobChangeAdapter {
 	public void done(final IJobChangeEvent event) {
 		if (event.getResult().isOK()) {
 			Display.getDefault().syncExec(new Runnable() {
-
 				@Override
 				public void run() {
-					boolean restart = MessageDialog
-							.openQuestion(
+					boolean restart = MessageDialog.openQuestion(
 									UpdateJobChangeAdapter.this.parent,
 									Messages.UpdatesInstalledRestart,
 									Messages.UpdatesHaveBeenInstalledSuccessfullyDoYouWantToRestart);
 					if (UpdateJobChangeAdapter.this.viewContainer
 							.getUnsavedChanges()) {
 						restart = restart
-								&& !MessageDialog
-										.openQuestion(
+								&& !MessageDialog.openQuestion(
 												UpdateJobChangeAdapter.this.parent,
 												Messages.PlatformName,
 												Messages.ThereAreUnsafedChangesDoYouWantToStoreThemAbort);
-					}
-					if (restart) {
+					}if (restart) {
 						PlatformUI.getWorkbench().restart();
 					}
 				}

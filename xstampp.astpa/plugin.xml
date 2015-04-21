@@ -9,7 +9,8 @@
             extension="haz"
             icon="icons/branding/project16.png"
             id="astpa.navigation.process"
-            name="STPA Project">
+            name="STPA Project"
+            newWizard="astpa.wizards.NewWizard">
          <category
                icon="icons/branding/step1EstablishFundamentals.png"
                id="astpa.navigation.step1"

@@ -4,6 +4,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
+/**
+ * a simple perspective for displaying the projectExplorer and editor window
+ * @author Lukas Balzer
+ *
+ */
 public class ASTPAPerspective implements IPerspectiveFactory {
 
 	private static final Logger LOGGER = Logger.getRootLogger();

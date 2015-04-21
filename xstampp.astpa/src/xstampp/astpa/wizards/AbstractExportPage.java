@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 
 import xstampp.ui.common.ViewContainer;
-import xstampp.util.export.IExportPage;
 
 /**
  * a class to prevent code cloning in the export Pages

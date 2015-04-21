@@ -24,16 +24,13 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
-import xstampp.actions.ToolbarContribution;
-
 /**
  * Configures the action bar.
  * 
  * @author Patrick Wickenhaeuser
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
-	IWorkbenchAction exportAction;
-
+	
 	/**
 	 * Constructor of the advisor.
 	 * 
@@ -52,14 +49,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		IWorkbenchAction action = ActionFactory.HELP_CONTENTS.create(window);
 		this.register(action);
 
-		this.exportAction = ActionFactory.EXPORT.create(window);
-		this.register(action);
-		// intentionally empty
+		IWorkbenchAction exportAction = ActionFactory.EXPORT.create(window);
+		this.register(exportAction);
 	}
 
 	@Override
 	protected void fillCoolBar(ICoolBarManager coolBar) {
-		ToolbarContribution cont = new ToolbarContribution();
 		coolBar.setLockLayout(false);
 		coolBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		super.fillCoolBar(coolBar);

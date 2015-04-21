@@ -142,25 +142,5 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		this.viewLocation = view;
 	}
 
-	/**
-	 * @param values
-	 *            <ol>
-	 *            <li>[0] must be the filePath
-	 *            <li>[1] if there is a second value it is assumed as the offset
-	 *            if not a default value is used
-	 *            <li>[3] if there is a third value it is assumed as the boolean
-	 *            deciding the decoration if there is no such value decoration
-	 *            is turned off
-	 *            </ol>
-	 */
-	@Override
-	public boolean triggerExport(Object[] values) {
-		return this.initExport(Messages.ExportCSwithPM,
-				Messages.ExportingCSwithPM, values);
-	}
 
-	@Override
-	public Class<?> getExportWizard() {
-		return ControlStructureWithPMWizard.class;
-	}
 }

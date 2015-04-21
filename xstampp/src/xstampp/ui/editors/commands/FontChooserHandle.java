@@ -3,13 +3,22 @@ package xstampp.ui.editors.commands;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ViewContainer;
 import xstampp.ui.editors.interfaces.ITextEditor;
-
+/**
+ * this Handler changes the current Font of a text editor
+ * this is done by calling {@link ITextEditor#setFont(String, int)}
+ * with the value of the parameters<ul>
+ * <li> <code>xstampp.commandParameter.fontfamily</Code>
+ * <li> <code>xstampp.commandParameter.fontsize</Code>
+ * </ul> 
+ * @author Lukas Balzer
+ * 
+ * @see ITextEditor
+ * @since 1.0
+ */
 public class FontChooserHandle extends AbstractHandler {
 
 	@Override

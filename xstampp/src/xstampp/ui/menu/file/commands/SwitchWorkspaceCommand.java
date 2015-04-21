@@ -10,11 +10,16 @@ import org.eclipse.ui.PlatformUI;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.util.ChooseWorkLocation;
 
+
+/**
+ * this handler sets {@link IPreferenceConstants#WS_REMEMBER} and restarts the Platform
+ * causing the system to ask for the prefered workspace on startup
+ * 
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class SwitchWorkspaceCommand extends AbstractHandler {
 
-	public SwitchWorkspaceCommand() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {

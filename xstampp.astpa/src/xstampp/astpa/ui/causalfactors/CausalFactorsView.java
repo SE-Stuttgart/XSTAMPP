@@ -67,7 +67,7 @@ import xstampp.util.StandartEditorPart;
  * 
  * @author Benedikt Markt, Patrick Wickenhaeuser
  */
-public class CausalFactorsView extends StandartEditorPart implements IViewBase {
+public class CausalFactorsView extends StandartEditorPart{
 
 	private static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 	private static final Point ADD_BUTTON_COORDINATE = new Point(40, 1);
@@ -311,10 +311,6 @@ public class CausalFactorsView extends StandartEditorPart implements IViewBase {
 		return Messages.CausalFactorsTable;
 	}
 
-	@Override
-	public void onActivateView() {
-		// intentionally empty
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -465,14 +461,6 @@ public class CausalFactorsView extends StandartEditorPart implements IViewBase {
 		}
 	}
 
-	/**
-	 * please use the CausalFactorsTable Wizard for he export function
-	 */
-	@Override
-	public boolean triggerExport(Object[] values) {
-		// not used in this view
-		return false;
-	}
 
 	@Override
 	public void dispose() {

@@ -453,12 +453,6 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 		return UnsafeControlActionsView.ID;
 	}
 
-	@Override
-	public void onActivateView() {
-		UnsafeControlActionsView.LOGGER.info("refresh"); //$NON-NLS-1$
-
-		this.reloadTable();
-	}
 
 	@Override
 	public String getTitle() {
@@ -496,11 +490,6 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 		}
 	}
 
-	@Override
-	public boolean triggerExport(Object[] values) {
-
-		return false;
-	}
 
 	@Override
 	public void dispose() {

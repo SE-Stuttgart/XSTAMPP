@@ -68,7 +68,7 @@ import xstampp.util.StandartEditorPart;
  * @author Patrick Wickenhaeuser
  * @author Jarkko Heidenwag
  */
-public class LinkingView extends StandartEditorPart implements IViewBase,IPropertyChangeListener {
+public class LinkingView extends StandartEditorPart implements IPropertyChangeListener {
 
 	/**
 	 * Identifier of the view
@@ -464,10 +464,6 @@ public class LinkingView extends StandartEditorPart implements IViewBase,IProper
 		return LinkingView.ID;
 	}
 
-	@Override
-	public void onActivateView() {
-		this.updateAll();
-	}
 
 	/**
 	 * @wbp.parser.entryPoint
@@ -827,11 +823,6 @@ public class LinkingView extends StandartEditorPart implements IViewBase,IProper
 		}
 	}
 
-	@Override
-	public boolean triggerExport(Object[] values) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public void dispose() {

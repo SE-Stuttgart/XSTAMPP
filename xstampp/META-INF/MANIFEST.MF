@@ -27,11 +27,6 @@ Export-Package: com.sun.xml.bind.marshaller,
    org.eclipse.jface.resource,
    org.eclipse.ui.application,
    org.eclipse.ui.plugin",
- xstampp.actions;
-  uses:="org.eclipse.ui.menus,
-   org.eclipse.swt.events,
-   org.eclipse.jface.action,
-   org.eclipse.ui.services",
  xstampp.model,
  xstampp.preferences;uses:="org.eclipse.ui,org.eclipse.jface.preference,org.eclipse.core.runtime.preferences",
  xstampp.ui.common;
@@ -45,8 +40,7 @@ Export-Package: com.sun.xml.bind.marshaller,
  xstampp.ui.menu.file.commands,
  xstampp.ui.navigation,
  xstampp.ui.welcome,
- xstampp.util,
- xstampp.util.export
+ xstampp.util
 Bundle-ClassPath: .,
  lib/log4j-1.2.9.jar,
  lib/avalon-framework-4.2.0.jar,

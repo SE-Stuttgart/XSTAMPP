@@ -53,7 +53,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	private static final int DEFAULT_SPLITTER_BACKGROUND = SWT.COLOR_DARK_BLUE;
 
-	private static final int DEFAULT_SPLITTER_FONT = SWT.COLOR_TITLE_BACKGROUND_GRADIENT;
 
 	/**
 	 * Link to update the application.

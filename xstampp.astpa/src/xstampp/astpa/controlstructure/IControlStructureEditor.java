@@ -25,7 +25,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.ui.ISelectionListener;
 
 import xstampp.ui.common.IViewBase;
-import xstampp.util.export.IExportView;
 
 /**
  * 
@@ -33,9 +32,9 @@ import xstampp.util.export.IExportView;
  * 
  */
 public interface IControlStructureEditor extends CommandStackListener,
-		ISelectionListener, MouseListener, PaletteListener, IViewBase,
+		ISelectionListener, MouseListener, PaletteListener,
 		SelectionListener, ZoomListener, PropertyChangeListener,
-		ISelectionChangedListener, IExportView {
+		ISelectionChangedListener {
 
 	
 	/**

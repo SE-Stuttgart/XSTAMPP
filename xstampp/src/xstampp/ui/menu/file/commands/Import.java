@@ -20,8 +20,8 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import xstampp.ui.common.IProcessController;
 import xstampp.ui.common.ViewContainer;
+
 
 /**
  * Handler that loads a analysis from the file system
@@ -34,7 +34,7 @@ public class Import extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		IProcessController viewContainer = ViewContainer.getContainerInstance();
+		ViewContainer viewContainer = ViewContainer.getContainerInstance();
 		// Enable the save entries in the menu
 		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
 				.getWorkbench().getService(ISourceProviderService.class);

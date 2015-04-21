@@ -235,6 +235,16 @@ The Load job is resposible for creating a IDataModel which contains the project 
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="newWizard" type="string">
+            <annotation>
+               <documentation>
+                  this field stored the wizard which is to be used to create a new process analysis
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.newWizards/wizard/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

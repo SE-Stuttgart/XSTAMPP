@@ -7,7 +7,6 @@ import java.util.List;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.jobs.Job;
 
 import xstampp.model.IDataModel;
@@ -77,6 +76,12 @@ public abstract class AbstractLoadJob extends Job {
 		return this.log;
 	}
 	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return a list of errors which occured during the job
+	 */
 	public List<String> getErrors() {
 		return this.errors;
 	}

@@ -19,6 +19,7 @@ import org.eclipse.ui.PlatformUI;
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ViewContainer;
+import xstampp.ui.navigation.StepSelector;
 
 /**
  * The Standard Editor input for this Platform,
@@ -37,14 +38,15 @@ public class STPAEditorInput implements IEditorInput {
 	private String pathHistory;
 	private TreeItem stepItem;
 	/**
-	 * The
+	 * The Default editorInput 
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param projectId
 	 *            the id of the project which is related to this input
-	 * @param editorId 
-	 * @param refItem 
+	 * @param editorId {@link StepSelector#getEditorId()}
+	 * 			
+	 * @param refItem {@link StepSelector}
 	 */
 	public STPAEditorInput(UUID projectId, String editorId, TreeItem refItem) {
 		this.stepItem=refItem;
@@ -111,11 +113,7 @@ public class STPAEditorInput implements IEditorInput {
 		
 		if(arg0 instanceof STPAEditorInput){
 			equality= this.projectId.equals(((STPAEditorInput) arg0).projectId);
-			equality= equality && this.stepEditorId.equals(((STPAEditorInput) arg0).stepEditorId);
-			if(equality){
-			}
-			
-			return this.id.equals(((STPAEditorInput) arg0).id);
+			return equality && this.stepEditorId.equals(((STPAEditorInput) arg0).stepEditorId);
 		}
 		return super.equals(arg0);
 	}
@@ -141,11 +139,17 @@ public class STPAEditorInput implements IEditorInput {
 		this.pathHistory = pathHistory;
 	}
 	
+	/**
+	 * called when the editor handeled by this input is opened 
+	 * updates the workbench and optionally highlightes the related step in the project Explorer
+	 * @author Lukas Balzer
+	 *
+	 */
 	public void activate() {
 		
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().
 									setText(Messages.PlatformName + " -" +this.pathHistory);
-		if(!store.getBoolean(IPreferenceConstants.USE_NAVIGATION_COLORS)){
+		if(!this.store.getBoolean(IPreferenceConstants.USE_NAVIGATION_COLORS)){
 			return;
 		}
 		Color navigationColor = new Color(Display.getCurrent(), PreferenceConverter
@@ -160,6 +164,11 @@ public class STPAEditorInput implements IEditorInput {
 		}
 	}
 
+	/**
+	 *if the step is deactivated this method notifys the platform to reset the path highlighting 
+	 * @author Lukas Balzer
+	 *
+	 */
 	public void deactivate() {
 		this.stepItem.setBackground(null);
 		
@@ -167,6 +176,12 @@ public class STPAEditorInput implements IEditorInput {
 		this.stepItem.getParentItem().getParentItem().setBackground(null);
 	}
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param item the related step item
+	 */
 	public void setStepItem(TreeItem item) {
 		this.stepItem=item;
 		

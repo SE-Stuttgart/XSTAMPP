@@ -7,7 +7,6 @@ import java.util.prefs.Preferences;
 
 import messages.Messages;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -15,7 +14,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -28,6 +26,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ViewContainer;
@@ -108,12 +107,10 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 
 			@Override
 			public void handleEvent(Event event) {
-				DirectoryDialog dd = new DirectoryDialog(
-						ChooseWorkLocation.this.getParentShell());
+				DirectoryDialog dd = new DirectoryDialog(ChooseWorkLocation.this.getParentShell());
 				dd.setText("Select the Workspace Root"); //$NON-NLS-1$
 				dd.setMessage(Messages.WorkspaceSetDesc);
-				dd.setFilterPath(ChooseWorkLocation.this.workspacePathCombo
-						.getText());
+				dd.setFilterPath(ChooseWorkLocation.this.workspacePathCombo.getText());
 				String pick = dd.open();
 				if ((pick == null)
 						&& (ChooseWorkLocation.this.workspacePathCombo
@@ -125,7 +122,6 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 					ChooseWorkLocation.this.workspacePathCombo.setText(pick);
 				}
 			}
-
 		});
 
 		data = new FormData();
@@ -320,9 +316,17 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 
 		}
 	}
-	public static boolean initiateWorkspace(){
-		return ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(
-				INIT_WORKSPACE, false);
+	/**
+	 *if true the workspace has to be initialized, for that purpose it is neccesary to restart the Platform  
+	 * @author Lukas Balzer
+	 *
+	 */
+	public static void initiateWorkspace(){
+		if(ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(
+				INIT_WORKSPACE, false)){
+			PlatformUI.getWorkbench().restart();
+			ViewContainer.getLOGGER().debug("restarted Workbench");
+		}
 	}
 	/**
 	 * 

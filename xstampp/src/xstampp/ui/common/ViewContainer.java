@@ -13,13 +13,7 @@
 
 package xstampp.ui.common;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,23 +22,10 @@ import java.util.Observable;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
 import messages.Messages;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -56,7 +37,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
-import org.xml.sax.SAXException;
 
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -79,7 +59,7 @@ import xstampp.util.STPAPluginUtils;
  * @author Lukas Balzer
  * 
  */
-public class ViewContainer implements IProcessController {
+public class ViewContainer {
 
 	/**
 	 * The log4j logger
@@ -93,12 +73,6 @@ public class ViewContainer implements IProcessController {
 	 */
 	public static final String ID = "astpa.ui.common.viewcontainer"; //$NON-NLS-1$
 
-
-
-	/**
-	 * The message which the dialog shows
-	 */
-	private static final String DISCARD_MESSAGE = Messages.ThereAreUnsafedChangesDoYouWantToStoreThem;
 
 	private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheFile;
 
@@ -173,8 +147,19 @@ public class ViewContainer implements IProcessController {
 		this.projectDataToUUID = new HashMap<>();
 		this.projectSaveFilesToUUID = new HashMap<>();
 	}
-
-	@Override
+	
+	/**
+	 * creates a new project in the given location
+	 * 
+	 * @author Lukas Balzer
+	 * @param controller 
+	 * 		the controller class which should be used  
+	 * @param projectName
+	 *            he name of the new project
+	 * @param path
+	 *            the path where the new project is stored
+	 * @return The UUID of the new project
+	 */
 	public UUID startUp(Class<?> controller, String projectName, String path) {
 		IDataModel newController;
 		try {
@@ -186,8 +171,7 @@ public class ViewContainer implements IProcessController {
 			this.projectSaveFilesToUUID.put(projectId, new File(path));
 			this.saveDataModel(projectId, false);
 			return projectId;
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
+		} catch (InstantiationException | IllegalAccessException e) {	
 			e.printStackTrace();
 		}
 		return null;
@@ -221,7 +205,15 @@ public class ViewContainer implements IProcessController {
 		return false;
 	}
 
-	@Override
+	/**
+	 * Saves the data model to a file
+	 * 
+	 * @author Fabian Toth,Lukas Balzer
+	 * @param projectId
+	 *            the id of the project
+	 * 
+	 * @return whether the operation was successful or not
+	 */
 	public boolean saveDataModelAs(final UUID projectId) {
 
 		IDataModel tmpController = this.projectDataToUUID.get(projectId);
@@ -248,7 +240,18 @@ public class ViewContainer implements IProcessController {
 		return this.saveDataModel(projectId, false);
 	}
 
-	@Override
+	/**
+	 * Saves the data model to the file in the variable. If this is null
+	 * saveDataModelAs() is called
+	 * 
+	 * @author Fabian Toth,Lukas Balzer
+	 * @param projectId
+	 *            the id of the project
+	 * @param isUIcall informs the runtime if the call is initiated by the 
+	 * 			user or the system
+	 * 
+	 * @return whether the operation was successful or not
+	 */
 	public boolean saveDataModel(UUID projectId, boolean isUIcall) {
 		if (this.projectSaveFilesToUUID.get(projectId) == null) {
 			return this.saveDataModelAs(projectId);
@@ -296,11 +299,18 @@ public class ViewContainer implements IProcessController {
 
 	private void synchronizeProjectName(UUID projectID){
 		File saveFile=this.projectSaveFilesToUUID.get(projectID);
-		String projName= this.getTitle(projectID);
 		renameProject(projectID, saveFile.getName().split("\\.")[0]); //$NON-NLS-1$
 	}
 	
-	@Override
+	/**
+	 * Loads the data model from a file if it is valid
+	 * 
+	 * @author Fabian Toth
+	 * @author Jarkko Heidenwag
+	 * @author Lukas Balzer
+	 * 
+	 * @return whether the operation was successful or not
+	 */
 	public boolean importDataModel() {
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
 				.getDisplay().getActiveShell(), SWT.OPEN);
@@ -341,22 +351,7 @@ public class ViewContainer implements IProcessController {
 				}
 				
 			}
-//			
-//			try (BufferedReader reader = new BufferedReader(new FileReader(
-//					outer));
-//					BufferedWriter writer = new BufferedWriter(new FileWriter(
-//							copy))) {
-//				String currentLine;
-//				while((currentLine = reader.readLine()) != null) {
-//					writer.append(currentLine);
-//					writer.newLine();
-//				}
-//				reader.close();
-//				writer.close();
-//				return this.loadDataModelFile(copy.getPath());
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
+
 			this.loadDataModelFile(file,copy.getPath());
 		} else if (file != null) {
 			return this.loadDataModelFile(file,file);
@@ -372,10 +367,10 @@ public class ViewContainer implements IProcessController {
 	 * @author Lukas Balzer
 	 * @param file
 	 *            the file which contains the dataModel
+	 * @param saveFile the file the project shuold be saved in
 	 * 
 	 * @return whether the operation was successful or not
 	 */
-	@Override
 	public boolean loadDataModelFile(String file,String saveFile) {
 		Object jobObject = null;
 		String pluginName = ""; //$NON-NLS-1$
@@ -407,31 +402,7 @@ public class ViewContainer implements IProcessController {
 		return false;
 	}
 
-	/**
-	 * Exports the PDF document.
-	 * 
-	 * @author Sebastian Sieber,Lukas Balzer
-	 * 
-	 * @param xslName
-	 *            the name of the file in which the xsl file is stored which
-	 *            should be used
-	 * @param page
-	 *            the export page
-	 * @param jobMessage
-	 *            the job message which is shown in the progress bar
-	 * @param forceCSDeco
-	 *            if the deco of the control structure should be shown or not
-	 * @return whether exporting succeeded.
-	 */
-	public boolean export(Job exportJob, UUID projectId) {
-		this.projectDataToUUID.get(projectId).prepareForExport();
 
-		// start the job, that exports the pdf from the JAXB stream
-
-		exportJob.schedule();
-		return true;
-
-	}
 
 	/**
 	 * Checks if there are unsaved changes or not
@@ -463,58 +434,15 @@ public class ViewContainer implements IProcessController {
 		return false;
 	}
 
+	
 	/**
-	 * Updates all views when a new data model was created/loaded
+	 * Calls the observer of the data model with the given value
 	 * 
 	 * @author Fabian Toth
 	 * 
+	 * @param value
+	 *            the value to call
 	 */
-	private void setNewDataModel(UUID id) {
-		for (ObserverValue value : ObserverValue.values()) {
-			this.projectDataToUUID.get(id).updateValue(value);
-			synchronizeProjectName(id);
-		}
-		this.saveDataModel(id, false);
-		this.projectDataToUUID.get(id).setStored();
-	}
-
-	/**
-	 * Asks the user if the data model should be overwritten
-	 * 
-	 * @author Fabian Toth
-	 * @deprecated since vs 2.0 due to multiple datamodels are stored
-	 * 
-	 * @return true, if the data model should be overwritten
-	 */
-	@Deprecated
-	private boolean overwriteDataModel() {
-		if (!this.projectDataToUUID.get(1).hasUnsavedChanges()) {
-			return true;
-		}
-		MessageDialog dialog = new MessageDialog(
-				Display.getCurrent().getActiveShell(),
-				Messages.PlatformName,
-				null,
-				ViewContainer.DISCARD_MESSAGE,
-				MessageDialog.CONFIRM,
-				new String[] { Messages.Store, Messages.Discard, Messages.Abort },
-				0);
-		int resultNum = dialog.open();
-		switch (resultNum) {
-		case -1:
-			return false;
-		case 0:
-			// return this.saveDataModel();
-		case 1:
-			return true;
-		case 2:
-			return false;
-		default:
-			return false;
-		}
-	}
-
-	@Override
 	public void callObserverValue(ObserverValue value) {
 		for (UUID id : this.getProjectKeys()) {
 			this.projectDataToUUID.get(id).updateValue(value);
@@ -531,7 +459,15 @@ public class ViewContainer implements IProcessController {
 		return ViewContainer.containerInstance;
 	}
 
-	@Override
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param projectId
+	 * 			the id which is stored for the requested proejcts data
+	 * @return the DataModel as IDataModel for the given project id
+	 */
 	public IDataModel getDataModel(UUID projectId) {
 		if (this.projectDataToUUID.containsKey(projectId)) {
 			return this.projectDataToUUID.get(projectId);
@@ -557,8 +493,15 @@ public class ViewContainer implements IProcessController {
 		}
 		return null;
 	}
-
-	@Override
+	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param projectId
+	 *            the id with which the project data are stored in the DataModel
+	 * @return the title of the project
+	 */
 	public String getTitle(UUID projectId) {
 		if (this.projectDataToUUID.containsKey(projectId)) {
 			return this.projectDataToUUID.get(projectId).getProjectName();
@@ -566,6 +509,15 @@ public class ViewContainer implements IProcessController {
 		return Messages.NewProject;
 	}
 
+	/**
+	 *	generates a random uuid for the project and the registered extension and data model 
+	 *	to it 
+	 * @author Lukas Balzer
+	 *
+	 * @param controller
+	 * 			the data model as IDataModel which contains the projects data
+	 * @return	generates a random uuid and stores/returns it as the projectId
+	 */
 	public UUID addProjectData(IDataModel controller) {
 		UUID id = UUID.randomUUID();
 		this.extensionsToUUID.put(id, controller.getFileExtension());
@@ -614,6 +566,15 @@ public class ViewContainer implements IProcessController {
 		return this.projectDataToUUID.keySet();
 	}
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param id	
+	 * 		the id for the requested project
+	 * @return
+	 * 		the extension which is registered for the project
+	 */
 	public String getProjectExtension(UUID id) {
 		return this.extensionsToUUID.get(id);
 	}
@@ -631,6 +592,15 @@ public class ViewContainer implements IProcessController {
 		return map;
 	}
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param path
+	 * 		a file path 
+	 * @return	
+	 * 		a mime constant for the handling of the file
+	 */
 	public String getMimeConstant(String path) {
 		if (path.endsWith("pdf")) { //$NON-NLS-1$
 			return org.apache.xmlgraphics.util.MimeConstants.MIME_PDF;

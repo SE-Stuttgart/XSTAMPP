@@ -15,18 +15,14 @@ package xstampp.ui.menu.file.commands;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.ui.AbstractSourceProvider;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.editors.interfaces.ITextEditor;
-import xstampp.ui.navigation.IProjectSelection;
-import xstampp.util.STPAEditorInput;
 
 /**
  * Class that stores whether the save menu should be enabled or not
@@ -134,25 +130,25 @@ public class CommandState extends AbstractSourceProvider implements IPartListene
 
 	@Override
 	public void partBroughtToTop(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
+		// not used by this implementation
 		
 	}
 
 	@Override
 	public void partClosed(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
+		// not used by this implementation
 		
 	}
 
 	@Override
 	public void partDeactivated(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
+		// not used by this implementation
 		
 	}
 
 	@Override
 	public void partOpened(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
+		// not used by this implementation
 		
 	}
 

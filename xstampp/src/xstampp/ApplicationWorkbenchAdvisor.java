@@ -13,14 +13,11 @@
 
 package xstampp;
 
-import org.eclipse.equinox.app.IApplication;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-
-import xstampp.util.ChooseWorkLocation;
 
 /**
  * Configures the workbench.

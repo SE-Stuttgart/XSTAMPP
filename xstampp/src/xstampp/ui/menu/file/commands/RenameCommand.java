@@ -17,6 +17,12 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import xstampp.ui.common.ViewContainer;
 import xstampp.ui.navigation.IProjectSelection;
 
+/**
+ * opens a rename dialoge and calls the function {@link ViewContainer#renameProject(UUID, String)}
+ * 
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class RenameCommand extends AbstractHandler {
 
 	@Override

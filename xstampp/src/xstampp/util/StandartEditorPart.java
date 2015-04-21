@@ -13,7 +13,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
@@ -35,7 +34,6 @@ public abstract class StandartEditorPart extends EditorPart implements
 		IViewBase,IPartListener {
 
 	private UUID projectID;
-	private boolean dirty;
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -122,7 +120,6 @@ public abstract class StandartEditorPart extends EditorPart implements
 			this.getEditorSite().getActionBars().getStatusLineManager()
 					.setMessage(null);
 		}
-		this.dirty = true;
 	}
 
 	@Override
@@ -153,25 +150,25 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void partBroughtToTop(IWorkbenchPart arg0) {
-		// TODO Auto-generated method stub
+		// is not used by the implementation
 		
 	}
 
 	@Override
 	public void partClosed(IWorkbenchPart arg0) {
-		// TODO Auto-generated method stub
+		// is not used by the implementation
 		
 	}
 
 	@Override
 	public void partDeactivated(IWorkbenchPart arg0) {
-		// TODO Auto-generated method stub
+		// is not used by the implementation
 		
 	}
 
 	@Override
 	public void partOpened(IWorkbenchPart arg0) {
-		// TODO Auto-generated method stub
+		// is not used by the implementation
 		
 	}
 	

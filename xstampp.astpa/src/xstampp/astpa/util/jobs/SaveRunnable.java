@@ -1,8 +1,6 @@
-package xstampp.astpa.util;
+package xstampp.astpa.util.jobs;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-
-import xstampp.astpa.util.jobs.SaveJob;
 
 public class SaveRunnable implements Runnable {
 

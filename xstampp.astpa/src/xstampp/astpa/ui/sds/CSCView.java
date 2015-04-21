@@ -308,10 +308,7 @@ public class CSCView extends StandartEditorPart{
 		return Messages.CorrespondingSafetyConstraints;
 	}
 
-	@Override
-	public void onActivateView() {
-		// intentionally empty
-	}
+
 
 	public void setDataModelInterface(IDataModel dataInterface) {
 		this.dataInterface = (ICorrespondingSafetyConstraintDataModel) dataInterface;
@@ -390,12 +387,6 @@ public class CSCView extends StandartEditorPart{
 			CSCView.this.tableViewer.setInput(CSCView.this.dataInterface
 					.getAllUnsafeControlActions());
 		}
-	}
-
-	@Override
-	public boolean triggerExport(Object[] values) {
-		// nothing to export here
-		return false;
 	}
 
 	@Override

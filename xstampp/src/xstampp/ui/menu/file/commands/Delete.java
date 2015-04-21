@@ -9,13 +9,19 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import xstampp.ui.common.ViewContainer;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectSelector;
 
+/**
+ * This handler manages the deletfor all projects and plugins on that platform
+ * by calling {@link ViewContainer#removeProjectData(UUID)} with the current project selection
+ * 
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class Delete extends AbstractHandler {
 
 	@Override

@@ -9,6 +9,20 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.editors.interfaces.ITextEditor;
 
+/**
+ * this Handler changes either the {@link ITextEditor#FOREGROUND} or the {@link ITextEditor#BACKGROUND}
+ * this is done by calling {@link ITextEditor#setStyleColor(String, RGB)}
+ * with the value of the parameters<ul>
+ * <li> <code>xstampp.commandParameter.color.type</Code>
+ * <li> <code>xstampp.commandParameter.color.red</Code>
+ * <li> <code>xstampp.commandParameter.color.green</Code>
+ * <li> <code>xstampp.commandParameter.color.blue</Code>
+ * </ul> 
+ * @author Lukas Balzer
+ * 
+ * @see ITextEditor
+ * @since 1.0
+ */
 public class ColorChooseHandle extends AbstractHandler {
 
 

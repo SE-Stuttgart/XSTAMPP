@@ -19,7 +19,6 @@ import java.util.List;
 
 import messages.Messages;
 
-import org.apache.log4j.Logger;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -37,7 +36,6 @@ import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.osgi.framework.ServiceReference;
 
-import xstampp.ui.common.IProcessController;
 import xstampp.ui.common.ViewContainer;
 import xstampp.update.UpdateJob;
 import xstampp.util.ChooseWorkLocation;
@@ -53,11 +51,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	 * The minimum and the initial size of the window
 	 */
 	private static final Point MINIMUM_WINDOW_SIZE = new Point(1024, 768);
-
-	/**
-	 * The log4j logger
-	 */
-	private static final Logger LOGGER = Logger.getRootLogger();
 
 	private UpdateJob updateJob;
 
@@ -83,10 +76,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	@SuppressWarnings("restriction")
 	@Override
 	public void postWindowOpen() {
-		if(ChooseWorkLocation.initiateWorkspace()){
-			PlatformUI.getWorkbench().restart();
-			ViewContainer.getLOGGER().debug("restarted Workbench");
-		}
+		ChooseWorkLocation.initiateWorkspace();
 		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
 				.getWorkbench().getExportWizardRegistry();
 		IWizardCategory[] categories = wizardRegistry.getRootCategory()
@@ -151,21 +141,13 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		final Shell shell = this.getWindowConfigurer().getWindow().getShell();
 		shell.setMinimumSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
 
-		IProcessController viewContainer = ViewContainer.getContainerInstance();
-
-		if (viewContainer == null) {
-			ApplicationWorkbenchWindowAdvisor.LOGGER
-					.error("View Container not found"); //$NON-NLS-1$
-			return;
-		}
-
 		ServiceReference<?> reference = Activator.getContext()
 				.getServiceReference(IProvisioningAgent.SERVICE_NAME);
 		final IProvisioningAgent agent = (IProvisioningAgent) Activator
 				.getContext().getService(reference);
 		Activator.getContext().ungetService(reference);
 		this.updateJob = new UpdateJob(Messages.UpdatingASTPA, agent, shell,
-				viewContainer, true);
+				 true);
 		this.updateJob.schedule();
 	}
 

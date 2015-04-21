@@ -37,12 +37,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.xml.sax.SAXException;
 
-import xstampp.Activator;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
@@ -65,7 +63,8 @@ public class ExportJob extends Job {
 	private final String fileType;
 	private final String xslName;
 	private final boolean asOne;
-	public final UUID id;
+	private final UUID id;
+
 	private final boolean decorate;
 
 	/**
@@ -246,6 +245,13 @@ public class ExportJob extends Job {
 		
 		return Float.toString(pageHeight) + "in";//$NON-NLS-1$
 
+	}
+	
+	/**
+	 * @return the id
+	 */
+	public UUID getId() {
+		return this.id;
 	}
 
 }

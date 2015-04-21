@@ -906,37 +906,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		return true;
 	}
 
-	@Override
-	public void onActivateView() {
-		
-		this.setFocus();
-		this.getGraphicalViewer().getRootEditPart().deactivate();
-		this.getGraphicalViewer().getEditPartRegistry().clear();
-
-		this.configureGraphicalViewer(this.getGraphicalViewer());
-		this.initializeGraphicalViewer(this.getGraphicalViewer());
-
-		this.zoomManager.setZoom(this.getZoomLevel());
-		if (this.getViewport() != null) {
-			this.zoomManager.getViewport().setVerticalRangeModel(
-					this.getViewport().getVerticalRangeModel());
-			this.zoomManager.getViewport().setHorizontalRangeModel(
-					this.getViewport().getHorizontalRangeModel());
-			this.zoomManager.getViewport().setViewLocation(
-					this.getViewport().getViewLocation());
-			this.zoomManager.getViewport().validate();
-
-		}
-		int level = (int) (this.getZoomLevel() * CSAbstractEditor.FULL_SCALE);
-		this.scale.setSelection(level);
-		this.label.setText(level + "%"); //$NON-NLS-1$
-		this.setFocus();
-		this.getSite().setSelectionProvider(null);
-		this.getSite().setSelectionProvider(this.getGraphicalViewer());
-		this.getSite().getWorkbenchWindow().getSelectionService()
-				.addSelectionListener(this);
-		setDecoration(this.decoSwitch.getSelection());
-	}
 
 	public void setDataModelInterface(IDataModel dataInterface) {
 		this.modelInterface = (IControlStructureEditorDataModel) dataInterface;

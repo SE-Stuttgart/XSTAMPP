@@ -20,12 +20,9 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.ServiceReference;
 
 import xstampp.Activator;
-import xstampp.ui.common.IProcessController;
-import xstampp.ui.common.ViewContainer;
 
 /**
  * Handles the update routine
@@ -42,11 +39,8 @@ public class UpdateHandler extends AbstractHandler {
 		final IProvisioningAgent agent = (IProvisioningAgent) Activator
 				.getContext().getService(reference);
 		Activator.getContext().ungetService(reference);
-		IProcessController viewContainer = (IProcessController) PlatformUI
-				.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.findView(ViewContainer.ID);
 		UpdateJob j = new UpdateJob(Messages.UpdatingASTPA, agent, Display
-				.getCurrent().getActiveShell(), viewContainer, false);
+				.getCurrent().getActiveShell(), false);
 		j.schedule();
 		return null;
 	}

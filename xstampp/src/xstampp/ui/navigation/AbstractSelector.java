@@ -6,17 +6,26 @@ import messages.Messages;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.util.STPAEditorInput;
-
+/**
+ * A Selector is connected to a treeItem and manages the interaction between the platform and the ProjectTree
+ * @author Lukas Balzer
+ *
+ */
 public abstract class AbstractSelector implements IProjectSelection {
 
 	private TreeItem treeItem;
 	private UUID projectId;
 	private String pathHistory;
 
+	/**
+	 *constructs a new Selector for the given treeItem and project
+	 * @author Lukas Balzer
+	 *
+	 * @param item {@link #getItem()}
+	 * @param projectId {@link #getProjectId()}
+	 */
 	public AbstractSelector(TreeItem item, UUID projectId) {
 		this.treeItem = item;
 		this.projectId = projectId;

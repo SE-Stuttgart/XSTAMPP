@@ -265,7 +265,7 @@
                <with
                      variable="selection">
                   <instanceof
-                        value="astpa.ui.navigation.IProjectSelection">
+                        value="xstampp.ui.navigation.IProjectSelection">
                   </instanceof>
                </with>
             </visibleWhen>
@@ -376,7 +376,7 @@
       </handler>
       <handler
             class="xstampp.ui.menu.file.commands.SaveAll"
-            commandId="astpa.saveall">
+            commandId="xstampp.saveall">
          <enabledWhen>
             <with
                   variable="xstampp.ui.menu.file.commands.savestate">
@@ -686,27 +686,6 @@
    <toc
          file="tocgettingstarted.xml">
    </toc>
-</extension>
-<extension
-      point="org.eclipse.ui.importWizards">
-   <wizard
-         category="xstampp.category.general"
-         class="org.eclipse.ui.internal.wizards.preferences.PreferencesImportWizard"
-         id="xstampp.importwizard.preferences"
-         name="Preferences">
-   </wizard>
-   <category
-         id="xstampp.category.general"
-         name="General">
-   </category>
-</extension>
-<extension
-      point="org.eclipse.ui.exportWizards">
-   <wizard
-         class="org.eclipse.ui.internal.wizards.preferences.PreferencesExportWizard"
-         id="xstampp..exportwizard.preferences"
-         name="Preferences">
-   </wizard>
 </extension>
 
 

@@ -95,8 +95,6 @@ public class WelcomeView extends ViewPart implements IViewBase {
 
 	private static final String NEW_PROJECT_TOOLTIP = Messages.CreateNewProject;
 	private static final String LOAD_PROJECT_TOOLTIP = Messages.LoadProject;
-	private static final String EXIT_PROJECT_TOOLTIP = "Go to the Workbench";
-	private static final String CLOSE_TOOLTIP = Messages.CloseWelcomeView;
 	private static final FontData TitleFont = new FontData(
 			"Calibri", 16, SWT.NORMAL); //$NON-NLS-1$
 	private static final FontData DefaultFont = new FontData(
@@ -119,10 +117,6 @@ public class WelcomeView extends ViewPart implements IViewBase {
 		return Messages.WelcomeView;
 	}
 
-	@Override
-	public void onActivateView() {
-
-	}
 
 	/**
 	 * adds a list of recent projects to the welcome view,
@@ -134,6 +128,7 @@ public class WelcomeView extends ViewPart implements IViewBase {
 	 * @param parent
 	 *            the composite on which this component will be shown
 	 */
+	@SuppressWarnings("unused")
 	private void addRecentProjects(Composite parent) {
 		Composite recentComp = new Composite(parent, SWT.NONE);
 		FormData data = new FormData();
@@ -387,6 +382,7 @@ public class WelcomeView extends ViewPart implements IViewBase {
 		});
 		return newLabel;
 	}
+	@SuppressWarnings("unused")
 	private Label addHoveredButton(Composite parent, final Image icon,
 			final String helpText, Point relativePosition, final Image hoveredIcon,
 			final String command) {
@@ -452,12 +448,8 @@ public class WelcomeView extends ViewPart implements IViewBase {
 		return IPreferenceConstants.SHOW_WELCOME_ON_STARTUP_PREFERENCES;
 	}
 
-	@Override
-	public boolean triggerExport(Object[] values) {
-		// no export available
-		return false;
-	}
 
+	@SuppressWarnings("unused")
 	private void updateRecentProjects() {
 		RecentProjectLabel newRecentEntry;
 		String recentProjectsTest = Activator.getDefault().getPreferenceStore()
@@ -706,15 +698,22 @@ public class WelcomeView extends ViewPart implements IViewBase {
 		return WelcomeView.helpImageHovered;
 	}
 
+	/**
+	 * 
+	 *
+	 * @author Lukas Balzer
+	 * @since 1.0
+	 */
 	private class RecentProjectLabel implements MouseListener,
 			MouseTrackListener {
+		@SuppressWarnings("unused")
 		private String link;
 		private Label label;
 
 		RecentProjectLabel(Composite parent, String path, FormData data) {
 
 			this.label = new Label(parent, SWT.NONE);
-
+			this.link = path;
 			Font recentFont = new Font(Display.getCurrent(),
 					WelcomeView.DefaultFont);
 
@@ -774,8 +773,7 @@ public class WelcomeView extends ViewPart implements IViewBase {
 
 	@Override
 	public void setFocus() {
-		this.onActivateView();
-
+		//methode call not used in this implementation of IWorkbenchPart
 	}
 
 }

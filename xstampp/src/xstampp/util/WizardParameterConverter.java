@@ -1,12 +1,8 @@
 package xstampp.util;
 
-import java.util.Map;
-
 import org.eclipse.core.commands.AbstractParameterValueConverter;
-import org.eclipse.core.commands.IParameterValues;
 import org.eclipse.core.commands.ParameterValueConversionException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.IWizardDescriptor;

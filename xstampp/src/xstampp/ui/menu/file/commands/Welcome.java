@@ -13,7 +13,6 @@
 
 package xstampp.ui.menu.file.commands;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -33,11 +32,6 @@ public class Welcome extends AbstractHandler {
 	private static Workbench workbench;
 
 	private static IIntroPart currentIntro;
-
-	/**
-	 * The log4j logger
-	 */
-	private static final Logger LOGGER = Logger.getRootLogger();
 
 	/**
 	 * 

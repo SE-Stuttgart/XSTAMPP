@@ -1,15 +1,26 @@
 package xstampp.ui.editors.interfaces;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 
+
+/**
+ * THis type stores a text selection of a styled text which alos contains informations about it's font
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class StyledTextSelection implements ISelection {
 
 	private int fontSize;
 	private Point selectionRange;
 	private String fontName;
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param range the range of the selection
+	 */
 	public StyledTextSelection(Point range) {
 		this.setSelectionRange(range);
 	}
@@ -48,7 +59,7 @@ public class StyledTextSelection implements ISelection {
 	 * @return the fontName
 	 */
 	public String getFontName() {
-		return fontName;
+		return this.fontName;
 	}
 	/**
 	 * @param fontName the fontName to set

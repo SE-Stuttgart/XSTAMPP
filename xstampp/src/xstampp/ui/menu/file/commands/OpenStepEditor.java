@@ -5,10 +5,14 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 import xstampp.ui.navigation.StepSelector;
 
+/**
+ *
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class OpenStepEditor extends AbstractHandler {
 
 	@Override

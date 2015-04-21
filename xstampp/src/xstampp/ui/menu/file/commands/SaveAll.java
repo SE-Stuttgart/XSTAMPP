@@ -6,11 +6,14 @@ import org.eclipse.core.commands.ExecutionException;
 
 import xstampp.ui.common.ViewContainer;
 
+/**
+ * this handler simply passes the call to {@link ViewContainer#saveAllDataModels()}
+ *
+ * @author Lukas Balzer
+ * @since 1.0
+ */
 public class SaveAll extends AbstractHandler {
 
-	public SaveAll() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {

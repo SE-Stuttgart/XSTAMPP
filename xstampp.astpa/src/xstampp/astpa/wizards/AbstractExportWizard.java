@@ -25,7 +25,6 @@ import xstampp.astpa.wizards.pages.CSVExportPage;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ViewContainer;
-import xstampp.util.export.IExportPage;
 
 /**
  * 
@@ -128,19 +127,15 @@ public abstract class AbstractExportWizard extends Wizard implements
 						Messages.CantOverride);
 				return false;
 			}
-			ViewContainer viewContainer = ViewContainer.getContainerInstance();
 			Job exportJob = new ExportJob(this.getExportPage().getProjectId(),
 					jobMessage, filePath, ViewContainer.getContainerInstance()
 							.getMimeConstant(filePath), fopName, this
 							.getExportPage().asOne(), forceCSDeco);
 
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
-			if (!viewContainer.export(exportJob, this.getExportPage()
-					.getProjectId())) {
-				MessageDialog.openWarning(this.getShell(), Messages.Warning,
-						Messages.CantOverride);
-				return false;
-			}
+
+
+			exportJob.schedule();
 		} else {
 			MessageDialog.openWarning(this.getShell(), Messages.Warning,
 					Messages.ChooseTheDestination);
@@ -260,7 +255,13 @@ public abstract class AbstractExportWizard extends Wizard implements
 
 			super.scheduled(event);
 		}
-
+		@Override
+		public void aboutToRun(IJobChangeEvent event) {
+			ViewContainer.getContainerInstance()
+			.getDataModel(((ExportJob) event.getJob()).getId())
+			.prepareForExport();
+			super.aboutToRun(event);
+		}
 		@Override
 		public void done(final IJobChangeEvent event) {
 			if (event.getResult().isOK()) {
@@ -272,7 +273,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 						ViewContainer.getContainerInstance().callObserverValue(
 								ObserverValue.EXPORT_FINISHED);
 						ViewContainer.getContainerInstance()
-								.getDataModel(((ExportJob) event.getJob()).id)
+								.getDataModel(((ExportJob) event.getJob()).getId())
 								.prepareForSave();
 					}
 				});

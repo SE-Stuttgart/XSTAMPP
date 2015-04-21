@@ -2,19 +2,29 @@ package xstampp.ui.navigation;
 
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PlatformUI;
 
-public class ProjectSelector extends AbstractSelector implements
-		IProjectSelection {
+/**
+ * A subclass of {@link AbstractSelector} for a project selction
+ *  
+ * @author Lukas Balzer
+ * @see AbstractSelector
+ *
+ */
+public class ProjectSelector extends AbstractSelector {
 	private IContributionItem openEntry;
 	private IAction customAction;
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param item {@link AbstractSelector#getItem()}
+	 * @param projectId {@link AbstractSelector#getProjectId()}
+	 */
 	public ProjectSelector(TreeItem item, UUID projectId) {
 		super(item, projectId);
 		
