@@ -19,8 +19,6 @@ import messages.Messages;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
@@ -48,9 +46,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
-import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -480,6 +476,17 @@ public abstract class CommonTableView extends StandartEditorPart {
 						&& (e.keyCode == 'a')) {
 					CommonTableView.this.getDescriptionWidget().selectAll();
 				}
+				switch(e.keyCode){
+				case SWT.ARROW_LEFT:{
+					((Text)e.getSource()).setSelection(((Text)e.getSource()).getSelection().x -1, 
+							((Text)e.getSource()).getSelection().x-1);
+					break;
+				}
+				case SWT.ARROW_RIGHT:{
+					((Text)e.getSource()).setSelection(((Text)e.getSource()).getSelection().x +1,
+							((Text)e.getSource()).getSelection().x+1);
+				}
+				}
 			}
 
 		});
@@ -526,7 +533,6 @@ public abstract class CommonTableView extends StandartEditorPart {
 
 		TableViewerEditor.create(this.getTableViewer(), null,
 				activationSupport, ColumnViewerEditor.DEFAULT);
-
 		// ctrl + a selects all items with this KeyListener
 		this.getTableViewer().getTable().addKeyListener(new KeyListener() {
 

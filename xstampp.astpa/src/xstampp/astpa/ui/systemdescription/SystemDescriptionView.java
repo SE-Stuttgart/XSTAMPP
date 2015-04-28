@@ -40,6 +40,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuAdapter;
@@ -237,6 +238,25 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 					
 				}
 				
+			}
+		});
+		this.descriptionText.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				switch(e.keyCode){
+				case SWT.ARROW_LEFT:{
+					SystemDescriptionView.this.descriptionText.setSelection(
+							SystemDescriptionView.this.descriptionText.getSelection().x -1, 
+							SystemDescriptionView.this.descriptionText.getSelection().x-1);
+					break;
+				}
+				case SWT.ARROW_RIGHT:{
+					SystemDescriptionView.this.descriptionText.setSelection(
+							SystemDescriptionView.this.descriptionText.getSelection().x +1,
+							SystemDescriptionView.this.descriptionText.getSelection().x+1);
+				}
+				}
 			}
 		});
 		this.getSite().setSelectionProvider(this);

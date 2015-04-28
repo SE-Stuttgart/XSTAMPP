@@ -29,23 +29,31 @@ import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ControlEditor;
+import org.eclipse.swt.custom.TableCursor;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -197,7 +205,8 @@ public class CSCView extends StandartEditorPart{
 		this.tableViewer.setContentProvider(new ArrayContentProvider());
 		this.tableViewer.getTable().setLinesVisible(true);
 		this.tableViewer.getTable().setHeaderVisible(true);
-
+		
+		
 		this.filter = new ATableFilter();
 		CSCView.this.tableViewer.addFilter(this.filter);
 
@@ -232,7 +241,7 @@ public class CSCView extends StandartEditorPart{
 //		                }
 //		                else
 //		                {
-//							text = new Text((Composite) cell.getViewerRow().getControl(), SWT.READ_ONLY);
+//							text = new Text((Composite) cell.getViewerRow().getControl(), SWT.READ_ONLY|SWT.WRAP);
 //							text.setBackground(null);
 //							editor = new TableEditor(item.getParent());
 //				            editor.grabHorizontal  = true;
@@ -457,6 +466,23 @@ public class CSCView extends StandartEditorPart{
 		@Override
 		protected CellEditor getCellEditor(Object element) {
 			CellEditor editor =new TextCellEditor(CSCView.this.tableViewer.getTable());
+			final Text cont = (Text) editor.getControl();
+			
+			cont.addKeyListener(new KeyAdapter() {
+				
+				@Override
+				public void keyReleased(KeyEvent e) {
+					switch(e.keyCode){
+					case SWT.ARROW_LEFT:{
+						cont.setSelection(cont.getSelection().x -1, cont.getSelection().x-1);
+						break;
+					}
+					case SWT.ARROW_RIGHT:{
+						cont.setSelection(cont.getSelection().x +1, cont.getSelection().x+1);
+					}
+					}
+				}
+			});
 			return editor;
 		}
 
