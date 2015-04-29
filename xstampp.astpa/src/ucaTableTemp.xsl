@@ -847,13 +847,13 @@
 						<fo:block font-weight="bold">Control Action</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Not Given</fo:block>
+						<fo:block font-weight="bold">Not providing causes hazard </fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Given Incorrectly</fo:block>
+						<fo:block font-weight="bold">Providing causes hazard </fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Wrong Timing or Order</fo:block>
+						<fo:block font-weight="bold">Wrong timing or order causes hazard </fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Stopped too soon or applied too long
@@ -1076,7 +1076,7 @@
 	<!-- ################### UCA - Hazardous-Color-Chooser ################### -->
 	<xsl:template name="ucaHazLinkColor">
 		<xsl:choose>
-			<xsl:when test="links = 'Not Hazardous'">
+			<xsl:when test="links = notHazardousMsg">
 				<fo:block color="#2D7500">
 					&#x005B;
 					<xsl:value-of select="links" />
