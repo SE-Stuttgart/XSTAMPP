@@ -15,6 +15,8 @@ package xstampp.astpa.controlstructure.controller.commands;
 
 import java.util.UUID;
 
+import org.eclipse.draw2d.geometry.Point;
+
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
@@ -90,6 +92,9 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 	 *            The figure an arrow points to or the a connection ends
 	 */
 	public void setTargetModel(IAnchorFigure target) {
+		if(target.getAnchorFactor().x != 100){
+			System.out.println();
+		}
 		UUID id = ((IControlStructureFigure) target.getOwner()).getId();
 		int x = target.getAnchorFactor().x;
 		int y = target.getAnchorFactor().y;
@@ -97,12 +102,20 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 
 		if ((target instanceof CSFlyAnchor)
 				&& (this.sourceAnchorFigure instanceof CSAnchor)) {
-
-			x = target.getAnchorFactor().x;
-			y = target.getAnchorFactor().y;
+			Point targetPosition= new Point(target.getLocation(null));
+			this.sourceAnchorFigure.getOwner().translateFromParent(targetPosition);
+			x = targetPosition.x;
+			y = targetPosition.y;
+			if(this.sourceAnchorModel.getxOrientation() == 100){
+				x -= this.sourceAnchorFigure.getOwner().getBounds().width;
+			}else if(this.sourceAnchorModel.getyOrientation() == 100){
+				y -= this.sourceAnchorFigure.getOwner().getBounds().height;
+			}
 			flys = true;
-		} else if ((this.sourceAnchorFigure instanceof CSFlyAnchor)
-				&& (target instanceof CSAnchor)) {
+		} 
+		else if ((this.sourceAnchorFigure instanceof CSFlyAnchor)
+				&& (target instanceof CSAnchor)) 
+		{
 			((CSFlyAnchor) this.sourceAnchorFigure)
 					.setRelation((CSAnchor) target);
 			this.sourceAnchorModel.setxOrientation(this.sourceAnchorFigure

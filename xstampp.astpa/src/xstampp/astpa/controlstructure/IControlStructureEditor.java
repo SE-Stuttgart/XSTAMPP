@@ -24,7 +24,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.ui.ISelectionListener;
 
-import xstampp.ui.common.IViewBase;
+import xstampp.ui.editors.interfaces.IEditorBase;
 
 /**
  * 

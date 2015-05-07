@@ -89,7 +89,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorPart;
@@ -98,8 +97,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
@@ -117,10 +114,10 @@ import xstampp.astpa.util.IZoomContributor;
 import xstampp.astpa.util.jobs.CSExportJob;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.util.STPAPluginUtils;
-import xstampp.util.StandartEditorPart;
 
 /**
  * 
@@ -151,7 +148,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * @see CSAbstractEditor#createActions()
 	 */
 	private ActionRegistry actionRegistry;
-	protected IControlStructureEditorDataModel modelInterface;
+	private IControlStructureEditorDataModel modelInterface;
 	private DefaultEditDomain editDomain;
 	private List<String> selectionActions = new ArrayList<String>();
 	private List<String> stackActions = new ArrayList<String>();
@@ -182,8 +179,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	// this bool can be set if a decoration in the next Image is wished
 	private int timeOfLastChange = 0;
 
-	private String imagePath;
-
 	private Button decoSwitch;
 
 	private boolean asExport;
@@ -202,11 +197,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	}
 	@Override
 	public void createPartControl(Composite parent) {
-		int noBack=SWT.NO_BACKGROUND;
-		int doubleBuff=SWT.DOUBLE_BUFFERED;
-		int none=SWT.None;
-		int EMBEDDED=SWT.NO_FOCUS;
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		FormLayout layout = new FormLayout();
 		Composite editorComposite = new Composite(parent, SWT.BORDER);
@@ -283,11 +274,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * @return the root component
 	 */
 	private IRectangleComponent createRoot() {
-		IRectangleComponent root = this.modelInterface.getRoot();
+		IRectangleComponent root = this.getModelInterface().getRoot();
 
 		if (root == null) {
-			this.modelInterface.setRoot(new Rectangle(), new String());
-			root = this.modelInterface.getRoot();
+			this.getModelInterface().setRoot(new Rectangle(), new String());
+			root = this.getModelInterface().getRoot();
 		}
 		return root;
 	}
@@ -305,20 +296,19 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		ArrayList<String> zoomContributions;
 
 
-		viewer.setEditPartFactory(new CSEditPartFactory(this.modelInterface,
+		viewer.setEditPartFactory(new CSEditPartFactory(this.getModelInterface(),
 				this.getId()));
 		// zooming
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 
 		viewer.setRootEditPart(rootEditPart);
 		viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(
-				viewer, this.modelInterface));
+				viewer, this.getModelInterface()));
 
 		this.zoomManager = rootEditPart.getZoomManager();
 
 		this.zoomManager.getViewport().addCoordinateListener(
 				new CoordinateListener() {
-
 					@Override
 					public void coordinateSystemChanged(IFigure source) {
 
@@ -326,16 +316,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 								.setViewport(CSAbstractEditor.this.zoomManager
 										.getViewport());
 						CSAbstractEditor.this.zoomManager.getViewport()
-								.setVerticalRangeModel(
-										CSAbstractEditor.this.getViewport()
+								.setVerticalRangeModel(CSAbstractEditor.this.getViewport()
 												.getVerticalRangeModel());
 						CSAbstractEditor.this.zoomManager.getViewport()
-								.setHorizontalRangeModel(
-										CSAbstractEditor.this.getViewport()
+								.setHorizontalRangeModel(CSAbstractEditor.this.getViewport()
 												.getHorizontalRangeModel());
 						CSAbstractEditor.this.zoomManager.getViewport()
-								.setViewLocation(
-										CSAbstractEditor.this.getViewport()
+								.setViewLocation(CSAbstractEditor.this.getViewport()
 												.getViewLocation());
 						CSAbstractEditor.this.zoomManager.getViewport().validate();
 					}
@@ -742,7 +729,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getGraphicalViewer().getControl().setFocus();
 		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
 				.getWorkbench().getService(ISourceProviderService.class);
-		CommandState saveStateService = (CommandState) sourceProviderService
+		sourceProviderService
 				.getSourceProvider(CommandState.SAVE_STATE);
 		
 	}
@@ -908,8 +895,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 
 	public void setDataModelInterface(IDataModel dataInterface) {
-		this.modelInterface = (IControlStructureEditorDataModel) dataInterface;
-		this.modelInterface.addObserver(this);
+		this.setModelInterface((IControlStructureEditorDataModel) dataInterface);
+		this.getModelInterface().addObserver(this);
 
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 	}
@@ -1049,7 +1036,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	@Override
 	public void initialSync(boolean step1, boolean step3) {
 		if (step1 && !step3) {
-			this.modelInterface.synchronizeLayouts();
+			this.getModelInterface().synchronizeLayouts();
 		}
 	}
 
@@ -1137,6 +1124,20 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			
 		}
 		
+	}
+
+	/**
+	 * @return the modelInterface
+	 */
+	public IControlStructureEditorDataModel getModelInterface() {
+		return modelInterface;
+	}
+
+	/**
+	 * @param modelInterface the modelInterface to set
+	 */
+	public void setModelInterface(IControlStructureEditorDataModel modelInterface) {
+		this.modelInterface = modelInterface;
 	}
 	
 	

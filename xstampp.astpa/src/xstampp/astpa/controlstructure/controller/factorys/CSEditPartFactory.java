@@ -137,6 +137,7 @@ public class CSEditPartFactory implements EditPartFactory {
 		case CONNECTION: {
 			id = ((IConnection) model).getId();
 			part = this.getConnectionFrom((IConnection) model);
+			
 			break;
 		}
 		case TEXTFIELD: {
@@ -173,6 +174,8 @@ public class CSEditPartFactory implements EditPartFactory {
 		IAnchor sourceModel = model.getSourceAnchor();
 		IAnchor targetModel = model.getTargetAnchor();
 
+		targetModel.setIsFlying(source.getParent().equals(target));
+		sourceModel.setIsFlying(target.getParent().equals(source));
 		IAnchorFigure sourceAnchor;
 		IAnchorFigure targetAnchor;
 

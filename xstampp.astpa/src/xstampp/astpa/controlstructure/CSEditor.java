@@ -30,14 +30,13 @@ import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
-import xstampp.astpa.wizards.stepImages.ControlStructureWizard;
 
 /**
  * The Graphical Editor is responsible for creating the manipulatable content of
  * the Editor view. The extension of GraphicalEditorWithFlyoutPalette also adds
  * 
  * 
- * @version 1.0
+ * @since 1.0
  * @author Lukas Balzer, Aliaksei Babkovich
  * 
  */
@@ -94,7 +93,7 @@ public class CSEditor extends CSAbstractEditor {
 		componentElements.add(new CombinedTemplateCreationEntry(
 				Messages.Controller, Messages.CreateController,
 				ComponentType.CONTROLLER, new CSModelCreationFactory(
-						ComponentType.CONTROLLER, this.modelInterface),
+						ComponentType.CONTROLLER, this.getModelInterface()),
 				imgDesc, imgDescLarge));
 
 		imgDesc = Activator
@@ -104,7 +103,7 @@ public class CSEditor extends CSAbstractEditor {
 		componentElements.add(new CombinedTemplateCreationEntry(
 				Messages.Actuator, Messages.CreateActuator,
 				ComponentType.ACTUATOR, new CSModelCreationFactory(
-						ComponentType.ACTUATOR, this.modelInterface), imgDesc,
+						ComponentType.ACTUATOR, this.getModelInterface()), imgDesc,
 				imgDescLarge));
 
 		imgDesc = Activator
@@ -114,7 +113,7 @@ public class CSEditor extends CSAbstractEditor {
 		componentElements.add(new CombinedTemplateCreationEntry(
 				Messages.ControlledProcess, Messages.CreateControlledProcess,
 				ComponentType.CONTROLLED_PROCESS, new CSModelCreationFactory(
-						ComponentType.CONTROLLED_PROCESS, this.modelInterface),
+						ComponentType.CONTROLLED_PROCESS, this.getModelInterface()),
 				imgDesc, imgDescLarge));
 
 		imgDesc = Activator
@@ -124,7 +123,7 @@ public class CSEditor extends CSAbstractEditor {
 		componentElements.add(new CombinedTemplateCreationEntry(
 				Messages.Sensor, Messages.CreateSensor, ComponentType.SENSOR,
 				new CSModelCreationFactory(ComponentType.SENSOR,
-						this.modelInterface), imgDesc, imgDescLarge));
+						this.getModelInterface()), imgDesc, imgDescLarge));
 
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_32.png"); //$NON-NLS-1$
@@ -133,7 +132,7 @@ public class CSEditor extends CSAbstractEditor {
 		componentElements.add(new CombinedTemplateCreationEntry(
 				Messages.ControlAction, Messages.CreateControlAction,
 				ComponentType.CONTROLACTION, new CSModelCreationFactory(
-						ComponentType.CONTROLACTION, this.modelInterface),
+						ComponentType.CONTROLACTION, this.getModelInterface()),
 				imgDesc, imgDescLarge));
 
 		root.add(separator);
@@ -168,7 +167,7 @@ public class CSEditor extends CSAbstractEditor {
 		otherElements.add(new CombinedTemplateCreationEntry(Messages.TextBox,
 				Messages.CreateTextBox, ComponentType.TEXTFIELD,
 				new CSModelCreationFactory(ComponentType.TEXTFIELD,
-						this.modelInterface), imgDesc, imgDescLarge));
+						this.getModelInterface()), imgDesc, imgDescLarge));
 		
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_32.png"); //$NON-NLS-1$
@@ -177,7 +176,7 @@ public class CSEditor extends CSAbstractEditor {
 		otherElements.add(new CombinedTemplateCreationEntry(Messages.DashedBox,
 				Messages.CreateDashedBox, ComponentType.DASHEDBOX,
 				new CSModelCreationFactory(ComponentType.DASHEDBOX,
-						this.modelInterface), imgDesc, imgDescLarge));
+						this.getModelInterface()), imgDesc, imgDescLarge));
 
 		return root;
 	}

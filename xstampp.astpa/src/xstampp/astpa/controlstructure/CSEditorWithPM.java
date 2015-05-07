@@ -82,7 +82,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		componentElements.add(new CombinedTemplateCreationEntry(
 				Messages.ProcessModel, Messages.CreateProcessModel,
 				ComponentType.PROCESS_MODEL, new CSModelCreationFactory(
-						ComponentType.PROCESS_MODEL, this.modelInterface),
+						ComponentType.PROCESS_MODEL, this.getModelInterface()),
 				imgDesc, imgDescLarge));
 
 		PaletteDrawer additionalElements = new PaletteDrawer(Messages.Others);
@@ -95,7 +95,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		additionalElements.add(new CombinedTemplateCreationEntry(
 				Messages.ProcessVariable, Messages.CreateProcessVariable,
 				ComponentType.PROCESS_VARIABLE, new CSModelCreationFactory(
-						ComponentType.PROCESS_VARIABLE, this.modelInterface),
+						ComponentType.PROCESS_VARIABLE, this.getModelInterface()),
 				imgDesc, imgDescLarge));
 
 		imgDesc = Activator
@@ -105,7 +105,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		additionalElements.add(new CombinedTemplateCreationEntry(
 				Messages.ProcessValue, Messages.CreateProcessValue,
 				ComponentType.PROCESS_VALUE, new CSModelCreationFactory(
-						ComponentType.PROCESS_VALUE, this.modelInterface),
+						ComponentType.PROCESS_VALUE, this.getModelInterface()),
 				imgDesc, imgDescLarge));
 
 		return root;
