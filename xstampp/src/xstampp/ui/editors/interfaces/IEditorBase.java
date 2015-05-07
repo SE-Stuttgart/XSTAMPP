@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package xstampp.ui.common;
+package xstampp.ui.editors.interfaces;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -28,7 +28,7 @@ import xstampp.Activator;
  * @author Patrick Wickenhaeuser
  * 
  */
-public interface IViewBase extends Observer {
+public interface IEditorBase extends Observer {
 
 	/**
 	 * Stores preferences

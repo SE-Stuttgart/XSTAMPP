@@ -56,9 +56,9 @@ import xstampp.astpa.model.interfaces.ILinkingViewDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.IViewBase;
-import xstampp.ui.common.ViewContainer;
-import xstampp.util.StandartEditorPart;
+import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
+import xstampp.ui.editors.interfaces.IEditorBase;
 
 /**
  * Editor to create and delete links between hazards and accidents. There are
@@ -470,14 +470,14 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		Activator.getDefault().getPreferenceStore()
 				.addPropertyChangeListener(this);
 
 		// font used for the labels over the tables
 		Font labelFont = new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IViewBase.STORE,
+				PreferenceConverter.getFontData(IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT));
 
 		ColumnLabelProvider idLabelProvider = new ColumnLabelProvider() {
@@ -835,18 +835,18 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
 	public void propertyChange(PropertyChangeEvent event) {
 		LinkingView.this.lblSelected.setFont(new Font(Display
 				.getCurrent(), PreferenceConverter.getFontData(
-				IViewBase.STORE,
+				IEditorBase.STORE,
 				IPreferenceConstants.DEFAULT_FONT)));
 		LinkingView.this.lblAvailableForLinking.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
-						IViewBase.STORE,
+						IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 
 		LinkingView.this.lblCurrentlyLinked.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
-						IViewBase.STORE,
+						IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 	}
 }

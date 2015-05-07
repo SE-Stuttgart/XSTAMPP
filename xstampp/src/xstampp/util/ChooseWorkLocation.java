@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * 
@@ -325,7 +325,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 		if(ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(
 				INIT_WORKSPACE, false)){
 			PlatformUI.getWorkbench().restart();
-			ViewContainer.getLOGGER().debug("restarted Workbench");
+			ProjectManager.getLOGGER().debug("restarted Workbench");
 		}
 	}
 	/**
@@ -375,7 +375,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 	public static boolean shouldRememberWS(boolean check) {
 		if(check && shouldRememberWS()){
 			if(checkWorkspaceDirectory(null, getLastUsedWorkspace(), false) != null){
-				ViewContainer.getLOGGER().debug(Messages.PreferedWSDoNotExist);
+				ProjectManager.getLOGGER().debug(Messages.PreferedWSDoNotExist);
 				return false;
 			}
 		}

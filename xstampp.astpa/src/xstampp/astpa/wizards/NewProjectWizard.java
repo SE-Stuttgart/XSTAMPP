@@ -12,7 +12,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 import xstampp.astpa.Activator;
-import xstampp.astpa.wizards.pages.NewProjectPage;
+import xstampp.util.NewProjectPage;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -33,7 +33,7 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		ImageDescriptor desc = Activator
 				.getImageDescriptor("icons/branding/i64.png"); //$NON-NLS-1$
 		this.page = new NewProjectPage(Messages.CreateNewProject,
-				Messages.NewProject, desc);
+				Messages.NewProject, desc,"haz");
 		this.addPage(this.page);
 	}
 

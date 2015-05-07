@@ -15,9 +15,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import xstampp.astpa.wizards.AbstractExportPage;
-import xstampp.astpa.wizards.AbstractWizardPage;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.util.AbstractExportPage;
+import xstampp.util.AbstractWizardPage;
 
 /**
  * Creates a Page which collects basic informations about formatting the table

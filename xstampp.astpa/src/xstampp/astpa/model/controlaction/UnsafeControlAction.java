@@ -37,7 +37,6 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	private UnsafeControlActionType type;
 	private CorrespondingSafetyConstraint correspondingSafetyConstraint;
 	private String links;
-	private String notHazardousMsg = Messages.ControlActionController_NotHazardous;
 	/**
 	 * Constructs a new unsafe control action with the given values
 	 * 
@@ -131,20 +130,6 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	 */
 	public void setLinks(String links) {
 		this.links = links;
-	}
-
-	/**
-	 * @return the notHazardousMsg
-	 */
-	public String getNotHazardousMsg() {
-		return this.notHazardousMsg;
-	}
-
-	/**
-	 * @param notHazardousMsg the notHazardousMsg to set
-	 */
-	public void setNotHazardousMsg(String notHazardousMsg) {
-		this.notHazardousMsg = notHazardousMsg;
 	}
 
 }

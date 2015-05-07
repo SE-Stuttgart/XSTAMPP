@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards;
+package xstampp.util;
 
 import java.io.File;
 import java.util.Map;
@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * a class to prevent code cloning in the export Pages
@@ -37,7 +37,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 
 	protected AbstractExportPage(String pageName, String projectName) {
 		super(pageName, projectName);
-		this.projects = ViewContainer.getContainerInstance().getProjects();
+		this.projects = ProjectManager.getContainerInstance().getProjects();
 	}
 
 	/**
@@ -129,7 +129,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	@Override
 	public String getExportPath() {
 		if (this.pathChooser == null) {
-			ViewContainer.getLOGGER().debug(
+			ProjectManager.getLOGGER().debug(
 					"AbstractExportPage must define a pathChooser"); //$NON-NLS-1$
 			return null;
 		}

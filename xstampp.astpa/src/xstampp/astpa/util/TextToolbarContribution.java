@@ -33,9 +33,9 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
+import xstampp.ui.editors.StyledTextSelection;
 import xstampp.ui.editors.interfaces.ITextEditContribution;
 import xstampp.ui.editors.interfaces.ITextEditor;
-import xstampp.ui.editors.interfaces.StyledTextSelection;
 import xstampp.util.STPAPluginUtils;
 
 /**This toolbar can be activated/used by implementing the ITextEditor Interface

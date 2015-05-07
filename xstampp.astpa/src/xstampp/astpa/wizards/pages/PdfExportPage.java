@@ -33,9 +33,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.Activator;
-import xstampp.astpa.wizards.AbstractExportPage;
-import xstampp.astpa.wizards.AbstractWizardPage;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.util.AbstractExportPage;
+import xstampp.util.AbstractWizardPage;
 
 /**
  * Create export page.

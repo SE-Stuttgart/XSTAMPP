@@ -12,8 +12,8 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import xstampp.astpa.wizards.AbstractExportPage;
-import xstampp.astpa.wizards.AbstractWizardPage;
+import xstampp.util.AbstractExportPage;
+import xstampp.util.AbstractWizardPage;
 
 /**
  * 

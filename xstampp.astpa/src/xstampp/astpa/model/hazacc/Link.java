@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  * Represents a link between an accident and a hazard
  * 
  * @author Fabian Toth
+ * @since 2.0
  * 
  */
 @XmlRootElement(name = "link")

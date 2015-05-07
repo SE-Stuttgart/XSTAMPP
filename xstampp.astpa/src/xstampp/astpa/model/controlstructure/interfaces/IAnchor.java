@@ -49,5 +49,12 @@ public interface IAnchor {
 	 * @author Fabian Toth
 	 */
 	UUID getOwnerId();
-
+	/**
+	 * 
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param isFlying whether the component is flying or not
+	 */
+	void setIsFlying(boolean isFlying);
 }

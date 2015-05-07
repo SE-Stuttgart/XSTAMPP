@@ -53,7 +53,7 @@ import xstampp.astpa.model.ITableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.model.IDataModel;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
@@ -89,7 +89,7 @@ public class AccidentsView extends CommonTableView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		this.createCommonTableView(parent, Messages.Accidents);
 

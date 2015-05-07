@@ -1,4 +1,4 @@
-package xstampp.ui.editors.interfaces;
+package xstampp.ui.editors;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.graphics.Point;

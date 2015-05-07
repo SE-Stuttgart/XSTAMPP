@@ -20,7 +20,7 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 
 /**
@@ -34,7 +34,7 @@ public class Import extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		ViewContainer viewContainer = ViewContainer.getContainerInstance();
+		ProjectManager viewContainer = ProjectManager.getContainerInstance();
 		// Enable the save entries in the menu
 		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
 				.getWorkbench().getService(ISourceProviderService.class);
@@ -45,7 +45,7 @@ public class Import extends AbstractHandler {
 
 		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
 				.getPerspectiveRegistry()
-				.findPerspectiveWithId("astpa.astpaPerspective");//$NON-NLS-1$
+				.findPerspectiveWithId("xstampp.defaultPerspective");//$NON-NLS-1$
 		if (descriptor != null) {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().setPerspective(descriptor);

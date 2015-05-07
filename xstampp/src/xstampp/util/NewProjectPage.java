@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards.pages;
+package xstampp.util;
 
 import java.io.File;
 
@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.wizards.AbstractWizardPage;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * 
@@ -32,9 +31,10 @@ import xstampp.ui.common.ViewContainer;
 public class NewProjectPage extends AbstractWizardPage implements
 		ModifyListener {
 
-	private final static int DEFAULT_MARGIN = 10;
-	private final static int DEFAULT_HEIGHT = 30;
+	private final static int DEFAULTMARGIN = 10;
+	private final static int DEFAULTHEIGHT = 30;
 
+	private String projectExtension;
 	private Text newProjectName;
 	private PathComposite pathComposite;
 	private Button defaultPathWidget;
@@ -62,8 +62,9 @@ public class NewProjectPage extends AbstractWizardPage implements
 	 *            the Image which appears on top of the wizard dialog
 	 */
 	public NewProjectPage(String pageName, String title,
-			ImageDescriptor titleImage) {
+			ImageDescriptor titleImage, String ext) {
 		super(pageName, title, titleImage);
+		this.projectExtension = ext;
 	}
 
 	@Override
@@ -73,10 +74,10 @@ public class NewProjectPage extends AbstractWizardPage implements
 
 		// -----Create new Project Name Composite---------
 		FormData data = new FormData();
-		data.top = new FormAttachment(0, NewProjectPage.DEFAULT_MARGIN);
-		data.left = new FormAttachment(0, NewProjectPage.DEFAULT_MARGIN);
-		data.right = new FormAttachment(100, NewProjectPage.DEFAULT_MARGIN);
-		data.height = NewProjectPage.DEFAULT_HEIGHT;
+		data.top = new FormAttachment(0, NewProjectPage.DEFAULTMARGIN);
+		data.left = new FormAttachment(0, NewProjectPage.DEFAULTMARGIN);
+		data.right = new FormAttachment(100, NewProjectPage.DEFAULTMARGIN);
+		data.height = NewProjectPage.DEFAULTHEIGHT;
 
 		Composite nameComposite = new Composite(control, SWT.None);
 		nameComposite.setLayoutData(data);
@@ -92,10 +93,10 @@ public class NewProjectPage extends AbstractWizardPage implements
 		// -----Create Project Path Composite----------
 		data = new FormData();
 		data.top = new FormAttachment(nameComposite,
-				NewProjectPage.DEFAULT_MARGIN);
-		data.left = new FormAttachment(0, NewProjectPage.DEFAULT_MARGIN);
-		data.right = new FormAttachment(100, NewProjectPage.DEFAULT_MARGIN);
-		data.height = NewProjectPage.DEFAULT_HEIGHT;
+				NewProjectPage.DEFAULTMARGIN);
+		data.left = new FormAttachment(0, NewProjectPage.DEFAULTMARGIN);
+		data.right = new FormAttachment(100, NewProjectPage.DEFAULTMARGIN);
+		data.height = NewProjectPage.DEFAULTHEIGHT;
 
 		this.defaultPathWidget = new Button(control, SWT.CHECK);
 		this.defaultPathWidget.setText(Messages.UseWorkspace);
@@ -120,13 +121,13 @@ public class NewProjectPage extends AbstractWizardPage implements
 
 		data = new FormData();
 		data.top = new FormAttachment(this.defaultPathWidget,
-				NewProjectPage.DEFAULT_MARGIN);
-		data.left = new FormAttachment(0, NewProjectPage.DEFAULT_MARGIN);
-		data.right = new FormAttachment(100, NewProjectPage.DEFAULT_MARGIN);
-		data.height = NewProjectPage.DEFAULT_HEIGHT;
+				NewProjectPage.DEFAULTMARGIN);
+		data.left = new FormAttachment(0, NewProjectPage.DEFAULTMARGIN);
+		data.right = new FormAttachment(100, NewProjectPage.DEFAULTMARGIN);
+		data.height = NewProjectPage.DEFAULTHEIGHT;
 
 		this.pathComposite = new PathComposite(
-				new String[] { "*.haz" }, control, SWT.None); //$NON-NLS-1$
+				new String[] { "*." + this.projectExtension }, control, SWT.None); //$NON-NLS-1$
 		this.pathComposite.setLayoutData(data);
 		this.pathComposite.setText(Platform.getInstanceLocation().getURL()
 				.getPath());
@@ -148,7 +149,7 @@ public class NewProjectPage extends AbstractWizardPage implements
 						.getText().equals(""))) { //$NON-NLS-1$
 			return false;
 		}
-		if (ViewContainer.getContainerInstance().getProjects()
+		if (ProjectManager.getContainerInstance().getProjects()
 				.containsValue(this.getNewProjectName())) {
 			this.setErrorMessage(Messages.ProjectExists);
 			return false;
@@ -174,7 +175,7 @@ public class NewProjectPage extends AbstractWizardPage implements
 	public String getNewProjectPath() {
 		if (this.defaultPathWidget.getSelection()) {
 			return Platform.getInstanceLocation().getURL().getPath()
-					+ File.separator + this.getNewProjectName() + ".haz"; //$NON-NLS-1$
+					+ File.separator + this.getNewProjectName() + "." + this.projectExtension; //$NON-NLS-1$
 		}
 		return this.pathComposite.getText();
 	}

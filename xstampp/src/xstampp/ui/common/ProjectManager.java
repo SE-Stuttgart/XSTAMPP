@@ -59,13 +59,13 @@ import xstampp.util.STPAPluginUtils;
  * @author Lukas Balzer
  * 
  */
-public class ViewContainer {
+public class ProjectManager {
 
 	/**
 	 * The log4j logger
 	 */
 	private static final Logger LOGGER = Logger.getRootLogger();
-	private static ViewContainer containerInstance;
+	private static ProjectManager containerInstance;
 	/**
 	 * The ID of the view container.
 	 * 
@@ -117,14 +117,14 @@ public class ViewContainer {
 
 		@Override
 		public void run() {
-			UUID projectId = ViewContainer.getContainerInstance()
+			UUID projectId = ProjectManager.getContainerInstance()
 					.addProjectData(this.job.getController());
 			File saveFile = this.job.getSaveFile();
 			
-			ViewContainer.getContainerInstance().projectSaveFilesToUUID.put(
+			ProjectManager.getContainerInstance().projectSaveFilesToUUID.put(
 					projectId, saveFile);
-			ViewContainer.getContainerInstance().saveDataModel(projectId, false);
-			ViewContainer.getContainerInstance().synchronizeProjectName(projectId);
+			ProjectManager.getContainerInstance().saveDataModel(projectId, false);
+			ProjectManager.getContainerInstance().synchronizeProjectName(projectId);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class ViewContainer {
 	 * 
 	 * @author Patrick Wickenhaeuser
 	 */
-	public ViewContainer() {
+	public ProjectManager() {
 		this.extensionsToUUID = new HashMap<>();
 		this.projectDataToUUID = new HashMap<>();
 		this.projectSaveFilesToUUID = new HashMap<>();
@@ -231,7 +231,7 @@ public class ViewContainer {
 		if (file.exists()) {
 			boolean result = MessageDialog.openConfirm(Display.getCurrent()
 					.getActiveShell(), Messages.ConfirmSaveAs, String.format(
-					ViewContainer.OVERWRITE_MESSAGE, file.getName()));
+					ProjectManager.OVERWRITE_MESSAGE, file.getName()));
 			if (!result) {
 				return false;
 			}
@@ -261,7 +261,7 @@ public class ViewContainer {
 		tmpController.prepareForSave();
 		
 		Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId),
-				ViewContainer.getLOGGER(), isUIcall);
+				ProjectManager.getLOGGER(), isUIcall);
 		save.addJobChangeListener(new JobChangeAdapter() {
 
 			@Override
@@ -376,7 +376,7 @@ public class ViewContainer {
 		String pluginName = ""; //$NON-NLS-1$
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
-				.getConfigurationElementsFor("astpa.extension.steppedProcess")) { //$NON-NLS-1$
+				.getConfigurationElementsFor("xstampp.extension.steppedProcess")) { //$NON-NLS-1$
 			if(file.endsWith(extElement.getAttribute("extension"))){ //$NON-NLS-1$
 				pluginName = extElement.getAttribute("id"); //$NON-NLS-1$
 				jobObject = STPAPluginUtils.executeCommand(extElement.getAttribute("command")); //$NON-NLS-1$
@@ -452,11 +452,11 @@ public class ViewContainer {
 	/**
 	 * @return the containerInstance
 	 */
-	public static ViewContainer getContainerInstance() {
-		if (ViewContainer.containerInstance == null) {
-			ViewContainer.containerInstance = new ViewContainer();
+	public static ProjectManager getContainerInstance() {
+		if (ProjectManager.containerInstance == null) {
+			ProjectManager.containerInstance = new ProjectManager();
 		}
-		return ViewContainer.containerInstance;
+		return ProjectManager.containerInstance;
 	}
 
 	
@@ -618,7 +618,7 @@ public class ViewContainer {
 	 * @return the lOGGER
 	 */
 	public static Logger getLOGGER() {
-		return ViewContainer.LOGGER;
+		return ProjectManager.LOGGER;
 	}
 
 }

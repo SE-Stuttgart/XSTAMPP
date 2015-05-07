@@ -19,7 +19,7 @@ public class ToWorkbenchHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
 				.getPerspectiveRegistry()
-				.findPerspectiveWithId("astpa.astpaPerspective");//$NON-NLS-1$
+				.findPerspectiveWithId("xstampp.defaultPerspective");//$NON-NLS-1$
 		if (descriptor != null) {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().setPerspective(descriptor);

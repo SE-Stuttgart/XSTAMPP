@@ -60,5 +60,7 @@ public interface IConnection extends IComponent {
 	 * @author Fabian Toth
 	 */
 	UUID getId();
+	
+
 
 }

@@ -43,8 +43,8 @@ public class OpenWizardHandler extends AbstractHandler {
 	}
 	
 	/**
-	 * expects a wizard id <br/><i>note: the wizard mmust be registered in an installed plugin.xml</i>.
-	 * <p/>this method converts all import, export and newWizards
+	 * expects a wizard id <br><i>note: the wizard mmust be registered in an installed plugin.xml</i>.
+	 * <p>this method converts all import, export and newWizards
 	 * 
 	 * @param parameterValue
 	 * 			must be a wizard id which is registered for a import, export or newWizard  extension

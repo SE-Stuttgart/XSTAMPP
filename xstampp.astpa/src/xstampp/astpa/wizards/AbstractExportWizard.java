@@ -24,7 +24,8 @@ import xstampp.astpa.util.jobs.StpaCSVExport;
 import xstampp.astpa.wizards.pages.CSVExportPage;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
+import xstampp.util.IExportPage;
 
 /**
  * 
@@ -84,7 +85,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 		String filePath = this.exportPage.getExportPath();
 		try {
 			if (this.checkError(this.checkPath(filePath))) {
-				IDataModel model = ViewContainer.getContainerInstance()
+				IDataModel model = ProjectManager.getContainerInstance()
 						.getDataModel(this.exportPage.getProjectId());
 				StpaCSVExport export = new StpaCSVExport("Export CSV",
 						filePath,
@@ -128,7 +129,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 				return false;
 			}
 			Job exportJob = new ExportJob(this.getExportPage().getProjectId(),
-					jobMessage, filePath, ViewContainer.getContainerInstance()
+					jobMessage, filePath, ProjectManager.getContainerInstance()
 							.getMimeConstant(filePath), fopName, this
 							.getExportPage().asOne(), forceCSDeco);
 
@@ -257,7 +258,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 		}
 		@Override
 		public void aboutToRun(IJobChangeEvent event) {
-			ViewContainer.getContainerInstance()
+			ProjectManager.getContainerInstance()
 			.getDataModel(((ExportJob) event.getJob()).getId())
 			.prepareForExport();
 			super.aboutToRun(event);
@@ -270,9 +271,9 @@ public abstract class AbstractExportWizard extends Wizard implements
 					@Override
 					public void run() {
 
-						ViewContainer.getContainerInstance().callObserverValue(
+						ProjectManager.getContainerInstance().callObserverValue(
 								ObserverValue.EXPORT_FINISHED);
-						ViewContainer.getContainerInstance()
+						ProjectManager.getContainerInstance()
 								.getDataModel(((ExportJob) event.getJob()).getId())
 								.prepareForSave();
 					}

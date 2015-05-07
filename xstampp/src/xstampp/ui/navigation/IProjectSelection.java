@@ -65,7 +65,7 @@ public interface IProjectSelection extends ISelection {
 	 * @author Lukas Balzer
 	 * @param pathHistory 
 	 * 			the relative path of the step which means: 
-	 * 			<br/><code>project->category->step</code>
+	 * 			<br><code>project&#8594;category&#8594;step</code>
 	 *
 	 */
 	void setPathHistory(String pathHistory);

@@ -21,7 +21,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.util.STPAEditorInput;
 
@@ -50,6 +50,6 @@ public class Save extends AbstractHandler {
 			return false;
 		}
 		
-		return ViewContainer.getContainerInstance().saveDataModel(saveId, true);
+		return ProjectManager.getContainerInstance().saveDataModel(saveId, true);
 	}
 }

@@ -57,9 +57,9 @@ import xstampp.astpa.ui.common.grid.IGridCell;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.IViewBase;
-import xstampp.ui.common.ViewContainer;
-import xstampp.util.StandartEditorPart;
+import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
+import xstampp.ui.editors.interfaces.IEditorBase;
 
 /**
  * View used to handle the unsafe control actions.
@@ -67,7 +67,7 @@ import xstampp.util.StandartEditorPart;
  * @author Benedikt Markt, Patrick Wickenhaeuser
  */
 public class UnsafeControlActionsView extends StandartEditorPart implements
-		IViewBase {
+		IEditorBase {
 
 	/**
 	 * ViewPart ID.
@@ -221,7 +221,7 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		UnsafeControlActionsView.LOGGER.info("createPartControl()"); //$NON-NLS-1$
 

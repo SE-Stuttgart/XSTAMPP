@@ -14,11 +14,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 
 /**
- * opens a rename dialoge and calls the function {@link ViewContainer#renameProject(UUID, String)}
+ * opens a rename dialoge and calls the function {@link ProjectManager#renameProject(UUID, String)}
  * 
  * @author Lukas Balzer
  * @since 1.0
@@ -30,14 +30,14 @@ public class RenameCommand extends AbstractHandler {
 		Object selection = HandlerUtil.getCurrentSelection(event);
 		if (selection instanceof IProjectSelection) {
 			UUID projectId = ((IProjectSelection) selection).getProjectId();
-			String currentString = ViewContainer.getContainerInstance()
+			String currentString = ProjectManager.getContainerInstance()
 					.getTitle(projectId);
 
 			InputDialog renameDiag = new InputDialog(Display.getCurrent()
 					.getActiveShell(), "Rename Project", "New Project Name: ",
 					currentString, new ProjectNameValidator(projectId));
 			if (renameDiag.open() == Window.OK &&
-				ViewContainer.getContainerInstance().renameProject(projectId,
+				ProjectManager.getContainerInstance().renameProject(projectId,
 						renameDiag.getValue())){
 				MessageDialog.openError(null, Messages.Error, "Project cannot be renamed!");
 			}
@@ -55,11 +55,11 @@ public class RenameCommand extends AbstractHandler {
 
 		@Override
 		public String isValid(String newName) {
-			for (UUID id : ViewContainer.getContainerInstance().getProjects()
+			for (UUID id : ProjectManager.getContainerInstance().getProjects()
 					.keySet()) {
 
 				if (!this.projectId.equals(id)
-						&& newName.equals(ViewContainer.getContainerInstance()
+						&& newName.equals(ProjectManager.getContainerInstance()
 								.getTitle(id))) {
 					return "the Project " + newName + " already exists";
 				}

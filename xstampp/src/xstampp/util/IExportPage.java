@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards;
+package xstampp.util;
 
 import java.util.UUID;
 

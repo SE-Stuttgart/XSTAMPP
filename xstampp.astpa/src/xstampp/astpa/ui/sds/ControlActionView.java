@@ -53,7 +53,7 @@ import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.astpa.ui.acchaz.CommonTableView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
@@ -89,7 +89,7 @@ public class ControlActionView extends CommonTableView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 
 		this.createCommonTableView(parent, Messages.ControlActions);

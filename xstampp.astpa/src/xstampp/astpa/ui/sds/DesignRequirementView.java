@@ -51,7 +51,7 @@ import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.astpa.ui.acchaz.CommonTableView;
 import xstampp.model.IDataModel;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
@@ -87,7 +87,7 @@ public class DesignRequirementView extends CommonTableView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 
 		this.createCommonTableView(parent, Messages.DesignRequirements);

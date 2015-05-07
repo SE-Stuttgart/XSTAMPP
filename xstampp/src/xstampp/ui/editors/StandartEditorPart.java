@@ -1,4 +1,4 @@
-package xstampp.util;
+package xstampp.ui.editors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +19,10 @@ import org.eclipse.ui.part.EditorPart;
 
 import xstampp.Activator;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.IViewBase;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.interfaces.IEditorBase;
+import xstampp.util.STPAEditorInput;
+import xstampp.util.STPAPluginUtils;
 
 /**
  * The Standard Editor Part for an STPA Project
@@ -31,7 +33,7 @@ import xstampp.ui.common.ViewContainer;
  * 
  */
 public abstract class StandartEditorPart extends EditorPart implements
-		IViewBase,IPartListener {
+		IEditorBase,IPartListener {
 
 	private UUID projectID;
 
@@ -63,13 +65,13 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void dispose() {
-		ViewContainer.getLOGGER().debug("Editor: " + getTitle() + " closed");
+		ProjectManager.getLOGGER().debug("Editor: " + getTitle() + " closed");
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
 		super.dispose();
 	}
 	@Override
 	public boolean isDirty() {
-		if (ViewContainer.getContainerInstance().getUnsavedChanges(
+		if (ProjectManager.getContainerInstance().getUnsavedChanges(
 				this.projectID)) {
 			this.setStatusLine();
 		}
@@ -110,7 +112,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 	 * 
 	 */
 	public void setStatusLine() {
-		if (ViewContainer.getContainerInstance().getUnsavedChanges(
+		if (ProjectManager.getContainerInstance().getUnsavedChanges(
 				this.projectID)) {
 			Image image = Activator.getImageDescriptor(
 					"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$

@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards;
+package xstampp.util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Text;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * 
@@ -658,7 +658,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 			if (this.projectId == null) {
 				this.sampleTitle.setText(Messages.NewProject);
 			} else {
-				this.sampleTitle.setText(ViewContainer.getContainerInstance()
+				this.sampleTitle.setText(ProjectManager.getContainerInstance()
 						.getTitle(this.projectId));
 			}
 			e.gc.setBackground(ColorConstants.white);

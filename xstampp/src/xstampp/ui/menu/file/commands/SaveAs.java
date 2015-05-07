@@ -19,7 +19,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * Handler that asks for the location of the file and stores them afterwards
@@ -32,6 +32,6 @@ public class SaveAs extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		UUID saveModel = UUID.fromString(event.getParameter("saveAsProjectId")); //$NON-NLS-1$
-		return ViewContainer.getContainerInstance().saveDataModelAs(saveModel);
+		return ProjectManager.getContainerInstance().saveDataModelAs(saveModel);
 	}
 }

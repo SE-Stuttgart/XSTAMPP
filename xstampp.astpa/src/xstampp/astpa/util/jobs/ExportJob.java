@@ -45,7 +45,7 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * Eclipse job that handles the export
@@ -118,7 +118,7 @@ public class ExportJob extends Job {
 		csPmExport.getPrintableRoot();
 		monitor.worked(1);
 
-		IDataModel model = ViewContainer.getContainerInstance().getDataModel(
+		IDataModel model = ProjectManager.getContainerInstance().getDataModel(
 				this.id);
 		((DataModelController) model).setCSImagePath(csPath);
 		((DataModelController) model).setCSPMImagePath(csPmPath);

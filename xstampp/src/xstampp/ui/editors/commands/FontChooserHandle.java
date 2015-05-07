@@ -5,7 +5,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.interfaces.ITextEditor;
 /**
  * this Handler changes the current Font of a text editor
@@ -33,7 +33,7 @@ public class FontChooserHandle extends AbstractHandler {
 				try{
 					((ITextEditor) activeEditor).setFont(parameterStyle,Integer.parseInt(parameterSize));
 				}catch(NumberFormatException e){
-					ViewContainer.getLOGGER().error(this.getClass() + " has recived: " + parameterSize + " but expected an Integer");
+					ProjectManager.getLOGGER().error(this.getClass() + " has recived: " + parameterSize + " but expected an Integer");
 				}
 			}
 			

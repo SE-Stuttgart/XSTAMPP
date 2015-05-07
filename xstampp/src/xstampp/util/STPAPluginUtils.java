@@ -15,7 +15,7 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IServiceLocator;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * this class provides useful static methods for the interaction with the plugin
@@ -50,11 +50,11 @@ public final class STPAPluginUtils {
 				return command.executeWithChecks(new ExecutionEvent());
 			} catch (ExecutionException | NotDefinedException
 					| NotEnabledException | NotHandledException e) {
-				ViewContainer.getLOGGER().error(
+				ProjectManager.getLOGGER().error(
 						"Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		} else {
-			ViewContainer.getLOGGER().error(
+			ProjectManager.getLOGGER().error(
 					"Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return null;
@@ -82,13 +82,13 @@ public final class STPAPluginUtils {
 				.getService(IHandlerService.class);
 		Command command = commandService.getCommand(commandId);
 		if (command == null) {
-			ViewContainer.getLOGGER().debug(commandId + " is no valid command id");
+			ProjectManager.getLOGGER().debug(commandId + " is no valid command id");
 			return false;
 		}
 		ParameterizedCommand paraCommand = ParameterizedCommand
 				.generateCommand(command, params);
 		if(paraCommand == null){
-			ViewContainer.getLOGGER().debug("One of: "+params.toString()+ " is no valid parameter id");
+			ProjectManager.getLOGGER().debug("One of: "+params.toString()+ " is no valid parameter id");
 			return false;
 		}
 		try {

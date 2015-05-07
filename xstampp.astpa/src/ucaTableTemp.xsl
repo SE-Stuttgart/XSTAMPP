@@ -1076,7 +1076,7 @@
 	<!-- ################### UCA - Hazardous-Color-Chooser ################### -->
 	<xsl:template name="ucaHazLinkColor">
 		<xsl:choose>
-			<xsl:when test="links = notHazardousMsg">
+			<xsl:when test="links = 'Not Hazardous'">
 				<fo:block color="#2D7500">
 					&#x005B;
 					<xsl:value-of select="links" />

@@ -75,6 +75,10 @@ public class Anchor implements IAnchor {
 		return this.isFlying;
 	}
 
+	@Override
+	public void setIsFlying(boolean isFlying){
+		this.isFlying = isFlying;
+	}
 	/**
 	 * @param isSource
 	 *            the isSource to set

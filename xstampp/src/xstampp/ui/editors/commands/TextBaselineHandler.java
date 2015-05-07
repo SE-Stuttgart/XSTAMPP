@@ -6,14 +6,14 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.ui.editors.StyledTextSelection;
 import xstampp.ui.editors.interfaces.ITextEditor;
-import xstampp.ui.editors.interfaces.StyledTextSelection;
 
 /**
  * this Handler changes the current Styöe of the text which is either written or selected in a text editor
  * this is done by calling {@link ITextEditor#setStyle(String)}
  * with the value of the parameter <code>xstampp.commandParameter.baseline</Code>
- * <p/>
+ * <p>
  * TODO this is not the normal increase/decrease Baseline function since it sets the whole selection to one level <br>
  * instead of setting the baseline 
  * @author Lukas Balzer

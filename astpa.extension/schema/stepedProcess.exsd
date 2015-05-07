@@ -90,13 +90,10 @@ Each step can be categoriesed and muliple editors where the Step can be progress
    <element name="step">
       <annotation>
          <documentation>
-            This Adds a step a given category
+            This Adds a step to a given category
          </documentation>
       </annotation>
       <complexType>
-         <sequence>
-            <element ref="stepEditor" minOccurs="1" maxOccurs="unbounded"/>
-         </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
@@ -121,25 +118,21 @@ Each step can be categoriesed and muliple editors where the Step can be progress
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="editorId" type="string" use="required">
+         <attribute name="editorId" use="required">
             <annotation>
                <documentation>
-                  
+                  each step is handled by a step editor this editor should not be related to any file Extension but should retrieve its information from a IDataModel
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.ui.editors/editor/@id"/>
                </appinfo>
             </annotation>
-         </attribute>
-         <attribute name="defaultWizardId" type="string" use="default" value="null">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.exportWizards/wizard/@id"/>
-               </appinfo>
-            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="StandartEditorPart">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
       </complexType>
    </element>
@@ -186,7 +179,7 @@ Each step can be categoriesed and muliple editors where the Step can be progress
          <attribute name="extension" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  the file extension contains out
                </documentation>
             </annotation>
          </attribute>

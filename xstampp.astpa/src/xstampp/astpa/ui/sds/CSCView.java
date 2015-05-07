@@ -65,8 +65,8 @@ import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ViewContainer;
-import xstampp.util.StandartEditorPart;
+import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
 
 /**
  * 
@@ -105,7 +105,7 @@ public class CSCView extends StandartEditorPart{
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		// setting up the outer composite
 		Composite cscComposite = new Composite(parent, SWT.NONE);

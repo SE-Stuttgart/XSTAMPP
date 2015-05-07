@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="astpa.extension.steppedProcess">
+         point="xstampp.extension.steppedProcess">
       <process
             command="astpa.command.load"
             editorId="astpa.steps.step1_1"
@@ -20,88 +20,48 @@
                   icon="icons/buttons/navigation/STEP1_1(16).png"
                   id="astpa.navigation.step1_1"
                   name="System Description">
-               <stepEditor
-                     id="astpa.steps.step1_1"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step1_2"
                   icon="icons/buttons/navigation/STEP1_2(16).png"
                   id="astpa.navigation.step1_2"
                   name="Accidents">
-               <stepEditor
-                     id="astpa.steps.step1_2"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step1_3"
                   icon="icons/buttons/navigation/STEP1_3(16).png"
                   id="astpa.navigation.step1_3"
                   name="Hazards">
-               <stepEditor
-                     id="astpa.steps.step1_3"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step1_4"
                   icon="icons/buttons/navigation/STEP1_4(16).png"
                   id="astpa.navigation.step1_4"
                   name="Linking of Accidents and Hazzards">
-               <stepEditor
-                     id="astpa.steps.step1_4"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step1_5"
                   icon="icons/buttons/navigation/STEP1_5(16).png"
                   id="astpa.navigation.step1_5"
                   name="Safety Constraints">
-               <stepEditor
-                     id="astpa.steps.step1_5"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step1_6"
                   icon="icons/buttons/navigation/STEP1_6(16).png"
                   id="astpa.navigation.step1_6"
                   name="System Goals">
-               <stepEditor
-                     id="astpa.steps.step1_6"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step1_7"
                   icon="icons/buttons/navigation/STEP1_7(16).png"
                   id="astpa.navigation.step1_7"
                   name="Design Requirenments">
-               <stepEditor
-                     id="astpa.steps.step1_7"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step1_8"
                   icon="icons/buttons/navigation/STEP1_8(16).png"
                   id="astpa.navigation.step1_8"
                   name="Control Structure">
-               <stepEditor
-                     id="astpa.steps.step1_8"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
          </category>
          <category
@@ -113,33 +73,18 @@
                   icon="icons/buttons/navigation/STEP2_1(16).png"
                   id="astpa.navigation.step2_1"
                   name="Control Actions">
-               <stepEditor
-                     id="astpa.steps.step2_1"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step2_2"
                   icon="icons/buttons/navigation/STEP2_2(16).png"
                   id="astpa.navigation.step2_2"
                   name="UnsafeControlActions Table">
-               <stepEditor
-                     id="astpa.steps.step2_2"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step2_3"
                   icon="icons/buttons/navigation/STEP2_3(16).png"
                   id="astpa.navigation.step2_3"
                   name="Corresponding Safety Constraints">
-               <stepEditor
-                     id="astpa.steps.step2_3"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
          </category>
          <category
@@ -151,22 +96,12 @@
                   icon="icons/buttons/navigation/STEP3_1(16).png"
                   id="astpa.navigation.step3_1"
                   name="Control Structure With Process Model">
-               <stepEditor
-                     id="astpa.steps.step3_1"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
             <step
                   editorId="astpa.steps.step3_2"
                   icon="icons/buttons/navigation/STEP3_2(16).png"
                   id="astpa.navigation.step3_2"
                   name="Causal Factors Table">
-               <stepEditor
-                     id="astpa.steps.step2_2"
-                     isDefault="true"
-                     name="default">
-               </stepEditor>
             </step>
          </category>
       </process>
@@ -600,6 +535,18 @@
             id="xstampp.astpa.preferencepage.cs"
             name="Control Structure">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="xstampp.astpa.category1"
+            name="name">
+      </category>
+      <wizard
+            class="xstampp.astpa.ImportWizard1"
+            id="xstampp.astpa.wizard1"
+            name="name">
+      </wizard>
    </extension>
 
 </plugin>

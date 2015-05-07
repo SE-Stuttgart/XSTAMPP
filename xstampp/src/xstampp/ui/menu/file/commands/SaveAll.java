@@ -4,10 +4,10 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
- * this handler simply passes the call to {@link ViewContainer#saveAllDataModels()}
+ * this handler simply passes the call to {@link ProjectManager#saveAllDataModels()}
  *
  * @author Lukas Balzer
  * @since 1.0
@@ -17,7 +17,7 @@ public class SaveAll extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		return ViewContainer.getContainerInstance().saveAllDataModels();
+		return ProjectManager.getContainerInstance().saveAllDataModels();
 	}
 
 }

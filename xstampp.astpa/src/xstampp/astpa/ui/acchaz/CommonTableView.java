@@ -50,8 +50,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.IViewBase;
-import xstampp.util.StandartEditorPart;
+import xstampp.ui.editors.StandartEditorPart;
+import xstampp.ui.editors.interfaces.IEditorBase;
 
 /**
  * @author Jarkko Heidenwag
@@ -380,7 +380,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 		leftHeadComposite.setLayout(new GridLayout(leftHeadColumns, true));
 		this.itemsLabel = new Label(leftHeadComposite, SWT.LEAD);
 		this.itemsLabel.setFont(new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IViewBase.STORE,
+				PreferenceConverter.getFontData(IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 		this.itemsLabel.setText(tableHeader);
 		this.itemsLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
@@ -388,7 +388,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 
 		this.filterLabel = new Label(leftHeadComposite, SWT.TRAIL);
 		this.filterLabel.setFont(new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IViewBase.STORE,
+				PreferenceConverter.getFontData(IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 		this.filterLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				false));
@@ -449,7 +449,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 
 		this.descriptionLabel = new Label(rightHeadComposite, SWT.LEAD);
 		this.descriptionLabel.setFont(new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IViewBase.STORE,
+				PreferenceConverter.getFontData(IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 		this.descriptionLabel.setText(Messages.DescriptionNotes);
 
@@ -633,17 +633,17 @@ public abstract class CommonTableView extends StandartEditorPart {
 			CommonTableView.this.itemsLabel.setFont(new Font(
 					Display.getCurrent(),
 					PreferenceConverter.getFontData(
-							IViewBase.STORE,
+							IEditorBase.STORE,
 							IPreferenceConstants.DEFAULT_FONT)));
 			CommonTableView.this.filterLabel.setFont(new Font(
 					Display.getCurrent(),
 					PreferenceConverter.getFontData(
-							IViewBase.STORE,
+							IEditorBase.STORE,
 							IPreferenceConstants.DEFAULT_FONT)));
 			CommonTableView.this.descriptionLabel.setFont(new Font(
 					Display.getCurrent(),
 					PreferenceConverter.getFontData(
-							IViewBase.STORE,
+							IEditorBase.STORE,
 							IPreferenceConstants.DEFAULT_FONT)));
 		}
 		super.partActivated(arg0);

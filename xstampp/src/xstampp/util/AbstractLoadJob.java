@@ -7,10 +7,12 @@ import java.util.List;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 
 import xstampp.model.IDataModel;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  *	An abstarct definition of a load job used by Xstampp to load all
@@ -21,7 +23,7 @@ import xstampp.ui.common.ViewContainer;
  */
 public abstract class AbstractLoadJob extends Job {
 	private File file;
-	private final Logger log = ViewContainer.getLOGGER();
+	private final Logger log = ProjectManager.getLOGGER();
 	private IDataModel controller;
 	private File saveFile;
 	private List<String> errors;

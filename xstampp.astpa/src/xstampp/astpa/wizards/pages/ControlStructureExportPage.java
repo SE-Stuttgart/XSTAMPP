@@ -13,8 +13,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-import xstampp.astpa.wizards.AbstractExportPage;
-import xstampp.astpa.wizards.AbstractWizardPage;
+import xstampp.util.AbstractExportPage;
+import xstampp.util.AbstractWizardPage;
 
 /**
  * A Simple implementation of the ApstactExportPage containing elements for the

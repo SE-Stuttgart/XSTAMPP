@@ -18,7 +18,7 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.StepSelector;
 
 /**
@@ -83,7 +83,7 @@ public class STPAEditorInput implements IEditorInput {
 
 	@Override
 	public String getToolTipText() {
-		return this.stepName + " - " + ViewContainer.getContainerInstance().getTitle(this.projectId);
+		return this.stepName + " - " + ProjectManager.getContainerInstance().getTitle(this.projectId);
 	}
 	
 	/**

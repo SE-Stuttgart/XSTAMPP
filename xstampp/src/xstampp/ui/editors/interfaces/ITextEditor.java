@@ -99,7 +99,7 @@ public interface ITextEditor extends ISelectionProvider{
 	 * @author Lukas Balzer
 	 * @param style one of {@link #FONT_SIZE_DOWN},{@link #FONT_SIZE_UP},{@link #FONT_SIZE}
 	 *
-	 * @param fontSize
+	 * @param fontSize the font size of the text in points
 	 */
 	void setFontSize(String style,int fontSize);
 	/**

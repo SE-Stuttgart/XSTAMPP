@@ -36,7 +36,7 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * The job that handles the update routine
@@ -56,7 +56,7 @@ public class UpdateJob extends Job {
 
 	private IProvisioningAgent agent;
 	private Shell parent;
-	private ViewContainer viewContainer;
+	private ProjectManager viewContainer;
 	private boolean startUp;
 
 	/**
@@ -75,10 +75,10 @@ public class UpdateJob extends Job {
 	 */
 	public UpdateJob(String name, IProvisioningAgent agent, Shell parent,boolean startUp) {
 		super(name);
-		ViewContainer.getLOGGER().debug("Search " + UpdateJob.REPOSITORY_LOC + " for updates");
+		ProjectManager.getLOGGER().debug("Search " + UpdateJob.REPOSITORY_LOC + " for updates");
 		this.agent = agent;
 		this.parent = parent;
-		this.viewContainer = ViewContainer.getContainerInstance();
+		this.viewContainer = ProjectManager.getContainerInstance();
 		this.startUp = startUp;
 		ValidationDialogService dialogService = new ValidationDialogService();
 		dialogService.bindProvisioningAgent(agent);
@@ -175,9 +175,9 @@ public class UpdateJob extends Job {
 class UpdateJobChangeAdapter extends JobChangeAdapter {
 
 	private Shell parent;
-	private ViewContainer viewContainer;
+	private ProjectManager viewContainer;
 
-	public UpdateJobChangeAdapter(Shell parent, ViewContainer viewContainer) {
+	public UpdateJobChangeAdapter(Shell parent, ProjectManager viewContainer) {
 		this.parent = parent;
 		this.viewContainer = viewContainer;
 	}

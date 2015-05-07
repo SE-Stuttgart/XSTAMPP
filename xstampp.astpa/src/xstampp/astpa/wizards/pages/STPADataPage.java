@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 import xstampp.astpa.util.jobs.ICSVExportConstants;
-import xstampp.astpa.wizards.AbstractWizardPage;
+import xstampp.util.AbstractWizardPage;
 
 /**
  * 

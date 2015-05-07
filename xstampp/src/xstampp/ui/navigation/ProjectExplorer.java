@@ -39,7 +39,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -69,7 +69,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	/**
 	 * The log4j logger
 	 */
-	private static final Logger LOGGER = ViewContainer.getLOGGER();
+	private static final Logger LOGGER = ProjectManager.getLOGGER();
 	/**
 	 * The ID of this view
 	 */
@@ -172,7 +172,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 * 
 	 */
 	private void buildTree(final UUID projectID,String pluginID) {
-		IConfigurationElement projectExt = this.extensions.get(ViewContainer.
+		IConfigurationElement projectExt = this.extensions.get(ProjectManager.
 																getContainerInstance().
 																getProjectExtension(projectID));
 		/**
@@ -181,14 +181,14 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		String selectionId = projectID.toString();
 		String projectName=projectExt.getAttribute("name") 
 							+ PATH_SEPERATOR 
-							+ ViewContainer.getContainerInstance().getTitle(projectID);
+							+ ProjectManager.getContainerInstance().getTitle(projectID);
 		final TreeItem projectItem = new TreeItem(this.tree, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
 		IProjectSelection selector = new ProjectSelector(projectItem, projectID);
 		this.addOrReplaceStep(selectionId, selector, projectItem);
 		projectItem.addListener(SWT.MouseDown, this.listener);
 		projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
-		projectItem.setText(ViewContainer.getContainerInstance().getTitle(
+		projectItem.setText(ProjectManager.getContainerInstance().getTitle(
 				projectID));
 		
 		ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginID, projectExt
@@ -288,10 +288,10 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		this.tree.clearAll(true);
 		Set<UUID> oldProjects=this.treeItemsToProjectIDs.keySet();
 		this.treeItemsToProjectIDs= new HashMap<>();
-		for (UUID id : ViewContainer.getContainerInstance().getProjectKeys()) {
-			ViewContainer.getContainerInstance().getDataModel(id)
+		for (UUID id : ProjectManager.getContainerInstance().getProjectKeys()) {
+			ProjectManager.getContainerInstance().getDataModel(id)
 					.addObserver(this);
-			String plugin = ViewContainer.getContainerInstance().getDataModel(id).getPluginID();
+			String plugin = ProjectManager.getContainerInstance().getDataModel(id).getPluginID();
 			this.buildTree(id,plugin);
 			this.updateProject(id);
 			oldProjects.remove(id);
@@ -330,7 +330,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 *            the id of the project
 	 */
 	public void updateProject(UUID projectID) {
-		String temp = ViewContainer.getContainerInstance().getTitle(projectID);
+		String temp = ProjectManager.getContainerInstance().getTitle(projectID);
 
 		if (this.treeItemsToProjectIDs.containsKey(projectID)
 				&& !this.treeItemsToProjectIDs.get(projectID).equals(temp)) {
@@ -388,7 +388,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		this.extensions = new HashMap<>();
 		for (IConfigurationElement extElement : Platform
 				.getExtensionRegistry()
-				.getConfigurationElementsFor("astpa.extension.steppedProcess")) { //$NON-NLS-1$
+				.getConfigurationElementsFor("xstampp.extension.steppedProcess")) { //$NON-NLS-1$
 			String ext = extElement.getAttribute("extension"); //$NON-NLS-1$
 
 			this.extensions.put(ext, extElement);

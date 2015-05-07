@@ -36,7 +36,7 @@ import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.osgi.framework.ServiceReference;
 
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.update.UpdateJob;
 import xstampp.util.ChooseWorkLocation;
 
@@ -158,10 +158,10 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	@Override
 	public boolean preWindowShellClose() {
-		ViewContainer viewContainerViewPart = ViewContainer
+		ProjectManager viewContainerViewPart = ProjectManager
 				.getContainerInstance();
 
-		ViewContainer viewContainer = viewContainerViewPart;
+		ProjectManager viewContainer = viewContainerViewPart;
 		if (viewContainer.getUnsavedChanges()) {
 			MessageDialog dialog = new MessageDialog(Display.getCurrent()
 					.getActiveShell(), Messages.PlatformName, null,

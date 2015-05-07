@@ -81,7 +81,7 @@ import xstampp.astpa.util.jobs.STPALoadJob;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.astpa.util.jobs.SaveRunnable;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.util.AbstractLoadJob;
 
 /**
@@ -101,7 +101,8 @@ public class DataModelController extends Observable implements
 		IControlStructureEditorDataModel, IUnsafeControlActionDataModel,
 		ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel {
 
-	private static final Logger LOGGER = ViewContainer.getLOGGER();
+
+	private static final Logger LOGGER = ProjectManager.getLOGGER();
 
 	@XmlAttribute(name = "astpaversion")
 	private String astpaVersion;

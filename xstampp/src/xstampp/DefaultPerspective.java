@@ -9,13 +9,13 @@ import org.eclipse.ui.IPerspectiveFactory;
  * @author Lukas Balzer
  *
  */
-public class ASTPAPerspective implements IPerspectiveFactory {
+public class DefaultPerspective implements IPerspectiveFactory {
 
 	private static final Logger LOGGER = Logger.getRootLogger();
 
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
-		ASTPAPerspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
+		DefaultPerspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
 		layout.setFixed(true);
 		
 		layout.setEditorAreaVisible(true);

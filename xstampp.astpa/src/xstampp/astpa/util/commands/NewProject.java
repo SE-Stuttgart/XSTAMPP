@@ -21,7 +21,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.menu.file.commands.CommandState;
 
 /**
@@ -41,7 +41,7 @@ public class NewProject extends AbstractHandler {
 			return null;
 		}
 
-		ViewContainer.getContainerInstance().startUp(DataModelController.class,
+		ProjectManager.getContainerInstance().startUp(DataModelController.class,
 				nameParam, pathParam);
 
 		// Enable the save entries in the menu
@@ -53,7 +53,7 @@ public class NewProject extends AbstractHandler {
 
 		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
 				.getPerspectiveRegistry()
-				.findPerspectiveWithId("astpa.astpaPerspective"); //$NON-NLS-1$
+				.findPerspectiveWithId("xstampp.defaultPerspective"); //$NON-NLS-1$
 		if (descriptor != null) {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().setPerspective(descriptor);

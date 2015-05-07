@@ -48,7 +48,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.IViewBase;
+import xstampp.ui.editors.interfaces.IEditorBase;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -57,7 +57,7 @@ import xstampp.util.STPAPluginUtils;
  * @author Patrick Wickenhaeuser
  * 
  */
-public class WelcomeView extends ViewPart implements IViewBase {
+public class WelcomeView extends ViewPart implements IEditorBase {
 
 	// private static final String SHOW_WELCOME_ON_STARTUP_PREFERENCES =
 	// "SHOW_WELCOME_ON_STARTUP";

@@ -1,4 +1,4 @@
-package xstampp.ui.editors.interfaces;
+package xstampp.ui.editors;
 
 import java.util.EventObject;
 import java.util.HashMap;

@@ -57,9 +57,9 @@ import xstampp.astpa.ui.common.grid.GridWrapper;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.IViewBase;
-import xstampp.ui.common.ViewContainer;
-import xstampp.util.StandartEditorPart;
+import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
+import xstampp.ui.editors.interfaces.IEditorBase;
 
 /**
  * The view to add causal factors to control structure components, edit them and
@@ -314,7 +314,7 @@ public class CausalFactorsView extends StandartEditorPart{
 
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		this.grid = new GridWrapper(parent, new String[] { Messages.Component,
 				Messages.CausalFactors, Messages.HazardLinks,

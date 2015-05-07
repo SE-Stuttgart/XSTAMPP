@@ -82,12 +82,12 @@ import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.IViewBase;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
+import xstampp.ui.editors.StyledTextSelection;
+import xstampp.ui.editors.interfaces.IEditorBase;
 import xstampp.ui.editors.interfaces.ITextEditContribution;
 import xstampp.ui.editors.interfaces.ITextEditor;
-import xstampp.ui.editors.interfaces.StyledTextSelection;
-import xstampp.util.StandartEditorPart;
 
 /**
  * SystemDescriptionViewPart
@@ -192,7 +192,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		if(this.toolContributor== null){
 			this.toolContributor= new EmptyTextContributor();
 		}
-		this.setDataModelInterface(ViewContainer.getContainerInstance()
+		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		
 		Activator.getDefault().getPreferenceStore()
@@ -208,7 +208,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.createContextMenu();
 		this.statusBar = new Label(composite, SWT.NONE);
 		this.statusBar.setFont(new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IViewBase.STORE,
+				PreferenceConverter.getFontData(IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 
 		// Initialize with color black
@@ -389,7 +389,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.projectNameLabel = new Label(composite, SWT.NONE);
 		final int textLimit = 100;
 		Font labelFont = new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IViewBase.STORE,
+				PreferenceConverter.getFontData(IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT));
 
 		this.projectNameLabel.setText(Messages.ProjectName);
@@ -1776,12 +1776,12 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.projectNameLabel.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
-						IViewBase.STORE,
+						IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 		this.statusBar.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
-						IViewBase.STORE,
+						IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 		super.partActivated(arg0);
 	}
@@ -1791,12 +1791,12 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		SystemDescriptionView.this.statusBar.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
-						IViewBase.STORE,
+						IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 		SystemDescriptionView.this.projectNameLabel.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
-						IViewBase.STORE,
+						IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
 		
 	}

@@ -41,7 +41,7 @@ import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import xstampp.astpa.controlstructure.figure.RootFigure;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * 
@@ -91,7 +91,7 @@ public class CSExportJob extends Job {
 			UUID projectId, boolean showPreview, boolean decorate) {
 		super(Messages.ExportCS);
 		this.projectID=projectId;
-		this.model = (IControlStructureEditorDataModel) ViewContainer
+		this.model = (IControlStructureEditorDataModel) ProjectManager
 				.getContainerInstance().getDataModel(projectId);
 		this.path = path;
 		if (editorId.equals(CSEditor.ID)) {

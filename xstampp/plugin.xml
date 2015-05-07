@@ -59,10 +59,10 @@
             name="Welcome perspective">
       </perspective>
       <perspective
-            class="xstampp.ASTPAPerspective"
+            class="xstampp.DefaultPerspective"
             fixed="true"
-            id="astpa.astpaPerspective"
-            name="A-STPA Perspective">
+            id="xstampp.defaultPerspective"
+            name="Default Perspective">
       </perspective>
    </extension>
    <extension

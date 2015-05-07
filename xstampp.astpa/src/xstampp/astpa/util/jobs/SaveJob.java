@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 import xstampp.model.IDataModel;
-import xstampp.ui.common.ViewContainer;
+import xstampp.ui.common.ProjectManager;
 
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
@@ -87,7 +87,7 @@ public class SaveJob extends Job {
 			writer.close();
 			
 		} catch (JAXBException e) {
-			ViewContainer.getLOGGER().error(e.getMessage(), e);
+			ProjectManager.getLOGGER().error(e.getMessage(), e);
 			return Status.CANCEL_STATUS;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
