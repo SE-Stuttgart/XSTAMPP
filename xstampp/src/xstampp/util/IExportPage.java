@@ -29,5 +29,5 @@ public interface IExportPage extends IWizardPage {
 	 * @return the id for the currently selected project or null if the chooser
 	 *         has not be instantiated
 	 */
-	public UUID getProjectId();
+	public UUID getProjectID();
 }

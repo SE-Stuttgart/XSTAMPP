@@ -13,6 +13,8 @@
 
 package xstampp.astpa.wizards.pages;
 
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.apache.log4j.Logger;
@@ -32,7 +34,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.Activator;
+import xstampp.astpa.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
@@ -66,7 +68,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	 *            the name of the project
 	 */
 	public PdfExportPage(String pageName, String projectName) {
-		super(pageName, projectName);
+		super(pageName, Activator.PLUGIN_ID);
 		this.setTitle(Messages.Export);
 		this.setDescription(Messages.SetValuesForTheExportFile);
 	}
@@ -79,17 +81,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 
 		Composite projectChooser = this.addProjectChooser(this.container,
 				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
-		projectChooser.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-
-				PdfExportPage.this.sampleComp.setProjectID(PdfExportPage.this
-						.getProjectId());
-
-			}
-		});
-		// -----Create the Company Name input Composite-------------------------
+				// -----Create the Company Name input Composite-------------------------
 		Composite labelComposite = new Composite(this.container, SWT.NONE);
 		data = new FormData();
 		data.top = new FormAttachment(projectChooser,
@@ -248,6 +240,12 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	 */
 	public boolean getDecoChoice() {
 		return this.decoSwitch.getSelection();
+	}
+	
+	@Override
+	public void setProjectID(UUID projectID) {
+		super.setProjectID(projectID);
+		this.sampleComp.setProjectID(projectID);
 	}
 
 }

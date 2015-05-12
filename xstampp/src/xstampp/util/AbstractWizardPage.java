@@ -46,6 +46,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 */
 	public static final String ESSENTIAL = "*"; //$NON-NLS-1$
 	private String projectName;
+	private UUID projectID;
 	protected static final int DEMOCANVAS_HEIGHT = 60;
 	protected static final int COMPONENT_OFFSET = 10;
 	private static final String IMAGE_PATH = "/icons/buttons/export"; //$NON-NLS-1$
@@ -433,6 +434,69 @@ public abstract class AbstractWizardPage extends WizardPage {
 		return ""; //$NON-NLS-1$
 	}
 
+
+	/**
+	 * @return the fontState
+	 */
+	public int getFontState() {
+		return this.fontState;
+	}
+
+	/**
+	 * @param fontState
+	 *            the fontState to set
+	 */
+	public void setFontState(int fontState) {
+		this.fontState = fontState;
+	}
+
+	/**
+	 * @return the backgroundState
+	 */
+	public int getBackgroundState() {
+		return this.backgroundState;
+	}
+
+	/**
+	 * @param backgroundState
+	 *            the backgroundState to set
+	 */
+	public void setBackgroundState(int backgroundState) {
+		this.backgroundState = backgroundState;
+	}
+
+	/**
+	 * checks if the page is finished
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @return if the page is finished
+	 */
+	public abstract boolean checkFinish();
+
+	/**
+	 * @return the id for the currently selected project or null if the chooser
+	 *         has not be instantiated
+	 */
+	public UUID getProjectID() {
+		return this.projectID;
+	}
+
+	/**
+	 * @param projectID the projectID to set
+	 */
+	public void setProjectID(UUID projectID) {
+		
+		this.projectID = projectID;
+	}
+	
+	/**
+	 * a class which can be used by every child to add a Comosite to the editor page with which the user can
+	 * than choose a file path 
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
 	protected final class PathComposite extends Composite {
 
 		public static final int LOGO_DIALOG = 1;
@@ -631,14 +695,15 @@ public abstract class AbstractWizardPage extends WizardPage {
 		private Color fontColor;
 		private Color bgColor;
 		private UUID projectId;
-		private final int string_xPos = 10;
-		private final int string_yPos = 0;
-		private final int bgRec_yPos = 7;
-		private final int preview_xPos = 8;
-		private final int preview_yPos = 19;
+		private static final int string_xPos = 10;
+		private static final int string_yPos = 0;
+		private static final int bgRec_yPos = 7;
+		private static final int PREVIEW_XPOS = 8;
+		private static final int PREVIEW_YPOS = 19;
 
 		public DemoCanvas(Composite parent, int style) {
 			super(parent, style);
+			
 			this.sampleTitle = new Text(DemoCanvas.this, SWT.NONE);
 			this.sampleTitle.setFont(this.previewFont);
 			this.sampleTitle.setVisible(false);
@@ -662,7 +727,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 						.getTitle(this.projectId));
 			}
 			e.gc.setBackground(ColorConstants.white);
-			e.gc.fillRectangle(0, this.bgRec_yPos, 400, 40);
+			e.gc.fillRectangle(0, DemoCanvas.bgRec_yPos, 400, 40);
 
 			this.fontColor = new Color(null, PreferenceConverter.getColor(
 					AbstractWizardPage.this.store,
@@ -674,52 +739,14 @@ public abstract class AbstractWizardPage extends WizardPage {
 			e.gc.setFont(DemoCanvas.this.previewFont);
 			e.gc.setBackground(this.bgColor);
 			e.gc.drawString(DemoCanvas.this.sampleTitle.getText(),
-					this.preview_xPos, this.preview_yPos, false);
+					DemoCanvas.PREVIEW_XPOS, DemoCanvas.PREVIEW_YPOS, false);
 
 			e.gc.setForeground(ColorConstants.black);
 			e.gc.setFont(DemoCanvas.this.normalFont);
-			e.gc.drawText(Messages.Preview, this.string_xPos, this.string_yPos,
+			e.gc.drawText(Messages.Preview, DemoCanvas.string_xPos, DemoCanvas.string_yPos,
 					true);
 		}
 	}
 
-	/**
-	 * @return the fontState
-	 */
-	public int getFontState() {
-		return this.fontState;
-	}
-
-	/**
-	 * @param fontState
-	 *            the fontState to set
-	 */
-	public void setFontState(int fontState) {
-		this.fontState = fontState;
-	}
-
-	/**
-	 * @return the backgroundState
-	 */
-	public int getBackgroundState() {
-		return this.backgroundState;
-	}
-
-	/**
-	 * @param backgroundState
-	 *            the backgroundState to set
-	 */
-	public void setBackgroundState(int backgroundState) {
-		this.backgroundState = backgroundState;
-	}
-
-	/**
-	 * checks if the page is finished
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return if the page is finished
-	 */
-	public abstract boolean checkFinish();
 
 }

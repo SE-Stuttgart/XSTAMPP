@@ -23,8 +23,7 @@ public class DesignRequirementsWizard extends AbstractExportWizard {
 		super(DesignRequirementView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$ 
 		this.setExportPage(new CSVExportPage(filters,
-				Messages.DesignRequirements, this.getStore().getString(
-						IPreferenceConstants.PROJECT_NAME)));
+				Messages.DesignRequirements));
 	}
 
 	@Override

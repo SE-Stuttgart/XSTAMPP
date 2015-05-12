@@ -23,8 +23,7 @@ public class UnsafeControlActionsDataWizard extends AbstractExportWizard {
 		super(UnsafeControlActionsView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 		this.setExportPage(new CSVExportPage(filters,
-				Messages.UnsafeControlActions, this.getStore().getString(
-						IPreferenceConstants.PROJECT_NAME)));
+				Messages.UnsafeControlActions));
 	}
 
 	@Override

@@ -49,6 +49,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 	 */
 	public AbstractExportWizard() {
 		this(new String[] { "" }); //$NON-NLS-1$
+		
 	}
 
 	/**
@@ -86,7 +87,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 		try {
 			if (this.checkError(this.checkPath(filePath))) {
 				IDataModel model = ProjectManager.getContainerInstance()
-						.getDataModel(this.exportPage.getProjectId());
+						.getDataModel(this.exportPage.getProjectID());
 				StpaCSVExport export = new StpaCSVExport("Export CSV",
 						filePath,
 						((CSVExportPage) this.exportPage).getSeperator(),
@@ -128,9 +129,12 @@ public abstract class AbstractExportWizard extends Wizard implements
 						Messages.CantOverride);
 				return false;
 			}
-			Job exportJob = new ExportJob(this.getExportPage().getProjectId(),
-					jobMessage, filePath, ProjectManager.getContainerInstance()
-							.getMimeConstant(filePath), fopName, this
+			String mimeType =  ProjectManager.getContainerInstance().getMimeConstant(filePath);
+			if(mimeType == null){
+				return false;
+			}
+			Job exportJob = new ExportJob(this.getExportPage().getProjectID(),
+					jobMessage, filePath,mimeType, fopName, this
 							.getExportPage().asOne(), forceCSDeco);
 
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());

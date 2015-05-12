@@ -19,11 +19,9 @@ public class ControlStructureWithPMWizard extends ControlStructureWizard {
 	 */
 	public ControlStructureWithPMWizard() {
 		super(CSEditorWithPM.ID);
-		String[] filters = new String[] { "*.png", "*.jpg", "*.bmp" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String[] filters = new String[] { "*.png", "*.jpg", "*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		this.setExportPage(new ControlStructureExportPage(filters,
-				Messages.ControlStructureDiagramWithProcessModel, this
-						.getStore()
-						.getString(IPreferenceConstants.PROJECT_NAME)));
+				Messages.ControlStructureDiagramWithProcessModel));
 	}
 
 	@Override

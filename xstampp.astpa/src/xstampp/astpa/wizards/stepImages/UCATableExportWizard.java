@@ -4,7 +4,6 @@ import messages.Messages;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  * 
@@ -21,10 +20,9 @@ public class UCATableExportWizard extends AbstractExportWizard {
 	 */
 	public UCATableExportWizard() {
 		super(UnsafeControlActionsView.ID);
-		String[] filters = new String[] { "*.png", "*.pdf" }; //$NON-NLS-1$
+		String[] filters = new String[] { "*.png", "*.jpg", "*.bmp","*.pdf" }; //$NON-NLS-1$
 		this.exportPage = new TableExportPage(filters,
-				Messages.ExportPreferences, this.getStore().getString(
-						IPreferenceConstants.PROJECT_NAME));
+				Messages.ExportPreferences);
 		this.setExportPage(this.exportPage);
 	}
 

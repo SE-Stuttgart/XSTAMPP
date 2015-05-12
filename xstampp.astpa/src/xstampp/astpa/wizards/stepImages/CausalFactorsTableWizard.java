@@ -4,7 +4,6 @@ import messages.Messages;
 import xstampp.astpa.ui.causalfactors.CausalFactorsView;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  * 
@@ -20,10 +19,9 @@ public class CausalFactorsTableWizard extends AbstractExportWizard {
 	 */
 	public CausalFactorsTableWizard() {
 		super(CausalFactorsView.ID);
-		String[] filters = new String[] { "*.png" }; //$NON-NLS-1$
+		String[] filters = new String[] { "*.png", "*.jpg", "*.bmp","*.pdf" }; //$NON-NLS-1$
 		this.setExportPage(new TableExportPage(filters,
-				Messages.CausalFactorsTable, this.getStore().getString(
-						IPreferenceConstants.PROJECT_NAME)));
+				Messages.CausalFactorsTable));
 	}
 
 	@Override

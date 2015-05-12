@@ -48,7 +48,7 @@ public class STPADataPage extends CSVExportPage {
 	 *            The Name of the project
 	 */
 	public STPADataPage(String[] filters, String pageName, String projectName) {
-		super(filters, pageName, projectName);
+		super(filters, pageName);
 		this.setTitle(pageName);
 		this.stepViews = new ArrayList<>();
 		for (Field f : ICSVExportConstants.class.getDeclaredFields()) {

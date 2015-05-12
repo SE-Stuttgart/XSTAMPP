@@ -22,10 +22,9 @@ public class ControlStructureWizard extends AbstractExportWizard {
 	 */
 	public ControlStructureWizard() {
 		super(CSEditor.ID);
-		String[] filters = new String[] { "*.png", "*.jpg", "*.bmp" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String[] filters = new String[] {  "*.png", "*.jpg", "*.bmp" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		this.setExportPage(new ControlStructureExportPage(filters,
-				Messages.ControlStructure, this.getStore().getString(
-						IPreferenceConstants.PROJECT_NAME)));
+				Messages.ControlStructure));
 	}
 
 	protected ControlStructureWizard(String id) {
@@ -43,7 +42,7 @@ public class ControlStructureWizard extends AbstractExportWizard {
 		boolean decoCoice = ((ControlStructureExportPage) this.getExportPage())
 				.getDecoChoice();
 		CSExportJob job = new CSExportJob(this.getExportPage().getExportPath(),
-				editorID, this.getExportPage().getProjectId(), offset,
+				editorID, this.getExportPage().getProjectID(), offset,
 				decoCoice);
 		job.setPreview(true);
 		job.schedule();

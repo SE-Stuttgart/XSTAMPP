@@ -300,6 +300,12 @@
             The Causal Factors Table as single Export , provided as PNG
          </description>
       </wizard>
+      <wizard
+            category="astpa.stepImages"
+            class="xstampp.astpa.wizards.stepImages.CSCExportWizard"
+            id="xstampp.astpa.imageExport.2_2"
+            name="Corresponding Safety Constraints">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">

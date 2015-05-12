@@ -23,8 +23,7 @@ public class SystemDecriptionDataWizard extends AbstractExportWizard {
 		super(SystemDescriptionView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 		this.setExportPage(new CSVExportPage(filters,
-				Messages.SystemDescription, this.getStore().getString(
-						IPreferenceConstants.PROJECT_NAME)));
+				Messages.SystemDescription));
 	}
 
 	@Override

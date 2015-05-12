@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
+import xstampp.astpa.Activator;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
 
@@ -40,9 +41,8 @@ public class ControlStructureExportPage extends AbstractExportPage {
 	 * @param projectName
 	 *            The Name of the project
 	 */
-	public ControlStructureExportPage(String[] filters, String pageName,
-			String projectName) {
-		super(pageName, projectName);
+	public ControlStructureExportPage(String[] filters, String pageName) {
+		super(pageName, Activator.PLUGIN_ID);
 		this.setTitle(pageName);
 		this.filters = filters;
 		this.setDescription(Messages.SetValuesForTheExportFile);

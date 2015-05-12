@@ -22,8 +22,7 @@ public class CausalFactorsDataWizard extends AbstractExportWizard {
 	public CausalFactorsDataWizard() {
 		super(CausalFactorsView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
-		this.setExportPage(new CSVExportPage(filters, Messages.CausalFactors,
-				this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
+		this.setExportPage(new CSVExportPage(filters, Messages.CausalFactors));
 	}
 
 	@Override

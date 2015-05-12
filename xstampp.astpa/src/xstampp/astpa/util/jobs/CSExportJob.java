@@ -159,123 +159,17 @@ public class CSExportJob extends Job {
 	 * @return
 	 */
 	public IStatus getPrintableRoot() {
-		Runnable run = new Runnable() {
-
-			@Override
-			public void run() {
-				Shell shell=new Shell();
-				Composite canvas = new Composite(shell,33554432);
-				ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-				if (!CSExportJob.this.editorId.equals(CSEditor.ID)
-						&& !CSExportJob.this.editorId.equals(CSEditorWithPM.ID)) {
-					// the editor id must be one of CSEditor or CSEditorWithPM
-					return;
-				}
-
-				viewer.createControl(canvas);
-				viewer.setEditPartFactory(new CSEditPartFactory(
-						CSExportJob.this.model, CSExportJob.this.editorId));
-				viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
-						CSExportJob.this.editorId);
-
-				ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
-				viewer.setRootEditPart(rootEditPart);
-				IRectangleComponent root = CSExportJob.this.model.getRoot();
-
-				if (root == null) {
-					CSExportJob.this.model.setRoot(new Rectangle(),
-							new String());
-					root = CSExportJob.this.model.getRoot();
-				}
-				viewer.setContents(root);
-				viewer.getContents().refresh();
-				((RootEditPart) rootEditPart.getContents()).getFigure()
-						.setDeco(CSExportJob.this.deco);
-
-				viewer.getContents().refresh();
-				
-				IFigure tmpFigure = rootEditPart
-						.getLayer(LayerConstants.PRINTABLE_LAYERS);
-				// create a rectangle to guarantee that the src image 
-				Rectangle srcRectangle = tmpFigure.getBounds();
-				for (Object layers : tmpFigure.getChildren()) {
-					// Layer&ConnectionLayer
-					for (Object part : ((IFigure) layers).getChildren()) {
-						srcRectangle.union(((IFigure) part).getBounds());
-					}
-
-				}
-				
-				// a plain Image is created on which we can draw any graphics
-				CSExportJob.this.srcImage = new Image(null, (int) Math.max(
-						CSExportJob.this.factor * srcRectangle.width,
-						1), (int) Math.max(
-						CSExportJob.this.factor * srcRectangle.height,
-						1));
-				GC imageGC = new GC(CSExportJob.this.srcImage);
-				Graphics graphics = new SWTGraphics(imageGC);
-				graphics.scale(CSExportJob.this.factor);
-				tmpFigure.paint(graphics);
-				CSExportJob.this.printableFigure = tmpFigure;
-			}
-		};
+		Runnable run = new CSImageCalculator();
 
 		Display.getDefault().syncExec(run);
 		while (this.printableFigure == null) {
-			// wait
+			// wait 
 		}
 
 		if (this.imageType < 0) {
 			return Status.CANCEL_STATUS;
 		}
-		boolean isFirst = true;
-
-		// create a clip rectangle to cut the unnecessary whitespace
-		Rectangle clipRectangle = new Rectangle();
-		for (Object layers : this.printableFigure.getChildren()) {
-			// Layer&ConnectionLayer
-			for (Object part : ((IFigure) layers).getChildren()) {
-				if (part instanceof RootFigure) {
-					for (final Object child : ((IFigure) part).getChildren()) {
-						if (child.getClass().equals(Figure.class)) {
-							// skip children which are not instances of a CS
-							// class
-						} else if (isFirst) {
-							// the first component which is found by the loop is
-							// added
-							// as starting Point for the rectangle
-							isFirst = false;
-							clipRectangle = new Rectangle(
-									((IFigure) child).getBounds());
-						} else {
-							clipRectangle.union(((IFigure) child).getBounds());
-						}
-					}
-				} else {
-					clipRectangle.union(((IFigure) part).getBounds());
-				}
-			}
-
-		}
-		// cut off negative x-/y-parts
-		clipRectangle.width = clipRectangle.width
-				+ Math.min(0, clipRectangle.x);
-		clipRectangle.height = clipRectangle.height
-				+ Math.min(0, clipRectangle.y);
-		// the clipRectangle is minimally located at (0,0)
-		clipRectangle.x = Math.max(0, clipRectangle.x);
-		clipRectangle.y = Math.max(0, clipRectangle.y);
-		clipRectangle.scale(this.factor);
-		if ((clipRectangle.height + clipRectangle.y) > this.srcImage
-				.getBounds().height) {
-			clipRectangle.height = this.srcImage.getBounds().height
-					- clipRectangle.y;
-		}
-		if ((clipRectangle.width + clipRectangle.x) > this.srcImage.getBounds().width) {
-			clipRectangle.width = this.srcImage.getBounds().width
-					- clipRectangle.x;
-		}
-		
+		Rectangle clipRectangle = getClippingRectangle();
 
 		// this additional Image is created with the actual Bounds
 		// and the first one is clipped inside the scaled image
@@ -321,4 +215,122 @@ public class CSExportJob extends Job {
 		this.showPreview = preview;
 	}
 
+	/** 
+	 * create a clip rectangle to cut the unnecessary whitespace
+	 * 
+	 * @author Lukas Balzer
+	 *
+	 * @return a rectangle which describes the bounds of the control structure
+	 */
+	private Rectangle getClippingRectangle() {
+		boolean isFirst = true;
+
+		Rectangle clipRectangle = new Rectangle();
+		for (Object layers : this.printableFigure.getChildren()) {
+			// Layer&ConnectionLayer
+			for (Object part : ((IFigure) layers).getChildren()) {
+				if (part instanceof RootFigure) {
+					for (final Object child : ((IFigure) part).getChildren()) {
+						if (child.getClass().equals(Figure.class)) {
+							// skip children which are not instances of a CS
+							// class
+						} else if (isFirst) {
+							// the first component which is found by the loop is
+							// added
+							// as starting Point for the rectangle
+							isFirst = false;
+							clipRectangle = new Rectangle(
+									((IFigure) child).getBounds());
+						} else {
+							clipRectangle.union(((IFigure) child).getBounds());
+						}
+					}
+				} else {
+					clipRectangle.union(((IFigure) part).getBounds());
+				}
+			}
+
+		}
+		// cut off negative x-/y-parts
+		clipRectangle.width = clipRectangle.width
+				+ Math.min(0, clipRectangle.x);
+		clipRectangle.height = clipRectangle.height
+				+ Math.min(0, clipRectangle.y);
+		// the clipRectangle is minimally located at (0,0)
+		clipRectangle.x = Math.max(0, clipRectangle.x);
+		clipRectangle.y = Math.max(0, clipRectangle.y);
+		clipRectangle.scale(this.factor);
+		if ((clipRectangle.height + clipRectangle.y) > this.srcImage
+				.getBounds().height) {
+			clipRectangle.height = this.srcImage.getBounds().height
+					- clipRectangle.y;
+		}
+		if ((clipRectangle.width + clipRectangle.x) > this.srcImage.getBounds().width) {
+			clipRectangle.width = this.srcImage.getBounds().width
+					- clipRectangle.x;
+		}
+		return clipRectangle;
+	}
+	
+	private class CSImageCalculator implements Runnable{
+
+		@Override
+		public void run() {
+			Shell shell=new Shell();
+			Composite canvas = new Composite(shell,33554432);
+			ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
+			if (!CSExportJob.this.editorId.equals(CSEditor.ID)
+					&& !CSExportJob.this.editorId.equals(CSEditorWithPM.ID)) {
+				// the editor id must be one of CSEditor or CSEditorWithPM
+				return;
+			}
+
+			viewer.createControl(canvas);
+			viewer.setEditPartFactory(new CSEditPartFactory(
+					CSExportJob.this.model, CSExportJob.this.editorId));
+			viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
+					CSExportJob.this.editorId);
+
+			ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
+			viewer.setRootEditPart(rootEditPart);
+			IRectangleComponent root = CSExportJob.this.model.getRoot();
+
+			if (root == null) {
+				CSExportJob.this.model.setRoot(new Rectangle(),
+						new String());
+				root = CSExportJob.this.model.getRoot();
+			}
+			viewer.setContents(root);
+			viewer.getContents().refresh();
+			((RootEditPart) rootEditPart.getContents()).getFigure()
+					.setDeco(CSExportJob.this.deco);
+
+			viewer.getContents().refresh();
+			
+			IFigure tmpFigure = rootEditPart
+					.getLayer(LayerConstants.PRINTABLE_LAYERS);
+			// create a rectangle to guarantee that the src image 
+			Rectangle srcRectangle = tmpFigure.getBounds();
+			for (Object layers : tmpFigure.getChildren()) {
+				// Layer&ConnectionLayer
+				for (Object part : ((IFigure) layers).getChildren()) {
+					srcRectangle.union(((IFigure) part).getBounds());
+				}
+
+			}
+			
+			// a plain Image is created on which we can draw any graphics
+			CSExportJob.this.srcImage = new Image(null, (int) Math.max(
+					CSExportJob.this.factor * srcRectangle.width,
+					1), (int) Math.max(
+					CSExportJob.this.factor * srcRectangle.height,
+					1));
+			GC imageGC = new GC(CSExportJob.this.srcImage);
+			Graphics graphics = new SWTGraphics(imageGC);
+			graphics.scale(CSExportJob.this.factor);
+			tmpFigure.paint(graphics);
+			CSExportJob.this.printableFigure = tmpFigure;
+		}
+		
+	}
 }

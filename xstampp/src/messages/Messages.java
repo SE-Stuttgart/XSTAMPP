@@ -293,6 +293,7 @@ public final class Messages extends NLS {
 	public static String ExportingPdf;
 	@SuppressWarnings("javadoc")
 	public static String ExportingCS;
+	public static String ExportingCSC;
 	@SuppressWarnings("javadoc")
 	public static String ExportingCSV;
 	@SuppressWarnings("javadoc")

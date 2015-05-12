@@ -185,7 +185,7 @@ public class ExportJob extends Job {
 			try (OutputStream out = new BufferedOutputStream(
 					new FileOutputStream(pdfFile));
 					FileOutputStream str = new FileOutputStream(pdfFile);) {
-				if (this.asOne) {
+				if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {
 					fopFactory.setPageHeight(this
 							.getFirstDocumentSpan(xslfoTransformer));
 				}
@@ -238,11 +238,12 @@ public class ExportJob extends Job {
 		AreaTreeModel treeModel = new AreaTreeModel();
 		AreaTreeParser areaTreeParser = new AreaTreeParser();
 		areaTreeParser.parse(treeSource, treeModel, userAgent);
-		
-		Span span = (Span) treeModel.getCurrentPageSequence().getPage(0)
-				.getBodyRegion().getMainReference().getSpans().get(0);
-		float pageHeight = span.getBPD() / ExportJob.MP_TO_INCH;
-		
+		float pageHeight = 0;
+		for(int i= 0;i < treeModel.getCurrentPageSequence().getPageCount();i++){
+			Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
+					.getBodyRegion().getMainReference().getSpans().get(0);
+			pageHeight += span.getBPD() / ExportJob.MP_TO_INCH;
+		}
 		return Float.toString(pageHeight) + "in";//$NON-NLS-1$
 
 	}

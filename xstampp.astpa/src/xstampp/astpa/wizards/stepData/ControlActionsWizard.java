@@ -22,8 +22,7 @@ public class ControlActionsWizard extends AbstractExportWizard {
 	public ControlActionsWizard() {
 		super(ControlActionView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
-		this.setExportPage(new CSVExportPage(filters, Messages.ControlAction,
-				this.getStore().getString(IPreferenceConstants.PROJECT_NAME)));
+		this.setExportPage(new CSVExportPage(filters, Messages.ControlAction));
 	}
 
 	@Override

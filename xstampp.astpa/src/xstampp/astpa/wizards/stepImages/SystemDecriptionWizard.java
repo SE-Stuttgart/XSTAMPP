@@ -20,10 +20,9 @@ public class SystemDecriptionWizard extends AbstractExportWizard {
 	 */
 	public SystemDecriptionWizard() {
 		super(SystemDescriptionView.ID);
-		String[] filters = new String[] { "*.png", "*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$
+		String[] filters = new String[] {  "*.png", "*.jpg", "*.bmp","*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$
 		this.setExportPage(new SystemDescriptionExportPage(filters,
-				Messages.ExportPreferences, this.getStore().getString(
-						IPreferenceConstants.PROJECT_NAME)));
+				Messages.ExportPreferences));
 	}
 
 	@Override

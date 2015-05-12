@@ -1,5 +1,7 @@
 package xstampp.astpa.wizards.pages;
 
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.swt.SWT;
@@ -15,6 +17,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import xstampp.astpa.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
@@ -32,22 +35,19 @@ public class TableExportPage extends AbstractExportPage implements
 	private Button singlePage;
 	private Button multiPage;
 	private final String[] filters;
-	private Composite sampleCanvas;
+	private DemoCanvas sampleCanvas;
 
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * @param filters
 	 *            the file extensions, which shall be excepted by in the dialog
-	 * 
 	 * @param pageName
 	 *            the Name of this page, that is displayed in the header of the
 	 *            wizard
-	 * @param projectName
-	 *            The Name of the project
 	 */
-	public TableExportPage(String[] filters, String pageName, String projectName) {
-		super(pageName, projectName);
+	public TableExportPage(String[] filters, String pageName) {
+		super(pageName, Activator.PLUGIN_ID);
 		this.setTitle(pageName);
 		this.filters = filters;
 		this.setDescription(Messages.SetValuesForTheExportFile);
@@ -110,6 +110,7 @@ public class TableExportPage extends AbstractExportPage implements
 		this.pathChooser.setLayoutData(data);
 
 		this.sampleCanvas = new DemoCanvas(this.control, SWT.NONE);
+		this.sampleCanvas.setProjectID(this.getProjectID());
 		data = new FormData();
 		data.width = parent.getBounds().width;
 		data.height = AbstractWizardPage.DEMOCANVAS_HEIGHT;
@@ -138,5 +139,12 @@ public class TableExportPage extends AbstractExportPage implements
 		}
 		return super.checkFinish();
 	}
-
+	
+	@Override
+	public void setProjectID(UUID projectID) {
+		super.setProjectID(projectID);
+		if(this.sampleCanvas != null){
+			this.sampleCanvas.setProjectID(projectID);
+		}
+	}
 }

@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import xstampp.astpa.Activator;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
 
@@ -36,8 +37,8 @@ public class CSVExportPage extends AbstractExportPage {
 	 * @param projectName
 	 *            The Name of the project
 	 */
-	public CSVExportPage(String[] filters, String pageName, String projectName) {
-		super(pageName, projectName);
+	public CSVExportPage(String[] filters, String pageName) {
+		super(pageName, Activator.PLUGIN_ID);
 		this.setTitle(pageName);
 		this.filters = filters;
 		this.setDescription(Messages.PrepareDataExport);

@@ -1,13 +1,18 @@
 package xstampp.util;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import messages.Messages;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -19,8 +24,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.navigation.IProjectSelection;
 
 /**
  * a class to prevent code cloning in the export Pages
@@ -34,10 +41,22 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	private Map<UUID, String> projects;
 	private Combo chooseList;
 	protected PathComposite pathChooser;
+	private String pluginID;
 
-	protected AbstractExportPage(String pageName, String projectName) {
-		super(pageName, projectName);
-		this.projects = ProjectManager.getContainerInstance().getProjects();
+	/**
+	 * 
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param pageName
+	 * 			the name of the export page
+ 	 * @param pluginID
+	 * 			The plugin for which this export page is created
+	 */
+	protected AbstractExportPage(String pageName, String pluginID) {
+		super(pageName);
+		this.projects = new HashMap<>();
+		this.pluginID = pluginID;
 	}
 
 	/**
@@ -98,33 +117,40 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 
 		this.chooseList = new Combo(projectChooser, SWT.DROP_DOWN);
 		this.chooseList.setLayoutData(new GridData(300, SWT.DEFAULT));
+		
 		this.chooseList.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				projectChooser.notifyListeners(SWT.Selection, null);
+				AbstractExportPage.this.setProjectID(AbstractExportPage.this.projects.keySet().
+															toArray(new UUID[0])[AbstractExportPage.this.chooseList
+				                                                                       .getSelectionIndex()]);
+				
 				AbstractExportPage.this.setPageComplete(AbstractExportPage.this
 						.checkFinish());
+				
 			}
 		});
-		for (UUID id : this.projects.keySet()) {
-			this.chooseList.add(this.projects.get(id));
+		for (Entry<UUID, String> entry : ProjectManager.getContainerInstance().getProjects().entrySet()) {
+			if(ProjectManager.getContainerInstance().getDataModel(entry.getKey()).getPluginID().equals(this.pluginID)){
+				this.projects.put(entry.getKey(), entry.getValue());
+				this.chooseList.add( entry.getValue());
+			}
+		}
+		ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().findView("astpa.explorer").getSite()
+				.getSelectionProvider().getSelection();
+
+		if(selection instanceof IProjectSelection && this.projects.containsKey(((IProjectSelection) selection).getProjectId())){		
+			this.setProjectID(((IProjectSelection) selection).getProjectId());
+			this.chooseList.setText(this.projects.get(((IProjectSelection) selection).getProjectId()));
 		}
 		return projectChooser;
 
 	}
 
-	@Override
-	public UUID getProjectId() {
-		if (this.chooseList == null) {
-			return null;
-		}
-		if (this.chooseList.getSelectionIndex() == -1) {
-			return null;
-		}
-		return this.projects.keySet().toArray(new UUID[0])[this.chooseList
-				.getSelectionIndex()];
-	}
+
 
 	@Override
 	public String getExportPath() {
@@ -139,7 +165,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	@Override
 	public boolean checkFinish() {
 		this.setErrorMessage(null);
-		if (this.getProjectId() == null) {
+		if (this.getProjectID() == null) {
 			this.setErrorMessage(Messages.NoProjectSelected);
 			return false;
 		}
