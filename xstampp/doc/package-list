@@ -1,0 +1,12 @@
+messages
+xstampp
+xstampp.model
+xstampp.preferences
+xstampp.ui.common
+xstampp.ui.editors.commands
+xstampp.ui.editors.interfaces
+xstampp.ui.menu.file.commands
+xstampp.ui.navigation
+xstampp.ui.welcome
+xstampp.update
+xstampp.util
