@@ -52,7 +52,7 @@ public class TextFieldFigure extends CSFigure {
 	 *            the id which the figure inherits from its model
 	 */
 	public TextFieldFigure(UUID id) {
-		super(id);
+		super(id, false);
 		this.isDashed = false;
 		this.setOpaque(false);
 		this.getTextField().setOpaque(false);
@@ -88,10 +88,17 @@ public class TextFieldFigure extends CSFigure {
 	@Override
 	public void setDeco(boolean deco) 
 	{
-		if(deco){
-			this.isDashed = true;
-			setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH)); 
-		}
+		//the text field is not decorated
 	}
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param dashed whther the component is dashed or not
+	 */
+	public void setDashed() {
+		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH));
+		this.isDashed = true;
+	}
 }

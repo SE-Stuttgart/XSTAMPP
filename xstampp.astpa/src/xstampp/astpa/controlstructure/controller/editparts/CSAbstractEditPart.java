@@ -34,6 +34,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
+import org.eclipse.swt.widgets.Control;
 
 import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
@@ -70,6 +71,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	private final String stepId;
 	private IControlStructureEditorDataModel dataModel;
 	private List<IConnection> connectionRegisty;
+	private int layer;
 
 	/**
 	 * 
@@ -79,9 +81,11 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	 *            The DataModel which contains all model classes
 	 * @param stepId
 	 *            this steps id
+	 * @param layer TODO
 	 */
 	public CSAbstractEditPart(IControlStructureEditorDataModel model,
-			String stepId) {
+			String stepId, Integer layer) {
+		this.layer = layer;
 		this.stepId = stepId;
 		this.dataModel = model;
 		this.connectionRegisty = new ArrayList<IConnection>();
@@ -89,7 +93,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	protected IFigure createFigure() {
-		ComponentFigure tmpFigure = new ComponentFigure(this.getId());
+		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), false);
 		tmpFigure
 				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
 		return tmpFigure;
@@ -159,8 +163,10 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 			}
 
 			this.refreshChildren();
+			
 			this.getViewer().getControl().redraw();
-
+			
+			
 			for (Object child : this.getChildren()) {
 				((IControlStructureEditPart) child).refresh();
 			}
@@ -350,5 +356,19 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	 */
 	public String getStepId() {
 		return this.stepId;
+	}
+
+	/**
+	 * @return the layer
+	 */
+	public int getLayer() {
+		return layer;
+	}
+
+	/**
+	 * @param layer the layer to set
+	 */
+	public void setLayer(int layer) {
+		this.layer = layer;
 	}
 }

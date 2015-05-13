@@ -69,6 +69,7 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
 		super(owner);
 
 		((CSFigure) this.getOwner()).removeHighlighter();
+		model.setIsFlying(true);
 		this.relatedAnchor = (CSAnchor) relation;
 		this.lastRef = new Point();
 		int xOffset = model.getxOrientation();

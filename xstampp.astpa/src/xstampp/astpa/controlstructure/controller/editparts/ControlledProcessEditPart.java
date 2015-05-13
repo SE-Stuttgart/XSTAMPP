@@ -50,7 +50,7 @@ public class ControlledProcessEditPart extends CSAbstractEditPart {
 	 */
 	public ControlledProcessEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
-		super(model, stepId);
+		super(model, stepId, 1);
 	}
 
 	@Override

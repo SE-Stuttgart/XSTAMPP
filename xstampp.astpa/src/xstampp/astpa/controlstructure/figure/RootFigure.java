@@ -63,7 +63,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	 * 
 	 */
 	public RootFigure(UUID id) {
-		super(id);
+		super(id, false);
 		this.hasDeco = true;
 		this.addMouseMotionListener(this);
 	}
@@ -114,7 +114,8 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		Figure anchorHighlighter = null;
 
 		for (IRectangleComponent child : childrenList) {
-			if (child.getComponentType() != ComponentType.TEXTFIELD) {
+			if (child.getComponentType() != ComponentType.TEXTFIELD &&
+					child.getComponentType() != ComponentType.DASHEDBOX) {
 				childLayout = new Rectangle(child.getLayout(true));
 				for (float factor : CSFigure.X_ORIENTATIONS) {
 					// for each entry in the array two anchorPoints are created

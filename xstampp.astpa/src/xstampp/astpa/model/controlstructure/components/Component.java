@@ -224,12 +224,17 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	 * 
 	 * @param child
 	 *            the new child
+	 * @param index TODO
 	 * @return true if child could be added
 	 * 
 	 * @author Fabian Toth
 	 */
-	public boolean addChild(Component child) {
-		return this.children.add(child);
+	public boolean addChild(Component child, Integer index) {
+		if(index < 0 || index >this.children.size()){
+			return this.children.add(child);
+		}
+		this.children.add(index,child);
+		return true;
 	}
 
 	/**

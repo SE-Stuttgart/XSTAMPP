@@ -163,6 +163,7 @@ public class DataModelController extends Observable implements
 	public void updateValue(ObserverValue value) {
 		DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
 		this.setChanged();
+		int c = this.countObservers();
 		this.notifyObservers(value);
 	}
 
@@ -751,7 +752,7 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public UUID addComponent(UUID parentId, Rectangle layout, String text,
-			ComponentType type) {
+			ComponentType type, Integer index) {
 		if ((parentId == null) || (layout == null) || (text == null)
 				|| (type == null)) {
 			return null;
@@ -761,7 +762,7 @@ public class DataModelController extends Observable implements
 		}
 
 		UUID result = this.controlStructureController.addComponent(parentId,
-				layout, text, type);
+				layout, text, type, index);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -1272,7 +1273,7 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public UUID addComponent(UUID controlActionId, UUID parentId,
-			Rectangle layout, String text, ComponentType type) {
+			Rectangle layout, String text, ComponentType type, Integer index) {
 		if ((parentId == null) || (layout == null) || (text == null)
 				|| (type == null)) {
 			return null;
@@ -1282,7 +1283,7 @@ public class DataModelController extends Observable implements
 		}
 
 		UUID result = this.controlStructureController.addComponent(
-				controlActionId, parentId, layout, text, type);
+				controlActionId, parentId, layout, text, type, index);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}

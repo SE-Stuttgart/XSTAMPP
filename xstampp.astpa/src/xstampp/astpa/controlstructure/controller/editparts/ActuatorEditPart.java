@@ -48,7 +48,7 @@ public class ActuatorEditPart extends CSAbstractEditPart {
 	 */
 	public ActuatorEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
-		super(model, stepId);
+		super(model, stepId, 1);
 	}
 
 	@Override

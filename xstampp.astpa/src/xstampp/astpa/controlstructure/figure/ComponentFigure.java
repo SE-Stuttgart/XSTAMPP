@@ -55,13 +55,13 @@ public class ComponentFigure extends CSFigure  implements IPropertyChangeListene
 	 * @author Lukas Balzer, Aliaksei Babkovich
 	 * @param id
 	 *            the id which the figure inherits from its model
+	 * @param isDashed TODO
 	 * 
 	 */
-	public ComponentFigure(UUID id) {
+	public ComponentFigure(UUID id, Boolean isDashed) {
 
-		super(id);
+		super(id, isDashed);
 		this.setForegroundColor(ColorConstants.black);
-		this.setBorder(new LineBorder(1));
 		this.decoBorderColor = CSFigure.STANDARD_BORDER_COLOR;
 	}
 
@@ -80,7 +80,7 @@ public class ComponentFigure extends CSFigure  implements IPropertyChangeListene
 	 */
 	public ComponentFigure(UUID id, Image img, String colorPreference) {
 
-		super(id, img);
+		super(id, img, false);
 		this.setForegroundColor(ColorConstants.black);
 		this.colorPreference=colorPreference;
 		this.decoBorderColor =  new Color(Display.getCurrent(), PreferenceConverter

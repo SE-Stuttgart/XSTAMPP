@@ -42,7 +42,7 @@ public class ProcessValueEditPart extends CSAbstractEditPart {
 	 */
 	public ProcessValueEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
-		super(model, stepId);
+		super(model, stepId, 1);
 
 	}
 

@@ -49,6 +49,7 @@ public class ControlStructureController {
 	@XmlElement(name = "connection")
 	private List<CSConnection> connections;
 	private final Map<UUID, IRectangleComponent> componentTrash;
+	private final Map<UUID, Integer> componentIndexTrash;
 	private final Map<UUID, IConnection> connectionTrash;
 	private final Map<UUID, List<UUID>> removedLinks;
 	private boolean initiateStep1;
@@ -60,6 +61,7 @@ public class ControlStructureController {
 	 */
 	public ControlStructureController() {
 		this.connections = new ArrayList<>();
+		this.componentIndexTrash = new HashMap<>();
 		this.componentTrash = new HashMap<>();
 		this.connectionTrash = new HashMap<>();
 		this.removedLinks = new HashMap<>();
@@ -79,22 +81,24 @@ public class ControlStructureController {
 	 *            the text of the new component
 	 * @param type
 	 *            the type of the new component
+	 * @param index TODO
 	 * @return the id of the created component. Null if the component could not
 	 *         be added
 	 * 
 	 * @author Fabian Toth
 	 */
 	public UUID addComponent(UUID parentId, Rectangle layout, String text,
-			ComponentType type) {
+			ComponentType type, Integer index) {
 		Component newComp = new Component(text, layout, type);
 		Component parent = this.getInternalComponent(parentId);
-		parent.addChild(newComp);
+		parent.addChild(newComp,index);
 		return newComp.getId();
 	}
 
 	/**
 	 * Adds a new component to a parent with the given values.
-	 * 
+	 * @param controlActionId
+	 *            an id of a ControlAction
 	 * @param parentId
 	 *            the id of the parent
 	 * @param layout
@@ -103,18 +107,17 @@ public class ControlStructureController {
 	 *            the text of the new component
 	 * @param type
 	 *            the type of the new component
+	 * @param index TODO
+	 * 
 	 * @return the id of the created component. Null if the component could not
 	 *         be added
-	 * @param controlActionId
-	 *            an id of a ControlAction
-	 * 
 	 * @author Fabian Toth,Lukas Balzer
 	 */
 	public UUID addComponent(UUID controlActionId, UUID parentId,
-			Rectangle layout, String text, ComponentType type) {
+			Rectangle layout, String text, ComponentType type, Integer index) {
 		Component newComp = new Component(controlActionId, text, layout, type);
 		Component parent = this.getInternalComponent(parentId);
-		parent.addChild(newComp);
+		parent.addChild(newComp,index);
 
 		return newComp.getId();
 	}
@@ -206,6 +209,7 @@ public class ControlStructureController {
 		Component component = this.getInternalComponent(componentId);
 		this.removeAllLinks(componentId);
 		this.componentTrash.put(componentId, component);
+		this.componentIndexTrash.put(componentId, this.root.getChildren().indexOf(component));
 		return this.root.removeChild(componentId);
 	}
 
@@ -225,7 +229,7 @@ public class ControlStructureController {
 		if (this.componentTrash.containsKey(componentId)) {
 			Component parent = this.getInternalComponent(parentId);
 			boolean success = parent.addChild((Component) this.componentTrash
-					.get(componentId));
+					.get(componentId),this.componentIndexTrash.get(componentId));
 			this.componentTrash.remove(componentId);
 			if (this.removedLinks.containsKey(componentId)) {
 				for (UUID connectionId : this.removedLinks.get(componentId)) {
@@ -369,6 +373,7 @@ public class ControlStructureController {
 		return false;
 	}
 
+	
 	/**
 	 * This methode recovers a Connection which was deleted before, from the
 	 * connectionTrash

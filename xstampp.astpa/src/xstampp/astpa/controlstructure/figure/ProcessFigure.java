@@ -42,7 +42,7 @@ public class ProcessFigure extends CSFigure {
 	 *            the offset from the parent models text Label
 	 */
 	public ProcessFigure(UUID id, int top) {
-		super(id);
+		super(id, false);
 
 		this.setOpaque(false);
 		this.topOffset = top;

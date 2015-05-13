@@ -32,7 +32,7 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 	 */
 	public ControlActionEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
-		super(model, stepId);
+		super(model, stepId, 1);
 
 	}
 

@@ -48,7 +48,7 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 	 */
 	public ProcessModelEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
-		super(model, stepId);
+		super(model, stepId, 1);
 		this.activate();
 	}
 

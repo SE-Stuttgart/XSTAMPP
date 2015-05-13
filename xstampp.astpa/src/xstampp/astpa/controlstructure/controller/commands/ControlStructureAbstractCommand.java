@@ -45,6 +45,8 @@ public abstract class ControlStructureAbstractCommand extends Command {
 			this.add(ComponentType.CONTROLLED_PROCESS);
 			this.add(ComponentType.SENSOR);
 			this.add(ComponentType.TEXTFIELD);
+			this.add(ComponentType.DASHEDBOX);
+			
 		}
 	};
 

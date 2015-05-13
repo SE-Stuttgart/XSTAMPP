@@ -174,8 +174,6 @@ public class CSEditPartFactory implements EditPartFactory {
 		IAnchor sourceModel = model.getSourceAnchor();
 		IAnchor targetModel = model.getTargetAnchor();
 
-		targetModel.setIsFlying(source.getParent().equals(target));
-		sourceModel.setIsFlying(target.getParent().equals(source));
 		IAnchorFigure sourceAnchor;
 		IAnchorFigure targetAnchor;
 
@@ -183,6 +181,7 @@ public class CSEditPartFactory implements EditPartFactory {
 			targetAnchor = new CSAnchor(targetFigure, targetModel);
 			sourceAnchor = new CSFlyAnchor(sourceFigure, targetAnchor,
 					sourceModel);
+			
 		} else if (target instanceof RootEditPart) {
 			sourceAnchor = new CSAnchor(sourceFigure, sourceModel);
 			targetAnchor = new CSFlyAnchor(targetFigure, sourceAnchor,

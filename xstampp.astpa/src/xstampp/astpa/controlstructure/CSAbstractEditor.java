@@ -773,6 +773,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	@Override
 	public void dispose() {
 		this.getCommandStack().removeCommandStackListener(this);
+		this.modelInterface.deleteObserver(this);
 		this.getSite().getWorkbenchWindow().getSelectionService()
 				.removeSelectionListener(this);
 		this.getEditDomain().setActiveTool(null);
@@ -1140,7 +1141,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.modelInterface = modelInterface;
 	}
 	
-	
+
 }
 
 

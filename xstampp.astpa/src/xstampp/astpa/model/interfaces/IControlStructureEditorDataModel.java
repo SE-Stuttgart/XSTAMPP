@@ -49,19 +49,20 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 *            the text of the new component
 	 * @param type
 	 *            the type of the new component
+	 * @param index TODO
 	 * @return the id of the created component. Null when the component could
 	 *         not be added
 	 * 
 	 * @author Fabian Toth
 	 */
 	UUID addComponent(UUID parentId, Rectangle layout, String text,
-			ComponentType type);
+			ComponentType type, Integer index);
 
 	/**
 	 * Adds a new component to a root component with the given values. <br>
 	 * Triggers an update for
 	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
-	 * 
+	 * @param controlActionId
 	 * @param parentId
 	 *            the id of the parent
 	 * @param layout
@@ -70,14 +71,15 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 *            the text of the new component
 	 * @param type
 	 *            the type of the new component
+	 * @param index TODO
+	 * 
 	 * @return the id of the created component. Null when the component could
 	 *         not be added
 	 * 
 	 * @author Fabian Toth
-	 * @param controlActionId
 	 */
 	UUID addComponent(UUID controlActionId, UUID parentId, Rectangle layout,
-			String text, ComponentType type);
+			String text, ComponentType type, Integer index);
 
 	/**
 	 * Removes a control action. <br>

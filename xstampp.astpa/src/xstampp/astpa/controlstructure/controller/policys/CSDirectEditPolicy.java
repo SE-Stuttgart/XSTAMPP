@@ -83,8 +83,7 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 
 		Rectangle newLayout = ((CSDirectEditor) request.getCellEditor())
 				.getBounds().getCopy();
-		((CSEditPolicy) this.getHost().getEditPolicy(EditPolicy.LAYOUT_ROLE))
-				.getAbsoluteLayout(newLayout);
+		 this.getHost().getFigure().translateToRelative(newLayout);
 		command.setModel(this.model);
 		command.setNewLayout(newLayout);
 

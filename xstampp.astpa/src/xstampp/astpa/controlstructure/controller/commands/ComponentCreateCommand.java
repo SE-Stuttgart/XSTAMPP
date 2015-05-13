@@ -135,7 +135,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		} else if (this.rootModel.getComponentType() == ComponentType.TEXTFIELD) {
 			return false;
 		}
-
 		switch (this.compModel.getComponentType()) {
 		case PROCESS_MODEL: {
 			return this.rootModel.getComponentType() == ComponentType.CONTROLLER;
@@ -165,7 +164,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		this.componentId = this.getDataModel().addComponent(
 				this.compModel.getControlActionLink(), this.rootModel.getId(),
 				this.layout, this.compModel.getText(),
-				this.compModel.getComponentType());
+				this.compModel.getComponentType(), 0);
 		this.updateParentConstraint();
 
 	}

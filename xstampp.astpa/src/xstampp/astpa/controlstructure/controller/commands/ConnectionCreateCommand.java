@@ -92,9 +92,6 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 	 *            The figure an arrow points to or the a connection ends
 	 */
 	public void setTargetModel(IAnchorFigure target) {
-		if(target.getAnchorFactor().x != 100){
-			System.out.println();
-		}
 		UUID id = ((IControlStructureFigure) target.getOwner()).getId();
 		int x = target.getAnchorFactor().x;
 		int y = target.getAnchorFactor().y;

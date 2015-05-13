@@ -47,7 +47,7 @@ public class SensorEditPart extends CSAbstractEditPart {
 	 *            this steps id
 	 */
 	public SensorEditPart(IControlStructureEditorDataModel model, String stepId) {
-		super(model, stepId);
+		super(model, stepId, 1);
 	}
 
 	@Override

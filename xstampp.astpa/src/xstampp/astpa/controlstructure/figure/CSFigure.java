@@ -27,6 +27,7 @@ import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
@@ -56,6 +57,7 @@ public abstract class CSFigure extends Figure implements
 	 */
 	public static final Color STANDARD_BORDER_COLOR = ColorConstants.black;
 	private boolean withIcon;
+	private LineBorder border;
 
 	/**
 	 * the xOrientations array which stores the locations on the x-axis as
@@ -75,19 +77,11 @@ public abstract class CSFigure extends Figure implements
 	 * 
 	 * 
 	 * @author Lukas Balzer
+	 * @param isDashed TODO
 	 * 
 	 */
-	protected CSFigure(UUID id) {
-		this.componentID = id;
-		this.setLayoutManager(new XYLayout());
-		this.image = null;
-
-		this.textLabel = new CSTextLabel(this);
-		this.add(this.textLabel);
-
-		this.setConstraint(this.textLabel, new Rectangle(1, 1, -1, -1));
-		this.setOpaque(true);
-		this.setBackgroundColor(ColorConstants.white);
+	protected CSFigure(UUID id, Boolean isDashed) {
+		this(id, null, isDashed);
 	}
 
 	/**
@@ -96,13 +90,18 @@ public abstract class CSFigure extends Figure implements
 	 * 
 	 * 
 	 * @author Lukas Balzer
+	 * @param isDashed TODO
 	 * 
 	 */
-	protected CSFigure(UUID id, Image img) {
+	protected CSFigure(UUID id, Image img, boolean isDashed) {
 		this.componentID = id;
 		this.setLayoutManager(new XYLayout());
 		this.image = img;
-
+		if(isDashed){
+			this.border =new LineBorder(STANDARD_BORDER_COLOR, 1,SWT.BORDER_DASH);
+		}else{
+			this.border =new LineBorder(STANDARD_BORDER_COLOR, 1);
+		}
 		this.textLabel = new CSTextLabel(this);
 		this.add(this.textLabel);
 
@@ -151,13 +150,13 @@ public abstract class CSFigure extends Figure implements
 	 *            the Color of the new Border
 	 */
 	public void setBorder(Color color) {
-		Border border;
+		this.border.setColor(color);
 		if (this.getChildren().size() > 1) {
-			border = new LineBorder(color, 2);
+			this.border.setWidth(2);
 		} else {
-			border = new LineBorder(color, 1);
+			this.border.setWidth(1);
 		}
-		super.setBorder(border);
+		super.setBorder(this.border);
 	}
 
 	@Override
