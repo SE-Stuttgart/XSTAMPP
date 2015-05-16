@@ -27,9 +27,12 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.ui.PlatformUI;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.preferences.IAstpaPreferences;
 
 /**
  * 
@@ -64,10 +67,12 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	 */
 	public RootFigure(UUID id) {
 		super(id, false);
+		this.useLocalCoordinates();
 		this.hasDeco = true;
 		this.addMouseMotionListener(this);
 	}
 
+	
 	@Override
 	protected boolean useLocalCoordinates() {
 		return true;
@@ -107,6 +112,9 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	 */
 	public void addAnchorsGrid(List<IRectangleComponent> childrenList) {
 
+		if(Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+			return;
+		}
 		int width = RootFigure.NONACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
 		int offset = (width / 2);
 		List<Point> childrenAnchorsPoints = new ArrayList<>();

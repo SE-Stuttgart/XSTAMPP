@@ -2,6 +2,7 @@ package xstampp.astpa.preferences;
 
 import messages.Messages;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FontFieldEditor;
@@ -25,6 +26,7 @@ import xstampp.astpa.Activator;
 public class ControlStructurePreferences extends FieldEditorPreferencePage
 implements IWorkbenchPreferencePage {
 
+	private BooleanFieldEditor ConnectorSwitch;
 	private ColorFieldEditor CSFontColor;
 	private FontFieldEditor csLabelFont;
 	private ColorFieldEditor CSSensorDeco;
@@ -75,6 +77,9 @@ implements IWorkbenchPreferencePage {
 				this.getFieldEditorParent());
 		this.addField(this.CSSensorDeco);
 		
+		this.ConnectorSwitch = new BooleanFieldEditor(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, "Connection mode",
+						this.getFieldEditorParent());
+		this.addField(this.ConnectorSwitch);
 	}
 
 	@Override
@@ -85,6 +90,7 @@ implements IWorkbenchPreferencePage {
 		this.CSControllerDeco.store();
 		this.CSSensorDeco.store();
 		this.CSActuatorDeco.store();
+		this.ConnectorSwitch.store();
 		return super.performOk();
 	}
 	
@@ -96,6 +102,7 @@ implements IWorkbenchPreferencePage {
 		this.CSControllerDeco.loadDefault();
 		this.CSSensorDeco.loadDefault();
 		this.CSActuatorDeco.loadDefault();
+		this.ConnectorSwitch.loadDefault();
 	}
 	@Override
 	protected void performApply() {
@@ -103,6 +110,7 @@ implements IWorkbenchPreferencePage {
 		this.csLabelFont.store();
 		this.CSProcessDeco.store();
 		this.CSControllerDeco.store();
+		this.ConnectorSwitch.store();
 		this.CSSensorDeco.store();
 		this.CSActuatorDeco.store();
 	}

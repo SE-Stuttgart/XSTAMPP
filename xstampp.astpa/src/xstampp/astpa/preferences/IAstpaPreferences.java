@@ -38,4 +38,10 @@ public interface IAstpaPreferences {
 	 * @author Lukas Balzer
 	 */
 	String CONTROLSTRUCTURE_SENSOR_COLOR="CSsensorDecoration"; //$NON-NLS-1$
+	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 */
+	String CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS="ConnectionMode"; //$NON-NLS-1$ 
 }

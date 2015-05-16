@@ -21,7 +21,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.preferences.IAstpaPreferences;
 
 /**
  * 
@@ -65,16 +67,65 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	 * @param owner
 	 *            The Figure this AnchorPoint lies on
 	 * @param ref
-	 *            the reference Point on the Editor
+	 *            the reference Point in absolute coordinates on the Editor
 	 */
 	public CSAnchor(IFigure owner, Point ref) {
 		this(owner);
 
-		this.lastRef = ref;
-		this.setAnchorFactor(this.calcAnchorNr());
+		this.lastRef = ref.getCopy();
+		if(Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+			this.calulateAnchorFac(this.lastRef);
+		}else{
+			this.setAnchorFactor(this.calcAnchorNr());
+		}
 		this.calcReferencePoint();
-		this.getOwner().translateToRelative(this.referencePoint);
+//		this.getOwner().translateToRelative(this.referencePoint);
 		((CSFigure) this.getOwner()).addHighlighter(this.referencePoint);
+	}
+
+
+
+	/**
+	 * calculates the relative position of a point 
+	 * on the parent component
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param ref
+	 * 			the point for which the relative position 
+	 * 			is requested
+	 */
+	private void calulateAnchorFac(Point ref) {
+		ref.performTranslate(-this.getOwner().getBounds().x, -this.getOwner().getBounds().y);
+		
+		double m = this.getOwner().getBounds().preciseHeight() / this.getOwner().getBounds().preciseWidth();
+		
+		double preciseYUP = this.getOwner().getBounds().preciseHeight() - ref.preciseY();
+		double ascend = preciseYUP / ref.preciseX();
+		double inv_ascned =Math.abs(ref.preciseY()) / ref.preciseX();
+		
+		boolean  underM = ascend <= m;
+		boolean  underMINV = inv_ascned >= m;
+		
+		if(underM && underMINV){
+			this.anchorFactor.x = (int) (ref.x / getOwner().getBounds().preciseWidth() * MAX_PERCENT);
+			this.anchorFactor.y = MAX_PERCENT;
+		}
+		else if(!underM && underMINV){
+			this.anchorFactor.x = 0;
+			this.anchorFactor.y = (int) (ref.y / getOwner().getBounds().preciseHeight() * MAX_PERCENT);
+		}
+		else if(underM && !underMINV){
+			this.anchorFactor.x = MAX_PERCENT;
+			this.anchorFactor.y = (int) (ref.y / getOwner().getBounds().preciseHeight() * MAX_PERCENT);
+		}else if(!underM && !underMINV){
+			this.anchorFactor.x = (int) (ref.x / getOwner().getBounds().preciseWidth() * MAX_PERCENT);
+			this.anchorFactor.y = 0;
+		}
+		this.anchorFactor.x = Math.max(0, this.anchorFactor.x);
+		this.anchorFactor.x = Math.min(100, this.anchorFactor.x);
+		this.anchorFactor.y = Math.max(0, this.anchorFactor.y);
+		this.anchorFactor.y = Math.min(100, this.anchorFactor.y);
 	}
 
 	/**

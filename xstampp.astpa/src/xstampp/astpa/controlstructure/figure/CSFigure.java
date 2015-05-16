@@ -27,6 +27,7 @@ import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -158,6 +159,8 @@ public abstract class CSFigure extends Figure implements
 		}
 		super.setBorder(this.border);
 	}
+	
+
 
 	@Override
 	public void setLayout(Rectangle rect) {
