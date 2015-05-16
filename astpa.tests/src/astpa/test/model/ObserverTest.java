@@ -85,7 +85,7 @@ public class ObserverTest implements Observer {
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
 		UUID component =
 			this.dataModel.addComponent(this.dataModel.setRoot(new Rectangle(), ""), new Rectangle(), "",
-				ComponentType.ACTUATOR);
+				ComponentType.ACTUATOR, -1);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
 		UUID causalFactor = this.dataModel.addCausalFactor(component, "");
@@ -173,7 +173,7 @@ public class ObserverTest implements Observer {
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
 		UUID root = this.dataModel.setRoot(new Rectangle(), "");
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
-		UUID comp = this.dataModel.addComponent(root, new Rectangle(), "", ComponentType.CONTROLLER);
+		UUID comp = this.dataModel.addComponent(root, new Rectangle(), "", ComponentType.CONTROLLER, -1);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
 		this.dataModel.getComponent(comp);
 		this.dataModel.getRoot();

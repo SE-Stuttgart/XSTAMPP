@@ -34,10 +34,10 @@ public class ControlStructureControllerTest {
 		Rectangle layout = new Rectangle(5, 10, 15, 20);
 		
 		// add a component with only null as parameter
-		Assert.assertNull(dataModel.addComponent(null, null, null, null));
+		Assert.assertNull(dataModel.addComponent(null, null, null, null, -1));
 		
 		// add a component with a parent id that does not exist in the model
-		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), layout, "Test", ComponentType.ACTUATOR));
+		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), layout, "Test", ComponentType.ACTUATOR, -1));
 		
 		// try to change the layout of a component before the root is set
 		Assert.assertFalse(dataModel.changeComponentLayout(UUID.randomUUID(), new Rectangle(), true));
@@ -56,15 +56,15 @@ public class ControlStructureControllerTest {
 		// same
 		Assert.assertEquals(dataModel.getRoot(), dataModel.getComponent(id1));
 		
-		UUID id2 = dataModel.addComponent(id1, layout, "Testcontroller", ComponentType.CONTROLLER);
+		UUID id2 = dataModel.addComponent(id1, layout, "Testcontroller", ComponentType.CONTROLLER, -1);
 		Assert.assertNotNull(id2);
-		UUID id3 = dataModel.addComponent(id2, layout, "Testprocess", ComponentType.CONTROLLED_PROCESS);
+		UUID id3 = dataModel.addComponent(id2, layout, "Testprocess", ComponentType.CONTROLLED_PROCESS, -1);
 		Assert.assertNotNull(id3);
-		UUID id4 = dataModel.addComponent(id3, layout, "Testsensor", ComponentType.SENSOR);
+		UUID id4 = dataModel.addComponent(id3, layout, "Testsensor", ComponentType.SENSOR, -1);
 		Assert.assertNotNull(id3);
-		UUID id5 = dataModel.addComponent(id4, layout, "Testtextfield", ComponentType.TEXTFIELD);
+		UUID id5 = dataModel.addComponent(id4, layout, "Testtextfield", ComponentType.TEXTFIELD, -1);
 		Assert.assertNotNull(id4);
-		Assert.assertNotNull(dataModel.addComponent(id1, layout, "Textfield 2", ComponentType.TEXTFIELD));
+		Assert.assertNotNull(dataModel.addComponent(id1, layout, "Textfield 2", ComponentType.TEXTFIELD, -1));
 		
 		//check the recover function
 		Assert.assertFalse(dataModel.recoverComponent(null, null));
@@ -230,10 +230,10 @@ public class ControlStructureControllerTest {
 		DataModelController dataModel = new DataModelController();
 		
 		// Components
-		Assert.assertNull(dataModel.addComponent(null, null, null, null));
-		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), null, null, null));
-		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), new Rectangle(), null, null));
-		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), new Rectangle(), "", null));
+		Assert.assertNull(dataModel.addComponent(null, null, null, null, -1));
+		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), null, null, null, -1));
+		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), new Rectangle(), null, null, -1));
+		Assert.assertNull(dataModel.addComponent(UUID.randomUUID(), new Rectangle(), "", null, -1));
 		Assert.assertNull(dataModel.setRoot(null, null));
 		Assert.assertNull(dataModel.setRoot(new Rectangle(), null));
 		Assert.assertFalse(dataModel.changeComponentLayout(null, null, true));

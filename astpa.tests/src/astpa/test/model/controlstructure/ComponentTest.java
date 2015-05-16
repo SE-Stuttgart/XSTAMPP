@@ -55,9 +55,9 @@ public class ComponentTest {
 		Component component2 = new Component("Test2", layout, ComponentType.CONTROLLER);
 		Component component3 = new Component("Test3", layout, ComponentType.CONTROLLED_PROCESS);
 		Component component4 = new Component("Test4", layout, ComponentType.SENSOR);
-		Assert.assertTrue(component.addChild(component2));
-		Assert.assertTrue(component.addChild(component3));
-		Assert.assertTrue(component.addChild(component4));
+		Assert.assertTrue(component.addChild(component2, -1));
+		Assert.assertTrue(component.addChild(component3, -1));
+		Assert.assertTrue(component.addChild(component4, -1));
 		Assert.assertEquals(3, component.getChildren().size());
 		Assert.assertEquals(component3, component.getChild(component3.getId()));
 		Assert.assertEquals(component4, component.getChild(component4.getId()));

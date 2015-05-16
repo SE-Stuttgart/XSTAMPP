@@ -7,8 +7,9 @@
 	- at least JavaSE 1.7
 	- eclipse http://eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/lunasr2
    	- to install gef ( help -> install new software->http://download.eclipse.org/tools/gef/updates/releases/
-	- to install maven https://maven.apache.org/download.cgi
-	- (optional) the m2e maven feature for eclipse on http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.6.0/N/0.6.0.201207302152/
+   	- to install nebula grid from http://download.eclipse.org/technology/nebula/snapshot/
+	   - to install maven https://maven.apache.org/download.cgi
+	   - the m2e maven feature for eclipse on http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.6.0/N/0.6.0.201207302152/
 3. Create a new plugin:
 	- create a new plugin by clicking new->Others..->Plug-in Developement->Plug-in Project
 	- add dependencies xstampp and xstampp.extension

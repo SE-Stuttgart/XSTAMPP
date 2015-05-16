@@ -7,14 +7,13 @@ Bundle-Activator: xstampp.astpa.Activator
 Require-Bundle: org.eclipse.ui,
  xstampp,
  org.eclipse.gef;bundle-version="3.9.100",
- org.eclipse.equinox.p2.core;bundle-version="2.3.0",
+ org.eclipse.equinox.p2.core,
  org.eclipse.equinox.p2.operations;bundle-version="2.3.0",
  org.eclipse.equinox.p2.engine;bundle-version="2.3.0",
  org.eclipse.nebula.widgets.grid;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.9.0",
  org.eclipse.core.resources;bundle-version="3.8.101",
  org.eclipse.e4.ui.workbench.addons.swt;bundle-version="1.0.1",
- org.apache.commons.lang3;bundle-version="3.1.0",
  xstampp.extension;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: com.sun.xml.bind,

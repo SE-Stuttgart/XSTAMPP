@@ -47,7 +47,7 @@ public class CausalFactorControllerTest {
 		// a single component exists
 		Assert.assertNull(dataModel.addCausalFactor(UUID.randomUUID(), ""));
 		
-		UUID comp1 = dataModel.addComponent(rootComp, new Rectangle(0, 0, 0, 0), "", ComponentType.CONTROLLER);
+		UUID comp1 = dataModel.addComponent(rootComp, new Rectangle(0, 0, 0, 0), "", ComponentType.CONTROLLER, -1);
 		
 		// try to add a causal factor to a component that does not exist
 		Assert.assertNull(dataModel.addCausalFactor(UUID.randomUUID(), ""));
@@ -109,7 +109,7 @@ public class CausalFactorControllerTest {
 		
 		// Create a causal factor and some hazards
 		UUID rootComp = dataModel.setRoot(new Rectangle(0, 0, 0, 0), "");
-		UUID comp1 = dataModel.addComponent(rootComp, new Rectangle(0, 0, 0, 0), "", ComponentType.CONTROLLER);
+		UUID comp1 = dataModel.addComponent(rootComp, new Rectangle(0, 0, 0, 0), "", ComponentType.CONTROLLER, -1);
 		UUID cfId1 = dataModel.addCausalFactor(comp1, "New Causal Factor");
 		Assert.assertNotNull(cfId1);
 		UUID cfId2 = dataModel.addCausalFactor(comp1, "New Causal Factor");
