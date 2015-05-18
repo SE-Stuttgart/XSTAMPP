@@ -13,6 +13,9 @@
 
 package xstampp.astpa.controlstructure;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import messages.Messages;
 
 import org.eclipse.draw2d.Viewport;
@@ -23,6 +26,7 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
+import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import xstampp.astpa.Activator;
@@ -42,12 +46,17 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
  */
 public class CSEditor extends CSAbstractEditor {
 
+	
 	/**
 	 * The ID is used to reference the Editor
 	 */
 	public static final String ID = "astpa.steps.step1_8"; //$NON-NLS-1$
 	private double zoomLevel;
 	private Viewport viewLocation;
+	private ToolEntry simpleConnectionEntry;
+	private Map<ComponentType,ToolEntry> toolEntryToComponentType;
+
+	private Map<ConnectionType,ToolEntry> toolEntryToConnectionType;
 
 	/**
 	 * this sets the zoom initially to 100%
@@ -58,6 +67,8 @@ public class CSEditor extends CSAbstractEditor {
 	public CSEditor() {
 		this.zoomLevel = 1.0;
 		this.viewLocation = null;
+		this.toolEntryToComponentType = new HashMap<>();
+		this.toolEntryToConnectionType = new HashMap<>();
 	}
 
 	/**
@@ -90,50 +101,60 @@ public class CSEditor extends CSAbstractEditor {
 				.getImageDescriptor("/icons/buttons/controlstructure/controller_32.png"); //$NON-NLS-1$
 		ImageDescriptor imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/controller_40.png"); //$NON-NLS-1$
-		componentElements.add(new CombinedTemplateCreationEntry(
+		ToolEntry entry =new CombinedTemplateCreationEntry(
 				Messages.Controller, Messages.CreateController,
 				ComponentType.CONTROLLER, new CSModelCreationFactory(
 						ComponentType.CONTROLLER, this.getModelInterface()),
-				imgDesc, imgDescLarge));
+				imgDesc, imgDescLarge);
+		componentElements.add(entry);
+		this.toolEntryToComponentType.put(ComponentType.CONTROLLER, entry);
 
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/actuator_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/actuator_40.png"); //$NON-NLS-1$
-		componentElements.add(new CombinedTemplateCreationEntry(
+		entry = new CombinedTemplateCreationEntry(
 				Messages.Actuator, Messages.CreateActuator,
 				ComponentType.ACTUATOR, new CSModelCreationFactory(
 						ComponentType.ACTUATOR, this.getModelInterface()), imgDesc,
-				imgDescLarge));
+				imgDescLarge);
+		componentElements.add(entry);
+		this.toolEntryToComponentType.put(ComponentType.ACTUATOR, entry);
 
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/process_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/process_40.png"); //$NON-NLS-1$
-		componentElements.add(new CombinedTemplateCreationEntry(
+		entry = new CombinedTemplateCreationEntry(
 				Messages.ControlledProcess, Messages.CreateControlledProcess,
 				ComponentType.CONTROLLED_PROCESS, new CSModelCreationFactory(
 						ComponentType.CONTROLLED_PROCESS, this.getModelInterface()),
-				imgDesc, imgDescLarge));
+				imgDesc, imgDescLarge);
+		componentElements.add(entry);
+		this.toolEntryToComponentType.put(ComponentType.CONTROLLED_PROCESS, entry);
 
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/sensor_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/sensor_40.png"); //$NON-NLS-1$
-		componentElements.add(new CombinedTemplateCreationEntry(
+		entry = new CombinedTemplateCreationEntry(
 				Messages.Sensor, Messages.CreateSensor, ComponentType.SENSOR,
 				new CSModelCreationFactory(ComponentType.SENSOR,
-						this.getModelInterface()), imgDesc, imgDescLarge));
+						this.getModelInterface()), imgDesc, imgDescLarge);
+		componentElements.add(entry);
+		this.toolEntryToComponentType.put(ComponentType.SENSOR, entry);
 
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
-		componentElements.add(new CombinedTemplateCreationEntry(
+		entry = new CombinedTemplateCreationEntry(
 				Messages.ControlAction, Messages.CreateControlAction,
 				ComponentType.CONTROLACTION, new CSModelCreationFactory(
 						ComponentType.CONTROLACTION, this.getModelInterface()),
-				imgDesc, imgDescLarge));
+				imgDesc, imgDescLarge);
+		componentElements.add(entry);
+		this.toolEntryToComponentType.put(ComponentType.CONTROLACTION, entry);
 
 		root.add(separator);
 		PaletteDrawer connectionElements = new PaletteDrawer(
@@ -144,18 +165,23 @@ public class CSEditor extends CSAbstractEditor {
 				.getImageDescriptor("/icons/buttons/controlstructure/arrow_simple_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/arrow_simple_40.png"); //$NON-NLS-1$
-		connectionElements.add(new ConnectionCreationToolEntry(Messages.Arrow,
+		entry = new ConnectionCreationToolEntry(Messages.Arrow,
 				Messages.CreateConnections, new ConnectionCreationFactory(
-						ConnectionType.ARROW_SIMPLE), imgDesc, imgDescLarge));
+						ConnectionType.ARROW_SIMPLE), imgDesc, imgDescLarge);
+		connectionElements.add(entry);
+		this.toolEntryToConnectionType.put(ConnectionType.ARROW_SIMPLE, entry);
 
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/arrow_dashed_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/arrow_dashed_40.png"); //$NON-NLS-1$
-		connectionElements.add(new ConnectionCreationToolEntry(
+		entry = new ConnectionCreationToolEntry(
 				Messages.DashedArrows, Messages.CreateConnections,
 				new ConnectionCreationFactory(ConnectionType.ARROW_DASHED),
-				imgDesc, imgDescLarge));
+				imgDesc, imgDescLarge);
+		connectionElements.add(entry);
+
+		this.toolEntryToConnectionType.put(ConnectionType.ARROW_DASHED, entry);
 
 		root.add(separator);
 		PaletteDrawer otherElements = new PaletteDrawer(Messages.Others);
@@ -164,23 +190,36 @@ public class CSEditor extends CSAbstractEditor {
 				.getImageDescriptor("/icons/buttons/controlstructure/text_box_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/text_box_40.png"); //$NON-NLS-1$
-		otherElements.add(new CombinedTemplateCreationEntry(Messages.TextBox,
+		entry = new CombinedTemplateCreationEntry(Messages.TextBox,
 				Messages.CreateTextBox, ComponentType.TEXTFIELD,
 				new CSModelCreationFactory(ComponentType.TEXTFIELD,
-						this.getModelInterface()), imgDesc, imgDescLarge));
+						this.getModelInterface()), imgDesc, imgDescLarge);
+		otherElements.add(entry);
+		this.toolEntryToComponentType.put(ComponentType.TEXTFIELD, entry);
 		
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_40.png"); //$NON-NLS-1$
-		otherElements.add(new CombinedTemplateCreationEntry(Messages.DashedBox,
+		entry = new CombinedTemplateCreationEntry(Messages.DashedBox,
 				Messages.CreateDashedBox, ComponentType.DASHEDBOX,
 				new CSModelCreationFactory(ComponentType.DASHEDBOX,
-						this.getModelInterface()), imgDesc, imgDescLarge));
+						this.getModelInterface()), imgDesc, imgDescLarge);
+		otherElements.add(entry);
+		this.toolEntryToComponentType.put(ComponentType.DASHEDBOX, entry);
 
 		return root;
 	}
 
+	public void changeActiveTool(String activeTool){
+		for(ComponentType t : ComponentType.values()){
+			
+		}
+			
+		for(ConnectionType con: ConnectionType.values()){
+			
+		}
+	}
 	@Override
 	public String getTitle() {
 		return Messages.ControlStructure;

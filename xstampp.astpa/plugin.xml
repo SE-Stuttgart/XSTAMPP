@@ -437,6 +437,16 @@
             id="astpa.command.load"
             name="Load">
       </command>
+      <command
+            defaultHandler="xstampp.astpa.controlstructure.controller.commands.OpenNewTool"
+            id="xstampp.astpa.cseditor.changeTool"
+            name="Switch Tool">
+         <commandParameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="name"
+               optional="true">
+         </commandParameter>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -475,6 +485,16 @@
             <parameter
                   name="xstampp.command.preferencePage"
                   value="xstampp.astpa.preferencepage.cs">
+            </parameter>
+         </command>
+         <command
+               commandId="xstampp.astpa.cseditor.changeTool"
+               icon="icons/buttons/controlstructure/arrow_simple_32.png"
+               label="new Connection.."
+               style="push">
+            <parameter
+                  name="xstampp.astpa.cseditor.toolconstant"
+                  value="ARROW_SIMPLE">
             </parameter>
          </command>
       </menuContribution>
