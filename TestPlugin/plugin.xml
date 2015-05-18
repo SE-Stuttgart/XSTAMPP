@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Sample Editor"
+            icon="icons/sample.gif"
+            class="testplugin.editors.TestEditor"
+            id="testplugin.editors.editor">
+      </editor>
+   </extension>
+   <extension
+         point="xstampp.extension.steppedProcess">
+      <process
+            command="TestPlugin.load"
+            extension="txt"
+            icon="icons/sample.gif"
+            id="TestPlugin.process1"
+            name="TestPlugin.process1">
+         <category
+               icon="icons/sample.gif"
+               id="TestPlugin.category1"
+               name="Test Category">
+            <step
+                  defaultWizardId="null"
+                  editorId="testplugin.editors.editor"
+                  icon="icons/sample.gif"
+                  id="step1"
+                  name="Test Step">
+            </step>
+         </category>
+      </process>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="testplugin.commands.Load"
+            id="TestPlugin.load"
+            name="name">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="testplugin.wizard.NewWizard"
+            finalPerspective="xstampp.defaultPerspective"
+            id="TestPlugin.wizard2"
+            name="name"
+            project="true">
+      </wizard>
+   </extension>
+
+</plugin>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TestPlugin
+Bundle-SymbolicName: TestPlugin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: testplugin.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ xstampp;bundle-version="1.0.1",
+ xstampp.extension
+Bundle-ActivationPolicy: lazy
