@@ -188,6 +188,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * displayed in
 	 */
 	public CSAbstractEditor() {
+		
 		this.setEditDomain(this);
 		this.asExport=false;
 	}
@@ -223,7 +224,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				this.getSite().getPage(), this.getPaletteViewerProvider(),
 				this.getPalettePreferences());
 		this.splitter.setLayoutData(data);
-
 		this.initializeActionRegistry();
 		this.createGraphicalViewer(this.splitter);
 		this.splitter.setGraphicalControl(this.getGraphicalControl());
@@ -238,6 +238,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	protected void createGraphicalViewer(Composite parent) {
 
 		GraphicalViewer viewer = new ScrollingGraphicalViewer();
+		viewer.setKeyHandler(new KeyHandler());
 		this.setGraphicalViewer(viewer);
 		viewer.setProperty(STEP_EDITOR, this.getId());
 		viewer.setProperty(IS_DECORATED, this.decoSwitch.getSelection());
@@ -351,21 +352,20 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		// keyboard shortcuts
 		KeyHandler keyHandler = new KeyHandler();
 
-		keyHandler.put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY,
+		viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY,
 				0),
 				this.getActionRegistry()
 						.getAction(ActionFactory.DELETE.getId()));
 
-		keyHandler.put(KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0), this
+		viewer.getKeyHandler().put(KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0), this
 				.getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
 
-		keyHandler.put(KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0), this
+		viewer.getKeyHandler().put(KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0), this
 				.getActionRegistry().getAction(GEFActionConstants.ZOOM_OUT));
 
 		viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.CONTROL),
 				MouseWheelZoomHandler.SINGLETON);
 
-		viewer.setKeyHandler(keyHandler);
 
 		ContextMenuProvider contextProvider = new CSContextMenuProvider(viewer,
 				this.getActionRegistry());
@@ -675,15 +675,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.graphicalViewer = viewer;
 	}
 
-	/**
-	 * This returns the viewer of this editor, the graphical viewer is a
-	 * displays a canvas object on which alll the content of this editor is
-	 * drawn
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return The viewer which represents the Editor content
-	 */
+	
+	@Override
 	public GraphicalViewer getGraphicalViewer() {
 		return this.graphicalViewer;
 	}
@@ -899,7 +892,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.setModelInterface((IControlStructureEditorDataModel) dataInterface);
 		this.getModelInterface().addObserver(this);
 
-		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
+//		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 	}
 
 	@Override
@@ -1090,7 +1083,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			RootEditPart root = (RootEditPart) this.getGraphicalViewer()
 					.getContents();
 			root.getFigure().setDeco(deco);
-			root.setAnchorsGrid(deco);
 			root.refresh();
 		}
 		this.decoSwitch.setSelection(deco);

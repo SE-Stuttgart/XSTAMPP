@@ -158,11 +158,14 @@ public class RootEditPart extends CSAbstractEditPart {
 	 * Delete all drawn anchors on component
 	 * 
 	 * @author Aliaksei Babkovich
+	 * @param mode TODO
 	 * 
 	 */
-	public void setAnchorsGrid(boolean deco) {
-		if(!deco){
+	public void setAnchorsGrid(boolean mode) {
+		if(!mode){
 			((RootFigure) this.figure).removeAnchorsGrid();
+		}else{
+			addAnchorsGrid();
 		}
 	}
 }

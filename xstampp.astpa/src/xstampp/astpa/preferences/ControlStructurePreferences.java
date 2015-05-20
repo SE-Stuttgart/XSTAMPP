@@ -11,10 +11,15 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FontDialog;
+import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.util.CSConnectionModeProvider;
+import xstampp.ui.menu.file.commands.CommandState;
 
 
 /**
@@ -77,7 +82,7 @@ implements IWorkbenchPreferencePage {
 				this.getFieldEditorParent());
 		this.addField(this.CSSensorDeco);
 		
-		this.ConnectorSwitch = new BooleanFieldEditor(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, "Connection mode",
+		this.ConnectorSwitch = new BooleanFieldEditor(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, "Activate manual connection mode",
 						this.getFieldEditorParent());
 		this.addField(this.ConnectorSwitch);
 	}

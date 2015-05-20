@@ -15,14 +15,21 @@ package xstampp.ui.menu.file.commands;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISources;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.interfaces.ITextEditor;
+import xstampp.ui.navigation.IProjectSelection;
+import xstampp.ui.navigation.ProjectExplorer;
 
 /**
  * Class that stores whether the save menu should be enabled or not
@@ -30,7 +37,7 @@ import xstampp.ui.editors.interfaces.ITextEditor;
  * @author Fabian Toth
  * 
  */
-public class CommandState extends AbstractSourceProvider implements IPartListener{
+public class CommandState extends AbstractSourceProvider implements IPartListener, ISelectionChangedListener{
 
 	/**
 	 * The id of the state
@@ -66,7 +73,7 @@ public class CommandState extends AbstractSourceProvider implements IPartListene
 	}
 
 	private static State curState = State.DISABLED;
-
+ 
 	@Override
 	public void dispose() {
 		// Nothing to do here
@@ -79,7 +86,7 @@ public class CommandState extends AbstractSourceProvider implements IPartListene
 
 	@Override
 	public Map<String, String> getCurrentState() {
-		Map<String, String> map = new HashMap<>(1);
+		Map<String, String> map = new HashMap<>();
 		if ((PlatformUI.getWorkbench() == null)
 				|| (PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null)
 				|| (PlatformUI.getWorkbench().getActiveWorkbenchWindow()
@@ -116,6 +123,10 @@ public class CommandState extends AbstractSourceProvider implements IPartListene
 		if(PlatformUI.getWorkbench() != null){
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
 		}
+		IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("astpa.explorer");
+		if(view instanceof ProjectExplorer){
+			((ProjectExplorer) view).addSelectionChangedListener(this);
+		}
 	}
 
 	@Override
@@ -149,6 +160,20 @@ public class CommandState extends AbstractSourceProvider implements IPartListene
 	@Override
 	public void partOpened(IWorkbenchPart part) {
 		// not used by this implementation
+		
+	}
+
+	@Override
+	public void selectionChanged(SelectionChangedEvent arg0) {
+		if(arg0.getSelection() instanceof IProjectSelection){
+			UUID id = ((IProjectSelection) arg0.getSelection()).getProjectId();
+			if(ProjectManager.getContainerInstance().getUnsavedChanges(id)){
+				this.fireSourceChanged(ISources.WORKBENCH, TEXT_STATE,S_ENABLED);
+				
+			}else{
+				this.fireSourceChanged(ISources.WORKBENCH, TEXT_STATE,S_DISABLED);
+			}
+		}
 		
 	}
 

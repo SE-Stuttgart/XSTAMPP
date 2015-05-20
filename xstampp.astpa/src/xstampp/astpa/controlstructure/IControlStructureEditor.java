@@ -16,6 +16,7 @@ package xstampp.astpa.controlstructure;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.draw2d.Viewport;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.palette.PaletteListener;
@@ -89,5 +90,15 @@ public interface IControlStructureEditor extends CommandStackListener,
 	 * @param view
 	 */
 	void setViewport(Viewport view);
-
+	
+	/**
+	 * This returns the viewer of this editor, the graphical viewer is a
+	 * displays a canvas object on which alll the content of this editor is
+	 * drawn
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @return The viewer which represents the Editor content
+	 */
+	public GraphicalViewer getGraphicalViewer();
 }

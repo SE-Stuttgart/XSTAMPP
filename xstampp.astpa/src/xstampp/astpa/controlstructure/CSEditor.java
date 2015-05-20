@@ -19,6 +19,7 @@ import java.util.Map;
 import messages.Messages;
 
 import org.eclipse.draw2d.Viewport;
+import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
@@ -27,13 +28,21 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.AbstractAction;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.internal.baseadaptor.StateManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.ui.PlatformUI;
+import org.w3c.dom.views.AbstractView;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * The Graphical Editor is responsible for creating the manipulatable content of
@@ -54,10 +63,22 @@ public class CSEditor extends CSAbstractEditor {
 	private double zoomLevel;
 	private Viewport viewLocation;
 	private ToolEntry simpleConnectionEntry;
-	private Map<ComponentType,ToolEntry> toolEntryToComponentType;
+	private Map<Object,ToolEntry> toolEntryToComponentType;
 
-	private Map<ConnectionType,ToolEntry> toolEntryToConnectionType;
 
+	private class OpenAction extends Action{
+		private ToolEntry entry;
+
+		public OpenAction(ToolEntry entry) {
+			this.entry = entry;
+			// TODO Auto-generated constructor stub
+		}
+		
+		@Override
+		public void run() {
+			getEditDomain().getPaletteViewer().setActiveTool(this.entry);
+		}
+	}
 	/**
 	 * this sets the zoom initially to 100%
 	 * 
@@ -68,28 +89,28 @@ public class CSEditor extends CSAbstractEditor {
 		this.zoomLevel = 1.0;
 		this.viewLocation = null;
 		this.toolEntryToComponentType = new HashMap<>();
-		this.toolEntryToConnectionType = new HashMap<>();
 	}
 
 	/**
 	 * creates fly out palette with tools
 	 * 
 	 * @author Lukas Balzer, Aliaksei Babkovich
+	 * @return 
 	 */
 	@Override
 	public PaletteRoot getPaletteRoot() {
 		PaletteRoot root = new PaletteRoot();
-
 		PaletteDrawer manipGroup = new PaletteDrawer(
 				Messages.ManipulationObjects);
 		root.add(manipGroup);
-
-		PanningSelectionToolEntry selectionToolEntry = new PanningSelectionToolEntry();
-		selectionToolEntry.setDescription(Messages.SpacePlusMouseTo);
-		manipGroup.add(selectionToolEntry);
-		manipGroup.add(new MarqueeToolEntry());
-
-		root.setDefaultEntry(selectionToolEntry);
+		ToolEntry entry = new PanningSelectionToolEntry();
+		manipGroup.add(entry);
+		this.toolEntryToComponentType.put("SELECT", entry);
+		root.setDefaultEntry(entry);
+		
+		entry = new MarqueeToolEntry();
+		manipGroup.add(entry);
+		this.toolEntryToComponentType.put("MARQUEE", entry);
 
 		PaletteSeparator separator = new PaletteSeparator();
 		root.add(separator);
@@ -101,8 +122,8 @@ public class CSEditor extends CSAbstractEditor {
 				.getImageDescriptor("/icons/buttons/controlstructure/controller_32.png"); //$NON-NLS-1$
 		ImageDescriptor imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/controller_40.png"); //$NON-NLS-1$
-		ToolEntry entry =new CombinedTemplateCreationEntry(
-				Messages.Controller, Messages.CreateController,
+		entry =new CombinedTemplateCreationEntry(
+				Messages.Controller + "", Messages.CreateController,
 				ComponentType.CONTROLLER, new CSModelCreationFactory(
 						ComponentType.CONTROLLER, this.getModelInterface()),
 				imgDesc, imgDescLarge);
@@ -132,7 +153,7 @@ public class CSEditor extends CSAbstractEditor {
 				imgDesc, imgDescLarge);
 		componentElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.CONTROLLED_PROCESS, entry);
-
+		
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/sensor_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
@@ -169,7 +190,7 @@ public class CSEditor extends CSAbstractEditor {
 				Messages.CreateConnections, new ConnectionCreationFactory(
 						ConnectionType.ARROW_SIMPLE), imgDesc, imgDescLarge);
 		connectionElements.add(entry);
-		this.toolEntryToConnectionType.put(ConnectionType.ARROW_SIMPLE, entry);
+		this.toolEntryToComponentType.put(ConnectionType.ARROW_SIMPLE, entry);
 
 		imgDesc = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/arrow_dashed_32.png"); //$NON-NLS-1$
@@ -181,7 +202,7 @@ public class CSEditor extends CSAbstractEditor {
 				imgDesc, imgDescLarge);
 		connectionElements.add(entry);
 
-		this.toolEntryToConnectionType.put(ConnectionType.ARROW_DASHED, entry);
+		this.toolEntryToComponentType.put(ConnectionType.ARROW_DASHED, entry);
 
 		root.add(separator);
 		PaletteDrawer otherElements = new PaletteDrawer(Messages.Others);
@@ -212,14 +233,26 @@ public class CSEditor extends CSAbstractEditor {
 	}
 
 	public void changeActiveTool(String activeTool){
-		for(ComponentType t : ComponentType.values()){
-			
+		if(this.toolEntryToComponentType.containsKey(activeTool)){
+			this.getEditDomain().getPaletteViewer().setActiveTool(this.toolEntryToComponentType.get(activeTool));
+			return;
+		}
+		for(ComponentType type : ComponentType.values()){
+			if(type.toString().equals(activeTool)){
+				this.getEditDomain().getPaletteViewer().setActiveTool(this.toolEntryToComponentType.get(type));
+				return;
+			}
 		}
 			
-		for(ConnectionType con: ConnectionType.values()){
-			
+		for(ConnectionType type: ConnectionType.values()){
+			if(type.toString().equals(activeTool)){
+				this.getEditDomain().getPaletteViewer().setActiveTool(this.toolEntryToComponentType.get(type));
+				return;
+			}
 		}
+		ProjectManager.getLOGGER().debug("there is no tool registered for " + activeTool + " in " + ID);
 	}
+	
 	@Override
 	public String getTitle() {
 		return Messages.ControlStructure;
