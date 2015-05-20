@@ -88,6 +88,8 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
 	@Override
 	public void addHighlighter(Point ref) {
+
+		this.translateToRelative(ref);
 		int width = RootFigure.ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
 		int offset = (width / 2);
 		if (this.highlighter == null) {

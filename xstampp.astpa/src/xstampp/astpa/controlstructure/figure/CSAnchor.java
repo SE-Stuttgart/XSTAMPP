@@ -78,8 +78,8 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 		}else{
 			this.setAnchorFactor(this.calcAnchorNr());
 		}
+		
 		this.calcReferencePoint();
-//		this.getOwner().translateToRelative(this.referencePoint);
 		((CSFigure) this.getOwner()).addHighlighter(this.referencePoint);
 	}
 
@@ -96,6 +96,7 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	 * 			is requested
 	 */
 	private void calulateAnchorFac(Point ref) {
+		this.getOwner().translateToRelative(ref);
 		ref.performTranslate(-this.getOwner().getBounds().x, -this.getOwner().getBounds().y);
 		
 		double m = this.getOwner().getBounds().preciseHeight() / this.getOwner().getBounds().preciseWidth();
