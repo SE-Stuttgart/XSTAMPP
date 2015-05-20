@@ -177,6 +177,29 @@
                   commandId="org.eclipse.ui.window.resetPerspective"
                   style="push">
             </command>
+            <menu
+                  label="Navigation">
+               <command
+                     commandId="org.eclipse.ui.window.nextView"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ui.window.nextEditor"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ui.window.switchToEditor"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ui.window.previousView"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ui.window.previousEditor"
+                     style="push">
+               </command>
+            </menu>
          </menu>
          <menu
                id="helpMenu"
@@ -643,6 +666,42 @@
             id="xstampp.expand"
             value="True">
       </parameter>
+   </key>
+   <key
+         commandId="astpa.command.openStep"
+         contextId="org.eclipse.ui.contexts.window"
+         schemeId="bindingscheme"
+         sequence="CR">
+   </key>
+   <key
+         commandId="org.eclipse.ui.window.nextView"
+         contextId="org.eclipse.ui.contexts.window"
+         schemeId="bindingscheme"
+         sequence="M1+F7">
+   </key>
+   <key
+         commandId="org.eclipse.ui.window.nextEditor"
+         contextId="org.eclipse.ui.contexts.window"
+         schemeId="bindingscheme"
+         sequence="M1+F6">
+   </key>
+   <key
+         commandId="org.eclipse.ui.window.previousEditor"
+         contextId="org.eclipse.ui.contexts.window"
+         schemeId="bindingscheme"
+         sequence="M1+Shift+F6">
+   </key>
+   <key
+         commandId="org.eclipse.ui.window.previousView"
+         contextId="org.eclipse.ui.contexts.window"
+         schemeId="bindingscheme"
+         sequence="M1+SHIFT+F7">
+   </key>
+   <key
+         commandId="org.eclipse.ui.window.switchToEditor"
+         contextId="org.eclipse.ui.contexts.window"
+         schemeId="bindingscheme"
+         sequence="M1+SHIFT+E">
    </key>
 </extension>
 <extension point="org.eclipse.ui.preferencePages">

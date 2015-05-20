@@ -447,6 +447,11 @@
                optional="true">
          </commandParameter>
       </command>
+      <command
+            defaultHandler="xstampp.astpa.util.commands.ConnectionPreferenceHandler"
+            id="xstampp.astpa.controlstructure.connectionmode"
+            name="name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -460,6 +465,15 @@
             </control>
             <control
                   class="xstampp.astpa.util.EditorContribution">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeEditor">
+                     <instanceof
+                           value="xstampp.astpa.controlstructure.IControlStructureEditor">
+                     </instanceof>
+                  </with>
+               </visibleWhen>
             </control>
             <control
                   class="xstampp.util.SeperatorContribution">
@@ -489,13 +503,145 @@
          </command>
          <command
                commandId="xstampp.astpa.cseditor.changeTool"
-               icon="icons/buttons/controlstructure/arrow_simple_32.png"
-               label="new Connection.."
+               label="Select"
                style="push">
             <parameter
                   name="xstampp.astpa.cseditor.toolconstant"
-                  value="ARROW_SIMPLE">
+                  value="SELECT">
             </parameter>
+         </command>
+         <command
+               commandId="xstampp.astpa.cseditor.changeTool"
+               label="Marquee"
+               style="push">
+            <parameter
+                  name="xstampp.astpa.cseditor.toolconstant"
+                  value="MARQUEE">
+            </parameter>
+         </command>
+         <menu
+               label="Connections">
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/arrow_simple_16.png"
+                  label="new Connection.."
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="ARROW_SIMPLE">
+               </parameter>
+            </command>
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/arrow_dashed_16.png"
+                  label="new dashed Connection.."
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="ARROW_DASHED">
+               </parameter>
+            </command>
+         </menu>
+         <menu
+               label="Components">
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/controller_16.png"
+                  label="Controller"
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="CONTROLLER">
+               </parameter>
+            </command>
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/actuator_16.png"
+                  label="Actuator"
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="ACTUATOR">
+               </parameter>
+            </command>
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/process_16.png"
+                  label="Controlled Process"
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="CONTROLLED_PROCESS">
+               </parameter>
+            </command>
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/sensor_16.png"
+                  label="Sensor"
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="SENSOR">
+               </parameter>
+            </command>
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/ControlAction_16.png"
+                  label="Control Action"
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="CONTROLACTION">
+               </parameter>
+            </command>
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/text_box_16.png"
+                  label="Text Box"
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="TEXTFIELD">
+               </parameter>
+            </command>
+            <command
+                  commandId="xstampp.astpa.cseditor.changeTool"
+                  icon="icons/buttons/controlstructure/dashed_box_16.png"
+                  label="Dashed Box"
+                  style="push">
+               <parameter
+                     name="xstampp.astpa.cseditor.toolconstant"
+                     value="DASHEDBOX">
+               </parameter>
+            </command>
+         </menu>
+         <command
+               commandId="xstampp.astpa.controlstructure.connectionmode"
+               label="Connection Mode: Manual (switch to Snap-To)"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="xstampp.astpa.connectionMode">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="xstampp.astpa.controlstructure.connectionmode"
+               label="Connection Mode: Snap-To (switch to manual)"
+               tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="xstampp.astpa.connectionMode">
+                  <equals
+                        value="false">
+                  </equals>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution
@@ -505,6 +651,15 @@
                id="xstampp.astpa.toolbar1">
             <control
                   class="xstampp.astpa.util.TextToolbarContribution">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeEditor">
+                     <instanceof
+                           value="xstampp.ui.editors.interfaces.ITextEditor">
+                     </instanceof>
+                  </with>
+               </visibleWhen>
             </control>
          </toolbar>
       </menuContribution>
@@ -573,6 +728,126 @@
             id="xstampp.astpa.wizard1"
             name="name">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="xstampp.astpa.key1">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+1">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="SELECT">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+2">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="MARQUEE">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+3">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="CONTROLLER">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+4">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="ACTUATOR">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+5">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="CONTROLLED_PROCESS">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+7">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="SENSOR">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+8">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="CONTROLACTION">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+9">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="ARROW_SIMPLE">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+0">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="TEXTFIELD">
+         </parameter>
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <sourceProvider
+            provider="xstampp.astpa.util.CSConnectionModeProvider">
+         <variable
+               name="xstampp.astpa.connectionMode"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
    </extension>
 
 </plugin>
