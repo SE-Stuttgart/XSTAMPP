@@ -798,7 +798,7 @@
             commandId="xstampp.astpa.cseditor.changeTool"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="bindingscheme"
-            sequence="M1+7">
+            sequence="M1+6">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
                name="xstampp.astpa.cseditor.toolconstant"
@@ -809,7 +809,7 @@
             commandId="xstampp.astpa.cseditor.changeTool"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="bindingscheme"
-            sequence="M1+8">
+            sequence="M1+7">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
                name="xstampp.astpa.cseditor.toolconstant"
@@ -820,7 +820,7 @@
             commandId="xstampp.astpa.cseditor.changeTool"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="bindingscheme"
-            sequence="M1+9">
+            sequence="M1+8">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
                name="xstampp.astpa.cseditor.toolconstant"
@@ -831,11 +831,22 @@
             commandId="xstampp.astpa.cseditor.changeTool"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="bindingscheme"
-            sequence="M1+0">
+            sequence="M1+9">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
                name="xstampp.astpa.cseditor.toolconstant"
                value="TEXTFIELD">
+         </parameter>
+      </key>
+      <key
+            commandId="xstampp.astpa.cseditor.changeTool"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="bindingscheme"
+            sequence="M1+0">
+         <parameter
+               id="xstampp.astpa.cseditor.toolconstant"
+               name="xstampp.astpa.cseditor.toolconstant"
+               value="DASHEDBOX">
          </parameter>
       </key>
    </extension>
