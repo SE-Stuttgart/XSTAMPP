@@ -42,7 +42,7 @@ import xstampp.util.STPAPluginUtils;
  * 
  * @author Lukas Balzer
  *
- *@since version 2.0.0
+ *@since version 2.0
  */
 public class TextToolbarContribution extends WorkbenchWindowControlContribution implements 
 										ISelectionListener,IPartListener, ITextEditContribution{
@@ -141,7 +141,6 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
 		this.fontCombo.addSelectionListener(this.listener);
 		this.fontSizeCombo.addSelectionListener(this.listener);
-		setEnabled(false);
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addSelectionListener(this);
 		return comp;
 	}
@@ -580,9 +579,6 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	public void partActivated(IWorkbenchPart part) {
 		if(part instanceof ITextEditor){
 			((ITextEditor) part).setEditToolContributor(this);
-			setEnabled(true);
-		}else{
-			setEnabled(false);
 		}
 	}
 

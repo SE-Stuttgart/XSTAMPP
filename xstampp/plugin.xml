@@ -80,7 +80,7 @@
             fastViewWidthRatio="0.2f"
             id="astpa.explorer"
             name="Project Explorer"
-            restorable="true">
+            restorable="false">
       </view>
    </extension>
    <extension
@@ -255,6 +255,7 @@
             locationURI="popup:astpa.explorer">
          <command
                commandId="astpa.command.openStep"
+               id="xstampp.explorer.menu.open"
                label="Open"
                style="toggle">
             <visibleWhen

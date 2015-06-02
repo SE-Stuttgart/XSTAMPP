@@ -462,6 +462,15 @@
                id="astpa.toolbar2">
             <control
                   class="xstampp.util.SeperatorContribution">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeEditor">
+                     <instanceof
+                           value="xstampp.astpa.controlstructure.IControlStructureEditor">
+                     </instanceof>
+                  </with>
+               </visibleWhen>
             </control>
             <control
                   class="xstampp.astpa.util.EditorContribution">
@@ -477,6 +486,15 @@
             </control>
             <control
                   class="xstampp.util.SeperatorContribution">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeEditor">
+                     <instanceof
+                           value="xstampp.astpa.controlstructure.IControlStructureEditor">
+                     </instanceof>
+                  </with>
+               </visibleWhen>
             </control>
          </toolbar>
       </menuContribution>
@@ -728,14 +746,6 @@
             id="xstampp.astpa.wizard1"
             name="name">
       </wizard>
-   </extension>
-   <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="bindingscheme"
-            sequence="xstampp.astpa.key1">
-      </key>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">

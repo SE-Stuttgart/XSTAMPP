@@ -321,9 +321,9 @@ public class CSExportJob extends Job {
 			
 			// a plain Image is created on which we can draw any graphics
 			CSExportJob.this.srcImage = new Image(null, (int) Math.max(
-					CSExportJob.this.factor * srcRectangle.width,
+					CSExportJob.this.factor * tmpFigure.getBounds().width,
 					1), (int) Math.max(
-					CSExportJob.this.factor * srcRectangle.height,
+					CSExportJob.this.factor * tmpFigure.getBounds().height,
 					1));
 			GC imageGC = new GC(CSExportJob.this.srcImage);
 			Graphics graphics = new SWTGraphics(imageGC);

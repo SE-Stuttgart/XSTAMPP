@@ -50,9 +50,10 @@ Each step can be categoriesed and muliple editors where the Step can be progress
 
    <element name="category">
       <complexType>
-         <sequence>
+         <choice>
+            <element ref="category" minOccurs="1" maxOccurs="unbounded"/>
             <element ref="step" minOccurs="1" maxOccurs="unbounded"/>
-         </sequence>
+         </choice>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
@@ -121,7 +122,7 @@ Each step can be categoriesed and muliple editors where the Step can be progress
          <attribute name="editorId" use="required">
             <annotation>
                <documentation>
-                  each step is handled by a step editor this editor should not be related to any file Extension but should retrieve its information from a IDataModel
+                  each step is handled by a step editor this editor should not be related to any file Extension but should retrieve its information from a IDataModel, if this is the only registered editor it is set as default
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.ui.editors/editor/@id"/>
@@ -134,34 +135,7 @@ Each step can be categoriesed and muliple editors where the Step can be progress
                </restriction>
             </simpleType>
          </attribute>
-      </complexType>
-   </element>
-
-   <element name="stepEditor">
-      <annotation>
-         <documentation>
-            This adds an editor registered in the org.eclipse.ui.editors point to the list of available editors in this step
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.editors/editor/@id"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string" use="default" value="default">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="isDefault" type="boolean" use="default" value="false">
+         <attribute name="default_editor" type="boolean" use="default" value="true">
             <annotation>
                <documentation>
                   

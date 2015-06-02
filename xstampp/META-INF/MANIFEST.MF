@@ -60,5 +60,6 @@ Bundle-ClassPath: .,
  lib/jaxb-impl-2.0.1.jar,
  lib/commons-lang3-3.4.jar
 Import-Package: org.eclipse.emf.common.notify
+Bundle-Vendor: Universität Stuttgart
 
 

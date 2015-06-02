@@ -21,6 +21,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		layout.setEditorAreaVisible(true);
 		layout.addView(
 				"astpa.explorer", IPageLayout.LEFT, 0.2f, layout.getEditorArea()); //$NON-NLS-1$
+		layout.getViewLayout("astpa.explorer").setCloseable(false);
 	}
 
 }

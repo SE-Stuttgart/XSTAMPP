@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -40,6 +41,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -52,20 +54,6 @@ import xstampp.util.STPAPluginUtils;
  */
 public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		Observer, ISelectionProvider {
-
-	private static final String EXTENSION = "extension";
-	private static final String PATH_SEPERATOR="->";
-	private Map<UUID, TreeItem> treeItemsToProjectIDs;
-	private Map<TreeItem, String> stepIdsToTreeItems;
-	private Map<String, IProjectSelection> selectorsToSelectionId;
-	private Tree tree;
-	private Listener listener;
-	private TreeViewer treeViewer;
-	private MenuManager contextMenu;
-	/**
-	 * Interface to communicate with the data model.
-	 */
-
 	/**
 	 * The log4j logger
 	 */
@@ -74,11 +62,21 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 * The ID of this view
 	 */
 	public static final String ID = "astpa.explorer"; //$NON-NLS-1$
+	private static final String MENU_ID = "openWith.menu";
+	private static final String EXTENSION = "extension";
+	private static final String PATH_SEPERATOR="->";
+	private Map<UUID, TreeItem> treeItemsToProjectIDs;
+	private Map<TreeItem, String> stepIdsToTreeItems;
+	private Map<String, IProjectSelection> selectorsToSelectionId;
 	private Map<String, IConfigurationElement> extensions;
-
+	private Map<String, List<IConfigurationElement>> stepEditorsToStepId;
 	private List<ISelectionChangedListener> selectionListener;
-
-
+	private Tree tree;
+	private Listener listener;
+	private TreeViewer treeViewer;
+	private MenuManager contextMenu;
+	private IMenuManager openWithMenu;
+	
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setBackground(null);
@@ -98,8 +96,10 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		Menu context = this.contextMenu.createContextMenu(this.tree);
 		this.tree.setMenu(context);
 		this.getSite().registerContextMenu(this.contextMenu, this.treeViewer);
+		this.openWithMenu = new MenuManager("Open With..",MENU_ID);
 		this.getSite().setSelectionProvider(this);
 		this.listener= new Listener() {
+		
 
 			@Override
 			public void handleEvent(Event event) {
@@ -176,7 +176,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 																getContainerInstance().
 																getProjectExtension(projectID));
 		/**
-		 * The selection id iedentifies each step in the current runtime
+		 * The selection id identifies each step in the current runtime
 		 */
 		String selectionId = projectID.toString();
 		String projectName=projectExt.getAttribute("name") 
@@ -199,33 +199,43 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		//this two for-loops construct the process tree which consists out of 
 		//steps grouped by categorys, each step or category is represented by a treeItem 
 		//which is accosiated with a Step/CategorySelector which handles the linking to the step editor
-		String categoryPath;
 		for (IConfigurationElement categoryExt : projectExt.getChildren()) {
-			selectionId = categoryExt.getAttribute("id") + projectID.toString();
-			categoryPath=projectName + PATH_SEPERATOR + categoryExt.getAttribute("name");
-			TreeItem categoryItem = new TreeItem(projectItem, SWT.BORDER
-					| SWT.MULTI | SWT.V_SCROLL);
-			categoryItem.setText(categoryExt.getAttribute("name"));//$NON-NLS-1$
-			categoryItem.addListener(SWT.SELECTED, this.listener);
-			this.addImage(categoryItem, categoryExt.getAttribute("icon"), pluginID);//$NON-NLS-1$
-			selector = new CategorySelector(categoryItem, projectID);
-			selector.setPathHistory(categoryPath);
-			this.addOrReplaceStep(selectionId, selector, categoryItem);
+			addTreeItem(categoryExt,projectItem,projectName,projectID, pluginID);
+		}
+	}
 
-			for (IConfigurationElement stepExt : categoryExt.getChildren()) {
-
-				selectionId = stepExt.getAttribute("id") + projectID.toString();
-				TreeItem stepItem = new TreeItem(categoryItem, SWT.BORDER
-						| SWT.MULTI | SWT.V_SCROLL);
-				stepItem.addListener(SWT.SELECTED, this.listener);
-				stepItem.setText(stepExt.getAttribute("name"));//$NON-NLS-1$
-				this.addImage(stepItem, stepExt.getAttribute("icon"), pluginID);//$NON-NLS-1$
-				selector = new StepSelector(stepItem, projectID,
-						stepExt.getAttribute("editorId"));
-				((StepSelector)selector).setEditorName(stepExt.getAttribute("name")); //$NON-NLS-1$
-				selector.setPathHistory(categoryPath + PATH_SEPERATOR + stepItem.getText());
-				this.addOrReplaceStep(selectionId, selector, stepItem);
-
+	
+	private void addTreeItem(IConfigurationElement element,
+			TreeItem projectItem, String pathName, UUID projectID, String pluginID) {
+		String name = element.getName();
+		String selectionId = element.getAttribute("id") + projectID.toString();
+		String navigationPath=pathName + PATH_SEPERATOR + element.getAttribute("name");
+		TreeItem subItem = new TreeItem(projectItem, SWT.BORDER
+				| SWT.MULTI | SWT.V_SCROLL);
+		subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
+		subItem.addListener(SWT.SELECTED, this.listener);
+		this.addImage(subItem, element.getAttribute("icon"), pluginID);//$NON-NLS-1$
+		IProjectSelection selector;
+		if(name.equals("step")){
+			selector = new StepSelector(subItem, projectID,
+					element.getAttribute("editorId"), //$NON-NLS-1$
+					element.getAttribute("name")); //$NON-NLS-1$
+			//register all additional stepEditors defined as xstampp.extension.stepEditor extension in any of the plugins
+			if(this.stepEditorsToStepId.containsKey(element.getAttribute("id"))){
+				for(IConfigurationElement e : this.stepEditorsToStepId.get(element.getAttribute("id"))){
+					((StepSelector)selector).addStepEditor(e.getAttribute("editor"), e.getAttribute("name"));
+				}
+			}
+			selector.setPathHistory(navigationPath + PATH_SEPERATOR + subItem.getText());
+			this.contextMenu.addMenuListener((IMenuListener) selector);
+			this.addOrReplaceStep(selectionId, selector, subItem);
+		}else{
+			selector = new CategorySelector(subItem, projectID);
+			selector.setPathHistory(navigationPath);
+			this.addOrReplaceStep(selectionId, selector, subItem);
+	
+			for (IConfigurationElement childExt : element.getChildren()) {
+				addTreeItem(childExt,subItem,navigationPath,projectID, pluginID);
 			}
 		}
 	}
@@ -349,6 +359,14 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	@Override
 	public void menuAboutToShow(IMenuManager manager) {
 		this.setFocus();
+		IContributionItem item = manager.find(MENU_ID);
+		if(item == null){
+			this.openWithMenu.removeAll();
+			for(STPAEditorInput input : ((StepSelector) this.getSelection()).getInputs()){
+				this.openWithMenu.add(input.getActivationAction());
+			}
+			manager.add( this.openWithMenu);
+		}
 		for (ISelectionChangedListener listenerObj : ProjectExplorer.this.selectionListener) {
 			listenerObj.selectionChanged(new SelectionChangedEvent(
 					ProjectExplorer.this, ProjectExplorer.this.getSelection()));
@@ -386,13 +404,26 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 */
 	private void searchExtensions() {
 		this.extensions = new HashMap<>();
-		for (IConfigurationElement extElement : Platform
+		this.stepEditorsToStepId = new HashMap<>();
+		IConfigurationElement[] elements = Platform
 				.getExtensionRegistry()
-				.getConfigurationElementsFor("xstampp.extension.steppedProcess")) { //$NON-NLS-1$
-			String ext = extElement.getAttribute("extension"); //$NON-NLS-1$
-
+				.getConfigurationElementsFor("xstampp.extension.steppedProcess");
+		for (IConfigurationElement extElement : elements) { //$NON-NLS-1$
+			String ext = extElement.getAttribute("extension"); 	//$NON-NLS-1$
 			this.extensions.put(ext, extElement);
 			ProjectExplorer.LOGGER.debug("registered extension: " + ext); //$NON-NLS-1$
+		}
+		for (IConfigurationElement element : Platform
+				.getExtensionRegistry()
+				.getConfigurationElementsFor("xstampp.extension.stepEditors")) { //$NON-NLS-1$
+			String stepId= element.getAttribute("parentStep");
+			if(this.stepEditorsToStepId.containsKey(stepId)){
+				this.stepEditorsToStepId.get(stepId).add(element);
+			}else{
+				List<IConfigurationElement> list = new ArrayList<>();
+				list.add(element);
+				this.stepEditorsToStepId.put(stepId, list);
+			}
 		}
 	}
 

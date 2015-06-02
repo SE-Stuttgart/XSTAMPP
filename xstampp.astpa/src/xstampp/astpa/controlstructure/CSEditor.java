@@ -19,7 +19,6 @@ import java.util.Map;
 import messages.Messages;
 
 import org.eclipse.draw2d.Viewport;
-import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
@@ -29,14 +28,7 @@ import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.AbstractAction;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osgi.internal.baseadaptor.StateManager;
-import org.eclipse.swt.SWT;
-import org.eclipse.ui.PlatformUI;
-import org.w3c.dom.views.AbstractView;
-
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
