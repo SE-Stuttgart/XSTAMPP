@@ -141,13 +141,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
-		
-		if(arg0.equals(this)){
-			((STPAEditorInput)getEditorInput()).activate();
-		}else{
-			((STPAEditorInput)getEditorInput()).deactivate();
-		}
-		
+		// is not used by the implementation
 	}
 
 	@Override
@@ -164,7 +158,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void partDeactivated(IWorkbenchPart arg0) {
-		// is not used by the implementation
+		((STPAEditorInput)getEditorInput()).deactivate();
 		
 	}
 

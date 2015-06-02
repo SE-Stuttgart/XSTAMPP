@@ -2,5 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="steppedProcess" name="steppedProcess" schema="schema/stepedProcess.exsd"/>
+   <extension-point id="stepEditors" name="stepEditors" schema="schema/stepEditors.exsd"/>
 
 </plugin>

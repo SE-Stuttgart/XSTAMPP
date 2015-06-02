@@ -22,12 +22,7 @@ public class OpenStepEditor extends AbstractHandler {
 									getActiveWorkbenchWindow().
 									getActivePage().getSelection("astpa.explorer");
 		if (currentSelection instanceof StepSelector) {
-			try {
-				((StepSelector) currentSelection).getDefaultEditor();
-			} catch (PartInitException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			((StepSelector) currentSelection).openDefaultEditor();
 		}
 		return null;
 	}

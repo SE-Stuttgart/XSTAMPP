@@ -6,6 +6,8 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -14,6 +16,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
@@ -44,7 +47,7 @@ public class STPAEditorInput implements IEditorInput {
 	 * 
 	 * @param projectId
 	 *            the id of the project which is related to this input
-	 * @param editorId {@link StepSelector#getEditorId()}
+	 * @param editorId {@link StepSelector#getDefaultEditorId()}
 	 * 			
 	 * @param refItem {@link StepSelector}
 	 */
@@ -143,10 +146,10 @@ public class STPAEditorInput implements IEditorInput {
 	 * called when the editor handeled by this input is opened 
 	 * updates the workbench and optionally highlightes the related step in the project Explorer
 	 * @author Lukas Balzer
+	 * @throws PartInitException 
 	 *
 	 */
 	public void activate() {
-		
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().
 									setText(Messages.PlatformName + " -" +this.pathHistory);
 		if(!this.store.getBoolean(IPreferenceConstants.USE_NAVIGATION_COLORS)){
@@ -184,6 +187,29 @@ public class STPAEditorInput implements IEditorInput {
 	 */
 	public void setStepItem(TreeItem item) {
 		this.stepItem=item;
+		
+	}
+	
+	public IAction getActivationAction() {
+		return new ActivationAction();
+	}
+	
+	private class ActivationAction extends Action{
+		public ActivationAction() {
+			setText(getStepName());
+		}
+		@Override
+		public void run() {
+			try {
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage()
+				.openEditor(STPAEditorInput.this, STPAEditorInput.this.stepEditorId);
+				activate();
+			} catch (PartInitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 }
