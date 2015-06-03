@@ -360,7 +360,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	public void menuAboutToShow(IMenuManager manager) {
 		this.setFocus();
 		IContributionItem item = manager.find(MENU_ID);
-		if(item == null){
+		if(item == null && this.getSelection() instanceof StepSelector){
 			this.openWithMenu.removeAll();
 			for(STPAEditorInput input : ((StepSelector) this.getSelection()).getInputs()){
 				this.openWithMenu.add(input.getActivationAction());
