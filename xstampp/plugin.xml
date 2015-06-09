@@ -60,7 +60,7 @@
       </perspective>
       <perspective
             class="xstampp.DefaultPerspective"
-            fixed="true"
+            fixed="false"
             id="xstampp.defaultPerspective"
             name="Default Perspective">
       </perspective>
@@ -80,7 +80,7 @@
             fastViewWidthRatio="0.2f"
             id="astpa.explorer"
             name="Project Explorer"
-            restorable="false">
+            restorable="true">
       </view>
    </extension>
    <extension
