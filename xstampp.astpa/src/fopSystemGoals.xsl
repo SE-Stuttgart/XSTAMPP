@@ -5,9 +5,6 @@
 	<!-- author: Lukas Balzer -->
     
     <xsl:import href="ucaTableTemp.xsl"/>
-    <xsl:param name="title.size" select="24"/> 
-    <xsl:param name="table.head.size" select="14"/> 
-    <xsl:param name="text.size" select="12"/> 
     
     <xsl:template match="/*">
     <fo:root>
@@ -22,17 +19,13 @@
 			<fo:page-sequence master-reference="HelloWorld" white-space-collapse="true"> 	
 				<fo:flow flow-name="xsl-region-body">
 					
-					<!-- *************** Unsafe Control Actions *************** -->
+					<!-- *************** Causal Factors-Table *************** -->
 					<fo:block>
-						<fo:block space-after="5pt" page-break-after="avoid">
-                  <xsl:attribute name="font-size"><xsl:value-of select="$title.size" />pt</xsl:attribute>
-                     Unsafe Control Actions
+						<fo:block font-size="24pt" space-after="5pt" page-break-after="avoid">
+							System Goals
 						</fo:block>
-						<!-- Unsafe Control Actions-Table-Template -->
-						<xsl:call-template name="ucaTable">
-                            <xsl:with-param name="varSize" select="$text.size" />
-                            <xsl:with-param name="headSize" select="$table.head.size" />
-                  </xsl:call-template>    
+						<!-- Causal Factors-Table-Template -->
+						<xsl:call-template name="systemGoalsTable"/>
 					</fo:block>
         
         

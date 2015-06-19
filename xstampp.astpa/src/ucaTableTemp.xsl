@@ -42,6 +42,8 @@
 	
 	<!-- ################### Accidents-Table ################### -->
 	<xsl:template name="accidentsTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 		<fo:table border="none" space-after="30pt">
 			<fo:table-column column-number="1" column-width="5%"
 				border-style="none" />
@@ -55,6 +57,7 @@
 				color="#FFFFFF" padding="3px">
 				<xsl:call-template name="headTheme"/>
 				<xsl:call-template name="fontTheme"/>
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">No.</fo:block>
@@ -72,6 +75,7 @@
 			</fo:table-header>
 		
 			<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks whether some accidents are defined -->
 					<xsl:when test="hazacc/accidents/accident">
@@ -81,22 +85,22 @@
 									<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
 								</xsl:if>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block >
 										<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block >
 										<xsl:value-of select="title" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block >
 										<xsl:value-of select="description" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="links" />
 									</fo:block>
 								</fo:table-cell>
@@ -132,6 +136,8 @@
 	
 	<!-- ################### Hazard-Table ################### -->
 	<xsl:template name="hazardTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 	<fo:table border="none" space-after="30pt">
 		<fo:table-column column-number="1" column-width="5%"
 			border-style="none" />
@@ -144,6 +150,7 @@
 		
 		<fo:table-header border="none" background-color="#1A277A"
 			color="#FFFFFF" padding="3px">
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 			<!-- Sets the PDF-Theme-Color -->
 				<xsl:call-template name="headTheme"/>
 				<xsl:call-template name="fontTheme"/>
@@ -164,6 +171,7 @@
 			</fo:table-header>
 		
 			<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks whether some hazards are defined -->
 					<xsl:when test="hazacc/hazards/hazard">
@@ -226,6 +234,8 @@
 	
 	<!-- ################### Safety Constraints Table ################### -->
 	<xsl:template name="safetyConstraintsTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 	<fo:table border="none" space-after="30pt">
 		<fo:table-column column-number="1" column-width="5%"
 			border-style="none" />
@@ -240,6 +250,7 @@
 				<xsl:call-template name="headTheme"/>
 				<xsl:call-template name="fontTheme"/>
 				<fo:table-row>
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">No.</fo:block>
 					</fo:table-cell>
@@ -253,6 +264,7 @@
 			</fo:table-header>
 		
 			<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks whether some Safety Constraints are defined -->
 					<xsl:when test="sds/safetyConstraints/safetyConstraint">
@@ -306,6 +318,8 @@
 	
 	<!-- ################### System Goals Table ################### -->
 	<xsl:template name="systemGoalsTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 	<fo:table border="none" space-after="30pt">
 		<fo:table-column column-number="1" column-width="5%"
 			border-style="none" />
@@ -316,6 +330,7 @@
 		
 		<fo:table-header border="none" background-color="#1A277A"
 			color="#FFFFFF">
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 			<!-- Sets the PDF-Theme-Color -->
 				<xsl:call-template name="headTheme"/>
 				<xsl:call-template name="fontTheme"/>
@@ -333,6 +348,7 @@
 			</fo:table-header>
 		
 			<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks whether some System Goals are defined -->
 					<xsl:when test="sds/systemGoals/systemGoal">
@@ -386,6 +402,8 @@
 	
 	<!-- ################### Design Requirements Table ################### -->
 	<xsl:template name="designRequirementsTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 		<fo:table border="none" space-after="30pt">
 		<fo:table-column column-number="1" column-width="5%"
 		border-style="none" />
@@ -396,6 +414,7 @@
 	
 		<fo:table-header border="none" background-color="#1A277A"
 			color="#FFFFFF">
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 			<!-- Sets the PDF-Theme-Color -->
 			<xsl:call-template name="headTheme" />
 			<xsl:call-template name="fontTheme" />
@@ -413,6 +432,7 @@
 		</fo:table-header>
 	
 		<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 			<xsl:choose>
 				<!-- Checks whether some Design Requirements are defined -->
 				<xsl:when test="sds/designRequirements/designRequirement">
@@ -466,6 +486,8 @@
 	
 	<!-- ################### Control Actions Table ################### -->
 	<xsl:template name="controlActionsTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 		<fo:table border="none" space-after="30pt">
 			<fo:table-column column-number="1" column-width="5%"
 				border-style="none" />
@@ -478,6 +500,7 @@
 					<!-- Sets the PDF-Theme-Color -->
 					<xsl:call-template name="headTheme"/>
 					<xsl:call-template name="fontTheme"/>
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">No.</fo:block>
@@ -492,6 +515,8 @@
 			</fo:table-header>
 		
 			<fo:table-body>
+			
+            <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks whether there are some Control Actions defined -->
 					<xsl:when test="cac/controlactions/controlaction">
@@ -547,6 +572,9 @@
 	
 	<!-- ################### Corresponding Safety Constraints Table ################### -->
 	<xsl:template name="correspondingSafetyConstraintsTable">
+	
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 		<fo:table border="none" space-after="30pt">
 			<fo:table-column column-number="1" column-width="50%"
 				border-style="none" />
@@ -559,10 +587,16 @@
 					<xsl:call-template name="fontTheme"/>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Unsafe Control Actions</fo:block>
+						<fo:block font-weight="bold">
+                     <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+						   Unsafe Control Actions
+						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Resulting Safety Constraints</fo:block>
+						<fo:block font-weight="bold">
+                                 <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+						Resulting Safety Constraints
+						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 			</fo:table-header>
@@ -580,12 +614,14 @@
 										<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
 									</xsl:if>
 									<fo:table-cell padding="3px">
-										<fo:block font-size="12pt">
+										<fo:block>
+										   <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 											<xsl:value-of select="description" />
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell padding="3px">
-										<fo:block font-size="12pt">
+										<fo:block >
+                                 <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 											<xsl:value-of select="correspondingSafetyConstraint/text" />
 										</fo:block>
 									</fo:table-cell>
@@ -613,6 +649,8 @@
 	
 	<!-- ################### Causal Factors Table ################### -->
 	<xsl:template name="causalFactorsTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
 		<fo:table border="none" space-after="30pt">
 			<fo:table-column column-number="1" column-width="20%"
 				border-style="none" />
@@ -641,6 +679,7 @@
 	
 								<fo:table-header border="none" background-color="#1A277A"
 									color="#FFFFFF">
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 									<!-- Sets the PDF-Theme-Color -->
 									<xsl:call-template name="headTheme"/>
 									<xsl:call-template name="fontTheme"/>
@@ -680,6 +719,7 @@
 			</fo:table-header>
 	
 			<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 				<!-- Checks if there are some components for the CausalFactors-Table -->
 					<xsl:when test="controlstructure/component/children/component">

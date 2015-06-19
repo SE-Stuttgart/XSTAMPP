@@ -245,7 +245,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	@Override
 	public void setProjectID(UUID projectID) {
 		super.setProjectID(projectID);
-		this.sampleComp.setProjectID(projectID);
+		if(this.sampleComp != null){
+			this.sampleComp.setProjectID(projectID);
+		}
 	}
 
 }

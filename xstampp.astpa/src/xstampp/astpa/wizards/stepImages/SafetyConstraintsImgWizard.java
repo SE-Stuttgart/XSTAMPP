@@ -5,21 +5,22 @@ import org.eclipse.ui.PlatformUI;
 import messages.Messages;
 import xstampp.astpa.ui.causalfactors.CausalFactorsView;
 import xstampp.astpa.ui.sds.CSCView;
+import xstampp.astpa.ui.sds.SafetyConstraintView;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
 
-public class CSCExportWizard extends AbstractExportWizard {
+public class SafetyConstraintsImgWizard extends AbstractExportWizard {
 
-	public CSCExportWizard() {
-		super(CSCView.ID);
+	public SafetyConstraintsImgWizard() {
+		super(SafetyConstraintView.ID);
 		String[] filters = new String[] { "*.png", "*.jpg", "*.bmp","*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		this.setExportPage(new TableExportPage(filters,
-				Messages.CorrespondingSafetyConstraints));
+				Messages.SafetyConstraints));
 	}
 
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopCorrespondingSafetyConstraints.xsl", Messages.ExportingCSC, false); ////$NON-NLS-1$
+				"/fopSafetyConstraints.xsl", Messages.ExportingPdf, false); ////$NON-NLS-1$
 	}
 }

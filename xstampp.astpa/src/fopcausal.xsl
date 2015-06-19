@@ -5,6 +5,9 @@
 	<!-- author: Lukas Balzer -->
     
     <xsl:import href="ucaTableTemp.xsl"/>
+    <xsl:param name="title.size" select="24"/> 
+    <xsl:param name="table.head.size" select="14"/> 
+    <xsl:param name="text.size" select="12"/> 
     
     <xsl:template match="/*">
     <fo:root>
@@ -21,11 +24,15 @@
 					
 					<!-- *************** Causal Factors-Table *************** -->
 					<fo:block>
-						<fo:block font-size="24pt" space-after="5pt" page-break-after="avoid">
+						<fo:blockspace-after="5pt" page-break-after="avoid">
+                  <xsl:attribute name="font-size"><xsl:value-of select="$title.size" />pt</xsl:attribute>
 							Causal Factors Table
 						</fo:block>
 						<!-- Causal Factors-Table-Template -->
-						<xsl:call-template name="causalFactorsTable"/>
+						<xsl:call-template name="causalFactorsTable">
+                            <xsl:with-param name="varSize" select="$text.size" />
+                            <xsl:with-param name="headSize" select="$table.head.size" />
+                           </xsl:call-template>
 					</fo:block>
         
         

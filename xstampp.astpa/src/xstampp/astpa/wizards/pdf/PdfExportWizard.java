@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package xstampp.astpa.wizards.stepImages;
+package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;

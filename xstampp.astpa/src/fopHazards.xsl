@@ -3,8 +3,10 @@
 <xsl:stylesheet version="1.0" xmlns:fo="http://www.w3.org/1999/XSL/Format"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<!-- author: Lukas Balzer -->
-    
     <xsl:import href="ucaTableTemp.xsl"/>
+    <xsl:param name="title.size" select="24"/> 
+    <xsl:param name="table.head.size" select="14"/> 
+    <xsl:param name="text.size" select="12"/> 
     
     <xsl:template match="/*">
     <fo:root>
@@ -15,17 +17,20 @@
                 <fo:region-body/>                               
             </fo:simple-page-master>
         </fo:layout-master-set>
-        
 			<fo:page-sequence master-reference="HelloWorld" white-space-collapse="true"> 	
 				<fo:flow flow-name="xsl-region-body">
 					
-					<!-- *************** Causal Factors-Table *************** -->
+                  <!-- ################### Hazard-Table ################### -->
 					<fo:block>
-						<fo:block font-size="24pt" space-after="5pt" page-break-after="avoid">
-							Causal Factors Table
-						</fo:block>
-						<!-- Causal Factors-Table-Template -->
-						<xsl:call-template name="correspondingSafetyConstraintsTable"/>
+					<fo:block space-after="5pt" page-break-after="avoid">
+					   <xsl:attribute name="font-size"><xsl:value-of select="$title.size" />pt</xsl:attribute>
+                     Hazzards
+                  </fo:block>
+                  <xsl:call-template name="hazardTable">
+                            <xsl:with-param name="varSize" select="$text.size" />
+                            <xsl:with-param name="headSize" select="$table.head.size" />
+                  </xsl:call-template>    
+                        
 					</fo:block>
         
         
@@ -34,6 +39,7 @@
 			</fo:page-sequence>
         </fo:root>
 	</xsl:template>
+    
     
     
 </xsl:stylesheet>

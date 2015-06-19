@@ -134,8 +134,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 				return false;
 			}
 			Job exportJob = new ExportJob(this.getExportPage().getProjectID(),
-					jobMessage, filePath,mimeType, fopName, this
-							.getExportPage().asOne(), forceCSDeco);
+					jobMessage, filePath,mimeType, fopName, true, forceCSDeco);
 
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
 
