@@ -1,4 +1,4 @@
-package xstampp.util;
+package xstampp.ui.workbench.contributions;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;

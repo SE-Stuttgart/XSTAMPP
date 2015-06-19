@@ -1,4 +1,4 @@
-package xstampp.astpa.util;
+package xstampp.ui.workbench.contributions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,8 +31,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
-import xstampp.astpa.Activator;
-import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
+import xstampp.Activator;
 import xstampp.ui.editors.StyledTextSelection;
 import xstampp.ui.editors.interfaces.ITextEditContribution;
 import xstampp.ui.editors.interfaces.ITextEditor;
@@ -188,7 +187,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.boldControl
 				.setImage(Activator
 						.getImageDescriptor(
-								SystemDescriptionView.getImagePath()
+								getImagePath()
 										+ "/bold.ico").createImage()); //$NON-NLS-1$
 		this.boldControl.setToolTipText(Messages.Bold);
 		this.boldControl.addSelectionListener(new StyleSelectionListener(ITextEditor.BOLD));
@@ -197,7 +196,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.italicControl = new ToolItem(styleToolBar, SWT.CHECK);
 		this.italicControl.setImage(Activator.getImageDescriptor(
 
-		SystemDescriptionView.getImagePath() + "/italic.ico").createImage()); //$NON-NLS-1$
+		getImagePath() + "/italic.ico").createImage()); //$NON-NLS-1$
 
 		this.italicControl.setToolTipText(Messages.Italic);
 		this.italicControl.addSelectionListener(new StyleSelectionListener(ITextEditor.ITALIC));
@@ -206,7 +205,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.underlineControl = new ToolItem(styleToolBar, SWT.CHECK);
 		this.underlineControl.setImage(Activator.getImageDescriptor(
 
-		SystemDescriptionView.getImagePath() + "/underline.ico").createImage()); //$NON-NLS-1$
+		getImagePath() + "/underline.ico").createImage()); //$NON-NLS-1$
 
 		this.underlineControl.setToolTipText(Messages.Underline);
 		this.underlineControl.addSelectionListener(new StyleSelectionListener(ITextEditor.UNDERLINE));
@@ -215,7 +214,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.strikeoutControl = new ToolItem(styleToolBar, SWT.CHECK);
 		this.strikeoutControl.setImage(Activator.getImageDescriptor(
 
-		SystemDescriptionView.getImagePath() + "/strikeout.ico").createImage()); //$NON-NLS-1$
+		getImagePath() + "/strikeout.ico").createImage()); //$NON-NLS-1$
 
 		this.strikeoutControl.setToolTipText(Messages.Strikeout);
 		this.strikeoutControl.addSelectionListener(new StyleSelectionListener(ITextEditor.STRIKEOUT));
@@ -249,7 +248,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.foregroundControl
 
 		.setImage(Activator.getImageDescriptor(
-				SystemDescriptionView.getImagePath()
+				getImagePath()
 						+ "/colors/foreground/textBlack.ico").createImage()); //$NON-NLS-1$
 
 		this.foregroundControl.setToolTipText(Messages.TextForeground);
@@ -279,7 +278,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.backgroundControl
 
 		.setImage(Activator.getImageDescriptor(
-				SystemDescriptionView.getImagePath()
+				getImagePath()
 						+ "/colors/background/textWhite.ico").createImage()); //$NON-NLS-1$
 
 		this.backgroundControl.setToolTipText(Messages.TextBackground);
@@ -342,41 +341,41 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		// set icon
 		if (redShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textRed.ico").createImage()); //$NON-NLS-1$
 		} else if (blackShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textBlack.ico") //$NON-NLS-1$
 					.createImage());
 		} else if (yellowShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textYellow.ico") //$NON-NLS-1$
 					.createImage());
 		} else if (greenShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textGreen.ico") //$NON-NLS-1$
 					.createImage());
 		} else if (purpleShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textPurple.ico") //$NON-NLS-1$
 					.createImage());
 		} else if (whiteShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textWhite.ico") //$NON-NLS-1$
 					.createImage());
 		} else if (blueShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textBlue.ico") //$NON-NLS-1$
 					.createImage());
 		} else if (grayShades.contains(rgb)) {
 			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
+					getImagePath() + imagePath
 							+ "/textGrey.ico") //$NON-NLS-1$
 					.createImage());
 		}
@@ -489,7 +488,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.baselineUpControl = new ToolItem(toolbar, SWT.PUSH);
 		this.baselineUpControl.setImage(Activator.getImageDescriptor(
 	
-		SystemDescriptionView.getImagePath() + "/font_big.ico").createImage()); //$NON-NLS-1$
+		getImagePath() + "/font_big.ico").createImage()); //$NON-NLS-1$
 	
 		this.baselineUpControl.setToolTipText("Increase font size"); //$NON-NLS-1$
 		this.baselineUpControl.addSelectionListener(new SelectionAdapter() {
@@ -505,7 +504,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.baselineDownControl = new ToolItem(toolbar, SWT.PUSH);
 		this.baselineDownControl.setImage(Activator.getImageDescriptor(
 	
-		SystemDescriptionView.getImagePath() + "/font_sml.ico").createImage()); //$NON-NLS-1$
+		getImagePath() + "/font_sml.ico").createImage()); //$NON-NLS-1$
 		this.baselineDownControl.setToolTipText(Messages.DecreaseFontSize);
 		this.baselineDownControl.addSelectionListener(new SelectionAdapter() {
 	
@@ -529,7 +528,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		this.bulletListControl
 				.setImage(Activator
 						.getImageDescriptor(
-								SystemDescriptionView.getImagePath()
+								getImagePath()
 										+ "/para_bul.ico").createImage()); //$NON-NLS-1$
 		this.bulletListControl.setToolTipText(Messages.BulletList);
 		this.bulletListControl.addSelectionListener(new SelectionAdapter() {
@@ -543,6 +542,11 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		});
 	}
 	
+	private String getImagePath() {
+		// TODO Auto-generated method stub
+		return "icons/buttons/systemdescription";
+	}
+
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if(selection instanceof StyledTextSelection){

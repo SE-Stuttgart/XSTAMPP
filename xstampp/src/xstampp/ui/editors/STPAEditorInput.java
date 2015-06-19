@@ -1,6 +1,8 @@
-package xstampp.util;
+package xstampp.ui.editors;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import messages.Messages;
@@ -23,6 +25,7 @@ import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.StepSelector;
+import xstampp.util.STPAPluginUtils;
 
 /**
  * The Standard Editor input for this Platform,
@@ -173,6 +176,7 @@ public class STPAEditorInput implements IEditorInput {
 	 *
 	 */
 	public void deactivate() {
+		
 		this.stepItem.setBackground(null);
 		
 		this.stepItem.getParentItem().setBackground(null);
@@ -200,15 +204,10 @@ public class STPAEditorInput implements IEditorInput {
 		}
 		@Override
 		public void run() {
-			try {
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage()
-				.openEditor(STPAEditorInput.this, STPAEditorInput.this.stepEditorId);
+				Map<String,String> values= new HashMap<>();
+				values.put("xstampp.command.steps.open",STPAEditorInput.this.stepEditorId);
 				activate();
-			} catch (PartInitException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				STPAPluginUtils.executeParaCommand("astpa.command.openStep", values);
 		}
 		
 	}

@@ -1,4 +1,4 @@
-package xstampp.astpa.util;
+package xstampp.ui.workbench.contributions;
 
 import java.beans.PropertyChangeListener;
 

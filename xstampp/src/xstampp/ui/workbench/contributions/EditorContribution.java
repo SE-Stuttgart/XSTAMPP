@@ -1,4 +1,4 @@
-package xstampp.astpa.util;
+package xstampp.ui.workbench.contributions;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -28,8 +28,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
-import xstampp.astpa.Activator;
-import xstampp.astpa.controlstructure.IControlStructureEditor;
+import xstampp.Activator;
 /**
 * This toolbar Contribution provides tools for a graphical editor
 * Editors can interact with this contribution by implementing IZoomContributior<p/>
@@ -74,7 +73,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 		this.decoButton= new Label(comp,SWT.None);
 		this.decoButton.setToolTipText(Messages.DecorationToolTip);
 		this.decoButton.setImage(Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/process_32.png").createImage()); //$NON-NLS-1$
+				.getImageDescriptor("icons/buttons/DecoButton.png").createImage()); //$NON-NLS-1$
 		this.decoButton.setLayoutData(data);
 		this.decoButton.addMouseListener(new MouseAdapter() {
 			
@@ -114,7 +113,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 		});
 		this.zoomOutButton= new Button(comp, SWT.PUSH);
 		this.zoomOutButton.setImage(Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/minus.png").createImage()); //$NON-NLS-1$
+				.getImageDescriptor("/icons/buttons/minus.png").createImage()); //$NON-NLS-1$
 		data= new FormData(20, 18);
 		data.left= new FormAttachment(this.zoomSlider,2);
 		this.zoomOutButton.setLayoutData(data);
@@ -160,7 +159,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 		
 		this.zoomInButton= new Button(comp, SWT.PUSH);
 		this.zoomInButton.setImage(Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/plus.png").createImage()); //$NON-NLS-1$
+				.getImageDescriptor("/icons/buttons/plus.png").createImage()); //$NON-NLS-1$
 		data= new FormData(20, 18);
 		data.left= new FormAttachment(this.zoomLabel,2);
 		this.zoomInButton.setLayoutData(data);
@@ -221,9 +220,9 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	private void setDecoSelection(boolean enabled){
 		this.isDecorated=enabled;
 		if(enabled){
-			this.decoButton.setImage(Activator.getImageDescriptor("icons/buttons/controlstructure/DecoButton_Selected.png").createImage()); //$NON-NLS-1$
+			this.decoButton.setImage(Activator.getImageDescriptor("icons/buttons/DecoButton_Selected.png").createImage()); //$NON-NLS-1$
 		}else{
-			this.decoButton.setImage(Activator.getImageDescriptor("icons/buttons/controlstructure/DecoButton.png").createImage()); //$NON-NLS-1$
+			this.decoButton.setImage(Activator.getImageDescriptor("icons/buttons/DecoButton.png").createImage()); //$NON-NLS-1$
 		}
 	}
 

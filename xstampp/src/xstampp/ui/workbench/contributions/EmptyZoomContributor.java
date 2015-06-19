@@ -1,8 +1,9 @@
-package xstampp.astpa.util;
+package xstampp.ui.workbench.contributions;
 
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.gef.editparts.ZoomManager;
+
 
 /**
  * An empty implementation of IZoomContributor serving as a null-object
