@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -41,7 +42,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.util.STPAEditorInput;
+import xstampp.ui.editors.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -66,10 +67,12 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private static final String EXTENSION = "extension";
 	private static final String PATH_SEPERATOR="->";
 	private Map<UUID, TreeItem> treeItemsToProjectIDs;
-	private Map<TreeItem, String> stepIdsToTreeItems;
+	private Map<TreeItem, String> selectionIdsToTreeItems;
+	private Map<TreeItem, String> perspectiveIdsToTreeItems;
 	private Map<String, IProjectSelection> selectorsToSelectionId;
 	private Map<String, IConfigurationElement> extensions;
 	private Map<String, List<IConfigurationElement>> stepEditorsToStepId;
+	private Map<String, List<IPerspectiveDescriptor>> stepPerspectivesToStepId; 
 	private List<ISelectionChangedListener> selectionListener;
 	private Tree tree;
 	private Listener listener;
@@ -80,10 +83,12 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setBackground(null);
-		this.stepIdsToTreeItems = new HashMap<>();
+		this.selectionIdsToTreeItems = new HashMap<>();
 		this.selectorsToSelectionId = new HashMap<>();
 		this.selectionListener = new ArrayList<>();
 		this.treeItemsToProjectIDs = new HashMap<>();
+		this.perspectiveIdsToTreeItems = new HashMap<>();
+		
 		
 		Composite container = new Composite(parent, SWT.None);
 		container.setBackground(null);
@@ -185,7 +190,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		final TreeItem projectItem = new TreeItem(this.tree, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
 		IProjectSelection selector = new ProjectSelector(projectItem, projectID);
-		this.addOrReplaceStep(selectionId, selector, projectItem);
+		this.addOrReplaceItem(selectionId, selector, projectItem);
 		projectItem.addListener(SWT.MouseDown, this.listener);
 		projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
 		projectItem.setText(ProjectManager.getContainerInstance().getTitle(
@@ -226,13 +231,25 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 					((StepSelector)selector).addStepEditor(e.getAttribute("editor"), e.getAttribute("name"));
 				}
 			}
+			if(this.stepPerspectivesToStepId.containsKey(element.getAttribute("id"))){
+				TreeItem perspectiveItem;
+				for(IPerspectiveDescriptor descriptor : this.stepPerspectivesToStepId.get(element.getAttribute("id"))){
+					perspectiveItem = new TreeItem(subItem, SWT.BORDER
+							| SWT.MULTI | SWT.V_SCROLL);
+					this.perspectiveIdsToTreeItems.put(perspectiveItem, descriptor.getId());
+					perspectiveItem.setText(descriptor.getLabel());//$NON-NLS-1$
+					this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
+					
+				}
+			}
+
 			selector.setPathHistory(navigationPath + PATH_SEPERATOR + subItem.getText());
 			this.contextMenu.addMenuListener((IMenuListener) selector);
-			this.addOrReplaceStep(selectionId, selector, subItem);
+			this.addOrReplaceItem(selectionId, selector, subItem);
 		}else{
 			selector = new CategorySelector(subItem, projectID);
 			selector.setPathHistory(navigationPath);
-			this.addOrReplaceStep(selectionId, selector, subItem);
+			this.addOrReplaceItem(selectionId, selector, subItem);
 	
 			for (IConfigurationElement childExt : element.getChildren()) {
 				addTreeItem(childExt,subItem,navigationPath,projectID, pluginID);
@@ -260,16 +277,16 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 * @param selector
 	 * @param item
 	 */
-	private void addOrReplaceStep(String selectionId,
+	private void addOrReplaceItem(String selectionId,
 			IProjectSelection selector, TreeItem item) {
 		if (this.selectorsToSelectionId.containsKey(selectionId)) {
-			this.stepIdsToTreeItems.remove(this.selectorsToSelectionId.get(selectionId).getItem());
-			this.stepIdsToTreeItems.put(item, selectionId);
+			this.selectionIdsToTreeItems.remove(this.selectorsToSelectionId.get(selectionId).getItem());
+			this.selectionIdsToTreeItems.put(item, selectionId);
 			this.selectorsToSelectionId.get(selectionId).changeItem(item);
 			
 			
 		} else {
-			this.stepIdsToTreeItems.put(item, selectionId);
+			this.selectionIdsToTreeItems.put(item, selectionId);
 			this.selectorsToSelectionId.put(selectionId, selector);
 		}
 	}
@@ -405,6 +422,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private void searchExtensions() {
 		this.extensions = new HashMap<>();
 		this.stepEditorsToStepId = new HashMap<>();
+		this.stepPerspectivesToStepId = new HashMap<>();
 		IConfigurationElement[] elements = Platform
 				.getExtensionRegistry()
 				.getConfigurationElementsFor("xstampp.extension.steppedProcess");
@@ -416,13 +434,29 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		for (IConfigurationElement element : Platform
 				.getExtensionRegistry()
 				.getConfigurationElementsFor("xstampp.extension.stepEditors")) { //$NON-NLS-1$
-			String stepId= element.getAttribute("parentStep");
-			if(this.stepEditorsToStepId.containsKey(stepId)){
+			String confName = element.getName();
+			String stepId= element.getAttribute("parentStep"); //$NON-NLS-1$
+			//the if structure handles both the stepEditor (if cases 1 &2) 
+			//and the stepPerspective extension (if-cases 3 & 4) 
+			//inside the stepEditors point, doing that all extensions  are mapped seperately to the stepIds
+			if(this.stepEditorsToStepId.containsKey(stepId) && confName.equals("stepEditor")){ //$NON-NLS-1$
 				this.stepEditorsToStepId.get(stepId).add(element);
-			}else{
+			}else if(confName.equals("stepEditor")){ //$NON-NLS-1$
 				List<IConfigurationElement> list = new ArrayList<>();
 				list.add(element);
 				this.stepEditorsToStepId.put(stepId, list);
+			}
+			else if(confName.equals("stepPerspective")){ //$NON-NLS-1$
+				String perspective = element.getAttribute("targetId");
+				IPerspectiveDescriptor descriptor= PlatformUI.getWorkbench().getPerspectiveRegistry().
+						findPerspectiveWithId(perspective);
+				if(this.stepPerspectivesToStepId.containsKey(stepId)){
+					this.stepPerspectivesToStepId.get(stepId).add(descriptor);
+				}else{
+					List<IPerspectiveDescriptor> list = new ArrayList<>();
+					list.add(descriptor);
+					this.stepPerspectivesToStepId.put(stepId, list);
+				}
 			}
 		}
 	}
@@ -436,9 +470,16 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	@Override
 	public ISelection getSelection() {
 		if ((this.tree.getSelectionCount() > 0)
-				&& this.stepIdsToTreeItems.containsKey(this.tree.getSelection()[0])) {
-			String stepId = this.stepIdsToTreeItems.get(this.tree.getSelection()[0]);
-			this.selectorsToSelectionId.get(stepId).activate();
+				&& this.selectionIdsToTreeItems.containsKey(this.tree.getSelection()[0])) {
+			TreeItem item = this.tree.getSelection()[0];
+			String stepId = this.selectionIdsToTreeItems.get(this.tree.getSelection()[0]);
+			IProjectSelection selector =this.selectorsToSelectionId.get(stepId);
+			selector.activate();
+			if(this.perspectiveIdsToTreeItems.containsKey(item)){
+				((StepSelector)selector).setOpenWithPerspective(this.perspectiveIdsToTreeItems.get(item));
+			}else if (selector instanceof StepSelector){
+				((StepSelector)selector).setOpenWithPerspective("xstampp.defaultPerspective");//$NON-NLS-1$
+			}
 			return this.selectorsToSelectionId.get(stepId);
 		}
 		return new TreeSelection();
@@ -459,5 +500,4 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 	}
 
-	
 }

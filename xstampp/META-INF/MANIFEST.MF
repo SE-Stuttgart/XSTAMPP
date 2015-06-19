@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.equinox.p2.metadata.repository;bundle-version="1.2.100",
  org.eclipse.core.runtime,
  org.eclipse.core.net;bundle-version="1.2.200",
- org.apache.commons.lang;bundle-version="2.1.0"
+ org.apache.commons.lang;bundle-version="2.1.0",
+ org.eclipse.swt
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.sun.xml.bind.marshaller,
@@ -43,6 +44,7 @@ Export-Package: com.sun.xml.bind.marshaller,
  xstampp.ui.menu.file.commands,
  xstampp.ui.navigation,
  xstampp.ui.welcome,
+ xstampp.ui.workbench.contributions,
  xstampp.util
 Bundle-ClassPath: .,
  lib/log4j-1.2.9.jar,

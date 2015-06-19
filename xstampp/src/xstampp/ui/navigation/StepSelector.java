@@ -3,6 +3,7 @@ package xstampp.ui.navigation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,7 +27,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
 
-import xstampp.util.STPAEditorInput;
+import xstampp.ui.editors.STPAEditorInput;
 
 /**
  * a Selection class which is used to carry information about the project step
@@ -39,6 +40,7 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 	private String editorId;
 	private Map<String,STPAEditorInput> inputs;
 	private boolean showOpenWith;
+	private String openWithPerspective;
 
 	/**
 	 * constructs a step selector which manages the selection and interaction with a 
@@ -57,7 +59,6 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 		STPAEditorInput input = new STPAEditorInput(projectId, editorId, item);
 		input.setStepName(editorName);
 		this.inputs.put(editorId,input);
-		
 		this.showOpenWith = false;
 	}
 	
@@ -91,20 +92,24 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 	 * @author Lukas Balzer
 	 */
 	public void openDefaultEditor() {
-		STPAEditorInput input = this.inputs.values().iterator().next();
+		openEditor(this.getDefaultEditorId());
+	}
+
+	public void openEditor(String id) {
+		STPAEditorInput input = this.inputs.get(id);
 		if (input != null) {
 			try {
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage()
-				.openEditor(getEditorInput(), this.editorId);
+				.openEditor(input, id);
 				input.activate();
 			} catch (PartInitException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
 	}
-
 	@Override
 	public void setPathHistory(String pathHistory) {
 		for(STPAEditorInput input : this.inputs.values()){
@@ -166,5 +171,20 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 	public Collection<STPAEditorInput> getInputs() {
 		return this.inputs.values();
 		
+	}
+
+
+	/**
+	 * @return the openWithPerspective
+	 */
+	public String getOpenWithPerspective() {
+		return this.openWithPerspective;
+	}
+
+	/**
+	 * @param openWithPerspective the openWithPerspective to set
+	 */
+	public void setOpenWithPerspective(String openWithPerspective) {
+		this.openWithPerspective = openWithPerspective;
 	}
 }

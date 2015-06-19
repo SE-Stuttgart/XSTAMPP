@@ -110,13 +110,13 @@ import xstampp.astpa.controlstructure.utilities.CSPalettePreferences;
 import xstampp.astpa.controlstructure.utilities.CSTemplateTransferDropTargetListener;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.astpa.util.IZoomContributor;
 import xstampp.astpa.util.jobs.CSExportJob;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.menu.file.commands.CommandState;
+import xstampp.ui.workbench.contributions.IZoomContributor;
 import xstampp.util.STPAPluginUtils;
 
 /**

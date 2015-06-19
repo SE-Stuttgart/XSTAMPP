@@ -115,7 +115,7 @@
       </category>
       <wizard
             category="astpa.mainCategory"
-            class="xstampp.astpa.wizards.stepImages.PdfExportWizard"
+            class="xstampp.astpa.wizards.pdf.PdfExportWizard"
             icon="icons/Logo_small.png"
             id="astpa.wizardExport"
             name="PDF Report">
@@ -252,6 +252,51 @@
       </category>
       <wizard
             category="astpa.stepImages"
+            class="xstampp.astpa.wizards.stepImages.SystemDecriptionWizard"
+            icon="icons/buttons/navigation/STEP1_1.png"
+            id="astpa.wizard1_1"
+            name="System Decription">
+         <description>
+            Export the description either as picture or as pdf file
+         </description>
+      </wizard>
+      <wizard
+            category="astpa.stepImages"
+            class="xstampp.astpa.wizards.stepImages.AccidentsImgWizard"
+            icon="icons/buttons/navigation/STEP1_2(16).png"
+            id="xstampp.astpa.imageExport."
+            name="Accidents">
+      </wizard>
+      <wizard
+            category="astpa.stepImages"
+            class="xstampp.astpa.wizards.stepImages.HazardsImgWizard"
+            icon="icons/buttons/navigation/STEP1_3(16).png"
+            id="xstampp.astpa.imageExport.1_3"
+            name="Hazards">
+      </wizard>
+      <wizard
+            category="astpa.stepImages"
+            class="xstampp.astpa.wizards.stepImages.SafetyConstraintsImgWizard"
+            icon="icons/buttons/navigation/STEP1_5(16).png"
+            id="xstampp.astpa.imageExport.1_5"
+            name="SafetyConstraints">
+      </wizard>
+      <wizard
+            category="astpa.stepImages"
+            class="xstampp.astpa.wizards.stepImages.SystemGoalsImgWizard"
+            icon="icons/buttons/navigation/STEP1_6(16).png"
+            id="xstampp.astpa.imageExport.1_6"
+            name="SystemGoals">
+      </wizard>
+      <wizard
+            category="astpa.stepImages"
+            class="xstampp.astpa.wizards.stepImages.DesignRequirementsImgWizard"
+            icon="icons/buttons/navigation/STEP1_7(16).png"
+            id="xstampp.astpa.imageExport.1_7"
+            name="DesignRequirements">
+      </wizard>
+      <wizard
+            category="astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.ControlStructureWizard"
             icon="icons/buttons/navigation/STEP1_8.png"
             id="astpa.wizard1_8"
@@ -269,6 +314,9 @@
          <description>
             The Unsafe Control Actions Table as single Export , provided as PNG
          </description>
+         <keywordReference
+               id="xstampp.astpa.keywordReference1">
+         </keywordReference>
       </wizard>
       <wizard
             category="astpa.stepImages"
@@ -278,16 +326,6 @@
             name="ControlStructure With Process Model">
          <description>
             Export the Control Structure with process model as picture
-         </description>
-      </wizard>
-      <wizard
-            category="astpa.stepImages"
-            class="xstampp.astpa.wizards.stepImages.SystemDecriptionWizard"
-            icon="icons/buttons/navigation/STEP1_1.png"
-            id="astpa.wizard1_1"
-            name="System Decription">
-         <description>
-            Export the description either as picture or as pdf file
          </description>
       </wizard>
       <wizard
@@ -303,6 +341,7 @@
       <wizard
             category="astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.CSCExportWizard"
+            icon="icons/buttons/navigation/STEP2_2(16).png"
             id="xstampp.astpa.imageExport.2_2"
             name="Corresponding Safety Constraints">
       </wizard>
@@ -455,49 +494,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
-         <toolbar
-               id="astpa.toolbar2">
-            <control
-                  class="xstampp.util.SeperatorContribution">
-               <visibleWhen
-                     checkEnabled="false">
-                  <with
-                        variable="activeEditor">
-                     <instanceof
-                           value="xstampp.astpa.controlstructure.IControlStructureEditor">
-                     </instanceof>
-                  </with>
-               </visibleWhen>
-            </control>
-            <control
-                  class="xstampp.astpa.util.EditorContribution">
-               <visibleWhen
-                     checkEnabled="false">
-                  <with
-                        variable="activeEditor">
-                     <instanceof
-                           value="xstampp.astpa.controlstructure.IControlStructureEditor">
-                     </instanceof>
-                  </with>
-               </visibleWhen>
-            </control>
-            <control
-                  class="xstampp.util.SeperatorContribution">
-               <visibleWhen
-                     checkEnabled="false">
-                  <with
-                        variable="activeEditor">
-                     <instanceof
-                           value="xstampp.astpa.controlstructure.IControlStructureEditor">
-                     </instanceof>
-                  </with>
-               </visibleWhen>
-            </control>
-         </toolbar>
-      </menuContribution>
       <menuContribution
             allPopups="false"
             locationURI="popup:astpa.steps.step1_8">
@@ -661,25 +657,6 @@
                </with>
             </visibleWhen>
          </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
-         <toolbar
-               id="xstampp.astpa.toolbar1">
-            <control
-                  class="xstampp.astpa.util.TextToolbarContribution">
-               <visibleWhen
-                     checkEnabled="false">
-                  <with
-                        variable="activeEditor">
-                     <instanceof
-                           value="xstampp.ui.editors.interfaces.ITextEditor">
-                     </instanceof>
-                  </with>
-               </visibleWhen>
-            </control>
-         </toolbar>
       </menuContribution>
       <menuContribution
             allPopups="false"

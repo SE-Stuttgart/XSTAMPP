@@ -19,6 +19,7 @@
       <complexType>
          <sequence>
             <element ref="stepEditor" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="stepPerspective" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -73,6 +74,38 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.ui.editors/editor/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="parentStep" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the step for which the editor defined in the equally named attribute is registered as an additional editor that can be opened in the step contextmenu under &quot;Open with..&quot;
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="xstampp.extension.steppedProcess/process/category/step/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="stepPerspective">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="targetId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  an additional perspective which can be registered here and is than suggested by the system as default for this step, in case of more than one registered perspectives the user will be given the choice by pormting a dialoge
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.perspectives/perspective/@id"/>
                </appinfo>
             </annotation>
          </attribute>

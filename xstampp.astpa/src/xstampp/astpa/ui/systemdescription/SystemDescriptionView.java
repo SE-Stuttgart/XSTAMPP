@@ -77,7 +77,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;

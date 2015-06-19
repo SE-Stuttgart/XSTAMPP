@@ -9,11 +9,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -64,6 +67,7 @@ public class ExportJob extends Job {
 	private final String xslName;
 	private final boolean asOne;
 	private final UUID id;
+	private float textSize,titleSize,tableHeadSize;
 
 	private final boolean decorate;
 
@@ -98,6 +102,9 @@ public class ExportJob extends Job {
 		this.fileType = type;
 		this.xslName = xslName;
 		this.asOne = asOne;
+		this.tableHeadSize = 14;
+		this.titleSize = 24;
+		this.textSize = 12;
 	}
 
 	@Override
@@ -181,13 +188,20 @@ public class ExportJob extends Job {
 				}
 			});
 			xslfoTransformer = transfact.newTransformer(transformXSLSource);
-
+		
 			try (OutputStream out = new BufferedOutputStream(
 					new FileOutputStream(pdfFile));
 					FileOutputStream str = new FileOutputStream(pdfFile);) {
-				if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {
+				if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {	
 					fopFactory.setPageHeight(this
-							.getFirstDocumentSpan(xslfoTransformer));
+							.getFirstDocumentSpan(xslfoTransformer).get(0));
+					this.titleSize *=2;
+					this.textSize *= 2;
+					this.tableHeadSize *=2;
+					float width = Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
+					fopFactory.setPageWidth(2 * width + "in");
+					float height = Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
+					fopFactory.setPageHeight(2 * height + "in");
 				}
 
 				monitor.worked(1);
@@ -196,8 +210,14 @@ public class ExportJob extends Job {
 						pdfoutStream);
 				
 				Result res = new SAXResult(fop.getDefaultHandler());
+
+				xslfoTransformer.setParameter("title.size", this.titleSize);
+				xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
+				xslfoTransformer.setParameter("text.size", this.textSize);
 				// transform the informationSource with the transformXSLSource
-				xslfoTransformer.transform(informationSource, res);
+				
+xslfoTransformer.transform(informationSource, res);
+				
 				str.write(pdfoutStream.toByteArray());
 				str.close();
 
@@ -214,7 +234,7 @@ public class ExportJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	private String getFirstDocumentSpan(Transformer xslTransformer)
+	private List<String> getFirstDocumentSpan(Transformer xslTransformer)
 			throws TransformerException, FOPException {
 		FopFactory fopFactory = FopFactory.newInstance();
 		FOUserAgent userAgent = fopFactory.newFOUserAgent();
@@ -238,13 +258,25 @@ public class ExportJob extends Job {
 		AreaTreeModel treeModel = new AreaTreeModel();
 		AreaTreeParser areaTreeParser = new AreaTreeParser();
 		areaTreeParser.parse(treeSource, treeModel, userAgent);
+		ArrayList<String> returnArray= new ArrayList<>();
 		float pageHeight = 0;
-		for(int i= 0;i < treeModel.getCurrentPageSequence().getPageCount();i++){
-			Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
-					.getBodyRegion().getMainReference().getSpans().get(0);
-			pageHeight += span.getBPD() / ExportJob.MP_TO_INCH;
+		if(this.asOne){
+			for(int i= 0;i < treeModel.getCurrentPageSequence().getPageCount();i++){
+				Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
+						.getBodyRegion().getMainReference().getSpans().get(0);
+				pageHeight += span.getBPD() / ExportJob.MP_TO_INCH;
+			}
+			returnArray.add(Float.toString(pageHeight) + "in"); //$NON-NLS-1$
 		}
-		return Float.toString(pageHeight) + "in";//$NON-NLS-1$
+		else{
+			for(int i= 0;i < treeModel.getCurrentPageSequence().getPageCount();i++){
+				Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
+						.getBodyRegion().getMainReference().getSpans().get(0);
+				pageHeight = span.getBPD() / ExportJob.MP_TO_INCH;
+				returnArray.add(Float.toString(pageHeight) + "in"); //$NON-NLS-1$
+			}
+		}
+		return returnArray;
 
 	}
 	

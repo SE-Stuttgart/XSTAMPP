@@ -22,8 +22,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.navigation.IProjectSelection;
-import xstampp.util.STPAEditorInput;
 
 /**
  * Handler that saves the analysis to the last location on runtime

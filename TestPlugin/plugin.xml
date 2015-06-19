@@ -30,6 +30,16 @@
                   id="step1"
                   name="Test Step">
             </step>
+            <category
+                  id="TestPlugin.category1"
+                  name="TestPlugin.category1">
+               <step
+                     default_editor="true"
+                     editorId="StandartEditorPart"
+                     id="TestPlugin.step1"
+                     name="TestPlugin.step1">
+               </step>
+            </category>
          </category>
       </process>
    </extension>
@@ -50,6 +60,49 @@
             name="name"
             project="true">
       </wizard>
+   </extension>
+   <extension
+         point="xstampp.extension.stepEditors">
+      <stepEditor
+            editor="testplugin.editors.editor"
+            id="TestPlugin.stepEditor1"
+            name="test"
+            parentStep="astpa.navigation.step1_2">
+      </stepEditor>
+      <stepPerspective
+            id="TestPlugin.stepPerspective1"
+            parentStep="astpa.navigation.step1_4"
+            targetId="TestPlugin.perspective1">
+      </stepPerspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="testplugin.TestPerspective"
+            id="TestPlugin.perspective1"
+            name="Test">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="TestPlugin.perspective1">
+         <view
+               closeable="false"
+               id="astpa.explorer"
+               minimized="true"
+               moveable="false"
+               ratio="0.3"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <perspectiveShortcut
+               id="xstampp.defaultPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
    </extension>
 
 </plugin>

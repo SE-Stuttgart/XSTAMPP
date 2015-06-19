@@ -254,18 +254,20 @@ public class CausalFactorController {
 					linkedHazards.add(hazAccController.getHazard(id));
 				}
 				Collections.sort(linkedHazards);
+				StringBuffer linkString = new StringBuffer(); //$NON-NLS-1$
 				if (linkedHazards.size() == 0) {
-					causalFactor.setLinks(Messages.NotHazardous);
+					linkString.append(Messages.NotHazardous);
 				} else {
-					String linkString = ""; //$NON-NLS-1$
-					for (int i = 0; i < linkedHazards.size(); i++) {
-						linkString += linkedHazards.get(i).getNumber();
-						if (i < (linkedHazards.size() - 1)) {
-							linkString += ", "; //$NON-NLS-1$
+					
+					for (int i = 0;i < linkedHazards.size(); i++) {
+						if (i != 0) {
+							linkString.append(","); //$NON-NLS-1$
 						}
+						linkString.append("H-" + linkedHazards.get(i).getNumber());
 					}
-					causalFactor.setLinks(linkString);
 				}
+				causalFactor.setLinks(linkString.toString());
+				
 			}
 		}
 	}

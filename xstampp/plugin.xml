@@ -357,6 +357,78 @@
             </parameter>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
+         <toolbar
+               id="xstampp.toolbar.contribution.text">
+            <separator
+                  name="xstampp.separator1">
+            </separator>
+            <control
+                  class="xstampp.ui.workbench.contributions.TextToolbarContribution">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeEditor">
+                     <instanceof
+                           value="xstampp.ui.editors.interfaces.ITextEditor">
+                     </instanceof>
+                  </with>
+               </visibleWhen>
+            </control>
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeEditor">
+                  <instanceof
+                        value="xstampp.ui.editors.interfaces.ITextEditor">
+                  </instanceof>
+               </with>
+            </visibleWhen>
+         </toolbar>
+         <toolbar
+               id="xstampp.toolbar.contribution.zoombar">
+            <control
+                  class="xstampp.ui.workbench.contributions.SeperatorContribution">
+            </control>
+            <control
+                  class="xstampp.ui.workbench.contributions.EditorContribution">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeEditor">
+                     <instanceof
+                           value="xstampp.ui.workbench.contributions.IZoomContributor">
+                     </instanceof>
+                  </with>
+               </visibleWhen>
+            </control>
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeEditor">
+                  <instanceof
+                        value="xstampp.ui.workbench.contributions.IZoomContributor">
+                  </instanceof>
+               </with>
+            </visibleWhen>
+         </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="xstampp.toolbar.contribution.perspectives">
+            <control
+                  class="xstampp.ui.workbench.contributions.SeperatorContribution">
+            </control>
+            <command
+                  commandId="org.eclipse.ui.perspectives.showPerspective"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -524,6 +596,11 @@
             defaultHandler="xstampp.ui.menu.file.commands.OpenStepEditor"
             id="astpa.command.openStep"
             name="Open ">
+         <commandParameter
+               id="xstampp.command.steps.open"
+               name="refStepId"
+               optional="true">
+         </commandParameter>
       </command>
       <command
             id="xstampp.saveall"
@@ -746,6 +823,15 @@
    <toc
          file="tocgettingstarted.xml">
    </toc>
+</extension>
+<extension
+      point="org.eclipse.ui.perspectiveExtensions">
+   <perspectiveExtension
+         targetID="xstampp.defaultPerspective">
+      <perspectiveShortcut
+            id="TestPlugin.perspective1">
+      </perspectiveShortcut>
+   </perspectiveExtension>
 </extension>
 
 

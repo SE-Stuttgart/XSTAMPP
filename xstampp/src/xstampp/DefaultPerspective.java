@@ -16,12 +16,11 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		DefaultPerspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
-		layout.setFixed(true);
-		
+		layout.setFixed(false);
 		layout.setEditorAreaVisible(true);
 		layout.addView(
 				"astpa.explorer", IPageLayout.LEFT, 0.2f, layout.getEditorArea()); //$NON-NLS-1$
 		layout.getViewLayout("astpa.explorer").setCloseable(false);
 	}
-
+	
 }

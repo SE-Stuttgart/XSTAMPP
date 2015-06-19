@@ -77,6 +77,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	@Override
 	public void postWindowOpen() {
 		ChooseWorkLocation.initiateWorkspace();
+
 		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
 				.getWorkbench().getExportWizardRegistry();
 		IWizardCategory[] categories = wizardRegistry.getRootCategory()
@@ -122,6 +123,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setShowStatusLine(true);
 		configurer.setShowProgressIndicator(true);
 		configurer.setTitle(Messages.PlatformName);
+//		configurer.setShowPerspectiveBar(true);
 
 	}
 

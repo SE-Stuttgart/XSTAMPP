@@ -21,7 +21,6 @@ import xstampp.Activator;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.interfaces.IEditorBase;
-import xstampp.util.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
 
 /**
