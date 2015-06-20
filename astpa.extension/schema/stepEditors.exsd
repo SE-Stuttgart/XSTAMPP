@@ -17,10 +17,10 @@
          </appinfo>
       </annotation>
       <complexType>
-         <sequence>
-            <element ref="stepEditor" minOccurs="1" maxOccurs="unbounded"/>
-            <element ref="stepPerspective" minOccurs="1" maxOccurs="unbounded"/>
-         </sequence>
+         <choice>
+            <element ref="stepEditor" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="stepPerspective" minOccurs="0" maxOccurs="unbounded"/>
+         </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>

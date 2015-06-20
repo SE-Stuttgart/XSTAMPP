@@ -16,6 +16,8 @@ package xstampp.astpa.model.causalfactor;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.controlstructure.components.ComponentType;
+
 /**
  * A Component for the causal factors table
  * 
@@ -51,4 +53,11 @@ public interface ICausalComponent {
 	 */
 	List<ICausalFactor> getCausalFactors();
 
+	/**
+	 * 
+	 * @return The ComponentType which is stored in the model
+	 * 
+	 * @author Lukas Balzer
+	 */
+	ComponentType getComponentType();
 }
