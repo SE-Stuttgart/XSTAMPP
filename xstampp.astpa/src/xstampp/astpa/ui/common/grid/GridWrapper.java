@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
+import org.eclipse.nebula.widgets.grid.internal.DefaultCellRenderer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -248,7 +249,7 @@ public class GridWrapper {
 	 */
 	private static final Logger LOGGER = Logger.getRootLogger();
 
-	private GridCellRenderer cellRenderer;
+	private DefaultCellRenderer cellRenderer;
 
 	private Grid actualGrid;
 	private IGridCell hoveredCell = null;
@@ -410,10 +411,12 @@ public class GridWrapper {
 
 		this.hoveredCell = null;
 
-		this.actualGrid = new Grid(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		this.actualGrid = new Grid(parent,SWT.V_SCROLL | SWT.H_SCROLL|SWT.VIRTUAL);
+		
 		this.actualGrid.setHeaderVisible(true);
 		this.actualGrid.setCellSelectionEnabled(true);
 		this.actualGrid.setLinesVisible(false);
+		this.actualGrid.setWordWrapHeader(true);
 		this.actualGrid.addMouseListener(new GridMouseListener(this));
 		this.actualGrid.addMouseMoveListener(new GridMouseMoveListener(this));
 		this.actualGrid.addFocusListener(new GridFocusListener(this));
@@ -501,7 +504,8 @@ public class GridWrapper {
 	 */
 	@SuppressWarnings("deprecation")
 	public void clearTable() {
-		this.actualGrid.removeAll();
+		this.actualGrid.disposeAllItems();
+		this.actualGrid.clearItems();
 	}
 
 	/**
@@ -528,7 +532,6 @@ public class GridWrapper {
 			// add cells for children cells
 			for (int childI = 0; childI < childCount; childI++) {
 				GridRow childRow = row.getChildren().get(childI);
-
 				maxCellCount = Math.max(maxCellCount, childRow.getCells()
 						.size() + 1);
 
@@ -555,6 +558,7 @@ public class GridWrapper {
 						SWT.NONE);
 				childColumn.setText(Messages.GridWrapper_Column);
 				childColumn.setWordWrap(true);
+				childColumn.setHeaderWordWrap(true);
 				childColumn.setWidth(GridWrapper.DEFAULT_COLUMN_WIDTH);
 				childColumn.setResizeable(false);
 

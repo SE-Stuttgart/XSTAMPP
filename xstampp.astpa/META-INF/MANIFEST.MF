@@ -113,6 +113,6 @@ Bundle-ClassPath: lib/avalon-framework-4.2.0.jar,
  lib/xmlgraphics-commons-1.5.jar,
  lib/jaxb-impl-2.0.1.jar,
  .,
- lib/org.eclipse.nebula.widgets.grid_1.0.0.201402181348.jar
+ lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar
 Import-Package: org.apache.log4j
 Bundle-Vendor: Universität Stuttgart

@@ -15,8 +15,12 @@ package xstampp.astpa.ui.common.grid;
 
 import java.util.UUID;
 
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
@@ -53,8 +57,7 @@ public class GridCellComposite extends Composite implements IGridCell {
 	 *            SWT style constant of the composite.
 	 */
 	public GridCellComposite(GridWrapper gridWrapper, int style) {
-		super(gridWrapper.getGrid(), style);
-
+		super(gridWrapper.getGrid(), style|SWT.DOUBLE_BUFFERED);
 		this.init();
 	}
 
@@ -141,7 +144,6 @@ public class GridCellComposite extends Composite implements IGridCell {
 	@Override
 	public void paint(GridCellRenderer renderer, GC gc,
 			NebulaGridRowWrapper item) {
-
 		this.setBounds(renderer.getDrawBounds());
 	}
 

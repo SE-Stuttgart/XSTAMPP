@@ -27,7 +27,6 @@ import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
  * @author Patrick Wickenhaeuser, Benedikt Markt
  * 
  */
-@SuppressWarnings("restriction")
 public class GridCellRenderer extends DefaultCellRenderer {
 
 	private GridWrapper gridWrapper;
@@ -56,7 +55,6 @@ public class GridCellRenderer extends DefaultCellRenderer {
 			IGridCell cell = item.getCell(this.getColumn());
 
 			if (cell != null) {
-
 				cell.paint(this, gc, item);
 				Color fColor = gc.getForeground();
 				gc.setForeground(new Color(Display.getCurrent(), 255, 255, 255));
@@ -92,6 +90,7 @@ public class GridCellRenderer extends DefaultCellRenderer {
 				renderBounds.y + this.borderSize, renderBounds.width
 						- this.borderSize, renderBounds.height
 						- this.borderSize);
+		
 		return bounds;
 	}
 }

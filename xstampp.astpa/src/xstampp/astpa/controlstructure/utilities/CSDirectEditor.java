@@ -16,7 +16,9 @@ package xstampp.astpa.controlstructure.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -25,8 +27,11 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * 
@@ -119,6 +124,14 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 			this.oldLineNumber = this.text.getCaretLineNumber();
 		}
 
+	}
+	
+	public void activate(CellEditorLocator locator,Composite comp) {
+		
+		locator.relocate(this);
+		doSetFocus();
+		getControl().setVisible(true);
+		super.activate();
 	}
 
 	@Override

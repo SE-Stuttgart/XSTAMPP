@@ -16,10 +16,14 @@ package xstampp.astpa.ui.common.grid;
 import messages.Messages;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
@@ -74,7 +78,7 @@ public class GridCellEditor extends GridCellComposite {
 
 		this.compositeArea = new Composite(this, SWT.FILL);
 		this.compositeArea.setLayout(new FillLayout(SWT.HORIZONTAL));
-
+//		this.compositeArea.setRedraw(false);
 		this.description = new Text(this.compositeArea, SWT.PUSH | SWT.WRAP);
 
 		if (initialText.trim().isEmpty()) {
@@ -165,9 +169,13 @@ public class GridCellEditor extends GridCellComposite {
 		if (this.isDisposed()) {
 			return;
 		}
+//		this.compositeArea.setRedraw(true);
+//		this.setRedraw(false);
+		renderer.getBounds();
+		gc.getClipping();
 		this.compositeArea.setBounds(0, 0, renderer.getDrawBounds().width - 1,
 				renderer.getDrawBounds().height);
-
+		this.compositeArea.setVisible(true);
 		if (this.hasFocus) {
 			this.description.setBackground(new Color(Display.getCurrent(), 255,
 					255, 255));
@@ -177,6 +185,7 @@ public class GridCellEditor extends GridCellComposite {
 		}
 
 		super.paint(renderer, gc, item);
+//		this.compositeArea.setRedraw(false);
 	}
 
 	@Override
