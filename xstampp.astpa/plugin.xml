@@ -110,18 +110,90 @@
          name="Pdf Export Wizard"
          point="org.eclipse.ui.exportWizards">
       <category
-            id="astpa.mainCategory"
-            name="STPA Report">
+            id="astpa.pdf.mainCategory"
+            name="STPA PDF Export">
       </category>
       <wizard
-            category="astpa.mainCategory"
+            category="astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.PdfExportWizard"
             icon="icons/Logo_small.png"
-            id="astpa.wizardExport"
-            name="PDF Report">
+            id="xstampp.astpa.export.pdf"
+            name="Final PDF Report">
          <description>
             The whole STPA Analysis in as PDF Report
          </description>
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.HazardsPDFWizard"
+            icon="icons/buttons/navigation/STEP1_3(16).png"
+            id="xstampp.astpa.export.pdf.1_3"
+            name="Hazards">
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.SafetyConstraintsPDFWizard"
+            icon="icons/buttons/navigation/STEP1_5(16).png"
+            id="xstampp.astpa.export.pdf.1_5"
+            name="SafetyConstraints">
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.SystemGoalsPDFWizard"
+            icon="icons/buttons/navigation/STEP1_6(16).png"
+            id="xstampp.astpa.export.pdf.1_6"
+            name="SystemGoals">
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.DesignRequirementsPDFWizard"
+            icon="icons/buttons/navigation/STEP1_7(16).png"
+            id="xstampp.astpa.export.pdf.1_7"
+            name="DesignRequirements">
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.AccidentsPDFWizard"
+            icon="icons/buttons/navigation/STEP1_2(16).png"
+            id="xstampp.astpa.export.pdf.1_2"
+            name="Accidents">
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.SystemDecriptionPDFWizard"
+            icon="icons/buttons/navigation/STEP1_1.png"
+            id="xstampp.astpa.export.pdf.1_1"
+            name="System Decription">
+         <description>
+            Export the description either as picture or as pdf file
+         </description>
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.UCATablePDFWizard"
+            icon="icons/buttons/navigation/STEP2_2.png"
+            id="xstampp.astpa.export.pdf.2_2"
+            name="Unsafe Control Actions Table">
+         <description>
+            The Unsafe Control Actions Table as single Export , provided as PNG
+         </description>
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.CausalFactorsTablePDFWizard"
+            icon="icons/buttons/navigation/STEP3_2.png"
+            id="xstampp.astpa.export.pdf.3_2"
+            name="Causal Factors Table">
+         <description>
+            The Causal Factors Table as single Export , provided as PNG
+         </description>
+      </wizard>
+      <wizard
+            category="astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.CSCPDFWizard"
+            icon="icons/buttons/navigation/STEP2_2(16).png"
+            id="xstampp.astpa.export.pdf.2_3"
+            name="Corresponding Safety Constraints">
       </wizard>
    </extension>
    <extension
@@ -342,7 +414,7 @@
             category="astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.CSCExportWizard"
             icon="icons/buttons/navigation/STEP2_2(16).png"
-            id="xstampp.astpa.imageExport.2_2"
+            id="xstampp.astpa.imageExport.2_3"
             name="Corresponding Safety Constraints">
       </wizard>
    </extension>

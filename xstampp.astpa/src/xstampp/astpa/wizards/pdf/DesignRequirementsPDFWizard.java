@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards.stepImages;
+package xstampp.astpa.wizards.pdf;
 
 import org.eclipse.ui.PlatformUI;
 
@@ -9,13 +9,13 @@ import xstampp.astpa.ui.sds.DesignRequirementView;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
 
-public class DesignRequirementsImgWizard extends AbstractExportWizard {
+public class DesignRequirementsPDFWizard extends AbstractExportWizard {
 
-	public DesignRequirementsImgWizard() {
+	public DesignRequirementsPDFWizard() {
 		super(DesignRequirementView.ID);
-		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		this.setExportPage(new TableExportPage(filters,
-				Messages.DesignRequirements + Messages.AsImage));
+				Messages.DesignRequirements + Messages.AsPDF));
 	}
 
 	@Override

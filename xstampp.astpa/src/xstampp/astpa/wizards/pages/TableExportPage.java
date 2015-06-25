@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import messages.Messages;
 
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

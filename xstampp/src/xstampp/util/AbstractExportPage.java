@@ -42,6 +42,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	private Combo chooseList;
 	protected PathComposite pathChooser;
 	private String pluginID;
+	private String nameSuggestion;
 
 	/**
 	 * 
@@ -71,12 +72,17 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 
 	}
 
+	
 	@Override
 	protected String openExportDialog(String[] filters, String[] names) {
 		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
 		fileDialog.setFilterExtensions(filters);
 		fileDialog.setFilterNames(names);
-		fileDialog.setFileName(this.getProjectName());
+		if(this.nameSuggestion != null){
+			fileDialog.setFileName(nameSuggestion);
+		}else{
+			fileDialog.setFileName(this.getProjectName());
+		}
 		String filePath = fileDialog.open();
 		if (filePath != null) {
 			this.setExportPath(filePath);
@@ -185,5 +191,19 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	protected void setControl(Control newControl) {
 		this.setPageComplete(this.checkFinish());
 		super.setControl(newControl);
+	}
+
+	/**
+	 * @return the nameSuggestion
+	 */
+	public String getNameSuggestion() {
+		return nameSuggestion;
+	}
+
+	/**
+	 * @param nameSuggestion the nameSuggestion to set
+	 */
+	public void setNameSuggestion(String nameSuggestion) {
+		this.nameSuggestion = nameSuggestion;
 	}
 }

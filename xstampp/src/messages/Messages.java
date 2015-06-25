@@ -63,6 +63,9 @@ public final class Messages extends NLS {
 	public static String AddWrongTimingUCA;
 	@SuppressWarnings("javadoc")
 	public static String All;
+	public static String AsDataSet;
+	public static String AsImage;
+	public static String AsPDF;
 	@SuppressWarnings("javadoc")
 	public static String ASTPAminus;
 	//*-------B-------------------------------------------------------------------*

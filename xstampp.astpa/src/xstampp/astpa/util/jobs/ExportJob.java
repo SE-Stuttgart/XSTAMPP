@@ -42,6 +42,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 
 import xstampp.astpa.controlstructure.CSEditor;
@@ -151,7 +152,6 @@ public class ExportJob extends Job {
 		monitor.worked(1);
 
 		FopFactory fopFactory = FopFactory.newInstance();
-		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 		ByteArrayOutputStream pdfoutStream = new ByteArrayOutputStream();
 
 		StreamSource informationSource = new StreamSource(
@@ -193,30 +193,35 @@ public class ExportJob extends Job {
 					new FileOutputStream(pdfFile));
 					FileOutputStream str = new FileOutputStream(pdfFile);) {
 				if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {	
-					fopFactory.setPageHeight(this
-							.getFirstDocumentSpan(xslfoTransformer).get(0));
 					this.titleSize *=2;
 					this.textSize *= 2;
 					this.tableHeadSize *=2;
 					float width = Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
 					fopFactory.setPageWidth(2 * width + "in");
-					float height = Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
-					fopFactory.setPageHeight(2 * height + "in");
+					xslfoTransformer.setParameter("title.size", this.titleSize);
+					xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
+					xslfoTransformer.setParameter("text.size", this.textSize);
+					xslfoTransformer.setParameter("header.omit", "true"); //$NON-NLS-1$
+					this.getFirstDocumentSpan(xslfoTransformer,fopFactory);
+//					float height = Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
+//					fopFactory.setPageHeight(2 * height + "in");
+				}else{
+					xslfoTransformer.setParameter("title.size", this.titleSize);
+					xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
+					xslfoTransformer.setParameter("text.size", this.textSize);
+					xslfoTransformer.setParameter("header.omit", "false"); //$NON-NLS-1$
 				}
-
 				monitor.worked(1);
 				Fop fop;
+				FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 				fop = fopFactory.newFop(this.fileType, foUserAgent,
 						pdfoutStream);
 				
 				Result res = new SAXResult(fop.getDefaultHandler());
 
-				xslfoTransformer.setParameter("title.size", this.titleSize);
-				xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
-				xslfoTransformer.setParameter("text.size", this.textSize);
 				// transform the informationSource with the transformXSLSource
 				
-xslfoTransformer.transform(informationSource, res);
+				xslfoTransformer.transform(informationSource, res);
 				
 				str.write(pdfoutStream.toByteArray());
 				str.close();
@@ -234,9 +239,8 @@ xslfoTransformer.transform(informationSource, res);
 		return Status.OK_STATUS;
 	}
 
-	private List<String> getFirstDocumentSpan(Transformer xslTransformer)
+	private void getFirstDocumentSpan(Transformer xslTransformer, FopFactory fopFactory)
 			throws TransformerException, FOPException {
-		FopFactory fopFactory = FopFactory.newInstance();
 		FOUserAgent userAgent = fopFactory.newFOUserAgent();
 		StreamSource informationSource = new StreamSource(
 				new ByteArrayInputStream(this.outStream.toByteArray()));
@@ -246,8 +250,8 @@ xslfoTransformer.transform(informationSource, res);
 		// creae a new fop as areaTree
 		fop = fopFactory.newFop(MimeConstants.MIME_FOP_AREA_TREE, userAgent,
 				areaTreeStream);
+		
 		Result areaTreeResult = new SAXResult(fop.getDefaultHandler());
-
 		// transform the informationSource with the transformXSLSource
 		// the areaTreeResult is a complete description of the export dokument
 		xslTransformer.transform(informationSource, areaTreeResult);
@@ -258,25 +262,19 @@ xslfoTransformer.transform(informationSource, res);
 		AreaTreeModel treeModel = new AreaTreeModel();
 		AreaTreeParser areaTreeParser = new AreaTreeParser();
 		areaTreeParser.parse(treeSource, treeModel, userAgent);
-		ArrayList<String> returnArray= new ArrayList<>();
+		
 		float pageHeight = 0;
-		if(this.asOne){
-			for(int i= 0;i < treeModel.getCurrentPageSequence().getPageCount();i++){
-				Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
-						.getBodyRegion().getMainReference().getSpans().get(0);
-				pageHeight += span.getBPD() / ExportJob.MP_TO_INCH;
-			}
-			returnArray.add(Float.toString(pageHeight) + "in"); //$NON-NLS-1$
+		float addition;
+		
+		for(int i= 0;i < treeModel.getCurrentPageSequence().getPageCount();i++){
+			Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
+					.getBodyRegion().getMainReference().getSpans().get(0);
+			addition = span.getBPD()/ ExportJob.MP_TO_INCH;
+			
+			pageHeight += addition;
 		}
-		else{
-			for(int i= 0;i < treeModel.getCurrentPageSequence().getPageCount();i++){
-				Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
-						.getBodyRegion().getMainReference().getSpans().get(0);
-				pageHeight = span.getBPD() / ExportJob.MP_TO_INCH;
-				returnArray.add(Float.toString(pageHeight) + "in"); //$NON-NLS-1$
-			}
-		}
-		return returnArray;
+		fopFactory.setPageHeight(Float.toString(pageHeight + 1) + "in"); //$NON-NLS-1$
+		
 
 	}
 	

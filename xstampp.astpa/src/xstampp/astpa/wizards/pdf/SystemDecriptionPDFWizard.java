@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards.stepImages;
+package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
@@ -11,18 +11,18 @@ import xstampp.preferences.IPreferenceConstants;
  * @author Lukas Balzer
  * 
  */
-public class SystemDecriptionWizard extends AbstractExportWizard {
+public class SystemDecriptionPDFWizard extends AbstractExportWizard {
 
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 */
-	public SystemDecriptionWizard() {
+	public SystemDecriptionPDFWizard() {
 		super(SystemDescriptionView.ID);
-		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$
+		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$
 		this.setExportPage(new SystemDescriptionExportPage(filters,
-				Messages.SystemDescription + Messages.AsImage));
+				Messages.ExportPreferences + Messages.AsPDF));
 	}
 
 	@Override

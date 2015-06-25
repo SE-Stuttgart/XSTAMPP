@@ -22,7 +22,7 @@ public class SystemGoalsWizard extends AbstractExportWizard {
 	public SystemGoalsWizard() {
 		super(SystemGoalView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$ 
-		this.setExportPage(new CSVExportPage(filters, Messages.SystemGoals));
+		this.setExportPage(new CSVExportPage(filters, Messages.SystemGoals + Messages.AsDataSet));
 	}
 
 	@Override

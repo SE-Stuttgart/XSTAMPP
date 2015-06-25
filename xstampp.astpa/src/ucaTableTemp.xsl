@@ -44,7 +44,9 @@
 	<xsl:template name="accidentsTable">
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="5%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="30%"
@@ -138,7 +140,9 @@
 	<xsl:template name="hazardTable">
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 	<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="5%"
 			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
@@ -183,22 +187,22 @@
 					</xsl:attribute>
 								</xsl:if>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block >
 										<xsl:value-of select="title" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block >
 										<xsl:value-of select="description" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block >
 										<xsl:value-of select="links" />
 									</fo:block>
 								</fo:table-cell>
@@ -236,7 +240,9 @@
 	<xsl:template name="safetyConstraintsTable">
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 	<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="5%"
 			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
@@ -276,17 +282,17 @@
 					</xsl:attribute>
 								</xsl:if>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="title" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="description" />
 									</fo:block>
 								</fo:table-cell>
@@ -320,7 +326,9 @@
 	<xsl:template name="systemGoalsTable">
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 	<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="5%"
 			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
@@ -360,17 +368,17 @@
 					</xsl:attribute>
 								</xsl:if>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="title" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="description" />
 									</fo:block>
 								</fo:table-cell>
@@ -404,7 +412,9 @@
 	<xsl:template name="designRequirementsTable">
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="5%"
 		border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
@@ -444,17 +454,17 @@
 					</xsl:attribute>
 							</xsl:if>
 							<fo:table-cell padding="3px">
-								<fo:block font-size="12pt">
+								<fo:block>
 									<xsl:value-of select="number" />
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell padding="3px">
-								<fo:block font-size="12pt">
+								<fo:block>
 									<xsl:value-of select="title" />
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell padding="3px">
-								<fo:block font-size="12pt">
+								<fo:block>
 									<xsl:value-of select="description" />
 								</fo:block>
 							</fo:table-cell>
@@ -488,7 +498,9 @@
 	<xsl:template name="controlActionsTable">
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="5%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="30%"
@@ -528,17 +540,17 @@
 					</xsl:attribute>
 								</xsl:if>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="title" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
-									<fo:block font-size="12pt">
+									<fo:block>
 										<xsl:value-of select="description" />
 									</fo:block>
 								</fo:table-cell>
@@ -575,7 +587,9 @@
 	
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="50%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="50%"
@@ -651,7 +665,9 @@
 	<xsl:template name="causalFactorsTable">
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="20%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="80%"
@@ -662,6 +678,7 @@
 					<xsl:call-template name="headTheme"/>
 					<xsl:call-template name="fontTheme"/>
 				<fo:table-row>
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Component</fo:block>
 					</fo:table-cell>
@@ -679,7 +696,6 @@
 	
 								<fo:table-header border="none" background-color="#1A277A"
 									color="#FFFFFF">
-           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 									<!-- Sets the PDF-Theme-Color -->
 									<xsl:call-template name="headTheme"/>
 									<xsl:call-template name="fontTheme"/>
@@ -728,14 +744,14 @@
 								border-top="2pt solid black">
 								<fo:table-cell padding="4px" background-color="#FFFFFF"
 									color="#000000" border-right="2pt solid black">
-									<fo:block font-size="12pt" font-weight="bold">
+									<fo:block  font-weight="bold">
 										<xsl:value-of select="text" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell>
 								
 									<!-- ***** CausalFactors with its relatives ***** -->
-									<fo:block font-size="12pt">
+									<fo:block >
 									<xsl:call-template name="causalFactorRelatives"/>
 									</fo:block>
 								</fo:table-cell>
@@ -865,8 +881,12 @@
 	</xsl:template>
 <!-- ################### Unsafe Control Actions Table (UCA) ################### -->
 	<xsl:template name="ucaTable">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/>       
     <xsl:param name="value"/>
 		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="20%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="20%"
@@ -878,11 +898,12 @@
 			<fo:table-column column-number="5" column-width="20%"
 				border-style="none" />
 			<fo:table-header border="none" background-color="#1A277A"
-				color="#FFFFFF">
+				color="#FFFFFF" >
 				<!-- Sets the PDF-Theme-Color -->
 				<xsl:call-template name="headTheme"/>
 				<xsl:call-template name="fontTheme"/>
 				<fo:table-row>
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Control Action</fo:block>
 					</fo:table-cell>
@@ -903,6 +924,7 @@
 			</fo:table-header>
 			
 			<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks if there are some Control Actions already defined -->
 					<xsl:when test="cac/controlactions/controlaction">
@@ -911,7 +933,7 @@
 								border-top="2pt solid black">
 								<fo:table-cell padding="4px" background-color="#FFFFFF"
 									color="#000000" border-right="2pt solid black">
-									<fo:block font-size="12pt" font-weight="bold">
+									<fo:block font-weight="bold">
 										<xsl:value-of select="title" />
 									</fo:block>
 								</fo:table-cell>

@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards.stepImages;
+package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
@@ -10,7 +10,7 @@ import xstampp.astpa.wizards.pages.TableExportPage;
  * @author Lukas Balzer
  * 
  */
-public class UCATableExportWizard extends AbstractExportWizard {
+public class UCATablePDFWizard extends AbstractExportWizard {
 	TableExportPage exportPage;
 
 	/**
@@ -18,11 +18,11 @@ public class UCATableExportWizard extends AbstractExportWizard {
 	 * @author Lukas Balzer
 	 * 
 	 */
-	public UCATableExportWizard() {
+	public UCATablePDFWizard() {
 		super(UnsafeControlActionsView.ID);
-		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$
+		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$
 		this.exportPage = new TableExportPage(filters,
-				Messages.ExportPreferences + Messages.AsImage);
+				Messages.UnsafeControlActionsTable + Messages.AsPDF);
 		this.setExportPage(this.exportPage);
 	}
 
@@ -33,7 +33,6 @@ public class UCATableExportWizard extends AbstractExportWizard {
 
 	@Override
 	public boolean performFinish() {
-
 		return this.performXSLExport(
 				"/fopuca.xsl", Messages.ExportingUCATable, false); //$NON-NLS-1$
 	}

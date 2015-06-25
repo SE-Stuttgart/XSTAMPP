@@ -8,6 +8,7 @@
     <xsl:param name="title.size" select="24"/> 
     <xsl:param name="table.head.size" select="14"/> 
     <xsl:param name="text.size" select="12"/> 
+    <xsl:param name="header.omit" select="false"/>  
     
     <xsl:template match="/*">
     <fo:root>
@@ -32,6 +33,7 @@
 						<xsl:call-template name="ucaTable">
                             <xsl:with-param name="varSize" select="$text.size" />
                             <xsl:with-param name="headSize" select="$table.head.size" />
+                            <xsl:with-param name="omitHeader" select="$header.omit" />
                   </xsl:call-template>    
 					</fo:block>
         

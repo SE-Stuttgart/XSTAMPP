@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards.stepImages;
+package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.ui.causalfactors.CausalFactorsView;
@@ -10,18 +10,18 @@ import xstampp.astpa.wizards.pages.TableExportPage;
  * @author Lukas Balzer
  * 
  */
-public class CausalFactorsTableWizard extends AbstractExportWizard {
+public class CausalFactorsTablePDFWizard extends AbstractExportWizard {
 
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 */
-	public CausalFactorsTableWizard() {
+	public CausalFactorsTablePDFWizard() {
 		super(CausalFactorsView.ID);
-		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$
+		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$
 		this.setExportPage(new TableExportPage(filters,
-				Messages.CausalFactorsTable + Messages.AsImage));
+				Messages.CausalFactorsTable + Messages.AsPDF));
 	}
 
 	@Override

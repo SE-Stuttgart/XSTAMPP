@@ -25,7 +25,7 @@ public class CSCWizard extends AbstractExportWizard {
 		super(CSCView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$ 
 		this.setExportPage(new CSVExportPage(filters,
-				Messages.CorrespondingSafetyConstraints));
+				Messages.CorrespondingSafetyConstraints + Messages.AsDataSet));
 	}
 
 	@Override

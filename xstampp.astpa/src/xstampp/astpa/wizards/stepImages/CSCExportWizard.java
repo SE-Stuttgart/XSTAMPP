@@ -12,9 +12,9 @@ public class CSCExportWizard extends AbstractExportWizard {
 
 	public CSCExportWizard() {
 		super(CSCView.ID);
-		String[] filters = new String[] { "*.png", "*.jpg", "*.bmp","*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		this.setExportPage(new TableExportPage(filters,
-				Messages.CorrespondingSafetyConstraints));
+				Messages.CorrespondingSafetyConstraints + Messages.AsImage));
 	}
 
 	@Override

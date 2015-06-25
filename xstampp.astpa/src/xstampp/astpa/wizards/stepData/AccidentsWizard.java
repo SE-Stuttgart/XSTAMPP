@@ -26,7 +26,7 @@ public class AccidentsWizard extends AbstractExportWizard {
 	public AccidentsWizard() {
 		super(AccidentsView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
-		this.setExportPage(new CSVExportPage(filters, Messages.Accidents));
+		this.setExportPage(new CSVExportPage(filters, Messages.Accidents + Messages.AsDataSet));
 	}
 
 	@Override

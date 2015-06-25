@@ -23,7 +23,7 @@ public class SafetyConstraintsWizard extends AbstractExportWizard {
 		super(SafetyConstraintView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 		this.setExportPage(new CSVExportPage(filters,
-				Messages.SafetyConstraints));
+				Messages.SafetyConstraints + Messages.AsDataSet));
 	}
 
 	@Override

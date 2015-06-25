@@ -39,7 +39,6 @@ public abstract class AbstractExportWizard extends Wizard implements
 			.getPreferenceStore();
 	private IExportPage exportPage;
 	private String[] viewId;
-
 	private enum Error {
 		OK, CANT_OVERWRITE, EXIT, CANT_FIND;
 	}
@@ -243,6 +242,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 	 */
 	public void setExportPage(IExportPage exportPage) {
 		this.exportPage = exportPage;
+		setWindowTitle(exportPage.getTitle());
 	}
 
 	protected void setExportedViews(String[] ids) {

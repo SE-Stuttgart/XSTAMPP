@@ -24,7 +24,7 @@ public class ControlStructureWizard extends AbstractExportWizard {
 		super(CSEditor.ID);
 		String[] filters = new String[] {  "*.png", "*.jpg", "*.bmp" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		this.setExportPage(new ControlStructureExportPage(filters,
-				Messages.ControlStructure));
+				Messages.ControlStructure + Messages.AsImage));
 	}
 
 	protected ControlStructureWizard(String id) {

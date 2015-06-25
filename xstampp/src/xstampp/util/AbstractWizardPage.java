@@ -488,6 +488,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	public void setProjectID(UUID projectID) {
 		
 		this.projectID = projectID;
+		setProjectName(ProjectManager.getContainerInstance().getDataModel(projectID).getProjectName());
 	}
 	
 	/**
@@ -497,13 +498,17 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 * @author Lukas Balzer
 	 *
 	 */
-	protected final class PathComposite extends Composite {
+	protected final class PathComposite extends Composite implements SelectionListener{
 
 		public static final int LOGO_DIALOG = 1;
 		public static final int PATH_DIALOG = 2;
 		private Button pathButton;
 		private final Text path;
 		private final Label labelExport;
+		private String nameSuggestion;
+		private String[] filter;
+		private String[] filterNames;
+		private int dialogStyle;
 
 		/**
 		 * This constructor constructs a Composite which contains a basic ui for
@@ -547,33 +552,16 @@ public abstract class AbstractWizardPage extends WizardPage {
 			this(filter, names, parent, style, Messages.Destination);
 		}
 
-		public PathComposite(final String[] filter, final String[] filterNames,
+		public PathComposite(String[] filter, String[] filterNames,
 				Composite parent, final int style, String name) {
 			this(parent, name);
-			this.addButtonListener(new SelectionListener() {
-
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					if (style == PathComposite.LOGO_DIALOG) {
-						PathComposite.this.path.setText(AbstractWizardPage.this
-								.openLogoDialog());
-					} else {
-						PathComposite.this.path.setText(AbstractWizardPage.this
-								.openExportDialog(filter, filterNames));
-					}
-					AbstractWizardPage.this
-							.setPageComplete(AbstractWizardPage.this
-									.checkFinish());
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-					// nothing
-
-				}
-			});
+			this.addButtonListener(this);
+			this.filter = filter;
+			this.filterNames = filterNames;
+			this.dialogStyle = style;
 		}
 
+		
 		public void addButtonListener(SelectionListener listener) {
 			this.pathButton.addSelectionListener(listener);
 		}
@@ -596,6 +584,40 @@ public abstract class AbstractWizardPage extends WizardPage {
 			this.path.setEnabled(enabled);
 			this.pathButton.setEnabled(enabled);
 			this.labelExport.setEnabled(enabled);
+		}
+
+		@Override
+		public void widgetDefaultSelected(SelectionEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			if (this.dialogStyle == PathComposite.LOGO_DIALOG) {
+				PathComposite.this.path.setText(AbstractWizardPage.this
+						.openLogoDialog());
+			} else {
+				PathComposite.this.path.setText(AbstractWizardPage.this
+						.openExportDialog(this.filter, this.filterNames));
+			}
+			AbstractWizardPage.this
+					.setPageComplete(AbstractWizardPage.this
+							.checkFinish());
+		}
+
+		/**
+		 * @return the nameSuggestion
+		 */
+		public String getNameSuggestion() {
+			return this.nameSuggestion;
+		}
+
+		/**
+		 * @param nameSuggestion the nameSuggestion to set
+		 */
+		public void setNameSuggestion(String nameSuggestion) {
+			this.nameSuggestion = nameSuggestion;
 		}
 
 	}
