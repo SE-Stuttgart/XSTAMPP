@@ -21,6 +21,8 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -91,15 +93,18 @@ public class GridCellTextEditor extends AbstractGridCell {
 
 		Color fgColor = gc.getForeground();
 		FontMetrics metrics= gc.getFontMetrics();
-		//calculate the cvaiable space and performe a wrap
+		//calculate the avaiable space and performe a wrap
 		int char_wrapper= bounds.width/metrics.getAverageCharWidth() -1;
 		int lines = this.currentText.length() / char_wrapper;
 		int start = 0;
 		int end = Math.min(this.currentText.length(),char_wrapper);
 		int line_height = bounds.y;
 		while(end < this.currentText.length()-1){
+			while(this.currentText.charAt(end) != ' '){
+				end=Math.max(0,end-1);
+			}
 			gc.drawText(this.currentText.substring(start, end), bounds.x + 2 ,line_height);
-			start += char_wrapper;
+			start = end +1;
 			end += char_wrapper;
 			line_height += metrics.getHeight();
 		}
@@ -158,6 +163,14 @@ public class GridCellTextEditor extends AbstractGridCell {
 		editor.setTextColor(ColorConstants.black);
 		editor.setTextFont(Display.getDefault().getSystemFont());
 		editor.setValue(currentText);
+		editor.addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				GridCellTextEditor.this.currentText = ((Text)e.widget).getText();
+				GridCellTextEditor.this.grid.resizeRows();
+			}
+		});
 	}
 
 	/**

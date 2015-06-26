@@ -16,6 +16,7 @@ package xstampp.astpa.ui.common.grid;
 import java.util.UUID;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -70,7 +71,23 @@ public class GridCellText extends AbstractGridCell {
 
 		Color fgColor = gc.getForeground();
 		gc.setForeground(GridCellText.TEXT_COLOR);
-		gc.drawString(this.text, bounds.x + 2, bounds.y);
+		FontMetrics metrics= gc.getFontMetrics();
+		//calculate the avaiable space and performe a wrap
+		int char_wrapper= bounds.width/metrics.getAverageCharWidth() -1;
+		int lines = this.text.length() / char_wrapper;
+		int start = 0;
+		int end = Math.min(this.text.length(),char_wrapper);
+		int line_height = bounds.y;
+		while(end < this.text.length()-1){
+			while(this.text.charAt(end) != ' '){
+				end=Math.max(0,end-1);
+			}
+			gc.drawText(this.text.substring(start, end), bounds.x + 2 ,line_height);
+			start = end +1;
+			end += char_wrapper;
+			line_height += metrics.getHeight();
+		}
+		gc.drawText(this.text.substring(start), bounds.x + 2 ,line_height);
 
 		// restore bg color
 		gc.setBackground(bgColor);

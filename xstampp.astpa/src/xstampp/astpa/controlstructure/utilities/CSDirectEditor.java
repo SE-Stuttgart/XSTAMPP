@@ -21,10 +21,15 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FillLayout;
@@ -42,7 +47,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public class CSDirectEditor extends TextCellEditor implements ModifyListener,
-		MouseMoveListener {
+		MouseMoveListener, MouseTrackListener {
 
 	private int oldLineNumber = 0;
 	private List<Integer> lineFeeds = new ArrayList<Integer>();
@@ -58,7 +63,6 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 	public CSDirectEditor(Composite composite) {
 		super(composite, SWT.WRAP);
 		this.oldLineNumber = this.text.getCaretLineNumber();
-		// this.text.addModifyListener(this);
 
 		this.text.addMouseMoveListener(this);
 
@@ -126,11 +130,37 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 
 	}
 	
+	/**
+	 * adds a modify listener to the text control of this editor
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param listener the modify listener
+	 * @see Text#addModifyListener(ModifyListener)
+	 */
+	public void addModifyListener(ModifyListener listener) {
+		this.text.addModifyListener(this);
+	}
+	
+	/**
+	 * adds a dispose listener to the text control of this editor
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param listener the dispose listener
+	 * @see Text#addDisposeListener(DisposeListener)
+	 */
+	public void addDisposeListener(DisposeListener listener) {
+		this.text.addDisposeListener(listener);
+	}
+	
+	
 	public void activate(CellEditorLocator locator,Composite comp) {
 		
 		locator.relocate(this);
 		doSetFocus();
 		getControl().setVisible(true);
+		getControl().addMouseTrackListener(this);
 		super.activate();
 	}
 
@@ -140,5 +170,26 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 			this.text.setCursor(new Cursor(null, SWT.CURSOR_IBEAM));
 		}
 
+	}
+
+
+	@Override
+	public void mouseEnter(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExit(MouseEvent e) {
+		if(e.widget instanceof Text){
+			((Text)e.widget).setVisible(false);
+		}
+		e.widget.dispose();
+	}
+
+	@Override
+	public void mouseHover(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
