@@ -17,11 +17,12 @@ import messages.Messages;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.controlstructure.figure.ProcessFigure;
+import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -50,10 +51,11 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ProcessFigure(this.getId(),
+		IControlStructureFigure tmpFigure = new ProcessModelFigure(this.getId(),
 				ProcessVariableEditPart.TOP_OFFSET);
-		tmpFigure.setBorder(null);
+		tmpFigure.setBorder(new LineBorder(1));
 		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
+		tmpFigure.getTextField().setLineVisible(true);
 		tmpFigure
 				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
 		tmpFigure.setToolTip(new Label(Messages.ProcessVariable));

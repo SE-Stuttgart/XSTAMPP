@@ -23,8 +23,9 @@ import org.eclipse.draw2d.geometry.Translatable;
 
 import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.controlstructure.figure.ProcessFigure;
+import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -73,8 +74,7 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ProcessFigure(this.getId(),
-				ProcessModelEditPart.TOP_OFFSET);
+		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false);
 		tmpFigure.setBorder(new LineBorder(1));
 
 		tmpFigure

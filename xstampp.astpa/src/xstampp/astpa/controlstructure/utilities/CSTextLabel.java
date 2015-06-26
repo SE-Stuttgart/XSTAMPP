@@ -58,6 +58,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	private TextFlow content;
 	private FontData currentFont;
 	private static final int CENTER_COMPENSATION = 2;
+	private boolean extraLine = false;
 	private final IPreferenceStore store = Activator.getDefault()
 			.getPreferenceStore();
 	/**
@@ -91,6 +92,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 
 	}
 
+	
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -201,9 +203,15 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		this.content.getUpdateManager().performUpdate();
 	}
 
+	public void setLineVisible(boolean extraLine) {
+		this.extraLine = extraLine;
+	}
 	@Override
 	public void paint(Graphics graphics) {
 		super.paint(graphics);
+		if(extraLine){
+			graphics.drawLine(0, getBounds().height, getParent().getBounds().width, getBounds().height);
+		}
 	}
 
 	@Override

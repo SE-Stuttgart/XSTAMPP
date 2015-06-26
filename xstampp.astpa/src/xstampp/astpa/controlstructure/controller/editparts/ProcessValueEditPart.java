@@ -20,7 +20,8 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Translatable;
 
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.controlstructure.figure.ProcessFigure;
+import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
+import xstampp.astpa.controlstructure.figure.ProcessValueFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -48,7 +49,7 @@ public class ProcessValueEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ProcessFigure(this.getId(),
+		IControlStructureFigure tmpFigure = new ProcessValueFigure(this.getId(),
 				ProcessValueEditPart.TOP_OFFSET);
 		tmpFigure.setBorder(null);
 		tmpFigure
