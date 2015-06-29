@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -37,6 +39,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -118,7 +122,22 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				}
 			}
 		};
-		
+		this.tree.addFocusListener(new FocusListener() {
+			private IContextActivation activation;
+			@Override
+			public void focusLost(FocusEvent e) {
+				  IContextService contextService=(IContextService)getSite().getService(IContextService.class);
+				  if(activation != null){
+					  contextService.deactivateContext(activation);
+				  }
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				  IContextService contextService=(IContextService)getSite().getService(IContextService.class);
+				  activation=  contextService.activateContext("xstampp.navigation.context"); //$NON-NLS-1$
+			}
+		});
 		this.tree.addListener(SWT.MouseDown, this.listener);
 		this.tree.addListener(SWT.KeyDown, this.listener);
 		this.tree.addListener(SWT.MouseDoubleClick, new Listener() {
@@ -368,7 +387,6 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	@Override
 	public void setFocus() {
 		this.treeViewer.getControl().setFocus();
-
 		this.getSite().registerContextMenu(this.contextMenu, this.treeViewer);
 		this.getSite().setSelectionProvider(this);
 	}

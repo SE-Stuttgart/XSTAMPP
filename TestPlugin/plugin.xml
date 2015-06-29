@@ -87,21 +87,27 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="TestPlugin.perspective1">
-         <view
-               closeable="false"
-               id="astpa.explorer"
-               minimized="true"
-               moveable="false"
-               ratio="0.3"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               standalone="false"
-               visible="true">
-         </view>
          <perspectiveShortcut
                id="xstampp.defaultPerspective">
          </perspectiveShortcut>
+         <view
+               closeable="false"
+               id="astpa.explorer"
+               minimized="false"
+               ratio="0.3f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               id="astpa.Welcome"
+               minimized="false"
+               ratio="0.2f"
+               relationship="bottom"
+               relative="astpa.explorer"
+               visible="true">
+         </view>
       </perspectiveExtension>
    </extension>
 

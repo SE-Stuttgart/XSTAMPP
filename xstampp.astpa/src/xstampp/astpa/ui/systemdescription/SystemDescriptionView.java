@@ -240,25 +240,25 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				
 			}
 		});
-		this.descriptionText.addKeyListener(new KeyAdapter() {
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				switch(e.keyCode){
-				case SWT.ARROW_LEFT:{
-					SystemDescriptionView.this.descriptionText.setSelection(
-							SystemDescriptionView.this.descriptionText.getSelection().x -1, 
-							SystemDescriptionView.this.descriptionText.getSelection().x-1);
-					break;
-				}
-				case SWT.ARROW_RIGHT:{
-					SystemDescriptionView.this.descriptionText.setSelection(
-							SystemDescriptionView.this.descriptionText.getSelection().x +1,
-							SystemDescriptionView.this.descriptionText.getSelection().x+1);
-				}
-				}
-			}
-		});
+//		this.descriptionText.addKeyListener(new KeyAdapter() {
+//			
+//			@Override
+//			public void keyReleased(KeyEvent e) {
+//				switch(e.keyCode){
+//				case SWT.ARROW_LEFT:{
+//					SystemDescriptionView.this.descriptionText.setSelection(
+//							SystemDescriptionView.this.descriptionText.getSelection().x -1, 
+//							SystemDescriptionView.this.descriptionText.getSelection().x-1);
+//					break;
+//				}
+//				case SWT.ARROW_RIGHT:{
+//					SystemDescriptionView.this.descriptionText.setSelection(
+//							SystemDescriptionView.this.descriptionText.getSelection().x +1,
+//							SystemDescriptionView.this.descriptionText.getSelection().x+1);
+//				}
+//				}
+//			}
+//		});
 		this.getSite().setSelectionProvider(this);
 		composite.pack();
 

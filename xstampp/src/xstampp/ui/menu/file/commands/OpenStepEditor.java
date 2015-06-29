@@ -37,10 +37,7 @@ public class OpenStepEditor extends AbstractHandler {
 			String perspective = selector.getOpenWithPerspective();
 			IPerspectiveDescriptor descriptor= PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(perspective);
 			if (descriptor != null) {
-				
-				String perspectiveName = descriptor.getLabel();
-				
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().setPerspective(descriptor);
 			}
 		}

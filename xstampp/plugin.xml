@@ -377,20 +377,20 @@
                   </with>
                </visibleWhen>
             </control>
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeEditor">
-                  <instanceof
-                        value="xstampp.ui.editors.interfaces.ITextEditor">
-                  </instanceof>
-               </with>
-            </visibleWhen>
          </toolbar>
          <toolbar
                id="xstampp.toolbar.contribution.zoombar">
             <control
                   class="xstampp.ui.workbench.contributions.SeperatorContribution">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeEditor">
+                     <instanceof
+                           value="xstampp.ui.workbench.contributions.IZoomContributor">
+                     </instanceof>
+                  </with>
+               </visibleWhen>
             </control>
             <control
                   class="xstampp.ui.workbench.contributions.EditorContribution">
@@ -404,15 +404,6 @@
                   </with>
                </visibleWhen>
             </control>
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeEditor">
-                  <instanceof
-                        value="xstampp.ui.workbench.contributions.IZoomContributor">
-                  </instanceof>
-               </with>
-            </visibleWhen>
          </toolbar>
       </menuContribution>
       <menuContribution
@@ -727,7 +718,7 @@
    </key>
    <key
          commandId="astpa.commands.expandAll"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="xstampp.navigation.context"
          schemeId="bindingscheme"
          sequence="ARROW_LEFT">
       <parameter
@@ -737,7 +728,7 @@
    </key>
    <key
          commandId="astpa.commands.expandAll"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="xstampp.navigation.context"
          schemeId="bindingscheme"
          sequence="ARROW_RIGHT">
       <parameter
@@ -747,7 +738,7 @@
    </key>
    <key
          commandId="astpa.command.openStep"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="xstampp.navigation.context"
          schemeId="bindingscheme"
          sequence="CR">
    </key>
@@ -832,6 +823,13 @@
             id="TestPlugin.perspective1">
       </perspectiveShortcut>
    </perspectiveExtension>
+</extension>
+<extension
+      point="org.eclipse.ui.contexts">
+   <context
+         id="xstampp.navigation.context"
+         name="navigation context">
+   </context>
 </extension>
 
 

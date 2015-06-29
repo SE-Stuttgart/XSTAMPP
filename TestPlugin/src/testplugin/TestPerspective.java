@@ -15,6 +15,11 @@ public class TestPerspective implements IPerspectiveFactory {
 		TestPerspective.LOGGER.debug("Setup Test perspective"); //$NON-NLS-1$
 		layout.setFixed(false);
 		layout.setEditorAreaVisible(true);
+//		layout.addView("astpa.Welcome", IPageLayout.LEFT,
+//				0.3f, "astpa.explorer");
+//		layout.addView(
+//				"astpa.explorer", IPageLayout.LEFT, 0.2f, layout.getEditorArea()); //$NON-NLS-1$
+//		layout.getViewLayout("astpa.explorer").setCloseable(false);
 	
 	}
 }

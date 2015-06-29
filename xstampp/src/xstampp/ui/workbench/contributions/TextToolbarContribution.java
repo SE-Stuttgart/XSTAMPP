@@ -642,6 +642,15 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		return new Color(null, this.backgroundColor);
 	}
 	
-	
+	@Override
+	public void dispose() {
+		try{
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removeSelectionListener(this);
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+		}catch(NullPointerException e){
+			// if there is a nullpointer one can't delete anything
+		}
+		super.dispose();
+	}
 }
 
