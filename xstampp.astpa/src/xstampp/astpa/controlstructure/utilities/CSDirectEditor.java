@@ -63,7 +63,7 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 	public CSDirectEditor(Composite composite) {
 		super(composite, SWT.WRAP);
 		this.oldLineNumber = this.text.getCaretLineNumber();
-
+		this.text.setFocus();
 		this.text.addMouseMoveListener(this);
 
 	}

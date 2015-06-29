@@ -127,12 +127,12 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 				Rectangle constraint = (Rectangle) this
 						.getConstraintFor(request);
 				// if the components are ment for ProcessModel
-				if ((rootModel.getComponentType() == ComponentType.PROCESS_VARIABLE)
-						|| (rootModel.getComponentType() == ComponentType.PROCESS_MODEL)) {
-					command.addConstraint(this.getHost().getParent().getModel());
-					constraint = this.addProcessModelConstraint(constraint,
-							rootModel, compModel);
-				}
+//				if ((rootModel.getComponentType() == ComponentType.PROCESS_VARIABLE)
+//						|| (rootModel.getComponentType() == ComponentType.PROCESS_MODEL)) {
+//					command.addConstraint(this.getHost().getParent().getModel());
+//					constraint = this.addProcessModelConstraint(constraint,
+//							rootModel, compModel);
+//				}
 
 				if ((compModel.getComponentType() == ComponentType.PROCESS_VALUE)
 						&& (rootModel.getComponentType() != ComponentType.PROCESS_VARIABLE)) {
