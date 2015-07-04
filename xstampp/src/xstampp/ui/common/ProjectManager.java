@@ -191,9 +191,9 @@ public class ProjectManager {
 	public boolean renameProject(UUID projectId, String projectName) {
 
 		File projectFile = this.projectSaveFilesToUUID.get(projectId);
-		
+		String ext= this.extensionsToUUID.get(projectId);
 		Path newPath=projectFile.toPath().getParent();
-		File newNameFile = new File(newPath.toFile(),projectName + ".haz"); //$NON-NLS-1$
+		File newNameFile = new File(newPath.toFile(),projectName + "."+ext); //$NON-NLS-1$
 		
 		if (projectFile.renameTo(newNameFile) || !projectFile.exists()) {
 			
