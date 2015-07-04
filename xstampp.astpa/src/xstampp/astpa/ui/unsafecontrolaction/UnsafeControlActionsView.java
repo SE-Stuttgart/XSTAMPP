@@ -13,7 +13,9 @@
 
 package xstampp.astpa.ui.unsafecontrolaction;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -29,17 +31,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchPart;
 
 import xstampp.astpa.model.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -48,15 +46,13 @@ import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.common.grid.GridCellBlank;
 import xstampp.astpa.ui.common.grid.GridCellButton;
 import xstampp.astpa.ui.common.grid.GridCellColored;
-import xstampp.astpa.ui.common.grid.GridCellEditor;
 import xstampp.astpa.ui.common.grid.GridCellLinking;
-import xstampp.astpa.ui.common.grid.GridCellRenderer;
 import xstampp.astpa.ui.common.grid.GridCellText;
 import xstampp.astpa.ui.common.grid.GridCellTextEditor;
+import xstampp.astpa.ui.common.grid.GridCellTextEditor.IEditorListener;
 import xstampp.astpa.ui.common.grid.GridRow;
 import xstampp.astpa.ui.common.grid.GridWrapper;
 import xstampp.astpa.ui.common.grid.IGridCell;
-import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -95,100 +91,37 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	private UcaContentProvider ucaContentProvider = null;
 
 	private IUnsafeControlActionDataModel ucaInterface;
-
+	private Map<UUID,String> descriptionsToUUIDs = new HashMap<>();
 	private GridWrapper grid;
 
-	private class UnsafeControlActionCell extends GridCellEditor {
+	private class UCADeleteListener implements IEditorListener{
 
-		private IUnsafeControlAction unsafeControlAction;
-		private Label deleteButton = null;
-
-		public UnsafeControlActionCell(GridWrapper gridWrapper,
-				String initialText, IUnsafeControlAction unsafeControlAction) {
-			super(gridWrapper, initialText);
-			this.unsafeControlAction = unsafeControlAction;
-
-			Composite area = this.getCompositeArea();
-			area.setLayout(new GridLayout(2, false));
-
-			this.deleteButton = new Label(area, SWT.PUSH);
-			this.deleteButton.setImage(GridWrapper.getDeleteButton16());
-			this.deleteButton.addMouseListener(new MouseListener() {
-
-				@Override
-				public void mouseDoubleClick(MouseEvent e) {
-					// intentionally empty
-				}
-
-				@Override
-				public void mouseDown(MouseEvent e) {
-					UnsafeControlActionsView.LOGGER
-							.debug("Delete unsafe control action"); //$NON-NLS-1$
-
-					if (MessageDialog.openConfirm(
-							UnsafeControlActionsView.this.grid.getGrid()
-									.getShell(),
-							UnsafeControlActionsView.CONFIRMATION_TITLE,
-							UnsafeControlActionsView.CONFIRMATION_DESCRIPTION)) {
-						UnsafeControlActionsView.this.ucaInterface
-								.removeUnsafeControlAction(UnsafeControlActionCell.this.unsafeControlAction
-										.getId());
-					}
-				}
-
-				@Override
-				public void mouseUp(MouseEvent e) {
-					// intentionally empty
-				}
-			});
-
-			GridData gridData = new GridData();
-			gridData.horizontalAlignment = GridData.FILL;
-			gridData.verticalAlignment = GridData.FILL;
-			gridData.grabExcessHorizontalSpace = true;
-			gridData.grabExcessVerticalSpace = true;
-			gridData.horizontalSpan = 1;
-			this.getTextEditor().setLayoutData(gridData);
-
+		private UUID unsafeControlAction;
+		public UCADeleteListener(UUID uca) {
+			this.unsafeControlAction = uca;
 		}
-
 		@Override
-		public void onTextChanged(String newText) {
-			UnsafeControlActionsView.this.ucaInterface.setUcaDescription(
-					this.unsafeControlAction.getId(), newText);
-		}
-
-		@Override
-		public void onEditorFocus() {
-			if (this.getTextEditor().getText()
-					.equals(GridCellEditor.EMPTY_CELL_TEXT)) {
-				this.getTextEditor().setText(""); //$NON-NLS-1$
+		public void delete() {
+			UnsafeControlActionsView.LOGGER
+					.debug("Delete unsafe control action"); //$NON-NLS-1$
+			
+			if (MessageDialog.openConfirm(
+					UnsafeControlActionsView.this.grid.getGrid()
+							.getShell(),
+					UnsafeControlActionsView.CONFIRMATION_TITLE,
+					UnsafeControlActionsView.CONFIRMATION_DESCRIPTION)) {
+				UnsafeControlActionsView.this.ucaInterface
+						.removeUnsafeControlAction(this.unsafeControlAction);
 			}
 		}
-
+		
+		public UUID getUCAId(){
+			return unsafeControlAction;
+		}
 		@Override
-		public void paint(GridCellRenderer renderer, GC gc,
-				NebulaGridRowWrapper item) {
-			gc.setForeground(UnsafeControlActionsView.TEXT_COLOR);
-			this.getCompositeArea().setBackground(
-					this.getBackgroundColor(renderer, gc));
-			this.getTextEditor().setBackground(
-					this.getBackgroundColor(renderer, gc));
-			this.deleteButton.setBackground(this.getBackgroundColor(renderer,
-					gc));
-
-			super.paint(renderer, gc, item);
+		public void updateDataModel(String description) {
+			UnsafeControlActionsView.this.descriptionsToUUIDs.put(unsafeControlAction,description);
 		}
-
-		@Override
-		public UUID getUUID() {
-			return this.unsafeControlAction.getId();
-		}
-
-		public IUnsafeControlAction getUnsafeControlAction() {
-			return this.unsafeControlAction;
-		}
-
 	}
 
 	private class AddUcaButton extends GridCellButton {
@@ -285,10 +218,11 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 			for (int i = 0; i < selected.size(); i++) {
 				IGridCell cell = selected.get(i);
 
-				if (cell instanceof UnsafeControlActionCell) {
+				if (cell instanceof GridCellTextEditor) {
+					GridCellTextEditor editor= ((GridCellTextEditor) cell);
+					UUID ucaID=((UCADeleteListener)editor.getEditorListener()).getUCAId();
 					UnsafeControlActionsView.this.ucaInterface
-							.removeUnsafeControlAction(((UnsafeControlActionCell) cell)
-									.getUnsafeControlAction().getId());
+							.removeUnsafeControlAction(ucaID);
 				}
 			}
 		}
@@ -363,9 +297,10 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				// set descriptions
 				if (allNotGiven.size() > i) {
 					notGivenUca = allNotGiven.get(i);
-
-					ucaRow.addCell(new GridCellTextEditor(this.grid,notGivenUca.getDescription(),
-							notGivenUca));
+					GridCellTextEditor editor = new GridCellTextEditor(this.grid,notGivenUca.getDescription(),
+							notGivenUca);
+					editor.addDeleteListener(new UCADeleteListener(notGivenUca.getId()));
+					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							notGivenUca.getId(), this.ucaContentProvider,
 							this.grid,
@@ -385,8 +320,10 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				if (allIncorrect.size() > i) {
 					incorrectUca = allIncorrect.get(i);
 
-					ucaRow.addCell(new GridCellTextEditor(this.grid,incorrectUca.getDescription(),
-							incorrectUca));
+					GridCellTextEditor editor = new GridCellTextEditor(this.grid,incorrectUca.getDescription(),
+							incorrectUca);
+					editor.addDeleteListener(new UCADeleteListener(incorrectUca.getId()));
+					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							incorrectUca.getId(), this.ucaContentProvider,
 							this.grid,
@@ -406,8 +343,10 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				if (allWrongTiming.size() > i) {
 					timingUca = allWrongTiming.get(i);
 
-					ucaRow.addCell(new GridCellTextEditor(this.grid,timingUca.getDescription(),
-							timingUca));
+					GridCellTextEditor editor = new GridCellTextEditor(this.grid,timingUca.getDescription(),
+							timingUca);
+					editor.addDeleteListener(new UCADeleteListener(timingUca.getId()));
+					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							timingUca.getId(), this.ucaContentProvider,
 							this.grid,
@@ -426,9 +365,10 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 
 				if (allTooSoon.size() > i) {
 					tooSoonUca = allTooSoon.get(i);
-
-					ucaRow.addCell(new GridCellTextEditor(this.grid,tooSoonUca.getDescription(),
-							tooSoonUca));
+					GridCellTextEditor editor = new GridCellTextEditor(this.grid,tooSoonUca.getDescription(),
+							tooSoonUca);
+					editor.addDeleteListener(new UCADeleteListener(tooSoonUca.getId()));
+					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							tooSoonUca.getId(), this.ucaContentProvider,
 							this.grid,
@@ -491,7 +431,13 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 		}
 	}
 
-
+	@Override
+	public void partBroughtToTop(IWorkbenchPart arg0) {
+		for(UUID ucaID: this.descriptionsToUUIDs.keySet()){
+			this.ucaInterface.setUcaDescription(ucaID, this.descriptionsToUUIDs.get(ucaID));
+		}
+		super.partBroughtToTop(arg0);
+	}
 	@Override
 	public void dispose() {
 		this.ucaInterface.deleteObserver(this);

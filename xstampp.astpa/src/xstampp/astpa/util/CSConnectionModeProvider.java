@@ -32,6 +32,7 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 
 	@Override
 	public Map getCurrentState() {
+
 		Map<String,Object> map = new HashMap<>();
 		boolean f=Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS);
 		if(f){

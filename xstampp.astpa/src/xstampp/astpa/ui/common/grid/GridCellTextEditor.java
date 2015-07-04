@@ -26,14 +26,11 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.controlstructure.utilities.CSDirectEditor;
@@ -60,6 +57,9 @@ public class GridCellTextEditor extends AbstractGridCell {
 	private String currentText = ""; //$NON-NLS-1$
 	private boolean hasFocus = false;
 	private Color bgColor;
+	private CSDirectEditor editor;
+	private IEditorListener deleteListener;
+	private Rectangle deleteSpace;
 	
 	
 	private class TextLocator implements CellEditorLocator{
@@ -83,7 +83,7 @@ public class GridCellTextEditor extends AbstractGridCell {
 		this.grid=grid;
 		this.currentText = initialText;
 		this.editField= new Rectangle(0, 0, -1, DEFAULT_CELL_HEIGHT);
-		this.showSelection(false);
+		
 	}
 
 	@Override
@@ -164,7 +164,8 @@ public class GridCellTextEditor extends AbstractGridCell {
 		if(bounds.height + 2< this.editField.height){
 			this.grid.resizeRows();
 		}
-		gc.drawImage(GridWrapper.getDeleteButton16(), bounds.x + bounds.width -16,bounds.y +  bounds.height/2 - 8);
+		this.deleteSpace = new Rectangle(bounds.x + bounds.width -16,bounds.y +  bounds.height/2 - 8,16,16);
+		gc.drawImage(GridWrapper.getDeleteButton16(),this.deleteSpace.x,this.deleteSpace.y);
 		// restore bg color
 		gc.setBackground(this.bgColor);
 		// restore fg color
@@ -193,23 +194,35 @@ public class GridCellTextEditor extends AbstractGridCell {
 	}
 
 	@Override
+	public Color getBackgroundColor(GridCellRenderer renderer, GC gc) {
+		// TODO Auto-generated method stub
+		Color color = super.getBackgroundColor(renderer, gc);
+		this.bgColor = color;
+		if(this.editor != null && !this.editor.getControl().isDisposed()){
+			this.editor.getControl().setBackground(color);
+		}
+		return color;
+	}
+	@Override
 	public void activate() {
-		CSDirectEditor editor = new CSDirectEditor(this.grid.getGrid());
-		editor.activate(new TextLocator());
-		editor.setTextColor(ColorConstants.black);
-		editor.getControl().setBackground(this.bgColor);
-		editor.setTextFont(Display.getDefault().getSystemFont());
-		editor.setValue(this.currentText);
-		editor.addDisposeListener(new DisposeListener() {
+		this.editor = new CSDirectEditor(this.grid.getGrid());
+		this.editor.activate(new TextLocator());
+		this.editor.setTextColor(ColorConstants.black);
+		this.editor.getControl().setBackground(this.bgColor);
+		this.editor.setTextFont(Display.getDefault().getSystemFont());
+		this.editor.setValue(this.currentText);
+		
+		this.editor.addDisposeListener(new DisposeListener() {
 			
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				GridCellTextEditor.this.currentText = ((Text)e.widget).getText();
 				GridCellTextEditor.this.editField = ((Text)e.widget).getBounds();
 				GridCellTextEditor.this.grid.resizeRows();
+				GridCellTextEditor.this.getEditorListener().updateDataModel(((Text)e.widget).getText());
 			}
 		});
-		editor.addModifyListener(new ModifyListener() {
+		this.editor.addModifyListener(new ModifyListener() {
 			
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -235,7 +248,9 @@ public class GridCellTextEditor extends AbstractGridCell {
 
 	@Override
 	public void cleanUp() {
-		// TODO Auto-generated method stub
+		if(this.editor != null && !this.editor.getControl().isDisposed()){
+			this.editor.getControl().dispose();
+		}
 		
 	}
 
@@ -256,5 +271,29 @@ public class GridCellTextEditor extends AbstractGridCell {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void onMouseUp(MouseEvent e) {
+		if(GridCellTextEditor.this.deleteListener != null && GridCellTextEditor.this.deleteSpace.contains(e.x,e.y)){
+			GridCellTextEditor.this.deleteListener.delete();
+		}
+		super.onMouseUp(e);
+	}
+	/**
+	 * adds a listener that is called when the user presses the delete Button
+	 * @author Lukas
+	 *
+	 * @param listener
+	 */
+	public void addDeleteListener(IEditorListener listener) {
+		this.deleteListener = listener;
+	}
 
+	public IEditorListener getEditorListener() {
+		return this.deleteListener;
+	}
+	
+	public interface IEditorListener{
+		void delete();
+		void updateDataModel(String description);
+	}
 }
