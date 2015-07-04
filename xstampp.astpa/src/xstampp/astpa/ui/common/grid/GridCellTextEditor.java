@@ -23,18 +23,21 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.controlstructure.utilities.CSDirectEditor;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
 /**
@@ -56,13 +59,14 @@ public class GridCellTextEditor extends AbstractGridCell {
 	private GridWrapper grid = null;
 	private String currentText = ""; //$NON-NLS-1$
 	private boolean hasFocus = false;
-
+	private Color bgColor;
+	
+	
 	private class TextLocator implements CellEditorLocator{
 
 		@Override
 		public void relocate(CellEditor celleditor) {
-			if(GridCellTextEditor.this.editField != null)
-			celleditor.getControl().setBounds(editField);
+			celleditor.getControl().setBounds(GridCellTextEditor.this.editField);
 		}
 		
 	}
@@ -70,49 +74,99 @@ public class GridCellTextEditor extends AbstractGridCell {
 	 * Ctor.
 	 * 
 	 * @author Patrick Wickenhaeuser
-	 * 
-	 * @param gridWrapper
-	 *            the grid.
 	 * @param initialText
 	 *            the intitial text in the editor.
+	 * @param uca 
 	 * 
 	 */
-	public GridCellTextEditor(GridWrapper grid,String initialText) {
-		this.grid = grid;
+	public GridCellTextEditor(GridWrapper grid,String initialText,IUnsafeControlAction uca) {
+		this.grid=grid;
 		this.currentText = initialText;
+		this.editField= new Rectangle(0, 0, -1, DEFAULT_CELL_HEIGHT);
+		this.showSelection(false);
 	}
 
 	@Override
 	public void paint(GridCellRenderer renderer, GC gc,
 			NebulaGridRowWrapper item) {
+
+
 		super.paint(renderer, gc, item);
-		Color bgColor = gc.getBackground();
+		this.bgColor = gc.getBackground();
 
 		Rectangle bounds = renderer.getDrawBounds();
 		gc.setBackground(this.getBackgroundColor(renderer, gc));
-
 		Color fgColor = gc.getForeground();
+		gc.setForeground(ColorConstants.black);
 		FontMetrics metrics= gc.getFontMetrics();
 		//calculate the avaiable space and performe a wrap
-		int char_wrapper= bounds.width/metrics.getAverageCharWidth() -1;
-		int lines = this.currentText.length() / char_wrapper;
-		int start = 0;
-		int end = Math.min(this.currentText.length(),char_wrapper);
+		
 		int line_height = bounds.y;
-		while(end < this.currentText.length()-1){
-			while(this.currentText.charAt(end) != ' '){
-				end=Math.max(0,end-1);
+		String[] words= this.currentText.split(" ");
+
+		String line="";
+		String tmpLine=words[0];
+		String space = "";
+		boolean first = true;
+		boolean carryOver=false;
+		int i=1;
+		while(i<= words.length){
+			if(!first){
+				space= " "; 
+			}else{
+				space="";
 			}
-			gc.drawText(this.currentText.substring(start, end), bounds.x + 2 ,line_height);
-			start = end +1;
-			end += char_wrapper;
-			line_height += metrics.getHeight();
+			if(tmpLine.startsWith(System.lineSeparator())){
+				gc.drawString(line,bounds.x + 2 ,line_height);
+				line = "";
+				tmpLine = tmpLine.replaceFirst(System.lineSeparator(), "");
+				line_height += metrics.getHeight();
+				first=true;
+				carryOver= false;
+				continue;
+			}
+			if(tmpLine.contains(System.lineSeparator())){
+				words[i-1] = tmpLine.substring(tmpLine.indexOf(System.lineSeparator()));
+				
+				tmpLine = tmpLine.substring(0,tmpLine.indexOf(System.lineSeparator()));
+				first = line.isEmpty();
+				carryOver= true;
+			}
+			
+			if(gc.stringExtent(line + space + tmpLine).x > bounds.width - 16){
+							
+				gc.drawString(line, bounds.x + 2 ,line_height);			
+				line_height += metrics.getHeight();	
+				first=true;
+				line = "";
+			}
+			else if(carryOver){
+				line += space + tmpLine;
+				tmpLine = words[i-1];
+				carryOver = false;
+				first=false;
+			}else if(i == words.length){
+				line += space + tmpLine;
+				gc.drawString(line, bounds.x + 2 ,line_height);			
+				line_height += metrics.getHeight();	
+				line = "";
+				tmpLine ="";
+				i++;
+			}else{
+				line += space + tmpLine;
+				tmpLine = words[i++];
+				first=false;
+			}
 		}
-		gc.drawText(this.currentText.substring(start), bounds.x + 2 ,line_height);
-		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-16, bounds.height);
+		line_height += 2;
+		
+		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-16,line_height - bounds.y);
+		if(bounds.height + 2< this.editField.height){
+			this.grid.resizeRows();
+		}
 		gc.drawImage(GridWrapper.getDeleteButton16(), bounds.x + bounds.width -16,bounds.y +  bounds.height/2 - 8);
 		// restore bg color
-		gc.setBackground(bgColor);
+		gc.setBackground(this.bgColor);
 		// restore fg color
 		gc.setForeground(fgColor);
 	}
@@ -135,44 +189,37 @@ public class GridCellTextEditor extends AbstractGridCell {
 
 	@Override
 	public int getPreferredHeight() {
-		int minHeight = AbstractGridCell.DEFAULT_CELL_HEIGHT * 2;
-		GC gc = new GC(this.grid.getGrid());
-		FontMetrics fm= gc.getFontMetrics();
-		int string_h= fm.getHeight();
-		int string_w= fm.getAverageCharWidth();
-		int preferredHeight=minHeight;
-		int string_pref=this.grid.getGrid().getBounds().width/4;
-		if(string_pref > 0){
-			string_pref = (string_w * this.currentText.length())/string_pref +1;
-			
-		}else{
-			return minHeight;
-		}
-		
-		// upper limit
-
-		// lower limit
-		
-		return Math.max(minHeight, preferredHeight);
+		return  this.editField.height;
 	}
 
 	@Override
 	public void activate() {
 		CSDirectEditor editor = new CSDirectEditor(this.grid.getGrid());
-		editor.activate(new TextLocator(),this.grid.getGrid());
+		editor.activate(new TextLocator());
 		editor.setTextColor(ColorConstants.black);
+		editor.getControl().setBackground(this.bgColor);
 		editor.setTextFont(Display.getDefault().getSystemFont());
-		editor.setValue(currentText);
+		editor.setValue(this.currentText);
 		editor.addDisposeListener(new DisposeListener() {
 			
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				GridCellTextEditor.this.currentText = ((Text)e.widget).getText();
+				GridCellTextEditor.this.editField = ((Text)e.widget).getBounds();
 				GridCellTextEditor.this.grid.resizeRows();
 			}
 		});
+		editor.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				Rectangle bounds = ((Text)e.widget).getBounds();
+				int newHeight= ((Text)e.widget).computeSize(GridCellTextEditor.this.editField.width, SWT.DEFAULT).y;
+				bounds.height = Math.max(newHeight, GridCellTextEditor.this.editField.height);
+				((Text)e.widget).setBounds(bounds);
+			}
+		});
 	}
-
 	/**
 	 * Gets called when the text changed and the cell lost focus.
 	 * 

@@ -48,6 +48,8 @@ public abstract class AbstractGridCell implements IGridCell {
 
 	private CellButtonContainer buttonContainer = null;
 
+	private boolean showSelection;
+
 	/**
 	 * Ctor.
 	 * 
@@ -84,7 +86,7 @@ public abstract class AbstractGridCell implements IGridCell {
 	 */
 	public Color getBackgroundColor(GridCellRenderer renderer, GC gc) {
 
-		if (renderer.getGridWrapper().isCellSelected(this)) {
+		if (renderer.getGridWrapper().isCellSelected(this) && showSelection) {
 			// selected color constant
 			return new Color(gc.getDevice(), AbstractGridCell.HOVER_RED,
 					AbstractGridCell.HOVER_GREEN, AbstractGridCell.HOVER_BLUE);
@@ -175,5 +177,9 @@ public abstract class AbstractGridCell implements IGridCell {
 	@Override
 	public void setGridRow(GridRow gridRow) {
 		this.row = gridRow;
+	}
+	
+	public void showSelection(boolean show) {
+		this.showSelection= show;
 	}
 }

@@ -51,7 +51,7 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 
 	private int oldLineNumber = 0;
 	private List<Integer> lineFeeds = new ArrayList<Integer>();
-
+	
 	/**
 	 * 
 	 * 
@@ -139,7 +139,7 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 	 * @see Text#addModifyListener(ModifyListener)
 	 */
 	public void addModifyListener(ModifyListener listener) {
-		this.text.addModifyListener(this);
+		this.text.addModifyListener(listener);
 	}
 	
 	/**
@@ -155,7 +155,7 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 	}
 	
 	
-	public void activate(CellEditorLocator locator,Composite comp) {
+	public void activate(CellEditorLocator locator) {
 		
 		locator.relocate(this);
 		doSetFocus();

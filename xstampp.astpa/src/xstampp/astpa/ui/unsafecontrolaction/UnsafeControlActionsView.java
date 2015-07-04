@@ -364,8 +364,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				if (allNotGiven.size() > i) {
 					notGivenUca = allNotGiven.get(i);
 
-					ucaRow.addCell(new UnsafeControlActionCell(this.grid,
-							notGivenUca.getDescription(), notGivenUca));
+					ucaRow.addCell(new GridCellTextEditor(this.grid,notGivenUca.getDescription(),
+							notGivenUca));
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							notGivenUca.getId(), this.ucaContentProvider,
 							this.grid,
@@ -385,8 +385,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				if (allIncorrect.size() > i) {
 					incorrectUca = allIncorrect.get(i);
 
-					ucaRow.addCell(new UnsafeControlActionCell(this.grid,
-							incorrectUca.getDescription(), incorrectUca));
+					ucaRow.addCell(new GridCellTextEditor(this.grid,incorrectUca.getDescription(),
+							incorrectUca));
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							incorrectUca.getId(), this.ucaContentProvider,
 							this.grid,
@@ -406,8 +406,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				if (allWrongTiming.size() > i) {
 					timingUca = allWrongTiming.get(i);
 
-					ucaRow.addCell(new UnsafeControlActionCell(this.grid,
-							timingUca.getDescription(), timingUca));
+					ucaRow.addCell(new GridCellTextEditor(this.grid,timingUca.getDescription(),
+							timingUca));
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							timingUca.getId(), this.ucaContentProvider,
 							this.grid,
@@ -427,8 +427,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				if (allTooSoon.size() > i) {
 					tooSoonUca = allTooSoon.get(i);
 
-					ucaRow.addCell(new UnsafeControlActionCell(this.grid,
-							tooSoonUca.getDescription(), tooSoonUca));
+					ucaRow.addCell(new GridCellTextEditor(this.grid,tooSoonUca.getDescription(),
+							tooSoonUca));
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							tooSoonUca.getId(), this.ucaContentProvider,
 							this.grid,

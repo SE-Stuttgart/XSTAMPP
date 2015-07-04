@@ -114,7 +114,7 @@
             name="STPA PDF Export">
       </category>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.final"
             class="xstampp.astpa.wizards.pdf.PdfExportWizard"
             icon="icons/Logo_small.png"
             id="xstampp.astpa.export.pdf"
@@ -195,6 +195,10 @@
             id="xstampp.astpa.export.pdf.2_3"
             name="Corresponding Safety Constraints">
       </wizard>
+      <category
+            id="xstampp.astpa.export.final"
+            name="Final STPA Report">
+      </category>
    </extension>
    <extension
          id="astpa.export"
@@ -559,9 +563,14 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="xstampp.astpa.util.commands.ConnectionPreferenceHandler"
-            id="xstampp.astpa.controlstructure.connectionmode"
-            name="name">
+            defaultHandler="xstampp.astpa.util.commands.BoleanPreferenceToggle"
+            id="xstampp.astpa.controlstructure.preferenceToggle"
+            name="preferenceToggle">
+         <commandParameter
+               id="xstampp.astpa.command.preference"
+               name="preference name"
+               optional="false">
+         </commandParameter>
       </command>
    </extension>
    <extension
@@ -702,7 +711,7 @@
             </command>
          </menu>
          <command
-               commandId="xstampp.astpa.controlstructure.connectionmode"
+               commandId="xstampp.astpa.controlstructure.preferenceToggle"
                label="Connection Mode: Manual (switch to Snap-To)"
                style="push">
             <visibleWhen
@@ -714,9 +723,13 @@
                   </equals>
                </with>
             </visibleWhen>
+            <parameter
+                  name="xstampp.astpa.command.preference"
+                  value="ConnectionMode">
+            </parameter>
          </command>
          <command
-               commandId="xstampp.astpa.controlstructure.connectionmode"
+               commandId="xstampp.astpa.controlstructure.preferenceToggle"
                label="Connection Mode: Snap-To (switch to manual)"
                tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
             <visibleWhen
@@ -728,11 +741,51 @@
                   </equals>
                </with>
             </visibleWhen>
+            <parameter
+                  name="xstampp.astpa.command.preference"
+                  value="ConnectionMode">
+            </parameter>
          </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
             locationURI="popup:astpa.steps.step3_1">
+         <command
+               commandId="xstampp.astpa.controlstructure.preferenceToggle"
+               label="Enable Process Variable Borders"
+               tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="xstampp.astpa.ProcessModelBorder">
+                  <equals
+                        value="false">
+                  </equals>
+               </with>
+            </visibleWhen>
+            <parameter
+                  name="xstampp.astpa.command.preference"
+                  value="ShowProcessModelBorder">
+            </parameter>
+         </command>
+         <command
+               commandId="xstampp.astpa.controlstructure.preferenceToggle"
+               label="Disable Process Variable Borders"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="xstampp.astpa.ProcessModelBorder">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+            <parameter
+                  name="xstampp.astpa.command.preference"
+                  value="ShowProcessModelBorder">
+            </parameter>
+         </command>
          <command
                commandId="xstampp.command.openWizard"
                label="Export Image"
@@ -749,6 +802,37 @@
             <parameter
                   name="xstampp.command.preferencePage"
                   value="xstampp.astpa.preferencepage.cs">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?befor=additions">
+         <toolbar
+               id="xstampp.astpa.toolbar1">
+            <command
+                  commandId="xstampp.command.openWizard"
+                  icon="icons/buttons/export/run_pdf.png"
+                  style="pulldown"
+                  tooltip="Opens the PDF Export Wizard">
+               <parameter
+                     name="xstampp.commandParameter.openwizard"
+                     value="xstampp.astpa.export.pdf">
+               </parameter>
+            </command>
+         </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:xstampp.command.openWizard">
+         <command
+               commandId="xstampp.command.openWizard"
+               icon="icons/buttons/export/run_csv.png"
+               style="push"
+               tooltip="Opens the Data Export Wizard">
+            <parameter
+                  name="xstampp.commandParameter.openwizard"
+                  value="astpa.stepData">
             </parameter>
          </command>
       </menuContribution>
@@ -915,6 +999,10 @@
             provider="xstampp.astpa.util.CSConnectionModeProvider">
          <variable
                name="xstampp.astpa.connectionMode"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="xstampp.astpa.ProcessModelBorder"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>

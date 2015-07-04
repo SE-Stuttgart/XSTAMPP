@@ -249,6 +249,10 @@
                   style="push">
             </command>
          </toolbar>
+         <separator
+               name="xstampp.toolbar"
+               visible="false">
+         </separator>
       </menuContribution>
       <menuContribution
             allPopups="true"
@@ -830,6 +834,13 @@
          id="xstampp.navigation.context"
          name="navigation context">
    </context>
+</extension>
+<extension
+      point="org.eclipse.ui.commandImages">
+   <image
+         commandId="xstampp.command.openWizard"
+         icon="icons/eclipse/run_exc.gif">
+   </image>
 </extension>
 
 
