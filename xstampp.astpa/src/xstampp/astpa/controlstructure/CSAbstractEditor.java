@@ -74,6 +74,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -100,6 +101,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
@@ -110,6 +112,7 @@ import xstampp.astpa.controlstructure.utilities.CSPalettePreferences;
 import xstampp.astpa.controlstructure.utilities.CSTemplateTransferDropTargetListener;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.preferences.IAstpaPreferences;
 import xstampp.astpa.util.jobs.CSExportJob;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -131,7 +134,7 @@ import xstampp.util.STPAPluginUtils;
  * 
  */
 public abstract class CSAbstractEditor extends StandartEditorPart implements
-		IControlStructureEditor,IZoomContributor {
+		IControlStructureEditor,IZoomContributor, IPropertyChangeListener {
 
 
 
@@ -233,6 +236,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 		}
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
+		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	protected void createGraphicalViewer(Composite parent) {
@@ -765,6 +769,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	@Override
 	public void dispose() {
+		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		this.getCommandStack().removeCommandStackListener(this);
 		this.modelInterface.deleteObserver(this);
 		this.getSite().getWorkbenchWindow().getSelectionService()
@@ -1001,6 +1006,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	}
 	
+	@Override
+	public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
+		if(event.getProperty().equals(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER) && this instanceof CSEditorWithPM){
+			getGraphicalControl().redraw();
+		}
+	}
 	@Override
 	public Object getProperty(String propertyString){
 		return getGraphicalViewer().getProperty(propertyString);

@@ -32,6 +32,7 @@ public class ControlStructurePreferences extends FieldEditorPreferencePage
 implements IWorkbenchPreferencePage {
 
 	private BooleanFieldEditor ConnectorSwitch;
+	private BooleanFieldEditor ProcessModelBorderSwitch;
 	private ColorFieldEditor CSFontColor;
 	private FontFieldEditor csLabelFont;
 	private ColorFieldEditor CSSensorDeco;
@@ -85,6 +86,10 @@ implements IWorkbenchPreferencePage {
 		this.ConnectorSwitch = new BooleanFieldEditor(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, "Activate manual connection mode",
 						this.getFieldEditorParent());
 		this.addField(this.ConnectorSwitch);
+		
+		this.ProcessModelBorderSwitch = new BooleanFieldEditor(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, "Show the border of the process Model Variables",
+						this.getFieldEditorParent());
+		this.addField(this.ProcessModelBorderSwitch);
 	}
 
 	@Override
@@ -96,6 +101,7 @@ implements IWorkbenchPreferencePage {
 		this.CSSensorDeco.store();
 		this.CSActuatorDeco.store();
 		this.ConnectorSwitch.store();
+		this.ProcessModelBorderSwitch.store();
 		return super.performOk();
 	}
 	

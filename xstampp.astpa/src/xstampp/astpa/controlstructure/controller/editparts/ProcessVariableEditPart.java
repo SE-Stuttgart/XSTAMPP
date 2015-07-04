@@ -15,15 +15,19 @@ package xstampp.astpa.controlstructure.controller.editparts;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.swt.SWT;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.preferences.IAstpaPreferences;
 
 /**
  * 
@@ -53,7 +57,16 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 	protected IFigure createFigure() {
 		IControlStructureFigure tmpFigure = new ProcessModelFigure(this.getId(),
 				ProcessVariableEditPart.TOP_OFFSET);
-		tmpFigure.setBorder(new LineBorder(1));
+		LineBorder border= new LineBorder(1){
+			@Override
+			public void paint(IFigure figure, Graphics graphics, Insets insets) {
+				// TODO Auto-generated method stub
+				if(Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
+					super.paint(figure, graphics, insets);
+				}
+			}
+		};
+		tmpFigure.setBorder(border);
 		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
 		tmpFigure.getTextField().setLineVisible(true);
 		tmpFigure

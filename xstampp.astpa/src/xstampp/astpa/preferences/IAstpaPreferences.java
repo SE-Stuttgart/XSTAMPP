@@ -44,4 +44,10 @@ public interface IAstpaPreferences {
 	 * @author Lukas Balzer
 	 */
 	String CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS="ConnectionMode"; //$NON-NLS-1$ 
+	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 */
+	String CONTROLSTRUCTURE_PROCESS_MODEL_BORDER="ShowProcessModelBorder"; //$NON-NLS-1$ 
 }

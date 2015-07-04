@@ -11,12 +11,15 @@ import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.preferences.IAstpaPreferences;
 
 public class CSConnectionModeProvider extends AbstractSourceProvider implements IPropertyChangeListener{
 	public static final String CONNECTION_MODE= "xstampp.astpa.connectionMode";
+	public static final String PROCESS_MODEL_BORDER= "xstampp.astpa.ProcessModelBorder";
+	
 	public CSConnectionModeProvider() {
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
@@ -36,24 +39,31 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 		}else{
 			map.put(CONNECTION_MODE, Boolean.FALSE);
 		}
+		f =Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER); 
+		map.put(PROCESS_MODEL_BORDER, f);
 		return map;
 	}
 
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[]{CONNECTION_MODE};
+		return new String[]{CONNECTION_MODE,PROCESS_MODEL_BORDER};
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if(event.getNewValue() instanceof Boolean){
-		boolean f=(boolean) event.getNewValue();
-		fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.CONNECTION_MODE,f);
-		IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if(part instanceof IControlStructureEditor){
-			RootEditPart editpart = (RootEditPart) ((IControlStructureEditor)part).getGraphicalViewer().getContents();
-			editpart.setAnchorsGrid(!f);
-		} 
+		if(event.getProperty().equals(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+			boolean newValue=(boolean) event.getNewValue();
+			fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.CONNECTION_MODE,newValue);
+			IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			if(part instanceof IControlStructureEditor){
+				RootEditPart editpart = (RootEditPart) ((IControlStructureEditor)part).getGraphicalViewer().getContents();
+				editpart.setAnchorsGrid(!newValue);
+			}
+		}else if(event.getProperty().equals(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
+
+			boolean newValue=(boolean) event.getNewValue();
+			fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.PROCESS_MODEL_BORDER,newValue);
+			
 		}
 	}
 

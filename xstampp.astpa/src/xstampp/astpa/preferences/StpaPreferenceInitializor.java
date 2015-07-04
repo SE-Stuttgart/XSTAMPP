@@ -65,6 +65,7 @@ public class StpaPreferenceInitializor extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(this.store, IAstpaPreferences.CONTROLSTRUCTURE_SENSOR_COLOR,
 				   ColorConstants.green.getRGB());
 		this.store.setDefault(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, true);
+		this.store.setDefault(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, true);
 
 	}
 	
