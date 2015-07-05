@@ -79,36 +79,20 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="testplugin.TestPerspective"
+            fixed="false"
             id="TestPlugin.perspective1"
             name="Test">
       </perspective>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="TestPlugin.perspective1">
-         <perspectiveShortcut
-               id="xstampp.defaultPerspective">
-         </perspectiveShortcut>
-         <view
-               closeable="false"
-               id="astpa.explorer"
-               minimized="false"
-               ratio="0.3f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               visible="true">
-         </view>
-         <view
-               id="astpa.Welcome"
-               minimized="false"
-               ratio="0.2f"
-               relationship="bottom"
-               relative="astpa.explorer"
-               visible="true">
-         </view>
-      </perspectiveExtension>
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="testplugin.editors.TestView"
+            id="TestPlugin.view1"
+            name="name"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>

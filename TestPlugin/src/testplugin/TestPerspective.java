@@ -1,6 +1,7 @@
 package testplugin;
 
 import org.apache.log4j.Logger;
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.internal.Perspective;
@@ -12,14 +13,16 @@ public class TestPerspective implements IPerspectiveFactory {
 
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
-		TestPerspective.LOGGER.debug("Setup Test perspective"); //$NON-NLS-1$
-		layout.setFixed(false);
 		layout.setEditorAreaVisible(true);
-//		layout.addView("astpa.Welcome", IPageLayout.LEFT,
-//				0.3f, "astpa.explorer");
-//		layout.addView(
-//				"astpa.explorer", IPageLayout.LEFT, 0.2f, layout.getEditorArea()); //$NON-NLS-1$
-//		layout.getViewLayout("astpa.explorer").setCloseable(false);
+		layout.setFixed(false);
+		IFolderLayout consoleFolder = layout.createFolder("folder", 
+	            IPageLayout.BOTTOM, 0.75f,  layout.getEditorArea());
+		IFolderLayout naviFolder = layout.createFolder("navi", 
+	            IPageLayout.LEFT, 0.3f,  layout.getEditorArea());
+		
+		naviFolder.addView("astpa.explorer");
+
+		consoleFolder.addView("astpa.Welcome");
 	
 	}
 }

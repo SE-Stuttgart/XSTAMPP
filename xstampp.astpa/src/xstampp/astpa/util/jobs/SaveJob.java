@@ -120,9 +120,6 @@ class MyEscapeHandler implements CharacterEscapeHandler{
 	    String string = new String(ch);
 	    String sub = string.substring(start, start+length);
 	    int limit = start + length;
-	    if(sub.contains("ü")){
-	    	System.out.println();
-	    }
 	    
 	    sub = StringEscapeUtils.ESCAPE_HTML4.translate(sub);
 	    if (start != limit) {
