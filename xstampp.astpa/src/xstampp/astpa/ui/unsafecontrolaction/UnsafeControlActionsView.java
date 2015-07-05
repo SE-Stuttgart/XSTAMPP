@@ -49,7 +49,6 @@ import xstampp.astpa.ui.common.grid.GridCellColored;
 import xstampp.astpa.ui.common.grid.GridCellLinking;
 import xstampp.astpa.ui.common.grid.GridCellText;
 import xstampp.astpa.ui.common.grid.GridCellTextEditor;
-import xstampp.astpa.ui.common.grid.GridCellTextEditor.IEditorListener;
 import xstampp.astpa.ui.common.grid.GridRow;
 import xstampp.astpa.ui.common.grid.GridWrapper;
 import xstampp.astpa.ui.common.grid.IGridCell;
@@ -94,10 +93,11 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	private Map<UUID,String> descriptionsToUUIDs = new HashMap<>();
 	private GridWrapper grid;
 
-	private class UCADeleteListener implements IEditorListener{
+	private class UnsafeControlActionCell extends GridCellTextEditor{
 
 		private UUID unsafeControlAction;
-		public UCADeleteListener(UUID uca) {
+		public UnsafeControlActionCell(GridWrapper grid,String initialText,UUID uca) {
+			super(grid, initialText, true);
 			this.unsafeControlAction = uca;
 		}
 		@Override
@@ -116,11 +116,11 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 		}
 		
 		public UUID getUCAId(){
-			return unsafeControlAction;
+			return this.unsafeControlAction;
 		}
 		@Override
 		public void updateDataModel(String description) {
-			UnsafeControlActionsView.this.descriptionsToUUIDs.put(unsafeControlAction,description);
+			UnsafeControlActionsView.this.descriptionsToUUIDs.put(this.unsafeControlAction,description);
 		}
 	}
 
@@ -218,9 +218,9 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 			for (int i = 0; i < selected.size(); i++) {
 				IGridCell cell = selected.get(i);
 
-				if (cell instanceof GridCellTextEditor) {
-					GridCellTextEditor editor= ((GridCellTextEditor) cell);
-					UUID ucaID=((UCADeleteListener)editor.getEditorListener()).getUCAId();
+				if (cell instanceof UnsafeControlActionCell) {
+					UnsafeControlActionCell editor= ((UnsafeControlActionCell) cell);
+					UUID ucaID=editor.getUCAId();
 					UnsafeControlActionsView.this.ucaInterface
 							.removeUnsafeControlAction(ucaID);
 				}
@@ -297,9 +297,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 				// set descriptions
 				if (allNotGiven.size() > i) {
 					notGivenUca = allNotGiven.get(i);
-					GridCellTextEditor editor = new GridCellTextEditor(this.grid,notGivenUca.getDescription(),
-							notGivenUca);
-					editor.addDeleteListener(new UCADeleteListener(notGivenUca.getId()));
+					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,notGivenUca.getDescription(),
+							notGivenUca.getId());
 					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							notGivenUca.getId(), this.ucaContentProvider,
@@ -319,10 +318,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 
 				if (allIncorrect.size() > i) {
 					incorrectUca = allIncorrect.get(i);
-
-					GridCellTextEditor editor = new GridCellTextEditor(this.grid,incorrectUca.getDescription(),
-							incorrectUca);
-					editor.addDeleteListener(new UCADeleteListener(incorrectUca.getId()));
+					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,incorrectUca.getDescription(),
+							incorrectUca.getId());
 					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							incorrectUca.getId(), this.ucaContentProvider,
@@ -342,10 +339,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 
 				if (allWrongTiming.size() > i) {
 					timingUca = allWrongTiming.get(i);
-
-					GridCellTextEditor editor = new GridCellTextEditor(this.grid,timingUca.getDescription(),
-							timingUca);
-					editor.addDeleteListener(new UCADeleteListener(timingUca.getId()));
+					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,timingUca.getDescription(),
+							timingUca.getId());
 					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							timingUca.getId(), this.ucaContentProvider,
@@ -365,9 +360,8 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 
 				if (allTooSoon.size() > i) {
 					tooSoonUca = allTooSoon.get(i);
-					GridCellTextEditor editor = new GridCellTextEditor(this.grid,tooSoonUca.getDescription(),
-							tooSoonUca);
-					editor.addDeleteListener(new UCADeleteListener(tooSoonUca.getId()));
+					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
+							tooSoonUca.getId());
 					ucaRow.addCell(editor);
 					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 							tooSoonUca.getId(), this.ucaContentProvider,

@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.controlstructure.utilities.CSDirectEditor;
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
 /**
@@ -43,7 +42,7 @@ import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
  * @author Patrick Wickenhaeuser, Benedikt Markt
  * 
  */
-public class GridCellTextEditor extends AbstractGridCell {
+public abstract class GridCellTextEditor extends AbstractGridCell {
 
 	private Rectangle editField;
 	/**
@@ -58,8 +57,8 @@ public class GridCellTextEditor extends AbstractGridCell {
 	private boolean hasFocus = false;
 	private Color bgColor;
 	private CSDirectEditor editor;
-	private IEditorListener deleteListener;
 	private Rectangle deleteSpace;
+	private boolean showDelete;
 	
 	
 	private class TextLocator implements CellEditorLocator{
@@ -76,10 +75,11 @@ public class GridCellTextEditor extends AbstractGridCell {
 	 * @author Patrick Wickenhaeuser
 	 * @param initialText
 	 *            the intitial text in the editor.
-	 * @param uca 
+	 * @param showDelete 
 	 * 
 	 */
-	public GridCellTextEditor(GridWrapper grid,String initialText,IUnsafeControlAction uca) {
+	public GridCellTextEditor(GridWrapper grid,String initialText,Boolean showDelete) {
+		this.showDelete=showDelete;
 		this.grid=grid;
 		this.currentText = initialText;
 		this.editField= new Rectangle(0, 0, -1, DEFAULT_CELL_HEIGHT);
@@ -99,11 +99,15 @@ public class GridCellTextEditor extends AbstractGridCell {
 		Color fgColor = gc.getForeground();
 		gc.setForeground(ColorConstants.black);
 		FontMetrics metrics= gc.getFontMetrics();
+		int buttonCollum=0;
 		//calculate the avaiable space and performe a wrap
-		
+		if(this.showDelete){
+			this.deleteSpace = new Rectangle(bounds.x + bounds.width -16,bounds.y +  bounds.height/2 - 8,16,16);
+			buttonCollum=this.deleteSpace.width;
+			gc.drawImage(GridWrapper.getDeleteButton16(),this.deleteSpace.x,this.deleteSpace.y);
+		}
 		int line_height = bounds.y;
 		String[] words= this.currentText.split(" ");
-
 		String line="";
 		String tmpLine=words[0];
 		String space = "";
@@ -133,7 +137,7 @@ public class GridCellTextEditor extends AbstractGridCell {
 				carryOver= true;
 			}
 			
-			if(gc.stringExtent(line + space + tmpLine).x > bounds.width - 16){
+			if(gc.stringExtent(line + space + tmpLine).x >= bounds.width -2 - buttonCollum){
 							
 				gc.drawString(line, bounds.x + 2 ,line_height);			
 				line_height += metrics.getHeight();	
@@ -160,12 +164,10 @@ public class GridCellTextEditor extends AbstractGridCell {
 		}
 		line_height += 2;
 		
-		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-16,line_height - bounds.y);
+		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-buttonCollum,line_height - bounds.y);
 		if(bounds.height + 2< this.editField.height){
 			this.grid.resizeRows();
 		}
-		this.deleteSpace = new Rectangle(bounds.x + bounds.width -16,bounds.y +  bounds.height/2 - 8,16,16);
-		gc.drawImage(GridWrapper.getDeleteButton16(),this.deleteSpace.x,this.deleteSpace.y);
 		// restore bg color
 		gc.setBackground(this.bgColor);
 		// restore fg color
@@ -178,16 +180,6 @@ public class GridCellTextEditor extends AbstractGridCell {
 		this.activate();
 	}
 
-	/**
-	 * Gets called when the swt.text gets focus
-	 * 
-	 * @author Benedikt Markt
-	 * 
-	 */
-	public void onEditorFocus() {
-		// intentionally empty
-	}
-
 	@Override
 	public int getPreferredHeight() {
 		return  this.editField.height;
@@ -195,7 +187,6 @@ public class GridCellTextEditor extends AbstractGridCell {
 
 	@Override
 	public Color getBackgroundColor(GridCellRenderer renderer, GC gc) {
-		// TODO Auto-generated method stub
 		Color color = super.getBackgroundColor(renderer, gc);
 		this.bgColor = color;
 		if(this.editor != null && !this.editor.getControl().isDisposed()){
@@ -219,7 +210,7 @@ public class GridCellTextEditor extends AbstractGridCell {
 				GridCellTextEditor.this.currentText = ((Text)e.widget).getText();
 				GridCellTextEditor.this.editField = ((Text)e.widget).getBounds();
 				GridCellTextEditor.this.grid.resizeRows();
-				GridCellTextEditor.this.getEditorListener().updateDataModel(((Text)e.widget).getText());
+				updateDataModel(((Text)e.widget).getText());
 			}
 		});
 		this.editor.addModifyListener(new ModifyListener() {
@@ -232,18 +223,6 @@ public class GridCellTextEditor extends AbstractGridCell {
 				((Text)e.widget).setBounds(bounds);
 			}
 		});
-	}
-	/**
-	 * Gets called when the text changed and the cell lost focus.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 * 
-	 * @param newText
-	 *            the new text.
-	 * 
-	 */
-	public void onTextChanged(@SuppressWarnings("unused") String newText) {
-		// intentionally empty
 	}
 
 	@Override
@@ -273,27 +252,14 @@ public class GridCellTextEditor extends AbstractGridCell {
 	}
 	@Override
 	public void onMouseUp(MouseEvent e) {
-		if(GridCellTextEditor.this.deleteListener != null && GridCellTextEditor.this.deleteSpace.contains(e.x,e.y)){
-			GridCellTextEditor.this.deleteListener.delete();
+		if(this.showDelete && GridCellTextEditor.this.deleteSpace.contains(e.x,e.y)){
+			delete();
 		}
 		super.onMouseUp(e);
 	}
-	/**
-	 * adds a listener that is called when the user presses the delete Button
-	 * @author Lukas
-	 *
-	 * @param listener
-	 */
-	public void addDeleteListener(IEditorListener listener) {
-		this.deleteListener = listener;
-	}
 
-	public IEditorListener getEditorListener() {
-		return this.deleteListener;
-	}
 	
-	public interface IEditorListener{
-		void delete();
-		void updateDataModel(String description);
-	}
+	public abstract void delete();
+	public abstract void updateDataModel(String description);
+	
 }
