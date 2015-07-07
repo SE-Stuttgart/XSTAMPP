@@ -29,15 +29,18 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -45,23 +48,19 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.causalfactor.CausalFactor;
-import xstampp.astpa.model.causalfactor.CausalSafetyConstraint;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.ui.common.grid.AutoCompleteField;
 import xstampp.astpa.ui.common.grid.CellButton;
 import xstampp.astpa.ui.common.grid.GridCellButton;
 import xstampp.astpa.ui.common.grid.GridCellColored;
-import xstampp.astpa.ui.common.grid.GridCellEditor;
 import xstampp.astpa.ui.common.grid.GridCellLinking;
-import xstampp.astpa.ui.common.grid.GridCellRenderer;
 import xstampp.astpa.ui.common.grid.GridCellText;
 import xstampp.astpa.ui.common.grid.GridCellTextEditor;
 import xstampp.astpa.ui.common.grid.GridRow;
 import xstampp.astpa.ui.common.grid.GridWrapper;
-import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -80,7 +79,7 @@ public class CausalFactorsView extends StandartEditorPart{
 
 	private static final String CONFIRMATION_TITLE = Messages.DeleteCausalFactor;
 	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheCF;
-
+	private static final String CAUSALFACTORS= "Causal Factors";
 	private Map<UUID,CausalFactor> factorsToUUIDs;
 	private class SafetyConstraintEditorCell extends GridCellTextEditor {
 
@@ -102,14 +101,18 @@ public class CausalFactorsView extends StandartEditorPart{
 
 		@Override
 		public void delete() {
-			// TODO Auto-generated method stub
+			// a safety constraint cannot be deleted
 			
+		}
+
+		@Override
+		public UUID getUUID() {
+			return this.safetyConstraintId;
 		}
 	}
 
 	private class NoteCell extends GridCellTextEditor {
 
-		private ICausalFactor factor;
 		private UUID factorId;
 		private UUID safetyConstraintId;
 
@@ -117,7 +120,6 @@ public class CausalFactorsView extends StandartEditorPart{
 				ICausalFactor factor) {
 			super(gridWrapper, initialText,false);
 			this.factorId = factor.getId();
-			this.factor = factor;
 			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
@@ -127,17 +129,19 @@ public class CausalFactorsView extends StandartEditorPart{
 		}
 
 		@Override
-		public void updateDataModel(String description) {
-			CausalFactorsView.this.addOrGetFactor(this.factorId, this.safetyConstraintId).setNote(description);
+		public void updateDataModel(String newValue) {
+			CausalFactorsView.this.addOrGetFactor(this.factorId, this.safetyConstraintId).setNote(newValue);
+		}
+
+		@Override
+		public UUID getUUID() {
+			return this.factorId;
 		}
 	}
 
 	private class CausalFactorCell extends GridCellTextEditor {
 
 		private UUID factorID;
-		
-		private Label deleteButton = null;
-
 		private UUID safetyConstraintId;
 
 		public CausalFactorCell(GridWrapper gridWrapper, String initialText,
@@ -166,8 +170,8 @@ public class CausalFactorsView extends StandartEditorPart{
 		}
 
 		@Override
-		public void updateDataModel(String description) {
-			CausalFactorsView.this.addOrGetFactor(this.factorID, this.safetyConstraintId).setText(description);
+		public void updateDataModel(String newValue) {
+			CausalFactorsView.this.addOrGetFactor(this.factorID, this.safetyConstraintId).setText(newValue);
 		}
 	}
 
@@ -264,6 +268,9 @@ public class CausalFactorsView extends StandartEditorPart{
 	private GridWrapper grid;
 
 	private CausalContentProvider causalContentProvider;
+	private Text filterText;
+	private Combo componentCombo;
+	private boolean lockreload;
 
 	/**
 	 * Ctor.
@@ -301,10 +308,45 @@ public class CausalFactorsView extends StandartEditorPart{
 	public void createPartControl(Composite parent) {
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
+		parent.setLayout(new GridLayout(1, false));
+		
+		Composite filter= new Composite(parent, SWT.None);
+		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		filter.setLayout(new GridLayout(3, false));
+		
+		Label label= new Label(filter,SWT.LEFT);
+		label.setText("Component Filter");
+		this.componentCombo = new Combo(filter, SWT.READ_ONLY|SWT.None);
+		this.componentCombo.add("ALL");
+		this.componentCombo.add(ComponentType.ACTUATOR.name());
+		this.componentCombo.add(ComponentType.CONTROLLER.name());
+		this.componentCombo.add(ComponentType.CONTROLLED_PROCESS.name());
+		this.componentCombo.add(ComponentType.SENSOR.name());
+		this.componentCombo.add(CAUSALFACTORS);
+		this.componentCombo.select(0);
+		this.componentCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				reloadTable();
+			}
+		});
+		this.filterText= new Text(filter, SWT.LEFT |SWT.BORDER);
+		this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		this.filterText.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.character == 13){
+					reloadTable();
+				}
+			}
+		});
 		this.grid = new GridWrapper(parent, new String[] { Messages.Component,
 				Messages.CausalFactors, Messages.HazardLinks,
 				Messages.SafetyConstraint, Messages.NotesSlashRationale });
-
+		this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
 		this.reloadTable();
 	}
 
@@ -345,7 +387,25 @@ public class CausalFactorsView extends StandartEditorPart{
 			CausalFactorsView.this.grid.activateCell(factorId);
 		}
 	}
-
+	private boolean isFiltered(ICausalFactor factor) {
+		return factor.getText().startsWith(this.filterText.getText());
+	}
+	
+	private boolean isFiltered(ICausalComponent component) {
+		boolean filter=component.getText().startsWith(this.filterText.getText());
+		if(this.componentCombo.getText().equals("ALL")){
+			return filter;
+		}
+		else if(this.componentCombo.getText().equals(CAUSALFACTORS)){
+			for(ICausalFactor factor: component.getCausalFactors()){
+				if(isFiltered(factor)){
+					return true;
+				}
+			}
+			return false;
+		}
+		return filter && component.getComponentType().name().equals(this.componentCombo.getText());
+	}
 	/**
 	 * Fill the table.
 	 * 
@@ -356,6 +416,9 @@ public class CausalFactorsView extends StandartEditorPart{
 	 */
 	private void fillTable(List<ICausalComponent> components) {
 		for (ICausalComponent component : components) {
+			if(!isFiltered(component)){
+				continue;
+			}
 			GridRow csRow = new GridRow();
 			GridCellText causalComp = new GridCellText(component.getText());
 			csRow.addCell(causalComp);
@@ -370,6 +433,9 @@ public class CausalFactorsView extends StandartEditorPart{
 			this.grid.addRow(csRow);
 
 			for (ICausalFactor factor : component.getCausalFactors()) {
+				if(!isFiltered(factor)){
+					continue;
+				}
 				GridRow childRow = new GridRow();
 				childRow.addCell(new CausalFactorCell(this.grid, factor
 						.getText(), factor));
@@ -421,11 +487,30 @@ public class CausalFactorsView extends StandartEditorPart{
 	 * 
 	 */
 	private void reloadTable() {
-		this.grid.clearRows();
-		this.fillTable(this.dataInterface.getCausalComponents());
-		this.grid.reloadTable();
+		if(!this.lockreload){
+			this.lockreload = true;
+			for(UUID factorID: this.factorsToUUIDs.keySet()){
+				this.dataInterface.setCausalFactorText(factorID, this.factorsToUUIDs.get(factorID).getText());
+				this.dataInterface.setNoteText(factorID, this.factorsToUUIDs.get(factorID).getNote());
+				this.dataInterface.setCausalSafetyConstraintText(this.factorsToUUIDs.get(factorID).getSafetyConstraint().getId(),
+						this.factorsToUUIDs.get(factorID).getSafetyConstraint().getText());
+			}
+	
+			this.factorsToUUIDs = new HashMap<>();
+			this.grid.clearRows();
+			this.fillTable(this.dataInterface.getCausalComponents());
+			this.grid.reloadTable();
+			this.lockreload = false;
+		}
 	}
 
+	/**
+	 * sets the data model object for this editor
+	 *
+	 * @author Lukas
+	 *
+	 * @param dataInterface the data model object
+	 */
 	public void setDataModelInterface(IDataModel dataInterface) {
 		this.dataInterface = (ICausalFactorDataModel) dataInterface;
 		this.dataInterface.addObserver(this);
@@ -453,11 +538,16 @@ public class CausalFactorsView extends StandartEditorPart{
 	
 	@Override
 	public void partBroughtToTop(IWorkbenchPart arg0) {
-		for(UUID factorID: this.factorsToUUIDs.keySet()){
-			this.dataInterface.setCausalFactorText(factorID, this.factorsToUUIDs.get(factorID).getText());
-			this.dataInterface.setNoteText(factorID, this.factorsToUUIDs.get(factorID).getNote());
-			this.dataInterface.setCausalSafetyConstraintText(this.factorsToUUIDs.get(factorID).getSafetyConstraint().getId(),
-					this.factorsToUUIDs.get(factorID).getSafetyConstraint().getText());
+		if(!this.lockreload && this.factorsToUUIDs.size() > 0){
+			this.lockreload = true;
+			for(UUID factorID: this.factorsToUUIDs.keySet()){
+				this.dataInterface.setCausalFactorText(factorID, this.factorsToUUIDs.get(factorID).getText());
+				this.dataInterface.setNoteText(factorID, this.factorsToUUIDs.get(factorID).getNote());
+				this.dataInterface.setCausalSafetyConstraintText(this.factorsToUUIDs.get(factorID).getSafetyConstraint().getId(),
+						this.factorsToUUIDs.get(factorID).getSafetyConstraint().getText());
+			}
+			this.lockreload = false;
+			this.factorsToUUIDs = new HashMap<>();
 		}
 		super.partBroughtToTop(arg0);
 	}
