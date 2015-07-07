@@ -4,8 +4,10 @@ import messages.Messages;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.swt.SWT;
 
+import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -62,5 +64,10 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 				modelTemp.getControlActionLink(), modelTemp.getText());
 
 	}
-
+	@Override
+	protected void createEditPolicies() {
+		super.createEditPolicies();
+		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+	}
 }
