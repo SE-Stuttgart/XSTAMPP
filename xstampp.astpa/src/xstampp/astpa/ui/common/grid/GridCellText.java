@@ -74,7 +74,6 @@ public class GridCellText extends AbstractGridCell {
 		FontMetrics metrics= gc.getFontMetrics();
 		//calculate the avaiable space and performe a wrap
 		int char_wrapper= bounds.width/metrics.getAverageCharWidth() -1;
-		int lines = this.text.length() / char_wrapper;
 		int start = 0;
 		int end = Math.min(this.text.length(),char_wrapper);
 		int line_height = bounds.y;

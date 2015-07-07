@@ -13,8 +13,6 @@
 
 package xstampp.astpa.ui.common.grid;
 
-import java.util.UUID;
-
 import messages.Messages;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -26,6 +24,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
@@ -33,8 +32,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.controlstructure.utilities.CSDirectEditor;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
+import xstampp.astpa.util.DirectEditor;
 
 /**
  * A cell that contains an SWT text editor.
@@ -42,7 +41,7 @@ import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
  * @author Patrick Wickenhaeuser, Benedikt Markt
  * 
  */
-public abstract class GridCellTextEditor extends AbstractGridCell {
+public abstract class GridCellTextEditor extends AbstractGridCell{
 
 	private Rectangle editField;
 	/**
@@ -54,9 +53,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
 	private GridWrapper grid = null;
 	private String currentText = ""; //$NON-NLS-1$
-	private boolean hasFocus = false;
 	private Color bgColor;
-	private CSDirectEditor editor;
+	private DirectEditor editor;
 	private Rectangle deleteSpace;
 	private boolean showDelete;
 	
@@ -73,27 +71,40 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 	 * Ctor.
 	 * 
 	 * @author Patrick Wickenhaeuser
+	 * @param grid The grid canvas, this is needed to show the direct editor
 	 * @param initialText
 	 *            the intitial text in the editor.
-	 * @param showDelete 
+	 * @param showDelete if the delete button should be drawn in this component
 	 * 
 	 */
 	public GridCellTextEditor(GridWrapper grid,String initialText,Boolean showDelete) {
 		this.showDelete=showDelete;
 		this.grid=grid;
-		this.currentText = initialText;
-		this.editField= new Rectangle(0, 0, -1, DEFAULT_CELL_HEIGHT);
+		
+		if (initialText.trim().isEmpty()) {
+			this.currentText = GridCellEditor.EMPTY_CELL_TEXT;
+		} else {
+			this.currentText = initialText;
+		}
+		
+		this.editField= new Rectangle(0, 0, -1, 2 * DEFAULT_CELL_HEIGHT);
+		grid.getGrid().addMouseWheelListener(new MouseWheelListener() {
+			
+			@Override
+			public void mouseScrolled(MouseEvent e) {
+				if(GridCellTextEditor.this.editor != null && !GridCellTextEditor.this.editor.getControl().isDisposed()){
+				GridCellTextEditor.this.editor.getControl().dispose();
+			}
+			}
+		});
 		
 	}
 
 	@Override
 	public void paint(GridCellRenderer renderer, GC gc,
 			NebulaGridRowWrapper item) {
-
-
 		super.paint(renderer, gc, item);
 		this.bgColor = gc.getBackground();
-
 		Rectangle bounds = renderer.getDrawBounds();
 		gc.setBackground(this.getBackgroundColor(renderer, gc));
 		Color fgColor = gc.getForeground();
@@ -114,6 +125,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 		boolean first = true;
 		boolean carryOver=false;
 		int i=1;
+		int width=bounds.width -2 - buttonCollum;
 		while(i<= words.length){
 			if(!first){
 				space= " "; 
@@ -135,9 +147,14 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 				tmpLine = tmpLine.substring(0,tmpLine.indexOf(System.lineSeparator()));
 				first = line.isEmpty();
 				carryOver= true;
-			}
+			}else if(gc.stringExtent(tmpLine).x >= width){
+				int end= wrap(gc, tmpLine, width-1, 0,tmpLine.length()-1, 0,1,1);
+				gc.drawString(tmpLine.substring(0, end), bounds.x + 2 ,line_height);			
+				line_height += metrics.getHeight();	
+				tmpLine=tmpLine.substring(end);
+			}else
 			
-			if(gc.stringExtent(line + space + tmpLine).x >= bounds.width -2 - buttonCollum){
+			if(gc.stringExtent(line + space + tmpLine).x >= width){
 							
 				gc.drawString(line, bounds.x + 2 ,line_height);			
 				line_height += metrics.getHeight();	
@@ -158,6 +175,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 				i++;
 			}else{
 				line += space + tmpLine;
+				
 				tmpLine = words[i++];
 				first=false;
 			}
@@ -174,6 +192,18 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 		gc.setForeground(fgColor);
 	}
 
+	private int wrap(GC gc,String line, int width,int start,int end,int i,double res,double ch){
+		double _res;
+		double _end=res * end;
+		if(gc.stringExtent(line.substring(start, (int) (_end))).x <= width && ch > 0.1 ){
+			_res = Math.min(1, res + ch * 0.5);
+			return wrap(gc, line, width, start, end,i+1,_res,ch/2);
+		}else if(gc.stringExtent(line.substring(start, (int) (_end))).x > width && ch> 0.1){
+			_res = Math.min(1, res - ch * 0.5);
+			return wrap(gc, line, width, start, end,i+1,_res,ch/2);
+		}
+		return (int) _end;
+	}
 	@Override
 	public void onMouseDown(MouseEvent e,
 			org.eclipse.swt.graphics.Point relativeMouse, Rectangle cellBounds) {
@@ -182,7 +212,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
 	@Override
 	public int getPreferredHeight() {
-		return  this.editField.height;
+		return Math.max(DEFAULT_CELL_HEIGHT*2,  this.editField.height);
 	}
 
 	@Override
@@ -196,7 +226,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 	}
 	@Override
 	public void activate() {
-		this.editor = new CSDirectEditor(this.grid.getGrid());
+		this.editor = new DirectEditor(this.grid.getGrid(), SWT.NONE);
 		this.editor.activate(new TextLocator());
 		this.editor.setTextColor(ColorConstants.black);
 		this.editor.getControl().setBackground(this.bgColor);
@@ -235,21 +265,16 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
 	@Override
 	public void addCellButton(CellButton button) {
-		// TODO Auto-generated method stub
-		
+		//the delete Button is aded manually to allow a better handling of the delete process
 	}
 
 	@Override
 	public void clearCellButtons() {
-		// TODO Auto-generated method stub
+		// not needed either
 		
 	}
 
-	@Override
-	public UUID getUUID() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	@Override
 	public void onMouseUp(MouseEvent e) {
 		if(this.showDelete && GridCellTextEditor.this.deleteSpace.contains(e.x,e.y)){
@@ -257,9 +282,22 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 		}
 		super.onMouseUp(e);
 	}
-
 	
+	/**
+	 *The abstract methode which is linked with the delete button
+	 *note that if showDelete is set to false, this function is never called
+	 *
+	 * @author Lukas
+	 *
+	 */
 	public abstract void delete();
-	public abstract void updateDataModel(String description);
+	
+	/**
+	 * This methode is called when ever a change is made to the displayed data
+	 * @author Lukas
+	 *
+	 * @param newValue the changed text
+	 */
+	public abstract void updateDataModel(String newValue);
 	
 }
