@@ -28,15 +28,21 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
 import xstampp.astpa.model.controlaction.UnsafeControlActionType;
@@ -56,15 +62,13 @@ import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
-import xstampp.ui.editors.interfaces.IEditorBase;
 
 /**
  * View used to handle the unsafe control actions.
  * 
  * @author Benedikt Markt, Patrick Wickenhaeuser
  */
-public class UnsafeControlActionsView extends StandartEditorPart implements
-		IEditorBase {
+public class UnsafeControlActionsView extends StandartEditorPart{
 
 	/**
 	 * ViewPart ID.
@@ -75,14 +79,11 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	 * The log4j logger.
 	 */
 	private static final Logger LOGGER = Logger.getRootLogger();
-
 	private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
 	private static final String CONFIRMATION_TITLE = Messages.DeleteUnsafeControlAction;
 	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheUCA;
 
 	private static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
-	private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0,
-			0, 0);
 
 	/**
 	 * Interfaces to communicate with the data model.
@@ -92,6 +93,10 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	private IUnsafeControlActionDataModel ucaInterface;
 	private Map<UUID,String> descriptionsToUUIDs = new HashMap<>();
 	private GridWrapper grid;
+
+	private Text filterText;
+
+	private boolean lockreload;
 
 	private class UnsafeControlActionCell extends GridCellTextEditor{
 
@@ -115,13 +120,15 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 			}
 		}
 		
-		public UUID getUCAId(){
+		@Override
+		public UUID getUUID(){
 			return this.unsafeControlAction;
 		}
 		@Override
-		public void updateDataModel(String description) {
-			UnsafeControlActionsView.this.descriptionsToUUIDs.put(this.unsafeControlAction,description);
+		public void updateDataModel(String newValue) {
+			UnsafeControlActionsView.this.descriptionsToUUIDs.put(this.unsafeControlAction,newValue);
 		}
+		
 	}
 
 	private class AddUcaButton extends GridCellButton {
@@ -159,12 +166,41 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		UnsafeControlActionsView.LOGGER.info("createPartControl()"); //$NON-NLS-1$
-
+		parent.setLayout(new FormLayout());
+		FormData data = new FormData();
+		data.top = new FormAttachment(0);
+		data.left= new FormAttachment(0);
+		data.right= new FormAttachment(100);
+		
+		Composite filter= new Composite(parent, SWT.None);
+		filter.setLayoutData(data);
+		filter.setLayout(new GridLayout(2, false));
+		Label label= new Label(filter,SWT.LEFT);
+		label.setText("Filter");
+		this.filterText= new Text(filter, SWT.LEFT |SWT.BORDER);
+		this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		this.filterText.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.character == 13){
+					reloadTable();
+				}
+			}
+		});
+		
+		data = new FormData();
+		data.top = new FormAttachment(filter);
+		data.left= new FormAttachment(0);
+		data.right= new FormAttachment(100);
+		data.bottom = new FormAttachment(100);
 		this.grid = new GridWrapper(parent, new String[] {
 				Messages.ControlAction, Messages.NotGiven,
 				Messages.GivenIncorrectly, Messages.WrongTiming,
 				Messages.StoppedTooSoon });
 		this.grid.getGrid().setVisible(true);
+		this.grid.getGrid().setLayoutData(data);
 		this.reloadTable();
 
 		MenuManager menuMgr = new MenuManager();
@@ -220,7 +256,7 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 
 				if (cell instanceof UnsafeControlActionCell) {
 					UnsafeControlActionCell editor= ((UnsafeControlActionCell) cell);
-					UUID ucaID=editor.getUCAId();
+					UUID ucaID=editor.getUUID();
 					UnsafeControlActionsView.this.ucaInterface
 							.removeUnsafeControlAction(ucaID);
 				}
@@ -252,12 +288,14 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	}
 
 	private void fillTable(List<IControlAction> controlActions) {
-
+		
 		if (controlActions.isEmpty()) {
 			return;
 		}
-
 		for (IControlAction cAction : controlActions) {
+			if(!cAction.getTitle().startsWith(this.filterText.getText())){
+				continue;
+			}
 			GridRow controlActionRow = new GridRow();
 			this.grid.addRow(controlActionRow);
 
@@ -393,7 +431,14 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	public String getTitle() {
 		return "Unsafe Control Actions Table"; //$NON-NLS-1$
 	}
-
+	
+	/**
+	 * sets the data model object for this editor
+	 *
+	 * @author Lukas
+	 *
+	 * @param controlActionsInterface the data model object
+	 */
 	public void setDataModelInterface(IDataModel controlActionsInterface) {
 		this.ucaInterface = (IUnsafeControlActionDataModel) controlActionsInterface;
 		this.ucaInterface.addObserver(this);
@@ -402,9 +447,19 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 	}
 
 	private void reloadTable() {
-		this.grid.clearRows();
-		this.fillTable(this.ucaInterface.getAllControlActionsU());
-		this.grid.reloadTable();
+		if(!this.lockreload){
+			this.lockreload = true;
+			if(this.descriptionsToUUIDs.size() > 0){
+				for(UUID ucaID: this.descriptionsToUUIDs.keySet()){
+					this.ucaInterface.setUcaDescription(ucaID, this.descriptionsToUUIDs.get(ucaID));
+				}
+				this.descriptionsToUUIDs= new HashMap<>();
+			}
+			this.grid.clearRows();
+			this.fillTable(this.ucaInterface.getAllControlActionsU());
+			this.grid.reloadTable();
+			this.lockreload = false;
+		}
 	}
 
 	@Override
@@ -427,8 +482,14 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 
 	@Override
 	public void partBroughtToTop(IWorkbenchPart arg0) {
-		for(UUID ucaID: this.descriptionsToUUIDs.keySet()){
-			this.ucaInterface.setUcaDescription(ucaID, this.descriptionsToUUIDs.get(ucaID));
+		
+		if(!this.lockreload && this.descriptionsToUUIDs.size() > 0){
+			this.lockreload = true;
+			for(UUID ucaID: this.descriptionsToUUIDs.keySet()){
+				this.ucaInterface.setUcaDescription(ucaID, this.descriptionsToUUIDs.get(ucaID));
+			}
+			this.descriptionsToUUIDs= new HashMap<>();
+			this.lockreload = false;
 		}
 		super.partBroughtToTop(arg0);
 	}
@@ -437,4 +498,6 @@ public class UnsafeControlActionsView extends StandartEditorPart implements
 		this.ucaInterface.deleteObserver(this);
 		super.dispose();
 	}
+	
+	
 }
