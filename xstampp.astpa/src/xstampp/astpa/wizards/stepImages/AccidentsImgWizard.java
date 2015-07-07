@@ -1,11 +1,7 @@
 package xstampp.astpa.wizards.stepImages;
 
-import org.eclipse.ui.PlatformUI;
-
 import messages.Messages;
 import xstampp.astpa.ui.acchaz.AccidentsView;
-import xstampp.astpa.ui.causalfactors.CausalFactorsView;
-import xstampp.astpa.ui.sds.CSCView;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
 

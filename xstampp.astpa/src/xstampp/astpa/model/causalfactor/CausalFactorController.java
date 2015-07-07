@@ -21,10 +21,10 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import messages.Messages;
 import xstampp.astpa.model.ITableModel;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.hazacc.HazAccController;
-import messages.Messages;
 
 /**
  * Manager class for the causal factors

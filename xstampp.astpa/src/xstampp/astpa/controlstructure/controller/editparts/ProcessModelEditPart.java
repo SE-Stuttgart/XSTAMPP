@@ -25,7 +25,6 @@ import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

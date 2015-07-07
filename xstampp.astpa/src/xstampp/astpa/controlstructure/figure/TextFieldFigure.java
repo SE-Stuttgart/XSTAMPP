@@ -15,14 +15,9 @@ package xstampp.astpa.controlstructure.figure;
 
 import java.util.UUID;
 
-import org.apache.fop.render.txt.border.DashedBorderElement;
-import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 

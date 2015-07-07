@@ -11,7 +11,6 @@ import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
-import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.preferences.IAstpaPreferences;

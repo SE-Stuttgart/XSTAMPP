@@ -15,10 +15,6 @@ package xstampp.astpa.controlstructure.utilities;
 
 import java.util.List;
 
-
-
-
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -43,7 +39,6 @@ import org.eclipse.swt.widgets.Display;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.preferences.IAstpaPreferences;
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  * 

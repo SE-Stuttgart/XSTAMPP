@@ -20,7 +20,6 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Translatable;
 
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.controlstructure.figure.ProcessValueFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 

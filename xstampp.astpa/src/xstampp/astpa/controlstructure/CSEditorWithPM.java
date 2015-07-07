@@ -27,7 +27,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
-import xstampp.astpa.wizards.stepImages.ControlStructureWithPMWizard;
 
 /**
  * 

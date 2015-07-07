@@ -34,9 +34,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
-import org.eclipse.swt.widgets.Control;
 
-import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
@@ -47,12 +45,12 @@ import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.utilities.CSCellEditorLocator;
-import xstampp.astpa.controlstructure.utilities.CSDirectEditor;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.util.DirectEditor;
 
 /**
  * The CSAbstractEditPart is a child from AbstractGraphicalEditPart.
@@ -194,7 +192,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	private void performDirectEditing() {
 		CSTextLabel label = ((CSFigure) this.getFigure()).getTextField();
 		CSDirectEditManager manager = new CSDirectEditManager(this,
-				CSDirectEditor.class, new CSCellEditorLocator(label), label);
+				DirectEditor.class, new CSCellEditorLocator(label), label);
 		manager.show();
 		this.refreshVisuals();
 	}

@@ -9,7 +9,6 @@ import xstampp.astpa.ui.acchaz.AccidentsView;
 import xstampp.astpa.util.jobs.ICSVExportConstants;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.CSVExportPage;
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  * 

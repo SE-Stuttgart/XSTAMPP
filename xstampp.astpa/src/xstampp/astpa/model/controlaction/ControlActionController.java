@@ -23,6 +23,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import messages.Messages;
 import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.ITableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -30,7 +31,6 @@ import xstampp.astpa.model.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
-import messages.Messages;
 
 /**
  * Manager class for control actions.

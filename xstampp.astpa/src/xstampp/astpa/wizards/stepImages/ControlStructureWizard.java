@@ -5,7 +5,6 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.util.jobs.CSExportJob;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.ControlStructureExportPage;
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  * The Wizard for Exporting the control structure as image

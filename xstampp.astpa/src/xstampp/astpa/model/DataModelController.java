@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
@@ -77,12 +76,10 @@ import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
-import xstampp.astpa.util.jobs.STPALoadJob;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.astpa.util.jobs.SaveRunnable;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.util.AbstractLoadJob;
 
 /**
  * Data Model controller class

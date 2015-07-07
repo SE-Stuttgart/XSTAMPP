@@ -17,8 +17,8 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
 
-import xstampp.astpa.controlstructure.utilities.CSDirectEditor;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
+import xstampp.astpa.util.DirectEditor;
 
 /**
  * 
@@ -59,9 +59,9 @@ public class CSDirectEditManager extends DirectEditManager {
 
 		this.getCellEditor().setValue(initialLabelText);
 
-		((CSDirectEditor) this.getCellEditor()).setTextFont(this.label
+		((DirectEditor) this.getCellEditor()).setTextFont(this.label
 				.getFont());
-		((CSDirectEditor) this.getCellEditor()).setTextColor(this.label
+		((DirectEditor) this.getCellEditor()).setTextColor(this.label
 				.getForegroundColor());
 
 	}

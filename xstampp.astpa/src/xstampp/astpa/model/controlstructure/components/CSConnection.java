@@ -15,11 +15,9 @@ package xstampp.astpa.model.controlstructure.components;
 
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 
 /**

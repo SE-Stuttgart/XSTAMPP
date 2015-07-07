@@ -8,12 +8,8 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 
-import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
-import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
-import xstampp.astpa.controlstructure.figure.ComponentFigure;
-import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 

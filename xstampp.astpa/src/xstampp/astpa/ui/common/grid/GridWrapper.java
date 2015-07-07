@@ -408,11 +408,9 @@ public class GridWrapper {
 	public GridWrapper(Composite parent, String[] columnLabels) {
 		this.rows = new ArrayList<GridRow>();
 		this.nebulaRows = new ArrayList<NebulaGridRowWrapper>();
-
 		this.hoveredCell = null;
 
 		this.actualGrid = new Grid(parent,SWT.V_SCROLL | SWT.H_SCROLL|SWT.VIRTUAL);
-		
 		this.actualGrid.setHeaderVisible(true);
 		this.actualGrid.setCellSelectionEnabled(true);
 		this.actualGrid.setLinesVisible(false);
@@ -502,7 +500,6 @@ public class GridWrapper {
 	 * @author Patrick Wickenhaeuser
 	 * 
 	 */
-	@SuppressWarnings("deprecation")
 	public void clearTable() {
 		this.actualGrid.disposeAllItems();
 		this.actualGrid.clearItems();
@@ -725,7 +722,7 @@ public class GridWrapper {
 	public void addRow(GridRow csRow) {
 		this.rows.add(csRow);
 	}
-
+	
 	/**
 	 * Resize the rows accodring to the their preferred heights.
 	 * 

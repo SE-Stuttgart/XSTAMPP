@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import messages.Messages;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;

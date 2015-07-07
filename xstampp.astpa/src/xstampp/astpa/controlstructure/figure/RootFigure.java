@@ -27,7 +27,6 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.controlstructure.components.ComponentType;

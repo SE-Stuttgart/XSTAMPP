@@ -3,10 +3,7 @@ package xstampp.astpa.util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-
-import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
 
 public class DefaultKeyNavigation implements KeyListener {
 

@@ -11,42 +11,36 @@
  * 
  *******************************************************************************/
 
-package xstampp.astpa.controlstructure.utilities;
+package xstampp.astpa.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * 
  * 
  * @author Lukas Balzer
  * 
- * @version 1.0
+ * @version 1.1
+ * @since 2.0
  * 
  */
-public class CSDirectEditor extends TextCellEditor implements ModifyListener,
+public class DirectEditor extends TextCellEditor implements ModifyListener,
 		MouseMoveListener, MouseTrackListener {
 
 	private int oldLineNumber = 0;
@@ -59,9 +53,10 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 	 * 
 	 * @param composite
 	 *            the parent is a CanvasFigure by default
+	 * @param style the style which should be attached to the Text widget
 	 */
-	public CSDirectEditor(Composite composite) {
-		super(composite, SWT.WRAP);
+	public DirectEditor(Composite composite, int style) {
+		super(composite,SWT.WRAP|style);
 		this.oldLineNumber = this.text.getCaretLineNumber();
 		this.text.setFocus();
 		this.text.addMouseMoveListener(this);
@@ -155,6 +150,12 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 	}
 	
 	
+	/**
+	 *Activates this cell editor. 
+	 * @author Lukas
+	 *
+	 * @param locator the CellEditorLocator which should be used
+	 */
 	public void activate(CellEditorLocator locator) {
 		
 		locator.relocate(this);
@@ -175,7 +176,7 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 
 	@Override
 	public void mouseEnter(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// nothing to do here
 		
 	}
 
@@ -189,7 +190,7 @@ public class CSDirectEditor extends TextCellEditor implements ModifyListener,
 
 	@Override
 	public void mouseHover(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// nothing to do here
 		
 	}
 }

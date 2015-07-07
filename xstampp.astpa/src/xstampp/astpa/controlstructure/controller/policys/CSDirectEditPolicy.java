@@ -15,7 +15,6 @@ package xstampp.astpa.controlstructure.controller.policys;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
@@ -24,9 +23,9 @@ import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.controller.commands.ComponentRenameCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.figure.CSFigure;
-import xstampp.astpa.controlstructure.utilities.CSDirectEditor;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.util.DirectEditor;
 
 /**
  * 
@@ -81,7 +80,7 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 		// The method getHost() calls the componentModel which makes the
 		// requests
 
-		Rectangle newLayout = ((CSDirectEditor) request.getCellEditor())
+		Rectangle newLayout = ((DirectEditor) request.getCellEditor())
 				.getBounds().getCopy();
 		 this.getHost().getFigure().translateToRelative(newLayout);
 		command.setModel(this.model);
