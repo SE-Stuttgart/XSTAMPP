@@ -76,8 +76,7 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false);
 		tmpFigure.setBorder(new LineBorder(1));
 
-		tmpFigure
-				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		((CSAbstractEditPart) this.getParent()).getFigure().setBorder(
 				new LineBorder(ColorConstants.blue, 2));
 		tmpFigure.setToolTip(new Label(Messages.ProcessModel));

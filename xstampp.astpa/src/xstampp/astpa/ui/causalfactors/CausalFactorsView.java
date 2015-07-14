@@ -31,6 +31,8 @@ import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -333,13 +335,11 @@ public class CausalFactorsView extends StandartEditorPart{
 		this.filterText= new Text(filter, SWT.LEFT |SWT.BORDER);
 		this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		this.filterText.addKeyListener(new KeyAdapter() {
+		this.filterText.addModifyListener(new ModifyListener() {
 			
 			@Override
-			public void keyReleased(KeyEvent e) {
-				if(e.character == 13){
-					reloadTable();
-				}
+			public void modifyText(ModifyEvent e) {
+				reloadTable();
 			}
 		});
 		this.grid = new GridWrapper(parent, new String[] { Messages.Component,
@@ -489,6 +489,7 @@ public class CausalFactorsView extends StandartEditorPart{
 	private void reloadTable() {
 		if(!this.lockreload){
 			this.lockreload = true;
+			int tmp= this.grid.getGrid().getVerticalBar().getSelection();
 			for(UUID factorID: this.factorsToUUIDs.keySet()){
 				this.dataInterface.setCausalFactorText(factorID, this.factorsToUUIDs.get(factorID).getText());
 				this.dataInterface.setNoteText(factorID, this.factorsToUUIDs.get(factorID).getNote());
@@ -501,6 +502,7 @@ public class CausalFactorsView extends StandartEditorPart{
 			this.fillTable(this.dataInterface.getCausalComponents());
 			this.grid.reloadTable();
 			this.lockreload = false;
+			this.grid.getGrid().setTopIndex(tmp);
 		}
 	}
 

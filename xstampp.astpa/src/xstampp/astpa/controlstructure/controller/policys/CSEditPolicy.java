@@ -35,6 +35,7 @@ import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
+import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -111,8 +112,9 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			command.setFeedbackLayer(this.getFeedbackLayer());
 			// the root Edit Part is the EditPart on which this policy is
 			// installed
-			IRectangleComponent rootModel = (IRectangleComponent) this
+			IComponent rootModel = (IComponent) this
 					.getHost().getModel();
+			
 			// the EditPart on shall be created is the newObject which is given
 			// by the request,
 			// which is send from the ModelCreationFactory

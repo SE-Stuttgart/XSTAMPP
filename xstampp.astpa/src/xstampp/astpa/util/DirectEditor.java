@@ -62,7 +62,21 @@ public class DirectEditor extends TextCellEditor implements ModifyListener,
 		this.text.addMouseMoveListener(this);
 
 	}
+	/**
+	 * 
+	 * 
+	 * @author Lukas
+	 * 
+	 * @param composite
+	 *            the parent is a CanvasFigure by default
+	 */
+	public DirectEditor(Composite composite) {
+		super(composite,SWT.WRAP);
+		this.oldLineNumber = this.text.getCaretLineNumber();
+		this.text.setFocus();
+		this.text.addMouseMoveListener(this);
 
+	}
 	/**
 	 * sets the color of the Text which will be displayed inside the Editor
 	 * 

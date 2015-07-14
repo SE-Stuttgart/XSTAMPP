@@ -53,8 +53,7 @@ public class TextFieldEditPart extends CSAbstractEditPart {
 	@Override
 	protected IFigure createFigure() {
 		IControlStructureFigure tmpFigure = new TextFieldFigure(this.getId());
-		tmpFigure
-				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		return tmpFigure;
 	}
 	@Override

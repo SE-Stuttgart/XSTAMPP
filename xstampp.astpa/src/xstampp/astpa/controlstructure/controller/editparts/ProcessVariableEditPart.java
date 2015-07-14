@@ -69,8 +69,7 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 		tmpFigure.setBorder(border);
 		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
 		tmpFigure.getTextField().setLineVisible(true);
-		tmpFigure
-				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		tmpFigure.setToolTip(new Label(Messages.ProcessVariable));
 		return tmpFigure;
 	}

@@ -31,9 +31,9 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 
 	/**
 	 * Getter for the Control Actions
-	 * 
+	 *
 	 * @author Benedikt Markt
-	 * 
+	 *
 	 * @return the list of Control Actions
 	 */
 	List<IControlAction> getAllControlActionsU();
@@ -45,7 +45,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	 * @param controlActionId
 	 *            id of the control action
 	 * 
-	 * @return the control action with the given id
+	 * @return the control action with the given id or null
 	 */
 	IControlAction getControlActionU(UUID controlActionId);
 

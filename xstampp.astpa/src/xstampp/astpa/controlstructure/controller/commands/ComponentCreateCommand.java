@@ -21,6 +21,7 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -36,7 +37,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 
-	private IRectangleComponent rootModel;
+	private IComponent rootModel;
 	private IRectangleComponent compModel;
 	private IRectangleComponent constraintModel;
 	private UUID componentId;
@@ -60,6 +61,8 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 			String stepID) {
 		super(model, stepID);
 		this.constraintModel = new Component();
+		this.rootLayout = new Rectangle();
+		this.oldRootLayout =  new Rectangle();
 		this.compModel = null;
 		this.rootModel = null;
 
@@ -93,7 +96,18 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		this.oldRootLayout = this.rootLayout.getCopy();
 		this.rootId = csModel.getId();
 	}
-
+	
+	/** 
+	 * @author Lukas Balzer
+	 * 
+	 * @param csModel
+	 *            The Model of the Root, which shall be set as the parent of the
+	 *            Component
+	 */
+	public void setRootModel(IComponent csModel) {
+		this.rootModel = csModel;
+		this.rootId = csModel.getId();
+	}
 	/**
 	 * this adds a component to the map, which needs to be refreshed after
 	 * execution
@@ -148,6 +162,9 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		case TEXTFIELD: {
 			return true;
 		}
+		case CONTROLACTION: {
+			return true;
+		}
 		default: {
 			return this.rootModel.getComponentType() == ComponentType.ROOT;
 		}
@@ -174,8 +191,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		if ((this.rootModel == null) || (this.compModel == null)) {
 			return false;
 		}
-		return this.getDataModel().getComponent(this.rootModel.getId())
-				.getChildren().contains(this.compModel);
+		return true;
 
 	}
 

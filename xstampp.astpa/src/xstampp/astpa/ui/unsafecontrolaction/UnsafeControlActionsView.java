@@ -31,6 +31,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -153,6 +155,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 							"", this.ucaType); //$NON-NLS-1$
 			UnsafeControlActionsView.this.grid.activateCell(newUCA);
 			UnsafeControlActionsView.LOGGER.debug(Messages.AddingNewUCA);
+			
 		}
 	}
 
@@ -179,7 +182,14 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		label.setText("Filter");
 		this.filterText= new Text(filter, SWT.LEFT |SWT.BORDER);
 		this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+		this.filterText.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				reloadTable();
+				
+			}
+		});
 		this.filterText.addKeyListener(new KeyAdapter() {
 			
 			@Override
@@ -293,6 +303,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 			return;
 		}
 		for (IControlAction cAction : controlActions) {
+			//fiter by the title of the control action
 			if(!cAction.getTitle().startsWith(this.filterText.getText())){
 				continue;
 			}
@@ -448,6 +459,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 
 	private void reloadTable() {
 		if(!this.lockreload){
+			int tmp= this.grid.getGrid().getVerticalBar().getSelection();
 			this.lockreload = true;
 			if(this.descriptionsToUUIDs.size() > 0){
 				for(UUID ucaID: this.descriptionsToUUIDs.keySet()){
@@ -459,11 +471,13 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 			this.fillTable(this.ucaInterface.getAllControlActionsU());
 			this.grid.reloadTable();
 			this.lockreload = false;
+			this.grid.getGrid().setTopIndex(tmp);
 		}
 	}
 
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
+
 		super.update(dataModelController, updatedValue);
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
@@ -475,7 +489,6 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 			break;
 
 		default:
-			this.reloadTable();
 			break;
 		}
 	}

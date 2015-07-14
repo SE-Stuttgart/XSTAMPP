@@ -1275,9 +1275,9 @@ public class DataModelController extends Observable implements
 				|| (type == null)) {
 			return null;
 		}
-		if (!(this.getComponent(parentId) instanceof Component)) {
-			return null;
-		}
+//		if (!(this.getComponent(parentId) instanceof Component)) {
+//			return null;
+//		}
 
 		UUID result = this.controlStructureController.addComponent(
 				controlActionId, parentId, layout, text, type, index);

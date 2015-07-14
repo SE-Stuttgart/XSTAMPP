@@ -31,6 +31,7 @@ import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 
@@ -89,10 +90,7 @@ public class ControlStructureController {
 	 */
 	public UUID addComponent(UUID parentId, Rectangle layout, String text,
 			ComponentType type, Integer index) {
-		Component newComp = new Component(text, layout, type);
-		Component parent = this.getInternalComponent(parentId);
-		parent.addChild(newComp,index);
-		return newComp.getId();
+		return addComponent(null, parentId, layout, text, type, index);
 	}
 
 	/**
@@ -116,9 +114,17 @@ public class ControlStructureController {
 	public UUID addComponent(UUID controlActionId, UUID parentId,
 			Rectangle layout, String text, ComponentType type, Integer index) {
 		Component newComp = new Component(controlActionId, text, layout, type);
-		Component parent = this.getInternalComponent(parentId);
-		parent.addChild(newComp,index);
-
+		IComponent parent = this.getInternalComponent(parentId);
+		if(parent == null){
+			parent = this.getInternalConnection(parentId);
+		}else{
+			((Component)parent).addChild(newComp,index);
+			return newComp.getId();
+		}
+		if(parent == null){
+			return null;
+		}
+		((CSConnection)parent).addChild(newComp,index);
 		return newComp.getId();
 	}
 
@@ -256,7 +262,17 @@ public class ControlStructureController {
 		if (this.root == null) {
 			return null;
 		}
-		return this.root.getChild(componentId);
+		Component comp =  this.root.getChild(componentId);
+		if(comp != null){
+			return comp;
+		}
+		for(CSConnection conn:this.connections){
+			comp = conn.getChild(componentId);
+			if(comp != null){
+				return comp;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -428,7 +444,28 @@ public class ControlStructureController {
 		}
 		return this.root.getChild(componentId);
 	}
-
+	
+	/**
+	 * Searches for the internal connection with the given id
+	 * 
+	 * @param connectionId
+	 *            the id of the child
+	 * @return the component with the given id
+	 * 
+	 * @author Lukas Balzer
+	 */
+	private CSConnection getInternalConnection(UUID connectionId) {
+		if (this.connections == null) {
+			return null;
+		}
+		
+		for(CSConnection conn:this.connections){
+			if(conn.getId().equals(connectionId)){
+				return conn;
+			}
+		}
+		return null;
+	}
 	/**
 	 * Removes all links that are connected to the component with the given id
 	 * 

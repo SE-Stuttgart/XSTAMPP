@@ -477,7 +477,6 @@ public class GridWrapper {
 	public void reloadTable() {
 		this.clearTable();
 		this.fillTable();
-
 	}
 
 	/**
@@ -513,7 +512,7 @@ public class GridWrapper {
 	 */
 	public void fillTable() {
 		this.nebulaRows.clear();
-
+		GridItem item = null;
 		int maxCellCount = this.columnLabels.length;
 		for (int i = 0; i < this.rows.size(); i++) {
 			GridRow row = this.rows.get(i);
@@ -525,16 +524,18 @@ public class GridWrapper {
 					this.getGrid(), SWT.NONE, row, null);
 			parentItem.setRowSpan(0, parentSpan);
 			// parentItem.pack();
-
+			if(i ==this.rows.size() -1 ){
+				item=parentItem;
+			}
 			// add cells for children cells
 			for (int childI = 0; childI < childCount; childI++) {
 				GridRow childRow = row.getChildren().get(childI);
 				maxCellCount = Math.max(maxCellCount, childRow.getCells()
 						.size() + 1);
-
+				
 				NebulaGridRowWrapper childItem = new NebulaGridRowWrapper(
 						this.getGrid(), SWT.NONE, childRow, row);
-
+				
 				childItem.setHeight(childRow.getPreferredHeight());
 				// childItem.pack();
 
@@ -574,6 +575,9 @@ public class GridWrapper {
 		}
 
 		this.resizeColumns();
+		if(item != null){
+			this.actualGrid.showItem(item);
+		}
 	}
 
 	/**

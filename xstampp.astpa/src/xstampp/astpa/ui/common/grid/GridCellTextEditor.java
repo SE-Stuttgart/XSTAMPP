@@ -79,6 +79,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 	 */
 	public GridCellTextEditor(GridWrapper grid,String initialText,Boolean showDelete) {
 		this.showDelete=showDelete;
+		this.deleteSpace = new Rectangle(0, 0, 0, 0);
 		this.grid=grid;
 		
 		if (initialText.trim().isEmpty()) {

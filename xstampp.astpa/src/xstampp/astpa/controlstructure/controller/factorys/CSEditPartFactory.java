@@ -140,8 +140,8 @@ public class CSEditPartFactory implements EditPartFactory {
 			
 			break;
 		}
-		case TEXTFIELD: {
-			part = new TextFieldEditPart(this.dataModel, this.stepId);
+		case ROOT: {
+			part = new RootEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
@@ -151,7 +151,7 @@ public class CSEditPartFactory implements EditPartFactory {
 			break;
 		}
 		default: {
-			part = new RootEditPart(this.dataModel, this.stepId);
+			part = new TextFieldEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 		}
 		}

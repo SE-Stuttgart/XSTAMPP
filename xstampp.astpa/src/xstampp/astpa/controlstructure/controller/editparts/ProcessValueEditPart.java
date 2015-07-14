@@ -51,8 +51,7 @@ public class ProcessValueEditPart extends CSAbstractEditPart {
 		IControlStructureFigure tmpFigure = new ProcessValueFigure(this.getId(),
 				ProcessValueEditPart.TOP_OFFSET);
 		tmpFigure.setBorder(null);
-		tmpFigure
-				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		tmpFigure.setToolTip(new Label(Messages.ProcessValue));
 		return tmpFigure;
 	}

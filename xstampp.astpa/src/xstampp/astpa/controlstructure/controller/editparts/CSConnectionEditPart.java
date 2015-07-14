@@ -13,6 +13,7 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -30,6 +31,7 @@ import org.eclipse.swt.SWT;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionDeleteEditPolicy;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
+import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -50,6 +52,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 	private IControlStructureEditorDataModel dataModel;
 	private final UUID ownID;
 	private final String stepId;
+	private IFigure container;
 
 	/**
 	 * This constructor is used to load a connection EditPart from a given model
@@ -79,21 +82,25 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 		this.targetAnchor = target;
 
 	}
-
 	@Override
 	protected IFigure createFigure() {
 
 		PolylineConnection connection = new PolylineConnection();
 		connection.setLineWidth(1);
-
 		PolylineDecoration decoration = new PolylineDecoration();
 		decoration.setTemplate(PolylineDecoration.TRIANGLE_TIP);
 
+		
+		RectangleEditPart part= new RectangleEditPart(this.dataModel, this.stepId,connection);
+		part.setParent(this);
+		Component model= new Component();
+		model.setId(getId());
+		part.setModel(model);
 		Label connectionName = new Label();
 		switch (((CSConnection) this.getModel()).getConnectionType()) {
 		case ARROW_SIMPLE: {
 			connection.setTargetDecoration(decoration);
-			connectionName.setText(""); //$NON-NLS-1$
+			connectionName.setText("Connection"); //$NON-NLS-1$
 			connection.setLineStyle(SWT.LINE_SOLID);
 			break;
 		}
@@ -107,12 +114,19 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 		default:
 			return null;
 		}
-
-		connection.add(connectionName, new MidpointLocator(connection, 0));
-
+		this.container = part.createFigure();
+		connection.add(this.container, new MidpointLocator(connection, 0));
+		this.getViewer().getVisualPartMap().put(this.container, part);
+		part.addNotify();
 		return connection;
 	}
 
+	@Override
+	public IFigure getContentPane() {
+		super.getContentPane();
+		return this.container;
+	}
+	
 	@Override
 	public void refresh() {
 		if (this.dataModel.getConnection(((CSConnection) this.getModel())
@@ -125,11 +139,16 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 	}
 
 	@Override
+	protected List getModelChildren() {
+		return ((IConnection)getModel()).getChildren();
+	}
+	@Override
 	protected void createEditPolicies() {
 		this.installEditPolicy(EditPolicy.CONNECTION_ROLE,
 				new CSConnectionDeleteEditPolicy(this.dataModel, this.stepId));
 		this.installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
 				new ConnectionEndpointEditPolicy());
+
 	}
 
 	@Override

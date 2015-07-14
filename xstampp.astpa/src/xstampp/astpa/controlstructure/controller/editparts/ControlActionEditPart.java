@@ -5,9 +5,14 @@ import messages.Messages;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.editparts.AbstractEditPart;
+import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -45,8 +50,7 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 		tmpFigure.setToolTip(new Label(Messages.ControlAction));
 
 		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
-		tmpFigure
-				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		return tmpFigure;
 	}
 
@@ -66,7 +70,10 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 	}
 	@Override
 	protected void createEditPolicies() {
-		super.createEditPolicies();
+		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
+		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+				new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
+		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(this.getDataModel(), this.getStepId()));
 		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
 				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
 	}

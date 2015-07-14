@@ -45,14 +45,7 @@ public interface IRectangleComponent extends IComponent {
 	 */
 	String getText();
 
-	/**
-	 * Getter for the id
-	 * 
-	 * @return the id
-	 * 
-	 * @author Fabian Toth
-	 */
-	UUID getId();
+
 
 	/**
 	 * 

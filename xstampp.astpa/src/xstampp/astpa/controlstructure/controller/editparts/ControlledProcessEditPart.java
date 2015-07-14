@@ -58,8 +58,7 @@ public class ControlledProcessEditPart extends CSAbstractEditPart {
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
 				IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_COLOR);
-		tmpFigure
-				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		tmpFigure.setToolTip(new Label(Messages.ControlledProcess));
 		return tmpFigure;
 	}

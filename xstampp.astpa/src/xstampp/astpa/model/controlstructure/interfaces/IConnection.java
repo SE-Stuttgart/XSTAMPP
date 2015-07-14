@@ -52,14 +52,6 @@ public interface IConnection extends IComponent {
 	 */
 	ConnectionType getConnectionType();
 
-	/**
-	 * Getter for the id
-	 * 
-	 * @return the id of the connection
-	 * 
-	 * @author Fabian Toth
-	 */
-	UUID getId();
 	
 
 

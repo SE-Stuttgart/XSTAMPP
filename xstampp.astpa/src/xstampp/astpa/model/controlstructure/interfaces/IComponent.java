@@ -13,6 +13,9 @@
 
 package xstampp.astpa.model.controlstructure.interfaces;
 
+import java.util.List;
+import java.util.UUID;
+
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 
 /**
@@ -31,5 +34,22 @@ public interface IComponent {
 	 * @author Lukas Balzer
 	 */
 	ComponentType getComponentType();
+	
+	/**
+	 * Getter for the id
+	 * 
+	 * @return the id
+	 * 
+	 * @author Fabian Toth
+	 */
+	UUID getId();
 
+	/**
+	 * Getter for the children
+	 * 
+	 * @return the children
+	 * 
+	 * @author Fabian Toth
+	 */
+	List<IRectangleComponent> getChildren();
 }

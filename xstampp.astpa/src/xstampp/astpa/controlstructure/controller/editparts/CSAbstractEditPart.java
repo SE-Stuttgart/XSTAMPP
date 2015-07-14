@@ -47,6 +47,7 @@ import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.utilities.CSCellEditorLocator;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -92,8 +93,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	@Override
 	protected IFigure createFigure() {
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), false);
-		tmpFigure
-				.setParent(((CSAbstractEditPart) this.getParent()).getFigure());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		return tmpFigure;
 	}
 
@@ -253,7 +253,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	public List<IRectangleComponent> getModelChildren() {
-		return ((IRectangleComponent) this.getModel()).getChildren();
+		return ((IComponent) this.getModel()).getChildren();
 	}
 
 	@Override
@@ -336,7 +336,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	public UUID getId() {
-		return ((IRectangleComponent) this.getModel()).getId();
+		return ((IComponent) this.getModel()).getId();
 	}
 
 	@Override
@@ -369,4 +369,5 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	public void setLayer(int layer) {
 		this.layer = layer;
 	}
+	
 }
