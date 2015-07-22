@@ -11,6 +11,7 @@ import java.io.Writer;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlElement;
 
 import messages.Messages;
 
@@ -20,11 +21,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import xstampp.astpa.haz.HAZController;
+import xstampp.astpa.haz.IHAZModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
+import com.sun.xml.bind.v2.schemagen.xmlschema.Annotation;
 
 /**
  * a runtime job which is stores a DataModel in a given File
@@ -65,7 +69,8 @@ public class SaveJob extends Job {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
 		try {
-			context = JAXBContext.newInstance(this.controller.getClass());
+			HAZController haz = new HAZController((IHAZModel) this.controller);
+			context = JAXBContext.newInstance(HAZController.class);
 			Marshaller m = context.createMarshaller();
 			
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -74,12 +79,12 @@ public class SaveJob extends Job {
 			FileWriter writer = new FileWriter(this.file);
 			
 			if(this.compatibilityMode){
-				m.marshal(this.controller,writer);
+				m.marshal(haz,writer);
 			}
 			else{
 				PrintWriter printWriter = new PrintWriter(writer);
 				DataWriter dataWriter = new DataWriter(printWriter, "UTF-8", new MyEscapeHandler());
-				m.marshal(this.controller,dataWriter);
+				m.marshal(haz,dataWriter);
 				printWriter.close();
 				
 			}

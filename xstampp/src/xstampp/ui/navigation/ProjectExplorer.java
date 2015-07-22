@@ -74,7 +74,6 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private Map<TreeItem, String> selectionIdsToTreeItems;
 	private Map<TreeItem, String> perspectiveIdsToTreeItems;
 	private Map<String, IProjectSelection> selectorsToSelectionId;
-	private Map<String, IConfigurationElement> extensions;
 	private Map<String, List<IConfigurationElement>> stepEditorsToStepId;
 	private Map<String, List<IPerspectiveDescriptor>> stepPerspectivesToStepId; 
 	private List<ISelectionChangedListener> selectionListener;
@@ -127,15 +126,15 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			@Override
 			public void focusLost(FocusEvent e) {
 				  IContextService contextService=(IContextService)getSite().getService(IContextService.class);
-				  if(activation != null){
-					  contextService.deactivateContext(activation);
+				  if(this.activation != null){
+					  contextService.deactivateContext(this.activation);
 				  }
 			}
 			
 			@Override
 			public void focusGained(FocusEvent e) {
 				  IContextService contextService=(IContextService)getSite().getService(IContextService.class);
-				  activation=  contextService.activateContext("xstampp.navigation.context"); //$NON-NLS-1$
+				  this.activation=  contextService.activateContext("xstampp.navigation.context"); //$NON-NLS-1$
 			}
 		});
 		this.tree.addListener(SWT.MouseDown, this.listener);
@@ -177,7 +176,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				
 				String[] fileSegments = f.getName().split("\\."); //$NON-NLS-1$
 				if ((fileSegments.length > 1)
-						&& this.extensions.containsKey(fileSegments[1])) {
+						&& ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
 					Map<String, String> values = new HashMap<>();
 					values.put("loadRecentProject", f.getAbsolutePath()); //$NON-NLS-1$
 					STPAPluginUtils.executeParaCommand("xstampp.command.load", values);//$NON-NLS-1$
@@ -196,9 +195,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 * 
 	 */
 	private void buildTree(final UUID projectID,String pluginID) {
-		IConfigurationElement projectExt = this.extensions.get(ProjectManager.
-																getContainerInstance().
-																getProjectExtension(projectID));
+		IConfigurationElement projectExt = ProjectManager.getContainerInstance().
+													getConfigurationFor(projectID);
 		/**
 		 * The selection id identifies each step in the current runtime
 		 */
@@ -438,16 +436,17 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	 *
 	 */
 	private void searchExtensions() {
-		this.extensions = new HashMap<>();
 		this.stepEditorsToStepId = new HashMap<>();
 		this.stepPerspectivesToStepId = new HashMap<>();
 		IConfigurationElement[] elements = Platform
 				.getExtensionRegistry()
 				.getConfigurationElementsFor("xstampp.extension.steppedProcess");
 		for (IConfigurationElement extElement : elements) { //$NON-NLS-1$
-			String ext = extElement.getAttribute("extension"); 	//$NON-NLS-1$
-			this.extensions.put(ext, extElement);
-			ProjectExplorer.LOGGER.debug("registered extension: " + ext); //$NON-NLS-1$
+			String[] ext = extElement.getAttribute("extension").split(";"); 	//$NON-NLS-1$
+			for(int i=0;i< ext.length;i++){
+				ProjectManager.getContainerInstance().registerExtension(ext[i], extElement);
+				ProjectExplorer.LOGGER.debug("registered extension: " + ext[i]); //$NON-NLS-1$
+			}
 		}
 		for (IConfigurationElement element : Platform
 				.getExtensionRegistry()
