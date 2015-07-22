@@ -19,9 +19,9 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
+import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
-import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -97,17 +97,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		this.rootId = csModel.getId();
 	}
 	
-	/** 
-	 * @author Lukas Balzer
-	 * 
-	 * @param csModel
-	 *            The Model of the Root, which shall be set as the parent of the
-	 *            Component
-	 */
-	public void setRootModel(IComponent csModel) {
-		this.rootModel = csModel;
-		this.rootId = csModel.getId();
-	}
 	/**
 	 * this adds a component to the map, which needs to be refreshed after
 	 * execution

@@ -13,7 +13,10 @@
 
 package xstampp.astpa.controlstructure.controller.commands;
 
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Dialog;
+
+import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -44,19 +47,19 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	@Override
 	public void execute() {
 
-		this.getDataModel().removeComponent(this.model.getId());
-		this.getDataModel().removeControlAction(
-				this.model.getControlActionLink());
-
+		boolean isDeleteAllowed = ControlStructureAbstractCommand.COMPONENTS_MAP
+				.get(this.getStepID()).contains(this.model.getComponentType());
+		if(isDeleteAllowed ||  MessageDialog.openConfirm(null, "Delete not step related component", "Do you really want to delete"+
+															"\nthe component created in step 0.8?")){
+			this.getDataModel().removeComponent(this.model.getId());
+			this.getDataModel().removeControlAction(
+					this.model.getControlActionLink());
+		}
 	}
 
 	@Override
 	public boolean canExecute() {
-		boolean isDeleteAllowed = ControlStructureAbstractCommand.COMPONENTS_MAP
-				.get(this.getStepID()).contains(this.model.getComponentType());
-
-		return ((this.model != null) && (this.parentModel != null))
-				&& isDeleteAllowed;
+		return ((this.model != null) && (this.parentModel != null));
 	}
 
 	/**
