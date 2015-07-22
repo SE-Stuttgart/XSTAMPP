@@ -18,7 +18,8 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 
-import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
+
 
 /**
  * a Flying anchor used for creating a Anchor Point on the root

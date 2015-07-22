@@ -22,7 +22,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.Activator;
-import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.preferences.IAstpaPreferences;
 
 /**

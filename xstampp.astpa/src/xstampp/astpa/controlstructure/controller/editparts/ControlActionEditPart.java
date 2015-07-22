@@ -5,17 +5,16 @@ import messages.Messages;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
-import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -24,7 +23,9 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @author Lukas Balzer
  * 
  */
-public class ControlActionEditPart extends CSAbstractEditPart {
+public class ControlActionEditPart extends CSAbstractEditPart implements IConnectable{
+
+	private IRelative relativePart;
 
 	/**
 	 * this constructor sets the unique ID of this EditPart which is the same in
@@ -48,7 +49,7 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 		IControlStructureFigure tmpFigure = new TextFieldFigure(this.getId());
 
 		tmpFigure.setToolTip(new Label(Messages.ControlAction));
-
+		tmpFigure.addMouseMotionListener(this);
 		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		return tmpFigure;
@@ -66,6 +67,9 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 		}
 		this.getDataModel().setControlActionTitle(
 				modelTemp.getControlActionLink(), modelTemp.getText());
+		if(relativePart != null){
+			this.relativePart.updateFeedback();
+		}
 
 	}
 	@Override
@@ -76,5 +80,23 @@ public class ControlActionEditPart extends CSAbstractEditPart {
 		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(this.getDataModel(), this.getStepId()));
 		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
 				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+		this.installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new CSSelectionEditPolicy());
+	}
+
+	@Override
+	public void setRelative(IRelative relative) {
+		if(this.relativePart != null){
+			this.relativePart.eraseFeedback();
+		}
+		this.relativePart = relative;
+	}
+
+
+	@Override
+	public IFigure getFeedback() {
+		if(this.relativePart == null){
+			return null;
+		}
+		return this.relativePart.getFeedback(this);
 	}
 }

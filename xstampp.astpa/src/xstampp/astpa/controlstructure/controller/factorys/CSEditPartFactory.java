@@ -34,13 +34,14 @@ import xstampp.astpa.controlstructure.controller.editparts.DashedBoxEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessModelEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessValueEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessVariableEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.RectangleEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.SensorEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.TextFieldEditPart;
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
-import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -97,6 +98,11 @@ public class CSEditPartFactory implements EditPartFactory {
 						Messages.DescriptionOfThisControlAction);
 				((IRectangleComponent) model).linktoControlAction(newLinkId);
 			}
+			break;
+		}
+		case CONTAINER:{
+			part = new RectangleEditPart(this.dataModel, this.stepId);
+			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case ACTUATOR: {

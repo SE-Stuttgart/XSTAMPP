@@ -13,26 +13,40 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.draw2d.AbstractRouter;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionAnchor;
+import org.eclipse.draw2d.ConnectionRouter;
+import org.eclipse.draw2d.IClippingStrategy;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.MidpointLocator;
+import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.PolylineDecoration;
+import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
+import org.eclipse.gef.editpolicies.FeedbackHelper;
+import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionDeleteEditPolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
+import xstampp.astpa.controlstructure.figure.ConnectionFigure;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
+import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
-import xstampp.astpa.model.controlstructure.components.Component;
-import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -43,8 +57,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @author Aliaksei Babkovich
  * @version 1.0
  */
-public class CSConnectionEditPart extends AbstractConnectionEditPart implements
-		IControlStructureEditPart {
+public class CSConnectionEditPart extends AbstractConnectionEditPart implements IRelative {
 
 	private static final float DASH = 4;
 	private IAnchorFigure targetAnchor;
@@ -53,6 +66,8 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 	private final UUID ownID;
 	private final String stepId;
 	private IFigure container;
+	private List<IConnectable> members;
+	private PolylineConnection feedback;
 
 	/**
 	 * This constructor is used to load a connection EditPart from a given model
@@ -73,6 +88,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 	public CSConnectionEditPart(IControlStructureEditorDataModel model,
 			IAnchorFigure source, IAnchorFigure target, UUID id, String stepId) {
 		super();
+		this.members = new ArrayList<>();
 		this.stepId = stepId;
 		this.registerAccessibility();
 		this.activate();
@@ -80,52 +96,42 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 		this.ownID = id;
 		this.sourceAnchor = source;
 		this.targetAnchor = target;
+		
 
 	}
+	
 	@Override
 	protected IFigure createFigure() {
 
-		PolylineConnection connection = new PolylineConnection();
+		PolylineConnection connection = new ConnectionFigure();
+		connection.addMouseMotionListener(this);
+		connection.setLayoutManager(new XYLayout());
 		connection.setLineWidth(1);
-		PolylineDecoration decoration = new PolylineDecoration();
-		decoration.setTemplate(PolylineDecoration.TRIANGLE_TIP);
-
-		
-		RectangleEditPart part= new RectangleEditPart(this.dataModel, this.stepId,connection);
-		part.setParent(this);
-		Component model= new Component();
-		model.setId(getId());
-		part.setModel(model);
-		Label connectionName = new Label();
+		connection.setTolerance(15);
+//		RectangleEditPart part= new RectangleEditPart(this.dataModel, this.stepId);
+//		part.setParent(this);
+//		Component model= new Component();
+//		model.setId(getId());
+//		part.setModel(model);
 		switch (((CSConnection) this.getModel()).getConnectionType()) {
 		case ARROW_SIMPLE: {
-			connection.setTargetDecoration(decoration);
-			connectionName.setText("Connection"); //$NON-NLS-1$
 			connection.setLineStyle(SWT.LINE_SOLID);
 			break;
 		}
 		case ARROW_DASHED: {
-			connection.setTargetDecoration(decoration);
-			connectionName.setText(""); //$NON-NLS-1$
-			connection.setLineStyle(SWT.LINE_DASH);
 			connection.setLineDash(new float[] { CSConnectionEditPart.DASH });
 			break;
 		}
 		default:
 			return null;
 		}
-		this.container = part.createFigure();
-		connection.add(this.container, new MidpointLocator(connection, 0));
-		this.getViewer().getVisualPartMap().put(this.container, part);
-		part.addNotify();
+//		this.container = part.createFigure();
+//		connection.add(this.container,new Rectangle(0,0,50,50));
+//		this.getViewer().getVisualPartMap().put(this.container, part);
+//		part.addNotify();
 		return connection;
 	}
 
-	@Override
-	public IFigure getContentPane() {
-		super.getContentPane();
-		return this.container;
-	}
 	
 	@Override
 	public void refresh() {
@@ -134,13 +140,21 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 			this.deactivate();
 			this.getViewer().getEditPartRegistry().remove(this);
 		} else {
+			
 			super.refresh();
+		}
+		this.refreshChildren();
+		this.getViewer().getControl().redraw();
+		
+		
+		for (Object child : this.getChildren()) {
+			((IControlStructureEditPart) child).refresh();
 		}
 	}
 
 	@Override
 	protected List getModelChildren() {
-		return ((IConnection)getModel()).getChildren();
+		return new ArrayList<>();
 	}
 	@Override
 	protected void createEditPolicies() {
@@ -148,9 +162,32 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 				new CSConnectionDeleteEditPolicy(this.dataModel, this.stepId));
 		this.installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
 				new ConnectionEndpointEditPolicy());
-
 	}
 
+	@Override
+	public IFigure getFeedback() {
+		return getFeedback(null);
+	}
+	@Override
+	public IFigure getFeedback(IConnectable member) {
+		if(this.feedback == null){
+			this.feedback = new PolylineConnection();
+			this.feedback.setAlpha(150);
+			this.feedback.setAntialias(SWT.ON);
+			this.feedback.setLineWidth(4);
+			this.feedback.setForegroundColor(ColorConstants.darkGreen);
+		}
+		this.feedback.setVisible(true);
+		
+		if(member != null){
+			this.feedback.setConnectionRouter(new FeedbackRouter(member));
+			updateFeedback();
+		}else{
+			this.feedback.setPoints(getConnectionFigure().getPoints());
+		}
+		return this.feedback;
+	}
+	
 	@Override
 	protected ConnectionAnchor getTargetConnectionAnchor() {
 		IAnchor target = this.dataModel.getConnection(this.ownID)
@@ -203,5 +240,88 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements
 		// does nothing by default
 
 	}
+	@Override
+	public void mouseDragged(MouseEvent me) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent me) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent me) {
+		((ConnectionFigure)getConnectionFigure()).disableFeedback();
+		
+	}
+	@Override
+	public void mouseHover(MouseEvent me) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseMoved(MouseEvent me) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void eraseFeedback() {
+		if(this.feedback != null){
+			this.feedback.setVisible(false);
+		}
+		
+	}
+
+	@Override
+	public void setMember(IConnectable member) {
+		this.members.add(member);
+	}
+
+	private class FeedbackRouter extends AbstractRouter{
+		private IFigure figure;
+		public FeedbackRouter(IConnectable member) {
+			this.figure=member.getFigure();
+		}
+		@Override
+		public void route(Connection connection) {
+			PointList list = getConnectionFigure().getPoints().getCopy();
+			Point a=list.removePoint(list.size()-1);
+			
+			Point b=list.getPoint(list.size()-1);
+			Point center = this.figure.getBounds().getCenter().getCopy();
+			
+			for(int i=0;i<10;i++){
+				Rectangle tmp = new Rectangle(center,b);
+				tmp = tmp.intersect(this.figure.getBounds());
+				center = tmp.getCenter().getCopy();
+			}
+			list.addPoint(center);
+			list.addPoint(b);
+			list.addPoint(a);
+			connection.setPoints(list);
+		}
+		
+	}
+
+	@Override
+	public void updateFeedback() {
+		if(this.feedback != null){
+			this.feedback.getConnectionRouter().route(this.feedback);
+		}
+	}
 }
+
+class RectangleClipping implements IClippingStrategy{
+	private Rectangle clippingRect;
+	public RectangleClipping(Rectangle rect) {
+		this.clippingRect = rect;
+	}
+	@Override
+	public Rectangle[] getClip(IFigure childFigure) {
+		return new Rectangle[]{this.clippingRect};
+	}
+	
+}
+

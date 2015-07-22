@@ -27,8 +27,8 @@ import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.controlstructure.figure.RootFigure;
+import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

@@ -2,8 +2,15 @@ package xstampp.astpa.controlstructure.figure;
 
 import java.util.UUID;
 
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -11,16 +18,13 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
-public class CSRectangleContainer extends RectangleFigure implements
-		IControlStructureFigure {
+public class CSRectangleContainer extends CSFigure {
 	
-	private UUID id;
 
 	public CSRectangleContainer(UUID id) {
-		super();
-		this.id = id;
-		setSize(10, 10);
-		setLayoutManager(new XYLayout());
+		super(id, true);
+		setBorder(ColorConstants.black);
+		setText("?");
 	}
 	
 	@Override
@@ -59,70 +63,12 @@ public class CSRectangleContainer extends RectangleFigure implements
 		}
 		setPreferredSize(width, y);
 	}
-	 
-	@Override
-	public UUID getId() {
-		return this.id;
-	}
-
-	@Override
-	public String getText() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setText(String text) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public CSTextLabel getTextField() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setLayout(Rectangle rect) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addHighlighter(Point ref) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeHighlighter() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void disableOffset() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void enableOffset() {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void setDeco(boolean deco) {
 		// TODO Auto-generated method stub
-
+		
 	}
-
-	@Override
-	public boolean hasDeco() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	 
 
 }

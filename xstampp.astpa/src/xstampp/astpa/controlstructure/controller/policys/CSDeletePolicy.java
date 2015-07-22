@@ -19,7 +19,7 @@ import org.eclipse.gef.requests.GroupRequest;
 
 import xstampp.astpa.controlstructure.controller.commands.DeleteCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

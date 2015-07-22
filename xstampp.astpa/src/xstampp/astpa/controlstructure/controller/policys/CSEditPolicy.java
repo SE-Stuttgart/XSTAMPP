@@ -13,6 +13,10 @@
 
 package xstampp.astpa.controlstructure.controller.policys;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
@@ -21,21 +25,28 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
+import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.commands.ComponentChangeLayoutCommand;
 import xstampp.astpa.controlstructure.controller.commands.ComponentCreateCommand;
+import xstampp.astpa.controlstructure.controller.commands.addRelativeCommand;
+import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.IRelative;
+import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
-import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -54,6 +65,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	private IControlStructureEditorDataModel dataModel;
 	private Figure parentFeedback;
 	private final String stepID;
+	private Border tmpBorder;
+	private List<IFigure> feedback = new ArrayList<>();
 	/**
 	 * the offset of the process variables and values
 	 * 
@@ -95,9 +108,10 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			Object constraint) {
 		ComponentChangeLayoutCommand command = new ComponentChangeLayoutCommand(
 				this.dataModel, this.stepID);
+		
 		IFigure childFigure = ((IControlStructureEditPart) child).getFigure();
 		command.setMinConstraint(((IControlStructureFigure) childFigure)
-				.getTextField().getMinimumSize());
+				.getMinimumSize());
 		command.setModel(child.getModel());
 		command.setConstraint((Rectangle) constraint);
 		return command;
@@ -106,13 +120,12 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
 		if ((request.getType() == RequestConstants.REQ_CREATE)) {
-
 			ComponentCreateCommand command = new ComponentCreateCommand(
 					this.dataModel, this.stepID);
 			command.setFeedbackLayer(this.getFeedbackLayer());
 			// the root Edit Part is the EditPart on which this policy is
 			// installed
-			IComponent rootModel = (IComponent) this
+			IRectangleComponent rootModel = (IRectangleComponent) this
 					.getHost().getModel();
 			
 			// the EditPart on shall be created is the newObject which is given
@@ -155,19 +168,35 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 							(ComponentType) request.getNewObjectType(),
 							constraint));
 				}
-
+				if(command.canExecute() &&!(getHost() instanceof RootEditPart)){
+					this.getHostFigure().showFeedback();
+				}
 				command.setLayout(constraint);
 				return command;
 			}
 		}
 		return null;
 	}
-
+@Override
+public void eraseSourceFeedback(Request request) {
+	// TODO Auto-generated method stub
+	super.eraseSourceFeedback(request);
+}
+@Override
+public void eraseTargetFeedback(Request request) {
+	// TODO Auto-generated method stub
+	super.eraseTargetFeedback(request);
+}
 	@Override
 	public IControlStructureEditPart getHost() {
 		return (IControlStructureEditPart) super.getHost();
 	}
 
+	@Override
+	protected IControlStructureFigure getHostFigure() {
+		// TODO Auto-generated method stub
+		return (IControlStructureFigure) super.getHostFigure();
+	}
 	private Dimension getDefaultSizeFor(ComponentType type, Rectangle rect) {
 		Dimension dim = new Dimension();
 		switch (type) {
@@ -224,5 +253,32 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 
 		return constraint;
 	}
-
+	 @Override
+	public Command getCommand(Request request) {
+		if(RequestConstants.REQ_MOVE_CHILDREN.equals(request.getType())){
+			EditPart relative = getHost().getViewer().findObjectAt(((ChangeBoundsRequest)request).getLocation());
+			Object connectable =((ChangeBoundsRequest)request).getEditParts().get(0);
+			if(relative instanceof IRelative && connectable instanceof IConnectable){
+				IFigure conn= ((IRelative) relative).getFeedback();
+				if(!(this.feedback.contains(conn))){
+					addFeedback(conn);		
+					this.feedback.add(conn);
+				}
+				return new addRelativeCommand((IRelative) relative, (IConnectable) connectable);
+			}
+			for(IFigure figure:this.feedback){
+				if(figure.getParent() == getFeedbackLayer()){
+					removeFeedback(figure);
+				}
+			}
+			this.feedback.clear();
+			
+			}
+		return super.getCommand(request);
+	}
+	 
+ 	public Command getRelativeCommand(IConnectable part, IRelative relative) {
+		part.setRelative(relative);
+		return null;
+	}
 }

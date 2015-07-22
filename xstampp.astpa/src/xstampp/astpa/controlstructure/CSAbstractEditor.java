@@ -247,7 +247,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		viewer.setProperty(STEP_EDITOR, this.getId());
 		viewer.setProperty(IS_DECORATED, this.decoSwitch.getSelection());
 		viewer.addSelectionChangedListener(this);
-
 		viewer.createControl(parent);
 		this.configureGraphicalViewer(viewer);
 		this.hookGraphicalViewer();
@@ -305,7 +304,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				this.getId()));
 		// zooming
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
-
 		viewer.setRootEditPart(rootEditPart);
 		viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(
 				viewer, this.getModelInterface()));
@@ -1143,6 +1141,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	public void setModelInterface(IControlStructureEditorDataModel modelInterface) {
 		this.modelInterface = modelInterface;
 	}
+	
 	
 
 }

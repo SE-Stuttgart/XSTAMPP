@@ -16,7 +16,7 @@ package xstampp.astpa.controlstructure.figure;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.geometry.Point;
 
-import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 
 /**
  * 

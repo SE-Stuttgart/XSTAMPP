@@ -111,7 +111,25 @@ public interface IControlStructureFigure extends IFigure {
 	 */
 	void enableOffset();
 
+	/**
+	 * enables/disables the decoration of this figure,</br>
+	 * the decoration can exist out of a colored border and an image
+	 * @author Lukas
+	 *
+	 * @param deco whther or not to show the decoration
+	 */
 	void setDeco(boolean deco);
 
+	/**
+	 * if the deco is visible
+	 * 
+	 * @author Lukas
+	 *
+	 * @return if the decoration is visible
+	 */
 	boolean hasDeco();
+	
+	void showFeedback();
+	void disableFeedback();
+	
 }

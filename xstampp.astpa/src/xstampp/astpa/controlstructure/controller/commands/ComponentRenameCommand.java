@@ -16,7 +16,7 @@ package xstampp.astpa.controlstructure.controller.commands;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

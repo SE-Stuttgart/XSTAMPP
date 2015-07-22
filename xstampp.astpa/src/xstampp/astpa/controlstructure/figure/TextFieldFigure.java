@@ -49,8 +49,8 @@ public class TextFieldFigure extends CSFigure {
 	public TextFieldFigure(UUID id) {
 		super(id, false);
 		this.isDashed = false;
-		this.setOpaque(false);
-		this.getTextField().setOpaque(false);
+//		this.setOpaque(false);
+//		this.getTextField().setOpaque(false);
 	}
 
 	/**

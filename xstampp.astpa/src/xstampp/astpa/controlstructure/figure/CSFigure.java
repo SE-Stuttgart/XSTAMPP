@@ -320,4 +320,15 @@ public abstract class CSFigure extends Figure implements
 	public boolean hasDeco() {
 		return this.withIcon;
 	}
+	
+	@Override
+	public void showFeedback() {
+		
+	}
+	
+	@Override
+	public void disableFeedback() {
+		// TODO Auto-generated method stub
+		
+	}
 }

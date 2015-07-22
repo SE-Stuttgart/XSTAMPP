@@ -170,6 +170,16 @@ public class CSEditor extends CSAbstractEditor {
 		componentElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.CONTROLACTION, entry);
 
+		imgDesc = Activator
+				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_32.png"); //$NON-NLS-1$
+		imgDescLarge = Activator
+				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
+		entry = new CombinedTemplateCreationEntry(
+				"Container", "Create a container, in which you can bundle Control Actions",
+				ComponentType.CONTAINER, new CSModelCreationFactory(
+						ComponentType.CONTAINER, this.getModelInterface()),
+				imgDesc, imgDescLarge);
+		componentElements.add(entry);
 		root.add(separator);
 		PaletteDrawer connectionElements = new PaletteDrawer(
 				Messages.ConnectingElements);

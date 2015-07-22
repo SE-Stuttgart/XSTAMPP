@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.CompoundSnapToHelper;
@@ -34,6 +35,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
+import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
@@ -89,11 +91,10 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 		this.dataModel = model;
 		this.connectionRegisty = new ArrayList<IConnection>();
 	}
-
 	@Override
 	protected IFigure createFigure() {
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), false);
-		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
+		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getFigure());
 		return tmpFigure;
 	}
 
@@ -154,10 +155,10 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 			// increase the number of refreshes so the logic updates exactly
 			for (int i = 0; i <= 2; i++) {
-				figureTemp.setText(modelTemp.getText());
 
 				figureTemp.setLayout(modelTemp.getLayout(stepID
 						.equals(CSEditor.ID)));
+				figureTemp.setText(modelTemp.getText());
 			}
 
 			this.refreshChildren();
@@ -369,5 +370,31 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	public void setLayer(int layer) {
 		this.layer = layer;
 	}
-	
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		this.getFigure().disableFeedback();
+		
+	}
+
+	@Override
+	public void mouseHover(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

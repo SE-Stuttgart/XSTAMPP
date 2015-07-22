@@ -23,7 +23,7 @@ import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.controller.commands.ComponentRenameCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.figure.CSFigure;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.astpa.util.DirectEditor;
 

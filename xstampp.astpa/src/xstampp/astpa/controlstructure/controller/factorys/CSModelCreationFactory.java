@@ -78,6 +78,12 @@ public class CSModelCreationFactory implements CreationFactory {
 			text = Messages.DashedBox;
 			break;
 		}
+		case CONTAINER:{
+
+			text = Messages.DashedBox;
+			break;
+			
+		}
 		case CONTROLLER: {
 			text = Messages.Controller;
 			break;

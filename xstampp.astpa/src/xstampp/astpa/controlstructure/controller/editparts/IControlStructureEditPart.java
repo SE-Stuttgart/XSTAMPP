@@ -15,7 +15,7 @@ package xstampp.astpa.controlstructure.controller.editparts;
 
 import java.util.UUID;
 
-import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.GraphicalEditPart;
 
@@ -24,7 +24,7 @@ import org.eclipse.gef.GraphicalEditPart;
  * @author Lukas
  * 
  */
-public interface IControlStructureEditPart extends GraphicalEditPart {
+public interface IControlStructureEditPart extends GraphicalEditPart,MouseMotionListener {
 
 	/**
 	 * 
