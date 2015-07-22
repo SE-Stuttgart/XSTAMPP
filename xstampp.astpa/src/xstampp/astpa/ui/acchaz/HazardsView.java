@@ -49,7 +49,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.Activator;
-import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.model.IDataModel;

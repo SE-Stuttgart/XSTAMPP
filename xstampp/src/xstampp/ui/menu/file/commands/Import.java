@@ -50,6 +50,7 @@ public class Import extends AbstractHandler {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().setPerspective(descriptor);
 		}
+		
 		if (recentPath == null) {
 			return viewContainer.importDataModel();
 		}

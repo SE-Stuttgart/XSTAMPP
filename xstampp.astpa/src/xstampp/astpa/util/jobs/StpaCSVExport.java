@@ -15,13 +15,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.ITableModel;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;
-import xstampp.astpa.model.controlaction.UnsafeControlActionType;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.wizards.BufferedCSVWriter;
 import xstampp.model.IDataModel;
@@ -96,7 +96,7 @@ public class StpaCSVExport extends Job {
 						csvWriter, Messages.DesignRequirements);
 			}
 			if (this.type.contains(ICSVExportConstants.CONTROL_ACTION)) {
-				this.exportAsCSV(this.model.getAllControlActions(), csvWriter,
+				this.exportCAcAsCSV(this.model.getAllControlActions(), csvWriter,
 						Messages.ControlActions);
 			}
 			if (this.type
@@ -149,7 +149,34 @@ public class StpaCSVExport extends Job {
 			csvWriter.newLine();
 		}
 	}
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param models
+	 *            the data which shall be exported as CSV
+	 * @throws IOException
+	 */
+	protected void exportCAcAsCSV(List<IControlAction> models,
+			BufferedCSVWriter csvWriter, String title) throws IOException {
+		csvWriter.newLine();
+		csvWriter.write(title);
+		csvWriter.newLine();
+		csvWriter.writeCell("ID");
+		csvWriter.writeCell("Name");
+		csvWriter.write("Description");
+		csvWriter.newLine();
+		int i = 0;
+		for (ITableModel data : models) {
+			i++;
+			csvWriter.writeCell(Integer.toString(i));
 
+			csvWriter.writeCell(data.getTitle());
+			csvWriter.write(data.getDescription());
+			csvWriter.newLine();
+		}
+	}
+	
 	private void writeCausalFactorsCSV(BufferedCSVWriter writer, String title)
 			throws IOException {
 

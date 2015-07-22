@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.xml.sax.SAXException;
 
+import xstampp.astpa.haz.HAZController;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.util.AbstractLoadJob;
@@ -51,7 +52,12 @@ public class STPALoadJob extends AbstractLoadJob {
 
 		try {
 			// validate the file
-			URL schemaFile = this.getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
+			URL schemaFile;
+//			if(this.getFile().getName().endsWith("haz")){
+//				schemaFile = HAZController.class.getResource("/hazschema.xsd"); //$NON-NLS-1$
+//			}else{
+				schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
+//			}
 			BufferedReader reader= new BufferedReader(new FileReader(this.getFile()));
 			StringBuffer buffer = new StringBuffer();
 			String line;

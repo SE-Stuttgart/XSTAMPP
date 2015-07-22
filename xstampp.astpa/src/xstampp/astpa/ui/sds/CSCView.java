@@ -13,8 +13,6 @@
 
 package xstampp.astpa.ui.sds;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Observable;
 
 import messages.Messages;
@@ -33,13 +31,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -49,7 +44,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -77,8 +71,8 @@ public class CSCView extends StandartEditorPart{
 	private TableViewer tableViewer;
 	private ATableFilter filter;
 	private Text filterTextField;
-	private TableViewerColumn unsafeControlActionsColumn;
-	private TableViewerColumn safetyConstraintsColumn;
+	TableViewerColumn unsafeControlActionsColumn;
+	TableViewerColumn safetyConstraintsColumn;
 
 	/**
 	 * 
@@ -197,8 +191,7 @@ public class CSCView extends StandartEditorPart{
 		this.tableViewer.setContentProvider(new ArrayContentProvider());
 		this.tableViewer.getTable().setLinesVisible(true);
 		this.tableViewer.getTable().setHeaderVisible(true);
-		
-		
+
 		this.filter = new ATableFilter();
 		CSCView.this.tableViewer.addFilter(this.filter);
 
@@ -218,36 +211,7 @@ public class CSCView extends StandartEditorPart{
 
 		this.unsafeControlActionsColumn
 				.setLabelProvider(new ColumnLabelProvider() {
-		            Map<Object, TableEditor> texts = new HashMap<>();
-					
-					
-//					@Override
-//					public void update(ViewerCell cell) {
-//		                TableItem item = (TableItem) cell.getItem();
-//						Text text;
-//						TableEditor editor;
-//		                if(this.texts.containsKey(cell.getElement()))
-//		                {
-//		                	editor = this.texts.get(cell.getElement());
-//		                	text = (Text) editor.getEditor();
-//		                }
-//		                else
-//		                {
-//							text = new Text((Composite) cell.getViewerRow().getControl(), SWT.READ_ONLY|SWT.WRAP);
-//							text.setBackground(null);
-//							editor = new TableEditor(item.getParent());
-//				            editor.grabHorizontal  = true;
-//				            editor.grabVertical = true;
-//				            editor.setEditor(text , item, cell.getColumnIndex());
-//							this.texts.put(cell.getElement(), editor);
-//							editor.layout();
-//		                }
-//						text.setText(((ICorrespondingUnsafeControlAction) cell.getElement())
-//									.getDescription());
-//		               
-//		                
-//		                
-//					}
+
 					@Override
 					public String getText(Object element) {
 						if (element instanceof ICorrespondingUnsafeControlAction) {
@@ -256,44 +220,8 @@ public class CSCView extends StandartEditorPart{
 						}
 						return null;
 					}
-					
-					
 				});
-		
-		
-		TableViewerColumn middle = new TableViewerColumn(
-				this.tableViewer, SWT.NONE);
-		tableColumnLayout.setColumnData(
-				middle.getColumn(),
-				new ColumnWeightData(0, 40, false));
-		ColumnLabelProvider provider = new ColumnLabelProvider(){
-            Map<Object, Button> buttons = new HashMap<>();
 
-            @Override
-            public void update(ViewerCell cell) {
-                TableItem item = (TableItem) cell.getItem();
-                Button button;
-                if(this.buttons.containsKey(cell.getElement()))
-                {
-                    button = this.buttons.get(cell.getElement());
-                }
-                else
-                {
-                     button = new Button((Composite) cell.getViewerRow().getControl(),SWT.NONE);
-                    button.setText(">>");
-                    this.buttons.put(cell.getElement(), button);
-                    button.addSelectionListener(new CopyListener((ICorrespondingUnsafeControlAction) cell.getElement()));
-                }
-                TableEditor editor = new TableEditor(item.getParent());
-                editor.grabHorizontal  = true;
-                editor.grabVertical = true;
-                editor.setEditor(button , item, cell.getColumnIndex());
-                editor.layout();
-            }
-
-		};
-		middle.setLabelProvider(provider);
-		
 		// the right column is for the resulting safety constraints
 		this.safetyConstraintsColumn = new TableViewerColumn(this.tableViewer,
 				SWT.NONE);
@@ -362,7 +290,7 @@ public class CSCView extends StandartEditorPart{
 
 		// the editing support for the right column
 		final EditingSupport correspondingSafetyConstraintEditingSupport = new CSCEditingSupport(
-				this.tableViewer,true);
+				this.tableViewer, SWT.NONE);
 		this.safetyConstraintsColumn
 				.setEditingSupport(correspondingSafetyConstraintEditingSupport);
 		this.tableViewer.setInput(this.dataInterface
@@ -379,7 +307,6 @@ public class CSCView extends StandartEditorPart{
 	public String getTitle() {
 		return Messages.CorrespondingSafetyConstraints;
 	}
-
 
 
 	public void setDataModelInterface(IDataModel dataInterface) {
@@ -416,38 +343,20 @@ public class CSCView extends StandartEditorPart{
 				.getAllUnsafeControlActions());
 	}
 
-	private class CopyListener extends SelectionAdapter {
-		private ICorrespondingUnsafeControlAction undafeControlAction;
-		
-		public CopyListener(ICorrespondingUnsafeControlAction uca) {
-			this.undafeControlAction = uca;
-		}
-		
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-			String description = this.undafeControlAction.getDescription();
-			
-			CSCView.this.dataInterface.setCorrespondingSafetyConstraint(
-					this.undafeControlAction.getId(),
-					String.valueOf(description));
-			CSCView.this.tableViewer.refresh();
-		}
-	}
 	private class CSCEditingSupport extends EditingSupport {
 
-		private boolean isEditable;
+		private int style;
 		/**
 		 * 
 		 * @author Jarkko Heidenwag
 		 * 
 		 * @param viewer
 		 *            the ColumnViewer
-		 * @param editable 
-		 * 			if the cell is editable
+		 * @param style TODO
 		 */
-		public CSCEditingSupport(ColumnViewer viewer,boolean editable) {
+		public CSCEditingSupport(ColumnViewer viewer, int style) {
 			super(viewer);
-			this.isEditable =editable;
+			this.style = style;
 		}
 
 		@Override
@@ -457,25 +366,7 @@ public class CSCView extends StandartEditorPart{
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			CellEditor editor =new TextCellEditor(CSCView.this.tableViewer.getTable());
-			final Text cont = (Text) editor.getControl();
-			
-			cont.addKeyListener(new KeyAdapter() {
-				
-				@Override
-				public void keyReleased(KeyEvent e) {
-					switch(e.keyCode){
-					case SWT.ARROW_LEFT:{
-						cont.setSelection(cont.getSelection().x -1, cont.getSelection().x-1);
-						break;
-					}
-					case SWT.ARROW_RIGHT:{
-						cont.setSelection(cont.getSelection().x +1, cont.getSelection().x+1);
-					}
-					}
-				}
-			});
-			return editor;
+			return new TextCellEditor(CSCView.this.tableViewer.getTable(),style);
 		}
 
 		@Override
@@ -489,19 +380,17 @@ public class CSCView extends StandartEditorPart{
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			if(this.isEditable){
-				if (element instanceof ICorrespondingUnsafeControlAction) {
-					CSCView.this.dataInterface.setCorrespondingSafetyConstraint(
-							((ICorrespondingUnsafeControlAction) element).getId(),
-							String.valueOf(value));
-				}
-				this.getViewer().refresh(element);
-//				CSCView.this.tableViewer.refresh(true, true);
-//				CSCView.this.tableViewer.setInput(CSCView.this.dataInterface
-//						.getAllUnsafeControlActions());
+			if (element instanceof ICorrespondingUnsafeControlAction) {
+				CSCView.this.dataInterface.setCorrespondingSafetyConstraint(
+						((ICorrespondingUnsafeControlAction) element).getId(),
+						String.valueOf(value));
 			}
+			CSCView.this.tableViewer.refresh(true, true);
+			CSCView.this.tableViewer.setInput(CSCView.this.dataInterface
+					.getAllUnsafeControlActions());
 		}
 	}
+
 
 	@Override
 	public void dispose() {

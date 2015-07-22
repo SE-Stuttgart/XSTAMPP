@@ -47,9 +47,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
-import xstampp.astpa.model.controlaction.UnsafeControlActionType;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.common.grid.GridCellBlank;
 import xstampp.astpa.ui.common.grid.GridCellButton;

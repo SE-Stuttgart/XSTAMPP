@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Set;
 import java.util.UUID;
@@ -79,6 +80,7 @@ public class ProjectManager {
 	private Map<UUID, IDataModel> projectDataToUUID;
 	private Map<UUID, File> projectSaveFilesToUUID;
 	private Map<UUID, String> extensionsToUUID;
+	private Map<String, IConfigurationElement> elementsToExtensions;
 	
 
 	private class LoadJobChangeAdapter extends JobChangeAdapter {
@@ -314,19 +316,12 @@ public class ProjectManager {
 	public boolean importDataModel() {
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
 				.getDisplay().getActiveShell(), SWT.OPEN);
-		String tmpExt;
 		ArrayList<String> extensions= new ArrayList<>();
-		ArrayList<String> names= new ArrayList<>();
-		for (IConfigurationElement extElement : Platform
-				.getExtensionRegistry()
-				.getConfigurationElementsFor("astpa.extension.steppedProcess")) { //$NON-NLS-1$
-			tmpExt = "*." + extElement.getAttribute("extension");  //$NON-NLS-1$ //$NON-NLS-2$
-			extensions.add(tmpExt);
-			names.add(extElement.getAttribute("name") + "(" +tmpExt+ ")");  //$NON-NLS-1$  //$NON-NLS-2$  //$NON-NLS-3$
+		for (String ext : this.elementsToExtensions.keySet()) {
+			extensions.add("*." + ext);
 		}
 			
 		fileDialog.setFilterExtensions(extensions.toArray(new String[]{}));
-		fileDialog.setFilterNames(names.toArray(new String[]{}));
 		
 		String file = fileDialog.open();
 		if ((file != null)
@@ -349,7 +344,6 @@ public class ProjectManager {
 						return false;
 					}
 				}
-				
 			}
 
 			this.loadDataModelFile(file,copy.getPath());
@@ -374,13 +368,14 @@ public class ProjectManager {
 	public boolean loadDataModelFile(String file,String saveFile) {
 		Object jobObject = null;
 		String pluginName = ""; //$NON-NLS-1$
-		for (IConfigurationElement extElement : Platform
-				.getExtensionRegistry()
-				.getConfigurationElementsFor("xstampp.extension.steppedProcess")) { //$NON-NLS-1$
-			if(file.endsWith(extElement.getAttribute("extension"))){ //$NON-NLS-1$
-				pluginName = extElement.getAttribute("id"); //$NON-NLS-1$
-				jobObject = STPAPluginUtils.executeCommand(extElement.getAttribute("command")); //$NON-NLS-1$
-				
+		for (Entry<String, IConfigurationElement> extElement : 
+			this.elementsToExtensions.entrySet()) { //$NON-NLS-1$
+			
+			if(file.endsWith(extElement.getKey())){ //$NON-NLS-1$
+				pluginName = extElement.getValue().getAttribute("id"); //$NON-NLS-1$
+				jobObject = STPAPluginUtils.
+						executeCommand(extElement.getValue().getAttribute("command")); //$NON-NLS-1$
+				break;
 			}
 		}
 		
@@ -613,7 +608,35 @@ public class ProjectManager {
 		}
 		return null;
 	}
+	
+	/**
+	 * maps the given Configuration to the extension string 
+	 * @author Lukas
+	 *
+	 * @param ext the extension e.g.: "ext"
+	 * @param element the registered stepped process
+	 */
+	public void registerExtension(String ext,IConfigurationElement element){
+		if(this.elementsToExtensions == null){
+			this.elementsToExtensions = new HashMap<>();
+		}
+		this.elementsToExtensions.put(ext, element);
+	}
 
+	/**
+	 *
+	 * @author Lukas
+	 *
+	 * @param ext the extension e.g.: "ext"
+	 * @return if elementsToExtensions contains the extension
+	 */
+	public boolean isRegistered(String ext){
+		return this.elementsToExtensions.containsKey(ext);
+	}
+	
+	public IConfigurationElement getConfigurationFor(UUID projectID){
+		return this.elementsToExtensions.get(getProjectExtension(projectID));
+	}
 	/**
 	 * @return the lOGGER
 	 */

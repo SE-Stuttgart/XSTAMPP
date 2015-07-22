@@ -41,7 +41,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
 /**
