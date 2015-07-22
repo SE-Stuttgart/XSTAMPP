@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 
 /**
  * Class that represents anchor points of a connection in the control structure

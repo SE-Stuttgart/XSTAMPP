@@ -20,7 +20,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.haz.ITableModel;
 
 /**
  * Class for managing safety constraints, system goals and design requirements.

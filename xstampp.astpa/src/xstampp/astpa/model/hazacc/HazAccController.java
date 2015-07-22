@@ -3,14 +3,13 @@
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *******************************************************************************/
-
 package xstampp.astpa.model.hazacc;
 
 import java.util.ArrayList;
@@ -21,14 +20,15 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.hazacc.Link;
 
 /**
  * Controller-class for working with accidents and hazards and links between
  * them.
- * 
+ *
  * @author Fabian Toth
- * 
+ *
  */
 public class HazAccController {
 
@@ -46,9 +46,9 @@ public class HazAccController {
 
 	/**
 	 * Constructor for the controller
-	 * 
+	 *
 	 * @author Fabian Toth
-	 * 
+	 *
 	 */
 	public HazAccController() {
 		this.accidents = new ArrayList<>();
@@ -58,13 +58,13 @@ public class HazAccController {
 
 	/**
 	 * Creates a new accident and adds it to the list of accidents.
-	 * 
+	 *
 	 * @param title
 	 *            the title of the new accident
 	 * @param description
 	 *            the description of the new accident
 	 * @return the ID of the new accident
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public UUID addAccident(String title, String description) {
@@ -77,13 +77,13 @@ public class HazAccController {
 	/**
 	 * Removes the accident from the list of accidents and removes all links
 	 * associated with this accident.
-	 * 
+	 *
 	 * @param id
 	 *            Accident's ID
 	 * @return true if the accident has been removed
-	 * 
+	 *
 	 * @author Fabian Toth
-	 * 
+	 *
 	 */
 	public boolean removeAccident(UUID id) {
 		ITableModel accident = this.getAccident(id);
@@ -98,11 +98,11 @@ public class HazAccController {
 
 	/**
 	 * Searches for an Accident with given ID
-	 * 
+	 *
 	 * @param accidentID
 	 *            the id of the accident
 	 * @return found accident
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public ITableModel getAccident(UUID accidentID) {
@@ -116,9 +116,9 @@ public class HazAccController {
 
 	/**
 	 * Gets all accidents
-	 * 
+	 *
 	 * @return all accidents
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public List<ITableModel> getAllAccidents() {
@@ -131,11 +131,11 @@ public class HazAccController {
 
 	/**
 	 * Searches for all the hazards linked with given accident.
-	 * 
+	 *
 	 * @param accidentId
 	 *            the id of the accident
 	 * @return list of hazards linked to the given accident
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public List<ITableModel> getLinkedHazards(UUID accidentId) {
@@ -151,13 +151,13 @@ public class HazAccController {
 
 	/**
 	 * Creates a new hazard and adds it to the list of hazards.
-	 * 
+	 *
 	 * @param title
 	 *            the title of the new hazard
 	 * @param description
 	 *            the description of the new hazard
 	 * @return the ID of the new hazard
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public UUID addHazard(String title, String description) {
@@ -170,13 +170,13 @@ public class HazAccController {
 	/**
 	 * Removes the hazard from the list of hazards and remove all links
 	 * associated with this hazard.
-	 * 
+	 *
 	 * @param id
 	 *            the hazard's ID
 	 * @return true if the hazard has been removed
-	 * 
+	 *
 	 * @author Fabian Toth
-	 * 
+	 *
 	 */
 	public boolean removeHazard(UUID id) {
 		ITableModel hazard = this.getHazard(id);
@@ -191,12 +191,12 @@ public class HazAccController {
 
 	/**
 	 * Creates a link between an accident and a hazard.
-	 * 
+	 *
 	 * @param accidentId
 	 *            the id of the accident
 	 * @param hazardId
 	 *            the id of the hazard
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public void addLink(UUID accidentId, UUID hazardId) {
@@ -205,13 +205,13 @@ public class HazAccController {
 
 	/**
 	 * Removes a link between an accident and a hazard.
-	 * 
+	 *
 	 * @param accidentId
 	 *            the id of the accident
 	 * @param hazardId
 	 *            the id of the hazard
 	 * @return true if the link has been removed
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public boolean deleteLink(UUID accidentId, UUID hazardId) {
@@ -220,9 +220,9 @@ public class HazAccController {
 
 	/**
 	 * Gets all hazards
-	 * 
+	 *
 	 * @return all hazards
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public List<ITableModel> getAllHazards() {
@@ -235,11 +235,11 @@ public class HazAccController {
 
 	/**
 	 * Searches for all the accidents linked with given hazard.
-	 * 
+	 *
 	 * @param hazardId
 	 *            the ID of the hazard
 	 * @return list of accidents linked with given hazard
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public List<ITableModel> getLinkedAccidents(UUID hazardId) {
@@ -255,11 +255,11 @@ public class HazAccController {
 
 	/**
 	 * Searches for a Hazard with given ID
-	 * 
+	 *
 	 * @param hazardId
 	 *            the id of the hazard
 	 * @return found hazard
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	public ITableModel getHazard(UUID hazardId) {
@@ -273,9 +273,9 @@ public class HazAccController {
 
 	/**
 	 * Prepares the accidents and hazards for the export
-	 * 
+	 *
 	 * @author Fabian Toth
-	 * 
+	 *
 	 */
 	public void prepareForExport() {
 		for (Accident accident : this.accidents) {
@@ -306,9 +306,9 @@ public class HazAccController {
 
 	/**
 	 * Removes the preparations that were made for the export
-	 * 
+	 *
 	 * @author Fabian Toth
-	 * 
+	 *
 	 */
 	public void prepareForSave() {
 		for (Accident accident : this.accidents) {
@@ -321,19 +321,23 @@ public class HazAccController {
 
 	/**
 	 * Deletes all links that are associated to this id
-	 * 
+	 *
 	 * @param id
 	 *            the id of the hazard or accident
-	 * 
+	 *
 	 * @author Fabian Toth
 	 */
 	private void deleteAllLinks(UUID id) {
-		List<ILink> toDelete = new ArrayList<>();
+		List<Link> toDelete = new ArrayList<>();
 		for (Link link : this.links) {
 			if (link.containsId(id)) {
 				toDelete.add(link);
 			}
 		}
 		this.links.removeAll(toDelete);
+	}
+
+	public List<xstampp.astpa.haz.hazacc.Link> getAllHazAccLinks() {
+		return this.links;
 	}
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import xstampp.astpa.model.controlaction.interfaces.IUCAHazLink;
+import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 
 /**
  * Represents a link between a unsafe control action and a hazard

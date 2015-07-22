@@ -13,7 +13,7 @@
 
 package xstampp.astpa.model.controlstructure.interfaces;
 
-import java.util.UUID;
+import java.util.List;
 
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 
@@ -23,25 +23,10 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
  * @author Fabian Toth
  * 
  */
-public interface IConnection extends IComponent {
+public interface IConnection extends xstampp.astpa.haz.controlstructure.interfaces.IConnection,IComponent {
 
-	/**
-	 * Getter for the source anchor
-	 * 
-	 * @return The anchor where the connection begins
-	 * 
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 */
-	IAnchor getSourceAnchor();
 
-	/**
-	 * Getter for the targetFigure
-	 * 
-	 * @return The anchor where the connection ends
-	 * 
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 */
-	IAnchor getTargetAnchor();
+	
 
 	/**
 	 * Getter for the connection type
@@ -50,9 +35,11 @@ public interface IConnection extends IComponent {
 	 * 
 	 * @author Lukas Balzer, Aliaksei Babkovich
 	 */
+	@Override
 	ConnectionType getConnectionType();
 
-	
+
+	public List<IRectangleComponent> getChildren();
 
 
 }

@@ -25,7 +25,7 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
  * @author Lukas
  * 
  */
-public interface IComponent {
+public interface IComponent extends xstampp.astpa.haz.controlstructure.interfaces.IComponent{
 
 	/**
 	 * 
@@ -33,6 +33,7 @@ public interface IComponent {
 	 * 
 	 * @author Lukas Balzer
 	 */
+	@Override
 	ComponentType getComponentType();
 	
 	/**

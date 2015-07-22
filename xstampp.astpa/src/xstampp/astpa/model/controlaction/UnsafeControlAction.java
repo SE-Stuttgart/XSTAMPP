@@ -17,7 +17,8 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 
@@ -104,6 +105,10 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 
 	@Override
 	public CorrespondingSafetyConstraint getCorrespondingSafetyConstraint() {
+		if(this.correspondingSafetyConstraint == null){
+			this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(new String());
+			
+		}
 		return this.correspondingSafetyConstraint;
 	}
 

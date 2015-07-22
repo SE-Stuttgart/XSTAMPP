@@ -24,11 +24,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import messages.Messages;
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.UCAHazLink;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ISafetyConstraint;
-import xstampp.astpa.model.ITableModel;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IUCAHazLink;
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
 
@@ -258,7 +260,7 @@ public class ControlActionController {
 		List<IUCAHazLink> result = new ArrayList<>();
 		for (UCAHazLink link : this.links) {
 			if (link.containsId(unsafeControlActionId)) {
-				result.add(link);
+				result.add((IUCAHazLink) link);
 			}
 		}
 		return result;
@@ -350,6 +352,7 @@ public class ControlActionController {
 		for (ControlAction controlAction : this.controlActions) {
 			for (IUnsafeControlAction unsafeControlAction : controlAction
 					.getUnsafeControlActions()) {
+				//an unsafe controlaction is only to be conssidered if it leads to a hazard
 				if (!this.getLinksOfUCA(unsafeControlAction.getId()).isEmpty()) {
 					result.add((ICorrespondingUnsafeControlAction) unsafeControlAction);
 				}
@@ -473,5 +476,8 @@ public class ControlActionController {
 			}
 		}
 	}
-
+	
+	public List<UCAHazLink> getAllUCALinks() {
+		return this.links;
+	}
 }

@@ -17,6 +17,8 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlType;
 
+import xstampp.astpa.haz.ITableModel;
+
 /**
  * Abstract class for everything that can be shown in a table
  * 

@@ -22,7 +22,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import messages.Messages;
-import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.causalfactor.CausalFactorHazardLink;
+import xstampp.astpa.haz.causalfactor.ICausalFactorHazardLink;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.hazacc.HazAccController;
 
@@ -288,5 +290,9 @@ public class CausalFactorController {
 				causalFactor.setLinks(null);
 			}
 		}
+	}
+
+	public List<CausalFactorHazardLink> getCausalFactorHazLinks() {
+		return this.links;
 	}
 }

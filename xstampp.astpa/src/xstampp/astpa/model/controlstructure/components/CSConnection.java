@@ -20,8 +20,11 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.draw2d.geometry.Rectangle;
+
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+
 
 /**
  * This class contains functions necessary for connection model
@@ -36,7 +39,6 @@ public class CSConnection implements IConnection {
 	private ConnectionType connectionType;
 	private Anchor sourceAnchor;
 	private Anchor targetAnchor;
-	private List<Component> children;
 
 	/**
 	 * Constructs a new connection
@@ -64,7 +66,6 @@ public class CSConnection implements IConnection {
 	 * @author Fabian Toth
 	 */
 	public CSConnection() {
-		this.children = new ArrayList<>();
 	}
 
 	@Override
@@ -140,50 +141,8 @@ public class CSConnection implements IConnection {
 
 	@Override
 	public List<IRectangleComponent> getChildren() {
-		
-		List<IRectangleComponent> result = new ArrayList<>();
-		for (IRectangleComponent component : this.children) {
-			result.add(component);
-		}
-		return result;
-	}
-	
-	/**
-	 * Gets the child with the given id
-	 * 
-	 * @param childId
-	 *            the id of the child
-	 * @return the child with the given id or null
-	 * 
-	 * @author Lukas Balzer
-	 */
-	public Component getChild(UUID childId) {
-		for (Component component : this.children) {
-			if (component.getId().equals(childId)) {
-				return component;
-			}
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
 
-	/**
-	 * Adds a chid
-	 * 
-	 * @param child
-	 *            the new child
-	 * @param index TODO
-	 * @return true if child could be added
-	 * 
-	 * @author Lukas Balzer
-	 */
-	public boolean addChild(Component child, Integer index) {
-		
-		if(index < 0 || index >this.children.size()){
-			return this.children.add(child);
-		}
-		this.children.add(index,child);
-		return true;
-		
-	}
 }

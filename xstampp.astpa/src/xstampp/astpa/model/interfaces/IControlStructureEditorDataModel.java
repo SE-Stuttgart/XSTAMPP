@@ -20,7 +20,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
-import xstampp.astpa.model.ITableModel;
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
@@ -144,7 +145,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * 
 	 * @return All control actions
 	 */
-	List<ITableModel> getAllControlActions();
+	List<IControlAction> getAllControlActions();
 
 	/**
 	 * Get a control action by it's ID.

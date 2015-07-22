@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
+import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;
 import xstampp.astpa.model.controlstructure.components.Anchor;
@@ -31,7 +32,6 @@ import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
-import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 
@@ -115,17 +115,11 @@ public class ControlStructureController {
 			Rectangle layout, String text, ComponentType type, Integer index) {
 		Component newComp = new Component(controlActionId, text, layout, type);
 		IComponent parent = this.getInternalComponent(parentId);
-		if(parent == null){
-			parent = this.getInternalConnection(parentId);
-		}else{
+		if(parent != null){
 			((Component)parent).addChild(newComp,index);
 			return newComp.getId();
 		}
-		if(parent == null){
-			return null;
-		}
-		((CSConnection)parent).addChild(newComp,index);
-		return newComp.getId();
+		return null;
 	}
 
 	/**
@@ -262,17 +256,7 @@ public class ControlStructureController {
 		if (this.root == null) {
 			return null;
 		}
-		Component comp =  this.root.getChild(componentId);
-		if(comp != null){
-			return comp;
-		}
-		for(CSConnection conn:this.connections){
-			comp = conn.getChild(componentId);
-			if(comp != null){
-				return comp;
-			}
-		}
-		return null;
+		return this.root.getChild(componentId);
 	}
 
 	/**
@@ -443,29 +427,9 @@ public class ControlStructureController {
 			return null;
 		}
 		return this.root.getChild(componentId);
-	}
-	
-	/**
-	 * Searches for the internal connection with the given id
-	 * 
-	 * @param connectionId
-	 *            the id of the child
-	 * @return the component with the given id
-	 * 
-	 * @author Lukas Balzer
-	 */
-	private CSConnection getInternalConnection(UUID connectionId) {
-		if (this.connections == null) {
-			return null;
-		}
 		
-		for(CSConnection conn:this.connections){
-			if(conn.getId().equals(connectionId)){
-				return conn;
-			}
-		}
-		return null;
 	}
+
 	/**
 	 * Removes all links that are connected to the component with the given id
 	 * 

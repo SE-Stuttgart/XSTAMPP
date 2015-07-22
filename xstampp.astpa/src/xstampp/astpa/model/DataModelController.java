@@ -37,14 +37,18 @@ import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.causalfactor.CausalFactorHazardLink;
+import xstampp.astpa.haz.controlaction.UCAHazLink;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
+import xstampp.astpa.haz.hazacc.Link;
 import xstampp.astpa.model.causalfactor.CausalFactor;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
-import xstampp.astpa.model.controlaction.UnsafeControlActionType;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
@@ -90,7 +94,7 @@ import xstampp.ui.common.ProjectManager;
  */
 @XmlRootElement(namespace = "astpa.model")
 public class DataModelController extends Observable implements
-		ILinkingViewDataModel, INavigationViewDataModel,
+		IHAZXModel,ILinkingViewDataModel, INavigationViewDataModel,
 		ISystemDescriptionViewDataModel, IAccidentViewDataModel,
 		IHazardViewDataModel, IStatusLineDataModel,
 		IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel,
@@ -673,8 +677,8 @@ public class DataModelController extends Observable implements
 	}
 
 	@Override
-	public List<ITableModel> getAllControlActions() {
-		return this.controlActionController.getAllControlActions();
+	public List<IControlAction> getAllControlActions() {
+		return this.controlActionController.getAllControlActionsU();
 	}
 
 	@Override
@@ -1312,5 +1316,26 @@ public class DataModelController extends Observable implements
 	@Override
 	public String getPluginID() {
 		return Activator.PLUGIN_ID;
+	}
+
+	@Override
+	public List<Link> getAllHazAccLinks() {
+		return this.hazAccController.getAllHazAccLinks();
+	}
+
+	@Override
+	public List<UCAHazLink> getAllUCALinks() {
+		return this.controlActionController.getAllUCALinks();
+	}
+
+	@Override
+	public List<CausalFactorHazardLink> getCausalFactorHazLinks() {
+		return this.causalFactorController.getCausalFactorHazLinks();
+	}
+	
+	
+	@Override
+	public String getAstpaVersion() {
+		return this.astpaVersion;
 	}
 }

@@ -16,9 +16,9 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.ITableModel;
-import xstampp.astpa.model.controlaction.UnsafeControlActionType;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.model.IDataModel;
 
 /**

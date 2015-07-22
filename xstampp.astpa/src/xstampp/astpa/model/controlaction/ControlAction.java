@@ -20,9 +20,10 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 
 /**
  * Class representing the control action objects
@@ -131,4 +132,5 @@ public class ControlAction extends ATableModel implements IControlAction {
 	public List<UnsafeControlAction> getInternalUnsafeControlActions() {
 		return this.unsafeControlActions;
 	}
+
 }

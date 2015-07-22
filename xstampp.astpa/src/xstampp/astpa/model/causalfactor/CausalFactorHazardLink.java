@@ -15,6 +15,8 @@ package xstampp.astpa.model.causalfactor;
 
 import java.util.UUID;
 
+import xstampp.astpa.haz.causalfactor.ICausalFactorHazardLink;
+
 /**
  * A implementation of a link between a causal factor and a hazard
  * 

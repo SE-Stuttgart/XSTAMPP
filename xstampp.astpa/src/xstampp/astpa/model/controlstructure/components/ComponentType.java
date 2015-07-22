@@ -20,7 +20,11 @@ package xstampp.astpa.model.controlstructure.components;
  * @since 2.0
  * 
  */
-public enum ComponentType {
+public enum ComponentType{
+	/**
+	 * This enum represents a container component
+	 */
+	CONTAINER,
 	/**
 	 * This constant is used to create Text Fields
 	 */
