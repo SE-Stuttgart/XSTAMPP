@@ -156,7 +156,7 @@ public class ControlStructureController {
 	 */
 	public boolean changeComponentLayout(UUID componentId, Rectangle layout,
 			boolean step1) {
-		Component component = this.getInternalComponent(componentId);
+	Component component = this.getInternalComponent(componentId);
 		if (component != null) {
 			//every time the layout is changed the controller checks if both
 			//steps have been initialized and if not synchronizes the two layouts
@@ -572,6 +572,118 @@ public class ControlStructureController {
 	 }
 	 
 
-	 
-	 
+	/**
+	 * this funktion 
+	 * @param componentId 
+	 *            the id of the component
+	 * @return the relative of the component which belongs to the given id
+	 */
+	public UUID getRelativeOfComponent(UUID componentId) {
+		return getInternalComponent(componentId).getRelative();
+	}
+
+	/**
+	 * @param componentId 
+	 *            the id of the component
+	 * @param relativeId the relative to set
+	 */
+	public void setRelativeOfComponent(UUID componentId, UUID relativeId) {
+		Component comp = getInternalComponent(componentId);
+		if(comp != null){
+			comp.setRelative(relativeId);
+		}
+	}
+	
+	/**
+	 * @param componentId  
+	 *            the id of the component
+	 * @param isSafetyCritical the isSafetyCritical to set
+	 */
+	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
+		Component comp = getInternalComponent(componentId);
+		if(comp != null){
+			comp.setSafetyCritical(isSafetyCritical);
+		}
+	}
+	
+	/**
+	 * @param componentId 
+	 *            the id of the component
+	 * @param comment the comment to set
+	 */
+	public void setComment(UUID componentId, String comment) {
+		Component comp = getInternalComponent(componentId);
+		if(comp != null){
+			comp.setComment(comment);
+		}
+	}
+	
+	/**
+	 *
+	 * @author Lukas
+	 *
+	 * @param componentId
+	 *            the id of the component
+	 * @param variableID the variable which should be rmoved
+	 * @return whether or not the add was successful, it also returns false if
+	 * 			the given uuid belongs to no component
+	 */
+	public boolean addUnsafeProcessVariable(UUID componentId,UUID variableID){
+		Component comp = getInternalComponent(componentId);
+		if(comp != null){
+			return comp.addUnsafeProcessVariable(variableID);
+		}
+		return false;
+	}
+	
+	
+	/**
+	 *
+	 * @author Lukas
+	 *
+	 * @param componentId
+	 *            the id of the component
+	 * @param variableID the variable which should be rmoved
+	 * @return whether or not the remove was successful, it also returns false if
+	 * 			the given uuid belongs to no component 
+	 */
+	public boolean removeUnsafeProcessVariable(UUID componentId,UUID variableID){
+		Component comp = getInternalComponent(componentId);
+		if(comp != null){
+			comp.removeUnsafeProcessVariable(variableID);
+		}
+		return false;
+	}
+	
+	/**
+	 *
+	 * @author Lukas
+	 *
+	 * @param componentId
+	 *            the id of the component
+	 * @return 
+	 * 			a map cointaining all process variables provided as keys to a safe/unsafe boolean  
+	 */
+	public Map<IRectangleComponent,Boolean> getRelatedProcessVariables(UUID componentId){
+		Component comp = getInternalComponent(componentId);
+		Map<IRectangleComponent,Boolean> values =new HashMap<>();
+		if(comp != null){
+			List<UUID> upv= comp.getUnsafeProcessVariables();
+			IConnection conn = getConnection(comp.getRelative());
+			Component target = getInternalComponent(conn.getTargetAnchor().getOwnerId());
+			if(target == null || target.getComponentType() != ComponentType.CONTROLLER){
+				return values;
+			}
+			for(IRectangleComponent child: target.getChildren()){
+				if(child.getComponentType() == ComponentType.PROCESS_MODEL){
+					for(IRectangleComponent variable: child.getChildren()){
+						if(variable.getComponentType() == ComponentType.PROCESS_VARIABLE){
+							values.put(variable, upv.contains(variable.getId()));
+						}
+					}
+				}
+			}
+		}
+		return values;
+	}
 }

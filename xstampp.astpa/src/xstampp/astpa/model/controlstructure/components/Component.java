@@ -31,6 +31,7 @@ import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.causalfactor.CausalFactor;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;
+import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 
 /**
@@ -44,16 +45,19 @@ import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
  */
 @XmlRootElement(name = "component")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "id", "text", "componentType", "controlActionId",
-		"layout", "layoutPM", "children", "causalFactors" })
+@XmlType(propOrder = { "id", "text","isSafetyCritical","comment", "componentType", "controlActionId",
+		"layout", "layoutPM", "relative","children", "causalFactors","unsafeVariables" })
 public class Component implements IRectangleComponent, ICausalComponent {
 
 	private UUID id;
 	private UUID controlActionId;
 	private String text;
+	private boolean isSafetyCritical;
+	private String comment;
 	private Rectangle layout;
 	private Rectangle layoutPM;
 	private ComponentType componentType;
+	private UUID relative;
 
 	@XmlElementWrapper(name = "causalFactors")
 	@XmlElement(name = "causalFactor")
@@ -63,6 +67,9 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	@XmlElement(name = "component")
 	private List<Component> children;
 
+	@XmlElementWrapper(name = "unsafeVariables")
+	@XmlElement(name = "unsafeVariable")
+	private List<UUID> unsafeVariables;
 	/**
 	 * Constructs a new component with the given text and layout
 	 * 
@@ -141,7 +148,7 @@ public class Component implements IRectangleComponent, ICausalComponent {
 
 	@Override
 	public String getText() {
-		return this.text;
+		return new String(this.text);
 	}
 
 	/**
@@ -332,5 +339,97 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	public boolean linktoControlAction(UUID controlActionid) {
 		this.controlActionId = controlActionid;
 		return true;
+	}
+	
+	
+	@Override
+	public UUID getRelative() {
+		return this.relative;
+	}
+
+	/**
+	 * @param relative the relative to set
+	 */
+	public void setRelative(UUID relative) {
+		this.relative = relative;
+	}
+
+	@Override
+	public boolean isSafetyCritical() {
+		return this.isSafetyCritical;
+	}
+
+	/**
+	 * @param isSafetyCritical the isSafetyCritical to set
+	 */
+	public void setSafetyCritical(boolean isSafetyCritical) {
+		this.isSafetyCritical = isSafetyCritical;
+	}
+
+	
+	@Override
+	public String getComment() {
+		if(this.comment == null){
+			this.comment = new String();
+		}
+		return new String(this.comment);
+	}
+
+	/**
+	 * @param comment the comment to set
+	 */
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author Lukas
+	 *
+	 * @param variableID the variable which should be rmoved
+	 * @see ControlStructureController#addUnsafeProcessVariable(UUID, UUID)
+	 * 
+	 * @return whether or not the add was successful, it also returns false if the given uuid belongs to no component
+	 */
+	public boolean addUnsafeProcessVariable(UUID variableID){
+		if(this.componentType == ComponentType.CONTROLACTION){
+			return false;
+		}
+		if(this.unsafeVariables == null){
+			this.unsafeVariables = new ArrayList<>();
+		}
+		return this.unsafeVariables.add(variableID);
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author Lukas
+	 *
+	 * @param variableID  the variable which should be rmoved  
+	 * 
+	 * @see ControlStructureController#removeUnsafeProcessVariable(UUID, UUID)
+	 * @return whether or not the remove was successful, it also returns false if the given uuid belongs to no component 
+	 */
+	public boolean removeUnsafeProcessVariable(UUID variableID){
+		if(this.unsafeVariables == null){
+			return false;
+		}
+		return this.unsafeVariables.remove(variableID);
+	}
+	
+	/**
+	 * getter for the unsafe process model variables
+	 *
+	 * @author Lukas
+	 *
+	 * @return a list containing all process variables registered as unsafe
+	 */
+	public List<UUID> getUnsafeProcessVariables(){
+		if(this.unsafeVariables == null){
+			return new ArrayList<>();
+		}
+		return new ArrayList<>(this.unsafeVariables);
 	}
 }

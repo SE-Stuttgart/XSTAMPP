@@ -16,7 +16,9 @@ package xstampp.astpa.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -49,6 +51,7 @@ import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
@@ -104,7 +107,8 @@ public class DataModelController extends Observable implements
 
 
 	private static final Logger LOGGER = ProjectManager.getLOGGER();
-
+	private static final String HAZ ="haz";
+	private static final String HAZX ="hazx";
 	@XmlAttribute(name = "astpaversion")
 	private String astpaVersion;
 
@@ -136,6 +140,7 @@ public class DataModelController extends Observable implements
 
 	
 	private int initialCalls;
+	private String projectExtension;
 	/**
 	 * Constructor of the DataModel Controller
 	 * 
@@ -932,14 +937,19 @@ public class DataModelController extends Observable implements
 	}
 
 	@Override
-	public IControlAction getControlActionU(UUID controlActionId) {
+	public IHAZXControlAction getControlActionU(UUID controlActionId) {
 		if (controlActionId == null) {
 			return null;
 		}
 
 		return this.controlActionController.getControlActionU(controlActionId);
 	}
-
+	
+	@Override
+	public void linkControlAction(UUID caId,UUID componentId) {
+		this.controlActionController.setComponentLink(componentId, caId);
+	}
+	
 	@Override
 	public UUID addUnsafeControlAction(UUID controlActionId,
 			String description, UnsafeControlActionType unsafeControlActionType) {
@@ -1285,9 +1295,12 @@ public class DataModelController extends Observable implements
 
 		UUID result = this.controlStructureController.addComponent(
 				controlActionId, parentId, layout, text, type, index);
+		this.controlActionController.setComponentLink(result, controlActionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
+	
+	
 
 	@Override
 	public Job doSave(final File file, Logger log, boolean isUIcall) {
@@ -1311,7 +1324,21 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public String getFileExtension() {
-		return "haz";
+		return this.projectExtension;
+	}
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param ext must be one of 
+	 * @return whether the given extension is supported or not
+	 */
+	public boolean setProjectExtension(String ext){
+		if(ext.equals(HAZ) || ext.equals(HAZX)){
+			this.projectExtension = ext;
+			return true;
+		}
+		return false;
 	}
 	@Override
 	public String getPluginID() {
@@ -1337,5 +1364,38 @@ public class DataModelController extends Observable implements
 	@Override
 	public String getAstpaVersion() {
 		return this.astpaVersion;
+	}
+
+	@Override
+	public void setRelativeOfComponent(UUID componentId, UUID relativeId) {
+		this.controlStructureController.setRelativeOfComponent(componentId, relativeId);
+		updateValue(ObserverValue.CONTROL_STRUCTURE);
+		updateValue(ObserverValue.UNSAVED_CHANGES);
+	}
+
+	
+	@Override
+	public Map<IRectangleComponent, Boolean> getRelatedProcessVariables(UUID componentId){
+		return this.controlStructureController.getRelatedProcessVariables(componentId);
+	}
+
+	@Override
+	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
+		this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
+	}
+
+	@Override
+	public void setComment(UUID componentId, String comment) {
+		this.controlStructureController.setComment(componentId, comment);
+	}
+
+	@Override
+	public boolean addUnsafeProcessVariable(UUID componentId, UUID variableID) {
+		return this.controlStructureController.addUnsafeProcessVariable(componentId, variableID);
+	}
+
+	@Override
+	public boolean removeUnsafeProcessVariable(UUID componentId, UUID variableID) {
+		return this.controlStructureController.removeUnsafeProcessVariable(componentId, variableID);
 	}
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.model.IDataModel;
 
 /**
@@ -55,4 +56,5 @@ public interface ICorrespondingSafetyConstraintDataModel extends IDataModel {
 	UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
 			String safetyConstraintDescription);
 
+	
 }

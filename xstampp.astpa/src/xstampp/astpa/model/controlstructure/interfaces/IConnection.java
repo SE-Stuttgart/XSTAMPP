@@ -38,8 +38,7 @@ public interface IConnection extends xstampp.astpa.haz.controlstructure.interfac
 	@Override
 	ConnectionType getConnectionType();
 
-
-	public List<IRectangleComponent> getChildren();
+	
 
 
 }

@@ -177,10 +177,13 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
     <xs:sequence>
       <xs:element type="xs:string" name="id"/>
       <xs:element type="xs:string" name="text"/>
+      <xs:element type="xs:string" name="isSafetyCritical" minOccurs="0" maxOccurs="1"/>
+      <xs:element type="xs:string" name="comment" minOccurs="0" maxOccurs="1"/>
       <xs:element type="xs:string" name="componentType"/>
       <xs:element type="xs:string" name="controlActionId" minOccurs="0" maxOccurs="1"/>
       <xs:element name="layout" type="Q1:layoutType"/>
       <xs:element name="layoutPM" type="Q1:layoutType" minOccurs="0" maxOccurs="1"/>
+      <xs:element type="xs:string" name="relative" minOccurs="0" maxOccurs="1"/>
       <xs:element name="children">
         <xs:complexType>
           <xs:sequence>
@@ -208,6 +211,13 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
                 </xs:sequence>
               </xs:complexType>
             </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="unsafeVariables" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="unsafeVariable" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

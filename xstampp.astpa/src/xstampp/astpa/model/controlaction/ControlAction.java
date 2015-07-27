@@ -24,17 +24,36 @@ import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 
 /**
  * Class representing the control action objects
  * 
  * @author Fabian Toth
  */
-public class ControlAction extends ATableModel implements IControlAction {
+public class ControlAction extends ATableModel implements IHAZXControlAction {
 
 	@XmlElementWrapper(name = "unsafecontrolactions")
 	@XmlElement(name = "unsafecontrolaction")
 	private List<UnsafeControlAction> unsafeControlActions;
+	
+	private UUID componentLink;
+
+
+	@XmlElement(name="componentLink")
+	@Override
+	public UUID getComponentLink() {
+		return this.componentLink;
+	}
+
+
+	/**
+	 * @param componentLink the componentLink to set
+	 */
+	public void setComponentLink(UUID componentLink) {
+		this.componentLink = componentLink;
+	}
+
 
 	/**
 	 * Constructor of a control action
@@ -53,6 +72,7 @@ public class ControlAction extends ATableModel implements IControlAction {
 		this.unsafeControlActions = new ArrayList<>();
 	}
 
+	
 	/**
 	 * Empty constructor for JAXB. Do not use it!
 	 * 

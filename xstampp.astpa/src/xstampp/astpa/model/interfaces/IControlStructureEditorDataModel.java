@@ -14,6 +14,7 @@
 package xstampp.astpa.model.interfaces;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -22,9 +23,12 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlstructure.components.Anchor;
+import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.model.IDataModel;
@@ -156,7 +160,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * 
 	 * @return the control action.
 	 */
-	ITableModel getControlAction(UUID controlActionId);
+	public IHAZXControlAction getControlActionU(UUID controlActionId);
 
 	/**
 	 * Searches for the component with the given id and changes the layout of
@@ -417,6 +421,72 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * @return the amount of components currently in the trash
 	 */
 	public int getConnectionTrashSize();
-
 	
+	/**
+	 * @param componentId the component which shall be related
+	 * @param relativeId the id of the relative to which the component should have a direct link
+	 * @author Lukas Balzer
+	 */
+	public void setRelativeOfComponent(UUID componentId, UUID relativeId);
+	
+	/**
+	 * @param componentId  
+	 *            the id of the component
+	 * @param isSafetyCritical the isSafetyCritical to set
+	 * @author Lukas Balzer
+	 */
+	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical);
+	
+	/**
+	 * @author Lukas Balzer
+	 * @param componentId 
+	 *            the id of the component
+	 * @param comment the comment to set
+	 */
+	public void setComment(UUID componentId, String comment);
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param componentId
+	 *            the id of the component
+	 * @param variableID the variable which should be rmoved
+	 * @return whether or not the add was successful, it also returns false if
+	 * 			the given uuid belongs to no component
+	 */
+	public boolean addUnsafeProcessVariable(UUID componentId,UUID variableID);
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param componentId
+	 *            the id of the component
+	 * @param variableID the variable which should be rmoved
+	 * @return whether or not the remove was successful, it also returns false if
+	 * 			the given uuid belongs to no component 
+	 */
+	public boolean removeUnsafeProcessVariable(UUID componentId,UUID variableID);
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param componentId
+	 *            the id of the component
+	 * @return 
+	 * 			a map cointaining all process variables provided as keys to a safe/unsafe boolean  
+	 */
+	public Map<IRectangleComponent,Boolean> getRelatedProcessVariables(UUID componentId);
+	
+	/**
+	 * 
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param componentId the componentLink to set
+	 * @param caId the control action which should be linked
+	 */
+	public void linkControlAction(UUID caId,UUID componentId);
 }

@@ -19,6 +19,7 @@ import java.util.UUID;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.model.IDataModel;
 
 /**
@@ -47,7 +48,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	 * 
 	 * @return the control action with the given id or null
 	 */
-	IControlAction getControlActionU(UUID controlActionId);
+	IHAZXControlAction getControlActionU(UUID controlActionId);
 
 	/**
 	 * Add an unsafe control action to a given control action.<br>

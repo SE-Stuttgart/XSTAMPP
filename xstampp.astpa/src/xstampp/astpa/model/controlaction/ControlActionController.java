@@ -31,6 +31,7 @@ import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ISafetyConstraint;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
 
@@ -182,8 +183,8 @@ public class ControlActionController {
 	 * 
 	 * @author Fabian Toth
 	 */
-	public IControlAction getControlActionU(UUID controlActionId) {
-		for (IControlAction controlAction : this.controlActions) {
+	public IHAZXControlAction getControlActionU(UUID controlActionId) {
+		for (IHAZXControlAction controlAction : this.controlActions) {
 			if (controlAction.getId().equals(controlActionId)) {
 				return controlAction;
 			}
@@ -479,5 +480,14 @@ public class ControlActionController {
 	
 	public List<UCAHazLink> getAllUCALinks() {
 		return this.links;
+	}
+	
+	/**
+	 * @param componentLink the componentLink to set
+	 * @param caId the control action which should be linked
+	 */
+	public void setComponentLink(UUID componentLink,UUID caId){
+		ControlAction action = getInternalControlAction(caId);
+		action.setComponentLink(componentLink);
 	}
 }
