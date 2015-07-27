@@ -145,6 +145,15 @@
                   style="push"
                   tooltip="Exits the application">
             </command>
+            <command
+                  commandId="astpa.save"
+                  label="Save As..."
+                  style="push">
+               <parameter
+                     name="xstampp.commands.params.doSaveAs"
+                     value="TRUE">
+               </parameter>
+            </command>
          </menu>
          <menu
                id="editMenu"
@@ -516,6 +525,11 @@
          <commandParameter
                id="saveProjectId"
                name="projectId"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="xstampp.commands.params.doSaveAs"
+               name="name"
                optional="true">
          </commandParameter>
       </command>
