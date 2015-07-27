@@ -80,7 +80,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		}
 		case CONTAINER:{
 
-			text = Messages.DashedBox;
+			text = "?";
 			break;
 			
 		}

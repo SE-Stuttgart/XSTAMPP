@@ -15,7 +15,14 @@ package xstampp.astpa.controlstructure.controller.editparts;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
+import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 
+import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
 import xstampp.astpa.controlstructure.figure.CSRectangleContainer;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -27,7 +34,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @author Lukas Balzer
  * 
  */
-public class RectangleEditPart extends CSAbstractEditPart{
+public class RectangleEditPart extends AbstractMemberEditPart{
 
 	/**
 	 * this constuctor sets the unique ID of this EditPart which is the same in
@@ -56,12 +63,23 @@ public class RectangleEditPart extends CSAbstractEditPart{
 	}
 	@Override
 	protected void createEditPolicies() {
-		super.createEditPolicies();
+		this.installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new CSSelectionEditPolicy());
 		
-//		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
-//		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
-//				this.getDataModel(), this.getStepId()));
+		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
+		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
+				this.getDataModel(), this.getStepId()));
+		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
+				this.getDataModel(), this.getStepId()));
 	}
 
-	
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
+	 * @author Lukas Balzer, Aliaksei Babkovich
+	 */
+	@Override
+	public void performRequest(Request req) {
+		//this method overwritten to prevent the interpretation of the REQ_DIRECT_EDIT
+	}
 }
