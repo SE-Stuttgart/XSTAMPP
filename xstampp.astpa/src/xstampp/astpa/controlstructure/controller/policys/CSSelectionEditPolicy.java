@@ -8,9 +8,13 @@ import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
 public class CSSelectionEditPolicy extends SelectionEditPolicy {
 
 	public CSSelectionEditPolicy() {
-		// TODO Auto-generated constructor stub
-	}
 
+	}
+	@Override
+	protected void showFocus() {
+		System.out.println("focus");
+		super.showFocus();
+	}
 	@Override
 	protected void hideSelection() {
 		if(getHost() != null){

@@ -19,6 +19,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
+import xstampp.astpa.controlstructure.figure.ConnectionFigure;
 import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -37,7 +38,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 
-	private IComponent rootModel;
+	private IRectangleComponent rootModel;
 	private IRectangleComponent compModel;
 	private IRectangleComponent constraintModel;
 	private UUID componentId;
@@ -45,6 +46,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	private Rectangle layout;
 	private Rectangle rootLayout;
 	private Rectangle oldRootLayout;
+	private UUID relativeId;
 
 	/**
 	 * This Constructor sets the Model of the Component and of it's root to null
@@ -171,6 +173,11 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 				this.compModel.getControlActionLink(), this.rootModel.getId(),
 				this.layout, this.compModel.getText(),
 				this.compModel.getComponentType(), 0);
+		if(this.rootModel.getComponentType() == ComponentType.CONTAINER){
+			this.getDataModel().setRelativeOfComponent(this.componentId, this.rootModel.getRelative());
+		}else{
+			this.getDataModel().setRelativeOfComponent(this.componentId, this.relativeId);
+		}
 		this.updateParentConstraint();
 
 	}
@@ -220,5 +227,9 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 				conflict = constrainRect;
 			}
 		}
+	}
+
+	public void setRelative(UUID relativeID) {
+		this.relativeId =relativeID;
 	}
 }

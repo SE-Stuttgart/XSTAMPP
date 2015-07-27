@@ -87,7 +87,7 @@ public class RootEditPart extends CSAbstractEditPart {
 		super.refresh();
 		for (IRectangleComponent f : this.getModelChildren()) {
 			if ((f.getComponentType() == ComponentType.CONTROLACTION)
-					&& (this.getDataModel().getControlAction(
+					&& (this.getDataModel().getControlActionU(
 							f.getControlActionLink()) == null)) {
 				this.getDataModel().removeComponent(f.getId());
 			}

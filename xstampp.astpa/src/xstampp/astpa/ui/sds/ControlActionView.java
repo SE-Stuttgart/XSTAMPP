@@ -27,11 +27,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -48,6 +50,10 @@ import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.controlaction.ControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.controlstructure.interfaces.IConnection;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.astpa.ui.acchaz.CommonTableView;
@@ -293,6 +299,67 @@ public class ControlActionView extends CommonTableView {
 		});
 		menuMgr.setRemoveAllWhenShown(true);
 		ControlActionView.this.getTableViewer().getControl().setMenu(menu);
+		
+
+		// the target column is for the unsafe control actions
+		TableViewerColumn targetColumn = new TableViewerColumn(
+						this.getTableViewer(), SWT.CENTER);
+		targetColumn.getColumn().setText(
+				"Feedback for");
+		getTableColumnLayout().setColumnData(
+				targetColumn.getColumn(),
+				new ColumnWeightData(10, 100, true));
+
+		targetColumn.setLabelProvider(new ColumnLabelProvider() {
+
+					@Override
+					public String getText(Object element) {
+						if (element instanceof IHAZXControlAction) {
+							IRectangleComponent comp=ControlActionView.this.dataInterface.
+									getComponent(((IHAZXControlAction) element).getComponentLink());
+							if(comp == null){
+								return null;
+							}
+							IConnection conn = ControlActionView.this.dataInterface.getConnection(comp.getRelative());
+							if(conn == null){
+								return null;
+							}
+							comp=ControlActionView.this.dataInterface.getComponent(conn.getTargetAnchor().getOwnerId());
+							return comp.getText();
+						}
+						return null;
+					}
+				});
+		
+		// the target column is for the unsafe control actions
+				TableViewerColumn sourceColumn = new TableViewerColumn(
+								this.getTableViewer(), SWT.CENTER);
+				sourceColumn.getColumn().setText(
+						"Feedback of");
+				getTableColumnLayout().setColumnData(
+						sourceColumn.getColumn(),
+						new ColumnWeightData(10, 100, true));
+
+				sourceColumn.setLabelProvider(new ColumnLabelProvider() {
+
+							@Override
+							public String getText(Object element) {
+								if (element instanceof IHAZXControlAction) {
+									IRectangleComponent comp=ControlActionView.this.dataInterface.
+											getComponent(((IHAZXControlAction) element).getComponentLink());
+									if(comp == null){
+										return null;
+									}
+									IConnection conn = ControlActionView.this.dataInterface.getConnection(comp.getRelative());
+									if(conn == null){
+										return null;
+									}
+									comp=ControlActionView.this.dataInterface.getComponent(conn.getSourceAnchor().getOwnerId());
+									return comp.getText();
+								}
+								return null;
+							}
+						});
 		this.updateTable();
 	}
 

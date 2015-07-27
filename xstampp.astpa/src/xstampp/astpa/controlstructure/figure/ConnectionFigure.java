@@ -2,21 +2,31 @@ package xstampp.astpa.controlstructure.figure;
 
 import java.util.UUID;
 
+import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.PolylineDecoration;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 
+import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
 public class ConnectionFigure extends PolylineConnection implements IControlStructureFigure{
 
-	public ConnectionFigure() {
+	private PolylineConnection feedback;
+	private UUID currentFeedbackId;
+	private UUID id;
+	public ConnectionFigure(UUID id) {
 		super();
-		
+		this.id = id;
 	}
+	
 	@Override
 	protected boolean useLocalCoordinates() {
 		return true;
@@ -64,8 +74,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	}
 	@Override
 	public UUID getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.id;
 	}
 	@Override
 	public String getText() {
@@ -137,5 +146,103 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		Rectangle rct =getPoints().getBounds().getCopy();
 		Rectangle bounds =super.getBounds();
 		return rct.setSize(bounds.getSize());
+	}
+	
+	public void eraseFeedback() {
+		if(this.feedback != null){
+			this.feedback.setVisible(false);
+		}
+		
+	}
+	
+	public IFigure getFeedback() {
+		return getFeedback((Rectangle)null);
+	}
+	
+	public IFigure getFeedback(IConnectable member) {
+		
+		if(this.feedback == null){
+			this.feedback = new PolylineConnection();
+			this.feedback.setAlpha(150);
+			this.feedback.setAntialias(SWT.ON);
+			this.feedback.setLineWidth(4);
+			this.feedback.setForegroundColor(ColorConstants.darkGreen);
+		}
+		this.feedback.setVisible(true);
+		
+		if(member != null && this.currentFeedbackId != member.getId()){
+			this.currentFeedbackId = member.getId();
+			this.feedback.setConnectionRouter(new FeedbackRouter(member));
+		}
+		updateFeedback();
+		return getFeedback(member.getFigure().getBounds());
+	}
+	
+	
+	public IFigure getFeedback(Rectangle bounds) {
+		if(this.feedback == null){
+			this.feedback = new PolylineConnection();
+			this.feedback.setAlpha(150);
+			this.feedback.setAntialias(SWT.ON);
+			this.feedback.setLineWidth(4);
+			this.feedback.setForegroundColor(ColorConstants.darkGreen);
+		}
+		this.feedback.setVisible(true);
+		
+		if(bounds != null){
+			this.feedback.setConnectionRouter(new FeedbackRouter(bounds));
+		}else{
+			this.feedback.setConnectionRouter(new AbstractRouter() {
+				
+				@Override
+				public void route(Connection connection) {
+					connection.setPoints(getPoints());
+					
+				}
+			});
+		}
+		updateFeedback();
+		return this.feedback;
+	}
+	
+	private class FeedbackRouter extends AbstractRouter{
+		private IFigure targetFigure;
+		private Rectangle rectangle;
+		public FeedbackRouter(IConnectable member) {
+			this.targetFigure=member.getFigure();
+			this.rectangle=member.getFigure().getBounds();
+		}
+		public FeedbackRouter(Rectangle rect) {
+			this.rectangle=rect;
+		}
+		@Override
+		public void route(Connection connection) {
+			PointList list = getPoints().getCopy();
+			Point a=list.removePoint(list.size()-1);
+			
+			Point b=list.getPoint(list.size()-1);
+			Dimension diff = a.getDifference(b);
+			Point middle = b.getTranslated(diff.width/2, diff.height/2);
+			Point center = this.rectangle.getCenter().getCopy();
+			
+			for(int i=0;i<10;i++){
+				Rectangle tmp = new Rectangle(center,middle);
+				tmp = tmp.intersect(rectangle);
+				center = tmp.getCenter().getCopy();
+			}
+			list.addPoint(middle);
+			list.addPoint(center);
+			list.addPoint(middle);
+			list.addPoint(b);
+			list.addPoint(a);
+			connection.setPoints(list);
+		}
+		
+	}
+
+	public void updateFeedback() {
+		if(this.feedback != null){
+			this.feedback.getConnectionRouter().route(this.feedback);
+		}
 	}
 }

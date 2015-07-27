@@ -91,12 +91,15 @@ public class CSEditPartFactory implements EditPartFactory {
 			part = new ControlActionEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			UUID caId = ((IRectangleComponent) model).getControlActionLink();
-			if ((this.dataModel.getControlAction(caId) == null)
+			if ((this.dataModel.getControlActionU(caId) == null)
 					|| (caId == null)) {
 				UUID newLinkId = this.dataModel.addControlAction(
 						Messages.ControlAction,
 						Messages.DescriptionOfThisControlAction);
 				((IRectangleComponent) model).linktoControlAction(newLinkId);
+			}
+			if(this.dataModel.getControlActionU(caId).getComponentLink() != id){
+				this.dataModel.linkControlAction(caId, id);
 			}
 			break;
 		}

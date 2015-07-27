@@ -1,19 +1,18 @@
 package xstampp.astpa.controlstructure.controller.commands;
 
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.commands.Command;
-
 import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
 import xstampp.astpa.controlstructure.controller.editparts.IRelative;
+import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.model.IDataModel;
 
-public class addRelativeCommand extends Command {
+public class addRelativeCommand extends ControlStructureAbstractCommand {
 	
 	private IConnectable connectable;
 	private IRelative relative;
 
-	public addRelativeCommand(IRelative relative,IConnectable connectable) {
-		super();
-		System.out.println("create " +getClass());
+	public addRelativeCommand(IControlStructureEditorDataModel model,String stepID,
+							IRelative relative,IConnectable connectable) {
+		super(model, stepID);
 		this.relative = relative;
 		this.connectable = connectable;
 	}
@@ -21,7 +20,7 @@ public class addRelativeCommand extends Command {
 	
 	@Override
 	public void execute() {
-		this.connectable.setRelative(this.relative);
+		this.getDataModel().setRelativeOfComponent(connectable.getId(), relative.getId());
 		super.execute();
 	}
 	

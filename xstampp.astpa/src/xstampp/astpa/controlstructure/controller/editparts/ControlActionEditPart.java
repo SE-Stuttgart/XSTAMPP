@@ -1,5 +1,7 @@
 package xstampp.astpa.controlstructure.controller.editparts;
 
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.draw2d.IFigure;
@@ -23,9 +25,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @author Lukas Balzer
  * 
  */
-public class ControlActionEditPart extends CSAbstractEditPart implements IConnectable{
-
-	private IRelative relativePart;
+public class ControlActionEditPart extends AbstractMemberEditPart{
 
 	/**
 	 * this constructor sets the unique ID of this EditPart which is the same in
@@ -60,17 +60,14 @@ public class ControlActionEditPart extends CSAbstractEditPart implements IConnec
 		super.refreshVisuals();
 		IRectangleComponent modelTemp = this.getDataModel().getComponent(
 				this.getId());
-		if (this.getDataModel().getControlAction(
+		if (this.getDataModel().getControlActionU(
 				modelTemp.getControlActionLink()) == null) {
 			this.getDataModel().removeComponent(modelTemp.getId());
 			this.deactivate();
 		}
 		this.getDataModel().setControlActionTitle(
 				modelTemp.getControlActionLink(), modelTemp.getText());
-		if(relativePart != null){
-			this.relativePart.updateFeedback();
-		}
-
+		
 	}
 	@Override
 	protected void createEditPolicies() {
@@ -83,20 +80,7 @@ public class ControlActionEditPart extends CSAbstractEditPart implements IConnec
 		this.installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new CSSelectionEditPolicy());
 	}
 
-	@Override
-	public void setRelative(IRelative relative) {
-		if(this.relativePart != null){
-			this.relativePart.eraseFeedback();
-		}
-		this.relativePart = relative;
-	}
 
 
-	@Override
-	public IFigure getFeedback() {
-		if(this.relativePart == null){
-			return null;
-		}
-		return this.relativePart.getFeedback(this);
-	}
+
 }

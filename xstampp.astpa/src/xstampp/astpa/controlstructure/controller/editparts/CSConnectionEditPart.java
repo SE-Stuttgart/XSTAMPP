@@ -14,35 +14,23 @@
 package xstampp.astpa.controlstructure.controller.editparts;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.draw2d.AbstractRouter;
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionAnchor;
-import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IClippingStrategy;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.XYLayout;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
-import org.eclipse.gef.editpolicies.FeedbackHelper;
-import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionDeleteEditPolicy;
-import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
-import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
@@ -65,9 +53,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	private IControlStructureEditorDataModel dataModel;
 	private final UUID ownID;
 	private final String stepId;
-	private IFigure container;
 	private List<IConnectable> members;
-	private PolylineConnection feedback;
 
 	/**
 	 * This constructor is used to load a connection EditPart from a given model
@@ -103,7 +89,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	@Override
 	protected IFigure createFigure() {
 
-		PolylineConnection connection = new ConnectionFigure();
+		PolylineConnection connection = new ConnectionFigure(getId());
 		connection.addMouseMotionListener(this);
 		connection.setLayoutManager(new XYLayout());
 		connection.setLineWidth(1);
@@ -166,28 +152,16 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 
 	@Override
 	public IFigure getFeedback() {
-		return getFeedback(null);
+		return this.getConnectionFigure().getFeedback();
 	}
 	@Override
 	public IFigure getFeedback(IConnectable member) {
-		if(this.feedback == null){
-			this.feedback = new PolylineConnection();
-			this.feedback.setAlpha(150);
-			this.feedback.setAntialias(SWT.ON);
-			this.feedback.setLineWidth(4);
-			this.feedback.setForegroundColor(ColorConstants.darkGreen);
-		}
-		this.feedback.setVisible(true);
-		
-		if(member != null){
-			this.feedback.setConnectionRouter(new FeedbackRouter(member));
-			updateFeedback();
-		}else{
-			this.feedback.setPoints(getConnectionFigure().getPoints());
-		}
-		return this.feedback;
+		return this.getConnectionFigure().getFeedback(member);
 	}
-	
+	@Override
+	public IFigure getFeedback(Rectangle bounds) {
+		return this.getConnectionFigure().getFeedback(bounds);
+	}
 	@Override
 	protected ConnectionAnchor getTargetConnectionAnchor() {
 		IAnchor target = this.dataModel.getConnection(this.ownID)
@@ -252,7 +226,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	}
 	@Override
 	public void mouseExited(MouseEvent me) {
-		((ConnectionFigure)getConnectionFigure()).disableFeedback();
+//		getConnectionFigure().disableFeedback();
 		
 	}
 	@Override
@@ -265,13 +239,16 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public ConnectionFigure getConnectionFigure() {
+		// TODO Auto-generated method stub
+		return (ConnectionFigure) super.getConnectionFigure();
+	}
 
 	@Override
 	public void eraseFeedback() {
-		if(this.feedback != null){
-			this.feedback.setVisible(false);
-		}
-		
+		getConnectionFigure().eraseFeedback();
 	}
 
 	@Override
@@ -279,38 +256,12 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		this.members.add(member);
 	}
 
-	private class FeedbackRouter extends AbstractRouter{
-		private IFigure figure;
-		public FeedbackRouter(IConnectable member) {
-			this.figure=member.getFigure();
-		}
-		@Override
-		public void route(Connection connection) {
-			PointList list = getConnectionFigure().getPoints().getCopy();
-			Point a=list.removePoint(list.size()-1);
-			
-			Point b=list.getPoint(list.size()-1);
-			Point center = this.figure.getBounds().getCenter().getCopy();
-			
-			for(int i=0;i<10;i++){
-				Rectangle tmp = new Rectangle(center,b);
-				tmp = tmp.intersect(this.figure.getBounds());
-				center = tmp.getCenter().getCopy();
-			}
-			list.addPoint(center);
-			list.addPoint(b);
-			list.addPoint(a);
-			connection.setPoints(list);
-		}
+	@Override
+	public void updateFeedback() {
+		getConnectionFigure().updateFeedback();
 		
 	}
 
-	@Override
-	public void updateFeedback() {
-		if(this.feedback != null){
-			this.feedback.getConnectionRouter().route(this.feedback);
-		}
-	}
 }
 
 class RectangleClipping implements IClippingStrategy{

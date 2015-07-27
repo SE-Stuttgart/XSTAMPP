@@ -177,7 +177,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	public void refresh() {
 		for (IRectangleComponent f : this.getModelChildren()) {
 			if ((f.getComponentType() == ComponentType.CONTROLACTION)
-					&& (this.getDataModel().getControlAction(
+					&& (this.getDataModel().getControlActionU(
 							f.getControlActionLink()) == null)) {
 				this.getDataModel().removeComponent(f.getId());
 			}

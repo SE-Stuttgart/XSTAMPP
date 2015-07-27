@@ -21,10 +21,13 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
@@ -43,10 +46,12 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
 import xstampp.astpa.controlstructure.controller.editparts.IRelative;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
+import xstampp.astpa.controlstructure.figure.ConnectionFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
+import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -66,6 +71,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	private Figure parentFeedback;
 	private final String stepID;
 	private Border tmpBorder;
+	private ConnectionFigure relative;
 	private List<IFigure> feedback = new ArrayList<>();
 	/**
 	 * the offset of the process variables and values
@@ -138,7 +144,10 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			command.setComponentModel(compModel);
 
 			if (request.getNewObject() instanceof IComponent) {
-
+				if(this.relative != null && getFeedbackLayer().getChildren().contains(this.relative.getFeedback())){
+					removeFeedback(this.relative.getFeedback());
+				}
+				this.relative=null;
 				Rectangle constraint = (Rectangle) this
 						.getConstraintFor(request);
 				// if the components are ment for ProcessModel
@@ -148,6 +157,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 //					constraint = this.addProcessModelConstraint(constraint,
 //							rootModel, compModel);
 //				}
+
 
 				if ((compModel.getComponentType() == ComponentType.PROCESS_VALUE)
 						&& (rootModel.getComponentType() != ComponentType.PROCESS_VARIABLE)) {
@@ -172,21 +182,48 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 					this.getHostFigure().showFeedback();
 				}
 				command.setLayout(constraint);
+
+				if(getHost() instanceof RootEditPart
+						&& (compModel.getComponentType() == ComponentType.CONTAINER ||
+							compModel.getComponentType() == ComponentType.CONTROLACTION)){
+					this.relative= findNearestRelative(constraint.getCenter());
+					addFeedback(this.relative.getFeedback());
+					command.setRelative(this.relative.getId());
+				}
 				return command;
 			}
 		}
 		return null;
 	}
-@Override
-public void eraseSourceFeedback(Request request) {
-	// TODO Auto-generated method stub
-	super.eraseSourceFeedback(request);
-}
-@Override
-public void eraseTargetFeedback(Request request) {
-	// TODO Auto-generated method stub
-	super.eraseTargetFeedback(request);
-}
+	
+	private ConnectionFigure findNearestRelative(Point point) {
+		Rectangle bounds;
+		double distance=Double.MAX_VALUE;
+		double newDistance;
+		ConnectionFigure relativeFigure = null;
+			for(Object connection:getLayer(LayerConstants.CONNECTION_LAYER).getChildren()){
+				if(connection instanceof ConnectionFigure){
+					bounds = ((ConnectionFigure) connection).getBounds();
+					newDistance = point.getDistance(bounds.getCenter());
+					if(newDistance < distance){
+						relativeFigure= (ConnectionFigure) connection;
+						distance = newDistance;
+					}
+				}
+			}
+			return relativeFigure;
+		}
+	
+	@Override
+	public void eraseSourceFeedback(Request request) {
+		// TODO Auto-generated method stub
+		super.eraseSourceFeedback(request);
+	}
+	@Override
+	public void eraseTargetFeedback(Request request) {
+		// TODO Auto-generated method stub
+		super.eraseTargetFeedback(request);
+	}
 	@Override
 	public IControlStructureEditPart getHost() {
 		return (IControlStructureEditPart) super.getHost();
@@ -256,15 +293,17 @@ public void eraseTargetFeedback(Request request) {
 	 @Override
 	public Command getCommand(Request request) {
 		if(RequestConstants.REQ_MOVE_CHILDREN.equals(request.getType())){
-			EditPart relative = getHost().getViewer().findObjectAt(((ChangeBoundsRequest)request).getLocation());
+			EditPart part = getHost().getViewer().findObjectAt(((ChangeBoundsRequest)request).getLocation());
 			Object connectable =((ChangeBoundsRequest)request).getEditParts().get(0);
-			if(relative instanceof IRelative && connectable instanceof IConnectable){
-				IFigure conn= ((IRelative) relative).getFeedback();
+			if(part instanceof IRelative && connectable instanceof IConnectable 
+					&& ((IRelative) part).getId() != ((IConnectable)connectable).getRelativeId()){
+				IFigure conn= ((IRelative) part).getFeedback();
 				if(!(this.feedback.contains(conn))){
 					addFeedback(conn);		
 					this.feedback.add(conn);
 				}
-				return new addRelativeCommand((IRelative) relative, (IConnectable) connectable);
+				return new addRelativeCommand(this.dataModel,this.stepID,
+											(IRelative) part, (IConnectable) connectable);
 			}
 			for(IFigure figure:this.feedback){
 				if(figure.getParent() == getFeedbackLayer()){
@@ -275,10 +314,5 @@ public void eraseTargetFeedback(Request request) {
 			
 			}
 		return super.getCommand(request);
-	}
-	 
- 	public Command getRelativeCommand(IConnectable part, IRelative relative) {
-		part.setRelative(relative);
-		return null;
 	}
 }
