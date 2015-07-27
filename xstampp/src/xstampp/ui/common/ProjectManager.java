@@ -17,6 +17,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
@@ -119,14 +120,20 @@ public class ProjectManager {
 
 		@Override
 		public void run() {
-			UUID projectId = ProjectManager.getContainerInstance()
-					.addProjectData(this.job.getController());
-			File saveFile = this.job.getSaveFile();
+			UUID projectId = UUID.randomUUID();
+			ProjectManager.getContainerInstance().projectDataToUUID.put(projectId, job.getController());
+			IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage().findView(ProjectExplorer.ID);
 			
+			File saveFile = this.job.getSaveFile();
+			ProjectManager.getContainerInstance().extensionsToUUID.put(projectId, saveFile.getName().split("\\.")[1]);//$NON-NLS-1$
 			ProjectManager.getContainerInstance().projectSaveFilesToUUID.put(
 					projectId, saveFile);
-			ProjectManager.getContainerInstance().saveDataModel(projectId, false);
+			ProjectManager.getContainerInstance().saveDataModel(projectId, false, false);
 			ProjectManager.getContainerInstance().synchronizeProjectName(projectId);
+			if (navi != null) {
+				((ProjectExplorer) navi).updateProjects();
+			}
 		}
 	}
 
@@ -171,7 +178,7 @@ public class ProjectManager {
 			newController.updateValue(ObserverValue.PROJECT_NAME);
 			UUID projectId = this.addProjectData(newController);
 			this.projectSaveFilesToUUID.put(projectId, new File(path));
-			this.saveDataModel(projectId, false);
+			this.saveDataModel(projectId, false, false);
 			return projectId;
 		} catch (InstantiationException | IllegalAccessException e) {	
 			e.printStackTrace();
@@ -221,9 +228,20 @@ public class ProjectManager {
 		IDataModel tmpController = this.projectDataToUUID.get(projectId);
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getShell(), SWT.SAVE);
-		fileDialog.setFilterExtensions(new String[] { "*.haz" }); //$NON-NLS-1$
-		fileDialog
-				.setFilterNames(new String[] { "A-STPA project file (*.haz)" }); //$NON-NLS-1$
+		List<String> extensions = new ArrayList<>();
+		IConfigurationElement extElement = getConfigurationFor(projectId);
+		String[] filterNames=new String[]{};
+		if(extElement.getAttribute("extensionDescriptions") != null){
+			filterNames = extElement.getAttribute("extensionDescriptions").split(";");//$NON-NLS-1$ //$NON-NLS-2$
+		}
+		
+		for(String ext:extElement.getAttribute("extension").split(";")){//$NON-NLS-1$
+			extensions.add("*."+ext); //$NON-NLS-1$
+		}
+		fileDialog.setFilterExtensions(extensions.toArray(new String[]{}));
+		if(extensions.size() == filterNames.length){
+			fileDialog.setFilterNames(filterNames);
+		}
 		fileDialog.setFileName(tmpController.getProjectName());
 		String fileName = fileDialog.open();
 		if (fileName == null) {
@@ -238,8 +256,9 @@ public class ProjectManager {
 				return false;
 			}
 		}
-
-		return this.saveDataModel(projectId, false);
+		this.projectSaveFilesToUUID.replace(projectId, file);
+		this.extensionsToUUID.replace(projectId, fileName.split("\\.")[1]);
+		return this.saveDataModel(projectId, false, false);
 	}
 
 	/**
@@ -251,11 +270,11 @@ public class ProjectManager {
 	 *            the id of the project
 	 * @param isUIcall informs the runtime if the call is initiated by the 
 	 * 			user or the system
-	 * 
+	 * @param saveAs TODO
 	 * @return whether the operation was successful or not
 	 */
-	public boolean saveDataModel(UUID projectId, boolean isUIcall) {
-		if (this.projectSaveFilesToUUID.get(projectId) == null) {
+	public boolean saveDataModel(UUID projectId, boolean isUIcall, boolean saveAs) {
+		if (this.projectSaveFilesToUUID.get(projectId) == null || saveAs) {
 			return this.saveDataModelAs(projectId);
 		}
 		final IDataModel tmpController = this.projectDataToUUID.get(projectId);
@@ -294,7 +313,7 @@ public class ProjectManager {
 	public boolean saveAllDataModels() {
 		boolean temp = true;
 		for (UUID id : this.getProjectKeys()) {
-			temp = temp && this.saveDataModel(id, false);
+			temp = temp && this.saveDataModel(id, false, false);
 		}
 		return temp;
 	}
@@ -515,7 +534,6 @@ public class ProjectManager {
 	 */
 	public UUID addProjectData(IDataModel controller) {
 		UUID id = UUID.randomUUID();
-		this.extensionsToUUID.put(id, controller.getFileExtension());
 		this.projectDataToUUID.put(id, controller);
 		IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage().findView("astpa.explorer"); //$NON-NLS-1$

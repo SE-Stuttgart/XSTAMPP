@@ -69,8 +69,14 @@ public class SaveJob extends Job {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
 		try {
-			HAZController haz = new HAZController((IHAZModel) this.controller);
-			context = JAXBContext.newInstance(HAZController.class);
+			Object haz;
+			if(this.file.getName().endsWith("haz")){
+				haz = new HAZController((IHAZModel) this.controller);
+			}else{
+				haz = this.controller;
+			}
+			context = JAXBContext.newInstance(haz.getClass());
+			
 			Marshaller m = context.createMarshaller();
 			
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

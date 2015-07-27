@@ -153,7 +153,14 @@ Each step can be categoriesed and muliple editors where the Step can be progress
          <attribute name="extension" type="string" use="required">
             <annotation>
                <documentation>
-                  the file extension contains out
+                  the file extensions seperarated by an &quot;;&quot;(semicolon) bsp.: exe;txt
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="extensionDescriptions" type="string">
+            <annotation>
+               <documentation>
+                  the descriptions which will be displayed in all file save/load dialoges as description of the file extensions, if provided the descriptions must be given in the same number and form (desc1;desc2...)
                </documentation>
             </annotation>
          </attribute>
