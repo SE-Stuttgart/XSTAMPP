@@ -171,9 +171,9 @@ public class CSEditor extends CSAbstractEditor {
 		this.toolEntryToComponentType.put(ComponentType.CONTROLACTION, entry);
 
 		imgDesc = Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_32.png"); //$NON-NLS-1$
+				.getImageDescriptor("/icons/buttons/controlstructure/Container_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
+				.getImageDescriptor("/icons/buttons/controlstructure/Container_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(
 				"Container", "Create a container, in which you can bundle Control Actions",
 				ComponentType.CONTAINER, new CSModelCreationFactory(
