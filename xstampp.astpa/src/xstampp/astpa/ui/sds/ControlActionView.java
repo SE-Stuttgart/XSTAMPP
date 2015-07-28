@@ -301,16 +301,47 @@ public class ControlActionView extends CommonTableView {
 		ControlActionView.this.getTableViewer().getControl().setMenu(menu);
 		
 
-		// the target column is for the unsafe control actions
-		TableViewerColumn targetColumn = new TableViewerColumn(
+		
+		
+		// the source column is for the unsafe control actions
+		TableViewerColumn sourceColumn = new TableViewerColumn(
 						this.getTableViewer(), SWT.CENTER);
-		targetColumn.getColumn().setText(
-				"Feedback for");
+		sourceColumn.getColumn().setText(
+				"Source");
 		getTableColumnLayout().setColumnData(
-				targetColumn.getColumn(),
+				sourceColumn.getColumn(),
 				new ColumnWeightData(10, 100, true));
 
-		targetColumn.setLabelProvider(new ColumnLabelProvider() {
+		sourceColumn.setLabelProvider(new ColumnLabelProvider() {
+
+					@Override
+					public String getText(Object element) {
+						if (element instanceof IHAZXControlAction) {
+							IRectangleComponent comp=ControlActionView.this.dataInterface.
+									getComponent(((IHAZXControlAction) element).getComponentLink());
+							if(comp == null){
+								return null;
+							}
+							IConnection conn = ControlActionView.this.dataInterface.getConnection(comp.getRelative());
+							if(conn == null){
+								return null;
+							}
+							comp=ControlActionView.this.dataInterface.getComponent(conn.getSourceAnchor().getOwnerId());
+							return comp.getText();
+						}
+						return null;
+					}
+				});
+		// the target column is for the unsafe control actions
+		TableViewerColumn distanceColumn = new TableViewerColumn(
+						this.getTableViewer(), SWT.CENTER);
+		distanceColumn.getColumn().setText(
+				"Distance");
+		getTableColumnLayout().setColumnData(
+				distanceColumn.getColumn(),
+				new ColumnWeightData(10, 100, true));
+
+		distanceColumn.setLabelProvider(new ColumnLabelProvider() {
 
 					@Override
 					public String getText(Object element) {
@@ -330,36 +361,6 @@ public class ControlActionView extends CommonTableView {
 						return null;
 					}
 				});
-		
-		// the target column is for the unsafe control actions
-				TableViewerColumn sourceColumn = new TableViewerColumn(
-								this.getTableViewer(), SWT.CENTER);
-				sourceColumn.getColumn().setText(
-						"Feedback of");
-				getTableColumnLayout().setColumnData(
-						sourceColumn.getColumn(),
-						new ColumnWeightData(10, 100, true));
-
-				sourceColumn.setLabelProvider(new ColumnLabelProvider() {
-
-							@Override
-							public String getText(Object element) {
-								if (element instanceof IHAZXControlAction) {
-									IRectangleComponent comp=ControlActionView.this.dataInterface.
-											getComponent(((IHAZXControlAction) element).getComponentLink());
-									if(comp == null){
-										return null;
-									}
-									IConnection conn = ControlActionView.this.dataInterface.getConnection(comp.getRelative());
-									if(conn == null){
-										return null;
-									}
-									comp=ControlActionView.this.dataInterface.getComponent(conn.getSourceAnchor().getOwnerId());
-									return comp.getText();
-								}
-								return null;
-							}
-						});
 		this.updateTable();
 	}
 

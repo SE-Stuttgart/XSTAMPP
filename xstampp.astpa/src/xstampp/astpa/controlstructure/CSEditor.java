@@ -175,7 +175,7 @@ public class CSEditor extends CSAbstractEditor {
 		imgDescLarge = Activator
 				.getImageDescriptor("/icons/buttons/controlstructure/Container_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(
-				"Container", "Create a container, in which you can bundle Control Actions",
+				"List of Control Actions", "Create a container, in which you can bundle Control Actions",
 				ComponentType.CONTAINER, new CSModelCreationFactory(
 						ComponentType.CONTAINER, this.getModelInterface()),
 				imgDesc, imgDescLarge);
