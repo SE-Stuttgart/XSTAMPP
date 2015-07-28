@@ -7,7 +7,7 @@
             command="astpa.command.load"
             editorId="astpa.steps.step1_1"
             extension="hazx;haz"
-            extensionDescriptions="STPA Project Analysis;extended STPA Analysis"
+            extensionDescriptions="extended STPA Project;STPA Project"
             icon="icons/branding/project16.png"
             id="astpa.navigation.process"
             name="STPA Project"
