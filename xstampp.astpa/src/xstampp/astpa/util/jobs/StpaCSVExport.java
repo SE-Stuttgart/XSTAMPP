@@ -39,6 +39,7 @@ public class StpaCSVExport extends Job {
 	private final String path;
 	private final DataModelController model;
 	private final List<String> type;
+	private boolean enablePreview;
 
 	/**
 	 * calls the Export function in the given view.
@@ -62,8 +63,12 @@ public class StpaCSVExport extends Job {
 		this.seperator = seperator;
 		this.model = (DataModelController) controller;
 		this.type = types;
+		this.enablePreview = true;
 	}
-
+	
+	public void showPreview(boolean preview){
+		this.enablePreview = preview;
+	}
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.ExportingCSV, IProgressMonitor.UNKNOWN);
@@ -111,7 +116,7 @@ public class StpaCSVExport extends Job {
 						Messages.CausalFactorsTable);
 			}
 			csvWriter.close();
-			if (tableCSV.exists() && Desktop.isDesktopSupported()) {
+			if (this.enablePreview && tableCSV.exists() && Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().open(tableCSV);
 			}
 		} catch (IOException e) {

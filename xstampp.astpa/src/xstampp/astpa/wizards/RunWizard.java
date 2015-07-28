@@ -56,7 +56,7 @@ public class RunWizard extends AbstractExportWizard {
 				}
 			}
 		}
-		Run runjob= new Run("run", outputDir + File.separator,this.page.getProjectID());
+		Run runjob= new Run(this.page.getProjectName(), outputDir + File.separator,this.page.getProjectID());
 		runjob.schedule();
 		return true;
 	}

@@ -56,7 +56,7 @@ public class Save extends AbstractHandler {
 		else{
 			return false;
 		}
-		if(doSaveAs.equals("TRUE")){
+		if(doSaveAs != null && doSaveAs.equals("TRUE")){
 			return ProjectManager.getContainerInstance().saveDataModel(saveId, true, true);
 		}
 		return ProjectManager.getContainerInstance().saveDataModel(saveId, true, false);

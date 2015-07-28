@@ -1399,9 +1399,4 @@ public class DataModelController extends Observable implements
 		return this.controlStructureController.removeUnsafeProcessVariable(componentId, variableID);
 	}
 
-	@Override
-	public String getRunCommand() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

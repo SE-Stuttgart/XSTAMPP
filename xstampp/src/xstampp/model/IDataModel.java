@@ -65,7 +65,6 @@ public interface IDataModel {
 	 */
 	Job doSave(final File file, Logger log, boolean isUIcall);
 	
-	public String getRunCommand();
 	/**
 	 * Returns the number of observers of this Observable object.
 	 * 
