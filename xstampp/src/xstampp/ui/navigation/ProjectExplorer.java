@@ -211,8 +211,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		projectItem.addListener(SWT.MouseDown, this.listener);
 		projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
 		projectItem.setText(ProjectManager.getContainerInstance().getTitle(
-				projectID));
-		
+				projectID) + " ["+ ProjectManager.getContainerInstance().getProjectExtension(projectID) +"]");
 		ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginID, projectExt
 				.getAttribute("icon")); //$NON-NLS-1$
 		projectItem.setImage(imgDesc.createImage());
@@ -378,7 +377,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 		if (this.treeItemsToProjectIDs.containsKey(projectID)
 				&& !this.treeItemsToProjectIDs.get(projectID).equals(temp)) {
-			this.treeItemsToProjectIDs.get(projectID).setText(temp);
+			this.treeItemsToProjectIDs.get(projectID).setText(temp + " ["+ ProjectManager.getContainerInstance().getProjectExtension(projectID) +"]");
 		}
 	}
 
