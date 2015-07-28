@@ -76,7 +76,7 @@ public class ProjectManager {
 	public static final String ID = "astpa.ui.common.viewcontainer"; //$NON-NLS-1$
 
 
-	private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheFile;
+	private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheContentAt;
 
 	private Map<UUID, IDataModel> projectDataToUUID;
 	private Map<UUID, File> projectSaveFilesToUUID;
@@ -353,7 +353,7 @@ public class ProjectManager {
 			if (copy.isFile()){
 				if(!MessageDialog.openQuestion(PlatformUI.getWorkbench()	
 							.getDisplay().getActiveShell(),
-							Messages.FileExists,String.format(Messages.DoYouReallyWantToOverwriteTheFile,outer.getName()))) {
+							Messages.FileExists,String.format(Messages.DoYouReallyWantToOverwriteTheContentAt,outer.getName()))) {
 				return false;
 				}
 				Set<UUID> idSet =this.projectSaveFilesToUUID.keySet();

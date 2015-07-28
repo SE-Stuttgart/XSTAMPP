@@ -41,6 +41,9 @@ public final class STPAPluginUtils {
 	 *         executed
 	 */
 	public static Object executeCommand(String commandId) {
+		if(commandId == null){
+			return false;
+		}
 		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
 		ICommandService commandService = (ICommandService) serviceLocator
 				.getService(ICommandService.class);

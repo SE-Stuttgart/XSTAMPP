@@ -120,6 +120,15 @@
                   style="push">
             </command>
             <command
+                  commandId="astpa.save"
+                  label="Save As..."
+                  style="push">
+               <parameter
+                     name="xstampp.commands.params.doSaveAs"
+                     value="TRUE">
+               </parameter>
+            </command>
+            <command
                   commandId="org.eclipse.ui.file.import"
                   label="Import..."
                   style="push">
@@ -144,15 +153,6 @@
                   label="Exit Application"
                   style="push"
                   tooltip="Exits the application">
-            </command>
-            <command
-                  commandId="astpa.save"
-                  label="Save As..."
-                  style="push">
-               <parameter
-                     name="xstampp.commands.params.doSaveAs"
-                     value="TRUE">
-               </parameter>
             </command>
          </menu>
          <menu
@@ -433,6 +433,19 @@
             </command>
          </toolbar>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="xstampp.run.toolbar">
+            <command
+                  commandId="xstampp.command.run"
+                  icon="icons/buttons/export/run.png"
+                  id="xstampp.toolbar.run.menu"
+                  style="pulldown">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -693,6 +706,11 @@
                name="name"
                optional="true">
          </commandParameter>
+      </command>
+      <command
+            defaultHandler="xstampp.util.RunExportCommand"
+            id="xstampp.command.run"
+            name="Run">
       </command>
    </extension>
    

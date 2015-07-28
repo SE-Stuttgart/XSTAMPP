@@ -53,6 +53,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 			.getPreferenceStore();
 	private Button decoSwitch;
 	private PathComposite logoComposite;
+	private int pathConstant;
 
 	/**
 	 * Constructor.
@@ -63,11 +64,27 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	 *            the name of the page
 	 * @param projectName
 	 *            the name of the project
+	 * @param pathConstant TODO
 	 */
 	public PdfExportPage(String pageName, String projectName) {
+		this(pageName, projectName,PathComposite.PATH_DIALOG);
+	}
+	/**
+	 * Constructor.
+	 * 
+	 * @author Sebastian Sieber,Lukas Balzer
+	 * 
+	 * @param pageName
+	 *            the name of the page
+	 * @param projectName
+	 *            the name of the project
+	 * @param pathConstant TODO
+	 */
+	public PdfExportPage(String pageName, String projectName, int pathConstant) {
 		super(pageName, Activator.PLUGIN_ID);
 		this.setTitle(Messages.Export);
 		this.setDescription(Messages.SetValuesForTheExportFile);
+		this.pathConstant = pathConstant;
 	}
 
 	@Override
@@ -147,7 +164,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		// ----Create the path chooser composite---------------------------
 		this.pathChooser = new PathComposite(new String[] { "*.pdf" }, //$NON-NLS-1$
 				new String[] { "A-STPA Report *.pdf" }, //$NON-NLS-1$
-				this.container, SWT.NONE);
+				this.container,this.pathConstant);
 		data = new FormData();
 		data.top = new FormAttachment(this.fontChooser,
 				AbstractWizardPage.COMPONENT_OFFSET);

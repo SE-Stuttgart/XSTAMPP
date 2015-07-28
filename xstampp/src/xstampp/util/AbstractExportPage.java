@@ -181,7 +181,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		}
 		File fileTmp = new File(this.getExportPath());
 		if (fileTmp.exists()) {
-			this.setMessage(String.format(Messages.DoYouReallyWantToOverwriteTheFile,fileTmp.getName()),
+			this.setMessage(String.format(Messages.DoYouReallyWantToOverwriteTheContentAt,getExportPath()),
 					IMessageProvider.WARNING);
 		}
 		return true;

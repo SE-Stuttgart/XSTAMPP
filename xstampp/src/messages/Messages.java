@@ -256,7 +256,7 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String DoYouWishToDeleteTheSystemGoal;
 	@SuppressWarnings("javadoc")
-	public static String DoYouReallyWantToOverwriteTheFile;
+	public static String DoYouReallyWantToOverwriteTheContentAt;
 	@SuppressWarnings("javadoc")
 	public static String DeleteHazards;
 	@SuppressWarnings("javadoc")

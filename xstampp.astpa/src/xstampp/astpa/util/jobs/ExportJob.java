@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.equinox.internal.p2.engine.EngineActivator;
 import org.xml.sax.SAXException;
 
 import xstampp.astpa.controlstructure.CSEditor;
@@ -56,6 +57,7 @@ import xstampp.ui.common.ProjectManager;
  */
 public class ExportJob extends Job {
 
+	private boolean enablePreview = true;
 	private static final float MP_TO_INCH = 72270f;
 	private static final Logger LOGGER = Logger.getRootLogger();
 	private String filePath;
@@ -67,6 +69,8 @@ public class ExportJob extends Job {
 	private float textSize,titleSize,tableHeadSize;
 
 	private final boolean decorate;
+	private String imgPath;
+	private boolean isCsDirty;
 
 	/**
 	 * Constructor of the export job
@@ -74,7 +78,6 @@ public class ExportJob extends Job {
 	 * @author Fabian Toth, Lukas Balzer
 	 * @param projectId
 	 *            the project which
-	 * 
 	 * @param name
 	 *            the name of the job
 	 * @param filePath
@@ -82,50 +85,61 @@ public class ExportJob extends Job {
 	 * @param xslName
 	 *            the name of the file in which the xsl file is stored which
 	 *            should be used
-	 * @param type
-	 *            the file type which shall be exported
 	 * @param asOne
 	 *            true if all content shall be exported on a single page
 	 * @param decorate
 	 *            if the control structure components should be pictured with
 	 *            colored borders and image labels
 	 */
-	public ExportJob(UUID projectId, String name, String filePath, String type,
-			String xslName, boolean asOne, boolean decorate) {
+	public ExportJob(UUID projectId, String name, String filePath, String xslName,
+			boolean asOne, boolean decorate) {
 		super(name);
 		this.decorate = decorate;
 		this.id = projectId;
 		this.filePath = filePath;
-		this.fileType = type;
+		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);;
 		this.xslName = xslName;
 		this.asOne = asOne;
 		this.tableHeadSize = 14;
 		this.titleSize = 24;
 		this.textSize = 12;
+		this.isCsDirty = false;
 	}
 
+	public void setCSImagePath(String path){
+		File pathFile= new File(path);
+		if(pathFile.exists()){
+			this.imgPath = path;
+		}
+	}
+	public void setCSDirty(){
+		this.isCsDirty= true;
+	}
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.ExportPdf, 5);
-		String workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
-		String csPath = workspacePath + File.separator
-				+ Messages.ControlStructure + ".png";
-		String csPmPath = workspacePath + File.separator
-				+ Messages.ControlStructureDiagramWithProcessModel + ".png";
-
-		CSExportJob csExport = new CSExportJob(csPath, CSEditor.ID, this.id,
-				10, this.decorate);
-		CSExportJob csPmExport = new CSExportJob(csPmPath, CSEditorWithPM.ID,
-				this.id, 10, this.decorate);
-
-		csExport.getPrintableRoot();
-		csPmExport.getPrintableRoot();
+		if(this.imgPath == null){
+			this.imgPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
+		}
+		File csPath = new File(this.imgPath + File.separator
+				+ Messages.ControlStructure + ".png");
+		File csPmPath = new File(this.imgPath + File.separator
+				+ Messages.ControlStructureDiagramWithProcessModel + ".png");
+		if(this.isCsDirty || !csPath.exists() || !csPmPath.exists()){
+			CSExportJob csExport = new CSExportJob(csPath.getPath(), CSEditor.ID, this.id,
+					10, this.decorate);
+			CSExportJob csPmExport = new CSExportJob(csPmPath.getPath(), CSEditorWithPM.ID,
+					this.id, 10, this.decorate);
+	
+			csExport.getPrintableRoot();
+			csPmExport.getPrintableRoot();
+		}
 		monitor.worked(1);
 
 		IDataModel model = ProjectManager.getContainerInstance().getDataModel(
 				this.id);
-		((DataModelController) model).setCSImagePath(csPath);
-		((DataModelController) model).setCSPMImagePath(csPmPath);
+		((DataModelController) model).setCSImagePath(csPath.getPath());
+		((DataModelController) model).setCSPMImagePath(csPmPath.getPath());
 		// put the xml jaxb content into an output stream
 		this.outStream = new ByteArrayOutputStream();
 		if (this.filePath != null) {
@@ -223,7 +237,7 @@ public class ExportJob extends Job {
 				str.close();
 
 				monitor.worked(1);
-				if (pdfFile.exists()) {
+				if (pdfFile.exists() && this.enablePreview) {
 					if (Desktop.isDesktopSupported()) {
 						Desktop.getDesktop().open(pdfFile);
 					}
@@ -280,5 +294,8 @@ public class ExportJob extends Job {
 	public UUID getId() {
 		return this.id;
 	}
-
+	
+	public void showPreview(boolean preview){
+		this.enablePreview = preview;
+	}
 }

@@ -112,7 +112,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 			if (newPDF.isFile()
 					&& !MessageDialog.openConfirm(this.getShell(),
 							Messages.Warning, String.format(
-									Messages.DoYouReallyWantToOverwriteTheFile,
+									Messages.DoYouReallyWantToOverwriteTheContentAt,
 									newPDF.getName()))) {
 				return false;
 			}
@@ -132,12 +132,11 @@ public abstract class AbstractExportWizard extends Wizard implements
 			if(mimeType == null){
 				return false;
 			}
-			Job exportJob = new ExportJob(this.getExportPage().getProjectID(),
-					jobMessage, filePath,mimeType, fopName, true, forceCSDeco);
+			ExportJob exportJob = new ExportJob(this.getExportPage().getProjectID(),
+					jobMessage, filePath,fopName, true, forceCSDeco);
 
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
-
-
+			exportJob.setCSDirty();
 			exportJob.schedule();
 		} else {
 			MessageDialog.openWarning(this.getShell(), Messages.Warning,
@@ -178,7 +177,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 		if (MessageDialog.openQuestion(
 				this.getShell(),
 				Messages.Warning,
-				String.format(Messages.DoYouReallyWantToOverwriteTheFile,
+				String.format(Messages.DoYouReallyWantToOverwriteTheContentAt,
 						file.getName()))) {
 			if (!file.delete()) {
 				return Error.CANT_OVERWRITE;

@@ -11,7 +11,8 @@
             icon="icons/branding/project16.png"
             id="astpa.navigation.process"
             name="STPA Project"
-            newWizard="astpa.wizards.NewWizard">
+            newWizard="astpa.wizards.NewWizard"
+            runCommand="xstampp.astpa.command.run">
          <category
                icon="icons/branding/step1EstablishFundamentals.png"
                id="astpa.navigation.step1"
@@ -573,6 +574,11 @@
                optional="false">
          </commandParameter>
       </command>
+      <command
+            defaultHandler="xstampp.astpa.util.commands.RunCommand"
+            id="xstampp.astpa.command.run"
+            name="Run">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -808,24 +814,7 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?befor=additions">
-         <toolbar
-               id="xstampp.astpa.toolbar1">
-            <command
-                  commandId="xstampp.command.openWizard"
-                  icon="icons/buttons/export/run_pdf.png"
-                  style="pulldown"
-                  tooltip="Opens the PDF Export Wizard">
-               <parameter
-                     name="xstampp.commandParameter.openwizard"
-                     value="xstampp.astpa.export.pdf">
-               </parameter>
-            </command>
-         </toolbar>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:xstampp.command.openWizard">
+            locationURI="menu:xstampp.toolbar.run.menu">
          <command
                commandId="xstampp.command.openWizard"
                icon="icons/buttons/export/run_csv.png"
@@ -834,6 +823,16 @@
             <parameter
                   name="xstampp.commandParameter.openwizard"
                   value="astpa.stepData">
+            </parameter>
+         </command>
+         <command
+               commandId="xstampp.command.openWizard"
+               icon="icons/buttons/export/run_pdf.png"
+               style="pulldown"
+               tooltip="Opens the PDF Export Wizard">
+            <parameter
+                  name="xstampp.commandParameter.openwizard"
+                  value="xstampp.astpa.export.pdf">
             </parameter>
          </command>
       </menuContribution>

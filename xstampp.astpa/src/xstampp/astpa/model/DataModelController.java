@@ -1295,7 +1295,7 @@ public class DataModelController extends Observable implements
 
 		UUID result = this.controlStructureController.addComponent(
 				controlActionId, parentId, layout, text, type, index);
-		this.controlActionController.setComponentLink(result, controlActionId);
+//		this.controlActionController.setComponentLink(result, controlActionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -1397,5 +1397,11 @@ public class DataModelController extends Observable implements
 	@Override
 	public boolean removeUnsafeProcessVariable(UUID componentId, UUID variableID) {
 		return this.controlStructureController.removeUnsafeProcessVariable(componentId, variableID);
+	}
+
+	@Override
+	public String getRunCommand() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

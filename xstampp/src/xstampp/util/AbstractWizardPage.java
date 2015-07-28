@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import messages.Messages;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -373,7 +375,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 * 
 	 */
 	protected String openExportDialog(String[] filters, String[] names) {
-		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
+		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.OPEN);
 		fileDialog.setFilterExtensions(filters);
 		fileDialog.setFilterNames(names);
 		fileDialog.setFileName(this.getProjectName());
@@ -383,7 +385,22 @@ public abstract class AbstractWizardPage extends WizardPage {
 		}
 		return ""; ////$NON-NLS-1$
 	}
-
+	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 */
+	protected String openDirectoryDialog() {
+		DirectoryDialog fileDialog = new DirectoryDialog(this.getShell(), SWT.OPEN);
+		System.out.println(Platform.getInstanceLocation().getURL().toString());
+		fileDialog.setFilterPath(Platform.getInstanceLocation().getURL().getPath().toString());
+		String filePath = fileDialog.open();
+		if (filePath != null) {
+			return filePath;
+		}
+		return ""; ////$NON-NLS-1$
+	}
 	/**
 	 * 
 	 * @author Sebastian Sieber,Lukas Balzer
@@ -502,6 +519,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 
 		public static final int LOGO_DIALOG = 1;
 		public static final int PATH_DIALOG = 2;
+		public static final int DIR_DIALOG = 3;
 		private Button pathButton;
 		private final Text path;
 		private final Label labelExport;
@@ -597,9 +615,12 @@ public abstract class AbstractWizardPage extends WizardPage {
 			if (this.dialogStyle == PathComposite.LOGO_DIALOG) {
 				PathComposite.this.path.setText(AbstractWizardPage.this
 						.openLogoDialog());
-			} else {
+			} else if(this.dialogStyle == PathComposite.PATH_DIALOG) {
 				PathComposite.this.path.setText(AbstractWizardPage.this
 						.openExportDialog(this.filter, this.filterNames));
+			} else if(this.dialogStyle == PathComposite.DIR_DIALOG) {
+				PathComposite.this.path.setText(AbstractWizardPage.this
+						.openDirectoryDialog());
 			}
 			AbstractWizardPage.this
 					.setPageComplete(AbstractWizardPage.this
