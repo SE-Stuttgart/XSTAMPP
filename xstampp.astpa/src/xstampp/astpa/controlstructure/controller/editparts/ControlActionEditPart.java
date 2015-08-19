@@ -1,7 +1,5 @@
 package xstampp.astpa.controlstructure.controller.editparts;
 
-import java.util.UUID;
-
 import messages.Messages;
 
 import org.eclipse.draw2d.IFigure;
@@ -36,7 +34,7 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 	 * @param model
 	 *            The DataModel which contains all model classes
 	 * @param stepId
-	 *            TODO
+	 *            the id of the current step
 	 */
 	public ControlActionEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
@@ -79,7 +77,6 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
 		this.installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new CSSelectionEditPolicy());
 	}
-
 
 
 

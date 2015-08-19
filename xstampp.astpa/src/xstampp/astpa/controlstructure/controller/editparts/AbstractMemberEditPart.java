@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.eclipse.draw2d.IFigure;
 
-import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -41,6 +40,7 @@ public abstract class AbstractMemberEditPart extends CSAbstractEditPart implemen
 		}
 
 	}
+
 	@Override
 	public IFigure getFeedback() {
 		if(this.relativePart == null){

@@ -35,7 +35,6 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
-import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
@@ -82,7 +81,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	 *            The DataModel which contains all model classes
 	 * @param stepId
 	 *            this steps id
-	 * @param layer TODO
+	 * @param layer The layer on which this component is drawn
 	 */
 	public CSAbstractEditPart(IControlStructureEditorDataModel model,
 			String stepId, Integer layer) {
@@ -361,7 +360,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	 * @return the layer
 	 */
 	public int getLayer() {
-		return layer;
+		return this.layer;
 	}
 
 	/**
@@ -372,12 +371,12 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	}
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		//Do nothing by default
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
+		//Do nothing by default
 	}
 
 	@Override
@@ -388,13 +387,13 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	public void mouseHover(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		//Do nothing by default
 		
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		//Do nothing by default
 		
 	}
 }

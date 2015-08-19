@@ -13,12 +13,19 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
@@ -34,7 +41,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @author Lukas Balzer
  * 
  */
-public class RectangleEditPart extends AbstractMemberEditPart{
+public class RectangleEditPart extends AbstractMemberEditPart implements ISelectionChangedListener{
 
 	/**
 	 * this constuctor sets the unique ID of this EditPart which is the same in
@@ -52,6 +59,11 @@ public class RectangleEditPart extends AbstractMemberEditPart{
 		super(model, stepId, 1);
 	}
 
+	@Override
+	public void setParent(EditPart parent) {
+		super.setParent(parent);
+		getViewer().addSelectionChangedListener(this);
+	}
 	@Override
 	protected IFigure createFigure() {
 	CSRectangleContainer tmp = new CSRectangleContainer(getId());
@@ -71,7 +83,13 @@ public class RectangleEditPart extends AbstractMemberEditPart{
 		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
 				this.getDataModel(), this.getStepId()));
 	}
-
+	@Override
+	public boolean understandsRequest(Request req) {
+//		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT){
+//			return false;
+//		}
+		return super.understandsRequest(req);
+	}
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -80,6 +98,25 @@ public class RectangleEditPart extends AbstractMemberEditPart{
 	 */
 	@Override
 	public void performRequest(Request req) {
-		//this method overwritten to prevent the interpretation of the REQ_DIRECT_EDIT
+		
+		if(req.getType() == RequestConstants.REQ_OPEN) {
+	        ((CSRectangleContainer)getFigure()).setSelected(isActive());
+	        for(Object child :getFigure().getChildren()){
+				((IFigure) child).setBorder(new LineBorder(ColorConstants.gray, 1, SWT.BORDER_DASH));
+			}
+	    }
+		
+	}
+	
+
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		StructuredSelection selection = (StructuredSelection) event.getSelection();
+		if(((EditPart) selection.getFirstElement()).getParent() != this){
+			((CSRectangleContainer)getFigure()).setSelected(false);
+			for(Object child :getFigure().getChildren()){
+				((IFigure) child).setBorder(null);
+			}
+		}
 	}
 }

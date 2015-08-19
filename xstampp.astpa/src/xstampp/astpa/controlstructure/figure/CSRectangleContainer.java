@@ -4,9 +4,12 @@ import java.util.UUID;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.FocusEvent;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -19,9 +22,13 @@ import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
 public class CSRectangleContainer extends Figure implements IControlStructureFigure{
 	private UUID id;
-
+	private boolean selected;
+	private static final int TOP_OFFSET= 5;
+	private static final int BOTTOM_OFFSET= 5;
+	
 	public CSRectangleContainer(UUID id) {
 		super();
+		this.selected = false;
 		this.id= id;
 		setLayoutManager(new XYLayout());
 		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH));
@@ -36,6 +43,13 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 		return dim; 
 	}
 
+	@Override
+	protected IFigure findDescendantAtExcluding(int x, int y, TreeSearch search) {
+		if(isSelected()){
+			return super.findDescendantAtExcluding(x, y, search);
+		}
+		return null;
+	}
 	/**
 	 * this implementation of the funktion adds a automatic vertical </br>
 	 * positioning and a resize to layout()
@@ -45,7 +59,7 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 	 */
 	 @Override
 	protected void layout() {
-			int y =0;
+			int y =TOP_OFFSET;
 			int width=0;
 			Point offset = ((XYLayout)getLayoutManager()).getOrigin(this);
 			Rectangle tmp;
@@ -54,14 +68,14 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 //					rect =  (Rectangle) ((XYLayout)getLayoutManager()).getConstraint((IFigure) child);
 					tmp = ((IFigure) child).getBounds();
 					tmp.y = y;
-					y += tmp.height;
+					y += tmp.height + TOP_OFFSET;
 					width = Math.max(width, tmp.width);
-					tmp.x = 0;
+					tmp.x = TOP_OFFSET;
 					tmp = tmp.getTranslated(offset);
 					((IFigure) child).setBounds(tmp);
 				}
 			}
-		setPreferredSize(width, y);
+		setPreferredSize(width + 2 + TOP_OFFSET, y +5);
 	}
 
 	@Override
@@ -98,6 +112,7 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 		}
 
 		setBounds(bounds);
+		this.getParent().setConstraint(this, bounds);
 	}
 	
 	@Override
@@ -157,6 +172,20 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 	public void disableFeedback() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/**
+	 * @return the selected
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
+
+	/**
+	 * @param selected the selected to set
+	 */
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 	 
 

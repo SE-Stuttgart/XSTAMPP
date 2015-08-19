@@ -94,11 +94,6 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		connection.setLayoutManager(new XYLayout());
 		connection.setLineWidth(1);
 		connection.setTolerance(15);
-//		RectangleEditPart part= new RectangleEditPart(this.dataModel, this.stepId);
-//		part.setParent(this);
-//		Component model= new Component();
-//		model.setId(getId());
-//		part.setModel(model);
 		switch (((CSConnection) this.getModel()).getConnectionType()) {
 		case ARROW_SIMPLE: {
 			connection.setLineStyle(SWT.LINE_SOLID);
@@ -111,10 +106,6 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		default:
 			return null;
 		}
-//		this.container = part.createFigure();
-//		connection.add(this.container,new Rectangle(0,0,50,50));
-//		this.getViewer().getVisualPartMap().put(this.container, part);
-//		part.addNotify();
 		return connection;
 	}
 
