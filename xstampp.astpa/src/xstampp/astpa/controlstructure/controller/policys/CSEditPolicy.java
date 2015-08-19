@@ -187,8 +187,11 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 						&& (compModel.getComponentType() == ComponentType.CONTAINER ||
 							compModel.getComponentType() == ComponentType.CONTROLACTION)){
 					this.relative= findNearestRelative(constraint.getCenter());
-					addFeedback(this.relative.getFeedback());
-					command.setRelative(this.relative.getId());
+					
+					if(this.relative != null){
+						addFeedback(this.relative.getFeedback());
+						command.setRelative(this.relative.getId());
+					}
 				}
 				return command;
 			}
@@ -196,6 +199,15 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 		return null;
 	}
 	
+	/**
+	 * Finds the nearest relative (in general the nearest connection) 
+	 * if there is no it returns null
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param point the point which should be used
+	 * @return the nearest relative or null if no
+	 */
 	private ConnectionFigure findNearestRelative(Point point) {
 		Rectangle bounds;
 		double distance=Double.MAX_VALUE;
@@ -297,7 +309,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 			Object connectable =((ChangeBoundsRequest)request).getEditParts().get(0);
 			if(part instanceof IRelative && connectable instanceof IConnectable 
 					&& ((IRelative) part).getId() != ((IConnectable)connectable).getRelativeId()){
-				IFigure conn= ((IRelative) part).getFeedback();
+				IFigure conn= ((IRelative) part).getFeedback(((IConnectable)connectable));
 				if(!(this.feedback.contains(conn))){
 					addFeedback(conn);		
 					this.feedback.add(conn);

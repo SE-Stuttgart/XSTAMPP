@@ -5,14 +5,18 @@ import java.util.UUID;
 import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Connection;
+import org.eclipse.draw2d.ConnectionRouter;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.w3c.dom.svg.GetSVGDocument;
 
 import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
@@ -36,6 +40,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	@Override
 	public void paintFigure(Graphics graphics) {
 		super.paintFigure(graphics);
+//		updateFeedback();
 		Point p1 = getPoints().getPoint(getPoints().size() -1);
 		Point p2 = getPoints().getPoint(getPoints().size() - 2);
 		Point p3 = new Point();
@@ -156,7 +161,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	}
 	
 	public IFigure getFeedback() {
-		return getFeedback((Rectangle)null);
+		return getFeedback((IFigure)null);
 	}
 	
 	public IFigure getFeedback(IConnectable member) {
@@ -172,14 +177,30 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		
 		if(member != null && this.currentFeedbackId != member.getId()){
 			this.currentFeedbackId = member.getId();
-			this.feedback.setConnectionRouter(new FeedbackRouter(member));
+			this.feedback.setConnectionRouter(new FeedbackRouter(member.getFigure()));
 		}
 		updateFeedback();
-		return getFeedback(member.getFigure().getBounds());
+		return getFeedback(member.getFigure());
 	}
 	
+	/**
+	 * @deprecated use getFeedbach(IFigure) instead
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param bounds
+	 * @return
+	 */
+	@Deprecated
+	public IFigure getFeedback(Rectangle bounds){
+		IFigure figure= new Figure();
+		if(bounds != null){
+			figure.setBounds(bounds);
+		}
+		return getFeedback(figure);
+	}
 	
-	public IFigure getFeedback(Rectangle bounds) {
+	public IFigure getFeedback(IFigure member) {
 		if(this.feedback == null){
 			this.feedback = new PolylineConnection();
 			this.feedback.setAlpha(150);
@@ -188,46 +209,49 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 			this.feedback.setForegroundColor(ColorConstants.darkGreen);
 		}
 		this.feedback.setVisible(true);
+		this.feedback.setConnectionRouter(new FeedbackRouter(member));
 		
-		if(bounds != null){
-			this.feedback.setConnectionRouter(new FeedbackRouter(bounds));
-		}else{
-			this.feedback.setConnectionRouter(new AbstractRouter() {
-				
-				@Override
-				public void route(Connection connection) {
-					connection.setPoints(getPoints());
-					
-				}
-			});
-		}
 		updateFeedback();
 		return this.feedback;
 	}
 	
 	private class FeedbackRouter extends AbstractRouter{
 		private IFigure targetFigure;
-		private Rectangle rectangle;
-		public FeedbackRouter(IConnectable member) {
-			this.targetFigure=member.getFigure();
-			this.rectangle=member.getFigure().getBounds();
+		private ManhattanConnectionRouter router;
+		
+		public FeedbackRouter(IFigure member) {
+			this.targetFigure=member;
+			this.router= new ManhattanConnectionRouter();
 		}
 		public FeedbackRouter(Rectangle rect) {
-			this.rectangle=rect;
+			this.router= new ManhattanConnectionRouter();
+			
 		}
 		@Override
 		public void route(Connection connection) {
-			PointList list = getPoints().getCopy();
+			connection.setSourceAnchor(getSourceAnchor());
+			connection.setTargetAnchor(getTargetAnchor());
+			this.router.route(connection);
+			if(this.targetFigure == null){
+				return;
+			}
+			PointList list = connection.getPoints().getCopy();
+			
 			Point a=list.removePoint(list.size()-1);
 			
 			Point b=list.getPoint(list.size()-1);
 			Dimension diff = a.getDifference(b);
 			Point middle = b.getTranslated(diff.width/2, diff.height/2);
-			Point center = this.rectangle.getCenter().getCopy();
+			Rectangle tmp = this.targetFigure.getBounds().getCopy();
+			this.targetFigure.translateToAbsolute(tmp);
+			connection.translateToRelative(tmp);
+			Point center = tmp.getCenter().getCopy();
 			
 			for(int i=0;i<10;i++){
-				Rectangle tmp = new Rectangle(center,middle);
-				tmp = tmp.intersect(rectangle);
+//				this.targetFigure.translateToAbsolute(center);
+				Rectangle loop_tmp = new Rectangle(center,middle);
+//				this.targetFigure.translateToAbsolute(tmp);
+				tmp = tmp.intersect(loop_tmp);
 				center = tmp.getCenter().getCopy();
 			}
 			list.addPoint(middle);
@@ -235,6 +259,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 			list.addPoint(middle);
 			list.addPoint(b);
 			list.addPoint(a);
+//			this.targetFigure.translateToAbsolute(list);
 			connection.setPoints(list);
 		}
 		
