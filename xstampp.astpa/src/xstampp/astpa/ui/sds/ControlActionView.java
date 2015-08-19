@@ -336,7 +336,7 @@ public class ControlActionView extends CommonTableView {
 		TableViewerColumn distanceColumn = new TableViewerColumn(
 						this.getTableViewer(), SWT.CENTER);
 		distanceColumn.getColumn().setText(
-				"Distance");
+				"Destination");//$NON-NLS-1$
 		getTableColumnLayout().setColumnData(
 				distanceColumn.getColumn(),
 				new ColumnWeightData(10, 100, true));

@@ -178,6 +178,7 @@ public class ProjectManager {
 			newController.updateValue(ObserverValue.PROJECT_NAME);
 			UUID projectId = this.addProjectData(newController);
 			this.projectSaveFilesToUUID.put(projectId, new File(path));
+			
 			this.saveDataModel(projectId, false, false);
 			return projectId;
 		} catch (InstantiationException | IllegalAccessException e) {	
@@ -589,7 +590,14 @@ public class ProjectManager {
 	 * 		the extension which is registered for the project
 	 */
 	public String getProjectExtension(UUID id) {
-		return this.extensionsToUUID.get(id);
+		File saveFile = this.projectSaveFilesToUUID.get(id);
+		
+		String ext = saveFile.getName();
+		String[] tmp =ext.split("\\."); 
+		if(tmp.length > 0){
+			ext=tmp[1];
+		}
+		return ext;
 	}
 	/**
 	 * 
