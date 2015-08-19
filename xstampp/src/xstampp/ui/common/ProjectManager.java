@@ -176,8 +176,7 @@ public class ProjectManager {
 			newController.setProjectName(projectName);
 			newController.initializeProject();
 			newController.updateValue(ObserverValue.PROJECT_NAME);
-			UUID projectId = this.addProjectData(newController);
-			this.projectSaveFilesToUUID.put(projectId, new File(path));
+			UUID projectId = this.addProjectData(newController, path);
 			
 			this.saveDataModel(projectId, false, false);
 			return projectId;
@@ -531,10 +530,12 @@ public class ProjectManager {
 	 *
 	 * @param controller
 	 * 			the data model as IDataModel which contains the projects data
+	 * @param path TODO
 	 * @return	generates a random uuid and stores/returns it as the projectId
 	 */
-	public UUID addProjectData(IDataModel controller) {
+	public UUID addProjectData(IDataModel controller, String path) {
 		UUID id = UUID.randomUUID();
+		this.projectSaveFilesToUUID.put(id, new File(path));
 		this.projectDataToUUID.put(id, controller);
 		IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage().findView("astpa.explorer"); //$NON-NLS-1$
