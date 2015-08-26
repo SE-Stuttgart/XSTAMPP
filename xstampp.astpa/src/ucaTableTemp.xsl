@@ -609,7 +609,7 @@
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">
                                  <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
-						Resulting Safety Constraints
+						Corresponding Safety Constraints
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
