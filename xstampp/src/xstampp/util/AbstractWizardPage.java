@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import messages.Messages;
 
+import org.apache.commons.io.output.ThresholdingOutputStream;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -560,18 +561,49 @@ public abstract class AbstractWizardPage extends WizardPage {
 			this.pathButton.setText("..."); //$NON-NLS-1$
 
 		}
-
+		/**
+		 * calls {@link #AbstractWizardPage(String[], String[], Composite, int, String)} 
+		 * with <code>Messages.Destination</code> as name 
+		 *
+		 * @author Lukas Balzer
+		 *
+		 * @param filter a string array containing the filter extensionsBsp.: {"*.haz","*.hazx"}
+		 * @param parent the parent composite
+		 * @param style the style, must be one of the constants defined in PathComposite
+		 */
 		public PathComposite(final String[] filter, Composite parent, int style) {
 			this(filter, filter, parent, style, Messages.Destination);
 		}
 
-		public PathComposite(final String[] filter, final String[] names,
+		/**
+		 * calls {@link #AbstractWizardPage(String[], String[], Composite, int, String)} 
+		 * with <code>Messages.Destination</code> as name 
+		 *
+		 * @author Lukas Balzer
+		 *
+		 * @param filter a string array containing the filter extensionsBsp.: {"*.haz","*.hazx"}
+		 * @param parent the parent composite
+		 * @param style the style, must be one of the constants defined in PathComposite
+		 * @param filterNames a string array containing a description of the extension
+		 */
+		public PathComposite(final String[] filter, final String[] filterNames,
 				Composite parent, int style) {
-			this(filter, names, parent, style, Messages.Destination);
+			this(filter, filterNames, parent, style, Messages.Destination);
 		}
 
+		/**
+		 * 
+		 *
+		 * @author Lukas
+		 *
+		 * @param filter a string array containing the filter extensionsBsp.: {"*.haz","*.hazx"}
+		 * @param filterNames a string array containing a description of the extension
+		 * @param parent the parent composite
+		 * @param style the style, must be one of the constants defined in PathComposite
+		 * @param name the name which specifies the path to be chosen
+		 */
 		public PathComposite(String[] filter, String[] filterNames,
-				Composite parent, final int style, String name) {
+				Composite parent, int style, String name) {
 			this(parent, name);
 			this.addButtonListener(this);
 			this.filter = filter;

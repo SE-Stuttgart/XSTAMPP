@@ -81,7 +81,7 @@ public class ControlStructureExportPage extends AbstractExportPage {
 		this.dekoSwitch = new Button(decoSwitchComposite, SWT.CHECK);
 
 		this.pathChooser = new PathComposite(this.filters, this.control,
-				SWT.NONE);
+				PathComposite.PATH_DIALOG);
 		data = new FormData();
 		data.top = new FormAttachment(decoSwitchComposite,
 				AbstractWizardPage.COMPONENT_OFFSET);

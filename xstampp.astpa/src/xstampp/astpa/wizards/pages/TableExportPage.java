@@ -57,30 +57,7 @@ public class TableExportPage extends AbstractExportPage implements
 		Composite projectChooser = this.addProjectChooser(this.control,
 				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
 		FormData data;
-
-//		Group layoutGroup = new Group(this.control, SWT.SHADOW_IN);
-//		layoutGroup.setLayout(new RowLayout(SWT.VERTICAL));
-//		layoutGroup.setText("Layout");
-//		layoutGroup.addMouseListener(new MouseAdapter() {
-//
-//			@Override
-//			public void mouseUp(MouseEvent e) {
-//				TableExportPage.this.setPageComplete(TableExportPage.this
-//						.checkFinish());
-//
-//			}
-//		});
-//		this.singlePage = new Button(layoutGroup, SWT.RADIO);
-//		this.singlePage.setText("export on a single image");
-//		this.multiPage = new Button(layoutGroup, SWT.RADIO);
-//		this.multiPage.setSelection(true);
-//		this.multiPage.setText("Use multiple Din A4 Images if needed");
-//
-//		data = new FormData();
-//		data.top = new FormAttachment(projectChooser,
-//				AbstractWizardPage.COMPONENT_OFFSET);
-//		layoutGroup.setLayoutData(data);
-
+		
 		ColorChooser bgChooser = new ColorChooser(this.control, SWT.NONE,
 				Messages.BackgroundColor,
 				IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
@@ -99,7 +76,7 @@ public class TableExportPage extends AbstractExportPage implements
 		fontChooser.addColorChangeListener(this);
 
 		this.pathChooser = new PathComposite(this.filters, this.control,
-				SWT.NONE);
+				PathComposite.PATH_DIALOG);
 		data = new FormData();
 		data.top = new FormAttachment(fontChooser,
 				AbstractWizardPage.COMPONENT_OFFSET);

@@ -1305,7 +1305,8 @@ public class DataModelController extends Observable implements
 	@Override
 	public Job doSave(final File file, Logger log, boolean isUIcall) {
 		SaveJob job= new SaveJob(file,this);
-		if(isUIcall){
+		//the compabillity mode is only needed in haz files, since the hazx format could never be stored the other way
+		if(isUIcall && file.getName().endsWith("haz")){ //$NON-NLS-1$
 			Runnable question = new SaveRunnable(job);
 			
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay().syncExec(question);
