@@ -219,6 +219,7 @@ public final class Messages extends NLS {
 	public static String DirIsNotReadable;
 	@SuppressWarnings("javadoc")
 	public static String Discard;
+	public static String DontPromtThisMsgAgain;
 	@SuppressWarnings("javadoc")
 	public static String DotASTPA;
 	@SuppressWarnings("javadoc")
@@ -348,6 +349,8 @@ public final class Messages extends NLS {
 	public static String Hazards;
 	@SuppressWarnings("javadoc")
 	public static String HazardsAvailableForLinking;
+	public static String HazDesc;
+	public static String HazXDesc;
 	@SuppressWarnings("javadoc")
 	public static String HelpContents;
 	@SuppressWarnings("javadoc")
@@ -357,6 +360,7 @@ public final class Messages extends NLS {
 	//*-------I-------------------------------------------------------------------*
 	@SuppressWarnings("javadoc")
 	public static String Information;
+	public static String InformationCannotBeStored;
 	@SuppressWarnings("javadoc")
 	public static String InvalidPluginCommand;
 	@SuppressWarnings("javadoc")
@@ -386,6 +390,7 @@ public final class Messages extends NLS {
 	public static String LoadProject;
 	@SuppressWarnings("javadoc")
 	public static String Logo;
+	public static String LossOfData;
 	@SuppressWarnings("javadoc")
 	public static String loadHaz;
 	@SuppressWarnings("javadoc")

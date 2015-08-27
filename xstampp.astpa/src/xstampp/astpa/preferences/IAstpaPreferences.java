@@ -43,6 +43,13 @@ public interface IAstpaPreferences {
 	 * 
 	 * @author Lukas Balzer
 	 */
+	String CS_HideIllegalComponentWarning="CS_HideIllegalComponentWarning"; //$NON-NLS-1$
+	
+	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 */
 	String CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS="ConnectionMode"; //$NON-NLS-1$ 
 	
 	/**

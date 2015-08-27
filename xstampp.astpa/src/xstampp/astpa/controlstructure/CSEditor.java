@@ -64,7 +64,6 @@ public class CSEditor extends CSAbstractEditor {
 
 		public OpenAction(ToolEntry entry) {
 			this.entry = entry;
-			// TODO Auto-generated constructor stub
 		}
 		
 		@Override

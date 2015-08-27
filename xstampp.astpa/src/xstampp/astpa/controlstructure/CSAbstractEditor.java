@@ -48,6 +48,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.ToolEntry;
@@ -74,6 +75,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -89,6 +93,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
@@ -98,6 +103,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
@@ -110,6 +116,7 @@ import xstampp.astpa.controlstructure.utilities.CSContextMenuProvider;
 import xstampp.astpa.controlstructure.utilities.CSPalettePage;
 import xstampp.astpa.controlstructure.utilities.CSPalettePreferences;
 import xstampp.astpa.controlstructure.utilities.CSTemplateTransferDropTargetListener;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.astpa.preferences.IAstpaPreferences;
@@ -213,7 +220,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		if(!asExport){
+		if(!this.asExport){
 			this.createToolBar(editorComposite, data);
 		}
 		this.getCommandStack().addCommandStackListener(this);
@@ -443,24 +450,18 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		});
 
 		final Button preferenceButton= new Button(this.toolBar, SWT.PUSH);
-		preferenceButton.setText("Preferenes");
+		preferenceButton.setText("Preferenes"); //$NON-NLS-1$
 		data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
 		data.left = new FormAttachment(this.decoSwitch, 30);
 		preferenceButton.setLayoutData(data);
-		preferenceButton.addSelectionListener(new SelectionListener() {
+		preferenceButton.addSelectionListener(new SelectionAdapter() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Map<String,String> values=new HashMap<>();
-				values.put("xstampp.command.preferencePage", "xstampp.astpa.preferencepage.cs");
-				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+				values.put("xstampp.command.preferencePage", "xstampp.astpa.preferencepage.cs"); //$NON-NLS-1$ //$NON-NLS-2$
+				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values); //$NON-NLS-1$
 			}
 		});
 		
@@ -1025,15 +1026,27 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 					.enableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.addAnchorsGrid();
-		} else {
+		} else if(tool instanceof CombinedTemplateCreationEntry){
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.getFigure().removeHighlighter();
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.disableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.setAnchorsGrid(false);
+			
+			//if the current project should be stored as a haz file, a warning is promted when the user trys to insert not storeable
+			//components
+			boolean conflict= ProjectManager.getContainerInstance().getProjectExtension(getProjectID()).equals("haz");//$NON-NLS-1$
+			Object obj =((CombinedTemplateCreationEntry) tool).getTemplate();
+			boolean hideWarning =PlatformUI.getPreferenceStore().getBoolean(IAstpaPreferences.CS_HideIllegalComponentWarning);
+			if(((ComponentType)obj) == ComponentType.CONTAINER && !hideWarning && conflict){
+				hideWarning = MessageDialogWithToggle.openWarning(null,Messages.LossOfData,
+													String.format(Messages.InformationCannotBeStored,obj.toString()),
+													Messages.DontPromtThisMsgAgain,false,null,null).getToggleState();
+				PlatformUI.getPreferenceStore().setValue(IAstpaPreferences.CS_HideIllegalComponentWarning, hideWarning);
+			}
 		}
-
+	
 	}
 
 	@Override
@@ -1132,7 +1145,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * @return the modelInterface
 	 */
 	public IControlStructureEditorDataModel getModelInterface() {
-		return modelInterface;
+		return this.modelInterface;
 	}
 
 	/**

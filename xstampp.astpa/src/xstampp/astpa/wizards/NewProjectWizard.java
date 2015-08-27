@@ -33,7 +33,8 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		ImageDescriptor desc = Activator
 				.getImageDescriptor("icons/branding/i64.png"); //$NON-NLS-1$
 		this.page = new NewProjectPage(Messages.CreateNewProject,
-				Messages.NewProject, desc,"haz");
+				Messages.NewProject, desc,new String[]{"haz","hazx"}, //$NON-NLS-1$ //$NON-NLS-2$
+				new String[]{Messages.HazDesc,Messages.HazXDesc});
 		this.addPage(this.page);
 	}
 
@@ -43,7 +44,7 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		Map<String, String> values = new HashMap<>();
 		values.put("astpa.new.name", this.page.getNewProjectName()); //$NON-NLS-1$
 		values.put("astpa.new.path", this.page.getNewProjectPath()); //$NON-NLS-1$
-		STPAPluginUtils.executeParaCommand("astpa.commands.new", values);
+		STPAPluginUtils.executeParaCommand("astpa.commands.new", values); //$NON-NLS-1$
 		return true;
 	}
 
