@@ -9,6 +9,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
@@ -16,8 +17,10 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -35,9 +38,11 @@ public class NewProjectPage extends AbstractWizardPage implements
 	private final static int DEFAULTHEIGHT = 30;
 
 	private String projectExtension;
+	private String[] extensions;
+	private String[] descriptions;
 	private Text newProjectName;
 	private PathComposite pathComposite;
-	private Button defaultPathWidget;
+	private Button defaultPathCheckbox;
 
 	/**
 	 * 
@@ -65,8 +70,30 @@ public class NewProjectPage extends AbstractWizardPage implements
 			ImageDescriptor titleImage, String ext) {
 		super(pageName, title, titleImage);
 		this.projectExtension = ext;
+		this.extensions = new String[]{ext};
+		this.descriptions = new String[]{new String()};
 	}
+	
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 * 
+	 * @param pageName
+	 *            this Pages Name
+	 * @param title
+	 *            the title which appears on top of the wizard
+	 * @param titleImage
+	 *            the Image which appears on top of the wizard dialog
+	 */
+	public NewProjectPage(String pageName, String title,
+			ImageDescriptor titleImage, String[] ext, String[] descriptions) {
+		super(pageName, title, titleImage);
 
+		this.extensions = ext;
+		this.descriptions = descriptions;
+		
+	}
+	
 	@Override
 	public void createControl(Composite parent) {
 		Composite control = new Composite(parent, SWT.NONE);
@@ -90,6 +117,8 @@ public class NewProjectPage extends AbstractWizardPage implements
 		this.newProjectName.setLayoutData(new GridData(300, SWT.DEFAULT));
 		this.newProjectName.addModifyListener(this);
 
+		
+		
 		// -----Create Project Path Composite----------
 		data = new FormData();
 		data.top = new FormAttachment(nameComposite,
@@ -98,41 +127,67 @@ public class NewProjectPage extends AbstractWizardPage implements
 		data.right = new FormAttachment(100, NewProjectPage.DEFAULTMARGIN);
 		data.height = NewProjectPage.DEFAULTHEIGHT;
 
-		this.defaultPathWidget = new Button(control, SWT.CHECK);
-		this.defaultPathWidget.setText(Messages.UseWorkspace);
-		this.defaultPathWidget.setLayoutData(data);
-		this.defaultPathWidget.setSelection(true);
-		this.defaultPathWidget.addSelectionListener(new SelectionListener() {
+		this.defaultPathCheckbox = new Button(control, SWT.CHECK);
+		this.defaultPathCheckbox.setText(Messages.UseWorkspace);
+		this.defaultPathCheckbox.setLayoutData(data);
+		this.defaultPathCheckbox.setSelection(true);
+		this.defaultPathCheckbox.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				NewProjectPage.this.pathComposite
-						.setEnabled(!NewProjectPage.this.defaultPathWidget
-								.getSelection());
-
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// nothing to do here
-
+				if(NewProjectPage.this.defaultPathCheckbox.getSelection()){
+					//if the default path checkbox is checked the path choice is automatically resettet to
+					//the workspace location
+					NewProjectPage.this.pathComposite.setText(Platform.getInstanceLocation().getURL().getPath());
+					NewProjectPage.this.pathComposite.setEnabled(false);
+				}else{
+					NewProjectPage.this.pathComposite.setEnabled(true);
+				}
 			}
 		});
 
 		data = new FormData();
-		data.top = new FormAttachment(this.defaultPathWidget,
+		data.top = new FormAttachment(this.defaultPathCheckbox,
 				NewProjectPage.DEFAULTMARGIN);
 		data.left = new FormAttachment(0, NewProjectPage.DEFAULTMARGIN);
 		data.right = new FormAttachment(100, NewProjectPage.DEFAULTMARGIN);
 		data.height = NewProjectPage.DEFAULTHEIGHT;
 
 		this.pathComposite = new PathComposite(
-				new String[] { "*." + this.projectExtension }, control, SWT.None); //$NON-NLS-1$
+				new String[] { "*." + this.projectExtension }, control, PathComposite.DIR_DIALOG); //$NON-NLS-1$
 		this.pathComposite.setLayoutData(data);
 		this.pathComposite.setText(Platform.getInstanceLocation().getURL()
 				.getPath());
 		this.pathComposite.getTextWidget().addModifyListener(this);
 		this.pathComposite.setEnabled(false);
+		//the group component to choose the extension (the type of project is only displayed if there is more than 
+		//one choice
+		if(this.extensions.length > 1){
+			data = new FormData();
+			data.top = new FormAttachment(this.pathComposite, NewProjectPage.DEFAULTMARGIN);
+			data.left = new FormAttachment(0, NewProjectPage.DEFAULTMARGIN);
+			data.right = new FormAttachment(100, NewProjectPage.DEFAULTMARGIN);
+			Group extGroup= new Group(control, SWT.SHADOW_IN);
+			extGroup.setLayoutData(data);
+			extGroup.setLayout(new RowLayout(SWT.VERTICAL));
+			for(int i=0; i<this.extensions.length;i++){
+				final String extName = this.extensions[i];
+				Button extChooser = new Button(extGroup, SWT.RADIO);
+				extChooser.setText(this.extensions[i] + " - " + this.descriptions[i]); //$NON-NLS-1$
+				extChooser.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						NewProjectPage.this.projectExtension = extName;
+					}
+				});
+				//the first item in the group is initially selected
+				if(i == 0){
+					extChooser.setSelection(true);
+					this.projectExtension = extName;
+				}
+			}
+		}
+		
 		this.setPageComplete(false);
 		this.setControl(control);
 	}
@@ -144,7 +199,7 @@ public class NewProjectPage extends AbstractWizardPage implements
 				|| this.getNewProjectName().equals("")) { //$NON-NLS-1$
 			return false;
 		}
-		if (!this.defaultPathWidget.getSelection()
+		if (!this.defaultPathCheckbox.getSelection()
 				&& ((this.pathComposite == null) || this.pathComposite
 						.getText().equals(""))) { //$NON-NLS-1$
 			return false;
@@ -173,11 +228,9 @@ public class NewProjectPage extends AbstractWizardPage implements
 	 * @return the path where the Data for the new project is stored
 	 */
 	public String getNewProjectPath() {
-		if (this.defaultPathWidget.getSelection()) {
-			return Platform.getInstanceLocation().getURL().getPath()
-					+ File.separator + this.getNewProjectName() + "." + this.projectExtension; //$NON-NLS-1$
-		}
-		return this.pathComposite.getText();
+		return this.pathComposite.getText()
+				+ File.separator + this.getNewProjectName() + "." + this.projectExtension; //$NON-NLS-1$
+		
 	}
 
 	@Override
