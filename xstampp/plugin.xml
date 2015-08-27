@@ -442,7 +442,7 @@
                   commandId="xstampp.command.run"
                   icon="icons/buttons/export/run.png"
                   id="xstampp.toolbar.run.menu"
-                  style="pulldown">
+                  style="push">
             </command>
          </toolbar>
       </menuContribution>
@@ -508,6 +508,18 @@
                <equals
                      value="ENABLED">
                </equals>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="xstampp.util.RunExportCommand"
+            commandId="xstampp.command.run">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <instanceof
+                     value="xstampp.ui.navigation.IProjectSelection">
+               </instanceof>
             </with>
          </enabledWhen>
       </handler>ler>
@@ -708,7 +720,6 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="xstampp.util.RunExportCommand"
             id="xstampp.command.run"
             name="Run">
       </command>

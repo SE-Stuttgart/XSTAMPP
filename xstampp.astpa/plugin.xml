@@ -812,30 +812,6 @@
             </parameter>
          </command>
       </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:xstampp.toolbar.run.menu">
-         <command
-               commandId="xstampp.command.openWizard"
-               icon="icons/buttons/export/run_csv.png"
-               style="push"
-               tooltip="Opens the Data Export Wizard">
-            <parameter
-                  name="xstampp.commandParameter.openwizard"
-                  value="astpa.stepData">
-            </parameter>
-         </command>
-         <command
-               commandId="xstampp.command.openWizard"
-               icon="icons/buttons/export/run_pdf.png"
-               style="pulldown"
-               tooltip="Opens the PDF Export Wizard">
-            <parameter
-                  name="xstampp.commandParameter.openwizard"
-                  value="xstampp.astpa.export.pdf">
-            </parameter>
-         </command>
-      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.help.toc">
