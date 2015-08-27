@@ -256,9 +256,13 @@ public class ProjectManager {
 				return false;
 			}
 		}
-		this.projectSaveFilesToUUID.replace(projectId, file);
-		this.extensionsToUUID.replace(projectId, fileName.split("\\.")[1]);
+		this.projectSaveFilesToUUID.remove(projectId);
+		this.projectSaveFilesToUUID.put(projectId, file);
+		this.extensionsToUUID.remove(projectId);
+		this.extensionsToUUID.put(projectId, fileName.split("\\.")[1]);
+		updateProjectTree();
 		return this.saveDataModel(projectId, false, false);
+		
 	}
 
 	/**
@@ -537,15 +541,18 @@ public class ProjectManager {
 		UUID id = UUID.randomUUID();
 		this.projectSaveFilesToUUID.put(id, new File(path));
 		this.projectDataToUUID.put(id, controller);
+		updateProjectTree();
+		return id;
+
+	}
+
+	private void updateProjectTree(){
 		IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage().findView("astpa.explorer"); //$NON-NLS-1$
 		if (navi != null) {
 			((ProjectExplorer) navi).updateProjects();
 		}
-		return id;
-
 	}
-
 	/**
 	 * removes a project from the project list and updates the navigation
 	 * 
@@ -613,6 +620,8 @@ public class ProjectManager {
 		}
 		return map;
 	}
+	
+	
 
 	/**
 	 *
