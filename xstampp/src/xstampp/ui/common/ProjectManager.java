@@ -121,7 +121,7 @@ public class ProjectManager {
 		@Override
 		public void run() {
 			UUID projectId = UUID.randomUUID();
-			ProjectManager.getContainerInstance().projectDataToUUID.put(projectId, job.getController());
+			ProjectManager.getContainerInstance().projectDataToUUID.put(projectId, this.job.getController());
 			IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().findView(ProjectExplorer.ID);
 			
@@ -534,7 +534,8 @@ public class ProjectManager {
 	 *
 	 * @param controller
 	 * 			the data model as IDataModel which contains the projects data
-	 * @param path TODO
+	 * @param path the path to the save file which should be used,\n
+	 * 				the type of the project is determined using the extension of this file
 	 * @return	generates a random uuid and stores/returns it as the projectId
 	 */
 	public UUID addProjectData(IDataModel controller, String path) {
@@ -670,6 +671,15 @@ public class ProjectManager {
 		return this.elementsToExtensions.containsKey(ext);
 	}
 	
+	/**
+	 * looks up the <code> IConfigurationElement </code> which is registered for the extension,
+	 * of the projects save file
+	 * 
+	 * @author Lukas Balzer
+	 *
+	 * @param projectID the id of the requested project
+	 * @return the configuration element as defined in the steppedProcess extension Point
+	 */
 	public IConfigurationElement getConfigurationFor(UUID projectID){
 		return this.elementsToExtensions.get(getProjectExtension(projectID));
 	}

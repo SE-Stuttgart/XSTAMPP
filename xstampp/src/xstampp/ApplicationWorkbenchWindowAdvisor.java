@@ -191,8 +191,11 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		if (page.findView("A-CAST.view1") != null) { 
 		   page.hideView(page.findView("A-CAST.view1"));
 		}
+		if (page.findView("xstpa.view") != null) { 
+			   page.hideView(page.findView("xstpa.view"));
+		}
 		page.resetPerspective();
-			 
+		
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		return true;
 	}
