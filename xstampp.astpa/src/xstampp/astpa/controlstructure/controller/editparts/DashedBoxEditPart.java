@@ -36,6 +36,7 @@ public class DashedBoxEditPart extends CSAbstractEditPart {
 	protected IFigure createFigure() {
 		TextFieldFigure tmpFigure = new TextFieldFigure(this.getId());
 		tmpFigure.setDashed();
+		tmpFigure.setBackgroundColor(null);
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		return tmpFigure;
 	}
@@ -46,7 +47,7 @@ public class DashedBoxEditPart extends CSAbstractEditPart {
 		 * to use in what situation when performed,
 		 * performRequest(EditPolicy.constant) is called
 		 */
-		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
+//		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
 		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
 				new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
 //		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(

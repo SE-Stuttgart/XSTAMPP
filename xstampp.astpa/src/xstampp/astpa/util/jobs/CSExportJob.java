@@ -109,7 +109,6 @@ public class CSExportJob extends Job {
 		} else {
 			this.imageType = -1;
 		}
-		// addJobChangeListener(new CSJobAdapter());
 	}
 
 	/**
@@ -173,8 +172,6 @@ public class CSExportJob extends Job {
 				+ (2 * this.imgOffset));
 		GC imageGC = new GC(scaledImage);
 		Graphics graphics = new SWTGraphics(imageGC);
-		org.eclipse.swt.graphics.Rectangle r1=this.srcImage.getBounds();
-		org.eclipse.swt.graphics.Rectangle r2=scaledImage.getBounds();
 		
 		if ((this.srcImage.getBounds().width >= 0)
 				&& (scaledImage.getBounds().width >= 0)) {
@@ -183,7 +180,7 @@ public class CSExportJob extends Job {
 					clipRectangle.height));
 		}
 		ImageLoader imgLoader = new ImageLoader();
-		imgLoader.data = new ImageData[] { scaledImage.getImageData() };
+		imgLoader.data = new ImageData[] { this.srcImage.getImageData() };
 
 		imgLoader.save(this.path, this.imageType);
 		File imageFile = new File(this.path);

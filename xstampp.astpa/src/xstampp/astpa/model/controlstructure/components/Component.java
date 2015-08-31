@@ -14,6 +14,7 @@
 package xstampp.astpa.model.controlstructure.components;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -240,10 +241,25 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	 */
 	public boolean addChild(Component child, Integer index) {
 		if(index < 0 || index >this.children.size()){
-			return this.children.add(child);
+			this.children.add(child);
 		}
 		this.children.add(index,child);
-		return true;
+		
+		this.children.sort(new Comparator<xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent>() {
+
+			
+
+			@Override
+			public int compare(
+					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg0,
+					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg1) {
+				if(arg0.getComponentType() == ComponentType.DASHEDBOX){
+					return -1;
+				}
+				return 1;
+			}
+		});
+		return this.children.contains(child);
 	}
 
 	/**

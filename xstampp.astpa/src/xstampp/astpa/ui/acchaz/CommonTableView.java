@@ -74,6 +74,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 	private TableViewerColumn titleColumn;
 	private Button addNewItemButton;
 	private Button deleteItemsButton;
+	private Button deleteAllItemsButton;
 	private ATableFilter filter;
 	private Text filterTextField;
 
@@ -416,7 +417,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 		this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
 		this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 				true, false));
-		this.buttonComposite.setLayout(new GridLayout(2, true));
+		this.buttonComposite.setLayout(new GridLayout(3, true));
 
 		// the Button for adding new items
 		this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);

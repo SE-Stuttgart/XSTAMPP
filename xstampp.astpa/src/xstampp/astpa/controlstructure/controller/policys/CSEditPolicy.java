@@ -116,8 +116,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 				this.dataModel, this.stepID);
 		
 		IFigure childFigure = ((IControlStructureEditPart) child).getFigure();
-		command.setMinConstraint(((IControlStructureFigure) childFigure)
-				.getMinimumSize());
+		
 		command.setModel(child.getModel());
 		command.setConstraint((Rectangle) constraint);
 		return command;

@@ -13,12 +13,16 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+
 import messages.Messages;
 
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.draw2d.geometry.Translatable;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
@@ -93,10 +97,25 @@ public class RootEditPart extends CSAbstractEditPart {
 			}
 		}
 	}
+	
 
 	@Override
 	protected void refreshVisuals() {
+		getModelChildren().sort(new Comparator<xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent>() {
 
+		
+
+			@Override
+			public int compare(
+					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg0,
+					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg1) {
+				if(arg0.getComponentType() == ComponentType.DASHEDBOX){
+					return 1;
+				}
+				return -1;
+			}
+		});
+		
 		this.refreshChildren();
 		this.refreshConnections();
 		for (Object child : this.getChildren()) {

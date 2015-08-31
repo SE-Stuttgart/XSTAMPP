@@ -20,7 +20,7 @@ public class addRelativeCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public void execute() {
-		this.getDataModel().setRelativeOfComponent(connectable.getId(), relative.getId());
+		this.getDataModel().setRelativeOfComponent(this.connectable.getId(), this.relative.getId());
 		super.execute();
 	}
 	

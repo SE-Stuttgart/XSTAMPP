@@ -102,17 +102,17 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 
 	@Override
 	public void setLayout(Rectangle rect) {
-		Rectangle bounds = rect.getCopy();
+		Rectangle bounds1 = rect.getCopy();
 		
 		if(getChildren().isEmpty()){
-			bounds.setSize(20,20);
+			bounds1.setSize(20,20);
 		}else{
 			layout();
-			bounds.setSize(getPreferredSize());
+			bounds1.setSize(getPreferredSize());
 		}
 
-		setBounds(bounds);
-		this.getParent().setConstraint(this, bounds);
+		setBounds(bounds1);
+		this.getParent().setConstraint(this, bounds1);
 	}
 	
 	@Override
