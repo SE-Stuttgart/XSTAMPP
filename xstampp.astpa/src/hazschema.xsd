@@ -288,6 +288,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element type="xs:string" name="componentLink" maxOccurs="1" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
                 

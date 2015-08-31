@@ -92,6 +92,9 @@
 
    <element name="stepPerspective">
       <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="view"/>
+         </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
@@ -116,6 +119,26 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="xstampp.extension.steppedProcess/process/category/step/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="view">
+      <annotation>
+         <documentation>
+            With this element one can register a view that is added to the perspective, either in a defined placeholder or on the right hand side of the perpective
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.views/view/@id"/>
                </appinfo>
             </annotation>
          </attribute>

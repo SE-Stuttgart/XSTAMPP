@@ -2,6 +2,7 @@ package xstampp.ui.editors;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,7 +18,12 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -43,6 +49,11 @@ public class STPAEditorInput implements IEditorInput {
 	private String stepName;
 	private String pathHistory;
 	private TreeItem stepItem;
+	private List<String> additionalViews;
+	private String perspective;
+	private boolean isActive;
+	private boolean lock = false;
+	private static boolean perspectiveChange = false;
 	/**
 	 * The Default editorInput 
 	 * 
@@ -60,6 +71,8 @@ public class STPAEditorInput implements IEditorInput {
 		this.stepEditorId = editorId;
 		this.id= UUID.randomUUID();
 		this.stepName="";
+		
+		
 
 	}
 
@@ -149,12 +162,53 @@ public class STPAEditorInput implements IEditorInput {
 	 * called when the editor handeled by this input is opened 
 	 * updates the workbench and optionally highlightes the related step in the project Explorer
 	 * @author Lukas Balzer
-	 * @throws PartInitException 
 	 *
 	 */
 	public void activate() {
+		if(this.isActive || this.lock){
+			return;
+		}
+		this.lock=true;
+		this.isActive = true;
+		for(int i=0; this.additionalViews != null && i<this.additionalViews.size();i++){
+			IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(this.additionalViews.get(i));
+			if(!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(part)){
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(this.additionalViews.get(i));
+				} catch (PartInitException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}
+//		if(perspectiveChange){
+//			return;
+//		}
+//		if(!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId().equals(this.perspective)){
+//			IPerspectiveDescriptor descriptor= PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(this.perspective);
+//			PlatformUI.getWorkbench().getPerspectiveRegistry().revertPerspective(descriptor);
+//			if (descriptor != null && !perspectiveChange) {
+//				perspectiveChange = true;
+//				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+//					.getActivePage().setPerspective(descriptor);
+//				perspectiveChange = false;
+//			}
+//		}
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().
 									setText(Messages.PlatformName + " -" +this.pathHistory);
+//		for(String viewId: this.additionalViews){
+//			try {
+//				
+//				if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId) != null){
+//					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
+//				}
+//			} catch (PartInitException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+		this.lock= false;
 		if(!this.store.getBoolean(IPreferenceConstants.USE_NAVIGATION_COLORS)){
 			return;
 		}
@@ -176,11 +230,22 @@ public class STPAEditorInput implements IEditorInput {
 	 *
 	 */
 	public void deactivate() {
-		
-		this.stepItem.setBackground(null);
-		
-		this.stepItem.getParentItem().setBackground(null);
-		this.stepItem.getParentItem().getParentItem().setBackground(null);
+		if(!this.lock && isActive){
+			
+			this.lock= true;
+			for(int i=0; this.additionalViews != null && i<this.additionalViews.size();i++){
+				IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(this.additionalViews.get(i));
+				if(part != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(part)){
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(part);
+				}
+			}
+			this.stepItem.setBackground(null);
+			
+			this.stepItem.getParentItem().setBackground(null);
+			this.stepItem.getParentItem().getParentItem().setBackground(null);
+			this.isActive=false;
+			this.lock = false;
+		}
 	}
 
 	/**
@@ -194,6 +259,12 @@ public class STPAEditorInput implements IEditorInput {
 		
 	}
 	
+	public void setPerspective(String id){
+		this.perspective= id;
+	}
+	public void addViews(List<String> view) {
+		this.additionalViews = view;
+	}
 	public IAction getActivationAction() {
 		return new ActivationAction();
 	}

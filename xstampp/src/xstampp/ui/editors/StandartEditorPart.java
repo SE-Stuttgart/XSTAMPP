@@ -84,8 +84,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void setFocus() {
-		((STPAEditorInput)getEditorInput()).activate();
-		
+		//d
 	}
 
 	/**
@@ -140,7 +139,12 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
-		// is not used by the implementation
+		if(arg0 == this){
+			((STPAEditorInput)getEditorInput()).activate();
+		}else if(arg0 != this){
+			((STPAEditorInput)getEditorInput()).deactivate();
+		}
+		
 	}
 
 	@Override
@@ -151,13 +155,16 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void partClosed(IWorkbenchPart arg0) {
-		// is not used by the implementation
-		
+		if(arg0 == this){
+			((STPAEditorInput)getEditorInput()).deactivate();
+		}
 	}
 
 	@Override
 	public void partDeactivated(IWorkbenchPart arg0) {
-		((STPAEditorInput)getEditorInput()).deactivate();
+		if(arg0 == this){
+			((STPAEditorInput)getEditorInput()).deactivate();
+		}
 		
 	}
 

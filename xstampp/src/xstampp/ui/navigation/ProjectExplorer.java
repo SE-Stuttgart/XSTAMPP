@@ -72,10 +72,10 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private static final String PATH_SEPERATOR="->";
 	private Map<UUID, TreeItem> treeItemsToProjectIDs;
 	private Map<TreeItem, String> selectionIdsToTreeItems;
-	private Map<TreeItem, String> perspectiveIdsToTreeItems;
+	private Map<TreeItem, IConfigurationElement> perspectiveElementsToTreeItems;
 	private Map<String, IProjectSelection> selectorsToSelectionId;
 	private Map<String, List<IConfigurationElement>> stepEditorsToStepId;
-	private Map<String, List<IPerspectiveDescriptor>> stepPerspectivesToStepId; 
+	private Map<String, List<IConfigurationElement>> stepPerspectivesToStepId; 
 	private List<ISelectionChangedListener> selectionListener;
 	private Tree tree;
 	private Listener listener;
@@ -90,7 +90,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		this.selectorsToSelectionId = new HashMap<>();
 		this.selectionListener = new ArrayList<>();
 		this.treeItemsToProjectIDs = new HashMap<>();
-		this.perspectiveIdsToTreeItems = new HashMap<>();
+		this.perspectiveElementsToTreeItems = new HashMap<>();
 		
 		
 		Composite container = new Composite(parent, SWT.None);
@@ -249,10 +249,11 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			}
 			if(this.stepPerspectivesToStepId.containsKey(element.getAttribute("id"))){
 				TreeItem perspectiveItem;
-				for(IPerspectiveDescriptor descriptor : this.stepPerspectivesToStepId.get(element.getAttribute("id"))){
-					perspectiveItem = new TreeItem(subItem, SWT.BORDER
-							| SWT.MULTI | SWT.V_SCROLL);
-					this.perspectiveIdsToTreeItems.put(perspectiveItem, descriptor.getId());
+				for(IConfigurationElement perspConf : this.stepPerspectivesToStepId.get(element.getAttribute("id"))){
+					String descriptorName =perspConf.getAttribute("targetId");
+					IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(descriptorName);
+					perspectiveItem = new TreeItem(subItem, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+					this.perspectiveElementsToTreeItems.put(perspectiveItem,perspConf);
 					perspectiveItem.setText(descriptor.getLabel());//$NON-NLS-1$
 					this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
 					
@@ -455,26 +456,27 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			//the if structure handles both the stepEditor (if cases 1 &2) 
 			//and the stepPerspective extension (if-cases 3 & 4) 
 			//inside the stepEditors point, doing that all extensions  are mapped seperately to the stepIds
-			if(this.stepEditorsToStepId.containsKey(stepId) && confName.equals("stepEditor")){ //$NON-NLS-1$
-				this.stepEditorsToStepId.get(stepId).add(element);
-			}else if(confName.equals("stepEditor")){ //$NON-NLS-1$
-				List<IConfigurationElement> list = new ArrayList<>();
-				list.add(element);
-				this.stepEditorsToStepId.put(stepId, list);
+			if(confName.equals("stepEditor")){ //$NON-NLS-1$
+				if(this.stepEditorsToStepId.containsKey(stepId)){
+					this.stepEditorsToStepId.get(stepId).add(element);
+				}else{
+					List<IConfigurationElement> list = new ArrayList<>();
+					list.add(element);
+					this.stepEditorsToStepId.put(stepId, list);
+				}
 			}
 			else if(confName.equals("stepPerspective")){ //$NON-NLS-1$
-				String perspective = element.getAttribute("targetId");
-				IPerspectiveDescriptor descriptor= PlatformUI.getWorkbench().getPerspectiveRegistry().
-						findPerspectiveWithId(perspective);
 				if(this.stepPerspectivesToStepId.containsKey(stepId)){
-					this.stepPerspectivesToStepId.get(stepId).add(descriptor);
+					this.stepPerspectivesToStepId.get(stepId).add(element);
 				}else{
-					List<IPerspectiveDescriptor> list = new ArrayList<>();
-					list.add(descriptor);
+					List<IConfigurationElement> list = new ArrayList<>();
+					list.add(element);
 					this.stepPerspectivesToStepId.put(stepId, list);
 				}
 			}
+			
 		}
+		
 	}
 
 	@Override
@@ -491,8 +493,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			String stepId = this.selectionIdsToTreeItems.get(this.tree.getSelection()[0]);
 			IProjectSelection selector =this.selectorsToSelectionId.get(stepId);
 			selector.activate();
-			if(this.perspectiveIdsToTreeItems.containsKey(item)){
-				((StepSelector)selector).setOpenWithPerspective(this.perspectiveIdsToTreeItems.get(item));
+			if(this.perspectiveElementsToTreeItems.containsKey(item)){
+				((StepSelector)selector).setOpenWithPerspective(this.perspectiveElementsToTreeItems.get(item));
 			}else if (selector instanceof StepSelector){
 				((StepSelector)selector).setOpenWithPerspective("xstampp.defaultPerspective");//$NON-NLS-1$
 			}

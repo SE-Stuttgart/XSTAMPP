@@ -32,15 +32,17 @@ public class OpenStepEditor extends AbstractHandler {
 			return null;
 		}
 		StepSelector selector =((StepSelector) currentSelection);
-		if(!selector.getOpenWithPerspective().equals("")){
-			
-			String perspective = selector.getOpenWithPerspective();
-			IPerspectiveDescriptor descriptor= PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(perspective);
-			if (descriptor != null) {
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().setPerspective(descriptor);
-			}
-		}
+//		if(!selector.getOpenWithPerspective().equals("")){
+//			
+//			String perspective = selector.getOpenWithPerspective();
+//			IPerspectiveDescriptor descriptor= PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(perspective);
+//			PlatformUI.getWorkbench().getPerspectiveRegistry().revertPerspective(descriptor);
+//			if (descriptor != null) {
+//				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+//					.getActivePage().setPerspective(descriptor);
+//			}
+//		
+//		}
 		if(openWithEditor != null){
 
 			selector.openEditor(openWithEditor);

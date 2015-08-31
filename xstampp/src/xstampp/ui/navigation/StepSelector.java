@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -41,6 +43,7 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 	private Map<String,STPAEditorInput> inputs;
 	private boolean showOpenWith;
 	private String openWithPerspective;
+	private ArrayList<String> additionalViews;
 
 	/**
 	 * constructs a step selector which manages the selection and interaction with a 
@@ -98,6 +101,8 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 	public void openEditor(String id) {
 		STPAEditorInput input = this.inputs.get(id);
 		if (input != null) {
+			input.addViews(this.additionalViews);
+			input.setPerspective(openWithPerspective);
 			try {
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage()
@@ -182,9 +187,29 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 	}
 
 	/**
-	 * @param openWithPerspective the openWithPerspective to set
+	 * @param configurationElement the openWithPerspective to set
 	 */
-	public void setOpenWithPerspective(String openWithPerspective) {
-		this.openWithPerspective = openWithPerspective;
+	public void setOpenWithPerspective(IConfigurationElement configurationElement) {
+		
+		this.openWithPerspective = configurationElement.getAttribute("targetId"); //$NON-NLS-1$
+		this.additionalViews = new ArrayList<>();
+		for(IConfigurationElement element : configurationElement.getChildren("view")){  //$NON-NLS-1$
+			this.additionalViews.add(element.getAttribute("id")); //$NON-NLS-1$
+		}
+	}
+	
+	/**
+	 * @param perspectiveId the openWithPerspective to set
+	 */
+	public void setOpenWithPerspective(String perspectiveId) {
+		
+		this.openWithPerspective = perspectiveId;
+		this.additionalViews = new ArrayList<>();
+	}
+	
+	public void addViews() throws PartInitException {
+		for(int i=0;this.additionalViews != null && i< this.additionalViews.size();i++){
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(this.additionalViews.get(i));
+		}
 	}
 }

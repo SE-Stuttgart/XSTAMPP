@@ -29,8 +29,9 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		IFolderLayout folder = layout.createFolder("buttomfolder", IPageLayout.BOTTOM, 0.75f, layout.getEditorArea());
 
 		folder.addPlaceholder("A-CAST.view1");
+		folder.addPlaceholder("TestPlugin.view1");
+		
 
-		folder.addPlaceholder("xstpa.view");
 	}
 	
 }
