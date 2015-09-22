@@ -93,7 +93,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		connection.addMouseMotionListener(this);
 		connection.setLayoutManager(new XYLayout());
 		connection.setLineWidth(1);
-		connection.setTolerance(15);
+		connection.setTolerance(2);
 		switch (((CSConnection) this.getModel()).getConnectionType()) {
 		case ARROW_SIMPLE: {
 			connection.setLineStyle(SWT.LINE_SOLID);

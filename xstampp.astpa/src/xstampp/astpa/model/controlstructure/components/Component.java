@@ -71,6 +71,31 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	@XmlElementWrapper(name = "unsafeVariables")
 	@XmlElement(name = "unsafeVariable")
 	private List<UUID> unsafeVariables;
+	
+	/**
+	 * this comparator compares two Objects from the type IRectangleComponent.
+	 * a component of the ComponentType DashedBox is always considered smaller and is therefor 
+	 * set below any other component(in any paint job)
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
+	private class CSComparator implements  Comparator<xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent>{
+		@Override
+		public int compare(
+				xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg0,
+				xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg1) {
+			if(arg0.getComponentType() == ComponentType.DASHEDBOX){
+				if(arg1.getComponentType() == ComponentType.DASHEDBOX){
+					return 0;
+				}
+				return -1;
+			}else if(arg1.getComponentType() == ComponentType.DASHEDBOX){
+				return 1;
+			}
+			return 0;
+		}
+	}
 	/**
 	 * Constructs a new component with the given text and layout
 	 * 
@@ -189,6 +214,8 @@ public class Component implements IRectangleComponent, ICausalComponent {
 
 	@Override
 	public List<IRectangleComponent> getChildren() {
+
+		this.children.sort(new CSComparator());
 		List<IRectangleComponent> result = new ArrayList<>();
 		for (Component component : this.children) {
 			result.add(component);
@@ -245,20 +272,7 @@ public class Component implements IRectangleComponent, ICausalComponent {
 		}
 		this.children.add(index,child);
 		
-		this.children.sort(new Comparator<xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent>() {
-
-			
-
-			@Override
-			public int compare(
-					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg0,
-					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg1) {
-				if(arg0.getComponentType() == ComponentType.DASHEDBOX){
-					return -1;
-				}
-				return 1;
-			}
-		});
+		this.children.sort(new CSComparator());
 		return this.children.contains(child);
 	}
 

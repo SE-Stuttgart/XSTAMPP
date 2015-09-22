@@ -101,20 +101,7 @@ public class RootEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected void refreshVisuals() {
-		getModelChildren().sort(new Comparator<xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent>() {
-
-		
-
-			@Override
-			public int compare(
-					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg0,
-					xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg1) {
-				if(arg0.getComponentType() == ComponentType.DASHEDBOX){
-					return 1;
-				}
-				return -1;
-			}
-		});
+	
 		
 		this.refreshChildren();
 		this.refreshConnections();
