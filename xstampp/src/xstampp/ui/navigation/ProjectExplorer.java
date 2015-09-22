@@ -256,7 +256,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 					this.perspectiveElementsToTreeItems.put(perspectiveItem,perspConf);
 					perspectiveItem.setText(descriptor.getLabel());//$NON-NLS-1$
 					this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
-					
+					perspectiveItem.setImage(descriptor.getImageDescriptor().createImage());
 				}
 			}
 

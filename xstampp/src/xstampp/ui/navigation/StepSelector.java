@@ -98,6 +98,12 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 		openEditor(this.getDefaultEditorId());
 	}
 
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param id the id 
+	 */
 	public void openEditor(String id) {
 		STPAEditorInput input = this.inputs.get(id);
 		if (input != null) {
