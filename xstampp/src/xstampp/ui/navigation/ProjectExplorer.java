@@ -29,6 +29,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -250,13 +251,15 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			if(this.stepPerspectivesToStepId.containsKey(element.getAttribute("id"))){
 				TreeItem perspectiveItem;
 				for(IConfigurationElement perspConf : this.stepPerspectivesToStepId.get(element.getAttribute("id"))){
-					String descriptorName =perspConf.getAttribute("targetId");
-					IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(descriptorName);
+					
+					String viewID = perspConf.getChildren("view")[0].getAttribute("id");
+					
+					Image img = PlatformUI.getWorkbench().getViewRegistry().find(viewID).getImageDescriptor().createImage();
 					perspectiveItem = new TreeItem(subItem, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 					this.perspectiveElementsToTreeItems.put(perspectiveItem,perspConf);
-					perspectiveItem.setText(descriptor.getLabel());//$NON-NLS-1$
+					perspectiveItem.setText(perspConf.getAttribute("name"));
 					this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
-					perspectiveItem.setImage(descriptor.getImageDescriptor().createImage());
+					perspectiveItem.setImage(img);
 				}
 			}
 

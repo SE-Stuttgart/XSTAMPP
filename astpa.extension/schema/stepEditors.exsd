@@ -92,7 +92,7 @@
 
    <element name="stepPerspective">
       <complexType>
-         <sequence minOccurs="0" maxOccurs="unbounded">
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="view"/>
          </sequence>
          <attribute name="id" type="string" use="required">
@@ -120,6 +120,13 @@
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="xstampp.extension.steppedProcess/process/category/step/@id"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

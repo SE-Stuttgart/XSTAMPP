@@ -13,6 +13,8 @@
 
 package xstampp.astpa.util.commands;
 
+import messages.Messages;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -38,11 +40,13 @@ public class NewProject extends AbstractHandler {
 		String nameParam = event.getParameter("astpa.new.name"); //$NON-NLS-1$
 		String pathParam = event.getParameter("astpa.new.path"); //$NON-NLS-1$
 		if ((nameParam == null) || (pathParam == null)) {
-			return null;
+			ProjectManager.getLOGGER().debug("failed to initialize new Project");
 		}
 
-		ProjectManager.getContainerInstance().startUp(DataModelController.class,
-				nameParam, pathParam);
+		if(ProjectManager.getContainerInstance().startUp(DataModelController.class,
+				nameParam, pathParam) == null){
+			ProjectManager.getLOGGER().debug("failed to start up new Project");
+		}
 
 		// Enable the save entries in the menu
 		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI

@@ -26,7 +26,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		layout.getViewLayout("astpa.explorer").setCloseable(false);
 		
 		
-		IFolderLayout folder = layout.createFolder("buttomfolder", IPageLayout.BOTTOM, 0.75f, layout.getEditorArea());
+		IFolderLayout folder = layout.createFolder("buttomfolder", IPageLayout.BOTTOM, 0.65f, layout.getEditorArea());
 
 		folder.addPlaceholder("A-CAST.view1");
 		folder.addPlaceholder("xstpa.view");

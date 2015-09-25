@@ -235,6 +235,10 @@
                   commandId="org.eclipse.ui.help.helpContents"
                   style="push">
             </command>
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.install"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution
