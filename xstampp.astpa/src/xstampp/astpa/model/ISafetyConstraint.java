@@ -22,7 +22,7 @@ import java.util.UUID;
  * @since 2.0
  * 
  */
-public interface ISafetyConstraint {
+public interface ISafetyConstraint extends xstampp.astpa.haz.ISafetyConstraint{
 
 	/**
 	 * Getter for the id. The id is a unique identifier for the element

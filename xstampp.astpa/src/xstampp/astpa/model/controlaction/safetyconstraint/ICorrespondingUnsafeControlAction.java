@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+* Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -24,13 +24,14 @@ import xstampp.astpa.model.ISafetyConstraint;
  * @author Fabian Toth
  * 
  */
-public interface ICorrespondingUnsafeControlAction {
+public interface ICorrespondingUnsafeControlAction extends xstampp.astpa.haz.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction {
 
 	/**
 	 * @return the description
 	 * 
 	 * @author Fabian Toth
 	 */
+	@Override
 	String getDescription();
 
 	/**
@@ -38,6 +39,7 @@ public interface ICorrespondingUnsafeControlAction {
 	 * 
 	 * @author Fabian Toth
 	 */
+	@Override
 	UUID getId();
 
 	/**
@@ -45,5 +47,6 @@ public interface ICorrespondingUnsafeControlAction {
 	 * 
 	 * @return the correspondingSafetyConstraint
 	 */
+	@Override
 	ISafetyConstraint getCorrespondingSafetyConstraint();
 }

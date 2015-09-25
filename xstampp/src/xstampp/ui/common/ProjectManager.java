@@ -84,6 +84,13 @@ public class ProjectManager {
 	private Map<String, IConfigurationElement> elementsToExtensions;
 	
 
+	/**
+	 * when the plugin dependent load job is done, this change adapter promts out all error messages
+	 * returned by the job in case of failure or calls {@link LoadRunnable} in case of success
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
 	private class LoadJobChangeAdapter extends JobChangeAdapter {
 
 		@Override
@@ -129,7 +136,9 @@ public class ProjectManager {
 			ProjectManager.getContainerInstance().extensionsToUUID.put(projectId, saveFile.getName().split("\\.")[1]);//$NON-NLS-1$
 			ProjectManager.getContainerInstance().projectSaveFilesToUUID.put(
 					projectId, saveFile);
-			ProjectManager.getContainerInstance().saveDataModel(projectId, false, false);
+			if(!saveFile.exists()){
+				ProjectManager.getContainerInstance().saveDataModel(projectId, false, false);
+			}
 			ProjectManager.getContainerInstance().synchronizeProjectName(projectId);
 			if (navi != null) {
 				((ProjectExplorer) navi).updateProjects();
@@ -328,7 +337,7 @@ public class ProjectManager {
 	}
 	
 	/**
-	 * Loads the data model from a file if it is valid
+	 * promts a choose Dialog to the user and calls {@link #loadDataModelFile(String, String)} as needed
 	 * 
 	 * @author Fabian Toth
 	 * @author Jarkko Heidenwag
@@ -347,29 +356,34 @@ public class ProjectManager {
 		fileDialog.setFilterExtensions(extensions.toArray(new String[]{}));
 		
 		String file = fileDialog.open();
-		if ((file != null)
-				&& !file.contains(Platform.getInstanceLocation().getURL()
-						.getPath())) {
+		//if the file is not null but also not located in the workspace the project is loaded from the choosen file
+		//but later stored in the workspace
+		if ((file != null) && !file.contains(Platform.getInstanceLocation().getURL().getPath())) {
 
 			File outer = new File(file);
 			File copy = new File(Platform.getInstanceLocation().getURL()
 					.getPath(), outer.getName());
 			if (copy.isFile()){
-				if(!MessageDialog.openQuestion(PlatformUI.getWorkbench()	
+				//if the imported file allready exists and the user wants to overwrite it with the new one,
+				//the current project is searched and removed
+				if(MessageDialog.openQuestion(PlatformUI.getWorkbench()	
 							.getDisplay().getActiveShell(),
 							Messages.FileExists,String.format(Messages.DoYouReallyWantToOverwriteTheContentAt,outer.getName()))) {
-				return false;
-				}
-				Set<UUID> idSet =this.projectSaveFilesToUUID.keySet();
-				for(UUID id: idSet){
-					if(this.projectSaveFilesToUUID.get(id).equals(copy) && !removeProjectData(id)){
-						MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
-						return false;
+					
+					Set<UUID> idSet =this.projectSaveFilesToUUID.keySet();
+					for(UUID id: idSet){
+						if(this.projectSaveFilesToUUID.get(id).equals(copy) && !removeProjectData(id)){
+							MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
+							return false;
+						}
 					}
+				}else{
+					return false;
 				}
 			}
 
 			this.loadDataModelFile(file,copy.getPath());
+			
 		} else if (file != null) {
 			return this.loadDataModelFile(file,file);
 
@@ -379,22 +393,27 @@ public class ProjectManager {
 	}
 
 	/**
-	 * Loads the data model from a file if it is valid
+	 * recives the accurate load job by calling the load command given by the IConfigurationElement
+	 * mapped to the given file extension of the storeFile.  
+	 * Loads the data model from the loadFile by executing the loadJob with the LoadJobChangeAdapter
 	 * 
 	 * @author Lukas Balzer
-	 * @param file
+	 * @param loadFile
 	 *            the file which contains the dataModel
-	 * @param saveFile the file the project shuold be saved in
+	 * @param saveFile
+	 * 			  the file the project shuold be saved in,
+	 * 			  normally the same as loadFile   
+	 * 					
 	 * 
 	 * @return whether the operation was successful or not
 	 */
-	public boolean loadDataModelFile(String file,String saveFile) {
+	public boolean loadDataModelFile(String loadFile,String saveFile) {
 		Object jobObject = null;
 		String pluginName = ""; //$NON-NLS-1$
 		for (Entry<String, IConfigurationElement> extElement : 
 			this.elementsToExtensions.entrySet()) { //$NON-NLS-1$
 			
-			if(file.endsWith(extElement.getKey())){ //$NON-NLS-1$
+			if(loadFile.endsWith(extElement.getKey())){ //$NON-NLS-1$
 				pluginName = extElement.getValue().getAttribute("id"); //$NON-NLS-1$
 				jobObject = STPAPluginUtils.
 						executeCommand(extElement.getValue().getAttribute("command")); //$NON-NLS-1$
@@ -402,15 +421,15 @@ public class ProjectManager {
 			}
 		}
 		
-		if (file != null && jobObject != null && jobObject instanceof AbstractLoadJob) {
-			((AbstractLoadJob) jobObject).setFile(file);
+		if (loadFile != null && jobObject != null && jobObject instanceof AbstractLoadJob) {
+			((AbstractLoadJob) jobObject).setFile(loadFile);
 			((AbstractLoadJob) jobObject).setSaveFile(saveFile);
 			((AbstractLoadJob) jobObject).schedule();
 			((AbstractLoadJob) jobObject).addJobChangeListener(new LoadJobChangeAdapter());
 			return true;
 		}
 		else if(jobObject == null){
-			LOGGER.error(Messages.FileFormatNotSupported + ": " + file); //$NON-NLS-1$
+			LOGGER.error(Messages.FileFormatNotSupported + ": " + loadFile); //$NON-NLS-1$
 		}
 		else if(!(jobObject instanceof AbstractLoadJob)){
 			LOGGER.error(String.format(Messages.InvalidPluginCommand,pluginName));

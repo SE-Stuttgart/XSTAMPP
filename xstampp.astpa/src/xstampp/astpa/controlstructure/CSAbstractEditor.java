@@ -1037,9 +1037,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			//if the current project should be stored as a haz file, a warning is promted when the user trys to insert not storeable
 			//components
 			boolean conflict= ProjectManager.getContainerInstance().getProjectExtension(getProjectID()).equals("haz");//$NON-NLS-1$
-			Object obj =((CombinedTemplateCreationEntry) tool).getTemplate();
 			boolean hideWarning =PlatformUI.getPreferenceStore().getBoolean(IAstpaPreferences.CS_HideIllegalComponentWarning);
-			if(((ComponentType)obj) == ComponentType.CONTAINER && !hideWarning && conflict){
+			//the message is only promted if the choosen tool creates one of the new and thus not in haz storable components
+			ComponentType obj =(ComponentType) ((CombinedTemplateCreationEntry) tool).getTemplate();
+			boolean criticalComp =obj == ComponentType.CONTAINER || obj == ComponentType.DASHEDBOX; 
+			if(criticalComp && !hideWarning && conflict){
 				hideWarning = MessageDialogWithToggle.openWarning(null,Messages.LossOfData,
 													String.format(Messages.InformationCannotBeStored,obj.toString()),
 													Messages.DontPromtThisMsgAgain,false,null,null).getToggleState();
