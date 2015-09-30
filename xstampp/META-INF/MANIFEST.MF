@@ -20,7 +20,11 @@ Export-Package: com.sun.xml.bind.marshaller,
  messages,
  org.apache.commons.lang3,
  org.apache.commons.lang3.text.translate,
+ org.apache.fop.apps,
+ org.apache.fop.area,
  org.apache.log4j,
+ org.apache.xmlgraphics.util,
+ org.eclipse.nebula.widgets.grid,
  xstampp;
   uses:="org.osgi.framework,
    org.eclipse.ui,
@@ -61,7 +65,8 @@ Bundle-ClassPath: .,
  lib/xmlgraphics-commons-1.5.jar,
  lib/jaxb-impl-2.0.1.jar,
  lib/commons-lang3-3.4.jar,
- lib/org.eclipse.e4.ui.workbench_1.0.1.v20130910-2014.jar
+ lib/org.eclipse.e4.ui.workbench_1.0.1.v20130910-2014.jar,
+ lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar
 Import-Package: org.eclipse.emf.common.notify
 Bundle-Vendor: Universität Stuttgart
 

@@ -50,6 +50,8 @@ import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
+import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
+import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
@@ -1323,6 +1325,22 @@ public class DataModelController extends Observable implements
 	}
 
 	@Override
+	public boolean isCSComponentSafetyCritical(UUID componentId){
+		return this.controlStructureController.isSafetyCritical(componentId);
+	}
+	
+	/**
+	 * return whether the control action for the given id is safetycritical or not
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param caID must be an id of a control action
+	 * @return whether the ca is safety critical or not 
+	 */
+	public boolean isCASafetyCritical(UUID caID){
+		return this.controlActionController.isSafetyCritical(caID);
+	}
+	@Override
 	public String getFileExtension() {
 		return this.projectExtension;
 	}
@@ -1379,13 +1397,9 @@ public class DataModelController extends Observable implements
 		return this.controlStructureController.getRelatedProcessVariables(componentId);
 	}
 
-	@Override
-	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
-		this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
-	}
 
 	@Override
-	public void setComment(UUID componentId, String comment) {
+	public void setCSComponentComment(UUID componentId, String comment) {
 		this.controlStructureController.setComment(componentId, comment);
 	}
 
@@ -1399,4 +1413,96 @@ public class DataModelController extends Observable implements
 		return this.controlStructureController.removeUnsafeProcessVariable(componentId, variableID);
 	}
 
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @param isSafetyCritical the isSafetyCritical to set
+	 */
+	public void setCASafetyCritical(UUID caID, boolean isSafetyCritical) {
+		this.controlActionController.setSafetyCritical(caID, isSafetyCritical);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @return the valuesWhenNotProvided
+	 */
+	public List<NotProvidedValuesCombi> getValuesWhenCANotProvided(UUID caID) {
+		return this.controlActionController.getValuesWhenNotProvided(caID);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @param valuesWhenNotProvided the valuesWhenNotProvided to set
+	 */
+	public void setValuesWhenCANotProvided(UUID caID, List<NotProvidedValuesCombi> valuesWhenNotProvided) {
+		this.controlActionController.setValuesWhenNotProvided(caID, valuesWhenNotProvided);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @return the valuesWhenProvided
+	 */
+	public List<ProvidedValuesCombi> getValuesWhenCAProvided(UUID caID) {
+		return this.controlActionController.getValuesWhenProvided(caID);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @param valuesWhenProvided the valuesWhenProvided to set
+	 */
+	public void setValuesWhenCAProvided(UUID caID, List<ProvidedValuesCombi> valuesWhenProvided) {
+		this.controlActionController.setValuesWhenProvided(caID, valuesWhenProvided);
+	}
+
+
+	/**
+	 * {@link ControlAction#getNotProvidedVariables()}
+	 * @param caID the control action id which is used to look up the action
+	 * @return {@link ControlAction#getProvidedVariables()}
+	 */
+	public List<UUID> getCANotProvidedVariables(UUID caID) {
+		return this.controlActionController.getNotProvidedVariables(caID);
+	}
+
+
+	/**
+	 * 
+	 * {@link ControlAction#getProvidedVariables()}
+	 * 
+	 * @param caID the control action id which is used to look up the action
+	 * @param notProvidedVariable the notProvidedVariables to set
+	 */
+	public void addCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
+		this.controlActionController.addNotProvidedVariable(caID, notProvidedVariable);
+	}
+
+
+	/**
+	 * {@link ControlAction#getProvidedVariables()}
+	 * @param caID the control action id which is used to look up the action
+	 * @return a copie of the provided variables list
+	 */
+	public List<UUID> getCAProvidedVariables(UUID caID) {
+		return this.controlActionController.getProvidedVariables(caID);
+	}
+
+
+	/**
+	 * {@link ControlAction#addProvidedVariable(UUID)}
+	 * @param caID the control action id which is used to look up the action
+	 * 
+	 * @param providedVariable the providedVariable to add
+	 */
+	public void addCAProvidedVariable(UUID caID, UUID providedVariable) {
+		this.controlActionController.addProvidedVariable(caID,providedVariable);
+	}
+
+	@Override
+	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
+		this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
+	}
 }

@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
@@ -37,9 +39,29 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	@XmlElement(name = "unsafecontrolaction")
 	private List<UnsafeControlAction> unsafeControlActions;
 	
+	
 	private UUID componentLink;
+	
+	@XmlElement(name="isSafetyCritical")
+	private boolean isSafetyCritical;
 
+	@XmlElementWrapper(name = "notProvidedPMVariables")
+	@XmlElement(name = "variableID")
+    private List<UUID> notProvidedVariables;
 
+	@XmlElementWrapper(name = "providedPMVariables")
+	@XmlElement(name = "variableID")
+    private List<UUID> providedVariables;
+
+	@XmlElementWrapper(name = "PMCombisWhenNotProvided")
+	@XmlElement(name = "combinationOfPMValues")
+    private List<NotProvidedValuesCombi> valuesWhenNotProvided;
+
+	@XmlElementWrapper(name = "PMCombisWhenProvided")
+	@XmlElement(name = "combinationOfPMValues")
+    private List<ProvidedValuesCombi> valuesWhenProvided;
+	
+	
 	@XmlElement(name="componentLink")
 	@Override
 	public UUID getComponentLink() {
@@ -153,4 +175,98 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		return this.unsafeControlActions;
 	}
 
+
+	/**
+	 * @return the isSafetyCritical
+	 */
+	public boolean isCASafetyCritical() {
+		return this.isSafetyCritical;
+	}
+
+
+	/**
+	 * @param isSafetyCritical the isSafetyCritical to set
+	 */
+	public void setSafetyCritical(boolean isSafetyCritical) {
+		this.isSafetyCritical = isSafetyCritical;
+	}
+
+
+	/**
+	 * @return the valuesWhenNotProvided
+	 */
+	public List<NotProvidedValuesCombi> getValuesAffectedWhenNotProvided() {
+		return this.valuesWhenNotProvided;
+	}
+
+
+	/**
+	 * @param valuesWhenNotProvided the valuesWhenNotProvided to set
+	 */
+	public void setValuesWhenNotProvided(List<NotProvidedValuesCombi> valuesWhenNotProvided) {
+		this.valuesWhenNotProvided = valuesWhenNotProvided;
+	}
+
+
+	/**
+	 * @return the valuesWhenProvided
+	 */
+	public List<ProvidedValuesCombi> getValuesAffectedWhenProvided() {
+		return this.valuesWhenProvided;
+	}
+
+
+	/**
+	 * @param valuesWhenProvided the valuesWhenProvided to set
+	 */
+	public void setValuesWhenProvided(List<ProvidedValuesCombi> valuesWhenProvided) {
+		this.valuesWhenProvided = valuesWhenProvided;
+	}
+
+
+	/**
+	 * @return a copie of the the notProvidedVariables List
+	 */
+	public List<UUID> getNotProvidedVariables() {
+		return new ArrayList<>(this.notProvidedVariables);
+	}
+
+
+	/**
+	 * 
+	 * addds the uuid of a process variable component to the list
+	 * of variables depending on this control action when not provided
+	 * 
+	 * @param notProvidedVariable the notProvidedVariables to set
+	 */
+	public void addNotProvidedVariable(UUID notProvidedVariable) {
+		if(this.notProvidedVariables == null){
+			this.notProvidedVariables = new ArrayList<>();
+		}
+		this.notProvidedVariables.add(notProvidedVariable);
+	}
+
+
+	/**
+	 * @return a copie of the provided variables list
+	 */
+	public List<UUID> getProvidedVariables() {
+		return new ArrayList<>(this.providedVariables);
+	}
+
+
+	/**
+	 * addds the uuid of a process variable component to the list
+	 * of variables depending on this control action when provided
+	 * 
+	 * @param providedVariable the providedVariable to add
+	 */
+	public void addProvidedVariable(UUID providedVariable) {
+		if(this.providedVariables == null){
+			this.providedVariables = new ArrayList<>();
+		}
+		this.providedVariables.add(providedVariable);
+	}
+
+	
 }

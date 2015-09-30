@@ -840,6 +840,11 @@
          id="astpa.preferencePageUpdate"
          name="Update">
    </page>
+   <page
+         class="xstampp.preferences.ControlStructurePreferences"
+         id="xstampp.cs.preferencees"
+         name="Conrol Structure">
+   </page>
 </extension>
 <extension
       point="org.eclipse.ui.commandImages">

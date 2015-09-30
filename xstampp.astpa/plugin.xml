@@ -837,12 +837,6 @@
             id="xstampp.astpa.preferencepage"
             name="A-STPA Preferences">
       </page>
-      <page
-            category="xstampp.astpa.preferencepage"
-            class="xstampp.astpa.preferences.ControlStructurePreferences"
-            id="xstampp.astpa.preferencepage.cs"
-            name="Control Structure">
-      </page>
    </extension>
    <extension
          point="org.eclipse.ui.importWizards">
@@ -860,7 +854,7 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+1">
          <parameter
@@ -871,7 +865,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+2">
          <parameter
@@ -882,7 +876,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+3">
          <parameter
@@ -893,7 +887,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+4">
          <parameter
@@ -904,7 +898,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+5">
          <parameter
@@ -915,7 +909,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+6">
          <parameter
@@ -926,7 +920,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+7">
          <parameter
@@ -937,7 +931,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+8">
          <parameter
@@ -948,7 +942,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+9">
          <parameter
@@ -959,7 +953,7 @@
       </key>
       <key
             commandId="xstampp.astpa.cseditor.changeTool"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="xstampp.astpa.csContext"
             schemeId="bindingscheme"
             sequence="M1+0">
          <parameter
@@ -982,6 +976,13 @@
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="xstampp.astpa.csContext"
+            name="Control Structure context">
+      </context>
    </extension>
 
 </plugin>

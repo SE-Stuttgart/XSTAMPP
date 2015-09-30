@@ -490,4 +490,110 @@ public class ControlActionController {
 		ControlAction action = getInternalControlAction(caId);
 		action.setComponentLink(componentLink);
 	}
+	
+	/**
+	 * @return the isSafetyCritical
+	 * @param caID the control action id which is used to look up the action
+	 */
+	public boolean isSafetyCritical(UUID caID) {
+		ControlAction action = getInternalControlAction(caID);
+		return action.isCASafetyCritical();
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @param isSafetyCritical the isSafetyCritical to set
+	 */
+	public void setSafetyCritical(UUID caID, boolean isSafetyCritical) {
+		ControlAction action = getInternalControlAction(caID);
+		action.setSafetyCritical(isSafetyCritical);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @return the valuesWhenNotProvided
+	 */
+	public List<NotProvidedValuesCombi> getValuesWhenNotProvided(UUID caID) {
+		ControlAction action = getInternalControlAction(caID);
+		return action.getValuesAffectedWhenNotProvided();
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @param valuesWhenNotProvided the valuesWhenNotProvided to set
+	 */
+	public void setValuesWhenNotProvided(UUID caID, List<NotProvidedValuesCombi> valuesWhenNotProvided) {
+		ControlAction action = getInternalControlAction(caID);
+		action.setValuesWhenNotProvided(valuesWhenNotProvided);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @return the valuesWhenProvided
+	 */
+	public List<ProvidedValuesCombi> getValuesWhenProvided(UUID caID) {
+		ControlAction action = getInternalControlAction(caID);
+		return action.getValuesAffectedWhenProvided();
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @param valuesWhenProvided the valuesWhenProvided to set
+	 */
+	public void setValuesWhenProvided(UUID caID, List<ProvidedValuesCombi> valuesWhenProvided) {
+		ControlAction action = getInternalControlAction(caID);
+		action.setValuesWhenProvided(valuesWhenProvided);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * {@link ControlAction#getNotProvidedVariables()}
+	 * @return {@link ControlAction#getProvidedVariables()}
+	 */
+	public List<UUID> getNotProvidedVariables(UUID caID) {
+		ControlAction action = getInternalControlAction(caID);
+		return action.getNotProvidedVariables();
+	}
+
+
+	/**
+	 * 
+	 * {@link ControlAction#getProvidedVariables()}
+	 * @param caID the control action id which is used to look up the action
+	 * 
+	 * @param notProvidedVariable the notProvidedVariables to set
+	 */
+	public void addNotProvidedVariable(UUID caID, UUID notProvidedVariable) {
+		ControlAction action = getInternalControlAction(caID);
+		action.addNotProvidedVariable(notProvidedVariable);
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * {@link ControlAction#getProvidedVariables()}
+	 * @return a copie of the provided variables list
+	 */
+	public List<UUID> getProvidedVariables(UUID caID) {
+		ControlAction action = getInternalControlAction(caID);
+		return action.getProvidedVariables();
+	}
+
+
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * {@link ControlAction#addProvidedVariable(UUID)}
+	 * 
+	 * @param providedVariable the providedVariable to add
+	 */
+	public void addProvidedVariable(UUID caID, UUID providedVariable) {
+		ControlAction action = getInternalControlAction(caID);
+		action.addProvidedVariable(providedVariable);
+	}
 }
