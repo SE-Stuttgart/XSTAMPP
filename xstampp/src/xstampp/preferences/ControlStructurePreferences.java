@@ -1,4 +1,4 @@
-package xstampp.astpa.preferences;
+package xstampp.preferences;
 
 import messages.Messages;
 
@@ -9,7 +9,6 @@ import org.eclipse.jface.preference.FontFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import xstampp.astpa.Activator;
 
 
 /**
@@ -36,7 +35,7 @@ implements IWorkbenchPreferencePage {
 
 	@Override
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setPreferenceStore(xstampp.Activator.getDefault().getPreferenceStore());
 		setDescription("Preferences for both the control structure and the control structure with process model editor");
 		
 	}
@@ -44,40 +43,40 @@ implements IWorkbenchPreferencePage {
 	@Override
 	protected void createFieldEditors() {
 		this.CSFontColor = new ColorFieldEditor(
-				IAstpaPreferences.CONTROLSTRUCTURE_FONT_COLOR, Messages.ControlStructureFontColor,
+				IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR, Messages.ControlStructureFontColor,
 				this.getFieldEditorParent());
 		this.addField(this.CSFontColor);
 		this.csLabelFont = new FontFieldEditor(
-				IAstpaPreferences.CONTROLSTRUCTURE_FONT, Messages.DefaultFont,
+				IControlStructureConstants.CONTROLSTRUCTURE_FONT, Messages.DefaultFont,
 				this.getFieldEditorParent());
 		
 		this.addField(this.csLabelFont);
 
 		this.CSControllerDeco = new ColorFieldEditor(
-				IAstpaPreferences.CONTROLSTRUCTURE_CONTROLLER_COLOR, Messages.Controller,
+				IControlStructureConstants.CONTROLSTRUCTURE_CONTROLLER_COLOR, Messages.Controller,
 				this.getFieldEditorParent());
 		this.addField(this.CSControllerDeco);
 		
 		this.CSActuatorDeco = new ColorFieldEditor(
-				IAstpaPreferences.CONTROLSTRUCTURE_ACTUATOR_COLOR, Messages.Actuator,
+				IControlStructureConstants.CONTROLSTRUCTURE_ACTUATOR_COLOR, Messages.Actuator,
 				this.getFieldEditorParent());
 		this.addField(this.CSActuatorDeco);
 		
 		this.CSProcessDeco = new ColorFieldEditor(
-				IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_COLOR, Messages.ControlledProcess,
+				IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_COLOR, Messages.ControlledProcess,
 				this.getFieldEditorParent());
 		this.addField(this.CSProcessDeco);
 		
 		this.CSSensorDeco = new ColorFieldEditor(
-				IAstpaPreferences.CONTROLSTRUCTURE_SENSOR_COLOR, Messages.Sensor,
+				IControlStructureConstants.CONTROLSTRUCTURE_SENSOR_COLOR, Messages.Sensor,
 				this.getFieldEditorParent());
 		this.addField(this.CSSensorDeco);
 		
-		this.ConnectorSwitch = new BooleanFieldEditor(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, "Activate manual connection mode",
+		this.ConnectorSwitch = new BooleanFieldEditor(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, "Activate manual connection mode",
 						this.getFieldEditorParent());
 		this.addField(this.ConnectorSwitch);
 		
-		this.ProcessModelBorderSwitch = new BooleanFieldEditor(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, "Show the border of the process Model Variables",
+		this.ProcessModelBorderSwitch = new BooleanFieldEditor(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, "Show the border of the process Model Variables",
 						this.getFieldEditorParent());
 		this.addField(this.ProcessModelBorderSwitch);
 	}

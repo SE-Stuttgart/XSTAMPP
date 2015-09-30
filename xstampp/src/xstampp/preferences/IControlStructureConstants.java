@@ -1,4 +1,4 @@
-package xstampp.astpa.preferences;
+package xstampp.preferences;
 
 /**
 *
@@ -6,7 +6,7 @@ package xstampp.astpa.preferences;
 * @since 2.0.0
 *
 */
-public interface IAstpaPreferences {
+public interface IControlStructureConstants {
 	
 	/**
 	 * Constant for the splitter font color.
