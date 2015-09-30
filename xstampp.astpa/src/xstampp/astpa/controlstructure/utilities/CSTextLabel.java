@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Display;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.preferences.IAstpaPreferences;
+import xstampp.preferences.IControlStructureConstants;
 
 /**
  * 
@@ -73,8 +73,8 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		this.content = new TextFlow();
 		this.content.setBackgroundColor(ColorConstants.white);
 		this.store.addPropertyChangeListener( this);
-		syncProperty(IAstpaPreferences.CONTROLSTRUCTURE_FONT);
-		syncProperty(IAstpaPreferences.CONTROLSTRUCTURE_FONT_COLOR);
+		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT);
+		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR);
 
 		this.content.setLayoutManager(new ParagraphTextLayout(this.content,
 				ParagraphTextLayout.WORD_WRAP_TRUNCATE));
@@ -206,7 +206,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	public void paint(Graphics graphics) {
 		super.paint(graphics);
 		if(this.extraLine && Activator.getDefault().getPreferenceStore().
-							getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
+							getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
 			graphics.drawLine(0, getBounds().height, getParent().getBounds().width, getBounds().height);
 		}
 	}
@@ -217,11 +217,11 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	}
 	
 	private void syncProperty(String property){
-		if(property.equals(IAstpaPreferences.CONTROLSTRUCTURE_FONT)){
+		if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT)){
 			this.currentFont= PreferenceConverter.getFontData(this.store, property);
 			this.content.setFont(new Font(null,
 					this.currentFont)); //$NON-NLS-1$
-		}else if(property.equals(IAstpaPreferences.CONTROLSTRUCTURE_FONT_COLOR)){
+		}else if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR)){
 			Color fontColor = new Color(Display.getCurrent(), PreferenceConverter
 					.getColor(this.store, property));
 			setForeground(fontColor);

@@ -5,7 +5,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 import xstampp.astpa.Activator;
-import xstampp.astpa.preferences.IAstpaPreferences;
+import xstampp.preferences.IControlStructureConstants;
 
 public class ConnectionPreferenceHandler extends AbstractHandler {
 
@@ -15,10 +15,10 @@ public class ConnectionPreferenceHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if(Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
-			Activator.getDefault().getPreferenceStore().setValue(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS,Boolean.FALSE);
+		if(Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+			Activator.getDefault().getPreferenceStore().setValue(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS,Boolean.FALSE);
 		}else{
-			Activator.getDefault().getPreferenceStore().setValue(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS,Boolean.TRUE);
+			Activator.getDefault().getPreferenceStore().setValue(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS,Boolean.TRUE);
 		}
 		return null;
 	}

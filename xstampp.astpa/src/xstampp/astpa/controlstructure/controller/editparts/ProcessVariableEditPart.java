@@ -27,7 +27,7 @@ import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.astpa.preferences.IAstpaPreferences;
+import xstampp.preferences.IControlStructureConstants;
 
 /**
  * 
@@ -61,7 +61,7 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 			@Override
 			public void paint(IFigure figure, Graphics graphics, Insets insets) {
 				// TODO Auto-generated method stub
-				if(Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
+				if(Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
 					super.paint(figure, graphics, insets);
 				}
 			}

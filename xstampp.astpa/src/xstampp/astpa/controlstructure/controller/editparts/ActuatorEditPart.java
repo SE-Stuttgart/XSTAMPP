@@ -25,7 +25,7 @@ import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.astpa.preferences.IAstpaPreferences;
+import xstampp.preferences.IControlStructureConstants;
 
 /**
  * @author Aliaksei Babkovich
@@ -56,7 +56,7 @@ public class ActuatorEditPart extends CSAbstractEditPart {
 				.getImageDescriptor("/icons/buttons/controlstructure/actuator_icon.png"); //$NON-NLS-1$
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
-				IAstpaPreferences.CONTROLSTRUCTURE_ACTUATOR_COLOR);
+				IControlStructureConstants.CONTROLSTRUCTURE_ACTUATOR_COLOR);
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		tmpFigure.setToolTip(new Label(Messages.Actuator));
 		return tmpFigure;

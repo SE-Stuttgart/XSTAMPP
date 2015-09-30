@@ -23,7 +23,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
-import xstampp.astpa.preferences.IAstpaPreferences;
+import xstampp.preferences.IControlStructureConstants;
 
 /**
  * 
@@ -73,7 +73,7 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 		this(owner);
 
 		this.lastRef = ref.getCopy();
-		if(Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+		if(Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
 			this.calulateAnchorFac(this.lastRef);
 		}else{
 			this.setAnchorFactor(this.calcAnchorNr());

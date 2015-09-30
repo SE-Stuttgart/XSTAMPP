@@ -26,6 +26,7 @@ import java.util.Observable;
 
 import messages.Messages;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.draw2d.ColorConstants;
@@ -119,10 +120,10 @@ import xstampp.astpa.controlstructure.utilities.CSTemplateTransferDropTargetList
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.astpa.preferences.IAstpaPreferences;
 import xstampp.astpa.util.jobs.CSExportJob;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
+import xstampp.preferences.IControlStructureConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.menu.file.commands.CommandState;
@@ -208,7 +209,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	}
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ProjectManager.getContainerInstance()
+		this.setModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		FormLayout layout = new FormLayout();
 		Composite editorComposite = new Composite(parent, SWT.BORDER);
@@ -891,7 +892,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		return true;
 	}
 
-
+	/**
+	 * @deprecated use setModelInterface(IDataModel dataInterface) directly
+	 *
+	 * @author Lukas
+	 *
+	 * @param dataInterface
+	 */
 	public void setDataModelInterface(IDataModel dataInterface) {
 		this.setModelInterface((IControlStructureEditorDataModel) dataInterface);
 		this.getModelInterface().addObserver(this);
@@ -1007,7 +1014,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	
 	@Override
 	public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
-		if(event.getProperty().equals(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER) && this instanceof CSEditorWithPM){
+		if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER) && this instanceof CSEditorWithPM){
 			getGraphicalControl().redraw();
 		}
 	}
@@ -1037,7 +1044,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			//if the current project should be stored as a haz file, a warning is promted when the user trys to insert not storeable
 			//components
 			boolean conflict= ProjectManager.getContainerInstance().getProjectExtension(getProjectID()).equals("haz");//$NON-NLS-1$
-			boolean hideWarning =PlatformUI.getPreferenceStore().getBoolean(IAstpaPreferences.CS_HideIllegalComponentWarning);
+			boolean hideWarning =PlatformUI.getPreferenceStore().getBoolean(IControlStructureConstants.CS_HideIllegalComponentWarning);
 			//the message is only promted if the choosen tool creates one of the new and thus not in haz storable components
 			ComponentType obj =(ComponentType) ((CombinedTemplateCreationEntry) tool).getTemplate();
 			boolean criticalComp =obj == ComponentType.CONTAINER || obj == ComponentType.DASHEDBOX; 
@@ -1045,7 +1052,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				hideWarning = MessageDialogWithToggle.openWarning(null,Messages.LossOfData,
 													String.format(Messages.InformationCannotBeStored,obj.toString()),
 													Messages.DontPromtThisMsgAgain,false,null,null).getToggleState();
-				PlatformUI.getPreferenceStore().setValue(IAstpaPreferences.CS_HideIllegalComponentWarning, hideWarning);
+				PlatformUI.getPreferenceStore().setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);
 			}
 		}
 	
@@ -1153,8 +1160,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	/**
 	 * @param modelInterface the modelInterface to set
 	 */
-	public void setModelInterface(IControlStructureEditorDataModel modelInterface) {
-		this.modelInterface = modelInterface;
+	public void setModelInterface(IDataModel modelInterface) {
+		Assert.isLegal(modelInterface instanceof IControlStructureEditorDataModel,
+						"The data model must implement the interface IControlStructureEditorDataModel!"); //$NON-NLS-1$
+		this.modelInterface = (IControlStructureEditorDataModel) modelInterface;
+		this.modelInterface.addObserver(this);
 	}
 	
 	

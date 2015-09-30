@@ -37,6 +37,7 @@ import xstampp.model.IDataModel;
  * This class provides methods for the DataModel access of the CSDiagramm
  * 
  * @author Lukas Balzer, Fabian Toth
+ * @since 2.0
  * 
  */
 public interface IControlStructureEditorDataModel extends IDataModel {
@@ -271,6 +272,17 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	IRectangleComponent getRoot();
 
 	/**
+	 * returns whether a component is safety critical or not
+	 * @author Lukas Balzer
+	 *
+	 * @param componentId 
+	 *            the id of the component
+	 * @return 
+	 * 			if the component is safety critical, also false if the uuid fits
+	 * 			no component
+	 */
+	public boolean isCSComponentSafetyCritical(UUID componentId);
+	/**
 	 * Adds a new connection with the given values<br>
 	 * Triggers an update for
 	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
@@ -443,7 +455,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 *            the id of the component
 	 * @param comment the comment to set
 	 */
-	public void setComment(UUID componentId, String comment);
+	public void setCSComponentComment(UUID componentId, String comment);
 	
 	/**
 	 *

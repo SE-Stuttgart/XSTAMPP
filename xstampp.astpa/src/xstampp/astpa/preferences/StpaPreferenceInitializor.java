@@ -9,6 +9,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.astpa.Activator;
+import xstampp.preferences.IControlStructureConstants;
 
 
 /**
@@ -52,20 +53,20 @@ public class StpaPreferenceInitializor extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		PreferenceConverter.setDefault(this.store, IAstpaPreferences.CONTROLSTRUCTURE_FONT,
+		PreferenceConverter.setDefault(this.store, IControlStructureConstants.CONTROLSTRUCTURE_FONT,
 									   DEFAUL_FONT.getFontData());
-		PreferenceConverter.setDefault(this.store, IAstpaPreferences.CONTROLSTRUCTURE_FONT_COLOR,
+		PreferenceConverter.setDefault(this.store, IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR,
 									   ColorConstants.black.getRGB());
-		PreferenceConverter.setDefault(this.store, IAstpaPreferences.CONTROLSTRUCTURE_CONTROLLER_COLOR,
+		PreferenceConverter.setDefault(this.store, IControlStructureConstants.CONTROLSTRUCTURE_CONTROLLER_COLOR,
 				Display.getCurrent().getSystemColor(SWT.COLOR_BLUE).getRGB());
-		PreferenceConverter.setDefault(this.store, IAstpaPreferences.CONTROLSTRUCTURE_ACTUATOR_COLOR,
+		PreferenceConverter.setDefault(this.store, IControlStructureConstants.CONTROLSTRUCTURE_ACTUATOR_COLOR,
 				   ColorConstants.orange.getRGB());
-		PreferenceConverter.setDefault(this.store, IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_COLOR,
+		PreferenceConverter.setDefault(this.store, IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_COLOR,
 				Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA).getRGB());
-		PreferenceConverter.setDefault(this.store, IAstpaPreferences.CONTROLSTRUCTURE_SENSOR_COLOR,
+		PreferenceConverter.setDefault(this.store, IControlStructureConstants.CONTROLSTRUCTURE_SENSOR_COLOR,
 				   ColorConstants.green.getRGB());
-		this.store.setDefault(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, true);
-		this.store.setDefault(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, true);
+		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, true);
+		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, true);
 
 	}
 	

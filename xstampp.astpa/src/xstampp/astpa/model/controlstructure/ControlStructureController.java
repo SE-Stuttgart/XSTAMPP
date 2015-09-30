@@ -607,6 +607,23 @@ public class ControlStructureController {
 	}
 	
 	/**
+	 *returns whether a component is safety critical or not
+	 * @author Lukas Balzer
+	 *
+	 * @param componentId 
+	 *            the id of the component
+	 * @return 
+	 * 			if the component is safety critical, also false if the uuid fits
+	 * 			no component
+	 */
+	public boolean isSafetyCritical(UUID componentId) {
+		Component comp = getInternalComponent(componentId);
+		if(comp != null){
+			return comp.isSafetyCritical();
+		}
+		return false;
+	}
+	/**
 	 * @param componentId 
 	 *            the id of the component
 	 * @param comment the comment to set

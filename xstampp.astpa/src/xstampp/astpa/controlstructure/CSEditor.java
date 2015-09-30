@@ -29,6 +29,11 @@ import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
@@ -286,5 +291,27 @@ public class CSEditor extends CSAbstractEditor {
 		this.viewLocation = view;
 	}
 
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		getGraphicalControl().addFocusListener(new FocusListener() {
+			
+			private IContextActivation activation;
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				IContextService contextService=(IContextService)getSite().getService(IContextService.class);
+				
+				 contextService.deactivateContext(this.activation); //$NON-NLS-1$
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				 IContextService contextService=(IContextService)getSite().getService(IContextService.class);
+				
+				 this.activation = contextService.activateContext("xstampp.astpa.csContext"); //$NON-NLS-1$
+			}
+		});
+	}
 
 }

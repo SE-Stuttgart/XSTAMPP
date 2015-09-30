@@ -13,7 +13,7 @@ import org.eclipse.ui.PlatformUI;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
-import xstampp.astpa.preferences.IAstpaPreferences;
+import xstampp.preferences.IControlStructureConstants;
 
 public class CSConnectionModeProvider extends AbstractSourceProvider implements IPropertyChangeListener{
 	public static final String CONNECTION_MODE= "xstampp.astpa.connectionMode";
@@ -33,13 +33,13 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 	public Map getCurrentState() {
 
 		Map<String,Object> map = new HashMap<>();
-		boolean f=Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS);
+		boolean f=Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS);
 		if(f){
 			map.put(CONNECTION_MODE, Boolean.TRUE);
 		}else{
 			map.put(CONNECTION_MODE, Boolean.FALSE);
 		}
-		f =Activator.getDefault().getPreferenceStore().getBoolean(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER); 
+		f =Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER); 
 		map.put(PROCESS_MODEL_BORDER, f);
 		return map;
 	}
@@ -51,7 +51,7 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if(event.getProperty().equals(IAstpaPreferences.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+		if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
 			boolean newValue=(boolean) event.getNewValue();
 			fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.CONNECTION_MODE,newValue);
 			IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
@@ -59,7 +59,7 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 				RootEditPart editpart = (RootEditPart) ((IControlStructureEditor)part).getGraphicalViewer().getContents();
 				editpart.setAnchorsGrid(!newValue);
 			}
-		}else if(event.getProperty().equals(IAstpaPreferences.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
+		}else if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
 
 			boolean newValue=(boolean) event.getNewValue();
 			fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.PROCESS_MODEL_BORDER,newValue);
