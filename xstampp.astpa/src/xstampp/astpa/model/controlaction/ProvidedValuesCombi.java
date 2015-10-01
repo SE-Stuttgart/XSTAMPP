@@ -88,7 +88,7 @@ public class ProvidedValuesCombi {
 	/**
 	 * @param values the values to set
 	 */
-	public void setPMValues(List<UUID> values) {
+	public void setValues(List<UUID> values) {
 		this.values = values;
 	}
 
