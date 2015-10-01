@@ -1505,4 +1505,32 @@ public class DataModelController extends Observable implements
 	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
 		this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
 	}
+	
+	/**
+	 * 
+	 * remove the uuid of a process variable component from the list
+	 * of variables depending on this control action when not provided
+	 * 
+	 * @param caID the control action id which is used to look up the action
+	 * @param notProvidedVariable the notProvidedVariables to remove
+	 * @return return whether the remove was successful or not, also returns false
+	 * 			if the list is null or the uuid is not contained in the list 
+	 */
+	public boolean removeCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
+		return this.controlActionController.removeNotProvidedVariable(caID, notProvidedVariable);
+	}
+	
+	/**
+	 * 
+	 * remove the uuid of a process variable component from the list
+	 * of variables depending on this control action when provided
+	 * 
+	 * @param caID the control action id which is used to look up the action
+	 * @param providedVariable the providedVariable to remove
+	 * @return return whether the remove was successful or not, also returns false
+	 * 			if the list is null or the uuid is not contained in the list 
+	 */
+	public boolean removeCAProvidedVariable(UUID caID, UUID providedVariable) {
+		return this.controlActionController.removeProvidedVariable(caID, providedVariable);
+	}
 }

@@ -596,4 +596,42 @@ public class ControlActionController {
 		ControlAction action = getInternalControlAction(caID);
 		action.addProvidedVariable(providedVariable);
 	}
+	
+	/**
+	 * 
+	 * remove the uuid of a process variable component from the list
+	 * of variables depending on this control action when not provided
+	 * 
+	 * @param caID the control action id which is used to look up the action
+	 * @param notProvidedVariable the notProvidedVariables to remove
+	 * @return return whether the remove was successful or not, also returns false
+	 * 			if the list is null or the uuid is not contained in the list 
+	 */
+	public boolean removeNotProvidedVariable(UUID caID, UUID notProvidedVariable) {
+		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return false;
+		}
+		
+		return action.removeNotProvidedVariable(notProvidedVariable);
+	}
+	
+	/**
+	 * 
+	 * @param caID the control action id which is used to look up the action
+	 * remove the uuid of a process variable component from the list
+	 * of variables depending on this control action when provided
+	 * 
+	 * @param providedVariable the providedVariable to remove
+	 * @return return whether the remove was successful or not, also returns false
+	 * 			if the list is null or the uuid is not contained in the list 
+	 */
+	public boolean removeProvidedVariable(UUID caID, UUID providedVariable) {
+		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return false;
+		}
+		
+		return action.removeProvidedVariable(providedVariable);
+	}
 }

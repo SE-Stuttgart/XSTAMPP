@@ -268,5 +268,41 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		this.providedVariables.add(providedVariable);
 	}
 
+	/**
+	 * 
+	 * remove the uuid of a process variable component from the list
+	 * of variables depending on this control action when not provided
+	 * 
+	 * @param notProvidedVariable the notProvidedVariables to remove
+	 * @return return whether the remove was successful or not, also returns false
+	 * 			if the list is null or the uuid is not contained in the list 
+	 */
+	public boolean removeNotProvidedVariable(UUID notProvidedVariable) {
+		if(this.notProvidedVariables == null){
+			return false;
+		}
+		if(this.notProvidedVariables.contains(notProvidedVariable)){
+			return this.notProvidedVariables.remove(notProvidedVariable);
+		}
+		return false;
+	}
 	
+	/**
+	 * 
+	 * remove the uuid of a process variable component from the list
+	 * of variables depending on this control action when provided
+	 * 
+	 * @param providedVariable the providedVariable to remove
+	 * @return return whether the remove was successful or not, also returns false
+	 * 			if the list is null or the uuid is not contained in the list 
+	 */
+	public boolean removeProvidedVariable(UUID providedVariable) {
+		if(this.providedVariables == null){
+			return false;
+		}
+		if(this.providedVariables.contains(providedVariable)){
+			return this.providedVariables.remove(providedVariable);
+		}
+		return false;
+	}
 }
