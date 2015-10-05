@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="xstpa.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="xstpa.Perspective"
+            fixed="false"
+            icon="icons/logo.png"
+            id="xstpa.perspective"
+            name="XSTPA">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="xstpa.View"
+            icon="icons/logo.png"
+            id="xstpa.view"
+            name="Plugin View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+      </menuContribution>
+   </extension>
+   <extension
+         point="xstampp.extension.stepEditors">
+      <stepPerspective
+            id="xstpa.stepPerspective1"
+            name="Xstpa"
+            parentStep="astpa.navigation.step3_1"
+            targetId="xstampp.defaultPerspective">
+         <view
+               id="xstpa.view">
+         </view>
+      </stepPerspective>
+   </extension>
+
+</plugin>
