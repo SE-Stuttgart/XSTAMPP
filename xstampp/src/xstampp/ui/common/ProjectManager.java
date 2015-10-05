@@ -223,6 +223,20 @@ public class ProjectManager {
 		return false;
 	}
 
+	public boolean changeProjectExtension(UUID projectId, String ext){
+		this.extensionsToUUID.remove(projectId);
+		this.extensionsToUUID.put(projectId, ext);
+		renameProject(projectId, getTitle(projectId));
+		saveDataModel(projectId, false, false);
+		IViewPart explorer = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().findView("astpa.explorer"); //$NON-NLS-1$
+		if(explorer != null){
+			((ProjectExplorer)explorer).update(null, ObserverValue.PROJECT_NAME);
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Saves the data model to a file
 	 * 
