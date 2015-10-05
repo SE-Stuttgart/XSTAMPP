@@ -15,6 +15,7 @@ package xstampp.astpa.ui.common.grid;
 
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -181,5 +182,118 @@ public abstract class AbstractGridCell implements IGridCell {
 	
 	public void showSelection(boolean show) {
 		this.showSelection= show;
+	}
+	
+	/**
+	 * draws a string in the given bounds on the gc element,
+	 * this method also performs linebreaks
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param bounds the bounds the funktion can draw in, 
+	 * @param gc the GC element to draw on
+	 * @param text the given string line( given CRs are considert)
+	 * @param left_space the offset from the bounds left end in points
+	 * @param right_space the offset from the right side of the bounds
+	 * @return
+	 * 			the height of the written text sequence
+	 */
+	protected final int wrapText(Rectangle bounds, GC gc, String text,
+								 int left_space, int right_space){
+
+		FontMetrics metrics= gc.getFontMetrics();
+		int line_height = bounds.y;
+		String[] words= text.split(" ");
+		String line="";
+		String tmpLine=words[0];
+		String space = "";
+		boolean first = true;
+		boolean carryOver=false;
+		int i=1;
+		int width=bounds.width -2 - right_space;
+		while(i<= words.length){
+			if(!first){
+				space= " "; 
+			}else{
+				space="";
+			}
+			if(tmpLine.startsWith(System.lineSeparator())){
+				gc.drawString(line,bounds.x + left_space ,line_height);
+				line = "";
+				tmpLine = tmpLine.replaceFirst(System.lineSeparator(), "");
+				line_height += metrics.getHeight();
+				first=true;
+				carryOver= false;
+				continue;
+			}
+			if(tmpLine.contains(System.lineSeparator())){
+				words[i-1] = tmpLine.substring(tmpLine.indexOf(System.lineSeparator()));
+				
+				tmpLine = tmpLine.substring(0,tmpLine.indexOf(System.lineSeparator()));
+				first = line.isEmpty();
+				carryOver= true;
+			}else if(gc.stringExtent(tmpLine).x >= width){
+				int end= wrap(gc, tmpLine, width-1, 0,tmpLine.length()-1, 0,1,1);
+				gc.drawString(tmpLine.substring(0, end), bounds.x + left_space ,line_height);			
+				line_height += metrics.getHeight();	
+				tmpLine=tmpLine.substring(end);
+			}else
+			
+			if(gc.stringExtent(line + space + tmpLine).x >= width){
+							
+				gc.drawString(line, bounds.x + left_space ,line_height);			
+				line_height += metrics.getHeight();	
+				first=true;
+				line = "";
+			}
+			else if(carryOver){
+				line += space + tmpLine;
+				tmpLine = words[i-1];
+				carryOver = false;
+				first=false;
+			}else if(i == words.length){
+				line += space + tmpLine;
+				gc.drawString(line, bounds.x + left_space ,line_height);			
+				line_height += metrics.getHeight();	
+				line = "";
+				tmpLine ="";
+				i++;
+			}else{
+				line += space + tmpLine;
+				
+				tmpLine = words[i++];
+				first=false;
+			}
+		}
+		return line_height += 2;
+		
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param gc
+	 * @param line the String line
+	 * @param width the max width of the line 
+	 * @param start the index the line should start with ( usually 0)
+	 * @param end
+	 * @param i
+	 * @param res
+	 * @param ch
+	 * @return the maximal end index to ensure that the line is still visible
+	 */
+	protected final int wrap(GC gc,String line, int width,int start,int end,int i,double res,double ch){
+		double _res;
+		double _end=res * end;
+		if(gc.stringExtent(line.substring(start, (int) (_end))).x <= width && ch > 0.1 ){
+			_res = Math.min(1, res + ch * 0.5);
+			return wrap(gc, line, width, start, end,i+1,_res,ch/2);
+		}else if(gc.stringExtent(line.substring(start, (int) (_end))).x > width && ch> 0.1){
+			_res = Math.min(1, res - ch * 0.5);
+			return wrap(gc, line, width, start, end,i+1,_res,ch/2);
+		}
+		return (int) _end;
 	}
 }

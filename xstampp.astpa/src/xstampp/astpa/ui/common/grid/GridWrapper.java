@@ -412,6 +412,7 @@ public class GridWrapper {
 
 		this.actualGrid = new Grid(parent,SWT.V_SCROLL | SWT.H_SCROLL|SWT.VIRTUAL);
 		this.actualGrid.setHeaderVisible(true);
+		this.actualGrid.getHeaderHeight();
 		this.actualGrid.setCellSelectionEnabled(true);
 		this.actualGrid.setLinesVisible(false);
 		this.actualGrid.setWordWrapHeader(true);
@@ -444,6 +445,7 @@ public class GridWrapper {
 			GridWrapper.this.actualGrid.getColumn(i).setWidth(columnWidth);
 		}
 		this.resizeRows();
+		this.actualGrid.recalculateHeader();
 	}
 
 	/**

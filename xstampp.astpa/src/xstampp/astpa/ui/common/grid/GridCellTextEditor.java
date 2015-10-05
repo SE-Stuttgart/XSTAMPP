@@ -110,7 +110,6 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 		gc.setBackground(this.getBackgroundColor(renderer, gc));
 		Color fgColor = gc.getForeground();
 		gc.setForeground(ColorConstants.black);
-		FontMetrics metrics= gc.getFontMetrics();
 		int buttonCollum=0;
 		//calculate the avaiable space and performe a wrap
 		if(this.showDelete){
@@ -118,71 +117,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 			buttonCollum=this.deleteSpace.width;
 			gc.drawImage(GridWrapper.getDeleteButton16(),this.deleteSpace.x,this.deleteSpace.y);
 		}
-		int line_height = bounds.y;
-		String[] words= this.currentText.split(" ");
-		String line="";
-		String tmpLine=words[0];
-		String space = "";
-		boolean first = true;
-		boolean carryOver=false;
-		int i=1;
-		int width=bounds.width -2 - buttonCollum;
-		while(i<= words.length){
-			if(!first){
-				space= " "; 
-			}else{
-				space="";
-			}
-			if(tmpLine.startsWith(System.lineSeparator())){
-				gc.drawString(line,bounds.x + 2 ,line_height);
-				line = "";
-				tmpLine = tmpLine.replaceFirst(System.lineSeparator(), "");
-				line_height += metrics.getHeight();
-				first=true;
-				carryOver= false;
-				continue;
-			}
-			if(tmpLine.contains(System.lineSeparator())){
-				words[i-1] = tmpLine.substring(tmpLine.indexOf(System.lineSeparator()));
-				
-				tmpLine = tmpLine.substring(0,tmpLine.indexOf(System.lineSeparator()));
-				first = line.isEmpty();
-				carryOver= true;
-			}else if(gc.stringExtent(tmpLine).x >= width){
-				int end= wrap(gc, tmpLine, width-1, 0,tmpLine.length()-1, 0,1,1);
-				gc.drawString(tmpLine.substring(0, end), bounds.x + 2 ,line_height);			
-				line_height += metrics.getHeight();	
-				tmpLine=tmpLine.substring(end);
-			}else
-			
-			if(gc.stringExtent(line + space + tmpLine).x >= width){
-							
-				gc.drawString(line, bounds.x + 2 ,line_height);			
-				line_height += metrics.getHeight();	
-				first=true;
-				line = "";
-			}
-			else if(carryOver){
-				line += space + tmpLine;
-				tmpLine = words[i-1];
-				carryOver = false;
-				first=false;
-			}else if(i == words.length){
-				line += space + tmpLine;
-				gc.drawString(line, bounds.x + 2 ,line_height);			
-				line_height += metrics.getHeight();	
-				line = "";
-				tmpLine ="";
-				i++;
-			}else{
-				line += space + tmpLine;
-				
-				tmpLine = words[i++];
-				first=false;
-			}
-		}
-		line_height += 2;
-		
+		int line_height = wrapText(bounds,gc,this.currentText,2,buttonCollum);
 		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-buttonCollum,line_height - bounds.y);
 		if(bounds.height + 2< this.editField.height){
 			this.grid.resizeRows();
@@ -193,18 +128,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 		gc.setForeground(fgColor);
 	}
 
-	private int wrap(GC gc,String line, int width,int start,int end,int i,double res,double ch){
-		double _res;
-		double _end=res * end;
-		if(gc.stringExtent(line.substring(start, (int) (_end))).x <= width && ch > 0.1 ){
-			_res = Math.min(1, res + ch * 0.5);
-			return wrap(gc, line, width, start, end,i+1,_res,ch/2);
-		}else if(gc.stringExtent(line.substring(start, (int) (_end))).x > width && ch> 0.1){
-			_res = Math.min(1, res - ch * 0.5);
-			return wrap(gc, line, width, start, end,i+1,_res,ch/2);
-		}
-		return (int) _end;
-	}
+	
 	@Override
 	public void onMouseDown(MouseEvent e,
 			org.eclipse.swt.graphics.Point relativeMouse, Rectangle cellBounds) {

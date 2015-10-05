@@ -33,6 +33,8 @@ public class GridCellText extends AbstractGridCell {
 
 	private String text;
 
+	private int textHeight;
+
 	private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0,
 			0, 0);
 
@@ -64,30 +66,14 @@ public class GridCellText extends AbstractGridCell {
 			NebulaGridRowWrapper item) {
 		super.paint(renderer, gc, item);
 		Color bgColor = gc.getBackground();
-
-		Rectangle bounds = renderer.getDrawBounds();
-
+		
 		gc.setBackground(this.getBackgroundColor(renderer, gc));
 
 		Color fgColor = gc.getForeground();
 		gc.setForeground(GridCellText.TEXT_COLOR);
-		FontMetrics metrics= gc.getFontMetrics();
-		//calculate the avaiable space and performe a wrap
-		int char_wrapper= bounds.width/metrics.getAverageCharWidth() -1;
-		int start = 0;
-		int end = Math.min(this.text.length(),char_wrapper);
-		int line_height = bounds.y;
-		while(end < this.text.length()-1){
-			while(this.text.charAt(end) != ' '){
-				end=Math.max(0,end-1);
-			}
-			gc.drawText(this.text.substring(start, end), bounds.x + 2 ,line_height);
-			start = end +1;
-			end += char_wrapper;
-			line_height += metrics.getHeight();
-		}
-		gc.drawText(this.text.substring(start), bounds.x + 2 ,line_height);
-
+		
+		this.textHeight = wrapText(renderer.getDrawBounds(), gc, this.text,2, 0);
+				
 		// restore bg color
 		gc.setBackground(bgColor);
 		// restore fg color
@@ -105,7 +91,7 @@ public class GridCellText extends AbstractGridCell {
 
 	@Override
 	public int getPreferredHeight() {
-		return AbstractGridCell.DEFAULT_CELL_HEIGHT;
+		return Math.max(this.textHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
 	}
 
 	@Override
