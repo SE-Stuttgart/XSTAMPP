@@ -482,10 +482,15 @@ public class ControlStructureController {
 		}
 
 		for (Component component : this.root.getInternalChildren()) {
-			if (!component.getComponentType().equals(ComponentType.TEXTFIELD)
-					&& !component.getComponentType().equals(
-							ComponentType.CONTROLACTION)) {
+			switch(component.getComponentType()){
+			case ACTUATOR:
+			case CONTROLLED_PROCESS:
+			case CONTROLLER:
+			case SENSOR:
 				result.add(component);
+				//$FALL-THROUGH$
+			default:
+				break;
 			}
 		}
 		return result;

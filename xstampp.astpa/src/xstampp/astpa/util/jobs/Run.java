@@ -16,6 +16,8 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
+import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -73,6 +75,7 @@ public class Run extends Job implements IJobChangeListener{
 	private boolean exportImages;
 	private boolean exportCSVs;
 	private boolean exportPDFs;
+	private boolean decorateCS;
 							
 
 	/**
@@ -124,7 +127,17 @@ public class Run extends Job implements IJobChangeListener{
 			job.addJobChangeListener(this);
 			job.schedule();
 		}
-		
+		if(this.exportImages){
+			String csPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructure +".png";
+			String csPMPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructureDiagramWithProcessModel +".png";
+			CSExportJob job = new CSExportJob(csPath, 5	, CSEditor.ID, this.projectID, false,this.decorateCS);
+			CSExportJob pmJob = new CSExportJob(csPMPath, 5	, CSEditorWithPM.ID, this.projectID, false,this.decorateCS);
+			
+			job.addJobChangeListener(this);
+			pmJob.addJobChangeListener(this);
+			job.schedule();
+			pmJob.schedule();
+		}
 		monitor.setTaskName(Messages.ExportingPdf);
 		for(int i= 0;i<this.xslMap.length && this.exportPDFs;i+=2){
 			ExportJob pdfJob = new ExportJob(this.projectID, getName(),
@@ -133,6 +146,12 @@ public class Run extends Job implements IJobChangeListener{
 			pdfJob.showPreview(false);
 			pdfJob.addJobChangeListener(this);
 			pdfJob.schedule();
+			try {
+				pdfJob.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if(this.exportReport){
@@ -140,10 +159,15 @@ public class Run extends Job implements IJobChangeListener{
 					this.dir + getName()+".pdf", //$NON-NLS-1$
 					"/fopxsl.xsl", true, false); //$NON-NLS-1$
 			pdfRepJob.setCSDirty();
-			pdfRepJob.setCSImagePath(this.dir + IMAGE_DIR);
 			pdfRepJob.showPreview(false);
 			pdfRepJob.addJobChangeListener(this);
 			pdfRepJob.schedule();
+			try {
+				pdfRepJob.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return Status.OK_STATUS;
@@ -303,5 +327,16 @@ public class Run extends Job implements IJobChangeListener{
 	 */
 	public void exportReport(boolean choice) {
 		this.exportReport = choice;
+	}
+
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @param decoChoice whether or not to activate the decoration on
+	 *     		control structure components
+	 */
+	public void setcsDecoration(boolean decoChoice) {
+		this.decorateCS = decoChoice;
 	}
 }

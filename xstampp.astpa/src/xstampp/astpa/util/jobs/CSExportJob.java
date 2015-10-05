@@ -152,7 +152,7 @@ public class CSExportJob extends Job {
 	 * 
 	 * @return
 	 */
-	public IStatus getPrintableRoot() {
+	public synchronized IStatus getPrintableRoot() {
 		Runnable run = new CSImageCalculator();
 
 		Display.getDefault().syncExec(run);

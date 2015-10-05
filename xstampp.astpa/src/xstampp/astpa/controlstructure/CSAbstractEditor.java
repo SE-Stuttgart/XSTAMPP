@@ -1049,9 +1049,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			ComponentType obj =(ComponentType) ((CombinedTemplateCreationEntry) tool).getTemplate();
 			boolean criticalComp =obj == ComponentType.CONTAINER || obj == ComponentType.DASHEDBOX; 
 			if(criticalComp && !hideWarning && conflict){
-				hideWarning = MessageDialogWithToggle.openWarning(null,Messages.LossOfData,
+				MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(null,Messages.LossOfData,
 													String.format(Messages.InformationCannotBeStored,obj.toString()),
-													Messages.DontPromtThisMsgAgain,false,null,null).getToggleState();
+													Messages.DontPromtThisMsgAgain,false,null,null);
+				hideWarning = dialog.getToggleState();
+				if(dialog.getReturnCode() == MessageDialogWithToggle.OK){
+					ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx");
+				}
 				PlatformUI.getPreferenceStore().setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);
 			}
 		}

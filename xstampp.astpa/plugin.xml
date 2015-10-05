@@ -859,7 +859,6 @@
             sequence="M1+1">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="SELECT">
          </parameter>
       </key>
@@ -870,7 +869,6 @@
             sequence="M1+2">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="MARQUEE">
          </parameter>
       </key>
@@ -881,7 +879,6 @@
             sequence="M1+3">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="CONTROLLER">
          </parameter>
       </key>
@@ -892,7 +889,6 @@
             sequence="M1+4">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="ACTUATOR">
          </parameter>
       </key>
@@ -903,7 +899,6 @@
             sequence="M1+5">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="CONTROLLED_PROCESS">
          </parameter>
       </key>
@@ -914,7 +909,6 @@
             sequence="M1+6">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="SENSOR">
          </parameter>
       </key>
@@ -925,7 +919,6 @@
             sequence="M1+7">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="CONTROLACTION">
          </parameter>
       </key>
@@ -936,7 +929,6 @@
             sequence="M1+8">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="ARROW_SIMPLE">
          </parameter>
       </key>
@@ -947,7 +939,6 @@
             sequence="M1+9">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="TEXTFIELD">
          </parameter>
       </key>
@@ -958,7 +949,6 @@
             sequence="M1+0">
          <parameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="xstampp.astpa.cseditor.toolconstant"
                value="DASHEDBOX">
          </parameter>
       </key>

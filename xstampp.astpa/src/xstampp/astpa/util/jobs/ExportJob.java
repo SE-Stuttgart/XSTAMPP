@@ -38,6 +38,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.internal.p2.engine.EngineActivator;
 import org.xml.sax.SAXException;
@@ -55,7 +57,7 @@ import xstampp.ui.common.ProjectManager;
  * @since 2.0
  * 
  */
-public class ExportJob extends Job {
+public class ExportJob extends Job implements IJobChangeListener {
 
 	private boolean enablePreview = true;
 	private static final float MP_TO_INCH = 72270f;
@@ -71,6 +73,8 @@ public class ExportJob extends Job {
 	private final boolean decorate;
 	private String imgPath;
 	private boolean isCsDirty;
+	private File csPath;
+	private File csPmPath;
 
 	/**
 	 * Constructor of the export job
@@ -104,6 +108,7 @@ public class ExportJob extends Job {
 		this.titleSize = 24;
 		this.textSize = 12;
 		this.isCsDirty = false;
+		addJobChangeListener(this);
 	}
 
 	public void setCSImagePath(String path){
@@ -118,17 +123,19 @@ public class ExportJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.ExportPdf, 5);
-		if(this.imgPath == null){
-			this.imgPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
-		}
-		File csPath = new File(this.imgPath + File.separator
-				+ Messages.ControlStructure + ".png");
-		File csPmPath = new File(this.imgPath + File.separator
-				+ Messages.ControlStructureDiagramWithProcessModel + ".png");
-		if(this.isCsDirty || !csPath.exists() || !csPmPath.exists()){
-			CSExportJob csExport = new CSExportJob(csPath.getPath(), CSEditor.ID, this.id,
+			String projectTitle = ProjectManager.getContainerInstance().getTitle(this.id);
+			String wsPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
+			this.imgPath = wsPath + File.separator + "Output" + File.separator //$NON-NLS-1$
+					      + projectTitle + File.separator + "images"; //$NON-NLS-1$
+			
+		this.csPath = new File(this.imgPath + File.separator
+				+ getThread().getId() + "cs.png");
+		this.csPmPath = new File(this.imgPath + File.separator
+				+ getThread().getId() + "cspm.png");
+		if(this.isCsDirty || !this.csPath.exists() || !this.csPmPath.exists()){
+			CSExportJob csExport = new CSExportJob(this.csPath.getPath(), CSEditor.ID, this.id,
 					10, this.decorate);
-			CSExportJob csPmExport = new CSExportJob(csPmPath.getPath(), CSEditorWithPM.ID,
+			CSExportJob csPmExport = new CSExportJob(this.csPmPath.getPath(), CSEditorWithPM.ID,
 					this.id, 10, this.decorate);
 	
 			csExport.getPrintableRoot();
@@ -138,8 +145,8 @@ public class ExportJob extends Job {
 
 		IDataModel model = ProjectManager.getContainerInstance().getDataModel(
 				this.id);
-		((DataModelController) model).setCSImagePath(csPath.getPath());
-		((DataModelController) model).setCSPMImagePath(csPmPath.getPath());
+		((DataModelController) model).setCSImagePath(this.csPath.getPath());
+		((DataModelController) model).setCSPMImagePath(this.csPmPath.getPath());
 		// put the xml jaxb content into an output stream
 		this.outStream = new ByteArrayOutputStream();
 		if (this.filePath != null) {
@@ -176,7 +183,7 @@ public class ExportJob extends Job {
 			URL xslUrl = this.getClass().getResource(this.xslName);
 
 			if (xslUrl == null) {
-				ExportJob.LOGGER.error("Fop xsl file not found"); //$NON-NLS-1$
+				ExportJob.LOGGER.error("Fop xsl: " + this.xslName + " not found"); //$NON-NLS-1$
 				return Status.CANCEL_STATUS;
 			}
 
@@ -297,5 +304,42 @@ public class ExportJob extends Job {
 	
 	public void showPreview(boolean preview){
 		this.enablePreview = preview;
+	}
+
+	@Override
+	public void aboutToRun(IJobChangeEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void awake(IJobChangeEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void done(IJobChangeEvent event) {
+		ExportJob.this.csPath.delete();
+		ExportJob.this.csPmPath.delete();
+		
+	}
+
+	@Override
+	public void running(IJobChangeEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void scheduled(IJobChangeEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sleeping(IJobChangeEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -42,10 +42,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
+import xstampp.Activator;
 import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.causalfactor.CausalFactor;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
@@ -79,7 +81,7 @@ public class CausalFactorsView extends StandartEditorPart{
 
 	private static final String CONFIRMATION_TITLE = Messages.DeleteCausalFactor;
 	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheCF;
-	private static final String CAUSALFACTORS= "Causal Factors";
+	private static final String CAUSALFACTORS= "Text filter for Causal Factors";
 	private Map<UUID,CausalFactor> factorsToUUIDs;
 	private class SafetyConstraintEditorCell extends GridCellTextEditor {
 
@@ -390,6 +392,7 @@ public class CausalFactorsView extends StandartEditorPart{
 	}
 	
 	private boolean isFiltered(ICausalComponent component) {
+		//filters for the text filter 
 		boolean filter=component.getText().startsWith(this.filterText.getText());
 		if(this.componentCombo.getText().equals("ALL")){
 			return filter;
@@ -524,7 +527,13 @@ public class CausalFactorsView extends StandartEditorPart{
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 		default:
-			this.reloadTable();
+			Display.getDefault().syncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					CausalFactorsView.this.reloadTable();
+				}
+			});
 			break;
 		}
 	}

@@ -67,6 +67,7 @@ public class RunWizard extends AbstractExportWizard {
 		runjob.exportCSVs(this.page.csvCheckbox.getSelection());
 		runjob.exportImages(this.page.imgCheckbox.getSelection());
 		runjob.exportReport(this.page.reportCheckbox.getSelection());
+		runjob.setcsDecoration(page.getDecoChoice());
 		runjob.schedule();
 		return true;
 	}
