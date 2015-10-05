@@ -13,15 +13,19 @@
 
 package xstampp.astpa.controlstructure.controller.factorys;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import messages.Messages;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.requests.CreationFactory;
+import org.eclipse.osgi.framework.util.ArrayMap;
 
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -36,6 +40,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 public class CSModelCreationFactory implements CreationFactory {
 
 	private ComponentType type;
+	private static Map<ComponentType,Integer> countMap;
 	private final IControlStructureEditorDataModel dataModel;
 
 	/**
@@ -52,6 +57,7 @@ public class CSModelCreationFactory implements CreationFactory {
 			IControlStructureEditorDataModel model) {
 		this.type = type;
 		this.dataModel = model;
+		
 	}
 
 	/**
@@ -61,21 +67,30 @@ public class CSModelCreationFactory implements CreationFactory {
 	@Override
 	public Object getNewObject() {
 		String text;
-
+		if(countMap == null){
+			countMap = new HashMap<>();
+		}
+		if(countMap.containsKey(this.type)){
+			countMap.put(this.type, countMap.get(this.type)+1);
+		}
+		else{
+			countMap.put(this.type, 1);
+		}
+		int count =  countMap.get(this.type);
 		switch (this.type) {
 		case CONTROLACTION: {
-			text = Messages.ControlAction;
+			text = Messages.ControlAction + " " + count; //$NON-NLS-1$
 			UUID caLink = this.dataModel.addControlAction(text,
 					Messages.DescriptionOfThisControlAction);
 			return new Component(caLink, text, new Rectangle(), this.type);
 		}
 		case ACTUATOR: {
-			text = Messages.Actuator;
+			text = Messages.Actuator + " " + count; //$NON-NLS-1$
 			break;
 		}
 		case DASHEDBOX:  {
 
-			text = Messages.DashedBox;
+			text = Messages.DashedBox + " " + count; //$NON-NLS-1$
 			break;
 		}
 		case CONTAINER:{
@@ -85,15 +100,15 @@ public class CSModelCreationFactory implements CreationFactory {
 			
 		}
 		case CONTROLLER: {
-			text = Messages.Controller;
+			text = Messages.Controller + " " + count; //$NON-NLS-1$
 			break;
 		}
 		case CONTROLLED_PROCESS: {
-			text = Messages.ControlledProcess;
+			text = Messages.ControlledProcess + " " + count; //$NON-NLS-1$
 			break;
 		}
 		case PROCESS_MODEL: {
-			text = Messages.ProcessModel;
+			text = Messages.ProcessModel + " " + count; //$NON-NLS-1$
 			break;
 		}
 		case PROCESS_VARIABLE: {
@@ -105,11 +120,11 @@ public class CSModelCreationFactory implements CreationFactory {
 			break;
 		}
 		case SENSOR: {
-			text = Messages.Sensor;
+			text = Messages.Sensor + " " + count; //$NON-NLS-1$
 			break;
 		}
 		case TEXTFIELD: {
-			text = Messages.TextBox;
+			text = Messages.TextBox + " " + count; //$NON-NLS-1$
 			break;
 		}
 		default: {
