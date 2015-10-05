@@ -108,6 +108,11 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 		STPAEditorInput input = this.inputs.get(id);
 		if (input != null) {
 			input.addViews(this.additionalViews);
+			if(id.equals("acast.steps.step2_1")){
+				List<String> tmp=new ArrayList<String>();
+				tmp.add("A-CAST.view1");
+				input.addViews(tmp);
+			}
 			input.setPerspective(openWithPerspective);
 			try {
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow()

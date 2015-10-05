@@ -165,7 +165,22 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	public boolean preWindowShellClose() {
 		ProjectManager viewContainerViewPart = ProjectManager
 				.getContainerInstance();
-
+		
+		this.updateJob.cancel();
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		if (page.findView("A-CAST.view1") != null) { 
+		   page.hideView(page.findView("A-CAST.view1"));
+		}
+		if (page.findView("xstpa.view") != null) { 
+			   page.hideView(page.findView("xstpa.view"));
+		}
+		IPerspectiveRegistry registry = PlatformUI.getWorkbench().getPerspectiveRegistry();
+		for(IPerspectiveDescriptor dec:registry.getPerspectives()){
+			registry.revertPerspective(dec);
+		}
+		page.resetPerspective();
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+		
 		ProjectManager viewContainer = viewContainerViewPart;
 		if (viewContainer.getUnsavedChanges()) {
 			MessageDialog dialog = new MessageDialog(Display.getCurrent()
@@ -188,21 +203,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			}
 		}
 		
-		this.updateJob.cancel();
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		if (page.findView("A-CAST.view1") != null) { 
-		   page.hideView(page.findView("A-CAST.view1"));
-		}
-		if (page.findView("xstpa.view") != null) { 
-			   page.hideView(page.findView("xstpa.view"));
-		}
-		IPerspectiveRegistry registry = PlatformUI.getWorkbench().getPerspectiveRegistry();
-		for(IPerspectiveDescriptor dec:registry.getPerspectives()){
-			registry.revertPerspective(dec);
-		}
-		page.resetPerspective();
-		
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+	
 		return true;
 	}
 }

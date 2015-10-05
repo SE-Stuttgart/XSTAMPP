@@ -8,7 +8,9 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
@@ -110,16 +112,24 @@ public abstract class StandartEditorPart extends EditorPart implements
 	 * 
 	 */
 	public void setStatusLine() {
-		if (ProjectManager.getContainerInstance().getUnsavedChanges(
-				this.projectID)) {
-			Image image = Activator.getImageDescriptor(
-					"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
-			this.getEditorSite().getActionBars().getStatusLineManager()
-					.setMessage(image, Messages.ThereAreUnsafedChanges);
-		} else {
-			this.getEditorSite().getActionBars().getStatusLineManager()
-					.setMessage(null);
-		}
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				if (ProjectManager.getContainerInstance().getUnsavedChanges(
+						StandartEditorPart.this.projectID)) {
+					Image image = Activator.getImageDescriptor(
+							"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
+					
+					StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager()
+							.setMessage(image, Messages.ThereAreUnsafedChanges);
+				} else {
+					StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager()
+							.setMessage(null);
+				}
+			}
+		});
+		
 	}
 
 	@Override
