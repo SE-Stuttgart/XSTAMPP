@@ -20,6 +20,8 @@
         <module>astpa.extension</module>
 		<module>xstampp</module>
 		<module>xstampp.astpa</module>
+		<module>xstampp.acast</module>
+		<module>xstpa</module>
 		<module>astpa.feature</module>
 	</modules>
 
