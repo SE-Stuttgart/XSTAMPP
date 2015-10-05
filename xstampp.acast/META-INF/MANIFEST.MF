@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: A-CAST
+Bundle-SymbolicName: xstampp.acast;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: acast.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ xstampp;bundle-version="1.0.2",
+ xstampp.extension;bundle-version="1.0.1",
+ org.eclipse.gef,
+ org.eclipse.core.resources,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Import-Package: xstampp.model
