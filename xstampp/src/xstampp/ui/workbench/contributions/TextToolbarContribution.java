@@ -115,24 +115,6 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	private void addFontControl(ToolBarManager manager){
 		this.foregroundColor=new RGB(_0, _0, _0);
 		this.backgroundColor=new RGB(_255, _255, _255);
-		final SelectionListener listener= new SelectionAdapter() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Map<String,String> params=new HashMap<>();
-				params.put(FONT_NAME_PARAMETER,TextToolbarContribution.this.fontCombo.getComboControl().getText());
-				params.put(FONT_SIZE_PARAMETER,TextToolbarContribution.this.fontSizeCombo.getComboControl().getText());
-				if(params.get(FONT_NAME_PARAMETER) == null || !getFontNames().contains(params.get(FONT_NAME_PARAMETER))){
-					
-					params.put(FONT_NAME_PARAMETER, getFontNames().get(0));
-				}
-				if(params.get(FONT_SIZE_PARAMETER).equals("")){
-					params.put(FONT_SIZE_PARAMETER, FONT_SIZES[0]);
-				}
-				STPAPluginUtils.executeParaCommand(CHANGE_FONT_COMMAND, params);
-			}
-			
-		};
 		
 		this.fontCombo= new ComboContribiution("xstampp.text.styleCombo", SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL){
 			@Override
@@ -140,7 +122,19 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 				Control control = super.createControl(parent);
 				getComboControl().setItems(getFontNames().toArray(new String[0]));
 				getComboControl().setText(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
-				getComboControl().addSelectionListener(listener);
+				getComboControl().addSelectionListener(new SelectionAdapter() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						Map<String,String> params=new HashMap<>();
+						params.put(FONT_NAME_PARAMETER,TextToolbarContribution.this.fontCombo.getComboControl().getText());
+						if(params.get(FONT_NAME_PARAMETER) == null || !getFontNames().contains(params.get(FONT_NAME_PARAMETER))){
+							params.put(FONT_NAME_PARAMETER, getFontNames().get(0));
+						}
+						STPAPluginUtils.executeParaCommand(CHANGE_FONT_COMMAND, params);
+					}
+					
+				});
 				return control;
 			}
 		};
@@ -153,7 +147,19 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 				getComboControl().setItems(FONT_SIZES);
 				getComboControl().setText(String.valueOf(PlatformUI.getWorkbench().getDisplay()
 						 .getSystemFont().getFontData()[0].getHeight()));
-				getComboControl().addSelectionListener(listener);
+				getComboControl().addSelectionListener(new SelectionAdapter() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						Map<String,String> params=new HashMap<>();
+						params.put(FONT_SIZE_PARAMETER,TextToolbarContribution.this.fontSizeCombo.getComboControl().getText());
+						if(params.get(FONT_SIZE_PARAMETER).equals("")){
+							params.put(FONT_SIZE_PARAMETER, FONT_SIZES[0]);
+						}
+						STPAPluginUtils.executeParaCommand(CHANGE_FONT_COMMAND, params);
+					}
+					
+				});
 				return control;
 			}
 		};
