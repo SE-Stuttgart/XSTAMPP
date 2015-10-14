@@ -184,5 +184,8 @@ public abstract class StandartEditorPart extends EditorPart implements
 		
 	}
 	
+	public void selectAll(){
+		//so nothing by default
+	}
 	
 }

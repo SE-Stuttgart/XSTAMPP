@@ -727,6 +727,12 @@
             id="xstampp.command.run"
             name="Run">
       </command>
+      <command
+            defaultHandler="xstampp.ui.menu.file.commands.SelectAllHandler"
+            description="org.eclipse.ui.edit.selectAll + callback in StandartEditorPart"
+            id="xstampp.ui.commands.selectAll"
+            name="Select All">
+      </command>
    </extension>
    
 <!-- WELCOME-PAGE Author: Jaqueline Patzek -->
@@ -822,6 +828,12 @@
          contextId="org.eclipse.ui.contexts.window"
          schemeId="bindingscheme"
          sequence="M1+SHIFT+E">
+   </key>
+   <key
+         commandId="xstampp.ui.commands.selectAll"
+         contextId="org.eclipse.ui.contexts.window"
+         schemeId="bindingscheme"
+         sequence="M1+A">
    </key>
 </extension>
 <extension point="org.eclipse.ui.preferencePages">

@@ -579,12 +579,20 @@
             id="xstampp.astpa.command.run"
             name="Run">
       </command>
+      <command
+            id="xstampp.astpa.command1"
+            name="name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
             locationURI="popup:astpa.steps.step1_8">
+         <command
+               commandId="xstampp.ui.commands.selectAll"
+               style="push">
+         </command>
          <command
                commandId="xstampp.command.openWizard"
                label="Export Image"
@@ -757,6 +765,10 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:astpa.steps.step3_1">
+         <command
+               commandId="xstampp.ui.commands.selectAll"
+               style="push">
+         </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
                label="Enable Process Variable Borders"

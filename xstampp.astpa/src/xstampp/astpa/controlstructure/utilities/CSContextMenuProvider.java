@@ -64,9 +64,6 @@ public class CSContextMenuProvider extends ContextMenuProvider {
 			if (action.getClass().equals(DirectEditAction.class)) {
 				menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
 			}
-			if (action.getClass().equals(SelectAllAction.class)) {
-				menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
-			}
 			if (action.getClass().equals(DeleteAction.class)) {
 				menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
 			}
