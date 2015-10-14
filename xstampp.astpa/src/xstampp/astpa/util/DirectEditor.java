@@ -21,8 +21,11 @@ import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseTrackListener;
@@ -40,8 +43,7 @@ import org.eclipse.swt.widgets.Text;
  * @since 2.0
  * 
  */
-public class DirectEditor extends TextCellEditor implements ModifyListener,
-		MouseMoveListener, MouseTrackListener {
+public class DirectEditor extends TextCellEditor implements ModifyListener{
 
 	private int oldLineNumber = 0;
 	private List<Integer> lineFeeds = new ArrayList<Integer>();
@@ -59,8 +61,15 @@ public class DirectEditor extends TextCellEditor implements ModifyListener,
 		super(composite,SWT.WRAP|style);
 		this.oldLineNumber = this.text.getCaretLineNumber();
 		this.text.setFocus();
-		this.text.addMouseMoveListener(this);
-
+		this.text.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.keyCode == SWT.CONTROL){
+					DirectEditor.this.text.selectAll();
+				}
+				super.keyReleased(e);
+			}
+		});
 	}
 	/**
 	 * 
@@ -74,7 +83,6 @@ public class DirectEditor extends TextCellEditor implements ModifyListener,
 		super(composite,SWT.WRAP);
 		this.oldLineNumber = this.text.getCaretLineNumber();
 		this.text.setFocus();
-		this.text.addMouseMoveListener(this);
 
 	}
 	/**
@@ -175,36 +183,8 @@ public class DirectEditor extends TextCellEditor implements ModifyListener,
 		locator.relocate(this);
 		doSetFocus();
 		getControl().setVisible(true);
-		getControl().addMouseTrackListener(this);
 		super.activate();
 	}
 
-	@Override
-	public void mouseMove(MouseEvent e) {
-		if (e.widget instanceof Text) {
-			this.text.setCursor(new Cursor(null, SWT.CURSOR_IBEAM));
-		}
 
-	}
-
-
-	@Override
-	public void mouseEnter(MouseEvent e) {
-		// nothing to do here
-		
-	}
-
-	@Override
-	public void mouseExit(MouseEvent e) {
-		if(e.widget instanceof Text){
-			((Text)e.widget).setVisible(false);
-		}
-		e.widget.dispose();
-	}
-
-	@Override
-	public void mouseHover(MouseEvent e) {
-		// nothing to do here
-		
-	}
 }
