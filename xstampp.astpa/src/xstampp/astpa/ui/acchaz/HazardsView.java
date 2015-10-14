@@ -119,7 +119,7 @@ public class HazardsView extends CommonTableView {
 				HazardsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				HazardsView.this.refreshView();
 				HazardsView.this.dataInterface.addHazard(
-						"", Messages.DescriptionOfThisHazard); //$NON-NLS-1$
+						Messages.DoubleClickToEditTitle, Messages.DescriptionOfThisHazard);
 				int newID = HazardsView.this.dataInterface.getAllHazards()
 						.size() - 1;
 				HazardsView.this.updateTable();
@@ -432,11 +432,12 @@ public class HazardsView extends CommonTableView {
 		@Override
 		protected void setValue(Object element, Object value) {
 			if (element instanceof Hazard) {
-				((Hazard) element).setTitle(String.valueOf(value));
+				HazardsView.this.dataInterface.setHazardTitle(((Hazard) element).getId(),
+						String.valueOf(value));
 				// Fill in the default title if the user left it blank
-				if (((Hazard) element).getTitle().length() == 0) {
-					((Hazard) element)
-							.setTitle(Messages.DoubleClickToEditTitle);
+				if (String.valueOf(value).length() == 0) {
+					HazardsView.this.dataInterface.setHazardTitle(((Hazard) element).getId(),
+							Messages.DoubleClickToEditTitle);
 				}
 			}
 			HazardsView.this.refreshView();

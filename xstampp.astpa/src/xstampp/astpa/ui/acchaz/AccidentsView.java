@@ -126,7 +126,7 @@ public class AccidentsView extends CommonTableView {
 				AccidentsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				AccidentsView.this.refreshView();
 				AccidentsView.this.dataInterface.addAccident(
-						"", Messages.DescriptionOfThisAccident); //$NON-NLS-1$
+						Messages.DoubleClickToEditTitle, Messages.DescriptionOfThisAccident);
 				int newID = AccidentsView.this.dataInterface.getAllAccidents()
 						.size() - 1;
 				AccidentsView.this.updateTable();
@@ -440,11 +440,10 @@ public class AccidentsView extends CommonTableView {
 		@Override
 		protected void setValue(Object element, Object value) {
 			if (element instanceof Accident) {
-				((Accident) element).setTitle(String.valueOf(value));
+				AccidentsView.this.dataInterface.setAccidentTitle(((Accident) element).getId(),String.valueOf(value));
 				// Fill in the default title if the user left it blank
-				if (((Accident) element).getTitle().length() == 0) {
-					((Accident) element)
-							.setTitle(Messages.DoubleClickToEditTitle);
+				if (String.valueOf(value).length() == 0) {
+					AccidentsView.this.dataInterface.setAccidentTitle(((Accident) element).getId(),Messages.DoubleClickToEditTitle);
 				}
 			}
 			AccidentsView.this.refreshView();
