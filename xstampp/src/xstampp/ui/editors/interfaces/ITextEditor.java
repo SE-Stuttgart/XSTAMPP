@@ -118,5 +118,7 @@ public interface ITextEditor extends ISelectionProvider{
 	 * @param contributor the contributor, with which the user can manipulate the Text
 	 */
 	void setEditToolContributor(ITextEditContribution contributor);
+	
+ 
 
 }

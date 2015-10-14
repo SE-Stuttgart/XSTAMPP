@@ -170,7 +170,14 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			this.resetProjectName();
 			break;
 		case SAVE:
-			this.applyProjectDescriptionToDataModel();
+			Display.getDefault().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					applyProjectDescriptionToDataModel();
+					
+				}
+			});
 			break;
 		default:
 			break;
@@ -458,7 +465,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			@Override
 			public void focusLost(FocusEvent e) {
 				SystemDescriptionView.this.applyProjectDescriptionToDataModel();
-				SystemDescriptionView.this.setStyle(e.widget);
+//				SystemDescriptionView.this.setStyle(e.widget);
 			}
 
 			@Override
@@ -557,281 +564,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		SystemDescriptionView.this.descriptionText.setMenu(menu);
 	}
 
-	/**
-	 * Create ToolBar to format the TextArea.
-	 * 
-	 * @author Sebastian Sieber
-	 * @param composite
-	 *            composite
-	 */
-	private void createToolBar(final Composite composite) {
-		// Create cool bar
-		CoolBar coolBar = new CoolBar(composite, SWT.FLAT);
 
-		// create style toolBar and add controls.
-		this.gridData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
-		this.gridData.widthHint = SWT.DEFAULT;
-		coolBar.setLayoutData(this.gridData);
-
-		// Add style items to coolBar.
-		ToolBar styleToolBar = new ToolBar(coolBar, SWT.FLAT);
-		this.addStyleItems(styleToolBar);
-		CoolItem coolItem = new CoolItem(coolBar, SWT.NONE);
-		coolItem.setControl(styleToolBar);
-
-		// create text color toolBar and add controls.
-		ToolBar textColorToolBar = new ToolBar(coolBar, SWT.FLAT);
-		this.addColorItems(textColorToolBar, composite);
-		coolItem = new CoolItem(coolBar, SWT.NONE);
-		coolItem.setControl(textColorToolBar);
-
-		// add combo component to coolBar
-		Composite compositeCombo = new Composite(coolBar, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
-		layout.marginHeight = 1;
-		compositeCombo.setLayout(layout);
-		this.addFontNameSizeCombo(compositeCombo, composite);
-
-		coolItem = new CoolItem(coolBar, SWT.NONE);
-		coolItem.setControl(compositeCombo);
-
-		// create alignment toolBar and add controls
-		ToolBar alignmentToolBar = new ToolBar(coolBar, SWT.FLAT);
-
-		this.baselineUpControl = new ToolItem(alignmentToolBar, SWT.PUSH);
-		this.baselineUpControl.setImage(Activator.getImageDescriptor(
-
-		SystemDescriptionView.getImagePath() + "/font_big.ico").createImage()); //$NON-NLS-1$
-
-		this.baselineUpControl.setToolTipText("Increase font size"); //$NON-NLS-1$
-		this.baselineUpControl.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				SystemDescriptionView.this.setBaselineUp(composite, event);
-				SystemDescriptionView.this.setStyle(event.widget);
-
-			}
-		});
-
-		this.baselineDownControl = new ToolItem(alignmentToolBar, SWT.PUSH);
-		this.baselineDownControl.setImage(Activator.getImageDescriptor(
-
-		SystemDescriptionView.getImagePath() + "/font_sml.ico").createImage()); //$NON-NLS-1$
-		this.baselineDownControl.setToolTipText(Messages.DecreaseFontSize);
-		this.baselineDownControl.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				SystemDescriptionView.this.setBaselineDown(composite, event);
-				SystemDescriptionView.this.setStyle(event.widget);
-			}
-		});
-
-		coolItem = new CoolItem(coolBar, SWT.NONE);
-		coolItem.setControl(alignmentToolBar);
-
-		ToolBar listToolBar = new ToolBar(coolBar, SWT.FLAT);
-		// add alignment items to coolBar
-		this.addListItems(listToolBar);
-		coolItem = new CoolItem(coolBar, SWT.NONE);
-		coolItem.setControl(listToolBar);
-
-		this.setCoolItemSize(coolBar);
-		coolBar.setLocked(true);
-		composite.pack();
-	}
-
-	/**
-	 * Add style items to coolBar
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param selectionListener
-	 *            SelectionAdapter
-	 * @param styleToolBar
-	 *            ToolBar
-	 */
-	private void addStyleItems(ToolBar styleToolBar) {
-		// Add listener for toolBar items. Get selected widget.
-		SelectionAdapter selectionListener = new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				SystemDescriptionView.this.setStyle(event.widget);
-			}
-		};
-
-		// Bold item
-		this.boldControl = new ToolItem(styleToolBar, SWT.CHECK);
-		this.boldControl
-				.setImage(Activator
-						.getImageDescriptor(
-								SystemDescriptionView.getImagePath()
-										+ "/bold.ico").createImage()); //$NON-NLS-1$
-		this.boldControl.setToolTipText(Messages.Bold);
-		this.boldControl.addSelectionListener(selectionListener);
-
-		// Italic item
-		this.italicControl = new ToolItem(styleToolBar, SWT.CHECK);
-		this.italicControl.setImage(Activator.getImageDescriptor(
-
-		SystemDescriptionView.getImagePath() + "/italic.ico").createImage()); //$NON-NLS-1$
-
-		this.italicControl.setToolTipText(Messages.Italic);
-		this.italicControl.addSelectionListener(selectionListener);
-
-		// Underline item
-		this.underlineControl = new ToolItem(styleToolBar, SWT.CHECK);
-		this.underlineControl.setImage(Activator.getImageDescriptor(
-
-		SystemDescriptionView.getImagePath() + "/underline.ico").createImage()); //$NON-NLS-1$
-
-		this.underlineControl.setToolTipText(Messages.Underline);
-		this.underlineControl.addSelectionListener(selectionListener);
-
-		// Strike out item
-		this.strikeoutControl = new ToolItem(styleToolBar, SWT.CHECK);
-		this.strikeoutControl.setImage(Activator.getImageDescriptor(
-
-		SystemDescriptionView.getImagePath() + "/strikeout.ico").createImage()); //$NON-NLS-1$
-
-		this.strikeoutControl.setToolTipText(Messages.Strikeout);
-		this.strikeoutControl.addSelectionListener(selectionListener);
-	}
-
-	/**
-	 * Add font foreground and font background items to coolBar.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param textColorToolBar
-	 *            ToolBar
-	 * @param composite
-	 *            Composite
-	 */
-	private void addColorItems(ToolBar textColorToolBar,
-			final Composite composite) {
-		this.foregroundControl = new ToolItem(textColorToolBar, SWT.DROP_DOWN);
-		this.foregroundControl
-
-		.setImage(Activator.getImageDescriptor(
-				SystemDescriptionView.getImagePath()
-						+ "/colors/foreground/textBlack.ico").createImage()); //$NON-NLS-1$
-
-		this.foregroundControl.setToolTipText(Messages.TextForeground);
-		this.foregroundControl.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-
-				SystemDescriptionView.this.setTextForeground(event, composite,
-						SystemDescriptionView.this.foregroundControl);
-				SystemDescriptionView.this.setStyle(event.widget);
-
-			}
-		});
-
-		this.backgroundControl = new ToolItem(textColorToolBar, SWT.DROP_DOWN);
-		this.backgroundControl
-
-		.setImage(Activator.getImageDescriptor(
-				SystemDescriptionView.getImagePath()
-						+ "/colors/background/textWhite.ico").createImage()); //$NON-NLS-1$
-
-		this.backgroundControl.setToolTipText(Messages.TextBackground);
-		this.backgroundControl.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				SystemDescriptionView.this.setTextBackground(event, composite,
-						SystemDescriptionView.this.backgroundControl);
-				SystemDescriptionView.this.setStyle(event.widget);
-			}
-		});
-	}
-
-	/**
-	 * Add font name and font size combo to coolbar.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param compositeCombo
-	 *            Composite
-	 * @param composite
-	 *            Composite
-	 */
-	private void addFontNameSizeCombo(Composite compositeCombo,
-			final Composite composite) {
-
-		final int visibleItemCount = 8;
-		this.fontNameControl = new Combo(compositeCombo, SWT.DROP_DOWN
-				| SWT.READ_ONLY);
-		this.fontNameControl.setItems(SystemDescriptionView
-				.getFontNames(composite));
-		this.fontNameControl.setVisibleItemCount(visibleItemCount);
-
-		this.fontSizeControl = new Combo(compositeCombo, SWT.DROP_DOWN
-				| SWT.READ_ONLY);
-		this.fontSizeControl.setItems(SystemDescriptionView.getFontSizes());
-		this.fontSizeControl.setVisibleItemCount(visibleItemCount);
-
-		// get chosen font size and font name from UI
-		SelectionAdapter selectionAdapter = new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				SystemDescriptionView.this.setFont(SystemDescriptionView.this.fontNameControl.getText(),-1);
-				SystemDescriptionView.this.setStyle(event.widget);
-			}
-		};
-		this.fontSizeControl.addSelectionListener(selectionAdapter);
-		this.fontNameControl.addSelectionListener(selectionAdapter);
-	}
-
-	/**
-	 * Add list items to coolBar
-	 * 
-	 * @author Sebastian Sieber
-	 * @param listToolBar
-	 *            ToolBar
-	 */
-	private void addListItems(ToolBar listToolBar) {
-		this.bulletListControl = new ToolItem(listToolBar, SWT.PUSH);
-		this.bulletListControl
-				.setImage(Activator
-						.getImageDescriptor(
-								SystemDescriptionView.getImagePath()
-										+ "/para_bul.ico").createImage()); //$NON-NLS-1$
-		this.bulletListControl.setToolTipText(Messages.BulletList);
-		this.bulletListControl.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				SystemDescriptionView.this.setBullet(DOT_LIST);
-			}
-		});
-	}
-
-	/**
-	 * Set the size of each coolItem.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param coolBar
-	 *            CoolBar
-	 */
-	private void setCoolItemSize(CoolBar coolBar) {
-		CoolItem[] coolItems = coolBar.getItems();
-		for (CoolItem item : coolItems) {
-			Control control = item.getControl();
-			Point size = control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-			item.setMinimumSize(size);
-			size = item.computeSize(size.x, size.y);
-			item.setPreferredSize(size);
-			item.setSize(size);
-		}
-	}
 
 	/**
 	 * Force the focus on project name and select text if text equals
@@ -875,20 +608,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.projectNameText.setSelection(modifiedProjectName.length());
 	}
 
-	/**
-	 * Reset style buttons to default if the description text field loses focus
-	 * or another view gets aktive.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 */
-	private void resetStyleButtons() {
-		this.boldControl.setSelection(false);
-		this.italicControl.setSelection(false);
-		this.underlineControl.setSelection(false);
-		this.strikeoutControl.setSelection(false);
-	}
-
 	private void setStyle(Widget widget){
 		this.values=new HashMap<>();
 		this.values.put(this.backgroundControl, BACKGROUND);
@@ -903,60 +622,51 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.values.put(this.descriptionText, DESCRIPTION);
 		setStyle(this.values.get(widget));
 	}
+	
 	@Override
 	public void setStyle(String style) {
+		addStyleRangesFor(style, new String(), 0, 0);
+	}
+	
+	@Override
+	public void setFont(String fontString,int fontSize) {
+		addStyleRangesFor(FONT_FAMILY,fontString, fontSize, SWT.NORMAL);
+	}
+	
+	@Override
+	public void setFontSize(String style, int fontSize) {
+		addStyleRangesFor(style,new String(), fontSize, SWT.NORMAL);
+	}
+	
+	private void addStyleRangesFor(String style, String fontName, int fontSize,int fontStyle) {
 		Point selectionRange = this.descriptionText.getSelectionRange();
 		if ((selectionRange == null) || (selectionRange.y == 0)) {
 			return;
 		}
-		StyleRange newRange = new StyleRange();
-		for (int i = selectionRange.x; i < (selectionRange.x + selectionRange.y); i++) {
-			StyleRange range = this.descriptionText.getStyleRangeAtOffset(i);
-			if (range != null) {
-				newRange = (StyleRange) range.clone();
-				newRange.start = i;
-				newRange.length = 1;
-			} else {
-				newRange = new StyleRange(i, 1, null, null, SWT.NULL);
+		int end = selectionRange.x + selectionRange.y;
+		
+		StyleRange[] ranges = this.descriptionText.getStyleRanges(selectionRange.x, selectionRange.y,true);
+		for(int i=0;i< ranges.length;i++){
+			StyleRange range = (StyleRange) ranges[i].clone();
+			if(range.start < selectionRange.x){
+				range.length = range.length - (selectionRange.x - range.start);
+				range.start = selectionRange.x;
 			}
-			// called if text is selected and button pressed
-			this.descriptionText.setStyleRange(this.setStyleItemRange(style,
-					newRange));
-			this.descriptionText.setStyleRange(this.setFontItemRange(style,
-					newRange));
+			if(range.start + range.length  -1> end){
+				range.length= end - range.start;
+			}
+			
+			this.descriptionText.setStyleRange(setFontItemRange(style, range, new FontData(fontName, fontSize, fontStyle)));
 		}
-		this.descriptionText.setSelectionRange(selectionRange.x
-				+ selectionRange.y, 0);
-
-		// mark text as selected
-		this.descriptionText.setSelection(selectionRange.x, selectionRange.x
-				+ selectionRange.y);
-		this.descriptionText.setStyleRange(newRange);
-	}
-
-	/**
-	 * Set style range for bold, italic, strike out and underline.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param style
-	 *            Widget
-	 * @param styleRange
-	 *            StyleRange
-	 * @return styleRange
-	 */
-	private StyleRange setStyleItemRange(String style, StyleRange styleRange) {
-		if (style.equals(BOLD)) {
-			styleRange.fontStyle ^= SWT.BOLD;
-		} else if (style.equals(ITALIC)) {
-			styleRange.fontStyle ^= SWT.ITALIC;
-		} else if (style.equals(UNDERLINE)) {
-			styleRange.underline = !styleRange.underline;
-		} else if (style.equals(STRIKEOUT)) {
-			styleRange.strikeout = !styleRange.strikeout;
+		if(ranges.length == 0){
+			StyleRange newRange = new StyleRange();
+			newRange.start = selectionRange.x;
+			newRange.length = selectionRange.y;
+			this.descriptionText.setStyleRange(setFontItemRange(style, newRange, new FontData(fontName, fontSize, fontStyle)));
 		}
-		return styleRange;
+		
 	}
+	
 
 	/**
 	 * Set the style range if text get modified and widget is selected. Also
@@ -968,19 +678,50 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 *            Widget
 	 * @param styleRange
 	 *            Set to selected widget
+	 * @param newDataSet TODO
 	 * @return styleRange StyleRange
 	 */
-	private StyleRange setFontItemRange(String style, StyleRange styleRange) {
-		if (style.equals(FOREGROUND)) {
-			styleRange.foreground = this.textForegroundColor;
-		} else if (style.equals(BACKGROUND)) {
-			styleRange.background = this.textBackgroundColor;
-		} else if ((style.equals(FONT_SIZE_UP))
-				|| (style.equals(FONT_SIZE_DOWN))
-				|| (style.equals(FONT_SIZE))
-				|| (style.equals(FONT_FAMILY))) {
-			styleRange.font = this.textFont;
+	private StyleRange setFontItemRange(String style, StyleRange styleRange, FontData newDataSet) {
+
+		if(styleRange.font == null){
+			styleRange.font = Display.getDefault().getSystemFont(); 
 		}
+		FontData data = styleRange.font.getFontData()[0];
+		
+		switch(style){
+			case(FOREGROUND):{
+				styleRange.foreground = this.textForegroundColor;
+				break;
+			}case(BACKGROUND):{
+				styleRange.background = this.textBackgroundColor;
+				break;
+			}case(INCREASE):{
+				data.setHeight(data.getHeight() + 1);
+				break;
+			}case(DECREASE):{
+				data.setHeight(data.getHeight() - 1);
+				break;
+			}case(FONT_SIZE):{
+				data.setHeight(newDataSet.getHeight());
+				break;
+			}case(FONT_FAMILY):{
+				data.setName(newDataSet.getName());
+				break;
+			}case(BOLD): {
+				data.setStyle(data.getStyle() ^ SWT.BOLD);
+				break;
+			}case(ITALIC): {
+				data.setStyle(data.getStyle() ^ SWT.ITALIC);
+				break;
+			}case(UNDERLINE): {
+				styleRange.underline = !styleRange.underline;
+				break;
+			}case(STRIKEOUT): {
+				styleRange.strikeout = !styleRange.strikeout;
+				break;
+			}
+		}
+		styleRange.font= new Font(null, data);
 		return styleRange;
 	}
 
@@ -1690,25 +1431,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		Activator.getDefault().getPreferenceStore()
 		.removePropertyChangeListener(this);
 		super.dispose();
-	}
-
-	@Override
-	public void setFont(String fontString,int fontSize) {
-		getSelection();
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		int newSize=fontSize;
-		if(fontSize < 0){
-			newSize = Integer.parseInt(this.fontSizeControl.getText());
-		}
-		this.textFont = new Font(display, fontString, newSize, SWT.NORMAL);
-		setStyle(FONT_FAMILY);
-		
-	}
-
-	@Override
-	public void setFontSize(String style, int fontSize) {
-		this.textFont.getFontData()[0].setHeight(fontSize);	
-		setStyle(FONT_FAMILY);
 	}
 
 	@Override

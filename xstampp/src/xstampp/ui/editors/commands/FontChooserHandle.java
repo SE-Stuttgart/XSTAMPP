@@ -26,17 +26,19 @@ public class FontChooserHandle extends AbstractHandler {
 		Object activeEditor = PlatformUI.getWorkbench().
 				getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		if(activeEditor instanceof ITextEditor){
-			String parameterStyle= event.getParameter("xstampp.commandParameter.fontfamily"); //$NON-NLS-1$
-			String parameterSize= event.getParameter("xstampp.commandParameter.fontsize");//$NON-NLS-1$
+			String fontName= event.getParameter("xstampp.commandParameter.fontfamily"); //$NON-NLS-1$
+			String fontSize= event.getParameter("xstampp.commandParameter.fontsize");//$NON-NLS-1$
 			
-			if(parameterStyle != null && parameterSize != null){
+			if(fontName != null){
+					((ITextEditor) activeEditor).setFont(fontName,0);
+			}
+			if(fontSize != null){
 				try{
-					((ITextEditor) activeEditor).setFont(parameterStyle,Integer.parseInt(parameterSize));
+					((ITextEditor) activeEditor).setFontSize(ITextEditor.FONT_SIZE, Integer.parseInt(fontSize));
 				}catch(NumberFormatException e){
-					ProjectManager.getLOGGER().error(this.getClass() + " has recived: " + parameterSize + " but expected an Integer");
+					ProjectManager.getLOGGER().error(this.getClass() + " has recived: " + fontSize + " but expected an Integer");
 				}
 			}
-			
 			
 		}
 		return null;
