@@ -181,6 +181,11 @@ public class GridWrapper {
 
 		@Override
 		public void mouseDown(MouseEvent e) {
+			IGridCell cell = this.getCellFromMouse(e);
+			if(getEditClient() != null && ( getEditClient() != cell)){
+				getEditClient().cleanUp();
+				setEditClient(null);
+			}
 			Point mousePoint = new Point(e.x, e.y);
 			Point cellCoord = this.grid.getGrid().getCell(mousePoint);
 
@@ -193,7 +198,6 @@ public class GridWrapper {
 				relativeMouse = new Point(mousePoint.x - itemBounds.x,
 						mousePoint.y - itemBounds.y);
 
-				IGridCell cell = this.getCellFromMouse(e);
 				if (cell != null) {
 					cell.onMouseDown(e, relativeMouse, itemBounds);
 				}
@@ -216,7 +220,13 @@ public class GridWrapper {
 
 		@Override
 		public void mouseUp(MouseEvent e) {
+
 			IGridCell cell = this.getCellFromMouse(e);
+			IGridCell editClient = getEditClient();
+			if(editClient != null && ( editClient != cell)){
+				cell.cleanUp();
+				setEditClient(null);
+			}
 			if (cell != null) {
 				cell.onMouseUp(e);
 			}
@@ -254,7 +264,8 @@ public class GridWrapper {
 	private Grid actualGrid;
 	private IGridCell hoveredCell = null;
 	private IGridCell focusedCell = null;
-
+	private IGridCell editClient =null;
+	
 	private List<GridRow> rows;
 
 	private List<NebulaGridRowWrapper> nebulaRows;
@@ -828,5 +839,13 @@ public class GridWrapper {
 			}
 			this.activateRecursive(r.getChildren(), uuid);
 		}
+	}
+
+	public IGridCell getEditClient() {
+		return this.editClient;
+	}
+
+	public void setEditClient(IGridCell editClient) {
+		this.editClient = editClient;
 	}
 }

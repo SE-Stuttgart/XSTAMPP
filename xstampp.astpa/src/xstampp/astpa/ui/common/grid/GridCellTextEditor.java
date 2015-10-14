@@ -32,6 +32,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
+import xstampp.astpa.controlstructure.utilities.CSCellEditorLocator;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import xstampp.astpa.util.DirectEditor;
 
@@ -63,7 +64,16 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 
 		@Override
 		public void relocate(CellEditor celleditor) {
-			celleditor.getControl().setBounds(GridCellTextEditor.this.editField);
+			getPreferredHeight();
+			Rectangle rect = GridCellTextEditor.this.editField;
+			Text text = (Text) celleditor.getControl();
+
+			// if the size is determined to be larger than the text lines itself
+			// this the original size, will be displayed as long as it not
+			// overwritten by text
+			int editorHeight = Math.max(rect.height,
+					text.getLineHeight() * text.getLineCount());
+			text.setBounds(rect.x, rect.y, rect.width, editorHeight);
 		}
 		
 	}
@@ -83,7 +93,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 		this.grid=grid;
 		
 		if (initialText.trim().isEmpty()) {
-			this.currentText = GridCellEditor.EMPTY_CELL_TEXT;
+			this.currentText = new String();
 		} else {
 			this.currentText = initialText;
 		}
@@ -117,7 +127,13 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 			buttonCollum=this.deleteSpace.width;
 			gc.drawImage(GridWrapper.getDeleteButton16(),this.deleteSpace.x,this.deleteSpace.y);
 		}
-		int line_height = wrapText(bounds,gc,this.currentText,2,buttonCollum);
+		int line_height;
+		if (this.currentText.trim().isEmpty()) {
+			line_height = wrapText(bounds,gc,EMPTY_CELL_TEXT,2,buttonCollum);
+		} else {
+			line_height = wrapText(bounds,gc,this.currentText,2,buttonCollum);
+		}
+		
 		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-buttonCollum,line_height - bounds.y);
 		if(bounds.height + 2< this.editField.height){
 			this.grid.resizeRows();
@@ -137,7 +153,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 
 	@Override
 	public int getPreferredHeight() {
-		return Math.max(DEFAULT_CELL_HEIGHT*2,  this.editField.height);
+		this.editField.height = Math.max(DEFAULT_CELL_HEIGHT*2,  this.editField.height);
+		return  this.editField.height;
 	}
 
 	@Override
@@ -151,7 +168,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 	}
 	@Override
 	public void activate() {
-		this.editor = new DirectEditor(this.grid.getGrid(), SWT.NONE);
+		this.editor = new DirectEditor(this.grid.getGrid(), SWT.None);
+		this.grid.setEditClient(this);
 		this.editor.activate(new TextLocator());
 		this.editor.setTextColor(ColorConstants.black);
 		this.editor.getControl().setBackground(this.bgColor);
@@ -172,10 +190,18 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 			
 			@Override
 			public void modifyText(ModifyEvent e) {
-				Rectangle bounds = ((Text)e.widget).getBounds();
-				int newHeight= ((Text)e.widget).computeSize(GridCellTextEditor.this.editField.width, SWT.DEFAULT).y;
-				bounds.height = Math.max(newHeight, GridCellTextEditor.this.editField.height);
-				((Text)e.widget).setBounds(bounds);
+				if(e.getSource() instanceof Text){
+					getPreferredHeight();
+					Rectangle rect = GridCellTextEditor.this.editField;
+					Text text = (Text) e.getSource();
+
+					// if the size is determined to be larger than the text lines itself
+					// this the original size, will be displayed as long as it not
+					// overwritten by text
+					int editorHeight = Math.max(rect.height,
+							text.getLineHeight() * text.getLineCount());
+					text.setBounds(rect.x, rect.y, rect.width, editorHeight);
+				}
 			}
 		});
 	}
@@ -199,7 +225,10 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 		
 	}
 
-	
+	/**
+	 * 
+	 * @param e
+	 */
 	@Override
 	public void onMouseUp(MouseEvent e) {
 		if(this.showDelete && GridCellTextEditor.this.deleteSpace.contains(e.x,e.y)){
