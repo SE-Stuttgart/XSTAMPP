@@ -837,20 +837,6 @@
       </toc>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="xstampp.astpa.preferences.StpaPreferenceInitializor">
-      </initializer>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="xstampp.astpa.preferences.StpaPreferencePage"
-            id="xstampp.astpa.preferencepage"
-            name="A-STPA Preferences">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.ui.importWizards">
       <category
             id="xstampp.astpa.category1"

@@ -22,6 +22,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jaxb-impl-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.e4.ui.workbench_1.0.1.v20130910-2014.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar" sourcepath="C:/Users/Lukas/git/org.eclipse.nebula.widgets.grid.source_1.0.0.201506151822.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

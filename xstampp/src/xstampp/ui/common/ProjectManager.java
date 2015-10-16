@@ -16,6 +16,7 @@ package xstampp.ui.common;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -618,8 +619,21 @@ public class ProjectManager {
 	 * 
 	 * @return a Set with all UUID's of the currently loaded projects
 	 */
-	public Set<UUID> getProjectKeys() {
-		return this.projectDataToUUID.keySet();
+	public ArrayList<UUID> getProjectKeys() {
+		Set<UUID> keys = this.projectDataToUUID.keySet();
+		ArrayList<UUID> tmp= new ArrayList<>(keys);
+		tmp.sort(new Comparator<UUID>() {
+
+			@Override
+			public int compare(UUID arg0, UUID arg1) {
+				String a = getTitle(arg0);
+				String b = getTitle(arg1);
+				return a.compareTo(b);
+			}
+			
+		});
+		
+		return tmp;
 	}
 
 	/**

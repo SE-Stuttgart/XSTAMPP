@@ -49,6 +49,9 @@
       <initializer
             class="xstampp.preferences.PreferenceInitializer">
       </initializer>
+      <initializer
+            class="xstampp.preferences.StpaPreferenceInitializor">
+      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

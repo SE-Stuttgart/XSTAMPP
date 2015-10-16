@@ -1,4 +1,4 @@
-package xstampp.astpa.preferences;
+package xstampp.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.draw2d.ColorConstants;
@@ -8,8 +8,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.astpa.Activator;
-import xstampp.preferences.IControlStructureConstants;
+import xstampp.Activator;
+
 
 
 /**

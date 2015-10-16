@@ -76,9 +76,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -86,7 +84,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -94,7 +91,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
@@ -104,11 +100,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
@@ -461,7 +456,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Map<String,String> values=new HashMap<>();
-				values.put("xstampp.command.preferencePage", "xstampp.astpa.preferencepage.cs"); //$NON-NLS-1$ //$NON-NLS-2$
+				values.put("xstampp.command.preferencePage", "xstampp.cs.preferencees"); //$NON-NLS-1$ //$NON-NLS-2$
 				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values); //$NON-NLS-1$
 			}
 		});
@@ -1170,8 +1165,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.modelInterface = (IControlStructureEditorDataModel) modelInterface;
 		this.modelInterface.addObserver(this);
 	}
-	
-	
+	@Override
+	public void selectAll() {
+		this.getActionRegistry().getAction(ActionFactory.SELECT_ALL.getId()).run();
+	}
 
 }
 
