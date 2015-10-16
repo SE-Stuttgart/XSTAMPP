@@ -5,10 +5,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -19,6 +16,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
+import messages.Messages;
 import xstampp.Activator;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -27,14 +25,13 @@ import xstampp.util.STPAPluginUtils;
 
 /**
  * The Standard Editor Part for an STPA Project
- * 
+ *
  * @author Lukas Balzer
  * @since version 2.0.0
  * @see EditorPart
- * 
+ *
  */
-public abstract class StandartEditorPart extends EditorPart implements
-		IEditorBase,IPartListener {
+public abstract class StandartEditorPart extends EditorPart implements IEditorBase, IPartListener {
 
 	private UUID projectID;
 
@@ -55,8 +52,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		this.setSite(site);
 		this.setInput(input);
 		this.setProjectID(((STPAEditorInput) input).getProjectID());
@@ -70,10 +66,10 @@ public abstract class StandartEditorPart extends EditorPart implements
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
 		super.dispose();
 	}
+
 	@Override
 	public boolean isDirty() {
-		if (ProjectManager.getContainerInstance().getUnsavedChanges(
-				this.projectID)) {
+		if (ProjectManager.getContainerInstance().getUnsavedChanges(this.projectID)) {
 			this.setStatusLine();
 		}
 		return false;
@@ -86,7 +82,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void setFocus() {
-		//d
+		// d
 	}
 
 	/**
@@ -106,30 +102,23 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	/**
 	 * updates the status line
-	 * 
+	 *
 	 * @author Lukas Balzer
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public void setStatusLine() {
-		Display.getDefault().syncExec(new Runnable() {
+		Display.getDefault().syncExec(() -> {
+			if (ProjectManager.getContainerInstance().getUnsavedChanges(StandartEditorPart.this.projectID)) {
+				Image image = Activator.getImageDescriptor("/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
 
-			@Override
-			public void run() {
-				if (ProjectManager.getContainerInstance().getUnsavedChanges(
-						StandartEditorPart.this.projectID)) {
-					Image image = Activator.getImageDescriptor(
-							"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
-					
-					StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager()
-							.setMessage(image, Messages.ThereAreUnsafedChanges);
-				} else {
-					StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager()
-							.setMessage(null);
-				}
+				StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(image,
+						Messages.ThereAreUnsafedChanges);
+			} else {
+				StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(null);
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -149,43 +138,45 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
-		if(arg0 == this){
-			((STPAEditorInput)getEditorInput()).activate();
-		}else if(arg0 != this){
-			((STPAEditorInput)getEditorInput()).deactivate();
+		if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getSite().getId()
+				.equals("acast.steps.step2_1")) {
+			if (arg0 == this) {
+				((STPAEditorInput) getEditorInput()).activate();
+			} else if (arg0 != this) {
+				((STPAEditorInput) getEditorInput()).deactivate();
+			}
 		}
-		
 	}
 
 	@Override
 	public void partBroughtToTop(IWorkbenchPart arg0) {
 		// is not used by the implementation
-		
+
 	}
 
 	@Override
 	public void partClosed(IWorkbenchPart arg0) {
-		if(arg0 == this){
-			((STPAEditorInput)getEditorInput()).deactivate();
+		if (arg0 == this) {
+			((STPAEditorInput) getEditorInput()).deactivate();
 		}
 	}
 
 	@Override
 	public void partDeactivated(IWorkbenchPart arg0) {
-		if(arg0 == this){
-			((STPAEditorInput)getEditorInput()).deactivate();
+		if (arg0 == this) {
+			((STPAEditorInput) getEditorInput()).deactivate();
 		}
-		
+
 	}
 
 	@Override
 	public void partOpened(IWorkbenchPart arg0) {
 		// is not used by the implementation
-		
+
 	}
-	
-	public void selectAll(){
-		//so nothing by default
+
+	public void selectAll() {
+		// so nothing by default
 	}
-	
+
 }

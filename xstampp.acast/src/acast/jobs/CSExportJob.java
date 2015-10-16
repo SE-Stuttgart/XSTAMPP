@@ -26,22 +26,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import acast.controlstructure.CSAbstractEditor;
-import acast.controlstructure.CSEditor;
-import acast.controlstructure.controller.editparts.RootEditPart;
-import acast.controlstructure.controller.factorys.CSEditPartFactory;
-import acast.controlstructure.figure.RootFigure;
-import acast.model.controlstructure.interfaces.IRectangleComponent;
-import acast.model.interfaces.IControlStructureEditorDataModel;
 import messages.Messages;
+import xstampp.astpa.controlstructure.CSAbstractEditor;
+import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
+import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
+import xstampp.astpa.controlstructure.figure.RootFigure;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
 
-
 /**
- * 
+ *
  * @author Lukas Balzer
  * @since 2.0
- * 
+ *
  */
 public class CSExportJob extends Job {
 
@@ -54,15 +52,13 @@ public class CSExportJob extends Job {
 	private boolean deco;
 	private IFigure printableFigure;
 	private Image srcImage;
-	private IControlStructureEditorDataModel model;
 	private final double factor = 4.0;
 	private UUID projectID;
-
-	
+	private IControlStructureEditorDataModel model;
 
 	/**
 	 * this constructor creates a new Job to print the current Control Structure
-	 * 
+	 *
 	 * @author Lukas Balzer
 	 * @param path
 	 *            the path defined as a String
@@ -81,15 +77,14 @@ public class CSExportJob extends Job {
 	 * @see SWT#IMAGE_PNG
 	 * @see SWT#IMAGE_JPEG
 	 */
-	public CSExportJob(String path, int imgOffset, String editorId,
-			UUID projectId, boolean showPreview, boolean decorate) {
+	public CSExportJob(String path, int imgOffset, String editorId, UUID projectId, boolean showPreview,
+			boolean decorate) {
 		super(Messages.ExportCS);
-		this.projectID=projectId;
-		this.model = (IControlStructureEditorDataModel) ProjectManager
-				.getContainerInstance().getDataModel(projectId);
+		this.projectID = projectId;
+		this.model = (IControlStructureEditorDataModel) ProjectManager.getContainerInstance().getDataModel(projectId);
 		this.path = path;
 		this.process = Messages.ExportingCS;
-		
+
 		this.imgOffset = imgOffset;
 		this.showPreview = showPreview;
 		this.editorId = editorId;
@@ -109,7 +104,7 @@ public class CSExportJob extends Job {
 
 	/**
 	 * this constructor creates a new Job to print the current Control Structure
-	 * 
+	 *
 	 * @author Lukas Balzer
 	 * @param path
 	 *            the path defined as a String
@@ -127,8 +122,7 @@ public class CSExportJob extends Job {
 	 * @see SWT#IMAGE_PNG
 	 * @see SWT#IMAGE_JPEG
 	 */
-	public CSExportJob(String path, String editorId, UUID projectId,
-			int imgOffset, boolean forcedDeco) {
+	public CSExportJob(String path, String editorId, UUID projectId, int imgOffset, boolean forcedDeco) {
 		this(path, imgOffset, editorId, projectId, false, forcedDeco);
 	}
 
@@ -143,9 +137,9 @@ public class CSExportJob extends Job {
 
 	/**
 	 * this method prints the control structure
-	 * 
+	 *
 	 * @author Lukas Balzer
-	 * 
+	 *
 	 * @return
 	 */
 	public IStatus getPrintableRoot() {
@@ -153,7 +147,7 @@ public class CSExportJob extends Job {
 
 		Display.getDefault().syncExec(run);
 		while (this.printableFigure == null) {
-			// wait 
+			// wait
 		}
 
 		if (this.imageType < 0) {
@@ -163,17 +157,14 @@ public class CSExportJob extends Job {
 
 		// this additional Image is created with the actual Bounds
 		// and the first one is clipped inside the scaled image
-		Image scaledImage = new Image(null, clipRectangle.width
-				+ (2 * this.imgOffset), clipRectangle.height
-				+ (2 * this.imgOffset));
+		Image scaledImage = new Image(null, clipRectangle.width + (2 * this.imgOffset),
+				clipRectangle.height + (2 * this.imgOffset));
 		GC imageGC = new GC(scaledImage);
 		Graphics graphics = new SWTGraphics(imageGC);
-		
-		if ((this.srcImage.getBounds().width >= 0)
-				&& (scaledImage.getBounds().width >= 0)) {
-			graphics.drawImage(this.srcImage, clipRectangle, new Rectangle(
-					this.imgOffset, this.imgOffset, clipRectangle.width,
-					clipRectangle.height));
+
+		if ((this.srcImage.getBounds().width >= 0) && (scaledImage.getBounds().width >= 0)) {
+			graphics.drawImage(this.srcImage, clipRectangle,
+					new Rectangle(this.imgOffset, this.imgOffset, clipRectangle.width, clipRectangle.height));
 		}
 		ImageLoader imgLoader = new ImageLoader();
 		imgLoader.data = new ImageData[] { this.srcImage.getImageData() };
@@ -193,9 +184,9 @@ public class CSExportJob extends Job {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Lukas Balzer
-	 * 
+	 *
 	 * @param preview
 	 *            true if the file should be opened with after the export
 	 */
@@ -203,9 +194,9 @@ public class CSExportJob extends Job {
 		this.showPreview = preview;
 	}
 
-	/** 
+	/**
 	 * create a clip rectangle to cut the unnecessary whitespace
-	 * 
+	 *
 	 * @author Lukas Balzer
 	 *
 	 * @return a rectangle which describes the bounds of the control structure
@@ -227,8 +218,7 @@ public class CSExportJob extends Job {
 							// added
 							// as starting Point for the rectangle
 							isFirst = false;
-							clipRectangle = new Rectangle(
-									((IFigure) child).getBounds());
+							clipRectangle = new Rectangle(((IFigure) child).getBounds());
 						} else {
 							clipRectangle.union(((IFigure) child).getBounds());
 						}
@@ -240,60 +230,49 @@ public class CSExportJob extends Job {
 
 		}
 		// cut off negative x-/y-parts
-		clipRectangle.width = clipRectangle.width
-				+ Math.min(0, clipRectangle.x);
-		clipRectangle.height = clipRectangle.height
-				+ Math.min(0, clipRectangle.y);
+		clipRectangle.width = clipRectangle.width + Math.min(0, clipRectangle.x);
+		clipRectangle.height = clipRectangle.height + Math.min(0, clipRectangle.y);
 		// the clipRectangle is minimally located at (0,0)
 		clipRectangle.x = Math.max(0, clipRectangle.x);
 		clipRectangle.y = Math.max(0, clipRectangle.y);
 		clipRectangle.scale(this.factor);
-		if ((clipRectangle.height + clipRectangle.y) > this.srcImage
-				.getBounds().height) {
-			clipRectangle.height = this.srcImage.getBounds().height
-					- clipRectangle.y;
+		if ((clipRectangle.height + clipRectangle.y) > this.srcImage.getBounds().height) {
+			clipRectangle.height = this.srcImage.getBounds().height - clipRectangle.y;
 		}
 		if ((clipRectangle.width + clipRectangle.x) > this.srcImage.getBounds().width) {
-			clipRectangle.width = this.srcImage.getBounds().width
-					- clipRectangle.x;
+			clipRectangle.width = this.srcImage.getBounds().width - clipRectangle.x;
 		}
 		return clipRectangle;
 	}
-	
-	private class CSImageCalculator implements Runnable{
+
+	private class CSImageCalculator implements Runnable {
 
 		@Override
 		public void run() {
-			Shell shell=new Shell();
-			Composite canvas = new Composite(shell,33554432);
+			Shell shell = new Shell();
+			Composite canvas = new Composite(shell, 33554432);
 			ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-		
 
 			viewer.createControl(canvas);
-			viewer.setEditPartFactory(new CSEditPartFactory(
-					CSExportJob.this.model, CSExportJob.this.editorId));
-			viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
-					CSExportJob.this.editorId);
+			viewer.setEditPartFactory(new CSEditPartFactory(CSExportJob.this.model, CSExportJob.this.editorId));
+			viewer.setProperty(CSAbstractEditor.STEP_EDITOR, CSExportJob.this.editorId);
 
 			ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 			viewer.setRootEditPart(rootEditPart);
 			IRectangleComponent root = CSExportJob.this.model.getRoot();
 
 			if (root == null) {
-				CSExportJob.this.model.setRoot(new Rectangle(),
-						new String());
+				CSExportJob.this.model.setRoot(new Rectangle(), new String());
 				root = CSExportJob.this.model.getRoot();
 			}
 			viewer.setContents(root);
 			viewer.getContents().refresh();
-			((RootEditPart) rootEditPart.getContents()).getFigure()
-					.setDeco(CSExportJob.this.deco);
+			((RootEditPart) rootEditPart.getContents()).getFigure().setDeco(CSExportJob.this.deco);
 
 			viewer.getContents().refresh();
-			
-			IFigure tmpFigure = rootEditPart
-					.getLayer(LayerConstants.PRINTABLE_LAYERS);
-			// create a rectangle to guarantee that the src image 
+
+			IFigure tmpFigure = rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
+			// create a rectangle to guarantee that the src image
 			Rectangle srcRectangle = tmpFigure.getBounds();
 			for (Object layers : tmpFigure.getChildren()) {
 				// Layer&ConnectionLayer
@@ -302,19 +281,17 @@ public class CSExportJob extends Job {
 				}
 
 			}
-			
+
 			// a plain Image is created on which we can draw any graphics
-			CSExportJob.this.srcImage = new Image(null, (int) Math.max(
-					CSExportJob.this.factor * tmpFigure.getBounds().width,
-					1), (int) Math.max(
-					CSExportJob.this.factor * tmpFigure.getBounds().height,
-					1));
+			CSExportJob.this.srcImage = new Image(null,
+					(int) Math.max(CSExportJob.this.factor * tmpFigure.getBounds().width, 1),
+					(int) Math.max(CSExportJob.this.factor * tmpFigure.getBounds().height, 1));
 			GC imageGC = new GC(CSExportJob.this.srcImage);
 			Graphics graphics = new SWTGraphics(imageGC);
 			graphics.scale(CSExportJob.this.factor);
 			tmpFigure.paint(graphics);
 			CSExportJob.this.printableFigure = tmpFigure;
 		}
-		
+
 	}
 }

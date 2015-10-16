@@ -41,17 +41,16 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.xml.sax.SAXException;
 
 import acast.controller.Controller;
-import acast.controlstructure.CSEditor;
 import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 
 /**
  * Eclipse job that handles the export
- * 
+ *
  * @author Fabian Toth,Lukas Balzer
  * @since 2.0
- * 
+ *
  */
 public class ExportJob extends Job {
 
@@ -72,7 +71,7 @@ public class ExportJob extends Job {
 
 	/**
 	 * Constructor of the export job
-	 * 
+	 *
 	 * @author Fabian Toth, Lukas Balzer
 	 * @param projectId
 	 *            the project which
@@ -132,10 +131,11 @@ public class ExportJob extends Job {
 				}
 				path = path + File.separator + Messages.ControlStructure + ".png";
 				csPath = new File(path);
-				CSExportJob csExport = new CSExportJob(path, CSEditor.ID, this.id, 10, this.decorate);
+				CSExportJob csExport = new CSExportJob(path, "acast.steps.step2_1", this.id, 10, this.decorate);
 				csExport.getPrintableRoot();
 			} else {
-				CSExportJob csExport = new CSExportJob(csPath.getPath(), CSEditor.ID, this.id, 10, this.decorate);
+				CSExportJob csExport = new CSExportJob(csPath.getPath(), "acast.steps.step2_1", this.id, 10,
+						this.decorate);
 
 				csExport.getPrintableRoot();
 			}

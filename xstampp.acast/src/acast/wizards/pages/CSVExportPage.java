@@ -18,17 +18,14 @@ import xstampp.util.AbstractWizardPage;
 
 /**
  * a page to prepare and execute a CSV Export
- * 
- * @author Lukas Balzer
- * 
+ *
+ *
  */
 public class CSVExportPage extends AbstractExportPage {
 	private char seperator;
 	private String[] filters;
-	
 
 	/**
-	 * @author Lukas Balzer
 	 * @param filters
 	 *            the file extensions, which shall be excepted by in the dialog
 	 * @param pageName
@@ -130,9 +127,8 @@ public class CSVExportPage extends AbstractExportPage {
 	}
 
 	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
+	 *
+	 *
 	 * @return the character which shall be used as seperator in the CSV
 	 */
 	public char getSeperator() {

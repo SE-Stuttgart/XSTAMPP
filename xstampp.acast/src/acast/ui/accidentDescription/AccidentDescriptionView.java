@@ -14,8 +14,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import messages.Messages;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -67,6 +65,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import acast.Activator;
+import acast.model.interfaces.IAccidentDescriptionViewDataModel;
+import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -74,14 +75,10 @@ import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.StyledTextSelection;
 import xstampp.ui.editors.interfaces.ITextEditContribution;
 import xstampp.ui.editors.interfaces.ITextEditor;
-import acast.Activator;
-import acast.model.interfaces.IAccidentDescriptionViewDataModel;
 
-public class AccidentDescriptionView extends StandartEditorPart implements
-		ITextEditor, IPropertyChangeListener {
+public class AccidentDescriptionView extends StandartEditorPart implements ITextEditor, IPropertyChangeListener {
 
-	private final IPreferenceStore store = Activator.getDefault()
-			.getPreferenceStore();
+	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
 	/**
 	 * ViewPart ID.
@@ -103,8 +100,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	private final static int stateForeground = 0;
 	private final static int stateBackground = 1;
 
-	private static final String[] FONT_SIZES = new String[] {
-			"6", "8", "9", "10", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	private static final String[] FONT_SIZES = new String[] { "6", "8", "9", "10", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			"11", "12", "14", "24", "36", "48" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
 	private Map<Widget, String> values;
@@ -131,9 +127,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	private ArrayList<ISelectionChangedListener> listener;
 
-	private ToolItem boldControl, italicControl, foregroundControl,
-			backgroundControl, baselineUpControl, baselineDownControl,
-			bulletListControl;
+	private ToolItem boldControl, italicControl, foregroundControl, backgroundControl, baselineUpControl,
+			baselineDownControl, bulletListControl;
 
 	/**
 	 * Text arena to describe the accident.
@@ -162,9 +157,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Update UI
-	 * 
+	 *
 	 * @author Patrick Wickenhaeuser
-	 * 
+	 *
 	 * @param dataModelController
 	 *            Observable
 	 * @param updatedValue
@@ -203,9 +198,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set text background color
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param event
 	 *            SelectionEvent
 	 * @param composite
@@ -213,8 +208,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * @param colorControl
 	 *            ToolItem
 	 */
-	public void setTextBackground(SelectionEvent event, Composite composite,
-			ToolItem colorControl) {
+	public void setTextBackground(SelectionEvent event, Composite composite, ToolItem colorControl) {
 		Shell shell = composite.getShell();
 		if ((event.detail == SWT.ARROW) || (this.textBackgroundColor == null)) {
 			ColorDialog dialog = new ColorDialog(shell);
@@ -233,17 +227,16 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			if (!newRgb.equals(rgb)) {
 				setStyleColor(this.values.get(event.widget), newRgb);
 				// change icon
-				this.setToolItemIcon(colorControl, newRgb,
-						AccidentDescriptionView.stateBackground);
+				this.setToolItemIcon(colorControl, newRgb, AccidentDescriptionView.stateBackground);
 			}
 		}
 	}
 
 	/**
 	 * Set text foreground color
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param event
 	 *            SelectionEvent
 	 * @param composite
@@ -251,8 +244,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * @param colorControl
 	 *            ToolItem
 	 */
-	public void setTextForeground(SelectionEvent event, Composite composite,
-			ToolItem colorControl) {
+	public void setTextForeground(SelectionEvent event, Composite composite, ToolItem colorControl) {
 		Shell shell = composite.getShell();
 		if ((event.detail == SWT.ARROW) || (this.textForegroundColor == null)) {
 			ColorDialog dialog = new ColorDialog(shell);
@@ -271,8 +263,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			if (!newRgb.equals(this.textForegroundColor)) {
 				setStyleColor(this.values.get(event.widget), newRgb);
 				// change icon
-				this.setToolItemIcon(colorControl, newRgb,
-						AccidentDescriptionView.stateForeground);
+				this.setToolItemIcon(colorControl, newRgb, AccidentDescriptionView.stateForeground);
 			}
 
 		}
@@ -280,9 +271,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set different color icons for different color shades.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param rgb
 	 *            RGB
 	 */
@@ -298,8 +289,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		ArrayList<RGB> blueShades = new ArrayList<>();
 		ArrayList<RGB> grayShades = new ArrayList<>();
 
-		this.initShadeLists(redShades, blackShades, yellowShades, greenShades,
-				purpleShades, whiteShades, blueShades, grayShades);
+		this.initShadeLists(redShades, blackShades, yellowShades, greenShades, purpleShades, whiteShades, blueShades,
+				grayShades);
 
 		if (state == AccidentDescriptionView.stateForeground) {
 			imagePath = "/colors/foreground"; //$NON-NLS-1$
@@ -309,45 +300,37 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 		// set icon
 		if (redShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textRed.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textRed.ico") //$NON-NLS-1$
+							.createImage());
 		} else if (blackShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textBlack.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textBlack.ico") //$NON-NLS-1$
+							.createImage());
 		} else if (yellowShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textYellow.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textYellow.ico") //$NON-NLS-1$
+							.createImage());
 		} else if (greenShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textGreen.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textGreen.ico") //$NON-NLS-1$
+							.createImage());
 		} else if (purpleShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textPurple.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textPurple.ico") //$NON-NLS-1$
+							.createImage());
 		} else if (whiteShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textWhite.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textWhite.ico") //$NON-NLS-1$
+							.createImage());
 		} else if (blueShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textBlue.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textBlue.ico") //$NON-NLS-1$
+							.createImage());
 		} else if (grayShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					AccidentDescriptionView.getImagePath() + imagePath
-							+ "/textGrey.ico") //$NON-NLS-1$
-					.createImage());
+			colorControl.setImage(
+					Activator.getImageDescriptor(AccidentDescriptionView.getImagePath() + imagePath + "/textGrey.ico") //$NON-NLS-1$
+							.createImage());
 		}
 
 	}
@@ -361,9 +344,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Initialize ArrayList with RGB values of color shades.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param redShades
 	 *            ArrayList<RGB>
 	 * @param blackShades
@@ -381,11 +364,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * @param grayShades
 	 *            ArrayList<RGB>
 	 */
-	private void initShadeLists(ArrayList<RGB> redShades,
-			ArrayList<RGB> blackShades, ArrayList<RGB> yellowShades,
-			ArrayList<RGB> greenShades, ArrayList<RGB> purpleShades,
-			ArrayList<RGB> whiteShades, ArrayList<RGB> blueShades,
-			ArrayList<RGB> grayShades) {
+	private void initShadeLists(ArrayList<RGB> redShades, ArrayList<RGB> blackShades, ArrayList<RGB> yellowShades,
+			ArrayList<RGB> greenShades, ArrayList<RGB> purpleShades, ArrayList<RGB> whiteShades,
+			ArrayList<RGB> blueShades, ArrayList<RGB> grayShades) {
 
 		// RGB values
 		final int twoHundredAndFiftyFive = 255;
@@ -394,11 +375,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		final int oneHundredAndTwentyEight = 128;
 		// initialize
 		if (redShades.size() == 0) {
-			redShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, oneHundredAndTwentyEight));
+			redShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
 			redShades.add(new RGB(twoHundredAndFiftyFive, zero, zero));
-			redShades.add(new RGB(oneHundredAndTwentyEight, sixtyfour,
-					sixtyfour));
+			redShades.add(new RGB(oneHundredAndTwentyEight, sixtyfour, sixtyfour));
 			redShades.add(new RGB(oneHundredAndTwentyEight, zero, zero));
 			redShades.add(new RGB(sixtyfour, zero, zero));
 		}
@@ -408,102 +387,73 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		}
 
 		if (yellowShades.size() == 0) {
-			yellowShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, zero));
-			yellowShades
-					.add(new RGB(oneHundredAndTwentyEight, sixtyfour, zero));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, zero));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, sixtyfour));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive, zero));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive, oneHundredAndTwentyEight));
+			yellowShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, zero));
+			yellowShades.add(new RGB(oneHundredAndTwentyEight, sixtyfour, zero));
+			yellowShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, zero));
+			yellowShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, sixtyfour));
+			yellowShades.add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, zero));
+			yellowShades.add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, oneHundredAndTwentyEight));
 		}
 
 		if (greenShades.size() == 0) {
-			greenShades.add(new RGB(oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive, oneHundredAndTwentyEight));
-			greenShades.add(new RGB(oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive, zero));
-			greenShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, sixtyfour));
-			greenShades.add(new RGB(sixtyfour, oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight));
+			greenShades.add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, oneHundredAndTwentyEight));
+			greenShades.add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, zero));
+			greenShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, sixtyfour));
+			greenShades.add(new RGB(sixtyfour, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
 			greenShades.add(new RGB(zero, twoHundredAndFiftyFive, zero));
 			greenShades.add(new RGB(zero, oneHundredAndTwentyEight, zero));
 			greenShades.add(new RGB(zero, sixtyfour, zero));
-			greenShades.add(new RGB(zero, twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight));
+			greenShades.add(new RGB(zero, twoHundredAndFiftyFive, oneHundredAndTwentyEight));
 			greenShades.add(new RGB(zero, twoHundredAndFiftyFive, sixtyfour));
-			greenShades.add(new RGB(zero, oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight));
+			greenShades.add(new RGB(zero, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
 			greenShades.add(new RGB(zero, oneHundredAndTwentyEight, sixtyfour));
 			greenShades.add(new RGB(zero, sixtyfour, sixtyfour));
 		}
 
 		final int onehundredAndNinetyTwo = 192;
 		if (purpleShades.size() == 0) {
-			purpleShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, onehundredAndNinetyTwo));
-			purpleShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, twoHundredAndFiftyFive));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, onehundredAndNinetyTwo));
-			purpleShades.add(new RGB(twoHundredAndFiftyFive, zero,
-					twoHundredAndFiftyFive));
-			purpleShades
-					.add(new RGB(oneHundredAndTwentyEight, zero, sixtyfour));
-			purpleShades.add(new RGB(twoHundredAndFiftyFive, zero,
-					oneHundredAndTwentyEight));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight, zero,
-					oneHundredAndTwentyEight));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight, zero,
-					twoHundredAndFiftyFive));
+			purpleShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, onehundredAndNinetyTwo));
+			purpleShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, twoHundredAndFiftyFive));
+			purpleShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, onehundredAndNinetyTwo));
+			purpleShades.add(new RGB(twoHundredAndFiftyFive, zero, twoHundredAndFiftyFive));
+			purpleShades.add(new RGB(oneHundredAndTwentyEight, zero, sixtyfour));
+			purpleShades.add(new RGB(twoHundredAndFiftyFive, zero, oneHundredAndTwentyEight));
+			purpleShades.add(new RGB(oneHundredAndTwentyEight, zero, oneHundredAndTwentyEight));
+			purpleShades.add(new RGB(oneHundredAndTwentyEight, zero, twoHundredAndFiftyFive));
 			purpleShades.add(new RGB(sixtyfour, zero, sixtyfour));
-			purpleShades
-					.add(new RGB(sixtyfour, zero, oneHundredAndTwentyEight));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, twoHundredAndFiftyFive));
+			purpleShades.add(new RGB(sixtyfour, zero, oneHundredAndTwentyEight));
+			purpleShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, twoHundredAndFiftyFive));
 		}
 
 		if (whiteShades.size() == 0) {
-			whiteShades.add(new RGB(twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive, twoHundredAndFiftyFive));
+			whiteShades.add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
 		}
 
 		final int onehundredAndSixty = 160;
 		if (blueShades.size() == 0) {
-			blueShades.add(new RGB(oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive, twoHundredAndFiftyFive));
-			blueShades.add(new RGB(zero, twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive));
+			blueShades.add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
+			blueShades.add(new RGB(zero, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
 			blueShades.add(new RGB(zero, sixtyfour, oneHundredAndTwentyEight));
 			blueShades.add(new RGB(zero, zero, twoHundredAndFiftyFive));
 			blueShades.add(new RGB(zero, zero, oneHundredAndTwentyEight));
-			blueShades.add(new RGB(zero, oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive));
-			blueShades.add(new RGB(zero, oneHundredAndTwentyEight,
-					onehundredAndNinetyTwo));
+			blueShades.add(new RGB(zero, oneHundredAndTwentyEight, twoHundredAndFiftyFive));
+			blueShades.add(new RGB(zero, oneHundredAndTwentyEight, onehundredAndNinetyTwo));
 			blueShades.add(new RGB(zero, zero, onehundredAndSixty));
 			blueShades.add(new RGB(zero, zero, sixtyfour));
 		}
 
 		if (grayShades.size() == 0) {
-			grayShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, oneHundredAndTwentyEight));
-			grayShades.add(new RGB(onehundredAndNinetyTwo,
-					onehundredAndNinetyTwo, onehundredAndNinetyTwo));
+			grayShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
+			grayShades.add(new RGB(onehundredAndNinetyTwo, onehundredAndNinetyTwo, onehundredAndNinetyTwo));
 		}
 
 	}
 
 	/**
 	 * Get font names from system and sort alphabetically.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param composite
 	 *            Composite
 	 * @return names font names
@@ -530,9 +480,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set default font sizes to combo.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 */
 	public void setDefaultFontSize() {
 		FontData fontData;
@@ -563,9 +513,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set default font names to combo.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 */
 	public void setDefaultFontName() {
 		FontData fontData;
@@ -595,9 +545,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Increase font size.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param composite
 	 *            Composite
 	 * @param event
@@ -609,19 +559,17 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		if (currentIndex < (this.fontSizeControl.getItemCount() - 1)) {
 			currentIndex = currentIndex + 1;
 			this.fontSizeControl.select(currentIndex);
-			int size = Integer.parseInt(this.fontSizeControl
-					.getItem(currentIndex));
-			this.textFont = new Font(display, this.fontNameControl.getText(),
-					size, SWT.NORMAL);
+			int size = Integer.parseInt(this.fontSizeControl.getItem(currentIndex));
+			this.textFont = new Font(display, this.fontNameControl.getText(), size, SWT.NORMAL);
 			this.setStyle(event.widget);
 		}
 	}
 
 	/**
 	 * Decrease font size
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param composite
 	 *            Composite
 	 * @param event
@@ -633,10 +581,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		if (currentIndex > 1) {
 			currentIndex = currentIndex - 1;
 			this.fontSizeControl.select(currentIndex);
-			int size = Integer.parseInt(this.fontSizeControl
-					.getItem(currentIndex));
-			this.textFont = new Font(display, this.fontNameControl.getText(),
-					size, SWT.NORMAL);
+			int size = Integer.parseInt(this.fontSizeControl.getItem(currentIndex));
+			this.textFont = new Font(display, this.fontNameControl.getText(), size, SWT.NORMAL);
 			this.setStyle(event.widget);
 		}
 	}
@@ -649,7 +595,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Gets the current accident description from the data model and set the
 	 * text formation.
-	 * 
+	 *
 	 */
 	private void updateAccidentDescription() {
 
@@ -695,20 +641,16 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	private void updateAccidentDate() {
 		if (!this.dataInterface.getAccidentDate().isEmpty()) {
-			String[] accidentDate = this.dataInterface.getAccidentDate().split(
-					" ");
+			String[] accidentDate = this.dataInterface.getAccidentDate().split(" ");
 			LocalDate date = LocalDate.parse(accidentDate[0]);
 			LocalTime time = LocalTime.parse(accidentDate[1]);
-			dateTime.setDate(date.getYear(), date.getMonthValue() - 1,
-					date.getDayOfMonth());
-			dateClock.setTime(time.getHour(), time.getMinute(),
-					time.getSecond());
+			dateTime.setDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
+			dateClock.setTime(time.getHour(), time.getMinute(), time.getSecond());
 		}
 	}
 
 	private void updatePictureList() {
-		if (this.dataInterface.getPictureList() != null
-				&& !this.dataInterface.getPictureList().isEmpty()) {
+		if (this.dataInterface.getPictureList() != null && !this.dataInterface.getPictureList().isEmpty()) {
 			for (String picture : this.dataInterface.getPictureList()) {
 				this.pictureList.add(picture);
 			}
@@ -719,21 +661,18 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentDescriptionToDataModel() {
-		if (!this.descriptionText.getStyleRanges().equals(
-				this.dataInterface.getStyleRanges())) {
+		if (!this.descriptionText.getStyleRanges().equals(this.dataInterface.getStyleRanges())) {
 			this.dataInterface.getStyleRanges().clear();
 			for (StyleRange styleRange : this.descriptionText.getStyleRanges()) {
 				this.dataInterface.addStyleRange(styleRange);
 			}
 		}
-		if (!(this.descriptionText.getText().equals(this.dataInterface
-				.getAccidentDescription()))) {
-			this.dataInterface.setAccidentDescription(this.descriptionText
-					.getText());
+		if (!(this.descriptionText.getText().equals(this.dataInterface.getAccidentDescription()))) {
+			this.dataInterface.setAccidentDescription(this.descriptionText.getText());
 		}
 	}
 
@@ -741,15 +680,13 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentCompanyToDataModel() {
 
-		if (!(this.companyInformationText.getText().equals(this.dataInterface
-				.getAccidentCompany()))) {
-			this.dataInterface.setAccidentCompany(this.companyInformationText
-					.getText());
+		if (!(this.companyInformationText.getText().equals(this.dataInterface.getAccidentCompany()))) {
+			this.dataInterface.setAccidentCompany(this.companyInformationText.getText());
 		}
 	}
 
@@ -757,14 +694,12 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentLocationToDataModel() {
-		if (!(this.accidentLocationText.getText().equals(this.dataInterface
-				.getAccidentLocation()))) {
-			this.dataInterface.setAccidentLocation(this.accidentLocationText
-					.getText());
+		if (!(this.accidentLocationText.getText().equals(this.dataInterface.getAccidentLocation()))) {
+			this.dataInterface.setAccidentLocation(this.accidentLocationText.getText());
 		}
 	}
 
@@ -772,14 +707,12 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentDateToDataModel() {
-		LocalDate datum = LocalDate.of(dateTime.getYear(),
-				dateTime.getMonth() + 1, dateTime.getDay());
-		LocalTime time = LocalTime.of(dateClock.getHours(),
-				dateClock.getMinutes(), dateClock.getSeconds());
+		LocalDate datum = LocalDate.of(dateTime.getYear(), dateTime.getMonth() + 1, dateTime.getDay());
+		LocalTime time = LocalTime.of(dateClock.getHours(), dateClock.getMinutes(), dateClock.getSeconds());
 		String date = datum.toString() + " " + time.toString();
 		if (!(date.equals(this.dataInterface.getAccidentDate()))) {
 			this.dataInterface.setAccidentDate(date);
@@ -797,38 +730,32 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	public void addAccidentInformationComponent(final Composite parent) {
 		Composite compositeAccidentInformation = new Composite(parent, SWT.NONE);
 		compositeAccidentInformation.setLayout(new GridLayout(2, true));
-		compositeAccidentInformation.setLayoutData(new GridData(SWT.FILL,
-				SWT.FILL, true, true, 1, 1));
+		compositeAccidentInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-		Composite compositeAccidentPicture = new Composite(
-				compositeAccidentInformation, SWT.BORDER);
-		compositeAccidentPicture.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false, 1, 1));
+		Composite compositeAccidentPicture = new Composite(compositeAccidentInformation, SWT.BORDER);
+		compositeAccidentPicture.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		compositeAccidentPicture.setLayout(new GridLayout(4, false));
 
 		lblpicture = new Label(compositeAccidentPicture, SWT.None);
-		lblpicture.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-				false, 1, 1));
+		lblpicture.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		lblpicture.setBounds(0, 0, 55, 15);
 		lblpicture.setText("Accident Picture:");
-		lblpicture.setFont(new Font(Display.getCurrent(), "Segoe UI", 9,
-				SWT.BOLD));
+		lblpicture.setFont(new Font(Display.getCurrent(), "Segoe UI", 9, SWT.BOLD));
 
 		Button btnAddPicture = new Button(compositeAccidentPicture, SWT.NONE);
-		btnAddPicture.setImage(Activator.getImageDescriptor(
-				"/icons/buttons/commontables/add.png").createImage());
-		btnAddPicture.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false,
-				false, 1, 1));
+		btnAddPicture.setImage(Activator.getImageDescriptor("/icons/buttons/commontables/add.png").createImage());
+		btnAddPicture.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
 		btnAddPicture.setBounds(0, 0, 75, 25);
 
 		btnAddPicture.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				switch (e.type) {
 				case SWT.Selection:
 					boolean cancel = false;
 					JFileChooser jfc = new JFileChooser();
-					FileFilter imageFilter = new FileNameExtensionFilter(
-							"Image files", ImageIO.getReaderFileSuffixes());
+					FileFilter imageFilter = new FileNameExtensionFilter("Image files",
+							ImageIO.getReaderFileSuffixes());
 					jfc.setFileFilter(imageFilter);
 					jfc.setAcceptAllFileFilterUsed(false);
 					jfc.showOpenDialog(null);
@@ -836,9 +763,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 						File f = jfc.getSelectedFile();
 						for (String currentPicturePath : pictureList.getItems()) {
 							if (currentPicturePath.contains(f.getAbsolutePath())) {
-								MessageBox dialog = new MessageBox(parent
-										.getShell(), SWT.ICON_INFORMATION
-										| SWT.OK);
+								MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.OK);
 								dialog.setText("Warning");
 								dialog.setMessage("Picture already exists");
 
@@ -848,16 +773,11 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 						}
 						if (!cancel) {
 
-							int currentPictureNumber = pictureList
-									.getItemCount() + 1;
-							lblCurrentPicture
-									.setText("Current Picture: Picture "
-											+ currentPictureNumber);
+							int currentPictureNumber = pictureList.getItemCount() + 1;
+							lblCurrentPicture.setText("Current Picture: Picture " + currentPictureNumber);
 							applyCurrentPictureToDataModel();
-							pictureList.add("Picture " + currentPictureNumber
-									+ " -> " + f.getAbsolutePath());
-							AccidentDescriptionView.this
-									.applyPictureListToDataModel();
+							pictureList.add("Picture " + currentPictureNumber + " -> " + f.getAbsolutePath());
+							AccidentDescriptionView.this.applyPictureListToDataModel();
 							break;
 						} else {
 							break;
@@ -868,8 +788,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		});
 
 		Button btnDeletePicture = new Button(compositeAccidentPicture, SWT.NONE);
-		btnDeletePicture.setImage(Activator.getImageDescriptor(
-				"/icons/buttons/commontables/remove.png").createImage());
+		btnDeletePicture.setImage(Activator.getImageDescriptor("/icons/buttons/commontables/remove.png").createImage());
 		btnDeletePicture.setBounds(0, 0, 75, 25);
 		btnDeletePicture.addListener(SWT.Selection, new Listener() {
 
@@ -877,8 +796,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			public void handleEvent(Event event) {
 				int currentPicture = pictureList.getSelectionIndex();
 				if (currentPicture == -1) {
-					MessageBox dialog = new MessageBox(parent.getShell(),
-							SWT.ICON_INFORMATION | SWT.OK);
+					MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.OK);
 					dialog.setText("Warning");
 					dialog.setMessage("No Picture selected");
 
@@ -887,8 +805,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 					pictureList.remove(currentPicture);
 					AccidentDescriptionView.this.applyPictureListToDataModel();
 					if (currentPicture > 0) {
-						lblCurrentPicture.setText("Current Picture: Picture "
-								+ currentPicture);
+						lblCurrentPicture.setText("Current Picture: Picture " + currentPicture);
 						applyCurrentPictureToDataModel();
 					} else if (currentPicture == 0) {
 						lblCurrentPicture.setText("Current Picture: -");
@@ -899,10 +816,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		});
 
 		Button showPicture = new Button(compositeAccidentPicture, SWT.NONE);
-		showPicture
-				.setImage(Activator
-						.getImageDescriptor(
-								"/icons/buttons/navigation/Picture_frame_with_mountain_image_32.png")
+		showPicture.setImage(
+				Activator.getImageDescriptor("/icons/buttons/navigation/Picture_frame_with_mountain_image_32.png")
 						.createImage());
 		showPicture.setBounds(0, 0, 75, 25);
 		showPicture.addListener(SWT.Selection, new Listener() {
@@ -911,27 +826,20 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			public void handleEvent(Event event) {
 
 				if (lblCurrentPicture.getText().equals("Current Picture: -")) {
-					MessageBox dialog = new MessageBox(parent.getShell(),
-							SWT.ICON_INFORMATION | SWT.OK);
+					MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.OK);
 					dialog.setText("Warning");
 					dialog.setMessage("No Picture selected");
 
 					dialog.open();
 				} else {
-					IWorkbenchWindow window = PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow();
+					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 					IWorkbenchPage page = window.getActivePage();
 					try {
 						ImageInput input = new ImageInput();
-						int selection = Integer.valueOf(lblCurrentPicture
-								.getText().substring(25,
-										lblCurrentPicture.getText().length()));
-						input.setPath(pictureList
-								.getItem(selection - 1)
-								.substring(
-										13,
-										pictureList.getItem(selection - 1)
-												.length()).replace(" ", ""));
+						int selection = Integer.valueOf(
+								lblCurrentPicture.getText().substring(25, lblCurrentPicture.getText().length()));
+						input.setPath(pictureList.getItem(selection - 1)
+								.substring(13, pictureList.getItem(selection - 1).length()).replace(" ", ""));
 						page.openEditor(input, ImageViewID);
 					} catch (PartInitException e) {
 						e.printStackTrace();
@@ -942,18 +850,13 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		});
 
 		lblCurrentPicture = new Label(compositeAccidentPicture, SWT.NONE);
-		lblCurrentPicture.setFont(new Font(Display.getCurrent(), "Segoe UI", 7,
-				SWT.ITALIC));
-		lblCurrentPicture.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				false, false, 1, 1));
+		lblCurrentPicture.setFont(new Font(Display.getCurrent(), "Segoe UI", 7, SWT.ITALIC));
+		lblCurrentPicture.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lblCurrentPicture.setText("Current Picture: -");
-		lblCurrentPicture.setFont(new Font(Display.getCurrent(), "Segoe UI", 7,
-				SWT.ITALIC));
+		lblCurrentPicture.setFont(new Font(Display.getCurrent(), "Segoe UI", 7, SWT.ITALIC));
 
-		pictureList = new List(compositeAccidentPicture, SWT.SINGLE
-				| SWT.V_SCROLL | SWT.H_SCROLL);
-		pictureList.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true,
-				4, 1));
+		pictureList = new List(compositeAccidentPicture, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+		pictureList.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 4, 1));
 		pictureList.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -961,8 +864,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 				if (pictureList.getSelectionIndex() >= 0) {
 
 					int currentPictureNumber = pictureList.getSelectionIndex() + 1;
-					lblCurrentPicture.setText("Current Picture: Picture "
-							+ currentPictureNumber);
+					lblCurrentPicture.setText("Current Picture: Picture " + currentPictureNumber);
 					applyCurrentPictureToDataModel();
 
 				}
@@ -975,33 +877,26 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		});
 		Color color = new Color(Display.getCurrent(), new RGB(255, 255, 255));
 
-		Composite compositeAccidentDate = new Composite(
-				compositeAccidentInformation, SWT.BORDER);
-		compositeAccidentDate.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false, 1, 1));
+		Composite compositeAccidentDate = new Composite(compositeAccidentInformation, SWT.BORDER);
+		compositeAccidentDate.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		compositeAccidentDate.setLayout(new GridLayout(2, false));
 
 		Label lblDate = new Label(compositeAccidentDate, SWT.NONE);
-		lblDate.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1,
-				1));
+		lblDate.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
 		lblDate.setText("Accident Date:");
 		lblDate.setFont(new Font(Display.getCurrent(), "Segoe UI", 9, SWT.BOLD));
 
 		Label lblTime = new Label(compositeAccidentDate, SWT.NONE);
-		lblTime.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1,
-				1));
+		lblTime.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
 		lblTime.setText("Accident Time:");
 		lblTime.setFont(new Font(Display.getCurrent(), "Segoe UI", 9, SWT.BOLD));
 
-		Composite compositeAccidentCalendar = new Composite(
-				compositeAccidentDate, SWT.BORDER);
-		compositeAccidentCalendar.setLayoutData(new GridData(SWT.FILL,
-				SWT.FILL, true, false, 2, 1));
+		Composite compositeAccidentCalendar = new Composite(compositeAccidentDate, SWT.BORDER);
+		compositeAccidentCalendar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		compositeAccidentCalendar.setLayout(new GridLayout(2, false));
 		compositeAccidentCalendar.setBackground(color);
 		dateTime = new DateTime(compositeAccidentCalendar, SWT.CALENDAR);
-		dateTime.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true, 1,
-				1));
+		dateTime.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1));
 		dateTime.setBackground(color);
 		dateTime.addFocusListener(new FocusListener() {
 
@@ -1017,8 +912,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		});
 
 		dateClock = new DateTime(compositeAccidentCalendar, SWT.TIME);
-		dateClock.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 1,
-				1));
+		dateClock.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1));
 		dateClock.addFocusListener(new FocusListener() {
 
 			@Override
@@ -1034,25 +928,18 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 		updateAccidentDate();
 
-		Composite compositeCompanyInformation = new Composite(
-				compositeAccidentInformation, SWT.BORDER);
-		compositeCompanyInformation.setLayoutData(new GridData(SWT.FILL,
-				SWT.FILL, true, true, 1, 1));
+		Composite compositeCompanyInformation = new Composite(compositeAccidentInformation, SWT.BORDER);
+		compositeCompanyInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		compositeCompanyInformation.setLayout(new GridLayout(1, false));
 
-		Label lblCompanyInformation = new Label(compositeCompanyInformation,
-				SWT.NONE);
-		lblCompanyInformation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				true, false, 1, 1));
+		Label lblCompanyInformation = new Label(compositeCompanyInformation, SWT.NONE);
+		lblCompanyInformation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblCompanyInformation.setBounds(0, 0, 55, 15);
 		lblCompanyInformation.setText("Company Information:");
-		lblCompanyInformation.setFont(new Font(Display.getCurrent(),
-				"Segoe UI", 9, SWT.BOLD));
+		lblCompanyInformation.setFont(new Font(Display.getCurrent(), "Segoe UI", 9, SWT.BOLD));
 
-		companyInformationText = new Text(compositeCompanyInformation,
-				SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
-		companyInformationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true, 1, 1));
+		companyInformationText = new Text(compositeCompanyInformation, SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
+		companyInformationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		companyInformationText.setBounds(0, 0, 76, 21);
 		companyInformationText.addFocusListener(new FocusListener() {
 
@@ -1067,25 +954,18 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			}
 		});
 
-		Composite compositeAccidentLocation = new Composite(
-				compositeAccidentInformation, SWT.BORDER);
-		compositeAccidentLocation.setLayoutData(new GridData(SWT.FILL,
-				SWT.FILL, true, true, 1, 1));
+		Composite compositeAccidentLocation = new Composite(compositeAccidentInformation, SWT.BORDER);
+		compositeAccidentLocation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		compositeAccidentLocation.setLayout(new GridLayout(1, false));
 
-		Label lblAccidentLocation = new Label(compositeAccidentLocation,
-				SWT.NONE);
-		lblAccidentLocation.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false, 1, 1));
+		Label lblAccidentLocation = new Label(compositeAccidentLocation, SWT.NONE);
+		lblAccidentLocation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		lblAccidentLocation.setBounds(0, 0, 55, 15);
 		lblAccidentLocation.setText("Accident Location:");
-		lblAccidentLocation.setFont(new Font(Display.getCurrent(), "Segoe UI",
-				9, SWT.BOLD));
+		lblAccidentLocation.setFont(new Font(Display.getCurrent(), "Segoe UI", 9, SWT.BOLD));
 
-		accidentLocationText = new Text(compositeAccidentLocation, SWT.BORDER
-				| SWT.V_SCROLL | SWT.WRAP);
-		accidentLocationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true, 1, 1));
+		accidentLocationText = new Text(compositeAccidentLocation, SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
+		accidentLocationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		accidentLocationText.setBounds(0, 0, 76, 21);
 		accidentLocationText.addFocusListener(new FocusListener() {
 
@@ -1112,91 +992,84 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		if (this.toolContributor == null) {
 			this.toolContributor = new EmptyTextContributor();
 		}
-		this.setDataModelInterface(ProjectManager.getContainerInstance()
-				.getDataModel(this.getProjectID()));
-		Activator.getDefault().getPreferenceStore()
-				.addPropertyChangeListener(this);
+		this.setDataModelInterface(ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
+		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.addPartListener(new IPartListener2() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
 
-					@Override
-					public void partVisible(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
 
+			}
+
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
+
+			}
+
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				if (partRef.getId().equals("acast.steps.step1_1")) {
+					if (TableView.visible) {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(PlatformUI
+								.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("A-CAST.view1"));
 					}
+				}
 
-					@Override
-					public void partOpened(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			}
 
-					}
-
-					@Override
-					public void partInputChanged(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void partHidden(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void partDeactivated(IWorkbenchPartReference partRef) {
-
-					}
-
-					@Override
-					public void partClosed(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void partBroughtToTop(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void partActivated(IWorkbenchPartReference partRef) {
-						IWorkbenchPage page = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage();
-					}
-				});
+			@Override
+			public void partActivated(IWorkbenchPartReference partRef) {
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			}
+		});
 
 		parent.setLayout(new GridLayout(1, false));
-		Composite composite_AccidentDescription = new Composite(parent,
-				SWT.BORDER);
+		Composite composite_AccidentDescription = new Composite(parent, SWT.BORDER);
 		composite_AccidentDescription.setLayout(new GridLayout(1, false));
-		GridData accidentDescriptionData = new GridData(SWT.FILL, SWT.FILL,
-				true, true, 1, 1);
+		GridData accidentDescriptionData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite_AccidentDescription.setLayoutData(accidentDescriptionData);
 
-		this.accidentNameLabel = new Label(composite_AccidentDescription,
-				SWT.NONE);
-		accidentNameLabel.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM,
-				true, false, 1, 1));
+		this.accidentNameLabel = new Label(composite_AccidentDescription, SWT.NONE);
+		accidentNameLabel.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
 		this.accidentNameLabel.setText("Accident Description:");
-		this.accidentNameLabel.setFont(new Font(Display.getCurrent(),
-				"Segoe UI", 10, SWT.BOLD));
+		this.accidentNameLabel.setFont(new Font(Display.getCurrent(), "Segoe UI", 10, SWT.BOLD));
 
-		this.descriptionText = new StyledText(composite_AccidentDescription,
-				SWT.H_SCROLL | SWT.WRAP);
+		this.descriptionText = new StyledText(composite_AccidentDescription, SWT.H_SCROLL | SWT.WRAP);
 		this.descriptionText.setAlwaysShowScrollBars(true);
-		GridData descriptionTextData = new GridData(SWT.FILL, SWT.FILL, true,
-				true, 1, 1);
+		GridData descriptionTextData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		descriptionText.setLayoutData(descriptionTextData);
 		this.descriptionText.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				for (ISelectionChangedListener obj : AccidentDescriptionView.this.listener) {
-					obj.selectionChanged(new SelectionChangedEvent(
-							AccidentDescriptionView.this, getSelection()));
+					obj.selectionChanged(new SelectionChangedEvent(AccidentDescriptionView.this, getSelection()));
 
 				}
 
@@ -1209,40 +1082,33 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 				switch (e.keyCode) {
 				case SWT.ARROW_LEFT: {
 					AccidentDescriptionView.this.descriptionText.setSelection(
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x - 1,
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x - 1);
+							AccidentDescriptionView.this.descriptionText.getSelection().x - 1,
+							AccidentDescriptionView.this.descriptionText.getSelection().x - 1);
 					break;
 				}
 				case SWT.ARROW_RIGHT: {
 					AccidentDescriptionView.this.descriptionText.setSelection(
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x + 1,
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x + 1);
+							AccidentDescriptionView.this.descriptionText.getSelection().x + 1,
+							AccidentDescriptionView.this.descriptionText.getSelection().x + 1);
 				}
 				}
 			}
 		});
 
-		this.descriptionText
-				.addExtendedModifyListener(new ExtendedModifyListener() {
+		this.descriptionText.addExtendedModifyListener(new ExtendedModifyListener() {
 
-					@Override
-					public void modifyText(ExtendedModifyEvent event) {
-						AccidentDescriptionView.this
-								.handleDescriptionModify(event);
+			@Override
+			public void modifyText(ExtendedModifyEvent event) {
+				AccidentDescriptionView.this.handleDescriptionModify(event);
 
-						AccidentDescriptionView.this.setStyle(event.widget);
-					}
-				});
+				AccidentDescriptionView.this.setStyle(event.widget);
+			}
+		});
 		this.descriptionText.addFocusListener(new FocusListener() {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				AccidentDescriptionView.this
-						.applyAccidentDescriptionToDataModel();
+				AccidentDescriptionView.this.applyAccidentDescriptionToDataModel();
 				AccidentDescriptionView.this.setStyle(e.widget);
 			}
 
@@ -1277,7 +1143,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Handles changes occurring in the TextArea depending on the CaretOffset
 	 * and selection of the text.
-	 * 
+	 *
 	 * @author Sebastian Sieber
 	 * @param event
 	 *            Fired if description text changed
@@ -1288,22 +1154,19 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		}
 		StyleRange styleRange = new StyleRange();
 		styleRange.font = this.textFont;
-		if ((event.length == 1)
-				|| this.descriptionText.getTextRange(event.start, event.length)
-						.equals(this.descriptionText.getLineDelimiter())) {
+		if ((event.length == 1) || this.descriptionText.getTextRange(event.start, event.length)
+				.equals(this.descriptionText.getLineDelimiter())) {
 			int caretOffset = this.descriptionText.getCaretOffset();
 
 			if (caretOffset < this.descriptionText.getCharCount()) {
-				styleRange = this.descriptionText
-						.getStyleRangeAtOffset(caretOffset);
+				styleRange = this.descriptionText.getStyleRangeAtOffset(caretOffset);
 			}
 			if (styleRange != null) {
 				styleRange = (StyleRange) styleRange.clone();
 				styleRange.start = event.start;
 				styleRange.length = event.length;
 			} else {
-				styleRange = new StyleRange(event.start, event.length, null,
-						null, SWT.NONE);
+				styleRange = new StyleRange(event.start, event.length, null, null, SWT.NONE);
 			}
 
 			if (this.toolContributor.getBoldControl()) {
@@ -1345,8 +1208,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	public ISelection getSelection() {
 		Point selection = this.descriptionText.getSelectionRange();
 		StyledTextSelection styledSelection = new StyledTextSelection(selection);
-		StyleRange[] selctedRanges = this.descriptionText.getStyleRanges(
-				selection.x, selection.y);
+		StyleRange[] selctedRanges = this.descriptionText.getStyleRanges(selection.x, selection.y);
 		int size = -1;
 		String fontName = "";
 		for (StyleRange range : selctedRanges) {
@@ -1365,8 +1227,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	}
 
 	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		if (this.listener != null) {
 			this.listener.remove(listener);
 		}
@@ -1394,26 +1255,22 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 				newRange = new StyleRange(i, 1, null, null, SWT.NULL);
 			}
 			// called if text is selected and button pressed
-			this.descriptionText.setStyleRange(this.setStyleItemRange(style,
-					newRange));
-			this.descriptionText.setStyleRange(this.setFontItemRange(style,
-					newRange));
+			this.descriptionText.setStyleRange(this.setStyleItemRange(style, newRange));
+			this.descriptionText.setStyleRange(this.setFontItemRange(style, newRange));
 		}
-		this.descriptionText.setSelectionRange(selectionRange.x
-				+ selectionRange.y, 0);
+		this.descriptionText.setSelectionRange(selectionRange.x + selectionRange.y, 0);
 
 		// mark text as selected
-		this.descriptionText.setSelection(selectionRange.x, selectionRange.x
-				+ selectionRange.y);
+		this.descriptionText.setSelection(selectionRange.x, selectionRange.x + selectionRange.y);
 		this.descriptionText.setStyleRange(newRange);
 
 	}
 
 	/**
 	 * Set style range for bold, italic, strike out and underline.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param style
 	 *            Widget
 	 * @param styleRange
@@ -1436,9 +1293,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Set the style range if text get modified and widget is selected. Also
 	 * triggers if text get selection and widget is selected.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param style
 	 *            Widget
 	 * @param styleRange
@@ -1450,8 +1307,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			styleRange.foreground = this.textForegroundColor;
 		} else if (style.equals(BACKGROUND)) {
 			styleRange.background = this.textBackgroundColor;
-		} else if ((style.equals(FONT_SIZE_UP))
-				|| (style.equals(FONT_SIZE_DOWN)) || (style.equals(FONT_SIZE))
+		} else if ((style.equals(FONT_SIZE_UP)) || (style.equals(FONT_SIZE_DOWN)) || (style.equals(FONT_SIZE))
 				|| (style.equals(FONT_FAMILY))) {
 			styleRange.font = this.textFont;
 		}
@@ -1474,9 +1330,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Set style range for given range. Used to set foreground and background
 	 * color when chosen a new color from dialog.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param selectionRange
 	 *            selected range
 	 * @param widget
@@ -1503,12 +1359,10 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			}
 			this.descriptionText.setStyleRange(styleRange);
 		}
-		this.descriptionText.setSelectionRange(selectionRange.x
-				+ selectionRange.y, 0);
+		this.descriptionText.setSelectionRange(selectionRange.x + selectionRange.y, 0);
 
 		// mark text as selected
-		this.descriptionText.setSelection(selectionRange.x, selectionRange.x
-				+ selectionRange.y);
+		this.descriptionText.setSelection(selectionRange.x, selectionRange.x + selectionRange.y);
 	}
 
 	@Override

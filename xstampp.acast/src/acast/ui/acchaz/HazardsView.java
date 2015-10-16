@@ -3,20 +3,18 @@
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *******************************************************************************/
 
 package acast.ui.acchaz;
 
 import java.util.Iterator;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -44,20 +42,24 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.PlatformUI;
 
-import xstampp.model.IDataModel;
-import xstampp.ui.common.ProjectManager;
 import acast.Activator;
 import acast.model.hazacc.Hazard;
 import acast.model.interfaces.IHazardViewDataModel;
+import acast.ui.accidentDescription.TableView;
+import messages.Messages;
+import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
- * 
+ *
  */
 public class HazardsView extends CommonTableView {
 
-	
 	public static final String ID = "acast.steps.step1_2_1"; //$NON-NLS-1$
 
 	// the hazard currently displayed in the text widget
@@ -67,16 +69,70 @@ public class HazardsView extends CommonTableView {
 
 	/**
 	 * Create contents of the view part.
-	 * 
+	 *
 	 * @author Jarkko Heidenwag
 	 * @param parent
 	 *            The parent composite
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ProjectManager.getContainerInstance()
-				.getDataModel(this.getProjectID()));
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
 
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				if (partRef.getId().equals("acast.steps.step1_2_1")) {
+					if (TableView.visible) {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(PlatformUI
+								.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("A-CAST.view1"));
+					}
+				}
+
+			}
+
+			@Override
+			public void partActivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		this.setDataModelInterface(ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
 
 		this.createCommonTableView(parent, Messages.Hazards);
 
@@ -84,8 +140,7 @@ public class HazardsView extends CommonTableView {
 
 			@Override
 			public void keyReleased(KeyEvent ke) {
-				HazardsView.this.getFilter().setSearchText(
-						HazardsView.this.getFilterTextField().getText());
+				HazardsView.this.getFilter().setSearchText(HazardsView.this.getFilterTextField().getText());
 				HazardsView.this.refreshView();
 			}
 		});
@@ -93,14 +148,10 @@ public class HazardsView extends CommonTableView {
 		this.setFilter(new ATableFilter());
 		this.getTableViewer().addFilter(this.getFilter());
 
-		this.getAddNewItemButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/add.png") //$NON-NLS-1$
-						.createImage());
-		this.getDeleteItemsButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
-						.createImage());
+		this.getAddNewItemButton().setImage(Activator.getImageDescriptor("/icons/buttons/commontables/add.png") //$NON-NLS-1$
+				.createImage());
+		this.getDeleteItemsButton().setImage(Activator.getImageDescriptor("/icons/buttons/commontables/remove.png") //$NON-NLS-1$
+				.createImage());
 
 		Listener addHazardListener = new Listener() {
 
@@ -112,54 +163,36 @@ public class HazardsView extends CommonTableView {
 				HazardsView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				HazardsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				HazardsView.this.refreshView();
-				HazardsView.this.dataInterface.addHazard(
-						"", Messages.DescriptionOfThisHazard); //$NON-NLS-1$
-				int newID = HazardsView.this.dataInterface.getAllHazards()
-						.size() - 1;
+				HazardsView.this.dataInterface.addHazard("", Messages.DescriptionOfThisHazard); //$NON-NLS-1$
+				int newID = HazardsView.this.dataInterface.getAllHazards().size() - 1;
 				HazardsView.this.updateTable();
 				HazardsView.this.refreshView();
 				HazardsView.this.getTableViewer().setSelection(
-						new StructuredSelection(HazardsView.this
-								.getTableViewer().getElementAt(newID)), true);
-				HazardsView.this
-						.getTitleColumn()
-						.getViewer()
-						.editElement(
-								HazardsView.this.getTableViewer().getElementAt(
-										newID), 1);
+						new StructuredSelection(HazardsView.this.getTableViewer().getElementAt(newID)), true);
+				HazardsView.this.getTitleColumn().getViewer()
+						.editElement(HazardsView.this.getTableViewer().getElementAt(newID), 1);
 			}
 		};
 
-		this.getAddNewItemButton()
-				.addListener(SWT.Selection, addHazardListener);
+		this.getAddNewItemButton().addListener(SWT.Selection, addHazardListener);
 
-		this.getTableViewer().getTable()
-				.addListener(SWT.KeyDown, addHazardListener);
+		this.getTableViewer().getTable().addListener(SWT.KeyDown, addHazardListener);
 
 		// Listener for editing a title by pressing return
 		Listener returnListener = new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
-				if ((event.type == SWT.KeyDown)
-						&& (event.keyCode == SWT.CR)
-						&& (!HazardsView.this.getTableViewer().getSelection()
-								.isEmpty())) {
-					int indexFirstSelected = HazardsView.this.getTableViewer()
-							.getTable().getSelectionIndices()[0];
-					HazardsView.this
-							.getTitleColumn()
-							.getViewer()
-							.editElement(
-									HazardsView.this.getTableViewer()
-											.getElementAt(indexFirstSelected),
-									1);
+				if ((event.type == SWT.KeyDown) && (event.keyCode == SWT.CR)
+						&& (!HazardsView.this.getTableViewer().getSelection().isEmpty())) {
+					int indexFirstSelected = HazardsView.this.getTableViewer().getTable().getSelectionIndices()[0];
+					HazardsView.this.getTitleColumn().getViewer()
+							.editElement(HazardsView.this.getTableViewer().getElementAt(indexFirstSelected), 1);
 				}
 			}
 		};
 
-		this.getTableViewer().getTable()
-				.addListener(SWT.KeyDown, returnListener);
+		this.getTableViewer().getTable().addListener(SWT.KeyDown, returnListener);
 
 		// check if the description is default and delete it in that case
 		this.getDescriptionWidget().addFocusListener(new FocusListener() {
@@ -191,15 +224,13 @@ public class HazardsView extends CommonTableView {
 					Text text = (Text) e.widget;
 					String description = text.getText();
 					UUID id = HazardsView.this.displayedHazard.getId();
-					HazardsView.this.dataInterface.setHazardDescription(id,
-							description);
+					HazardsView.this.dataInterface.setHazardDescription(id, description);
 				}
 			}
 		});
 
 		// Listener for showing the description of the selected hazard
-		HazardsView.this.getTableViewer().addSelectionChangedListener(
-				new HazSelectionChangedListener());
+		HazardsView.this.getTableViewer().addSelectionChangedListener(new HazSelectionChangedListener());
 
 		this.getIdColumn().setLabelProvider(new ColumnLabelProvider() {
 
@@ -223,35 +254,30 @@ public class HazardsView extends CommonTableView {
 			}
 		});
 
-		final EditingSupport titleEditingSupport = new HazEditingSupport(
-				HazardsView.this.getTableViewer());
+		final EditingSupport titleEditingSupport = new HazEditingSupport(HazardsView.this.getTableViewer());
 		this.getTitleColumn().setEditingSupport(titleEditingSupport);
-
 
 		// KeyListener for deleting hazards by selecting them and pressing the
 		// delete key
-		HazardsView.this.getTableViewer().getControl()
-				.addKeyListener(new KeyAdapter() {
+		HazardsView.this.getTableViewer().getControl().addKeyListener(new KeyAdapter() {
 
-					@Override
-					public void keyReleased(final KeyEvent e) {
-						if ((e.keyCode == SWT.DEL)
-								|| ((e.stateMask == SWT.COMMAND) && (e.keyCode == SWT.BS))) {
-							IStructuredSelection selection = (IStructuredSelection) HazardsView.this
-									.getTableViewer().getSelection();
-							if (selection.isEmpty()) {
-								return;
-							}
-							HazardsView.this.deleteItems();
-						}
+			@Override
+			public void keyReleased(final KeyEvent e) {
+				if ((e.keyCode == SWT.DEL) || ((e.stateMask == SWT.COMMAND) && (e.keyCode == SWT.BS))) {
+					IStructuredSelection selection = (IStructuredSelection) HazardsView.this.getTableViewer()
+							.getSelection();
+					if (selection.isEmpty()) {
+						return;
 					}
-				});
+					HazardsView.this.deleteItems();
+				}
+			}
+		});
 
 		// Adding a right click context menu and the option to delete an entry
 		// this way
 		MenuManager menuMgr = new MenuManager();
-		Menu menu = menuMgr.createContextMenu(HazardsView.this.getTableViewer()
-				.getControl());
+		Menu menu = menuMgr.createContextMenu(HazardsView.this.getTableViewer().getControl());
 		menuMgr.addMenuListener(new IMenuListener() {
 
 			@Override
@@ -282,29 +308,24 @@ public class HazardsView extends CommonTableView {
 
 	/**
 	 * deleting all selected hazards
-	 * 
+	 *
 	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 */
 	@Override
 	public void deleteItems() {
 		final int maxNumOfDisplayedEntries = 10;
-		IStructuredSelection selection = (IStructuredSelection) HazardsView.this
-				.getTableViewer().getSelection();
+		IStructuredSelection selection = (IStructuredSelection) HazardsView.this.getTableViewer().getSelection();
 		if (selection.size() == 1) {
 			// if only one hazard is selected
 			Hazard deletedHazard = (Hazard) selection.getFirstElement();
-			String deletedHazardId = Integer
-					.toString(deletedHazard.getNumber());
+			String deletedHazardId = Integer.toString(deletedHazard.getNumber());
 			String deletedHazardTitle = deletedHazard.getTitle();
-			String confirmation = Messages.DoYouWishToDeleteTheHazard
-					+ deletedHazardId + ": " //$NON-NLS-1$
+			String confirmation = Messages.DoYouWishToDeleteTheHazard + deletedHazardId + ": " //$NON-NLS-1$
 					+ deletedHazardTitle + "?"; //$NON-NLS-1$
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
+			boolean b = MessageDialog.openQuestion(this.getTableContainer().getShell(), Messages.Confirm, confirmation);
 			this.delOne(b, deletedHazard.getId());
-		} else if ((selection.size() > 1)
-				&& (selection.size() <= maxNumOfDisplayedEntries)) {
+		} else if ((selection.size() > 1) && (selection.size() <= maxNumOfDisplayedEntries)) {
 			// if a few hazards are selected
 			String hazards = ""; //$NON-NLS-1$
 			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
@@ -315,10 +336,8 @@ public class HazardsView extends CommonTableView {
 				String hazard = newline + num + ": " + title; //$NON-NLS-1$
 				hazards = hazards + hazard;
 			}
-			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingHazards
-					+ hazards;
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
+			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingHazards + hazards;
+			boolean b = MessageDialog.openQuestion(this.getTableContainer().getShell(), Messages.Confirm, confirmation);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				HazardsView.this.displayedHazard = null;
@@ -330,8 +349,7 @@ public class HazardsView extends CommonTableView {
 			}
 		} else if (selection.size() > maxNumOfDisplayedEntries) {
 			// if many hazards are selected
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm,
+			boolean b = MessageDialog.openQuestion(this.getTableContainer().getShell(), Messages.Confirm,
 					Messages.ConfirmTheDeletionOfAllSelectedHazards);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
@@ -343,8 +361,8 @@ public class HazardsView extends CommonTableView {
 				this.refreshView();
 			}
 		} else {
-			MessageDialog.openInformation(this.getTableContainer().getShell(),
-					Messages.Information, Messages.NoHazardSelected);
+			MessageDialog.openInformation(this.getTableContainer().getShell(), Messages.Information,
+					Messages.NoHazardSelected);
 		}
 	}
 
@@ -361,9 +379,9 @@ public class HazardsView extends CommonTableView {
 	private class HazEditingSupport extends EditingSupport {
 
 		/**
-		 * 
+		 *
 		 * @author Jarkko Heidenwag
-		 * 
+		 *
 		 * @param viewer
 		 *            the ColumnViewer
 		 */
@@ -378,16 +396,14 @@ public class HazardsView extends CommonTableView {
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return new TextCellEditor(HazardsView.this.getTableViewer()
-					.getTable());
+			return new TextCellEditor(HazardsView.this.getTableViewer().getTable());
 		}
 
 		@Override
 		protected Object getValue(Object element) {
 			if (element instanceof Hazard) {
 				// deleting the default title
-				if ((((Hazard) element).getTitle()
-						.compareTo(Messages.DoubleClickToEditTitle)) == 0) {
+				if ((((Hazard) element).getTitle().compareTo(Messages.DoubleClickToEditTitle)) == 0) {
 					((Hazard) element).setTitle(""); //$NON-NLS-1$
 				}
 				return ((Hazard) element).getTitle();
@@ -401,16 +417,14 @@ public class HazardsView extends CommonTableView {
 				((Hazard) element).setTitle(String.valueOf(value));
 				// Fill in the default title if the user left it blank
 				if (((Hazard) element).getTitle().length() == 0) {
-					((Hazard) element)
-							.setTitle(Messages.DoubleClickToEditTitle);
+					((Hazard) element).setTitle(Messages.DoubleClickToEditTitle);
 				}
 			}
 			HazardsView.this.refreshView();
 		}
 	}
 
-	private class HazSelectionChangedListener implements
-			ISelectionChangedListener {
+	private class HazSelectionChangedListener implements ISelectionChangedListener {
 
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
@@ -422,20 +436,16 @@ public class HazardsView extends CommonTableView {
 				return;
 			}
 			if (event.getSelection() instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				if (selection.getFirstElement() instanceof Hazard) {
 					if (HazardsView.this.displayedHazard == null) {
-						HazardsView.this.getDescriptionWidget()
-								.setEnabled(true);
+						HazardsView.this.getDescriptionWidget().setEnabled(true);
 					} else {
 						HazardsView.this.displayedHazard = null;
 					}
-					HazardsView.this.getDescriptionWidget().setText(
-							((Hazard) selection.getFirstElement())
-									.getDescription());
-					HazardsView.this.displayedHazard = (Hazard) selection
-							.getFirstElement();
+					HazardsView.this.getDescriptionWidget()
+							.setText(((Hazard) selection.getFirstElement()).getDescription());
+					HazardsView.this.displayedHazard = (Hazard) selection.getFirstElement();
 				}
 			}
 		}
@@ -443,12 +453,11 @@ public class HazardsView extends CommonTableView {
 
 	/**
 	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 */
 	@Override
 	public void updateTable() {
-		HazardsView.this.getTableViewer().setInput(
-				this.dataInterface.getAllHazards());
+		HazardsView.this.getTableViewer().setInput(this.dataInterface.getAllHazards());
 	}
 
 	@Override
@@ -468,9 +477,9 @@ public class HazardsView extends CommonTableView {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 * @return the type of this view
 	 */
 	@Override

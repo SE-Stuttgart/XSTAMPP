@@ -15,7 +15,7 @@ package acast.model.hazacc;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import acast.model.ATableModel;
+import acast.model.ATableModelCAST;
 
 
 
@@ -26,7 +26,7 @@ import acast.model.ATableModel;
  * 
  */
 @XmlRootElement(name = "accident")
-public class Accident extends ATableModel {
+public class Accident extends ATableModelCAST {
 
 	/**
 	 * Constructor of an accident

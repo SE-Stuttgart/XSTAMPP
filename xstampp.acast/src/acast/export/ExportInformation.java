@@ -3,12 +3,12 @@
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *******************************************************************************/
 package acast.export;
 
@@ -24,16 +24,14 @@ import xstampp.preferences.IPreferenceConstants;
 
 /**
  * Stores extra information for the export
- * 
+ *
  * @author Fabian Toth
- * 
+ *
  */
 public class ExportInformation {
 
-	private final IPreferenceStore store = Activator.getDefault()
-			.getPreferenceStore();
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"dd.MM.yyyy, HH:mm:ss"); //$NON-NLS-1$
+	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss"); //$NON-NLS-1$
 
 	private Date creationDate;
 	private String csImagePath;
@@ -49,18 +47,17 @@ public class ExportInformation {
 
 	/**
 	 * Constructor of the export information
-	 * 
-	 * @author Fabian Toth
-	 * 
+	 *
+	 *
 	 */
 	public ExportInformation() {
 		this.creationDate = new Date();
 		this.logoPath = this.store.getString(IPreferenceConstants.COMPANY_LOGO);
 		this.company = this.store.getString(IPreferenceConstants.COMPANY_NAME);
-		this.colorBackground = this.rgbToHex(PreferenceConverter.getColor(
-				this.store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
-		this.colorFont = this.rgbToHex(PreferenceConverter.getColor(this.store,
-				IPreferenceConstants.COMPANY_FONT_COLOR));
+		this.colorBackground = this
+				.rgbToHex(PreferenceConverter.getColor(this.store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
+		this.colorFont = this
+				.rgbToHex(PreferenceConverter.getColor(this.store, IPreferenceConstants.COMPANY_FONT_COLOR));
 	}
 
 	/**
