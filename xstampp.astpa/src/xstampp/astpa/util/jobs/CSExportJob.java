@@ -56,7 +56,7 @@ public class CSExportJob extends Job {
 	private IFigure printableFigure;
 	private Image srcImage;
 	private IControlStructureEditorDataModel model;
-	private final double factor = 4.0;
+	private final double factor = 5.0;
 	private UUID projectID;
 
 	
@@ -180,8 +180,8 @@ public class CSExportJob extends Job {
 					clipRectangle.height));
 		}
 		ImageLoader imgLoader = new ImageLoader();
-		imgLoader.data = new ImageData[] { this.srcImage.getImageData() };
-
+		imgLoader.data = new ImageData[] { scaledImage.getImageData() };
+		
 		imgLoader.save(this.path, this.imageType);
 		File imageFile = new File(this.path);
 		if (imageFile.exists() && this.showPreview) {

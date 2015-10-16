@@ -56,7 +56,7 @@ public class Run extends Job implements IJobChangeListener{
 											Messages.Hazards,"/fopHazards.xsl",//$NON-NLS-1$
 											Messages.CausalFactors,"/fopcausal.xsl",//$NON-NLS-1$
 											Messages.CorrespondingSafetyConstraints,"/fopCorrespondingSafetyConstraints.xsl",//$NON-NLS-1$
-											Messages.DesignRequirements,"/fopDesignRequironments.xsl",//$NON-NLS-1$
+											Messages.DesignRequirements,"/fopDesignRequirements.xsl",//$NON-NLS-1$
 											Messages.SafetyConstraints,"/fopSafetyConstraints.xsl",//$NON-NLS-1$
 											Messages.SystemDescription,"/fopSystemDescription.xsl",//$NON-NLS-1$
 											Messages.SystemGoals,"/fopSystemGoals.xsl",//$NON-NLS-1$

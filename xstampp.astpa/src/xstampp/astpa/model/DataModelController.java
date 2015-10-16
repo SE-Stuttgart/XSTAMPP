@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
@@ -198,8 +199,14 @@ public class DataModelController extends Observable implements
 		this.causalFactorController.prepareForExport(this.hazAccController,
 				this.controlStructureController.getInternalComponents());
 		this.exportInformation = new ExportInformation();
-		this.updateValue(ObserverValue.SAVE);
-		this.updateValue(ObserverValue.EXPORT);
+		Display.getDefault().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				updateValue(ObserverValue.SAVE);
+				updateValue(ObserverValue.EXPORT);
+			}
+		});
 		return true;
 	}
 
@@ -211,7 +218,13 @@ public class DataModelController extends Observable implements
 				.prepareForSave(this.controlStructureController
 						.getInternalComponents());
 		this.exportInformation = null;
-		this.updateValue(ObserverValue.SAVE);
+		Display.getDefault().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				updateValue(ObserverValue.SAVE);
+			}
+		});
 	}
 
 	@XmlTransient

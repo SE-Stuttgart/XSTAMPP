@@ -123,10 +123,11 @@ public class ExportJob extends Job implements IJobChangeListener {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.ExportPdf, 5);
+			File tmp = new File(filePath);
 			String projectTitle = ProjectManager.getContainerInstance().getTitle(this.id);
 			String wsPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
-			this.imgPath = wsPath + File.separator + "Output" + File.separator //$NON-NLS-1$
-					      + projectTitle + File.separator + "images"; //$NON-NLS-1$
+			
+			this.imgPath = tmp.getParent(); //$NON-NLS-1$
 			
 		this.csPath = new File(this.imgPath + File.separator
 				+ getThread().getId() + "cs.png");
