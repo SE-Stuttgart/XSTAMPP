@@ -132,12 +132,11 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 			this.parent.removeHighlighter();
 			return false;
 		}
-//		else if (this.sourceAnchorModel.getOwnerId().equals(
-//				this.targetAnchorModel.getOwnerId())) {
-//			this.parent.removeHighlighter();
-//			return false;
-//		}
-//		else 
+		else if (this.sourceAnchorModel.getOwnerId().equals(
+				this.targetAnchorModel.getOwnerId())) {
+			this.parent.removeHighlighter();
+			return false;
+		}
 		if (!this.checkConnection(this.sourceAnchorModel,
 				this.targetAnchorModel)) {
 			return false;

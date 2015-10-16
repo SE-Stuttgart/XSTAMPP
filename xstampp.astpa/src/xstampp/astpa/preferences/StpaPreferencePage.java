@@ -23,7 +23,7 @@ implements IWorkbenchPreferencePage {
 	public void init(IWorkbench workbench) {
 
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("A-STPA Preferences");
+		setDescription("XSTAMPP Preferences");
 		
 	}
 

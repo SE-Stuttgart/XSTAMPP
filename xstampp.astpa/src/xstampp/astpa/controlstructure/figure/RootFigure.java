@@ -28,7 +28,7 @@ import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.preferences.IControlStructureConstants;

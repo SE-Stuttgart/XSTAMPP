@@ -21,7 +21,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.preferences.IControlStructureConstants;
 

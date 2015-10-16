@@ -1182,54 +1182,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	}
 
 	/**
-	 * Increase font size.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param composite
-	 *            Composite
-	 * @param event
-	 *            SelectionEvent
-	 */
-	public void setBaselineUp(Composite composite, SelectionEvent event) {
-		Display display = composite.getDisplay();
-		int currentIndex = this.fontSizeControl.getSelectionIndex();
-		if (currentIndex < (this.fontSizeControl.getItemCount() - 1)) {
-			currentIndex = currentIndex + 1;
-			this.fontSizeControl.select(currentIndex);
-			int size = Integer.parseInt(this.fontSizeControl
-					.getItem(currentIndex));
-			this.textFont = new Font(display, this.fontNameControl.getText(),
-					size, SWT.NORMAL);
-			this.setStyle(event.widget);
-		}
-	}
-
-	/**
-	 * Decrease font size
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param composite
-	 *            Composite
-	 * @param event
-	 *            SelectionEvent
-	 */
-	public void setBaselineDown(Composite composite, SelectionEvent event) {
-		Display display = composite.getDisplay();
-		int currentIndex = this.fontSizeControl.getSelectionIndex();
-		if (currentIndex > 1) {
-			currentIndex = currentIndex - 1;
-			this.fontSizeControl.select(currentIndex);
-			int size = Integer.parseInt(this.fontSizeControl
-					.getItem(currentIndex));
-			this.textFont = new Font(display, this.fontNameControl.getText(),
-					size, SWT.NORMAL);
-			this.setStyle(event.widget);
-		}
-	}
-
-	/**
 	 * Get font names from system and sort alphabetically.
 	 * 
 	 * @author Sebastian Sieber

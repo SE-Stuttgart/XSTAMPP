@@ -36,7 +36,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.astpa.Activator;
+import xstampp.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.preferences.IControlStructureConstants;
 
@@ -194,7 +194,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	public void setText(String text) {
 //		this.content.getUpdateManager().performUpdate();
 		this.content.setText(text);
-		this.getParent().setBounds(content.getBounds());
+		this.getParent().setBounds(this.content.getBounds());
 		this.content.getLayoutManager().invalidate();
 		this.content.getUpdateManager().performUpdate();
 	}
@@ -205,7 +205,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	@Override
 	public void paint(Graphics graphics) {
 		super.paint(graphics);
-		if(this.extraLine && Activator.getDefault().getPreferenceStore().
+		if(this.extraLine && this.store.
 							getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
 			graphics.drawLine(0, getBounds().height, getParent().getBounds().width, getBounds().height);
 		}
