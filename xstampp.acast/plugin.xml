@@ -606,5 +606,16 @@
             name="name">
       </context>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="tocusingacast.xml"
+            primary="false">
+      </toc>
+   </extension>
 
 </plugin>

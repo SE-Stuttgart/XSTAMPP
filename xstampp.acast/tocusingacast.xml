@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Using Acast" link_to="toc.xml#usingacast">
+	<topic label="Accident Description" href="html/usingAcast/accidentDescriptionView.html" />
+	<topic label="Common Table View" href="html/usingAcast/commonTableView.html" />
+	<topic label="Control Structure View" href="html/usingAcast/controlStructureView.html" />
+	<topic label="Proximal Events Table" href="html/usingAcast/proximalEventsView.html" />
+	<topic label="Responsibilities View" href="html/usingAcast/responsibilityView.html" />
+	<topic label="Recommendation View" href="html/usingAcast/recommendationView.html" />
+	
+</toc>

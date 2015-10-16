@@ -130,14 +130,14 @@ public class CSEditorCAST extends CSEditor {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				IContextService contextService = getSite().getService(IContextService.class);
+				IContextService contextService = (IContextService) getSite().getService(IContextService.class);
 
 				contextService.deactivateContext(this.activation); // $NON-NLS-1$
 			}
 
 			@Override
 			public void focusGained(FocusEvent e) {
-				IContextService contextService = getSite().getService(IContextService.class);
+				IContextService contextService = (IContextService) getSite().getService(IContextService.class);
 				this.activation = contextService.activateContext("acastContextID");
 				// $NON-NLS-1$
 			}

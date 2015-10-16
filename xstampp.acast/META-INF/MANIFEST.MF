@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.eclipse.osgi,
  org.eclipse.draw2d,
- xstampp.astpa;bundle-version="2.0.2"
+ xstampp.astpa;bundle-version="2.0.2",
+ org.eclipse.help
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: xstampp.model
