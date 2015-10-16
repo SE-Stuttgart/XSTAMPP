@@ -50,5 +50,13 @@
          </view>
       </stepPerspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="settings.PreferencePageSettings"
+            id="xstpa.preferencePage"
+            name="PreferencePage">
+      </page>
+   </extension>
 
 </plugin>

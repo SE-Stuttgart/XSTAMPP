@@ -5,7 +5,9 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -37,6 +39,8 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+
+import xstampp.util.STPAPluginUtils;
 
 /**
  * 
@@ -331,6 +335,37 @@ public class editWindow
 	    dontCareValues.setSelection(true);
 	    
 	    // Add the buttons for the ButtonsComponent
+	    
+	    // Button which calls the PreferencePage for the ACTS Path
+	    Button setPathBtn = new Button(buttonsComposite, SWT.PUSH);
+	    setPathBtn.setText("Set ACTS Path");
+	    data = new GridData(100, 30);
+	    setPathBtn.setLayoutData(data);
+	    
+	    /**
+	     * Functionality of the setPathBtn
+	     */
+	    setPathBtn.addSelectionListener(new SelectionAdapter() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		Map<String,String> values=new HashMap<>();
+  	    	  	values.put("xstampp.command.preferencePage", "xstpa.preferencePage");
+  	    	  	STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
+  	    	  	view.setInput(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+  	    	  			.replace("acts_cmd_2.92.jar", "")+"input.txt"); 
+  	    	  	view.setInput2(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+  	    	  			.replace("acts_cmd_2.92.jar", "")+"input2.txt");
+  	    	  	view.setOutput(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+  	    	  			.replace("acts_cmd_2.92.jar", "")+"output.txt");
+  	    	  	view.setOutput2(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+  	    	  			.replace("acts_cmd_2.92.jar", "")+"output2.txt");
+	    	}
+	    });
+
+	    
+	    Label spacerLabel = new Label(buttonsComposite, SWT.NULL);
+	    spacerLabel.setText("");
+	    
+	    // Apply Button
 	    Button apply = new Button(buttonsComposite, SWT.PUSH);
 	    apply.setText("Apply");
 	    data = new GridData(100, 30);

@@ -11,7 +11,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
@@ -20,8 +22,11 @@ import javax.swing.JOptionPane;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -68,6 +73,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import settings.PreferenceInitializer;
+import settings.PreferencePageSettings;
 import export.ExportContent;
 import export.ExportJob;
 import xstampp.astpa.haz.ITableModel;
@@ -83,6 +90,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
+import xstampp.util.STPAPluginUtils;
 
 public class View extends ViewPart implements Observer {
 	public static final String ID = "xstpa.view";
@@ -138,13 +146,17 @@ public class View extends ViewPart implements Observer {
 	
 	public static final String[] RS_PROPS = { ENTRY_ID, CONTROL_ACTIONS, CONTEXT, CRITICAL_COMBI, UCA, REL_HAZ, REFINED_SAFETY};
 
-	public static final String INPUT = Platform.getInstanceLocation().getURL().getPath()+"input.txt";
+	private String INPUT = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+			  .replace("acts_cmd_2.92.jar", "")+"input.txt";
 	
-	public static final String INPUT2 = Platform.getInstanceLocation().getURL().getPath()+"input2.txt";
+	private String INPUT2 = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+			  .replace("acts_cmd_2.92.jar", "")+"input2.txt";
 	
-	public static final String OUTPUT = Platform.getInstanceLocation().getURL().getPath()+"output.txt";
+	private String OUTPUT = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+			  .replace("acts_cmd_2.92.jar", "")+"output.txt";
 	
-	public static final String OUTPUT2 = Platform.getInstanceLocation().getURL().getPath()+"output2.txt";
+	private String OUTPUT2 = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+			  .replace("acts_cmd_2.92.jar", "")+"output2.txt";
 	
 	// static fields to hold the images
 	private static final Image CHECKED = Activator.getImageDescriptor("icons/checked.gif").createImage();
@@ -257,8 +269,6 @@ public class View extends ViewPart implements Observer {
 	
 	private int tableIndex = 0;
 	
-	private int tempTableIndex = -1;
-	
 	private int conflictCounter = 0;
 	
 	private Boolean controlActionProvided = true;
@@ -272,6 +282,8 @@ public class View extends ViewPart implements Observer {
 	private Boolean dependencyProvided = true;
 	
 	public static String[] contextProps;
+	
+	
 	
 	
 	/**
@@ -869,42 +881,87 @@ public class View extends ViewPart implements Observer {
 	    
 	    // this is the composite for the dependencies section
 	    compositeDependencies = new Composite(outercomposite, SWT.BORDER);
-	    compositeDependencies.setLayout(new GridLayout(2, false));
+	    compositeDependencies.setLayout(new GridLayout(1, false));
 	    compositeDependencies.setVisible(false);
 	    
 	    // set the formdata for the dependencies
 	    fData = new FormData();
 	    fData.top = new FormAttachment( 0 );
 	    fData.left = new FormAttachment( innerLeft );
-	    fData.right = new FormAttachment( 35 );
+	    fData.right = new FormAttachment( 100 );
 	    fData.bottom = new FormAttachment( 100 );
 	    compositeDependencies.setLayoutData( fData );
 	    
+	    // the tabfolder for the dependencies Composite
+	    final TabFolder dependenciesFolder = new TabFolder(compositeDependencies, SWT.NONE);
+	    dependenciesFolder.setLayout(new GridLayout(1, false));
+	    
+	    GridData folderData = new GridData();
+	    folderData.grabExcessHorizontalSpace = true;
+	    folderData.grabExcessVerticalSpace = true;
+	    folderData.horizontalAlignment = SWT.FILL;
+	    folderData.verticalAlignment = SWT.FILL;
+	    
+	    dependenciesFolder.setLayoutData(folderData);
+	    
+	    TabItem dependenciesTab1 = new TabItem(dependenciesFolder, SWT.NONE);
+	    dependenciesTab1.setText("Control Action Provided");
+	    TabItem dependenciesTab2 = new TabItem(dependenciesFolder, SWT.NONE);
+	    dependenciesTab2.setText("Control Action Not Provided");	 
+	    
+	    //Composite in which the folder items are located
+	    Composite dependenciesOuterComposite = new Composite(dependenciesFolder, SWT.NONE);	    
+	    
+	    
+	    formLayout = new FormLayout();
+	    //formLayout.marginHeight = 5;
+	    //formLayout.marginWidth = 5;
+	    //formLayout.spacing = 5;
+	    dependenciesOuterComposite.setLayout( formLayout );
+	    
+	    //Composite in which the dependencies Table is
+	    Composite dependenciesInnerComposite = new Composite(dependenciesOuterComposite, SWT.NONE);	    
+	    dependenciesInnerComposite.setLayout( new GridLayout(1, false));
+	    
+	    
+	    // set the formdata for the dependencies (inner)
+	    fData = new FormData();
+	    fData.top = new FormAttachment( 0 );
+	    fData.left = new FormAttachment( 0 );
+	    fData.right = new FormAttachment( 35 );
+	    fData.bottom = new FormAttachment( 100 );
+	    dependenciesInnerComposite.setLayoutData( fData );
+	    
+	    
 	    // the top right part
-	    compositeDependenciesTopRight = new Composite(outercomposite, SWT.BORDER);
+	    compositeDependenciesTopRight = new Composite(dependenciesOuterComposite, SWT.BORDER);
 	    compositeDependenciesTopRight.setLayout( new GridLayout(1, false));
 	    
 	    // set the formdata for the dependencies (top right)
 	    fData = new FormData();
 	    fData.top = new FormAttachment( 0 );
-	    fData.left = new FormAttachment( compositeDependencies );
+	    fData.left = new FormAttachment( dependenciesInnerComposite );
 	    fData.right = new FormAttachment( 58 );
 	    fData.bottom = new FormAttachment( 55 );
 	    compositeDependenciesTopRight.setLayoutData( fData );
 	    	    
 	    
 	    // the bottom right part
-	    compositeDependenciesBottomRight = new Composite(outercomposite, SWT.BORDER);
+	    compositeDependenciesBottomRight = new Composite(dependenciesOuterComposite, SWT.BORDER);
 	    compositeDependenciesBottomRight.setLayout(new GridLayout(1, false));
 	    
 	    // set the formdata for the dependencies (bottom right)
 	    fData = new FormData();
 	    fData.top = new FormAttachment( compositeDependenciesTopRight );
-	    fData.left = new FormAttachment( compositeDependencies );
+	    fData.left = new FormAttachment( dependenciesInnerComposite );
 	    fData.right = new FormAttachment( 58 );
 	    fData.bottom = new FormAttachment( 100 );
 	    
 	    compositeDependenciesBottomRight.setLayoutData( fData );
+	    
+	    //Set the composite to the right tab
+	    dependenciesTab1.setControl(dependenciesOuterComposite);
+	    dependenciesTab2.setControl(dependenciesOuterComposite);
 	    
 	    contextComposite = new Composite(outercomposite, SWT.BORDER);
 	    contextComposite.setLayout( new GridLayout(1, false));
@@ -1011,7 +1068,7 @@ public class View extends ViewPart implements Observer {
 	    final Button andOrBtn = new Button(innerLeft, SWT.PUSH);
 	    andOrBtn.setText("AND/OR Table");
 	    andOrBtn.setLayoutData(new GridData(100,30));
-	    andOrBtn.setEnabled(false);
+	    andOrBtn.setEnabled(true);
 	    
 	    
 	    
@@ -1037,17 +1094,17 @@ public class View extends ViewPart implements Observer {
 		controlActionViewer.setContentProvider(new MainViewContentProvider());
 		controlActionViewer.setLabelProvider(mVLP);
 		
-		dependencyTableViewer = new TableViewer(compositeDependencies, SWT.FULL_SELECTION );
+		dependencyTableViewer = new TableViewer(dependenciesInnerComposite, SWT.FULL_SELECTION );
 		dependencyTableViewer.setContentProvider(new MainViewContentProvider());
 		dependencyTableViewer.setLabelProvider(new DependencyViewLabelProvider());
 		
 		// Add a Combobox for Dependencys
-		final Combo dependencyCombo = new Combo (compositeDependencies, SWT.READ_ONLY);
-		dependencyCombo.add("Control Action Provided");
-		dependencyCombo.add("Control Action not Provided");
-		dependencyCombo.select(0);
+//		final Combo dependencyCombo = new Combo (compositeDependencies, SWT.READ_ONLY);
+//		dependencyCombo.add("Control Action Provided");
+//		dependencyCombo.add("Control Action not Provided");
+//		dependencyCombo.select(0);
 		GridData data = new GridData(SWT.RIGHT, SWT.TOP, false, true); 
-		dependencyCombo.setLayoutData(data);
+//		dependencyCombo.setLayoutData(data);
 		
 		dependencyTopTableViewer = new TableViewer(compositeDependenciesTopRight, SWT.FULL_SELECTION );
 		dependencyTopTableViewer.setContentProvider(new MainViewContentProvider());
@@ -1218,6 +1275,9 @@ public class View extends ViewPart implements Observer {
 	    table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    controlActionTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    dependencyTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+	    
+
+	    
 	    dependencyTopTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    dependencyBottomTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    contextTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -1251,6 +1311,7 @@ public class View extends ViewPart implements Observer {
 	    // Columns for Dependencies table
 	    new TableColumn(dependencyTable, SWT.CENTER).setText(ENTRY_ID);
 	    new TableColumn(dependencyTable, SWT.CENTER).setText(CONTROL_ACTIONS);
+	    
 	    
 	    // Columns for dependencies top (Process model Variables)
 	    new TableColumn(dependencyTopTable, SWT.CENTER).setText(ENTRY_ID);
@@ -1301,11 +1362,26 @@ public class View extends ViewPart implements Observer {
 	     */
 	    generateEntry.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-		    	  //tempTableIndex = -1;
+		    	  
 		    	  if (getLinkedCAE() == null) {
 		    		  JOptionPane.showMessageDialog(null, "Please Select a Control Action to generate the Table!");
 		    	  }
 		    	  else {
+		    		  // If the Path for ACTS is not set, the PreferencePage opens
+		    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+		    				  .equals(xstampp.Activator.getDefault().getPreferenceStore().getDefaultString(("ACTS_Path")))) {
+		    			  Map<String,String> values=new HashMap<>();
+		    	    	  values.put("xstampp.command.preferencePage", "xstpa.preferencePage");
+		    	    	  STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
+		    	    	  INPUT = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+		    			  .replace("acts_cmd_2.92.jar", "")+"input.txt";
+		    	    	  INPUT2 = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+		    	    			  .replace("acts_cmd_2.92.jar", "")+"input2.txt";
+		    	    	  OUTPUT = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+		    	    			  .replace("acts_cmd_2.92.jar", "")+"output.txt";
+		    	    	  OUTPUT2 = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
+		    	    			  .replace("acts_cmd_2.92.jar", "")+"output2.txt";
+		    		  }
 			    	  // creates the correct number of rows for the context table
 			    	  createTablerows(0);
 			    	  // writes the Data into the input file for ACTS		    	  
@@ -1465,18 +1541,29 @@ public class View extends ViewPart implements Observer {
 	        
 			for (int i = 0, n = dependencyTable.getColumnCount(); i < n; i++) {
 				  dependencyTable.getColumn(i).pack();
+				  if (i == n-1) {
+					 dependencyTable.getColumn(i).setWidth(dependencyTable.getSize().x - dependencyTable.getColumn(0).getWidth());
+				  }
 			}
 			  
 
 			for (int i = 0, n = dependencyTopTable.getColumnCount(); i < n; i++) {
 				  dependencyTopTable.getColumn(i).pack();
+				  if (i == n-1) {
+					 dependencyTopTable.getColumn(i).setWidth(dependencyTopTable.getSize().x - dependencyTopTable.getColumn(0).getWidth());
+				  }
 			}
 			  
 
 			for (int i = 0, n = dependencyBottomTable.getColumnCount(); i < n; i++) {
 				  dependencyBottomTable.getColumn(i).pack();
+				  if (i == n-1) {
+					 dependencyBottomTable.getColumn(i).setWidth(dependencyBottomTable.getSize().x - dependencyBottomTable.getColumn(0).getWidth());
+				  }
 			}
-			  
+			
+
+			
 			compositeDependencies.setVisible(true);
 			compositeDependenciesTopRight.setVisible(true);
 	    	compositeDependenciesBottomRight.setVisible(true);
@@ -1674,6 +1761,20 @@ public class View extends ViewPart implements Observer {
 	      }
 	    });
 	    
+	    /**
+	     * Functionality for the settingsButton
+	     */
+	    andOrBtn.addSelectionListener(new SelectionAdapter() {
+	      public void widgetSelected(SelectionEvent event) {
+
+	    	  Map<String,String> values=new HashMap<>();
+	    	  values.put("xstampp.command.preferencePage", "xstpa.preferencePage");
+	    	  STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
+
+	    	    
+	      }
+	    });
+	    
 	    
 	    /**
 	    *  Functionality for the AddButton (Dependencies)
@@ -1686,7 +1787,7 @@ public class View extends ViewPart implements Observer {
 	    		getLinkedCAE().removeAvailableItem(linkedPMV);
 	    		
 	    		try {
-	    			  if (dependencyCombo.getText().equals("Control Action Provided")) {
+	    			  if (dependenciesFolder.getSelectionIndex() == 0) {
 		    			  // Store it in the DataModel
 	    				  for (int i = 0; i<model.getCAProvidedVariables(getLinkedCAE().getId()).size();i++) {
 	    					  if (model.getCAProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
@@ -1704,7 +1805,7 @@ public class View extends ViewPart implements Observer {
 	    			model.addCAProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
 	    		}
 	    		try {
-	    			if (dependencyCombo.getText().equals("Control Action not Provided")) {
+	    			if (dependenciesFolder.getSelectionIndex() == 1) {
 	    				  
 	    				  for (int i = 0; i<model.getCANotProvidedVariables(getLinkedCAE().getId()).size();i++) {
 	    					  if (model.getCANotProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
@@ -1742,7 +1843,7 @@ public class View extends ViewPart implements Observer {
 		    	getLinkedCAE().removeAllAvailableItems();
 		    	
 	    		
-	    			  if (dependencyCombo.getText().equals("Control Action Provided")) {
+	    			  if (dependenciesFolder.getSelectionIndex() == 0) {
 		    			  // Store it in the DataModel
 	    				
 	    				  for (int j = 0; j<getLinkedCAE().getLinkedItems().size();j++) {
@@ -1790,7 +1891,7 @@ public class View extends ViewPart implements Observer {
 		    	getLinkedCAE().setAvailableItems(getLinkedCAE().sortItems(getLinkedCAE().getAvailableItems()));
 		    	
 	    		try {
-	    			  if (dependencyCombo.getText().equals("Control Action Provided")) {
+	    			  if (dependenciesFolder.getSelectionIndex() == 0) {
 		    			  // Store it in the DataModel
 	    				  for (int i = 0; i<model.getCAProvidedVariables(getLinkedCAE().getId()).size();i++) {
 	    					  if (model.getCAProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
@@ -1807,7 +1908,7 @@ public class View extends ViewPart implements Observer {
 	    			System.out.println("List was already empty");
 	    		}
 	    		try {
-	    			  if (dependencyCombo.getText().equals("Control Action not Provided")) {
+	    			  if (dependenciesFolder.getSelectionIndex() == 1) {
 	    				  
 	    				  for (int i = 0; i<model.getCANotProvidedVariables(getLinkedCAE().getId()).size();i++) {
 	    					  if (model.getCANotProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
@@ -1843,7 +1944,7 @@ public class View extends ViewPart implements Observer {
 		    	getLinkedCAE().setAvailableItems(temp);
 		    	getLinkedCAE().removeAllLinkedItems();
 		    	
-		    	if (dependencyCombo.getText().equals("Control Action Provided")) {
+		    	if (dependenciesFolder.getSelectionIndex() == 0) {
 	    			  // Store it in the DataModel
   				
   				  for (int j = 0; j<getLinkedCAE().getAvailableItems().size();j++) {
@@ -1884,7 +1985,7 @@ public class View extends ViewPart implements Observer {
 	    dependencyTable.addSelectionListener(new SelectionAdapter() {
 		      public void widgetSelected(SelectionEvent event) {
 		    	  //get the selected Control Action to link it to a Process model Variable
-		    	  if (dependencyCombo.getText().equals("Control Action Provided")) {
+		    	  if (dependenciesFolder.getSelectionIndex() == 0) {
 		    		  setLinkedCAE(dependencies.get(dependencyTable.getSelectionIndex()));
 		    	  }
 		    	  else {
@@ -2015,13 +2116,13 @@ public class View extends ViewPart implements Observer {
 		 * Listener for the dependency Combobox
 		 *  You can Select if the Control Action is provided or not and can add different Variables to them
 		 */
-	    dependencyCombo.addSelectionListener(new SelectionAdapter() {
+	    dependenciesFolder.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		
 	    		int selectionIndex = dependencyTable.getSelectionIndex();
 	    		
 	    		// checks which option is selected and shows the right content
-	    		if (dependencyCombo.getText().equals("Control Action Provided")) {
+	    		if (dependenciesFolder.getSelectionIndex() == 0) {
 	    			if (!dependencyProvided) {
 	    				dependencyTable.setVisible(false);
 	    				
@@ -2036,7 +2137,10 @@ public class View extends ViewPart implements Observer {
 	    				dependencyTableViewer.setInput(dependencyTableInput);
 			    		// packs the columns
 			    		for (int j = 0, n = dependencyTable.getColumnCount(); j < n; j++) {
-			    			dependencyTable.getColumn(j).pack();	    		  		  
+			    			dependencyTable.getColumn(j).pack();
+							if (j == n-1) {
+								dependencyTable.getColumn(j).setWidth(dependencyTable.getSize().x - dependencyTable.getColumn(0).getWidth());
+							}
 			    		}
 			    		if (selectionIndex == -1) {
 			    			dependencyTable.setSelection(0);
@@ -2064,7 +2168,11 @@ public class View extends ViewPart implements Observer {
 	    			}
 	    			
 	    		}
-	    		else if (dependencyCombo.getText().equals("Control Action not Provided")) {
+	    		else if (dependenciesFolder.getSelectionIndex() == 1) {
+	  	    	  	compositeDependenciesTopRight.setVisible(true);
+	  	    	  	compositeDependenciesBottomRight.setVisible(true);
+	  	    	  	compositeDependencies.setVisible(true);
+	  	    	  	dependenciesFolder.setVisible(true);
 	    			if (dependencyProvided) {
 	    				dependencyTable.setVisible(false);
 	    				
@@ -2115,7 +2223,6 @@ public class View extends ViewPart implements Observer {
 	    contextTable.addSelectionListener(new SelectionAdapter() {
 		      public void widgetSelected(SelectionEvent event) {
 		    	  
-		    	  tempTableIndex = -1;
 		    	  //get the selected control Action
 		    	  setLinkedCAE((ControlActionEntrys) event.item.getData());
 		    	  // creates the correct number of rows for the context table
@@ -3142,8 +3249,8 @@ public class View extends ViewPart implements Observer {
 				// clear so that the default mode gets selected again
 				editWindow.modes.clear();
 			}
-			String location = Platform.getInstanceLocation().getURL().getPath()+"acts_cmd_2.92.jar";
-			location = location.substring(1, location.length());
+			String location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
+			//location = location.substring(1, location.length());
 			if (controlActionProvided) {
 				proc = Runtime.getRuntime().exec("java"+modes+"-jar " +location+" cmd "+INPUT+ " " + OUTPUT);
 			}
@@ -3161,7 +3268,7 @@ public class View extends ViewPart implements Observer {
 	        while ((line = reader.readLine()) != null) {
 	            out.append(line);
 	        }
-	        //System.out.println(out.toString());   //Prints the string content read from input stream
+	        System.out.println(out.toString());   //Prints the string content read from input stream
 	        reader.close();
 
 	        getEntrysFromFile(reader);
@@ -3407,6 +3514,7 @@ public class View extends ViewPart implements Observer {
 		contextRightViewer.setCellEditors(contextEditors);
 	}
 	
+	
 
 	
 	/**
@@ -3440,6 +3548,31 @@ public class View extends ViewPart implements Observer {
 
 	public void setLinkedCAE(ControlActionEntrys linkedCAE) {
 		this.linkedCAE = linkedCAE;
+	}
+	
+	public String getInput() {
+		return INPUT;
+	}
+	public String getInput2() {
+		return INPUT2;
+	}
+	public String getOutput() {
+		return OUTPUT;
+	}
+	public String getOutput2() {
+		return OUTPUT2;
+	}
+	public void setInput(String input) {
+		INPUT = input;
+	}
+	public void setOutput(String output) {
+		OUTPUT = output;
+	}
+	public void setInput2(String input) {
+		INPUT2 = input;
+	}
+	public void setOutput2(String output) {
+		OUTPUT2 = output;
 	}
 	
 	
