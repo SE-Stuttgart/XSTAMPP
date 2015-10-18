@@ -32,13 +32,16 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.PlatformUI;
 
+import acast.Activator;
+import acast.model.interfaces.IProximalEventsViewDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
-import acast.Activator;
-import acast.model.interfaces.IProximalEventsViewDataModel;
 
 public class ProximalEventsView extends StandartEditorPart implements IPropertyChangeListener {
 
@@ -133,6 +136,59 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 
 	@Override
 	public void createPartControl(final Composite parent) {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
+
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				if (partRef.getId().equals("acast.steps.step1_3")) {
+					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
+
+				}
+			}
+
+			@Override
+			public void partActivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 		this.setDataModelInterface(ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 
@@ -180,6 +236,7 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 		tableComposite.setLayout(tableColumnLayoutC4);
 
 		tableComposite.addControlListener(new ControlAdapter() {
+			@Override
 			public void controlResized(ControlEvent event) {
 				if (viewer.getTable().getClientArea().width > 0) {
 					int width = 0;
@@ -191,7 +248,6 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 					Rectangle area = table.getClientArea();
 
 					TableColumn lastCol = table.getColumns()[columnCount - 1];
-					System.out.println("test");
 					lastCol.setWidth(lastCol.getWidth() + (tableComposite.getClientArea().width - width));
 				}
 			}
@@ -201,6 +257,7 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 		editor.horizontalAlignment = SWT.LEFT;
 		editor.grabHorizontal = true;
 		viewer.getTable().addListener(SWT.MouseDown, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				Rectangle clientArea = viewer.getTable().getClientArea();
 				Point pt = new Point(event.x, event.y);
@@ -216,6 +273,7 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 								if (column == 1) {
 									final DateTime date = new DateTime(viewer.getTable(), SWT.DATE);
 									Listener dateListener = new Listener() {
+										@Override
 										public void handleEvent(final Event e) {
 											switch (e.type) {
 											case SWT.FocusOut:
@@ -281,6 +339,7 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 								} else if (column == 2) {
 									final DateTime date = new DateTime(viewer.getTable(), SWT.TIME);
 									Listener dateListener = new Listener() {
+										@Override
 										public void handleEvent(final Event e) {
 											switch (e.type) {
 											case SWT.FocusOut:
@@ -350,6 +409,7 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 								} else if (column == 3) {
 									final Text text = new Text(viewer.getTable(), SWT.NONE);
 									Listener textListener = new Listener() {
+										@Override
 										public void handleEvent(final Event e) {
 											switch (e.type) {
 											case SWT.FocusOut:
@@ -383,8 +443,9 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 							visible = true;
 						}
 					}
-					if (!visible)
+					if (!visible) {
 						return;
+					}
 					index++;
 				}
 			}

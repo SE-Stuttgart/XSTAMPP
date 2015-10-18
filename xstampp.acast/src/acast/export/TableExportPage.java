@@ -20,12 +20,10 @@ import xstampp.util.AbstractWizardPage;
 /**
  * Creates a Page which collects basic informations about formatting the table
  * Export
- * 
- * @author Lukas Balzer
- * 
+ *
+ *
  */
-public class TableExportPage extends AbstractExportPage implements
-		ModifyListener {
+public class TableExportPage extends AbstractExportPage implements ModifyListener {
 	private Composite control;
 	private Button singlePage;
 	private Button multiPage;
@@ -33,8 +31,7 @@ public class TableExportPage extends AbstractExportPage implements
 	private DemoCanvas sampleCanvas;
 
 	/**
-	 * 
-	 * @author Lukas Balzer
+	 *
 	 * @param filters
 	 *            the file extensions, which shall be excepted by in the dialog
 	 * @param pageName
@@ -56,29 +53,24 @@ public class TableExportPage extends AbstractExportPage implements
 		Composite projectChooser = this.addProjectChooser(this.control,
 				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
 		FormData data;
-		
-		ColorChooser bgChooser = new ColorChooser(this.control, SWT.NONE,
-				Messages.BackgroundColor,
+
+		ColorChooser bgChooser = new ColorChooser(this.control, SWT.NONE, Messages.BackgroundColor,
 				IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
 		data = new FormData();
-		data.top = new FormAttachment(projectChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(projectChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		bgChooser.setLayoutData(data);
 		bgChooser.addColorChangeListener(this);
 
-		ColorChooser fontChooser = new ColorChooser(this.control, SWT.NONE,
-				Messages.FontColor, IPreferenceConstants.COMPANY_FONT_COLOR);
+		ColorChooser fontChooser = new ColorChooser(this.control, SWT.NONE, Messages.FontColor,
+				IPreferenceConstants.COMPANY_FONT_COLOR);
 		data = new FormData();
-		data.top = new FormAttachment(bgChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(bgChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		fontChooser.setLayoutData(data);
 		fontChooser.addColorChangeListener(this);
 
-		this.pathChooser = new PathComposite(this.filters, this.control,
-				PathComposite.PATH_DIALOG);
+		this.pathChooser = new PathComposite(this.filters, this.control, PathComposite.PATH_DIALOG);
 		data = new FormData();
-		data.top = new FormAttachment(fontChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(fontChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		this.pathChooser.setLayoutData(data);
 
 		this.sampleCanvas = new DemoCanvas(this.control, SWT.NONE);
@@ -86,8 +78,7 @@ public class TableExportPage extends AbstractExportPage implements
 		data = new FormData();
 		data.width = parent.getBounds().width;
 		data.height = AbstractWizardPage.DEMOCANVAS_HEIGHT;
-		data.top = new FormAttachment(this.pathChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(this.pathChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		this.sampleCanvas.setLayoutData(data);
 		// Required to avoid an error in the system
 		this.setControl(this.control);
@@ -104,11 +95,10 @@ public class TableExportPage extends AbstractExportPage implements
 		this.sampleCanvas.redraw();
 	}
 
-	
 	@Override
 	public void setProjectID(UUID projectID) {
 		super.setProjectID(projectID);
-		if(this.sampleCanvas != null){
+		if (this.sampleCanvas != null) {
 			this.sampleCanvas.setProjectID(projectID);
 		}
 	}

@@ -265,8 +265,8 @@
 							<fo:table-row border="none">
 								<xsl:if test="position() mod 2 = 0">
 									<xsl:attribute name="background-color">
-					#D9D9D9
-					</xsl:attribute>
+									#D9D9D9
+									</xsl:attribute>
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block>
@@ -333,76 +333,66 @@
 		<xsl:param name="omitHeader" select="false" />
 		<xsl:param name="title.size" select="24" />
 
-
 		<xsl:variable name="bcolor" select="exportinformation/backgroundColor" />
 		<xsl:variable name="fcolor" select="exportinformation/fontColor" />
-
-
 
 		<xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 		<!-- Checks whether some Responsibilities are defined -->
 		<xsl:choose>
-			<xsl:when test="controlstructure/component/children/component">
+			<xsl:when test="crc">
 				<fo:block space-after="5pt" page-break-after="avoid">
 					<xsl:attribute name="font-size"><xsl:value-of
 						select="$title.size" />pt</xsl:attribute>
 					Roles and Responsibilities
 				</fo:block>
-				<xsl:for-each select="controlstructure/component/children/component">
-					<xsl:choose>
-						<xsl:when test="responsibilities">
-							<fo:block space-after="5pt" page-break-after="avoid">
-								<xsl:attribute name="font-size">24pt</xsl:attribute>
-								Safety Related Responsibilities:
-								<xsl:value-of select="text" />
-							</fo:block>
-						</xsl:when>
-						<xsl:otherwise>
+				<xsl:for-each select="crc/componentNames/entry">
+					<xsl:variable name="currentComponent" select="." />
 
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:choose>
-
-						<xsl:when test="responsibilities">
+					<fo:block space-after="5pt" page-break-after="avoid">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+						Safety Related Responsibilities:
+						<xsl:value-of select="key" />
+					</fo:block>
+					<fo:table border="none" space-after="30pt">
+						<fo:table-column column-number="1" column-width="20%"
+							border-style="none" />
+						<fo:table-column column-number="2" column-width="80%"
+							border-style="none" />
+						<fo:table-header border="none" background-color="#1A277A"
+							color="#FFFFFF">
+							<!-- Sets the PDF-Theme-Color -->
 							<xsl:call-template name="headTheme" />
 							<xsl:call-template name="fontTheme" />
-							<fo:table border="none" space-after="30pt">
-								<fo:table-column column-number="1" column-width="10%"
-									border-style="none" />
-								<fo:table-column column-number="2" column-width="90%"
-									border-style="none" />
-								<xsl:call-template name="headTheme" />
-								<xsl:call-template name="fontTheme" />
-
-								<fo:table-header border="none" background-color="#1A277A"
-									color="#FFFFFF">
-
-									<fo:table-row>
-										<!-- Sets the PDF-Theme-Color -->
-										<xsl:attribute name="background-color"> 
+							<fo:table-row>
+								<!-- Sets the PDF-Theme-Color -->
+								<xsl:attribute name="background-color"> 
 										 <xsl:value-of select="$bcolor" />
 										</xsl:attribute>
-										<xsl:attribute name="color"> 
+								<xsl:attribute name="color"> 
 										 <xsl:value-of select="$fcolor" />
 										</xsl:attribute>
-										<xsl:attribute name="font-size"><xsl:value-of
-											select="$headSize" />pt</xsl:attribute>
-										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">ID</fo:block>
-										</fo:table-cell>
-										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">Description</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-header>
-								<fo:table-body>
-									<xsl:attribute name="font-size"><xsl:value-of
-										select="$varSize" />pt</xsl:attribute>
-									<!-- Checks whether some Responsibilities are defined -->
-									<xsl:for-each select="responsibilities">
+								<xsl:attribute name="font-size"><xsl:value-of
+									select="$headSize" />pt</xsl:attribute>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">ID</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">Description</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-header>
+						<fo:table-body>
+							<xsl:attribute name="font-size"><xsl:value-of
+								select="$varSize" />pt</xsl:attribute>
+							<xsl:choose>
+								<!-- Checks whether some Resp are defined -->
+								<xsl:when test="//responsibility[name=$currentComponent/key]">
+									<xsl:for-each select="//responsibility[name=$currentComponent/key]">
 										<fo:table-row border="none">
 											<xsl:if test="position() mod 2 = 0">
-												<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
+												<xsl:attribute name="background-color">
+									#D9D9D9
+									</xsl:attribute>
 											</xsl:if>
 											<fo:table-cell padding="3px">
 												<fo:block>
@@ -420,67 +410,70 @@
 											</fo:table-cell>
 										</fo:table-row>
 									</xsl:for-each>
-								</fo:table-body>
-							</fo:table>
-						</xsl:when>
-
-						<!-- If there are no Responsibilities defined the first row -->
-						<!-- should be filled with strokes -->
-						<xsl:otherwise>
-
-						</xsl:otherwise>
-
-
-					</xsl:choose>
-
-					<xsl:choose>
-						<xsl:when test="context">
-							<fo:block space-after="5pt" page-break-after="avoid">
-								<xsl:attribute name="font-size">24pt</xsl:attribute>
-								Context in which Decision made:
-								<xsl:value-of select="text" />
-							</fo:block>
-						</xsl:when>
-						<xsl:otherwise>
-
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:choose>
-						<xsl:when test="context">
-							<fo:table border="none" space-after="30pt">
-								<xsl:attribute name="table-omit-header-at-break"><xsl:value-of
-									select="$omitHeader" /></xsl:attribute>
-								<fo:table-column column-number="1" column-width="10%"
-									border-style="none" />
-								<fo:table-column column-number="2" column-width="90%"
-									border-style="none" />
-								<fo:table-header border="none" background-color="#1A277A"
-									color="#FFFFFF">
+								</xsl:when>
+								<!-- If there are no Resp defined the first row -->
+								<!-- should be filled with strokes -->
+								<xsl:otherwise>
 									<fo:table-row>
-										<xsl:attribute name="background-color"> 
-										 <xsl:value-of select="$bcolor" />
-										</xsl:attribute>
-										<xsl:attribute name="color"> 
-										 <xsl:value-of select="$fcolor" />
-										</xsl:attribute>
-										<xsl:attribute name="font-size"><xsl:value-of
-											select="$headSize" />pt</xsl:attribute>
 										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">ID</fo:block>
+											<fo:block>
+												&#x2014; </fo:block>
 										</fo:table-cell>
 										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">Description</fo:block>
+											<fo:block>
+												&#x2014; </fo:block>
 										</fo:table-cell>
 									</fo:table-row>
-								</fo:table-header>
-								<fo:table-body>
-									<xsl:attribute name="font-size"><xsl:value-of
-										select="$varSize" />pt</xsl:attribute>
-									<!-- Checks whether some context are defined -->
-									<xsl:for-each select="context">
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-body>
+					</fo:table>
+
+					<fo:block space-after="5pt" page-break-after="avoid">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+						Unsafe Decisions and Control Actions:
+						<xsl:value-of select="key" />
+					</fo:block>
+					<fo:table border="none" space-after="30pt">
+						<fo:table-column column-number="1" column-width="20%"
+							border-style="none" />
+						<fo:table-column column-number="2" column-width="80%"
+							border-style="none" />
+						<fo:table-header border="none" background-color="#1A277A"
+							color="#FFFFFF">
+							<!-- Sets the PDF-Theme-Color -->
+							<xsl:call-template name="headTheme" />
+							<xsl:call-template name="fontTheme" />
+							<fo:table-row>
+								<!-- Sets the PDF-Theme-Color -->
+								<xsl:attribute name="background-color"> 
+										 <xsl:value-of select="$bcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="color"> 
+										 <xsl:value-of select="$fcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="font-size"><xsl:value-of
+									select="$headSize" />pt</xsl:attribute>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">ID</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">Description</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-header>
+						<fo:table-body>
+							<xsl:attribute name="font-size"><xsl:value-of
+								select="$varSize" />pt</xsl:attribute>
+							<xsl:choose>
+								<!-- Checks whether some Resp are defined -->
+								<xsl:when test="//unsafeAction[name=$currentComponent/key]">
+									<xsl:for-each select="//unsafeAction[name=$currentComponent/key]">
 										<fo:table-row border="none">
 											<xsl:if test="position() mod 2 = 0">
-												<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
+												<xsl:attribute name="background-color">
+									#D9D9D9
+									</xsl:attribute>
 											</xsl:if>
 											<fo:table-cell padding="3px">
 												<fo:block>
@@ -498,70 +491,71 @@
 											</fo:table-cell>
 										</fo:table-row>
 									</xsl:for-each>
-								</fo:table-body>
-							</fo:table>
-						</xsl:when>
-
-						<!-- If there are no Responsibilities defined the first row -->
-						<!-- should be filled with strokes -->
-						<xsl:otherwise>
-
-						</xsl:otherwise>
-
-
-					</xsl:choose>
-
-					<xsl:choose>
-						<xsl:when test="flaws">
-							<fo:block space-after="5pt" page-break-after="avoid">
-								<xsl:attribute name="font-size">24pt</xsl:attribute>
-								Process Model Flaws:
-								<xsl:value-of select="text" />
-							</fo:block>
-						</xsl:when>
-						<xsl:otherwise>
-
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:choose>
-						<xsl:when test="flaws">
-							<fo:table border="none" space-after="30pt">
-								<xsl:attribute name="table-omit-header-at-break"><xsl:value-of
-									select="$omitHeader" /></xsl:attribute>
-								<fo:table-column column-number="1" column-width="10%"
-									border-style="none" />
-								<fo:table-column column-number="2" column-width="90%"
-									border-style="none" />
-								<fo:table-header border="none" background-color="#1A277A"
-									color="#FFFFFF">
-									<!-- Sets the PDF-Theme-Color -->
-									<xsl:call-template name="headTheme" />
-									<xsl:call-template name="fontTheme" />
+								</xsl:when>
+								<!-- If there are no Resp defined the first row -->
+								<!-- should be filled with strokes -->
+								<xsl:otherwise>
 									<fo:table-row>
-										<xsl:attribute name="background-color"> 
-										 <xsl:value-of select="$bcolor" />
-										</xsl:attribute>
-										<xsl:attribute name="color"> 
-										 <xsl:value-of select="$fcolor" />
-										</xsl:attribute>
-										<xsl:attribute name="font-size"><xsl:value-of
-											select="$headSize" />pt</xsl:attribute>
 										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">ID</fo:block>
+											<fo:block>
+												&#x2014; </fo:block>
 										</fo:table-cell>
 										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">Description</fo:block>
+											<fo:block>
+												&#x2014; </fo:block>
 										</fo:table-cell>
 									</fo:table-row>
-								</fo:table-header>
-								<fo:table-body>
-									<xsl:attribute name="font-size"><xsl:value-of
-										select="$varSize" />pt</xsl:attribute>
-									<!-- Checks whether some flaws are defined -->
-									<xsl:for-each select="flaws">
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-body>
+					</fo:table>
+
+
+					<fo:block space-after="5pt" page-break-after="avoid">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+						Process/Mental Model Flaws:
+						<xsl:value-of select="key" />
+					</fo:block>
+					<fo:table border="none" space-after="30pt">
+						<fo:table-column column-number="1" column-width="20%"
+							border-style="none" />
+						<fo:table-column column-number="2" column-width="80%"
+							border-style="none" />
+						<fo:table-header border="none" background-color="#1A277A"
+							color="#FFFFFF">
+							<!-- Sets the PDF-Theme-Color -->
+							<xsl:call-template name="headTheme" />
+							<xsl:call-template name="fontTheme" />
+							<fo:table-row>
+								<!-- Sets the PDF-Theme-Color -->
+								<xsl:attribute name="background-color"> 
+										 <xsl:value-of select="$bcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="color"> 
+										 <xsl:value-of select="$fcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="font-size"><xsl:value-of
+									select="$headSize" />pt</xsl:attribute>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">ID</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">Description</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-header>
+						<fo:table-body>
+							<xsl:attribute name="font-size"><xsl:value-of
+								select="$varSize" />pt</xsl:attribute>
+							<xsl:choose>
+								<!-- Checks whether some Resp are defined -->
+								<xsl:when test="//flaw[name=$currentComponent/key]">
+									<xsl:for-each select="//flaw[name=$currentComponent/key]">
 										<fo:table-row border="none">
 											<xsl:if test="position() mod 2 = 0">
-												<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
+												<xsl:attribute name="background-color">
+									#D9D9D9
+									</xsl:attribute>
 											</xsl:if>
 											<fo:table-cell padding="3px">
 												<fo:block>
@@ -579,70 +573,70 @@
 											</fo:table-cell>
 										</fo:table-row>
 									</xsl:for-each>
-								</fo:table-body>
-							</fo:table>
-						</xsl:when>
-
-						<!-- If there are no Responsibilities defined the first row -->
-						<!-- should be filled with strokes -->
-						<xsl:otherwise>
-
-						</xsl:otherwise>
-
-
-					</xsl:choose>
-
-					<xsl:choose>
-						<xsl:when test="unsafeActions">
-							<fo:block space-after="5pt" page-break-after="avoid">
-								<xsl:attribute name="font-size">24pt</xsl:attribute>
-								Unsafe Actions:
-								<xsl:value-of select="text" />
-							</fo:block>
-						</xsl:when>
-						<xsl:otherwise>
-
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:choose>
-						<xsl:when test="unsafeActions">
-							<fo:table border="none" space-after="30pt">
-								<xsl:attribute name="table-omit-header-at-break"><xsl:value-of
-									select="$omitHeader" /></xsl:attribute>
-								<fo:table-column column-number="1" column-width="10%"
-									border-style="none" />
-								<fo:table-column column-number="2" column-width="90%"
-									border-style="none" />
-								<fo:table-header border="none" background-color="#1A277A"
-									color="#FFFFFF">
-									<!-- Sets the PDF-Theme-Color -->
-									<xsl:call-template name="headTheme" />
-									<xsl:call-template name="fontTheme" />
+								</xsl:when>
+								<!-- If there are no Resp defined the first row -->
+								<!-- should be filled with strokes -->
+								<xsl:otherwise>
 									<fo:table-row>
-										<xsl:attribute name="background-color"> 
-										 <xsl:value-of select="$bcolor" />
-										</xsl:attribute>
-										<xsl:attribute name="color"> 
-										 <xsl:value-of select="$fcolor" />
-										</xsl:attribute>
-										<xsl:attribute name="font-size"><xsl:value-of
-											select="$headSize" />pt</xsl:attribute>
 										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">ID</fo:block>
+											<fo:block>
+												&#x2014; </fo:block>
 										</fo:table-cell>
 										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">Description</fo:block>
+											<fo:block>
+												&#x2014; </fo:block>
 										</fo:table-cell>
 									</fo:table-row>
-								</fo:table-header>
-								<fo:table-body>
-									<xsl:attribute name="font-size"><xsl:value-of
-										select="$varSize" />pt</xsl:attribute>
-									<!-- Checks whether some unsafeActions are defined -->
-									<xsl:for-each select="unsafeActions">
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-body>
+					</fo:table>
+
+					<fo:block space-after="5pt" page-break-after="avoid">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+						Context in which decisions made:
+						<xsl:value-of select="key" />
+					</fo:block>
+					<fo:table border="none" space-after="30pt">
+						<fo:table-column column-number="1" column-width="20%"
+							border-style="none" />
+						<fo:table-column column-number="2" column-width="80%"
+							border-style="none" />
+						<fo:table-header border="none" background-color="#1A277A"
+							color="#FFFFFF">
+							<!-- Sets the PDF-Theme-Color -->
+							<xsl:call-template name="headTheme" />
+							<xsl:call-template name="fontTheme" />
+							<fo:table-row>
+								<!-- Sets the PDF-Theme-Color -->
+								<xsl:attribute name="background-color"> 
+										 <xsl:value-of select="$bcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="color"> 
+										 <xsl:value-of select="$fcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="font-size"><xsl:value-of
+									select="$headSize" />pt</xsl:attribute>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">ID</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">Description</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-header>
+						<fo:table-body>
+							<xsl:attribute name="font-size"><xsl:value-of
+								select="$varSize" />pt</xsl:attribute>
+							<xsl:choose>
+								<!-- Checks whether some Resp are defined -->
+								<xsl:when test="//context[name=$currentComponent/key]">
+									<xsl:for-each select="//context[name=$currentComponent/key]">
 										<fo:table-row border="none">
 											<xsl:if test="position() mod 2 = 0">
-												<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
+												<xsl:attribute name="background-color">
+									#D9D9D9
+									</xsl:attribute>
 											</xsl:if>
 											<fo:table-cell padding="3px">
 												<fo:block>
@@ -660,21 +654,191 @@
 											</fo:table-cell>
 										</fo:table-row>
 									</xsl:for-each>
-								</fo:table-body>
-							</fo:table>
-						</xsl:when>
-
-						<!-- If there are no Responsibilities defined the first row -->
-						<!-- should be filled with strokes -->
-						<xsl:otherwise>
-
-						</xsl:otherwise>
-
-
-					</xsl:choose>
+								</xsl:when>
+								<!-- If there are no Resp defined the first row -->
+								<!-- should be filled with strokes -->
+								<xsl:otherwise>
+									<fo:table-row>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-body>
+					</fo:table>
+					
+					<fo:block space-after="5pt" page-break-after="avoid">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+						Feedback:
+						<xsl:value-of select="key" />
+					</fo:block>
+					<fo:table border="none" space-after="30pt">
+						<fo:table-column column-number="1" column-width="20%"
+							border-style="none" />
+						<fo:table-column column-number="2" column-width="80%"
+							border-style="none" />
+						<fo:table-header border="none" background-color="#1A277A"
+							color="#FFFFFF">
+							<!-- Sets the PDF-Theme-Color -->
+							<xsl:call-template name="headTheme" />
+							<xsl:call-template name="fontTheme" />
+							<fo:table-row>
+								<!-- Sets the PDF-Theme-Color -->
+								<xsl:attribute name="background-color"> 
+										 <xsl:value-of select="$bcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="color"> 
+										 <xsl:value-of select="$fcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="font-size"><xsl:value-of
+									select="$headSize" />pt</xsl:attribute>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">ID</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">Description</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-header>
+						<fo:table-body>
+							<xsl:attribute name="font-size"><xsl:value-of
+								select="$varSize" />pt</xsl:attribute>
+							<xsl:choose>
+								<!-- Checks whether some Resp are defined -->
+								<xsl:when test="//feedback[name=$currentComponent/key]">
+									<xsl:for-each select="//feedback[name=$currentComponent/key]">
+										<fo:table-row border="none">
+											<xsl:if test="position() mod 2 = 0">
+												<xsl:attribute name="background-color">
+									#D9D9D9
+									</xsl:attribute>
+											</xsl:if>
+											<fo:table-cell padding="3px">
+												<fo:block>
+													<xsl:call-template name="intersperse-with-zero-spaces">
+														<xsl:with-param name="str" select="id" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding="3px">
+												<fo:block>
+													<xsl:call-template name="intersperse-with-zero-spaces">
+														<xsl:with-param name="str" select="description" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</xsl:for-each>
+								</xsl:when>
+								<!-- If there are no Resp defined the first row -->
+								<!-- should be filled with strokes -->
+								<xsl:otherwise>
+									<fo:table-row>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-body>
+					</fo:table>
+					
+					<fo:block space-after="5pt" page-break-after="avoid">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+						Coordination:
+						<xsl:value-of select="key" />
+					</fo:block>
+					<fo:table border="none" space-after="30pt">
+						<fo:table-column column-number="1" column-width="20%"
+							border-style="none" />
+						<fo:table-column column-number="2" column-width="80%"
+							border-style="none" />
+						<fo:table-header border="none" background-color="#1A277A"
+							color="#FFFFFF">
+							<!-- Sets the PDF-Theme-Color -->
+							<xsl:call-template name="headTheme" />
+							<xsl:call-template name="fontTheme" />
+							<fo:table-row>
+								<!-- Sets the PDF-Theme-Color -->
+								<xsl:attribute name="background-color"> 
+										 <xsl:value-of select="$bcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="color"> 
+										 <xsl:value-of select="$fcolor" />
+										</xsl:attribute>
+								<xsl:attribute name="font-size"><xsl:value-of
+									select="$headSize" />pt</xsl:attribute>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">ID</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">Description</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-header>
+						<fo:table-body>
+							<xsl:attribute name="font-size"><xsl:value-of
+								select="$varSize" />pt</xsl:attribute>
+							<xsl:choose>
+								<!-- Checks whether some Resp are defined -->
+								<xsl:when test="//coordination[name=$currentComponent/key]">
+									<xsl:for-each select="//coordination[name=$currentComponent/key]">
+										<fo:table-row border="none">
+											<xsl:if test="position() mod 2 = 0">
+												<xsl:attribute name="background-color">
+									#D9D9D9
+									</xsl:attribute>
+											</xsl:if>
+											<fo:table-cell padding="3px">
+												<fo:block>
+													<xsl:call-template name="intersperse-with-zero-spaces">
+														<xsl:with-param name="str" select="id" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding="3px">
+												<fo:block>
+													<xsl:call-template name="intersperse-with-zero-spaces">
+														<xsl:with-param name="str" select="description" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</xsl:for-each>
+								</xsl:when>
+								<!-- If there are no Resp defined the first row -->
+								<!-- should be filled with strokes -->
+								<xsl:otherwise>
+									<fo:table-row>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-body>
+					</fo:table>
 
 
 				</xsl:for-each>
+
+
 			</xsl:when>
 			<xsl:otherwise>
 
@@ -694,63 +858,60 @@
 
 		<xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 		<xsl:choose>
-			<xsl:when test="controlstructure/component/children/component">
+			<xsl:when test="//recommendation">
 				<fo:block space-after="5pt" page-break-after="avoid">
 					<xsl:attribute name="font-size"><xsl:value-of
 						select="$title.size" />pt</xsl:attribute>
 					Findings and Recommendations
 				</fo:block>
-				<xsl:for-each select="controlstructure/component/children/component">
-					<xsl:choose>
-						<xsl:when test="recommendations">
-							<fo:block space-after="5pt" page-break-after="avoid">
-								<xsl:attribute name="font-size">24pt</xsl:attribute>
-								<xsl:value-of select="text" />
-							</fo:block>
-						</xsl:when>
-						<xsl:otherwise>
+				<xsl:for-each select="crc/componentNames/entry">
+					<xsl:variable name="currentComponent" select="." />
 
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:choose>
-						<xsl:when test="recommendations">
-							<fo:table border="none" space-after="30pt">
-								<xsl:attribute name="table-omit-header-at-break"><xsl:value-of
-									select="$omitHeader" /></xsl:attribute>
-								<fo:table-column column-number="1" column-width="10%"
-									border-style="none" />
-								<fo:table-column column-number="2" column-width="90%"
-									border-style="none" />
-								<fo:table-header border="none" background-color="#1A277A"
-									color="#FFFFFF">
-									<!-- Sets the PDF-Theme-Color -->
-									<xsl:call-template name="headTheme" />
-									<xsl:call-template name="fontTheme" />
-									<fo:table-row>
-										<xsl:attribute name="background-color"> 
+					<fo:block space-after="5pt" page-break-after="avoid">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+						Findings and Recommendations:
+						<xsl:value-of select="key" />
+					</fo:block>
+					<fo:table border="none" space-after="30pt">
+						<fo:table-column column-number="1" column-width="20%"
+							border-style="none" />
+						<fo:table-column column-number="2" column-width="80%"
+							border-style="none" />
+						<fo:table-header border="none" background-color="#1A277A"
+							color="#FFFFFF">
+							<!-- Sets the PDF-Theme-Color -->
+							<xsl:call-template name="headTheme" />
+							<xsl:call-template name="fontTheme" />
+							<fo:table-row>
+								<!-- Sets the PDF-Theme-Color -->
+								<xsl:attribute name="background-color"> 
 										 <xsl:value-of select="$bcolor" />
 										</xsl:attribute>
-										<xsl:attribute name="color"> 
+								<xsl:attribute name="color"> 
 										 <xsl:value-of select="$fcolor" />
 										</xsl:attribute>
-										<xsl:attribute name="font-size"><xsl:value-of
-											select="$headSize" />pt</xsl:attribute>
-										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">ID</fo:block>
-										</fo:table-cell>
-										<fo:table-cell padding="3px">
-											<fo:block font-weight="bold">Description</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-header>
-								<fo:table-body>
-									<xsl:attribute name="font-size"><xsl:value-of
-										select="$varSize" />pt</xsl:attribute>
-									<!-- Checks whether some Recommendations are defined -->
-									<xsl:for-each select="recommendations">
+								<xsl:attribute name="font-size"><xsl:value-of
+									select="$headSize" />pt</xsl:attribute>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">ID</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block font-weight="bold">Description</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-header>
+						<fo:table-body>
+							<xsl:attribute name="font-size"><xsl:value-of
+								select="$varSize" />pt</xsl:attribute>
+							<xsl:choose>
+								<!-- Checks whether some Resp are defined -->
+								<xsl:when test="//recommendation[name=$currentComponent/key]">
+									<xsl:for-each select="//recommendation[name=$currentComponent/key]">
 										<fo:table-row border="none">
 											<xsl:if test="position() mod 2 = 0">
-												<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
+												<xsl:attribute name="background-color">
+									#D9D9D9
+									</xsl:attribute>
 											</xsl:if>
 											<fo:table-cell padding="3px">
 												<fo:block>
@@ -768,18 +929,26 @@
 											</fo:table-cell>
 										</fo:table-row>
 									</xsl:for-each>
-								</fo:table-body>
-							</fo:table>
-						</xsl:when>
+								</xsl:when>
+								<!-- If there are no Resp defined the first row -->
+								<!-- should be filled with strokes -->
+								<xsl:otherwise>
+									<fo:table-row>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												&#x2014; </fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-body>
+					</fo:table>
 
-						<!-- If there are no Recommendations defined the first row -->
-						<!-- should be filled with strokes -->
-						<xsl:otherwise>
 
-						</xsl:otherwise>
-
-
-					</xsl:choose>
 				</xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>

@@ -13,7 +13,7 @@
 
 package acast.model.sds;
 
-import acast.model.ATableModel;
+import acast.model.ATableModelCAST;
 
 
 /**
@@ -23,7 +23,7 @@ import acast.model.ATableModel;
  * @since 2.0
  * 
  */
-public class SafetyConstraint extends ATableModel {
+public class SafetyConstraint extends ATableModelCAST {
 
 	/**
 	 * Constructor of a safety constraint

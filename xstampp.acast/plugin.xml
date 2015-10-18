@@ -39,18 +39,11 @@
             name="AccidentImageView">
       </editor>
       <editor
-            class="acast.controlstructure.CSEditor"
+            class="acast.model.CSEditorCAST"
             default="false"
             icon="icons/buttons/navigation/Site_Map_16.png"
             id="acast.steps.step2_1"
             name="Controlstructure">
-      </editor>
-      <editor
-            class="acast.model.controlstructure.ResponsibilitiesView"
-            default="false"
-            icon="icons/buttons/navigation/Verification_of_delivery_list_clipboard_symbol_16.png"
-            id="acast.steps.step2_2"
-            name="Roles and Responsibilities">
       </editor>
       <editor
             class="acast.ui.accidentDescription.RecommandationsView"
@@ -129,13 +122,6 @@
                   id="acast.navigation.step2_1"
                   name="Control Structure Diagram">
             </step>
-            <step
-                  default_editor="true"
-                  editorId="acast.steps.step2_2"
-                  icon="icons/buttons/navigation/Verification_of_delivery_list_clipboard_symbol_16.png"
-                  id="acast.navigation.step2_2"
-                  name="Roles and Responsibilities">
-            </step>
          </category>
          <category
                icon="icons/buttons/navigation/Number_three_in_a_circle_16(1).png"
@@ -178,7 +164,7 @@
             name="Run">
       </command>
       <command
-            defaultHandler="acast.controlstructure.controller.commands.OpenNewTool"
+            defaultHandler="acast.util.OpenNewTool"
             id="xstampp.acast.cseditor.changeTool"
             name="Switch Tool">
          <commandParameter
@@ -192,7 +178,8 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
-            class="acast.model.controlstructure.TableView"
+            class="acast.ui.accidentDescription.TableView"
+            icon="icons/buttons/navigation/Verification_of_delivery_list_clipboard_symbol_16.png"
             id="A-CAST.view1"
             name="Roles and Responsibilities"
             restorable="true">
@@ -207,7 +194,6 @@
       </perspective>
    </extension>
    <extension
-         id="acast.export"
          name="CSV Export"
          point="org.eclipse.ui.exportWizards">
       <category
@@ -381,7 +367,7 @@
    <extension
          point="org.eclipse.ui.services">
       <sourceProvider
-            provider="acast.util.CSConnectionModeProvider">
+            provider="acast.util.CSConnectionModeProviderCAST">
          <variable
                name="xstampp.acast.connectionMode"
                priorityLevel="workbench">
@@ -515,15 +501,6 @@
                   value="SELECT">
             </parameter>
          </command>
-         <command
-               commandId="xstampp.acast.cseditor.changeTool"
-               label="Marquee"
-               style="push">
-            <parameter
-                  name="xstampp.acast.cseditor.toolconstant"
-                  value="MARQUEE">
-            </parameter>
-         </command>
          <menu
                label="Connections">
             <command
@@ -628,6 +605,17 @@
             id="acastContextID"
             name="name">
       </context>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="tocusingacast.xml"
+            primary="false">
+      </toc>
    </extension>
 
 </plugin>

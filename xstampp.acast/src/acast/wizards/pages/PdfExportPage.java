@@ -1,20 +1,6 @@
-/*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
- * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- *******************************************************************************/
 package acast.wizards.pages;
 
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -30,16 +16,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import acast.Activator;
+import messages.Messages;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
-import acast.Activator;
 
 /**
  * Create export page.
- * 
+ *
  * @author Sebastian Sieber, Lukas Balzer
- * 
+ *
  */
 public class PdfExportPage extends AbstractExportPage implements ModifyListener {
 
@@ -48,23 +35,20 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	private Text textCompany;
 	private ColorChooser bgChooser, fontChooser;
 	private DemoCanvas sampleComp;
-	private final IPreferenceStore store = Activator.getDefault()
-			.getPreferenceStore();
+	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 	private Button decoSwitch;
 	private PathComposite logoComposite;
 	private int pathConstant;
 
 	/**
 	 * Constructor.
-	 * 
-	 * @author Sebastian Sieber,Lukas Balzer
-	 * 
+	 *
+	 *
 	 * @param pageName
 	 *            the name of the page
 	 * @param projectName
 	 *            the name of the project
 	 * @param pathConstant
-	 *            TODO
 	 */
 	public PdfExportPage(String pageName, String projectName) {
 		this(pageName, projectName, PathComposite.PATH_DIALOG);
@@ -72,15 +56,13 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 
 	/**
 	 * Constructor.
-	 * 
-	 * @author Sebastian Sieber,Lukas Balzer
-	 * 
+	 *
+	 *
 	 * @param pageName
 	 *            the name of the page
 	 * @param projectName
 	 *            the name of the project
 	 * @param pathConstant
-	 *            TODO
 	 */
 	public PdfExportPage(String pageName, String projectName, int pathConstant) {
 		super(pageName, Activator.PLUGIN_ID);
@@ -100,8 +82,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		// -----Create the Company Name input Composite-------------------------
 		Composite labelComposite = new Composite(this.container, SWT.NONE);
 		data = new FormData();
-		data.top = new FormAttachment(projectChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(projectChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		data.height = ENTRY_HEIGTH;
 		labelComposite.setLayoutData(data);
 		labelComposite.setLayout(null);
@@ -112,8 +93,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		this.textCompany = new Text(labelComposite, SWT.BORDER | SWT.SINGLE);
 		this.textCompany.setBounds(AbstractWizardPage.TEXT_COLUMN, 0, 345, 21);
 
-		String companyName = this.store
-				.getString(IPreferenceConstants.COMPANY_NAME);
+		String companyName = this.store.getString(IPreferenceConstants.COMPANY_NAME);
 
 		if (companyName != null) {
 			this.textCompany.setText(companyName);
@@ -123,29 +103,24 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		}
 
 		// ----Create the logo path chooser composite---------------------------
-		this.logoComposite = new PathComposite(null, null, this.container,
-				PathComposite.LOGO_DIALOG, Messages.Logo);
-		String logoName = this.store
-				.getString(IPreferenceConstants.COMPANY_LOGO);
+		this.logoComposite = new PathComposite(null, null, this.container, PathComposite.LOGO_DIALOG, Messages.Logo);
+		String logoName = this.store.getString(IPreferenceConstants.COMPANY_LOGO);
 
 		if (logoName != null) {
 			this.textCompany.setText(logoName);
 		}
 		data = new FormData();
-		data.top = new FormAttachment(labelComposite,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(labelComposite, AbstractWizardPage.COMPONENT_OFFSET);
 		data.height = ENTRY_HEIGTH;
 		this.logoComposite.setLayoutData(data);
 		this.logoComposite.setVisible(true);
 
 		// ----Create the background color chooser
 		// composite---------------------------
-		this.bgChooser = new ColorChooser(this.container, SWT.NONE,
-				Messages.BackgroundColor,
+		this.bgChooser = new ColorChooser(this.container, SWT.NONE, Messages.BackgroundColor,
 				IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
 		data = new FormData();
-		data.top = new FormAttachment(this.logoComposite,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(this.logoComposite, AbstractWizardPage.COMPONENT_OFFSET);
 		data.height = ENTRY_HEIGTH;
 		this.bgChooser.setLayoutData(data);
 		this.bgChooser.setVisible(true);
@@ -153,11 +128,10 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 
 		// ----Create the foreground color chooser
 		// composite---------------------------
-		this.fontChooser = new ColorChooser(this.container, SWT.NONE,
-				Messages.FontColor, IPreferenceConstants.COMPANY_FONT_COLOR);
+		this.fontChooser = new ColorChooser(this.container, SWT.NONE, Messages.FontColor,
+				IPreferenceConstants.COMPANY_FONT_COLOR);
 		data = new FormData();
-		data.top = new FormAttachment(this.bgChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(this.bgChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		data.height = ENTRY_HEIGTH;
 		this.fontChooser.setLayoutData(data);
 		this.fontChooser.setVisible(true);
@@ -168,8 +142,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 				new String[] { "A-CAST Report *.pdf" }, //$NON-NLS-1$
 				this.container, this.pathConstant);
 		data = new FormData();
-		data.top = new FormAttachment(this.fontChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(this.fontChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		data.height = ENTRY_HEIGTH;
 		this.pathChooser.setLayoutData(data);
 		this.pathChooser.setVisible(true);
@@ -178,23 +151,20 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		// the control structure on/off
 		Composite decoSwitchComposite = new Composite(this.container, SWT.NONE);
 		data = new FormData();
-		data.top = new FormAttachment(this.pathChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(this.pathChooser, AbstractWizardPage.COMPONENT_OFFSET);
 		decoSwitchComposite.setLayoutData(data);
 		decoSwitchComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		Label decoLabel = new Label(decoSwitchComposite, SWT.NONE);
 		decoLabel.setText(Messages.ControlStructureDeco);
 		decoLabel.setToolTipText(Messages.CSDecoToolTip);
-		decoLabel.setLayoutData(new RowData(160,
-				AbstractWizardPage.LABEL_HEIGHT));
+		decoLabel.setLayoutData(new RowData(160, AbstractWizardPage.LABEL_HEIGHT));
 		this.decoSwitch = new Button(decoSwitchComposite, SWT.CHECK);
 
 		// ----Creates a Composite for a Canvas which provides a preview of the
 		// projectname with the chosen fore-/background colors
 		this.sampleComp = new DemoCanvas(this.container, SWT.NONE);
 		data = new FormData();
-		data.top = new FormAttachment(decoSwitchComposite,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(decoSwitchComposite, AbstractWizardPage.COMPONENT_OFFSET);
 		data.height = AbstractWizardPage.DEMOCANVAS_HEIGHT;
 		data.width = parent.getBounds().width;
 		this.sampleComp.setLayoutData(data);
@@ -251,7 +221,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	}
 
 	/**
-	 * 
+	 *
 	 * @return if the structure is being decorated
 	 */
 	public boolean getDecoChoice() {

@@ -3,12 +3,12 @@
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *******************************************************************************/
 
 package acast.ui.acchaz;
@@ -16,14 +16,13 @@ package acast.ui.acchaz;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import acast.model.ATableModel;
-import acast.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-
+import acast.model.ATableModelCAST;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 
 /**
- * 
+ *
  * @author Jarkko Heidenwag
- * 
+ *
  */
 public class ATableFilter extends ViewerFilter {
 
@@ -33,9 +32,9 @@ public class ATableFilter extends ViewerFilter {
 	private int cscFilterMode = 0;
 
 	/**
-	 * 
+	 *
 	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 * @param s
 	 *            the string for the filter
 	 */
@@ -49,8 +48,8 @@ public class ATableFilter extends ViewerFilter {
 		if ((this.searchString == null) || (this.searchString.length() == 0)) {
 			return true;
 		}
-		if (element instanceof ATableModel) {
-			ATableModel p = (ATableModel) element;
+		if (element instanceof ATableModelCAST) {
+			ATableModelCAST p = (ATableModelCAST) element;
 			if (p.getTitle().toLowerCase().matches(this.searchString)) {
 				return true;
 			}
@@ -69,8 +68,7 @@ public class ATableFilter extends ViewerFilter {
 		final int uca = 1;
 		final int rsc = 2;
 		if ((this.getCSCFilterMode() == rsc)) {
-			if (cuca.getCorrespondingSafetyConstraint().getText().toLowerCase()
-					.matches(this.searchString)) {
+			if (cuca.getCorrespondingSafetyConstraint().getText().toLowerCase().matches(this.searchString)) {
 				return true;
 			}
 			return false;
@@ -80,10 +78,8 @@ public class ATableFilter extends ViewerFilter {
 			}
 			return false;
 		} else if (this.getCSCFilterMode() == both) {
-			if ((cuca.getCorrespondingSafetyConstraint().getText()
-					.toLowerCase().matches(this.searchString))
-					|| (cuca.getDescription().toLowerCase()
-							.matches(this.searchString))) {
+			if ((cuca.getCorrespondingSafetyConstraint().getText().toLowerCase().matches(this.searchString))
+					|| (cuca.getDescription().toLowerCase().matches(this.searchString))) {
 				return true;
 			}
 			return false;

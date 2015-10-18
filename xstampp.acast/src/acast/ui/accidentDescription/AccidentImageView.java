@@ -15,20 +15,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
-
-import acast.model.interfaces.IAccidentDescriptionViewDataModel;
-import xstampp.model.IDataModel;
-import xstampp.ui.common.ProjectManager;
-import xstampp.ui.editors.STPAEditorInput;
-import xstampp.ui.editors.StandartEditorPart;
 
 public class AccidentImageView extends EditorPart {
 
@@ -43,6 +37,58 @@ public class AccidentImageView extends EditorPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
+
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				if (partRef.getId().equals("acast.steps.step1_1_image")) {
+					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
+
+				}
+			}
+
+			@Override
+			public void partActivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 		parent.setLayout(new GridLayout(1, false));
 		Composite composite_AccidentImage = new Composite(parent, SWT.BORDER);

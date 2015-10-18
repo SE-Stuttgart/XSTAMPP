@@ -1,7 +1,5 @@
 package acast.ui.accidentDescription;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -26,40 +24,31 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import acast.Activator;
-import acast.controlstructure.CSAbstractEditor;
-import acast.model.causalfactor.ICausalComponent;
-import acast.model.controlstructure.components.ComponentType;
-import acast.model.interfaces.IControlStructureEditorDataModel;
+import acast.model.interfaces.IResponsibilityDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 
 public class RecommandationsView extends StandartEditorPart {
 
-	
 	/**
 	 * ViewPart ID.
 	 */
 	public static final String ID = "acast.steps.step3_1";
-	
-	private IControlStructureEditorDataModel dataInterface;
+
+	private IResponsibilityDataModel dataInterface;
 	private Combo combo;
 
-	private int count = 0;
-
 	private String selectedItem;
-
 
 	private TableViewer viewer;
 
 	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = (IControlStructureEditorDataModel) dataInterface;
+		this.dataInterface = (IResponsibilityDataModel) dataInterface;
 		this.dataInterface.addObserver(this);
 	}
 
@@ -69,41 +58,39 @@ public class RecommandationsView extends StandartEditorPart {
 		return null;
 	}
 
-	public void applyDataToDataModel(UUID name, String id, String description, boolean responsibilityAlreadyExits) {
+	public void applyDataToDataModel(UUID ident, String oldId, String newId, String newDescription,
+			boolean responsibilityAlreadyExits, String name) {
 		if (!responsibilityAlreadyExits) {
-			dataInterface.addRecommendation(name, id, description);
+			this.dataInterface.addRecommendation(ident, oldId, newDescription, name);
 		} else {
-			dataInterface.changeRecommendation(name, id, description);
+			this.dataInterface.changeRecommendation(ident, oldId, newId, newDescription, name);
 		}
+
 	}
 
-	public void updateComponents(UUID name, String id,String newId) {
-		dataInterface.updateRecommendation(name, id, newId);
+	public void updateComponents(UUID ident, String oldId, String newId, String newDescription, String name) {
+		dataInterface.changeRecommendation(ident, oldId, newId, newDescription, name);
 	}
 
-	public void removeFromDataModel(UUID name, String id) {
-		dataInterface.removeRecommendation(name, id);
+	public void removeFromDataModel(UUID ident, String id) {
+		this.dataInterface.removeRecommendation(ident, id);
 	}
 
 	public void updateReponsibilites(UUID id) {
-		if (dataInterface.getRecommendationList(id) != null && !dataInterface.getRecommendationList(id).isEmpty()) {
-			for (Recommendation resp : dataInterface.getRecommendationList(id)) {
-				TableItem item = new TableItem(viewer.getTable(), SWT.None);
-				item.setText(new String[] { resp.getId(), resp.getDescription() });
-			}
+		for (Responsibility resp : this.dataInterface.getRecommendationListforComponent(id)) {
+			TableItem item = new TableItem(viewer.getTable(), SWT.None);
+			item.setText(new String[] { resp.getId(), resp.getDescription() });
 		}
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		final Composite parent2 = parent;
-		setDataModelInterface(ProjectManager.getContainerInstance().getDataModel(getProjectID()));
-
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
 
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {
-				
+				// TODO Auto-generated method stub
+
 			}
 
 			@Override
@@ -138,16 +125,33 @@ public class RecommandationsView extends StandartEditorPart {
 
 			@Override
 			public void partBroughtToTop(IWorkbenchPartReference partRef) {
-				if (!combo.isDisposed()) {
-					combo.removeAll();
-					for (ICausalComponent c : dataInterface.getCasualComponents()) {
+				if (partRef.getId().equals("acast.steps.step3_1")) {
 
-						combo.add(c.getText());
-						CSAbstractEditor.identifiers.put(c.getText(), c.getId());
+					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
 
+					if (!combo.isDisposed()) {
+						if (combo.getSelectionIndex() == -1) {
+							combo.removeAll();
+							for (String x : dataInterface.getComponentNames().keySet()) {
+								combo.add(x);
+							}
+							if (combo.getItemCount() > 0) {
+								combo.select(0);
+							}
+						} else {
+							String se = combo.getItem(combo.getSelectionIndex());
+							combo.removeAll();
+							for (String x : dataInterface.getComponentNames().keySet()) {
+								combo.add(x);
+							}
+							if (combo.getItemCount() > 0) {
+								combo.select(combo.indexOf(se));
+							}
+						}
 					}
-					combo.select(combo.getItemCount() - 1);
+
 				}
+
 			}
 
 			@Override
@@ -156,6 +160,9 @@ public class RecommandationsView extends StandartEditorPart {
 
 			}
 		});
+
+		final Composite parent2 = parent;
+		setDataModelInterface(ProjectManager.getContainerInstance().getDataModel(getProjectID()));
 
 		parent.setLayout(new GridLayout(1, false));
 		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -170,26 +177,25 @@ public class RecommandationsView extends StandartEditorPart {
 		lblResponsibilities.setText("Name of the Role: ");
 		lblResponsibilities.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true, 1, 1));
 
-		if (count < 1) {
-			combo = new Combo(description, SWT.DROP_DOWN | SWT.RIGHT);
-			combo.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					viewer.getTable().removeAll();
-					selectedItem = combo.getItem(combo.getSelectionIndex());
-					updateReponsibilites(CSAbstractEditor.identifiers.get(selectedItem));
-				}
-			});
-			combo.setLayoutData(new GridData(SWT.NONE, SWT.FILL, true, true, 1, 1));
-			for (ICausalComponent x : dataInterface.getCasualComponents()) {
-					combo.add(x.getText());
-					CSAbstractEditor.identifiers.put(x.getText(), x.getId());
-			}
-			if (combo.getItemCount() > 0) {
-				combo.select(combo.getItemCount() - 1);
+		combo = new Combo(description, SWT.DROP_DOWN | SWT.RIGHT | SWT.READ_ONLY);
+		combo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				viewer.getTable().removeAll();
 				selectedItem = combo.getItem(combo.getSelectionIndex());
-				count++;
+				updateReponsibilites(dataInterface.getComponentNames().get(selectedItem));
 			}
+		});
+
+		combo.setLayoutData(new GridData(SWT.NONE, SWT.FILL, true, true, 1, 1));
+
+		for (String comp : this.dataInterface.getComponentNames().keySet()) {
+			combo.add(comp);
+		}
+
+		if (combo.getItemCount() > 0) {
+			combo.select(combo.getItemCount() - 1);
+			selectedItem = combo.getItem(combo.getSelectionIndex());
 		}
 
 		Button btnAdd = new Button(description, SWT.CENTER);
@@ -199,7 +205,7 @@ public class RecommandationsView extends StandartEditorPart {
 
 			@Override
 			public void handleEvent(Event event) {
-				if (dataInterface.getCasualComponents().isEmpty()) {
+				if (combo.getItemCount() == 0) {
 					MessageBox dialog = new MessageBox(parent2.getShell(), SWT.ICON_INFORMATION | SWT.OK);
 					dialog.setText("Warning");
 					dialog.setMessage("Create Components in Controlstruture first");
@@ -215,7 +221,8 @@ public class RecommandationsView extends StandartEditorPart {
 				}
 				TableItem item = new TableItem(viewer.getTable(), SWT.None);
 				item.setText(new String[] { count + "", "" });
-				applyDataToDataModel(CSAbstractEditor.identifiers.get(selectedItem), item.getText(0), "", false);
+				applyDataToDataModel(dataInterface.getComponentNames().get(selectedItem), item.getText(0),
+						item.getText(0), "", false, selectedItem);
 			}
 		});
 
@@ -235,10 +242,13 @@ public class RecommandationsView extends StandartEditorPart {
 					return;
 				}
 				int itemIndex = viewer.getTable().getSelectionIndex();
-				removeFromDataModel(CSAbstractEditor.identifiers.get(selectedItem), viewer.getTable().getItem(itemIndex).getText(0));
+				removeFromDataModel(dataInterface.getComponentNames().get(selectedItem),
+						viewer.getTable().getItem(itemIndex).getText(0));
 				viewer.getTable().remove(itemIndex);
 				for (int i = itemIndex; i < viewer.getTable().getItemCount(); i++) {
-					updateComponents(CSAbstractEditor.identifiers.get(selectedItem), viewer.getTable().getItem(i).getText(0),i + 1 + "");
+					updateComponents(dataInterface.getComponentNames().get(selectedItem),
+							viewer.getTable().getItem(i).getText(0), i + 1 + "",
+							viewer.getTable().getItem(i).getText(1), selectedItem);
 					viewer.getTable().getItem(i).setText(0, i + 1 + "");
 				}
 
@@ -287,8 +297,10 @@ public class RecommandationsView extends StandartEditorPart {
 										public void handleEvent(final Event e) {
 											switch (e.type) {
 											case SWT.FocusOut:
-												applyDataToDataModel(CSAbstractEditor.identifiers.get(selectedItem), item.getText(0), text.getText(),
-														true);
+												applyDataToDataModel(
+														dataInterface.getComponentNames().get(selectedItem),
+														item.getText(0), item.getText(0), text.getText(), true,
+														selectedItem);
 												item.setText(column, text.getText());
 												text.dispose();
 
@@ -329,7 +341,7 @@ public class RecommandationsView extends StandartEditorPart {
 				}
 			}
 		});
-		updateReponsibilites(CSAbstractEditor.identifiers.get(selectedItem));
+		updateReponsibilites(dataInterface.getComponentNames().get(selectedItem));
 		viewer.getTable().setHeaderVisible(true);
 		viewer.getTable().setLinesVisible(true);
 	}

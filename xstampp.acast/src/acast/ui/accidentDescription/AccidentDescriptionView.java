@@ -14,8 +14,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import messages.Messages;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -67,6 +65,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import acast.Activator;
+import acast.model.interfaces.IAccidentDescriptionViewDataModel;
+import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -74,8 +75,6 @@ import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.StyledTextSelection;
 import xstampp.ui.editors.interfaces.ITextEditContribution;
 import xstampp.ui.editors.interfaces.ITextEditor;
-import acast.Activator;
-import acast.model.interfaces.IAccidentDescriptionViewDataModel;
 
 public class AccidentDescriptionView extends StandartEditorPart implements
 		ITextEditor, IPropertyChangeListener {
@@ -131,9 +130,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	private ArrayList<ISelectionChangedListener> listener;
 
-	private ToolItem boldControl, italicControl, foregroundControl,
-			backgroundControl, baselineUpControl, baselineDownControl,
-			bulletListControl;
+	private ToolItem boldControl, italicControl, strikeoutControl,
+			foregroundControl, backgroundControl, baselineUpControl,
+			baselineDownControl, underlineControl, bulletListControl;
 
 	/**
 	 * Text arena to describe the accident.
@@ -162,9 +161,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Update UI
-	 * 
+	 *
 	 * @author Patrick Wickenhaeuser
-	 * 
+	 *
 	 * @param dataModelController
 	 *            Observable
 	 * @param updatedValue
@@ -203,9 +202,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set text background color
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param event
 	 *            SelectionEvent
 	 * @param composite
@@ -241,9 +240,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set text foreground color
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param event
 	 *            SelectionEvent
 	 * @param composite
@@ -280,9 +279,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set different color icons for different color shades.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param rgb
 	 *            RGB
 	 */
@@ -361,9 +360,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Initialize ArrayList with RGB values of color shades.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param redShades
 	 *            ArrayList<RGB>
 	 * @param blackShades
@@ -501,9 +500,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Get font names from system and sort alphabetically.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param composite
 	 *            Composite
 	 * @return names font names
@@ -530,9 +529,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set default font sizes to combo.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 */
 	public void setDefaultFontSize() {
 		FontData fontData;
@@ -563,9 +562,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Set default font names to combo.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 */
 	public void setDefaultFontName() {
 		FontData fontData;
@@ -595,9 +594,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Increase font size.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param composite
 	 *            Composite
 	 * @param event
@@ -619,9 +618,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	/**
 	 * Decrease font size
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param composite
 	 *            Composite
 	 * @param event
@@ -649,7 +648,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Gets the current accident description from the data model and set the
 	 * text formation.
-	 * 
+	 *
 	 */
 	private void updateAccidentDescription() {
 
@@ -719,8 +718,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentDescriptionToDataModel() {
 		if (!this.descriptionText.getStyleRanges().equals(
@@ -741,8 +740,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentCompanyToDataModel() {
 
@@ -757,8 +756,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentLocationToDataModel() {
 		if (!(this.accidentLocationText.getText().equals(this.dataInterface
@@ -772,8 +771,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 * Stores the current description text and style ranges of the text in the
 	 * data model. Style ranges are used to set the style and format of the
 	 * description text.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private void applyAccidentDateToDataModel() {
 		LocalDate datum = LocalDate.of(dateTime.getYear(),
@@ -822,6 +821,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		btnAddPicture.setBounds(0, 0, 75, 25);
 
 		btnAddPicture.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				switch (e.type) {
 				case SWT.Selection:
@@ -1157,7 +1157,10 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 					@Override
 					public void partBroughtToTop(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+						if (partRef.getId().equals("acast.steps.step1_1")) {
+							PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
+
+						}
 
 					}
 
@@ -1202,30 +1205,30 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 			}
 		});
-		this.descriptionText.addKeyListener(new KeyAdapter() {
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				switch (e.keyCode) {
-				case SWT.ARROW_LEFT: {
-					AccidentDescriptionView.this.descriptionText.setSelection(
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x - 1,
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x - 1);
-					break;
-				}
-				case SWT.ARROW_RIGHT: {
-					AccidentDescriptionView.this.descriptionText.setSelection(
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x + 1,
-							AccidentDescriptionView.this.descriptionText
-									.getSelection().x + 1);
-				}
-				}
-			}
-		});
-
+		// this.descriptionText.addKeyListener(new KeyAdapter() {
+		//
+		// @Override
+		// public void keyReleased(KeyEvent e) {
+		// switch (e.keyCode) {
+		// case SWT.ARROW_LEFT: {
+		// AccidentDescriptionView.this.descriptionText.setSelection(
+		// AccidentDescriptionView.this.descriptionText
+		// .getSelection().x - 1,
+		// AccidentDescriptionView.this.descriptionText
+		// .getSelection().x - 1);
+		// break;
+		// }
+		// case SWT.ARROW_RIGHT: {
+		// AccidentDescriptionView.this.descriptionText.setSelection(
+		// AccidentDescriptionView.this.descriptionText
+		// .getSelection().x + 1,
+		// AccidentDescriptionView.this.descriptionText
+		// .getSelection().x + 1);
+		// }
+		// }
+		// }
+		// });
+		//
 		this.descriptionText
 				.addExtendedModifyListener(new ExtendedModifyListener() {
 
@@ -1234,7 +1237,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 						AccidentDescriptionView.this
 								.handleDescriptionModify(event);
 
-						AccidentDescriptionView.this.setStyle(event.widget);
+						// AccidentDescriptionView.this.setStyle(event.widget);
 					}
 				});
 		this.descriptionText.addFocusListener(new FocusListener() {
@@ -1277,7 +1280,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Handles changes occurring in the TextArea depending on the CaretOffset
 	 * and selection of the text.
-	 * 
+	 *
 	 * @author Sebastian Sieber
 	 * @param event
 	 *            Fired if description text changed
@@ -1377,43 +1380,107 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	}
 
-	@Override
-	public void setStyle(String style) {
+	private void addStyleRangesFor(String style, String fontName, int fontSize,
+			int fontStyle) {
 		Point selectionRange = this.descriptionText.getSelectionRange();
 		if ((selectionRange == null) || (selectionRange.y == 0)) {
 			return;
 		}
-		StyleRange newRange = new StyleRange();
-		for (int i = selectionRange.x; i < (selectionRange.x + selectionRange.y); i++) {
-			StyleRange range = this.descriptionText.getStyleRangeAtOffset(i);
-			if (range != null) {
-				newRange = (StyleRange) range.clone();
-				newRange.start = i;
-				newRange.length = 1;
-			} else {
-				newRange = new StyleRange(i, 1, null, null, SWT.NULL);
-			}
-			// called if text is selected and button pressed
-			this.descriptionText.setStyleRange(this.setStyleItemRange(style,
-					newRange));
-			this.descriptionText.setStyleRange(this.setFontItemRange(style,
-					newRange));
-		}
-		this.descriptionText.setSelectionRange(selectionRange.x
-				+ selectionRange.y, 0);
+		int end = selectionRange.x + selectionRange.y;
 
-		// mark text as selected
-		this.descriptionText.setSelection(selectionRange.x, selectionRange.x
-				+ selectionRange.y);
-		this.descriptionText.setStyleRange(newRange);
+		StyleRange[] ranges = this.descriptionText.getStyleRanges(
+				selectionRange.x, selectionRange.y, true);
+		for (int i = 0; i < ranges.length; i++) {
+			StyleRange range = (StyleRange) ranges[i].clone();
+			if (range.start < selectionRange.x) {
+				range.length = range.length - (selectionRange.x - range.start);
+				range.start = selectionRange.x;
+			}
+			if (range.start + range.length - 1 > end) {
+				range.length = end - range.start;
+			}
+
+			this.descriptionText.setStyleRange(setFontItemRange(style, range,
+					new FontData(fontName, fontSize, fontStyle)));
+		}
+		if (ranges.length == 0) {
+			StyleRange newRange = new StyleRange();
+			newRange.start = selectionRange.x;
+			newRange.length = selectionRange.y;
+			this.descriptionText.setStyleRange(setFontItemRange(style,
+					newRange, new FontData(fontName, fontSize, fontStyle)));
+		}
+
+	}
+	
+	/**
+	 * Set the style range if text get modified and widget is selected. Also
+	 * triggers if text get selection and widget is selected.
+	 * 
+	 * @author Sebastian Sieber
+	 * 
+	 * @param style
+	 *            Widget
+	 * @param styleRange
+	 *            Set to selected widget
+	 * @param newDataSet TODO
+	 * @return styleRange StyleRange
+	 */
+	private StyleRange setFontItemRange(String style, StyleRange styleRange, FontData newDataSet) {
+
+		if(styleRange.font == null){
+			styleRange.font = Display.getDefault().getSystemFont(); 
+		}
+		FontData data = styleRange.font.getFontData()[0];
+		
+		switch(style){
+			case(FOREGROUND):{
+				styleRange.foreground = this.textForegroundColor;
+				break;
+			}case(BACKGROUND):{
+				styleRange.background = this.textBackgroundColor;
+				break;
+			}case(INCREASE):{
+				data.setHeight(data.getHeight() + 1);
+				break;
+			}case(DECREASE):{
+				data.setHeight(data.getHeight() - 1);
+				break;
+			}case(FONT_SIZE):{
+				data.setHeight(newDataSet.getHeight());
+				break;
+			}case(FONT_FAMILY):{
+				data.setName(newDataSet.getName());
+				break;
+			}case(BOLD): {
+				data.setStyle(data.getStyle() ^ SWT.BOLD);
+				break;
+			}case(ITALIC): {
+				data.setStyle(data.getStyle() ^ SWT.ITALIC);
+				break;
+			}case(UNDERLINE): {
+				styleRange.underline = !styleRange.underline;
+				break;
+			}case(STRIKEOUT): {
+				styleRange.strikeout = !styleRange.strikeout;
+				break;
+			}
+		}
+		styleRange.font= new Font(null, data);
+		return styleRange;
+	}
+
+	@Override
+	public void setStyle(String style) {
+		addStyleRangesFor(style, new String(), 0, 0);
 
 	}
 
 	/**
 	 * Set style range for bold, italic, strike out and underline.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param style
 	 *            Widget
 	 * @param styleRange
@@ -1436,9 +1503,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Set the style range if text get modified and widget is selected. Also
 	 * triggers if text get selection and widget is selected.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param style
 	 *            Widget
 	 * @param styleRange
@@ -1474,9 +1541,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	/**
 	 * Set style range for given range. Used to set foreground and background
 	 * color when chosen a new color from dialog.
-	 * 
+	 *
 	 * @author Sebastian Sieber
-	 * 
+	 *
 	 * @param selectionRange
 	 *            selected range
 	 * @param widget
@@ -1513,22 +1580,12 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	@Override
 	public void setFont(String fontString, int fontSize) {
-		getSelection();
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		int newSize = fontSize;
-		if (fontSize < 0) {
-			newSize = Integer.parseInt(this.fontSizeControl.getText());
-		}
-		this.textFont = new Font(display, fontString, newSize, SWT.NORMAL);
-		setStyle(FONT_FAMILY);
-
+		addStyleRangesFor(FONT_FAMILY,fontString, fontSize, SWT.NORMAL);
 	}
 
 	@Override
 	public void setFontSize(String style, int fontSize) {
-		this.textFont.getFontData()[0].setHeight(fontSize);
-		setStyle(FONT_FAMILY);
-
+		addStyleRangesFor(style,new String(), fontSize, SWT.NORMAL);
 	}
 
 	@Override

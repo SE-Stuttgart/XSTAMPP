@@ -1,0 +1,26 @@
+body
+{
+	font-family: Arial,Helvetica,sans-serif;
+}
+h1
+{
+	color:black;
+}
+h3
+{
+	color:black;
+}
+h5
+{
+	color:black;
+}
+a{
+	color:violet;
+}
+body{
+	padding-top:200px;
+	background-image: url('../icons/A-CAST-Logo.png');
+	background-repeat:no-repeat;
+	background-color:white;
+	color:black;
+}

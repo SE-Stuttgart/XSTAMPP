@@ -1,26 +1,23 @@
 package acast.jobs;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-
-import messages.Messages;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import xstampp.model.IDataModel;
 import acast.controller.Controller;
 import acast.model.ITableModel;
-import acast.model.causalfactor.ICausalComponent;
-import acast.model.controlstructure.Responsibility;
 import acast.ui.accidentDescription.ProximalEvent;
-import acast.ui.accidentDescription.Recommendation;
+import acast.ui.accidentDescription.Responsibility;
 import acast.wizards.BufferedCSVWriter;
+import messages.Messages;
+import xstampp.model.IDataModel;
 
 public class CastCSVExport extends Job {
 
@@ -69,9 +66,9 @@ public class CastCSVExport extends Job {
 			}
 
 			csvWriter.close();
-//			if (tableCSV.exists() && Desktop.isDesktopSupported()) {
-//				Desktop.getDesktop().open(tableCSV);
-//			}
+			// if (tableCSV.exists() && Desktop.isDesktopSupported()) {
+			// Desktop.getDesktop().open(tableCSV);
+			// }
 		} catch (IOException e) {
 			return Status.CANCEL_STATUS;
 		}
@@ -166,11 +163,12 @@ public class CastCSVExport extends Job {
 		csvWriter.newLine();
 		csvWriter.write("Roles and Responsibilities");
 		csvWriter.newLine();
-		for (ICausalComponent name : this.model.getCasualComponents()) {
+		for (String name : this.model.getComponentNames().keySet()) {
 			csvWriter.write("Role - ");
-			csvWriter.write(name.getText());
+			csvWriter.write(name);
 			csvWriter.newLine();
-			if (!this.model.getResponsibilitiesList(name.getId()).isEmpty()) {
+			UUID id = this.model.getComponentNames().get(name);
+			if (!this.model.getResponsibilitiesListforComponent(id).isEmpty()) {
 
 				csvWriter.write("Safety Related Responsibilities");
 				csvWriter.newLine();
@@ -178,29 +176,29 @@ public class CastCSVExport extends Job {
 				csvWriter.write("Description");
 				csvWriter.newLine();
 				i = 0;
-				for (Responsibility resp : this.model.getResponsibilitiesList(name.getId())) {
+				for (Responsibility resp : this.model.getResponsibilitiesListforComponent(id)) {
 					i++;
 					csvWriter.writeCell(Integer.toString(i));
 					csvWriter.write(resp.getDescription());
 					csvWriter.newLine();
 				}
 			}
-			if (!this.model.getContextList(name.getId()).isEmpty()) {
+			if (!this.model.getContextListforComponent(id).isEmpty()) {
 				csvWriter.newLine();
-				csvWriter.write("Context in which Decision made");
+				csvWriter.write("Context in which Decisions made");
 				csvWriter.newLine();
 				csvWriter.writeCell("ID");
 				csvWriter.write("Description");
 				csvWriter.newLine();
 				i = 0;
-				for (Responsibility resp : this.model.getContextList(name.getId())) {
+				for (Responsibility resp : this.model.getContextListforComponent(id)) {
 					i++;
 					csvWriter.writeCell(Integer.toString(i));
 					csvWriter.write(resp.getDescription());
 					csvWriter.newLine();
 				}
 			}
-			if (!this.model.getUnsafeActionsList(name.getId()).isEmpty()) {
+			if (!this.model.getUnsafeActionListforComponent(id).isEmpty()) {
 				csvWriter.newLine();
 				csvWriter.write("Unsafe Decisions and Control Actions");
 				csvWriter.newLine();
@@ -208,22 +206,52 @@ public class CastCSVExport extends Job {
 				csvWriter.write("Description");
 				csvWriter.newLine();
 				i = 0;
-				for (Responsibility resp : this.model.getUnsafeActionsList(name.getId())) {
+				for (Responsibility resp : this.model.getUnsafeActionListforComponent(id)) {
 					i++;
 					csvWriter.writeCell(Integer.toString(i));
 					csvWriter.write(resp.getDescription());
 					csvWriter.newLine();
 				}
 			}
-			if (!this.model.getFlawsList(name.getId()).isEmpty()) {
+			if (!this.model.getFlawListforComponent(id).isEmpty()) {
 				csvWriter.newLine();
-				csvWriter.write("Process Model Flaws");
+				csvWriter.write("Process/Mental Model Flaws");
 				csvWriter.newLine();
 				csvWriter.writeCell("ID");
 				csvWriter.write("Description");
 				csvWriter.newLine();
 				i = 0;
-				for (Responsibility resp : this.model.getFlawsList(name.getId())) {
+				for (Responsibility resp : this.model.getFlawListforComponent(id)) {
+					i++;
+					csvWriter.writeCell(Integer.toString(i));
+					csvWriter.write(resp.getDescription());
+					csvWriter.newLine();
+				}
+			}
+			if (!this.model.getFeedbackListforComponent(id).isEmpty()) {
+				csvWriter.newLine();
+				csvWriter.write("Feedback");
+				csvWriter.newLine();
+				csvWriter.writeCell("ID");
+				csvWriter.write("Description");
+				csvWriter.newLine();
+				i = 0;
+				for (Responsibility resp : this.model.getFeedbackListforComponent(id)) {
+					i++;
+					csvWriter.writeCell(Integer.toString(i));
+					csvWriter.write(resp.getDescription());
+					csvWriter.newLine();
+				}
+			}
+			if (!this.model.getCoordinationListforComponent(id).isEmpty()) {
+				csvWriter.newLine();
+				csvWriter.write("Coordination");
+				csvWriter.newLine();
+				csvWriter.writeCell("ID");
+				csvWriter.write("Description");
+				csvWriter.newLine();
+				i = 0;
+				for (Responsibility resp : this.model.getCoordinationListforComponent(id)) {
 					i++;
 					csvWriter.writeCell(Integer.toString(i));
 					csvWriter.write(resp.getDescription());
@@ -239,16 +267,17 @@ public class CastCSVExport extends Job {
 		csvWriter.newLine();
 		csvWriter.write("Findings and Recommendations");
 		csvWriter.newLine();
-		for (ICausalComponent name : this.model.getCasualComponents()) {
+		for (String name : this.model.getComponentNames().keySet()) {
 			csvWriter.write("Role - ");
-			csvWriter.write(name.getText());
+			csvWriter.write(name);
 			csvWriter.newLine();
-			if (!this.model.getRecommendationList(name.getId()).isEmpty()) {
+			UUID id = this.model.getComponentNames().get(name);
+			if (!this.model.getRecommendationListforComponent(id).isEmpty()) {
 				csvWriter.writeCell("ID");
 				csvWriter.write("Description");
 				csvWriter.newLine();
 				int i = 0;
-				for (Recommendation resp : this.model.getRecommendationList(name.getId())) {
+				for (Responsibility resp : this.model.getRecommendationListforComponent(id)) {
 					i++;
 					csvWriter.writeCell(Integer.toString(i));
 					csvWriter.write(resp.getDescription());

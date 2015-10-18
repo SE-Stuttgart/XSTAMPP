@@ -6,20 +6,19 @@ import acast.wizards.AbstractExportWizard;
 import xstampp.preferences.IPreferenceConstants;
 
 public class AllCSVDataWizard extends AbstractExportWizard {
-	
+
 	CASTDataPage site;
 
 	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
+	 *
+	 *
 	 */
 	public AllCSVDataWizard() {
-		super(new String[] {  HazardsView.ID });
+		super(new String[] { HazardsView.ID });
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 
-		this.site = new CASTDataPage(filters, "Custom Data", this.getStore()
-				.getString(IPreferenceConstants.PROJECT_NAME));
+		this.site = new CASTDataPage(filters, "Custom Data",
+				this.getStore().getString(IPreferenceConstants.PROJECT_NAME));
 		this.setExportPage(this.site);
 	}
 

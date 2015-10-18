@@ -3,20 +3,18 @@
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *******************************************************************************/
 
 package acast.ui.sds;
 
 import java.util.Iterator;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -48,23 +46,23 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.model.IDataModel;
-import xstampp.ui.common.ProjectManager;
 import acast.Activator;
 import acast.model.interfaces.ISafetyConstraintViewDataModel;
 import acast.model.sds.SafetyConstraint;
 import acast.ui.acchaz.ATableFilter;
 import acast.ui.acchaz.CommonTableView;
+import acast.ui.accidentDescription.TableView;
+import messages.Messages;
+import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
 
 /**
- * @author Jarkko Heidenwag
- * 
+ *
  */
 public class SafetyConstraintView extends CommonTableView {
 
 	/**
-	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 */
 	public static final String ID = "acast.steps.step1_2_2"; //$NON-NLS-1$
 
@@ -74,8 +72,7 @@ public class SafetyConstraintView extends CommonTableView {
 	private ISafetyConstraintViewDataModel dataInterface;
 
 	/**
-	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 */
 	public SafetyConstraintView() {
 
@@ -83,65 +80,65 @@ public class SafetyConstraintView extends CommonTableView {
 
 	/**
 	 * Create contents of the view part.
-	 * 
-	 * @author Jarkko Heidenwag
+	 *
 	 * @param parent
 	 *            The parent composite
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
 
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.addPartListener(new IPartListener2() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
 
-					@Override
-					public void partVisible(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
 
-					}
+			}
 
-					@Override
-					public void partOpened(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
 
-					}
+			}
 
-					@Override
-					public void partInputChanged(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
 
-					}
+			}
 
-					@Override
-					public void partHidden(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
 
-					}
+			}
 
-					@Override
-					public void partDeactivated(IWorkbenchPartReference partRef) {
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
 
-					}
+			}
 
-					@Override
-					public void partClosed(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
 
-					}
+			}
 
-					@Override
-					public void partBroughtToTop(IWorkbenchPartReference partRef) {
-						// TODO Auto-generated method stub
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				if (partRef.getId().equals("acast.steps.step1_2_2")) {
+					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
 
-					}
+				}
 
-					@Override
-					public void partActivated(IWorkbenchPartReference partRef) {
+			}
 
-					}
-				});
-		this.setDataModelInterface(ProjectManager.getContainerInstance()
-				.getDataModel(this.getProjectID()));
+			@Override
+			public void partActivated(IWorkbenchPartReference partRef) {
+
+			}
+		});
+		this.setDataModelInterface(ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
 
 		this.createCommonTableView(parent, Messages.SafetyConstraints);
 
@@ -149,9 +146,8 @@ public class SafetyConstraintView extends CommonTableView {
 
 			@Override
 			public void keyReleased(KeyEvent ke) {
-				SafetyConstraintView.this.getFilter().setSearchText(
-						SafetyConstraintView.this.getFilterTextField()
-								.getText());
+				SafetyConstraintView.this.getFilter()
+						.setSearchText(SafetyConstraintView.this.getFilterTextField().getText());
 				SafetyConstraintView.this.refreshView();
 			}
 		});
@@ -159,14 +155,10 @@ public class SafetyConstraintView extends CommonTableView {
 		this.setFilter(new ATableFilter());
 		this.getTableViewer().addFilter(this.getFilter());
 
-		this.getAddNewItemButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/add.png") //$NON-NLS-1$
-						.createImage());
-		this.getDeleteItemsButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
-						.createImage());
+		this.getAddNewItemButton().setImage(Activator.getImageDescriptor("/icons/buttons/commontables/add.png") //$NON-NLS-1$
+				.createImage());
+		this.getDeleteItemsButton().setImage(Activator.getImageDescriptor("/icons/buttons/commontables/remove.png") //$NON-NLS-1$
+				.createImage());
 
 		Listener addSafetyConstraintListener = new Listener() {
 
@@ -178,54 +170,37 @@ public class SafetyConstraintView extends CommonTableView {
 				SafetyConstraintView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.refreshView();
-				SafetyConstraintView.this.dataInterface.addSafetyConstraint(
-						"", Messages.DescriptionOfThisSafetyConstr); //$NON-NLS-1$
-				int newID = SafetyConstraintView.this.dataInterface
-						.getAllSafetyConstraints().size() - 1;
+				SafetyConstraintView.this.dataInterface.addSafetyConstraint("", Messages.DescriptionOfThisSafetyConstr); //$NON-NLS-1$
+				int newID = SafetyConstraintView.this.dataInterface.getAllSafetyConstraints().size() - 1;
 				SafetyConstraintView.this.updateTable();
 				SafetyConstraintView.this.refreshView();
 				SafetyConstraintView.this.getTableViewer().setSelection(
-						new StructuredSelection(SafetyConstraintView.this
-								.getTableViewer().getElementAt(newID)), true);
-				SafetyConstraintView.this
-						.getTitleColumn()
-						.getViewer()
-						.editElement(
-								SafetyConstraintView.this.getTableViewer()
-										.getElementAt(newID), 1);
+						new StructuredSelection(SafetyConstraintView.this.getTableViewer().getElementAt(newID)), true);
+				SafetyConstraintView.this.getTitleColumn().getViewer()
+						.editElement(SafetyConstraintView.this.getTableViewer().getElementAt(newID), 1);
 			}
 		};
 
-		this.getAddNewItemButton().addListener(SWT.Selection,
-				addSafetyConstraintListener);
+		this.getAddNewItemButton().addListener(SWT.Selection, addSafetyConstraintListener);
 
-		this.getTableViewer().getTable()
-				.addListener(SWT.KeyDown, addSafetyConstraintListener);
+		this.getTableViewer().getTable().addListener(SWT.KeyDown, addSafetyConstraintListener);
 
 		// Listener for editing a title by pressing return
 		Listener returnListener = new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
-				if ((event.type == SWT.KeyDown)
-						&& (event.keyCode == SWT.CR)
-						&& (!SafetyConstraintView.this.getTableViewer()
-								.getSelection().isEmpty())) {
-					int indexFirstSelected = SafetyConstraintView.this
-							.getTableViewer().getTable().getSelectionIndices()[0];
-					SafetyConstraintView.this
-							.getTitleColumn()
-							.getViewer()
-							.editElement(
-									SafetyConstraintView.this.getTableViewer()
-											.getElementAt(indexFirstSelected),
-									1);
+				if ((event.type == SWT.KeyDown) && (event.keyCode == SWT.CR)
+						&& (!SafetyConstraintView.this.getTableViewer().getSelection().isEmpty())) {
+					int indexFirstSelected = SafetyConstraintView.this.getTableViewer().getTable()
+							.getSelectionIndices()[0];
+					SafetyConstraintView.this.getTitleColumn().getViewer().editElement(
+							SafetyConstraintView.this.getTableViewer().getElementAt(indexFirstSelected), 1);
 				}
 			}
 		};
 
-		this.getTableViewer().getTable()
-				.addListener(SWT.KeyDown, returnListener);
+		this.getTableViewer().getTable().addListener(SWT.KeyDown, returnListener);
 
 		// check if the description is default and delete it in that case
 		this.getDescriptionWidget().addFocusListener(new FocusListener() {
@@ -234,12 +209,9 @@ public class SafetyConstraintView extends CommonTableView {
 			public void focusGained(FocusEvent e) {
 				Text text = (Text) e.widget;
 				String description = text.getText();
-				if (description
-						.compareTo(Messages.DescriptionOfThisSafetyConstr) == 0) {
-					UUID id = SafetyConstraintView.this.displayedSafetyConstraint
-							.getId();
-					SafetyConstraintView.this.dataInterface
-							.setSafetyConstraintDescription(id, ""); //$NON-NLS-1$
+				if (description.compareTo(Messages.DescriptionOfThisSafetyConstr) == 0) {
+					UUID id = SafetyConstraintView.this.displayedSafetyConstraint.getId();
+					SafetyConstraintView.this.dataInterface.setSafetyConstraintDescription(id, ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
 			}
@@ -259,26 +231,22 @@ public class SafetyConstraintView extends CommonTableView {
 				if (SafetyConstraintView.this.displayedSafetyConstraint != null) {
 					Text text = (Text) e.widget;
 					String description = text.getText();
-					UUID id = SafetyConstraintView.this.displayedSafetyConstraint
-							.getId();
-					SafetyConstraintView.this.dataInterface
-							.setSafetyConstraintDescription(id, description);
+					UUID id = SafetyConstraintView.this.displayedSafetyConstraint.getId();
+					SafetyConstraintView.this.dataInterface.setSafetyConstraintDescription(id, description);
 				}
 			}
 		});
 
 		// Listener for showing the description of the selected safety
 		// constraint
-		SafetyConstraintView.this.getTableViewer().addSelectionChangedListener(
-				new SCSelectionChangedListener());
+		SafetyConstraintView.this.getTableViewer().addSelectionChangedListener(new SCSelectionChangedListener());
 
 		this.getIdColumn().setLabelProvider(new ColumnLabelProvider() {
 
 			@Override
 			public String getText(Object element) {
 				if (element instanceof SafetyConstraint) {
-					return Integer.toString(((SafetyConstraint) element)
-							.getNumber());
+					return Integer.toString(((SafetyConstraint) element).getNumber());
 				}
 				return null;
 			}
@@ -295,45 +263,39 @@ public class SafetyConstraintView extends CommonTableView {
 			}
 		});
 
-		final EditingSupport titleEditingSupport = new SCEditingSupport(
-				SafetyConstraintView.this.getTableViewer());
+		final EditingSupport titleEditingSupport = new SCEditingSupport(SafetyConstraintView.this.getTableViewer());
 		this.getTitleColumn().setEditingSupport(titleEditingSupport);
 
 		// KeyListener for deleting safety constraints by selecting them and
 		// pressing the delete key
-		SafetyConstraintView.this.getTableViewer().getControl()
-				.addKeyListener(new KeyAdapter() {
+		SafetyConstraintView.this.getTableViewer().getControl().addKeyListener(new KeyAdapter() {
 
-					@Override
-					public void keyReleased(final KeyEvent e) {
-						if ((e.keyCode == SWT.DEL)
-								|| ((e.stateMask == SWT.COMMAND) && (e.keyCode == SWT.BS))) {
-							IStructuredSelection selection = (IStructuredSelection) SafetyConstraintView.this
-									.getTableViewer().getSelection();
-							if (selection.isEmpty()) {
-								return;
-							}
-							SafetyConstraintView.this.deleteItems();
-						}
+			@Override
+			public void keyReleased(final KeyEvent e) {
+				if ((e.keyCode == SWT.DEL) || ((e.stateMask == SWT.COMMAND) && (e.keyCode == SWT.BS))) {
+					IStructuredSelection selection = (IStructuredSelection) SafetyConstraintView.this.getTableViewer()
+							.getSelection();
+					if (selection.isEmpty()) {
+						return;
 					}
-				});
+					SafetyConstraintView.this.deleteItems();
+				}
+			}
+		});
 
 		// Adding a right click context menu and the option to delete an entry
 		// this way
 		MenuManager menuMgr = new MenuManager();
-		Menu menu = menuMgr.createContextMenu(SafetyConstraintView.this
-				.getTableViewer().getControl());
+		Menu menu = menuMgr.createContextMenu(SafetyConstraintView.this.getTableViewer().getControl());
 		menuMgr.addMenuListener(new IMenuListener() {
 
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-				if (SafetyConstraintView.this.getTableViewer().getSelection()
-						.isEmpty()) {
+				if (SafetyConstraintView.this.getTableViewer().getSelection().isEmpty()) {
 					return;
 				}
 				if (SafetyConstraintView.this.getTableViewer().getSelection() instanceof IStructuredSelection) {
-					Action deleteSafetyConstraint = new Action(
-							Messages.DeleteSafetyConstraints) {
+					Action deleteSafetyConstraint = new Action(Messages.DeleteSafetyConstraints) {
 
 						@Override
 						public void run() {
@@ -354,53 +316,40 @@ public class SafetyConstraintView extends CommonTableView {
 
 	/**
 	 * deleting all selected safety constraints
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
+	 *
+	 *
 	 */
 	@Override
 	public void deleteItems() {
 		final int maxNumOfDisplayedEntries = 10;
-		IStructuredSelection selection = (IStructuredSelection) SafetyConstraintView.this
-				.getTableViewer().getSelection();
+		IStructuredSelection selection = (IStructuredSelection) SafetyConstraintView.this.getTableViewer()
+				.getSelection();
 		if (selection.size() == 1) {
 			// if only one safety constraint is selected
-			SafetyConstraint deletedSafetyConstraint = (SafetyConstraint) selection
-					.getFirstElement();
-			String deletedSafetyConstraintId = Integer
-					.toString(deletedSafetyConstraint.getNumber());
-			String deletedSafetyConstraintTitle = deletedSafetyConstraint
-					.getTitle();
-			String confirmation = Messages.DoYouWishToDeleteTheSafetyConstraint
-					+ deletedSafetyConstraintId + ": " //$NON-NLS-1$
+			SafetyConstraint deletedSafetyConstraint = (SafetyConstraint) selection.getFirstElement();
+			String deletedSafetyConstraintId = Integer.toString(deletedSafetyConstraint.getNumber());
+			String deletedSafetyConstraintTitle = deletedSafetyConstraint.getTitle();
+			String confirmation = Messages.DoYouWishToDeleteTheSafetyConstraint + deletedSafetyConstraintId + ": " //$NON-NLS-1$
 					+ deletedSafetyConstraintTitle + "?"; //$NON-NLS-1$
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
+			boolean b = MessageDialog.openQuestion(this.getTableContainer().getShell(), Messages.Confirm, confirmation);
 			this.delOne(b, deletedSafetyConstraint.getId());
-		} else if ((selection.size() > 1)
-				&& (selection.size() <= maxNumOfDisplayedEntries)) {
+		} else if ((selection.size() > 1) && (selection.size() <= maxNumOfDisplayedEntries)) {
 			// if a few safety constraints are selected
 			String safetyConstraints = ""; //$NON-NLS-1$
 			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
-			for (Iterator<SafetyConstraint> i = selection.iterator(); i
-					.hasNext();) {
+			for (Iterator<SafetyConstraint> i = selection.iterator(); i.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.dataInterface.getSafetyConstraint(id)
-						.getTitle();
-				int num = this.dataInterface.getSafetyConstraint(id)
-						.getNumber();
+				String title = this.dataInterface.getSafetyConstraint(id).getTitle();
+				int num = this.dataInterface.getSafetyConstraint(id).getNumber();
 				String safetyConstraint = newline + num + ": " + title; //$NON-NLS-1$
 				safetyConstraints = safetyConstraints + safetyConstraint;
 			}
-			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingSafetyConstraints
-					+ safetyConstraints;
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
+			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingSafetyConstraints + safetyConstraints;
+			boolean b = MessageDialog.openQuestion(this.getTableContainer().getShell(), Messages.Confirm, confirmation);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.displayedSafetyConstraint = null;
-				for (Iterator<SafetyConstraint> i = selection.iterator(); i
-						.hasNext();) {
+				for (Iterator<SafetyConstraint> i = selection.iterator(); i.hasNext();) {
 					this.dataInterface.removeSafetyConstraint(i.next().getId());
 				}
 				SafetyConstraintView.this.updateTable();
@@ -408,22 +357,20 @@ public class SafetyConstraintView extends CommonTableView {
 			}
 		} else if (selection.size() > maxNumOfDisplayedEntries) {
 			// if many safety constraints are selected
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm,
+			boolean b = MessageDialog.openQuestion(this.getTableContainer().getShell(), Messages.Confirm,
 					Messages.ConfirmTheDeletionOfAllSelectedSafetyConstraints);
 			if (b) {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.displayedSafetyConstraint = null;
-				for (Iterator<SafetyConstraint> i = selection.iterator(); i
-						.hasNext();) {
+				for (Iterator<SafetyConstraint> i = selection.iterator(); i.hasNext();) {
 					this.dataInterface.removeSafetyConstraint(i.next().getId());
 				}
 				SafetyConstraintView.this.updateTable();
 				this.refreshView();
 			}
 		} else {
-			MessageDialog.openInformation(this.getTableContainer().getShell(),
-					Messages.Information, Messages.NoSafetyConstraintSelected);
+			MessageDialog.openInformation(this.getTableContainer().getShell(), Messages.Information,
+					Messages.NoSafetyConstraintSelected);
 		}
 	}
 
@@ -440,9 +387,8 @@ public class SafetyConstraintView extends CommonTableView {
 	private class SCEditingSupport extends EditingSupport {
 
 		/**
-		 * 
-		 * @author Jarkko Heidenwag
-		 * 
+		 *
+		 *
 		 * @param viewer
 		 *            the ColumnViewer
 		 */
@@ -457,16 +403,14 @@ public class SafetyConstraintView extends CommonTableView {
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return new TextCellEditor(SafetyConstraintView.this
-					.getTableViewer().getTable());
+			return new TextCellEditor(SafetyConstraintView.this.getTableViewer().getTable());
 		}
 
 		@Override
 		protected Object getValue(Object element) {
 			if (element instanceof SafetyConstraint) {
 				// deleting the default title
-				if ((((SafetyConstraint) element).getTitle()
-						.compareTo(Messages.DoubleClickToEditTitle)) == 0) {
+				if ((((SafetyConstraint) element).getTitle().compareTo(Messages.DoubleClickToEditTitle)) == 0) {
 					((SafetyConstraint) element).setTitle(""); //$NON-NLS-1$
 				}
 				return ((SafetyConstraint) element).getTitle();
@@ -480,16 +424,14 @@ public class SafetyConstraintView extends CommonTableView {
 				((SafetyConstraint) element).setTitle(String.valueOf(value));
 				// Fill in the default title if the user left it blank
 				if (((SafetyConstraint) element).getTitle().length() == 0) {
-					((SafetyConstraint) element)
-							.setTitle(Messages.DoubleClickToEditTitle);
+					((SafetyConstraint) element).setTitle(Messages.DoubleClickToEditTitle);
 				}
 			}
 			SafetyConstraintView.this.refreshView();
 		}
 	}
 
-	private class SCSelectionChangedListener implements
-			ISelectionChangedListener {
+	private class SCSelectionChangedListener implements ISelectionChangedListener {
 
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
@@ -497,23 +439,19 @@ public class SafetyConstraintView extends CommonTableView {
 			if (event.getSelection().isEmpty()) {
 				SafetyConstraintView.this.displayedSafetyConstraint = null;
 				SafetyConstraintView.this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				SafetyConstraintView.this.getDescriptionWidget().setEnabled(
-						false);
+				SafetyConstraintView.this.getDescriptionWidget().setEnabled(false);
 				return;
 			}
 			if (event.getSelection() instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				if (selection.getFirstElement() instanceof SafetyConstraint) {
 					if (SafetyConstraintView.this.displayedSafetyConstraint == null) {
-						SafetyConstraintView.this.getDescriptionWidget()
-								.setEnabled(true);
+						SafetyConstraintView.this.getDescriptionWidget().setEnabled(true);
 					} else {
 						SafetyConstraintView.this.displayedSafetyConstraint = null;
 					}
-					SafetyConstraintView.this.getDescriptionWidget().setText(
-							((SafetyConstraint) selection.getFirstElement())
-									.getDescription());
+					SafetyConstraintView.this.getDescriptionWidget()
+							.setText(((SafetyConstraint) selection.getFirstElement()).getDescription());
 					SafetyConstraintView.this.displayedSafetyConstraint = (SafetyConstraint) selection
 							.getFirstElement();
 				}
@@ -523,12 +461,11 @@ public class SafetyConstraintView extends CommonTableView {
 
 	/**
 	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 */
 	@Override
 	public void updateTable() {
-		SafetyConstraintView.this.getTableViewer().setInput(
-				this.dataInterface.getAllSafetyConstraints());
+		SafetyConstraintView.this.getTableViewer().setInput(this.dataInterface.getAllSafetyConstraints());
 	}
 
 	@Override
@@ -548,9 +485,9 @@ public class SafetyConstraintView extends CommonTableView {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Jarkko Heidenwag
-	 * 
+	 *
 	 * @return the type of this view
 	 */
 	@Override

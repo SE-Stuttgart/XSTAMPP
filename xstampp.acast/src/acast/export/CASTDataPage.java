@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * @author Lukas Balzer
  */
 package acast.export;
@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import messages.Messages;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,12 +23,12 @@ import org.eclipse.swt.widgets.Group;
 
 import acast.jobs.ICSVExportConstants;
 import acast.wizards.pages.CSVExportPage;
+import messages.Messages;
 import xstampp.util.AbstractWizardPage;
 
 /**
- * 
- * @author Lukas Balzer
- * 
+ *
+ *
  */
 public class CASTDataPage extends CSVExportPage {
 
@@ -39,7 +37,6 @@ public class CASTDataPage extends CSVExportPage {
 	private List<String> stepViews;
 
 	/**
-	 * @author Lukas Balzer
 	 * @param filters
 	 *            the file extensions, which shall be excepted by in the dialog
 	 * @param pageName
@@ -129,8 +126,7 @@ public class CASTDataPage extends CSVExportPage {
 		super.createControl(this.control);
 		Composite inheritedComp = (Composite) this.getControl();
 		data = new FormData();
-		data.top = new FormAttachment(group,
-				AbstractWizardPage.COMPONENT_OFFSET);
+		data.top = new FormAttachment(group, AbstractWizardPage.COMPONENT_OFFSET);
 		inheritedComp.setLayoutData(data);
 		this.setControl(this.control);
 
@@ -146,9 +142,8 @@ public class CASTDataPage extends CSVExportPage {
 	}
 
 	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
+	 *
+	 *
 	 * @return return an array containing all
 	 */
 	public ArrayList<String> getSteps() {
