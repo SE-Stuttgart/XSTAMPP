@@ -535,8 +535,6 @@ public class TableView extends ViewPart {
 				PlatformUI.getWorkbench().getDisplay().getActiveShell()
 						.forceFocus();
 				viewer.getTable().removeAll();
-				System.out.println(dataInterface.getComponentNames().get(
-						selectedItem));
 				updateReponsibilites(
 						dataInterface.getComponentNames().get(selectedItem),
 						responsibility);
@@ -798,8 +796,14 @@ public class TableView extends ViewPart {
 		});
 		viewer.getTable().setHeaderVisible(true);
 		viewer.getTable().setLinesVisible(true);
-		combo.select(0);
-
+		if (combo.getItemCount() > 0) {
+			selectedItem = combo.getItem(0);
+			combo.select(0);
+			viewer.getTable().removeAll();
+			updateReponsibilites(
+					dataInterface.getComponentNames().get(selectedItem),
+					responsibility);
+		}
 	}
 
 	@Override

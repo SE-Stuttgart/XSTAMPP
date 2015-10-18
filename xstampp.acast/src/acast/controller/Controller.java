@@ -57,9 +57,11 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
 @XmlRootElement(namespace = "acast.model")
-public class Controller extends Observable implements IDataModel, IAccidentDescriptionViewDataModel,
-		IHazardViewDataModel, ISafetyConstraintViewDataModel, IControlActionViewDataModel,
-		IControlStructureEditorDataModel, IProximalEventsViewDataModel, IResponsibilityDataModel {
+public class Controller extends Observable implements IDataModel,
+		IAccidentDescriptionViewDataModel, IHazardViewDataModel,
+		ISafetyConstraintViewDataModel, IControlActionViewDataModel,
+		IControlStructureEditorDataModel, IProximalEventsViewDataModel,
+		IResponsibilityDataModel {
 
 	private static final Logger LOGGER = ProjectManager.getLOGGER();
 
@@ -107,8 +109,10 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		if (bundle != null) {
 			Dictionary<?, ?> dictionary = bundle.getHeaders();
-			String versionWithQualifier = (String) dictionary.get(Messages.BundleVersion);
-			this.acastVersion = versionWithQualifier.substring(0, versionWithQualifier.lastIndexOf('.'));
+			String versionWithQualifier = (String) dictionary
+					.get(Messages.BundleVersion);
+			this.acastVersion = versionWithQualifier.substring(0,
+					versionWithQualifier.lastIndexOf('.'));
 		}
 
 	}
@@ -285,7 +289,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		if (!(this.hazController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-		((Hazard) this.hazController.getHazard(hazardId)).setDescription(description);
+		((Hazard) this.hazController.getHazard(hazardId))
+				.setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.HAZARD);
 		return true;
 	}
@@ -308,35 +313,44 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public UUID addComponent(UUID parentId, Rectangle layout, String text, ComponentType type, Integer index) {
-		if ((parentId == null) || (layout == null) || (text == null) || (type == null)) {
+	public UUID addComponent(UUID parentId, Rectangle layout, String text,
+			ComponentType type, Integer index) {
+		if ((parentId == null) || (layout == null) || (text == null)
+				|| (type == null)) {
 			return null;
 		}
 		if (!(this.getComponent(parentId) instanceof Component)) {
 			return null;
 		}
-		UUID result = this.controlStructureController.addComponent(parentId, layout, text, type, index);
-		this.respController.addComponentName(text, result);
-
+		UUID result = this.controlStructureController.addComponent(parentId,
+				layout, text, type, index);
+		if (type != ComponentType.CONTROLACTION
+				&& type != ComponentType.CONTAINER) {
+			this.respController.addComponentName(text, result);
+		}
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
 
 	@Override
-	public UUID addComponent(UUID controlActionId, UUID parentId, Rectangle layout, String text, ComponentType type,
-			Integer index) {
-		if ((parentId == null) || (layout == null) || (text == null) || (type == null)) {
+	public UUID addComponent(UUID controlActionId, UUID parentId,
+			Rectangle layout, String text, ComponentType type, Integer index) {
+		if ((parentId == null) || (layout == null) || (text == null)
+				|| (type == null)) {
 			return null;
 		}
 		if (!(this.getComponent(parentId) instanceof Component)) {
 			return null;
 		}
 
-		UUID result = this.controlStructureController.addComponent(controlActionId, parentId, layout, text, type,
-				index);
-		this.respController.addComponentName(text, result);
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", text, "add");
-
+		UUID result = this.controlStructureController.addComponent(
+				controlActionId, parentId, layout, text, type, index);
+		if (type != ComponentType.CONTROLACTION
+				&& type != ComponentType.CONTAINER) {
+			this.respController.addComponentName(text, result);
+			PlatformUI.getPreferenceStore().firePropertyChangeEvent(
+					"currentSelection", text, "add");
+		}
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -349,11 +363,9 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return false;
 		}
-		this.respController
-				.removeComponentName(this.controlActionController.getControlAction(controlActionId).getTitle());
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection",
-				this.controlActionController.getControlAction(controlActionId).getTitle(), "remove");
-		boolean result = this.controlActionController.removeControlAction(controlActionId);
+		
+		boolean result = this.controlActionController
+				.removeControlAction(controlActionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return result;
 	}
@@ -375,9 +387,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return null;
 		}
 
-		UUID id = this.controlActionController.addControlAction(title, description);
-		this.respController.addComponentName(title, id);
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", title, "add");
+		UUID id = this.controlActionController.addControlAction(title,
+				description);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return id;
 	}
@@ -391,8 +402,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		((ControlAction) this.controlActionController.getControlAction(controlActionId)).setTitle(title);
-		this.respController.addComponentName(title, controlActionId);
+		((ControlAction) this.controlActionController
+				.getControlAction(controlActionId)).setTitle(title);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return true;
 	}
@@ -415,12 +426,14 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public boolean changeComponentLayout(UUID componentId, Rectangle layout, boolean step1) {
+	public boolean changeComponentLayout(UUID componentId, Rectangle layout,
+			boolean step1) {
 		if ((componentId == null) || (layout == null)) {
 			return false;
 		}
 
-		boolean result = this.controlStructureController.changeComponentLayout(componentId, layout, step1);
+		boolean result = this.controlStructureController.changeComponentLayout(
+				componentId, layout, step1);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -433,7 +446,9 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 
 		boolean result = true;
 		for (IRectangleComponent child : this.getRoot().getChildren()) {
-			result = result && this.controlStructureController.sychronizeLayout(child.getId());
+			result = result
+					&& this.controlStructureController.sychronizeLayout(child
+							.getId());
 		}
 		return result;
 	}
@@ -443,10 +458,13 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		if ((componentId == null) || (text == null)) {
 			return false;
 		}
-		this.respController.removeComponentName(this.controlStructureController.getComponent(componentId).getText());
+		this.respController.removeComponentName(this.controlStructureController
+				.getComponent(componentId).getText());
 		this.respController.addComponentName(text, componentId);
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", text, "change");
-		boolean result = this.controlStructureController.changeComponentText(componentId, text);
+		PlatformUI.getPreferenceStore().firePropertyChangeEvent(
+				"currentSelection", text, "change");
+		boolean result = this.controlStructureController.changeComponentText(
+				componentId, text);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -456,10 +474,14 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		if ((componentId == null)) {
 			return false;
 		}
-		this.respController.removeComponentName(this.controlStructureController.getComponent(componentId).getText());
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection",
-				this.controlStructureController.getComponent(componentId).getText(), "remove");
-		boolean result = this.controlStructureController.removeComponent(componentId);
+		this.respController.removeComponentName(this.controlStructureController
+				.getComponent(componentId).getText());
+		PlatformUI.getPreferenceStore().firePropertyChangeEvent(
+				"currentSelection",
+				this.controlStructureController.getComponent(componentId)
+						.getText(), "remove");
+		boolean result = this.controlStructureController
+				.removeComponent(componentId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -469,11 +491,14 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		if ((parentId == null) || (componentId == null)) {
 			return false;
 		}
-		boolean result = this.controlStructureController.recoverComponent(parentId, componentId);
-		this.respController.addComponentName(this.controlStructureController.getComponent(componentId).getText(),
-				componentId);
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection",
-				this.controlStructureController.getComponent(componentId).getText(), "add");
+		boolean result = this.controlStructureController.recoverComponent(
+				parentId, componentId);
+		this.respController.addComponentName(this.controlStructureController
+				.getComponent(componentId).getText(), componentId);
+		PlatformUI.getPreferenceStore().firePropertyChangeEvent(
+				"currentSelection",
+				this.controlStructureController.getComponent(componentId)
+						.getText(), "add");
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -495,29 +520,35 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	@Override
 	public IRectangleComponent getRoot() {
 		if (this.controlStructureController.getRoot() == null) {
-			this.controlStructureController.setRoot(new Rectangle(), new String());
+			this.controlStructureController.setRoot(new Rectangle(),
+					new String());
 		}
 		return this.controlStructureController.getRoot();
 	}
 
 	@Override
-	public UUID addConnection(Anchor sourceAnchor, Anchor targetAnchor, ConnectionType connectionType) {
-		if ((sourceAnchor == null) || (targetAnchor == null) || (connectionType == null)) {
+	public UUID addConnection(Anchor sourceAnchor, Anchor targetAnchor,
+			ConnectionType connectionType) {
+		if ((sourceAnchor == null) || (targetAnchor == null)
+				|| (connectionType == null)) {
 			return null;
 		}
 
-		UUID result = this.controlStructureController.addConnection(sourceAnchor, targetAnchor, connectionType);
+		UUID result = this.controlStructureController.addConnection(
+				sourceAnchor, targetAnchor, connectionType);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
 
 	@Override
-	public boolean changeConnectionType(UUID connectionId, ConnectionType connectionType) {
+	public boolean changeConnectionType(UUID connectionId,
+			ConnectionType connectionType) {
 		if ((connectionId == null) || (connectionType == null)) {
 			return false;
 		}
 
-		boolean result = this.controlStructureController.changeConnectionType(connectionId, connectionType);
+		boolean result = this.controlStructureController.changeConnectionType(
+				connectionId, connectionType);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -528,7 +559,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		boolean result = this.controlStructureController.changeConnectionTarget(connectionId, targetAnchor);
+		boolean result = this.controlStructureController
+				.changeConnectionTarget(connectionId, targetAnchor);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -539,7 +571,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		boolean result = this.controlStructureController.changeConnectionSource(connectionId, sourceAnchor);
+		boolean result = this.controlStructureController
+				.changeConnectionSource(connectionId, sourceAnchor);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -550,7 +583,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		boolean result = this.controlStructureController.removeConnection(connectionId);
+		boolean result = this.controlStructureController
+				.removeConnection(connectionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -560,7 +594,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		if (connectionId == null) {
 			return false;
 		}
-		boolean result = this.controlStructureController.recoverConnection(connectionId);
+		boolean result = this.controlStructureController
+				.recoverConnection(connectionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		return result;
 	}
@@ -583,9 +618,12 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	public boolean setCSImagePath(String path) {
 		Image img = new Image(null, path);
 		File imgFile = new File(path);
-		this.exportInformation.setCsImageWidth(String.valueOf(img.getBounds().width));
-		this.exportInformation.setCsImageHeight(String.valueOf(img.getBounds().height));
-		return this.exportInformation.setCsImagePath(imgFile.toURI().toString());
+		this.exportInformation
+				.setCsImageWidth(String.valueOf(img.getBounds().width));
+		this.exportInformation
+				.setCsImageHeight(String.valueOf(img.getBounds().height));
+		return this.exportInformation
+				.setCsImagePath(imgFile.toURI().toString());
 	}
 
 	@Override
@@ -629,13 +667,15 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		boolean result = this.sdsController.removeSafetyConstraint(safetyConstraintId);
+		boolean result = this.sdsController
+				.removeSafetyConstraint(safetyConstraintId);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return result;
 	}
 
 	@Override
-	public boolean setSafetyConstraintTitle(UUID safetyConstraintId, String title) {
+	public boolean setSafetyConstraintTitle(UUID safetyConstraintId,
+			String title) {
 		if ((title == null) || (safetyConstraintId == null)) {
 			return false;
 		}
@@ -643,13 +683,15 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId)).setTitle(title);
+		((SafetyConstraint) this.sdsController
+				.getSafetyConstraint(safetyConstraintId)).setTitle(title);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return true;
 	}
 
 	@Override
-	public boolean setSafetyConstraintDescription(UUID safetyConstraintId, String description) {
+	public boolean setSafetyConstraintDescription(UUID safetyConstraintId,
+			String description) {
 		if ((description == null) || (safetyConstraintId == null)) {
 			return false;
 		}
@@ -657,7 +699,9 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId)).setDescription(description);
+		((SafetyConstraint) this.sdsController
+				.getSafetyConstraint(safetyConstraintId))
+				.setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return true;
 	}
@@ -780,7 +824,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 
 	@Override
 	public void setRelativeOfComponent(UUID componentId, UUID relativeId) {
-		this.controlStructureController.setRelativeOfComponent(componentId, relativeId);
+		this.controlStructureController.setRelativeOfComponent(componentId,
+				relativeId);
 		updateValue(ObserverValue.CONTROL_STRUCTURE);
 		updateValue(ObserverValue.UNSAVED_CHANGES);
 
@@ -788,23 +833,28 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 
 	@Override
 	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
-		this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
+		this.controlStructureController.setSafetyCritical(componentId,
+				isSafetyCritical);
 
 	}
 
 	@Override
 	public boolean addUnsafeProcessVariable(UUID componentId, UUID variableID) {
-		return this.controlStructureController.addUnsafeProcessVariable(componentId, variableID);
+		return this.controlStructureController.addUnsafeProcessVariable(
+				componentId, variableID);
 	}
 
 	@Override
 	public boolean removeUnsafeProcessVariable(UUID componentId, UUID variableID) {
-		return this.controlStructureController.removeUnsafeProcessVariable(componentId, variableID);
+		return this.controlStructureController.removeUnsafeProcessVariable(
+				componentId, variableID);
 	}
 
 	@Override
-	public Map<IRectangleComponent, Boolean> getRelatedProcessVariables(UUID componentId) {
-		return this.controlStructureController.getRelatedProcessVariables(componentId);
+	public Map<IRectangleComponent, Boolean> getRelatedProcessVariables(
+			UUID componentId) {
+		return this.controlStructureController
+				.getRelatedProcessVariables(componentId);
 	}
 
 	@Override
@@ -833,7 +883,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public boolean setControlActionDescription(UUID controlActionId, String description) {
+	public boolean setControlActionDescription(UUID controlActionId,
+			String description) {
 		if ((controlActionId == null) || (description == null)) {
 			return false;
 		}
@@ -841,7 +892,8 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 			return false;
 		}
 
-		((ControlAction) this.controlActionController.getControlAction(controlActionId)).setDescription(description);
+		((ControlAction) this.controlActionController
+				.getControlAction(controlActionId)).setDescription(description);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return true;
 	}
@@ -882,14 +934,17 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public void addResponsibility(UUID ident, String id, String description, String name) {
+	public void addResponsibility(UUID ident, String id, String description,
+			String name) {
 		this.respController.addResponsibility(ident, id, description, name);
 
 	}
 
 	@Override
-	public void changeResponsibility(UUID ident, String oldId, String newId, String newDescription, String name) {
-		this.respController.changeResponsibility(ident, oldId, newId, newDescription, name);
+	public void changeResponsibility(UUID ident, String oldId, String newId,
+			String newDescription, String name) {
+		this.respController.changeResponsibility(ident, oldId, newId,
+				newDescription, name);
 
 	}
 
@@ -910,14 +965,17 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public void addContext(UUID ident, String id, String description, String name) {
+	public void addContext(UUID ident, String id, String description,
+			String name) {
 		this.respController.addContext(ident, id, description, name);
 
 	}
 
 	@Override
-	public void changeContext(UUID ident, String oldId, String newId, String newDescription, String name) {
-		this.respController.changeContext(ident, oldId, newId, newDescription, name);
+	public void changeContext(UUID ident, String oldId, String newId,
+			String newDescription, String name) {
+		this.respController.changeContext(ident, oldId, newId, newDescription,
+				name);
 
 	}
 
@@ -943,8 +1001,10 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public void changeFlaw(UUID ident, String oldId, String newId, String newDescription, String name) {
-		this.respController.changeFlaw(ident, oldId, newId, newDescription, name);
+	public void changeFlaw(UUID ident, String oldId, String newId,
+			String newDescription, String name) {
+		this.respController.changeFlaw(ident, oldId, newId, newDescription,
+				name);
 
 	}
 
@@ -965,14 +1025,17 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public void addUnsafeAction(UUID ident, String id, String description, String name) {
+	public void addUnsafeAction(UUID ident, String id, String description,
+			String name) {
 		this.respController.addUnsafeAction(ident, id, description, name);
 
 	}
 
 	@Override
-	public void changeUnsafeAction(UUID ident, String oldId, String newId, String newDescription, String name) {
-		this.respController.changeUnsafeAction(ident, oldId, newId, newDescription, name);
+	public void changeUnsafeAction(UUID ident, String oldId, String newId,
+			String newDescription, String name) {
+		this.respController.changeUnsafeAction(ident, oldId, newId,
+				newDescription, name);
 
 	}
 
@@ -992,14 +1055,17 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public void addRecommendation(UUID ident, String id, String description, String name) {
+	public void addRecommendation(UUID ident, String id, String description,
+			String name) {
 		this.respController.addRecommendation(ident, id, description, name);
 
 	}
 
 	@Override
-	public void changeRecommendation(UUID ident, String oldId, String newId, String newDescription, String name) {
-		this.respController.changeRecommendation(ident, oldId, newId, newDescription, name);
+	public void changeRecommendation(UUID ident, String oldId, String newId,
+			String newDescription, String name) {
+		this.respController.changeRecommendation(ident, oldId, newId,
+				newDescription, name);
 
 	}
 
@@ -1036,14 +1102,17 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public void addFeedback(UUID ident, String id, String description, String name) {
+	public void addFeedback(UUID ident, String id, String description,
+			String name) {
 		this.respController.addFeedback(ident, id, description, name);
 
 	}
 
 	@Override
-	public void changeFeedback(UUID ident, String oldId, String newId, String newDescription, String name) {
-		this.respController.changeFeedback(ident, oldId, newId, newDescription, name);
+	public void changeFeedback(UUID ident, String oldId, String newId,
+			String newDescription, String name) {
+		this.respController.changeFeedback(ident, oldId, newId, newDescription,
+				name);
 
 	}
 
@@ -1064,14 +1133,17 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 	}
 
 	@Override
-	public void addCoordination(UUID ident, String id, String description, String name) {
+	public void addCoordination(UUID ident, String id, String description,
+			String name) {
 		this.respController.addCoordination(ident, id, description, name);
 
 	}
 
 	@Override
-	public void changeCoordination(UUID ident, String oldId, String newId, String newDescription, String name) {
-		this.respController.changeCoordination(ident, oldId, newId, newDescription, name);
+	public void changeCoordination(UUID ident, String oldId, String newId,
+			String newDescription, String name) {
+		this.respController.changeCoordination(ident, oldId, newId,
+				newDescription, name);
 
 	}
 

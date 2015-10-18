@@ -68,7 +68,11 @@ public class CSEditorCAST extends CSEditor {
 				if (partRef.getId().equals("acast.steps.step2_1")) {
 
 					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
-
+					try {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("A-CAST.view1");
+					} catch (PartInitException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 
