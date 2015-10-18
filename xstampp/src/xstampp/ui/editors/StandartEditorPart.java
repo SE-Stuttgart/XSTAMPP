@@ -108,14 +108,18 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 	 *
 	 */
 	public void setStatusLine() {
-		Display.getDefault().syncExec(() -> {
-			if (ProjectManager.getContainerInstance().getUnsavedChanges(StandartEditorPart.this.projectID)) {
-				Image image = Activator.getImageDescriptor("/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
+		Display.getDefault().syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (ProjectManager.getContainerInstance().getUnsavedChanges(StandartEditorPart.this.projectID)) {
+					Image image = Activator.getImageDescriptor("/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
 
-				StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(image,
-						Messages.ThereAreUnsafedChanges);
-			} else {
-				StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(null);
+					StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(image,
+							Messages.ThereAreUnsafedChanges);
+				} else {
+					StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(null);
+				}
 			}
 		});
 

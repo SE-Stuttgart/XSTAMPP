@@ -17,7 +17,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 @XmlRootElement(name = "contexttablecombinations")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "values", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
-		"number", "hazardous", "hLate","hEarly", "hAnytime","conflict" })
+		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "relatedHazards", "uca", "editWindow", "id" })
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")

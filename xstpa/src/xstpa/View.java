@@ -3226,7 +3226,13 @@ public class View extends ViewPart implements Observer {
 	public Boolean open() {
 		// Run ACTS in a separate system process
 		Process proc;
-		String modes = " -Ddoi=" + Integer.toString(contextRightTable.getColumnCount()-2) + " ";
+		String modes;
+		if (contextRightTable.getColumnCount()-2 <= 6) {
+			modes = " -Ddoi=" + Integer.toString(contextRightTable.getColumnCount()-2) + " ";	
+		}
+		else {
+			modes = " -Ddoi=6 " ;	
+		}
 		
 		try {
 			if (!editWindow.modes.isEmpty()) {

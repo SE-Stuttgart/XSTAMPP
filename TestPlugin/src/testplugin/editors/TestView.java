@@ -35,75 +35,9 @@ public class TestView extends ViewPart {
 	}
 
 	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public IWorkbenchPartSite getSite() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Image getTitleImage() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getTitleToolTip() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void removePropertyListener(IPropertyListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IViewSite getViewSite() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void init(IViewSite site) throws PartInitException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void init(IViewSite site, IMemento memento) throws PartInitException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void saveState(IMemento memento) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }
