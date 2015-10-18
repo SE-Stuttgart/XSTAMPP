@@ -127,10 +127,7 @@ public class RecommandationsView extends StandartEditorPart {
 			public void partBroughtToTop(IWorkbenchPartReference partRef) {
 				if (partRef.getId().equals("acast.steps.step3_1")) {
 
-					if (TableView.visible) {
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(PlatformUI
-								.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("A-CAST.view1"));
-					}
+					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
 
 					if (!combo.isDisposed()) {
 						if (combo.getSelectionIndex() == -1) {

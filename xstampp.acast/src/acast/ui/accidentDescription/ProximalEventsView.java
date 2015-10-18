@@ -177,10 +177,8 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 			@Override
 			public void partBroughtToTop(IWorkbenchPartReference partRef) {
 				if (partRef.getId().equals("acast.steps.step1_3")) {
-					if (TableView.visible) {
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(PlatformUI
-								.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("A-CAST.view1"));
-					}
+					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
+
 				}
 			}
 

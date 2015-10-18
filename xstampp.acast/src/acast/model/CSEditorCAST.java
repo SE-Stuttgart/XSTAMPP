@@ -67,10 +67,8 @@ public class CSEditorCAST extends CSEditor {
 			public void partBroughtToTop(IWorkbenchPartReference partRef) {
 				if (partRef.getId().equals("acast.steps.step2_1")) {
 
-					if (TableView.visible) {
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(PlatformUI
-								.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("A-CAST.view1"));
-					}
+					PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
+
 				}
 			}
 
@@ -88,7 +86,7 @@ public class CSEditorCAST extends CSEditor {
 		if ((selection.size() == 1) && !(selection.get(0) instanceof CSConnectionEditPart)) {
 
 			try {
-				if (!TableView.visible) {
+				if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("A-CAST.view1")==null) {
 					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 					page.showView("A-CAST.view1");
 				}
