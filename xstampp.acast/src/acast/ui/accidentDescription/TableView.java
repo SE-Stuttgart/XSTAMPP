@@ -286,17 +286,22 @@ public class TableView extends ViewPart {
 					public void propertyChange(PropertyChangeEvent event) {
 						if (!combo.isDisposed()) {
 							if (event.getNewValue().equals("close")) {
-								PlatformUI
-										.getWorkbench()
+								if (PlatformUI.getWorkbench()
 										.getActiveWorkbenchWindow()
 										.getActivePage()
-										.hideView(
-												PlatformUI
-														.getWorkbench()
-														.getActiveWorkbenchWindow()
-														.getActivePage()
-														.findView(
-																"A-CAST.view1"));
+										.findView("A-CAST.view1") != null) {
+									PlatformUI
+											.getWorkbench()
+											.getActiveWorkbenchWindow()
+											.getActivePage()
+											.hideView(
+													PlatformUI
+															.getWorkbench()
+															.getActiveWorkbenchWindow()
+															.getActivePage()
+															.findView(
+																	"A-CAST.view1"));
+								}
 							} else if (event.getNewValue().equals("change")) {
 								combo.remove(combo.getSelectionIndex());
 								combo.add(String.valueOf(event.getOldValue()));
