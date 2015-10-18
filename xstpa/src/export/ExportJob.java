@@ -113,8 +113,9 @@ public class ExportJob extends Job {
 				context = JAXBContext.newInstance(ExportContent.class);
 				Marshaller m = context.createMarshaller();
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
+				System.out.println("works to 116!");
 				m.marshal(View.exportContent, this.outStream);
+				System.out.println("works to 118!");
 			} catch (JAXBException e) {
 				ExportJob.LOGGER.error(e.getMessage(), e);
 				return Status.OK_STATUS;

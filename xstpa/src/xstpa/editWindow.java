@@ -271,20 +271,24 @@ public class editWindow
 	    // Add the radio Buttons
 	    final Button ipogButton = new Button(algoGroup, SWT.RADIO);
 	    ipogButton.setText("IPOG(Recommended)");
+	    ipogButton.setToolTipText("For a moderate size System (max. 20 Parameters)");
 	    ipogButton.setSelection(true);
 	    
 	    final Button ipogfButton = new Button(algoGroup, SWT.RADIO);
+	    ipogfButton.setToolTipText("For a moderate size System (20 Parameters)");
 	    ipogfButton.setText("IPOG-F");
 	    
 	    final Button ipogf2Button = new Button(algoGroup, SWT.RADIO);
+	    ipogf2Button.setToolTipText("For a moderate size System (20 Parameters)");
 	    ipogf2Button.setText("IPOG-F2");
 	    
 	    final Button ipogdButton = new Button(algoGroup, SWT.RADIO);
+	    ipogdButton.setToolTipText("For a large size System");
 	    ipogdButton.setText("IPOG-D");
 	    
 	    final Button baseChoiceButton = new Button(algoGroup, SWT.RADIO);
 	    baseChoiceButton.setText("Base Choice");
-	    
+	    baseChoiceButton.setToolTipText("A special oneway testing Algorithm");
 	    // Add the components for the middle (main) part
 	    Label strengthLabel = new Label(mainComposite, SWT.NULL);
 	    strengthLabel.setText("Strength: ");
@@ -311,6 +315,7 @@ public class editWindow
 	    final Combo modeCombo = new Combo(mainComposite, SWT.READ_ONLY);
 	    modeCombo.add("Scratch");
 	    modeCombo.add("Extend");
+	    
 	    modeCombo.select(0);
 	    data = new GridData(150, 80);
 	    modeCombo.setLayoutData(data);
