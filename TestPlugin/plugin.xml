@@ -70,25 +70,23 @@
             parentStep="astpa.navigation.step1_2">
       </stepEditor>
       <stepPerspective
+            icon="icons/sample.gif"
             id="TestPlugin.stepPerspective1"
+            name="Test perspective"
             parentStep="astpa.navigation.step1_4"
             targetId="TestPlugin.perspective1">
+         <view
+               id="TestPlugin.view1">
+         </view>
       </stepPerspective>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="testplugin.TestPerspective"
-            fixed="false"
-            id="TestPlugin.perspective1"
-            name="Test">
-      </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
             class="testplugin.editors.TestView"
+            fastViewWidthRatio="0.9f"
+            icon="icons/sample.gif"
             id="TestPlugin.view1"
             name="name"
             restorable="true">

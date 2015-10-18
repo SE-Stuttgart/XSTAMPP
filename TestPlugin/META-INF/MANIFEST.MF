@@ -9,5 +9,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  xstampp;bundle-version="1.0.1",
- xstampp.extension
-Bundle-ActivationPolicy: lazy
+ xstampp.extension,
+ xstampp.astpa
