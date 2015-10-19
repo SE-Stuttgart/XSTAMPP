@@ -61,8 +61,15 @@ public class RectangleEditPart extends AbstractMemberEditPart implements ISelect
 
 	@Override
 	public void setParent(EditPart parent) {
-		super.setParent(parent);
-		getViewer().addSelectionChangedListener(this);
+		if(parent == null){
+			getViewer().removeSelectionChangedListener(this);
+			super.setParent(parent);
+		}else{
+			super.setParent(parent);
+			getViewer().addSelectionChangedListener(this);
+		}
+		
+		
 	}
 	@Override
 	protected IFigure createFigure() {
