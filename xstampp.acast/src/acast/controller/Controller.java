@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import messages.Messages;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
@@ -22,23 +24,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
-import acast.Activator;
-import acast.export.ExportInformation;
-import acast.jobs.SaveJob;
-import acast.model.ITableModel;
-import acast.model.hazacc.HazController;
-import acast.model.hazacc.Hazard;
-import acast.model.interfaces.IAccidentDescriptionViewDataModel;
-import acast.model.interfaces.IHazardViewDataModel;
-import acast.model.interfaces.IProximalEventsViewDataModel;
-import acast.model.interfaces.IResponsibilityDataModel;
-import acast.model.interfaces.ISafetyConstraintViewDataModel;
-import acast.model.sds.SDSController;
-import acast.model.sds.SafetyConstraint;
-import acast.ui.accidentDescription.ProximalEvent;
-import acast.ui.accidentDescription.ProximalEventsController;
-import acast.ui.accidentDescription.Responsibility;
-import messages.Messages;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
@@ -55,6 +40,22 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import acast.Activator;
+import acast.export.ExportInformation;
+import acast.jobs.SaveJob;
+import acast.model.ITableModel;
+import acast.model.hazacc.HazController;
+import acast.model.hazacc.Hazard;
+import acast.model.interfaces.IAccidentDescriptionViewDataModel;
+import acast.model.interfaces.IHazardViewDataModel;
+import acast.model.interfaces.IProximalEventsViewDataModel;
+import acast.model.interfaces.IResponsibilityDataModel;
+import acast.model.interfaces.ISafetyConstraintViewDataModel;
+import acast.model.sds.SDSController;
+import acast.model.sds.SafetyConstraint;
+import acast.ui.accidentDescription.ProximalEvent;
+import acast.ui.accidentDescription.ProximalEventsController;
+import acast.ui.accidentDescription.Responsibility;
 
 @XmlRootElement(namespace = "acast.model")
 public class Controller extends Observable implements IDataModel,
@@ -325,7 +326,8 @@ public class Controller extends Observable implements IDataModel,
 		UUID result = this.controlStructureController.addComponent(parentId,
 				layout, text, type, index);
 		if (type != ComponentType.CONTROLACTION
-				&& type != ComponentType.CONTAINER) {
+				&& type != ComponentType.CONTAINER
+				&& type != ComponentType.TEXTFIELD) {
 			this.respController.addComponentName(text, result);
 		}
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
@@ -346,7 +348,8 @@ public class Controller extends Observable implements IDataModel,
 		UUID result = this.controlStructureController.addComponent(
 				controlActionId, parentId, layout, text, type, index);
 		if (type != ComponentType.CONTROLACTION
-				&& type != ComponentType.CONTAINER) {
+				&& type != ComponentType.CONTAINER
+				&& type != ComponentType.TEXTFIELD) {
 			this.respController.addComponentName(text, result);
 			PlatformUI.getPreferenceStore().firePropertyChangeEvent(
 					"currentSelection", text, "add");
@@ -363,7 +366,7 @@ public class Controller extends Observable implements IDataModel,
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return false;
 		}
-		
+
 		boolean result = this.controlActionController
 				.removeControlAction(controlActionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
@@ -458,11 +461,18 @@ public class Controller extends Observable implements IDataModel,
 		if ((componentId == null) || (text == null)) {
 			return false;
 		}
-		this.respController.removeComponentName(this.controlStructureController
-				.getComponent(componentId).getText());
-		this.respController.addComponentName(text, componentId);
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent(
-				"currentSelection", text, "change");
+		ComponentType type = this.controlStructureController.getComponent(
+				componentId).getComponentType();
+		if (type != ComponentType.CONTROLACTION
+				&& type != ComponentType.CONTAINER
+				&& type != ComponentType.TEXTFIELD) {
+			this.respController
+					.removeComponentName(this.controlStructureController
+							.getComponent(componentId).getText());
+			this.respController.addComponentName(text, componentId);
+			PlatformUI.getPreferenceStore().firePropertyChangeEvent(
+					"currentSelection", text, "change");
+		}
 		boolean result = this.controlStructureController.changeComponentText(
 				componentId, text);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
@@ -474,12 +484,19 @@ public class Controller extends Observable implements IDataModel,
 		if ((componentId == null)) {
 			return false;
 		}
-		this.respController.removeComponentName(this.controlStructureController
-				.getComponent(componentId).getText());
-		PlatformUI.getPreferenceStore().firePropertyChangeEvent(
-				"currentSelection",
-				this.controlStructureController.getComponent(componentId)
-						.getText(), "remove");
+		ComponentType type = this.controlStructureController.getComponent(
+				componentId).getComponentType();
+		if (type != ComponentType.CONTROLACTION
+				&& type != ComponentType.CONTAINER
+				&& type != ComponentType.TEXTFIELD) {
+			this.respController
+					.removeComponentName(this.controlStructureController
+							.getComponent(componentId).getText());
+			PlatformUI.getPreferenceStore().firePropertyChangeEvent(
+					"currentSelection",
+					this.controlStructureController.getComponent(componentId)
+							.getText(), "remove");
+		}
 		boolean result = this.controlStructureController
 				.removeComponent(componentId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);

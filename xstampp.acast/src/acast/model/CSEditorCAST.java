@@ -17,11 +17,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 
-import acast.ui.accidentDescription.TableView;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
-import xstampp.ui.common.ProjectManager;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 
 public class CSEditorCAST extends CSEditor {
 	public CSEditorCAST() {
@@ -63,12 +62,9 @@ public class CSEditorCAST extends CSEditor {
 					@Override
 					public void partBroughtToTop(IWorkbenchPartReference partRef) {
 						if (partRef.getId().equals("acast.steps.step2_1")) {
-								PlatformUI
-										.getPreferenceStore()
-										.firePropertyChangeEvent(
-												"currentSelection", "", "close");
-							
-							
+							PlatformUI.getPreferenceStore()
+									.firePropertyChangeEvent(
+											"currentSelection", "", "close");
 
 						}
 					}
@@ -87,17 +83,6 @@ public class CSEditorCAST extends CSEditor {
 		if ((selection.size() == 1)
 				&& !(selection.get(0) instanceof CSConnectionEditPart)) {
 
-			try {
-				if (PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						.getActivePage().findView("A-CAST.view1") == null) {
-					IWorkbenchPage page = PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage();
-					page.showView("A-CAST.view1");
-				}
-			} catch (PartInitException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 			Request req = new Request();
 			req.setType(RequestConstants.REQ_DIRECT_EDIT);
 			((CSAbstractEditPart) selection.get(0)).performRequest(req);
@@ -105,27 +90,47 @@ public class CSEditorCAST extends CSEditor {
 			if (((CSAbstractEditPart) selection.get(0)).getFigure().getText() != null
 					&& !(((CSAbstractEditPart) selection.get(0)).getFigure()
 							.getText().isEmpty())) {
+				ComponentType type = getModelInterface().getComponent(
+						((CSAbstractEditPart) selection.get(0)).getFigure()
+								.getId()).getComponentType();
+				if (type != ComponentType.CONTROLACTION
+						&& type != ComponentType.TEXTFIELD
+						&& type != ComponentType.CONTAINER) {
+					try {
+						if (PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow().getActivePage()
+								.findView("A-CAST.view1") == null) {
+							IWorkbenchPage page = PlatformUI.getWorkbench()
+									.getActiveWorkbenchWindow().getActivePage();
+							page.showView("A-CAST.view1");
+						}
+					} catch (PartInitException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					if (!PlatformUI.getPreferenceStore().contains(
+							"currentSelection")) {
+						PlatformUI.getPreferenceStore().putValue(
+								"currentSelection",
+								((CSAbstractEditPart) selection.get(0))
+										.getFigure().getText());
+						PlatformUI.getPreferenceStore()
+								.firePropertyChangeEvent(
+										"currentSelection",
+										((CSAbstractEditPart) selection.get(0))
+												.getFigure().getText(),
+										((CSAbstractEditPart) selection.get(0))
+												.getFigure().getText());
+					} else {
 
-				if (!PlatformUI.getPreferenceStore().contains(
-						"currentSelection")) {
-					PlatformUI.getPreferenceStore().putValue(
-							"currentSelection",
-							((CSAbstractEditPart) selection.get(0)).getFigure()
-									.getText());
-					PlatformUI.getPreferenceStore().firePropertyChangeEvent(
-							"currentSelection",
-							((CSAbstractEditPart) selection.get(0)).getFigure()
-									.getText(),
-							((CSAbstractEditPart) selection.get(0)).getFigure()
-									.getText());
-				} else {
-
-					PlatformUI.getPreferenceStore().firePropertyChangeEvent(
-							"currentSelection",
-							((CSAbstractEditPart) selection.get(0)).getFigure()
-									.getText(),
-							((CSAbstractEditPart) selection.get(0)).getFigure()
-									.getText());
+						PlatformUI.getPreferenceStore()
+								.firePropertyChangeEvent(
+										"currentSelection",
+										((CSAbstractEditPart) selection.get(0))
+												.getFigure().getText(),
+										((CSAbstractEditPart) selection.get(0))
+												.getFigure().getText());
+					}
 				}
 			}
 		}
