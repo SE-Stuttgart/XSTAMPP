@@ -466,10 +466,15 @@ public class Controller extends Observable implements IDataModel,
 		if (type != ComponentType.CONTROLACTION
 				&& type != ComponentType.CONTAINER
 				&& type != ComponentType.TEXTFIELD) {
-			this.respController
-					.removeComponentName(this.controlStructureController
-							.getComponent(componentId).getText());
+			if (this.respController.getComponentNames().containsKey(text)) {
+				text = text + " (2)";
+			} else {
+				this.respController
+						.removeComponentName(this.controlStructureController
+								.getComponent(componentId).getText());
+			}
 			this.respController.addComponentName(text, componentId);
+
 			PlatformUI.getPreferenceStore().firePropertyChangeEvent(
 					"currentSelection", text, "change");
 		}
