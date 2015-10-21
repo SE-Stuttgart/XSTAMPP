@@ -37,6 +37,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import acast.Activator;
 import acast.model.interfaces.IResponsibilityDataModel;
+import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
@@ -166,10 +167,10 @@ public class TableView extends ViewPart {
 			dataInterface.removeunsafeAction(name, id);
 			break;
 		case coordination:
-			dataInterface.removeFeedback(name, id);
+			dataInterface.removeCoordination(name, id);
 			break;
 		case feedback:
-			dataInterface.removeCoordination(name, id);
+			dataInterface.removeFeedback(name, id);
 			break;
 		}
 	}
@@ -252,24 +253,23 @@ public class TableView extends ViewPart {
 
 					@Override
 					public void partHidden(IWorkbenchPartReference partRef) {
-						visible = false;
+						
 					}
 
 					@Override
 					public void partDeactivated(IWorkbenchPartReference partRef) {
-						visible = false;
 
 					}
 
 					@Override
 					public void partClosed(IWorkbenchPartReference partRef) {
-						visible = false;
+						
 
 					}
 
 					@Override
 					public void partBroughtToTop(IWorkbenchPartReference partRef) {
-						visible = true;
+						
 
 					}
 
@@ -415,6 +415,15 @@ public class TableView extends ViewPart {
 							SWT.ICON_INFORMATION | SWT.OK);
 					dialog.setText("Warning");
 					dialog.setMessage("Create Components in Controlstructure first");
+
+					dialog.open();
+					return;
+				}
+				if (combo.getSelectionIndex()==-1){
+					MessageBox dialog = new MessageBox(parent.getShell(),
+							SWT.ICON_INFORMATION | SWT.OK);
+					dialog.setText("Warning");
+					dialog.setMessage("Select a component in the Combo-Box");
 
 					dialog.open();
 					return;

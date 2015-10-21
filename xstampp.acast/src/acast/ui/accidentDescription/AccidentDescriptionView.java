@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -696,12 +697,12 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		if (!this.dataInterface.getAccidentDate().isEmpty()) {
 			String[] accidentDate = this.dataInterface.getAccidentDate().split(
 					" ");
-			LocalDate date = LocalDate.parse(accidentDate[0]);
-			LocalTime time = LocalTime.parse(accidentDate[1]);
-			dateTime.setDate(date.getYear(), date.getMonthValue() - 1,
-					date.getDayOfMonth());
-			dateClock.setTime(time.getHour(), time.getMinute(),
-					time.getSecond());
+			String date =accidentDate[0];
+			String time = accidentDate[1];
+			dateTime.setDate(Integer.valueOf(date.split("-")[0]), Integer.valueOf(date.split("-")[1]) - 1,
+					Integer.valueOf(date.split("-")[2]));
+			dateClock.setTime(Integer.valueOf(time.split(":")[0]), Integer.valueOf(time.split(":")[1]),
+					Integer.valueOf(time.split(":")[2]));
 		}
 	}
 
@@ -775,13 +776,13 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 *
 	 */
 	private void applyAccidentDateToDataModel() {
-		LocalDate datum = LocalDate.of(dateTime.getYear(),
-				dateTime.getMonth() + 1, dateTime.getDay());
-		LocalTime time = LocalTime.of(dateClock.getHours(),
-				dateClock.getMinutes(), dateClock.getSeconds());
-		String date = datum.toString() + " " + time.toString();
-		if (!(date.equals(this.dataInterface.getAccidentDate()))) {
-			this.dataInterface.setAccidentDate(date);
+		int month = dateTime.getMonth() + 1;
+		String datum = dateTime.getYear() + "-" + month + "-"
+				+ dateTime.getDay() + " " + dateClock.getHours() + ":"
+				+ dateClock.getMinutes() + ":" + dateClock.getSeconds();
+		
+		if (!(datum.equals(this.dataInterface.getAccidentDate()))) {
+			this.dataInterface.setAccidentDate(datum);
 		}
 	}
 
@@ -1158,7 +1159,9 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 					@Override
 					public void partBroughtToTop(IWorkbenchPartReference partRef) {
 						if (partRef.getId().equals("acast.steps.step1_1")) {
-							PlatformUI.getPreferenceStore().firePropertyChangeEvent("currentSelection", "", "close");
+							PlatformUI.getPreferenceStore()
+									.firePropertyChangeEvent(
+											"currentSelection", "", "close");
 
 						}
 
@@ -1412,7 +1415,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 		}
 
 	}
-	
+
 	/**
 	 * Set the style range if text get modified and widget is selected. Also
 	 * triggers if text get selection and widget is selected.
@@ -1423,50 +1426,61 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 *            Widget
 	 * @param styleRange
 	 *            Set to selected widget
-	 * @param newDataSet TODO
+	 * @param newDataSet
+	 *            TODO
 	 * @return styleRange StyleRange
 	 */
-	private StyleRange setFontItemRange(String style, StyleRange styleRange, FontData newDataSet) {
+	private StyleRange setFontItemRange(String style, StyleRange styleRange,
+			FontData newDataSet) {
 
-		if(styleRange.font == null){
-			styleRange.font = Display.getDefault().getSystemFont(); 
+		if (styleRange.font == null) {
+			styleRange.font = Display.getDefault().getSystemFont();
 		}
 		FontData data = styleRange.font.getFontData()[0];
-		
-		switch(style){
-			case(FOREGROUND):{
-				styleRange.foreground = this.textForegroundColor;
-				break;
-			}case(BACKGROUND):{
-				styleRange.background = this.textBackgroundColor;
-				break;
-			}case(INCREASE):{
-				data.setHeight(data.getHeight() + 1);
-				break;
-			}case(DECREASE):{
-				data.setHeight(data.getHeight() - 1);
-				break;
-			}case(FONT_SIZE):{
-				data.setHeight(newDataSet.getHeight());
-				break;
-			}case(FONT_FAMILY):{
-				data.setName(newDataSet.getName());
-				break;
-			}case(BOLD): {
-				data.setStyle(data.getStyle() ^ SWT.BOLD);
-				break;
-			}case(ITALIC): {
-				data.setStyle(data.getStyle() ^ SWT.ITALIC);
-				break;
-			}case(UNDERLINE): {
-				styleRange.underline = !styleRange.underline;
-				break;
-			}case(STRIKEOUT): {
-				styleRange.strikeout = !styleRange.strikeout;
-				break;
-			}
+
+		switch (style) {
+		case (FOREGROUND): {
+			styleRange.foreground = this.textForegroundColor;
+			break;
 		}
-		styleRange.font= new Font(null, data);
+		case (BACKGROUND): {
+			styleRange.background = this.textBackgroundColor;
+			break;
+		}
+		case (INCREASE): {
+			data.setHeight(data.getHeight() + 1);
+			break;
+		}
+		case (DECREASE): {
+			data.setHeight(data.getHeight() - 1);
+			break;
+		}
+		case (FONT_SIZE): {
+			data.setHeight(newDataSet.getHeight());
+			break;
+		}
+		case (FONT_FAMILY): {
+			data.setName(newDataSet.getName());
+			break;
+		}
+		case (BOLD): {
+			data.setStyle(data.getStyle() ^ SWT.BOLD);
+			break;
+		}
+		case (ITALIC): {
+			data.setStyle(data.getStyle() ^ SWT.ITALIC);
+			break;
+		}
+		case (UNDERLINE): {
+			styleRange.underline = !styleRange.underline;
+			break;
+		}
+		case (STRIKEOUT): {
+			styleRange.strikeout = !styleRange.strikeout;
+			break;
+		}
+		}
+		styleRange.font = new Font(null, data);
 		return styleRange;
 	}
 
@@ -1580,12 +1594,12 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	@Override
 	public void setFont(String fontString, int fontSize) {
-		addStyleRangesFor(FONT_FAMILY,fontString, fontSize, SWT.NORMAL);
+		addStyleRangesFor(FONT_FAMILY, fontString, fontSize, SWT.NORMAL);
 	}
 
 	@Override
 	public void setFontSize(String style, int fontSize) {
-		addStyleRangesFor(style,new String(), fontSize, SWT.NORMAL);
+		addStyleRangesFor(style, new String(), fontSize, SWT.NORMAL);
 	}
 
 	@Override

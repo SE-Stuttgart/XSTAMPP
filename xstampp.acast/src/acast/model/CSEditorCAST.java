@@ -65,7 +65,7 @@ public class CSEditorCAST extends CSEditor {
 							PlatformUI.getPreferenceStore()
 									.firePropertyChangeEvent(
 											"currentSelection", "", "close");
-
+							
 						}
 					}
 
@@ -103,6 +103,7 @@ public class CSEditorCAST extends CSEditor {
 							IWorkbenchPage page = PlatformUI.getWorkbench()
 									.getActiveWorkbenchWindow().getActivePage();
 							page.showView("A-CAST.view1");
+
 						}
 					} catch (PartInitException e1) {
 						// TODO Auto-generated catch block
@@ -140,7 +141,7 @@ public class CSEditorCAST extends CSEditor {
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
-
+		
 		getGraphicalControl().addFocusListener(new FocusListener() {
 
 			private IContextActivation activation;
