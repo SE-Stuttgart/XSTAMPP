@@ -27,6 +27,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
+import org.eclipse.gef.requests.LocationRequest;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
@@ -63,6 +64,7 @@ public class RootEditPart extends CSAbstractEditPart {
 		
 	}
 
+	
 	@Override
 	protected IFigure createFigure() {
 
@@ -83,6 +85,7 @@ public class RootEditPart extends CSAbstractEditPart {
 	 */
 	@Override
 	public void performRequest(Request req) {
+		
 		// Overrides the perform Request function in CSAbstractEditPart
 	}
 

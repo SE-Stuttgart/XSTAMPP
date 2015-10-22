@@ -112,12 +112,12 @@ public abstract class CSFigure extends Figure implements
 	@Override
 	public void paintChildren(Graphics graphics) {
 		if ((this.image != null) && this.withIcon) {
-			double newPos = CSFigure.IMG_WIDTH / graphics.getAbsoluteScale();
+			double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
 			Rectangle rect = (Rectangle) this.getLayoutManager().getConstraint(
 					this.textLabel);
 			this.setConstraint(this.textLabel, new Rectangle((int) newPos,
 					rect.y, rect.width, rect.height));
-			double scale = 1.0 / graphics.getAbsoluteScale();
+			double scale =Math.min(1, graphics.getAbsoluteScale());
 			double zoom = graphics.getAbsoluteScale();
 			graphics.scale(scale);
 			graphics.drawImage(this.image, 1, 1);

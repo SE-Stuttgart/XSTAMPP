@@ -192,7 +192,7 @@ public class CSEditor extends CSAbstractEditor {
 		entry = new CombinedTemplateCreationEntry(Messages.DashedBox, Messages.CreateDashedBox, ComponentType.DASHEDBOX,
 				new CSModelCreationFactory(ComponentType.DASHEDBOX, this.getModelInterface()), imgDesc, imgDescLarge);
 		otherElements.add(entry);
-		this.toolEntryToComponentType.put(ComponentType.DASHEDBOX, entry);
+	this.toolEntryToComponentType.put(ComponentType.DASHEDBOX, entry);
 
 		return root;
 	}

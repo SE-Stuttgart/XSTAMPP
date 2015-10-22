@@ -13,7 +13,9 @@
 
 package xstampp.astpa.controlstructure.controller.factorys;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -64,7 +66,7 @@ public class CSEditPartFactory implements EditPartFactory {
 	private IControlStructureEditorDataModel dataModel;
 	private Map<UUID, EditPart> editPartMap = new HashMap<UUID, EditPart>();
 	private final String stepId;
-
+	private List<EditPart> addedParts;
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -78,6 +80,7 @@ public class CSEditPartFactory implements EditPartFactory {
 			String stepId) {
 		this.dataModel = model;
 		this.stepId = stepId;
+		this.addedParts = new ArrayList<>();
 	}
 
 	@Override
@@ -167,9 +170,15 @@ public class CSEditPartFactory implements EditPartFactory {
 		// allocates the model to it's controller
 		part.setModel(model);
 		this.editPartMap.put(id, part);
+		this.addedParts.add(part);
 		return part;
 	}
 
+	public List<EditPart> fetchNewParts(){
+		List<EditPart> tempParts = new ArrayList<>(this.addedParts);
+		this.addedParts = new ArrayList<>();
+		return tempParts;
+	}
 	private CSConnectionEditPart getConnectionFrom(IConnection model) {
 
 		EditPart source = this.editPartMap.get((model).getSourceAnchor()

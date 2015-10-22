@@ -31,6 +31,7 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
@@ -171,6 +172,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 		}
 
 	}
+
 
 	@Override
 	public void refresh() {

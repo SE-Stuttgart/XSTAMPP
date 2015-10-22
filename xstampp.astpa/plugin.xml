@@ -580,8 +580,14 @@
             name="Run">
       </command>
       <command
-            id="xstampp.astpa.command1"
-            name="name">
+            defaultHandler="xstampp.astpa.controlstructure.controller.commands.PasteComponentsHandler"
+            id="xstampp.astpa.command.cs.paste"
+            name="paste">
+      </command>
+      <command
+            defaultHandler="xstampp.astpa.controlstructure.controller.commands.CopyComponentsHandler"
+            id="xstampp.astpa.command.cs.copy"
+            name="copy">
       </command>
    </extension>
    <extension
@@ -591,6 +597,14 @@
             locationURI="popup:astpa.steps.step1_8">
          <command
                commandId="xstampp.ui.commands.selectAll"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.astpa.command.cs.copy"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.astpa.command.cs.paste"
                style="push">
          </command>
          <command
@@ -767,6 +781,14 @@
             locationURI="popup:astpa.steps.step3_1">
          <command
                commandId="xstampp.ui.commands.selectAll"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.astpa.command.cs.copy"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.astpa.command.cs.paste"
                style="push">
          </command>
          <command
@@ -950,6 +972,18 @@
                value="DASHEDBOX">
          </parameter>
       </key>
+      <key
+            commandId="xstampp.astpa.command.cs.copy"
+            contextId="xstampp.astpa.csContext"
+            schemeId="bindingscheme"
+            sequence="M1+C">
+      </key>
+      <key
+            commandId="xstampp.astpa.command.cs.paste"
+            contextId="xstampp.astpa.csContext"
+            schemeId="bindingscheme"
+            sequence="M1+V">
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -971,6 +1005,15 @@
             id="xstampp.astpa.csContext"
             name="Control Structure context">
       </context>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="xstampp.astpa.controlstructure.utilities.GraphicalViewerOutline"
+            id="xstampp.astpa.controlstructure.outline"
+            name="Outline"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>

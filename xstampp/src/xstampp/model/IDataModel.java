@@ -163,5 +163,9 @@ public interface IDataModel {
 	 * 		the id for the Plugin which is used by the DataModel
 	 */
 	String getPluginID();
+	
+	void lockUpdate();
+	
+	void releaseLockAndUpdate(ObserverValue value);
 		
 }

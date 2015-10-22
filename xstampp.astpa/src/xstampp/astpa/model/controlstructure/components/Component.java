@@ -14,6 +14,7 @@
 package xstampp.astpa.model.controlstructure.components;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +49,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "id", "text","isSafetyCritical","comment", "componentType", "controlActionId",
 		"layout", "layoutPM", "relative","children", "causalFactors","unsafeVariables" })
-public class Component implements IRectangleComponent, ICausalComponent {
+public class Component implements IRectangleComponent, ICausalComponent,Comparable {
 
 	private UUID id;
 	private UUID controlActionId;
@@ -214,8 +215,7 @@ public class Component implements IRectangleComponent, ICausalComponent {
 
 	@Override
 	public List<IRectangleComponent> getChildren() {
-
-		this.children.sort(new CSComparator());
+		Collections.sort(this.children);
 		List<IRectangleComponent> result = new ArrayList<>();
 		for (Component component : this.children) {
 			result.add(component);
@@ -269,10 +269,11 @@ public class Component implements IRectangleComponent, ICausalComponent {
 	public boolean addChild(Component child, Integer index) {
 		if(index < 0 || index >this.children.size()){
 			this.children.add(child);
+		}else{
+			this.children.add(index,child);
 		}
-		this.children.add(index,child);
 		
-		this.children.sort(new CSComparator());
+		Collections.sort(this.children);
 		return this.children.contains(child);
 	}
 
@@ -461,5 +462,19 @@ public class Component implements IRectangleComponent, ICausalComponent {
 			return new ArrayList<>();
 		}
 		return new ArrayList<>(this.unsafeVariables);
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		Component other= (Component) arg0;
+		if(other.getComponentType() == ComponentType.DASHEDBOX){
+			if(this.getComponentType() == ComponentType.DASHEDBOX){
+				return 0;
+			}
+			return -1;
+		}else if(this.getComponentType() == ComponentType.DASHEDBOX){
+			return 1;
+		}
+		return 0;
 	}
 }

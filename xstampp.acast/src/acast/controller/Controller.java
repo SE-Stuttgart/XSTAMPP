@@ -1090,4 +1090,15 @@ public class Controller extends Observable implements IDataModel, IAccidentDescr
 		return this.respController.getCoordinationListforComponent(id);
 	}
 
+	@Override
+	public void lockUpdate() {
+		//method not used at the moment
+		
+	}
+
+	@Override
+	public void releaseLockAndUpdate(ObserverValue value) {
+		//method not used at the moment
+	}
+
 }

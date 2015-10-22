@@ -33,19 +33,29 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CoordinateListener;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.gef.Tool;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CommandStackEvent;
+import org.eclipse.gef.commands.CommandStackEventListener;
+import org.eclipse.gef.commands.CommandStackListener;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
@@ -53,6 +63,8 @@ import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.requests.LocationRequest;
+import org.eclipse.gef.tools.TargetingTool;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DeleteAction;
@@ -80,15 +92,18 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -102,16 +117,21 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import xstampp.Activator;
+import xstampp.astpa.controlstructure.controller.commands.CopyComponentCommand;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
+import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.utilities.CSContextMenuProvider;
 import xstampp.astpa.controlstructure.utilities.CSPalettePage;
 import xstampp.astpa.controlstructure.utilities.CSPalettePreferences;
 import xstampp.astpa.controlstructure.utilities.CSTemplateTransferDropTargetListener;
+import xstampp.astpa.controlstructure.utilities.GraphicalViewerOutline;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -189,12 +209,24 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private boolean asExport;
 
+	public ScrollableThumbnail thumbnail;
+
+	public Canvas canvas;
+
+	private CopyComponentCommand copySelectionCommand;
+
+	protected Point mousePosition;
+
+	private Label positionLabel;
+
+	private boolean selectAddedParts = false;
+
 	/**
 	 * This constructor defines the Domain where the editable content should be
 	 * displayed in
 	 */
 	public CSAbstractEditor() {
-		
+		this.mousePosition = new Point(1,1);
 		this.setEditDomain(this);
 		this.asExport=false;
 	}
@@ -207,9 +239,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.setModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		FormLayout layout = new FormLayout();
-		Composite editorComposite = new Composite(parent, SWT.BORDER);
-		editorComposite.setBackground(null);
-		editorComposite.setLayout(layout);
+		
+//		Composite editorComposite = new Composite(parent, SWT.BORDER);
+		parent.setBackground(null);
+		parent.setLayout(layout);
 		
 		FormData data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
@@ -217,7 +250,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
 		if(!this.asExport){
-			this.createToolBar(editorComposite, data);
+			this.createToolBar(parent, data);
 		}
 		this.getCommandStack().addCommandStackListener(this);
 
@@ -226,7 +259,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.bottom = new FormAttachment(this.toolBar);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.CENTER,
+		this.splitter = new FlyoutPaletteComposite(parent, SWT.CENTER,
 				this.getSite().getPage(), this.getPaletteViewerProvider(),
 				this.getPalettePreferences());
 		this.splitter.setLayoutData(data);
@@ -240,6 +273,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		}
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+		updateThumbnail();
 	}
 
 	protected void createGraphicalViewer(Composite parent) {
@@ -255,7 +289,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.hookGraphicalViewer();
 		this.initializeGraphicalViewer(viewer);
 		viewer.getControl().addMouseListener(this);
-
+		
 		
 
 	}
@@ -462,6 +496,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		});
 		
 		data = new FormData();
+		data.height = CSAbstractEditor.TOOL_HEIGHT;
+		data.left = new FormAttachment(preferenceButton, 30);
+		this.positionLabel= new Label(this.toolBar, SWT.NONE);
+		this.positionLabel.setText(" --- x --- ");
+		this.positionLabel.setLayoutData(data);
+		
+		data = new FormData();
 		data.top = new FormAttachment(0);
 		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
@@ -645,7 +686,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.updateActions(this.stackActions);
 		this.updateActions(this.propertyActions);
 		this.updateActions(this.selectionActions);
-
 	}
 
 	/**
@@ -700,8 +740,25 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	public final void setEditDomain(EditorPart editor) {
 
-		this.editDomain = new DefaultEditDomain(editor);
-
+		this.editDomain = new DefaultEditDomain(editor){
+			@Override
+			public void mouseMove(MouseEvent mouseEvent, EditPartViewer viewer) {
+				CSAbstractEditor.this.mousePosition = new Point(mouseEvent.x,mouseEvent.y);
+				CSAbstractEditor.this.positionLabel.setText(mouseEvent.x + " x " + mouseEvent.y);
+				super.mouseMove(mouseEvent, viewer);
+			}
+		};
+		this.editDomain.getCommandStack().addCommandStackEventListener(new CommandStackEventListener() {
+			
+			@Override
+			public void stackChanged(CommandStackEvent event) {
+				if(event.isPreChangeEvent() && event.getCommand() instanceof CompoundCommand){
+					getModelInterface().lockUpdate();
+				}else if(event.isPostChangeEvent() && event.getCommand() instanceof CompoundCommand){
+					getModelInterface().releaseLockAndUpdate(ObserverValue.CONTROL_STRUCTURE);
+				}
+			}
+		});
 	}
 
 	/**
@@ -738,6 +795,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private class CSPaletteViewerProvider extends PaletteViewerProvider {
 
+
 		public CSPaletteViewerProvider(DefaultEditDomain domain) {
 			super(domain);
 		}
@@ -750,6 +808,25 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			viewer.addPaletteListener(CSAbstractEditor.this);
 
 		}
+		
+//		@Override
+//		public PaletteViewer createPaletteViewer(Composite parent) {
+//			parent.setLayout(new FormLayout());
+//			FormData data = new FormData();
+//			data.bottom = new FormAttachment(100);
+//			data.left = new FormAttachment(0);
+//			data.right = new FormAttachment(100);
+//			CSAbstractEditor.this.canvas = new Canvas(parent, SWT.BORDER | SWT.DOUBLE_BUFFERED); 
+//			
+//          
+//            CSAbstractEditor.this.canvas.setLayoutData(data);
+//            data = new FormData();
+//            data.bottom = new FormAttachment(CSAbstractEditor.this.canvas);
+//			data.left = new FormAttachment(0);
+//			data.right = new FormAttachment(100);
+//			PaletteViewer viewer = super.createPaletteViewer(parent);
+//			return viewer;
+//		}
 	}
 
 	/**
@@ -916,6 +993,14 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		case CONTROL_STRUCTURE: {
 			if (root != null) {
 				root.refresh();
+			}
+			List<EditPart> addedParts =((CSEditPartFactory)this.getGraphicalViewer().getEditPartFactory()).fetchNewParts();
+			if(this.selectAddedParts && !addedParts.isEmpty()){
+				this.selectAddedParts = false;
+				this.graphicalViewer.select(addedParts.get(0));
+				for(EditPart e :addedParts){
+					this.graphicalViewer.appendSelection(e);
+				}
 			}
 			break;
 		}
@@ -1170,6 +1255,57 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getActionRegistry().getAction(ActionFactory.SELECT_ALL.getId()).run();
 	}
 
+	private void updateThumbnail(){
+		  LightweightSystem lws = new LightweightSystem(this.canvas); 
+
+        this.thumbnail = new ScrollableThumbnail();
+        this.thumbnail.setViewport((Viewport) ((ScalableRootEditPart) getGraphicalViewer() 
+                .getRootEditPart()).getFigure()); 
+		  this.thumbnail.setSource(((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()) 
+				  					.getLayer(LayerConstants.PRINTABLE_LAYERS));
+		  
+        lws.setContents(CSAbstractEditor.this.thumbnail); 
+     
+      this.splitter.layout(true);
+	}
+	
+	public boolean copy(){
+		this.copySelectionCommand = new CopyComponentCommand(getModelInterface(),getId());
+		IControlStructureEditPart parentPart = null;
+		for(Object obj:getGraphicalViewer().getSelectedEditParts()){
+			if(((GraphicalEditPart)obj).getParent() instanceof IControlStructureEditPart){
+				parentPart = (IControlStructureEditPart) ((IControlStructureEditPart)obj).getParent();
+				this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), parentPart.getId());
+			}
+			else if((GraphicalEditPart)obj instanceof CSConnectionEditPart){
+				this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), null);
+			}
+		}
+		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
+		if(parentPart != null){
+			parentPart.getFigure().translateToRelative(p);
+			this.copySelectionCommand.setPosition(p);
+		}else{
+			return false;
+		}
+		return !getGraphicalViewer().getSelectedEditParts().isEmpty();
+	}
+	
+	public boolean paste(){
+		if(this.copySelectionCommand == null){
+			return false;
+		}
+		CSAbstractEditPart part = (CSAbstractEditPart)this.graphicalViewer.getContents();
+		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
+		part.getFigure().translateToRelative(p);
+		IControlStructureFigure figure =  (IControlStructureFigure) part.getFigure().findFigureAt(p);
+		figure.translateToRelative(p);
+		this.copySelectionCommand.setPastePosition(figure.getId(),p.x,p.y);
+		getCommandStack().execute(this.copySelectionCommand);
+		this.selectAddedParts  = true;
+		
+		return true;
+	}
 }
 
 

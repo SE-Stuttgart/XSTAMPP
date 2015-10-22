@@ -74,10 +74,11 @@ public class ProcessValueFigure extends CSFigure {
 			rect.setY(previousChild.getBounds().y
 					+ previousChild.getBounds().height
 					+ ProcessValueFigure.ROW_OFFSET);
+			
 		}
 
 		this.getParent().setConstraint(this, rect);
-
+		
 		this.getTextField().repaint();
 	}
 

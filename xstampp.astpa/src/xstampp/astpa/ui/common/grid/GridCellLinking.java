@@ -21,6 +21,7 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -349,7 +350,9 @@ public class GridCellLinking<T extends ITableContentProvider> extends
 		if ((this.linkEditor != null) && !this.linkEditor.isDisposed()) {
 			this.linkEditor.dispose();
 		}
+		
 		this.linkEditor = new Text(this.grid.getGrid(), SWT.PUSH);
+		
 		this.linkEditor.setText(""); //$NON-NLS-1$
 		this.linkEditor.setEditable(true);
 		this.linkEditor.setVisible(true);
@@ -414,7 +417,11 @@ public class GridCellLinking<T extends ITableContentProvider> extends
 				new PopupListener());
 		this.linkField.setPopupPosition(relativeMouse, cellBounds,
 				cellBounds.height);
-		this.linkField.openPopup();
+		if(this.grid.getGrid().getDisplay() != null){
+			this.linkField.openPopup();
+		}else{
+			MessageDialog.openError(null, "Widget is disposed", "for some reason the Platform can't find a suficient display!");
+		}
 		// final ToolTip tip = new ToolTip(this.grid.getGrid().getShell(),
 		// SWT.ICON_INFORMATION);
 		// tip.setMessage(Messages.TypeHere);
