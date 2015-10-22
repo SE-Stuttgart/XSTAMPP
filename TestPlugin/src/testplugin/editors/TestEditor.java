@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import testplugin.datamodel.TestController;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 
@@ -29,6 +30,7 @@ public class TestEditor extends StandartEditorPart	{
 		this.controller = (TestController) ProjectManager.getContainerInstance().getDataModel(this.getProjectID());
 		Composite editorArea = new Composite(arg0, SWT.NONE);
 		editorArea.setLayout(new FillLayout());
+		IControlAction i;
 		final Text text = new Text(editorArea, SWT.WRAP | SWT.MULTI);
 		text.addModifyListener(new ModifyListener() {
 			

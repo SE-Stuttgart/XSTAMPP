@@ -98,6 +98,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
@@ -137,9 +138,7 @@ import xstampp.util.STPAPluginUtils;
  * 
  */
 public abstract class CSAbstractEditor extends StandartEditorPart implements
-		IControlStructureEditor,IZoomContributor, IPropertyChangeListener {
-
-
+		IControlStructureEditor, IZoomContributor, IPropertyChangeListener {
 
 	/**
 	 * The GraphicalViewer is responsible for displaying all graphical Elements
@@ -176,7 +175,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	private static final int SCALE_FONT = 10;
 	protected static final int IMG_EXPAND = 10;
 
-	private ToolBar toolBar;
+	public ToolBar toolBar;
 	private ZoomManager zoomManager;
 	private Label label;
 	private Slider scale;
@@ -189,19 +188,21 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private boolean asExport;
 
+
 	/**
 	 * This constructor defines the Domain where the editable content should be
 	 * displayed in
 	 */
 	public CSAbstractEditor() {
-		
+
 		this.setEditDomain(this);
-		this.asExport=false;
+		this.asExport = false;
 	}
 
-	public void prepareForExport(){
-		this.asExport=true;
+	public void prepareForExport() {
+		this.asExport = true;
 	}
+
 	@Override
 	public void createPartControl(Composite parent) {
 		this.setModelInterface(ProjectManager.getContainerInstance()
@@ -210,13 +211,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		Composite editorComposite = new Composite(parent, SWT.BORDER);
 		editorComposite.setBackground(null);
 		editorComposite.setLayout(layout);
-		
+
 		FormData data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
 		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		if(!this.asExport){
+		if (!this.asExport) {
 			this.createToolBar(editorComposite, data);
 		}
 		this.getCommandStack().addCommandStackListener(this);
@@ -239,7 +240,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 		}
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
-		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+		Activator.getDefault().getPreferenceStore()
+				.addPropertyChangeListener(this);
 	}
 
 	protected void createGraphicalViewer(Composite parent) {
@@ -255,8 +257,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.hookGraphicalViewer();
 		this.initializeGraphicalViewer(viewer);
 		viewer.getControl().addMouseListener(this);
-
-		
 
 	}
 
@@ -296,15 +296,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * extend or override this method as needed.
 	 */
 	public void configureGraphicalViewer(GraphicalViewer viewer) {
-		viewer.getControl()
-				.setBackground(ColorConstants.listBackground);
+		viewer.getControl().setBackground(ColorConstants.listBackground);
 
 		double[] zoomLevel = new double[CSAbstractEditor.ZOOM_LEVEL];
 		ArrayList<String> zoomContributions;
 
-
-		viewer.setEditPartFactory(new CSEditPartFactory(this.getModelInterface(),
-				this.getId()));
+		viewer.setEditPartFactory(new CSEditPartFactory(this
+				.getModelInterface(), this.getId()));
 		// zooming
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		viewer.setRootEditPart(rootEditPart);
@@ -322,21 +320,26 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 								.setViewport(CSAbstractEditor.this.zoomManager
 										.getViewport());
 						CSAbstractEditor.this.zoomManager.getViewport()
-								.setVerticalRangeModel(CSAbstractEditor.this.getViewport()
+								.setVerticalRangeModel(
+										CSAbstractEditor.this.getViewport()
 												.getVerticalRangeModel());
 						CSAbstractEditor.this.zoomManager.getViewport()
-								.setHorizontalRangeModel(CSAbstractEditor.this.getViewport()
+								.setHorizontalRangeModel(
+										CSAbstractEditor.this.getViewport()
 												.getHorizontalRangeModel());
 						CSAbstractEditor.this.zoomManager.getViewport()
-								.setViewLocation(CSAbstractEditor.this.getViewport()
+								.setViewLocation(
+										CSAbstractEditor.this.getViewport()
 												.getViewLocation());
-						CSAbstractEditor.this.zoomManager.getViewport().validate();
+						CSAbstractEditor.this.zoomManager.getViewport()
+								.validate();
 					}
 				});
-		this.getActionRegistry().registerAction(new ZoomInAction(this.zoomManager));
+		this.getActionRegistry().registerAction(
+				new ZoomInAction(this.zoomManager));
 
-		this.getActionRegistry()
-				.registerAction(new ZoomOutAction(this.zoomManager));
+		this.getActionRegistry().registerAction(
+				new ZoomOutAction(this.zoomManager));
 
 		// array of possibles zoom levels. 0.2 = 20%, 3.0 = 300%
 		for (int zoomFactor = 0; zoomFactor < CSAbstractEditor.ZOOM_LEVEL; zoomFactor++) {
@@ -357,20 +360,22 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		// keyboard shortcuts
 		KeyHandler keyHandler = new KeyHandler();
 
-		viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY,
-				0),
+		viewer.getKeyHandler().put(
+				KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY, 0),
 				this.getActionRegistry()
 						.getAction(ActionFactory.DELETE.getId()));
 
-		viewer.getKeyHandler().put(KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0), this
-				.getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
+		viewer.getKeyHandler().put(
+				KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0),
+				this.getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
 
-		viewer.getKeyHandler().put(KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0), this
-				.getActionRegistry().getAction(GEFActionConstants.ZOOM_OUT));
+		viewer.getKeyHandler()
+				.put(KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0),
+						this.getActionRegistry().getAction(
+								GEFActionConstants.ZOOM_OUT));
 
 		viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.CONTROL),
 				MouseWheelZoomHandler.SINGLETON);
-
 
 		ContextMenuProvider contextProvider = new CSContextMenuProvider(viewer,
 				this.getActionRegistry());
@@ -414,7 +419,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		FormData data = new FormData();
 		ISharedImages sharedImages = PlatformUI.getWorkbench()
 				.getSharedImages();
-
 		// adding the undo/redo Buttons
 		this.undo = new Button(this.toolBar, SWT.BUTTON_MASK);
 		data = new FormData(CSAbstractEditor.TOOL_HEIGHT,
@@ -440,27 +444,58 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.decoSwitch.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-					CSAbstractEditor.this.setDecoration(((Button)e.getSource()).getSelection());
+				CSAbstractEditor.this.setDecoration(((Button) e.getSource())
+						.getSelection());
 
 			}
 		});
 
-		final Button preferenceButton= new Button(this.toolBar, SWT.PUSH);
+		final Button preferenceButton = new Button(this.toolBar, SWT.PUSH);
 		preferenceButton.setText("Preferenes"); //$NON-NLS-1$
 		data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
 		data.left = new FormAttachment(this.decoSwitch, 30);
 		preferenceButton.setLayoutData(data);
 		preferenceButton.addSelectionListener(new SelectionAdapter() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Map<String,String> values=new HashMap<>();
-				values.put("xstampp.command.preferencePage", "xstampp.cs.preferencees"); //$NON-NLS-1$ //$NON-NLS-2$
-				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values); //$NON-NLS-1$
+				Map<String, String> values = new HashMap<>();
+				values.put(
+						"xstampp.command.preferencePage", "xstampp.cs.preferencees"); //$NON-NLS-1$ //$NON-NLS-2$
+				STPAPluginUtils.executeParaCommand(
+						"astpa.preferencepage", values); //$NON-NLS-1$
 			}
 		});
-		
+
+		if (getModelInterface().getFileExtension().equals("acc")) {
+			final Button showResponsibilityViewButton = new Button(
+					this.toolBar, SWT.None);
+			showResponsibilityViewButton.setText("Show Responsibilities");
+			data = new FormData();
+			data.height = CSAbstractEditor.TOOL_HEIGHT;
+			data.left = new FormAttachment(preferenceButton, 30);
+			showResponsibilityViewButton.setLayoutData(data);
+			showResponsibilityViewButton
+					.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							try {
+								PlatformUI.getWorkbench()
+										.getActiveWorkbenchWindow().getActivePage()
+										.showView("A-CAST.view1");
+							} catch (PartInitException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+
+					});
+
+
+
+		}
+
 		data = new FormData();
 		data.top = new FormAttachment(0);
 		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
@@ -674,7 +709,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.graphicalViewer = viewer;
 	}
 
-	
 	@Override
 	public GraphicalViewer getGraphicalViewer() {
 		return this.graphicalViewer;
@@ -721,9 +755,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getGraphicalViewer().getControl().setFocus();
 		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
 				.getWorkbench().getService(ISourceProviderService.class);
-		sourceProviderService
-				.getSourceProvider(CommandState.SAVE_STATE);
-		
+		sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
+
 	}
 
 	/**
@@ -764,7 +797,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	@Override
 	public void dispose() {
-		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		Activator.getDefault().getPreferenceStore()
+				.removePropertyChangeListener(this);
 		this.getCommandStack().removeCommandStackListener(this);
 		this.modelInterface.deleteObserver(this);
 		this.getSite().getWorkbenchWindow().getSelectionService()
@@ -878,10 +912,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	protected boolean printStructure(String path, int imgOffset, String name,
 			String processName, boolean decorate) {
 
-		Job exportJob = new CSExportJob(path, imgOffset,
-				(String) this.getGraphicalViewer().getProperty(
-						IControlStructureEditor.STEP_EDITOR), this.getProjectID(),
-				true, decorate);
+		Job exportJob = new CSExportJob(path, imgOffset, (String) this
+				.getGraphicalViewer().getProperty(
+						IControlStructureEditor.STEP_EDITOR),
+				this.getProjectID(), true, decorate);
 		exportJob.schedule();
 		exportJob.addJobChangeListener(new JobChangeAdapter());
 		return true;
@@ -898,7 +932,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.setModelInterface((IControlStructureEditorDataModel) dataInterface);
 		this.getModelInterface().addObserver(this);
 
-//		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
+		// this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 	}
 
 	@Override
@@ -996,7 +1030,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if(event.getPropertyName().equals(IZoomContributor.IS_DECORATED)){
+		if (event.getPropertyName().equals(IZoomContributor.IS_DECORATED)) {
 			this.decoSwitch.notifyListeners(SWT.Selection, null);
 			this.decoSwitch.setSelection((boolean) event.getNewValue());
 		}
@@ -1006,15 +1040,19 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		}
 
 	}
-	
+
 	@Override
 	public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
-		if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER) && this instanceof CSEditorWithPM){
+		if (event
+				.getProperty()
+				.equals(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)
+				&& this instanceof CSEditorWithPM) {
 			getGraphicalControl().redraw();
 		}
 	}
+
 	@Override
-	public Object getProperty(String propertyString){
+	public Object getProperty(String propertyString) {
 		return getGraphicalViewer().getProperty(propertyString);
 	}
 
@@ -1028,33 +1066,47 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 					.enableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.addAnchorsGrid();
-		} else if(tool instanceof CombinedTemplateCreationEntry){
+		} else if (tool instanceof CombinedTemplateCreationEntry) {
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.getFigure().removeHighlighter();
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.disableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.setAnchorsGrid(false);
-			
-			//if the current project should be stored as a haz file, a warning is promted when the user trys to insert not storeable
-			//components
-			boolean conflict= ProjectManager.getContainerInstance().getProjectExtension(getProjectID()).equals("haz");//$NON-NLS-1$
-			boolean hideWarning =PlatformUI.getPreferenceStore().getBoolean(IControlStructureConstants.CS_HideIllegalComponentWarning);
-			//the message is only promted if the choosen tool creates one of the new and thus not in haz storable components
-			ComponentType obj =(ComponentType) ((CombinedTemplateCreationEntry) tool).getTemplate();
-			boolean criticalComp =obj == ComponentType.CONTAINER || obj == ComponentType.DASHEDBOX; 
-			if(criticalComp && !hideWarning && conflict){
-				MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(null,Messages.LossOfData,
-													String.format(Messages.InformationCannotBeStored,obj.toString()),
-													Messages.DontPromtThisMsgAgain,false,null,null);
+
+			// if the current project should be stored as a haz file, a warning
+			// is promted when the user trys to insert not storeable
+			// components
+			boolean conflict = ProjectManager.getContainerInstance()
+					.getProjectExtension(getProjectID()).equals("haz");//$NON-NLS-1$
+			boolean hideWarning = PlatformUI.getPreferenceStore().getBoolean(
+					IControlStructureConstants.CS_HideIllegalComponentWarning);
+			// the message is only promted if the choosen tool creates one of
+			// the new and thus not in haz storable components
+			ComponentType obj = (ComponentType) ((CombinedTemplateCreationEntry) tool)
+					.getTemplate();
+			boolean criticalComp = obj == ComponentType.CONTAINER
+					|| obj == ComponentType.DASHEDBOX;
+			if (criticalComp && !hideWarning && conflict) {
+				MessageDialogWithToggle dialog = MessageDialogWithToggle
+						.openOkCancelConfirm(null, Messages.LossOfData, String
+								.format(Messages.InformationCannotBeStored,
+										obj.toString()),
+								Messages.DontPromtThisMsgAgain, false, null,
+								null);
 				hideWarning = dialog.getToggleState();
-				if(dialog.getReturnCode() == MessageDialogWithToggle.OK){
-					ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx");
+				if (dialog.getReturnCode() == MessageDialogWithToggle.OK) {
+					ProjectManager.getContainerInstance()
+							.changeProjectExtension(getProjectID(), "hazx");
 				}
-				PlatformUI.getPreferenceStore().setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);
+				PlatformUI
+						.getPreferenceStore()
+						.setValue(
+								IControlStructureConstants.CS_HideIllegalComponentWarning,
+								hideWarning);
 			}
 		}
-	
+
 	}
 
 	@Override
@@ -1107,8 +1159,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.updateActions(this.selectionActions);
 	}
 
-	private void setDecoration(boolean deco){
-		if(getGraphicalViewer() != null){
+	private void setDecoration(boolean deco) {
+		if (getGraphicalViewer() != null) {
 			this.graphicalViewer.setProperty(IS_DECORATED, deco);
 			RootEditPart root = (RootEditPart) this.getGraphicalViewer()
 					.getContents();
@@ -1116,14 +1168,14 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			root.refresh();
 		}
 		this.decoSwitch.setSelection(deco);
-		if(deco){
+		if (deco) {
 			this.decoSwitch.setText(Messages.ControlStructure_DecoOn);
-		}else{
+		} else {
 			this.decoSwitch.setText(Messages.ControlStructure_DecoOff);
 		}
-		
+
 	}
-	
+
 	@Override
 	public void updateZoom(double zoom) {
 		this.zoomManager.setZoom(zoom);
@@ -1133,20 +1185,20 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	public ZoomManager getZoomManager() {
 		return this.zoomManager;
 	}
-	
+
 	@Override
 	public void addPropertyListener(PropertyChangeListener listener) {
 		this.getGraphicalViewer().addPropertyChangeListener(listener);
-		
+
 	}
-	
+
 	@Override
-	public void fireToolPropertyChange(String property, Object value){
-		if(property.equals(IS_DECORATED) && value instanceof Boolean){
+	public void fireToolPropertyChange(String property, Object value) {
+		if (property.equals(IS_DECORATED) && value instanceof Boolean) {
 			this.setDecoration((boolean) value);
-			
+
 		}
-		
+
 	}
 
 	/**
@@ -1157,19 +1209,21 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	}
 
 	/**
-	 * @param modelInterface the modelInterface to set
+	 * @param modelInterface
+	 *            the modelInterface to set
 	 */
 	public void setModelInterface(IDataModel modelInterface) {
-		Assert.isLegal(modelInterface instanceof IControlStructureEditorDataModel,
-						"The data model must implement the interface IControlStructureEditorDataModel!"); //$NON-NLS-1$
+		Assert.isLegal(
+				modelInterface instanceof IControlStructureEditorDataModel,
+				"The data model must implement the interface IControlStructureEditorDataModel!"); //$NON-NLS-1$
 		this.modelInterface = (IControlStructureEditorDataModel) modelInterface;
 		this.modelInterface.addObserver(this);
 	}
+
 	@Override
 	public void selectAll() {
-		this.getActionRegistry().getAction(ActionFactory.SELECT_ALL.getId()).run();
+		this.getActionRegistry().getAction(ActionFactory.SELECT_ALL.getId())
+				.run();
 	}
 
 }
-
-

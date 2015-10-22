@@ -15,14 +15,14 @@ public class TestPerspective implements IPerspectiveFactory {
 	public void createInitialLayout(IPageLayout layout) {
 		layout.setEditorAreaVisible(true);
 		layout.setFixed(false);
+		
+		
+		layout.addView(
+				"astpa.explorer", IPageLayout.LEFT, 0.2f, layout.getEditorArea()); //$NON-NLS-1$
+
 		IFolderLayout consoleFolder = layout.createFolder("folder", 
 	            IPageLayout.BOTTOM, 0.75f,  layout.getEditorArea());
-		IFolderLayout naviFolder = layout.createFolder("navi", 
-	            IPageLayout.LEFT, 0.3f,  layout.getEditorArea());
-		
-		naviFolder.addView("astpa.explorer");
-
-		consoleFolder.addView("astpa.Welcome");
+		consoleFolder.addPlaceholder("TestPlugin.view1");
 	
 	}
 }

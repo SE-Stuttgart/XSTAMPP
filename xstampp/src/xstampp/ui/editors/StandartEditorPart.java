@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -16,7 +18,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
-import messages.Messages;
 import xstampp.Activator;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -31,7 +32,8 @@ import xstampp.util.STPAPluginUtils;
  * @see EditorPart
  *
  */
-public abstract class StandartEditorPart extends EditorPart implements IEditorBase, IPartListener {
+public abstract class StandartEditorPart extends EditorPart implements
+		IEditorBase, IPartListener {
 
 	private UUID projectID;
 
@@ -52,24 +54,28 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
 		this.setSite(site);
 		this.setInput(input);
 		this.setProjectID(((STPAEditorInput) input).getProjectID());
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.addPartListener(this);
 
 	}
 
 	@Override
 	public void dispose() {
 		ProjectManager.getLOGGER().debug("Editor: " + getTitle() + " closed");
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.removePartListener(this);
 		super.dispose();
 	}
 
 	@Override
 	public boolean isDirty() {
-		if (ProjectManager.getContainerInstance().getUnsavedChanges(this.projectID)) {
+		if (ProjectManager.getContainerInstance().getUnsavedChanges(
+				this.projectID)) {
 			this.setStatusLine();
 		}
 		return false;
@@ -108,14 +114,22 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 	 *
 	 */
 	public void setStatusLine() {
-		Display.getDefault().syncExec(() -> {
-			if (ProjectManager.getContainerInstance().getUnsavedChanges(StandartEditorPart.this.projectID)) {
-				Image image = Activator.getImageDescriptor("/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
+		Display.getDefault().syncExec(new Runnable() {
 
-				StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(image,
-						Messages.ThereAreUnsafedChanges);
-			} else {
-				StandartEditorPart.this.getEditorSite().getActionBars().getStatusLineManager().setMessage(null);
+			@Override
+			public void run() {
+				if (ProjectManager.getContainerInstance().getUnsavedChanges(
+						StandartEditorPart.this.projectID)) {
+					Image image = Activator.getImageDescriptor(
+							"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
+
+					StandartEditorPart.this.getEditorSite().getActionBars()
+							.getStatusLineManager()
+							.setMessage(image, Messages.ThereAreUnsafedChanges);
+				} else {
+					StandartEditorPart.this.getEditorSite().getActionBars()
+							.getStatusLineManager().setMessage(null);
+				}
 			}
 		});
 
@@ -138,12 +152,16 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
-		if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getSite().getId()
-				.equals("acast.steps.step2_1")) {
-			if (arg0 == this) {
-				((STPAEditorInput) getEditorInput()).activate();
-			} else if (arg0 != this) {
-				((STPAEditorInput) getEditorInput()).deactivate();
+		if (PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().getActiveEditor() != null) {
+			if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage().getActiveEditor().getSite().getId()
+					.equals("acast.steps.step2_1")) {
+				if (arg0 == this) {
+					((STPAEditorInput) getEditorInput()).activate();
+				} else if (arg0 != this) {
+					((STPAEditorInput) getEditorInput()).deactivate();
+				}
 			}
 		}
 	}
