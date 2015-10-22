@@ -35,12 +35,11 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import acast.Activator;
-import acast.model.interfaces.IResponsibilityDataModel;
-import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
+import acast.Activator;
+import acast.model.interfaces.IResponsibilityDataModel;
 
 public class TableView extends ViewPart {
 
@@ -253,7 +252,7 @@ public class TableView extends ViewPart {
 
 					@Override
 					public void partHidden(IWorkbenchPartReference partRef) {
-						
+
 					}
 
 					@Override
@@ -263,13 +262,11 @@ public class TableView extends ViewPart {
 
 					@Override
 					public void partClosed(IWorkbenchPartReference partRef) {
-						
 
 					}
 
 					@Override
 					public void partBroughtToTop(IWorkbenchPartReference partRef) {
-						
 
 					}
 
@@ -419,7 +416,7 @@ public class TableView extends ViewPart {
 					dialog.open();
 					return;
 				}
-				if (combo.getSelectionIndex()==-1){
+				if (combo.getSelectionIndex() == -1) {
 					MessageBox dialog = new MessageBox(parent.getShell(),
 							SWT.ICON_INFORMATION | SWT.OK);
 					dialog.setText("Warning");
@@ -643,9 +640,11 @@ public class TableView extends ViewPart {
 				responsibility = feedback;
 				safety.setEnabled(true);
 				unsafeActionsBtn.setEnabled(true);
+				flawsBtn.setEnabled(true);
 				contextBtn.setEnabled(true);
 				coordinationBtn.setEnabled(true);
 				safety.setBackground(defaultColor);
+				flawsBtn.setBackground(defaultColor);
 				unsafeActionsBtn.setBackground(defaultColor);
 				contextBtn.setBackground(defaultColor);
 				coordinationBtn.setBackground(defaultColor);
@@ -667,6 +666,7 @@ public class TableView extends ViewPart {
 			public void handleEvent(Event event) {
 				responsibility = coordination;
 				safety.setEnabled(true);
+				flawsBtn.setEnabled(true);
 				unsafeActionsBtn.setEnabled(true);
 				contextBtn.setEnabled(true);
 				feedbackBtn.setEnabled(true);
@@ -674,6 +674,7 @@ public class TableView extends ViewPart {
 				unsafeActionsBtn.setBackground(defaultColor);
 				contextBtn.setBackground(defaultColor);
 				feedbackBtn.setBackground(defaultColor);
+				flawsBtn.setBackground(defaultColor);
 				coordinationBtn.setBackground(parent.getDisplay()
 						.getSystemColor(SWT.COLOR_RED));
 				coordinationBtn.setEnabled(false);
