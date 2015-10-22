@@ -33,6 +33,7 @@ public class ControlActionEntrys {
 		
 	}
 	
+	
 	public String getController() {
 		return controller;
 	}
@@ -202,7 +203,7 @@ public class ControlActionEntrys {
 		this.npavailableItems = npavailableItems;
 	}
 	@XmlElementWrapper(name = "contexttablecombinations")
-	@XmlElement(name = "processmodelvariables")
+	@XmlElement(name = "contexttablecombination")
 	public List<ProcessModelVariables> getContextTableCombinations() {
 		return contextTableCombinations;
 	}
