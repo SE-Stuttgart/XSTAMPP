@@ -77,12 +77,13 @@ public class CSModelCreationFactory implements CreationFactory {
 		switch (this.type) {
 		case CONTROLACTION: {
 			text = Messages.ControlAction + " " + count; //$NON-NLS-1$
-			UUID caLink = this.dataModel.addControlAction(text, Messages.DescriptionOfThisControlAction);
 			for (IControlAction x : dataModel.getAllControlActions()) {
 				if (x.getTitle().equals(text)) {
 					text = text + " (2)";
 				}
 			}
+			UUID caLink = this.dataModel.addControlAction(text, Messages.DescriptionOfThisControlAction);
+			
 			return new Component(caLink, text, new Rectangle(), this.type);
 		}
 		case ACTUATOR: {

@@ -13,21 +13,16 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-
 import messages.Messages;
 
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.draw2d.geometry.Translatable;
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
-import org.eclipse.gef.requests.LocationRequest;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;

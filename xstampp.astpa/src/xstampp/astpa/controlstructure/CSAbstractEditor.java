@@ -50,12 +50,9 @@ import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.Tool;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
-import org.eclipse.gef.commands.CommandStackListener;
-import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
@@ -63,8 +60,6 @@ import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.ToolEntry;
-import org.eclipse.gef.requests.LocationRequest;
-import org.eclipse.gef.tools.TargetingTool;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DeleteAction;
@@ -92,7 +87,6 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -117,7 +111,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import xstampp.Activator;
 import xstampp.astpa.controlstructure.controller.commands.CopyComponentCommand;
@@ -131,7 +124,6 @@ import xstampp.astpa.controlstructure.utilities.CSContextMenuProvider;
 import xstampp.astpa.controlstructure.utilities.CSPalettePage;
 import xstampp.astpa.controlstructure.utilities.CSPalettePreferences;
 import xstampp.astpa.controlstructure.utilities.CSTemplateTransferDropTargetListener;
-import xstampp.astpa.controlstructure.utilities.GraphicalViewerOutline;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -741,8 +733,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	public final void setEditDomain(EditorPart editor) {
 
 		this.editDomain = new DefaultEditDomain(editor){
+	
 			@Override
 			public void mouseMove(MouseEvent mouseEvent, EditPartViewer viewer) {
+			
 				CSAbstractEditor.this.mousePosition = new Point(mouseEvent.x,mouseEvent.y);
 				CSAbstractEditor.this.positionLabel.setText(mouseEvent.x + " x " + mouseEvent.y);
 				super.mouseMove(mouseEvent, viewer);
@@ -752,10 +746,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			
 			@Override
 			public void stackChanged(CommandStackEvent event) {
-				if(event.isPreChangeEvent() && event.getCommand() instanceof CompoundCommand){
+				if(event.isPreChangeEvent()){
 					getModelInterface().lockUpdate();
-				}else if(event.isPostChangeEvent() && event.getCommand() instanceof CompoundCommand){
+				}else if(event.isPostChangeEvent()){
 					getModelInterface().releaseLockAndUpdate(ObserverValue.CONTROL_STRUCTURE);
+
+					getModelInterface().releaseLockAndUpdate(ObserverValue.CONTROL_ACTION);
 				}
 			}
 		});
@@ -994,7 +990,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			if (root != null) {
 				root.refresh();
 			}
-			List<EditPart> addedParts =((CSEditPartFactory)this.getGraphicalViewer().getEditPartFactory()).fetchNewParts();
+			List<IControlStructureEditPart> addedParts =((CSEditPartFactory)this.getGraphicalViewer().getEditPartFactory()).fetchNewParts();
 			if(this.selectAddedParts && !addedParts.isEmpty()){
 				this.selectAddedParts = false;
 				this.graphicalViewer.select(addedParts.get(0));

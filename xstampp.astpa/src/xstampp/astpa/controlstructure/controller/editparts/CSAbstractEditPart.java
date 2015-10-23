@@ -31,7 +31,6 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
@@ -48,7 +47,6 @@ import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.utilities.CSCellEditorLocator;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
-import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -154,12 +152,12 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 					IControlStructureEditor.STEP_EDITOR);
 
 			// increase the number of refreshes so the logic updates exactly
-			for (int i = 0; i <= 2; i++) {
+//			for (int i = 0; i <= 2; i++) {
 
 				figureTemp.setLayout(modelTemp.getLayout(stepID
 						.equals(CSEditor.ID)));
 				figureTemp.setText(modelTemp.getText());
-			}
+//			}
 
 			this.refreshChildren();
 			
@@ -176,13 +174,13 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	public void refresh() {
-		for (IRectangleComponent f : this.getModelChildren()) {
-			if ((f.getComponentType() == ComponentType.CONTROLACTION)
-					&& (this.getDataModel().getControlActionU(
-							f.getControlActionLink()) == null)) {
-				this.getDataModel().removeComponent(f.getId());
-			}
-		}
+//		for (IRectangleComponent f : this.getModelChildren()) {
+//			if ((f.getComponentType() == ComponentType.CONTROLACTION)
+//					&& (this.getDataModel().getControlActionU(
+//							f.getControlActionLink()) == null)) {
+//				this.getDataModel().removeComponent(f.getId());
+//			}
+//		}
 		this.refreshVisuals();
 	}
 
@@ -397,5 +395,13 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	public void mouseMoved(MouseEvent arg0) {
 		//Do nothing by default
 		
+	}
+
+	public void addSourceConnection(CSConnectionEditPart conn){
+		primAddSourceConnection(conn,0);
+	}
+	
+	public void addTargetConnection(CSConnectionEditPart conn){
+		primAddTargetConnection(conn, 0);
 	}
 }

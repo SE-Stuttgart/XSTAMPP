@@ -93,7 +93,6 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 		Collections.sort(this.copyList,new CopySorter());
 
 		this.undoList = new ArrayList<>();
-		this.getDataModel().lockUpdate();
 		for(IRectangleComponent comp : this.copyList){
 			UUID newParentId;
 			Rectangle rect = comp.getLayout(this.getStepID().equals(CSEditor.ID));
@@ -108,6 +107,8 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 				y -= this.position.y - this.pastePosition.y;
 			}
 			
+			x= Math.max(x, 0);
+			y = Math.max(y, 0);
 			
 			UUID compId = this.getDataModel().addComponent(newParentId,
 														   new Rectangle(x, y, rect.width, rect.height),
@@ -136,7 +137,6 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 				this.undoConnectionList.add(this.getDataModel().addConnection(source, target, type));
 			}
 		}
-		this.getDataModel().releaseLockAndUpdate(ObserverValue.CONTROL_STRUCTURE);
 	}
 	
 	@Override
