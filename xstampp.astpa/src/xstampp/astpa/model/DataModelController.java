@@ -1366,6 +1366,9 @@ public class DataModelController extends Observable implements
 	}
 	@Override
 	public String getFileExtension() {
+		if(this.projectExtension == null){
+			return "haz";
+		}
 		return this.projectExtension;
 	}
 	/**
