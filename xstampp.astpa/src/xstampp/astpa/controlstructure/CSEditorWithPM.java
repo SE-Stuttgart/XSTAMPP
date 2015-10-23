@@ -22,6 +22,8 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
+import org.eclipse.gef.tools.AbstractTool;
+import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -69,8 +71,12 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		PanningSelectionToolEntry selectionToolEntry = new PanningSelectionToolEntry();
 		selectionToolEntry.setDescription(Messages.SpacePlusMouseTo);
 		manipGroup.add(selectionToolEntry);
-		manipGroup.add(new MarqueeToolEntry());
+		MarqueeToolEntry entry = new MarqueeToolEntry();
 
+		entry.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR,
+							  MarqueeSelectionTool.BEHAVIOR_NODES_CONTAINED_AND_RELATED_CONNECTIONS);
+		entry.setToolProperty(AbstractTool.PROPERTY_UNLOAD_WHEN_FINISHED,true);
+		manipGroup.add(entry);
 		root.setDefaultEntry(selectionToolEntry);
 
 		PaletteSeparator separator = new PaletteSeparator();

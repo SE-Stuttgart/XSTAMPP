@@ -33,6 +33,7 @@ import xstampp.astpa.controlstructure.controller.editparts.ControlActionEditPart
 import xstampp.astpa.controlstructure.controller.editparts.ControlledProcessEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ControllerEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.DashedBoxEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessModelEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessValueEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessVariableEditPart;
@@ -64,9 +65,9 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 public class CSEditPartFactory implements EditPartFactory {
 
 	private IControlStructureEditorDataModel dataModel;
-	private Map<UUID, EditPart> editPartMap = new HashMap<UUID, EditPart>();
+	private Map<UUID, IControlStructureEditPart> editPartMap = new HashMap<>();
 	private final String stepId;
-	private List<EditPart> addedParts;
+	private List<IControlStructureEditPart> addedParts;
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -87,7 +88,7 @@ public class CSEditPartFactory implements EditPartFactory {
 	public EditPart createEditPart(EditPart context, Object model) {
 		// the EditPart which acts as the controller in the MVC architecture of
 		// gef
-		AbstractGraphicalEditPart part = null;
+		IControlStructureEditPart part = null;
 		UUID id;
 		switch (((IComponent) model).getComponentType()) {
 		case CONTROLACTION: {
@@ -174,20 +175,21 @@ public class CSEditPartFactory implements EditPartFactory {
 		return part;
 	}
 
-	public List<EditPart> fetchNewParts(){
-		List<EditPart> tempParts = new ArrayList<>(this.addedParts);
+	public List<IControlStructureEditPart> fetchNewParts(){
+		List<IControlStructureEditPart> tempParts = new ArrayList<>(this.addedParts);
 		this.addedParts = new ArrayList<>();
 		return tempParts;
 	}
 	private CSConnectionEditPart getConnectionFrom(IConnection model) {
 
-		EditPart source = this.editPartMap.get((model).getSourceAnchor()
+		CSAbstractEditPart source = (CSAbstractEditPart) this.editPartMap.get((model).getSourceAnchor()
 				.getOwnerId());
-		EditPart target = this.editPartMap.get((model).getTargetAnchor()
+		
+		CSAbstractEditPart target = (CSAbstractEditPart)this.editPartMap.get((model).getTargetAnchor()
 				.getOwnerId());
 
-		IFigure sourceFigure = ((CSAbstractEditPart) source).getFigure();
-		IFigure targetFigure = ((CSAbstractEditPart) target).getFigure();
+		IFigure sourceFigure =	source.getFigure();
+		IFigure targetFigure = 	target.getFigure();
 
 		IAnchor sourceModel = model.getSourceAnchor();
 		IAnchor targetModel = model.getTargetAnchor();
@@ -213,6 +215,8 @@ public class CSEditPartFactory implements EditPartFactory {
 		part.setModel(model);
 		part.setSource(source);
 		part.setTarget(target);
+		source.addSourceConnection(part);
+		target.addTargetConnection(part);
 		return part;
 	}
 

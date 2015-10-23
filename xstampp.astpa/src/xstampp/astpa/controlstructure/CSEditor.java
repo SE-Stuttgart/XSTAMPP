@@ -25,6 +25,8 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.tools.AbstractTool;
+import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.events.FocusEvent;
@@ -103,6 +105,9 @@ public class CSEditor extends CSAbstractEditor {
 		root.setDefaultEntry(entry);
 
 		entry = new MarqueeToolEntry();
+		entry.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR,
+							  MarqueeSelectionTool.BEHAVIOR_NODES_CONTAINED_AND_RELATED_CONNECTIONS);
+		entry.setToolProperty(AbstractTool.PROPERTY_UNLOAD_WHEN_FINISHED,true);
 		manipGroup.add(entry);
 		this.toolEntryToComponentType.put("MARQUEE", entry);
 
