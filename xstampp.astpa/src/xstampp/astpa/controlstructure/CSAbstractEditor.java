@@ -225,8 +225,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		FormLayout layout = new FormLayout();
 		
 		Composite editorComposite = new Composite(parent, SWT.BORDER);
-		parent.setBackground(null);
-		parent.setLayout(layout);
+		editorComposite.setBackground(null);
+		editorComposite.setLayout(layout);
 		
 		FormData data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
