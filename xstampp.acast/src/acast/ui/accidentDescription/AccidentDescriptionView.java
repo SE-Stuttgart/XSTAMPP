@@ -1,10 +1,12 @@
 package acast.ui.accidentDescription;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -13,6 +15,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import messages.Messages;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -29,7 +33,6 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -65,9 +68,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-import acast.Activator;
-import acast.model.interfaces.IAccidentDescriptionViewDataModel;
-import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -75,6 +75,8 @@ import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.StyledTextSelection;
 import xstampp.ui.editors.interfaces.ITextEditContribution;
 import xstampp.ui.editors.interfaces.ITextEditor;
+import acast.Activator;
+import acast.model.interfaces.IAccidentDescriptionViewDataModel;
 
 public class AccidentDescriptionView extends StandartEditorPart implements
 		ITextEditor, IPropertyChangeListener {
@@ -694,14 +696,20 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 
 	private void updateAccidentDate() {
 		if (!this.dataInterface.getAccidentDate().isEmpty()) {
-			String[] accidentDate = this.dataInterface.getAccidentDate().split(
-					" ");
-			LocalDate date = LocalDate.parse(accidentDate[0]);
-			LocalTime time = LocalTime.parse(accidentDate[1]);
-			dateTime.setDate(date.getYear(), date.getMonthValue() - 1,
-					date.getDayOfMonth());
-			dateClock.setTime(time.getHour(), time.getMinute(),
-					time.getSecond());
+			String accidentDate = this.dataInterface.getAccidentDate();
+			SimpleDateFormat format = new SimpleDateFormat(); 
+			GregorianCalendar date = new GregorianCalendar();
+			try {
+				date.setTime(format.parse(accidentDate));
+				
+				dateTime.setDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH) - 1,
+						date.get(Calendar.DAY_OF_MONTH));
+				dateClock.setTime(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE),
+						date.get(Calendar.SECOND));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -775,11 +783,12 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 	 *
 	 */
 	private void applyAccidentDateToDataModel() {
-		LocalDate datum = LocalDate.of(dateTime.getYear(),
-				dateTime.getMonth() + 1, dateTime.getDay());
-		LocalTime time = LocalTime.of(dateClock.getHours(),
+		SimpleDateFormat format = new SimpleDateFormat(); 
+		GregorianCalendar datum = new GregorianCalendar(dateTime.getYear(),
+				dateTime.getMonth() + 1, dateTime.getDay(),dateClock.getHours(),
 				dateClock.getMinutes(), dateClock.getSeconds());
-		String date = datum.toString() + " " + time.toString();
+		
+		String date = format.format(datum.getTime());
 		if (!(date.equals(this.dataInterface.getAccidentDate()))) {
 			this.dataInterface.setAccidentDate(date);
 		}
