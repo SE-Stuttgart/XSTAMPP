@@ -35,11 +35,11 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import acast.Activator;
-import acast.model.interfaces.IResponsibilityDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
+import acast.Activator;
+import acast.model.interfaces.IResponsibilityDataModel;
 
 public class TableView extends ViewPart {
 
@@ -166,10 +166,10 @@ public class TableView extends ViewPart {
 			dataInterface.removeunsafeAction(name, id);
 			break;
 		case coordination:
-			dataInterface.removeFeedback(name, id);
+			dataInterface.removeCoordination(name, id);
 			break;
 		case feedback:
-			dataInterface.removeCoordination(name, id);
+			dataInterface.removeFeedback(name, id);
 			break;
 		}
 	}
@@ -252,24 +252,21 @@ public class TableView extends ViewPart {
 
 					@Override
 					public void partHidden(IWorkbenchPartReference partRef) {
-						visible = false;
+
 					}
 
 					@Override
 					public void partDeactivated(IWorkbenchPartReference partRef) {
-						visible = false;
 
 					}
 
 					@Override
 					public void partClosed(IWorkbenchPartReference partRef) {
-						visible = false;
 
 					}
 
 					@Override
 					public void partBroughtToTop(IWorkbenchPartReference partRef) {
-						visible = true;
 
 					}
 
@@ -286,17 +283,22 @@ public class TableView extends ViewPart {
 					public void propertyChange(PropertyChangeEvent event) {
 						if (!combo.isDisposed()) {
 							if (event.getNewValue().equals("close")) {
-								PlatformUI
-										.getWorkbench()
+								if (PlatformUI.getWorkbench()
 										.getActiveWorkbenchWindow()
 										.getActivePage()
-										.hideView(
-												PlatformUI
-														.getWorkbench()
-														.getActiveWorkbenchWindow()
-														.getActivePage()
-														.findView(
-																"A-CAST.view1"));
+										.findView("A-CAST.view1") != null) {
+									PlatformUI
+											.getWorkbench()
+											.getActiveWorkbenchWindow()
+											.getActivePage()
+											.hideView(
+													PlatformUI
+															.getWorkbench()
+															.getActiveWorkbenchWindow()
+															.getActivePage()
+															.findView(
+																	"A-CAST.view1"));
+								}
 							} else if (event.getNewValue().equals("change")) {
 								combo.remove(combo.getSelectionIndex());
 								combo.add(String.valueOf(event.getOldValue()));
@@ -410,6 +412,15 @@ public class TableView extends ViewPart {
 							SWT.ICON_INFORMATION | SWT.OK);
 					dialog.setText("Warning");
 					dialog.setMessage("Create Components in Controlstructure first");
+
+					dialog.open();
+					return;
+				}
+				if (combo.getSelectionIndex() == -1) {
+					MessageBox dialog = new MessageBox(parent.getShell(),
+							SWT.ICON_INFORMATION | SWT.OK);
+					dialog.setText("Warning");
+					dialog.setMessage("Select a component in the Combo-Box");
 
 					dialog.open();
 					return;
@@ -535,8 +546,6 @@ public class TableView extends ViewPart {
 				PlatformUI.getWorkbench().getDisplay().getActiveShell()
 						.forceFocus();
 				viewer.getTable().removeAll();
-				System.out.println(dataInterface.getComponentNames().get(
-						selectedItem));
 				updateReponsibilites(
 						dataInterface.getComponentNames().get(selectedItem),
 						responsibility);
@@ -631,9 +640,11 @@ public class TableView extends ViewPart {
 				responsibility = feedback;
 				safety.setEnabled(true);
 				unsafeActionsBtn.setEnabled(true);
+				flawsBtn.setEnabled(true);
 				contextBtn.setEnabled(true);
 				coordinationBtn.setEnabled(true);
 				safety.setBackground(defaultColor);
+				flawsBtn.setBackground(defaultColor);
 				unsafeActionsBtn.setBackground(defaultColor);
 				contextBtn.setBackground(defaultColor);
 				coordinationBtn.setBackground(defaultColor);
@@ -655,6 +666,7 @@ public class TableView extends ViewPart {
 			public void handleEvent(Event event) {
 				responsibility = coordination;
 				safety.setEnabled(true);
+				flawsBtn.setEnabled(true);
 				unsafeActionsBtn.setEnabled(true);
 				contextBtn.setEnabled(true);
 				feedbackBtn.setEnabled(true);
@@ -662,6 +674,7 @@ public class TableView extends ViewPart {
 				unsafeActionsBtn.setBackground(defaultColor);
 				contextBtn.setBackground(defaultColor);
 				feedbackBtn.setBackground(defaultColor);
+				flawsBtn.setBackground(defaultColor);
 				coordinationBtn.setBackground(parent.getDisplay()
 						.getSystemColor(SWT.COLOR_RED));
 				coordinationBtn.setEnabled(false);
@@ -798,8 +811,14 @@ public class TableView extends ViewPart {
 		});
 		viewer.getTable().setHeaderVisible(true);
 		viewer.getTable().setLinesVisible(true);
-		combo.select(0);
-
+		if (combo.getItemCount() > 0) {
+			selectedItem = combo.getItem(0);
+			combo.select(0);
+			viewer.getTable().removeAll();
+			updateReponsibilites(
+					dataInterface.getComponentNames().get(selectedItem),
+					responsibility);
+		}
 	}
 
 	@Override

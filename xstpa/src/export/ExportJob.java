@@ -113,9 +113,9 @@ public class ExportJob extends Job {
 				context = JAXBContext.newInstance(ExportContent.class);
 				Marshaller m = context.createMarshaller();
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-				System.out.println("works to 116!");
+				
 				m.marshal(View.exportContent, this.outStream);
-				System.out.println("works to 118!");
+				
 			} catch (JAXBException e) {
 				ExportJob.LOGGER.error(e.getMessage(), e);
 				return Status.OK_STATUS;
@@ -145,7 +145,7 @@ public class ExportJob extends Job {
 				ExportJob.LOGGER.error("Fop xsl file not found"); //$NON-NLS-1$
 				return Status.CANCEL_STATUS;
 			}
-
+			System.out.println("works to 148!");
 			StreamSource transformXSLSource = new StreamSource(
 					xslUrl.openStream());
 
@@ -153,7 +153,7 @@ public class ExportJob extends Job {
 			if (!pdfFile.exists()) {
 				pdfFile.createNewFile();
 			}
-
+			System.out.println("works to 156!");
 			monitor.worked(1);
 			TransformerFactory transfact = TransformerFactory.newInstance();
 			transfact.setURIResolver(new URIResolver() {
@@ -164,7 +164,7 @@ public class ExportJob extends Job {
 				}
 			});
 			xslfoTransformer = transfact.newTransformer(transformXSLSource);
-		
+			System.out.println("works to 167!");
 			try (OutputStream out = new BufferedOutputStream(
 					new FileOutputStream(pdfFile));
 					FileOutputStream str = new FileOutputStream(pdfFile);) {

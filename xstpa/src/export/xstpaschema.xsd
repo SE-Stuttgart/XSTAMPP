@@ -10,7 +10,13 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="xstpa.model" version="2.0.
               <xs:element name="controlactions" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="contexttablecombinations" type="Q1:pmvType" minOccurs="0" maxOccurs="unbounded"/>
+                  	<xs:element name="contexttablecombinations" minOccurs="0" maxOccurs="unbounded">
+                  	  <xs:complexType>
+                  		<xs:sequence>
+                    	  <xs:element name="contexttablecombination" type="Q1:pmvType" minOccurs="0" maxOccurs="unbounded"/>
+                    	</xs:sequence>
+                      </xs:complexType>
+              		</xs:element> 
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -23,13 +29,26 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="xstpa.model" version="2.0.
               <xs:element name="controlactions" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="contexttablecombinations" type="Q1:pmvType" minOccurs="0" maxOccurs="unbounded"/>
+                  	<xs:element name="contexttablecombinations" minOccurs="0" maxOccurs="unbounded">
+                  	  <xs:complexType>
+                  		<xs:sequence>
+                    	  <xs:element name="contexttablecombination" type="Q1:pmvType" minOccurs="0" maxOccurs="unbounded"/>
+                    	</xs:sequence>
+                      </xs:complexType>
+              		</xs:element> 
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+      	<xs:element name="tableHeaders" minOccurs="0" maxOccurs="unbounded">
+			<xs:complexType>
+		    	<xs:sequence>
+		        	<xs:element type="xs:string" name="tableHeader" minOccurs="0" maxOccurs="unbounded"/>
+		        </xs:sequence>
+		   	</xs:complexType>
+      	</xs:element>
       </xs:sequence>
       <xs:attribute name="astpaversion" type="xs:string" use="required"/>
     </xs:complexType>
@@ -68,6 +87,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="xstpa.model" version="2.0.
       <xs:element type="xs:string" name="hLate"/>
       <xs:element type="xs:string" name="hEarly"/>
       <xs:element type="xs:string" name="hAnytime"/>
+      <xs:element type="xs:string" name="isInRSRTable"/>
     </xs:sequence>
   </xs:complexType>
                 

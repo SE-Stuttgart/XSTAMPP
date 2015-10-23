@@ -58,5 +58,13 @@
             name="XSTPA Preferences">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            class="export.ExportWizard"
+            id="export.wizard"
+            name="exportWizard">
+      </wizard>
+   </extension>
 
 </plugin>

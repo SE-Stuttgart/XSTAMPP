@@ -21,6 +21,9 @@ public class ExportContent {
 	@XmlElement(name = "controlactions")
 	private List<ControlActionEntrys> notProvidedCA = new ArrayList<ControlActionEntrys>();
 	
+
+	private List<String> tableHeaders = new ArrayList<String>();
+	
 	public ExportContent (List<ControlActionEntrys> providedCA, List<ControlActionEntrys> notProvidedCA) {
 		this.notProvidedCA = notProvidedCA;
 		this.providedCA = providedCA;
@@ -28,6 +31,14 @@ public class ExportContent {
 	}
 	public ExportContent() {
 		// Constructor for JAXb
+	}
+	@XmlElementWrapper(name = "tableHeaders")
+	@XmlElement(name = "tableHeader")
+	public List<String> getTableHeaders() {
+		return tableHeaders;
+	}
+	public void setTableHeaders(List<String> tableHeaders) {
+		this.tableHeaders = tableHeaders;
 	}
 }
 

@@ -33,10 +33,7 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CoordinateListener;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPart;
@@ -45,7 +42,6 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
-import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.Request;
@@ -97,7 +93,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -107,6 +102,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
@@ -200,11 +196,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	private Button decoSwitch;
 
 	private boolean asExport;
-
-	public ScrollableThumbnail thumbnail;
-
-	public Canvas canvas;
-
+	
 	private CopyComponentCommand copySelectionCommand;
 
 	protected Point mousePosition;
@@ -220,11 +212,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	public CSAbstractEditor() {
 		this.mousePosition = new Point(1,1);
 		this.setEditDomain(this);
-		this.asExport=false;
+		this.asExport = false;
 	}
 
 	public void prepareForExport(){
-		this.asExport=true;
+		this.asExport = true;
 	}
 	@Override
 	public void createPartControl(Composite parent) {
@@ -232,7 +224,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				.getDataModel(this.getProjectID()));
 		FormLayout layout = new FormLayout();
 		
-//		Composite editorComposite = new Composite(parent, SWT.BORDER);
+		Composite editorComposite = new Composite(parent, SWT.BORDER);
 		parent.setBackground(null);
 		parent.setLayout(layout);
 		
@@ -242,7 +234,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
 		if(!this.asExport){
-			this.createToolBar(parent, data);
+			this.createToolBar(editorComposite, data);
 		}
 		this.getCommandStack().addCommandStackListener(this);
 
@@ -251,7 +243,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.bottom = new FormAttachment(this.toolBar);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		this.splitter = new FlyoutPaletteComposite(parent, SWT.CENTER,
+		this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.CENTER,
 				this.getSite().getPage(), this.getPaletteViewerProvider(),
 				this.getPalettePreferences());
 		this.splitter.setLayoutData(data);
@@ -265,7 +257,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		}
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
-		updateThumbnail();
+		
 	}
 
 	protected void createGraphicalViewer(Composite parent) {
@@ -322,8 +314,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * extend or override this method as needed.
 	 */
 	public void configureGraphicalViewer(GraphicalViewer viewer) {
-		viewer.getControl()
-				.setBackground(ColorConstants.listBackground);
+		viewer.getControl().setBackground(ColorConstants.listBackground);
 
 		double[] zoomLevel = new double[CSAbstractEditor.ZOOM_LEVEL];
 		ArrayList<String> zoomContributions;
@@ -384,9 +375,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		KeyHandler keyHandler = new KeyHandler();
 
 		viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY,
-				0),
-				this.getActionRegistry()
-						.getAction(ActionFactory.DELETE.getId()));
+				0),this.getActionRegistry().getAction(ActionFactory.DELETE.getId()));
 
 		viewer.getKeyHandler().put(KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0), this
 				.getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
@@ -471,7 +460,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			}
 		});
 
-		final Button preferenceButton= new Button(this.toolBar, SWT.PUSH);
+		final Button preferenceButton = new Button(this.toolBar, SWT.PUSH);
 		preferenceButton.setText("Preferenes"); //$NON-NLS-1$
 		data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
@@ -481,11 +470,39 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Map<String,String> values=new HashMap<>();
+				Map<String, String> values = new HashMap<>();
 				values.put("xstampp.command.preferencePage", "xstampp.cs.preferencees"); //$NON-NLS-1$ //$NON-NLS-2$
 				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values); //$NON-NLS-1$
 			}
 		});
+		
+				if (getModelInterface().getFileExtension().equals("acc")) {
+			final Button showResponsibilityViewButton = new Button(
+					this.toolBar, SWT.None);
+			showResponsibilityViewButton.setText("Show Responsibilities");
+			data = new FormData();
+			data.height = CSAbstractEditor.TOOL_HEIGHT;
+			data.left = new FormAttachment(preferenceButton, 30);
+			showResponsibilityViewButton.setLayoutData(data);
+			showResponsibilityViewButton
+					.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							try {
+								PlatformUI.getWorkbench()
+										.getActiveWorkbenchWindow().getActivePage()
+										.showView("A-CAST.view1");
+							} catch (PartInitException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+
+					});
+
+
+
+		}
 		
 		data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
@@ -774,8 +791,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getGraphicalViewer().getControl().setFocus();
 		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
 				.getWorkbench().getService(ISourceProviderService.class);
-		sourceProviderService
-				.getSourceProvider(CommandState.SAVE_STATE);
+		sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
 		
 	}
 
@@ -804,25 +820,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			viewer.addPaletteListener(CSAbstractEditor.this);
 
 		}
-		
-//		@Override
-//		public PaletteViewer createPaletteViewer(Composite parent) {
-//			parent.setLayout(new FormLayout());
-//			FormData data = new FormData();
-//			data.bottom = new FormAttachment(100);
-//			data.left = new FormAttachment(0);
-//			data.right = new FormAttachment(100);
-//			CSAbstractEditor.this.canvas = new Canvas(parent, SWT.BORDER | SWT.DOUBLE_BUFFERED); 
-//			
-//          
-//            CSAbstractEditor.this.canvas.setLayoutData(data);
-//            data = new FormData();
-//            data.bottom = new FormAttachment(CSAbstractEditor.this.canvas);
-//			data.left = new FormAttachment(0);
-//			data.right = new FormAttachment(100);
-//			PaletteViewer viewer = super.createPaletteViewer(parent);
-//			return viewer;
-//		}
 	}
 
 	/**
@@ -837,7 +834,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	@Override
 	public void dispose() {
-		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		Activator.getDefault().getPreferenceStore()
+				.removePropertyChangeListener(this);
 		this.getCommandStack().removeCommandStackListener(this);
 		this.modelInterface.deleteObserver(this);
 		this.getSite().getWorkbenchWindow().getSelectionService()
@@ -1251,19 +1249,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getActionRegistry().getAction(ActionFactory.SELECT_ALL.getId()).run();
 	}
 
-	private void updateThumbnail(){
-		  LightweightSystem lws = new LightweightSystem(this.canvas); 
-
-        this.thumbnail = new ScrollableThumbnail();
-        this.thumbnail.setViewport((Viewport) ((ScalableRootEditPart) getGraphicalViewer() 
-                .getRootEditPart()).getFigure()); 
-		  this.thumbnail.setSource(((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()) 
-				  					.getLayer(LayerConstants.PRINTABLE_LAYERS));
-		  
-        lws.setContents(CSAbstractEditor.this.thumbnail); 
-     
-      this.splitter.layout(true);
-	}
 	
 	public boolean copy(){
 		this.copySelectionCommand = new CopyComponentCommand(getModelInterface(),getId());

@@ -1446,16 +1446,16 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 			case(FOREGROUND):{
 				styleRange.foreground = this.textForegroundColor;
 				break;
-			}case(BACKGROUND):{
+			}case(BACKGROUND): {
 				styleRange.background = this.textBackgroundColor;
 				break;
-			}case(INCREASE):{
+			}case(INCREASE): {
 				data.setHeight(data.getHeight() + 1);
 				break;
-			}case(DECREASE):{
+			}case(DECREASE): {
 				data.setHeight(data.getHeight() - 1);
 				break;
-			}case(FONT_SIZE):{
+			}case(FONT_SIZE): {
 				data.setHeight(newDataSet.getHeight());
 				break;
 			}case(FONT_FAMILY):{

@@ -14,10 +14,10 @@ import javax.xml.bind.annotation.XmlType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 
 
-@XmlRootElement(name = "contexttablecombinations")
+@XmlRootElement(name = "contexttablecombination")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "values", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
-		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "relatedHazards", "uca", "editWindow", "id" })
+		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "editWindow", "id" })
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")
@@ -58,6 +58,8 @@ public class ProcessModelVariables {
 	
 	private Boolean conflict = false;
 	
+	private Boolean isInRSRTable = false;
+	
 	private RelatedHazards relatedHazards = new RelatedHazards(View.allHazards);
 	
 	private UnsafeControlAction uca= new UnsafeControlAction(this);
@@ -72,7 +74,7 @@ public class ProcessModelVariables {
 	}
 	
 	public ProcessModelVariables() {
-
+		// Empty Constructor for JAXB
 	}
 
 	public String getName() {
@@ -191,6 +193,14 @@ public class ProcessModelVariables {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+
+	public Boolean getIsInRSRTable() {
+		return isInRSRTable;
+	}
+
+	public void setIsInRSRTable(Boolean isInRSRTable) {
+		this.isInRSRTable = isInRSRTable;
 	}
 
 
