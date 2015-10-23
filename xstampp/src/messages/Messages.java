@@ -279,7 +279,9 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String DecreaseFontSize;
 	@SuppressWarnings("javadoc")
-	public static String DefaultFont;
+	public static String DefaultNavigationFont;
+	@SuppressWarnings("javadoc")
+	public static String DefaultControlStructureFont;
 	@SuppressWarnings("javadoc")
 	public static String DesignRequirements;
 	@SuppressWarnings("javadoc")

@@ -47,7 +47,7 @@ implements IWorkbenchPreferencePage {
 				this.getFieldEditorParent());
 		this.addField(this.CSFontColor);
 		this.csLabelFont = new FontFieldEditor(
-				IControlStructureConstants.CONTROLSTRUCTURE_FONT, Messages.DefaultFont,
+				IControlStructureConstants.CONTROLSTRUCTURE_FONT, Messages.DefaultControlStructureFont,
 				this.getFieldEditorParent());
 		
 		this.addField(this.csLabelFont);

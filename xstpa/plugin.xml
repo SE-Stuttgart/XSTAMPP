@@ -55,7 +55,7 @@
       <page
             class="settings.PreferencePageSettings"
             id="xstpa.preferencePage"
-            name="PreferencePage">
+            name="XSTPA Preferences">
       </page>
    </extension>
 

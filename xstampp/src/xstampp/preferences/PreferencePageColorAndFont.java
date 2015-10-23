@@ -19,6 +19,7 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FontFieldEditor;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -39,6 +40,10 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 
 	private BooleanFieldEditor useNavigationColor;
 
+	private RadioGroupFieldEditor extensionSortChooser;
+
+	private RadioGroupFieldEditor nameSortChooser;
+
 	/**
 	 * Constructor using grid layout.
 	 */
@@ -57,20 +62,27 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 		this.useNavigationColor=new BooleanFieldEditor(IPreferenceConstants.USE_NAVIGATION_COLORS,
 				"Highlight selected step items?", this.getFieldEditorParent());
 		this.addField(this.useNavigationColor);
+		
 		this.navigationSelectedColor = new ColorFieldEditor(
 				IPreferenceConstants.NAVIGATION_ITEM_SELECTED,
 				Messages.SelectedNavItem, this.getFieldEditorParent());
 		this.addField(this.navigationSelectedColor);
 		
-
+		this.extensionSortChooser = new RadioGroupFieldEditor(IPreferenceConstants.NAVIGATION_EXTENSION_SORT,
+															"Sort the Navigation by file extension", 3, new String[][]{
+																{"a to z","1"},{"z to a","-1"},{"not sorted","0"}
+																}, this.getFieldEditorParent(), true);
+		this.addField(this.extensionSortChooser);
+		
+		this.nameSortChooser = new RadioGroupFieldEditor(IPreferenceConstants.NAVIGATION_NAME_SORT,
+				"Sort the Navigation by file name", 3, new String[][]{
+					{"a to z","1"},{"z to a","-1"},{"not sorted","0"}
+					}, this.getFieldEditorParent(), true);
+		this.addField(this.nameSortChooser);
+		
 		// Fonts
-		this.navigationTitel = new FontFieldEditor(
-				IPreferenceConstants.NAVIGATION_TITLE_FONT, Messages.TitleFont,
-				this.getFieldEditorParent());
-		this.addField(this.navigationTitel);
-
 		this.defaultFont = new FontFieldEditor(
-				IPreferenceConstants.DEFAULT_FONT, Messages.DefaultFont,
+				IPreferenceConstants.DEFAULT_FONT, Messages.DefaultNavigationFont,
 				this.getFieldEditorParent());
 		this.addField(this.defaultFont);
 	}
@@ -83,17 +95,18 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage
 	@Override
 	protected void performDefaults() {
 		this.navigationSelectedColor.loadDefault();
-		this.navigationTitel.loadDefault();
 		this.defaultFont.loadDefault();
+		this.extensionSortChooser.loadDefault();
+		this.nameSortChooser.loadDefault();
 
 	}
 
 	@Override
 	public boolean performOk() {
 		this.navigationSelectedColor.store();
-		this.navigationTitel.store();
 		this.defaultFont.store();
-
+		this.extensionSortChooser.store();
+		this.nameSortChooser.store();
 		return super.performOk();
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 ASTPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+# * Copyright (c) 2013 ASTPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac Jarkko, Heidenwag, Benedikt Markt, Jaqueline Patzek Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksey Babkovic, Aleksander
  * Zotov).
@@ -16,6 +16,7 @@ package xstampp.ui.common;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -35,14 +36,19 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
+import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.navigation.ProjectExplorer;
 import xstampp.util.AbstractLoadJob;
 import xstampp.util.STPAPluginUtils;
@@ -62,7 +68,7 @@ import xstampp.util.STPAPluginUtils;
  * @author Lukas Balzer
  * 
  */
-public class ProjectManager {
+public class ProjectManager implements IPropertyChangeListener {
 
 	/**
 	 * The log4j logger
@@ -83,7 +89,8 @@ public class ProjectManager {
 	private Map<UUID, File> projectSaveFilesToUUID;
 	private Map<UUID, String> extensionsToUUID;
 	private Map<String, IConfigurationElement> elementsToExtensions;
-	
+	private final IPreferenceStore store = Activator.getDefault()
+			.getPreferenceStore();
 
 	/**
 	 * when the plugin dependent load job is done, this change adapter promts out all error messages
@@ -165,6 +172,7 @@ public class ProjectManager {
 		this.extensionsToUUID = new HashMap<>();
 		this.projectDataToUUID = new HashMap<>();
 		this.projectSaveFilesToUUID = new HashMap<>();
+		this.store.addPropertyChangeListener(this);
 	}
 	
 	/**
@@ -622,13 +630,21 @@ public class ProjectManager {
 	public ArrayList<UUID> getProjectKeys() {
 		Set<UUID> keys = this.projectDataToUUID.keySet();
 		ArrayList<UUID> tmp= new ArrayList<>(keys);
-		tmp.sort(new Comparator<UUID>() {
+		Collections.sort(tmp,new Comparator<UUID>() {
 
 			@Override
 			public int compare(UUID arg0, UUID arg1) {
+				int extSortPref = store.getInt(IPreferenceConstants.NAVIGATION_EXTENSION_SORT);
+				int nameSortPref =	store.getInt(IPreferenceConstants.NAVIGATION_NAME_SORT);
 				String a = getTitle(arg0);
 				String b = getTitle(arg1);
-				return a.compareTo(b);
+				String extA = getProjectExtension(arg0);
+				String extB = getProjectExtension(arg1);
+				int extCompare =extSortPref * extA.compareTo(extB);
+				if(extCompare == 0){
+					return nameSortPref * a.compareTo(b);
+				}
+				return extCompare;
 			}
 			
 		});
@@ -735,6 +751,13 @@ public class ProjectManager {
 	 */
 	public static Logger getLOGGER() {
 		return ProjectManager.LOGGER;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if(event.getProperty().contains("navigation")){
+			updateProjectTree();
+		}
 	}
 
 }

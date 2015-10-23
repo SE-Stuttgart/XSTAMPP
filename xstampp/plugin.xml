@@ -376,6 +376,14 @@
                   value="TRUE">
             </parameter>
          </command>
+         <command
+               commandId="org.eclipse.ui.window.preferences"
+               style="push">
+            <parameter
+                  name="preferencePageId"
+                  value="astpa.preferencePageColors">
+            </parameter>
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -843,7 +851,7 @@
    <page
          class="xstampp.preferences.PreferencePageColorAndFont"
          id="astpa.preferencePageColors"
-         name="Colors and Fonts">
+         name="Project Explorer">
    </page>
    <page
          class="xstampp.preferences.PreferencePageExport"

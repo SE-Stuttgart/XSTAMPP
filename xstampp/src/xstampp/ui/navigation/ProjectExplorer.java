@@ -17,6 +17,9 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -29,6 +32,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +50,9 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import xstampp.Activator;
 import xstampp.model.ObserverValue;
+import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
@@ -71,6 +78,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private static final String MENU_ID = "openWith.menu";
 	private static final String EXTENSION = "extension";
 	private static final String PATH_SEPERATOR="->";
+	private static final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 	private Map<UUID, TreeItem> treeItemsToProjectIDs;
 	private Map<TreeItem, String> selectionIdsToTreeItems;
 	private Map<TreeItem, IConfigurationElement> perspectiveElementsToTreeItems;
@@ -83,6 +91,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private TreeViewer treeViewer;
 	private MenuManager contextMenu;
 	private IMenuManager openWithMenu;
+	private FontData defaultFontData;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -207,6 +216,10 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 							+ ProjectManager.getContainerInstance().getTitle(projectID);
 		final TreeItem projectItem = new TreeItem(this.tree, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
+		defaultFontData = PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
+		if(defaultFontData != null){
+			projectItem.setFont(new Font(null, defaultFontData));
+		}
 		IProjectSelection selector = new ProjectSelector(projectItem, projectID);
 		this.addOrReplaceItem(selectionId, selector, projectItem);
 		projectItem.addListener(SWT.MouseDown, this.listener);
@@ -234,6 +247,9 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		String navigationPath=pathName + PATH_SEPERATOR + element.getAttribute("name");
 		TreeItem subItem = new TreeItem(projectItem, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
+		if(defaultFontData != null){
+			subItem.setFont(new Font(null, defaultFontData));
+		}
 		subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
 		subItem.addListener(SWT.SELECTED, this.listener);
 		this.addImage(subItem, element.getAttribute("icon"), pluginID);//$NON-NLS-1$

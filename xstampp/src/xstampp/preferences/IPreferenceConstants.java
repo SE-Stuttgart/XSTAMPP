@@ -38,6 +38,19 @@ public interface IPreferenceConstants {
 	String NAVIGATION_ITEM_UNSELECTED = "navigationItemUnselectedColor"; //$NON-NLS-1$
 
 	/**
+	 * Constant for sorting the navigation depending on the project extension 1 for alphabetical order
+	 * -1 for counter alphabetical and 0 for no sorting.
+	 */
+	String NAVIGATION_EXTENSION_SORT = "navigationExtensionSort"; //$NON-NLS-1$
+	
+
+	/**
+	 * Constant for sorting the navigation depending on the project name 1 for alphabetical order
+	 * -1 for counter alphabetical and 0 for no sorting.
+	 */
+	String NAVIGATION_NAME_SORT = "navigationNameSort"; //$NON-NLS-1$
+	
+	/**
 	 * Constant for the hover item color.
 	 */
 	String HOVER_ITEM = "hoverItemColor"; //$NON-NLS-1$
@@ -76,7 +89,7 @@ public interface IPreferenceConstants {
 	/**
 	 * Constant for the default font.
 	 */
-	String DEFAULT_FONT = "defaultFont"; //$NON-NLS-1$
+	String DEFAULT_FONT = "navigationdefaultFont"; //$NON-NLS-1$
 
 	/**
 	 * Constant for the company name.
