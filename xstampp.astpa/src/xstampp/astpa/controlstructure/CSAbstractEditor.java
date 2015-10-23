@@ -754,8 +754,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			@Override
 			public void mouseMove(MouseEvent mouseEvent, EditPartViewer viewer) {
 			
-				CSAbstractEditor.this.mousePosition = new Point(mouseEvent.x,mouseEvent.y);
-				CSAbstractEditor.this.positionLabel.setText(mouseEvent.x + " x " + mouseEvent.y);
+				org.eclipse.draw2d.geometry.Point point = new org.eclipse.draw2d.geometry.Point(mouseEvent.x,mouseEvent.y);
+//				getZoomManager().getViewport().translateFromParent(point);
+				CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
+				root.getFigure().translateToRelative(point);
+				CSAbstractEditor.this.mousePosition = new Point(point.x, point.y);
+				CSAbstractEditor.this.positionLabel.setText(CSAbstractEditor.this.mousePosition.x 
+															+ " x " + CSAbstractEditor.this.mousePosition.y);
 				super.mouseMove(mouseEvent, viewer);
 			}
 		};
@@ -1264,7 +1269,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		}
 		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
 		if(parentPart != null){
-			parentPart.getFigure().translateToRelative(p);
+			parentPart.getFigure().translateFromParent(p);
 			this.copySelectionCommand.setPosition(p);
 		}else{
 			return false;
@@ -1278,7 +1283,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		}
 		CSAbstractEditPart part = (CSAbstractEditPart)this.graphicalViewer.getContents();
 		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
-		part.getFigure().translateToRelative(p);
+		part.getFigure().translateToAbsolute(p);
 		IControlStructureFigure figure =  (IControlStructureFigure) part.getFigure().findFigureAt(p);
 		figure.translateToRelative(p);
 		this.copySelectionCommand.setPastePosition(figure.getId(),p.x,p.y);

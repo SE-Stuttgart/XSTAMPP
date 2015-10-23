@@ -25,6 +25,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.w3c.dom.svg.GetSVGDocument;
 
 import xstampp.astpa.controlstructure.controller.editparts.ActuatorEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
@@ -181,18 +182,32 @@ public class CSEditPartFactory implements EditPartFactory {
 		return tempParts;
 	}
 	private CSConnectionEditPart getConnectionFrom(IConnection model) {
-
+		
 		CSAbstractEditPart source = (CSAbstractEditPart) this.editPartMap.get((model).getSourceAnchor()
 				.getOwnerId());
 		
 		CSAbstractEditPart target = (CSAbstractEditPart)this.editPartMap.get((model).getTargetAnchor()
 				.getOwnerId());
-
-		IFigure sourceFigure =	source.getFigure();
-		IFigure targetFigure = 	target.getFigure();
-
+		
 		IAnchor sourceModel = model.getSourceAnchor();
 		IAnchor targetModel = model.getTargetAnchor();
+		
+		if(source== null){
+			sourceModel.setIsFlying(true);
+			source = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
+		}
+		IFigure sourceFigure =	source.getFigure();
+
+		if(target == null){
+			targetModel.setIsFlying(true);
+			target = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
+		}
+		
+		
+		IFigure targetFigure =	target.getFigure();
+		
+
+		
 
 		IAnchorFigure sourceAnchor;
 		IAnchorFigure targetAnchor;

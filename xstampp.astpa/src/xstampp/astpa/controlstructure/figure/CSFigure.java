@@ -117,11 +117,15 @@ public abstract class CSFigure extends Figure implements
 					this.textLabel);
 			this.setConstraint(this.textLabel, new Rectangle((int) newPos,
 					rect.y, rect.width, rect.height));
-			double scale =Math.min(1, graphics.getAbsoluteScale());
+			double scale = graphics.getAbsoluteScale();
 			double zoom = graphics.getAbsoluteScale();
-			graphics.scale(scale);
-			graphics.drawImage(this.image, 1, 1);
-			graphics.scale(zoom);
+			if(scale > 1){
+				graphics.scale(1/scale);
+				graphics.drawImage(this.image, 1, 1);
+				graphics.scale(zoom);
+			}else{
+				graphics.drawImage(this.image, 1, 1);
+			}
 		}
 		super.paintChildren(graphics);
 	}

@@ -112,14 +112,8 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	
 	@Override
 	public void refresh() {
-		if (this.dataModel.getConnection(((CSConnection) this.getModel())
-				.getId()) == null) {
-			this.deactivate();
-			this.getViewer().getEditPartRegistry().remove(this);
-		} else {
-			
-			super.refresh();
-		}
+		
+		super.refresh();
 		this.refreshChildren();
 		this.getViewer().getControl().redraw();
 		
