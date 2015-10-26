@@ -229,10 +229,6 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		this.csvCheckbox.setSelection(true);
 		this.csvCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 		
-		this.reportCheckbox = new Button(exportScope, SWT.CHECK);
-		this.reportCheckbox.setText("final PDF Report");
-		this.reportCheckbox.setSelection(true);
-		this.reportCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 		
 		
 		setPageComplete(checkFinish());
@@ -240,6 +236,27 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		// Required to avoid an error in the system
 		this.setControl(this.container);
 
+	}
+
+	/**
+	 * @return the value of the Pdf Checkbox
+	 */
+	public Button getPdfCheckbox() {
+		return pdfCheckbox;
+	}
+	
+	/**
+	 * @return the value of the Img Checkbox
+	 */
+	public Button getImgCheckbox() {
+		return imgCheckbox;
+	}
+
+	/**
+	 * @return the value of the csv Checkbox
+	 */
+	public Button getCsvCheckbox() {
+		return csvCheckbox;
 	}
 
 	/**

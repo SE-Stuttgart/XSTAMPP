@@ -1862,7 +1862,7 @@ public class View extends ViewPart implements Observer {
 	    	  exportContent.setTableHeaders(refinedSafetyContent.get(0).getPmVariables());
 	    	  // Stores the Export Content in a static Variable, so that it can be accessed even when the View is closed.
 	    	  ProjectManager.getContainerInstance().addProjectAdditionForUUID(projectId, exportContent);
-	  	      ExportJob exportjob = new ExportJob("xstpa",Platform.getInstanceLocation().getURL().getPath()+"xstpa-tables.pdf", "/src/export/fopXstpa.xsl", false, exportContent);
+	  	      ExportJob exportjob = new ExportJob("xstpa",Platform.getInstanceLocation().getURL().getPath()+"xstpa-tables.pdf", "/src/export/fopXstpa.xsl", exportContent);
 	  	      exportjob.schedule();
 	      }
 	    });
@@ -3106,24 +3106,24 @@ public class View extends ViewPart implements Observer {
 	    			  }
 	    			  for (int j=0; j<tempCAE2.getContextTableCombinations().size(); j++) {
 		  	    		  
-		  	   			  if (tempCAE2.getContextTableCombinations().get(j).getHazardous()) {
+//		  	   			  if (tempCAE2.getContextTableCombinations().get(j).getHazardous()) {
 		  	   				  ProcessModelVariables temp = new ProcessModelVariables();
 		  	   				  temp = tempCAE2.getContextTableCombinations().get(j);
 		  	   				  //temp.setIsInRSRTable(true);
 	  	    				  List<String> tempPmValList = new ArrayList<String>();
-//	  	    				  List<String> tempPmVarList = new ArrayList<String>();
+	  	    				  List<String> tempPmVarList = new ArrayList<String>();
 		  	    			  for (int z=0;z<tempCAE2.getLinkedItems().size();z++) {
 		  	    				  
 		  	    				  tempPmValList.add(tempCAE2.getLinkedItems().get(z).getName() + "="
 		  	    						  + tempCAE2.getContextTableCombinations().get(j).getValues().get(z));
-//		  	    				  tempPmVarList.add(dependencies.get(i).getLinkedItems().get(z).getName());
-//		  	    				  temp.setPmVariables(tempPmVarList);
+		  	    				  tempPmVarList.add(tempCAE2.getLinkedItems().get(z).getName());
+		  	    				  temp.setPmVariables(tempPmVarList);
 		  	    				  
 		  	    				  
 		  	    			  }
 		  	    			  temp.setPmValues(tempPmValList);
 
-		  	    		  }
+//		  	    		  }
 	    			  }
 	    		  
 	    		  
@@ -3163,24 +3163,24 @@ public class View extends ViewPart implements Observer {
 	    			  }
 	    			  for (int j=0; j<tempCAE.getContextTableCombinations().size(); j++) {
 		  	    		  
-		  	   			  if (tempCAE.getContextTableCombinations().get(j).getHAnytime()) {
+//		  	   			  if (tempCAE.getContextTableCombinations().get(j).getHAnytime()) {
 		  	   				  ProcessModelVariables temp = new ProcessModelVariables();
 		  	   				  temp = tempCAE.getContextTableCombinations().get(j);
 		  	   				  //temp.setIsInRSRTable(true);
 	  	    				  List<String> tempPmValList = new ArrayList<String>();
-//	  	    				  List<String> tempPmVarList = new ArrayList<String>();
+	  	    				  List<String> tempPmVarList = new ArrayList<String>();
 		  	    			  for (int z=0;z<tempCAE.getLinkedItems().size();z++) {
 		  	    				  
 		  	    				  tempPmValList.add(tempCAE.getLinkedItems().get(z).getName() + "="
 		  	    						  + tempCAE.getContextTableCombinations().get(j).getValues().get(z));
-//		  	    				  tempPmVarList.add(dependencies.get(i).getLinkedItems().get(z).getName());
-//		  	    				  temp.setPmVariables(tempPmVarList);
+		  	    				  tempPmVarList.add(tempCAE.getLinkedItems().get(z).getName());
+		  	    				  temp.setPmVariables(tempPmVarList);
 		  	    				  
 		  	    				  
 		  	    			  }
 		  	    			  temp.setPmValues(tempPmValList);
 
-		  	    		  }
+//		  	    		  }
 	    			  }
 	    		  
 				  

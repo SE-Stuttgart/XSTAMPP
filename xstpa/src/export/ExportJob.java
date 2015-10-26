@@ -83,10 +83,9 @@ public class ExportJob extends Job {
 	 *            colored borders and image labels
 	 */
 	public ExportJob(String name, String filePath, String xslName,
-			boolean asOne, ExportContent exportContent) {
+			ExportContent exportContent) {
 		super(name);
-		
-		
+
 		this.filePath = filePath;
 		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);;
 		this.xslName = xslName;
