@@ -58,7 +58,7 @@ public class ExportJob extends Job {
 	private ByteArrayOutputStream outStream;
 	private final String fileType;
 	private final String xslName;
-
+	private ExportContent exportContent;
 
 	private float textSize,titleSize,tableHeadSize;
 
@@ -83,14 +83,14 @@ public class ExportJob extends Job {
 	 *            colored borders and image labels
 	 */
 	public ExportJob(String name, String filePath, String xslName,
-			boolean asOne) {
+			boolean asOne, ExportContent exportContent) {
 		super(name);
 		
 		
 		this.filePath = filePath;
 		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);;
 		this.xslName = xslName;
-		
+		this.exportContent = exportContent;
 		this.tableHeadSize = 14;
 		this.titleSize = 24;
 		this.textSize = 12;
@@ -114,7 +114,7 @@ public class ExportJob extends Job {
 				Marshaller m = context.createMarshaller();
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 				
-				m.marshal(View.exportContent, this.outStream);
+				m.marshal(exportContent, this.outStream);
 				
 			} catch (JAXBException e) {
 				ExportJob.LOGGER.error(e.getMessage(), e);

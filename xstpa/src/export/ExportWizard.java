@@ -3,7 +3,6 @@ package export;
 import java.io.File;
 
 import org.eclipse.core.runtime.Platform;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -15,10 +14,10 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.util.jobs.Run;
 import xstampp.astpa.wizards.AbstractExportWizard;
-
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
+import xstpa.View;
 
 public class ExportWizard extends AbstractExportWizard {
 
@@ -61,12 +60,15 @@ public class ExportWizard extends AbstractExportWizard {
 				}
 			}
 		}
-		Run runjob= new Run(this.page.getProjectName(), outputDir + File.separator,this.page.getProjectID());
-		runjob.exportPDFs(this.page.pdfCheckbox.getSelection());
-		runjob.exportCSVs(this.page.csvCheckbox.getSelection());
-		runjob.exportImages(this.page.imgCheckbox.getSelection());
-		runjob.exportReport(this.page.reportCheckbox.getSelection());
-		runjob.schedule();
+//		Run runjob= new Run(this.page.getProjectName(), outputDir + File.separator,this.page.getProjectID());
+//		runjob.exportPDFs(this.page.pdfCheckbox.getSelection());
+//		runjob.exportCSVs(this.page.csvCheckbox.getSelection());
+//		runjob.exportImages(this.page.imgCheckbox.getSelection());
+//		runjob.exportReport(this.page.reportCheckbox.getSelection());
+//		runjob.schedule();
+		ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + "xstpa-tables.pdf", "/src/export/fopXstpa.xsl",
+				false, (ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+	    exportjob.schedule();
 		return true;
 	}
 

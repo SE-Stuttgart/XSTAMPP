@@ -84,10 +84,10 @@
            <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks whether some Combinations are defined -->
-					<xsl:when test="providedca/controlactions/contexttablecombinations/contexttablecombination/isInRSRTable = 'true' or 
-					notprovidedca/controlactions/contexttablecombinations/contexttablecombination/isInRSRTable = 'true'">
-						<xsl:for-each select="providedca/controlactions/contexttablecombinations/contexttablecombination[isInRSRTable = 'true'] |
-						 notprovidedca/controlactions/contexttablecombinations/contexttablecombination[isInRSRTable = 'true']">
+					<xsl:when test="providedca/controlactions/contexttablecombinations/contexttablecombination/hAnytime = 'true' or 
+					notprovidedca/controlactions/contexttablecombinations/contexttablecombination/hazardous = 'true'">
+						<xsl:for-each select="providedca/controlactions/contexttablecombinations/contexttablecombination[hAnytime = 'true'] |
+						 notprovidedca/controlactions/contexttablecombinations/contexttablecombination[hazardous = 'true']">
 							
 								<fo:table-row border="none">
 								

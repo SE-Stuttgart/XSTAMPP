@@ -13,10 +13,12 @@
 
 package export;
 
+import java.io.File;
 import java.util.UUID;
 
 import messages.Messages;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -24,6 +26,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -32,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.util.jobs.Run;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
@@ -54,6 +59,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	private Button decoSwitch;
 	private PathComposite logoComposite;
 	private int pathConstant;
+	private Button pdfCheckbox,imgCheckbox,csvCheckbox,reportCheckbox;
 
 	/**
 	 * Constructor.
@@ -196,6 +202,40 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data.height = AbstractWizardPage.DEMOCANVAS_HEIGHT;
 		data.width = parent.getBounds().width;
 		this.sampleComp.setLayoutData(data);
+		
+
+		data = new FormData();
+		data.top = new FormAttachment(this.sampleComp);
+		data.bottom = new FormAttachment(100);
+		data.left = new FormAttachment(0);
+		data.right = new FormAttachment(100);
+		
+		Composite exportScope = new Composite(this.container, SWT.NONE);
+		exportScope.setLayoutData(data);
+		
+		exportScope.setLayout(new GridLayout(4,true));
+		this.pdfCheckbox = new Button(exportScope, SWT.CHECK);
+		this.pdfCheckbox.setText(Run.PDF_DIR);
+		this.pdfCheckbox.setSelection(true);
+		this.pdfCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+		
+		this.imgCheckbox= new Button(exportScope, SWT.CHECK);
+		this.imgCheckbox.setText(Run.IMAGE_DIR);
+		this.imgCheckbox.setSelection(true);
+		this.imgCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+
+		this.csvCheckbox = new Button(exportScope, SWT.CHECK);
+		this.csvCheckbox.setText(Run.CSV_DIR);
+		this.csvCheckbox.setSelection(true);
+		this.csvCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+		
+		this.reportCheckbox = new Button(exportScope, SWT.CHECK);
+		this.reportCheckbox.setText("final PDF Report");
+		this.reportCheckbox.setSelection(true);
+		this.reportCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+		
+		
+		setPageComplete(checkFinish());
 
 		// Required to avoid an error in the system
 		this.setControl(this.container);

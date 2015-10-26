@@ -36,18 +36,18 @@
 					</fo:block>
 					
 					<!-- ################### Context Table Provided ################### -->
-					<fo:block>
-						<fo:block space-after="5pt" page-break-after="avoid">
-						   <xsl:attribute name="font-size"><xsl:value-of select="$title.size" />pt</xsl:attribute>
-	                     Refined Safety Requirements
-	                  	</fo:block>
-	                  	<xsl:call-template name="contextTableProvided">
-	            	        <xsl:with-param name="varSize" select="$text.size" />
-	                        <xsl:with-param name="headSize" select="$table.head.size" />
-	                        <xsl:with-param name="omitHeader" select="$header.omit" />
-	                	</xsl:call-template>
+<!-- 					<fo:block> -->
+<!-- 						<fo:block space-after="5pt" page-break-after="avoid"> -->
+<!-- 						   <xsl:attribute name="font-size"><xsl:value-of select="$title.size" />pt</xsl:attribute> -->
+<!-- 	                     Refined Safety Requirements -->
+<!-- 	                  	</fo:block> -->
+<!-- 	                  	<xsl:call-template name="contextTableProvided"> -->
+<!-- 	            	        <xsl:with-param name="varSize" select="$text.size" /> -->
+<!-- 	                        <xsl:with-param name="headSize" select="$table.head.size" /> -->
+<!-- 	                        <xsl:with-param name="omitHeader" select="$header.omit" /> -->
+<!-- 	                	</xsl:call-template> -->
                         
-					</fo:block>
+<!-- 					</fo:block> -->
         
         
 					
