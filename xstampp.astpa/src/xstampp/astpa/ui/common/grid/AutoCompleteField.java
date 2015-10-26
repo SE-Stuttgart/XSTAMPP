@@ -31,6 +31,7 @@ public class AutoCompleteField {
 
 	private ContentProposalProvider contentProposalProvider;
 	private LinkingCommandAdapter contentProposalAdapter;
+	private static LinkingShell shell = new LinkingShell();
 
 	/**
 	 * 
@@ -67,7 +68,8 @@ public class AutoCompleteField {
 
 					}
 				});
-
+		shell.setNextProposal(control, literals, labels, descriptions);
+		
 	}
 
 	/**
@@ -125,6 +127,7 @@ public class AutoCompleteField {
 		mouseLoc.y = (relativeMouse.y + cellPosition.y) - topOffset;
 
 		this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
+		shell.setMousePosition(mouseLoc);
 	}
 
 	/**
@@ -147,6 +150,9 @@ public class AutoCompleteField {
 		this.contentProposalAdapter.openProposalPopup();
 	}
 
+	public void openShell(){
+		this.shell.createControl();
+	}
 	/**
 	 * Closes the proposal popup immediately
 	 * 
@@ -156,5 +162,9 @@ public class AutoCompleteField {
 	public void closePopup() {
 		this.contentProposalAdapter.closeProposalPopup();
 	}
-
+	
+	
+	public void setProposalListener(IContentProposalListener listener){
+		shell.setProposalListener(listener);
+	}
 }

@@ -233,6 +233,10 @@ public class editRelatedHazardsWizard {
     public void open(View view)
     {
     	this.view = view;
+    	if(shell.isDisposed()){
+    		initialized = false;
+    		initializeUCA();
+    	}
         shell.open();     
     }
 

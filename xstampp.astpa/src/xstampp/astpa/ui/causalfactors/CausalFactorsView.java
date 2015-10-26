@@ -214,7 +214,7 @@ public class CausalFactorsView extends StandartEditorPart{
 					new TextContentAdapter(), literals.toArray(new String[0]),
 					labels.toArray(new String[0]),
 					description.toArray(new String[0]));
-			scLinking.getContentProposalAdapter().addContentProposalListener(
+			scLinking.setProposalListener(
 					new IContentProposalListener() {
 
 						@Override
@@ -229,7 +229,7 @@ public class CausalFactorsView extends StandartEditorPart{
 					});
 
 			scLinking.setPopupPosition(relativeMouse, cellBounds, 0);
-			scLinking.openPopup();
+			scLinking.openShell();
 
 		}
 
