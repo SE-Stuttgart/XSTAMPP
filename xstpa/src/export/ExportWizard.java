@@ -23,6 +23,7 @@ public class ExportWizard extends AbstractExportWizard {
 
 	private final static String OUTPUT ="Output"; //$NON-NLS-1$
 	private RunPage page;
+	
 
 	public ExportWizard() {
 		super();
@@ -60,15 +61,22 @@ public class ExportWizard extends AbstractExportWizard {
 				}
 			}
 		}
-//		Run runjob= new Run(this.page.getProjectName(), outputDir + File.separator,this.page.getProjectID());
-//		runjob.exportPDFs(this.page.pdfCheckbox.getSelection());
-//		runjob.exportCSVs(this.page.csvCheckbox.getSelection());
-//		runjob.exportImages(this.page.imgCheckbox.getSelection());
-//		runjob.exportReport(this.page.reportCheckbox.getSelection());
-//		runjob.schedule();
-		ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + "xstpa-tables.pdf", "/src/export/fopXstpa.xsl",
-				false, (ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
-	    exportjob.schedule();
+
+		if (this.page.getPdfCheckbox().getSelection() == true) {
+			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.PDF_DIR + File.separator +"xstpa-tables.pdf", "/src/export/fopXstpa.xsl",
+					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+		    exportjob.schedule();
+		}
+		if (this.page.getCsvCheckbox().getSelection() == true) {
+			new CsvExport(outputDir + File.separator + Run.CSV_DIR+ File.separator, 
+					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+		}
+		if (this.page.getImgCheckbox().getSelection() == true) {
+			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.IMAGE_DIR+ File.separator +"xstpa-tables.png", "/src/export/fopXstpa.xsl",
+					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+		    exportjob.schedule();
+		}
+
 		return true;
 	}
 
@@ -78,6 +86,7 @@ public class ExportWizard extends AbstractExportWizard {
 		
 		public RunPage(String pageName, String projectName) {
 			super(pageName, projectName, PathComposite.DIR_DIALOG);
+			
 		}
 		
 		@Override

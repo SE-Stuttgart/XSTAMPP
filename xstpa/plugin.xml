@@ -62,8 +62,9 @@
          point="org.eclipse.ui.exportWizards">
       <wizard
             class="export.ExportWizard"
+            icon="icons/logo.png"
             id="export.wizard"
-            name="exportWizard">
+            name="XstpaExport">
       </wizard>
    </extension>
 
