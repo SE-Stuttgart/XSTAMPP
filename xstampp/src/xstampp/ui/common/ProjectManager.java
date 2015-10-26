@@ -86,6 +86,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheContentAt;
 
 	private Map<UUID, IDataModel> projectDataToUUID;
+	private Map<UUID, Object> projectAdditionsToUUID;
 	private Map<UUID, File> projectSaveFilesToUUID;
 	private Map<UUID, String> extensionsToUUID;
 	private Map<String, IConfigurationElement> elementsToExtensions;
@@ -758,6 +759,35 @@ public class ProjectManager implements IPropertyChangeListener {
 		if(event.getProperty().contains("navigation")){
 			updateProjectTree();
 		}
+	}
+
+	/**
+	 * return the stored addition for the project with the given id
+	 * @param id should be a valid project id
+	 * @return null if there is no addition stored for the project,
+	 * 			or the stored value as an Object, the class handling must be
+	 * 			preformed by callers
+	 * @author Lukas Balzer
+	 */
+	public Object getProjectAdditionsFromUUID(UUID id) {
+		if(this.projectAdditionsToUUID == null){
+			return null;
+		}
+		return this.projectAdditionsToUUID.get(id);
+	}
+
+	/**
+	 * 
+	 * @param id a uuid 
+	 * @param addition a class which should be stored for this runtime in addition to the
+	 * 					project dataModel
+	 * @author Lukas Balzer
+	 */
+	public void addProjectAdditionForUUID(UUID id, Object addition){
+		if(this.projectAdditionsToUUID == null){
+			this.projectAdditionsToUUID = new HashMap<>();
+		}
+		this.projectAdditionsToUUID.put(id, addition);
 	}
 
 }
