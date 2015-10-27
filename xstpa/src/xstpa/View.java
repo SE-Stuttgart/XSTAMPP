@@ -18,15 +18,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
-import javax.swing.JOptionPane;
-
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.preference.IPreferencePage;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -35,9 +30,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.MenuAdapter;
-import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -73,12 +65,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import settings.PreferenceInitializer;
-import settings.PreferencePageSettings;
-import export.ExportContent;
-import export.ExportJob;
-import export.ExportWizard;
-import export.PdfExportPage;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
@@ -86,13 +72,15 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
+import export.ExportContent;
+import export.ExportJob;
+import export.ExportWizard;
+import export.PdfExportPage;
 
 public class View extends ViewPart implements Observer {
 	public static final String ID = "xstpa.view";
@@ -1180,7 +1168,7 @@ public class View extends ViewPart implements Observer {
 	    contextCompositeInner.setLayoutData( fData ); 
 	    
 	    Composite contextCompositeOptions = new Composite(contextCompositeInnerRight, SWT.CENTER);
-	    contextCompositeOptions.setLayout(new GridLayout(1, false));
+	    contextCompositeOptions.setLayout(new FormLayout());
 	    
 	    // set the formdata for the right part (options) of the context composite
 	    fData = new FormData();
@@ -1211,8 +1199,11 @@ public class View extends ViewPart implements Observer {
 	    filterCombo.add("Show Hazardous");
 	    filterCombo.add("Show Not Hazardous");
 	    filterCombo.select(0);	    
-	    data = new GridData(120, 80);
-	    filterCombo.setLayoutData(data);
+	    fData = new FormData();
+	    fData.top = new FormAttachment( 0 );
+	    fData.left = new FormAttachment( 0 );
+	    fData.right = new FormAttachment (100);
+	    filterCombo.setLayoutData(fData);
 	    
 		contextRightViewer = new TableViewer(contextCompositeInner, SWT.FULL_SELECTION );
 		contextRightViewer.setContentProvider(new MainViewContentProvider());
@@ -1221,9 +1212,13 @@ public class View extends ViewPart implements Observer {
 		// Add a Composite to edit all Tables
 	    Composite editTableComposite = new Composite( contextCompositeOptions, SWT.NONE);
 	    editTableComposite.setLayout( new GridLayout(1, false) );
-	    data = new GridData(SWT.LEFT, SWT.TOP, false, true); 
-	    data.verticalIndent = 5;	    
-	    editTableComposite.setLayoutData(data);
+
+	    fData = new FormData();
+	    fData.top = new FormAttachment(filterCombo);
+	    fData.left = new FormAttachment( 0 );
+	    fData.right = new FormAttachment (100);
+	    fData.bottom = new FormAttachment( 100 );   
+	    editTableComposite.setLayoutData(fData);
 	    
 	    // Add a Label which displays if there are any Error Messages
 	    final Label errorLabel = new Label(contextCompositeErrorLabel, SWT.NULL);
@@ -1332,7 +1327,6 @@ public class View extends ViewPart implements Observer {
 	    dependencyTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    
 
-	    
 	    dependencyTopTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    dependencyBottomTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    contextTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -1419,12 +1413,12 @@ public class View extends ViewPart implements Observer {
 	    	public void widgetSelected(SelectionEvent event) {
 		    	  
 		    	  if (getLinkedCAE() == null) {
-		    		  JOptionPane.showMessageDialog(null, "Please Select a Control Action to generate the Table!");
+		    		  MessageDialog.openInformation(null,"Select a Control Action", "Please Select a Control Action to generate the Table!");
 		    	  }
 		    	  else {
 
-		    		  if (JOptionPane.showConfirmDialog(null,"Are you sure to generate a new Testset? The old Data will get lost",
-		    				  "Generate a new Testset", 0 ) == 0) {
+		    		  if (MessageDialog.openConfirm(null,"Generate a new Testset","Are you sure to generate a new Testset? "
+		    		  		+ "The old Data will get lost" )) {
 			    		  // If the Path for ACTS is not set, the PreferencePage opens
 			    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
 			    				  .equals(xstampp.Activator.getDefault().getPreferenceStore().getDefaultString(("ACTS_Path")))) {

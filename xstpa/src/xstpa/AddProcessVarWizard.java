@@ -1,11 +1,11 @@
 package xstpa;
 
-import java.awt.Checkbox;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-import javax.swing.JOptionPane;
 
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -85,7 +85,7 @@ public class AddProcessVarWizard {
 	    		
 	    		for (int i=0; i<textArray.length; i++) {
 	    			if (textArray[i].getText().isEmpty()) {	    				
-	    				JOptionPane.showMessageDialog(null,"Please Fill Out every Field!");
+	    				MessageDialog.openWarning(null,"Empty Fields","Please Fill Out every Field!");
 	    				return;
 	    			}
 	    			if (i == textArray.length-1) {
