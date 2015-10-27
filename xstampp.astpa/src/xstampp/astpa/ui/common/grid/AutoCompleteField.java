@@ -147,11 +147,16 @@ public class AutoCompleteField {
 	 * 
 	 */
 	public void openPopup() {
-		this.contentProposalAdapter.openProposalPopup();
+
+		if(System.getProperty("os.name").toLowerCase().contains("mac")){
+			shell.createControl();
+		}else{
+			this.contentProposalAdapter.openProposalPopup();
+		}
 	}
 
 	public void openShell(){
-		this.shell.createControl();
+		shell.createControl();
 	}
 	/**
 	 * Closes the proposal popup immediately

@@ -117,7 +117,8 @@ public class LinkingShell{
 						
 						@Override
 						public String getLabel() {
-							return LinkingShell.this.labels[proposalList.getSelectionIndex()];
+							return getContent() + " - " 
+									+LinkingShell.this.labels[proposalList.getSelectionIndex()];
 						}
 						
 						@Override

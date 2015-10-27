@@ -229,7 +229,7 @@ public class CausalFactorsView extends StandartEditorPart{
 					});
 
 			scLinking.setPopupPosition(relativeMouse, cellBounds, 0);
-			scLinking.openShell();
+			scLinking.openPopup();
 
 		}
 
