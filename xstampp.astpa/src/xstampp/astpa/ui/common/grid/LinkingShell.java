@@ -1,5 +1,6 @@
 package xstampp.astpa.ui.common.grid;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.swt.SWT;
@@ -57,6 +58,11 @@ public class LinkingShell{
 		if(this.shell != null && !this.shell.isDisposed()){
 			this.shell.close();
 		}
+
+		if(this.labels.length == 0){
+			MessageDialog.openError(null,"No entrys available", "There are no entrys available for linking!");
+			return;
+		}
 		this.shell = new Shell(SWT.NO_TRIM | SWT.CLOSE);
 		this.shell.setSize(600, 300);
 		this.shell.setLayout(new FillLayout());
@@ -77,6 +83,7 @@ public class LinkingShell{
 		data.top= new FormAttachment(5);
 		final List proposalList = new List(parent, SWT.SINGLE | SWT.H_SCROLL| SWT.WRAP);
 		proposalList.setItems(this.labels);
+		
 		proposalList.setLayoutData(data);
 		final Label description = new Label(parent, SWT.WRAP);
 		data = new FormData();
@@ -150,7 +157,7 @@ public class LinkingShell{
 					proposalList.notifyListeners(SWT.MouseDoubleClick, null);
 				}
 				if(e.keyCode == SWT.ESC){
-					shell.close();
+					LinkingShell.this.shell.close();
 				}
 				
 			}

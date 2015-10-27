@@ -13,6 +13,7 @@
 
 package xstampp.astpa.ui.common.grid;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -125,8 +126,9 @@ public class AutoCompleteField {
 		// and the Constant for the menubar
 		mouseLoc.x = relativeMouse.x + cellPosition.x;
 		mouseLoc.y = (relativeMouse.y + cellPosition.y) - topOffset;
-
-		this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
+		if(this.contentProposalAdapter != null && !this.contentProposalAdapter.getControl().isDisposed()){
+			this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
+		}
 		shell.setMousePosition(mouseLoc);
 	}
 
@@ -147,7 +149,6 @@ public class AutoCompleteField {
 	 * 
 	 */
 	public void openPopup() {
-
 		if(System.getProperty("os.name").toLowerCase().contains("mac")){
 			shell.createControl();
 		}else{
