@@ -13,6 +13,7 @@
 
 package xstampp.astpa.ui.common.grid;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -31,6 +32,7 @@ public class AutoCompleteField {
 
 	private ContentProposalProvider contentProposalProvider;
 	private LinkingCommandAdapter contentProposalAdapter;
+	private static LinkingShell shell = new LinkingShell();
 
 	/**
 	 * 
@@ -67,7 +69,8 @@ public class AutoCompleteField {
 
 					}
 				});
-
+		shell.setNextProposal(control, literals, labels, descriptions);
+		
 	}
 
 	/**
@@ -123,8 +126,10 @@ public class AutoCompleteField {
 		// and the Constant for the menubar
 		mouseLoc.x = relativeMouse.x + cellPosition.x;
 		mouseLoc.y = (relativeMouse.y + cellPosition.y) - topOffset;
-
-		this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
+		if(this.contentProposalAdapter != null && !this.contentProposalAdapter.getControl().isDisposed()){
+			this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
+		}
+		shell.setMousePosition(mouseLoc);
 	}
 
 	/**
@@ -144,9 +149,16 @@ public class AutoCompleteField {
 	 * 
 	 */
 	public void openPopup() {
-		this.contentProposalAdapter.openProposalPopup();
+		if(System.getProperty("os.name").toLowerCase().contains("mac")){
+			shell.createControl();
+		}else{
+			this.contentProposalAdapter.openProposalPopup();
+		}
 	}
 
+	public void openShell(){
+		shell.createControl();
+	}
 	/**
 	 * Closes the proposal popup immediately
 	 * 
@@ -156,5 +168,9 @@ public class AutoCompleteField {
 	public void closePopup() {
 		this.contentProposalAdapter.closeProposalPopup();
 	}
-
+	
+	
+	public void setProposalListener(IContentProposalListener listener){
+		shell.setProposalListener(listener);
+	}
 }

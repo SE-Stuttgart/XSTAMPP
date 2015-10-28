@@ -417,7 +417,9 @@ public class GridCellLinking<T extends ITableContentProvider> extends
 				new PopupListener());
 		this.linkField.setPopupPosition(relativeMouse, cellBounds,
 				cellBounds.height);
+		
 		if(this.grid.getGrid().getDisplay() != null){
+			this.linkField.setProposalListener(new PropopsalListener());
 			this.linkField.openPopup();
 		}else{
 			MessageDialog.openError(null, "Widget is disposed", "for some reason the Platform can't find a suficient display!");

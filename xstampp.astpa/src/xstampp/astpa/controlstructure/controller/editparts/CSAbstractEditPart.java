@@ -151,18 +151,11 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 			String stepID = (String) this.getViewer().getProperty(
 					IControlStructureEditor.STEP_EDITOR);
 
-			// increase the number of refreshes so the logic updates exactly
-//			for (int i = 0; i <= 2; i++) {
-
-				figureTemp.setLayout(modelTemp.getLayout(stepID
-						.equals(CSEditor.ID)));
-				figureTemp.setText(modelTemp.getText());
-//			}
-
 			this.refreshChildren();
 			
-			this.getViewer().getControl().redraw();
-			
+			figureTemp.setLayout(modelTemp.getLayout(stepID
+					.equals(CSEditor.ID)));
+			figureTemp.setText(modelTemp.getText());
 			
 			for (Object child : this.getChildren()) {
 				((IControlStructureEditPart) child).refresh();
