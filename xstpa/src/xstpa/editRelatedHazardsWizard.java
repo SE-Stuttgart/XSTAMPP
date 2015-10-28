@@ -192,9 +192,9 @@ public class editRelatedHazardsWizard {
 	    });
     	
     }
-    public void initializeUCA() {
+    public Boolean initializeUCA() {
     	if (initialized) {
-    		
+    		return true;
     	}
     	else {
             shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
@@ -223,8 +223,12 @@ public class editRelatedHazardsWizard {
     	    	for (String entry : entryToEdit.getUca().getDescriptions()) {
     	    		availableList.add(entry);
     	    	}
+    	    	if (availableList.getItemCount() == 0) {
+    	    		return false;
+    	    	}
     	    }
     	    initialized = true;
+    	    return true;
     	}
 
 

@@ -20,7 +20,7 @@ import xstampp.ui.editors.STPAEditorInput;
 
 class EntryCellModifier implements ICellModifier {
 	  private Viewer viewer;
-
+	  private View view;
 	  public EntryCellModifier(Viewer viewer) {
 	    this.viewer = viewer;
 	  }
@@ -157,6 +157,9 @@ class EntryCellModifier implements ICellModifier {
 		    	}
 	    	if (View.REFINED_SAFETY.equals(property)) {
 	    		entry.setRefinedSafetyRequirements((String) value);
+	    		//View.setRefinedSafetyCanBeStored(true);
+	    		view.storeRefinedSafety();
+	    		
 	    	}
 	    }
 
@@ -165,4 +168,12 @@ class EntryCellModifier implements ICellModifier {
 	    viewer.refresh();
 	    
 	  }
+
+	public View getView() {
+		return view;
+	}
+
+	public void setView(View view) {
+		this.view = view;
+	}
 	}

@@ -17,8 +17,14 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JOptionPane;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
@@ -27,10 +33,13 @@ import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.IColorProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
@@ -94,7 +103,7 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
 
-public class View extends ViewPart implements Observer {
+public class View extends ViewPart implements Observer{
 	public static final String ID = "xstpa.view";
 	
 	// Table column names/properties
@@ -279,19 +288,11 @@ public class View extends ViewPart implements Observer {
 	private int conflictCounter = 0;
 	
 	private Boolean controlActionProvided = true;
-	
-	private Boolean showAll = true;
-	
-	private Boolean showHazardous = false;
-	
-	private Boolean showNotHazardous = false;
 
 	private Boolean dependencyProvided = true;
 	
 	public static String[] contextProps;
-	
-	
-	
+
 	
 	/**
 	 * The content provider class is responsible for providing objects to the
@@ -579,7 +580,7 @@ public class View extends ViewPart implements Observer {
 			
 			switch (columnIndex) {
 			case 0:
-				return String.valueOf(refinedSafetyContent.indexOf(entry));
+				return "RSR" + String.valueOf(refinedSafetyContent.indexOf(entry)+1);
 			case 1:
 				return entry.getLinkedControlActionName();
 			case 2:
@@ -594,76 +595,47 @@ public class View extends ViewPart implements Observer {
 				
 			case 3:	
 				String temp ="";
-				String nameOfControlAction = null;
-				if (entry.getPmVariables().isEmpty()) {
-					List<String> vars = new ArrayList<String>();
-					for (int i = 0;i<contextRightTable.getColumnCount();i++){
-						vars.add(contextRightTable.getColumn(i).getText());
-					}
-					entry.setPmVariables(vars);
-				}
-				if (entry.getHAnytime()) {
-					for (int i=0; i<entry.getValues().size(); i++){
 				
-						temp = temp.concat(entry.getPmVariables().get(i));
-						temp = temp.concat("=");
-						temp = temp.concat(entry.getValues().get(i));
+//				if (entry.getPmVariables().isEmpty()) {
+//					List<String> vars = new ArrayList<String>();
+//					for (int i = 0;i<contextRightTable.getColumnCount();i++){
+//						vars.add(contextRightTable.getColumn(i).getText());
+//					}
+//					entry.setPmVariables(vars);
+//				}
+//				if (entry.getHAnytime()) {
+					for (int i=0; i<entry.getPmValues().size(); i++){
+				
+//						temp = temp.concat(entry.getPmVariables().get(i));
+//						temp = temp.concat("=");
+//						temp = temp.concat(entry.getValues().get(i));
+						temp = temp.concat(entry.getPmValues().get(i));
 
-						if (!(i==entry.getSizeOfValues()-1)) {
+						if (!(i==entry.getPmValues().size()-1)) {
 							temp = temp.concat(",");
 						}
-						else {
-							nameOfControlAction = entry.getLinkedControlActionName();
-						}
+
 					}
 
-				}
-				else {
-					for (int i=0; i<entry.getValues().size(); i++){
-
-						temp = temp.concat(entry.getPmVariables().get(i));
-						temp = temp.concat("=");
-						temp = temp.concat(entry.getValues().get(i));
-						
-						if (!(i==entry.getSizeOfValues()-1)) {
-							temp = temp.concat(",");
-						}
-						else {
-							nameOfControlAction = entry.getLinkedControlActionName();
-						}
-					}
-
-				}
+//				}
+//				else {
+//					for (int i=0; i<entry.getValues().size(); i++){
+//
+//						temp = temp.concat(entry.getPmVariables().get(i));
+//						temp = temp.concat("=");
+//						temp = temp.concat(entry.getValues().get(i));
+//						
+//						if (!(i==entry.getSizeOfValues()-1)) {
+//							temp = temp.concat(",");
+//						}
+//
+//					}
+//
+//				}
 				return temp;
 				
 			case 4:
-				//String temp2 ="";
-				//for (xstpa.Hazard rules : entry.getRelatedHazards().getLinkedItems()) {
-					//temp2 = temp2.concat("H - "+rules.getNumber()+", ");
-				//}
-				//return temp2;
-				// TODO UCAS
-//				String tempDescription = "";
-//				List<IUnsafeControlAction> unsafeCA;
-//				for (int j = 0; j<model.getAllControlActions().size();j++) {
-//					unsafeCA = model.getAllControlActions().get(j).getUnsafeControlActions();
-//					for (int i=0; i<unsafeCA.size();i++){
-//						
-//						if (entry.getLinkedControlActionName().equals(model.getAllControlActions().get(j).getTitle())) {
-//							if (!(i == unsafeCA.size()-1)) {
-//								tempDescription = tempDescription.concat(unsafeCA.get(i).getDescription()+", ");
-//							}
-//							else {
-//								tempDescription = tempDescription.concat(unsafeCA.get(i).getDescription());
-//								return tempDescription;
-//							}
-//							
-//								
-//						}
-//						
-//						
-//					}
-//				}
+
 				return "Click to see UCA's";
 
 			
@@ -690,6 +662,7 @@ public class View extends ViewPart implements Observer {
 						}
 					}
 				}
+				return "No Related Hazards";
 				
 				
 			case 6:
@@ -753,7 +726,7 @@ public class View extends ViewPart implements Observer {
 	
 			switch (columnIndex) {
 			case 0:
-				return String.valueOf(ltlContent.indexOf(entry));
+				return "RSR" + String.valueOf(ltlContent.indexOf(entry)+1);
 			case 1:
 				String temp = "G (";
 				String nameOfControlAction = null;
@@ -1733,6 +1706,7 @@ public class View extends ViewPart implements Observer {
   	    				  List<String> tempPmVarList = new ArrayList<String>();
 	  	    			  for (int z=0;z<dependencies.get(i).getLinkedItems().size();z++) {
 	  	    				  
+	  	    				  
 	  	    				  tempPmValList.add(dependencies.get(i).getLinkedItems().get(z).getName() + "="
 	  	    						  + dependencies.get(i).getContextTableCombinations().get(j).getValues().get(z));
 	  	    				  tempPmVarList.add(dependencies.get(i).getLinkedItems().get(z).getName());
@@ -1901,6 +1875,7 @@ public class View extends ViewPart implements Observer {
 	    					  }
 	    					  else {
 	    						  model.addCAProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
+	    						  break;
 	    					  }
 	    				  }
 		    			  
@@ -1919,6 +1894,7 @@ public class View extends ViewPart implements Observer {
 	    					  }
 	    					  else {
 	    						  model.addCANotProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
+	    						  break;
 	    					  }
 	    				  }
 
@@ -2349,9 +2325,46 @@ public class View extends ViewPart implements Observer {
 		  		    	  	if (refinedSafetyTableCellX == refinedSafetyTable.getColumnCount()-3) {
 		  		    	  		
 		  		    	  		editHazards = refinedSafetyContent.get(refinedSafetyTable.getSelectionIndex()).getEditWindow();
-		  		    	  		editHazards.initializeUCA();
-		  		    	  		editHazards.open(view);
+		  		    	  		if (editHazards.initializeUCA()) {
+		  		    	  			editHazards.open(view);
+		  		    	  			return;
+		  		    	  		}
+		  		    	  		else {
+		  		    	  			JOptionPane.showMessageDialog(null, "There are no Unsafe Control Actions defined for this Control Action!");
+		  		    	  			return;
+		  		    	  		}
 		  		    	  	}
+//		  		    	  	if (refinedSafetyTableCellX == refinedSafetyTable.getColumnCount()-1) {
+//		  		    	  		
+////		  		    	  		while (refinedSafetyCanBeStored == false) {
+////		  		    	  			try {
+////		  		    	  				
+////		  		    	  			this.wait(500);
+////		  		    	  		
+////		  		    	  			//Thread.sleep(1000);   
+////		  		    	  	
+//////		  		    	  			synchronized(this){
+//////		  		    	  				try{
+//////		  		    	                  
+//////		  		    	  					this.wait();
+//////		  		    	  				}
+//////		  		    	  				catch(InterruptedException e){
+//////		  		    	  					e.printStackTrace();
+//////		  		    	  				}
+//////		  		    	   
+//////		  		    	              
+//////		  		    	  			}
+////		  		    	      
+////		  		    	  			
+////									} catch (InterruptedException e) {
+////										System.out.println("Failed!");
+////										e.printStackTrace();
+////									}
+////		  		    	  		}
+////		  		    	  		storeRefinedSafety();
+////		  		    	  		refinedSafetyCanBeStored = false;
+////		  		    	  		return;
+//		  		    	  	}
 	    				}
 	    	            if (!visible && rect.intersects(clientArea)) {
 	    	                visible = true;
@@ -2498,7 +2511,7 @@ public class View extends ViewPart implements Observer {
 	    			setLinkedCAE(dependencies.get(tableIndex));
 
 	    			
-	 				// create Input for contextTableViewer
+	 				
 	  				List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
 	  		    	for (int i = 0; i<dependencies.size();i++) {
 	  		    		if (dependencies.get(i).getSafetyCritical()) {
@@ -2508,7 +2521,7 @@ public class View extends ViewPart implements Observer {
 	  		    	contextViewer.setInput(contextTableInput);
 	  		    	
 	  		    	
-	    			//contextViewer.setInput(dependencies);
+	    			
 	    			createTablerows(0);
 	    			
 			    	if (!getLinkedCAE().getContextTableCombinations().isEmpty()) {
@@ -2522,27 +2535,9 @@ public class View extends ViewPart implements Observer {
 			    			contextRightContentNotProvided = contextRightContent;
 			    		}
 			    	}
-//	    			if (tableIndex == tempTableIndex) {
-//	    				contextRightContent = new ArrayList<ProcessModelVariables>();
-//	    				contextRightContent = contextRightContentProvided;
-//	    			}
-//	    			else {
-//	    				// writes the Data into the input file for ACTS		    	  
-//	  		    	  	writeFile();
-//	  		    	  	// opens ACTS with the given Parameters (the linkedControl)
-//	  		    	  	open();
-//	    			}
-	    			
-	    			
-	    			
-	    		  	
-	    			// packs the columns
-	    		  	//for (int i = 0, n = contextRightTable.getColumnCount(); i < n; i++) {
-	    		  		//contextRightTable.getColumn(i).pack();	    		  		  
-	    		  	//}
-	    		  	//tempTableIndex = tableIndex;
+
 	    		  	contextTable.setSelection(tableIndex);
-	    		  	//contextRightTable.setVisible(true);
+	    		  	
 	    		}
 	    		else {
 	    			controlActionProvided = false;
@@ -2744,9 +2739,31 @@ public class View extends ViewPart implements Observer {
 	    // Create the cell editors for refined Safety
 	    CellEditor[] refinedSafetyEditors = new CellEditor[7];
 	    refinedSafetyEditors[6] = new TextCellEditor(refinedSafetyTable);
-	    
-	   
-	    
+	    refinedSafetyEditors[6].addListener(new ICellEditorListener() {
+
+			@Override
+			public void applyEditorValue() {
+				System.out.println("ApplyEditorValue!");	
+					
+					//storeRefinedSafety();
+				
+			}
+
+			@Override
+			public void cancelEditor() {
+				
+				
+			}
+
+			@Override
+			public void editorValueChanged(boolean oldValidState,
+					boolean newValidState) {
+				
+				
+			}
+	    	
+	    });
+	        
 	    mainViewer.setColumnProperties(PROPS);
 	    mainViewer.setCellModifier(new EntryCellModifier(mainViewer));
 	    mainViewer.setCellEditors(editors);
@@ -2754,8 +2771,11 @@ public class View extends ViewPart implements Observer {
 	    controlActionViewer.setCellModifier(new EntryCellModifier(controlActionViewer));
 	    controlActionViewer.setCellEditors(controlActionEditors);
 	    refinedSafetyViewer.setColumnProperties(RS_PROPS);
-	    refinedSafetyViewer.setCellModifier(new EntryCellModifier(refinedSafetyViewer));
+	    EntryCellModifier refinedSafetyModifier = new EntryCellModifier(refinedSafetyViewer);
+	    refinedSafetyModifier.setView(view);
+	    refinedSafetyViewer.setCellModifier(refinedSafetyModifier);
 	    refinedSafetyViewer.setCellEditors(refinedSafetyEditors);
+	    
 	    
 	    // set title and Image
 	    this.setPartName("XSTPA");
@@ -2829,6 +2849,7 @@ public class View extends ViewPart implements Observer {
 		
 
 	}
+
 	public void showContent(Combo filterCombo) {
 		// checks which option is selected and shows the right content
   	  if (filterCombo.getText().equals("Show All")) {
@@ -2956,8 +2977,6 @@ public class View extends ViewPart implements Observer {
 	    				  finalObj.setValues(tempCWPME.getValues());
 	    				  finalObj.setId(tempCWPME.getId());
 	    				  finalObj.setComments(tempCWPME.getComments());
-	    				  //System.out.println(tempCWPME.getId());
-	    				  //System.out.println("Wert kommentar: "+tempPMVV.getComment());
 	    				  variables.addValue(tempCWPME.getValues());
 	    				  
 	    				  pmList.add(finalObj);
@@ -3591,7 +3610,7 @@ public class View extends ViewPart implements Observer {
 	}
 	
 	/**
-	 * Store the Boolean Data in the Datamodel
+	 * Store the Boolean Data (from the Context Table) in the Datamodel
 	 */
 	public void storeBooleans() {
 		if (controlActionProvided) {
@@ -3671,6 +3690,79 @@ public class View extends ViewPart implements Observer {
 		}
 	}
 	
+	/**
+	 * Store the Boolean Data (from the Context Table) in the Datamodel
+	 */
+	public void storeRefinedSafety() {
+			    		  
+	    for (int i = 0; i<dependencies.size();i++) {
+
+	    	try {
+	    		List<UUID> combis = new ArrayList<UUID>();
+	    		List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
+	    		ProvidedValuesCombi val = new ProvidedValuesCombi();
+	    			    		  
+	    		for (int g = 0; g<dependencies.get(i).getContextTableCombinations().size();g++) {
+	    			val = new ProvidedValuesCombi();
+	    			combis = new ArrayList<UUID>();
+	    	    	for (int z = 0; z<dependencies.get(i).getContextTableCombinations().get(g).getValues().size();z++) {
+	    			    				  
+	    	    		for (int n = 0; n<pmList.size();n++) {
+	    	    			if ((pmList.get(n).getValues().equals(dependencies.get(i)
+	    	    					.getContextTableCombinations().get(g).getValues().get(z)))) {
+	    	    				combis.add(pmList.get(n).getId());
+	    			    						  
+	    			    	}
+	    	    		}
+	    	    	}
+	    	    	val.setValues(combis);
+	    	    	val.setConstraint(dependencies.get(i).getContextTableCombinations().get(g).getRefinedSafetyRequirements());
+	    	    	val.setHazardousAnyTime(dependencies.get(i).getContextTableCombinations().get(g).getHAnytime());
+	    	    	val.setHazardousToEarly(dependencies.get(i).getContextTableCombinations().get(g).getHEarly());
+	    	    	val.setHazardousToLate(dependencies.get(i).getContextTableCombinations().get(g).getHLate());
+	    			valuesIfProvided.add(val);
+	    		}
+	    		model.setValuesWhenCAProvided(dependencies.get(i).getId(),valuesIfProvided);
+	    	}
+
+	    	catch (Exception e) {
+	    		System.out.println("Couldn't save ContextTableCombis if Provided");
+	    	}		
+	    }
+	    for (int i = 0; i<dependenciesNotProvided.size();i++) {	
+	    	try {
+	    		List<UUID> combis = new ArrayList<UUID>();
+	    	 	List<NotProvidedValuesCombi> valuesIfNotProvided = new ArrayList<NotProvidedValuesCombi>();
+	   	    	NotProvidedValuesCombi val = new NotProvidedValuesCombi();
+	    			    		  
+ 		    	for (int g = 0; g<dependenciesNotProvided.get(i).getContextTableCombinations().size();g++) {
+ 		    		val = new NotProvidedValuesCombi();
+	    		    combis = new ArrayList<UUID>();
+	    		    for (int z = 0; z<dependenciesNotProvided.get(i).getContextTableCombinations().get(g).getValues().size();z++) {
+	    		    	for (int n = 0; n<pmList.size();n++) {
+	    		    		if (pmList.get(n).getValues().equals(dependenciesNotProvided.get(i)
+	    		    			.getContextTableCombinations().get(g).getValues().get(z))) {
+	    		    			combis.add(pmList.get(n).getId());
+	    		    		}
+	    		  		}
+	    		    }
+	    		    val.setValues(combis);
+	    		    val.setConstraint(dependenciesNotProvided.get(i).getContextTableCombinations().get(g).getRefinedSafetyRequirements());
+	    		    val.setHazardous(dependenciesNotProvided.get(i).getContextTableCombinations().get(g).getHazardous());
+	    		    valuesIfNotProvided.add(val);
+	    	    }
+	   		    model.setValuesWhenCANotProvided(dependenciesNotProvided.get(i).getId(),valuesIfNotProvided);
+	 	   	}
+
+	   	    catch (Exception e) {
+	   	    	System.out.println("Couldn't save ContextTableCombis if Not Provided");
+	    	}    		
+	    }
+	    	
+	    
+	}
+	
+	
 
 	
 	/**
@@ -3730,6 +3822,8 @@ public class View extends ViewPart implements Observer {
 	public void setOutput2(String output) {
 		OUTPUT2 = output;
 	}
+
+
 	
 	
 
