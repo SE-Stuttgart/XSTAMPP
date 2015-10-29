@@ -96,6 +96,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
@@ -1283,7 +1284,17 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.copySelectionCommand = new CopyComponentCommand(getModelInterface(),getId());
 		IControlStructureEditPart parentPart = null;
 		for(Object obj:getGraphicalViewer().getSelectedEditParts()){
-			if(((GraphicalEditPart)obj).getParent() instanceof IControlStructureEditPart){
+			EditPart newParentPart = ((GraphicalEditPart)obj).getParent();
+			if(parentPart != null && parentPart.getClass() != newParentPart.getClass()){
+				boolean equalParents =parentPart.getClass() != newParentPart.getClass();
+				boolean parentIsChild = newParentPart.getChildren().contains(parentPart);
+				boolean parentSelected= getGraphicalViewer().getSelectedEditParts().contains(newParentPart);
+				if(!equalParents && !parentSelected && !parentIsChild){
+					Display.getDefault().beep();
+					return false;
+				}
+			}
+			if(newParentPart instanceof IControlStructureEditPart){
 				parentPart = (IControlStructureEditPart) ((IControlStructureEditPart)obj).getParent();
 				this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), parentPart.getId());
 			}
@@ -1309,8 +1320,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
 		part.getFigure().translateToAbsolute(p);
 		IControlStructureFigure figure =  (IControlStructureFigure) part.getFigure().findFigureAt(p);
-		figure.translateToRelative(p);
+		figure.translateFromParent(p);
 		this.copySelectionCommand.setPastePosition(figure.getId(),p.x,p.y);
+		if(!this.copySelectionCommand.canExecute()){
+			Display.getDefault().beep();
+			return false;
+		}
 		getCommandStack().execute(this.copySelectionCommand);
 		this.selectAddedParts  = true;
 		

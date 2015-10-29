@@ -77,7 +77,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		switch (this.type) {
 		case CONTROLACTION: {
 			text = Messages.ControlAction + " " + count; //$NON-NLS-1$
-			for (IControlAction x : dataModel.getAllControlActions()) {
+			for (IControlAction x : this.dataModel.getAllControlActions()) {
 				if (x.getTitle().equals(text)) {
 					text = text + " (2)";
 				}
@@ -88,7 +88,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		}
 		case ACTUATOR: {
 			text = Messages.Actuator + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
@@ -98,7 +98,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		case DASHEDBOX: {
 
 			text = Messages.DashedBox + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
@@ -113,7 +113,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		}
 		case CONTROLLER: {
 			text = Messages.Controller + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
@@ -122,7 +122,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		}
 		case CONTROLLED_PROCESS: {
 			text = Messages.ControlledProcess + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
@@ -131,7 +131,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		}
 		case PROCESS_MODEL: {
 			text = Messages.ProcessModel + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
@@ -139,8 +139,8 @@ public class CSModelCreationFactory implements CreationFactory {
 			break;
 		}
 		case PROCESS_VARIABLE: {
-			text = Messages.ProcessVariable;
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			text = Messages.ProcessVariable + " " + count; //$NON-NLS-1$
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
@@ -148,12 +148,12 @@ public class CSModelCreationFactory implements CreationFactory {
 			break;
 		}
 		case PROCESS_VALUE: {
-			text = Messages.ProcessValue;
+			text = Messages.ProcessValue + " " + count; //$NON-NLS-1$
 			break;
 		}
 		case SENSOR: {
 			text = Messages.Sensor + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
@@ -162,7 +162,7 @@ public class CSModelCreationFactory implements CreationFactory {
 		}
 		case TEXTFIELD: {
 			text = Messages.TextBox + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : dataModel.getRoot().getChildren()) {
+			for (IRectangleComponent x : this.dataModel.getRoot().getChildren()) {
 				if (x.getText().equals(text)) {
 					text = text + " (2)";
 				}
