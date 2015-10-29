@@ -16,13 +16,17 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 
 @XmlRootElement(name = "contexttablecombination")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "values", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
+@XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
 		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "editWindow", "id" })
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")
 	@XmlElement(name = "value")
 	private List<String> values = new ArrayList<String>();
+	
+	@XmlElementWrapper(name = "valueIds")
+	@XmlElement(name = "Id")
+	private List<UUID> valueIds = new ArrayList<UUID>();
 	
 	@XmlElementWrapper(name = "pmVariables")
 	@XmlElement(name = "pmVariable")
@@ -201,6 +205,18 @@ public class ProcessModelVariables {
 
 	public void setIsInRSRTable(Boolean isInRSRTable) {
 		this.isInRSRTable = isInRSRTable;
+	}
+
+	public List<UUID> getValueIds() {
+		return valueIds;
+	}
+
+	public void setValueIds(List<UUID> valueIds) {
+		this.valueIds = valueIds;
+	}
+	public void addValueId (UUID valueId) {
+		valueIds.add(valueId);
+		
 	}
 
 

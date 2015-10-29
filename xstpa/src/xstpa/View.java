@@ -946,7 +946,7 @@ public class View extends ViewPart implements Observer{
 	    
 	    
 	    contextCompositeRight = new Composite(outercomposite, SWT.BORDER);
-//	    contextCompositeRight.setLayout( new GridLayout(1, false));	 
+
 	    formLayout = new FormLayout();
 	    contextCompositeRight.setLayout(formLayout);
 	    contextCompositeRight.setVisible(false);
@@ -1382,7 +1382,7 @@ public class View extends ViewPart implements Observer{
 		    	  if (getLinkedCAE() == null) {
 		    		  MessageDialog.openInformation(null,"Select a Control Action", "Please Select a Control Action to generate the Table!");
 		    	  }
-		    	  else {
+		    	  else if (!getLinkedCAE().getLinkedItems().isEmpty()) {
 
 		    		  if (MessageDialog.openConfirm(null,"Generate a new Testset","Are you sure to generate a new Testset? "
 		    		  		+ "The old Data will get lost" )) {
@@ -1408,6 +1408,10 @@ public class View extends ViewPart implements Observer{
 				    	  // opens ACTS with the given Parameters (the linkedControl)
 				    	  open();
 		    		  }
+		    	  }
+		    	  else {
+		    		  MessageDialog.openInformation(null, "Link some Variables",
+		    				  "Please link some Variables to the selected Control Action to succesfully generate a new Testset");
 		    	  }
 	    	}
 	    });
@@ -1552,12 +1556,27 @@ public class View extends ViewPart implements Observer{
 	    		if (dependencies.get(i).getSafetyCritical()) {
 	    			dependencyTableInput.add(dependencies.get(i));
 	    		}
+	    		
+	    		
 	    	}
 	    	
 	        dependencyTableViewer.setInput(dependencyTableInput);
-	        //dependencyTopTableViewer.setInput(pmvList);	        
-	        dependencyBottomTableViewer.setInput(dependenciesBottom);
-	        dependencyTable.select(0);
+	        
+	    	// If the view was already shown, select the old values, if not select default
+	    	if (dependencyTable.getSelectionIndex() == -1) {
+    			dependencyTable.select(0);
+    		}
+	    	if (dependenciesFolder.getSelectionIndex() == 0) {
+	    		
+	    		setLinkedCAE(dependencies.get(dependencyTable.getSelectionIndex()));
+	    	}
+	    	else {
+	    		setLinkedCAE(dependenciesNotProvided.get(dependencyTable.getSelectionIndex()));  
+	    	}
+	    	
+	        dependencyTopTableViewer.setInput(getLinkedCAE().getAvailableItems());	        
+	        dependencyBottomTableViewer.setInput(getLinkedCAE().getLinkedItems());
+	        
 	        
 			for (int i = 0, n = dependencyTable.getColumnCount(); i < n; i++) {
 				  dependencyTable.getColumn(i).pack();
@@ -1820,12 +1839,9 @@ public class View extends ViewPart implements Observer{
 	    exportBtn.addSelectionListener(new SelectionAdapter() {
 	      public void widgetSelected(SelectionEvent event) {
 	    	  
-	    	  // gets the Current TableHeaders for the Export
-	    	  exportContent.setTableHeaders(refinedSafetyContent.get(0).getPmVariables());
-	    	  // Stores the Export Content in a static Variable, so that it can be accessed even when the View is closed.
-	    	  ProjectManager.getContainerInstance().addProjectAdditionForUUID(projectId, exportContent);
-	  	      ExportJob exportjob = new ExportJob("xstpa",Platform.getInstanceLocation().getURL().getPath()+"xstpa-tables.pdf", "/src/export/fopXstpa.xsl", exportContent);
-	  	      exportjob.schedule();
+	    	  Map<String,String> values=new HashMap<>();
+	    	  values.put("xstampp.commandParameter.openwizard", "export.wizard");
+	    	  STPAPluginUtils.executeParaCommand("xstampp.command.openWizard", values);
 	      }
 	    });
 	    
@@ -2213,7 +2229,7 @@ public class View extends ViewPart implements Observer{
 		    	  // creates the correct number of rows for the context table
 		    	  createTablerows(0);
 		    	  
-		    	  if (!getLinkedCAE().getContextTableCombinations().isEmpty()) {
+		    	  if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
 		    		  contextRightContent = getLinkedCAE().getContextTableCombinations();
 		    		  showContent(filterCombo);
 		    		  if (controlActionProvided) {
@@ -2222,7 +2238,11 @@ public class View extends ViewPart implements Observer{
 		    		  else {
 		    			  contextRightContentNotProvided = contextRightContent;
 		    		  }
-		    	  }	    	  
+		    	  }
+		    	  else {
+			    		contextRightViewer.setInput(null);
+			    		MessageDialog.openInformation(null, "No Linked Variables", "There are no Linked Variables found or there was no Stored Testset");
+		    	  }
 		    			  
 		      }  
 	    });
@@ -2481,7 +2501,7 @@ public class View extends ViewPart implements Observer{
 	    			
 	    			createTablerows(0);
 	    			
-			    	if (!getLinkedCAE().getContextTableCombinations().isEmpty()) {
+	    			if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
 			    		contextRightContent = getLinkedCAE().getContextTableCombinations();
 			    		
 			    		showContent(filterCombo);
@@ -2491,6 +2511,10 @@ public class View extends ViewPart implements Observer{
 			    		else {
 			    			contextRightContentNotProvided = contextRightContent;
 			    		}
+			    	}
+			    	else {
+			    		contextRightViewer.setInput(null);
+			    		MessageDialog.openInformation(null, "No Linked Variables", "There are no Linked Variables found or there was no Stored Testset");
 			    	}
 
 	    		  	contextTable.setSelection(tableIndex);
@@ -2519,7 +2543,7 @@ public class View extends ViewPart implements Observer{
 	    			//contextViewer.setInput(dependenciesNotProvided);
 	    			createTablerows(0);
 	    			
-			    	if (!getLinkedCAE().getContextTableCombinations().isEmpty()) {
+			    	if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
 			    		contextRightContent = getLinkedCAE().getContextTableCombinations();
 			    		
 			    		showContent(filterCombo);
@@ -2531,27 +2555,13 @@ public class View extends ViewPart implements Observer{
 			    			contextRightContentNotProvided = contextRightContent;
 			    		}
 			    	}
-//	    			if (tableIndex == tempTableIndex) {
-//	    				contextRightContent = new ArrayList<ProcessModelVariables>();
-//	    				contextRightContent = contextRightContentNotProvided;
-//	    			}
-//	    			else {
-//	    				// writes the Data into the input file for ACTS		    	  
-//	  		    	  	writeFile();
-//	  		    	  	// opens ACTS with the given Parameters (the linkedControl)
-//	  		    	  	open();
-//	    			}
-//	    			contextRightViewer.setInput(contextRightContent);
-			    	
-	    			//showContent(filterCombo);
-	    			
-	    			// packs the columns
-	    		  	//for (int i = 0, n = contextRightTable.getColumnCount(); i < n; i++) {
-	    		  		//contextRightTable.getColumn(i).pack();	    		  		  
-	    		  	//}
-	    		  	//tempTableIndex = tableIndex;
+			    	else {
+			    		contextRightViewer.setInput(null);
+			    		MessageDialog.openInformation(null, "No Linked Variables", "There are no Linked Variables found or there was no Stored Testset");
+			    	}
+
 	    		  	contextTable.setSelection(tableIndex);
-	    		  	//contextRightTable.setVisible(true);
+	    		  	
 	    		}
 	    	}
 	    	
@@ -2822,7 +2832,7 @@ public class View extends ViewPart implements Observer{
   		  contextRightTable.setVisible(false);
   		  contextRightHazardousContent.clear();
   		  for (int i=0; i < contextRightContent.size(); i++) {
-  			  if ((controlActionProvided)&&(contextRightContent.get(i).getHAnytime())) {
+  			  if ((controlActionProvided)&&(contextRightContent.get(i).getHAnytime() | (contextRightContent.get(i).getHEarly()) | (contextRightContent.get(i).getHLate()))) {
   				  contextRightHazardousContent.add(contextRightContent.get(i));
   			  }
   			  else if ((!controlActionProvided)&&(contextRightContent.get(i).getHazardous())) {
@@ -3071,7 +3081,8 @@ public class View extends ViewPart implements Observer{
 		    						  
 		    						  contextTableEntry.addValue(pmList.get(j).getValues());		    						  
 		    						  contextTableEntry.setLinkedControlActionName(entry.getTitle());
-
+		    						  contextTableEntry.addValueId(pmList.get(j).getId());
+		    						  
 		    					  }
 	    					  }
 	    				  }
@@ -3123,7 +3134,7 @@ public class View extends ViewPart implements Observer{
 	    						  
 		    						  contextTableEntry.addValue(pmList.get(j).getValues());
 		    						  contextTableEntry.setLinkedControlActionName(entry.getTitle());
-
+		    						  contextTableEntry.addValueId(pmList.get(j).getId());
 	    						  }
 	    					 }
 	    					  
@@ -3369,7 +3380,7 @@ public class View extends ViewPart implements Observer{
 			while ((line = reader.readLine()) != null) {
 				if (line.contains("Configuration #")) {
 					ProcessModelVariables entry = new ProcessModelVariables();
-					ProcessModelVariables entry2 = new ProcessModelVariables();
+					
 					temp = line.charAt(line.length()-2);
 					int currentConfig = Character.getNumericValue(temp);
 					reader.readLine();
@@ -3384,107 +3395,106 @@ public class View extends ViewPart implements Observer{
 						//entry.setName(line.substring(line.indexOf("=")+2, line.length()));
 						line = line.substring(line.lastIndexOf("=")+1, line.length());
 						entry.addValue(line);
+						
 						values.add(line);
 						if  (contextTable.getSelectionIndex() != -1) {
 							entry.setLinkedControlActionName(contextTable.getItem(contextTable.getSelectionIndex()).getText());
-							entry2.setLinkedControlActionName(contextTable.getItem(contextTable.getSelectionIndex()).getText());
+							
 						}
 						else {
-							entry.setLinkedControlActionName(contextTable.getItem(0).getText());
-							entry2.setLinkedControlActionName(contextTable.getItem(0).getText());
-						}
-						entry2.addValue(line);
-						
-						
+							entry.setLinkedControlActionName(contextTable.getItem(0).getText());						
+						}				
 					}
 					entry.setPmValues(values);
 					entry.setPmVariables(variables);
 					if (controlActionProvided) {
 						contextRightContentProvided.add(entry);
-						contextRightContent.add(entry);
-						//if (contextTable.getSelectionIndex() != -1) {
-						getLinkedCAE().setContextTableCombinations(contextRightContent);
-							
-				    	  try {
-				    		  List<UUID> combis = new ArrayList<UUID>();
-				    		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
-				    		  ProvidedValuesCombi val = new ProvidedValuesCombi();
-				    		  
-				    		  for (int i = 0; i<getLinkedCAE().getContextTableCombinations().size();i++) {
-				    			  val = new ProvidedValuesCombi();
-				    			  combis = new ArrayList<UUID>();
-				    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
-				    				  
-				    				  for (int n = 0; n<pmList.size();n++) {
-				    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
-				    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
-				    						  combis.add(pmList.get(n).getId());
-				    						  
-				    					  }
-				    				  }
-				    			  }
-				    			  val.setValues(combis);
-				    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
-				    			  val.setHazardousAnyTime(getLinkedCAE().getContextTableCombinations().get(i).getHAnytime());
-				    			  val.setHazardousToEarly(getLinkedCAE().getContextTableCombinations().get(i).getHEarly());
-				    			  val.setHazardousToLate(getLinkedCAE().getContextTableCombinations().get(i).getHLate());
-				    			  valuesIfProvided.add(val);
-				    		  }
-				    		  model.setValuesWhenCAProvided(getLinkedCAE().getId(),valuesIfProvided);
-				    	  }
-			
-				    	  catch (Exception e) {
-				    		  System.out.println("Couldn't save ContextTableCombis if Provided");
-				    	  }
-							//dependencies.get(contextTable.getSelectionIndex()).setContextTableCombinations(contextRightContentProvided);
-						//}
-						//else {
-							//dependencies.get(0).setContextTableCombinations(contextRightContentProvided);
-						//}
+						contextRightContent.add(entry);							  
 					}
 					else {
 						contextRightContentNotProvided.add(entry);
 						contextRightContent.add(entry);
-						//if  (contextTable.getSelectionIndex() != -1) {
-							//dependenciesNotProvided.get(contextTable.getSelectionIndex()).setContextTableCombinations(contextRightContentNotProvided);				
-						//}
-						//else {
-							//dependenciesNotProvided.get(0).setContextTableCombinations(contextRightContentNotProvided);
-						//}
-						getLinkedCAE().setContextTableCombinations(contextRightContent);
-						
-				    	  try {
-				    		  List<UUID> combis = new ArrayList<UUID>();
-				    		  List<NotProvidedValuesCombi> valuesIfNotProvided = new ArrayList<NotProvidedValuesCombi>();
-				    		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
-				    		  
-				    		  for (int i = 0; i<getLinkedCAE().getContextTableCombinations().size();i++) {
-				    			  val = new NotProvidedValuesCombi();
-				    			  combis = new ArrayList<UUID>();
-				    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
-				    				  for (int n = 0; n<pmList.size();n++) {
-				    					  if (pmList.get(n).getValues().equals(getLinkedCAE()
-				    							  .getContextTableCombinations().get(i).getValues().get(z))) {
-				    						  combis.add(pmList.get(n).getId());
-				    					  }
-				    				  }
-				    			  }
-				    			  val.setValues(combis);
-				    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
-				    			  val.setHazardous((getLinkedCAE().getContextTableCombinations().get(i).getHazardous()));
-				    			  valuesIfNotProvided.add(val);
-				    		  }
-				    		  model.setValuesWhenCANotProvided(getLinkedCAE().getId(),valuesIfNotProvided);
-				    	  }
-			
-				    	  catch (Exception e) {
-				    		  System.out.println("Couldn't save ContextTableCombis if Not Provided");
-				    	  }
 						
 					}
 					
 				}
 				
+			}
+			
+			getLinkedCAE().setContextTableCombinations(contextRightContent);
+			
+			if (controlActionProvided) {
+				try {
+		    		  List<UUID> combis = new ArrayList<UUID>();
+		    		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
+		    		  ProvidedValuesCombi val = new ProvidedValuesCombi();
+		    		  
+		    		  for (int i = 0; i<getLinkedCAE().getContextTableCombinations().size();i++) {
+		    			  val = new ProvidedValuesCombi();
+		    			  combis = new ArrayList<UUID>();
+		    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
+		    				  
+		    				  for (int n = 0; n<pmList.size();n++) {
+		    					  String tempPMV = pmList.get(n).getPMV().replace(" ", "_");
+		    					  if (tempPMV.equals(getLinkedCAE()
+		    							  .getContextTableCombinations().get(i).getPmVariables().get(z))) {
+			    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
+			    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
+			    						  combis.add(pmList.get(n).getId());
+			    						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmList.get(n).getId());
+			    					  }
+		    					  }
+		    				  }
+		    			  }
+		    			  val.setValues(combis);
+		    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
+		    			  val.setHazardousAnyTime(getLinkedCAE().getContextTableCombinations().get(i).getHAnytime());
+		    			  val.setHazardousToEarly(getLinkedCAE().getContextTableCombinations().get(i).getHEarly());
+		    			  val.setHazardousToLate(getLinkedCAE().getContextTableCombinations().get(i).getHLate());
+		    			  valuesIfProvided.add(val);
+		    		  }
+		    		  model.setValuesWhenCAProvided(getLinkedCAE().getId(),valuesIfProvided);
+		    	  }
+	
+		    	  catch (Exception e) {
+		    		  System.out.println("Couldn't save ContextTableCombis if Provided");
+		    	  }
+			}
+			else {
+				
+		    	  try {
+		    		  List<UUID> combis = new ArrayList<UUID>();
+		    		  List<NotProvidedValuesCombi> valuesIfNotProvided = new ArrayList<NotProvidedValuesCombi>();
+		    		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
+		    		  
+		    		  for (int i = 0; i<getLinkedCAE().getContextTableCombinations().size();i++) {
+		    			  val = new NotProvidedValuesCombi();
+		    			  combis = new ArrayList<UUID>();
+		    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
+		    				  
+		    				  for (int n = 0; n<pmList.size();n++) {
+		    					  String tempPMV = pmList.get(n).getPMV().replace(" ", "_");
+		    					  if (tempPMV.equals(getLinkedCAE()
+		    							  .getContextTableCombinations().get(i).getPmVariables().get(z))) {
+			    					  if (pmList.get(n).getValues().equals(getLinkedCAE()
+			    							  .getContextTableCombinations().get(i).getValues().get(z))) {
+			    						  combis.add(pmList.get(n).getId());
+			    						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmList.get(n).getId());
+			    					  }
+		    					  }
+		    				  }
+		    			  }
+		    			  val.setValues(combis);
+		    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
+		    			  val.setHazardous((getLinkedCAE().getContextTableCombinations().get(i).getHazardous()));
+		    			  valuesIfNotProvided.add(val);
+		    		  }
+		    		  model.setValuesWhenCANotProvided(getLinkedCAE().getId(),valuesIfNotProvided);
+		    	  }
+	
+		    	  catch (Exception e) {
+		    		  System.out.println("Couldn't save ContextTableCombis if Not Provided");
+		    	  }
 			}
 		} catch (IOException e) {			
 			e.printStackTrace();
@@ -3519,6 +3529,12 @@ public class View extends ViewPart implements Observer{
 	  			}
 
 	  		}
+	  		else {
+	  			for (int i=counter, columnCount=contextRightTable.getColumnCount(); i<columnCount; i++) {
+	  				contextRightTable.getColumn(counter).dispose();
+	  			}
+	  			
+	  		}
 
 	  	}
 	  	else {
@@ -3539,8 +3555,14 @@ public class View extends ViewPart implements Observer{
 		  		for (int i=counter, columnCount=contextRightTable.getColumnCount(); i<columnCount; i++) {
 		  			contextRightTable.getColumn(counter).dispose();
 		  		}
+		  		
 	  		}
-
+	  		else {
+	  			for (int i=counter, columnCount=contextRightTable.getColumnCount(); i<columnCount; i++) {
+	  				contextRightTable.getColumn(counter).dispose();
+	  			}
+	  			
+	  		}
 		  	
 	  	
 		}
@@ -3584,14 +3606,14 @@ public class View extends ViewPart implements Observer{
 	    			  val = new ProvidedValuesCombi();
 	    			  combis = new ArrayList<UUID>();
 	    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
-	    				  
-	    				  for (int n = 0; n<pmList.size();n++) {
-	    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
-	    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
-	    						  combis.add(pmList.get(n).getId());
-	    						  
-	    					  }
-	    				  }
+	    				  combis.add(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().get(z));
+//	    				  for (int n = 0; n<pmList.size();n++) {
+//	    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
+//	    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
+//	    						  combis.add(pmList.get(n).getId());
+//	    						  
+//	    					  }
+//	    				  }
 	    			  }
 	    			  val.setValues(combis);
 	    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
@@ -3625,12 +3647,13 @@ public class View extends ViewPart implements Observer{
 	    			  val = new NotProvidedValuesCombi();
 	    			  combis = new ArrayList<UUID>();
 	    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
-	    				  for (int n = 0; n<pmList.size();n++) {
-	    					  if (pmList.get(n).getValues().equals(getLinkedCAE()
-	    							  .getContextTableCombinations().get(i).getValues().get(z))) {
-	    						  combis.add(pmList.get(n).getId());
-	    					  }
-	    				  }
+	    				  combis.add(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().get(z));
+//	    				  for (int n = 0; n<pmList.size();n++) {
+//	    					  if (pmList.get(n).getValues().equals(getLinkedCAE()
+//	    							  .getContextTableCombinations().get(i).getValues().get(z))) {
+//	    						  combis.add(pmList.get(n).getId());
+//	    					  }
+//	    				  }
 	    			  }
 	    			  val.setValues(combis);
 	    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
@@ -3663,14 +3686,14 @@ public class View extends ViewPart implements Observer{
 	    			val = new ProvidedValuesCombi();
 	    			combis = new ArrayList<UUID>();
 	    	    	for (int z = 0; z<dependencies.get(i).getContextTableCombinations().get(g).getValues().size();z++) {
-	    			    				  
-	    	    		for (int n = 0; n<pmList.size();n++) {
-	    	    			if ((pmList.get(n).getValues().equals(dependencies.get(i)
-	    	    					.getContextTableCombinations().get(g).getValues().get(z)))) {
-	    	    				combis.add(pmList.get(n).getId());
-	    			    						  
-	    			    	}
-	    	    		}
+	    	    		combis.add(dependencies.get(i).getContextTableCombinations().get(g).getValueIds().get(z));				  
+//	    	    		for (int n = 0; n<pmList.size();n++) {
+//	    	    			if ((pmList.get(n).getValues().equals(dependencies.get(i)
+//	    	    					.getContextTableCombinations().get(g).getValues().get(z)))) {
+//	    	    				combis.add(pmList.get(n).getId());
+//	    			    						  
+//	    			    	}
+//	    	    		}
 	    	    	}
 	    	    	val.setValues(combis);
 	    	    	val.setConstraint(dependencies.get(i).getContextTableCombinations().get(g).getRefinedSafetyRequirements());
@@ -3696,12 +3719,13 @@ public class View extends ViewPart implements Observer{
  		    		val = new NotProvidedValuesCombi();
 	    		    combis = new ArrayList<UUID>();
 	    		    for (int z = 0; z<dependenciesNotProvided.get(i).getContextTableCombinations().get(g).getValues().size();z++) {
-	    		    	for (int n = 0; n<pmList.size();n++) {
-	    		    		if (pmList.get(n).getValues().equals(dependenciesNotProvided.get(i)
-	    		    			.getContextTableCombinations().get(g).getValues().get(z))) {
-	    		    			combis.add(pmList.get(n).getId());
-	    		    		}
-	    		  		}
+	    		    	combis.add(dependenciesNotProvided.get(i).getContextTableCombinations().get(g).getValueIds().get(z));
+//	    		    	for (int n = 0; n<pmList.size();n++) {
+//	    		    		if (pmList.get(n).getValues().equals(dependenciesNotProvided.get(i)
+//	    		    			.getContextTableCombinations().get(g).getValues().get(z))) {
+//	    		    			combis.add(pmList.get(n).getId());
+//	    		    		}
+//	    		  		}
 	    		    }
 	    		    val.setValues(combis);
 	    		    val.setConstraint(dependenciesNotProvided.get(i).getContextTableCombinations().get(g).getRefinedSafetyRequirements());
