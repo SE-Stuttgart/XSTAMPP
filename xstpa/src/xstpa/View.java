@@ -632,10 +632,10 @@ public class View extends ViewPart implements Observer{
 							List <ITableModel> linkedHazards = model.getLinkedHazardsOfUCA(unsafeCA.get(i).getId());
 							for (int n=0; n<linkedHazards.size();n++) {
 								if (!(n == linkedHazards.size()-1)) {
-									tempHazards = tempHazards.concat("H-"+linkedHazards.get(i).getNumber()+", ");
+									tempHazards = tempHazards.concat("H-"+linkedHazards.get(n).getNumber()+", ");
 								}
 								else {
-									tempHazards = tempHazards.concat("H-"+linkedHazards.get(i).getNumber());
+									tempHazards = tempHazards.concat("H-"+linkedHazards.get(n).getNumber());
 									return tempHazards;
 								}
 
@@ -2241,7 +2241,7 @@ public class View extends ViewPart implements Observer{
 		    	  }
 		    	  else {
 			    		contextRightViewer.setInput(null);
-			    		MessageDialog.openInformation(null, "No Linked Variables", "There are no Linked Variables found or there was no Stored Testset");
+			    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
 		    	  }
 		    			  
 		      }  
@@ -2514,7 +2514,7 @@ public class View extends ViewPart implements Observer{
 			    	}
 			    	else {
 			    		contextRightViewer.setInput(null);
-			    		MessageDialog.openInformation(null, "No Linked Variables", "There are no Linked Variables found or there was no Stored Testset");
+			    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
 			    	}
 
 	    		  	contextTable.setSelection(tableIndex);
