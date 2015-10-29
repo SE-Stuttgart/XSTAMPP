@@ -39,6 +39,7 @@ import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
+import xstampp.astpa.controlstructure.utilities.DragSelectionToolEntry;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.ui.common.ProjectManager;
@@ -100,7 +101,8 @@ public class CSEditor extends CSAbstractEditor {
 		PaletteRoot root = new PaletteRoot();
 		PaletteDrawer manipGroup = new PaletteDrawer(Messages.ManipulationObjects);
 		root.add(manipGroup);
-		ToolEntry entry = new PanningSelectionToolEntry();
+		ToolEntry entry = new DragSelectionToolEntry();
+		entry.setDescription(Messages.SpacePlusMouseTo);
 		manipGroup.add(entry);
 		this.toolEntryToComponentType.put("SELECT", entry);
 		root.setDefaultEntry(entry);
