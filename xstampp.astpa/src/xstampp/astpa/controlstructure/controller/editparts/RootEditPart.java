@@ -22,7 +22,9 @@ import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
@@ -62,8 +64,11 @@ public class RootEditPart extends CSAbstractEditPart {
 	
 	@Override
 	protected IFigure createFigure() {
-
-		IFigure figureTemp = new RootFigure(this.getId());
+		if(getViewer() == null || getViewer().getEditPartRegistry().get(LayerManager.ID) == null){
+			return null;
+		}
+		RootFigure figureTemp = new RootFigure(this.getId());
+		figureTemp.setPreferenceStore(getStore());
 		figureTemp.setFocusTraversable(false);
 		ConnectionLayer connLayer = (ConnectionLayer) this
 				.getLayer(LayerConstants.CONNECTION_LAYER);
@@ -171,5 +176,13 @@ public class RootEditPart extends CSAbstractEditPart {
 		}else{
 			addAnchorsGrid();
 		}
+	}
+	
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		for (Object child : this.getChildren()) {
+			((CSAbstractEditPart) child).setPreferenceStore(store);
+		}
+		super.setPreferenceStore(store);
 	}
 }

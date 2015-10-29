@@ -36,7 +36,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.preferences.IControlStructureConstants;
 
@@ -49,13 +48,11 @@ import xstampp.preferences.IControlStructureConstants;
  * 
  */
 public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
-	private static final int INITIAL_TEXT_SIZE = 10;
 	private TextFlow content;
 	private FontData currentFont;
 	private static final int CENTER_COMPENSATION = 2;
 	private boolean extraLine = false;
-	private final IPreferenceStore store = Activator.getDefault()
-			.getPreferenceStore();
+	private IPreferenceStore store;
 	/**
 	 * This constructor initializes the <code>blockFlow</code> and the
 	 * <code>content</code> It also sets the Layout Manager to
@@ -72,10 +69,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		this.setParent(csFigure);
 		this.content = new TextFlow();
 		this.content.setBackgroundColor(ColorConstants.white);
-		this.store.addPropertyChangeListener( this);
-		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT);
-		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR);
-
+		this.content.setFont(Display.getDefault().getSystemFont());
 		this.content.setLayoutManager(new ParagraphTextLayout(this.content,
 				ParagraphTextLayout.WORD_WRAP_TRUNCATE));
 		this.content.setLocation(new Point(0, 0));
@@ -227,5 +221,13 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 			setForeground(fontColor);
 		}
 		
+	}
+
+
+	public void setPreferenceStore(IPreferenceStore store) {
+		this.store = store;
+		this.store.addPropertyChangeListener( this);
+		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT);
+		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR);
 	}
 }

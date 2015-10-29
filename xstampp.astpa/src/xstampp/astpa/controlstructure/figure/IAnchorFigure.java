@@ -15,6 +15,7 @@ package xstampp.astpa.controlstructure.figure;
 
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 
@@ -50,4 +51,6 @@ public interface IAnchorFigure extends ConnectionAnchor {
 	 * @return the position of this
 	 */
 	public Point getAnchorPosition();
+	
+	void setPreferenceStore(IPreferenceStore store);
 }

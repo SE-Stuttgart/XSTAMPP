@@ -74,6 +74,8 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 	@Override
 	protected IFigure createFigure() {
 		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false);
+
+		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setBorder(new LineBorder(1));
 
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());

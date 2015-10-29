@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
@@ -131,5 +132,6 @@ public interface IControlStructureFigure extends IFigure {
 	
 	void showFeedback();
 	void disableFeedback();
+	void setPreferenceStore(IPreferenceStore store);
 	
 }

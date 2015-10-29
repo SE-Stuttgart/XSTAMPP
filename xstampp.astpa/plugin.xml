@@ -1015,5 +1015,25 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="xstampp.astpa.preferencePage"
+            class="xstampp.astpa.preferences.ControlStructurePreferences"
+            id="xstampp.astpa.preferencePage.controlstructure"
+            name="Control Structure">
+      </page>
+      <page
+            class="xstampp.astpa.preferences.StpaPreferencePage"
+            id="xstampp.astpa.preferencePage"
+            name="A-STPA">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="xstampp.astpa.preferences.StpaPreferenceInitializor">
+      </initializer>
+   </extension>
 
 </plugin>

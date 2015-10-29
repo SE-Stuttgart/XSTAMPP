@@ -279,7 +279,7 @@ public class CSExportJob extends Job {
 
 			viewer.createControl(canvas);
 			viewer.setEditPartFactory(new CSEditPartFactory(
-					CSExportJob.this.model, CSExportJob.this.editorId));
+					CSExportJob.this.model, CSExportJob.this.editorId, null));
 			viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
 					CSExportJob.this.editorId);
 

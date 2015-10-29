@@ -17,6 +17,7 @@ import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 
@@ -34,6 +35,8 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
 
 	private Dimension offset;
 	private CSAnchor relatedAnchor;
+
+	private IPreferenceStore store;
 
 	/**
 	 * 
@@ -144,5 +147,9 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
 
 		return new Point(this.offset.width, this.offset.height);
 	}
-
+	
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		this.store = store;
+	}
 }

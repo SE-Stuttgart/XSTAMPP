@@ -33,6 +33,7 @@ import org.eclipse.ui.contexts.IContextService;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
+import xstampp.astpa.controlstructure.utilities.DragSelectionToolEntry;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 
 /**
@@ -56,6 +57,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 	 * 
 	 */
 	public CSEditorWithPM() {
+		super(Activator.getDefault().getPreferenceStore());
 		this.zoomLevel = 1.0;
 		this.viewLocation = null;
 	}
@@ -68,7 +70,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 				Messages.ManipulationObjects);
 		root.add(manipGroup);
 
-		PanningSelectionToolEntry selectionToolEntry = new PanningSelectionToolEntry();
+		DragSelectionToolEntry selectionToolEntry = new DragSelectionToolEntry();
 		selectionToolEntry.setDescription(Messages.SpacePlusMouseTo);
 		manipGroup.add(selectionToolEntry);
 		MarqueeToolEntry entry = new MarqueeToolEntry();

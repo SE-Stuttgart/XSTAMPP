@@ -45,7 +45,7 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 	@Override
 	protected IFigure createFigure() {
 		IControlStructureFigure tmpFigure = new TextFieldFigure(this.getId());
-
+		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setToolTip(new Label(Messages.ControlAction));
 		tmpFigure.addMouseMotionListener(this);
 		tmpFigure.getTextField().setFontStyle(SWT.BOLD);
