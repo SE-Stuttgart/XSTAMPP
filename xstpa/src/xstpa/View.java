@@ -2758,7 +2758,7 @@ public class View extends ViewPart implements Observer{
 		    
 		    @Override
 		    public void partOpened(IWorkbenchPart part) {
-		     //if the view is active, get the projectId from the ControlStructure Editor
+		    //if the view is active, get the projectId from the ControlStructure Editor
 		     
 		     try{
 		    	 //PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
@@ -2774,6 +2774,7 @@ public class View extends ViewPart implements Observer{
 			    	 model = (DataModelController) ProjectManager.getContainerInstance().getDataModel(projectId);
 			    	 // observer gets added, so whenever a value changes, the view gets updated;
 					 model.addObserver(ob);
+					 
 					 getTableEntrys();
 		    	 }  
 		    	 
@@ -3191,9 +3192,12 @@ public class View extends ViewPart implements Observer{
 	      exportContent.setProvidedCA(dependencies);
 	      ProjectManager.getContainerInstance().addProjectAdditionForUUID(projectId, exportContent);
 	      
-	      mainViewer.setInput(pmList);
+	      mainViewer.setInput(pmList);	      
+	      
 		  for (int i = 0; i < 5; i++) {
-			  table.getColumn(i).pack();
+			  if (table.getColumn(i).getWidth() < 1) {
+				  table.getColumn(i).pack();
+			  }
 		  }
 	}
 	
