@@ -49,9 +49,6 @@
       <initializer
             class="xstampp.preferences.PreferenceInitializer">
       </initializer>
-      <initializer
-            class="xstampp.preferences.StpaPreferenceInitializor">
-      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -862,11 +859,6 @@
          class="xstampp.preferences.PreferencePageUpdate"
          id="astpa.preferencePageUpdate"
          name="Update">
-   </page>
-   <page
-         class="xstampp.preferences.ControlStructurePreferences"
-         id="xstampp.cs.preferencees"
-         name="Conrol Structure">
    </page>
 </extension>
 <extension

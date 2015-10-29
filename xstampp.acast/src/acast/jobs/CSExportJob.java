@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
@@ -254,7 +255,9 @@ public class CSExportJob extends Job {
 			ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
 
 			viewer.createControl(canvas);
-			viewer.setEditPartFactory(new CSEditPartFactory(CSExportJob.this.model, CSExportJob.this.editorId));
+			viewer.setEditPartFactory(new CSEditPartFactory(CSExportJob.this.model,
+															CSExportJob.this.editorId,
+															Activator.getDefault().getPreferenceStore()));
 			viewer.setProperty(CSAbstractEditor.STEP_EDITOR, CSExportJob.this.editorId);
 
 			ScalableRootEditPart rootEditPart = new ScalableRootEditPart();

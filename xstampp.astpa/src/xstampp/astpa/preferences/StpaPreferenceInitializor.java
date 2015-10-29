@@ -1,4 +1,4 @@
-package xstampp.preferences;
+package xstampp.astpa.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.draw2d.ColorConstants;
@@ -8,7 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.Activator;
+import xstampp.preferences.IControlStructureConstants;
 
 
 
@@ -20,7 +20,7 @@ import xstampp.Activator;
  */
 public class StpaPreferenceInitializor extends AbstractPreferenceInitializer {
 	
-	private final IPreferenceStore store = Activator.getDefault()
+	private final IPreferenceStore store = xstampp.astpa.Activator.getDefault()
 			.getPreferenceStore();
 
 	/**

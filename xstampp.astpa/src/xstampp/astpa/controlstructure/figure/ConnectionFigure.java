@@ -15,6 +15,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.w3c.dom.svg.GetSVGDocument;
 
@@ -26,6 +27,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	private PolylineConnection feedback;
 	private UUID currentFeedbackId;
 	private UUID id;
+	private IPreferenceStore store;
 	public ConnectionFigure(UUID id) {
 		super();
 		this.id = id;
@@ -269,5 +271,10 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		if(this.feedback != null){
 			this.feedback.getConnectionRouter().route(this.feedback);
 		}
+	}
+
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		this.store = store;
 	}
 }

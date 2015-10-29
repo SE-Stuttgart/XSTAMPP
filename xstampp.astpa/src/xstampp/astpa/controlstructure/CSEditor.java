@@ -83,6 +83,7 @@ public class CSEditor extends CSAbstractEditor {
 	 *
 	 */
 	public CSEditor() {
+		super(Activator.getDefault().getPreferenceStore());
 		this.zoomLevel = 1.0;
 		this.viewLocation = null;
 		this.toolEntryToComponentType = new HashMap<>();
@@ -171,6 +172,7 @@ public class CSEditor extends CSAbstractEditor {
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/arrow_simple_40.png"); //$NON-NLS-1$
 		entry = new ConnectionCreationToolEntry(Messages.Arrow, Messages.CreateConnections,
 				new ConnectionCreationFactory(ConnectionType.ARROW_SIMPLE), imgDesc, imgDescLarge);
+		entry.setToolProperty(AbstractTool.PROPERTY_UNLOAD_WHEN_FINISHED,true);
 		connectionElements.add(entry);
 		this.toolEntryToComponentType.put(ConnectionType.ARROW_SIMPLE, entry);
 
@@ -179,7 +181,7 @@ public class CSEditor extends CSAbstractEditor {
 		entry = new ConnectionCreationToolEntry(Messages.DashedArrows, Messages.CreateConnections,
 				new ConnectionCreationFactory(ConnectionType.ARROW_DASHED), imgDesc, imgDescLarge);
 		connectionElements.add(entry);
-
+		entry.setToolProperty(AbstractTool.PROPERTY_UNLOAD_WHEN_FINISHED,true);
 		this.toolEntryToComponentType.put(ConnectionType.ARROW_DASHED, entry);
 
 		root.add(separator);

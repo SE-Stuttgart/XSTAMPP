@@ -56,6 +56,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 	 * 
 	 */
 	public CSEditorWithPM() {
+		super(Activator.getDefault().getPreferenceStore());
 		this.zoomLevel = 1.0;
 		this.viewLocation = null;
 	}

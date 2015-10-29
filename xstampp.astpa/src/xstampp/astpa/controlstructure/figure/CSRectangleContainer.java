@@ -14,6 +14,7 @@ import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -23,6 +24,7 @@ import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 public class CSRectangleContainer extends Figure implements IControlStructureFigure{
 	private UUID id;
 	private boolean selected;
+	private IPreferenceStore store;
 	private static final int TOP_OFFSET= 5;
 	private static final int BOTTOM_OFFSET= 5;
 	
@@ -186,6 +188,11 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		this.store = store;
 	}
 	 
 

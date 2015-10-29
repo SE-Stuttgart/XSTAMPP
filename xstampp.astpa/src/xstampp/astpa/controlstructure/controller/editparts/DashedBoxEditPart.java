@@ -35,6 +35,7 @@ public class DashedBoxEditPart extends CSAbstractEditPart {
 	@Override
 	protected IFigure createFigure() {
 		TextFieldFigure tmpFigure = new TextFieldFigure(this.getId());
+		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setDashed();
 		tmpFigure.setBackgroundColor(null);
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());

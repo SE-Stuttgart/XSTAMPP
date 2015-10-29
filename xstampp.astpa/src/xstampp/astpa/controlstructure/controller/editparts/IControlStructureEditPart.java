@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * 
@@ -44,5 +45,10 @@ public interface IControlStructureEditPart extends GraphicalEditPart,MouseMotion
 	 *            the Translatable which is given to it's parents figure
 	 */
 	void translateToRoot(Translatable t);
+	
+	/**
+	 * @param store the store to set
+	 */
+	public void setPreferenceStore(IPreferenceStore store);
 
 }

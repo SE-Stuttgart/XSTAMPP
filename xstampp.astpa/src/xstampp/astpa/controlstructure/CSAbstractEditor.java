@@ -80,6 +80,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -108,7 +109,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import xstampp.Activator;
 import xstampp.astpa.controlstructure.controller.commands.CopyComponentCommand;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
@@ -205,12 +205,15 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private boolean selectAddedParts = false;
 
+	private IPreferenceStore store;
+
 	/**
 	 * This constructor defines the Domain where the editable content should be
 	 * displayed in
+	 * @param store TODO
 	 */
-	public CSAbstractEditor() {
-		this.mousePosition = new Point(1,1);
+	public CSAbstractEditor(IPreferenceStore store) {
+		this.store = store;
 		this.setEditDomain(this);
 		this.asExport = false;
 	}
@@ -256,7 +259,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 		}
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
-		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+
+		this.store.addPropertyChangeListener(this);
 		
 	}
 
@@ -289,6 +293,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.splitter.hookDropTargetListener(viewer);
 
 		viewer.setContents(this.createRoot());
+		((IControlStructureEditPart)viewer.getContents()).setPreferenceStore(this.store);
 		viewer.getContents().refresh();
 
 	}
@@ -321,7 +326,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 
 		viewer.setEditPartFactory(new CSEditPartFactory(this.getModelInterface(),
-				this.getId()));
+				this.getId(), this.store));
 		// zooming
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		viewer.setRootEditPart(rootEditPart);
@@ -471,7 +476,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Map<String, String> values = new HashMap<>();
-				values.put("xstampp.command.preferencePage", "xstampp.cs.preferencees"); //$NON-NLS-1$ //$NON-NLS-2$
+				values.put("xstampp.command.preferencePage", "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$ //$NON-NLS-2$
 				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values); //$NON-NLS-1$
 			}
 		});
@@ -839,8 +844,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	@Override
 	public void dispose() {
-		Activator.getDefault().getPreferenceStore()
-				.removePropertyChangeListener(this);
+		this.store.removePropertyChangeListener(this);
 		this.getCommandStack().removeCommandStackListener(this);
 		this.modelInterface.deleteObserver(this);
 		this.getSite().getWorkbenchWindow().getSelectionService()
@@ -850,6 +854,26 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		super.dispose();
 	}
 
+	/**
+	 * @author Lukas Balzer
+	 * @param store The preference store which should be used, see that 
+	 * 				the store must contain all keys defined in IControlStructureConstants
+	 * @see IControlStructureConstants 
+	 */
+	public void setPreferenceStore(IPreferenceStore store){
+		
+		if(this.store != null){
+			this.store.removePropertyChangeListener(this);
+		}
+		this.store = store;
+		if(this.store != null){
+			this.store.addPropertyChangeListener(this);
+		}
+		if(this.graphicalViewer != null){
+			((IControlStructureEditPart)this.graphicalViewer.getContents()).setPreferenceStore(this.store);
+			((CSEditPartFactory)this.graphicalViewer.getEditPartFactory()).setStore(this.store);
+		}
+	}
 	/**
 	 * Creates the GraphicalViewer on the specified <code>Composite.
 	 * 
