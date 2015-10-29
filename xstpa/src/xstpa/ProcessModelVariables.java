@@ -38,7 +38,7 @@ public class ProcessModelVariables {
 	private String linkedControlActionName = "";
 	
 
-	private String refinedSafetyRequirements = "Click to add some Rules";
+	private String refinedSafetyRequirements ="";
 	
 	private String context;
 	

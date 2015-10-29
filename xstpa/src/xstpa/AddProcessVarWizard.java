@@ -1,5 +1,6 @@
 package xstpa;
 
+import java.awt.Checkbox;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
