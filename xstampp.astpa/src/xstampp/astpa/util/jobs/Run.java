@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
@@ -20,6 +19,7 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 /**
  * an export job which run s a complete export in all available formats.
@@ -30,7 +30,7 @@ import xstampp.ui.common.ProjectManager;
  * @since 2.0
  *
  */
-public class Run extends Job implements IJobChangeListener{
+public class Run extends XstamppJob{
 
 
 	/**
@@ -49,9 +49,9 @@ public class Run extends Job implements IJobChangeListener{
 	 */
 	public static final String CSV_DIR="csv"; //$NON-NLS-1$
 	
-	private UUID projectID;
+	private List<Job> jobList;
 	private String dir;
-	private int counter=0;
+	private boolean isCanceled;
 	private String[] xslMap = new String[] {Messages.Accidents,"/fopAccidents.xsl",//$NON-NLS-1$
 											Messages.Hazards,"/fopHazards.xsl",//$NON-NLS-1$
 											Messages.CausalFactors,"/fopcausal.xsl",//$NON-NLS-1$
@@ -90,134 +90,131 @@ public class Run extends Job implements IJobChangeListener{
 	 * @param id the project id
 	 */
 	public Run(String name,String path,UUID id) {
-		super(name);
+		super(name,id);
 		this.dir = path;
-		this.projectID = id;
 		this.exportCSVs = true;
 		this.exportImages = true;
 		this.exportPDFs = true;
 		this.exportReport=true;
-		this.addJobChangeListener(this);
+		this.isCanceled = false;
+		this.jobList = new ArrayList<>();
 	}
 
 	@Override
+	protected void canceling() {
+		this.isCanceled = true;
+		for(Job job : this.jobList){
+			job.cancel();
+		}
+		super.canceling();
+	}
+	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(Messages.ExportPdf, IProgressMonitor.UNKNOWN);
-		ProjectManager.getContainerInstance()
-		.getDataModel(this.projectID).prepareForExport();
+		monitor.beginTask("Main Run Export...", 10);
+		String fileName;
+		ProjectManager.getContainerInstance().getDataModel(getProjectId()).prepareForExport();
 		
-		monitor.setTaskName(Messages.ExportingCSV);
 		for(int i= 0;i<this.csvMap.length && this.exportCSVs;i+=2){
 			List<String> values = new ArrayList<>();
 			values.add(this.csvMap[i+1]);
-			StpaCSVExport job = new StpaCSVExport(getName(),this.dir+ CSV_DIR + File.separator + this.csvMap[i] +".csv",//$NON-NLS-1$
-										 	';',ProjectManager.getContainerInstance().getDataModel(this.projectID),values);
+			fileName = this.csvMap[i] +".csv";
+			StpaCSVExport job = new StpaCSVExport(getJobName(fileName),this.dir+ CSV_DIR + File.separator + fileName,//$NON-NLS-1$
+										 	';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),values);
 			job.showPreview(false);
-			job.addJobChangeListener(this);
-			job.schedule();
+			if(!addJob(job)){
+				return Status.CANCEL_STATUS;
+			}
 		}
-
-		monitor.setTaskName(Messages.ExportImage);
+		monitor.worked(1);
 		for(int i= 0;i<this.xslMap.length && this.exportImages;i+=2){
-
-			ExportJob job = new ExportJob(this.projectID, getName(), 
-											this.dir+ IMAGE_DIR + File.separator + this.xslMap[i] +".png",  //$NON-NLS-1$
+			fileName = this.xslMap[i] +".png";
+			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
+											this.dir+ IMAGE_DIR + File.separator + fileName,  //$NON-NLS-1$
 										 	this.xslMap[i+1], true, false);
 			job.showPreview(false);
-			job.addJobChangeListener(this);
-			job.schedule();
+			if(!addJob(job)){
+				return Status.CANCEL_STATUS;
+			}
 		}
+		monitor.worked(4);
 		if(this.exportImages){
 			String csPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructure +".png";
 			String csPMPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructureDiagramWithProcessModel +".png";
-			CSExportJob job = new CSExportJob(csPath, 5	, CSEditor.ID, this.projectID, false,this.decorateCS);
-			CSExportJob pmJob = new CSExportJob(csPMPath, 5	, CSEditorWithPM.ID, this.projectID, false,this.decorateCS);
+			CSExportJob job = new CSExportJob(csPath, 5	, CSEditor.ID, getProjectId(), false,this.decorateCS);
+			CSExportJob pmJob = new CSExportJob(csPMPath, 5	, CSEditorWithPM.ID, getProjectId(), false,this.decorateCS);
 			
-			job.addJobChangeListener(this);
-			pmJob.addJobChangeListener(this);
-			job.schedule();
-			pmJob.schedule();
+			if(!addJob(job)){
+				return Status.CANCEL_STATUS;
+			}
+			if(!addJob(pmJob)){
+				return Status.CANCEL_STATUS;
+			}
 		}
-		monitor.setTaskName(Messages.ExportingPdf);
+		monitor.worked(5);
 		for(int i= 0;i<this.xslMap.length && this.exportPDFs;i+=2){
-			ExportJob pdfJob = new ExportJob(this.projectID, getName(),
+			ExportJob pdfJob = new ExportJob(getProjectId(), "Expoting " +this.xslMap[i] +".pdf",
 											this.dir + PDF_DIR + File.separator + this.xslMap[i] +".pdf", //$NON-NLS-1$
 											this.xslMap[i+1], true, false);
 			pdfJob.showPreview(false);
-			pdfJob.addJobChangeListener(this);
-			pdfJob.schedule();
-			try {
-				pdfJob.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(!addJob(pdfJob)){
+				return Status.CANCEL_STATUS;
 			}
 		}
-		
+		monitor.worked(8);
 		if(this.exportReport){
-			ExportJob pdfRepJob = new ExportJob(this.projectID, getName(),
+			ExportJob pdfRepJob = new ExportJob(getProjectId(), getJobName("Final Report"),
 					this.dir + getName()+".pdf", //$NON-NLS-1$
 					"/fopxsl.xsl", true, false); //$NON-NLS-1$
 			pdfRepJob.setCSDirty();
 			pdfRepJob.showPreview(false);
-			pdfRepJob.addJobChangeListener(this);
-			pdfRepJob.schedule();
-			try {
-				pdfRepJob.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(!addJob(pdfRepJob)){
+				return Status.CANCEL_STATUS;
 			}
 		}
-		
+		monitor.worked(10);
 		return Status.OK_STATUS;
 	}
 
-	@Override
-	public void aboutToRun(IJobChangeEvent event) {
-		//do nothing
+	private String getJobName(String file){
+		return "Exporting "+ getName() + " - " +file+"...";
 	}
-
-	@Override
-	public void awake(IJobChangeEvent event) {
-		// do nothing
+	
+	private boolean addJob(Job job){
+		if(this.isCanceled){
+			return false;
+		}
+		try {
+			job.schedule();
+			job.join();
+			this.jobList.add(job);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return true;
+		
 	}
 
 	@Override
 	public void done(IJobChangeEvent event) {
-		
-		this.counter--;
-		if(this.counter == 0){
+		if(this.isCanceled){
+			ProjectManager.getLOGGER().debug("STPA run export was canceled"); //$NON-NLS-1$
+		}else{
 			//this command 
 			OpenInFileBrowser(this.dir);
 			Display.getDefault().syncExec(new Runnable() {
-
+	
 				@Override
 				public void run() {
-
+	
 					ProjectManager.getContainerInstance().callObserverValue(
 							ObserverValue.EXPORT_FINISHED);
 					ProjectManager.getContainerInstance()
-							.getDataModel(Run.this.projectID).prepareForSave();
+							.getDataModel(getProjectId()).prepareForSave();
 				}
 			});
 			ProjectManager.getLOGGER().debug("STPA run export finished"); //$NON-NLS-1$
 		}
-	}
-
-	@Override
-	public void running(IJobChangeEvent event) {
-		//this listener needs only to handle the scheduled() and the done() methode
-	}
-
-	@Override
-	public void scheduled(IJobChangeEvent event) {
-		this.counter++;
-	}
-
-	@Override
-	public void sleeping(IJobChangeEvent event) {
-		//this listener needs only to handle the scheduled() and the done() methode
+		super.done(event);
 	}
 	
 	

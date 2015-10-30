@@ -141,7 +141,6 @@ public class DataModelController extends Observable implements
 	private boolean unsavedChanges;
 
 	
-	private int initialCalls;
 	private String projectExtension;
 	private boolean refreshLock;
 	/**
@@ -170,18 +169,19 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public void updateValue(ObserverValue value) {
-		if(!refreshLock){
+		if(!this.refreshLock){
 			DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
 			this.setChanged();
-			int c = this.countObservers();
 			this.notifyObservers(value);
 		}
 	}
 
+	@Override
 	public void lockUpdate(){
 		this.refreshLock = true;
 	}
 	
+	@Override
 	public void releaseLockAndUpdate(ObserverValue value){
 		this.refreshLock = false;
 		updateValue(value);

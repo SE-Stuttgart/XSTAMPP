@@ -71,7 +71,7 @@ public class StpaCSVExport extends Job {
 	}
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(Messages.ExportingCSV, IProgressMonitor.UNKNOWN);
+		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		File tableCSV = new File(this.path);
 
 		try (BufferedCSVWriter csvWriter = new BufferedCSVWriter(

@@ -34,14 +34,11 @@ import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.Span;
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.equinox.internal.p2.engine.EngineActivator;
 import org.xml.sax.SAXException;
 
 import xstampp.astpa.controlstructure.CSEditor;
@@ -49,6 +46,7 @@ import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 /**
  * Eclipse job that handles the export
@@ -57,7 +55,7 @@ import xstampp.ui.common.ProjectManager;
  * @since 2.0
  * 
  */
-public class ExportJob extends Job implements IJobChangeListener {
+public class ExportJob extends XstamppJob implements IJobChangeListener {
 
 	private boolean enablePreview = true;
 	private static final float MP_TO_INCH = 72270f;
@@ -75,6 +73,11 @@ public class ExportJob extends Job implements IJobChangeListener {
 	private boolean isCsDirty;
 	private File csPath;
 	private File csPmPath;
+	/**
+	 * the xslfoTransormer is beeing related to the xsl which describes the
+	 * pdf export
+	 */
+	private Transformer xslfoTransformer;
 
 	/**
 	 * Constructor of the export job
@@ -97,11 +100,11 @@ public class ExportJob extends Job implements IJobChangeListener {
 	 */
 	public ExportJob(UUID projectId, String name, String filePath, String xslName,
 			boolean asOne, boolean decorate) {
-		super(name);
+		super(name,projectId);
 		this.decorate = decorate;
 		this.id = projectId;
 		this.filePath = filePath;
-		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);;
+		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);
 		this.xslName = xslName;
 		this.asOne = asOne;
 		this.tableHeadSize = 14;
@@ -122,11 +125,8 @@ public class ExportJob extends Job implements IJobChangeListener {
 	}
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(Messages.ExportPdf, 5);
-			File tmp = new File(filePath);
-			String projectTitle = ProjectManager.getContainerInstance().getTitle(this.id);
-			String wsPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
-			
+		monitor.beginTask(getName(), 5);
+			File tmp = new File(this.filePath);
 			this.imgPath = tmp.getParent(); //$NON-NLS-1$
 			
 		this.csPath = new File(this.imgPath + File.separator
@@ -175,11 +175,7 @@ public class ExportJob extends Job implements IJobChangeListener {
 		StreamSource informationSource = new StreamSource(
 				new ByteArrayInputStream(this.outStream.toByteArray()));
 
-		/**
-		 * the xslfoTransormer is beeing related to the xsl which describes the
-		 * pdf export
-		 */
-		Transformer xslfoTransformer;
+		
 		try {
 			URL xslUrl = this.getClass().getResource(this.xslName);
 
@@ -205,7 +201,10 @@ public class ExportJob extends Job implements IJobChangeListener {
 							.getResourceAsStream("/" + href)); //$NON-NLS-1$
 				}
 			});
-			xslfoTransformer = transfact.newTransformer(transformXSLSource);
+			if(monitor.isCanceled()){
+				return Status.CANCEL_STATUS;
+			}
+			this.xslfoTransformer = transfact.newTransformer(transformXSLSource);
 		
 			try (OutputStream out = new BufferedOutputStream(
 					new FileOutputStream(pdfFile));
@@ -216,18 +215,18 @@ public class ExportJob extends Job implements IJobChangeListener {
 					this.tableHeadSize *=2;
 					float width = Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
 					fopFactory.setPageWidth(2 * width + "in");
-					xslfoTransformer.setParameter("title.size", this.titleSize);
-					xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
-					xslfoTransformer.setParameter("text.size", this.textSize);
-					xslfoTransformer.setParameter("header.omit", "true"); //$NON-NLS-1$
-					this.getFirstDocumentSpan(xslfoTransformer,fopFactory);
+					this.xslfoTransformer.setParameter("title.size", this.titleSize);
+					this.xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
+					this.xslfoTransformer.setParameter("text.size", this.textSize);
+					this.xslfoTransformer.setParameter("header.omit", "true"); //$NON-NLS-1$
+					this.getFirstDocumentSpan(this.xslfoTransformer,fopFactory);
 //					float height = Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
 //					fopFactory.setPageHeight(2 * height + "in");
 				}else{
-					xslfoTransformer.setParameter("title.size", this.titleSize);
-					xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
-					xslfoTransformer.setParameter("text.size", this.textSize);
-					xslfoTransformer.setParameter("header.omit", "false"); //$NON-NLS-1$
+					this.xslfoTransformer.setParameter("title.size", this.titleSize);
+					this.xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
+					this.xslfoTransformer.setParameter("text.size", this.textSize);
+					this.xslfoTransformer.setParameter("header.omit", "false"); //$NON-NLS-1$
 				}
 				monitor.worked(1);
 				Fop fop;
@@ -239,7 +238,7 @@ public class ExportJob extends Job implements IJobChangeListener {
 
 				// transform the informationSource with the transformXSLSource
 				
-				xslfoTransformer.transform(informationSource, res);
+				this.xslfoTransformer.transform(informationSource, res);
 				
 				str.write(pdfoutStream.toByteArray());
 				str.close();
@@ -296,6 +295,19 @@ public class ExportJob extends Job implements IJobChangeListener {
 
 	}
 	
+	@Override
+	protected void canceling() {
+		if(this.xslfoTransformer != null){
+			this.xslfoTransformer.reset();
+		}
+		if(this.csPath != null){
+			ExportJob.this.csPath.deleteOnExit();
+		}
+		if(this.csPmPath != null){
+			ExportJob.this.csPmPath.deleteOnExit();
+		}
+		super.canceling();
+	}
 	/**
 	 * @return the id
 	 */
@@ -308,39 +320,10 @@ public class ExportJob extends Job implements IJobChangeListener {
 	}
 
 	@Override
-	public void aboutToRun(IJobChangeEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void awake(IJobChangeEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void done(IJobChangeEvent event) {
 		ExportJob.this.csPath.delete();
 		ExportJob.this.csPmPath.delete();
-		
+		super.done(event);
 	}
 
-	@Override
-	public void running(IJobChangeEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void scheduled(IJobChangeEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sleeping(IJobChangeEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
 }

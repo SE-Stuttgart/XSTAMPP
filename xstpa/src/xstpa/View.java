@@ -18,7 +18,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -66,8 +65,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import com.sun.xml.bind.marshaller.Messages;
-
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
@@ -77,11 +74,11 @@ import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
 import export.ExportContent;
-import export.ExportJob;
 import export.ExportWizard;
 import export.PdfExportPage;
 
@@ -158,8 +155,6 @@ public class View extends ViewPart implements Observer{
 	
 	private static final Image ADD = Activator.getImageDescriptor("icons/add.png").createImage();
 	
-	private static final Image EDIT = Activator.getImageDescriptor("icons/edit.png").createImage();
-	
 	private static final Image DELETE = Activator.getImageDescriptor("icons/delete.png").createImage();
 	
 	private static final Image SETTINGS = Activator.getImageDescriptor("icons/Settings.png").createImage();
@@ -205,14 +200,9 @@ public class View extends ViewPart implements Observer{
 	private Composite compositeDependencies, compositeTable, compositeControlAction, contextComposite, contextCompositeRight, 
 	compositeDependenciesTopRight, compositeDependenciesBottomRight, refinedSafetyComposite, ltlComposite;
 	
-	private IPartListener pL;
+	private IPartListener editorListener;
 	
-	private CellEditor[] contextEditor;
-	
-	
-	
-	
-	List dependenciesBottom = new ArrayList();
+	List<?> dependenciesBottom = new ArrayList<Object>();
 	
 	private ExportContent exportContent = new ExportContent();
 	
@@ -221,7 +211,7 @@ public class View extends ViewPart implements Observer{
 	List<ControlActionEntrys> dependenciesNotProvided = new ArrayList<ControlActionEntrys>();
 	
 	
-	List controlActionList = new ArrayList();
+	List<ControlActionEntrys> controlActionList = new ArrayList<ControlActionEntrys>();
 	
 	List<ControllerWithPMEntry> pmList = new ArrayList<ControllerWithPMEntry>();
 	
@@ -249,7 +239,7 @@ public class View extends ViewPart implements Observer{
 	private ProcessModelVariables linkedPMV;
 	
 	
-	Observer ob = this;
+	Observer modelObserver = this;
 	
 	public static DataModelController model;
 	
@@ -261,7 +251,7 @@ public class View extends ViewPart implements Observer{
 	
 	public static UUID projectId;
 	
-	private int contextTableCellX, refinedSafetyTableCellX, refinedSafetyTableCellY;
+	private int contextTableCellX, refinedSafetyTableCellX;
 	
 	private int contextTableCellY;
 	
@@ -295,7 +285,7 @@ public class View extends ViewPart implements Observer{
 		   * Returns the objects for the tables
 		   */
 		  public Object[] getElements(Object inputElement) {
-		    return ((List) inputElement).toArray();
+		    return ((List<?>) inputElement).toArray();
 		  }
 	}
 
@@ -359,7 +349,7 @@ public class View extends ViewPart implements Observer{
 		@Override
 		public org.eclipse.swt.graphics.Color getBackground(Object element) {
 			if (CWPMCLASS == element.getClass().getName()) {
-				ArrayList list = (ArrayList) mainViewer.getInput();
+				ArrayList<?> list = (ArrayList<?>) mainViewer.getInput();
 				int index = list.indexOf(element);
 				if ((index % 2) == 0) {
 					return BACKGROUND;
@@ -368,7 +358,7 @@ public class View extends ViewPart implements Observer{
 				}
 			}
 			else {
-				ArrayList list = (ArrayList) controlActionViewer.getInput();
+				ArrayList<?> list = (ArrayList<?>) controlActionViewer.getInput();
 				
 
 				try {
@@ -467,7 +457,7 @@ public class View extends ViewPart implements Observer{
 		public org.eclipse.swt.graphics.Color getBackground(Object element) {
 
 			 if (CAECLASS == element.getClass().getName()){
-				ArrayList list = (ArrayList) dependencyTableViewer.getInput();
+				ArrayList<?> list = (ArrayList<?>) dependencyTableViewer.getInput();
 				int index = list.indexOf(element);
 				if ((index % 2) == 0) {
 					return BACKGROUND;
@@ -532,7 +522,7 @@ public class View extends ViewPart implements Observer{
 				return CONFLICT;
 			}
 			else {
-				ArrayList list = (ArrayList) contextRightViewer.getInput();
+				ArrayList<?> list = (ArrayList<?>) contextRightViewer.getInput();
 				int index = list.indexOf(element);
 				if ((index % 2) == 0) {
 					return BACKGROUND;
@@ -678,7 +668,7 @@ public class View extends ViewPart implements Observer{
 				return CONFLICT;
 			}
 			else {
-				ArrayList list = (ArrayList) refinedSafetyViewer.getInput();
+				ArrayList<?> list = (ArrayList<?>) refinedSafetyViewer.getInput();
 				int index = list.indexOf(element);
 				if ((index % 2) == 0) {
 					return BACKGROUND;
@@ -772,7 +762,7 @@ public class View extends ViewPart implements Observer{
 				return CONFLICT;
 			}
 			else {
-				ArrayList list = (ArrayList) ltlViewer.getInput();
+				ArrayList<?> list = (ArrayList<?>) ltlViewer.getInput();
 				int index = list.indexOf(element);
 				if ((index % 2) == 0) {
 					return BACKGROUND;
@@ -2753,7 +2743,7 @@ public class View extends ViewPart implements Observer{
 		 * Listener which Gets the project-id of the currently active editor
 		 */
 	    
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(pL = new IPartListener() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(editorListener = new IPartListener() {
 		
 		    
 		    @Override
@@ -2773,7 +2763,7 @@ public class View extends ViewPart implements Observer{
 			    	 
 			    	 model = (DataModelController) ProjectManager.getContainerInstance().getDataModel(projectId);
 			    	 // observer gets added, so whenever a value changes, the view gets updated;
-					 model.addObserver(ob);
+					 model.addObserver(modelObserver);
 					 
 					 getTableEntrys();
 		    	 }  
@@ -3192,8 +3182,10 @@ public class View extends ViewPart implements Observer{
 	      exportContent.setProvidedCA(dependencies);
 	      ProjectManager.getContainerInstance().addProjectAdditionForUUID(projectId, exportContent);
 	      
-	      mainViewer.setInput(pmList);	      
-	      
+	      if(mainViewer.getControl() != null && !mainViewer.getControl().isDisposed()){
+	    	  mainViewer.setInput(pmList);	      
+	      }
+	     
 		  for (int i = 0; i < 5; i++) {
 			  if (table.getColumn(i).getWidth() < 1) {
 				  table.getColumn(i).pack();
@@ -3324,7 +3316,7 @@ public class View extends ViewPart implements Observer{
 			
 			// Then retreive the process output
 			InputStream in = proc.getInputStream();
-			InputStream err = proc.getErrorStream();
+			proc.getErrorStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 	        StringBuilder out = new StringBuilder();
 	        String line;
@@ -3379,21 +3371,21 @@ public class View extends ViewPart implements Observer{
 			int paramCount = Character.getNumericValue(temp);
 			line = reader.readLine();
 			temp = line.charAt(line.length()-1);
-			int configCount = Character.getNumericValue(temp);
+			Character.getNumericValue(temp);
 			//contextRightTable.setVisible(false);
 			while ((line = reader.readLine()) != null) {
 				if (line.contains("Configuration #")) {
 					ProcessModelVariables entry = new ProcessModelVariables();
 					
 					temp = line.charAt(line.length()-2);
-					int currentConfig = Character.getNumericValue(temp);
+					Character.getNumericValue(temp);
 					reader.readLine();
 					List<String> values = new ArrayList<String>();
 					List<String> variables = new ArrayList<String>();
 					for (int i = 0; i<paramCount; i++) {
 						line = reader.readLine();
 						temp = line.charAt(0);
-						int currentVariable = Character.getNumericValue(temp);
+						Character.getNumericValue(temp);
 						
 						variables.add(line.substring(line.indexOf("=")+2, line.lastIndexOf("=")));
 						//entry.setName(line.substring(line.indexOf("=")+2, line.length()));
@@ -3760,9 +3752,11 @@ public class View extends ViewPart implements Observer{
 
 	@Override
 	public void dispose() {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(pL);
-		this.model.deleteObserver(ob);
-	super.dispose();
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(editorListener);
+		if(model != null){
+			model.deleteObserver(modelObserver);
+		}
+		super.dispose();
 	}
 	
 	
@@ -3770,8 +3764,18 @@ public class View extends ViewPart implements Observer{
 	 * updates the table dynamically if something changes in the Datamodel
 	 */
 	@Override
-	public void update(Observable o, Object arg) {
-		getTableEntrys();
+	public void update(Observable o, Object updatedValue) {
+		ObserverValue type = (ObserverValue) updatedValue;
+		
+		switch (type) {
+		case CONTROL_STRUCTURE: {
+			getTableEntrys();
+			break;
+		}
+		default:
+			break;
+		}
+
 		
 	}
 
