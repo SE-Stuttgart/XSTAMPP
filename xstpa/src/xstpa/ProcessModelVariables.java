@@ -17,7 +17,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 @XmlRootElement(name = "contexttablecombination")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
-		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "editWindow", "id" })
+		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "id" })
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")
@@ -67,8 +67,6 @@ public class ProcessModelVariables {
 	private RelatedHazards relatedHazards = new RelatedHazards(View.allHazards);
 	
 	private UnsafeControlAction uca= new UnsafeControlAction(this);
-	
-	private editRelatedHazardsWizard editWindow= new editRelatedHazardsWizard(this);;
 	
 	private UUID id;
 	
@@ -175,13 +173,6 @@ public class ProcessModelVariables {
 	public void setRelatedHazards(RelatedHazards relatedHazards) {
 		this.relatedHazards = relatedHazards;
 	}
-	public editRelatedHazardsWizard getEditWindow() {
-		return editWindow;
-	}
-	public void setEditWindow(editRelatedHazardsWizard editWindow) {
-		this.editWindow = editWindow;
-	}
-
 
 	public UnsafeControlAction getUca() {
 		return uca;
