@@ -1,5 +1,7 @@
 package xstampp.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -10,6 +12,9 @@ import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -26,10 +31,62 @@ import xstampp.ui.common.ProjectManager;
  */
 public final class STPAPluginUtils {
 
+	private static List<Job> unfinishedJobs;
 	private STPAPluginUtils() {
-
+		unfinishedJobs = new ArrayList<>();
 	}
 
+	public static void listJob(Job job){
+		if(unfinishedJobs == null){
+			unfinishedJobs = new ArrayList<>();
+		}
+		unfinishedJobs.add(job);
+		job.addJobChangeListener(new IJobChangeListener() {
+			
+			@Override
+			public void sleeping(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void scheduled(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void running(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void done(IJobChangeEvent event) {
+				unfinishedJobs.remove(event.getJob());
+			}
+			
+			@Override
+			public void awake(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void aboutToRun(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	public static List<Job> getUnfinishedJobs(){
+		if(unfinishedJobs == null){
+			return new ArrayList<>();
+		}
+		return unfinishedJobs;
+	}
+	
 	/**
 	 * Executes a registered command without command values
 	 * 

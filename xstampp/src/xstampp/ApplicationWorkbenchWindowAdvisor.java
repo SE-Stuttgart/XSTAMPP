@@ -16,6 +16,7 @@ package xstampp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import messages.Messages;
 
@@ -39,9 +40,12 @@ import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.osgi.framework.ServiceReference;
 
+import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.update.UpdateJob;
 import xstampp.util.ChooseWorkLocation;
+import xstampp.util.STPAPluginUtils;
 
 /**
  * Configures the workbench window.
@@ -163,7 +167,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	@Override
 	public boolean preWindowShellClose() {
-		ProjectManager viewContainerViewPart = ProjectManager
+		ProjectManager manager = ProjectManager
 				.getContainerInstance();
 		
 		this.updateJob.cancel();
@@ -180,8 +184,13 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		}
 		page.resetPerspective();
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
-		
-		ProjectManager viewContainer = viewContainerViewPart;
+		if(!STPAPluginUtils.getUnfinishedJobs().isEmpty())
+		{
+			MessageDialog.openError(null, "Unfinished Jobs", "there are still unfinished jobs!"
+					+ " They need to be canceled or finished before the platform can shut down!");
+			return false;
+		}
+		ProjectManager viewContainer = manager;
 		if (viewContainer.getUnsavedChanges()) {
 			MessageDialog dialog = new MessageDialog(Display.getCurrent()
 					.getActiveShell(), Messages.PlatformName, null,
