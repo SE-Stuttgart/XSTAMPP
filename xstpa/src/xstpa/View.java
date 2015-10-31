@@ -1653,19 +1653,41 @@ public class View extends ViewPart implements Observer{
 	    		  
 	    		  contextViewer.setInput(contextTableInput);
 	    	  }
+	    	  if (contextTable.getSelectionIndex() == -1) {
+	    		  contextTable.select(0);
+	    	  }
+	    	  ArrayList<ControlActionEntrys> list = (ArrayList<ControlActionEntrys>) contextViewer.getInput();
+	    	  if (controlActionProvided) {
+	    		 
+	    		  setLinkedCAE(list.get(contextTable.getSelectionIndex()));
+	    	  }
+	    	  else {
+	    		  setLinkedCAE(list.get(contextTable.getSelectionIndex()));  
+	    	  }
+    		  
+    		  
 	    	  
-	    	  contextTable.select(0);
+	    	  if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
+	    		  createTablerows(0);
+	    		  contextRightContent = getLinkedCAE().getContextTableCombinations();
+	    		  showContent(filterCombo);
+	    		  if (controlActionProvided) {
+	    			  contextRightContentProvided = contextRightContent;
+	    		  }
+	    		  else {
+	    			  contextRightContentNotProvided = contextRightContent;
+	    		  }
+	    	  }
+	    	  else {
+		    		contextRightViewer.setInput(null);
+		    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
+	    	  }
 	    	  
 	    	  // packs the columns
 			  for (int i = 0, n = contextTable.getColumnCount(); i < n; i++) {
 				  contextTable.getColumn(i).setWidth(contextTable.getSize().x);
 			  }
 
-	    	  
-	    	  
-	    	  for (int i = 0, n = contextRightTable.getColumnCount(); i < n; i++) {
-				  contextRightTable.getColumn(i).pack();
-			  }
 	    	  
 	  	      // set the new composite visible
 	  	      contextComposite.setVisible(true);
@@ -1723,6 +1745,8 @@ public class View extends ViewPart implements Observer{
 		  	    		String tempHazards = "";
 		  	    		List<IUnsafeControlAction> unsafeCA;
 		  	    		Boolean relatedHazardsIsSet = false;
+		  	    		dependencies.get(i).getContextTableCombinations().get(j).getUca().getDescriptionIds().clear();
+		  	    		dependencies.get(i).getContextTableCombinations().get(j).getUca().getDescriptions().clear();
 		  	    		for (int g = 0; g<model.getAllControlActions().size();g++) {
 		  	    			unsafeCA = model.getAllControlActions().get(g).getUnsafeControlActions();
 		  	    			
@@ -1778,6 +1802,8 @@ public class View extends ViewPart implements Observer{
 	  	  				String tempHazards = "";
 						List<IUnsafeControlAction> unsafeCA;
 						Boolean relatedHazardsIsSet = false;
+						dependenciesNotProvided.get(i).getContextTableCombinations().get(j).getUca().getDescriptionIds().clear();
+		  	    		dependenciesNotProvided.get(i).getContextTableCombinations().get(j).getUca().getDescriptions().clear();
 						for (int g = 0; g<model.getAllControlActions().size();g++) {
 							unsafeCA = model.getAllControlActions().get(g).getUnsafeControlActions();
 							for (int z=0; z<unsafeCA.size();z++){
@@ -1813,7 +1839,9 @@ public class View extends ViewPart implements Observer{
 	  	      }
 	  	     
 
-	  	      
+	  	      if (refinedSafetyContent.isEmpty()) {
+	  	    	  MessageDialog.openInformation(null, "No Hazardous Combinations", "Please check some Combinations as Hazardous");
+	  	      }
 	  	      
 	  	      refinedSafetyViewer.setInput(refinedSafetyContent);
 	  	      
