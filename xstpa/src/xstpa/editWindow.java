@@ -177,7 +177,7 @@ public class editWindow
 
 	public editWindow(ControlActionEntrys linkedCAE, View view)
     {
-        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
+        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));
         shell.setLayout(new GridLayout(1, false));
         shell.setText("Context Table Settings");
         shell.setImage(View.LOGO);
