@@ -91,6 +91,7 @@ public class GridCellText extends AbstractGridCell {
 
 	@Override
 	public int getPreferredHeight() {
+		
 		return Math.max(this.textHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
 	}
 

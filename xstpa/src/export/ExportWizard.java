@@ -64,7 +64,7 @@ public class ExportWizard extends AbstractExportWizard {
 
 		if (this.page.getPdfCheckbox().getSelection() == true) {
 			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.PDF_DIR + File.separator +"xstpa-tables.pdf", "/src/export/fopXstpa.xsl",
-					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+					View.projectId);
 		    exportjob.schedule();
 		}
 		if (this.page.getCsvCheckbox().getSelection() == true) {
@@ -73,7 +73,7 @@ public class ExportWizard extends AbstractExportWizard {
 		}
 		if (this.page.getImgCheckbox().getSelection() == true) {
 			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.IMAGE_DIR+ File.separator +"xstpa-tables.png", "/src/export/fopXstpa.xsl",
-					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+					View.projectId);
 		    exportjob.schedule();
 		}
 
