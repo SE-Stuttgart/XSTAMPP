@@ -556,7 +556,7 @@ public class View extends ViewPart implements Observer{
 			case 1:
 				return entry.getLinkedControlActionName();
 			case 2:
-				if (entry.getHAnytime()) {
+				if ((entry.getHAnytime()) | (entry.getHEarly()) | (entry.getHLate())) {
 					entry.setContext("Provided");
 					return entry.getContext();
 				}
@@ -567,20 +567,9 @@ public class View extends ViewPart implements Observer{
 				
 			case 3:	
 				String temp ="";
-				
-//				if (entry.getPmVariables().isEmpty()) {
-//					List<String> vars = new ArrayList<String>();
-//					for (int i = 0;i<contextRightTable.getColumnCount();i++){
-//						vars.add(contextRightTable.getColumn(i).getText());
-//					}
-//					entry.setPmVariables(vars);
-//				}
-//				if (entry.getHAnytime()) {
+
 					for (int i=0; i<entry.getPmValues().size(); i++){
 				
-//						temp = temp.concat(entry.getPmVariables().get(i));
-//						temp = temp.concat("=");
-//						temp = temp.concat(entry.getValues().get(i));
 						temp = temp.concat(entry.getPmValues().get(i));
 
 						if (!(i==entry.getPmValues().size()-1)) {
@@ -589,21 +578,6 @@ public class View extends ViewPart implements Observer{
 
 					}
 
-//				}
-//				else {
-//					for (int i=0; i<entry.getValues().size(); i++){
-//
-//						temp = temp.concat(entry.getPmVariables().get(i));
-//						temp = temp.concat("=");
-//						temp = temp.concat(entry.getValues().get(i));
-//						
-//						if (!(i==entry.getSizeOfValues()-1)) {
-//							temp = temp.concat(",");
-//						}
-//
-//					}
-//
-//				}
 				return temp;
 				
 			case 4:
@@ -616,31 +590,7 @@ public class View extends ViewPart implements Observer{
 				List<IUnsafeControlAction> unsafeCA;
 				
 				return entry.getUca().getRelatedHazards();
-				
-//				for (int j = 0; j<model.getAllControlActions().size();j++) {
-//					unsafeCA = model.getAllControlActions().get(j).getUnsafeControlActions();
-//					for (int i=0; i<unsafeCA.size();i++){
-//						
-//						if (entry.getLinkedControlActionName().equals(model.getAllControlActions().get(j).getTitle())) {
-//							
-//							List <ITableModel> linkedHazards = model.getLinkedHazardsOfUCA(unsafeCA.get(i).getId());
-//							for (int n=0; n<linkedHazards.size();n++) {
-//								if (!(n == linkedHazards.size()-1)) {
-//									tempHazards = tempHazards.concat("H-"+linkedHazards.get(n).getNumber()+", ");
-//									
-//								}
-//								else {
-//									tempHazards = tempHazards.concat("H-"+linkedHazards.get(n).getNumber());
-//									return tempHazards;
-//								}
-//
-//							}
-//								
-//						}
-//					}
-//				}
-				
-//				return "No Related Hazards";
+
 				
 				
 				
@@ -709,7 +659,7 @@ public class View extends ViewPart implements Observer{
 			case 1:
 				String temp = "G (";
 				String nameOfControlAction = null;
-				if (entry.getHAnytime()) {
+				if ((entry.getHAnytime()) | (entry.getHEarly()) | (entry.getHLate())) {
 					for (int i=0; i<entry.getValues().size(); i++){
 						temp = temp.concat("(");					
 						temp = temp.concat(entry.getPmVariables().get(i));
@@ -1680,7 +1630,8 @@ public class View extends ViewPart implements Observer{
 	    	  }
 	    	  else {
 		    		contextRightViewer.setInput(null);
-		    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
+//		    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
+		    		getViewSite().getActionBars().getStatusLineManager().setMessage("There was no Stored Testset. Please Generate a new Testset for this Control Action");
 	    	  }
 	    	  
 	    	  // packs the columns
@@ -1724,7 +1675,10 @@ public class View extends ViewPart implements Observer{
 		  	    for (int i=0; i<dependencies.size(); i++) {
 		  	    	for (int j=0; j<dependencies.get(i).getContextTableCombinations().size(); j++) {
 	  	    		  
-		  	    		if (dependencies.get(i).getContextTableCombinations().get(j).getHAnytime()) {
+		  	   			  if ((dependencies.get(i).getContextTableCombinations().get(j).getHAnytime()) | 
+		  	   					  (dependencies.get(i).getContextTableCombinations().get(j).getHEarly()) | 
+		  	   					  (dependencies.get(i).getContextTableCombinations().get(j).getHLate())) {
+		  	   				  
 		  	    			ProcessModelVariables temp = new ProcessModelVariables();
 	  	   				  	temp = dependencies.get(i).getContextTableCombinations().get(j);
 	  	   				  
@@ -1884,7 +1838,10 @@ public class View extends ViewPart implements Observer{
 	  	      for (int i=0; i<dependencies.size(); i++) {
 	  	    	  for (int j=0; j<dependencies.get(i).getContextTableCombinations().size(); j++) {
 	  	    		  
-	  	   			  if (dependencies.get(i).getContextTableCombinations().get(j).getHAnytime()) {
+	  	   			  if ((dependencies.get(i).getContextTableCombinations().get(j).getHAnytime()) | 
+	  	   					  (dependencies.get(i).getContextTableCombinations().get(j).getHEarly()) | 
+	  	   					  (dependencies.get(i).getContextTableCombinations().get(j).getHLate())) {
+	  	   				  
 	  	   				  ProcessModelVariables temp = new ProcessModelVariables();
 	  	   				  temp = dependencies.get(i).getContextTableCombinations().get(j);
 	  	    			  //temp.setLinkedControlActionName(dependencies.get(i).getControlAction());
@@ -2325,7 +2282,8 @@ public class View extends ViewPart implements Observer{
 		    	  }
 		    	  else {
 			    		contextRightViewer.setInput(null);
-			    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
+//			    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
+			    		getViewSite().getActionBars().getStatusLineManager().setMessage("There was no Stored Testset. Please Generate a new Testset for this Control Action");
 		    	  }
 		    			  
 		      }  
@@ -2590,7 +2548,8 @@ public class View extends ViewPart implements Observer{
 			    	}
 			    	else {
 			    		contextRightViewer.setInput(null);
-			    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
+//			    		MessageDialog.openInformation(null, "No stored Testset found", "There was no Stored Testset. Please Generate a new Testset for this Control Action");
+			    		getViewSite().getActionBars().getStatusLineManager().setMessage("There was no Stored Testset. Please Generate a new Testset for this Control Action");
 			    	}
 
 	    		  	contextTable.setSelection(tableIndex);
@@ -2633,7 +2592,8 @@ public class View extends ViewPart implements Observer{
 			    	}
 			    	else {
 			    		contextRightViewer.setInput(null);
-			    		MessageDialog.openInformation(null, "No Linked Variables", "There are no Linked Variables found or there was no Stored Testset");
+//			    		MessageDialog.openInformation(null, "No Linked Variables", "There are no Linked Variables found or there was no Stored Testset");
+			    		getViewSite().getActionBars().getStatusLineManager().setMessage("There was no Stored Testset. Please Generate a new Testset for this Control Action");
 			    	}
 
 	    		  	contextTable.setSelection(tableIndex);
