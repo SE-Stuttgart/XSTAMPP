@@ -21,7 +21,7 @@ import xstpa.View;
 
 public class ExportWizard extends AbstractExportWizard {
 
-	private final static String OUTPUT ="Output"; //$NON-NLS-1$
+	private final static String OUTPUT ="Output/Extended"; //$NON-NLS-1$
 	private RunPage page;
 	
 

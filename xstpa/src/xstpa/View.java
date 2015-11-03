@@ -1043,10 +1043,10 @@ public class View extends ViewPart implements Observer{
 
 	    
 		 // Add a button to switch tables (AND / OR Button)
-	    final Button andOrBtn = new Button(innerLeft, SWT.PUSH);
-	    andOrBtn.setText("AND/OR Table");
-	    andOrBtn.setLayoutData(new GridData(100,30));
-	    andOrBtn.setEnabled(true);
+//	    final Button andOrBtn = new Button(innerLeft, SWT.PUSH);
+//	    andOrBtn.setText("AND/OR Table");
+//	    andOrBtn.setLayoutData(new GridData(100,30));
+//	    andOrBtn.setEnabled(true);
 	    
 	    
 	    
@@ -1463,7 +1463,7 @@ public class View extends ViewPart implements Observer{
 	    	  DependenciesTableBtn.setBackground(NORMAL);
 	    	  contextTableBtn2.setBackground(NORMAL);
 	    	  refinedSafetyBtn.setBackground(NORMAL);
-	    	  andOrBtn.setBackground(NORMAL);
+//	    	  andOrBtn.setBackground(NORMAL);
 	    	  
 	    	  // set the old composite invisible
 	    	  compositeDependencies.setVisible(false);
@@ -1498,7 +1498,7 @@ public class View extends ViewPart implements Observer{
 	    	  DependenciesTableBtn.setBackground(NORMAL);
 	    	  contextTableBtn2.setBackground(NORMAL);
 	    	  refinedSafetyBtn.setBackground(NORMAL);
-	    	  andOrBtn.setBackground(NORMAL);
+//	    	  andOrBtn.setBackground(NORMAL);
 	    	  
 	    	  // set the old composite invisible
 	    	  compositeDependencies.setVisible(false);
@@ -1538,7 +1538,7 @@ public class View extends ViewPart implements Observer{
 	    	  DependenciesTableBtn.setBackground(HIGHLIGHT);
 	    	  contextTableBtn2.setBackground(NORMAL);
 	    	  refinedSafetyBtn.setBackground(NORMAL);
-	    	  andOrBtn.setBackground(NORMAL);
+//	    	  andOrBtn.setBackground(NORMAL);
 	    	  
 	    	compositeControlAction.setVisible(false);
 	    	compositeTable.setVisible(false);
@@ -1617,7 +1617,7 @@ public class View extends ViewPart implements Observer{
 	    	  DependenciesTableBtn.setBackground(NORMAL);
 	    	  contextTableBtn2.setBackground(HIGHLIGHT);
 	    	  refinedSafetyBtn.setBackground(NORMAL);
-	    	  andOrBtn.setBackground(NORMAL);
+//	    	  andOrBtn.setBackground(NORMAL);
 	    	  
 	    	  // set the old composite invisible
 	    	  compositeDependencies.setVisible(false);
@@ -1708,7 +1708,7 @@ public class View extends ViewPart implements Observer{
 	    		DependenciesTableBtn.setBackground(NORMAL);
 	    		contextTableBtn2.setBackground(NORMAL);
 	    		refinedSafetyBtn.setBackground(HIGHLIGHT);
-	    		andOrBtn.setBackground(NORMAL);
+//	    		andOrBtn.setBackground(NORMAL);
 	    	  
 		    	// set the old composite invisible
 		    	compositeDependencies.setVisible(false);
@@ -1868,7 +1868,7 @@ public class View extends ViewPart implements Observer{
 	    	  DependenciesTableBtn.setBackground(NORMAL);
 	    	  contextTableBtn2.setBackground(NORMAL);
 	    	  refinedSafetyBtn.setBackground(NORMAL);
-	    	  andOrBtn.setBackground(NORMAL);
+//	    	  andOrBtn.setBackground(NORMAL);
 	    	  
 	    	  // set the old composite invisible
 	    	  compositeDependencies.setVisible(false);
@@ -1932,16 +1932,16 @@ public class View extends ViewPart implements Observer{
 	    /**
 	     * Functionality for the settingsButton
 	     */
-	    andOrBtn.addSelectionListener(new SelectionAdapter() {
-	      public void widgetSelected(SelectionEvent event) {
-
-	    	ExportWizard eW = new ExportWizard();
-	    	eW.addPage(new PdfExportPage("test", "test1"));
-	    	System.out.println(eW.getPageCount());
-	    	eW.getShell();
-	    	    
-	      }
-	    });
+//	    andOrBtn.addSelectionListener(new SelectionAdapter() {
+//	      public void widgetSelected(SelectionEvent event) {
+//
+//	    	ExportWizard eW = new ExportWizard();
+//	    	eW.addPage(new PdfExportPage("test", "test1"));
+//	    	System.out.println(eW.getPageCount());
+//	    	eW.getShell();
+//	    	    
+//	      }
+//	    });
 	    
 	    
 	    /**

@@ -314,7 +314,7 @@ public class editWindow
 	    
 	    final Combo modeCombo = new Combo(mainComposite, SWT.READ_ONLY);
 	    modeCombo.add("Scratch");
-	    modeCombo.add("Extend");
+//	    modeCombo.add("Extend");
 	    
 	    modeCombo.select(0);
 	    data = new GridData(150, 80);
@@ -335,9 +335,9 @@ public class editWindow
 	    data = new GridData(150, 80);
 	    handlingCombo.setLayoutData(data);
 	    
-	    Button dontCareValues = new Button(mainComposite, SWT.CHECK);
-	    dontCareValues.setText("Randomize DontCare Values");
-	    dontCareValues.setSelection(true);
+//	    Button dontCareValues = new Button(mainComposite, SWT.CHECK);
+//	    dontCareValues.setText("Randomize DontCare Values");
+//	    dontCareValues.setSelection(true);
 	    
 	    // Add the buttons for the ButtonsComponent
 	    
