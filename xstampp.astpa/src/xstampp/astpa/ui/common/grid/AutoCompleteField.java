@@ -172,5 +172,6 @@ public class AutoCompleteField {
 	
 	public void setProposalListener(IContentProposalListener listener){
 		shell.setProposalListener(listener);
+		getContentProposalAdapter().addContentProposalListener(listener);
 	}
 }

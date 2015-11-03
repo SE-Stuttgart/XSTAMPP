@@ -100,16 +100,20 @@ public class CausalFactorsView extends StandartEditorPart{
 			
 			CausalFactorsView.this.addOrGetFactor(this.factorId, this.safetyConstraintId).getSafetyConstraint().setText(newText);
 		}
-
+		
 		@Override
 		public void delete() {
 			// a safety constraint cannot be deleted
 			
 		}
-
 		@Override
 		public UUID getUUID() {
 			return this.safetyConstraintId;
+		}
+
+		@Override
+		public void onTextChange() {
+			reloadTable();
 		}
 	}
 
@@ -225,6 +229,7 @@ public class CausalFactorsView extends StandartEditorPart{
 													.getSafetyConstraint()
 													.getId(), proposal
 													.getDescription());
+							reloadTable();
 						}
 					});
 

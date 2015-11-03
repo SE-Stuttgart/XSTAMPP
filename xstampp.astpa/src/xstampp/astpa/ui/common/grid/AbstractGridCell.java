@@ -200,7 +200,9 @@ public abstract class AbstractGridCell implements IGridCell {
 	 */
 	protected final int wrapText(Rectangle bounds, GC gc, String text,
 								 int left_space, int right_space){
-
+		if(text.isEmpty()){
+			return 0;
+		}
 		FontMetrics metrics= gc.getFontMetrics();
 		int line_height = bounds.y;
 		String[] words= text.split(" ");

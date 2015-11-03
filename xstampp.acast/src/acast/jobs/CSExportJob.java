@@ -5,10 +5,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -26,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
@@ -35,6 +35,7 @@ import xstampp.astpa.controlstructure.figure.RootFigure;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 /**
  *
@@ -42,7 +43,7 @@ import xstampp.ui.common.ProjectManager;
  * @since 2.0
  *
  */
-public class CSExportJob extends Job {
+public class CSExportJob extends XstamppJob {
 
 	private String path;
 	private String process;
@@ -80,7 +81,7 @@ public class CSExportJob extends Job {
 	 */
 	public CSExportJob(String path, int imgOffset, String editorId, UUID projectId, boolean showPreview,
 			boolean decorate) {
-		super(Messages.ExportCS);
+		super(Messages.ExportCS,projectId);
 		this.projectID = projectId;
 		this.model = (IControlStructureEditorDataModel) ProjectManager.getContainerInstance().getDataModel(projectId);
 		this.path = path;

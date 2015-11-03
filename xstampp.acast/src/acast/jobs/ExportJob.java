@@ -44,6 +44,7 @@ import acast.controller.Controller;
 import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 /**
  * Eclipse job that handles the export
@@ -52,7 +53,7 @@ import xstampp.ui.common.ProjectManager;
  * @since 2.0
  *
  */
-public class ExportJob extends Job {
+public class ExportJob extends XstamppJob {
 
 	private boolean enablePreview = true;
 	private static final float MP_TO_INCH = 72270f;
@@ -89,7 +90,7 @@ public class ExportJob extends Job {
 	 *            colored borders and image labels
 	 */
 	public ExportJob(UUID projectId, String name, String filePath, String xslName, boolean asOne, boolean decorate) {
-		super(name);
+		super(name,projectId);
 		this.decorate = decorate;
 		this.id = projectId;
 		this.filePath = filePath;
