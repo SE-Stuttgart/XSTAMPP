@@ -1,5 +1,6 @@
 package xstampp.ui.navigation;
 
+import java.io.File;
 import java.util.UUID;
 
 import messages.Messages;
@@ -7,6 +8,8 @@ import messages.Messages;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
+
+import xstampp.ui.common.ProjectManager;
 
 /**
  * A Selector is connected to a treeItem and manages the interaction between the platform and the ProjectTree
@@ -85,6 +88,8 @@ public abstract class AbstractSelector implements IProjectSelection {
 		return this.treeItem;
 	}
 
-	
+	public String getProjectOutput(){
+		return "Output"+ File.separator + ProjectManager.getContainerInstance().getTitle(getProjectId())+File.separator;
+	}
 	
 }
