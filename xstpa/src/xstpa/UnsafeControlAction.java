@@ -48,6 +48,9 @@ public class UnsafeControlAction {
 	public void setLinkedDescriptions(List<String> linkedDescriptions) {
 		this.linkedDescriptions = linkedDescriptions;
 	}
+	public void addLinkedDescription(String description) {
+		this.linkedDescriptions.add(description);
+	}
 	
 	public void initialize() {
 		List<IUnsafeControlAction> unsafeCA;

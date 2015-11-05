@@ -387,7 +387,7 @@ public class View extends ViewPart implements Observer{
 	
 
 	class DependencyViewLabelProvider extends LabelProvider implements
-			ITableLabelProvider, IColorProvider {
+			ITableLabelProvider{
 		
 		public String getColumnText(Object element, int columnIndex) {
 		
@@ -446,31 +446,31 @@ public class View extends ViewPart implements Observer{
 	        return null;
 		}
 		
-		@Override
-		public org.eclipse.swt.graphics.Color getForeground(Object element) {
-			
-			return null;
-		}
-
-
-		@Override
-		public org.eclipse.swt.graphics.Color getBackground(Object element) {
-
-			 if (CAECLASS == element.getClass().getName()){
-				ArrayList<?> list = (ArrayList<?>) dependencyTableViewer.getInput();
-				int index = list.indexOf(element);
-				if ((index % 2) == 0) {
-					return BACKGROUND;
-				} else {	    
-					return null;
-				}
-			}
-			 else {
-				 return null;
-			 }
-			
-			
-		}
+//		@Override
+//		public org.eclipse.swt.graphics.Color getForeground(Object element) {
+//			
+//			return null;
+//		}
+//
+//
+//		@Override
+//		public org.eclipse.swt.graphics.Color getBackground(Object element) {
+//
+//			 if (CAECLASS == element.getClass().getName()){
+//				ArrayList<?> list = (ArrayList<?>) dependencyTableViewer.getInput();
+//				int index = list.indexOf(element);
+//				if ((index % 2) == 0) {
+//					return BACKGROUND;
+//				} else {	    
+//					return null;
+//				}
+//			}
+//			 else {
+//				 return null;
+//			 }
+//			
+//			
+//		}
 		
 		
 
@@ -537,7 +537,7 @@ public class View extends ViewPart implements Observer{
 
 	
 	class RefinedSafetyViewLabelProvider extends LabelProvider implements
-	ITableLabelProvider, IColorProvider {
+	ITableLabelProvider{
 		
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
@@ -581,8 +581,44 @@ public class View extends ViewPart implements Observer{
 				return temp;
 				
 			case 4:
-
-				return "Click to see UCA's";
+				if (entry.getUca().getLinkedDescriptionIds().isEmpty()) {
+					return "Click to see UCA's";
+				}
+				else {
+					String tempUcas ="";
+					int counter = 0;
+					
+						for (int i= 0; i<entry.getUca().getDescriptionIds().size();i++) {
+							for (int j = 0; j<entry.getUca().getLinkedDescriptionIds().size();j++) {
+								if (entry.getUca().getLinkedDescriptionIds().get(j)
+										.equals(entry.getUca().getDescriptionIds().get(i))) {
+									if (counter != entry.getUca().getLinkedDescriptionIds().size()-1) {
+										tempUcas = tempUcas.concat("UCA"+i+ ",");
+										counter++;
+									}
+									else {
+										tempUcas = tempUcas.concat("UCA"+i);
+									}
+									
+								}
+							}
+						}
+						return tempUcas;
+					
+				}
+//					else {
+//						for (int i = 0 ; i< entry.getUca().getLinkedDescriptions().size(); i++) {
+//							if (i != entry.getUca().getLinkedDescriptions().size()-1) {
+//								tempUcas = tempUcas.concat(entry.getUca().getLinkedDescriptions().get(i) + ",");
+//							}
+//							else {
+//								tempUcas = tempUcas.concat(entry.getUca().getLinkedDescriptions().get(i));
+//							}
+//						}
+//						return tempUcas;
+//					}
+//				}
+//				return "Click to see UCA's";
 
 			
 			case 5:
@@ -611,36 +647,36 @@ public class View extends ViewPart implements Observer{
 			return null;
 			
 		}
-
-		@Override
-		public org.eclipse.swt.graphics.Color getForeground(Object element) {
-			
-			return null;
-		}
-
-		@Override
-		public org.eclipse.swt.graphics.Color getBackground(Object element) {
-			ProcessModelVariables entry = (ProcessModelVariables) element;
-			if (entry.getConflict()) {
-				return CONFLICT;
-			}
-			else {
-				ArrayList<?> list = (ArrayList<?>) refinedSafetyViewer.getInput();
-				int index = list.indexOf(element);
-				if ((index % 2) == 0) {
-					return BACKGROUND;
-				} else {	    
-					return null;
-				}
-			}
-			
-				
-		}
+//
+//		@Override
+//		public org.eclipse.swt.graphics.Color getForeground(Object element) {
+//			
+//			return null;
+//		}
+//
+//		@Override
+//		public org.eclipse.swt.graphics.Color getBackground(Object element) {
+//			ProcessModelVariables entry = (ProcessModelVariables) element;
+//			if (entry.getConflict()) {
+//				return CONFLICT;
+//			}
+//			else {
+//				ArrayList<?> list = (ArrayList<?>) refinedSafetyViewer.getInput();
+//				int index = list.indexOf(element);
+//				if ((index % 2) == 0) {
+//					return BACKGROUND;
+//				} else {	    
+//					return null;
+//				}
+//			}
+//			
+//				
+//		}
 	}	
 	
 	
 	class LtlViewLabelProvider extends LabelProvider implements
-	ITableLabelProvider, IColorProvider {
+	ITableLabelProvider{
 		
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
@@ -706,30 +742,30 @@ public class View extends ViewPart implements Observer{
 			
 		}
 
-		@Override
-		public org.eclipse.swt.graphics.Color getForeground(Object element) {
-			
-			return null;
-		}
-
-		@Override
-		public org.eclipse.swt.graphics.Color getBackground(Object element) {
-			ProcessModelVariables entry = (ProcessModelVariables) element;
-			if (entry.getConflict()) {
-				return CONFLICT;
-			}
-			else {
-				ArrayList<?> list = (ArrayList<?>) ltlViewer.getInput();
-				int index = list.indexOf(element);
-				if ((index % 2) == 0) {
-					return BACKGROUND;
-				} else {	    
-					return null;
-				}
-			}
-			
-				
-		}
+//		@Override
+//		public org.eclipse.swt.graphics.Color getForeground(Object element) {
+//			
+//			return null;
+//		}
+//
+//		@Override
+//		public org.eclipse.swt.graphics.Color getBackground(Object element) {
+//			ProcessModelVariables entry = (ProcessModelVariables) element;
+//			if (entry.getConflict()) {
+//				return CONFLICT;
+//			}
+//			else {
+//				ArrayList<?> list = (ArrayList<?>) ltlViewer.getInput();
+//				int index = list.indexOf(element);
+//				if ((index % 2) == 0) {
+//					return BACKGROUND;
+//				} else {	    
+//					return null;
+//				}
+//			}
+//			
+//				
+//		}
 	}
 	
 	
@@ -741,11 +777,6 @@ public class View extends ViewPart implements Observer{
 	 */
 	public void createPartControl(Composite parent) {
 		
-//		// store the Export Data for later Use
-//		exportContent.setNotProvidedCA(dependenciesNotProvided);
-//		exportContent.setProvidedCA(dependencies);
-//		ProjectManager.getContainerInstance().addProjectAdditionForUUID(projectId, exportContent);
-		
 	    Composite outercomposite = new Composite(parent, SWT.NONE);
 	    
 	    FormLayout formLayout = new FormLayout();
@@ -756,8 +787,6 @@ public class View extends ViewPart implements Observer{
 	    
 	    Composite innerLeft = new Composite( outercomposite, SWT.BORDER );
 	    innerLeft.setLayout( new GridLayout(1, false) );
-	    
-	    //composite.setLayout(new RowLayout());
 	    
 	    FormData fData = new FormData();
 	    fData.top = new FormAttachment( 0 );
@@ -950,7 +979,7 @@ public class View extends ViewPart implements Observer{
 	    
 	    //Composite in which the folder items are located
 	    Composite contextCompositeInnerRight = new Composite(contextRightFolder, SWT.NONE);	    
-//	    contextCompositeInnerRight.setLayout( new GridLayout(2, false));
+
 	    formLayout = new FormLayout();
 	    contextCompositeInnerRight.setLayout( formLayout);
 	    
@@ -1077,7 +1106,7 @@ public class View extends ViewPart implements Observer{
 	    fData = new FormData();
 	    fData.top = new FormAttachment( 0 );
 	    fData.left = new FormAttachment( 0 );
-	    fData.right = new FormAttachment (80);
+	    fData.right = new FormAttachment (95);
 	    fData.bottom = new FormAttachment( 90 );
 	    contextCompositeInner.setLayoutData( fData ); 
 	    
@@ -1104,20 +1133,20 @@ public class View extends ViewPart implements Observer{
 	    contextCompositeErrorLabel.setLayoutData( fData ); 
 		
 		// Add A Label for the Filter
-		Label filterLabel = new Label(contextCompositeInner, SWT.NULL);
-	    filterLabel.setText(""); 
+//		Label filterLabel = new Label(contextCompositeInner, SWT.NULL);
+//	    filterLabel.setText(""); 
 		
 		// Add a Combobox for the Filter
-	    final Combo filterCombo = new Combo(contextCompositeOptions, SWT.READ_ONLY);
+	    final Combo filterCombo = new Combo(contextCompositeInner, SWT.READ_ONLY);
 	    filterCombo.add("Show All");
 	    filterCombo.add("Show Hazardous");
 	    filterCombo.add("Show Not Hazardous");
 	    filterCombo.select(0);	    
-	    fData = new FormData();
-	    fData.top = new FormAttachment( 0 );
-	    fData.left = new FormAttachment( 0 );
-	    fData.right = new FormAttachment (100);
-	    filterCombo.setLayoutData(fData);
+//	    fData = new FormData();
+//	    fData.top = new FormAttachment( 0 );
+//	    fData.left = new FormAttachment( 0 );
+//	    fData.right = new FormAttachment (100);
+//	    filterCombo.setLayoutData(fData);
 	    
 		contextRightViewer = new TableViewer(contextCompositeInner, SWT.FULL_SELECTION );
 		contextRightViewer.setContentProvider(new MainViewContentProvider());

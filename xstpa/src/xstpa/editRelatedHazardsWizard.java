@@ -41,7 +41,7 @@ public class editRelatedHazardsWizard {
     {
         shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
         shell.setLayout(new GridLayout(2, false));
-        shell.setText("Add Hazards");
+        shell.setText("Add Unsafe Control Actions");
         shell.setImage(View.LOGO);
 
         // Get the size of the screen
@@ -79,20 +79,29 @@ public class editRelatedHazardsWizard {
 	    data.minimumHeight = 200;
 	    availableList.setLayoutData(data);
 	    if (entryToEdit != null) {
-	    	
+	    	entryToEdit.getUca().getLinkedDescriptions().clear();
+	    	List<UUID> tempLinkedIds = new ArrayList<UUID>();
 	    	for (int i = 0; i<entryToEdit.getUca().getDescriptionIds().size(); i++) {
+	    		// TODO CHECK AGAIN
+	    		String tempAvail = "UCA"+i+" - ";
+	    		String tempLinked = "UCA"+i+" - ";
 	    		Boolean addEntry = true;
 		    	for (int j = 0; j<entryToEdit.getUca().getLinkedDescriptionIds().size(); j++) {
 		    		if (entryToEdit.getUca().getLinkedDescriptionIds().get(j)
 		    					.equals(entryToEdit.getUca().getDescriptionIds().get(i))) {
 		    				addEntry = false;
-		    				linkedListContent.add(entryToEdit.getUca().getDescriptions().get(i));
+		    				tempLinked = tempLinked.concat(entryToEdit.getUca().getDescriptions().get(i));
+		    				linkedListContent.add(tempLinked);
+		    				entryToEdit.getUca().addLinkedDescription(entryToEdit.getUca().getDescriptions().get(i));
+		    				tempLinkedIds.add(entryToEdit.getUca().getDescriptionIds().get(i));
 		    		}
 		    	}
 		    	if (addEntry) {
-		    		availableList.add(entryToEdit.getUca().getDescriptions().get(i));
+		    		tempAvail = tempAvail.concat(entryToEdit.getUca().getDescriptions().get(i));
+		    		availableList.add(tempAvail);
 		    	}
 	    	}
+	    	entryToEdit.getUca().setLinkedDescriptionIds(tempLinkedIds);
 	    }
 	    	
 	    
@@ -181,14 +190,17 @@ public class editRelatedHazardsWizard {
     					
     					if (linkedList.getItem(linkedList.getSelectionIndex())
     					.contains(entryToEdit.getUca().getLinkedDescriptions().get(i))) {
+    						
+    	    				// Remove Linked Description Id
+    	    				entryToEdit.getUca().getLinkedDescriptionIds()
+    	    				.remove(i);
     	    				
     						// Remove Linked Description
     	    				entryToEdit.getUca().getLinkedDescriptions()
     	    				.remove(i);
     	    				
-    	    				// Remove Linked Description Id
-    	    				entryToEdit.getUca().getLinkedDescriptionIds()
-    	    				.remove(i);
+    	    				break;
+    	    			
     					}
     				}
 	    				
@@ -253,7 +265,8 @@ public class editRelatedHazardsWizard {
 
     public void close()
     {
-    	
+    	view.refinedSafetyViewer.setInput(view.refinedSafetyContent);
+    	view.refinedSafetyTable.getColumn(4).pack();
         shell.setVisible(false);
     }
 }
