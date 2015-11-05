@@ -144,9 +144,19 @@
             </separator>
             <command
                   commandId="astpa.switchworkspace"
+                  id="xstampp.ui.menu.command.switchWS"
                   label="Switch Workspace"
-                  style="push"
+                  style="pulldown"
                   tooltip="Restarts the Platform with the choose workspace dialog">
+            </command>
+            <command
+                  commandId="xstampp.command.openPath"
+                  label="Open Workspace"
+                  style="push">
+               <parameter
+                     name="xstampp.commandParameter.openFolder"
+                     value="instance">
+               </parameter>
             </command>
             <command
                   commandId="astpa.exit"
@@ -238,6 +248,15 @@
             <command
                   commandId="org.eclipse.equinox.p2.ui.sdk.install"
                   style="push">
+            </command>
+            <command
+                  commandId="xstampp.command.openPath"
+                  label="Open Log Path"
+                  style="push">
+               <parameter
+                     name="xstampp.commandParameter.openFolder"
+                     value="log">
+               </parameter>
             </command>
          </menu>
       </menuContribution>
@@ -349,6 +368,15 @@
                   value="True">
             </parameter>
          </command>
+         <command
+               commandId="xstampp.command.openPath"
+               label="Open Output"
+               style="push">
+            <parameter
+                  name="xstampp.commandParameter.openFolder"
+                  value="output">
+            </parameter>
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -457,6 +485,10 @@
                   style="push">
             </command>
          </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:xstampp.ui.menu.command.switchWS">
       </menuContribution>
    </extension>
    <extension
@@ -740,6 +772,16 @@
             description="org.eclipse.ui.edit.selectAll + callback in StandartEditorPart"
             id="xstampp.ui.commands.selectAll"
             name="Select All">
+      </command>
+      <command
+            defaultHandler="xstampp.ui.menu.file.commands.OpenPathHandler"
+            id="xstampp.command.openPath"
+            name="Open Path...">
+         <commandParameter
+               id="xstampp.commandParameter.openFolder"
+               name="path"
+               optional="false">
+         </commandParameter>
       </command>
    </extension>
    

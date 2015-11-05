@@ -19,6 +19,7 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.STPAPluginUtils;
 import xstampp.util.XstamppJob;
 
 /**
@@ -200,7 +201,7 @@ public class Run extends XstamppJob{
 			ProjectManager.getLOGGER().debug("STPA run export was canceled"); //$NON-NLS-1$
 		}else{
 			//this command 
-			OpenInFileBrowser(this.dir);
+			STPAPluginUtils.OpenInFileBrowser(this.dir);
 			Display.getDefault().syncExec(new Runnable() {
 	
 				@Override
@@ -218,68 +219,7 @@ public class Run extends XstamppJob{
 	}
 	
 	
-    private static void OpenInMacFileBrowser(String path)
-    {
-        Boolean openInsidesOfFolder = false;
-        // try mac
-        String macPath = path.replace("\\", "/"); // mac finder doesn't like backward slashes
-        File pathfile = new File(macPath);
-        // if path requested is a folder, automatically open insides of that folder
-        if (pathfile.isDirectory()) 
-        {
-            openInsidesOfFolder = true;
-        }
 
-        if (!macPath.startsWith("\""))
-        {
-            macPath = "\"" + macPath;
-        }
-        if (!macPath.endsWith("\""))
-        {
-            macPath = macPath + "\"";
-        }
-        String arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
-        try
-        {
-        	Runtime.getRuntime().exec("open"+ arguments);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private static void OpenInWinFileBrowser(String path)
-    {
-        Boolean openInsidesOfFolder = false;
-
-        // try windows
-        String winPath = path.replace("/", "\\"); // windows explorer doesn't like forward slashes
-        File pathfile = new File(winPath);
-        // if path requested is a folder, automatically open insides of that folder
-        if (pathfile.isDirectory()) 
-        {
-            openInsidesOfFolder = true;
-        }
-        try
-        {
-        	Runtime.getRuntime().exec("explorer.exe "+ (openInsidesOfFolder ? "/root," : "/select,") + winPath);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private static void OpenInFileBrowser(String path)
-    {
-    	String osName= System.getProperty("os.name").toLowerCase();
-    	if(osName.startsWith("win")){
-    		OpenInWinFileBrowser(path);
-    	}else if(osName.startsWith("mac")){
-    		OpenInMacFileBrowser(path);
-    	}
-    }
 
 	/**
 	 * set whether or not the pdf files should be included in the export
