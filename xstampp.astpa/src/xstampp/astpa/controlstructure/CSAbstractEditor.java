@@ -179,7 +179,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	private static final int MIN_SCALE = 20;
 	private static final int MAX_SCALE = 300;
 	private static final int FULL_SCALE = 100;
-	private static final int TOOL_HEIGHT = 20;
+	private static final int TOOL_HEIGHT = 30;
 	private static final int SCALE_WIDTH = 200;
 	private static final int SCLAE_TEXT_WIDTH = 150;
 	private static final int SCALE_FONT = 10;
@@ -247,9 +247,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.bottom = new FormAttachment(this.toolBar);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.CENTER,
+		this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.None,
 				this.getSite().getPage(), this.getPaletteViewerProvider(),
 				this.getPalettePreferences());
+		
 		this.splitter.setLayoutData(data);
 		this.initializeActionRegistry();
 		this.createGraphicalViewer(this.splitter);
@@ -262,6 +263,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 
 		this.store.addPropertyChangeListener(this);
+		
 		
 	}
 
@@ -378,7 +380,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.zoomManager.addZoomListener(this);
 
 		// keyboard shortcuts
-		KeyHandler keyHandler = new KeyHandler();
 
 		viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY,
 				0),this.getActionRegistry().getAction(ActionFactory.DELETE.getId()));

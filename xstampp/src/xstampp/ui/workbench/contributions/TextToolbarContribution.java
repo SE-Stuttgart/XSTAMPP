@@ -70,7 +70,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	private SelectionListener listener;
 	private RGB foregroundColor;
 	private RGB backgroundColor;
-	
+	private boolean forceDraw = false;
 	// RGB values
 			final static int _255 = 255;
 			final static int _0 = 0;
@@ -92,16 +92,22 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 			STPAPluginUtils.executeParaCommand("xstampp.command.style", values);
 		}
 	}
-	
+	public void drawControl(Composite comp){
+		forceDraw = true;
+		fill(comp);
+	}
 	@Override
 	protected Control createControl(Composite arg0) {
-		
-		ToolBarManager manager = new ToolBarManager();
+	
+		ToolBarManager manager = new ToolBarManager(SWT.HORIZONTAL);
 	    addStyleItems(manager);
 	    addColorItems(manager);
 		addFontControl(manager);
 	    addBaseControls(manager);
 	    addListItems(manager);
+	    if(!forceDraw && System.getProperty("os.name").toLowerCase().contains("linux")){
+	    	return new ToolBar(arg0, SWT.NONE);
+	    }
 	    ToolBar toolBar = manager.createControl(arg0);
 	
 		
@@ -181,7 +187,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	private void addStyleItems(ToolBarManager manager) {
 
 		// Bold item
-		this.boldControl = new ButtonContribution("boldControl",SWT.TOGGLE){
+		this.boldControl = new ButtonContribution("boldControl",SWT.None){
 			@Override
 			protected Control createControl(Composite parent) {
 				Control control = super.createControl(parent);
@@ -198,7 +204,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		manager.add(boldControl);
 		
 		// Italic item
-		this.italicControl = new ButtonContribution("italicControl",SWT.TOGGLE){
+		this.italicControl = new ButtonContribution("italicControl",SWT.None){
 			@Override
 			protected Control createControl(Composite parent) {
 				Control control = super.createControl(parent);
@@ -210,6 +216,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 				return control;
 			}
 		};
+		this.italicControl.setEnabled(true);
 		manager.add(italicControl);
 		
 		// Underline item
