@@ -206,9 +206,9 @@ public class View extends ViewPart implements Observer{
 	
 	private ExportContent exportContent = new ExportContent();
 	
-	List<ControlActionEntrys> dependencies = new ArrayList<ControlActionEntrys>();
+	private List<ControlActionEntrys> dependencies = new ArrayList<ControlActionEntrys>();
 	
-	List<ControlActionEntrys> dependenciesNotProvided = new ArrayList<ControlActionEntrys>();
+	private List<ControlActionEntrys> dependenciesNotProvided = new ArrayList<ControlActionEntrys>();
 	
 	
 	List<ControlActionEntrys> controlActionList = new ArrayList<ControlActionEntrys>();
@@ -220,6 +220,7 @@ public class View extends ViewPart implements Observer{
 	List<ProcessModelVariables> contextRightNotHazardousContent = new ArrayList<ProcessModelVariables>();
 	List<ProcessModelVariables> contextRightContentProvided = new ArrayList<ProcessModelVariables>();
 	List<ProcessModelVariables> contextRightContentNotProvided = new ArrayList<ProcessModelVariables>();
+	List<ProcessModelVariables> manuallyAddedCombinations = new ArrayList<ProcessModelVariables>();
 	
 	/**
 	 * This List is responsible for the Upper right section in the dependency view
@@ -542,6 +543,29 @@ public class View extends ViewPart implements Observer{
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 
+			switch (columnIndex) {
+			case 0:
+				return null;
+				
+			case 1:
+				return null;
+				
+			case 2:
+				return null;
+				
+			case 3: 
+				return null;
+				
+			case 4:
+				return ADD;
+				
+			case 5:
+				return null;
+				
+			case 6:
+				return null;
+			
+			}
 			return null;
 		}
 
@@ -1395,7 +1419,7 @@ public class View extends ViewPart implements Observer{
 	    
 	    
 	    /**
-	     * Listener for the add Entry Button for Refined Safety
+	     * Listener for the add Entry Button in the Context Table
 	     */
 	    addEntry.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
@@ -1413,7 +1437,9 @@ public class View extends ViewPart implements Observer{
 	    			pmVars.add(contextRightTable.getColumn(i).getText());
 	    		}
 	    		// add the New Variable
-				contextRightContent.add(new ProcessModelVariables(pmVars, getLinkedCAE().getControlAction()));
+	    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, getLinkedCAE().getControlAction());
+				contextRightContent.add(temp);
+				manuallyAddedCombinations.add(temp);
 				// set the ContextTableCombinations
 				getLinkedCAE().setContextTableCombinations(contextRightContent);
 				// refresh the Viewer
@@ -3499,6 +3525,19 @@ public class View extends ViewPart implements Observer{
 					
 				}
 				
+			}
+			if (!manuallyAddedCombinations.isEmpty()) {
+					for (int i = 0; i<manuallyAddedCombinations.size(); i++) {
+						if (controlActionProvided) {
+							contextRightContentProvided.add(manuallyAddedCombinations.get(i));
+							contextRightContent.add(manuallyAddedCombinations.get(i));							  
+						}
+						else {
+							contextRightContentNotProvided.add(manuallyAddedCombinations.get(i));
+							contextRightContent.add(manuallyAddedCombinations.get(i));
+							
+						}
+					}
 			}
 			
 			getLinkedCAE().setContextTableCombinations(contextRightContent);
