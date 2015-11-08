@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
@@ -60,11 +61,13 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	@Override
 	protected Control createControl(Composite parent) {
 		this.isDecorated=false;
-
-		ToolBarManager manager = new ToolBarManager();
+		if(System.getProperty("os.name").toLowerCase().contains("linux")){
+	    	return new ToolBar(parent, SWT.NONE);
+	    }
+		ToolBarManager manager = new ToolBarManager(SWT.HORIZONTAL | SWT.FLAT);
 		this.contributor = new EmptyZoomContributor();
 		
-		this.decoButton= new ButtonContribution("decoButton",SWT.FLAT){
+		this.decoButton= new ButtonContribution("decoButton",SWT.None){
 			@Override
 			protected Control createControl(Composite parent) {
 				Control control = super.createControl(parent);
@@ -146,7 +149,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 		
 		
 		
-		this.zoomLabel= new ComboContribiution("zoomCombo", SWT.V_SCROLL | SWT.H_SCROLL,60){
+		this.zoomLabel= new ComboContribiution("zoomCombo", SWT.DROP_DOWN | SWT.NONE,100){
 			@Override
 			protected Control createControl(Composite parent) {
 				Control control =super.createControl(parent);
@@ -205,7 +208,6 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 		}catch(NullPointerException e){
 			// if there is a nullpointer one one cant do anything
 		}
-		this.setEnabled(false);
 		return manager.createControl(parent);
 	}
 
@@ -263,13 +265,12 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 			this.contributor= ((IZoomContributor) part);
 			this.contributor.addPropertyListener(this);
 			this.zoomManager= this.contributor.getZoomManager();
-			this.setEnabled(true);
+			
 			this.zoomManager.addZoomListener(EditorContribution.this);
 			this.zoomSlider.getSliderControl().setSelection((int) (EditorContribution.this.zoomManager.getZoom() *100));
 			this.zoomSlider.getSliderControl().notifyListeners(SWT.Selection, null);
 		}else{
 			
-			this.setEnabled(false);
 			if(!(this.contributor instanceof EmptyZoomContributor)){
 				this.zoomManager.removeZoomListener(EditorContribution.this);
 				this.contributor = new EmptyZoomContributor();

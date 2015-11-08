@@ -59,9 +59,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -70,7 +67,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbenchPart;
@@ -87,6 +83,7 @@ import xstampp.ui.editors.StyledTextSelection;
 import xstampp.ui.editors.interfaces.IEditorBase;
 import xstampp.ui.editors.interfaces.ITextEditContribution;
 import xstampp.ui.editors.interfaces.ITextEditor;
+import xstampp.ui.workbench.contributions.TextToolbarContribution;
 
 /**
  * SystemDescriptionViewPart
@@ -207,8 +204,16 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		composite.setLayout(new GridLayout(2, false));
 
 		// UI parts
-		this.createProjectNameText(composite);
-//		this.createToolBar(composite);
+		
+			this.createProjectNameText(composite);
+			if(System.getProperty("os.name").toLowerCase().contains("linux")){
+				Composite barControl= new Composite(composite, SWT.NONE);
+				this.gridData = new GridData();
+				this.gridData.horizontalSpan = 2;
+				barControl.setLayoutData(this.gridData);
+				TextToolbarContribution bar = new TextToolbarContribution();
+				bar.drawControl(barControl);
+			}
 		this.createStyledText(composite);
 		
 		this.createContextMenu();
@@ -246,25 +251,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				
 			}
 		});
-//		this.descriptionText.addKeyListener(new KeyAdapter() {
-//			
-//			@Override
-//			public void keyReleased(KeyEvent e) {
-//				switch(e.keyCode){
-//				case SWT.ARROW_LEFT:{
-//					SystemDescriptionView.this.descriptionText.setSelection(
-//							SystemDescriptionView.this.descriptionText.getSelection().x -1, 
-//							SystemDescriptionView.this.descriptionText.getSelection().x-1);
-//					break;
-//				}
-//				case SWT.ARROW_RIGHT:{
-//					SystemDescriptionView.this.descriptionText.setSelection(
-//							SystemDescriptionView.this.descriptionText.getSelection().x +1,
-//							SystemDescriptionView.this.descriptionText.getSelection().x+1);
-//				}
-//				}
-//			}
-//		});
 		this.getSite().setSelectionProvider(this);
 		composite.pack();
 
