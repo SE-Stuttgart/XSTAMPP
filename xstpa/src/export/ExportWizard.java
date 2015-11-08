@@ -21,7 +21,7 @@ import xstpa.View;
 
 public class ExportWizard extends AbstractExportWizard {
 
-	private final static String OUTPUT ="Output/Extended"; //$NON-NLS-1$
+	private String OUTPUT; //$NON-NLS-1$
 	private RunPage page;
 	
 
@@ -35,6 +35,7 @@ public class ExportWizard extends AbstractExportWizard {
 			projectName = ProjectManager.getContainerInstance().
 									getTitle(((IProjectSelection) selection).getProjectId());
 		}
+		OUTPUT ="Output/" +projectName+ "/Extended";
 		File outputDir =new File(Platform.getInstanceLocation().getURL().getPath().toString()
 								+ OUTPUT);
 		if(!outputDir.exists()){
@@ -93,7 +94,7 @@ public class ExportWizard extends AbstractExportWizard {
 		public void createControl(Composite parent) {
 			super.createControl(parent);
 			this.pathChooser.setText(Platform.getInstanceLocation().getURL().getFile()
-					+ OUTPUT + File.separator + getProjectName());
+					+ OUTPUT);
 			FormData data = new FormData();
 			data.bottom = new FormAttachment(100,0);
 			data.left = new FormAttachment(0);
