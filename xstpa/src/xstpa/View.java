@@ -1437,7 +1437,7 @@ public class View extends ViewPart implements Observer{
 	    		//Create values for the Constructor
 	    		List<String> pmVars = new ArrayList<String>();
 	    		for (int i = 1; i<contextRightTable.getColumnCount()-1;i++) {
-	    			pmVars.add(contextRightTable.getColumn(i).getText());
+	    			pmVars.add(contextRightTable.getColumn(i).getText().replace(" ", "_"));
 	    		}
 	    		// add the New Variable
 	    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, getLinkedCAE().getControlAction());
@@ -3734,14 +3734,25 @@ public class View extends ViewPart implements Observer{
 	    			  val = new ProvidedValuesCombi();
 	    			  combis = new ArrayList<UUID>();
 	    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
-	    				  combis.add(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().get(z));
-//	    				  for (int n = 0; n<pmList.size();n++) {
-//	    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
-//	    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
-//	    						  combis.add(pmList.get(n).getId());
-//	    						  
-//	    					  }
-//	    				  }
+	    				  
+	    				  if (getLinkedCAE().getContextTableCombinations().get(i).getValueIds().size() < getLinkedCAE().getContextTableCombinations().get(i).getValues().size()) {
+		    				  for (int n = 0; n<pmList.size();n++) {
+		    					  String tempPMV = pmList.get(n).getPMV().replace(" ", "_");
+		    					  if (tempPMV.equals(getLinkedCAE()
+		    							  .getContextTableCombinations().get(i).getPmVariables().get(z))) {
+			    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
+			    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
+			    						  combis.add(pmList.get(n).getId());
+			    						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmList.get(n).getId());
+			    					  }
+		    					  }
+		    				  }
+	    				  }
+	    				  else {
+	    					  combis.add(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().get(z));
+	    				  }
+	    				  
+
 	    			  }
 	    			  val.setValues(combis);
 	    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
@@ -3775,13 +3786,23 @@ public class View extends ViewPart implements Observer{
 	    			  val = new NotProvidedValuesCombi();
 	    			  combis = new ArrayList<UUID>();
 	    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
-	    				  combis.add(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().get(z));
-//	    				  for (int n = 0; n<pmList.size();n++) {
-//	    					  if (pmList.get(n).getValues().equals(getLinkedCAE()
-//	    							  .getContextTableCombinations().get(i).getValues().get(z))) {
-//	    						  combis.add(pmList.get(n).getId());
-//	    					  }
-//	    				  }
+//	    				 THIS WAS THE ORIGINAL combis.add(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().get(z));
+	    				  if (getLinkedCAE().getContextTableCombinations().get(i).getValueIds().size() < getLinkedCAE().getContextTableCombinations().get(i).getValues().size()) {
+		    				  for (int n = 0; n<pmList.size();n++) {
+		    					  String tempPMV = pmList.get(n).getPMV().replace(" ", "_");
+		    					  if (tempPMV.equals(getLinkedCAE()
+		    							  .getContextTableCombinations().get(i).getPmVariables().get(z))) {
+			    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
+			    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
+			    						  combis.add(pmList.get(n).getId());
+			    						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmList.get(n).getId());
+			    					  }
+		    					  }
+		    				  }
+	    				  }
+	    				  else {
+	    					  combis.add(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().get(z));
+	    				  }
 	    			  }
 	    			  val.setValues(combis);
 	    			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
