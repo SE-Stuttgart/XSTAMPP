@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
@@ -37,6 +38,7 @@ import xstampp.astpa.controlstructure.figure.RootFigure;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 /**
  * 
@@ -44,7 +46,7 @@ import xstampp.ui.common.ProjectManager;
  * @since 2.0
  * 
  */
-public class CSExportJob extends Job {
+public class CSExportJob extends XstamppJob {
 
 	private String path;
 	private String process;
@@ -84,7 +86,7 @@ public class CSExportJob extends Job {
 	 */
 	public CSExportJob(String path, int imgOffset, String editorId,
 			UUID projectId, boolean showPreview, boolean decorate) {
-		super(Messages.ExportCS);
+		super(Messages.ExportCS,projectId);
 		this.projectID=projectId;
 		this.model = (IControlStructureEditorDataModel) ProjectManager
 				.getContainerInstance().getDataModel(projectId);
@@ -279,7 +281,7 @@ public class CSExportJob extends Job {
 
 			viewer.createControl(canvas);
 			viewer.setEditPartFactory(new CSEditPartFactory(
-					CSExportJob.this.model, CSExportJob.this.editorId));
+					CSExportJob.this.model, CSExportJob.this.editorId, Activator.getDefault().getPreferenceStore()));
 			viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
 					CSExportJob.this.editorId);
 
@@ -324,5 +326,11 @@ public class CSExportJob extends Job {
 			CSExportJob.this.printableFigure = tmpFigure;
 		}
 		
+	}
+	
+	@Override
+	protected void canceling() {
+		
+		super.canceling();
 	}
 }

@@ -28,11 +28,13 @@ import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionDeleteEditPolicy;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
+import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
@@ -54,6 +56,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	private final UUID ownID;
 	private final String stepId;
 	private List<IConnectable> members;
+	private IPreferenceStore store;
 
 	/**
 	 * This constructor is used to load a connection EditPart from a given model
@@ -89,7 +92,8 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	@Override
 	protected IFigure createFigure() {
 
-		PolylineConnection connection = new ConnectionFigure(getId());
+		ConnectionFigure connection = new ConnectionFigure(getId());
+		connection.setPreferenceStore(this.store);
 		connection.addMouseMotionListener(this);
 		connection.setLayoutManager(new XYLayout());
 		connection.setLineWidth(1);
@@ -245,6 +249,16 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	public void updateFeedback() {
 		getConnectionFigure().updateFeedback();
 		
+	}
+
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		this.store = store;
+		if(getFigure() != null){
+			((IControlStructureFigure)getFigure()).setPreferenceStore(store);
+			((IAnchorFigure)getSourceConnectionAnchor()).setPreferenceStore(store);
+			((IAnchorFigure)getTargetConnectionAnchor()).setPreferenceStore(store);
+		}
 	}
 
 }

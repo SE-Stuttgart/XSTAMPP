@@ -1,5 +1,9 @@
 package xstampp.util;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -10,6 +14,9 @@ import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -26,10 +33,62 @@ import xstampp.ui.common.ProjectManager;
  */
 public final class STPAPluginUtils {
 
+	private static List<Job> unfinishedJobs;
 	private STPAPluginUtils() {
-
+		unfinishedJobs = new ArrayList<>();
 	}
 
+	public static void listJob(Job job){
+		if(unfinishedJobs == null){
+			unfinishedJobs = new ArrayList<>();
+		}
+		unfinishedJobs.add(job);
+		job.addJobChangeListener(new IJobChangeListener() {
+			
+			@Override
+			public void sleeping(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void scheduled(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void running(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void done(IJobChangeEvent event) {
+				unfinishedJobs.remove(event.getJob());
+			}
+			
+			@Override
+			public void awake(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void aboutToRun(IJobChangeEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	public static List<Job> getUnfinishedJobs(){
+		if(unfinishedJobs == null){
+			return new ArrayList<>();
+		}
+		return unfinishedJobs;
+	}
+	
 	/**
 	 * Executes a registered command without command values
 	 * 
@@ -106,4 +165,67 @@ public final class STPAPluginUtils {
 		return true;
 	}
 
+	
+    private static void OpenInMacFileBrowser(String path)
+    {
+        Boolean openInsidesOfFolder = false;
+        // try mac
+        String macPath = path.replace("\\", "/"); // mac finder doesn't like backward slashes
+        File pathfile = new File(macPath);
+        // if path requested is a folder, automatically open insides of that folder
+        if (pathfile.isDirectory()) 
+        {
+            openInsidesOfFolder = true;
+        }
+
+        if (!macPath.startsWith("\""))
+        {
+            macPath = "\"" + macPath;
+        }
+        if (!macPath.endsWith("\""))
+        {
+            macPath = macPath + "\"";
+        }
+        String arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
+        try
+        {
+        	Runtime.getRuntime().exec("open"+ arguments);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static void OpenInWinFileBrowser(String path)
+    {
+        Boolean openInsidesOfFolder = false;
+
+        // try windows
+        String winPath = path.replace("/", "\\"); // windows explorer doesn't like forward slashes
+        File pathfile = new File(winPath);
+        // if path requested is a folder, automatically open insides of that folder
+        if (pathfile.isDirectory()) 
+        {
+            openInsidesOfFolder = true;
+        }
+        try
+        {
+        	Runtime.getRuntime().exec("explorer.exe "+ (openInsidesOfFolder ? "/root," : "/select,") + winPath);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void OpenInFileBrowser(String path)
+    {
+    	String osName= System.getProperty("os.name").toLowerCase();
+    	if(osName.startsWith("win")){
+    		OpenInWinFileBrowser(path);
+    	}else if(osName.startsWith("mac")){
+    		OpenInMacFileBrowser(path);
+    	}
+    }
 }

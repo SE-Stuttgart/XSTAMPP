@@ -74,6 +74,8 @@ public class RectangleEditPart extends AbstractMemberEditPart implements ISelect
 	@Override
 	protected IFigure createFigure() {
 	CSRectangleContainer tmp = new CSRectangleContainer(getId());
+
+	tmp.setPreferenceStore(getStore());
 	tmp.addMouseMotionListener(this);
 	tmp.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 	tmp.setToolTip(new Label("rec"));

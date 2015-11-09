@@ -23,7 +23,6 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.swt.SWT;
 
-import xstampp.Activator;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -57,12 +56,14 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 	protected IFigure createFigure() {
 		IControlStructureFigure tmpFigure = new ProcessModelFigure(this.getId(),
 				ProcessVariableEditPart.TOP_OFFSET);
+
+		tmpFigure.setPreferenceStore(getStore());
 		LineBorder border= new LineBorder(1){
 			@Override
-			public void paint(IFigure figure, Graphics graphics, Insets insets) {
+			public void paint(IFigure figure1, Graphics graphics, Insets insets) {
 				// TODO Auto-generated method stub
-				if(Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
-					super.paint(figure, graphics, insets);
+				if(getStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
+					super.paint(figure1, graphics, insets);
 				}
 			}
 		};

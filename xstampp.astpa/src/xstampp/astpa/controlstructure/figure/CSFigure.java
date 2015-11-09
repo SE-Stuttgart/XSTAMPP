@@ -26,6 +26,7 @@ import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -57,6 +58,7 @@ public abstract class CSFigure extends Figure implements
 	public static final Color STANDARD_BORDER_COLOR = ColorConstants.black;
 	private boolean withIcon;
 	private LineBorder border;
+	private IPreferenceStore store;
 
 	/**
 	 * the xOrientations array which stores the locations on the x-axis as
@@ -166,8 +168,6 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public void setLayout(Rectangle rect) {
-		int height = rect.height;
-		// int width = this.getBounds().width;
 		if (this.getChildren().size() > 1) {
 			// the height of the rectangle is set to the ideal height for the
 			// given width
@@ -200,7 +200,7 @@ public abstract class CSFigure extends Figure implements
 	 */
 	public ConnectionAnchor getConnectionAnchor(Point ref) {
 
-		CSAnchor temp = new CSAnchor(this, ref);
+		CSAnchor temp = new CSAnchor(this, ref,this.store);
 
 		return temp;
 	}
@@ -327,12 +327,22 @@ public abstract class CSFigure extends Figure implements
 	
 	@Override
 	public void showFeedback() {
-		
+		// no feedback by default
 	}
 	
 	@Override
 	public void disableFeedback() {
-		// TODO Auto-generated method stub
+		// no feedback by default
 		
+	}
+	
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		getTextField().setPreferenceStore(store);
+		this.store = store;
+	}
+	
+	protected IPreferenceStore getPreferenceStore(){
+		return this.store;
 	}
 }

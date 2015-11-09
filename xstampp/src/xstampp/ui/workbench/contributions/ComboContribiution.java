@@ -35,6 +35,7 @@ public class ComboContribiution extends ControlContribution {
 	 */
     public ComboContribiution(String id, int style,int size) {
         super(id);
+        
         this.style = style;
         this.size= size;
     }
@@ -60,4 +61,8 @@ public class ComboContribiution extends ControlContribution {
 		}
 	}
 
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

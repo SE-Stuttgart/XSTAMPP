@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.UUID;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -36,10 +38,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.xml.sax.SAXException;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 import xstpa.View;
 
 /**
@@ -49,7 +51,7 @@ import xstpa.View;
  * @since 2.0
  * 
  */
-public class ExportJob extends Job {
+public class ExportJob extends XstamppJob {
 
 	private boolean enablePreview = true;
 	private static final float MP_TO_INCH = 72270f;
@@ -67,8 +69,6 @@ public class ExportJob extends Job {
 	 * Constructor of the export job
 	 * 
 	 * @author Fabian Toth, Lukas Balzer
-	 * @param projectId
-	 *            the project which
 	 * @param name
 	 *            the name of the job
 	 * @param filePath
@@ -76,6 +76,9 @@ public class ExportJob extends Job {
 	 * @param xslName
 	 *            the name of the file in which the xsl file is stored which
 	 *            should be used
+	 * @param projectId TODO
+	 * @param projectId
+	 *            the project which
 	 * @param asOne
 	 *            true if all content shall be exported on a single page
 	 * @param decorate
@@ -83,13 +86,13 @@ public class ExportJob extends Job {
 	 *            colored borders and image labels
 	 */
 	public ExportJob(String name, String filePath, String xslName,
-			ExportContent exportContent) {
-		super(name);
+			UUID projectId) {
+		super(name,projectId);
 
 		this.filePath = filePath;
 		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);;
 		this.xslName = xslName;
-		this.exportContent = exportContent;
+		this.exportContent = (ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(projectId);
 		this.tableHeadSize = 14;
 		this.titleSize = 24;
 		this.textSize = 12;

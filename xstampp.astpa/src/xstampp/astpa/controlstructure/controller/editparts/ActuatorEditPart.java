@@ -57,6 +57,7 @@ public class ActuatorEditPart extends CSAbstractEditPart {
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
 				IControlStructureConstants.CONTROLSTRUCTURE_ACTUATOR_COLOR);
+		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		tmpFigure.setToolTip(new Label(Messages.Actuator));
 		return tmpFigure;

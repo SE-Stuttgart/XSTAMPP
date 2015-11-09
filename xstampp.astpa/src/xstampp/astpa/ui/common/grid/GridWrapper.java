@@ -223,7 +223,7 @@ public class GridWrapper {
 
 			IGridCell cell = this.getCellFromMouse(e);
 			IGridCell editClient = getEditClient();
-			if(editClient != null && ( editClient != cell)){
+			if(cell != null && editClient != null && ( editClient != cell)){
 				cell.cleanUp();
 				setEditClient(null);
 			}

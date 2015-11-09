@@ -25,7 +25,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.Activator;
 
 /**
  * 
@@ -35,9 +34,6 @@ import xstampp.Activator;
  * @version 1.0
  */
 public class ComponentFigure extends CSFigure  implements IPropertyChangeListener{
-
-	private final IPreferenceStore store = Activator.getDefault()
-			.getPreferenceStore();
 	/**
 	 * COMPONENT_FIGURE_DEFWIDTH is the default width to which the layout is set
 	 * when the user sets the Component from the palate without defining actual
@@ -82,10 +78,8 @@ public class ComponentFigure extends CSFigure  implements IPropertyChangeListene
 		super(id, img, false);
 		this.setForegroundColor(ColorConstants.black);
 		this.colorPreference=colorPreference;
-		this.decoBorderColor =  new Color(Display.getCurrent(), PreferenceConverter
-				.getColor(this.store, colorPreference));
+		this.decoBorderColor =  CSFigure.STANDARD_BORDER_COLOR;
 		this.setDeco(true);
-		this.store.addPropertyChangeListener(this);
 		setBackgroundColor(ColorConstants.white);
 	}
 
@@ -103,12 +97,22 @@ public class ComponentFigure extends CSFigure  implements IPropertyChangeListene
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		if(arg0.getProperty().equals(this.colorPreference)){
+		if(arg0.getProperty().equals(this.colorPreference) && getPreferenceStore() != null){
 			this.decoBorderColor =  new Color(Display.getCurrent(), PreferenceConverter
-											  .getColor(this.store, this.colorPreference));
+											  .getColor(getPreferenceStore(), this.colorPreference));
 			this.setDeco(this.isDecorated);
 			this.repaint();
 		}
 	}
 
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		store.addPropertyChangeListener(this);
+		if(this.colorPreference != null){
+			this.decoBorderColor =  new Color(Display.getCurrent(), PreferenceConverter
+					.getColor(store, colorPreference));
+			this.setDeco(this.isDecorated);
+		}
+		super.setPreferenceStore(store);
+	}
 }

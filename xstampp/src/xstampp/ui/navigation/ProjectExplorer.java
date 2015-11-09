@@ -51,6 +51,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import xstampp.Activator;
+import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
@@ -437,6 +438,11 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		case PROJECT_NAME: {
 			this.updateProjects();
 			break;
+		}
+		case CLEAN_UP:{
+			for(UUID model: ProjectManager.getContainerInstance().getProjectKeys()){
+				ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
+			}
 		}
 		default:
 			break;

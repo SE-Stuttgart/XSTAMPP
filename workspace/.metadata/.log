@@ -376,3 +376,13 @@ java.net.UnknownHostException: download.eclipse.org
 	at org.eclipse.ecf.provider.filetransfer.httpclient4.HttpClientRetrieveFileTransfer$1.performFileTransfer(HttpClientRetrieveFileTransfer.java:1064)
 	at org.eclipse.ecf.filetransfer.FileTransferJob.run(FileTransferJob.java:73)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SESSION 2015-11-07 19:25:22.565 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho8264801427209868566secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho8264801427209868566secure_storage
+
+!ENTRY org.eclipse.equinox.p2.touchpoint.natives 2 0 2015-11-07 19:25:22.565
+!MESSAGE Could not remove temporary backup directory (it is safe to manually delete it and its contents): C:\Users\Lukas\AppData\Local\Temp\DefaultProfile_2a1c66430721_c0a8b225d86d

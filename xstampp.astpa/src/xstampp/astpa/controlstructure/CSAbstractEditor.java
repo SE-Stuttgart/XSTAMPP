@@ -80,6 +80,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -95,6 +96,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
@@ -108,7 +110,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import xstampp.Activator;
 import xstampp.astpa.controlstructure.controller.commands.CopyComponentCommand;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
@@ -178,7 +179,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	private static final int MIN_SCALE = 20;
 	private static final int MAX_SCALE = 300;
 	private static final int FULL_SCALE = 100;
-	private static final int TOOL_HEIGHT = 20;
+	private static final int TOOL_HEIGHT = 30;
 	private static final int SCALE_WIDTH = 200;
 	private static final int SCLAE_TEXT_WIDTH = 150;
 	private static final int SCALE_FONT = 10;
@@ -205,12 +206,15 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private boolean selectAddedParts = false;
 
+	private IPreferenceStore store;
+
 	/**
 	 * This constructor defines the Domain where the editable content should be
 	 * displayed in
+	 * @param store TODO
 	 */
-	public CSAbstractEditor() {
-		this.mousePosition = new Point(1,1);
+	public CSAbstractEditor(IPreferenceStore store) {
+		this.store = store;
 		this.setEditDomain(this);
 		this.asExport = false;
 	}
@@ -243,9 +247,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.bottom = new FormAttachment(this.toolBar);
 		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
 		data.left = new FormAttachment(0);
-		this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.CENTER,
+		this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.None,
 				this.getSite().getPage(), this.getPaletteViewerProvider(),
 				this.getPalettePreferences());
+		
 		this.splitter.setLayoutData(data);
 		this.initializeActionRegistry();
 		this.createGraphicalViewer(this.splitter);
@@ -256,7 +261,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 		}
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
-		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+
+		this.store.addPropertyChangeListener(this);
+		
 		
 	}
 
@@ -289,6 +296,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.splitter.hookDropTargetListener(viewer);
 
 		viewer.setContents(this.createRoot());
+		((IControlStructureEditPart)viewer.getContents()).setPreferenceStore(this.store);
 		viewer.getContents().refresh();
 
 	}
@@ -321,7 +329,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 
 		viewer.setEditPartFactory(new CSEditPartFactory(this.getModelInterface(),
-				this.getId()));
+				this.getId(), this.store));
 		// zooming
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		viewer.setRootEditPart(rootEditPart);
@@ -372,7 +380,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.zoomManager.addZoomListener(this);
 
 		// keyboard shortcuts
-		KeyHandler keyHandler = new KeyHandler();
 
 		viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY,
 				0),this.getActionRegistry().getAction(ActionFactory.DELETE.getId()));
@@ -471,7 +478,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Map<String, String> values = new HashMap<>();
-				values.put("xstampp.command.preferencePage", "xstampp.cs.preferencees"); //$NON-NLS-1$ //$NON-NLS-2$
+				values.put("xstampp.command.preferencePage", "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$ //$NON-NLS-2$
 				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values); //$NON-NLS-1$
 			}
 		});
@@ -839,8 +846,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	@Override
 	public void dispose() {
-		Activator.getDefault().getPreferenceStore()
-				.removePropertyChangeListener(this);
+		this.store.removePropertyChangeListener(this);
 		this.getCommandStack().removeCommandStackListener(this);
 		this.modelInterface.deleteObserver(this);
 		this.getSite().getWorkbenchWindow().getSelectionService()
@@ -850,6 +856,26 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		super.dispose();
 	}
 
+	/**
+	 * @author Lukas Balzer
+	 * @param store The preference store which should be used, see that 
+	 * 				the store must contain all keys defined in IControlStructureConstants
+	 * @see IControlStructureConstants 
+	 */
+	public void setPreferenceStore(IPreferenceStore store){
+		
+		if(this.store != null){
+			this.store.removePropertyChangeListener(this);
+		}
+		this.store = store;
+		if(this.store != null){
+			this.store.addPropertyChangeListener(this);
+		}
+		if(this.graphicalViewer != null){
+			((IControlStructureEditPart)this.graphicalViewer.getContents()).setPreferenceStore(this.store);
+			((CSEditPartFactory)this.graphicalViewer.getEditPartFactory()).setStore(this.store);
+		}
+	}
 	/**
 	 * Creates the GraphicalViewer on the specified <code>Composite.
 	 * 
@@ -1259,7 +1285,17 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.copySelectionCommand = new CopyComponentCommand(getModelInterface(),getId());
 		IControlStructureEditPart parentPart = null;
 		for(Object obj:getGraphicalViewer().getSelectedEditParts()){
-			if(((GraphicalEditPart)obj).getParent() instanceof IControlStructureEditPart){
+			EditPart newParentPart = ((GraphicalEditPart)obj).getParent();
+			if(parentPart != null && parentPart.getClass() != newParentPart.getClass()){
+				boolean equalParents =parentPart.getClass() != newParentPart.getClass();
+				boolean parentIsChild = newParentPart.getChildren().contains(parentPart);
+				boolean parentSelected= getGraphicalViewer().getSelectedEditParts().contains(newParentPart);
+				if(!equalParents && !parentSelected && !parentIsChild){
+					Display.getDefault().beep();
+					return false;
+				}
+			}
+			if(newParentPart instanceof IControlStructureEditPart){
 				parentPart = (IControlStructureEditPart) ((IControlStructureEditPart)obj).getParent();
 				this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), parentPart.getId());
 			}
@@ -1285,8 +1321,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
 		part.getFigure().translateToAbsolute(p);
 		IControlStructureFigure figure =  (IControlStructureFigure) part.getFigure().findFigureAt(p);
-		figure.translateToRelative(p);
+		figure.translateFromParent(p);
 		this.copySelectionCommand.setPastePosition(figure.getId(),p.x,p.y);
+		if(!this.copySelectionCommand.canExecute()){
+			Display.getDefault().beep();
+			return false;
+		}
 		getCommandStack().execute(this.copySelectionCommand);
 		this.selectAddedParts  = true;
 		

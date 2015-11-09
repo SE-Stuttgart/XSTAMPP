@@ -33,6 +33,13 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 	private Map<UUID,UUID> pasteIdToCopyId;
 	private Map<IRectangleComponent,UUID> parentIdsToComponents;
 	
+	/**
+	 * A comparator that makes sure that components which are in a child relation which an other component
+	 * in the copy scope are added after their parent, because otherwise they wouldn't be drawn at all
+	 *  
+	 * @author Lukas Balzer
+	 *
+	 */
 	private class CopySorter implements Comparator<IRectangleComponent>{
 
 		@Override
@@ -84,15 +91,27 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public boolean canExecute() {
+		Collections.sort(this.copyList,new CopySorter());
+		ComponentType parentType = this.getDataModel().getComponent(parentID).getComponentType();
+		ComponentType childType =this.copyList.get(0).getComponentType();
 		
+		if(childType.equals(parentType)){
+			return false;
+		}if(childType.equals(ComponentType.PROCESS_MODEL) && !parentType.equals(ComponentType.CONTROLLER)){
+			return false;
+		}if(childType.equals(ComponentType.PROCESS_VALUE) && !parentType.equals(ComponentType.PROCESS_VARIABLE)){
+			return false;
+		}if(childType.equals(ComponentType.PROCESS_VARIABLE) && !parentType.equals(ComponentType.PROCESS_MODEL)){
+			return false;
+		}
 		return this.copyList.size() > 0 && this.position != null && this.parentID != null && this.pastePosition != null;
 	}
 	
 	@Override
 	public void execute() {
-		Collections.sort(this.copyList,new CopySorter());
 
 		this.undoList = new ArrayList<>();
+		
 		for(IRectangleComponent comp : this.copyList){
 			UUID newParentId;
 			Rectangle rect = comp.getLayout(this.getStepID().equals(CSEditor.ID));

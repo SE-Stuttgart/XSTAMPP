@@ -25,6 +25,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.w3c.dom.svg.GetSVGDocument;
 
 import xstampp.astpa.controlstructure.controller.editparts.ActuatorEditPart;
@@ -50,6 +51,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.preferences.IControlStructureConstants;
 
 // import astpa.rcp.controlstucture.model.ComponentModel;
 
@@ -69,6 +71,7 @@ public class CSEditPartFactory implements EditPartFactory {
 	private Map<UUID, IControlStructureEditPart> editPartMap = new HashMap<>();
 	private final String stepId;
 	private List<IControlStructureEditPart> addedParts;
+	private IPreferenceStore store;
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -77,12 +80,16 @@ public class CSEditPartFactory implements EditPartFactory {
 	 *            The DataModel which contains all model classes
 	 * @param stepId
 	 *            this steps id
+	 * @param store The preference store which should be used, see that 
+	 * 				the store must contain all keys defined in IControlStructureConstants
+	 * @see IControlStructureConstants  
 	 */
 	public CSEditPartFactory(IControlStructureEditorDataModel model,
-			String stepId) {
+			String stepId, IPreferenceStore store) {
 		this.dataModel = model;
 		this.stepId = stepId;
 		this.addedParts = new ArrayList<>();
+		this.setStore(store);
 	}
 
 	@Override
@@ -171,6 +178,7 @@ public class CSEditPartFactory implements EditPartFactory {
 		}
 		// allocates the model to it's controller
 		part.setModel(model);
+		part.setPreferenceStore(store);
 		this.editPartMap.put(id, part);
 		this.addedParts.add(part);
 		return part;
@@ -249,5 +257,12 @@ public class CSEditPartFactory implements EditPartFactory {
 			return this.editPartMap.get(id);
 		}
 		return new ActuatorEditPart(null, this.stepId);
+	}
+
+	/**
+	 * @param store the store to set
+	 */
+	public void setStore(IPreferenceStore store) {
+		this.store = store;
 	}
 }

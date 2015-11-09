@@ -56,6 +56,7 @@ public class SensorEditPart extends CSAbstractEditPart {
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
 				IControlStructureConstants.CONTROLSTRUCTURE_SENSOR_COLOR);
+		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		tmpFigure.setToolTip(new Label(Messages.Sensor));
 		return tmpFigure;

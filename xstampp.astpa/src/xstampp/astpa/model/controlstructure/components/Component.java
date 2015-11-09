@@ -471,9 +471,9 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 			if(this.getComponentType() == ComponentType.DASHEDBOX){
 				return 0;
 			}
-			return -1;
-		}else if(this.getComponentType() == ComponentType.DASHEDBOX){
 			return 1;
+		}else if(this.getComponentType() == ComponentType.DASHEDBOX){
+			return -1;
 		}
 		return 0;
 	}

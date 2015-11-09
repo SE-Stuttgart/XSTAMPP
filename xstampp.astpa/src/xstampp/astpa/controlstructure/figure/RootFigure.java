@@ -28,7 +28,6 @@ import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.Activator;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.preferences.IControlStructureConstants;
@@ -113,7 +112,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	 */
 	public void addAnchorsGrid(List<IRectangleComponent> childrenList) {
 
-		if(Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+		if(getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
 			return;
 		}
 		int width = RootFigure.NONACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -29,6 +30,7 @@ public class editRelatedHazardsWizard {
     private Shell shell;
     private ProcessModelVariables entryToEdit;
     private View view;
+    private List<String> linkedListContent = new ArrayList<String>();
     org.eclipse.swt.widgets.List linkedList;
     org.eclipse.swt.widgets.List availableList;
     
@@ -37,23 +39,24 @@ public class editRelatedHazardsWizard {
 
 	public editRelatedHazardsWizard(ProcessModelVariables entryToEdit)
     {
-//        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
-//        shell.setLayout(new GridLayout(2, false));
-//        shell.setText("Add Hazards");
-//        shell.setImage(View.LOGO);
-//
-//        // Get the size of the screen
-//        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-//        int x = (dim.width)/4;
-//        int y = (dim.height)/2;
-//        // set the Location
-//        shell.setLocation(x,y);
+        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
+        shell.setLayout(new GridLayout(2, false));
+        shell.setText("Add Unsafe Control Actions");
+        shell.setImage(View.LOGO);
+
+        // Get the size of the screen
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (dim.width)/4;
+        int y = (dim.height)/2;
+        // set the Location
+        shell.setLocation(x,y);
         
         this.entryToEdit = entryToEdit;
-        //createContents(shell);
-        //shell.pack();
+        createContents(shell);
+        shell.pack();
         
     }
+	
     
     // ==================== 5. Creators =============================
     
@@ -76,11 +79,32 @@ public class editRelatedHazardsWizard {
 	    data.minimumHeight = 200;
 	    availableList.setLayoutData(data);
 	    if (entryToEdit != null) {
-	    	
-	    	for (String entry : entryToEdit.getUca().getDescriptions()) {
-	    		availableList.add(entry);
+	    	entryToEdit.getUca().getLinkedDescriptions().clear();
+	    	List<UUID> tempLinkedIds = new ArrayList<UUID>();
+	    	for (int i = 0; i<entryToEdit.getUca().getDescriptionIds().size(); i++) {
+	    		// TODO CHECK AGAIN
+	    		String tempAvail = "UCA"+i+" - ";
+	    		String tempLinked = "UCA"+i+" - ";
+	    		Boolean addEntry = true;
+		    	for (int j = 0; j<entryToEdit.getUca().getLinkedDescriptionIds().size(); j++) {
+		    		if (entryToEdit.getUca().getLinkedDescriptionIds().get(j)
+		    					.equals(entryToEdit.getUca().getDescriptionIds().get(i))) {
+		    				addEntry = false;
+		    				tempLinked = tempLinked.concat(entryToEdit.getUca().getDescriptions().get(i));
+		    				linkedListContent.add(tempLinked);
+		    				entryToEdit.getUca().addLinkedDescription(entryToEdit.getUca().getDescriptions().get(i));
+		    				tempLinkedIds.add(entryToEdit.getUca().getDescriptionIds().get(i));
+		    		}
+		    	}
+		    	if (addEntry) {
+		    		tempAvail = tempAvail.concat(entryToEdit.getUca().getDescriptions().get(i));
+		    		availableList.add(tempAvail);
+		    	}
 	    	}
+	    	entryToEdit.getUca().setLinkedDescriptionIds(tempLinkedIds);
 	    }
+	    	
+	    
 	    
 	    // Add the List for relationParamListComposite
 	    linkedList = new org.eclipse.swt.widgets.List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
@@ -90,9 +114,11 @@ public class editRelatedHazardsWizard {
 	    data.minimumWidth = 350;
 	    data.minimumHeight = 200;
 	    linkedList.setLayoutData(data);
-	    if (entryToEdit.getUca().getLinkedDescriptions() != null) {
+//	    if (entryToEdit.getUca().getLinkedDescriptions() != null) {
+	    if (entryToEdit != null) {
 	    	
-	    	for (String entry : entryToEdit.getUca().getLinkedDescriptions()) {
+	    	
+	    	for (String entry : linkedListContent) {
 	    		linkedList.add(entry);
 	    	}
 	    }
@@ -117,6 +143,7 @@ public class editRelatedHazardsWizard {
 	    // closes the window
 	    okBtn.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
+	    		view.storeRefinedSafety();
 	    		close();
 	    	}
 	    });
@@ -132,25 +159,22 @@ public class editRelatedHazardsWizard {
 	    					if (availableList.getItem(availableList.getSelectionIndex())
 	    					.contains(entryToEdit.getUca().getDescriptions().get(i))) {
 	    						
+	    						// add the entry to the linked Descriptions
 	    						entryToEdit.getUca().getLinkedDescriptions()
 	        					.add(entryToEdit.getUca().getDescriptions().get(i));
+	    						// add the Id of the Entry to linked Descriptions
+	    						entryToEdit.getUca().getLinkedDescriptionIds()
+	        					.add(entryToEdit.getUca().getDescriptionIds().get(i));
 	    						
-	    						entryToEdit.getUca().getDescriptions()
-	        					.remove(i);
+
 	    					}
 	    						
 	    					
 	    				}
-	    			
+	    				// display the current changes
 	    				linkedList.add(availableList.getItem(availableList.getSelectionIndex()));
 	    				availableList.remove(availableList.getSelectionIndex());
-	    				
-	    				view.refinedSafetyTable.setVisible(false);
-	    				// refresh the viewer
-	    				view.refinedSafetyViewer.refresh();
-	    	    		// pack the table
-	    				view.refinedSafetyTable.getColumn(view.refinedSafetyTable.getColumnCount()-3).pack();
-	    				view.refinedSafetyTable.setVisible(true);
+
 	    		}
 	    		
 	    	}
@@ -167,23 +191,21 @@ public class editRelatedHazardsWizard {
     					if (linkedList.getItem(linkedList.getSelectionIndex())
     					.contains(entryToEdit.getUca().getLinkedDescriptions().get(i))) {
     						
-    	    				entryToEdit.getUca().getDescriptions()
-    	    				.add(entryToEdit.getUca().getLinkedDescriptions().get(i));
+    	    				// Remove Linked Description Id
+    	    				entryToEdit.getUca().getLinkedDescriptionIds()
+    	    				.remove(i);
     	    				
+    						// Remove Linked Description
     	    				entryToEdit.getUca().getLinkedDescriptions()
     	    				.remove(i);
+    	    				
+    	    				break;
+    	    			
     					}
     				}
 	    				
 	    				availableList.add(linkedList.getItem(linkedList.getSelectionIndex()));
 	    				linkedList.remove(linkedList.getSelectionIndex());
-	    				
-	    				view.refinedSafetyTable.setVisible(false);
-	    				// refresh the viewer
-	    				view.refinedSafetyViewer.refresh();
-	    	    		// pack the table
-	    				view.refinedSafetyTable.getColumn(view.refinedSafetyTable.getColumnCount()-1).pack();
-	    				view.refinedSafetyTable.setVisible(true);
 
 	    				
 	    		}
@@ -192,57 +214,59 @@ public class editRelatedHazardsWizard {
 	    });
     	
     }
-    public void initializeUCA() {
-    	if (initialized) {
-    		
-    	}
-    	else {
-            shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
-            shell.setLayout(new GridLayout(2, false));
-            shell.setText("Add Hazards");
-            shell.setImage(View.LOGO);
-
-            // Get the size of the screen
-            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-            int x = (dim.width)/4;
-            int y = (dim.height)/2;
-            // set the Location
-            shell.setLocation(x,y);
-            createContents(shell);
-            shell.pack();
-        	entryToEdit.getUca().initialize();
-        	
-    	    if (entryToEdit.getUca().getLinkedDescriptions() != null) {
-    	    	
-    	    	for (String entry : entryToEdit.getUca().getLinkedDescriptions()) {
-    	    		linkedList.add(entry);
-    	    	}
-    	    }
-    	    if (entryToEdit != null) {
-    	    	
-    	    	for (String entry : entryToEdit.getUca().getDescriptions()) {
-    	    		availableList.add(entry);
-    	    	}
-    	    }
-    	    initialized = true;
-    	}
-
-
-    }
+//    public Boolean initializeUCA() {
+//    	if (initialized) {
+//    		return true;
+//    	}
+//    	else {
+//            shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
+//            shell.setLayout(new GridLayout(2, false));
+//            shell.setText("Add Hazards");
+//            shell.setImage(View.LOGO);
+//
+//            // Get the size of the screen
+//            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+//            int x = (dim.width)/4;
+//            int y = (dim.height)/2;
+//            // set the Location
+//            shell.setLocation(x,y);
+//            createContents(shell);
+//            shell.pack();
+//        	entryToEdit.getUca().initialize();
+//        	
+//    	    if (entryToEdit.getUca().getLinkedDescriptions() != null) {
+//    	    	
+//    	    	for (String entry : entryToEdit.getUca().getLinkedDescriptions()) {
+//    	    		linkedList.add(entry);
+//    	    	}
+//    	    }
+//    	    if (entryToEdit != null) {
+//    	    	
+//    	    	for (String entry : entryToEdit.getUca().getDescriptions()) {
+//    	    		availableList.add(entry);
+//    	    	}
+//    	    	if (availableList.getItemCount() == 0) {
+//    	    		return false;
+//    	    	}
+//    	    }
+//    	    initialized = true;
+//    	    return true;
+//    	}
+//
+//
+//    }
     
     public void open(View view)
     {
     	this.view = view;
-    	if(shell.isDisposed()){
-    		initialized = false;
-    		initializeUCA();
-    	}
         shell.open();     
     }
+    
 
     public void close()
     {
-    	
+    	view.refinedSafetyViewer.setInput(view.refinedSafetyContent);
+    	view.refinedSafetyTable.getColumn(4).pack();
         shell.setVisible(false);
     }
 }

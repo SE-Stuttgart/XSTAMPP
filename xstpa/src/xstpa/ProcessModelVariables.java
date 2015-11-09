@@ -16,13 +16,17 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 
 @XmlRootElement(name = "contexttablecombination")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "values", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
-		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "editWindow", "id" })
+@XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
+		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "id" })
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")
 	@XmlElement(name = "value")
 	private List<String> values = new ArrayList<String>();
+	
+	@XmlElementWrapper(name = "valueIds")
+	@XmlElement(name = "Id")
+	private List<UUID> valueIds = new ArrayList<UUID>();
 	
 	@XmlElementWrapper(name = "pmVariables")
 	@XmlElement(name = "pmVariable")
@@ -38,7 +42,7 @@ public class ProcessModelVariables {
 	private String linkedControlActionName = "";
 	
 
-	private String refinedSafetyRequirements = "Click to add some Rules";
+	private String refinedSafetyRequirements ="";
 	
 	private String context;
 	
@@ -63,8 +67,6 @@ public class ProcessModelVariables {
 	private RelatedHazards relatedHazards = new RelatedHazards(View.allHazards);
 	
 	private UnsafeControlAction uca= new UnsafeControlAction(this);
-	
-	private editRelatedHazardsWizard editWindow= new editRelatedHazardsWizard(this);;
 	
 	private UUID id;
 	
@@ -171,13 +173,6 @@ public class ProcessModelVariables {
 	public void setRelatedHazards(RelatedHazards relatedHazards) {
 		this.relatedHazards = relatedHazards;
 	}
-	public editRelatedHazardsWizard getEditWindow() {
-		return editWindow;
-	}
-	public void setEditWindow(editRelatedHazardsWizard editWindow) {
-		this.editWindow = editWindow;
-	}
-
 
 	public UnsafeControlAction getUca() {
 		return uca;
@@ -201,6 +196,18 @@ public class ProcessModelVariables {
 
 	public void setIsInRSRTable(Boolean isInRSRTable) {
 		this.isInRSRTable = isInRSRTable;
+	}
+
+	public List<UUID> getValueIds() {
+		return valueIds;
+	}
+
+	public void setValueIds(List<UUID> valueIds) {
+		this.valueIds = valueIds;
+	}
+	public void addValueId (UUID valueId) {
+		valueIds.add(valueId);
+		
 	}
 
 

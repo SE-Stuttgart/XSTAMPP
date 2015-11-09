@@ -26,13 +26,11 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.controlstructure.utilities.CSCellEditorLocator;
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import xstampp.astpa.util.DirectEditor;
 
@@ -58,7 +56,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 	private DirectEditor editor;
 	private Rectangle deleteSpace;
 	private boolean showDelete;
-	
+ 	
 	
 	private class TextLocator implements CellEditorLocator{
 
@@ -184,6 +182,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 				GridCellTextEditor.this.editField = ((Text)e.widget).getBounds();
 				GridCellTextEditor.this.grid.resizeRows();
 				updateDataModel(((Text)e.widget).getText());
+				onTextChange();
 			}
 		});
 		this.editor.addModifyListener(new ModifyListener() {
@@ -214,6 +213,9 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 		
 	}
 
+	public void onTextChange(){
+		//do nothing by default
+	}
 	@Override
 	public void addCellButton(CellButton button) {
 		//the delete Button is aded manually to allow a better handling of the delete process

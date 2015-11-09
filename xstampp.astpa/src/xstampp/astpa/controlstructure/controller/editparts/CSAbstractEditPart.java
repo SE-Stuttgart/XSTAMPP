@@ -35,6 +35,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
@@ -71,6 +72,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	private IControlStructureEditorDataModel dataModel;
 	private List<IConnection> connectionRegisty;
 	private int layer;
+	private IPreferenceStore store;
 
 	/**
 	 * 
@@ -92,6 +94,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	@Override
 	protected IFigure createFigure() {
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), false);
+		tmpFigure.setPreferenceStore(store);
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getFigure());
 		return tmpFigure;
 	}
@@ -205,7 +208,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 			editPart = (CSConnectionEditPart) this
 					.createOrFindConnection(connection);
-
+			((IControlStructureEditPart)editPart).setPreferenceStore(this.store);
 			tmpRegistry.add(connection);
 			editPart.refresh();
 		}
@@ -339,6 +342,9 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	public IControlStructureFigure getFigure() {
+		if(getParent() == null){
+			return null;
+		}
 		return (IControlStructureFigure) super.getFigure();
 	}
 
@@ -396,5 +402,19 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	
 	public void addTargetConnection(CSConnectionEditPart conn){
 		primAddTargetConnection(conn, 0);
+	}
+	/**
+	 * @return the store
+	 */
+	public IPreferenceStore getStore() {
+		return this.store;
+	}
+	
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		if(getFigure() != null){
+			getFigure().setPreferenceStore(store);
+		}
+		this.store = store;
 	}
 }

@@ -20,8 +20,7 @@ import xstampp.ui.navigation.ProjectExplorer;
 import xstpa.View;
 
 public class ExportWizard extends AbstractExportWizard {
-
-	private final static String OUTPUT ="Output"; //$NON-NLS-1$
+	private String OUTPUT; //$NON-NLS-1$
 	private RunPage page;
 	
 
@@ -35,6 +34,7 @@ public class ExportWizard extends AbstractExportWizard {
 			projectName = ProjectManager.getContainerInstance().
 									getTitle(((IProjectSelection) selection).getProjectId());
 		}
+		OUTPUT ="Output/" +projectName+ "/Extended";
 		File outputDir =new File(Platform.getInstanceLocation().getURL().getPath().toString()
 								+ OUTPUT);
 		if(!outputDir.exists()){
@@ -64,7 +64,7 @@ public class ExportWizard extends AbstractExportWizard {
 
 		if (this.page.getPdfCheckbox().getSelection() == true) {
 			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.PDF_DIR + File.separator +"xstpa-tables.pdf", "/src/export/fopXstpa.xsl",
-					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+					View.projectId);
 		    exportjob.schedule();
 		}
 		if (this.page.getCsvCheckbox().getSelection() == true) {
@@ -73,7 +73,7 @@ public class ExportWizard extends AbstractExportWizard {
 		}
 		if (this.page.getImgCheckbox().getSelection() == true) {
 			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.IMAGE_DIR+ File.separator +"xstpa-tables.png", "/src/export/fopXstpa.xsl",
-					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+					View.projectId);
 		    exportjob.schedule();
 		}
 

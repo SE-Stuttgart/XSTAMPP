@@ -1,4 +1,4 @@
-package xstampp.preferences;
+package xstampp.astpa.preferences;
 
 import messages.Messages;
 
@@ -8,6 +8,8 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FontFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import xstampp.preferences.IControlStructureConstants;
 
 
 
@@ -35,7 +37,7 @@ implements IWorkbenchPreferencePage {
 
 	@Override
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(xstampp.Activator.getDefault().getPreferenceStore());
+		setPreferenceStore(xstampp.astpa.Activator.getDefault().getPreferenceStore());
 		setDescription("Preferences for both the control structure and the control structure with process model editor");
 		
 	}

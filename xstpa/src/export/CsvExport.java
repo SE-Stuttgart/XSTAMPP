@@ -123,6 +123,8 @@ public class CsvExport {
 			return false;
 		}
 		
+		// Info, that Context Provided table is printed
+		writer.print("CONTEXT_PROVIDED" + delimiter + crlf);
 
 		// Write the Data to csv
 		for (int i=0; i<exportContent.getProvidedCA().size();i++) {
@@ -178,7 +180,8 @@ public class CsvExport {
 		
 		// Leave 2 Rows Blank, then Start new Table
 		writer.print("" + crlf);
-		writer.print("" + crlf);
+		// Info, that Context Not Provided table is printed
+		writer.print("CONTEXT_NOT_PROVIDED" + delimiter + crlf);
 		
 		
 		// Write the Data to csv

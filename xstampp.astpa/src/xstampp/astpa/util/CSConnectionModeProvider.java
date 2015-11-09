@@ -3,6 +3,7 @@ package xstampp.astpa.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.gef.tools.ConnectionCreationTool;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.AbstractSourceProvider;
@@ -51,12 +52,20 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
+		
 		if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
-			boolean newValue=(boolean) event.getNewValue();
+			boolean newValue = false;
+			if(event.getNewValue() instanceof String){
+				newValue=Boolean.parseBoolean((String) event.getNewValue());
+			}else if(event.getNewValue() instanceof Boolean){
+				newValue = (boolean) event.getNewValue();
+			}
 			fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.CONNECTION_MODE,newValue);
 			IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-			if(part instanceof IControlStructureEditor){
+			if(part instanceof IControlStructureEditor 
+			&& ((IControlStructureEditor) part).getGraphicalViewer().getEditDomain().getActiveTool() instanceof ConnectionCreationTool){
 				RootEditPart editpart = (RootEditPart) ((IControlStructureEditor)part).getGraphicalViewer().getContents();
+				//the anchors grid is to be set if the manual connection mode value (newValue) is false
 				editpart.setAnchorsGrid(!newValue);
 			}
 		}else if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){

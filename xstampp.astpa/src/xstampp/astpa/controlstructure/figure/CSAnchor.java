@@ -20,6 +20,7 @@ import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.Activator;
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
@@ -36,6 +37,7 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	private Point lastRef;
 	private Rectangle refLayout;
 
+
 	/**
 	 * the xOrientations array which stores the locations on the x-axis as
 	 * values between 0 and 1 where the user should be able to create a CSAnchor
@@ -50,6 +52,7 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	private Map<Integer, Point> anchorPoints;
 	private Point referencePoint;
 	private Point anchorFactor;
+	private IPreferenceStore store;
 
 	private CSAnchor(IFigure owner) {
 		super(owner);
@@ -68,12 +71,13 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	 *            The Figure this AnchorPoint lies on
 	 * @param ref
 	 *            the reference Point in absolute coordinates on the Editor
+	 * @param store2 
 	 */
-	public CSAnchor(IFigure owner, Point ref) {
+	public CSAnchor(IFigure owner, Point ref, IPreferenceStore store2) {
 		this(owner);
-
+		setPreferenceStore(store2);
 		this.lastRef = ref.getCopy();
-		if(Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+		if(this.store.getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
 			this.calulateAnchorFac(this.lastRef);
 		}else{
 			this.setAnchorFactor(this.calcAnchorNr());
@@ -319,6 +323,11 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	@Override
 	public Point getAnchorPosition() {
 		return this.referencePoint;
+	}
+
+	@Override
+	public void setPreferenceStore(IPreferenceStore store) {
+		this.store = store;
 	}
 
 }

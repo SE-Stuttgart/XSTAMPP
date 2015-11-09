@@ -12,9 +12,6 @@ import java.util.Map;
 import java.util.Observable;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import messages.Messages;
 
@@ -53,6 +50,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
@@ -835,14 +833,11 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 				switch (e.type) {
 				case SWT.Selection:
 					boolean cancel = false;
-					JFileChooser jfc = new JFileChooser();
-					FileFilter imageFilter = new FileNameExtensionFilter(
-							"Image files", ImageIO.getReaderFileSuffixes());
-					jfc.setFileFilter(imageFilter);
-					jfc.setAcceptAllFileFilterUsed(false);
-					jfc.showOpenDialog(null);
-					if (jfc.getSelectedFile() != null) {
-						File f = jfc.getSelectedFile();
+					FileDialog jfc = new FileDialog(null);
+					jfc.setFilterExtensions(ImageIO.getReaderFileSuffixes());
+					String selectedFile = jfc.open();
+					if (selectedFile != null && new File(selectedFile).isFile()) {
+						File f = new File(selectedFile);
 						for (String currentPicturePath : pictureList.getItems()) {
 							if (currentPicturePath.contains(f.getAbsolutePath())) {
 								MessageBox dialog = new MessageBox(parent

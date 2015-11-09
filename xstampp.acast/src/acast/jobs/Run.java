@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Display;
 
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 /**
  * an export job which run s a complete export in all available formats. the
@@ -29,7 +30,7 @@ import xstampp.ui.common.ProjectManager;
  * @since 2.0
  *
  */
-public class Run extends Job implements IJobChangeListener {
+public class Run extends XstamppJob implements IJobChangeListener {
 
 	/**
 	 * the name for the image export folder
@@ -82,7 +83,7 @@ public class Run extends Job implements IJobChangeListener {
 	 *            the project id
 	 */
 	public Run(String name, String path, UUID id) {
-		super(name);
+		super(name,id);
 		this.dir = path;
 		this.projectID = id;
 		this.exportCSVs = true;
