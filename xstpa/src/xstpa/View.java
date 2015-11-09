@@ -2436,7 +2436,7 @@ public class View extends ViewPart implements Observer{
 	              
 	    				if (rect.contains(pt)) {	                
 	    					refinedSafetyTableCellX = i;	
-		  		    	  	if (refinedSafetyTableCellX == refinedSafetyTable.getColumnCount()-3) {	  		    	  		
+		  		    	  	if ((refinedSafetyTableCellX == refinedSafetyTable.getColumnCount()-3)& (refinedSafetyTable.getSelectionIndex() != -1)) {	  		    	  		
 		  		    	  		editHazards = new editRelatedHazardsWizard(refinedSafetyContent.get(refinedSafetyTable.getSelectionIndex()));
 		  		    	  		editHazards.open(view);
 		  		    	  	}
