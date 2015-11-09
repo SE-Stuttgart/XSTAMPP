@@ -1099,7 +1099,7 @@ public class View extends ViewPart implements Observer{
 		ltlViewer.setContentProvider(new MainViewContentProvider());
 		ltlViewer.setLabelProvider(new LtlViewLabelProvider());
 		
-	    Composite contextCompositeInner = new Composite(contextCompositeInnerRight, SWT.CENTER);
+	    Composite contextCompositeInner = new Composite(contextCompositeInnerRight, SWT.NONE);
 	    contextCompositeInner.setLayout(new GridLayout(1, false));
 	    
 	    // set the formdata for the middle part of the context composite
@@ -1110,7 +1110,7 @@ public class View extends ViewPart implements Observer{
 	    fData.bottom = new FormAttachment( 90 );
 	    contextCompositeInner.setLayoutData( fData ); 
 	    
-	    Composite contextCompositeOptions = new Composite(contextCompositeInnerRight, SWT.CENTER);
+	    Composite contextCompositeOptions = new Composite(contextCompositeInnerRight, SWT.NONE);
 	    contextCompositeOptions.setLayout(new FormLayout());
 	    
 	    // set the formdata for the right part (options) of the context composite
@@ -1121,7 +1121,7 @@ public class View extends ViewPart implements Observer{
 	    fData.bottom = new FormAttachment( 100 );
 	    contextCompositeOptions.setLayoutData( fData ); 
 	    
-	    Composite contextCompositeErrorLabel = new Composite(contextCompositeInnerRight, SWT.CENTER);
+	    Composite contextCompositeErrorLabel = new Composite(contextCompositeInnerRight, SWT.NONE);
 	    contextCompositeErrorLabel.setLayout(new GridLayout(1, false));
 	    
 	    // set the formdata for the right part (options) of the context composite
@@ -1208,7 +1208,7 @@ public class View extends ViewPart implements Observer{
 	    
 	    
 		// the top right part (buttons)
-	    Composite compositeDependenciesTopRightBtns = new Composite(compositeDependenciesTopRight, SWT.CENTER);
+	    Composite compositeDependenciesTopRightBtns = new Composite(compositeDependenciesTopRight, SWT.None);
 	    compositeDependenciesTopRightBtns.setLayout(new GridLayout(5, false));
 
 	    GridData gridData = new GridData(SWT.FILL, SWT.END, true, false);
@@ -1217,6 +1217,9 @@ public class View extends ViewPart implements Observer{
 	    
 	    gridData = new GridData(SWT.FILL, SWT.END, true, true);
 	    gridData.heightHint = 15;
+	    if(System.getProperty("os.name").toLowerCase().contains("linux")){
+		    gridData.heightHint = 25;
+	    }
 	    
 	    // Add a button to Add one Item in Dependencies View
 	    Button addBtn = new Button(compositeDependenciesTopRightBtns, SWT.PUSH);
@@ -1502,7 +1505,9 @@ public class View extends ViewPart implements Observer{
 	  	      
 	  	      // set the new composite visible
 	    	  compositeControlAction.setVisible(true);
-	  	      
+
+	  	      compositeControlAction.layout();
+	  	      compositeControlAction.update();
 	      }
 	    });
 	    
@@ -2324,9 +2329,13 @@ public class View extends ViewPart implements Observer{
 		 */
 	    settingsBtn.addSelectionListener(new SelectionAdapter() {
 		      public void widgetSelected(SelectionEvent event) {
-		    	  //open the settings window
-		    	  settingsWindow = new editWindow(linkedCAE, view);
-		    	  settingsWindow.open();
+		    	  if(System.getProperty("os.name").toLowerCase().contains("linux")){
+		    		  ProjectManager.getLOGGER().debug("The Acts settings shell is not working on linux at the moment");
+		    	  }else{
+			    	  //open the settings window
+			    	  settingsWindow = new editWindow(linkedCAE, view);
+			    	  settingsWindow.open();
+		    	  }
 		    	  
 		      }  
 		      });
@@ -3593,16 +3602,16 @@ public class View extends ViewPart implements Observer{
 	  	if (controlActionProvided == false) {
 	  		  
 	  		if (!getLinkedCAE().getLinkedItems().isEmpty()) {
-	  			new TableColumn(contextRightTable, SWT.CENTER, counter).setText(ENTRY_ID);
+	  			new TableColumn(contextRightTable, SWT.NONE, counter).setText(ENTRY_ID);
 	  			counter++;
 	  			// creates new TableColumns dynamically so that the context table has the right size (and labels)
 	  			for (ProcessModelVariables entry:getLinkedCAE().getLinkedItems()) {
 		  		  
-	  				new TableColumn(contextRightTable, SWT.CENTER, counter).setText(entry.getName());
+	  				new TableColumn(contextRightTable, SWT.NONE, counter).setText(entry.getName());
 	  				counter++;
 	  			}
 		  	
-	  			new TableColumn(contextRightTable, SWT.CENTER, counter).setText(HAZARDOUS);
+	  			new TableColumn(contextRightTable, SWT.NONE, counter).setText(HAZARDOUS);
 	  			counter++;
 	  			for (int i=counter, columnCount=contextRightTable.getColumnCount(); i<columnCount; i++) {
 	  				contextRightTable.getColumn(counter).dispose();
@@ -3619,17 +3628,17 @@ public class View extends ViewPart implements Observer{
 	  	}
 	  	else {
 	  		if (!getLinkedCAE().getLinkedItems().isEmpty()) {
-	  			new TableColumn(contextRightTable, SWT.CENTER, counter).setText(ENTRY_ID);
+	  			new TableColumn(contextRightTable, SWT.NONE, counter).setText(ENTRY_ID);
 	  			counter++;
 	  			// creates new TableColumns dynamically so that the context table has the right size (and labels)
 	  			for (ProcessModelVariables entry:getLinkedCAE().getLinkedItems()) {
 		  		  
-	  				new TableColumn(contextRightTable, SWT.CENTER, counter).setText(entry.getName());
+	  				new TableColumn(contextRightTable, SWT.NONE, counter).setText(entry.getName());
 	  				counter++;
 	  			}
 
 		  	
-		  		new TableColumn(contextRightTable, SWT.CENTER, counter).setImage(HEADER);
+		  		new TableColumn(contextRightTable, SWT.NONE, counter).setImage(HEADER);
 		  		counter++;
 		  	
 		  		for (int i=counter, columnCount=contextRightTable.getColumnCount(); i<columnCount; i++) {
@@ -3854,6 +3863,7 @@ public class View extends ViewPart implements Observer{
 		ObserverValue type = (ObserverValue) updatedValue;
 		
 		switch (type) {
+		case CONTROL_ACTION:
 		case CONTROL_STRUCTURE: {
 			getTableEntrys();
 			break;

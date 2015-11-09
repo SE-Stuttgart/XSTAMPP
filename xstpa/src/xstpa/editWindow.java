@@ -177,7 +177,7 @@ public class editWindow
 
 	public editWindow(ControlActionEntrys linkedCAE, View view)
     {
-        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));
+        shell = new Shell(SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));
         shell.setLayout(new GridLayout(1, false));
         shell.setText("Context Table Settings");
         shell.setImage(View.LOGO);
@@ -290,7 +290,7 @@ public class editWindow
 	    baseChoiceButton.setText("Base Choice");
 	    baseChoiceButton.setToolTipText("A special oneway testing Algorithm");
 	    // Add the components for the middle (main) part
-	    Label strengthLabel = new Label(mainComposite, SWT.NULL);
+	    Label strengthLabel = new Label(mainComposite, SWT.NONE);
 	    strengthLabel.setText("Strength: ");
 	    
 	    final Combo strengthCombo = new Combo(mainComposite, SWT.READ_ONLY);
@@ -305,11 +305,11 @@ public class editWindow
 	    GridData data = new GridData(150, 80);
 	    strengthCombo.setLayoutData(data);
 	    
-	    Label spaceHolderLabel = new Label(mainComposite, SWT.NULL);
+	    Label spaceHolderLabel = new Label(mainComposite, SWT.NONE);
 	    spaceHolderLabel.setText("");
 	    
 	    //Second Row
-	    Label modeLabel = new Label(mainComposite, SWT.NULL);
+	    Label modeLabel = new Label(mainComposite, SWT.NONE);
 	    modeLabel.setText("Mode: ");
 	    
 	    final Combo modeCombo = new Combo(mainComposite, SWT.READ_ONLY);
@@ -367,7 +367,7 @@ public class editWindow
 	    });
 
 	    
-	    Label spacerLabel = new Label(buttonsComposite, SWT.NULL);
+	    Label spacerLabel = new Label(buttonsComposite, SWT.NONE);
 	    spacerLabel.setText("");
 	    
 	    // Apply Button

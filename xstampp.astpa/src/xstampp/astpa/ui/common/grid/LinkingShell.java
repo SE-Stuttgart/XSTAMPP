@@ -63,8 +63,7 @@ public class LinkingShell{
 			MessageDialog.openError(null,"No entrys available", "There are no entrys available for linking!");
 			return;
 		}
-		this.shell = new Shell(SWT.NO_TRIM | SWT.CLOSE);
-		this.shell.setSize(600, 300);
+		this.shell = new Shell(SWT.NO_TRIM | SWT.CLOSE |SWT.MIN);
 		this.shell.setLayout(new FillLayout());
 		this.shell.addShellListener(new ShellAdapter() {
 			@Override
@@ -82,16 +81,21 @@ public class LinkingShell{
 		data.bottom = new FormAttachment(95);
 		data.top= new FormAttachment(5);
 		final List proposalList = new List(parent, SWT.SINGLE | SWT.H_SCROLL| SWT.WRAP);
-		proposalList.setItems(this.labels);
+		String[] entrys = new String[this.labels.length];
+		for(int i=0; i < this.labels.length;i++){
+			entrys[i] = this.literals[i] +" - " + this.labels[i];
+		}
+		proposalList.setItems(entrys);
 		
 		proposalList.setLayoutData(data);
 		final Label description = new Label(parent, SWT.WRAP);
-		data = new FormData();
+		data = new FormData(300,300);
 		data.left = new FormAttachment(proposalList,5);
 		data.bottom = new FormAttachment(95);
 		data.top= new FormAttachment(5);
 		data.right = new FormAttachment(95);
 		description.setLayoutData(data);
+		this.shell.setSize(parent.computeSize(-1, 300));
 		
 		proposalList.addSelectionListener(new SelectionAdapter() {
 			
