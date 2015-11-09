@@ -20,8 +20,7 @@ import xstampp.ui.navigation.ProjectExplorer;
 import xstpa.View;
 
 public class ExportWizard extends AbstractExportWizard {
-
-	private final static String OUTPUT ="Output"; //$NON-NLS-1$
+	private String OUTPUT; //$NON-NLS-1$
 	private RunPage page;
 	
 
@@ -35,6 +34,7 @@ public class ExportWizard extends AbstractExportWizard {
 			projectName = ProjectManager.getContainerInstance().
 									getTitle(((IProjectSelection) selection).getProjectId());
 		}
+		OUTPUT ="Output/" +projectName+ "/Extended";
 		File outputDir =new File(Platform.getInstanceLocation().getURL().getPath().toString()
 								+ OUTPUT);
 		if(!outputDir.exists()){
