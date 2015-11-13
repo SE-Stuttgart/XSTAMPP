@@ -408,8 +408,6 @@ public class GridCellLinking<T extends ITableContentProvider> extends
 
 		// Listener for Proposal Selection to instantly link if proposal is
 		// selected
-		this.linkField.getContentProposalAdapter().addContentProposalListener(
-				new PropopsalListener());
 		this.linkEditor.setText(""); //$NON-NLS-1$
 		this.linkEditor.setMessage(Messages.StartTyping);
 
