@@ -2813,9 +2813,9 @@ public class View extends ViewPart implements Observer{
 
 			@Override
 			public void applyEditorValue() {
-				System.out.println("ApplyEditorValue!");	
+//				System.out.println("ApplyEditorValue!");	
 					
-					//storeRefinedSafety();
+					storeRefinedSafety();
 				
 			}
 
