@@ -2342,6 +2342,7 @@ public class View extends ViewPart implements Observer{
 		    		  else {
 		    			  contextRightContentNotProvided = contextRightContent;
 		    		  }
+		    		  getViewSite().getActionBars().getStatusLineManager().setMessage("");
 		    	  }
 		    	  else {
 			    		contextRightViewer.setInput(null);
