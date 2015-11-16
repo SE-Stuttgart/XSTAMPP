@@ -247,7 +247,7 @@ public class View extends ViewPart implements Observer{
 	
 	private editWindow settingsWindow;
 	
-	private editRelatedHazardsWizard editHazards;
+	private EditRelatedUcaWizard editHazards;
 	
 	public View view = this;
 	
@@ -2440,7 +2440,7 @@ public class View extends ViewPart implements Observer{
 	    				if (rect.contains(pt)) {	                
 	    					refinedSafetyTableCellX = i;	
 		  		    	  	if ((refinedSafetyTableCellX == refinedSafetyTable.getColumnCount()-3)& (refinedSafetyTable.getSelectionIndex() != -1)) {	  		    	  		
-		  		    	  		editHazards = new editRelatedHazardsWizard(refinedSafetyContent.get(refinedSafetyTable.getSelectionIndex()));
+		  		    	  		editHazards = new EditRelatedUcaWizard(refinedSafetyContent.get(refinedSafetyTable.getSelectionIndex()));
 		  		    	  		editHazards.open(view);
 		  		    	  	}
 	    				}
