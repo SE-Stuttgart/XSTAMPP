@@ -1415,6 +1415,7 @@ public class DataModelController extends Observable implements
 	public void setRelativeOfComponent(UUID componentId, UUID relativeId) {
 		this.controlStructureController.setRelativeOfComponent(componentId, relativeId);
 		updateValue(ObserverValue.CONTROL_STRUCTURE);
+		updateValue(ObserverValue.CONTROL_ACTION);
 		updateValue(ObserverValue.UNSAVED_CHANGES);
 	}
 

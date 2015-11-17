@@ -40,10 +40,10 @@ import org.eclipse.swt.graphics.Cursor;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.commands.ComponentChangeLayoutCommand;
 import xstampp.astpa.controlstructure.controller.commands.ComponentCreateCommand;
-import xstampp.astpa.controlstructure.controller.commands.addRelativeCommand;
-import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
+import xstampp.astpa.controlstructure.controller.commands.SwapRelativeCommand;
+import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
-import xstampp.astpa.controlstructure.controller.editparts.IRelative;
+import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
@@ -182,6 +182,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 				}
 				command.setLayout(constraint);
 
+				//this if branch checks whether the command takes place on the root, since the a relation
+				//can only exist on the root
 				if(getHost() instanceof RootEditPart
 						&& (compModel.getComponentType() == ComponentType.CONTAINER ||
 							compModel.getComponentType() == ComponentType.CONTROLACTION)){
@@ -306,15 +308,15 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 		if(RequestConstants.REQ_MOVE_CHILDREN.equals(request.getType())){
 			EditPart part = getHost().getViewer().findObjectAt(((ChangeBoundsRequest)request).getLocation());
 			Object connectable =((ChangeBoundsRequest)request).getEditParts().get(0);
-			if(part instanceof IRelative && connectable instanceof IConnectable 
-					&& ((IRelative) part).getId() != ((IConnectable)connectable).getRelativeId()){
-				IFigure conn= ((IRelative) part).getFeedback(((IConnectable)connectable));
+			if(part instanceof IRelativePart && connectable instanceof IMemberEditPart 
+					&& ((IRelativePart) part).getId() != ((IMemberEditPart)connectable).getRelativeId()){
+				IFigure conn= ((IRelativePart) part).getFeedback(((IMemberEditPart)connectable));
 				if(!(this.feedback.contains(conn))){
 					addFeedback(conn);		
 					this.feedback.add(conn);
 				}
-				return new addRelativeCommand(this.dataModel,this.stepID,
-											(IRelative) part, (IConnectable) connectable);
+				return new SwapRelativeCommand(this.dataModel,this.stepID,
+											(IRelativePart) part, (IMemberEditPart) connectable);
 			}
 			for(IFigure figure:this.feedback){
 				if(figure.getParent() == getFeedbackLayer()){

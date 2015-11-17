@@ -13,10 +13,13 @@
 
 package xstampp.astpa.controlstructure.controller.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.controlstructure.CSEditor;
-import xstampp.astpa.model.controlstructure.components.CSConnection;
+import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -29,6 +32,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 
 	private UUID connectionId;
+	private List<UUID> memberIDs;
 
 	/**
 	 * 
@@ -42,6 +46,7 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	public ConnectionDeleteCommand(IControlStructureEditorDataModel model,
 			String stepId) {
 		super(model, stepId);
+		this.memberIDs = new ArrayList<>();
 	}
 
 	/**
@@ -49,12 +54,15 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	 * 
 	 * @author Lukas Balzer, Aliaksei Babkovich
 	 * 
-	 * @param model
+	 * @param structureEditPart
 	 *            the ConnectionModel which shall be removed
 	 * 
 	 */
-	public void setLink(CSConnection model) {
-		this.connectionId = model.getId();
+	public void setLink(IRelativePart structureEditPart) {
+		this.connectionId = structureEditPart.getId();
+		for(IMemberEditPart part: structureEditPart.getMembers()){
+			this.memberIDs.add(part.getId());
+		}
 
 	}
 
@@ -69,6 +77,9 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	@Override
 	public void execute() {
 		this.getDataModel().removeConnection(this.connectionId);
+		for(UUID memberId:this.memberIDs){
+			this.getDataModel().setRelativeOfComponent(memberId, null);
+		}
 	}
 
 	@Override
@@ -82,6 +93,9 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	@Override
 	public void undo() {
 		this.getDataModel().recoverConnection(this.connectionId);
+		for(UUID memberId:this.memberIDs){
+			this.getDataModel().setRelativeOfComponent(memberId, this.connectionId);
+		}
 	}
 
 }

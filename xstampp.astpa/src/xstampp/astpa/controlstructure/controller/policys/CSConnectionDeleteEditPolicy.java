@@ -19,6 +19,7 @@ import org.eclipse.gef.requests.GroupRequest;
 
 import xstampp.astpa.controlstructure.controller.commands.ConnectionDeleteCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -55,7 +56,7 @@ public class CSConnectionDeleteEditPolicy extends ConnectionEditPolicy
 	protected Command getDeleteCommand(GroupRequest arg0) {
 		ConnectionDeleteCommand command = new ConnectionDeleteCommand(
 				this.dataModel, this.stepId);
-		command.setLink((CSConnection) this.getHost().getModel());
+		command.setLink((IRelativePart)this.getHost());
 		return command;
 	}
 

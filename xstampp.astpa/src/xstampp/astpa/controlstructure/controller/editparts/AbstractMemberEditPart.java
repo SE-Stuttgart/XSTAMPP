@@ -7,10 +7,10 @@ import org.eclipse.draw2d.IFigure;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
-public abstract class AbstractMemberEditPart extends CSAbstractEditPart implements IConnectable{
+public abstract class AbstractMemberEditPart extends CSAbstractEditPart implements IMemberEditPart{
 
 	private UUID relativeID;
-	private IRelative relativePart;
+	private IRelativePart relativePart;
 
 	public AbstractMemberEditPart(IControlStructureEditorDataModel model,
 			String stepId, Integer layer) {
@@ -22,20 +22,23 @@ public abstract class AbstractMemberEditPart extends CSAbstractEditPart implemen
 		super.refreshVisuals();
 		
 		UUID currentRelativeId=getDataModel().getComponent(getId()).getRelative();
-		if(this.relativeID != currentRelativeId){
-			IConnection conn= getDataModel().getConnection(currentRelativeId);
+		IConnection conn= getDataModel().getConnection(currentRelativeId);
+		if(conn == null){
+			this.relativeID = null;
+			this.relativePart = null;
+		}else if(this.relativeID != currentRelativeId ){
 			Object tmp = getViewer().getEditPartRegistry().get(conn);
 			if(this.relativePart != null){
 				this.relativePart.eraseFeedback();
 			}
-			if(tmp instanceof IRelative){
-				this.relativePart = (IRelative) tmp;
+			if(tmp instanceof IRelativePart){
+				this.relativePart = (IRelativePart) tmp;
 				this.relativeID = currentRelativeId;
 				getDataModel().getRelatedProcessVariables(getId());
 			}
 		}
 		
-		if(relativePart != null){
+		if(this.relativePart != null){
 			this.relativePart.updateFeedback();
 		}
 

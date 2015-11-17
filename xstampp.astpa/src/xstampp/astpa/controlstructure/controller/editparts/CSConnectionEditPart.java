@@ -47,7 +47,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @author Aliaksei Babkovich
  * @version 1.0
  */
-public class CSConnectionEditPart extends AbstractConnectionEditPart implements IRelative {
+public class CSConnectionEditPart extends AbstractConnectionEditPart implements IRelativePart {
 
 	private static final float DASH = 4;
 	private IAnchorFigure targetAnchor;
@@ -55,7 +55,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	private IControlStructureEditorDataModel dataModel;
 	private final UUID ownID;
 	private final String stepId;
-	private List<IConnectable> members;
+	private List<IMemberEditPart> members;
 	private IPreferenceStore store;
 
 	/**
@@ -144,7 +144,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		return this.getConnectionFigure().getFeedback();
 	}
 	@Override
-	public IFigure getFeedback(IConnectable member) {
+	public IFigure getFeedback(IMemberEditPart member) {
 		return this.getConnectionFigure().getFeedback(member);
 	}
 	@Override
@@ -241,10 +241,20 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	}
 
 	@Override
-	public void setMember(IConnectable member) {
+	public void addMember(IMemberEditPart member) {
 		this.members.add(member);
 	}
 
+	@Override
+	public List<IMemberEditPart> getMembers() {
+		return this.members;
+	}
+	
+	@Override
+	public void removeMember(IMemberEditPart member) {
+		this.members.remove(member);
+		
+	}
 	@Override
 	public void updateFeedback() {
 		getConnectionFigure().updateFeedback();

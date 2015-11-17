@@ -19,8 +19,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
-import xstampp.astpa.controlstructure.figure.ConnectionFigure;
-import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -38,14 +36,14 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 
-	private IRectangleComponent rootModel;
+	private IRectangleComponent parentModel;
 	private IRectangleComponent compModel;
 	private IRectangleComponent constraintModel;
 	private UUID componentId;
-	private UUID rootId;
+	private UUID parentId;
 	private Rectangle layout;
-	private Rectangle rootLayout;
-	private Rectangle oldRootLayout;
+	private Rectangle parentLayout;
+	private Rectangle oldParentLayout;
 	private UUID relativeId;
 
 	/**
@@ -63,10 +61,10 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 			String stepID) {
 		super(model, stepID);
 		this.constraintModel = new Component();
-		this.rootLayout = new Rectangle();
-		this.oldRootLayout =  new Rectangle();
+		this.parentLayout = new Rectangle();
+		this.oldParentLayout =  new Rectangle();
 		this.compModel = null;
-		this.rootModel = null;
+		this.parentModel = null;
 
 	}
 
@@ -92,11 +90,11 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	 *            Component
 	 */
 	public void setRootModel(IRectangleComponent csModel) {
-		this.rootModel = csModel;
-		this.rootLayout = csModel.getLayout(
+		this.parentModel = csModel;
+		this.parentLayout = csModel.getLayout(
 				this.getStepID().equals(CSEditor.ID)).getCopy();
-		this.oldRootLayout = this.rootLayout.getCopy();
-		this.rootId = csModel.getId();
+		this.oldParentLayout = this.parentLayout.getCopy();
+		this.parentId = csModel.getId();
 	}
 	
 	/**
@@ -124,9 +122,9 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		if (this.compModel == null) {
 			return;
 		}
-		if (this.rootModel.getComponentType() == ComponentType.PROCESS_VARIABLE) {
-			this.rootLayout.setHeight(this.oldRootLayout.height + rect.height);
-			this.rootLayout.setWidth(Math.max(this.oldRootLayout.width,
+		if (this.parentModel.getComponentType() == ComponentType.PROCESS_VARIABLE) {
+			this.parentLayout.setHeight(this.oldParentLayout.height + rect.height);
+			this.parentLayout.setWidth(Math.max(this.oldParentLayout.width,
 					rect.width + CSEditPolicy.PROCESS_MODEL_COLUMN));
 
 		}
@@ -135,20 +133,20 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 
 	@Override
 	public boolean canExecute() {
-		if ((this.rootModel == null) || (this.compModel == null)) {
+		if ((this.parentModel == null) || (this.compModel == null)) {
 			return false;
-		} else if (this.rootModel.getComponentType() == ComponentType.TEXTFIELD) {
+		} else if (this.parentModel.getComponentType() == ComponentType.TEXTFIELD) {
 			return false;
 		}
 		switch (this.compModel.getComponentType()) {
 		case PROCESS_MODEL: {
-			return this.rootModel.getComponentType() == ComponentType.CONTROLLER;
+			return this.parentModel.getComponentType() == ComponentType.CONTROLLER;
 		}
 		case PROCESS_VARIABLE: {
-			return this.rootModel.getComponentType() == ComponentType.PROCESS_MODEL;
+			return this.parentModel.getComponentType() == ComponentType.PROCESS_MODEL;
 		}
 		case PROCESS_VALUE: {
-			return this.rootModel.getComponentType() == ComponentType.PROCESS_VARIABLE;
+			return this.parentModel.getComponentType() == ComponentType.PROCESS_VARIABLE;
 		}
 		case TEXTFIELD: {
 			return true;
@@ -157,7 +155,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 			return true;
 		}
 		default: {
-			return this.rootModel.getComponentType() == ComponentType.ROOT;
+			return this.parentModel.getComponentType() == ComponentType.ROOT;
 		}
 		}
 
@@ -170,12 +168,14 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	public void execute() {
 		this.deleteFeedback();
 		this.componentId = this.getDataModel().addComponent(
-				this.compModel.getControlActionLink(), this.rootModel.getId(),
+				this.compModel.getControlActionLink(), this.parentModel.getId(),
 				this.layout, this.compModel.getText(),
 				this.compModel.getComponentType(), 0);
-		if(this.rootModel.getComponentType() == ComponentType.CONTAINER){
-			this.getDataModel().setRelativeOfComponent(this.componentId, this.rootModel.getRelative());
-		}else{
+		//the following branch adds the functionality if inheriting the relation from a container component
+		if(this.parentModel.getComponentType() == ComponentType.CONTAINER){
+			this.getDataModel().setRelativeOfComponent(this.componentId, this.parentModel.getRelative());
+		}//
+		else if(this.relativeId != null){
 			this.getDataModel().setRelativeOfComponent(this.componentId, this.relativeId);
 		}
 		this.updateParentConstraint();
@@ -184,7 +184,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 
 	@Override
 	public boolean canUndo() {
-		if ((this.rootModel == null) || (this.compModel == null)) {
+		if ((this.parentModel == null) || (this.compModel == null)) {
 			return false;
 		}
 		return true;
@@ -194,25 +194,25 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	@Override
 	public void undo() {
 		this.getDataModel().removeComponent(this.componentId);
-		this.getDataModel().changeComponentLayout(this.rootId,
-				this.oldRootLayout, this.getStepID().equals(CSEditor.ID));
+		this.getDataModel().changeComponentLayout(this.parentId,
+				this.oldParentLayout, this.getStepID().equals(CSEditor.ID));
 
 	}
 
 	@Override
 	public void redo() {
-		this.getDataModel().recoverComponent(this.rootId,
+		this.getDataModel().recoverComponent(this.parentId,
 				this.compModel.getId());
 		// updateParentConstraint();
 
 	}
 
 	private void updateParentConstraint() {
-		this.getDataModel().changeComponentLayout(this.rootId, this.rootLayout,
+		this.getDataModel().changeComponentLayout(this.parentId, this.parentLayout,
 				this.getStepID().equals(CSEditor.ID));
 		this.compModel = this.getDataModel().getComponent(this.componentId);
 
-		Rectangle conflict = this.rootLayout;
+		Rectangle conflict = this.parentLayout;
 		// this loop updates all children of the constraint component
 		for (IRectangleComponent child : this.constraintModel.getChildren()) {
 			Rectangle constrainRect = child.getLayout(
@@ -220,7 +220,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 			// if the conflict intersects the child than the layout is moved
 			// down
 			if (conflict.intersects(constrainRect)
-					&& !child.equals(this.rootModel)) {
+					&& !child.equals(this.parentModel)) {
 				constrainRect.y += conflict.getIntersection(constrainRect).height;
 				this.getDataModel().changeComponentLayout(child.getId(),
 						constrainRect, this.getStepID().equals(CSEditor.ID));
@@ -229,6 +229,13 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		}
 	}
 
+	/**
+	 * adds a IRelativePart which is set as the components relative part,
+	 * NOTE: that only components of the type CONTAINER and CONTROLACTION can have a relative,
+	 * for all other components the relative will be ignored
+	 * 
+	 * @param relativeID the uuid of a component which should be set as relative
+	 */
 	public void setRelative(UUID relativeID) {
 		this.relativeId =relativeID;
 	}

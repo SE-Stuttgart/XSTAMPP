@@ -214,9 +214,9 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 		}
 		for (IConnection conn : this.connectionRegisty) {
 			if (!tmpRegistry.contains(conn)) {
-//				editPart = (CSConnectionEditPart) this
-//						.createOrFindConnection(conn);
-//				editPart.removeNotify();
+				editPart = (CSConnectionEditPart) this
+						.createOrFindConnection(conn);
+				editPart.removeNotify();
 				this.getViewer().getEditPartRegistry().remove(conn);
 			}
 		}

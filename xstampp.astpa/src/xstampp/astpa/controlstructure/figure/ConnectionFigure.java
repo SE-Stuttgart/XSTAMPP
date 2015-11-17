@@ -19,7 +19,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.w3c.dom.svg.GetSVGDocument;
 
-import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
+import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
 public class ConnectionFigure extends PolylineConnection implements IControlStructureFigure{
@@ -166,7 +166,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		return getFeedback((IFigure)null);
 	}
 	
-	public IFigure getFeedback(IConnectable member) {
+	public IFigure getFeedback(IMemberEditPart member) {
 		
 		if(this.feedback == null){
 			this.feedback = new PolylineConnection();

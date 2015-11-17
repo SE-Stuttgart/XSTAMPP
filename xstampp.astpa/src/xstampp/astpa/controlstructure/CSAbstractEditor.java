@@ -1219,7 +1219,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private void setDecoration(boolean deco){
 		if(getGraphicalViewer() != null){
-			this.graphicalViewer.setProperty(IS_DECORATED, deco);
+ 			this.graphicalViewer.setProperty(IS_DECORATED, deco);
 			RootEditPart root = (RootEditPart) this.getGraphicalViewer()
 					.getContents();
 			root.getFigure().setDeco(deco);
@@ -1250,6 +1250,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		
 	}
 	
+	@Override
+	public void removePropertyListener(PropertyChangeListener listener) {
+		this.getGraphicalViewer().removePropertyChangeListener(listener);
+		
+	}
 	@Override
 	public void fireToolPropertyChange(String property, Object value){
 		if(property.equals(IS_DECORATED) && value instanceof Boolean){

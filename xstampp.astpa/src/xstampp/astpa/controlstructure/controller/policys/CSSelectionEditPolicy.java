@@ -3,7 +3,7 @@ package xstampp.astpa.controlstructure.controller.policys;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editpolicies.SelectionEditPolicy;
 
-import xstampp.astpa.controlstructure.controller.editparts.IConnectable;
+import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 
 public class CSSelectionEditPolicy extends SelectionEditPolicy {
 
@@ -35,9 +35,9 @@ public class CSSelectionEditPolicy extends SelectionEditPolicy {
 		}
 	}
 	@Override
-	public IConnectable getHost() {
-		if(super.getHost() instanceof IConnectable){
-			return ((IConnectable) super.getHost());
+	public IMemberEditPart getHost() {
+		if(super.getHost() instanceof IMemberEditPart){
+			return ((IMemberEditPart) super.getHost());
 		}
 		return null;
 	}
