@@ -38,6 +38,7 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -246,7 +247,7 @@ public class View extends ViewPart implements Observer{
 	
 	private editWindow settingsWindow;
 	
-	private editRelatedHazardsWizard editHazards;
+	private EditRelatedUcaWizard editHazards;
 	
 	public View view = this;
 	
@@ -849,7 +850,9 @@ public class View extends ViewPart implements Observer{
 	    
 	    // this is the composite for the dependencies section
 	    compositeDependencies = new Composite(outercomposite, SWT.BORDER);
-	    compositeDependencies.setLayout(new GridLayout(1, false));
+	    
+	    
+	    compositeDependencies.setLayout(new FillLayout());
 	    compositeDependencies.setVisible(false);
 	    
 	    // set the formdata for the dependencies
@@ -864,13 +867,13 @@ public class View extends ViewPart implements Observer{
 	    final TabFolder dependenciesFolder = new TabFolder(compositeDependencies, SWT.NONE);
 	    dependenciesFolder.setLayout(new GridLayout(1, false));
 	    
-	    GridData folderData = new GridData();
-	    folderData.grabExcessHorizontalSpace = true;
-	    folderData.grabExcessVerticalSpace = true;
-	    folderData.horizontalAlignment = SWT.FILL;
-	    folderData.verticalAlignment = SWT.FILL;
+//	    GridData folderData = new GridData();
+//	    folderData.grabExcessHorizontalSpace = true;
+//	    folderData.grabExcessVerticalSpace = true;
+//	    folderData.horizontalAlignment = SWT.FILL;
+//	    folderData.verticalAlignment = SWT.FILL;
 	    
-	    dependenciesFolder.setLayoutData(folderData);
+//	    dependenciesFolder.setLayoutData(folderData);
 	    
 	    TabItem dependenciesTab1 = new TabItem(dependenciesFolder, SWT.NONE);
 	    dependenciesTab1.setText("Control Action Provided");
@@ -2339,6 +2342,7 @@ public class View extends ViewPart implements Observer{
 		    		  else {
 		    			  contextRightContentNotProvided = contextRightContent;
 		    		  }
+		    		  getViewSite().getActionBars().getStatusLineManager().setMessage("");
 		    	  }
 		    	  else {
 			    		contextRightViewer.setInput(null);
@@ -2437,7 +2441,7 @@ public class View extends ViewPart implements Observer{
 	    				if (rect.contains(pt)) {	                
 	    					refinedSafetyTableCellX = i;	
 		  		    	  	if ((refinedSafetyTableCellX == refinedSafetyTable.getColumnCount()-3)& (refinedSafetyTable.getSelectionIndex() != -1)) {	  		    	  		
-		  		    	  		editHazards = new editRelatedHazardsWizard(refinedSafetyContent.get(refinedSafetyTable.getSelectionIndex()));
+		  		    	  		editHazards = new EditRelatedUcaWizard(refinedSafetyContent.get(refinedSafetyTable.getSelectionIndex()));
 		  		    	  		editHazards.open(view);
 		  		    	  	}
 	    				}
@@ -2810,9 +2814,9 @@ public class View extends ViewPart implements Observer{
 
 			@Override
 			public void applyEditorValue() {
-				System.out.println("ApplyEditorValue!");	
+//				System.out.println("ApplyEditorValue!");	
 					
-					//storeRefinedSafety();
+					storeRefinedSafety();
 				
 			}
 

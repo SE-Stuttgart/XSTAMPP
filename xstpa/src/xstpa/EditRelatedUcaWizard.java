@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 
-public class editRelatedHazardsWizard {
+public class EditRelatedUcaWizard {
     // ==================== 2. Instance Fields ============================
 	private Boolean initialized = false;
     private Shell shell;
@@ -37,9 +37,10 @@ public class editRelatedHazardsWizard {
     // ==================== 4. Constructors ===============================
 
 
-	public editRelatedHazardsWizard(ProcessModelVariables entryToEdit)
+	public EditRelatedUcaWizard(ProcessModelVariables entryToEdit)
     {
-        shell = new Shell(Display.getCurrent().getActiveShell(),SWT.SHELL_TRIM & (~SWT.RESIZE));
+//        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));
+		shell = new Shell(Display.getCurrent().getActiveShell(),SWT.CLOSE | SWT.TITLE);
         shell.setLayout(new GridLayout(2, false));
         shell.setText("Add Unsafe Control Actions");
         shell.setImage(View.LOGO);

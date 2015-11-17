@@ -125,7 +125,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 	}
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(getName(), 5);
+		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 			File tmp = new File(this.filePath);
 			this.imgPath = tmp.getParent(); //$NON-NLS-1$
 			
@@ -142,7 +142,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 			csExport.getPrintableRoot();
 			csPmExport.getPrintableRoot();
 		}
-		monitor.worked(1);
+//		monitor.worked(1);
 
 		IDataModel model = ProjectManager.getContainerInstance().getDataModel(
 				this.id);
@@ -167,7 +167,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 					.error("Report cannot be exported: Invalid file path"); //$NON-NLS-1$
 			return Status.CANCEL_STATUS;
 		}
-		monitor.worked(1);
+//		monitor.worked(2);
 
 		FopFactory fopFactory = FopFactory.newInstance();
 		ByteArrayOutputStream pdfoutStream = new ByteArrayOutputStream();
@@ -192,7 +192,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 				pdfFile.createNewFile();
 			}
 
-			monitor.worked(1);
+//			monitor.worked(3);
 			TransformerFactory transfact = TransformerFactory.newInstance();
 			transfact.setURIResolver(new URIResolver() {
 				@Override
@@ -228,7 +228,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 					this.xslfoTransformer.setParameter("text.size", this.textSize);
 					this.xslfoTransformer.setParameter("header.omit", "false"); //$NON-NLS-1$
 				}
-				monitor.worked(1);
+//				monitor.worked(4);
 				Fop fop;
 				FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 				fop = fopFactory.newFop(this.fileType, foUserAgent,
@@ -243,7 +243,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 				str.write(pdfoutStream.toByteArray());
 				str.close();
 
-				monitor.worked(1);
+//				monitor.worked(5);
 				if (pdfFile.exists() && this.enablePreview) {
 					if (Desktop.isDesktopSupported()) {
 						Desktop.getDesktop().open(pdfFile);

@@ -137,7 +137,7 @@ public class Run extends XstamppJob{
 				return Status.CANCEL_STATUS;
 			}
 		}
-		monitor.worked(4);
+		monitor.worked(1);
 		if(this.exportImages){
 			String csPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructure +".png";
 			String csPMPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructureDiagramWithProcessModel +".png";
