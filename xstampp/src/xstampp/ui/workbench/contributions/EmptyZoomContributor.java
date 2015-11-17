@@ -52,4 +52,10 @@ public class EmptyZoomContributor implements IZoomContributor {
 		return null;
 	}
 
+	@Override
+	public void removePropertyListener(PropertyChangeListener listener) {
+		// null-object
+		
+	}
+
 }

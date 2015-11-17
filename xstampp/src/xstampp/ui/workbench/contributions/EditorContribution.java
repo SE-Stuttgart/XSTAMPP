@@ -67,7 +67,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 		ToolBarManager manager = new ToolBarManager(SWT.HORIZONTAL | SWT.FLAT);
 		this.contributor = new EmptyZoomContributor();
 		
-		this.decoButton= new ButtonContribution("decoButton",SWT.None){
+		this.decoButton= new ButtonContribution("decoButton",SWT.TOGGLE){
 			@Override
 			protected Control createControl(Composite parent) {
 				Control control = super.createControl(parent);
@@ -80,7 +80,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 					public void mouseUp(MouseEvent arg0) {
 						EditorContribution.this.contributor.fireToolPropertyChange(IZoomContributor.IS_DECORATED,
 																			   !EditorContribution.this.isDecorated);
-						
+						setDecoSelection((boolean) contributor.getProperty(IZoomContributor.IS_DECORATED));
 					}
 				});
 				return control;
@@ -273,6 +273,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 			
 			if(!(this.contributor instanceof EmptyZoomContributor)){
 				this.zoomManager.removeZoomListener(EditorContribution.this);
+				this.contributor.removePropertyListener(this);
 				this.contributor = new EmptyZoomContributor();
 			}
 		}
@@ -281,6 +282,9 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	@Override
 	public void dispose() {
 		try{
+			if(this.contributor != null){
+				this.contributor.removePropertyListener(this);
+			}
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
 		}catch(NullPointerException e){
 			// if there is a nullpointer one can't delete anything
@@ -296,14 +300,16 @@ public class EditorContribution extends WorkbenchWindowControlContribution imple
 	
 	@Override
 	public void partDeactivated(IWorkbenchPart part) {
-		
-		
+		if(this.contributor != null){
+			this.contributor.removePropertyListener(this);
+		}
 	}
 	
 	@Override
 	public void partClosed(IWorkbenchPart part) {
-		// nothing by default
-		
+		if(this.contributor != null){
+			this.contributor.removePropertyListener(this);
+		}
 	}
 	
 	@Override

@@ -29,7 +29,7 @@ public interface IZoomContributor {
 	ZoomManager getZoomManager();
 	
 	void addPropertyListener(PropertyChangeListener listener);
-
+	void removePropertyListener(PropertyChangeListener listener);
 	void fireToolPropertyChange(String property, Object value);
 	Object getProperty(String propertyString);
 }

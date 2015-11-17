@@ -186,10 +186,40 @@ public final class STPAPluginUtils {
         {
             macPath = macPath + "\"";
         }
+        //during the process of adding backslashes it is possible that quotes are added to the path
+       //those are removed with this command
+        macPath = macPath.replace('"', ' ').trim();
         String arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
         try
         {
-        	Runtime.getRuntime().exec("open"+ arguments);
+        	Runtime.getRuntime().exec("open "+ arguments);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void OpenInLinuxFileBrowser(String path)
+    {
+        // try mac
+        String linuxPath = path.replace("\\", "/"); // mac finder doesn't like backward slashes
+        File pathfile = new File(linuxPath);
+
+        if (!linuxPath.startsWith("\""))
+        {
+            linuxPath = "\"" + linuxPath;
+        }
+        if (!linuxPath.endsWith("\""))
+        {
+            linuxPath = linuxPath + "\"";
+        }
+        //during the process of adding backslashes it is possible that quotes are added to the path
+       //those are removed with this command
+        linuxPath = linuxPath.replace('"', ' ').trim();
+        try
+        {
+        	Runtime.getRuntime().exec("gnome-open"+ linuxPath);
         }
         catch(IOException e)
         {
@@ -225,6 +255,8 @@ public final class STPAPluginUtils {
     	if(osName.startsWith("win")){
     		OpenInWinFileBrowser(path);
     	}else if(osName.startsWith("mac")){
+    		OpenInMacFileBrowser(path);
+    	}else if(osName.startsWith("linux")){
     		OpenInMacFileBrowser(path);
     	}
     }
