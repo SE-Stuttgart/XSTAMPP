@@ -833,7 +833,7 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 				switch (e.type) {
 				case SWT.Selection:
 					boolean cancel = false;
-					FileDialog jfc = new FileDialog(null);
+					FileDialog jfc = new FileDialog(Display.getDefault().getActiveShell());
 					jfc.setFilterExtensions(ImageIO.getReaderFileSuffixes());
 					String selectedFile = jfc.open();
 					if (selectedFile != null && new File(selectedFile).isFile()) {

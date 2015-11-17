@@ -39,7 +39,7 @@ public class editRelatedHazardsWizard {
 
 	public editRelatedHazardsWizard(ProcessModelVariables entryToEdit)
     {
-        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
+        shell = new Shell(Display.getCurrent().getActiveShell(),SWT.SHELL_TRIM & (~SWT.RESIZE));
         shell.setLayout(new GridLayout(2, false));
         shell.setText("Add Unsafe Control Actions");
         shell.setImage(View.LOGO);
