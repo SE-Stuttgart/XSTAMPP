@@ -964,8 +964,8 @@ public class editWindow
 	    // removes an Element from the List
 	    remove.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		displayList.remove(displayList.getSelectionIndex());
 	    		constraints.remove(displayList.getSelectionIndex());
+	    		displayList.remove(displayList.getSelectionIndex());
 	    	}
 	    });
 	    
