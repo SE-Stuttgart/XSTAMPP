@@ -3509,10 +3509,10 @@ public class View extends ViewPart implements Observer{
 						line = reader.readLine();
 						temp = line.charAt(0);
 						Character.getNumericValue(temp);
-						
-						variables.add(line.substring(line.indexOf("=")+2, line.lastIndexOf("=")));
+						line = line.substring(line.indexOf("=")+2, line.length());
+						variables.add(line.substring(0, line.indexOf("=")));
 						//entry.setName(line.substring(line.indexOf("=")+2, line.length()));
-						line = line.substring(line.lastIndexOf("=")+1, line.length());
+						line = line.substring(line.indexOf("=")+1, line.length());
 						entry.addValue(line);
 						
 						values.add(line);
