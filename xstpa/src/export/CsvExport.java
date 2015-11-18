@@ -40,6 +40,7 @@ public class CsvExport {
 			return false;
 		}
 		// Writes the Headers of the TableColumns
+		writer.print("'sep=;'");
 		writer.print("ID" + delimiter);
 		writer.print("Control_Action" + delimiter);
 		writer.print("Context" + delimiter);
@@ -122,7 +123,8 @@ public class CsvExport {
 			e.printStackTrace();
 			return false;
 		}
-		
+		// Information for Excel
+		writer.print("'sep=;'");
 		// Info, that Context Provided table is printed
 		writer.print("CONTEXT_PROVIDED" + delimiter + crlf);
 
@@ -251,6 +253,8 @@ public class CsvExport {
 			e.printStackTrace();
 			return false;
 		}
+		// Information for Excel
+		writer.print("'sep=;'");
 		// Writes the Headers of the TableColumns
 		writer.print("ID" + delimiter);
 		writer.print("LTL Formula" + delimiter + crlf);
