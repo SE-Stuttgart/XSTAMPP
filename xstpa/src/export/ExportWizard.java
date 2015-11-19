@@ -34,7 +34,7 @@ public class ExportWizard extends AbstractExportWizard {
 			projectName = ProjectManager.getContainerInstance().
 									getTitle(((IProjectSelection) selection).getProjectId());
 		}
-		OUTPUT ="Output/" +projectName+ "/Extended";
+		OUTPUT ="Output"+File.separator +projectName+ File.separator+ "Extended";
 		File outputDir =new File(Platform.getInstanceLocation().getURL().getPath().toString()
 								+ OUTPUT);
 		if(!outputDir.exists()){
@@ -93,7 +93,7 @@ public class ExportWizard extends AbstractExportWizard {
 		public void createControl(Composite parent) {
 			super.createControl(parent);
 			this.pathChooser.setText(Platform.getInstanceLocation().getURL().getFile()
-					+ OUTPUT + File.separator + getProjectName());
+					+ OUTPUT);
 			FormData data = new FormData();
 			data.bottom = new FormAttachment(100,0);
 			data.left = new FormAttachment(0);
