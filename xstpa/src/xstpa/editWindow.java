@@ -272,23 +272,51 @@ public class editWindow
 	    final Button ipogButton = new Button(algoGroup, SWT.RADIO);
 	    ipogButton.setText("IPOG(Recommended)");
 	    ipogButton.setToolTipText("For a moderate size System (max. 20 Parameters)");
-	    ipogButton.setSelection(true);
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(0).equals(DALGO[0])) {
+	    		ipogButton.setSelection(true);
+	    	}
+	    }
+	    else {
+	    	ipogButton.setSelection(true);
+	    }
+	    
 	    
 	    final Button ipogfButton = new Button(algoGroup, SWT.RADIO);
 	    ipogfButton.setToolTipText("For a moderate size System (20 Parameters)");
 	    ipogfButton.setText("IPOG-F");
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(0).equals(DALGO[1])) {
+	    		ipogfButton.setSelection(true);
+	    	}
+	    }
 	    
 	    final Button ipogf2Button = new Button(algoGroup, SWT.RADIO);
 	    ipogf2Button.setToolTipText("For a moderate size System (20 Parameters)");
 	    ipogf2Button.setText("IPOG-F2");
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(0).equals(DALGO[2])) {
+	    		ipogf2Button.setSelection(true);
+	    	}
+	    }
 	    
 	    final Button ipogdButton = new Button(algoGroup, SWT.RADIO);
 	    ipogdButton.setToolTipText("For a large size System");
 	    ipogdButton.setText("IPOG-D");
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(0).equals(DALGO[3])) {
+	    		ipogdButton.setSelection(true);
+	    	}
+	    }
 	    
 	    final Button baseChoiceButton = new Button(algoGroup, SWT.RADIO);
 	    baseChoiceButton.setText("Base Choice");
 	    baseChoiceButton.setToolTipText("A special oneway testing Algorithm");
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(0).equals(DALGO[4])) {
+	    		baseChoiceButton.setSelection(true);
+	    	}
+	    }
 	    // Add the components for the middle (main) part
 	    Label strengthLabel = new Label(mainComposite, SWT.NONE);
 	    strengthLabel.setText("Strength: ");
@@ -301,7 +329,18 @@ public class editWindow
 	    strengthCombo.add("5");
 	    strengthCombo.add("6");
 	    strengthCombo.add("Mixed");
-	    strengthCombo.select(1);
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(1).equals("-1")) {
+	    		strengthCombo.select(6);
+	    	}
+	    	else {
+	    		strengthCombo.select(Integer.parseInt(modes.get(1)));
+	    	}
+	    }
+	    else {
+	    	strengthCombo.select(1);
+	    }
+	    
 	    GridData data = new GridData(150, 80);
 	    strengthCombo.setLayoutData(data);
 	    
@@ -322,6 +361,11 @@ public class editWindow
 	    
 	    final Button ignoreConstraints = new Button(mainComposite, SWT.CHECK);
 	    ignoreConstraints.setText("Ignore Constraints");
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(3).equals(DCHANDLER[0])) {
+	    		ignoreConstraints.setSelection(true);
+	    	}
+	    }
 	    
 	    //Third Row
 	    Label constraintHandlingLabel = new Label(mainComposite, SWT.WRAP);
@@ -331,7 +375,17 @@ public class editWindow
 	    final Combo handlingCombo = new Combo(mainComposite, SWT.READ_ONLY);
 	    handlingCombo.add("Forbidden Tuples (default)");
 	    handlingCombo.add("CSP Solver");
-	    handlingCombo.select(0);
+	    if (!modes.isEmpty()) {
+	    	if (modes.get(3).equals(DCHANDLER[2])) {
+	    		handlingCombo.select(0);
+	    	}
+	    	else {
+	    		handlingCombo.select(0);
+	    	}
+	    }
+	    else {
+	    	handlingCombo.select(0);
+	    }
 	    data = new GridData(150, 80);
 	    handlingCombo.setLayoutData(data);
 	    
@@ -424,8 +478,8 @@ public class editWindow
 	    		}
 	    		close();
 	    		view.createTablerows(0);
-	    		view.writeFile();
-	            view.open();
+	    		view.writeFile(false);
+	            view.open(false);
 	            
 	    	}	  
 	    });
@@ -674,8 +728,8 @@ public class editWindow
 	    		}
 	    		close();
 	    		view.createTablerows(0);
-	    		view.writeFile();
-	            view.open();
+	    		view.writeFile(false);
+	            view.open(false);
 	            
 	    	}	  
 	    });
@@ -1018,8 +1072,8 @@ public class editWindow
 	    		}
 	    		close();
 	    		view.createTablerows(0);
-	    		view.writeFile();
-	            view.open();
+	    		view.writeFile(false);
+	            view.open(false);
 	            
 	    	}	  
 	    });
