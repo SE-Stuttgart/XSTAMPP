@@ -2361,7 +2361,12 @@ public class View extends ViewPart implements Observer{
 		      public void widgetSelected(SelectionEvent event) {
 		    	  if(System.getProperty("os.name").toLowerCase().contains("linux")){
 		    		  ProjectManager.getLOGGER().debug("The Acts settings shell is not working on linux at the moment");
-		    	  }else{
+		    	  }
+		    	  else if (getLinkedCAE().getLinkedItems().isEmpty()) {
+		    		  MessageDialog.openInformation(null, "No linked Variables", "There are no Variables linked with this Control Action");
+		    	  }
+		    	  else{
+		    	  
 			    	  //open the settings window
 			    	  settingsWindow = new editWindow(linkedCAE, view);
 			    	  settingsWindow.open();
@@ -3382,12 +3387,16 @@ public class View extends ViewPart implements Observer{
 	    	}
 			writer.println("R"+entry+ " : ("+temp+", "+editWindow.relations.get(entry).getStrength()+")");
 		}
+		// clear the relations, so that default mode is selected again!
+		editWindow.relations.clear();
 		// Print the Constraints
 		writer.println("");
 		writer.println("[Constraint]");
 		for (String entry : editWindow.constraints) {
 			writer.println(entry);
 		}
+		// clear the constraints, so that default mode is selected again!
+		editWindow.constraints.clear();
 		writer.println("");
 		
 		writer.close();
