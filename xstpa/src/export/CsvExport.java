@@ -40,7 +40,8 @@ public class CsvExport {
 			return false;
 		}
 		// Writes the Headers of the TableColumns
-		writer.print("'sep=;'");
+		writer.print("sep=;" + crlf);
+
 		writer.print("ID" + delimiter);
 		writer.print("Control_Action" + delimiter);
 		writer.print("Context" + delimiter);

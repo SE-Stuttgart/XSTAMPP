@@ -1748,10 +1748,14 @@ public class View extends ViewPart implements Observer{
 	  	   				  	List<String> tempPmValList = new ArrayList<String>();
 	  	   				  	List<String> tempPmVarList = new ArrayList<String>();
 	  	   				  	for (int z=0;z<dependencies.get(i).getLinkedItems().size();z++) {  
-	  	   				  		tempPmValList.add(dependencies.get(i).getLinkedItems().get(z).getName() + "="
-	  	    						  + dependencies.get(i).getContextTableCombinations().get(j).getValues().get(z));
-	  	   				  		tempPmVarList.add(dependencies.get(i).getLinkedItems().get(z).getName());
-	  	   				  		temp.setPmVariables(tempPmVarList);
+	  	   				  		if(dependencies.get(i).getContextTableCombinations().get(j).getValues().size() <= z){
+	  	   				  			System.out.println(dependencies.get(i).getContextTableCombinations().get(j));
+	  	   				  		}else{
+		  	   				  		tempPmValList.add(dependencies.get(i).getLinkedItems().get(z).getName() + "="
+		  	    						  + dependencies.get(i).getContextTableCombinations().get(j).getValues().get(z));
+		  	   				  		tempPmVarList.add(dependencies.get(i).getLinkedItems().get(z).getName());
+		  	   				  		temp.setPmVariables(tempPmVarList);
+		  	   				  	}
 	  	    				  
 	  	    				  
 	  	   				  	}
@@ -3569,18 +3573,23 @@ public class View extends ViewPart implements Observer{
 		    		  List<UUID> combis = new ArrayList<UUID>();
 		    		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
 		    		  ProvidedValuesCombi val = new ProvidedValuesCombi();
-		    		  
+		    		  //iteration over all value combinations registered for the linked control action
 		    		  for (int i = 0; i<getLinkedCAE().getContextTableCombinations().size();i++) {
 		    			  val = new ProvidedValuesCombi();
 		    			  combis = new ArrayList<UUID>();
+		    			  //iterate over all values stored in that combination
 		    			  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
-		    				  
+		    				  String sVarName = getLinkedCAE().getContextTableCombinations().get(i).getPmVariables().get(z);
+		    				  String sValueName =getLinkedCAE().getContextTableCombinations().get(i).getValues().get(z);
+		    				  //iteration over all available and in the data model stored values
+		    				  //to get the uuids mapped to the components
 		    				  for (int n = 0; n<pmList.size();n++) {
 		    					  String tempPMV = pmList.get(n).getPMV().replace(" ", "_");
-		    					  if (tempPMV.equals(getLinkedCAE()
-		    							  .getContextTableCombinations().get(i).getPmVariables().get(z))) {
-			    					  if ((pmList.get(n).getValues().equals(getLinkedCAE()
-			    							  .getContextTableCombinations().get(i).getValues().get(z)))) {
+		    					  //2 if cases are used to find find the right variable-value combination 
+		    					  if (tempPMV.equals(sVarName)) {
+		    						  String tempValue =pmList.get(n).getValues().trim();
+		    						  
+			    					  if ((tempValue.equals(sValueName))) {
 			    						  combis.add(pmList.get(n).getId());
 			    						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmList.get(n).getId());
 			    					  }
