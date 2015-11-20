@@ -1410,9 +1410,9 @@ public class View extends ViewPart implements Observer{
 				    	  // creates the correct number of rows for the context table
 				    	  createTablerows(0);
 				    	  // writes the Data into the input file for ACTS		    	  
-				    	  writeFile();
+				    	  writeFile(true);
 				    	  // opens ACTS with the given Parameters (the linkedControl)
-				    	  open();
+				    	  open(true);
 		    		  }
 		    	  }
 		    	  else {
@@ -3328,7 +3328,7 @@ public class View extends ViewPart implements Observer{
 	/**
 	 * Writing the later used input file for ACTS
 	 */
-	public Boolean writeFile() {
+	public Boolean writeFile(Boolean defaultSettings) {
 		PrintWriter writer = null;
 		String paramName = null;
 		try {
@@ -3377,30 +3377,32 @@ public class View extends ViewPart implements Observer{
 		// Print the Relations
 		writer.println("");
 		writer.println("[Relation]");
-		for (int entry = 0; entry<editWindow.relations.size(); entry++) {
-			String temp = "";
-	    	List<String> tempList = editWindow.relations.get(entry).getVariables();
-	    	for (int i =0; i<tempList.size(); i++) {
-	    		
-	    		if (i == tempList.size()-1) {
-	    			temp = temp.concat(tempList.get(i).replace(" ", "_"));
-	    		}
-	    		else {
-	    			temp = temp.concat(tempList.get(i).replace(" ", "_").concat(", "));
-	    		}
-	    	}
-			writer.println("R"+entry+ " : ("+temp+", "+editWindow.relations.get(entry).getStrength()+")");
+		if (!defaultSettings) {
+			for (int entry = 0; entry<editWindow.relations.size(); entry++) {
+				String temp = "";
+		    	List<String> tempList = editWindow.relations.get(entry).getVariables();
+		    	for (int i =0; i<tempList.size(); i++) {
+		    		
+		    		if (i == tempList.size()-1) {
+		    			temp = temp.concat(tempList.get(i).replace(" ", "_"));
+		    		}
+		    		else {
+		    			temp = temp.concat(tempList.get(i).replace(" ", "_").concat(", "));
+		    		}
+		    	}
+				writer.println("R"+entry+ " : ("+temp+", "+editWindow.relations.get(entry).getStrength()+")");
+			}
 		}
-		// clear the relations, so that default mode is selected again!
-		editWindow.relations.clear();
+
 		// Print the Constraints
 		writer.println("");
 		writer.println("[Constraint]");
-		for (String entry : editWindow.constraints) {
-			writer.println(entry);
+		if (!defaultSettings) {
+			for (String entry : editWindow.constraints) {
+				writer.println(entry);
+			}
 		}
-		// clear the constraints, so that default mode is selected again!
-		editWindow.constraints.clear();
+
 		writer.println("");
 		
 		writer.close();
@@ -3408,7 +3410,7 @@ public class View extends ViewPart implements Observer{
 		
 	}
 	
-	public Boolean open() {
+	public Boolean open(Boolean defaultSettings) {
 		// Run ACTS in a separate system process
 		Process proc;
 		String modes;
@@ -3420,7 +3422,7 @@ public class View extends ViewPart implements Observer{
 		}
 		
 		try {
-			if (!editWindow.modes.isEmpty()) {
+			if (!defaultSettings) {
 				for (int i=0; i<editWindow.modes.size(); i++) {
 					
 						if (i==0) {
@@ -3438,7 +3440,7 @@ public class View extends ViewPart implements Observer{
 						}
 				}
 				// clear so that the default mode gets selected again
-				editWindow.modes.clear();
+//				editWindow.modes.clear();
 			}
 			String location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
 			//location = location.substring(1, location.length());
@@ -3514,6 +3516,7 @@ public class View extends ViewPart implements Observer{
 					ProcessModelVariables entry = new ProcessModelVariables();
 					
 					temp = line.charAt(line.length()-2);
+//					System.out.println(temp);
 					Character.getNumericValue(temp);
 					reader.readLine();
 					List<String> values = new ArrayList<String>();
@@ -3522,10 +3525,15 @@ public class View extends ViewPart implements Observer{
 						line = reader.readLine();
 						temp = line.charAt(0);
 						Character.getNumericValue(temp);
-						line = line.substring(line.indexOf("=")+2, line.length());
-						variables.add(line.substring(0, line.indexOf("=")));
-						//entry.setName(line.substring(line.indexOf("=")+2, line.length()));
-						line = line.substring(line.indexOf("=")+1, line.length());
+						try {
+							line = line.substring(line.indexOf("=")+2, line.length());
+							variables.add(line.substring(0, line.indexOf("=")));
+							//entry.setName(line.substring(line.indexOf("=")+2, line.length()));
+							line = line.substring(line.indexOf("=")+1, line.length());
+						}
+						catch (StringIndexOutOfBoundsException siobe) {
+							
+						}
 						entry.addValue(line);
 						
 						values.add(line);
