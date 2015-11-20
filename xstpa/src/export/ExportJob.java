@@ -90,7 +90,7 @@ public class ExportJob extends XstamppJob {
 		super(name,projectId);
 
 		this.filePath = filePath;
-		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);;
+		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);
 		this.xslName = xslName;
 		this.exportContent = (ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(projectId);
 		this.tableHeadSize = 14;

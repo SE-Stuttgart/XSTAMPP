@@ -851,7 +851,7 @@ public class View extends ViewPart implements Observer{
 	    compositeDependencies = new Composite(outercomposite, SWT.BORDER);
 	    
 	    
-	    compositeDependencies.setLayout(new FillLayout());
+	    compositeDependencies.setLayout(new GridLayout(1, false));
 	    compositeDependencies.setVisible(false);
 	    
 	    // set the formdata for the dependencies

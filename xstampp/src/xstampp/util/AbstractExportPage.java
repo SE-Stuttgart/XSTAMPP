@@ -139,7 +139,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 			}
 		});
 		for (Entry<UUID, String> entry : ProjectManager.getContainerInstance().getProjects().entrySet()) {
-			if(ProjectManager.getContainerInstance().getDataModel(entry.getKey()).getPluginID().equals(this.pluginID)){
+			if(canExport(entry.getKey())){
 				this.projects.put(entry.getKey(), entry.getValue());
 				this.chooseList.add( entry.getValue());
 			}
@@ -205,5 +205,19 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	 */
 	public void setNameSuggestion(String nameSuggestion) {
 		this.nameSuggestion = nameSuggestion;
+	}
+	
+	public boolean canExport(UUID id){
+		return ProjectManager.getContainerInstance().getDataModel(id).getPluginID().equals(this.pluginID);
+	}
+	public void setProjectChoice(UUID projectId){
+		if(this.projects.containsKey(projectId)){
+			String projectName = this.projects.get(projectId);
+			for(int i=0;i<this.chooseList.getItemCount();i++){
+				if(projectName.equals(this.chooseList.getItems()[i])){
+					this.chooseList.select(i);
+				}
+			}
+		}
 	}
 }

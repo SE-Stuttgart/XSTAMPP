@@ -3,9 +3,6 @@ package export;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import xstpa.ProcessModelVariables;
 
 public class CsvExport {
 	
@@ -125,7 +122,7 @@ public class CsvExport {
 			return false;
 		}
 		// Information for Excel
-		writer.print("'sep=;'");
+		writer.print("sep=;" + crlf);
 		// Info, that Context Provided table is printed
 		writer.print("CONTEXT_PROVIDED" + delimiter + crlf);
 
@@ -255,7 +252,7 @@ public class CsvExport {
 			return false;
 		}
 		// Information for Excel
-		writer.print("'sep=;'");
+		writer.print("sep=;" + crlf);
 		// Writes the Headers of the TableColumns
 		writer.print("ID" + delimiter);
 		writer.print("LTL Formula" + delimiter + crlf);

@@ -1,6 +1,7 @@
 package export;
 
 import java.io.File;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
@@ -92,6 +93,7 @@ public class ExportWizard extends AbstractExportWizard {
 		@Override
 		public void createControl(Composite parent) {
 			super.createControl(parent);
+			setProjectChoice(View.projectId);
 			this.pathChooser.setText(Platform.getInstanceLocation().getURL().getFile()
 					+ OUTPUT);
 			FormData data = new FormData();
@@ -127,6 +129,12 @@ public class ExportWizard extends AbstractExportWizard {
 			setPageComplete(checkFinish());
 		}
 
+		@Override
+		public boolean canExport(UUID id) {
+			boolean result= super.canExport(id);
+			result = result && ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(id) != null;
+			return result;
+		}
 		/**
 		 * @return the pdfCheckbox
 		 */

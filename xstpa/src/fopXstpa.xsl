@@ -3,7 +3,7 @@
 <xsl:stylesheet version="1.0" xmlns:fo="http://www.w3.org/1999/XSL/Format"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<!-- author: Yannic Sowoidnich -->
-    <xsl:import href="src/export/xstpaTemp.xsl"/>
+    <xsl:import href="xstpaTemp.xsl"/>
     <xsl:param name="title.size" select="24"/> 
     <xsl:param name="table.head.size" select="14"/> 
     <xsl:param name="text.size" select="12"/> 
