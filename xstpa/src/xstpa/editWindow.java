@@ -410,13 +410,13 @@ public class editWindow
   	    	  	values.put("xstampp.command.preferencePage", "xstpa.preferencePage");
   	    	  	STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
   	    	  	view.setInput(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", "")+"input.txt"); 
+  	    	  			.replace("acts_cmd_2.92.jar", "")); 
   	    	  	view.setInput2(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", "")+"input2.txt");
+  	    	  			.replace("acts_cmd_2.92.jar", ""));
   	    	  	view.setOutput(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", "")+"output.txt");
+  	    	  			.replace("acts_cmd_2.92.jar", ""));
   	    	  	view.setOutput2(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", "")+"output2.txt");
+  	    	  			.replace("acts_cmd_2.92.jar", ""));
 	    	}
 	    });
 

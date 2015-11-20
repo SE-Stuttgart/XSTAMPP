@@ -3,6 +3,7 @@ package xstpa;
 
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -80,8 +81,6 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.util.STPAPluginUtils;
 import export.ExportContent;
-import export.ExportWizard;
-import export.PdfExportPage;
 
 public class View extends ViewPart implements Observer{
 	public static final String ID = "xstpa.view";
@@ -138,16 +137,16 @@ public class View extends ViewPart implements Observer{
 	public static final String[] RS_PROPS = { ENTRY_ID, CONTROL_ACTIONS, CONTEXT, CRITICAL_COMBI, UCA, REL_HAZ, REFINED_SAFETY};
 
 	private String INPUT = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-			  .replace("acts_cmd_2.92.jar", "")+"input.txt";
+			  .replace("acts_cmd_2.92.jar", "")+".metadata"+File.separator+"input.txt";
 	
 	private String INPUT2 = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-			  .replace("acts_cmd_2.92.jar", "")+"input2.txt";
+			  .replace("acts_cmd_2.92.jar", "")+".metadata"+File.separator+"input2.txt";
 	
 	private String OUTPUT = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-			  .replace("acts_cmd_2.92.jar", "")+"output.txt";
+			  .replace("acts_cmd_2.92.jar", "")+".metadata"+File.separator+"output.txt";
 	
 	private String OUTPUT2 = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-			  .replace("acts_cmd_2.92.jar", "")+"output2.txt";
+			  .replace("acts_cmd_2.92.jar", "")+".metadata"+File.separator+"output2.txt";
 	
 	// static fields to hold the images
 	private static final Image CHECKED = Activator.getImageDescriptor("icons/checked.gif").createImage();
@@ -1392,6 +1391,7 @@ public class View extends ViewPart implements Observer{
 
 		    		  if (MessageDialog.openConfirm(null,"Generate a new Testset","Are you sure to generate a new Testset? "
 		    		  		+ "The old Data will get lost" )) {
+
 			    		  // If the Path for ACTS is not set, the PreferencePage opens
 			    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
 			    				  .equals(xstampp.Activator.getDefault().getPreferenceStore().getDefaultString(("ACTS_Path")))) {
@@ -1612,10 +1612,11 @@ public class View extends ViewPart implements Observer{
 			}
 			
 
-			
+			compositeDependencies.layout(true);
 			compositeDependencies.setVisible(true);
 			compositeDependenciesTopRight.setVisible(true);
 	    	compositeDependenciesBottomRight.setVisible(true);
+	    	
 	      }
 	    });
 	    
@@ -3986,17 +3987,18 @@ public class View extends ViewPart implements Observer{
 		return OUTPUT2;
 	}
 	public void setInput(String input) {
-		INPUT = input;
+		INPUT = input+".metadata"+File.separator+"input.txt";
 	}
 	public void setOutput(String output) {
-		OUTPUT = output;
+		OUTPUT = output+".metadata"+File.separator+"output.txt";
 	}
 	public void setInput2(String input) {
-		INPUT2 = input;
+		INPUT2 = input+".metadata"+File.separator+"input2.txt";
 	}
 	public void setOutput2(String output) {
-		OUTPUT2 = output;
+		OUTPUT2 = output+".metadata"+File.separator+"output2.txt";
 	}
+
 
 
 	
