@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -1329,17 +1330,27 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public Job doSave(final File file, Logger log, boolean isUIcall) {
-		SaveJob job= new SaveJob(file,this);
-		//the compabillity mode is only needed in haz files, since the hazx format could never be stored the other way
-		if(isUIcall && file.getName().endsWith("haz")){ //$NON-NLS-1$
-			Runnable question = new SaveRunnable(job);
-			
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay().syncExec(question);
-			while(!job.isReady()){
-				//wait till the user desided whether or not to store on compatibility  mode
-			}
-			
+		String sLossOfData =  String.format("%s contains data that can only be stored in an extended STPA File (.hazx)\n"
+											+ "Do you want to change the file extension to store the extended data?/n"
+											+ "NOTE: the file is not longer compatible with older versions of XSTAMPP or A-STPA",
+											file.getName());
+		if(usesHAZXData() && file.getName().endsWith("haz")&&
+			MessageDialog.openQuestion(Display.getDefault().getActiveShell(), "Unexpected data",sLossOfData)){
+			UUID id = ProjectManager.getContainerInstance().getProjectID(this);
+			ProjectManager.getContainerInstance().changeProjectExtension(id, "hazx");
+			return null;
 		}
+		SaveJob job= new SaveJob(file,this);
+//		//the compabillity mode is only needed in haz files, since the hazx format could never be stored the other way
+//		if(isUIcall && file.getName().endsWith("haz")){ //$NON-NLS-1$
+//			Runnable question = new SaveRunnable(job);
+//			
+//			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay().syncExec(question);
+//			while(!job.isReady()){
+//				//wait till the user desided whether or not to store on compatibility  mode
+//			}
+//			
+//		}
 		return job;
 	}
 
@@ -1560,5 +1571,10 @@ public class DataModelController extends Observable implements
 	 */
 	public boolean removeCAProvidedVariable(UUID caID, UUID providedVariable) {
 		return this.controlActionController.removeProvidedVariable(caID, providedVariable);
+	}
+	public boolean usesHAZXData(){
+		if(this.controlActionController.usesHAZXData()) return true;
+		if(this.controlStructureController.usesHAZXData()) return true;
+		return false;
 	}
 }

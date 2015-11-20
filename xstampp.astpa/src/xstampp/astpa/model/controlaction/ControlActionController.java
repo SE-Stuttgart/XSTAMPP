@@ -634,4 +634,13 @@ public class ControlActionController {
 		
 		return action.removeProvidedVariable(providedVariable);
 	}
+	
+	public boolean usesHAZXData(){
+		for(ControlAction action : this.controlActions){
+			if(action.isCASafetyCritical()) return true;
+			if(!action.getNotProvidedVariables().isEmpty()) return true;
+			if(!action.getProvidedVariables().isEmpty()) return true;
+		}
+		return false;
+	}
 }

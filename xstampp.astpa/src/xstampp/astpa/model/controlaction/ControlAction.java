@@ -228,6 +228,9 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 * @return a copie of the the notProvidedVariables List
 	 */
 	public List<UUID> getNotProvidedVariables() {
+		if(this.notProvidedVariables == null){
+			return new ArrayList<>();
+		}
 		return new ArrayList<>(this.notProvidedVariables);
 	}
 
@@ -251,6 +254,9 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 * @return a copie of the provided variables list
 	 */
 	public List<UUID> getProvidedVariables() {
+		if(this.providedVariables == null){
+			this.providedVariables = new ArrayList<>();
+		}
 		return new ArrayList<>(this.providedVariables);
 	}
 
