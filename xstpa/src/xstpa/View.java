@@ -1459,7 +1459,9 @@ public class View extends ViewPart implements Observer{
 	     */
 	    deleteEntry.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
+	    		contextRightContent.remove(contextRightTable.getSelectionIndex());
 	    		contextRightTable.remove(contextRightTable.getSelectionIndex());
+	    		storeBooleans();
 	    	}
 	    });
 	    
