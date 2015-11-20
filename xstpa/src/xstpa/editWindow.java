@@ -334,7 +334,7 @@ public class editWindow
 	    		strengthCombo.select(6);
 	    	}
 	    	else {
-	    		strengthCombo.select(Integer.parseInt(modes.get(1)));
+	    		strengthCombo.select(Integer.parseInt(modes.get(1))-1);
 	    	}
 	    }
 	    else {
