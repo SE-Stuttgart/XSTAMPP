@@ -214,10 +214,11 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 		}
 		for (IConnection conn : this.connectionRegisty) {
 			if (!tmpRegistry.contains(conn)) {
-				editPart = (CSConnectionEditPart) this
-						.createOrFindConnection(conn);
-				editPart.removeNotify();
-				this.getViewer().getEditPartRegistry().remove(conn);
+				editPart = (CSConnectionEditPart) this.getViewer().getEditPartRegistry().get(conn);
+				if(editPart != null){
+					editPart.removeNotify();
+					this.getViewer().getEditPartRegistry().remove(conn);
+				}
 			}
 		}
 		this.connectionRegisty = tmpRegistry;

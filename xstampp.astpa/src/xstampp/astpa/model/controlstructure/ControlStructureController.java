@@ -708,4 +708,14 @@ public class ControlStructureController {
 		}
 		return values;
 	}
+	
+	public boolean usesHAZXData(){
+		for(Component comp: this.getInternalComponents()){
+			if(comp.getComponentType().equals(ComponentType.CONTAINER)) return true;
+			if(comp.getComponentType().equals(ComponentType.DASHEDBOX)) return true;
+			if(!comp.getComment().isEmpty()) return true;
+			if(!comp.getUnsafeProcessVariables().isEmpty()) return true;
+		}
+		return false;
+	}
 }

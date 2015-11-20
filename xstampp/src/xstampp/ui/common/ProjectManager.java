@@ -233,6 +233,12 @@ public class ProjectManager implements IPropertyChangeListener {
 		return false;
 	}
 
+	/**
+	 * changes the project extension and stores the file
+	 * @param projectId the uuid stored for this project
+	 * @param ext the new extension literal without the dot e.g.: <code>exe</code> or <code>haz</code> 
+	 * @return
+	 */
 	public boolean changeProjectExtension(UUID projectId, String ext){
 		this.extensionsToUUID.remove(projectId);
 		this.extensionsToUUID.put(projectId, ext);
@@ -248,7 +254,9 @@ public class ProjectManager implements IPropertyChangeListener {
 	}
 	
 	/**
-	 * Saves the data model to a file
+	 *opens a filedialog in which the user can than choose a file on his system where he wants to store the dataModel into
+	 *if the operation is successful means that the user has not canceled the dialog and has chosen a legal file
+	 *{@link ProjectManager#saveDataModel(UUID, boolean, boolean)} is called with false in bath boolean arguments
 	 * 
 	 * @author Fabian Toth,Lukas Balzer
 	 * @param projectId
@@ -299,7 +307,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	}
 
 	/**
-	 * Saves the data model to the file in the variable. If this is null
+	 * Saves the data model to the file in the list projectSaveFilesToUUID. If this is null
 	 * saveDataModelAs() is called
 	 * 
 	 * @author Fabian Toth,Lukas Balzer
@@ -320,6 +328,9 @@ public class ProjectManager implements IPropertyChangeListener {
 		
 		Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId),
 				ProjectManager.getLOGGER(), isUIcall);
+		if(save == null){
+			return false;
+		}
 		save.addJobChangeListener(new JobChangeAdapter() {
 
 			@Override

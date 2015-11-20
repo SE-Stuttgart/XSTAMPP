@@ -109,8 +109,8 @@ public class CSEditPartFactory implements EditPartFactory {
 						Messages.ControlAction,
 						Messages.DescriptionOfThisControlAction);
 				((IRectangleComponent) model).linktoControlAction(newLinkId);
-			}
-			if(this.dataModel.getControlActionU(caId).getComponentLink() != id){
+				this.dataModel.linkControlAction(newLinkId, id);
+			}else if(this.dataModel.getControlActionU(caId).getComponentLink() != id){
 				this.dataModel.linkControlAction(caId, id);
 			}
 			break;
@@ -158,7 +158,9 @@ public class CSEditPartFactory implements EditPartFactory {
 		case CONNECTION: {
 			id = ((IConnection) model).getId();
 			part = this.getConnectionFrom((IConnection) model);
-			
+			if(part == null){
+				return null;
+			}
 			break;
 		}
 		case ROOT: {
@@ -200,6 +202,10 @@ public class CSEditPartFactory implements EditPartFactory {
 		IAnchor sourceModel = model.getSourceAnchor();
 		IAnchor targetModel = model.getTargetAnchor();
 		
+		if(target == null && source == null){
+			return null;
+		}
+		
 		if(source== null){
 			sourceModel.setIsFlying(true);
 			source = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
@@ -215,7 +221,9 @@ public class CSEditPartFactory implements EditPartFactory {
 		IFigure targetFigure =	target.getFigure();
 		
 
-		
+		if(targetFigure == null || sourceFigure == null){
+			return null;
+		}
 
 		IAnchorFigure sourceAnchor;
 		IAnchorFigure targetAnchor;

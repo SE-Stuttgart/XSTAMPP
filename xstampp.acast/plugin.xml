@@ -480,6 +480,24 @@
                value="DASHEDBOX">
          </parameter>
       </key>
+      <key
+            commandId="xstampp.astpa.command.cs.copy"
+            contextId="acastContextID"
+            schemeId="bindingscheme"
+            sequence="M1+C">
+      </key>
+      <key
+            commandId="xstampp.astpa.command.cs.paste"
+            contextId="acastContextID"
+            schemeId="bindingscheme"
+            sequence="M1+A">
+      </key>
+      <key
+            commandId="xstampp.ui.commands.selectAll"
+            contextId="acastContextID"
+            schemeId="bindingscheme"
+            sequence="M1+A">
+      </key>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -492,6 +510,18 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:acast.steps.step2_1">
+         <command
+               commandId="xstampp.astpa.command.cs.copy"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.astpa.command.cs.paste"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.ui.commands.selectAll"
+               style="push">
+         </command>
          <command
                commandId="xstampp.acast.cseditor.changeTool"
                label="Select"
