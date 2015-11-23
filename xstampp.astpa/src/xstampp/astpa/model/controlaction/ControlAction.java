@@ -206,7 +206,21 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	public void setValuesWhenNotProvided(List<NotProvidedValuesCombi> valuesWhenNotProvided) {
 		this.valuesWhenNotProvided = valuesWhenNotProvided;
 	}
+	
+	/**
+	 * @param valuesWhenNotProvided the valuesWhenNotProvided to set
+	 */
+	public boolean addValueWhenNotProvided(NotProvidedValuesCombi valueWhenNotProvided) {
+		if(this.valuesWhenNotProvided == null){
+			this.valuesWhenNotProvided = new ArrayList<>();
+		}
+		return this.valuesWhenNotProvided.add(valueWhenNotProvided);
+	}
 
+	public boolean removeValueWhenNotProvided(NotProvidedValuesCombi valueWhenNotProvided) {
+		return this.valuesWhenNotProvided.remove(valueWhenNotProvided);
+	}
+	
 
 	/**
 	 * @return the valuesWhenProvided
@@ -221,6 +235,21 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 */
 	public void setValuesWhenProvided(List<ProvidedValuesCombi> valuesWhenProvided) {
 		this.valuesWhenProvided = valuesWhenProvided;
+	}
+	
+
+	/**
+	 * @param valuesWhenNotProvided the valuesWhenNotProvided to set
+	 */
+	public boolean addValueWhenProvided(ProvidedValuesCombi valueWhenNotProvided) {
+		if(this.valuesWhenNotProvided == null){
+			this.valuesWhenNotProvided = new ArrayList<>();
+		}
+		return this.valuesWhenProvided.add(valueWhenNotProvided);
+	}
+
+	public boolean removeValueWhenProvided(ProvidedValuesCombi valueWhenNotProvided) {
+		return this.valuesWhenProvided.remove(valueWhenNotProvided);
 	}
 
 

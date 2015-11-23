@@ -1478,7 +1478,29 @@ public class DataModelController extends Observable implements
 	public void setValuesWhenCANotProvided(UUID caID, List<NotProvidedValuesCombi> valuesWhenNotProvided) {
 		this.controlActionController.setValuesWhenNotProvided(caID, valuesWhenNotProvided);
 	}
+	/**
+	 * adds the given values combination to the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is not provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean addValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
+		return this.controlActionController.addValueWhenNotProvided(caID, valueWhenNotProvided);
+	}
 
+	/**
+	 * removes the given value combinations from the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is not provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean removeValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
+		return this.controlActionController.removeValueWhenNotProvided(caID, valueWhenNotProvided);
+	}
 
 	/**
 	 * @param caID the control action id which is used to look up the action
@@ -1497,7 +1519,29 @@ public class DataModelController extends Observable implements
 		this.controlActionController.setValuesWhenProvided(caID, valuesWhenProvided);
 	}
 
+	/**
+	 * adds the given values combination to the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean addValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
+		return this.controlActionController.addValueWhenProvided(caID,valueWhenProvided);
+	}
 
+	/**
+	 * removes the given value combinations from the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean removeValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
+		return this.controlActionController.removeValueWhenProvided(caID,valueWhenProvided);
+	}
 	/**
 	 * {@link ControlAction#getNotProvidedVariables()}
 	 * @param caID the control action id which is used to look up the action

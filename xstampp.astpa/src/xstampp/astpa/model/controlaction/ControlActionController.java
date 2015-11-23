@@ -517,6 +517,9 @@ public class ControlActionController {
 	 */
 	public List<NotProvidedValuesCombi> getValuesWhenNotProvided(UUID caID) {
 		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return new ArrayList<>();
+		}
 		return action.getValuesAffectedWhenNotProvided();
 	}
 
@@ -527,10 +530,45 @@ public class ControlActionController {
 	 */
 	public void setValuesWhenNotProvided(UUID caID, List<NotProvidedValuesCombi> valuesWhenNotProvided) {
 		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return;
+		}
 		action.setValuesWhenNotProvided(valuesWhenNotProvided);
 	}
 
 
+	/**
+	 * adds the given values combination to the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is not provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean addValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
+		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return false;
+		}
+		return action.addValueWhenNotProvided(valueWhenNotProvided);
+	}
+
+	/**
+	 * removes the given value combinations from the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is not provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean removeValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
+		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return false;
+		}
+		return action.removeValueWhenNotProvided(valueWhenNotProvided);
+	}
+	
 	/**
 	 * @param caID the control action id which is used to look up the action
 	 * @return the valuesWhenProvided
@@ -550,7 +588,37 @@ public class ControlActionController {
 		action.setValuesWhenProvided(valuesWhenProvided);
 	}
 
+	/**
+	 * adds the given values combination to the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean addValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
+		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return false;
+		}
+		return action.addValueWhenProvided(valueWhenProvided);
+	}
 
+	/**
+	 * removes the given value combinations from the list of value combinations
+	 * in which the system gets into a hazardous state if the control action is provided
+	 * 
+	 * @param caID the uuid object of the control action
+	 * @param valueWhenNotProvided the values combination
+	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
+	 */
+	public boolean removeValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
+		ControlAction action = getInternalControlAction(caID);
+		if(action == null){
+			return false;
+		}
+		return action.removeValueWhenProvided(valueWhenProvided);
+	}
 	/**
 	 * @param caID the control action id which is used to look up the action
 	 * {@link ControlAction#getNotProvidedVariables()}
