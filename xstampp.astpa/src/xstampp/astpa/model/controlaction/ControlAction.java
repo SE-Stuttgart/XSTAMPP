@@ -300,7 +300,9 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		if(this.providedVariables == null){
 			this.providedVariables = new ArrayList<>();
 		}
-		this.providedVariables.add(providedVariable);
+		if(!this.providedVariables.contains(providedVariable)){
+			this.providedVariables.add(providedVariable);
+		}
 	}
 
 	/**

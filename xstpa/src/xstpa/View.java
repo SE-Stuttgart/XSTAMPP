@@ -1970,50 +1970,20 @@ public class View extends ViewPart implements Observer{
 	    */
 	    addBtn.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
+	    		if(linkedPMV == null || !(linkedPMV instanceof ProcessModelVariables)){
+	    			return;
+	    		}
 	    		getLinkedCAE().addLinkedItem(linkedPMV);
 	    		// sort the List after their "Id"
 	    		getLinkedCAE().setLinkedItems(getLinkedCAE().sortItems(getLinkedCAE().getLinkedItems()));
 	    		getLinkedCAE().removeAvailableItem(linkedPMV);
 	    		
-	    		try {
-	    			  if (dependenciesFolder.getSelectionIndex() == 0) {
-		    			  // Store it in the DataModel
-	    				  for (int i = 0; i<model.getCAProvidedVariables(getLinkedCAE().getId()).size();i++) {
-	    					  if (model.getCAProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
-	    						  
-	    					  }
-	    					  else {
-	    						  model.addCAProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
-	    						  break;
-	    					  }
-	    				  }
-		    			  
-	    			  }
-	    		}
-	    		catch (Exception e) {
-	    			System.out.println("Provided List was empty");
+	    		if (dependenciesFolder.getSelectionIndex() == 0) {
+		    		// Store it in the DataModel
 	    			model.addCAProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
-	    		}
-	    		try {
-	    			if (dependenciesFolder.getSelectionIndex() == 1) {
-	    				  
-	    				  for (int i = 0; i<model.getCANotProvidedVariables(getLinkedCAE().getId()).size();i++) {
-	    					  if (model.getCANotProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
-	    						  
-	    					  }
-	    					  else {
-	    						  model.addCANotProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
-	    						  break;
-	    					  }
-	    				  }
-
-	    			  }
-	    		}
-	    		catch (Exception e) {
-	    			System.out.println("Not Provided List was empty");
+	    		}else if (dependenciesFolder.getSelectionIndex() == 1) {
 	    			model.addCANotProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
 	    		}
-	    		
 	    		dependenciesBottom = getLinkedCAE().getLinkedItems();
 	    		dependencyBottomTableViewer.setInput(dependenciesBottom);
 	    		dependencyTopTableViewer.refresh();
@@ -2033,37 +2003,19 @@ public class View extends ViewPart implements Observer{
 		    	getLinkedCAE().setLinkedItems(temp);
 		    	getLinkedCAE().removeAllAvailableItems();
 		    	
-	    		
-	    			  if (dependenciesFolder.getSelectionIndex() == 0) {
-		    			  // Store it in the DataModel
-	    				
-	    				  for (int j = 0; j<getLinkedCAE().getLinkedItems().size();j++) {
-	    					  	try {
-	    					  		model.removeCAProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getLinkedItems().get(j).getId());
-	    					  	}
-	    					  	catch (Exception e) {
-	    					  		
-	    					  	}
-	    					  	model.addCAProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getLinkedItems().get(j).getId());	  					  
-	    				  }	  		    			  
-	    			  }
-	    			  else {
-	    				  for (int j = 0; j<getLinkedCAE().getLinkedItems().size();j++) {
-	    					  	try {
-	    					  		model.removeCANotProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getLinkedItems().get(j).getId());
-	    					  	}
-	    					  	catch (Exception e) {
-	    					  		
-	    					  	}
-	    					  	model.addCANotProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getLinkedItems().get(j).getId());	  					  
-	    				  }
-
-
-	    			  }
-
-		    	
-		    	
-		    	
+				  if (dependenciesFolder.getSelectionIndex() == 0) {
+	    			  // Store it in the DataModel
+					  for (int j = 0; j<getLinkedCAE().getLinkedItems().size();j++) {
+					
+						  	model.addCAProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getLinkedItems().get(j).getId());	  					  
+					  }	  		    			  
+				  }
+				  else {
+					  for (int j = 0; j<getLinkedCAE().getLinkedItems().size();j++) {
+						  	
+						  	model.addCANotProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getLinkedItems().get(j).getId());	  					  
+					  }
+				  }
 		    	dependenciesBottom = getLinkedCAE().getLinkedItems();
 		    	dependencyBottomTableViewer.setInput(dependenciesBottom);
 		    	dependencyTopTableViewer.setInput(getLinkedCAE().getAvailableItems());
@@ -2076,46 +2028,21 @@ public class View extends ViewPart implements Observer{
 		*/
 		removeBtn.addSelectionListener(new SelectionAdapter() {
 		    public void widgetSelected(SelectionEvent event) {
+	    		if(linkedPMV == null || !(linkedPMV instanceof ProcessModelVariables)){
+	    			return;
+	    		}
 		    	getLinkedCAE().removeLinkedItem(linkedPMV);
 		    	getLinkedCAE().addAvailableItem(linkedPMV);
 		    	// sorts the List after their "Id"
 		    	getLinkedCAE().setAvailableItems(getLinkedCAE().sortItems(getLinkedCAE().getAvailableItems()));
 		    	
-	    		try {
 	    			  if (dependenciesFolder.getSelectionIndex() == 0) {
 		    			  // Store it in the DataModel
-	    				  for (int i = 0; i<model.getCAProvidedVariables(getLinkedCAE().getId()).size();i++) {
-	    					  if (model.getCAProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
-	    						  model.removeCAProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
-	    					  }
-	    					  else {
-	    						  
-	    					  }
-	    				  }
-		    			  
+	    				  model.removeCAProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
+	    			  }else {
+	    				model.removeCANotProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
 	    			  }
-	    		}
-	    		catch (Exception e) {
-	    			System.out.println("List was already empty");
-	    		}
-	    		try {
-	    			  if (dependenciesFolder.getSelectionIndex() == 1) {
-	    				  
-	    				  for (int i = 0; i<model.getCANotProvidedVariables(getLinkedCAE().getId()).size();i++) {
-	    					  if (model.getCANotProvidedVariables(getLinkedCAE().getId()).get(i)== linkedPMV.getId()) {
-	    						  model.removeCANotProvidedVariable(getLinkedCAE().getId(), linkedPMV.getId());
-	    					  }
-	    					  else {
-	    						  
-	    					  }
-	    				  }
-
-	    			  }
-	    		}
-	    		catch (Exception e) {
-	    			System.out.println("List was already empty");
-	    		}
-		    	
+	    		
 		    	dependenciesBottom = getLinkedCAE().getLinkedItems();
 		    	dependencyBottomTableViewer.setInput(dependenciesBottom);
 		    	dependencyTopTableViewer.setInput(getLinkedCAE().getAvailableItems());
@@ -2139,27 +2066,14 @@ public class View extends ViewPart implements Observer{
 	    			  // Store it in the DataModel
   				
   				  for (int j = 0; j<getLinkedCAE().getAvailableItems().size();j++) {
-  					  	try {
-  					  		model.removeCAProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getAvailableItems().get(j).getId());
-  					  	}
-  					  	catch (Exception e) {
-  					  		
-  					  	}
+  					  model.removeCAProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getAvailableItems().get(j).getId());
   					  		  					  
   				  }	  		    			  
   			  }
   			  else {
   				  for (int j = 0; j<getLinkedCAE().getAvailableItems().size();j++) {
-  					  	try {
-  					  		model.removeCANotProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getAvailableItems().get(j).getId());
-  					  	}
-  					  	catch (Exception e) {
-  					  		
-  					  	}
-  					  	  					  
+  					  model.removeCANotProvidedVariable(getLinkedCAE().getId(), getLinkedCAE().getAvailableItems().get(j).getId());				  
   				  }
-
-
   			  }
 		    	
 		    	dependenciesBottom = getLinkedCAE().getLinkedItems();
@@ -2589,13 +2503,30 @@ public class View extends ViewPart implements Observer{
 	    		
 	    		if (contextRightFolder.getSelectionIndex() == 0) {
 	    			controlActionProvided = true;
-	    			if (contextTable.getSelectionIndex() != -1) {
-	    				tableIndex = contextTable.getSelectionIndex();
+	    			if(getLinkedCAE() == null){
+		    			if (contextTable.getSelectionIndex() != -1) {
+		    				tableIndex = dependencies.indexOf(contextTable.getSelection()[0].getData());
+		    				if(tableIndex == -1) {
+		    					tableIndex = dependenciesNotProvided.indexOf(contextTable.getSelection()[0].getData());
+		    				}
+			    			if(tableIndex == -1){
+			    				tableIndex = 0;
+			    			}
+		    			}
+		    			else {
+		    				tableIndex = 0;
+	
+			    		  	contextTable.setSelection(0);
+		    			}
+		    			setLinkedCAE(dependencies.get(tableIndex));
+	    			}else{
+	    				ControlActionEntrys entry= getLinkedCAE();
+	    				if(!dependencies.contains(entry)){
+		    				tableIndex = dependenciesNotProvided.indexOf(entry);
+			    			setLinkedCAE(dependencies.get(tableIndex));
+	    					
+	    				}
 	    			}
-	    			else {
-	    				tableIndex = 0;
-	    			}
-	    			setLinkedCAE(dependencies.get(tableIndex));
 
 	    			
 	 				
@@ -2628,18 +2559,35 @@ public class View extends ViewPart implements Observer{
 			    		getViewSite().getActionBars().getStatusLineManager().setMessage("There was no Stored Testset. Please Generate a new Testset for this Control Action");
 			    	}
 
-	    		  	contextTable.setSelection(tableIndex);
 	    		  	
 	    		}
 	    		else {
 	    			controlActionProvided = false;
-	    			if (contextTable.getSelectionIndex() != -1) {
-	    				tableIndex = contextTable.getSelectionIndex();
+	    			if(getLinkedCAE() == null){
+	    				if (contextTable.getSelectionIndex() != -1) {
+		    				tableIndex = dependencies.indexOf(contextTable.getSelection()[0].getData());
+		    				if(tableIndex == -1) {
+		    					tableIndex = dependenciesNotProvided.indexOf(contextTable.getSelection()[0].getData());
+		    				}
+			    			if(tableIndex == -1){
+			    				tableIndex = 0;
+			    			}
+		    			}
+		    			else {
+		    				tableIndex = 0;
+
+			    		  	contextTable.setSelection(0);
+		    			}
+		    			setLinkedCAE(dependenciesNotProvided.get(tableIndex));
+	    			}else{
+	    				ControlActionEntrys entry= getLinkedCAE();
+	    				if(!dependenciesNotProvided.contains(entry)){
+		    				tableIndex = dependencies.indexOf(entry);
+			    			setLinkedCAE(dependenciesNotProvided.get(tableIndex));
+	    					
+	    				}
 	    			}
-	    			else {
-	    				tableIndex = 0;
-	    			}
-	    			setLinkedCAE(dependenciesNotProvided.get(tableIndex));
+	    			
 	    			
 	 				// create Input for contextTableViewer
 	  				List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
@@ -2672,7 +2620,6 @@ public class View extends ViewPart implements Observer{
 			    		getViewSite().getActionBars().getStatusLineManager().setMessage("There was no Stored Testset. Please Generate a new Testset for this Control Action");
 			    	}
 
-	    		  	contextTable.setSelection(tableIndex);
 	    		  	
 	    		}
 	    	}
