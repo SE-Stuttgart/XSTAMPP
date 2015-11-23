@@ -9,16 +9,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import messages.Messages;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
@@ -28,7 +32,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -64,7 +68,16 @@ public class editWindow
     public static List<String> constraints = new ArrayList<String>();
     private ControlActionEntrys linkedCAE;
     private View view;
+	private Button ipogfButton, ipogButton, ipogf2Button, ipogdButton, baseChoiceButton,ignoreConstraints;
+	private Combo strengthCombo,modeCombo,handlingCombo;
     public static List<Relation> relations = new ArrayList<Relation>();
+    private boolean isDirty;
+    private SelectionAdapter dirtyListener= new SelectionAdapter() {
+    	@Override
+    	public void widgetSelected(SelectionEvent e) {
+    		isDirty = true;
+    	}
+	};
     
     
     // ====================== 3. Subclasses ===================================
@@ -89,7 +102,7 @@ public class editWindow
 		   * Returns the objects for the tables
 		   */
 		  public Object[] getElements(Object inputElement) {
-		    return ((List) inputElement).toArray();
+		    return ((List<?>) inputElement).toArray();
 		  }
 	}
     
@@ -177,7 +190,21 @@ public class editWindow
 
 	public editWindow(ControlActionEntrys linkedCAE, View view)
     {
+		this.isDirty = false;
         shell = new Shell(SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));
+        shell.addShellListener(new ShellAdapter() {
+        	@Override
+        	public void shellClosed(ShellEvent e) {
+        		if (isDirty&& MessageDialog.openConfirm(shell,Messages.ThereAreUnsafedChanges,
+        												Messages.ThereAreUnsafedChangesDoYouWantToStoreThemAbort)){
+        			apply();
+				}
+        		super.shellClosed(e);
+        	}
+        	
+		});
+        
+        
         shell.setLayout(new GridLayout(1, false));
         shell.setText("Context Table Settings");
         shell.setImage(View.LOGO);
@@ -269,7 +296,8 @@ public class editWindow
 	    
 	    
 	    // Add the radio Buttons
-	    final Button ipogButton = new Button(algoGroup, SWT.RADIO);
+	    ipogButton = new Button(algoGroup, SWT.RADIO);
+	    ipogButton.addSelectionListener(dirtyListener);
 	    ipogButton.setText("IPOG(Recommended)");
 	    ipogButton.setToolTipText("For a moderate size System (max. 20 Parameters)");
 	    if (!modes.isEmpty()) {
@@ -282,7 +310,8 @@ public class editWindow
 	    }
 	    
 	    
-	    final Button ipogfButton = new Button(algoGroup, SWT.RADIO);
+	    ipogfButton = new Button(algoGroup, SWT.RADIO);
+	    ipogfButton.addSelectionListener(dirtyListener);
 	    ipogfButton.setToolTipText("For a moderate size System (20 Parameters)");
 	    ipogfButton.setText("IPOG-F");
 	    if (!modes.isEmpty()) {
@@ -291,7 +320,8 @@ public class editWindow
 	    	}
 	    }
 	    
-	    final Button ipogf2Button = new Button(algoGroup, SWT.RADIO);
+	    ipogf2Button = new Button(algoGroup, SWT.RADIO);
+	    ipogf2Button.addSelectionListener(dirtyListener);
 	    ipogf2Button.setToolTipText("For a moderate size System (20 Parameters)");
 	    ipogf2Button.setText("IPOG-F2");
 	    if (!modes.isEmpty()) {
@@ -300,7 +330,8 @@ public class editWindow
 	    	}
 	    }
 	    
-	    final Button ipogdButton = new Button(algoGroup, SWT.RADIO);
+	    ipogdButton = new Button(algoGroup, SWT.RADIO);
+	    ipogdButton.addSelectionListener(dirtyListener);
 	    ipogdButton.setToolTipText("For a large size System");
 	    ipogdButton.setText("IPOG-D");
 	    if (!modes.isEmpty()) {
@@ -309,7 +340,8 @@ public class editWindow
 	    	}
 	    }
 	    
-	    final Button baseChoiceButton = new Button(algoGroup, SWT.RADIO);
+	    baseChoiceButton = new Button(algoGroup, SWT.RADIO);
+	    baseChoiceButton.addSelectionListener(dirtyListener);
 	    baseChoiceButton.setText("Base Choice");
 	    baseChoiceButton.setToolTipText("A special oneway testing Algorithm");
 	    if (!modes.isEmpty()) {
@@ -321,7 +353,8 @@ public class editWindow
 	    Label strengthLabel = new Label(mainComposite, SWT.NONE);
 	    strengthLabel.setText("Strength: ");
 	    
-	    final Combo strengthCombo = new Combo(mainComposite, SWT.READ_ONLY);
+	    strengthCombo = new Combo(mainComposite, SWT.READ_ONLY);
+	    strengthCombo.addSelectionListener(dirtyListener);
 	    strengthCombo.add("1");
 	    strengthCombo.add("2");
 	    strengthCombo.add("3");
@@ -351,7 +384,8 @@ public class editWindow
 	    Label modeLabel = new Label(mainComposite, SWT.NONE);
 	    modeLabel.setText("Mode: ");
 	    
-	    final Combo modeCombo = new Combo(mainComposite, SWT.READ_ONLY);
+	    modeCombo = new Combo(mainComposite, SWT.READ_ONLY);
+	    modeCombo.addSelectionListener(dirtyListener);
 	    modeCombo.add("Scratch");
 //	    modeCombo.add("Extend");
 	    
@@ -359,7 +393,7 @@ public class editWindow
 	    data = new GridData(150, 80);
 	    modeCombo.setLayoutData(data);
 	    
-	    final Button ignoreConstraints = new Button(mainComposite, SWT.CHECK);
+	    ignoreConstraints = new Button(mainComposite, SWT.CHECK);
 	    ignoreConstraints.setText("Ignore Constraints");
 	    if (!modes.isEmpty()) {
 	    	if (modes.get(3).equals(DCHANDLER[0])) {
@@ -372,7 +406,7 @@ public class editWindow
 	    constraintHandlingLabel.setText("Constraint\nHandling: ");
 	    constraintHandlingLabel.pack();
 	    
-	    final Combo handlingCombo = new Combo(mainComposite, SWT.READ_ONLY);
+	    handlingCombo = new Combo(mainComposite, SWT.READ_ONLY);
 	    handlingCombo.add("Forbidden Tuples (default)");
 	    handlingCombo.add("CSP Solver");
 	    if (!modes.isEmpty()) {
@@ -409,14 +443,7 @@ public class editWindow
 	    		Map<String,String> values=new HashMap<>();
   	    	  	values.put("xstampp.command.preferencePage", "xstpa.preferencePage");
   	    	  	STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
-  	    	  	view.setInput(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", "")); 
-  	    	  	view.setInput2(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", ""));
-  	    	  	view.setOutput(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", ""));
-  	    	  	view.setOutput2(xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-  	    	  			.replace("acts_cmd_2.92.jar", ""));
+  	    	  
 	    	}
 	    });
 
@@ -433,54 +460,7 @@ public class editWindow
 	    // Functionality of the Apply Button
 	    apply.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		// clear modes
-	    		modes.clear();
-		    	//get the values and apply them
-	    		// get the algo
-	    		if (ipogButton.getSelection()) {
-	    			modes.add(DALGO[0]);
-	    		}
-	    		if (ipogfButton.getSelection()) {
-	    			modes.add(DALGO[1]);
-	    		}
-	    		if (ipogf2Button.getSelection()) {
-	    			modes.add(DALGO[2]);
-	    		}
-	    		if (ipogdButton.getSelection()) {
-	    			modes.add(DALGO[3]);
-	    		}
-	    		if (baseChoiceButton.getSelection()) {
-	    			modes.add(DALGO[4]);
-	    		}
-	    		// add ddoi
-	    		if (strengthCombo.getSelectionIndex() == 6) {
-	    			modes.add("-1");
-	    		}
-	    		else {
-	    			modes.add(Integer.toString(strengthCombo.getSelectionIndex()+1));
-	    		}
-	    		// dmode
-	    		if (modeCombo.getSelectionIndex() == 0) {
-	    			modes.add(DMODE[0]);
-	    		}
-	    		else {
-	    			modes.add(DMODE[1]);
-	    		}
-	    		// dchandler
-	    		if (ignoreConstraints.getSelection()) {
-	    			modes.add(DCHANDLER[0]);
-	    		}
-	    		else if (handlingCombo.getSelectionIndex() == 0) {
-	    			modes.add(DCHANDLER[1]);
-	    		}
-	    		else {
-	    			modes.add(DCHANDLER[2]);
-	    		}
-	    		close();
-	    		view.createTablerows(0);
-	    		view.writeFile(false);
-	            view.open(false);
-	            
+	    		apply();
 	    	}	  
 	    });
 	    
@@ -683,54 +663,7 @@ public class editWindow
 	    // Functionality of the Apply Button
 	    applyRel.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		// clear modes
-	    		modes.clear();
-		    	//get the values and apply them
-	    		// get the algo
-	    		if (ipogButton.getSelection()) {
-	    			modes.add(DALGO[0]);
-	    		}
-	    		if (ipogfButton.getSelection()) {
-	    			modes.add(DALGO[1]);
-	    		}
-	    		if (ipogf2Button.getSelection()) {
-	    			modes.add(DALGO[2]);
-	    		}
-	    		if (ipogdButton.getSelection()) {
-	    			modes.add(DALGO[3]);
-	    		}
-	    		if (baseChoiceButton.getSelection()) {
-	    			modes.add(DALGO[4]);
-	    		}
-	    		// add ddoi
-	    		if (strengthCombo.getSelectionIndex() == 6) {
-	    			modes.add("-1");
-	    		}
-	    		else {
-	    			modes.add(Integer.toString(strengthCombo.getSelectionIndex()+1));
-	    		}
-	    		// dmode
-	    		if (modeCombo.getSelectionIndex() == 0) {
-	    			modes.add(DMODE[0]);
-	    		}
-	    		else {
-	    			modes.add(DMODE[1]);
-	    		}
-	    		// dchandler
-	    		if (ignoreConstraints.getSelection()) {
-	    			modes.add(DCHANDLER[0]);
-	    		}
-	    		else if (handlingCombo.getSelectionIndex() == 0) {
-	    			modes.add(DCHANDLER[1]);
-	    		}
-	    		else {
-	    			modes.add(DCHANDLER[2]);
-	    		}
-	    		close();
-	    		view.createTablerows(0);
-	    		view.writeFile(false);
-	            view.open(false);
-	            
+	    		apply();
 	    	}	  
 	    });
 	    
@@ -1026,56 +959,7 @@ public class editWindow
 	    
 	 // Functionality of the Apply Button
 	    applyConstraints.addSelectionListener(new SelectionAdapter() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		// clear modes
-	    		modes.clear();
-		    	//get the values and apply them
-	    		// get the algo
-	    		if (ipogButton.getSelection()) {
-	    			modes.add(DALGO[0]);
-	    		}
-	    		if (ipogfButton.getSelection()) {
-	    			modes.add(DALGO[1]);
-	    		}
-	    		if (ipogf2Button.getSelection()) {
-	    			modes.add(DALGO[2]);
-	    		}
-	    		if (ipogdButton.getSelection()) {
-	    			modes.add(DALGO[3]);
-	    		}
-	    		if (baseChoiceButton.getSelection()) {
-	    			modes.add(DALGO[4]);
-	    		}
-	    		// add ddoi
-	    		if (strengthCombo.getSelectionIndex() == 6) {
-	    			modes.add("-1");
-	    		}
-	    		else {
-	    			modes.add(Integer.toString(strengthCombo.getSelectionIndex()+1));
-	    		}
-	    		// dmode
-	    		if (modeCombo.getSelectionIndex() == 0) {
-	    			modes.add(DMODE[0]);
-	    		}
-	    		else {
-	    			modes.add(DMODE[1]);
-	    		}
-	    		// dchandler
-	    		if (ignoreConstraints.getSelection()) {
-	    			modes.add(DCHANDLER[0]);
-	    		}
-	    		else if (handlingCombo.getSelectionIndex() == 0) {
-	    			modes.add(DCHANDLER[1]);
-	    		}
-	    		else {
-	    			modes.add(DCHANDLER[2]);
-	    		}
-	    		close();
-	    		view.createTablerows(0);
-	    		view.writeFile(false);
-	            view.open(false);
-	            
-	    	}	  
+	    	public void widgetSelected(SelectionEvent event) {apply();}	  
 	    });
 	    
 	    // TODO LOAD FROM FILE?
@@ -1098,6 +982,56 @@ public class editWindow
         
     }
 
+    private void apply(){
+    	// clear modes
+		modes.clear();
+    	//get the values and apply them
+		// get the algo
+		if (ipogButton.getSelection()) {
+			modes.add(DALGO[0]);
+		}
+		if (ipogfButton.getSelection()) {
+			modes.add(DALGO[1]);
+		}
+		if (ipogf2Button.getSelection()) {
+			modes.add(DALGO[2]);
+		}
+		if (ipogdButton.getSelection()) {
+			modes.add(DALGO[3]);
+		}
+		if (baseChoiceButton.getSelection()) {
+			modes.add(DALGO[4]);
+		}
+		// add ddoi
+		if (strengthCombo.getSelectionIndex() == 6) {
+			modes.add("-1");
+		}
+		else {
+			modes.add(Integer.toString(strengthCombo.getSelectionIndex()+1));
+		}
+		// dmode
+		if (modeCombo.getSelectionIndex() == 0) {
+			modes.add(DMODE[0]);
+		}
+		else {
+			modes.add(DMODE[1]);
+		}
+		// dchandler
+		if (ignoreConstraints.getSelection()) {
+			modes.add(DCHANDLER[0]);
+		}
+		else if (handlingCombo.getSelectionIndex() == 0) {
+			modes.add(DCHANDLER[1]);
+		}
+		else {
+			modes.add(DCHANDLER[2]);
+		}
+		close();
+		view.createTableColumns(0);
+		view.writeFile(false);
+        view.open(false);
+    }
+    
     public void close()
     {
     	// Don't call shell.close(), because then
@@ -1109,10 +1043,6 @@ public class editWindow
 		return modes;
 	}
 
-	public void setModes(List<String> modes) {
-		this.modes = modes;
-	}
-	
 	public boolean isNumeric(String str)  
 	{  
 	  try  
