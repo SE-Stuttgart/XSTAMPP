@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -21,8 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 
 public class EditRelatedUcaWizard {
     // ==================== 2. Instance Fields ============================
@@ -44,7 +39,13 @@ public class EditRelatedUcaWizard {
         shell.setLayout(new GridLayout(2, false));
         shell.setText("Add Unsafe Control Actions");
         shell.setImage(View.LOGO);
-
+        shell.addShellListener(new ShellAdapter() {
+			@Override
+			public void shellDeactivated(ShellEvent e) {
+				EditRelatedUcaWizard.this.shell.close();
+			}
+			
+		});
         // Get the size of the screen
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (dim.width)/4;

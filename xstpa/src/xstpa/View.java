@@ -2091,6 +2091,9 @@ public class View extends ViewPart implements Observer{
 		      public void widgetSelected(SelectionEvent event) {
 		    	//calculate index of selected dependency in the dependencies list
 			    int relativeI = dependencies.indexOf(dependencyTable.getSelection()[0].getData());
+			    if(relativeI == -1){
+			    	relativeI = dependenciesNotProvided.indexOf(dependencyTable.getSelection()[0].getData());
+			    }
 		    	  //get the selected Control Action to link it to a Process model Variable
 		    	  if (dependenciesFolder.getSelectionIndex() == 0) {
 		    		  setLinkedCAE(dependencies.get(Math.max(relativeI, 0)));
