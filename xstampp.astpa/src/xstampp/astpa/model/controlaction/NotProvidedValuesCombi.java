@@ -7,6 +7,8 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import com.sun.xml.txw2.annotation.XmlAttribute;
+
 /**
  * This class is used to store a specific amount of process model values
  * which can lead( depending on the hazardous boolean)
@@ -33,6 +35,8 @@ public class NotProvidedValuesCombi{
 	@XmlElement(name="safetyConstraint")
 	private String constraint;
 	
+	@XmlElement(name="id")
+	private UUID id;
 	/**
 	 * constructs a combination of values.legth PM value ids 
 	 * 
@@ -110,4 +114,17 @@ public class NotProvidedValuesCombi{
 	public void setConstraint(String constraint) {
 		this.constraint = constraint;
 	}
+
+	public UUID getCombieId() {
+		if(this.id == null){
+			this.id = UUID.randomUUID();
+		}
+		return this.id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+	
+	
 }

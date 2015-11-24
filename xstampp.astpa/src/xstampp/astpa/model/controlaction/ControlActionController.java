@@ -550,7 +550,7 @@ public class ControlActionController {
 		if(action == null){
 			return false;
 		}
-		return action.addValueWhenNotProvided(valueWhenNotProvided);
+		return action.addValuesWhenNotProvided(valueWhenNotProvided);
 	}
 
 	/**
@@ -558,15 +558,15 @@ public class ControlActionController {
 	 * in which the system gets into a hazardous state if the control action is not provided
 	 * 
 	 * @param caID the uuid object of the control action
-	 * @param valueWhenNotProvided the values combination
+	 * @param combieId TODO
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
-	public boolean removeValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
+	public boolean removeValueWhenNotProvided(UUID caID, UUID combieId) {
 		ControlAction action = getInternalControlAction(caID);
 		if(action == null){
 			return false;
 		}
-		return action.removeValueWhenNotProvided(valueWhenNotProvided);
+		return action.removeValuesWhenNotProvided(combieId);
 	}
 	
 	/**
@@ -609,15 +609,16 @@ public class ControlActionController {
 	 * in which the system gets into a hazardous state if the control action is provided
 	 * 
 	 * @param caID the uuid object of the control action
+	 * @param combieId TODO
 	 * @param valueWhenNotProvided the values combination
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
-	public boolean removeValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
+	public boolean removeValueWhenProvided(UUID caID, UUID combieId) {
 		ControlAction action = getInternalControlAction(caID);
 		if(action == null){
 			return false;
 		}
-		return action.removeValueWhenProvided(valueWhenProvided);
+		return action.removeValueWhenProvided(combieId);
 	}
 	/**
 	 * @param caID the control action id which is used to look up the action

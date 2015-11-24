@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface,
  xstampp.extension;bundle-version="1.0.1",
  xstampp;bundle-version="1.0.2",
- org.eclipse.ui.workbench
+ org.eclipse.ui.workbench,
+ org.eclipse.draw2d;bundle-version="3.9.101"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.batik.css.engine.value;version="1.7.0",

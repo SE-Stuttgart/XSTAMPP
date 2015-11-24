@@ -59,14 +59,38 @@ public class ControlActionEntrys {
 		this.comments = comments;
 	}
 
+	/**
+	 *  this method returns the list of all process model variables this control Action 
+	 *  dependents on</br>
+	 *  NOTE: the linkedItems list is not to be confused with the contextTableCombinations!!
+	 *   
+	 * @return  the list of process model variables objects,which represent the variable 
+	 * 			components in the control structure
+	 */
 	public List<ProcessModelVariables> getLinkedItems() {
 		return linkedItems;
 	}
 
+	/**
+	 *  this method sets the list of all process model variables this control Action 
+	 *  dependents on</br>
+	 *  NOTE: the linkedItems list is not to be confused with the contextTableCombinations!!
+	 *   
+	 * @param linkedItems the list of process model variables objects,which represent the variable 
+	 * 						components in the control structure
+	 */
 	public void setLinkedItems(List<ProcessModelVariables> linkedItems) {
 		this.linkedItems = linkedItems;
 	}
 	
+	/**
+	 *  this method adds an item to the list of all process model variables this control Action 
+	 *  dependents on</br>
+	 *  NOTE: the linkedItems list is not to be confused with the contextTableCombinations!!
+	 *   
+	 * @param item a process model variables object,which represents a variable 
+	 * 						components in the control structure
+	 */
 	public void addLinkedItem(ProcessModelVariables item) {
 		linkedItems.add(item);
 	}

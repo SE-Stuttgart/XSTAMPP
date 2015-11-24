@@ -20,6 +20,8 @@ public class ControllerWithPMEntry {
 	  
 	  private UUID id;
 	  
+	  private UUID variableID;
+	  
 	  public ControllerWithPMEntry() {
 		  comments = "";
 		  
@@ -122,6 +124,20 @@ public class ControllerWithPMEntry {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the variableID
+	 */
+	public UUID getVariableID() {
+		return variableID;
+	}
+
+	/**
+	 * @param variableID the variableID to set
+	 */
+	public void setVariableID(UUID variableID) {
+		this.variableID = variableID;
 	}
 	}
 

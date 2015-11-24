@@ -76,6 +76,7 @@ class ContextCellModifier implements ICellModifier {
 				
 				entry.getValues().set(i-1, (String) value);
 				
+				View.model.changeComponentText(entry.getValueIds().get(i-1), (String) value);
 			}
 		}	
 

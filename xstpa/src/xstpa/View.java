@@ -209,7 +209,7 @@ public class View extends ViewPart implements Observer{
 	
 	List<ControlActionEntrys> controlActionList = new ArrayList<ControlActionEntrys>();
 	
-	List<ControllerWithPMEntry> pmList = new ArrayList<ControllerWithPMEntry>();
+	List<ControllerWithPMEntry> pmValuesList = new ArrayList<ControllerWithPMEntry>();
 	
 	public List<ProcessModelVariables> contextRightContent = new ArrayList<ProcessModelVariables>();
 	List<ProcessModelVariables> contextRightHazardousContent = new ArrayList<ProcessModelVariables>();
@@ -259,6 +259,8 @@ public class View extends ViewPart implements Observer{
 	private Boolean controlActionProvided = true;
 
 	private Boolean dependencyProvided = true;
+
+	private Button contextTableBtn2;
 	
 	public static String[] contextProps;
 
@@ -1024,7 +1026,7 @@ public class View extends ViewPart implements Observer{
 	    DependenciesTableBtn.setLayoutData(new GridData(100,30));
 	    
 	    // Add a button to switch tables (Context Table Button)
-	    final Button contextTableBtn2 = new Button(innerLeft, SWT.PUSH);
+	    contextTableBtn2 = new Button(innerLeft, SWT.PUSH);
 	    contextTableBtn2.setText("Context Table");
 	    contextTableBtn2.setLayoutData( new GridData(100,30));
 	    
@@ -1423,21 +1425,44 @@ public class View extends ViewPart implements Observer{
 	    		//AddProcessVarWizard window = new AddProcessVarWizard(vars, view);
 	    		//window.open();			
 	    	
-	    		//Create values for the Constructor
-	    		List<String> pmVars = new ArrayList<String>();
-	    		for (int i = 1; i<contextRightTable.getColumnCount()-1;i++) {
-	    			pmVars.add(contextRightTable.getColumn(i).getText().replace(" ", "_"));
-	    		}
-	    		// add the New Variable
-	    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, getLinkedCAE().getControlAction());
 	    		
-				contextRightContent.add(temp);
-				manuallyAddedCombinations.add(temp);
-				// set the ContextTableCombinations
-				getLinkedCAE().setContextTableCombinations(contextRightContent);
-				// refresh the Viewer
-				storeBooleans();
-				contextRightViewer.refresh();
+	    		List<UUID> idList = new ArrayList<>();
+	    		for(ProcessModelVariables variables : getLinkedCAE().getLinkedItems()){
+	    			
+	    			idList.add(variables.getId());
+	    			
+	    			
+	    		}
+	    		AddEntryShell shell = new AddEntryShell(idList, model);
+	    		shell.addApplyListener(new Listener() {
+					
+					@Override
+					public void handleEvent(Event event) {
+						//Create values for the Constructor
+			    		List<String> pmVars = new ArrayList<String>();
+			    		for (int i = 1; i<contextRightTable.getColumnCount()-1;i++) {
+			    			pmVars.add(contextRightTable.getColumn(i).getText().replace(" ", "_"));
+			    		}
+						// add the New Variable
+			    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, getLinkedCAE().getControlAction());
+			    		if(event.data instanceof String[]){
+			    			
+			    			for(String valueName:(String[]) event.data){
+			    				temp.addValue(valueName);
+			    			}
+			    		}
+						contextRightContent.add(temp);
+						manuallyAddedCombinations.add(temp);
+						// set the ContextTableCombinations
+						getLinkedCAE().setContextTableCombinations(contextRightContent);
+						// refresh the Viewer
+						storeBooleans();
+						contextRightViewer.refresh();
+						
+					}
+				});
+	    		shell.open();
+	    		
 	    	}
 	    });
 	    
@@ -1478,7 +1503,7 @@ public class View extends ViewPart implements Observer{
 	    	  contextCompositeRight.setVisible(false);
 	    	  ltlComposite.setVisible(false);  
 	    	  
-	    	  mainViewer.setInput(pmList);
+	    	  mainViewer.setInput(pmValuesList);
 			  for (int i = 0, n = table.getColumnCount(); i < n; i++) {
 				  
 				  table.getColumn(i).pack();
@@ -1680,7 +1705,7 @@ public class View extends ViewPart implements Observer{
 	    	  if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
 	    		  createTableColumns(0);
 	    		  contextRightContent = getLinkedCAE().getContextTableCombinations();
-	    		  showContent(filterCombo);
+	    		  showContent(filterCombo.getText());
 	    		  if (controlActionProvided) {
 	    			  contextRightContentProvided = contextRightContent;
 	    		  }
@@ -2255,7 +2280,7 @@ public class View extends ViewPart implements Observer{
 		    	  
 		    	  if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
 		    		  contextRightContent = getLinkedCAE().getContextTableCombinations();
-		    		  showContent(filterCombo);
+		    		  showContent(filterCombo.getText());
 		    		  if (controlActionProvided) {
 		    			  contextRightContentProvided = contextRightContent;
 		    		  }
@@ -2346,7 +2371,7 @@ public class View extends ViewPart implements Observer{
 		 */
 	    filterCombo.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-		    	  showContent(filterCombo);
+		    	  showContent(filterCombo.getText());
 		      }  
 	    	
 		      });
@@ -2548,7 +2573,7 @@ public class View extends ViewPart implements Observer{
 	    			if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
 			    		contextRightContent = getLinkedCAE().getContextTableCombinations();
 			    		
-			    		showContent(filterCombo);
+			    		showContent(filterCombo.getText());
 			    		if (controlActionProvided) {
 			    			contextRightContentProvided = contextRightContent;
 			    		}
@@ -2608,7 +2633,7 @@ public class View extends ViewPart implements Observer{
 			    	if ((!getLinkedCAE().getContextTableCombinations().isEmpty()) & (!getLinkedCAE().getLinkedItems().isEmpty())) {
 			    		contextRightContent = getLinkedCAE().getContextTableCombinations();
 			    		
-			    		showContent(filterCombo);
+			    		showContent(filterCombo.getText());
 			    		
 			    		if (controlActionProvided) {
 			    			contextRightContentProvided = contextRightContent;
@@ -2837,7 +2862,7 @@ public class View extends ViewPart implements Observer{
 			    	 // observer gets added, so whenever a value changes, the view gets updated;
 					 model.addObserver(modelObserver);
 					 
-					 getTableEntrys();
+					 getTableEntrys(true);
 		    	 }  
 		    	 
 		     }
@@ -2880,9 +2905,9 @@ public class View extends ViewPart implements Observer{
 
 	}
 
-	public void showContent(Combo filterCombo) {
+	public void showContent(String filter) {
 		// checks which option is selected and shows the right content
-  	  if (filterCombo.getText().equals("Show All")) {
+  	  if (filter.equals("Show All")) {
   		  contextRightTable.setVisible(false);
   		  contextRightViewer.setInput(contextRightContent);
   		  // packs the columns
@@ -2891,7 +2916,7 @@ public class View extends ViewPart implements Observer{
   		  }
   		  contextRightTable.setVisible(true);
   	  }
-  	  else if (filterCombo.getText().equals("Show Hazardous")) {
+  	  else if (filter.equals("Show Hazardous")) {
   		  contextRightTable.setVisible(false);
   		  contextRightHazardousContent.clear();
   		  for (int i=0; i < contextRightContent.size(); i++) {
@@ -2909,7 +2934,7 @@ public class View extends ViewPart implements Observer{
   		  }
   		  contextRightTable.setVisible(true);
   	  }
-  	  else if (filterCombo.getText().equals("Show Not Hazardous")) {
+  	  else if (filter.equals("Show Not Hazardous")) {
   		  contextRightTable.setVisible(false);
   		  contextRightNotHazardousContent.clear();
   		  for (int i=0; i < contextRightContent.size(); i++) {
@@ -2952,7 +2977,7 @@ public class View extends ViewPart implements Observer{
 	
 	
 	// Provide the input to the ContentProvider
-	public void getTableEntrys() {
+	public void getTableEntrys(boolean initialize) {
 		//List<ICorrespondingUnsafeControlAction> unsafeCA = model.getAllUnsafeControlActions();
 		List<ITableModel> iHazards = model.getAllHazards();
 		List<ICausalComponent> templist = model.getCausalComponents();
@@ -2961,7 +2986,9 @@ public class View extends ViewPart implements Observer{
 		List<ControlActionEntrys> controlActionList2 = new ArrayList<ControlActionEntrys>();
 		List<ControllerWithPMEntry> pmList = new ArrayList<ControllerWithPMEntry>();
 		pmvList.clear();
-		setLinkedCAE(null);
+		if(initialize){
+			setLinkedCAE(null);
+		}
 		linkedPMV = null;
 		allHazards.clear();
 		
@@ -2989,10 +3016,10 @@ public class View extends ViewPart implements Observer{
 	    		  for (IRectangleComponent tempPMV : tempPMVList) {
 	    			  List<IRectangleComponent> tempPMVVList = tempPMV.getChildren();
 	    			  tempCWPME.setPMV(tempPMV.getText());
-	    			  
 	    			  ProcessModelVariables variables = new ProcessModelVariables();
 	    			  variables.setName(tempPMV.getText());
 	    			  variables.setId(tempPMV.getId());
+	    			  variables.addVariableId(tempPMV.getId());
 	    			  // get the values and add the new object to the processmodel list
 	    			  for (IRectangleComponent tempPMVV : tempPMVVList) {
 	    				  tempCWPME.setComments(tempPMVV.getComment());
@@ -3006,9 +3033,10 @@ public class View extends ViewPart implements Observer{
 	    				  finalObj.setPMV(tempCWPME.getPMV());
 	    				  finalObj.setValues(tempCWPME.getValues());
 	    				  finalObj.setId(tempCWPME.getId());
+	    				  finalObj.setVariableID(tempPMV.getId());
 	    				  finalObj.setComments(tempCWPME.getComments());
 	    				  variables.addValue(tempCWPME.getValues());
-	    				  
+	    				  variables.addValueId(tempPMVV.getId());
 	    				  pmList.add(finalObj);
 	    				  
 	    			  }
@@ -3172,11 +3200,11 @@ public class View extends ViewPart implements Observer{
 		  	    				  tempPmValList.add(tempCAE2.getLinkedItems().get(z).getName() + "="
 		  	    						  + tempCAE2.getContextTableCombinations().get(j).getValues().get(z));
 		  	    				  tempPmVarList.add(tempCAE2.getLinkedItems().get(z).getName());
-		  	    				  temp.setPmVariables(tempPmVarList);
-		  	    				  
+		  	    				  temp.addVariableId(tempCAE2.getLinkedItems().get(z).getId());
 		  	    				  
 		  	    			  }
 		  	    			  temp.setPmValues(tempPmValList);
+	  	    				  temp.setPmVariables(tempPmVarList);
 	    			  }
 	    		  
 	    		  
@@ -3191,12 +3219,13 @@ public class View extends ViewPart implements Observer{
 	    		  // set linkedItems for CA Provided
 	    		  
 	    		  ProcessModelVariables contextTableEntry;
-	    			  for (int i = 0; i<model.getValuesWhenCAProvided(entry.getId()).size();i++) {
+	    		  List<ProvidedValuesCombi> valueCombie=model.getValuesWhenCAProvided(entry.getId());
+	    			  for (int i = 0; i<valueCombie.size();i++) {
 	    				  contextTableEntry = new ProcessModelVariables(); 
-	    				  for (int n = 0; n<model.getValuesWhenCAProvided(entry.getId()).get(i).getPMValues().size();n++) {
+	    				  for (int n = 0; n<valueCombie.get(i).getPMValues().size();n++) {
 	    					  
 	    					  for (int j = 0; j<pmList.size();j++) {
-	    						  if (model.getValuesWhenCAProvided(entry.getId()).get(i).getPMValues().get(n).equals(pmList.get(j).getId())) {
+	    						  if (valueCombie.get(i).getPMValues().get(n).equals(pmList.get(j).getId())) {
 	    						  
 		    						  contextTableEntry.addValue(pmList.get(j).getValues());
 		    						  contextTableEntry.setLinkedControlActionName(entry.getTitle());
@@ -3209,17 +3238,17 @@ public class View extends ViewPart implements Observer{
 	    				  }
 
 	    				  try {
-	    					  contextTableEntry.getUca().setLinkedDescriptionIds(model.getValuesWhenCAProvided(entry.getId()).get(i).getRefinedSafetyConstraint());
+	    					  contextTableEntry.getUca().setLinkedDescriptionIds(valueCombie.get(i).getRefinedSafetyConstraint());
 	    				  }
 	    				  catch (Exception e) {
 //	    					  System.out.println("No stored refined Safety for Not Provided");
 	    				  }
 	    				  
 	    				  contextTableEntry.setContext("Provided");
-						  contextTableEntry.setRefinedSafetyRequirements(model.getValuesWhenCAProvided(entry.getId()).get(i).getSafetyConstraint());
-						  contextTableEntry.setHAnytime(model.getValuesWhenCAProvided(entry.getId()).get(i).isHazardousWhenAnyTime());
-						  contextTableEntry.setHEarly(model.getValuesWhenCAProvided(entry.getId()).get(i).isHazardousWhenToEarly());
-						  contextTableEntry.setHLate(model.getValuesWhenCAProvided(entry.getId()).get(i).isHazardousWhenToLate());
+						  contextTableEntry.setRefinedSafetyRequirements(valueCombie.get(i).getSafetyConstraint());
+						  contextTableEntry.setHAnytime(valueCombie.get(i).isHazardousWhenAnyTime());
+						  contextTableEntry.setHEarly(valueCombie.get(i).isHazardousWhenToEarly());
+						  contextTableEntry.setHLate(valueCombie.get(i).isHazardousWhenToLate());
 	    				  tempCAE.addContextTableCombination(contextTableEntry); 
 	    			  }
 	    			  for (int j=0; j<tempCAE.getContextTableCombinations().size(); j++) {
@@ -3236,7 +3265,7 @@ public class View extends ViewPart implements Observer{
 		  	    						  + tempCAE.getContextTableCombinations().get(j).getValues().get(z));
 		  	    				  tempPmVarList.add(tempCAE.getLinkedItems().get(z).getName());
 		  	    				  temp.setPmVariables(tempPmVarList);
-		  	    				  
+		  	    				  temp.addVariableId(tempCAE.getLinkedItems().get(z).getId());
 		  	    				  
 		  	    			  }
 		  	    			  temp.setPmValues(tempPmValList);
@@ -3252,7 +3281,7 @@ public class View extends ViewPart implements Observer{
 	    	  controlActionList.add(tempCAE);
 	    	  controlActionList2.add(tempCAE2);
 	      }
-	      this.pmList = pmList;
+	      this.pmValuesList = pmList;
 	      
 	      this.controlActionList = controlActionList;
 	      dependencies = controlActionList;
@@ -3745,7 +3774,9 @@ public class View extends ViewPart implements Observer{
 		switch (type) {
 		case CONTROL_ACTION:
 		case CONTROL_STRUCTURE: {
-			getTableEntrys();
+			getTableEntrys(false);
+			fetchDataModel();
+			
 			break;
 		}
 		default:
@@ -3755,6 +3786,31 @@ public class View extends ViewPart implements Observer{
 		
 	}
 
+	private void fetchDataModel(){
+		String name;
+		for(ProcessModelVariables variable:pmvList){
+			name = model.getComponent(variable.getId()).getText();
+			variable.setName(name);
+			variable.setValues(new ArrayList<String>());
+			for(UUID valueId:variable.getValueIds()){
+				name = model.getComponent(valueId).getText();
+				variable.addValue(name);
+			}
+		}
+		
+		for(ControlActionEntrys controlAction:dependencies){
+			name = model.getControlAction(controlAction.getId()).getTitle();
+			controlAction.setControlAction(name);
+			for(ProcessModelVariables variable:controlAction.getContextTableCombinations()){
+				variable.setValues(new ArrayList<String>());
+				for(UUID valueId:variable.getValueIds()){
+					name = model.getComponent(valueId).getText();
+					variable.addValue(name);
+					
+				}
+			}
+		}contextTableBtn2.notifyListeners(SWT.Selection, null);
+	}
 	public ControlActionEntrys getLinkedCAE() {
 		return linkedCAE;
 	}
@@ -3784,19 +3840,20 @@ public class View extends ViewPart implements Observer{
 			  String sValueName =getLinkedCAE().getContextTableCombinations().get(i).getValues().get(z);
 			  //iteration over all available and in the data model stored values
 			  //to get the uuids mapped to the components
-			  for (int n = 0; n<pmList.size();n++) {
-				  String tempPMV = pmList.get(n).getPMV();
+			  for (int n = 0; n<pmValuesList.size();n++) {
+				  String tempPMV = pmValuesList.get(n).getPMV();
 				  if(sVarName.contains("_")){
 					  tempPMV = tempPMV.replace(" ", "_");
 				  }
 				  //2 if cases are used to find find the right variable-value combination 
 				  if (tempPMV.equals(sVarName)) {
 					  
-					  String tempValue =pmList.get(n).getValues().trim();
+					  String tempValue =pmValuesList.get(n).getValues().trim();
 					  
 					  if ((tempValue.equals(sValueName))) {
-						  combis.add(pmList.get(n).getId());
-						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmList.get(n).getId());
+						  combis.add(pmValuesList.get(n).getId());
+						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmValuesList.get(n).getId());
+						  getLinkedCAE().getContextTableCombinations().get(i).addVariableId(pmValuesList.get(n).getVariableID());
 					  }
 				  }
 			  }
@@ -3807,15 +3864,18 @@ public class View extends ViewPart implements Observer{
 
 	private void syncCombiesWhenProvided(){
 		try {
-  		  List<UUID> combis = new ArrayList<UUID>();
   		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
   		  ProvidedValuesCombi val = new ProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
   		  for (int i = 0; i<getLinkedCAE().getContextTableCombinations().size();i++) {
   			  val = new ProvidedValuesCombi();
-  			  combis = getCombieUUIDs(i);
-  			  
-  			  val.setValues(combis);
+  			  if(getLinkedCAE().getContextTableCombinations().get(i).getValueIds().isEmpty()){
+  				 val.setValues(getCombieUUIDs(i));
+  			  }else{
+  				  val.setValues(getLinkedCAE().getContextTableCombinations().get(i).getValueIds());
+  			  }
+  			  getLinkedCAE().getContextTableCombinations().get(i).setId(val.getCombieId());
+  			 
   			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
   			  val.setHazardousAnyTime(getLinkedCAE().getContextTableCombinations().get(i).getHAnytime());
   			  val.setHazardousToEarly(getLinkedCAE().getContextTableCombinations().get(i).getHEarly());
@@ -3833,20 +3893,21 @@ public class View extends ViewPart implements Observer{
 	
 	private void syncCombiesWhenNotProvided(){
 		try {
-  		  List<UUID> combis = new ArrayList<UUID>();
   		  List<NotProvidedValuesCombi> valuesIfProvided = new ArrayList<NotProvidedValuesCombi>();
   		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
   		  for (int i = 0; i<getLinkedCAE().getContextTableCombinations().size();i++) {
   			  val = new NotProvidedValuesCombi();
-  			  combis = getCombieUUIDs(i);
-  			  
-  			  val.setValues(combis);
+  			  if(getLinkedCAE().getContextTableCombinations().get(i).getValueIds() == null){
+  				 val.setValues(getCombieUUIDs(i));
+  			  }else{
+  				  val.setValues(getLinkedCAE().getContextTableCombinations().get(i).getValueIds());
+  			  }
+  			  getLinkedCAE().getContextTableCombinations().get(i).setId(val.getCombieId());
   			  val.setConstraint(getLinkedCAE().getContextTableCombinations().get(i).getRefinedSafetyRequirements());
   			  val.setHazardous(getLinkedCAE().getContextTableCombinations().get(i).getHazardous());
   			  valuesIfProvided.add(val);
   		  }
-  		  model.setValuesWhenCANotProvided(getLinkedCAE().getId(),valuesIfProvided);
   	  }
 
   	  catch (Exception e) {

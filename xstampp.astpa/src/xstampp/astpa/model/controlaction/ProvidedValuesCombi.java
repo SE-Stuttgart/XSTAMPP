@@ -38,6 +38,9 @@ public class ProvidedValuesCombi {
 	
 	@XmlElement(name="safetyConstraint")
 	private String constraint;
+
+	@XmlElement(name="combieId")
+	private UUID id;
 	
 	/**
 	 * constructs a combination of values.legth PM value ids 
@@ -146,5 +149,16 @@ public class ProvidedValuesCombi {
 	 */
 	public void setHazardousToEarly(boolean hazardousToEarly) {
 		this.hazardousToEarly = hazardousToEarly;
+	}
+	
+	public UUID getCombieId() {
+		if(this.id == null){
+			this.id = UUID.randomUUID();
+		}
+		return this.id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
 	}
 }

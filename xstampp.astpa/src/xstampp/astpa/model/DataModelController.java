@@ -36,7 +36,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 import xstampp.astpa.Activator;
@@ -87,7 +86,6 @@ import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.util.jobs.SaveJob;
-import xstampp.astpa.util.jobs.SaveRunnable;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -1486,7 +1484,7 @@ public class DataModelController extends Observable implements
 	 * @param valueWhenNotProvided the values combination
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
-	public boolean addValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
+	public boolean addValuesWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
 		return this.controlActionController.addValueWhenNotProvided(caID, valueWhenNotProvided);
 	}
 
@@ -1495,11 +1493,11 @@ public class DataModelController extends Observable implements
 	 * in which the system gets into a hazardous state if the control action is not provided
 	 * 
 	 * @param caID the uuid object of the control action
-	 * @param valueWhenNotProvided the values combination
+	 * @param combieId the uuid of the value combination
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
-	public boolean removeValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
-		return this.controlActionController.removeValueWhenNotProvided(caID, valueWhenNotProvided);
+	public boolean removeValueWhenNotProvided(UUID caID, UUID combieId) {
+		return this.controlActionController.removeValueWhenNotProvided(caID, combieId);
 	}
 
 	/**
@@ -1536,11 +1534,11 @@ public class DataModelController extends Observable implements
 	 * in which the system gets into a hazardous state if the control action is provided
 	 * 
 	 * @param caID the uuid object of the control action
-	 * @param valueWhenNotProvided the values combination
+	 * @param combieId the values combination id
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
-	public boolean removeValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
-		return this.controlActionController.removeValueWhenProvided(caID,valueWhenProvided);
+	public boolean removeValueWhenProvided(UUID caID, UUID combieId) {
+		return this.controlActionController.removeValueWhenProvided(caID,combieId);
 	}
 	/**
 	 * {@link ControlAction#getNotProvidedVariables()}

@@ -36,6 +36,8 @@ public class ProcessModelVariables {
 	@XmlElement(name = "pmValue")
 	private List<String> pmValues = new ArrayList<String>();
 	
+	
+	private List<UUID> variableIds;
 	private String name;
 	
 
@@ -206,9 +208,33 @@ public class ProcessModelVariables {
 		this.valueIds = valueIds;
 	}
 	public void addValueId (UUID valueId) {
+		if(this.valueIds == null){
+			this.valueIds = new ArrayList<>();
+		}
 		valueIds.add(valueId);
 		
 	}
 
+	/**
+	 * @return the variableIds
+	 */
+	public List<UUID> getVariableIds() {
+		return variableIds;
+	}
+
+	/**
+	 * @param variableIds the variableIds to set
+	 */
+	public void setVariableIds(List<UUID> variableIds) {
+		this.variableIds = variableIds;
+	}
+
+	public void addVariableId (UUID variableId) {
+		if(this.variableIds == null){
+			this.variableIds = new ArrayList<>();
+		}
+		variableIds.add(variableId);
+		
+	}
 
 }

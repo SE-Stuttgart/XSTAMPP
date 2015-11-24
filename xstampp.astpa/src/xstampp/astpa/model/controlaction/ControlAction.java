@@ -17,13 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
@@ -210,15 +207,20 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	/**
 	 * @param valuesWhenNotProvided the valuesWhenNotProvided to set
 	 */
-	public boolean addValueWhenNotProvided(NotProvidedValuesCombi valueWhenNotProvided) {
+	public boolean addValuesWhenNotProvided(NotProvidedValuesCombi valueWhenNotProvided) {
 		if(this.valuesWhenNotProvided == null){
 			this.valuesWhenNotProvided = new ArrayList<>();
 		}
 		return this.valuesWhenNotProvided.add(valueWhenNotProvided);
 	}
 
-	public boolean removeValueWhenNotProvided(NotProvidedValuesCombi valueWhenNotProvided) {
-		return this.valuesWhenNotProvided.remove(valueWhenNotProvided);
+	public boolean removeValuesWhenNotProvided(UUID combieId) {
+		for(NotProvidedValuesCombi combie: this.valuesWhenNotProvided){
+			if(combie.getCombieId().equals(combieId)){
+				return this.valuesWhenNotProvided.remove(combie);
+			}
+		}
+		return false;
 	}
 	
 
@@ -248,8 +250,13 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		return this.valuesWhenProvided.add(valueWhenNotProvided);
 	}
 
-	public boolean removeValueWhenProvided(ProvidedValuesCombi valueWhenNotProvided) {
-		return this.valuesWhenProvided.remove(valueWhenNotProvided);
+	public boolean removeValueWhenProvided(UUID combieId) {
+		for(ProvidedValuesCombi combie: this.valuesWhenProvided){
+			if(combie.getCombieId().equals(combieId)){
+				return this.valuesWhenProvided.remove(combie);
+			}
+		}
+		return false;
 	}
 
 
