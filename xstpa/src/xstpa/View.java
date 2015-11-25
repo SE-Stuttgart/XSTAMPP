@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -3409,7 +3408,13 @@ public class View extends ViewPart implements Observer{
 						}
 					
 						else if (i==1) {
-							modes = modes.concat("-Ddoi="+editWindow.modes.get(i)+" ");
+							if (editWindow.relations.isEmpty()) {
+								modes = modes.concat("-Ddoi="+editWindow.modes.get(i)+" ");
+							}
+							else {
+								modes = modes.concat("-Ddoi=-1 ");
+							}
+							
 						}
 						else if (i==2) {
 							modes = modes.concat("-Dmode="+editWindow.modes.get(i)+" ");
