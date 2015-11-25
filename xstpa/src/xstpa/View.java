@@ -716,16 +716,21 @@ public class View extends ViewPart implements Observer{
 				String nameOfControlAction = null;
 				if ((entry.getHAnytime()) | (entry.getHEarly()) | (entry.getHLate())) {
 					for (int i=0; i<entry.getValues().size(); i++){
-						temp = temp.concat("(");					
-						temp = temp.concat(entry.getPmVariables().get(i));
-						temp = temp.concat("==");
-						temp = temp.concat(entry.getValues().get(i));
-						temp = temp.concat(")");
-						if (!(i==entry.getSizeOfValues()-1)) {
-							temp = temp.concat(" && ");
+						if (entry.getValues().get(i).equals("(don't care)")) {
+							
 						}
 						else {
-							nameOfControlAction = entry.getLinkedControlActionName();
+							temp = temp.concat("(");					
+							temp = temp.concat(entry.getPmVariables().get(i));
+							temp = temp.concat("==");
+							temp = temp.concat(entry.getValues().get(i));
+							temp = temp.concat(")");
+							if (!(i==entry.getSizeOfValues()-1)) {
+								temp = temp.concat(" && ");
+							}
+							else {
+								nameOfControlAction = entry.getLinkedControlActionName();
+							}
 						}
 					}
 					temp = temp.concat(" ->! ");
