@@ -16,7 +16,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 
 @XmlRootElement(name = "contexttablecombination")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
+@XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "variableIds", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
 		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "id" })
 public class ProcessModelVariables {
 
@@ -36,8 +36,10 @@ public class ProcessModelVariables {
 	@XmlElement(name = "pmValue")
 	private List<String> pmValues = new ArrayList<String>();
 	
-	
+	@XmlElementWrapper(name = "variableIds")
+	@XmlElement(name = "varId")
 	private List<UUID> variableIds;
+	
 	private String name;
 	
 
