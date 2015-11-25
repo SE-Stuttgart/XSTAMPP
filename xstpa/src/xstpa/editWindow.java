@@ -196,10 +196,10 @@ public class editWindow
         shell.addShellListener(new ShellAdapter() {
         	@Override
         	public void shellClosed(ShellEvent e) {
-        		if (isDirty&& MessageDialog.openConfirm(shell,Messages.ThereAreUnsafedChanges,
-        												Messages.ThereAreUnsafedChangesDoYouWantToStoreThem)){
-        			apply();
-				}
+//        		if (isDirty&& MessageDialog.openConfirm(Display.getDefault().getActiveShell(),Messages.ThereAreUnsafedChanges,
+//        												Messages.ThereAreUnsafedChangesDoYouWantToStoreThem)){
+//        			apply();
+//				}
         	}
         	@Override
         	public void shellDeactivated(ShellEvent e) {
