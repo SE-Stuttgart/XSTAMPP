@@ -270,16 +270,22 @@ public class CsvExport {
 					String nameOfControlAction = null;
 					
 					for (int z=0; z<exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getValues().size(); z++){
-						temp = temp.concat("(");					
-						temp = temp.concat(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getPmVariables().get(z));
-						temp = temp.concat("==");
-						temp = temp.concat(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getValues().get(z));
-						temp = temp.concat(")");
-						if (!(z==exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getSizeOfValues()-1)) {
-							temp = temp.concat(" && ");
+						if (exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getValues().get(z).equals("(don't care)")) {
+							
 						}
 						else {
-							nameOfControlAction = exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getLinkedControlActionName();
+							
+							temp = temp.concat("(");					
+							temp = temp.concat(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getPmVariables().get(z));
+							temp = temp.concat("==");
+							temp = temp.concat(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getValues().get(z));
+							temp = temp.concat(")");
+							if (!(z==exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getSizeOfValues()-1)) {
+								temp = temp.concat(" && ");
+							}
+							else {
+								nameOfControlAction = exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getLinkedControlActionName();
+							}
 						}
 					}
 					temp = temp.concat(" ->! ");
