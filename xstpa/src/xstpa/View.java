@@ -2421,10 +2421,17 @@ public class View extends ViewPart implements Observer{
 	     */
 	    contextRightMenu.getItem(0).addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		if (contextTableCellX < contextRightTable.getColumnCount()-1) {
-	    			contextRightTable.getItem(contextRightTable.getSelectionIndex()).setText(contextTableCellX, " (don't care)");
-	    			contextRightContent.get(contextTableCellY).getValues().remove(contextTableCellX);
-	    			contextRightContent.get(contextTableCellY).getValues().add(contextTableCellX, "Doesn't Matter");
+	    		if ((contextTableCellX < contextRightTable.getColumnCount()-1)&(contextTableCellX != 0)) {
+	    			contextRightTable.getItem(contextRightTable.getSelectionIndex()).setText(contextTableCellX, "(don't care)");
+	    			contextRightContent.get(contextTableCellY).getValues().remove(contextTableCellX-1);
+	    			if (contextTableCellX-1 < contextRightContent.get(contextTableCellY).getValueIds().size()) {
+	    				contextRightContent.get(contextTableCellY).getValueIds().remove(contextTableCellX-1);
+	    				contextRightContent.get(contextTableCellY).getValueIds().add(contextTableCellX-1, model.getIgnoreLTLValue().getId());
+	    			}
+	    			
+	    			contextRightContent.get(contextTableCellY).getValues().add(contextTableCellX-1, "(don't care)");
+	    			
+	    			storeBooleans();
 	    		}
 	    	}
 	    });
@@ -3058,6 +3065,12 @@ public class View extends ViewPart implements Observer{
 	    	  
 		    }
 	      }
+	      // Add the dontcare obj
+	      ControllerWithPMEntry finalObj = new ControllerWithPMEntry();
+	      IRectangleComponent dontCare = model.getIgnoreLTLValue();
+	      finalObj.setValues(dontCare.getText());
+		  finalObj.setId(dontCare.getId());
+	      pmList.add(finalObj);
 	      // get the controlActions
 	      for (IControlAction entry : iControlActions) {
 	    	  ControlActionEntrys tempCAE = new ControlActionEntrys();
@@ -3281,6 +3294,7 @@ public class View extends ViewPart implements Observer{
 	    	  controlActionList.add(tempCAE);
 	    	  controlActionList2.add(tempCAE2);
 	      }
+	      pmList.remove(pmList.size()-1);
 	      this.pmValuesList = pmList;
 	      
 	      this.controlActionList = controlActionList;
@@ -3847,6 +3861,12 @@ public class View extends ViewPart implements Observer{
 	
 	private List<UUID> getCombieUUIDs(int i){
 		List<UUID> combis = new ArrayList<UUID>();
+		// Add the dont-care value to the pmValuesList
+//	    ControllerWithPMEntry finalObj = new ControllerWithPMEntry();
+//	    IRectangleComponent dontCare = model.getIgnoreLTLValue();
+//	    finalObj.setValues(dontCare.getText());
+//		finalObj.setId(dontCare.getId());
+//		pmValuesList.add(finalObj);
 		  //iterate over all values stored in that combination
 		  for (int z = 0; z<getLinkedCAE().getContextTableCombinations().get(i).getValues().size();z++) {
 			  String sVarName = getLinkedCAE().getContextTableCombinations().get(i).getPmVariables().get(z);
@@ -3868,10 +3888,15 @@ public class View extends ViewPart implements Observer{
 						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(pmValuesList.get(n).getId());
 						  getLinkedCAE().getContextTableCombinations().get(i).addVariableId(pmValuesList.get(n).getVariableID());
 					  }
+					  else if ("(don't care)".equals(sValueName)) {
+						  combis.add(model.getIgnoreLTLValue().getId());
+						  getLinkedCAE().getContextTableCombinations().get(i).addValueId(model.getIgnoreLTLValue().getId());
+						  getLinkedCAE().getContextTableCombinations().get(i).addVariableId(pmValuesList.get(n).getVariableID());
+					  }
 				  }
 			  }
 		  }
-		  
+//		 pmValuesList.remove(pmValuesList.size()-1);
 		 return combis;
 	}
 
