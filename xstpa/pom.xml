@@ -7,10 +7,10 @@
    <name>XSTPA Plugin</name>
 
    <parent>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
       <groupId>xstampp.group</groupId>
       <artifactId>parent</artifactId>
    </parent>
 
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0</version>
 </project>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="1.0.1" useFeatures="true" includeLaunchers="true">
+<product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="1.0.3" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/xstampp/icons/xstampp/logox128.png"/>
@@ -21,7 +21,8 @@ University of Stuttgart, Germany
    </configIni>
 
    <launcherArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/xstampp/icons/xstampp/logox16.png" i32="/xstampp/icons/xstampp/logox32.png" i48="/xstampp/icons/xstampp/logox48.png" i64="/xstampp/icons/xstampp/logox64.png" i128="/xstampp/icons/xstampp/logox128.png"/>

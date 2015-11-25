@@ -7,9 +7,10 @@
    <name>XSTAMPP Extenison</name>
 
    <parent>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
       <groupId>xstampp.group</groupId>
       <artifactId>parent</artifactId>
    </parent>
 
+   <version>1.0.3</version>
 </project>
