@@ -876,7 +876,8 @@ public class View extends ViewPart implements Observer{
 	    dependenciesTab2.setText("Control Action Not Provided");	 
 	    
 	    //Composite in which the folder items are located
-	    Composite dependenciesOuterComposite = new Composite(dependenciesFolder, SWT.NONE);	    
+	    final Composite dependenciesOuterComposite = new Composite(dependenciesFolder, SWT.NONE);
+	    dependenciesOuterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    
 	    
 	    formLayout = new FormLayout();
@@ -1234,14 +1235,9 @@ public class View extends ViewPart implements Observer{
 	    compositeDependenciesTopRightBtns.setLayout(new GridLayout(5, false));
 
 	    GridData gridData = new GridData(SWT.FILL, SWT.END, true, false);
-	    gridData.heightHint = 25;
 	    compositeDependenciesTopRightBtns.setLayoutData(gridData);
 	    
 	    gridData = new GridData(SWT.FILL, SWT.END, true, true);
-	    gridData.heightHint = 15;
-	    if(System.getProperty("os.name").toLowerCase().contains("linux")){
-		    gridData.heightHint = 25;
-	    }
 	    
 	    // Add a button to Add one Item in Dependencies View
 	    Button addBtn = new Button(compositeDependenciesTopRightBtns, SWT.PUSH);
@@ -1633,8 +1629,10 @@ public class View extends ViewPart implements Observer{
 				  }
 			}
 			
-			
+
+		    dependenciesOuterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			compositeDependencies.layout(true);
+			dependenciesOuterComposite.layout(true);
 			compositeDependencies.setVisible(true);
 			compositeDependenciesTopRight.setVisible(true);
 	    	compositeDependenciesBottomRight.setVisible(true);
