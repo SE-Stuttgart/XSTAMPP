@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -1306,7 +1305,7 @@ public class View extends ViewPart implements Observer{
 	    final Menu contextRightMenu = new Menu(contextRightTable);
 	    contextRightTable.setMenu(contextRightMenu);
 	    MenuItem newItem = new MenuItem(contextRightMenu, SWT.NONE);
-        newItem.setText("Doesn't Matter ");
+        newItem.setText("(don't care)");
         
 	    // add Columns for the mainTable
 	    new TableColumn(table, SWT.LEFT).setText(CONTROLLER);
@@ -2423,7 +2422,7 @@ public class View extends ViewPart implements Observer{
 	    contextRightMenu.getItem(0).addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		if (contextTableCellX < contextRightTable.getColumnCount()-1) {
-	    			contextRightTable.getItem(contextRightTable.getSelectionIndex()).setText(contextTableCellX, " Doesn't Matter ");
+	    			contextRightTable.getItem(contextRightTable.getSelectionIndex()).setText(contextTableCellX, " (don't care)");
 	    			contextRightContent.get(contextTableCellY).getValues().remove(contextTableCellX);
 	    			contextRightContent.get(contextTableCellY).getValues().add(contextTableCellX, "Doesn't Matter");
 	    		}
@@ -3409,7 +3408,13 @@ public class View extends ViewPart implements Observer{
 						}
 					
 						else if (i==1) {
-							modes = modes.concat("-Ddoi="+editWindow.modes.get(i)+" ");
+							if (editWindow.relations.isEmpty()) {
+								modes = modes.concat("-Ddoi="+editWindow.modes.get(i)+" ");
+							}
+							else {
+								modes = modes.concat("-Ddoi=-1 ");
+							}
+							
 						}
 						else if (i==2) {
 							modes = modes.concat("-Dmode="+editWindow.modes.get(i)+" ");

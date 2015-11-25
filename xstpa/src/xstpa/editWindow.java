@@ -907,7 +907,7 @@ public class editWindow
 	    final Text editor = new Text(constraintEditorGroup, SWT.BORDER);    
 	    data = new GridData(310, 124);
 	    editor.setLayoutData(data);
-	    editor.setMessage("Enter a Expression: e.g. Variable == \"Value\" or Variable < \"3\"");
+	    editor.setMessage("Enter a Expression: e.g. Variable == \"Value\"");
 	    // Add the Buttons for constraint Editor Composite
 	    Button clear = new Button(constraintEditorButtonsComposite, SWT.PUSH);
 	    clear.setText("Clear");
