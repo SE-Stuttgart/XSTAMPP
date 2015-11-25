@@ -1305,7 +1305,7 @@ public class View extends ViewPart implements Observer{
 	    final Menu contextRightMenu = new Menu(contextRightTable);
 	    contextRightTable.setMenu(contextRightMenu);
 	    MenuItem newItem = new MenuItem(contextRightMenu, SWT.NONE);
-        newItem.setText("Doesn't Matter ");
+        newItem.setText("(don't care)");
         
 	    // add Columns for the mainTable
 	    new TableColumn(table, SWT.LEFT).setText(CONTROLLER);
@@ -2422,7 +2422,7 @@ public class View extends ViewPart implements Observer{
 	    contextRightMenu.getItem(0).addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		if (contextTableCellX < contextRightTable.getColumnCount()-1) {
-	    			contextRightTable.getItem(contextRightTable.getSelectionIndex()).setText(contextTableCellX, " Doesn't Matter ");
+	    			contextRightTable.getItem(contextRightTable.getSelectionIndex()).setText(contextTableCellX, " (don't care)");
 	    			contextRightContent.get(contextTableCellY).getValues().remove(contextTableCellX);
 	    			contextRightContent.get(contextTableCellY).getValues().add(contextTableCellX, "Doesn't Matter");
 	    		}
