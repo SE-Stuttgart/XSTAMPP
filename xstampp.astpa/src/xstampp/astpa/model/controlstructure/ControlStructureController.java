@@ -45,10 +45,12 @@ public class ControlStructureController {
 
 	@XmlElement(name = "component")
 	private Component root;
-
+	
 	@XmlElementWrapper(name = "connections")
 	@XmlElement(name = "connection")
 	private List<CSConnection> connections;
+
+	
 	private final Map<UUID, IRectangleComponent> componentTrash;
 	private final Map<UUID, Integer> componentIndexTrash;
 	private final Map<UUID, IConnection> connectionTrash;
@@ -718,4 +720,6 @@ public class ControlStructureController {
 		}
 		return false;
 	}
+	
+	
 }

@@ -128,6 +128,10 @@ public class DataModelController extends Observable implements
 	@XmlElement(name = "controlstructure")
 	private ControlStructureController controlStructureController;
 
+
+	@XmlElement(name = "ignoreLTLValue")
+	private Component ignoreLtlValue;
+	
 	@XmlElement(name = "cac")
 	private ControlActionController controlActionController;
 
@@ -156,6 +160,7 @@ public class DataModelController extends Observable implements
 		this.controlActionController = new ControlActionController();
 		this.causalFactorController = new CausalFactorController();
 		this.unsavedChanges = false;
+		getIgnoreLTLValue();
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		if (bundle != null) {
 			Dictionary<?, ?> dictionary = bundle.getHeaders();
@@ -1617,6 +1622,23 @@ public class DataModelController extends Observable implements
 	public boolean usesHAZXData(){
 		if(this.controlActionController.usesHAZXData()) return true;
 		if(this.controlStructureController.usesHAZXData()) return true;
+
+		if(this.ignoreLtlValue != null) return true;
 		return false;
+	}
+	
+	/**
+	 *  this function returns or creates (if null is stored)
+	 *  a value component which can be referenced as null ignore component by
+	 *  ACTS, so that in XSTPA a value can be set to '(don't care)' to
+	 *  ignore its value in the LTL Formula
+	 *    
+	 * @return a value Component with the label '(don't care)'
+	 */
+	public IRectangleComponent getIgnoreLTLValue(){
+		if(this.ignoreLtlValue == null){
+			this.ignoreLtlValue = new Component("(don't care)", new Rectangle(), ComponentType.PROCESS_VALUE);
+		}
+		return this.ignoreLtlValue;
 	}
 }

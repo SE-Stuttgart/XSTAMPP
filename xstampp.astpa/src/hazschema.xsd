@@ -4,152 +4,180 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   <xs:element name="dataModelController">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="projectdata">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="styleRanges" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element type="xs:string" name="styleRange" minOccurs="0" maxOccurs="unbounded"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="projectDescription" type="xs:string"/>
-              <xs:element name="projectName" type="xs:string"/>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="hazacc">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="accidents">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="accident" type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="hazards">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="hazard" type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="links">
-                <xs:complexType>
-                  <xs:choice maxOccurs="unbounded" minOccurs="0">
-                    <xs:element name="link">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="accidentId" type="xs:string"/>
-                          <xs:element name="hazardId" type="xs:string"/>
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:choice>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="sds">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="safetyConstraints">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="safetyConstraint" type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="systemGoals">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="systemGoal" type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="designRequirements">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="designRequirement" type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="controlstructure">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="component" minOccurs="0" maxOccurs="unbounded" type="Q1:componentType"/>
-              <xs:element name="connections">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="connection" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="id" type="xs:string"/>
-                          <xs:element name="connectionType" type="xs:string"/>
-                          <xs:element name="sourceAnchor" type="Q1:anchorType"/>
-                          <xs:element name="targetAnchor" type="Q1:anchorType"/>
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="cac">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="controlactions">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="controlaction" maxOccurs="unbounded" minOccurs="0" type="Q1:caType"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="links">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="link" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element type="xs:string" name="unsafeControlActionId"/>
-                          <xs:element type="xs:string" name="hazardId" minOccurs="0" maxOccurs="unbounded"/>
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="causalfactor">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="causalFactorHazardLinks">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="causalFactorHazardLink" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="causalFactorId" type="xs:string"/>
-                          <xs:element name="hazardId" type="xs:string"/>
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
+      	<xs:element name="projectdata">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="styleRanges" minOccurs="0"
+      					maxOccurs="1">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element type="xs:string"
+      								name="styleRange" minOccurs="0" maxOccurs="unbounded" />
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      				<xs:element name="projectDescription"
+      					type="xs:string" />
+      				<xs:element name="projectName" type="xs:string" />
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+      	<xs:element name="hazacc">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="accidents">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="accident"
+      								type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      				<xs:element name="hazards">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="hazard"
+      								type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      				<xs:element name="links">
+      					<xs:complexType>
+      						<xs:choice maxOccurs="unbounded"
+      							minOccurs="0">
+      							<xs:element name="link">
+      								<xs:complexType>
+      									<xs:sequence>
+      										<xs:element
+      											name="accidentId" type="xs:string" />
+      										<xs:element
+      											name="hazardId" type="xs:string" />
+      									</xs:sequence>
+      								</xs:complexType>
+      							</xs:element>
+      						</xs:choice>
+      					</xs:complexType>
+      				</xs:element>
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+      	<xs:element name="sds">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="safetyConstraints">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="safetyConstraint"
+      								type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      				<xs:element name="systemGoals">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="systemGoal"
+      								type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      				<xs:element name="designRequirements">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="designRequirement"
+      								type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+                <xs:element name="controlstructure">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="component" minOccurs="0"
+      					maxOccurs="unbounded" type="Q1:componentType" />
+      				<xs:element name="connections">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="connection"
+      								minOccurs="0" maxOccurs="unbounded">
+      								<xs:complexType>
+      									<xs:sequence>
+      										<xs:element name="id"
+      											type="xs:string" />
+      										<xs:element
+      											name="connectionType" type="xs:string" />
+      										<xs:element
+      											name="sourceAnchor" type="Q1:anchorType" />
+      										<xs:element
+      											name="targetAnchor" type="Q1:anchorType" />
+      									</xs:sequence>
+      								</xs:complexType>
+      							</xs:element>
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+                <xs:element name="ignoreLTLValue" type="Q1:componentType" maxOccurs="1" minOccurs="0"></xs:element>
+                <xs:element name="cac">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="controlactions">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="controlaction"
+      								maxOccurs="unbounded" minOccurs="0" type="Q1:caType" />
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      				<xs:element name="links">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="link" minOccurs="0"
+      								maxOccurs="unbounded">
+      								<xs:complexType>
+      									<xs:sequence>
+      										<xs:element
+      											type="xs:string" name="unsafeControlActionId" />
+      										<xs:element
+      											type="xs:string" name="hazardId" minOccurs="0"
+      											maxOccurs="unbounded" />
+      									</xs:sequence>
+      								</xs:complexType>
+      							</xs:element>
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+      	<xs:element name="causalfactor">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="causalFactorHazardLinks">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element
+      								name="causalFactorHazardLink" minOccurs="0"
+      								maxOccurs="unbounded">
+      								<xs:complexType>
+      									<xs:sequence>
+      										<xs:element
+      											name="causalFactorId" type="xs:string" />
+      										<xs:element
+      											name="hazardId" type="xs:string" />
+      									</xs:sequence>
+      								</xs:complexType>
+      							</xs:element>
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+
       </xs:sequence>
       <xs:attribute name="astpaversion" type="xs:string" use="required"/>
     </xs:complexType>
