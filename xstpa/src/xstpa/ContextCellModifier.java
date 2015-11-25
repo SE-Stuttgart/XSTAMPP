@@ -22,7 +22,7 @@ class ContextCellModifier implements ICellModifier {
 	   */
 	  public boolean canModify(Object element, String property) {
 	    // Allow editing of all values
-	    return true;
+	    return false;
 	  }
 
 	  /**
