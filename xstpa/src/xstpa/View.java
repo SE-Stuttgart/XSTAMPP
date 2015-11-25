@@ -1586,13 +1586,14 @@ public class View extends ViewPart implements Observer{
 	    	}
 	    	
 	        dependencyTableViewer.setInput(dependencyTableInput);
-	        
+	        int relativeI = 0;
 	    	// If the view was already shown, select the old values, if not select default
 	    	if (dependencyTable.getSelectionIndex() == -1) {
     			dependencyTable.select(0);
+    		}else{
+    			//calculate index of selected dependency in the dependencies list
+    			relativeI = dependenciesProvided.indexOf(dependencyTable.getSelection()[0].getData());
     		}
-	    	//calculate index of selected dependency in the dependencies list
-	    	int relativeI = dependenciesProvided.indexOf(dependencyTable.getSelection()[0].getData());
 	    	if (dependenciesFolder.getSelectionIndex() == 0) {
 	    		
 	    		setLinkedCAE(dependenciesProvided.get(Math.max(relativeI, 0)));
