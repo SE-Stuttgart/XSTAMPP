@@ -9,6 +9,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -38,9 +40,11 @@ public class AddEntryShell {
 		this.idListToCombo = new ArrayList<>();
 	}
 	
-	public void open(){
+	public void open(int x, int y){
 
 		this.shell = new Shell(Display.getCurrent().getActiveShell(),SWT.CLOSE | SWT.TITLE);
+		
+		this.shell.setText("Add New Entry");
 		this.shell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellDeactivated(ShellEvent e) {
@@ -70,12 +74,14 @@ public class AddEntryShell {
 			this.idListToCombo.add(varCombo);
 			varCombo.select(0);		
 		}
+		Composite btnComp = new Composite(shell, SWT.None);
+		btnComp.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false, 2, 1));
+		btnComp.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Button apply = new Button(shell, SWT.PUSH);
-		apply.setText("Apply");
+		Button addEntry = new Button(btnComp, SWT.PUSH);
+		addEntry.setText("Add Entry");
 
-		apply.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
-		apply.addSelectionListener(new SelectionAdapter() {
+		addEntry.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 		    	notifyListener(getValueList());
@@ -83,8 +89,7 @@ public class AddEntryShell {
 			}
 		});
 		
-		Button cancel = new Button(shell, SWT.PUSH);
-		cancel.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
+		Button cancel = new Button(btnComp, SWT.PUSH);
 		cancel.setText("Cancel");
 		cancel.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -94,6 +99,7 @@ public class AddEntryShell {
 		});
 		
 		shell.pack();
+		shell.setLocation(new Point(x - shell.getBounds().width, y - shell.getBounds().height));
 		shell.open();
 	}
 	

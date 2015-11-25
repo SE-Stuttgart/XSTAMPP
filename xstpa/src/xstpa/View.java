@@ -1462,7 +1462,8 @@ public class View extends ViewPart implements Observer{
 						
 					}
 				});
-	    		shell.open();
+	    		Point location = Display.getDefault().getCursorLocation();
+	    		shell.open(location.x,location.y);
 	    		
 	    	}
 	    });
@@ -2866,7 +2867,7 @@ public class View extends ViewPart implements Observer{
 			    	 // observer gets added, so whenever a value changes, the view gets updated;
 					 model.addObserver(modelObserver);
 					 
-					 getTableEntrys(true);
+					 getTableEntrys();
 		    	 }  
 		    	 
 		     }
@@ -2981,7 +2982,7 @@ public class View extends ViewPart implements Observer{
 	
 	
 	// Provide the input to the ContentProvider
-	public void getTableEntrys(boolean initialize) {
+	public void getTableEntrys() {
 		//List<ICorrespondingUnsafeControlAction> unsafeCA = model.getAllUnsafeControlActions();
 		List<ITableModel> iHazards = model.getAllHazards();
 		List<ICausalComponent> templist = model.getCausalComponents();
@@ -2990,9 +2991,7 @@ public class View extends ViewPart implements Observer{
 		List<ControlActionEntrys> controlActionList2 = new ArrayList<ControlActionEntrys>();
 		List<ControllerWithPMEntry> pmList = new ArrayList<ControllerWithPMEntry>();
 		pmvList.clear();
-		if(initialize){
-			setLinkedCAE(null);
-		}
+		setLinkedCAE(null);
 		linkedPMV = null;
 		allHazards.clear();
 		
@@ -3778,18 +3777,14 @@ public class View extends ViewPart implements Observer{
 		switch (type) {
 		case CONTROL_ACTION:
 		case CONTROL_STRUCTURE: {
-
-			int formerIndex = contextTable.getSelectionIndex();
-//			if(getLinkedCAE() != null){
-//				if( !controlActionProvided){	
-//					formerIndex = this.dependenciesProvided.indexOf(getLinkedCAE());
-//				}else{
-//					formerIndex = this.dependenciesNotProvided.indexOf(getLinkedCAE());
-//				}
-//			}
-			getTableEntrys(false);
-			
-			fetchDataModel(formerIndex);
+			if(contextTable != null && !contextTable.isDisposed()){
+				int formerIndex = contextTable.getSelectionIndex();
+				getTableEntrys();
+				
+				fetchDataModel(formerIndex);
+			}else{
+				getTableEntrys();
+			}
 			
 			break;
 		}
@@ -3824,7 +3819,6 @@ public class View extends ViewPart implements Observer{
 				}
 			}
 		}
-//		contextTableBtn2.notifyListeners(SWT.Selection, null);
 		updateContextInput(i);
 	}
 	public ControlActionEntrys getLinkedCAE() {
@@ -3958,10 +3952,19 @@ public class View extends ViewPart implements Observer{
 		    			contextTableInput.add(dependenciesNotProvided.get(i));
 		    		}
 		    	}
+		    	if(contextTableInput.isEmpty()){
+		    		//if the context table input is empty than there is nothing to be shown
+		    		return;
+		    	}
 	  		  
 	  		  contextViewer.setInput(contextTableInput);
 	  	  }
 	  	  contextTable.select(formerIndex);
+	  	  if(contextTable.getSelectionIndex() == -1){
+	  		  //if the former index returns cannot be selected try 0 
+		  	  contextTable.select(0);
+	  	  }
+	  		  
 	  	  @SuppressWarnings("unchecked")
 	  	  ArrayList<ControlActionEntrys> list = (ArrayList<ControlActionEntrys>) contextViewer.getInput();
 	  	  if (controlActionProvided) {
