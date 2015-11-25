@@ -260,48 +260,59 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
 
    <xs:complexType name="combieType1">
       <xs:sequence>
-          <xs:element name="processModelValueIDs" maxOccurs="1" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="refinedSafetyConstraint" maxOccurs="1" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element type="xs:boolean" name="hazardous"/>
-          <xs:element type="xs:string" name="safetyConstraint"/>
+      	<xs:element name="processModelValueIDs" maxOccurs="1"
+      		minOccurs="0">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element type="xs:string" name="value"
+      					minOccurs="0" maxOccurs="unbounded" />
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+      	<xs:element name="refinedSafetyConstraint" maxOccurs="1"
+      		minOccurs="0">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element type="xs:string" name="value"
+      					minOccurs="0" maxOccurs="unbounded" />
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+      	<xs:element type="xs:boolean" name="hazardous" />
+      	<xs:element type="xs:string" name="safetyConstraint" />
+      	<xs:element name="combieId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
       </xs:sequence>
-    </xs:complexType>
+   </xs:complexType>
     
     
    <xs:complexType name="combieType2">
       <xs:sequence>
-          <xs:element name="processModelValueIDs" maxOccurs="1" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="refinedSafetyConstraint" maxOccurs="1" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element type="xs:boolean" name="hazardousAnyTime"/>
-          <xs:element type="xs:boolean" name="hazardousToLate"/>
-          <xs:element type="xs:boolean" name="hazardousifProvidedToEarly"/>
-          <xs:element type="xs:string" name="safetyConstraint"/>
+      	<xs:element name="processModelValueIDs" maxOccurs="1"
+      		minOccurs="0">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element type="xs:string" name="value"
+      					minOccurs="0" maxOccurs="unbounded" />
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+      	<xs:element name="refinedSafetyConstraint" maxOccurs="1"
+      		minOccurs="0">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element type="xs:string" name="value"
+      					minOccurs="0" maxOccurs="unbounded" />
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
+      	<xs:element type="xs:boolean" name="hazardousAnyTime" />
+      	<xs:element type="xs:boolean" name="hazardousToLate" />
+      	<xs:element type="xs:boolean"
+      		name="hazardousifProvidedToEarly" />
+      	<xs:element type="xs:string" name="safetyConstraint" />
+      	<xs:element name="combieId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
       </xs:sequence>
-    </xs:complexType>
+   </xs:complexType>
 <xs:complexType name="id">
     <xs:sequence>
       <xs:element type="xs:string" name="id"/>

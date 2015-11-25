@@ -138,6 +138,11 @@ public class ControlActionEntrys {
 		this.availableItems = availableItems;
 	}
 	
+	/**adds a process model variable to the list of variables which can be linked to
+	 * this control action Entry in the dependences table
+	 * 
+	 * @param item an object of the type ProcessModelVariable
+	 */
 	public void addAvailableItem(ProcessModelVariables item) {
 		availableItems.add(item);
 		//setNumber(availableItems.indexOf(item)+1);
