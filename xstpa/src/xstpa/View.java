@@ -3945,54 +3945,47 @@ public class View extends ViewPart implements Observer{
 	}
 
 	private void updateContextInput(int formerIndex){
-		
+		// create Input for contextTableViewer
+		List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
 		// if the tabfolder is on "Context Provided"
-	  	  if (controlActionProvided) {
+	  	if (controlActionProvided) {
 	  		  
-					// create Input for contextTableViewer
-					List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
-			    	for (int i = 0; i<dependenciesProvided.size();i++) {
-			    		if (dependenciesProvided.get(i).getSafetyCritical()) {
-			    			contextTableInput.add(dependenciesProvided.get(i));
-			    		}
-			    	}
-			    	
-			    	contextViewer.setInput(contextTableInput);
-	  		  //contextViewer.setInput(dependencies);
-	  	  }
+			 for (int i = 0; i<dependenciesProvided.size();i++) {
+				if (dependenciesProvided.get(i).getSafetyCritical()) {
+					contextTableInput.add(dependenciesProvided.get(i));
+				}
+			 }
+	  	}
 	  	  // if its on the other tab
-	  	  else {
-				// create Input for contextTableViewer
-				List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
-		    	for (int i = 0; i<dependenciesProvided.size();i++) {
-		    		if (dependenciesProvided.get(i).getSafetyCritical()) {
-		    			contextTableInput.add(dependenciesNotProvided.get(i));
-		    		}
-		    	}
-		    	if(contextTableInput.isEmpty()){
-		    		//if the context table input is empty than there is nothing to be shown
-		    		return;
-		    	}
-	  		  
-	  		  contextViewer.setInput(contextTableInput);
-	  	  }
-	  	  contextTable.select(formerIndex);
-	  	  if(contextTable.getSelectionIndex() == -1){
-	  		  //if the former index returns cannot be selected try 0 
-		  	  contextTable.select(0);
-	  	  }
-	  		  
-	  	  @SuppressWarnings("unchecked")
-	  	  ArrayList<ControlActionEntrys> list = (ArrayList<ControlActionEntrys>) contextViewer.getInput();
-	  	  if (controlActionProvided) {
-	  		 
-	  		  setLinkedCAE(list.get(contextTable.getSelectionIndex()));
-	  	  }
-	  	  else {
-	  		  setLinkedCAE(list.get(contextTable.getSelectionIndex()));  
-	  	  }
-	  	  contextRightContent = getLinkedCAE().getContextTableCombinations();
-	  	  showContent("Show All");
+	  	else {
+  			for (int i = 0; i<dependenciesProvided.size();i++) {
+				if (dependenciesProvided.get(i).getSafetyCritical()) {
+					contextTableInput.add(dependenciesNotProvided.get(i));
+				}
+			}
+	  	}
+	  	contextViewer.setInput(contextTableInput);
+	  	if(contextTableInput.isEmpty()){
+    		//if the context table input is empty than there is nothing to be shown
+    		return;
+    	}
+		  
+		contextTable.select(formerIndex);
+		if(contextTable.getSelectionIndex() == -1){
+			//if the former index returns cannot be selected try 0 
+			contextTable.select(0);
+		}
+		  
+	  	@SuppressWarnings("unchecked")
+		ArrayList<ControlActionEntrys> list = (ArrayList<ControlActionEntrys>) contextViewer.getInput();
+		if (controlActionProvided) {
+			setLinkedCAE(list.get(contextTable.getSelectionIndex()));
+		}
+		else {
+			 setLinkedCAE(list.get(contextTable.getSelectionIndex()));  
+		}
+		contextRightContent = getLinkedCAE().getContextTableCombinations();
+		showContent("Show All");
 	}
 	
 }

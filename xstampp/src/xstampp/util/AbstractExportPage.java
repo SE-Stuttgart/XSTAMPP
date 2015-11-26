@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -76,8 +77,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	
 	@Override
 	protected String openExportDialog(String[] filters, String[] names) {
-		FileDialog fileDialog = new FileDialog(Display.getCurrent()
-				.getActiveShell(), SWT.SAVE);
+		Display display = new Display();
+		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.SAVE);
 		fileDialog.setFilterExtensions(filters);
 		fileDialog.setFilterNames(names);
 		if(this.nameSuggestion != null){

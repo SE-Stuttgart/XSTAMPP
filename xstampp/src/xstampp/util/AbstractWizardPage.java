@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
@@ -191,8 +192,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 */
 	protected void openColorDialog(Button srcBtn, Text srcText, Label srcLbl,
 			int state, String constant) {
-		ColorDialog colorDialog = new ColorDialog(Display.getCurrent()
-				.getActiveShell());
+		ColorDialog colorDialog = new ColorDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
 		colorDialog.setText(Messages.SelectColor);
 		RGB selectedColor = colorDialog.open();
 		if (selectedColor == null) {
@@ -378,8 +378,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 * 
 	 */
 	protected String openExportDialog(String[] filters, String[] names) {
-		FileDialog fileDialog = new FileDialog(Display.getCurrent()
-				.getActiveShell(), SWT.OPEN);
+		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
 		fileDialog.setFilterExtensions(filters);
 		fileDialog.setFilterNames(names);
 		fileDialog.setFileName(this.getProjectName());
@@ -396,9 +395,8 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 * 
 	 */
 	protected String openDirectoryDialog() {
-		DirectoryDialog fileDialog = new DirectoryDialog(Display.getCurrent()
-				.getActiveShell(), SWT.OPEN);
-		System.out.println(Platform.getInstanceLocation().getURL().toString());
+		Display display = new Display();
+		DirectoryDialog fileDialog = new DirectoryDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
 		fileDialog.setFilterPath(Platform.getInstanceLocation().getURL().getPath().toString());
 		String filePath = fileDialog.open();
 		if (filePath != null) {
@@ -429,8 +427,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 		final String[] filterExtensions = {
 				"*.jpg", "*.png", "*.jpe", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				"*.jfif", "*.jpeg", "*.tif", "*.tiff", "*.gif", "*.bmp", "*.dib", "*.svg", "*.svgz" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
-		FileDialog dlg = new FileDialog(Display.getCurrent()
-				.getActiveShell(), SWT.OPEN);
+		FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
 		dlg.setFilterExtensions(filterExtensions);
 		dlg.setFilterNames(filterNames);
 		dlg.setText(Messages.Open);
