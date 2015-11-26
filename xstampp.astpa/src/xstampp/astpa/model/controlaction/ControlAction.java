@@ -293,7 +293,8 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		if(this.providedVariables == null){
 			this.providedVariables = new ArrayList<>();
 		}
-		return new ArrayList<>(this.providedVariables);
+		ArrayList<UUID> list = new ArrayList<>(this.providedVariables);
+		return list;
 	}
 
 

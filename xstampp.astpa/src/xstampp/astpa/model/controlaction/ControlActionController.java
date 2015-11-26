@@ -33,6 +33,7 @@ import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.hazacc.HazAccController;
 
 /**

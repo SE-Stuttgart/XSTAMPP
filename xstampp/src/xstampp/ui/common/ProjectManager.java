@@ -40,6 +40,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IViewPart;
@@ -335,17 +336,12 @@ public class ProjectManager implements IPropertyChangeListener {
 
 			@Override
 			public void done(IJobChangeEvent event) {
-				if (event.getResult().isOK()) {
-
-					Display.getDefault().syncExec(new Runnable() {
-
-						@Override
-						public void run() {
-							tmpController.setStored();
-						}
-					});
-					super.done(event);
+				try{
+					tmpController.setStored();
+				}catch(SWTException e){
+					LOGGER.debug("cant't mark DataModel ad saved!");
 				}
+				
 			}
 		});
 		save.schedule();

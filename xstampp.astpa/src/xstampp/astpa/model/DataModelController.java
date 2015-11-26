@@ -1584,7 +1584,12 @@ public class DataModelController extends Observable implements
 	 * @param providedVariable the providedVariable to add
 	 */
 	public void addCAProvidedVariable(UUID caID, UUID providedVariable) {
-		this.controlActionController.addProvidedVariable(caID,providedVariable);
+
+		if(this.controlStructureController.getComponent(providedVariable) != null){
+			this.controlActionController.addProvidedVariable(caID,providedVariable);
+		}else{
+			System.out.println("given provided id is not related to a valid component");
+		}
 	}
 
 	@Override

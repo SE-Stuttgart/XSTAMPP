@@ -75,7 +75,7 @@ public class ControllerWithPMEntry {
 	  /**
 	   * @return Returns the Value of the PMVs.
 	   */
-	  public String getValues() {
+	  public String getValueText() {
 	    return pmvv;
 	  }
 
@@ -83,7 +83,7 @@ public class ControllerWithPMEntry {
 	   * @param pmvv
 	   *            The Value of the PMV to set.
 	   */
-	  public void setValues(String pmvv) {
+	  public void setValueText(String pmvv) {
 	    this.pmvv = pmvv;
 	  }
 	  

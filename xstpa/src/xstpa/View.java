@@ -75,6 +75,7 @@ import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -305,7 +306,7 @@ public class View extends ViewPart implements Observer{
 	    case 2:
 	    	return entry.getPMV();
 	    case 3:
-	    	return entry.getValues();
+	    	return entry.getValueText();
 	    
 	    case 4:
 	    	return entry.getComments();
@@ -1771,12 +1772,12 @@ public class View extends ViewPart implements Observer{
 		  	   				  
 		  	    			ProcessModelVariables temp = new ProcessModelVariables();
 	  	   				  	temp = dependenciesProvided.get(i).getContextTableCombinations().get(j);
-	  	   				  
+	  	   				  	boolean hasNullEntrys = false;
 	  	   				  	List<String> tempPmValList = new ArrayList<String>();
 	  	   				  	List<String> tempPmVarList = new ArrayList<String>();
 	  	   				  	for (int z=0;z<dependenciesProvided.get(i).getLinkedItems().size();z++) {  
-	  	   				  		if(dependenciesProvided.get(i).getContextTableCombinations().get(j).getValues().size() <= z){
-	  	   				  			System.out.println(dependenciesProvided.get(i).getContextTableCombinations().get(j));
+	  	   				  		if(temp.getValues().size() <= z){
+	  	   				  			hasNullEntrys = true;
 	  	   				  		}else{
 		  	   				  		tempPmValList.add(dependenciesProvided.get(i).getLinkedItems().get(z).getName() + "="
 		  	    						  + dependenciesProvided.get(i).getContextTableCombinations().get(j).getValues().get(z));
@@ -1786,8 +1787,10 @@ public class View extends ViewPart implements Observer{
 	  	    				  
 	  	    				  
 	  	   				  	}
-	  	   				  	temp.setPmValues(tempPmValList);   			 
-	  	   				  	refinedSafetyContent.add(temp);
+	  	   				  	temp.setPmValues(tempPmValList);
+	  	   				  	if(!hasNullEntrys){
+	  	   				  		refinedSafetyContent.add(temp);
+	  	   				  	}
 		  	    		}
 	  	   			  
 		  	    		String tempHazards = "";
@@ -1830,21 +1833,26 @@ public class View extends ViewPart implements Observer{
 		  	    		if (dependenciesNotProvided.get(i).getContextTableCombinations().get(j).getHazardous()) {
 		  	    			ProcessModelVariables temp = new ProcessModelVariables();
 	  	    				temp = dependenciesNotProvided.get(i).getContextTableCombinations().get(j);
-	  	    				
+
+	  	   				  	boolean hasNullEntrys = false;
 	  	    				List<String> tempPmValList = new ArrayList<String>();
 	  	    				List<String> tempPmVarList = new ArrayList<String>();
 		  	    			for (int z=0;z<dependenciesNotProvided.get(i).getLinkedItems().size();z++) {
-		  	    				  
-		  	    				tempPmValList.add(dependenciesNotProvided.get(i).getLinkedItems().get(z).getName() + "="
-		  	    						  + dependenciesNotProvided.get(i).getContextTableCombinations().get(j).getValues().get(z));
-		  	    				tempPmVarList.add(dependenciesNotProvided.get(i).getLinkedItems().get(z).getName());
-		  	    				temp.setPmVariables(tempPmVarList);
+		  	    				if(temp.getValues().size() <= z){
+		  	    					hasNullEntrys = true;
+		  	    				}else{
+			  	    				tempPmValList.add(dependenciesNotProvided.get(i).getLinkedItems().get(z).getName() + "="
+			  	    						  + temp.getValues().get(z));
+			  	    				tempPmVarList.add(dependenciesNotProvided.get(i).getLinkedItems().get(z).getName());
+		  	    				}
 		  	    				  
 		  	    			}
+	  	    				temp.setPmVariables(tempPmVarList);
 		  	    			temp.setPmValues(tempPmValList);
 		  	    			  
-	  	    				
-	  	    				refinedSafetyContent.add(temp);
+	  	    				if(!hasNullEntrys){
+	  	    					refinedSafetyContent.add(temp);
+	  	    				}
 		  	    		}
 	  	    			  
 	  	  				String tempHazards = "";
@@ -2997,8 +3005,8 @@ public class View extends ViewPart implements Observer{
 		List<ITableModel> iHazards = model.getAllHazards();
 		List<ICausalComponent> templist = model.getCausalComponents();
 		List<IControlAction> iControlActions = model.getAllControlActionsU();
-		List<ControlActionEntrys> controlActionList = new ArrayList<ControlActionEntrys>();
-		List<ControlActionEntrys> controlActionList2 = new ArrayList<ControlActionEntrys>();
+		List<ControlActionEntrys> listCAProvided = new ArrayList<ControlActionEntrys>();
+		List<ControlActionEntrys> listCANotProvided = new ArrayList<ControlActionEntrys>();
 		List<ControllerWithPMEntry> pmList = new ArrayList<ControllerWithPMEntry>();
 		pmvList.clear();
 		setLinkedCAE(null);
@@ -3015,49 +3023,49 @@ public class View extends ViewPart implements Observer{
 	      for (int i = 0, n = templist.size(); i < n; i++) {
 	    	  
 	    	  ControllerWithPMEntry tempCWPME = new ControllerWithPMEntry();
-	    	  Component temp =(Component) templist.get(i);
-	    	  if (temp.getComponentType().name().equals("CONTROLLER")) {
+	    	  Component parentComponent =(Component) templist.get(i);
+	    	  if (parentComponent.getComponentType().name().equals("CONTROLLER")) {
 	    	  
-	    	  List<IRectangleComponent> tempPMList = temp.getChildren();
-	    	  tempCWPME.setController(temp.getText());
+	    	  tempCWPME.setController(parentComponent.getText());
 	    	  // get the process models
-	    	  for (IRectangleComponent tempPM : tempPMList ) {
-	    		  List<IRectangleComponent> tempPMVList = tempPM.getChildren();
+	    	  for (IRectangleComponent tempPM :  parentComponent.getChildren()) {
 	    		  tempCWPME.setPM(tempPM.getText());
 	    		  
 	    		  // get the variables
-	    		  for (IRectangleComponent tempPMV : tempPMVList) {
-	    			  List<IRectangleComponent> tempPMVVList = tempPMV.getChildren();
+	    		  for (IRectangleComponent tempPMV : tempPM.getChildren()) {
+	    			  if(!tempPMV.getComponentType().equals(ComponentType.PROCESS_VARIABLE)){
+	    				  System.out.println();
+	    			  }
 	    			  tempCWPME.setPMV(tempPMV.getText());
-	    			  ProcessModelVariables variables = new ProcessModelVariables();
-	    			  variables.setName(tempPMV.getText());
-	    			  variables.setId(tempPMV.getId());
-	    			  variables.addVariableId(tempPMV.getId());
+	    			  ProcessModelVariables variable = new ProcessModelVariables();
+	    			  variable.setName(tempPMV.getText());
+	    			  variable.setId(tempPMV.getId());
+	    			  variable.addVariableId(tempPMV.getId());
 	    			  // get the values and add the new object to the processmodel list
-	    			  for (IRectangleComponent tempPMVV : tempPMVVList) {
+	    			  for (IRectangleComponent tempPMVV : tempPMV.getChildren()) {
 	    				  tempCWPME.setComments(tempPMVV.getComment());
-	    				  tempCWPME.setValues(tempPMVV.getText());
+	    				  tempCWPME.setValueText(tempPMVV.getText());
 	    				  tempCWPME.setId(tempPMVV.getId());
 	    				  
-	    				  ControllerWithPMEntry finalObj = new ControllerWithPMEntry();
+	    				  ControllerWithPMEntry pmValueObject = new ControllerWithPMEntry();
 	    				  
-	    				  finalObj.setController(tempCWPME.getController());
-	    				  finalObj.setPM(tempCWPME.getPM());
-	    				  finalObj.setPMV(tempCWPME.getPMV());
-	    				  finalObj.setValues(tempCWPME.getValues());
-	    				  finalObj.setId(tempCWPME.getId());
-	    				  finalObj.setVariableID(tempPMV.getId());
-	    				  finalObj.setComments(tempCWPME.getComments());
-	    				  variables.addValue(tempCWPME.getValues());
-	    				  variables.addValueId(tempPMVV.getId());
-	    				  pmList.add(finalObj);
+	    				  pmValueObject.setController(tempCWPME.getController());
+	    				  pmValueObject.setPM(tempCWPME.getPM());
+	    				  pmValueObject.setPMV(tempCWPME.getPMV());
+	    				  pmValueObject.setValueText(tempPMVV.getText());
+	    				  pmValueObject.setId(tempPMVV.getId());
+	    				  pmValueObject.setVariableID(tempPMV.getId());
+	    				  pmValueObject.setComments(tempCWPME.getComments());
+	    				  variable.addValue(tempCWPME.getValueText());
+	    				  variable.addValueId(tempPMVV.getId());
+	    				  pmList.add(pmValueObject);
 	    				  
 	    			  }
-	    			  if (!variables.getValues().isEmpty()) {
+	    			  if (!variable.getValues().isEmpty()) {
 	    				  
 	    				 
-	    				  pmvList.add(variables);
-	    				  pmvList.get(pmvList.indexOf(variables)).setNumber(pmvList.indexOf(variables)+1);
+	    				  pmvList.add(variable);
+	    				  pmvList.get(pmvList.indexOf(variable)).setNumber(pmvList.indexOf(variable)+1);
 	    				  
 
 	    			  }
@@ -3072,27 +3080,27 @@ public class View extends ViewPart implements Observer{
 		    }
 	      }
 	      // Add the dontcare obj
-	      ControllerWithPMEntry finalObj = new ControllerWithPMEntry();
+	      ControllerWithPMEntry valueDontCareObj = new ControllerWithPMEntry();
 	      IRectangleComponent dontCare = model.getIgnoreLTLValue();
-	      finalObj.setValues(dontCare.getText());
-		  finalObj.setId(dontCare.getId());
-	      pmList.add(finalObj);
+	      valueDontCareObj.setValueText(dontCare.getText());
+		  valueDontCareObj.setId(dontCare.getId());
+	      pmList.add(valueDontCareObj);
 	      // get the controlActions
 	      for (IControlAction entry : iControlActions) {
-	    	  ControlActionEntrys tempCAE = new ControlActionEntrys();
-	    	  ControlActionEntrys tempCAE2 = new ControlActionEntrys();
+	    	  ControlActionEntrys tempCAEP = new ControlActionEntrys();
+	    	  ControlActionEntrys tempCAENP = new ControlActionEntrys();
 	    	  
-	    	  tempCAE.setComments(entry.getDescription());
-	    	  tempCAE.setControlAction(entry.getTitle());
-	    	  tempCAE.setNumber(entry.getNumber());
-	    	  tempCAE.setId(entry.getId());
-	    	  tempCAE.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
+	    	  tempCAEP.setComments(entry.getDescription());
+	    	  tempCAEP.setControlAction(entry.getTitle());
+	    	  tempCAEP.setNumber(entry.getNumber());
+	    	  tempCAEP.setId(entry.getId());
+	    	  tempCAEP.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
 	    	  //tempCAE.setController(entry.);
-	    	  tempCAE2.setComments(entry.getDescription());
-	    	  tempCAE2.setControlAction(entry.getTitle());
-	    	  tempCAE2.setNumber(entry.getNumber());
-	    	  tempCAE2.setId(entry.getId());	    	  
-	    	  tempCAE2.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
+	    	  tempCAENP.setComments(entry.getDescription());
+	    	  tempCAENP.setControlAction(entry.getTitle());
+	    	  tempCAENP.setNumber(entry.getNumber());
+	    	  tempCAENP.setId(entry.getId());	    	  
+	    	  tempCAENP.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
 	    	  
 	    	  //if (model.getCANotProvidedVariables(entry.getId()).isEmpty()) {
 	    	  try {
@@ -3100,8 +3108,8 @@ public class View extends ViewPart implements Observer{
 	    		  for (int j = 0; j<pmvList.size();j++) {
 	    			  Boolean linked = false;
 	    			  for (int i = 0; i<model.getCANotProvidedVariables(entry.getId()).size();i++) {
-	    		  
-	    				  if (model.getComponent(model.getCANotProvidedVariables(entry.getId()).get(i)).getId() == pmvList.get(j).getId()) {
+	    				  UUID variable = model.getCANotProvidedVariables(entry.getId()).get(i);
+	    				  if (model.getComponent(variable).getId().equals(pmvList.get(j).getId())) {
 	    					  ProcessModelVariables linkedVar = new ProcessModelVariables();
 	    					  linkedVar.setId(pmvList.get(j).getId());
 	    					  linkedVar.setValues(pmvList.get(j).getValues());
@@ -3109,7 +3117,7 @@ public class View extends ViewPart implements Observer{
 	    					  linkedVar.setNumber(pmvList.get(j).getNumber());	
 	    					  
 	    					  
-	    					  tempCAE2.addLinkedItem(linkedVar);
+	    					  tempCAENP.addLinkedItem(linkedVar);
 	    					  linked = true;
 	    				  }
 	    			  }
@@ -3122,7 +3130,7 @@ public class View extends ViewPart implements Observer{
     					  linkedVar.setValues(pmvList.get(j).getValues());
     					  linkedVar.setName(pmvList.get(j).getName());
     					  linkedVar.setNumber(pmvList.get(j).getNumber());
-	    				  tempCAE2.addAvailableItem(linkedVar);
+	    				  tempCAENP.addAvailableItem(linkedVar);
 	    			  }
 	    		  }
 	    	  }
@@ -3134,7 +3142,7 @@ public class View extends ViewPart implements Observer{
 					  linkedVar.setValues(pmvList.get(i).getValues());
 					  linkedVar.setName(pmvList.get(i).getName());
 					  linkedVar.setNumber(pmvList.get(i).getNumber());
-					  tempCAE2.addAvailableItem(linkedVar);
+					  tempCAENP.addAvailableItem(linkedVar);
 	    		  }
 	    	  }
 	      		
@@ -3144,15 +3152,15 @@ public class View extends ViewPart implements Observer{
 		    	  for (int j = 0; j<pmvList.size();j++) {
 		    		  Boolean notLinked = true;
 		    		  for (int i = 0; i<model.getCAProvidedVariables(entry.getId()).size();i++) {
-		     		  
-		    			  if (model.getComponent(model.getCAProvidedVariables(entry.getId()).get(i)).getId() == pmvList.get(j).getId()) {
+		    			  UUID variable = model.getCAProvidedVariables(entry.getId()).get(i);
+		    			  if (model.getComponent(variable).getId().equals(pmvList.get(j).getId())) {
 		    				  
 	    					  ProcessModelVariables linkedVar = new ProcessModelVariables();
 	    					  linkedVar.setId(pmvList.get(j).getId());
 	    					  linkedVar.setValues(pmvList.get(j).getValues());
 	    					  linkedVar.setName(pmvList.get(j).getName());
 	    					  linkedVar.setNumber(pmvList.get(j).getNumber());
-	    					  tempCAE.addLinkedItem(linkedVar);
+	    					  tempCAEP.addLinkedItem(linkedVar);
 	    					  notLinked = false;
 		    			  }
 		    		  }
@@ -3162,7 +3170,7 @@ public class View extends ViewPart implements Observer{
     					  linkedVar.setValues(pmvList.get(j).getValues());
     					  linkedVar.setName(pmvList.get(j).getName());
     					  linkedVar.setNumber(pmvList.get(j).getNumber());
-		    			  tempCAE.addAvailableItem(linkedVar);
+		    			  tempCAEP.addAvailableItem(linkedVar);
 		    		  }
 		    	  }
 	    	  }
@@ -3174,13 +3182,13 @@ public class View extends ViewPart implements Observer{
 					  linkedVar.setValues(pmvList.get(i).getValues());
 					  linkedVar.setName(pmvList.get(i).getName());
 					  linkedVar.setNumber(pmvList.get(i).getNumber());
-	    			  tempCAE.addAvailableItem(linkedVar);
+	    			  tempCAEP.addAvailableItem(linkedVar);
 	    		  }
 	    	  }
 	    	  
 	    	  try {
 	    		  
-	    		  // set linkedItems for CA Not Provided
+	    		  // add all the value combinations for the context table to the two dependencies lists 
 	    		  
 	    		  ProcessModelVariables contextTableEntry;
 	    			  for (int i = 0; i<model.getValuesWhenCANotProvided(entry.getId()).size();i++) {
@@ -3189,7 +3197,7 @@ public class View extends ViewPart implements Observer{
 	    					  for (int j = 0; j<pmList.size();j++) {
 		    					  if (model.getValuesWhenCANotProvided(entry.getId()).get(i).getPMValues().get(n).equals(pmList.get(j).getId())) {
 		    						  
-		    						  contextTableEntry.addValue(pmList.get(j).getValues());		    						  
+		    						  contextTableEntry.addValue(pmList.get(j).getValueText());		    						  
 		    						  contextTableEntry.setLinkedControlActionName(entry.getTitle());
 		    						  contextTableEntry.addValueId(pmList.get(j).getId());
 		    						  
@@ -3207,19 +3215,19 @@ public class View extends ViewPart implements Observer{
 	    				  contextTableEntry.setContext("Not Provided");
 						  contextTableEntry.setRefinedSafetyRequirements(model.getValuesWhenCANotProvided(entry.getId()).get(i).getSafetyConstraint());
 						  contextTableEntry.setHazardous(model.getValuesWhenCANotProvided(entry.getId()).get(i).isCombiHazardous());
-						  tempCAE2.addContextTableCombination(contextTableEntry);
+						  tempCAENP.addContextTableCombination(contextTableEntry);
 	    			  }
-	    			  for (int j=0; j<tempCAE2.getContextTableCombinations().size(); j++) {
+	    			  for (int j=0; j<tempCAENP.getContextTableCombinations().size(); j++) {
 		  	   				  ProcessModelVariables temp = new ProcessModelVariables();
-		  	   				  temp = tempCAE2.getContextTableCombinations().get(j);
+		  	   				  temp = tempCAENP.getContextTableCombinations().get(j);
 	  	    				  List<String> tempPmValList = new ArrayList<String>();
 	  	    				  List<String> tempPmVarList = new ArrayList<String>();
-		  	    			  for (int z=0;z<tempCAE2.getLinkedItems().size();z++) {
+		  	    			  for (int z=0;z<tempCAENP.getLinkedItems().size();z++) {
 		  	    				  
-		  	    				  tempPmValList.add(tempCAE2.getLinkedItems().get(z).getName() + "="
-		  	    						  + tempCAE2.getContextTableCombinations().get(j).getValues().get(z));
-		  	    				  tempPmVarList.add(tempCAE2.getLinkedItems().get(z).getName());
-		  	    				  temp.addVariableId(tempCAE2.getLinkedItems().get(z).getId());
+		  	    				  tempPmValList.add(tempCAENP.getLinkedItems().get(z).getName() + "="
+		  	    						  + tempCAENP.getContextTableCombinations().get(j).getValues().get(z));
+		  	    				  tempPmVarList.add(tempCAENP.getLinkedItems().get(z).getName());
+		  	    				  temp.addVariableId(tempCAENP.getLinkedItems().get(z).getId());
 		  	    				  
 		  	    			  }
 		  	    			  temp.setPmValues(tempPmValList);
@@ -3246,7 +3254,7 @@ public class View extends ViewPart implements Observer{
 	    					  for (int j = 0; j<pmList.size();j++) {
 	    						  if (valueCombie.get(i).getPMValues().get(n).equals(pmList.get(j).getId())) {
 	    						  
-		    						  contextTableEntry.addValue(pmList.get(j).getValues());
+		    						  contextTableEntry.addValue(pmList.get(j).getValueText());
 		    						  contextTableEntry.setLinkedControlActionName(entry.getTitle());
 		    						  contextTableEntry.addValueId(pmList.get(j).getId());
 	    						  }
@@ -3268,23 +3276,23 @@ public class View extends ViewPart implements Observer{
 						  contextTableEntry.setHAnytime(valueCombie.get(i).isHazardousWhenAnyTime());
 						  contextTableEntry.setHEarly(valueCombie.get(i).isHazardousWhenToEarly());
 						  contextTableEntry.setHLate(valueCombie.get(i).isHazardousWhenToLate());
-	    				  tempCAE.addContextTableCombination(contextTableEntry); 
+	    				  tempCAEP.addContextTableCombination(contextTableEntry); 
 	    			  }
-	    			  for (int j=0; j<tempCAE.getContextTableCombinations().size(); j++) {
+	    			  for (int j=0; j<tempCAEP.getContextTableCombinations().size(); j++) {
 		  	    		  
 
 		  	   				  ProcessModelVariables temp = new ProcessModelVariables();
-		  	   				  temp = tempCAE.getContextTableCombinations().get(j);
+		  	   				  temp = tempCAEP.getContextTableCombinations().get(j);
 
 	  	    				  List<String> tempPmValList = new ArrayList<String>();
 	  	    				  List<String> tempPmVarList = new ArrayList<String>();
-		  	    			  for (int z=0;z<tempCAE.getLinkedItems().size();z++) {
+		  	    			  for (int z=0;z<tempCAEP.getLinkedItems().size();z++) {
 		  	    				  
-		  	    				  tempPmValList.add(tempCAE.getLinkedItems().get(z).getName() + "="
-		  	    						  + tempCAE.getContextTableCombinations().get(j).getValues().get(z));
-		  	    				  tempPmVarList.add(tempCAE.getLinkedItems().get(z).getName());
+		  	    				  tempPmValList.add(tempCAEP.getLinkedItems().get(z).getName() + "="
+		  	    						  + tempCAEP.getContextTableCombinations().get(j).getValues().get(z));
+		  	    				  tempPmVarList.add(tempCAEP.getLinkedItems().get(z).getName());
 		  	    				  temp.setPmVariables(tempPmVarList);
-		  	    				  temp.addVariableId(tempCAE.getLinkedItems().get(z).getId());
+		  	    				  temp.addVariableId(tempCAEP.getLinkedItems().get(z).getId());
 		  	    				  
 		  	    			  }
 		  	    			  temp.setPmValues(tempPmValList);
@@ -3297,15 +3305,15 @@ public class View extends ViewPart implements Observer{
 	    	  }
 	    	  
 		    	  
-	    	  controlActionList.add(tempCAE);
-	    	  controlActionList2.add(tempCAE2);
+	    	  listCAProvided.add(tempCAEP);
+	    	  listCANotProvided.add(tempCAENP);
 	      }
 	      pmList.remove(pmList.size()-1);
 	      this.pmValuesList = pmList;
 	      
-	      this.controlActionList = controlActionList;
-	      dependenciesProvided = controlActionList;
-	      dependenciesNotProvided = controlActionList2;
+	      this.controlActionList = listCAProvided;
+	      dependenciesProvided = listCAProvided;
+	      dependenciesNotProvided = listCANotProvided;
 	      
 	      // store the Export Data for later Use
 	      exportContent.setNotProvidedCA(dependenciesNotProvided);
@@ -3316,7 +3324,7 @@ public class View extends ViewPart implements Observer{
 	    	  mainViewer.setInput(pmList);	      
 	      }
 	     
-		  for (int i = 0; i < 5; i++) {
+		  for (int i = 0; i < 5 && !table.isDisposed(); i++) {
 			  if (table.getColumn(i).getWidth() < 1) {
 				  table.getColumn(i).pack();
 			  }
@@ -3804,7 +3812,7 @@ public class View extends ViewPart implements Observer{
 				int formerIndex = contextTable.getSelectionIndex();
 				getTableEntrys();
 				
-				fetchDataModel(formerIndex);
+				updateContextInput(formerIndex);
 			}else{
 				getTableEntrys();
 			}
@@ -3818,32 +3826,7 @@ public class View extends ViewPart implements Observer{
 		
 	}
 
-	private void fetchDataModel(int i){
-		String name;
-		for(ProcessModelVariables variable:pmvList){
-			name = model.getComponent(variable.getId()).getText();
-			variable.setName(name);
-			variable.setValues(new ArrayList<String>());
-			for(UUID valueId:variable.getValueIds()){
-				name = model.getComponent(valueId).getText();
-				variable.addValue(name);
-			}
-		}
-		
-		for(ControlActionEntrys controlAction:dependenciesProvided){
-			name = model.getControlAction(controlAction.getId()).getTitle();
-			controlAction.setControlAction(name);
-			for(ProcessModelVariables variable:controlAction.getContextTableCombinations()){
-				variable.setValues(new ArrayList<String>());
-				for(UUID valueId:variable.getValueIds()){
-					name = model.getComponent(valueId).getText();
-					variable.addValue(name);
-					
-				}
-			}
-		}
-		updateContextInput(i);
-	}
+
 	public ControlActionEntrys getLinkedCAE() {
 		return linkedCAE;
 	}
@@ -3887,7 +3870,7 @@ public class View extends ViewPart implements Observer{
 				  //2 if cases are used to find find the right variable-value combination 
 				  if (tempPMV.equals(sVarName)) {
 					  
-					  String tempValue =pmValuesList.get(n).getValues().trim();
+					  String tempValue =pmValuesList.get(n).getValueText().trim();
 					  
 					  if ((tempValue.equals(sValueName))) {
 						  combis.add(pmValuesList.get(n).getId());
