@@ -77,7 +77,6 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	
 	@Override
 	protected String openExportDialog(String[] filters, String[] names) {
-		Display display = new Display();
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.SAVE);
 		fileDialog.setFilterExtensions(filters);
 		fileDialog.setFilterNames(names);

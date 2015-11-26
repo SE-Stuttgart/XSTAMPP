@@ -395,7 +395,6 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 * 
 	 */
 	protected String openDirectoryDialog() {
-		Display display = new Display();
 		DirectoryDialog fileDialog = new DirectoryDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
 		fileDialog.setFilterPath(Platform.getInstanceLocation().getURL().getPath().toString());
 		String filePath = fileDialog.open();
