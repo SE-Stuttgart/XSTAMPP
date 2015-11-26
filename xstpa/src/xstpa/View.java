@@ -3080,11 +3080,11 @@ public class View extends ViewPart implements Observer{
 		    }
 	      }
 	      // Add the dontcare obj
-	      ControllerWithPMEntry valueDontCareObj = new ControllerWithPMEntry();
+	      ControllerWithPMEntry finalObj = new ControllerWithPMEntry();
 	      IRectangleComponent dontCare = model.getIgnoreLTLValue();
-	      valueDontCareObj.setValueText(dontCare.getText());
-		  valueDontCareObj.setId(dontCare.getId());
-	      pmList.add(valueDontCareObj);
+	      finalObj.setValueText(dontCare.getText());
+		  finalObj.setId(dontCare.getId());
+	      pmList.add(finalObj);
 	      // get the controlActions
 	      for (IControlAction entry : iControlActions) {
 	    	  ControlActionEntrys tempCAEP = new ControlActionEntrys();

@@ -1551,7 +1551,13 @@ public class DataModelController extends Observable implements
 	 * @return {@link ControlAction#getProvidedVariables()}
 	 */
 	public List<UUID> getCANotProvidedVariables(UUID caID) {
-		return this.controlActionController.getNotProvidedVariables(caID);
+		ArrayList<UUID> list = new ArrayList<>();
+		for(UUID id : this.controlActionController.getNotProvidedVariables(caID)){
+			if(getComponent(id) != null){
+				list.add(id);
+			}
+		}
+		return list;
 	}
 
 
@@ -1573,7 +1579,13 @@ public class DataModelController extends Observable implements
 	 * @return a copie of the provided variables list
 	 */
 	public List<UUID> getCAProvidedVariables(UUID caID) {
-		return this.controlActionController.getProvidedVariables(caID);
+		ArrayList<UUID> list = new ArrayList<>();
+		for(UUID id : this.controlActionController.getProvidedVariables(caID)){
+			if(getComponent(id) != null){
+				list.add(id);
+			}
+		}
+		return list;
 	}
 
 
