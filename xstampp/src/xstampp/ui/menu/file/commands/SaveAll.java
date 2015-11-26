@@ -5,6 +5,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.STPAPluginUtils;
 
 /**
  * this handler simply passes the call to {@link ProjectManager#saveAllDataModels()}
@@ -17,6 +18,8 @@ public class SaveAll extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		STPAPluginUtils.executeCommand("org.eclipse.ui.file.saveAll");
 		return ProjectManager.getContainerInstance().saveAllDataModels();
 	}
 

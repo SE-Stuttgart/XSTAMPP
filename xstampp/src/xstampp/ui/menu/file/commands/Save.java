@@ -19,12 +19,14 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
+import xstampp.util.STPAPluginUtils;
 
 /**
  * Handler that saves the analysis to the last location on runtime
@@ -36,16 +38,21 @@ public class Save extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		STPAPluginUtils.executeCommand("org.eclipse.ui.file.save");
 		Object doSaveAs = event.getParameter("xstampp.commands.params.doSaveAs");
-		Object selection =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.findView(ProjectExplorer.ID).getViewSite()
-				.getSelectionProvider().getSelection();
+		IViewPart part =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.findView(ProjectExplorer.ID);
+		UUID saveId = null;
+		
 		IEditorPart editor = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		UUID saveId;
-		//if there is any project or step  selected in the explorer, this project is stored 
-		if(selection instanceof IProjectSelection){
-			saveId=((IProjectSelection)selection).getProjectId();
+		
+		if(part != null){
+			Object selection= part.getViewSite().getSelectionProvider().getSelection();
+			//if there is any project or step  selected in the explorer, this project is stored 
+			if(selection instanceof IProjectSelection){
+				saveId=((IProjectSelection)selection).getProjectId();
+			}
 		}
 		//if the focus is currectly not on the explorer and the selection is not project related,
 		//the project related to the active editor is stored
