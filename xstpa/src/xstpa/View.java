@@ -713,38 +713,42 @@ public class View extends ViewPart implements Observer{
 			case 0:
 				return "RSR" + String.valueOf(ltlContent.indexOf(entry)+1);
 			case 1:
+				List<Integer> considerList=new ArrayList<>();
+				
+				for(int index=0;index<entry.getValues().size(); index++){
+					if (!entry.getValues().get(index).equals("(don't care)")) {
+						considerList.add(index);
+					}
+				}
 				String temp = "G (";
 				String nameOfControlAction = null;
 				if ((entry.getHAnytime()) | (entry.getHEarly()) | (entry.getHLate())) {
-					for (int i=0; i<entry.getValues().size(); i++){
-						if (entry.getValues().get(i).equals("(don't care)")) {
-							
-						}
-						else {
+					for (int i : considerList){
+						
 							temp = temp.concat("(");					
 							temp = temp.concat(entry.getPmVariables().get(i));
 							temp = temp.concat("==");
 							temp = temp.concat(entry.getValues().get(i));
 							temp = temp.concat(")");
-							if (!(i==entry.getSizeOfValues()-1)) {
+							if (!(i==considerList.size()-1)) {
 								temp = temp.concat(" && ");
 							}
 							else {
 								nameOfControlAction = entry.getLinkedControlActionName();
 							}
-						}
+						
 					}
 					temp = temp.concat(" ->! ");
 					temp = temp.concat("(controlaction == " +nameOfControlAction+ "))");
 				}
 				else {
-					for (int i=0; i<entry.getValues().size(); i++){
+					for (int i : considerList){
 						temp = temp.concat("(");
 						temp = temp.concat(entry.getPmVariables().get(i));
 						temp = temp.concat("==");
 						temp = temp.concat(entry.getValues().get(i));
 						temp = temp.concat(")");
-						if (!(i==entry.getSizeOfValues()-1)) {
+						if (!(i==considerList.size()-1)) {
 							temp = temp.concat(" && ");
 						}
 						else {
