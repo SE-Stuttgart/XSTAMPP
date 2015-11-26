@@ -2393,6 +2393,7 @@ public class View extends ViewPart implements Observer{
 	        public void handleEvent(Event event) {
 	    		
 	    		Point pt = new Point(event.x, event.y);
+	    		
 	    		int index = refinedSafetyTable.getTopIndex();
 	    		Rectangle clientArea = refinedSafetyTable.getClientArea();
 	    		while (index < refinedSafetyTable.getItemCount()) {
@@ -2408,13 +2409,13 @@ public class View extends ViewPart implements Observer{
 		  		    	  		editHazards.open(view);
 		  		    	  	}
 	    				}
-	    	            if (!visible && rect.intersects(clientArea)) {
-	    	                visible = true;
-	    	              }
-	    	            
-	    	            if (!visible) {
-	    	            	return;
-	    	            }
+//	    	            if (!visible && rect.intersects(clientArea)) {
+//	    	                visible = true;
+//	    	              }
+//	    	            
+//	    	            if (!visible) {
+//	    	            	return;
+//	    	            }
 	    			}
 	    			index++;
 	    	   }
