@@ -14,6 +14,12 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html
 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
 Institute of Software Technology, Software Engineering Group
 University of Stuttgart, Germany
+
+X-STPA 
+http://www.iste.uni-stuttgart.de/se/werkzeuge/xstpa.html
+
+A-CAST
+http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html
       </text>
    </aboutInfo>
 
@@ -37,6 +43,7 @@ University of Stuttgart, Germany
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
