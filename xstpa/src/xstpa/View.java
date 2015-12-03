@@ -3521,11 +3521,11 @@ public class View extends ViewPart implements Observer{
 			reader.readLine();
 			String line = reader.readLine();
 			
-			char temp = line.charAt(line.length()-1);
+			String tempStr = line.substring(line.indexOf(":")+2, line.length());
 			
-			int paramCount = Character.getNumericValue(temp);
+			int paramCount = Integer.parseInt(tempStr);
 			line = reader.readLine();
-			temp = line.charAt(line.length()-1);
+			char temp = line.charAt(line.length()-1);
 			Character.getNumericValue(temp);
 			//contextRightTable.setVisible(false);
 			while ((line = reader.readLine()) != null) {
