@@ -8,6 +8,7 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -43,6 +44,7 @@ public abstract class StandartEditorPart extends EditorPart implements
 			Map<String, String> values = new HashMap<>();
 			values.put("saveProjectId", this.projectID.toString());
 			STPAPluginUtils.executeParaCommand("astpa.save", values);
+			ProjectManager.getContainerInstance().getDataModel(projectID).setStored();
 		}
 	}
 
@@ -76,7 +78,6 @@ public abstract class StandartEditorPart extends EditorPart implements
 	public boolean isDirty() {
 		if (ProjectManager.getContainerInstance().getUnsavedChanges(
 				this.projectID)) {
-			this.setStatusLine();
 		}
 		return false;
 	}
@@ -106,39 +107,11 @@ public abstract class StandartEditorPart extends EditorPart implements
 		this.projectID = projectID;
 	}
 
-	/**
-	 * updates the status line
-	 *
-	 * @author Lukas Balzer
-	 *
-	 *
-	 */
-	public void setStatusLine() {
-		Display.getDefault().syncExec(new Runnable() {
 
-			@Override
-			public void run() {
-				if (ProjectManager.getContainerInstance().getUnsavedChanges(
-						StandartEditorPart.this.projectID)) {
-					Image image = Activator.getImageDescriptor(
-							"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
-
-					StandartEditorPart.this.getEditorSite().getActionBars()
-							.getStatusLineManager()
-							.setMessage(image, Messages.ThereAreUnsafedChanges);
-				} else {
-					StandartEditorPart.this.getEditorSite().getActionBars()
-							.getStatusLineManager().setMessage(null);
-				}
-			}
-		});
-
-	}
 
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
-		this.setStatusLine();
 		switch (type) {
 		case DELETE: {
 			this.getSite().getPage().closeEditor(this, false);

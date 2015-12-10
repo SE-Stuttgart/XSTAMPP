@@ -21,12 +21,22 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
+import messages.Messages;
+
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.AbstractSourceProvider;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISources;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -127,6 +137,7 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 		case UNSAVED_CHANGES :
+			setStatusLine();
 			if(dataModel.hasUnsavedChanges()){
 				changeState(SAVE_STATE,S_ENABLED, null);
 			}else{
@@ -152,5 +163,41 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 		
 	}
 	
-	
+	/**
+	 * updates the status line
+	 *
+	 * @author Lukas Balzer
+	 *
+	 *
+	 */
+	private void setStatusLine() {
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				IWorkbenchPart part =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
+				IStatusLineManager manager = null;
+				if(part instanceof IViewPart){
+					manager =((IViewPart)part).getViewSite().getActionBars().getStatusLineManager();
+				}else if(part instanceof IEditorPart){
+					manager =((IEditorPart)part).getEditorSite().getActionBars().getStatusLineManager();
+				}
+				
+				if (ProjectManager.getContainerInstance().getUnsavedChanges() && manager != null) {
+					try{
+						Image image = Activator.getImageDescriptor(
+								"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
+						manager.setMessage(image, Messages.ThereAreUnsafedChanges);
+						
+						
+					}catch(SWTError e){
+						ProjectManager.getLOGGER().debug("Cannot write on the status line");
+					}
+				} else if(manager != null){
+					manager.setMessage(null);
+				}
+			}
+		});
+
+	}
 }
