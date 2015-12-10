@@ -1,10 +1,12 @@
-package xstpa;
+package xstpa.ui;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
 
-class ContextCellModifier implements ICellModifier {
+import xstpa.model.ProcessModelVariables;
+
+public class ContextCellModifier implements ICellModifier {
 	  private Viewer viewer;
 
 	  public ContextCellModifier(Viewer viewer) {

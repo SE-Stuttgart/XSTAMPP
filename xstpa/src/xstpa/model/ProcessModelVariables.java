@@ -1,4 +1,4 @@
-package xstpa;
+package xstpa.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,10 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.core.runtime.Assert;
+
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstpa.ui.View;
 
 
 @XmlRootElement(name = "contexttablecombination")
@@ -38,7 +41,7 @@ public class ProcessModelVariables {
 	
 	@XmlElementWrapper(name = "variableIds")
 	@XmlElement(name = "varId")
-	private List<UUID> variableIds;
+	private List<UUID> variableIdsList;
 	
 	private String name;
 	
@@ -68,11 +71,9 @@ public class ProcessModelVariables {
 	
 	private Boolean isInRSRTable = false;
 	
-	private RelatedHazards relatedHazards = new RelatedHazards(View.allHazards);
-	
 	private UnsafeControlAction uca= new UnsafeControlAction(this);
 	
-	private UUID id;
+	private UUID singleVarId;
 	
 	public ProcessModelVariables (List<String> pmVariables,String linkedControlActionName ) {
 		this.linkedControlActionName = linkedControlActionName;
@@ -83,12 +84,16 @@ public class ProcessModelVariables {
 		// Empty Constructor for JAXB
 	}
 
+	
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
+//********************************************************************************************
+// Management of the value name list
+
 	public List<String> getValues() {
 		return values;
 	}
@@ -104,13 +109,46 @@ public class ProcessModelVariables {
 	}
 	public int getSizeOfValues() {
 		return values.size();
+	}	
+	
+	//******************************
+	//Management of the pm values which are used to represent the value state
+	
+	public List<String> getPmValues() {
+		return pmValues;
 	}
+	public void setPmValues(List<String> pmValues) {
+		this.pmValues = pmValues;
+	}
+	
+	//**********************************
+	//Management of the value ids
+	
+	public List<UUID> getValueIds() {
+		return valueIds;
+	}
+
+	public void setValueIds(List<UUID> valueIds) {
+		this.valueIds = valueIds;
+	}
+	public void addValueId (UUID valueId) {
+		if(this.valueIds == null){
+			this.valueIds = new ArrayList<>();
+		}
+		valueIds.add(valueId);
+		
+	}
+// 
+//********************************************************************************************
 	public int getNumber() {
 		return number;
 	}
 	public void setNumber(int number) {
 		this.number = number;
 	}
+	
+//********************************************************************************************
+// Management of the Hazardous state
 	public Boolean getHazardous() {
 		return hazardous;
 	}
@@ -135,6 +173,8 @@ public class ProcessModelVariables {
 	public void setHAnytime(Boolean hAnytime) {
 		this.hAnytime = hAnytime;
 	}
+//
+//***********************************************************************************************
 	public Boolean getConflict() {
 		return conflict;
 	}
@@ -147,18 +187,69 @@ public class ProcessModelVariables {
 	public void setLinkedControlActionName(String linkedControlActionName) {
 		this.linkedControlActionName = linkedControlActionName;
 	}
+	
+//**************************************************************************************************
+//Management of the process model variables
+	
 	public List<String> getPmVariables() {
 		return pmVariables;
 	}
 	public void setPmVariables(List<String> pmVariables) {
 		this.pmVariables = pmVariables;
 	}
-	public List<String> getPmValues() {
-		return pmValues;
+	/**
+	 * this returns the variableId list which can be defined to 
+	 * declare this object as a value combination
+	 * 
+	 * @return the variableIds
+	 */
+	public List<UUID> getVariableIds() {
+		return variableIdsList;
 	}
-	public void setPmValues(List<String> pmValues) {
-		this.pmValues = pmValues;
+
+	/**
+	 * sets a list of variable ids to this object<br>
+	 * NOTE: an object of ProcessModelVariables can only have one of singleId and variableIdsList
+	 * 
+	 * @param variableIds the variableIds to set
+	 */
+	public void setVariableIds(List<UUID> variableIds) {
+		Assert.isTrue(this.singleVarId == null,"ProcessModelVariables can only have one of singleId and variableIdsList");
+		this.variableIdsList = variableIds;
 	}
+
+	/**
+	 * adds a variable id to this object<br>
+	 * NOTE: an object of ProcessModelVariables can only have one of singleId and variableIdsList
+	 * 
+	 * @param variableId the variableId to add
+	 */
+	public void addVariableId (UUID variableId) {
+		Assert.isTrue(this.singleVarId == null,"ProcessModelVariables can only have one of singleId and variableIdsList");
+		if(this.variableIdsList == null){
+			this.variableIdsList = new ArrayList<>();
+		}
+		variableIdsList.add(variableId);
+		
+	}
+	
+	
+	public UUID getId() {
+		return singleVarId;
+	}
+	
+	/**
+	 * sets a single variable id to this object<br>
+	 * NOTE: an object of ProcessModelVariables can only have one of singleId and variableIdsList
+	 * 
+	 * @param variableIds the variableIds to set
+	 */
+	public void setId(UUID id) {
+		Assert.isTrue(this.variableIdsList == null,"ProcessModelVariables can only have one of singleId and variableIdsList");
+		this.singleVarId = id;
+	}
+	
+//****************************************************************************************************
 	public String getRefinedSafetyRequirements() {
 		return refinedSafetyRequirements;
 	}
@@ -171,12 +262,6 @@ public class ProcessModelVariables {
 	public void setContext(String context) {
 		this.context = context;
 	}
-	public RelatedHazards getRelatedHazards() {
-		return relatedHazards;
-	}
-	public void setRelatedHazards(RelatedHazards relatedHazards) {
-		this.relatedHazards = relatedHazards;
-	}
 
 	public UnsafeControlAction getUca() {
 		return uca;
@@ -184,14 +269,6 @@ public class ProcessModelVariables {
 
 	public void setUca(UnsafeControlAction uca) {
 		this.uca = uca;
-	}
-
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public Boolean getIsInRSRTable() {
@@ -202,41 +279,8 @@ public class ProcessModelVariables {
 		this.isInRSRTable = isInRSRTable;
 	}
 
-	public List<UUID> getValueIds() {
-		return valueIds;
-	}
 
-	public void setValueIds(List<UUID> valueIds) {
-		this.valueIds = valueIds;
-	}
-	public void addValueId (UUID valueId) {
-		if(this.valueIds == null){
-			this.valueIds = new ArrayList<>();
-		}
-		valueIds.add(valueId);
-		
-	}
 
-	/**
-	 * @return the variableIds
-	 */
-	public List<UUID> getVariableIds() {
-		return variableIds;
-	}
 
-	/**
-	 * @param variableIds the variableIds to set
-	 */
-	public void setVariableIds(List<UUID> variableIds) {
-		this.variableIds = variableIds;
-	}
-
-	public void addVariableId (UUID variableId) {
-		if(this.variableIds == null){
-			this.variableIds = new ArrayList<>();
-		}
-		variableIds.add(variableId);
-		
-	}
 
 }

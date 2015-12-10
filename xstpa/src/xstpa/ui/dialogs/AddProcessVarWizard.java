@@ -1,10 +1,7 @@
-package xstpa;
+package xstpa.ui.dialogs;
 
-import java.awt.Checkbox;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
-
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -18,6 +15,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
+import xstpa.model.ProcessModelVariables;
+import xstpa.ui.View;
 
 public class AddProcessVarWizard {
 	

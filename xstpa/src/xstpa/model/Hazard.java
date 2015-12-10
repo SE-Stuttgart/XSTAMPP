@@ -1,4 +1,4 @@
-package xstpa;
+package xstpa.model;
 
 public class Hazard {
 

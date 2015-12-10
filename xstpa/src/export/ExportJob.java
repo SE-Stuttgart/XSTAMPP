@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
-import xstpa.View;
+import xstpa.ui.View;
 
 /**
  * Eclipse job that handles the export

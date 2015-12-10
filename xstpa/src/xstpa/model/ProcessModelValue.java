@@ -1,16 +1,28 @@
-package xstpa;
+package xstpa.model;
 
 import java.util.UUID;
 
-public class ControllerWithPMEntry {
+/**
+ * this class contains a complete representation of a process model value
+ * which consists out of a:<br>
+ * <ul>
+ * <li>Controller
+ * <li>Process Model
+ * <li>Process Variable
+ * <li>Control Action
+ * </ul>
+ * @author Janik Sowodnic, LukasBalzer
+ *
+ */
+public class ProcessModelValue {
 
 	  private String controller;
 
 	  private String pm;
 
-	  private String pmv;
+	  private String pm_variable;
 
-	  private String pmvv;
+	  private String pm_value;
 	  
 	  private String comments;
 	  
@@ -18,11 +30,11 @@ public class ControllerWithPMEntry {
 	  
 	  private Boolean safety_critical;
 	  
-	  private UUID id;
+	  private UUID valueid;
 	  
 	  private UUID variableID;
 	  
-	  public ControllerWithPMEntry() {
+	  public ProcessModelValue() {
 		  comments = "";
 		  
 	  }
@@ -61,7 +73,7 @@ public class ControllerWithPMEntry {
 	   * @return Returns the Process Model Variables.
 	   */
 	  public String getPMV() {
-	    return pmv;
+	    return pm_variable;
 	  }
 
 	  /**
@@ -69,14 +81,14 @@ public class ControllerWithPMEntry {
 	   *            The PMV to set.
 	   */
 	  public void setPMV(String pmv) {
-	    this.pmv = pmv;
+	    this.pm_variable = pmv;
 	  }
 
 	  /**
 	   * @return Returns the Value of the PMVs.
 	   */
 	  public String getValueText() {
-	    return pmvv;
+	    return pm_value;
 	  }
 
 	  /**
@@ -84,7 +96,7 @@ public class ControllerWithPMEntry {
 	   *            The Value of the PMV to set.
 	   */
 	  public void setValueText(String pmvv) {
-	    this.pmvv = pmvv;
+	    this.pm_value = pmvv;
 	  }
 	  
 	  /**
@@ -95,7 +107,7 @@ public class ControllerWithPMEntry {
 	}
 	
 	  /**
-	   * @param pmvv
+	   * @param pm_value
 	   *            The Value of the comments to set.
 	   */
 	public void setComments(String comments) {
@@ -119,11 +131,11 @@ public class ControllerWithPMEntry {
 	}
 
 	public UUID getId() {
-		return id;
+		return valueid;
 	}
 
 	public void setId(UUID id) {
-		this.id = id;
+		this.valueid = id;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package xstpa;
+package xstpa.ui;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;

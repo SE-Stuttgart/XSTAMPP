@@ -1,4 +1,4 @@
-package xstpa;
+package xstpa.ui.dialogs;
 
 import java.util.ArrayList;
 import java.util.List;

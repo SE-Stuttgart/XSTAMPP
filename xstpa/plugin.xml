@@ -25,7 +25,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
-            class="xstpa.View"
+            class="xstpa.ui.View"
             icon="icons/logo.png"
             id="xstpa.view"
             name="Plugin View"

@@ -18,7 +18,7 @@ import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
-import xstpa.View;
+import xstpa.ui.View;
 
 public class ExportWizard extends AbstractExportWizard {
 	private String OUTPUT; //$NON-NLS-1$

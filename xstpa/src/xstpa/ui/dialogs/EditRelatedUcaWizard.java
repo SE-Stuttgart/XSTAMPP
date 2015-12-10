@@ -1,4 +1,4 @@
-package xstpa;
+package xstpa.ui.dialogs;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+
+import xstpa.model.ProcessModelVariables;
+import xstpa.ui.View;
 
 public class EditRelatedUcaWizard {
     // ==================== 2. Instance Fields ============================

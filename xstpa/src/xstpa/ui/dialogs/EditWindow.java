@@ -1,4 +1,4 @@
-package xstpa;
+package xstpa.ui.dialogs;
 
 
 import java.awt.Dimension;
@@ -46,13 +46,17 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.util.STPAPluginUtils;
+import xstpa.model.ProcessModelVariables;
+import xstpa.model.Relation;
+import xstpa.ui.ControlActionEntrys;
+import xstpa.ui.View;
 
 /**
  * 
  * This class is responsible for editing the Options for ACTS
  *
  */
-public class editWindow
+public class EditWindow
 {
 
     // ==================== 2. Instance Fields ============================
@@ -189,7 +193,7 @@ public class editWindow
     // ==================== 4. Constructors ===============================
 
 
-	public editWindow(ControlActionEntrys linkedCAE, View view)
+	public EditWindow(ControlActionEntrys linkedCAE, View view)
     {
 		this.isDirty = false;
         shell = new Shell(SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));

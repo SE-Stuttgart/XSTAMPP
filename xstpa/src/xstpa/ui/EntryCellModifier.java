@@ -1,24 +1,13 @@
-package xstpa;
-
-import java.util.List;
-import java.util.UUID;
+package xstpa.ui;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
-import xstampp.astpa.model.controlstructure.components.Component;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.ui.common.ProjectManager;
-import xstampp.ui.editors.STPAEditorInput;
+import xstpa.model.ProcessModelValue;
+import xstpa.model.ProcessModelVariables;
 
-class EntryCellModifier implements ICellModifier {
+public class EntryCellModifier implements ICellModifier {
 	  private Viewer viewer;
 	  private View view;
 	  public EntryCellModifier(Viewer viewer) {
@@ -50,8 +39,8 @@ class EntryCellModifier implements ICellModifier {
 	   */
 	  public Object getValue(Object element, String property) {
 		// if Controller with PMEntry calls 
-		if (View.CWPMCLASS == element.getClass().getName()) {
-			ControllerWithPMEntry entry = (ControllerWithPMEntry) element;
+		if (View.CONTROLLER_WITH_PM_CLASS == element.getClass().getName()) {
+			ProcessModelValue entry = (ProcessModelValue) element;
 			if (View.COMMENTS.equals(property)) {
 
 				return entry.getComments();
@@ -62,7 +51,7 @@ class EntryCellModifier implements ICellModifier {
 			}
 		}
 		// if Control ActionEntry calls
-		else if (View.CAECLASS == element.getClass().getName()){
+		else if (View.CA_ENTRY_CLASS == element.getClass().getName()){
 			ControlActionEntrys entry = (ControlActionEntrys) element;
 			if (View.SAFETY_CRITICAL.equals(property)) {
 		      return Boolean.valueOf(entry.getSafetyCritical());
@@ -77,19 +66,19 @@ class EntryCellModifier implements ICellModifier {
 		
 		else {
 			ProcessModelVariables entry = (ProcessModelVariables) element;
-			if (View.HAZARDOUS.equals(property)) {
+			if (View.IS_HAZARDOUS.equals(property)) {
 		      return Boolean.valueOf(entry.getHazardous());
 			}
 			
-			else if (View.HANYTIME.equals(property)) {
+			else if (View.HAZ_IF_ANYTIME.equals(property)) {
 			      return Boolean.valueOf(entry.getHAnytime());
 				}
 			
-			else if (View.HEARLY.equals(property)) {
+			else if (View.HAZ_IF_EARLY.equals(property)) {
 			      return Boolean.valueOf(entry.getHEarly());
 				}
 			
-			else if (View.HLATE.equals(property)) {
+			else if (View.HAZ_IF_LATE.equals(property)) {
 			      return Boolean.valueOf(entry.getHLate());
 				}
 			else if (View.REFINED_SAFETY.equals(property)) {
@@ -118,8 +107,8 @@ class EntryCellModifier implements ICellModifier {
 	      element = ((Item) element).getData();
 	    }
 	    // if ControllerWithPMEntry calls
-	    if (View.CWPMCLASS == element.getClass().getName()) {
-	    	ControllerWithPMEntry entry = (ControllerWithPMEntry) element;
+	    if (View.CONTROLLER_WITH_PM_CLASS == element.getClass().getName()) {
+	    	ProcessModelValue entry = (ProcessModelValue) element;
 	    	if (View.COMMENTS.equals(property)) {
 	  	      	entry.setComments((String)value);
 	  	      	View.model.setCSComponentComment(entry.getId(), (String) value); 
@@ -129,7 +118,7 @@ class EntryCellModifier implements ICellModifier {
 	    	}
 	    }
 	    // if ControlActionEntrys calls
-	    else if (View.CAECLASS == element.getClass().getName()){
+	    else if (View.CA_ENTRY_CLASS == element.getClass().getName()){
 	    	ControlActionEntrys entry = (ControlActionEntrys) element;
 	    	if (View.SAFETY_CRITICAL.equals(property)) {
 	  	      entry.setSafetyCritical(!(Boolean)entry.getSafetyCritical());
@@ -143,16 +132,16 @@ class EntryCellModifier implements ICellModifier {
 	    
 	    else {
 	    	ProcessModelVariables entry = (ProcessModelVariables) element;
-	    	if (View.HAZARDOUS.equals(property)) {
+	    	if (View.IS_HAZARDOUS.equals(property)) {
 		  	      entry.setHazardous((!(Boolean)entry.getHazardous()));
 		    	}
-	    	if (View.HANYTIME.equals(property)) {
+	    	if (View.HAZ_IF_ANYTIME.equals(property)) {
 		  	      entry.setHAnytime((!(Boolean)entry.getHAnytime()));
 		    	}
-	    	if (View.HEARLY.equals(property)) {
+	    	if (View.HAZ_IF_EARLY.equals(property)) {
 		  	      entry.setHEarly((!(Boolean)entry.getHEarly()));
 		    	}
-	    	if (View.HLATE.equals(property)) {
+	    	if (View.HAZ_IF_LATE.equals(property)) {
 		  	      entry.setHLate((!(Boolean)entry.getHLate()));
 		    	}
 	    	if (View.REFINED_SAFETY.equals(property)) {

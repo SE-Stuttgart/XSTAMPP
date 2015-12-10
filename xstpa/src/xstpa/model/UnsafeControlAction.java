@@ -1,10 +1,11 @@
-package xstpa;
+package xstpa.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstpa.ui.View;
 
 public class UnsafeControlAction {
 	private List<String> linkedDescriptions = new ArrayList<String>();
@@ -17,7 +18,6 @@ public class UnsafeControlAction {
 	private ProcessModelVariables entryToEdit;
 	public UnsafeControlAction (ProcessModelVariables entryToEdit) {
 		this.entryToEdit = entryToEdit;
-		
 	}
 	
 	
