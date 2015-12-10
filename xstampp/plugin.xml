@@ -503,6 +503,10 @@
                name="xstampp.ui.menu.file.commands.textstate"
                priorityLevel="workbench">
          </variable>
+         <variable
+               name="xstampp.ui.menu.file.commands.saveAllState"
+               priorityLevel="workbench">
+         </variable>
       </sourceProvider>
    </extension>
    <extension
@@ -536,7 +540,7 @@
             commandId="xstampp.saveall">
          <enabledWhen>
             <with
-                  variable="xstampp.ui.menu.file.commands.savestate">
+                  variable="xstampp.ui.menu.file.commands.saveAllState">
                <equals
                      value="ENABLED">
                </equals>

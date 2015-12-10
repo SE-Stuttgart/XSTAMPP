@@ -182,11 +182,17 @@ public class Controller extends Observable implements IDataModel,
 	}
 
 	private void setUnsavedAndChanged(ObserverValue value) {
-		this.unsavedChanges = true;
+		
 		this.updateValue(value);
-		this.updateValue(ObserverValue.UNSAVED_CHANGES);
+		setUnsavedAndChanged();
 	}
 
+	@Override
+	public void setUnsavedAndChanged() {
+		this.unsavedChanges = true;
+		this.updateValue(ObserverValue.UNSAVED_CHANGES);
+	}
+	
 	@XmlTransient
 	@Override
 	public String getAccidentDescription() {
@@ -1194,5 +1200,6 @@ public class Controller extends Observable implements IDataModel,
 	public void releaseLockAndUpdate(ObserverValue value) {
 		//method not used at the moment
 	}
+
 
 }

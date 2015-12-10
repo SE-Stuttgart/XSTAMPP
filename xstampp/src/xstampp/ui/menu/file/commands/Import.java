@@ -40,13 +40,14 @@ public class Import extends AbstractHandler {
 				.getWorkbench().getService(ISourceProviderService.class);
 		CommandState saveStateService = (CommandState) sourceProviderService
 				.getSourceProvider(CommandState.SAVE_STATE);
-		saveStateService.setEnabled();
+//		saveStateService.setEnabled();
 		String recentPath = event.getParameter("loadRecentProject"); //$NON-NLS-1$
 
 		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
 				.getPerspectiveRegistry()
 				.findPerspectiveWithId("xstampp.defaultPerspective");//$NON-NLS-1$
-		if (descriptor != null) {
+		//
+		if (descriptor != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().setPerspective(descriptor);
 		}

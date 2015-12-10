@@ -167,5 +167,5 @@ public interface IDataModel {
 	void lockUpdate();
 	
 	void releaseLockAndUpdate(ObserverValue value);
-		
+	void setUnsavedAndChanged();
 }

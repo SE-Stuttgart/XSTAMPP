@@ -52,7 +52,7 @@ public class UpdateJob extends Job {
 	private static final String REPOSITORY_LOC = System.getProperty(
 			"UpdateHandler.Repo", //$NON-NLS-1$
 			Activator.getDefault().getPreferenceStore()
-					.getDefaultString(IPreferenceConstants.UPDATE_LINK));
+					.getString(IPreferenceConstants.UPDATE_LINK));
 
 	private IProvisioningAgent agent;
 	private Shell parent;

@@ -82,7 +82,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	 * @author Patrick Wickenhaeuser
 	 */
 	public static final String ID = "astpa.ui.common.viewcontainer"; //$NON-NLS-1$
-
+	private List<IPropertyChangeListener> listeners = new ArrayList<>();
 
 	private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheContentAt;
 
@@ -729,6 +729,8 @@ public class ProjectManager implements IPropertyChangeListener {
 			this.elementsToExtensions = new HashMap<>();
 		}
 		this.elementsToExtensions.put(ext, element);
+
+		LOGGER.debug("registered extension: " + ext); //$NON-NLS-1$
 	}
 
 	/**
@@ -797,6 +799,9 @@ public class ProjectManager implements IPropertyChangeListener {
 		this.projectAdditionsToUUID.put(id, addition);
 	}
 
+	public void addSaveStateListener(IPropertyChangeListener listener){
+		listeners.add(listener);
+	}
 }
 
 

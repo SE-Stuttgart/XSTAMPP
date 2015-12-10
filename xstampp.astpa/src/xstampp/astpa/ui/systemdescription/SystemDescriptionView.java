@@ -444,6 +444,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 								.handleDescriptionModify(event);
 						
 						SystemDescriptionView.this.setStyle(event.widget);
+						ProjectManager.getContainerInstance().getDataModel(getProjectID()).setUnsavedAndChanged();
 					}
 				});
 		this.descriptionText.addFocusListener(new FocusListener() {

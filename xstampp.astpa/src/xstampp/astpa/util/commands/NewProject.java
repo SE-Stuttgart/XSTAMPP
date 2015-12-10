@@ -53,7 +53,7 @@ public class NewProject extends AbstractHandler {
 				.getWorkbench().getService(ISourceProviderService.class);
 		CommandState saveStateService = (CommandState) sourceProviderService
 				.getSourceProvider(CommandState.SAVE_STATE);
-		saveStateService.setEnabled();
+//		saveStateService.setEnabled();
 
 		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
 				.getPerspectiveRegistry()
