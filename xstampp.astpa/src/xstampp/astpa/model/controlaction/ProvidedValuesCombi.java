@@ -1,7 +1,9 @@
 package xstampp.astpa.model.controlaction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -17,11 +19,28 @@ import javax.xml.bind.annotation.XmlElementWrapper;
  * @since 2.0
  *
  */
-public class ProvidedValuesCombi {
+public class ProvidedValuesCombi implements IValueCombie{
 	
 	@XmlElementWrapper(name="processModelValueIDs")
 	@XmlElement(name="value")
 	private List<UUID> values;
+	
+	@XmlElementWrapper(name="processModelVariableIDs")
+	@XmlElement(name="variable")
+	private List<UUID> variables;
+	
+
+	@XmlElementWrapper(name="relatedUCAsAnytime")
+	@XmlElement(name="ucaID")
+	private List<UUID> relatedUCAsAnytime;
+	
+	@XmlElementWrapper(name="relatedUCAsTooLate")
+	@XmlElement(name="ucaID")
+	private List<UUID> relatedUCAsTooLate;
+
+	@XmlElementWrapper(name="relatedUCAsTooEarly")
+	@XmlElement(name="ucaID")
+	private List<UUID> relatedUCAsTooEarly;
 	
 	@XmlElementWrapper(name="refinedSafetyConstraint")
 	@XmlElement(name="value")
@@ -41,7 +60,9 @@ public class ProvidedValuesCombi {
 
 	@XmlElement(name="combieId")
 	private UUID id;
-	
+
+	@XmlElement(name="archived")
+	private boolean archived;
 	/**
 	 * constructs a combination of values.legth PM value ids 
 	 * 
@@ -53,6 +74,7 @@ public class ProvidedValuesCombi {
 		this.hazardousAnyTime = false;
 		this.hazardousToEarly = false;
 		this.hazardousToLate = false;
+		this.archived = false;
 		this.values = values;
 	}
 
@@ -61,50 +83,59 @@ public class ProvidedValuesCombi {
 	 *
 	 */
 	public ProvidedValuesCombi() {
-		this.hazardousAnyTime = false;
-		this.hazardousToEarly = false;
-		this.hazardousToLate = false;
-		this.values = new ArrayList<>();
+		this(new ArrayList<UUID>());
 	}
-	 
-	/**
-	 * @return a copie of the list of process model value ids
-	 */
-	public List<UUID> getPMValues() {
-		return new ArrayList<>(this.values);
+	
+	@Override
+	public List<UUID> getValueList() {
+		if(this.values == null){
+			return new ArrayList<>();
+		}
+		return this.values;
+	}
+	
+	@Override
+	public Map<UUID, UUID> getPMValues() {
+		if(this.variables == null){
+			return new HashMap<>();
+		}
+		HashMap<UUID, UUID> valueMap = new HashMap<>();
+		for(int i=0;i < this.values.size();i++){
+			valueMap.put(this.variables.get(i), this.values.get(i));
+		}
+		return valueMap;
 	}
 
 	/**
 	 * @return the refinedSC
 	 */
-	public List<UUID> getRefinedSafetyConstraint() {
+	@Override
+	public List<UUID> getRefinedSafetyConstraints() {
 		return new ArrayList<>(this.refinedSC);
 	}
 
 	/**
 	 * @return the constraint
 	 */
+	@Override
 	public String getSafetyConstraint() {
 		return this.constraint;
 	}
 
-	/**
-	 * @param values the values to set
-	 */
-	public void setValues(List<UUID> values) {
-		this.values = values;
+	@Override
+	public void setValues(Map<UUID, UUID> valuesIdsTOvariableIDs) {
+		this.values = new ArrayList<>(valuesIdsTOvariableIDs.values());
+		this.variables = new ArrayList<>(valuesIdsTOvariableIDs.keySet());
 	}
 
-	/**
-	 * @param refinedSC the refinedSC to set
-	 */
+
+	@Override
 	public void setRefinedSC(List<UUID> refinedSC) {
 		this.refinedSC = refinedSC;
 	}
 
-	/**
-	 * @param constraint the constraint to set
-	 */
+
+	@Override
 	public void setConstraint(String constraint) {
 		this.constraint = constraint;
 	}
@@ -151,6 +182,7 @@ public class ProvidedValuesCombi {
 		this.hazardousToEarly = hazardousToEarly;
 	}
 	
+	@Override
 	public UUID getCombieId() {
 		if(this.id == null){
 			this.id = UUID.randomUUID();
@@ -158,7 +190,67 @@ public class ProvidedValuesCombi {
 		return this.id;
 	}
 
+	@Override
 	public void setId(UUID id) {
 		this.id = id;
+	}
+
+
+	@Override
+	public boolean isCombiHazardous(String type) {
+		switch(type){
+			case TYPE_ANYTIME:
+				return this.hazardousAnyTime;
+			case TYPE_TOO_EARLY:
+				return this.hazardousToEarly;
+			case TYPE_TOO_LATE:
+				return this.hazardousToLate;
+		}
+		return false;
+	}
+
+	@Override
+	public void setArchived(boolean archive) {
+		this.archived = archive;
+		
+	}
+	
+
+	@Override
+	public List<UUID> getUCALinks(String type) {
+		List<UUID> temp = null;
+		switch(type){
+			case TYPE_ANYTIME:
+				temp = this.relatedUCAsAnytime;
+				break;
+			case TYPE_TOO_EARLY:
+				temp = this.relatedUCAsTooEarly;
+				break;
+			case TYPE_TOO_LATE:
+				temp = this.relatedUCAsTooLate;
+				break;
+		}
+		if(temp == null){
+			return new ArrayList<>();
+		}
+		return temp;
+	}
+
+	/**
+	 * @param relatedUCAs the relatedUCAs to set
+	 */
+	@Override
+	public void setUCALinks(List<UUID> relatedUCAs, String type) {
+		switch(type){
+			case TYPE_ANYTIME:
+				this.relatedUCAsAnytime = relatedUCAs;
+				break;
+			case TYPE_TOO_EARLY:
+				this.relatedUCAsTooEarly = relatedUCAs;
+				break;
+			case TYPE_TOO_LATE:
+				this.relatedUCAsTooLate = relatedUCAs;
+				break;
+		}
 	}
 }

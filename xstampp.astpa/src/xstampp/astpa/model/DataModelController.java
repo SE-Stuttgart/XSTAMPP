@@ -15,10 +15,12 @@ package xstampp.astpa.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -36,6 +38,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.framework.Bundle;
 
 import xstampp.astpa.Activator;
@@ -51,6 +55,7 @@ import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
+import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
@@ -88,6 +93,7 @@ import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.menu.file.commands.CommandState;
 
 /**
  * Data Model controller class
@@ -169,6 +175,12 @@ public class DataModelController extends Observable implements
 			this.astpaVersion = versionWithQualifier.substring(0,
 					versionWithQualifier.lastIndexOf('.'));
 		}
+		// Enable the save entries in the menu
+		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+				.getWorkbench().getService(ISourceProviderService.class);
+		CommandState saveStateService = (CommandState) sourceProviderService
+				.getSourceProvider(CommandState.SAVE_STATE);
+		addObserver(saveStateService);
 	}
 
 	@Override
@@ -253,8 +265,9 @@ public class DataModelController extends Observable implements
 		if (projectName == null) {
 			return false;
 		}
-		this.projectDataManager.setProjectName(projectName);
-		this.setUnsavedAndChanged(ObserverValue.PROJECT_NAME);
+		if(this.projectDataManager.setProjectName(projectName)){
+			this.setUnsavedAndChanged(ObserverValue.PROJECT_NAME);
+		}
 		return true;
 	}
 
@@ -270,8 +283,9 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 		
-		this.projectDataManager.setProjectDescription(projectDescription);
-		this.setUnsavedAndChanged(ObserverValue.PROJECT_DESCRIPTION);
+		if(this.projectDataManager.setProjectDescription(projectDescription)){
+			this.setUnsavedAndChanged(ObserverValue.PROJECT_DESCRIPTION);
+		}
 		return true;
 	}
 
@@ -1237,11 +1251,15 @@ public class DataModelController extends Observable implements
 	}
 
 	private void setUnsavedAndChanged(ObserverValue value) {
-		this.unsavedChanges = true;
 		this.updateValue(value);
-		this.updateValue(ObserverValue.UNSAVED_CHANGES);
+		setUnsavedAndChanged();
 	}
 
+	@Override
+	public void setUnsavedAndChanged() {
+			this.unsavedChanges = true;
+			this.updateValue(ObserverValue.UNSAVED_CHANGES);
+	}
 	@Override
 	public boolean setCSImagePath(String path) {
 		if (this.exportInformation == null) {
@@ -1469,8 +1487,12 @@ public class DataModelController extends Observable implements
 	 * @param caID the control action id which is used to look up the action
 	 * @return the valuesWhenNotProvided
 	 */
-	public List<NotProvidedValuesCombi> getValuesWhenCANotProvided(UUID caID) {
-		return this.controlActionController.getValuesWhenNotProvided(caID);
+	public List<IValueCombie> getValuesWhenCANotProvided(UUID caID) {
+		ArrayList<IValueCombie> combies = new ArrayList<>();
+		for(IValueCombie combie : this.controlActionController.getValuesWhenNotProvided(caID)){
+			combies.add(combie);
+		}
+		return combies;
 	}
 
 
@@ -1509,8 +1531,12 @@ public class DataModelController extends Observable implements
 	 * @param caID the control action id which is used to look up the action
 	 * @return the valuesWhenProvided
 	 */
-	public List<ProvidedValuesCombi> getValuesWhenCAProvided(UUID caID) {
-		return this.controlActionController.getValuesWhenProvided(caID);
+	public List<IValueCombie> getValuesWhenCAProvided(UUID caID) {
+		ArrayList<IValueCombie> combies = new ArrayList<>();
+		for(IValueCombie combie : this.controlActionController.getValuesWhenProvided(caID)){
+			combies.add(combie);
+		}
+		return combies;
 	}
 
 
@@ -1657,5 +1683,124 @@ public class DataModelController extends Observable implements
 			this.ignoreLtlValue = new Component("(don't care)", new Rectangle(), ComponentType.PROCESS_VALUE);
 		}
 		return this.ignoreLtlValue;
+	}
+	
+	public Map<String,String> getLTLPropertys(int offset){
+		TreeMap<String,String> ltlList = new TreeMap<String, String>(new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				int res =o1.compareTo(o2);
+				return res;
+			}
+		});
+		int count =offset;
+		String key;
+		StringBuffer valueBuffer;
+		final String LITERAL ="RSR";
+		final String AND = " && ";
+		final String EQUALS ="==";
+		final String IMPLIES = " -> ";
+		final String IMPLIES_NOT = " ->! ";
+		final String START = "[] ";
+		final String UNTIL = " U ";
+		final char BRACKET_OPEN ='(';
+		final char BRACKET_CLOSE =')';
+		
+		for(IControlAction action: this.controlActionController.getAllControlActionsU()){
+			
+			if(!isCASafetyCritical(action.getId())){
+				continue;
+			}
+			List<IValueCombie> allCombies= new ArrayList<>();
+			allCombies.addAll(getValuesWhenCAProvided(action.getId()));
+			allCombies.addAll(getValuesWhenCANotProvided(action.getId()));
+			for(IValueCombie combie : allCombies){
+				valueBuffer = new StringBuffer(); 
+				for(UUID varKey : combie.getPMValues().keySet()){
+					if (!combie.getPMValues().get(varKey).equals(this.ignoreLtlValue.getId())) {
+						
+						valueBuffer.append(BRACKET_OPEN);					
+						valueBuffer.append(getComponent(varKey).getText());
+						valueBuffer.append(EQUALS);
+						valueBuffer.append(getComponent(combie.getPMValues().get(varKey)).getText());
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(AND);
+					}
+				}
+				valueBuffer.delete(valueBuffer.length() - AND.length(), valueBuffer.length());
+				String values = valueBuffer.toString();
+				
+				if (combie.isCombiHazardous(IValueCombie.TYPE_ANYTIME) && !combie.getPMValues().isEmpty()) {
+					key = LITERAL + count;
+					count++;
+					if(values != null && !values.isEmpty()){
+						valueBuffer = new StringBuffer();
+						valueBuffer.append(START);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(values);
+						valueBuffer.append(IMPLIES_NOT);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(BRACKET_CLOSE);
+						ltlList.put(key, valueBuffer.toString());
+					}
+				}if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_EARLY) && !combie.getPMValues().isEmpty()) {
+					key = LITERAL + count;
+					count++;
+					if(values != null && !values.isEmpty()){
+						valueBuffer = new StringBuffer();
+						valueBuffer.append(START);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(IMPLIES);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(UNTIL);
+						valueBuffer.append(values);
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(BRACKET_CLOSE);
+						ltlList.put(key, valueBuffer.toString());
+					}
+				}if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_LATE) && !combie.getPMValues().isEmpty()) {
+					key = LITERAL + count;
+					count++;
+					if(values != null && !values.isEmpty()){
+						valueBuffer = new StringBuffer();
+						valueBuffer.append(START);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(values);
+						valueBuffer.append(IMPLIES_NOT);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(BRACKET_CLOSE);
+						ltlList.put(key, valueBuffer.toString());
+					}
+				}
+				if (combie.isCombiHazardous(IValueCombie.TYPE_NOT_PROVIDED)) {
+					key = LITERAL + count;
+					count++;
+					if(values != null && !values.isEmpty()){
+						valueBuffer = new StringBuffer();
+						valueBuffer.append(START);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(values);
+						valueBuffer.append(IMPLIES);
+						valueBuffer.append(BRACKET_OPEN);
+						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(BRACKET_CLOSE);
+						ltlList.put(key, valueBuffer.toString());
+					}
+				}
+			}
+		}
+		
+		return ltlList;
 	}
 }

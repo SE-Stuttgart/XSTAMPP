@@ -139,6 +139,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		UnsafeControlAction unsafeControlAction = new UnsafeControlAction(
 				description, unsafeControlActionType);
 		this.unsafeControlActions.add(unsafeControlAction);
+		
 		return unsafeControlAction.getId();
 	}
 
@@ -193,6 +194,9 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 * @return the valuesWhenNotProvided
 	 */
 	public List<NotProvidedValuesCombi> getValuesAffectedWhenNotProvided() {
+		if(this.valuesWhenNotProvided == null){
+			return new ArrayList<>();
+		}
 		return this.valuesWhenNotProvided;
 	}
 
@@ -215,7 +219,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	}
 
 	public boolean removeValuesWhenNotProvided(UUID combieId) {
-		for(NotProvidedValuesCombi combie: this.valuesWhenNotProvided){
+		for(IValueCombie combie: this.valuesWhenNotProvided){
 			if(combie.getCombieId().equals(combieId)){
 				return this.valuesWhenNotProvided.remove(combie);
 			}
@@ -228,6 +232,9 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 * @return the valuesWhenProvided
 	 */
 	public List<ProvidedValuesCombi> getValuesAffectedWhenProvided() {
+		if(this.valuesWhenProvided == null){
+			return new ArrayList<>();
+		}
 		return this.valuesWhenProvided;
 	}
 

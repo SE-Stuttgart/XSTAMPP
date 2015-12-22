@@ -17,6 +17,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -49,8 +50,7 @@ public class ComponentChangeLayoutCommand extends
 	public ComponentChangeLayoutCommand(IControlStructureEditorDataModel model,
 			String stepID) {
 		super(model, stepID);
-		this.heightConstraint = ComponentChangeLayoutCommand.MIN_HEIGHT;
-		this.widthConstraint = ComponentChangeLayoutCommand.MIN_WIDTH;
+		setMinConstraint(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE);
 	}
 
 	@Override

@@ -297,6 +297,10 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
+      	<xs:element name="processModelVariableIDs"
+      		type="Q1:processModelVariableIDsType" maxOccurs="1"
+      		minOccurs="0">
+      	</xs:element>
       	<xs:element name="refinedSafetyConstraint" maxOccurs="1"
       		minOccurs="0">
       		<xs:complexType>
@@ -308,7 +312,16 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       	</xs:element>
       	<xs:element type="xs:boolean" name="hazardous" />
       	<xs:element type="xs:string" name="safetyConstraint" />
-      	<xs:element name="combieId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+      	<xs:element name="combieId" type="xs:string" maxOccurs="1"
+      		minOccurs="0">
+      	</xs:element>
+      	<xs:element name="archived" type="xs:boolean" maxOccurs="1"
+      		minOccurs="0">
+      	</xs:element>
+
+      	<xs:element name="relatedUnsafeCOntrolActionIDs"
+      		type="Q1:ucaIDType" maxOccurs="1" minOccurs="0">
+      	</xs:element>
       </xs:sequence>
    </xs:complexType>
     
@@ -324,6 +337,20 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
+      	<xs:element name="processModelVariableIDs"
+      		type="Q1:processModelVariableIDsType" maxOccurs="1"
+      		minOccurs="0">
+      	</xs:element>
+      	<xs:element name="relatedUCAsAnytime" maxOccurs="1"
+      		minOccurs="0" type="Q1:ucaIDType">
+
+      	</xs:element>
+      	<xs:element name="relatedUCAsTooLate" type="Q1:ucaIDType"
+      		maxOccurs="1" minOccurs="0">
+      	</xs:element>
+      	<xs:element name="relatedUCAsTooEarly" type="Q1:ucaIDType"
+      		maxOccurs="1" minOccurs="0">
+      	</xs:element>
       	<xs:element name="refinedSafetyConstraint" maxOccurs="1"
       		minOccurs="0">
       		<xs:complexType>
@@ -333,12 +360,19 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
+
       	<xs:element type="xs:boolean" name="hazardousAnyTime" />
       	<xs:element type="xs:boolean" name="hazardousToLate" />
       	<xs:element type="xs:boolean"
       		name="hazardousifProvidedToEarly" />
       	<xs:element type="xs:string" name="safetyConstraint" />
-      	<xs:element name="combieId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+      	<xs:element name="combieId" type="xs:string" maxOccurs="1"
+      		minOccurs="0">
+      	</xs:element>
+      	<xs:element name="archived" type="xs:boolean" maxOccurs="1"
+      		minOccurs="0">
+      	</xs:element>
+
       </xs:sequence>
    </xs:complexType>
 <xs:complexType name="id">
@@ -410,4 +444,16 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
     </xs:sequence>
   </xs:complexType>
                 
+
+  <xs:complexType name="processModelVariableIDsType">
+  	<xs:sequence>
+  		<xs:element name="variable" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+  	</xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ucaIDType">
+  	<xs:sequence>
+  		<xs:element name="ucaID" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+  	</xs:sequence>
+  </xs:complexType>
 </xs:schema>

@@ -1,13 +1,13 @@
 package xstampp.astpa.model.controlaction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-
-import com.sun.xml.txw2.annotation.XmlAttribute;
 
 /**
  * This class is used to store a specific amount of process model values
@@ -19,11 +19,20 @@ import com.sun.xml.txw2.annotation.XmlAttribute;
  * @since 2.0
  *
  */
-public class NotProvidedValuesCombi{
+public class NotProvidedValuesCombi implements IValueCombie{
 	
 	@XmlElementWrapper(name="processModelValueIDs")
 	@XmlElement(name="value")
 	private List<UUID> values;
+
+
+	@XmlElementWrapper(name="processModelVariableIDs")
+	@XmlElement(name="variable")
+	private List<UUID> variables;
+
+	@XmlElementWrapper(name="relatedUnsafeCOntrolActionIDs")
+	@XmlElement(name="ucaID")
+	private List<UUID> relatedUCAs;
 	
 	@XmlElementWrapper(name="refinedSafetyConstraint")
 	@XmlElement(name="value")
@@ -37,6 +46,9 @@ public class NotProvidedValuesCombi{
 	
 	@XmlElement(name="id")
 	private UUID id;
+
+	@XmlElement(name="archived")
+	private boolean archived;
 	/**
 	 * constructs a combination of values.legth PM value ids 
 	 * 
@@ -44,9 +56,11 @@ public class NotProvidedValuesCombi{
 	 *
 	 * @param values the list of process model variable ids 
 	 */
-	public NotProvidedValuesCombi(List<UUID> values) {
+	public NotProvidedValuesCombi(ArrayList<UUID> values) {
 		this.hazardous = false;
+		this.archived = false;
 		this.values = values;
+		
 	}
 	
 	/**
@@ -55,48 +69,80 @@ public class NotProvidedValuesCombi{
 	 *
 	 */
 	public NotProvidedValuesCombi() {
-		this.hazardous = false;
-		this.values = new ArrayList<>();
+		this(new ArrayList<UUID>());
 	}
 	
-	/**
-	 * @return a copie of the list of process model value ids
+	@Override
+	public List<UUID> getValueList() {
+		if(this.values == null){
+			return new ArrayList<>();
+		}
+		return this.values;
+	}
+	
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#getPMValues()
 	 */
-	public List<UUID> getPMValues() {
-		return new ArrayList<>(this.values);
+	@Override
+	public Map<UUID, UUID> getPMValues() {
+
+		if(this.variables == null){
+			return new HashMap<>();
+		}
+		HashMap<UUID, UUID> valueMap = new HashMap<>();
+		for(int i=0;i < this.values.size();i++){
+			valueMap.put(this.variables.get(i), this.values.get(i));
+		}
+		return valueMap;
 	}
 
-	/**
-	 * @return the refinedSC
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#getRefinedSafetyConstraints()
 	 */
+	@Override
 	public List<UUID> getRefinedSafetyConstraints() {
 		return new ArrayList<>(this.refinedSC);
 	}
 
-	/**
-	 * @return the hazardous
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#isCombiHazardous()
 	 */
-	public boolean isCombiHazardous() {
-		return this.hazardous;
+	@Override
+	public boolean isCombiHazardous(String type) {
+		switch(type){
+			case TYPE_ANYTIME:
+				return false;
+			case TYPE_TOO_EARLY:
+				return false;
+			case TYPE_TOO_LATE:
+				return false;
+			case TYPE_NOT_PROVIDED:
+				return this.hazardous;
+		}
+		return false;
 	}
 
-	/**
-	 * @return the constraint
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#getSafetyConstraint()
 	 */
+	@Override
 	public String getSafetyConstraint() {
 		return this.constraint;
 	}
 
-	/**
-	 * @param values the values to set
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#setValues(java.util.List)
 	 */
-	public void setValues(List<UUID> values) {
-		this.values = values;
+	@Override
+	public void setValues(Map<UUID, UUID> valuesIdsTOvariableIDs) {
+		this.values = new ArrayList<>(valuesIdsTOvariableIDs.values());
+		this.variables = new ArrayList<>(valuesIdsTOvariableIDs.keySet());
 	}
 
-	/**
-	 * @param refinedSC the refinedSC to set
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#setRefinedSC(java.util.List)
 	 */
+	@Override
 	public void setRefinedSC(List<UUID> refinedSC) {
 		this.refinedSC = refinedSC;
 	}
@@ -108,13 +154,18 @@ public class NotProvidedValuesCombi{
 		this.hazardous = hazardous;
 	}
 
-	/**
-	 * @param constraint the constraint to set
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#setConstraint(java.lang.String)
 	 */
+	@Override
 	public void setConstraint(String constraint) {
 		this.constraint = constraint;
 	}
 
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#getCombieId()
+	 */
+	@Override
 	public UUID getCombieId() {
 		if(this.id == null){
 			this.id = UUID.randomUUID();
@@ -122,9 +173,34 @@ public class NotProvidedValuesCombi{
 		return this.id;
 	}
 
+	/* (non-Javadoc)
+	 * @see xstampp.astpa.model.controlaction.IValueCombie#setId(java.util.UUID)
+	 */
+	@Override
 	public void setId(UUID id) {
 		this.id = id;
 	}
-	
+
+	@Override
+	public void setArchived(boolean archive) {
+		this.archived = archive;
+		
+	}
+
+
+	@Override
+	public List<UUID> getUCALinks(String type) {
+		if(this.relatedUCAs == null || !type.equals(TYPE_NOT_PROVIDED)){
+			return new ArrayList<>();
+		}
+		return this.relatedUCAs;
+	}
+
+	@Override
+	public void setUCALinks(List<UUID> relatedUCAs, String type) {
+		if(type.equals(TYPE_NOT_PROVIDED)){
+			this.relatedUCAs = relatedUCAs;
+		}
+	}
 	
 }
