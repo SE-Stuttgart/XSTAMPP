@@ -69,8 +69,12 @@ public class ProjectDataController {
 	 * 
 	 * @author Jaqueline Patzek
 	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
+	public boolean setProjectName(String projectName) {
+		if(this.projectName.equals(projectName)){
+			return false;
+		}
+		this.projectName =projectName;
+		return true;
 	}
 
 	/**
@@ -91,9 +95,14 @@ public class ProjectDataController {
 	 *            which has to be set
 	 * 
 	 * @author Jaqueline Patzek
+	 * @return TODO
 	 */
-	public void setProjectDescription(String projectDescription) {
+	public boolean setProjectDescription(String projectDescription) {
+		if(this.projectDescription.equals(projectDescription)){
+			return false;
+		}
 		this.projectDescription =projectDescription;
+		return true;
 	}
 
 	/**

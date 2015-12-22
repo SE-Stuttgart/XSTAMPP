@@ -19,7 +19,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -42,20 +41,20 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.Activator;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
+import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -68,10 +67,7 @@ import xstampp.util.STPAPluginUtils;
  */
 public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		Observer, ISelectionProvider {
-	/**
-	 * The log4j logger
-	 */
-	private static final Logger LOGGER = ProjectManager.getLOGGER();
+	
 	/**
 	 * The ID of this view
 	 */
@@ -177,26 +173,15 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		});
 
 		this.searchExtensions();
-		File wsPath = new File(Platform.getInstanceLocation().getURL()
-				.getPath());
-		if (wsPath.isDirectory()) {
-			for (File f : wsPath.listFiles()) {
-				if (f.getName().startsWith(".")) { //$NON-NLS-1$
-					continue;
-				}
-				
-				String[] fileSegments = f.getName().split("\\."); //$NON-NLS-1$
-				if ((fileSegments.length > 1)
-						&& ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
-					Map<String, String> values = new HashMap<>();
-					values.put("loadRecentProject", f.getAbsolutePath()); //$NON-NLS-1$
-					STPAPluginUtils.executeParaCommand("xstampp.command.load", values);//$NON-NLS-1$
-				}
-			}
-		}
 
 		this.updateProjects();
-
+		
+		// Enable the save entries in the menu
+		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+				.getWorkbench().getService(ISourceProviderService.class);
+		CommandState saveStateService = (CommandState) sourceProviderService
+				.getSourceProvider(CommandState.SAVE_STATE);
+		addSelectionChangedListener(saveStateService);
 	}
 	
 	/**
@@ -463,16 +448,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private void searchExtensions() {
 		this.stepEditorsToStepId = new HashMap<>();
 		this.stepPerspectivesToStepId = new HashMap<>();
-		IConfigurationElement[] elements = Platform
-				.getExtensionRegistry()
-				.getConfigurationElementsFor("xstampp.extension.steppedProcess");
-		for (IConfigurationElement extElement : elements) { //$NON-NLS-1$
-			String[] ext = extElement.getAttribute("extension").split(";"); 	//$NON-NLS-1$
-			for(int i=0;i< ext.length;i++){
-				ProjectManager.getContainerInstance().registerExtension(ext[i], extElement);
-				ProjectExplorer.LOGGER.debug("registered extension: " + ext[i]); //$NON-NLS-1$
-			}
-		}
+		
 		for (IConfigurationElement element : Platform
 				.getExtensionRegistry()
 				.getConfigurationElementsFor("xstampp.extension.stepEditors")) { //$NON-NLS-1$

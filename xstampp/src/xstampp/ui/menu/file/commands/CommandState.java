@@ -75,7 +75,7 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 	 */
 	public static final String S_DISABLED = "DISABLED"; //$NON-NLS-1$
 	
-	private List<Observable> saveList = new ArrayList<>();
+	private List<Object> saveList = new ArrayList<>();
  	
 	/**
 	 * The id of the state
@@ -131,6 +131,14 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 		
 	}
 
+	public void isSaveable(boolean saveState,Object saveable){
+		if(saveState){
+			changeState(SAVE_STATE,S_ENABLED, saveable);
+		}else{
+			changeState(SAVE_STATE,S_DISABLED, saveable);
+		}
+	}
+	
 	@Override
 	public void update(Observable arg0, Object updatedValue) {
 		IDataModel dataModel = (IDataModel) arg0;
@@ -148,9 +156,9 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 		}
 	}
 	
-	private void changeState(String key,String state, Observable model) {
+	private void changeState(String key,String state, Object model) {
 		this.fireSourceChanged(ISources.WORKBENCH, key,state);
-		if(model != null && state.equals(S_ENABLED)){
+		if(model != null && state.equals(S_ENABLED) && !this.saveList.contains(model)){
 			this.saveList.add(model);
 		}else if(model != null && state.equals(S_DISABLED)){
 			this.saveList.remove(model);
