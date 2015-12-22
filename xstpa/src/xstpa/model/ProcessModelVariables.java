@@ -1,7 +1,9 @@
 package xstpa.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,8 +15,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.core.runtime.Assert;
 
+import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstpa.ui.View;
 
 
 @XmlRootElement(name = "contexttablecombination")
@@ -69,11 +71,19 @@ public class ProcessModelVariables {
 	
 	private Boolean conflict = false;
 	
+	private boolean archived = false;
+	
 	private Boolean isInRSRTable = false;
-	
-	private UnsafeControlAction uca= new UnsafeControlAction(this);
-	
+
 	private UUID singleVarId;
+	
+	private List<UUID> ucaLinks= new ArrayList<>();
+
+	private List<UUID> relatedUCAsAnytime;
+
+	private List<UUID> relatedUCAsTooEarly;
+
+	private List<UUID> relatedUCAsTooLate;
 	
 	public ProcessModelVariables (List<String> pmVariables,String linkedControlActionName ) {
 		this.linkedControlActionName = linkedControlActionName;
@@ -150,7 +160,7 @@ public class ProcessModelVariables {
 //********************************************************************************************
 // Management of the Hazardous state
 	public Boolean getHazardous() {
-		return hazardous;
+		return hazardous || hLate || hEarly || hAnytime;
 	}
 	public void setHazardous(Boolean hazardous) {
 		this.hazardous = hazardous;
@@ -233,6 +243,15 @@ public class ProcessModelVariables {
 		
 	}
 	
+	public Map<UUID,UUID> getValueMap(){
+		Assert.isTrue(this.singleVarId == null,"ProcessModelVariables can only have one of singleId and variableIdsList");
+		Assert.isTrue(this.variableIdsList.size() == this.valueIds.size());
+		HashMap<UUID, UUID> valueMap = new HashMap<>();
+		for(int i=0;i < this.variableIdsList.size();i++){
+			valueMap.put(variableIdsList.get(i), valueIds.get(i));
+		}
+		return valueMap;
+	}
 	
 	public UUID getId() {
 		return singleVarId;
@@ -263,20 +282,72 @@ public class ProcessModelVariables {
 		this.context = context;
 	}
 
-	public UnsafeControlAction getUca() {
-		return uca;
-	}
-
-	public void setUca(UnsafeControlAction uca) {
-		this.uca = uca;
-	}
-
 	public Boolean getIsInRSRTable() {
 		return isInRSRTable;
 	}
 
 	public void setIsInRSRTable(Boolean isInRSRTable) {
 		this.isInRSRTable = isInRSRTable;
+	}
+
+	/**
+	 * @return the archived
+	 */
+	public boolean isArchived() {
+		return this.archived;
+	}
+
+	/**
+	 * @param archived the archived to set
+	 */
+	public void setArchived(boolean archived) {
+		this.archived = archived;
+	}
+
+	/**
+	 * @param type TODO
+	 * @return the ucaLinks
+	 */
+	public List<UUID> getUcaLinks(String type) {
+		List<UUID> temp = null;
+		switch(type){
+			case IValueCombie.TYPE_ANYTIME:
+				temp = this.relatedUCAsAnytime;
+				break;
+			case IValueCombie.TYPE_TOO_EARLY:
+				temp = this.relatedUCAsTooEarly;
+				break;
+			case IValueCombie.TYPE_TOO_LATE:
+				temp = this.relatedUCAsTooLate;
+				break;
+			case IValueCombie.TYPE_NOT_PROVIDED:
+				temp = this.ucaLinks;
+				break;
+		}
+		if(temp == null){
+			return new ArrayList<>();
+		}
+		return temp;
+	}
+
+	/**
+	 * @param ucaLinks the ucaLinks to set
+	 */
+	public void setUcaLinks(List<UUID> ucaLinks,String type) {
+		switch(type){
+			case IValueCombie.TYPE_ANYTIME:
+				this.relatedUCAsAnytime = ucaLinks;
+				break;
+			case IValueCombie.TYPE_TOO_EARLY:
+				this.relatedUCAsTooEarly = ucaLinks;
+				break;
+			case IValueCombie.TYPE_TOO_LATE:
+				this.relatedUCAsTooLate = ucaLinks;
+				break;
+			case IValueCombie.TYPE_NOT_PROVIDED:
+				this.ucaLinks = ucaLinks;
+				break;
+		}
 	}
 
 

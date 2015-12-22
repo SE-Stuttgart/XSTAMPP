@@ -19,26 +19,27 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import xstpa.model.ProcessModelVariables;
+import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstpa.ui.View;
 
 public class EditRelatedUcaWizard {
     // ==================== 2. Instance Fields ============================
-	private Boolean initialized = false;
     private Shell shell;
-    private ProcessModelVariables entryToEdit;
-    private View view;
-    private List<String> linkedListContent = new ArrayList<String>();
-    org.eclipse.swt.widgets.List linkedList;
-    org.eclipse.swt.widgets.List availableList;
+    private org.eclipse.swt.widgets.List linkedList;
+    private org.eclipse.swt.widgets.List availableList;
+	private boolean refreshView;
+	private List<UUID> ucaLinks;
+	private List<ICorrespondingUnsafeControlAction> availableLinks;
+	private DataModelController model;
     
     // ==================== 4. Constructors ===============================
 
 
-	public EditRelatedUcaWizard(ProcessModelVariables entryToEdit)
+	public EditRelatedUcaWizard(DataModelController model, List<UUID> list)
     {
-//        shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));
-		shell = new Shell(Display.getCurrent().getActiveShell(),SWT.CLOSE | SWT.TITLE);
+		this.refreshView = false;
+		shell = new Shell(Display.getCurrent().getActiveShell(),SWT.CLOSE | SWT.TITLE| SWT.APPLICATION_MODAL);
         shell.setLayout(new GridLayout(2, false));
         shell.setText("Add Unsafe Control Actions");
         shell.setImage(View.LOGO);
@@ -55,8 +56,12 @@ public class EditRelatedUcaWizard {
         int y = (dim.height)/2;
         // set the Location
         shell.setLocation(x,y);
-        
-        this.entryToEdit = entryToEdit;
+        this.model = model;
+        this.ucaLinks = list;
+        this.availableLinks = new ArrayList<>();
+        for(ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()){
+        	this.availableLinks.add(uca);
+        }
         createContents(shell);
         shell.pack();
         
@@ -65,7 +70,8 @@ public class EditRelatedUcaWizard {
     
     // ==================== 5. Creators =============================
     
-    private void createContents(final Composite parent) {
+
+	private void createContents(final Composite parent) {
     	
 	    // Add the Label for relationParamListComposite
 	    Label availableLable = new Label(shell, SWT.NONE);
@@ -83,31 +89,12 @@ public class EditRelatedUcaWizard {
 	    data.minimumWidth = 350;
 	    data.minimumHeight = 200;
 	    availableList.setLayoutData(data);
-	    if (entryToEdit != null) {
-	    	entryToEdit.getUca().getLinkedDescriptions().clear();
-	    	List<UUID> tempLinkedIds = new ArrayList<UUID>();
-	    	for (int i = 0; i<entryToEdit.getUca().getDescriptionIds().size(); i++) {
-	    		// TODO CHECK AGAIN
-	    		String tempAvail = "UCA"+i+" - ";
-	    		String tempLinked = "UCA"+i+" - ";
-	    		Boolean addEntry = true;
-		    	for (int j = 0; j<entryToEdit.getUca().getLinkedDescriptionIds().size(); j++) {
-		    		if (entryToEdit.getUca().getLinkedDescriptionIds().get(j)
-		    					.equals(entryToEdit.getUca().getDescriptionIds().get(i))) {
-		    				addEntry = false;
-		    				tempLinked = tempLinked.concat(entryToEdit.getUca().getDescriptions().get(i));
-		    				linkedListContent.add(tempLinked);
-		    				entryToEdit.getUca().addLinkedDescription(entryToEdit.getUca().getDescriptions().get(i));
-		    				tempLinkedIds.add(entryToEdit.getUca().getDescriptionIds().get(i));
-		    		}
-		    	}
-		    	if (addEntry) {
-		    		tempAvail = tempAvail.concat(entryToEdit.getUca().getDescriptions().get(i));
-		    		availableList.add(tempAvail);
-		    	}
-	    	}
-	    	entryToEdit.getUca().setLinkedDescriptionIds(tempLinkedIds);
-	    }
+	    for (ICorrespondingUnsafeControlAction uca : availableLinks) {
+	    	int number = model.getAllUnsafeControlActions().indexOf(uca);
+	    	
+			availableList.add("UCA-"+number+" : " +uca.getDescription());
+		}
+	    
 	    	
 	    
 	    
@@ -119,15 +106,7 @@ public class EditRelatedUcaWizard {
 	    data.minimumWidth = 350;
 	    data.minimumHeight = 200;
 	    linkedList.setLayoutData(data);
-//	    if (entryToEdit.getUca().getLinkedDescriptions() != null) {
-	    if (entryToEdit != null) {
-	    	
-	    	
-	    	for (String entry : linkedListContent) {
-	    		linkedList.add(entry);
-	    	}
-	    }
-
+	    refreshLists();
 	    
 	    // The Add Button
 	    Button addHazard = new Button (shell, SWT.PUSH);
@@ -148,7 +127,7 @@ public class EditRelatedUcaWizard {
 	    // closes the window
 	    okBtn.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		view.storeRefinedSafety();
+	    		refreshView = true;
 	    		close();
 	    	}
 	    });
@@ -157,28 +136,10 @@ public class EditRelatedUcaWizard {
 	    addHazard.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		if (availableList.getSelectionIndex() != -1) {	
-	    			
-	    				for (int i = 0; i<entryToEdit.getUca().getDescriptions().size(); i++) {
-	    					
-	    					
-	    					if (availableList.getItem(availableList.getSelectionIndex())
-	    					.contains(entryToEdit.getUca().getDescriptions().get(i))) {
-	    						
-	    						// add the entry to the linked Descriptions
-	    						entryToEdit.getUca().getLinkedDescriptions()
-	        					.add(entryToEdit.getUca().getDescriptions().get(i));
-	    						// add the Id of the Entry to linked Descriptions
-	    						entryToEdit.getUca().getLinkedDescriptionIds()
-	        					.add(entryToEdit.getUca().getDescriptionIds().get(i));
-	    						
-
-	    					}
-	    						
-	    					
-	    				}
-	    				// display the current changes
-	    				linkedList.add(availableList.getItem(availableList.getSelectionIndex()));
-	    				availableList.remove(availableList.getSelectionIndex());
+    				int index = availableList.getSelectionIndex();
+    				// display the current changes
+    				ucaLinks.add(availableLinks.get(index).getId());
+    				refreshLists();	
 
 	    		}
 	    		
@@ -188,90 +149,42 @@ public class EditRelatedUcaWizard {
 	    // adds the constraint to the list and clears the editor
 	    removeHazard.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		if (linkedList.getSelectionIndex() != -1) {
-	    			
-    				for (int i = 0; i<entryToEdit.getUca().getLinkedDescriptions().size(); i++) {
-    					
-    					
-    					if (linkedList.getItem(linkedList.getSelectionIndex())
-    					.contains(entryToEdit.getUca().getLinkedDescriptions().get(i))) {
-    						
-    	    				// Remove Linked Description Id
-    	    				entryToEdit.getUca().getLinkedDescriptionIds()
-    	    				.remove(i);
-    	    				
-    						// Remove Linked Description
-    	    				entryToEdit.getUca().getLinkedDescriptions()
-    	    				.remove(i);
-    	    				
-    	    				break;
-    	    			
-    					}
-    				}
-	    				
-	    				availableList.add(linkedList.getItem(linkedList.getSelectionIndex()));
-	    				linkedList.remove(linkedList.getSelectionIndex());
-
-	    				
+	    		if (linkedList.getSelectionIndex() != -1) {	
+    				int index = linkedList.getSelectionIndex();
+					ucaLinks.remove(index);
+					refreshLists();
 	    		}
-	    		
 	    	}
 	    });
     	
     }
-//    public Boolean initializeUCA() {
-//    	if (initialized) {
-//    		return true;
-//    	}
-//    	else {
-//            shell = new Shell(Display.getCurrent(),SWT.SHELL_TRIM & (~SWT.RESIZE));
-//            shell.setLayout(new GridLayout(2, false));
-//            shell.setText("Add Hazards");
-//            shell.setImage(View.LOGO);
-//
-//            // Get the size of the screen
-//            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-//            int x = (dim.width)/4;
-//            int y = (dim.height)/2;
-//            // set the Location
-//            shell.setLocation(x,y);
-//            createContents(shell);
-//            shell.pack();
-//        	entryToEdit.getUca().initialize();
-//        	
-//    	    if (entryToEdit.getUca().getLinkedDescriptions() != null) {
-//    	    	
-//    	    	for (String entry : entryToEdit.getUca().getLinkedDescriptions()) {
-//    	    		linkedList.add(entry);
-//    	    	}
-//    	    }
-//    	    if (entryToEdit != null) {
-//    	    	
-//    	    	for (String entry : entryToEdit.getUca().getDescriptions()) {
-//    	    		availableList.add(entry);
-//    	    	}
-//    	    	if (availableList.getItemCount() == 0) {
-//    	    		return false;
-//    	    	}
-//    	    }
-//    	    initialized = true;
-//    	    return true;
-//    	}
-//
-//
-//    }
     
-    public void open(View view)
+	private void refreshLists(){
+		linkedList.removeAll();
+		for (ICorrespondingUnsafeControlAction uca : availableLinks) {
+			if(ucaLinks.contains(uca.getId())){
+		    	int number = model.getAllUnsafeControlActions().indexOf(uca);
+		    	linkedList.add("UCA-"+number);
+			}
+		}
+	}
+    public boolean open()
     {
-    	this.view = view;
         shell.open();     
+        while (!shell.isDisposed()) {
+		    if (!Display.getDefault().readAndDispatch()) {
+		    	Display.getDefault().sleep();
+		    }
+		}
+        return this.refreshView;
     }
-    
-
+	
     public void close()
     {
-    	view.refinedSafetyViewer.setInput(view.refinedSafetyContent);
-    	view.refinedSafetyTable.getColumn(4).pack();
         shell.setVisible(false);
+    }
+    
+    public List<UUID> getUcaLinks(){
+    	return this.ucaLinks;
     }
 }

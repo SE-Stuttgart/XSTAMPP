@@ -29,5 +29,6 @@ Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  xstampp.astpa.model.controlstructure.components,
  xstampp.astpa.model.controlstructure.interfaces,
  xstampp.astpa.model.hazacc,
+ xstampp.astpa.ui.common.grid,
  xstampp.astpa.util.jobs,
  xstampp.astpa.wizards

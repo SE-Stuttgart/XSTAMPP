@@ -1,11 +1,13 @@
-package xstpa.ui;
+package xstpa.ui.tables.utils;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
 
+import xstpa.model.ControlActionEntrys;
 import xstpa.model.ProcessModelValue;
 import xstpa.model.ProcessModelVariables;
+import xstpa.ui.View;
 
 public class EntryCellModifier implements ICellModifier {
 	  private Viewer viewer;
@@ -39,7 +41,7 @@ public class EntryCellModifier implements ICellModifier {
 	   */
 	  public Object getValue(Object element, String property) {
 		// if Controller with PMEntry calls 
-		if (View.CONTROLLER_WITH_PM_CLASS == element.getClass().getName()) {
+		if (ProcessModelValue.class == element.getClass()) {
 			ProcessModelValue entry = (ProcessModelValue) element;
 			if (View.COMMENTS.equals(property)) {
 
@@ -51,7 +53,7 @@ public class EntryCellModifier implements ICellModifier {
 			}
 		}
 		// if Control ActionEntry calls
-		else if (View.CA_ENTRY_CLASS == element.getClass().getName()){
+		else if (ControlActionEntrys.class == element.getClass()){
 			ControlActionEntrys entry = (ControlActionEntrys) element;
 			if (View.SAFETY_CRITICAL.equals(property)) {
 		      return Boolean.valueOf(entry.getSafetyCritical());
@@ -81,7 +83,7 @@ public class EntryCellModifier implements ICellModifier {
 			else if (View.HAZ_IF_LATE.equals(property)) {
 			      return Boolean.valueOf(entry.getHLate());
 				}
-			else if (View.REFINED_SAFETY.equals(property)) {
+			else if (View.REFINED_RULES.equals(property)) {
 				return entry.getRefinedSafetyRequirements();
 			}
 			
@@ -107,7 +109,7 @@ public class EntryCellModifier implements ICellModifier {
 	      element = ((Item) element).getData();
 	    }
 	    // if ControllerWithPMEntry calls
-	    if (View.CONTROLLER_WITH_PM_CLASS == element.getClass().getName()) {
+	    if (ProcessModelValue.class == element.getClass()) {
 	    	ProcessModelValue entry = (ProcessModelValue) element;
 	    	if (View.COMMENTS.equals(property)) {
 	  	      	entry.setComments((String)value);
@@ -118,7 +120,7 @@ public class EntryCellModifier implements ICellModifier {
 	    	}
 	    }
 	    // if ControlActionEntrys calls
-	    else if (View.CA_ENTRY_CLASS == element.getClass().getName()){
+	    else if (ControlActionEntrys.class == element.getClass()){
 	    	ControlActionEntrys entry = (ControlActionEntrys) element;
 	    	if (View.SAFETY_CRITICAL.equals(property)) {
 	  	      entry.setSafetyCritical(!(Boolean)entry.getSafetyCritical());
@@ -144,10 +146,8 @@ public class EntryCellModifier implements ICellModifier {
 	    	if (View.HAZ_IF_LATE.equals(property)) {
 		  	      entry.setHLate((!(Boolean)entry.getHLate()));
 		    	}
-	    	if (View.REFINED_SAFETY.equals(property)) {
+	    	if (View.REFINED_RULES.equals(property)) {
 	    		entry.setRefinedSafetyRequirements((String) value);
-	    		//View.setRefinedSafetyCanBeStored(true);
-	    		view.storeRefinedSafety();
 	    		
 	    	}
 	    }

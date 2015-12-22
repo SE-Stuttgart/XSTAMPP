@@ -1,33 +1,46 @@
 package xstpa.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
+import xstampp.astpa.model.controlaction.ControlAction;
+import xstampp.astpa.model.controlaction.IValueCombie;
+import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
-import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstpa.ui.ControlActionEntrys;
 
 public class XSTPADataController {
+
+	private static final String CONTEXT_PROVIDED ="provided";
+	private static final String CONTEXT_NOT_PROVIDED ="not provided";
 	private List<ProcessModelValue> valuesList;
 	private List<ControlActionEntrys> dependenciesIFProvided;
 	private ArrayList<ProcessModelVariables> variablesList;
-	private List<ControlActionEntrys> dependenciesProvided = new ArrayList<ControlActionEntrys>();
-	
 	private List<ControlActionEntrys> dependenciesNotProvided = new ArrayList<ControlActionEntrys>();
-
+	private ControlActionEntrys linkedCAE;
+	private ProcessModelVariables linkedPMV;
+	private DataModelController model;
+	private boolean controlActionProvided;
+	
 	public XSTPADataController() {
 		this.valuesList = new ArrayList<>();
 		this.variablesList = new ArrayList<>();
+		this.dependenciesIFProvided  = new ArrayList<>();
+		this.dependenciesNotProvided = new ArrayList<>();
 	}
 	
 	public void clear(DataModelController model) {
-		this.valuesList.clear();
-		this.variablesList.clear();
+		this.linkedCAE = null;
+		this.linkedPMV = null;
+		this.dependenciesIFProvided.clear();
+		this.dependenciesNotProvided.clear();
 		this.fetchProcessComponents(model);
 		this.fetchControlActions(model);
 	}
@@ -45,10 +58,9 @@ public class XSTPADataController {
 		this.dependenciesIFProvided = dependenciesIFProvided;
 	}
 
-/********************************************************************************************************************
- * Management of the PROCESS MODEL VALUES
- * 																	
- ********************************************************************************************************************/
+//********************************************************************************************************************
+// Management of the PROCESS MODEL VALUES
+ 
 	/**
 	 * @return the valuesList
 	 * @see ProcessModelValue
@@ -108,7 +120,7 @@ public class XSTPADataController {
 	 * @param varible the value which is to add to the valuesList
 	 */
 	public void addVariable(ProcessModelVariables varible) {
-		varible.setNumber(this.variablesList.size());
+		varible.setNumber(this.variablesList.size()+1);
 		this.variablesList.add(varible);
 	}
 	
@@ -118,60 +130,54 @@ public class XSTPADataController {
 	 * @param model the current data model 
 	 */
 	private void fetchProcessComponents(DataModelController model){
+
+		this.valuesList.clear();
+		this.variablesList.clear();
 		List<ICausalComponent> templist = model.getCausalComponents();
 		for (int i = 0, n = templist.size(); i < n; i++) {
-	    	  
-	    	  ProcessModelValue tempCWPME = new ProcessModelValue();
+			
 	    	  Component parentComponent =(Component) templist.get(i);
 		      if (parentComponent.getComponentType().name().equals("CONTROLLER")) {
 		    	  
-		    	  tempCWPME.setController(parentComponent.getText());
 		    	  // get the process models
 		    	  for (IRectangleComponent tempPM :  parentComponent.getChildren()) {
-		    		  tempCWPME.setPM(tempPM.getText());
 		    		  
 		    		  // get the variables
 		    		  for (IRectangleComponent tempPMV : tempPM.getChildren()) {
-		    			  if(!tempPMV.getComponentType().equals(ComponentType.PROCESS_VARIABLE)){
-		    				  System.out.println();
-		    			  }
-		    			  tempCWPME.setPMV(tempPMV.getText());
 		    			  ProcessModelVariables variable = new ProcessModelVariables();
 		    			  variable.setName(tempPMV.getText());
 		    			  variable.setId(tempPMV.getId());
-		    			  variable.addVariableId(tempPMV.getId());
 		    			  // get the values and add the new object to the processmodel list
 		    			  for (IRectangleComponent tempPMVV : tempPMV.getChildren()) {
-		    				  tempCWPME.setComments(tempPMVV.getComment());
-		    				  tempCWPME.setValueText(tempPMVV.getText());
-		    				  tempCWPME.setId(tempPMVV.getId());
 		    				  
 		    				  ProcessModelValue pmValueObject = new ProcessModelValue();
 		    				  
-		    				  pmValueObject.setController(tempCWPME.getController());
-		    				  pmValueObject.setPM(tempCWPME.getPM());
-		    				  pmValueObject.setPMV(tempCWPME.getPMV());
+		    				  pmValueObject.setController(parentComponent.getText());
+		    				  pmValueObject.setPM(tempPM.getText());
+		    				  pmValueObject.setPMV(tempPMV.getText());
 		    				  pmValueObject.setValueText(tempPMVV.getText());
 		    				  pmValueObject.setId(tempPMVV.getId());
 		    				  pmValueObject.setVariableID(tempPMV.getId());
-		    				  pmValueObject.setComments(tempCWPME.getComments());
-		    				  variable.addValue(tempCWPME.getValueText());
+		    				  pmValueObject.setComments(tempPMVV.getComment());
+		    				  variable.addValue(tempPMVV.getText());
 		    				  variable.addValueId(tempPMVV.getId());
 		    				  addValue(pmValueObject);
 		    				  
 		    			  }
 		    			  if (!variable.getValues().isEmpty()) {
-		    				  
-		    				 
 		    				  addVariable(variable);
-		    				  
-	
 		    			  }
 		    		  }
 		    		  
 		    	  }
 			  }
 	      }
+		// Add the dontcare obj
+		ProcessModelValue finalObj = new ProcessModelValue();
+		IRectangleComponent dontCare = model.getIgnoreLTLValue();
+		finalObj.setValueText(dontCare.getText());
+		finalObj.setId(dontCare.getId());
+		addValue(finalObj);
 	}
 	
 	/**
@@ -182,171 +188,225 @@ public class XSTPADataController {
 	 * @param model the data model which should be used
 	 */
 	private void fetchControlActions(DataModelController model){
-		List<IControlAction> iControlActions = model.getAllControlActionsU();
 		  // get the controlActions
-	      for (IControlAction entry : iControlActions) {
-	    	  ControlActionEntrys tempCAEProvided = new ControlActionEntrys();
-	    	  ControlActionEntrys tempCAENotProvided = new ControlActionEntrys();
-	    	  
-	    	  tempCAEProvided.setComments(entry.getDescription());
-	    	  tempCAEProvided.setControlAction(entry.getTitle());
-	    	  tempCAEProvided.setNumber(entry.getNumber());
-	    	  tempCAEProvided.setId(entry.getId());
-	    	  tempCAEProvided.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
-	    	  //tempCAE.setController(entry.);
-	    	  tempCAENotProvided.setComments(entry.getDescription());
-	    	  tempCAENotProvided.setControlAction(entry.getTitle());
-	    	  tempCAENotProvided.setNumber(entry.getNumber());
-	    	  tempCAENotProvided.setId(entry.getId());	    	  
-	    	  tempCAENotProvided.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
-	    	  
-	    		  /*
-	    		   *  set linkedItems and available items for the control action entry
-	    		   */
-	    		  for (ProcessModelVariables var : getVariablesList()) {
-	    			  if(model.getCANotProvidedVariables(entry.getId()).contains(var.getId())) {
-	    				  tempCAENotProvided.addLinkedItem(var);
-	    			  }else{
-	    				  tempCAENotProvided.addAvailableItem(var);
-	    			  }
-	    			// set linkedItems for CA Provided
-	    			  if(model.getCAProvidedVariables(entry.getId()).contains(var.getId())) {
-  					  tempCAEProvided.addLinkedItem(var);
-	    			  }else{
-	    				  tempCAEProvided.addAvailableItem(var);
-	    			  }
-	    			  
-	    		  }
-	    	  
-	
-	    		  // add all the value combinations for the context table to the two dependencies lists 
-	    		  
-	    		  ProcessModelVariables contextTableEntry;
-  			  for (int i = 0; i<model.getValuesWhenCANotProvided(entry.getId()).size();i++) {
-  				  contextTableEntry = new ProcessModelVariables();
-  				  for (int n = 0; n<model.getValuesWhenCANotProvided(entry.getId()).get(i).getPMValues().size();n++) {
-  					  for (int j = 0; j<getValueCount();j++) {
-	    					  if (model.getValuesWhenCANotProvided(entry.getId()).get(i).getPMValues().get(n).equals(getValue(j).getId())) {
-	    						  
-	    						  contextTableEntry.addValue(getValue(j).getValueText());		    						  
-	    						  contextTableEntry.setLinkedControlActionName(entry.getTitle());
-	    						  contextTableEntry.addValueId(getValue(j).getId());
-	    						  
-	    					  }
-  					  }
-  				  }
-  			  
-	    			  try{
-	    				  contextTableEntry.getUca().setLinkedDescriptionIds(model.getValuesWhenCANotProvided(entry.getId()).
-									get(i).getRefinedSafetyConstraints());
-	    			  } catch (Exception e) {
-	//    					  System.out.println("No stored refined Safety for Not Provided");
-					  }
-  			  
-					  contextTableEntry.setContext("Not Provided");
-					  contextTableEntry.setRefinedSafetyRequirements(model.getValuesWhenCANotProvided(entry.getId()).get(i).getSafetyConstraint());
-					  contextTableEntry.setHazardous(model.getValuesWhenCANotProvided(entry.getId()).get(i).isCombiHazardous());
-					  tempCAENotProvided.addContextTableCombination(contextTableEntry);
-  			  }
-  			  for (ProcessModelVariables valueCombie : tempCAENotProvided.getContextTableCombinations()) {
-	  	   				 
-	    				  List<String> tempValuesList = new ArrayList<String>();
-	    				  List<String> tempVarialesList = new ArrayList<String>();
-	  	    			  for (int z=0;z<tempCAENotProvided.getLinkedItems().size();z++) {
-	  	    				  
-	  	    				  tempValuesList.add(tempCAENotProvided.getLinkedItems().get(z).getName() + "="
-	  	    						  													+ valueCombie.getValues().get(z));
-	  	    				  tempVarialesList.add(tempCAENotProvided.getLinkedItems().get(z).getName());
-	  	    				  valueCombie.addVariableId(tempCAENotProvided.getLinkedItems().get(z).getId());
-	  	    				  
-	  	    			  }
-	  	    			  valueCombie.setPmValues(tempValuesList);
-	    				  valueCombie.setPmVariables(tempVarialesList);
-  			  }
-	    		  
-	    		  
-				  
-	    		  // set linkedItems for CA Provided
-	    		  List<ProvidedValuesCombi> valueCombie=model.getValuesWhenCAProvided(entry.getId());
-  			  for (int i = 0; i<valueCombie.size();i++) {
-  				  contextTableEntry = new ProcessModelVariables(); 
-  				  for (int n = 0; n<valueCombie.get(i).getPMValues().size();n++) {
-  					  
-  					  for (int j = 0; j<getValueCount();j++) {
-  						  if (valueCombie.get(i).getPMValues().get(n).equals(getValue(j).getId())) {
-  						  
-	    						  contextTableEntry.addValue(getValue(j).getValueText());
-	    						  contextTableEntry.setLinkedControlActionName(entry.getTitle());
-	    						  contextTableEntry.addValueId(getValue(j).getId());
-  						  }
-  					 }
-  					  
-						  
-  					  
-  				  }
-
-  				  try {
-  					  contextTableEntry.getUca().setLinkedDescriptionIds(valueCombie.get(i).getRefinedSafetyConstraints());
-  				  }
-  				  catch (Exception e) {
-//	    					  System.out.println("No stored refined Safety for Not Provided");
-  				  }
-  				  
-  				  contextTableEntry.setContext("Provided");
-					  contextTableEntry.setRefinedSafetyRequirements(valueCombie.get(i).getSafetyConstraint());
-					  contextTableEntry.setHAnytime(valueCombie.get(i).isHazardousWhenAnyTime());
-					  contextTableEntry.setHEarly(valueCombie.get(i).isHazardousWhenToEarly());
-					  contextTableEntry.setHLate(valueCombie.get(i).isHazardousWhenToLate());
-  				  tempCAEProvided.addContextTableCombination(contextTableEntry); 
-  			  }
-	    			  for (int j=0; j<tempCAEProvided.getContextTableCombinations().size(); j++) {
-		  	    		  
-
-		  	   				  ProcessModelVariables temp = new ProcessModelVariables();
-		  	   				  temp = tempCAEProvided.getContextTableCombinations().get(j);
-
-	  	    				  List<String> tempPmValList = new ArrayList<String>();
-	  	    				  List<String> tempPmVarList = new ArrayList<String>();
-		  	    			  for (int z=0;z<tempCAEProvided.getLinkedItems().size();z++) {
-		  	    				  
-		  	    				  tempPmValList.add(tempCAEProvided.getLinkedItems().get(z).getName() + "="
-		  	    						  + tempCAEProvided.getContextTableCombinations().get(j).getValues().get(z));
-		  	    				  tempPmVarList.add(tempCAEProvided.getLinkedItems().get(z).getName());
-		  	    				  temp.setPmVariables(tempPmVarList);
-		  	    				  temp.addVariableId(tempCAEProvided.getLinkedItems().get(z).getId());
-		  	    				  
-		  	    			  }
-		  	    			  temp.setPmValues(tempPmValList);
-	    			  }
-	    		
-	    	  
-		    	  
-	    	getDependenciesIFProvided().add(tempCAEProvided);
-	    	getDependenciesNotProvided().add(tempCAENotProvided);
-
+	      for (IControlAction entry : model.getAllControlActionsU()) {
+	    	  this.dependenciesIFProvided.add(getEntryFor(entry, model.getValuesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
+	    	  this.dependenciesNotProvided.add(getEntryFor(entry, model.getValuesWhenCANotProvided(entry.getId()),CONTEXT_NOT_PROVIDED));
 	      }
 	}
+	
+	private ControlActionEntrys getEntryFor(IControlAction entry,List<IValueCombie> combies,String context){
+		ControlActionEntrys tempCAEntry = new ControlActionEntrys();
+  	  
+		//tempCAE.setController(entry.);
+		tempCAEntry.setComments(entry.getDescription());
+		tempCAEntry.setControlAction(entry.getTitle());
+		tempCAEntry.setNumber(entry.getNumber());
+		tempCAEntry.setId(entry.getId());	    	  
+		tempCAEntry.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
+		List<UUID> linkedIDs;
+  	  	if(context.equals(CONTEXT_PROVIDED)){
+  	  		linkedIDs = ((ControlAction)entry).getProvidedVariables();
+  	  	}else{
+  	  		linkedIDs = ((ControlAction)entry).getNotProvidedVariables();
+  	  	}
+		/*
+		 *  set linkedItems and available items for the control action entry
+		 */
+		for (ProcessModelVariables var : getVariablesList()) {
+			if(linkedIDs.contains(var.getId())) {
+				tempCAEntry.addLinkedItem(var);
+			}else{
+				tempCAEntry.addAvailableItem(var);
+			}
+		}
+  	  
 
+		// add all the value combinations for the context table to the two dependencies lists 
+  		  
+		ProcessModelVariables contextTableEntry;
+		for (IValueCombie valueCombie :  combies) {
+			List<String> tempValuesList = new ArrayList<String>();
+			List<String> tempVarialesList = new ArrayList<String>();
+			contextTableEntry = new ProcessModelVariables();
+			
+			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_NOT_PROVIDED),IValueCombie.TYPE_NOT_PROVIDED);
+			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_ANYTIME),IValueCombie.TYPE_ANYTIME);
+			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_TOO_EARLY),IValueCombie.TYPE_TOO_EARLY);
+			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_TOO_LATE),IValueCombie.TYPE_TOO_LATE);
+			
+			if(valueCombie.getPMValues() == null){
+				Map<UUID, UUID> valuesIdsTOvariableIDs= new HashMap<>();
+				for(ProcessModelValue value : getValuesList()){
+					if(valueCombie.getValueList().contains(value.getId())){
+						valuesIdsTOvariableIDs.put(value.getVariableID(), value.getId());
+					}
+				}
+				valueCombie.setValues(valuesIdsTOvariableIDs);
+			}
+			for (UUID varId : valueCombie.getPMValues().keySet()) {
+				contextTableEntry.addVariableId(varId);
+				tempVarialesList.add(model.getComponent(varId).getText());
+				for (int j = 0; j<getValueCount();j++) {
+					if (valueCombie.getPMValues().get(varId).equals(getValue(j).getId())) {
+						tempValuesList.add(model.getComponent(varId).getText()+ "="
+								+ getValue(j).getValueText());
+						contextTableEntry.addValue(getValue(j).getValueText());		    						  
+						contextTableEntry.setLinkedControlActionName(entry.getTitle());
+						contextTableEntry.addValueId(getValue(j).getId());
+  						  
+					}
+				}
+			}
+		  
+			contextTableEntry.setPmValues(tempValuesList);
+			contextTableEntry.setPmVariables(tempVarialesList);
+			contextTableEntry.setContext(context);
+			contextTableEntry.setRefinedSafetyRequirements(valueCombie.getSafetyConstraint());
+			contextTableEntry.setHazardous(valueCombie.isCombiHazardous(IValueCombie.TYPE_NOT_PROVIDED));
+			contextTableEntry.setHAnytime(valueCombie.isCombiHazardous(IValueCombie.TYPE_ANYTIME));
+			contextTableEntry.setHEarly(valueCombie.isCombiHazardous(IValueCombie.TYPE_TOO_EARLY));
+			contextTableEntry.setHLate(valueCombie.isCombiHazardous(IValueCombie.TYPE_TOO_LATE));
+			tempCAEntry.addContextTableCombination(contextTableEntry);
+		}
+		
+		return tempCAEntry;
+	}
+
+//=====================================================================
+//START 
+//=====================================================================
+
+	/**
+	 * Store the Boolean Data (from the Context Table) in the Datamodel
+	 * @param caEntry the ControlActionEntrys or null for the currently linked which should be stored in the data model
+	 */
+	public void storeBooleans(ControlActionEntrys caEntry) {
+		ControlActionEntrys temp = caEntry;
+		if(temp == null){
+			temp = this.linkedCAE;
+		}
+		if (controlActionProvided) {
+			syncCombiesWhenProvided(temp);
+		}
+		else {
+	    	syncCombiesWhenNotProvided(temp);
+		}
+	}
+	
+	private void syncCombiesWhenProvided(ControlActionEntrys caEntry){
+		try {
+  		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
+  		  ProvidedValuesCombi val = new ProvidedValuesCombi();
+  		  //iteration over all value combinations registered for the linked control action
+  		  for (ProcessModelVariables combie : getLinkedCAE().getContextTableCombinations()) {
+  			  val = new ProvidedValuesCombi();
+  			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
+   				 val.setValues(getCombieUUIDs(combie));
+  			  }else{
+  				  val.setValues(combie.getValueMap());
+  			  }
+
+  			  val.setUCALinks(combie.getUcaLinks(IValueCombie.TYPE_ANYTIME),IValueCombie.TYPE_ANYTIME);
+  			  val.setUCALinks(combie.getUcaLinks(IValueCombie.TYPE_TOO_EARLY),IValueCombie.TYPE_TOO_EARLY);
+  			  val.setUCALinks(combie.getUcaLinks(IValueCombie.TYPE_TOO_LATE),IValueCombie.TYPE_TOO_LATE);
+  			  
+  			  val.setArchived(combie.isArchived());
+  			  val.setConstraint(combie.getRefinedSafetyRequirements());
+  			  val.setHazardousAnyTime(combie.getHAnytime());
+  			  val.setHazardousToEarly(combie.getHEarly());
+  			  val.setHazardousToLate(combie.getHLate());
+  			  valuesIfProvided.add(val);
+  		  }
+  		  model.setValuesWhenCAProvided(getLinkedCAE().getId(),valuesIfProvided);
+  	  }
+
+  	  catch (Exception e) {
+  		  System.out.println("Couldn't save ContextTableCombis if Provided");
+  	  }
+		
+	}
+	
+	private void syncCombiesWhenNotProvided(ControlActionEntrys caEntry){
+		try {
+  		  List<NotProvidedValuesCombi> valuesIfProvided = new ArrayList<NotProvidedValuesCombi>();
+  		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
+  		  //iteration over all value combinations registered for the linked control action
+  		  for (ProcessModelVariables combie : getLinkedCAE().getContextTableCombinations()) {
+  			  val = new NotProvidedValuesCombi();
+  			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
+  				 val.setValues(getCombieUUIDs(combie));
+  			  }else{
+  				  val.setValues(combie.getValueMap());
+  			  }
+  			  val.setUCALinks(combie.getUcaLinks(IValueCombie.TYPE_NOT_PROVIDED),IValueCombie.TYPE_NOT_PROVIDED);
+  				  
+  			  val.setArchived(combie.isArchived());
+  			  val.setConstraint(combie.getRefinedSafetyRequirements());
+  			  val.setHazardous(combie.getHazardous());
+  			  valuesIfProvided.add(val);
+  		  }
+  		  model.setValuesWhenCANotProvided(getLinkedCAE().getId(),valuesIfProvided);
+  	  }
+
+  	  catch (Exception e) {
+  		  System.out.println("Couldn't save ContextTableCombis if Provided");
+  	  }
+		
+	}
+	
+	
+	public Map<UUID,UUID> getCombieUUIDs(ProcessModelVariables variables){
+		Map<UUID,UUID> combis = new HashMap<>();
+		  //iterate over all values stored in that combination
+		  for (int z = 0; z<variables.getValues().size();z++) {
+			  String sVarName =variables.getPmVariables().get(z);
+			  String sValueName =variables.getValues().get(z);
+			  UUID variableID =null;
+			  for(ProcessModelVariables variable : getVariablesList()){
+				  String variableString = variable.getName();
+				  if(sVarName.contains("_")){
+					  variableString = variableString.replace(" ", "_");
+				  }
+				  if(variableString.equals(sVarName)){
+					  variableID = variable.getId();
+				  }
+			  }
+			  
+			  //iteration over all available and in the data model stored values
+			  //to get the uuids mapped to the components
+			  for (int n = 0; n<getValueCount();n++) {
+				  
+				  //2 if cases are used to find find the right variable-value combination 
+				  if (getValue(n).getId().equals(model.getIgnoreLTLValue().getId()) || getValue(n).getVariableID().equals(variableID)) {
+					  
+					  String tempValue =getValue(n).getValueText().trim();
+					  
+					  if ((tempValue.equals(sValueName))) {
+						  combis.put(variableID,getValue(n).getId());
+						  variables.addValueId(getValue(n).getId());
+						  variables.addVariableId(getValue(n).getVariableID());
+					  }
+					  else if ("(don't care)".equals(sValueName)) {
+						  combis.put(variableID,model.getIgnoreLTLValue().getId());
+						  variables.addValueId(model.getIgnoreLTLValue().getId());
+						  variables.addVariableId(getValue(n).getVariableID());
+					  }
+				  }
+			  }
+		  }
+		 return combis;
+	}
+	
+//=====================================================================
+//END 
+//=====================================================================
+
+	
+	
 //********************************************************************************************************************
 // Management of the control action dependencies																	
 		
-	
-	/**
-	 * returns a list with entry objects for each control action
-	 * which contain the variables which the control action depends when provided 
-	 * 
-	 * @return the dependenciesProvided
-	 */
-	public List<ControlActionEntrys> getDependenciesProvided() {
-		return this.dependenciesProvided;
-	}
-
-	/**
-	 * @param dependenciesProvided the dependenciesProvided to set
-	 */
-	public void setDependenciesProvided(List<ControlActionEntrys> dependenciesProvided) {
-		this.dependenciesProvided = dependenciesProvided;
-	}
 
 	/**
 	 * @return the dependenciesNotProvided
@@ -360,5 +420,79 @@ public class XSTPADataController {
 	 */
 	public void setDependenciesNotProvided(List<ControlActionEntrys> dependenciesNotProvided) {
 		this.dependenciesNotProvided = dependenciesNotProvided;
+	}
+
+	/**
+	 * @return the linkedPMV
+	 */
+	public ProcessModelVariables getLinkedPMV() {
+		return this.linkedPMV;
+	}
+
+	/**
+	 * @param linkedPMV the linkedPMV to set
+	 */
+	public void setLinkedPMV(ProcessModelVariables linkedPMV) {
+		this.linkedPMV = linkedPMV;
+	}
+
+	/**
+	 * @return the linkedCAE
+	 */
+	public ControlActionEntrys getLinkedCAE() {
+		return this.linkedCAE;
+	}
+
+	/**
+	 * 
+	 * @param provided whether the control action entry should be
+	 * 					chosen out of the provided list or not 
+	 * @param i the linkedCAE to set
+	 */
+	public boolean setLinkedCAE(boolean provided,int i) {
+		
+		this.controlActionProvided = provided;
+		return setLinkedCAE(i);
+	}
+	
+	/**
+	 * this method sets the linked control action to the entry stored <br>
+	 * at the index i either in the {@link #dependenciesIFProvided} or the {@link #dependenciesNotProvided} list<br>
+	 * depending on the {@link #controlActionProvided} choice
+	 * @param i the index in either the {@link #dependenciesIFProvided} or the {@link #dependenciesNotProvided} list
+	 * 
+	 * @return whether the linked control action has changed
+	 */
+	public boolean setLinkedCAE(int i) {
+		if(i < 0 || i >= this.dependenciesIFProvided.size()){
+			this.linkedCAE = null;
+			return true;
+		}
+		if(this.controlActionProvided && !this.dependenciesIFProvided.get(i).equals(this.linkedCAE)){
+			this.linkedCAE = this.dependenciesIFProvided.get(i);
+			return true;
+		}
+		if(!this.controlActionProvided && !this.dependenciesNotProvided.get(i).equals(this.linkedCAE)){
+			this.linkedCAE = this.dependenciesNotProvided.get(i);
+			return true;
+		}
+		return false;
+	}
+	public boolean isControlActionProvided(){
+		return controlActionProvided;
+	}
+
+	/**
+	 * @return the model
+	 */
+	public DataModelController getModel() {
+		return this.model;
+	}
+
+	/**
+	 * @param model the model to set
+	 */
+	public void setModel(DataModelController model) {
+		this.model = model;
 	}
 }

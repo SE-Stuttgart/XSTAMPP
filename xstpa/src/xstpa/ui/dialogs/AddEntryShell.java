@@ -101,6 +101,11 @@ public class AddEntryShell {
 		shell.pack();
 		shell.setLocation(new Point(x - shell.getBounds().width, y - shell.getBounds().height));
 		shell.open();
+		while (!shell.isDisposed()) {
+		    if (!Display.getDefault().readAndDispatch()) {
+		    	Display.getDefault().sleep();
+		    }
+		}
 	}
 	
 	private String[] getValueList(){

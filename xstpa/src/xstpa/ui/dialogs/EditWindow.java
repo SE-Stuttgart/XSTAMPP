@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import messages.Messages;
-
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -46,9 +43,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.util.STPAPluginUtils;
+import xstpa.model.ControlActionEntrys;
 import xstpa.model.ProcessModelVariables;
 import xstpa.model.Relation;
-import xstpa.ui.ControlActionEntrys;
 import xstpa.ui.View;
 
 /**
@@ -69,10 +66,11 @@ public class EditWindow
     public static final String[] DMODE = { "scratch", "extend" };
     
     public static final String[] DCHANDLER = { "no", "solver", "forbiddentuples" };
+    
+    private boolean refreshView;
     public static List<String> modes = new ArrayList<String>();
     public static List<String> constraints = new ArrayList<String>();
     private ControlActionEntrys linkedCAE;
-    private View view;
 	private Button ipogfButton, ipogButton, ipogf2Button, ipogdButton, baseChoiceButton,ignoreConstraints;
 	private Combo strengthCombo,modeCombo,handlingCombo;
     public static List<Relation> relations = new ArrayList<Relation>();
@@ -193,10 +191,11 @@ public class EditWindow
     // ==================== 4. Constructors ===============================
 
 
-	public EditWindow(ControlActionEntrys linkedCAE, View view)
+	public EditWindow(ControlActionEntrys linkedCAE)
     {
+		this.refreshView = false;
 		this.isDirty = false;
-        shell = new Shell(SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN));
+        shell = new Shell(SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN)| SWT.APPLICATION_MODAL);
         shell.addShellListener(new ShellAdapter() {
         	@Override
         	public void shellClosed(ShellEvent e) {
@@ -224,7 +223,6 @@ public class EditWindow
         // set the Location
         shell.setLocation(x,y);
         
-        this.view = view;
         createContents(shell);
         
         shell.pack();
@@ -982,10 +980,15 @@ public class EditWindow
 
 
     
-    public void open()
+    public boolean open()
     {
         shell.open();
-        
+        while (!shell.isDisposed()) {
+		    if (!Display.getDefault().readAndDispatch()) {
+		    	Display.getDefault().sleep();
+		    }
+		}
+        return this.refreshView;
         
     }
 
@@ -1033,10 +1036,8 @@ public class EditWindow
 		else {
 			modes.add(DCHANDLER[2]);
 		}
+		refreshView = true;
 		close();
-		view.createTableColumns(0);
-		view.writeFile(false);
-        view.open(false);
     }
     
     public void close()
@@ -1062,4 +1063,7 @@ public class EditWindow
 	  }  
 	  return true;  
 	}
+
+
+
 }
