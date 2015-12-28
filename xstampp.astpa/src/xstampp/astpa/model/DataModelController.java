@@ -1084,6 +1084,12 @@ public class DataModelController extends Observable implements
 		return this.controlActionController.getAllUnsafeControlActions();
 	}
 
+	
+	@Override
+	public int getUCANumber(UUID ucaID){
+		return this.controlActionController.getUCANumber(ucaID);
+	}
+	
 	@Override
 	public UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
 			String safetyConstraintDescription) {
@@ -1716,6 +1722,9 @@ public class DataModelController extends Observable implements
 			allCombies.addAll(getValuesWhenCAProvided(action.getId()));
 			allCombies.addAll(getValuesWhenCANotProvided(action.getId()));
 			for(IValueCombie combie : allCombies){
+				if(combie.getPMValues().isEmpty()){
+					continue;
+				}
 				valueBuffer = new StringBuffer(); 
 				for(UUID varKey : combie.getPMValues().keySet()){
 					if (!combie.getPMValues().get(varKey).equals(this.ignoreLtlValue.getId())) {
@@ -1728,7 +1737,9 @@ public class DataModelController extends Observable implements
 						valueBuffer.append(AND);
 					}
 				}
-				valueBuffer.delete(valueBuffer.length() - AND.length(), valueBuffer.length());
+				if(valueBuffer.length() > AND.length()){
+					valueBuffer.delete(valueBuffer.length() - AND.length(), valueBuffer.length());
+				}
 				String values = valueBuffer.toString();
 				
 				if (combie.isCombiHazardous(IValueCombie.TYPE_ANYTIME) && !combie.getPMValues().isEmpty()) {
@@ -1753,16 +1764,19 @@ public class DataModelController extends Observable implements
 						valueBuffer = new StringBuffer();
 						valueBuffer.append(START);
 						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
-						valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(IMPLIES);
-						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
-						valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(UNTIL);
-						valueBuffer.append(values);
-						valueBuffer.append(BRACKET_CLOSE);
+							valueBuffer.append(BRACKET_OPEN);
+							valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+							valueBuffer.append(BRACKET_CLOSE);
+							valueBuffer.append(IMPLIES);
+							valueBuffer.append(BRACKET_OPEN);
+								valueBuffer.append(BRACKET_OPEN);
+								valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+								valueBuffer.append(BRACKET_CLOSE);
+								valueBuffer.append(UNTIL);
+								valueBuffer.append(BRACKET_OPEN);
+								valueBuffer.append(values);
+								valueBuffer.append(BRACKET_CLOSE);
+							valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
 					}

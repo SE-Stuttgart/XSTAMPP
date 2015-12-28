@@ -132,7 +132,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 			line_height = wrapText(bounds,gc,this.currentText,2,buttonCollum);
 		}
 		
-		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-buttonCollum,line_height - bounds.y);
+		this.editField = new Rectangle(bounds.x, bounds.y, bounds.width-buttonCollum,line_height);
 		if(bounds.height + 2< this.editField.height){
 			this.grid.resizeRows();
 		}

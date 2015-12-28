@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.core.net;bundle-version="1.2.200",
  org.apache.commons.lang;bundle-version="2.1.0",
  org.eclipse.swt,
- org.eclipse.ui.workbench
+ org.eclipse.ui.workbench,
+ org.apache.commons.lang3;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.sun.xml.bind.marshaller,

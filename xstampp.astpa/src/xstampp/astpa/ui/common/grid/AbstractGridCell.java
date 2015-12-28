@@ -102,9 +102,10 @@ public abstract class AbstractGridCell implements IGridCell {
 		// alternating color
 		// find out the index of the cell
 		int index = 0;
-		for (int i = 0; i < this.row.getParentRow().getChildren().size(); i++) {
-			if (this.row.getParentRow().getChildren().get(i).equals(this.row)) {
-				index = i;
+		GridRow colorSelectRow =this.row.getParentRow();
+		for (int i = 0; i < colorSelectRow.getChildren().size(); i++) {
+			if (colorSelectRow.getChildren().get(i).equals(this.row)) {
+				index = i / this.row.getColorDivider();
 				break;
 			}
 		}
@@ -204,6 +205,7 @@ public abstract class AbstractGridCell implements IGridCell {
 			return 0;
 		}
 		FontMetrics metrics= gc.getFontMetrics();
+		//the line height is set absolute so that the strings are drawn on the right position
 		int line_height = bounds.y;
 		String[] words= text.split(" ");
 		String line="";
@@ -267,7 +269,10 @@ public abstract class AbstractGridCell implements IGridCell {
 				first=false;
 			}
 		}
-		return line_height += 2;
+		
+		//since line_height was initialized in absolute scale but this function should calculate the
+		//relative text height the y -coordinate must be subtracted
+		return line_height -(bounds.y -2);
 		
 	}
 	

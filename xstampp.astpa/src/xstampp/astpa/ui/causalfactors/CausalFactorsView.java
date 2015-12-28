@@ -425,7 +425,7 @@ public class CausalFactorsView extends StandartEditorPart{
 			if(!isFiltered(component)){
 				continue;
 			}
-			GridRow csRow = new GridRow();
+			GridRow csRow = new GridRow(1);
 			GridCellText causalComp = new GridCellText(component.getText());
 			csRow.addCell(causalComp);
 			csRow.addCell(new GridCellColored(this.grid,
@@ -442,7 +442,7 @@ public class CausalFactorsView extends StandartEditorPart{
 				if(!isFiltered(factor)){
 					continue;
 				}
-				GridRow childRow = new GridRow();
+				GridRow childRow = new GridRow(1);
 				childRow.addCell(new CausalFactorCell(this.grid, factor
 						.getText(), factor));
 
@@ -479,7 +479,7 @@ public class CausalFactorsView extends StandartEditorPart{
 				csRow.addChildRow(childRow);
 			}
 
-			GridRow buttonRow = new GridRow();
+			GridRow buttonRow = new GridRow(1);
 			buttonRow.addCell(new AddCausalFactorButton(component));
 
 			csRow.addChildRow(buttonRow);

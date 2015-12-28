@@ -56,5 +56,11 @@ public interface ICorrespondingSafetyConstraintDataModel extends IDataModel {
 	UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
 			String safetyConstraintDescription);
 
-	
+	/**
+	 * returns the current id number of the UnsafeControlAction with the given ucaID
+	 *  
+	 * @param ucaID the UnsafeControlAction id
+	 * @return the current id
+	 */
+	int getUCANumber(UUID ucaID);
 }

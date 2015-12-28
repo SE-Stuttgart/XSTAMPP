@@ -197,9 +197,29 @@ public class CSCView extends StandartEditorPart{
 
 		// since both columns should behave the same both will use these
 		// constants as their ColumnWeightData
-		final int weight = 50;
+		final int weight = 40;
 		final int minWidth = 100;
 
+		TableViewerColumn ucaIdColumn = new TableViewerColumn(
+				this.tableViewer, SWT.NONE);
+		ucaIdColumn.getColumn().setText(
+				Messages.UnsafeControlActions);
+		tableColumnLayout.setColumnData(
+				ucaIdColumn.getColumn(),
+				new ColumnWeightData(10, 10, false));
+
+		ucaIdColumn.setLabelProvider(new ColumnLabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof ICorrespondingUnsafeControlAction) {
+					return "UCA1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
+							.getId());
+				}
+				return null;
+			}
+		});
+		
 		// the left column is for the unsafe control actions
 		this.unsafeControlActionsColumn = new TableViewerColumn(
 				this.tableViewer, SWT.NONE);
@@ -222,6 +242,27 @@ public class CSCView extends StandartEditorPart{
 					}
 				});
 
+
+		TableViewerColumn srIdColumn = new TableViewerColumn(
+				this.tableViewer, SWT.NONE);
+		srIdColumn.getColumn().setText(
+				Messages.UnsafeControlActions);
+		tableColumnLayout.setColumnData(
+				srIdColumn.getColumn(),
+				new ColumnWeightData(10, 10, false));
+
+		srIdColumn.setLabelProvider(new ColumnLabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof ICorrespondingUnsafeControlAction) {
+					return "SR2."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
+							.getId());
+				}
+				return null;
+			}
+		});
+		
 		// the right column is for the resulting safety constraints
 		this.safetyConstraintsColumn = new TableViewerColumn(this.tableViewer,
 				SWT.NONE);
@@ -230,6 +271,7 @@ public class CSCView extends StandartEditorPart{
 		tableColumnLayout.setColumnData(this.safetyConstraintsColumn
 				.getColumn(), new ColumnWeightData(weight, minWidth, false));
 
+		
 		this.safetyConstraintsColumn
 				.setLabelProvider(new ColumnLabelProvider() {
 
@@ -366,7 +408,7 @@ public class CSCView extends StandartEditorPart{
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return new TextCellEditor(CSCView.this.tableViewer.getTable(),style);
+			return new TextCellEditor(CSCView.this.tableViewer.getTable(),this.style);
 		}
 
 		@Override

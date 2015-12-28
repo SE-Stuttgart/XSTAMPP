@@ -19,7 +19,9 @@ import java.util.UUID;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.model.IDataModel;
 
 /**
@@ -147,4 +149,12 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	 * @return the list containing all hazards
 	 */
 	List<ITableModel> getAllHazards();
+	
+	/**
+	 * returns the current id number of the UnsafeControlAction with the given ucaID
+	 *  
+	 * @param ucaID the UnsafeControlAction id
+	 * @return the current id
+	 */
+	int getUCANumber(UUID ucaID);
 }

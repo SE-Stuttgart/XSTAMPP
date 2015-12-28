@@ -30,13 +30,19 @@ public class GridRow {
 
 	private GridRow parentRow = null;
 
+	private int colorDivider;
+	
+
 	/**
 	 * Ctor.
 	 * 
 	 * @author Patrick Wickenhaeuser
+	 * @param colorDivide The amount of rows that should be colored in the same color
+	 * 						to mark multiple rows that are related
 	 * 
 	 */
-	public GridRow() {
+	public GridRow(int colorDivide) {
+		this.colorDivider = colorDivide; 
 		this.childrenRows = new ArrayList<GridRow>();
 		this.cells = new ArrayList<IGridCell>();
 		this.parentRow = null;
@@ -143,5 +149,12 @@ public class GridRow {
 			height = Math.max(height, cellHeight);
 		}
 		return height;
+	}
+
+	/**
+	 * @return the colorDivider
+	 */
+	public int getColorDivider() {
+		return this.colorDivider;
 	}
 }

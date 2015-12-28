@@ -304,10 +304,21 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		}
 		for (IControlAction cAction : controlActions) {
 			//fiter by the title of the control action
-			if(!cAction.getTitle().startsWith(this.filterText.getText())){
+			boolean isDigit = false;
+			int filterID = -1;
+			for(Character c : this.filterText.getText().toCharArray()){
+				isDigit = Character.isDigit(c);
+				if(!isDigit){
+					break;
+				}
+			}
+			if(isDigit){
+				filterID = Integer.parseInt(this.filterText.getText());
+			}
+			if(!cAction.getTitle().startsWith(this.filterText.getText()) || isDigit){
 				continue;
 			}
-			GridRow controlActionRow = new GridRow();
+			GridRow controlActionRow = new GridRow(1);
 			this.grid.addRow(controlActionRow);
 
 			GridCellText descriptionItem = new GridCellText(cAction.getTitle());
@@ -333,8 +344,12 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 					.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
 
 			for (int i = 0; i <= this.getMaxHeight(cAction); i++) {
-				GridRow ucaRow = new GridRow();
-				GridRow linkRow = new GridRow();
+				
+				GridRow idRow = new GridRow(3);
+				GridRow ucaRow = new GridRow(3);
+				GridRow linkRow = new GridRow(3);
+
+				controlActionRow.addChildRow(idRow);
 				controlActionRow.addChildRow(ucaRow);
 				controlActionRow.addChildRow(linkRow);
 
@@ -344,8 +359,13 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 				IUnsafeControlAction tooSoonUca = null;
 
 				// set descriptions
-				if (allNotGiven.size() > i) {
+				if (allNotGiven.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allNotGiven.get(i).getId()) == filterID)) {
 					notGivenUca = allNotGiven.get(i);
+					if(this.ucaContentProvider.getLinkedItems(notGivenUca.getId()).isEmpty()){
+						idRow.addCell(new GridCellBlank());
+					}else{
+						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(notGivenUca.getId())));
+					}
 					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,notGivenUca.getDescription(),
 							notGivenUca.getId());
 					ucaRow.addCell(editor);
@@ -355,18 +375,25 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 							UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allNotGiven.size() == i) {
 					// add placeholder
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new AddUcaButton(cAction,
 							Messages.AddNotGivenUCA,
 							UnsafeControlActionType.NOT_GIVEN));
 				} else {
 					// add placeholders
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new GridCellBlank());
 				}
 
-				if (allIncorrect.size() > i) {
+				if (allIncorrect.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allIncorrect.get(i).getId()) == filterID)) {
 					incorrectUca = allIncorrect.get(i);
+					if(this.ucaContentProvider.getLinkedItems(incorrectUca.getId()).isEmpty()){
+						idRow.addCell(new GridCellBlank());
+					}else{
+						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(incorrectUca.getId())));
+					}
 					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,incorrectUca.getDescription(),
 							incorrectUca.getId());
 					ucaRow.addCell(editor);
@@ -376,18 +403,25 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 							UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allIncorrect.size() == i) {
 					// add placeholder
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new AddUcaButton(cAction,
 							Messages.AddGivenIncorrectlyUCA,
 							UnsafeControlActionType.GIVEN_INCORRECTLY));
 				} else {
 					// add placeholders
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new GridCellBlank());
 				}
 
-				if (allWrongTiming.size() > i) {
+				if (allWrongTiming.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allWrongTiming.get(i).getId()) == filterID)) {
 					timingUca = allWrongTiming.get(i);
+					if(this.ucaContentProvider.getLinkedItems(timingUca.getId()).isEmpty()){
+						idRow.addCell(new GridCellBlank());
+					}else{
+						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(timingUca.getId())));
+					}
 					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,timingUca.getDescription(),
 							timingUca.getId());
 					ucaRow.addCell(editor);
@@ -397,18 +431,25 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 							UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allWrongTiming.size() == i) {
 					// add placeholder
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new AddUcaButton(cAction,
 							Messages.AddWrongTimingUCA,
 							UnsafeControlActionType.WRONG_TIMING));
 				} else {
 					// add placeholders
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new GridCellBlank());
 				}
 
-				if (allTooSoon.size() > i) {
+				if (allTooSoon.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allTooSoon.get(i).getId()) == filterID)) {
 					tooSoonUca = allTooSoon.get(i);
+					if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
+						idRow.addCell(new GridCellBlank());
+					}else{
+						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(tooSoonUca.getId())));
+					}
 					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
 							tooSoonUca.getId());
 					ucaRow.addCell(editor);
@@ -418,12 +459,14 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 							UnsafeControlActionsView.HAZARD_ID_PREFIX));
 				} else if (allTooSoon.size() == i) {
 					// add placeholder
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new AddUcaButton(cAction,
 							Messages.AddStoppedTooSoonUCA,
 							UnsafeControlActionType.STOPPED_TOO_SOON));
 				} else {
 					// add placeholders
+					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new GridCellBlank());
 				}

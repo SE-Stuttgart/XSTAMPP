@@ -362,7 +362,27 @@ public class ControlActionController {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * returns the current id number of the UnsafeControlAction with the given ucaID
+	 *  
+	 * @param ucaID the UnsafeControlAction id
+	 * @return the current id
+	 */
+	public int getUCANumber(UUID ucaID){
+		int counter = 0;
+		for (ControlAction controlAction : this.controlActions) {
+			for (IUnsafeControlAction unsafeControlAction : controlAction
+					.getUnsafeControlActions()) {
+				counter++;
+				if(unsafeControlAction.getId().equals(ucaID)){
+					return counter;
+				}
+			}
+		}
+		return -1;
+	}
+	
 	/**
 	 * Sets the corresponding safety constraint of the unsafe control action
 	 * which is identified by the given id
