@@ -176,8 +176,10 @@ public class Controller extends Observable implements IDataModel,
 		if (projectName == null) {
 			return false;
 		}
-		this.projectDataManager.setProjectName(projectName);
-		this.setUnsavedAndChanged(ObserverValue.PROJECT_NAME);
+		if(!this.projectDataManager.getProjectName().equals(projectName)){
+			this.projectDataManager.setProjectName(projectName);
+			this.setUnsavedAndChanged(ObserverValue.PROJECT_NAME);
+		}
 		return true;
 	}
 
