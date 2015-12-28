@@ -61,6 +61,7 @@
       <perspective
             class="xstampp.DefaultPerspective"
             fixed="false"
+            icon="icons/xstampp/logox32.png"
             id="xstampp.defaultPerspective"
             name="Default Perspective">
       </perspective>

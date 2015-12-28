@@ -231,7 +231,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		String name = element.getName();
 		String selectionId = element.getAttribute("id") + projectID.toString();
 		String navigationPath=pathName + PATH_SEPERATOR + element.getAttribute("name");
-		TreeItem subItem = new TreeItem(projectItem, SWT.BORDER
+		final TreeItem subItem = new TreeItem(projectItem, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
 		if(defaultFontData != null){
 			subItem.setFont(new Font(null, defaultFontData));
@@ -240,14 +240,14 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		subItem.addListener(SWT.SELECTED, this.listener);
 		this.addImage(subItem, element.getAttribute("icon"), pluginID);//$NON-NLS-1$
 		IProjectSelection selector;
-		if(name.equals("step")){
+		if(name.equals("step") || name.equals("stepEditor")){
 			selector = new StepSelector(subItem, projectID,
 					element.getAttribute("editorId"), //$NON-NLS-1$
 					element.getAttribute("name")); //$NON-NLS-1$
 			//register all additional stepEditors defined as xstampp.extension.stepEditor extension in any of the plugins
 			if(this.stepEditorsToStepId.containsKey(element.getAttribute("id"))){
 				for(IConfigurationElement e : this.stepEditorsToStepId.get(element.getAttribute("id"))){
-					((StepSelector)selector).addStepEditor(e.getAttribute("editor"), e.getAttribute("name"));
+					((StepSelector)selector).addStepEditor(e.getAttribute("editorId"), e.getAttribute("name"));
 				}
 			}
 			if(this.stepPerspectivesToStepId.containsKey(element.getAttribute("id"))){
@@ -262,6 +262,11 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 					perspectiveItem.setText(perspConf.getAttribute("name"));
 					this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
 					perspectiveItem.setImage(img);
+				}
+			}
+			if(this.stepEditorsToStepId.containsKey(element.getAttribute("id"))){
+				for(IConfigurationElement subEditorConf : this.stepEditorsToStepId.get(element.getAttribute("id"))){
+					addTreeItem(subEditorConf,subItem,navigationPath,projectID, pluginID);
 				}
 			}
 

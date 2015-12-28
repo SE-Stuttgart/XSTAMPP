@@ -37,6 +37,6 @@ public class Perspective implements IPerspectiveFactory {
 		// create the view container
 		layout.addStandaloneView("astpa.Welcome", false, IPageLayout.LEFT,
 				Perspective.VIEW_CONTAINER_RATIO, layout.getEditorArea());
-
+		layout.setFixed(true);
 	}
 }

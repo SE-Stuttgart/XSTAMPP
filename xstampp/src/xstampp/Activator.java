@@ -13,9 +13,18 @@
 
 package xstampp;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import xstampp.ui.common.ProjectManager;
+import xstampp.util.STPAPluginUtils;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -52,6 +61,7 @@ public class Activator extends AbstractUIPlugin {
 		super.start(newContext);
 		Activator.context = newContext;
 		Activator.plugin = this;
+
 	}
 
 	/*
@@ -96,5 +106,45 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static BundleContext getContext() {
 		return Activator.context;
+	}
+	
+	/**
+	 * searches the registered plugins for any extensions of the type
+	 * <code>"astpa.extension.steppedProcess"</code>
+	 * and for each maps the declared file extension to the IConfigurationElement
+	 * 
+	 * @see IConfigurationElement
+	 *
+	 * @author Lukas Balzer
+	 *
+	 */
+	public void loadProjects(){
+		IConfigurationElement[] elements = Platform
+				.getExtensionRegistry()
+				.getConfigurationElementsFor("xstampp.extension.steppedProcess");
+		for (IConfigurationElement extElement : elements) { //$NON-NLS-1$
+			String[] ext = extElement.getAttribute("extension").split(";"); 	//$NON-NLS-1$
+			for(int i=0;i< ext.length;i++){
+				ProjectManager.getContainerInstance().registerExtension(ext[i], extElement);
+			}
+		}
+		
+		File wsPath = new File(Platform.getInstanceLocation().getURL()
+				.getPath());
+		if (wsPath.isDirectory()) {
+			for (File f : wsPath.listFiles()) {
+				if (f.getName().startsWith(".")) { //$NON-NLS-1$
+					continue;
+				}
+				
+				String[] fileSegments = f.getName().split("\\."); //$NON-NLS-1$
+				if ((fileSegments.length > 1)
+						&& ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
+					Map<String, String> values = new HashMap<>();
+					values.put("loadRecentProject", f.getAbsolutePath()); //$NON-NLS-1$
+					STPAPluginUtils.executeParaCommand("xstampp.command.load", values);//$NON-NLS-1$
+				}
+			}
+		}
 	}
 }

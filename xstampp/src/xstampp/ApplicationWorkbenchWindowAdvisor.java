@@ -16,7 +16,6 @@ package xstampp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import messages.Messages;
 
@@ -34,14 +33,10 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
-import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
 import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.osgi.framework.ServiceReference;
 
-import xstampp.model.IDataModel;
-import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.update.UpdateJob;
 import xstampp.util.ChooseWorkLocation;
@@ -85,37 +80,37 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	public void postWindowOpen() {
 		ChooseWorkLocation.initiateWorkspace();
 
-		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
-				.getWorkbench().getExportWizardRegistry();
-		IWizardCategory[] categories = wizardRegistry.getRootCategory()
-				.getCategories();
-		for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
-
-			if (wizard.getCategory().getId().matches("org.eclipse.ui.Basic") || //$NON-NLS-1$
-					wizard.getCategory().getId().endsWith("category")) { //$NON-NLS-1$
-
-				WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-				if (!wizardElement.getId().matches(
-						"org.eclipse.ui.wizards.export.Preferences")) { //$NON-NLS-1$
-					wizardRegistry.removeExtension(wizardElement
-							.getConfigurationElement().getDeclaringExtension(),
-							new Object[] { wizardElement });
-				}
-			}
-		}
-
-		wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
-				.getWorkbench().getImportWizardRegistry();
-		categories = wizardRegistry.getRootCategory().getCategories();
-		for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
-			WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-			if (!wizardElement.getId().matches(
-					"org.eclipse.ui.wizards.import.Preferences")) { //$NON-NLS-1$
-				wizardRegistry.removeExtension(wizardElement
-						.getConfigurationElement().getDeclaringExtension(),
-						new Object[] { wizardElement });
-			}
-		}
+//		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
+//				.getWorkbench().getExportWizardRegistry();
+//		IWizardCategory[] categories = wizardRegistry.getRootCategory()
+//				.getCategories();
+//		for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
+//
+//			if (wizard.getCategory().getId().matches("org.eclipse.ui.Basic") || //$NON-NLS-1$
+//					wizard.getCategory().getId().endsWith("category")) { //$NON-NLS-1$
+//
+//				WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+//				if (!wizardElement.getId().matches(
+//						"org.eclipse.ui.wizards.export.Preferences")) { //$NON-NLS-1$
+//					wizardRegistry.removeExtension(wizardElement
+//							.getConfigurationElement().getDeclaringExtension(),
+//							new Object[] { wizardElement });
+//				}
+//			}
+//		}
+//
+//		wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
+//				.getWorkbench().getImportWizardRegistry();
+//		categories = wizardRegistry.getRootCategory().getCategories();
+//		for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
+//			WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+//			if (!wizardElement.getId().matches(
+//					"org.eclipse.ui.wizards.import.Preferences")) { //$NON-NLS-1$
+//				wizardRegistry.removeExtension(wizardElement
+//						.getConfigurationElement().getDeclaringExtension(),
+//						new Object[] { wizardElement });
+//			}
+//		}
 	}
 
 	@Override
@@ -124,6 +119,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer
 				.setInitialSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
 		configurer.setShowCoolBar(true);
+		configurer.setShowPerspectiveBar(true);
 		configurer.setShellStyle(SWT.APPLICATION_MODAL);
 		configurer.getActionBarConfigurer().getCoolBarManager()
 				.setLockLayout(false);
@@ -183,7 +179,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			registry.revertPerspective(dec);
 		}
 		page.resetPerspective();
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+//		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		if(!STPAPluginUtils.getUnfinishedJobs().isEmpty())
 		{
 			MessageDialog.openError(null, "Unfinished Jobs", "there are still unfinished jobs!"
@@ -191,7 +187,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			return false;
 		}
 		ProjectManager viewContainer = manager;
-		if (viewContainer.getUnsavedChanges()) {
+		if (manager.getUnsavedChanges()) {
 			MessageDialog dialog = new MessageDialog(Display.getCurrent()
 					.getActiveShell(), Messages.PlatformName, null,
 					Messages.ThereAreUnsafedChangesDoYouWantToStoreThem,

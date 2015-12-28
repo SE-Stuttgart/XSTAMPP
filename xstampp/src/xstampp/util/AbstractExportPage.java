@@ -11,8 +11,6 @@ import messages.Messages;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -22,8 +20,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
@@ -146,13 +142,16 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 				this.chooseList.add( entry.getValue());
 			}
 		}
-		ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage().findView("astpa.explorer").getSite()
-				.getSelectionProvider().getSelection();
-
-		if(selection instanceof IProjectSelection && this.projects.containsKey(((IProjectSelection) selection).getProjectId())){		
-			this.setProjectID(((IProjectSelection) selection).getProjectId());
-			this.chooseList.setText(this.projects.get(((IProjectSelection) selection).getProjectId()));
+		if(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().findView("astpa.explorer") != null){
+			ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage().findView("astpa.explorer").getSite()
+					.getSelectionProvider().getSelection();
+	
+			if(selection instanceof IProjectSelection && this.projects.containsKey(((IProjectSelection) selection).getProjectId())){		
+				this.setProjectID(((IProjectSelection) selection).getProjectId());
+				this.chooseList.setText(this.projects.get(((IProjectSelection) selection).getProjectId()));
+			}
 		}
 		return projectChooser;
 

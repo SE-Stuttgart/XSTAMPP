@@ -67,7 +67,7 @@
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="editor" type="string" use="required">
+         <attribute name="editorId" type="string" use="required">
             <annotation>
                <documentation>
                   An editor which must be registered as editor in the extension org.eclipse.ui.editors
