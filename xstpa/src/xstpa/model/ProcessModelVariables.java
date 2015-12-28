@@ -16,13 +16,13 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.core.runtime.Assert;
 
 import xstampp.astpa.model.controlaction.IValueCombie;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 
 
 @XmlRootElement(name = "contexttablecombination")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "variableIds", "name", "linkedControlActionName", "refinedSafetyRequirements", "context",
-		"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict", "isInRSRTable", "relatedHazards", "uca", "id" })
+@XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "variableIdsList", "name", "linkedControlActionName",
+		"refinedSafetyRequirements", "context",	"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict",
+		"archived","singleVarId", "isInRSRTable", "ucaLinks","relatedUCAsAnytime","relatedUCAsTooEarly","relatedUCAsTooLate"})
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")
@@ -41,7 +41,7 @@ public class ProcessModelVariables {
 	@XmlElement(name = "pmValue")
 	private List<String> pmValues = new ArrayList<String>();
 	
-	@XmlElementWrapper(name = "variableIds")
+	@XmlElementWrapper(name = "variableIdsList")
 	@XmlElement(name = "varId")
 	private List<UUID> variableIdsList;
 	
@@ -58,31 +58,39 @@ public class ProcessModelVariables {
 	private int number;
 	
 
-	private Boolean hazardous = false;
+	private boolean hazardous = false;
 	
 	
-	private Boolean hLate = false;
+	private boolean hLate = false;
 	
 	
-	private Boolean hEarly = false;
+	private boolean hEarly = false;
 	
 	
-	private Boolean hAnytime = false;
+	private boolean hAnytime = false;
 	
-	private Boolean conflict = false;
+	private boolean conflict = false;
 	
 	private boolean archived = false;
 	
-	private Boolean isInRSRTable = false;
+	private boolean isInRSRTable = false;
 
 	private UUID singleVarId;
-	
-	private List<UUID> ucaLinks= new ArrayList<>();
 
+	@XmlElementWrapper(name = "ucaLinks")
+	@XmlElement(name = "id")
+	private List<UUID> ucaLinks= new ArrayList<>();
+	
+	@XmlElementWrapper(name = "relatedUCAsAnytime")
+	@XmlElement(name = "id")
 	private List<UUID> relatedUCAsAnytime;
 
+	@XmlElementWrapper(name = "relatedUCAsTooEarly")
+	@XmlElement(name = "id")
 	private List<UUID> relatedUCAsTooEarly;
 
+	@XmlElementWrapper(name = "relatedUCAsTooLate")
+	@XmlElement(name = "id")
 	private List<UUID> relatedUCAsTooLate;
 	
 	public ProcessModelVariables (List<String> pmVariables,String linkedControlActionName ) {

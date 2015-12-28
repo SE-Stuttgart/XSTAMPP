@@ -2,20 +2,23 @@ package xstpa.ui.tables;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 
 import xstpa.model.ProcessModelValue;
 import xstpa.model.XSTPADataController;
@@ -25,45 +28,8 @@ import xstpa.ui.tables.utils.MainViewContentProvider;
 
 public class ProcessValuesTable extends AbstractTableComposite {
 
-	private class ValueLabelsProvider extends LabelProvider implements
-	ITableLabelProvider, IColorProvider {
+	private abstract class ValueLabelsProvider extends ColumnLabelProvider{
 			
-		public String getColumnText(Object element, int columnIndex) {
-			
-			ProcessModelValue entry = (ProcessModelValue) element;
-				switch (columnIndex) {
-				case 0:
-					return entry.getController();
-				case 1:
-					return entry.getPM();
-				case 2:
-					return entry.getPMV();
-				case 3:
-					return entry.getValueText();
-				
-				case 4:
-					return entry.getComments();
-				}
-				return null;
-			
-		}
-		
-		public Image getColumnImage(Object obj, int index) {			
-			return getImage(obj);		
-		}
-		
-		
-		
-		public Image getImage(Object obj) {
-			return null;
-		}
-		
-		@Override
-		public org.eclipse.swt.graphics.Color getForeground(Object element) {
-			return null;
-		}
-		
-		
 		@Override
 		public Color getBackground(Object element) {
 			ArrayList<?> list = (ArrayList<?>) mainViewer.getInput();
@@ -81,15 +47,15 @@ public class ProcessValuesTable extends AbstractTableComposite {
 
 	public ProcessValuesTable(Composite parent,XSTPADataController controller) {
 		super(parent, controller);
-		setLayout(new GridLayout(1, false));
+		TableColumnLayout tLayout = new TableColumnLayout();
+		setLayout(tLayout);
 		 // Add the TableViewers   
-		mainViewer = new TableViewer(this, SWT.FULL_SELECTION );
+		mainViewer = new TableViewer(this, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
 		mainViewer.setContentProvider(new MainViewContentProvider());
-		mainViewer.setLabelProvider(new ValueLabelsProvider());
+		
 		table = mainViewer.getTable();
 		table.setHeaderVisible(true);
 	    table.setLinesVisible(true);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		 // Create the cell editors
 	    CellEditor[] editors = new CellEditor[5];
 	    editors[4] = new TextCellEditor(table);
@@ -99,11 +65,54 @@ public class ProcessValuesTable extends AbstractTableComposite {
 	    mainViewer.setCellEditors(editors);
 	    
 		// add Columns for the mainTable
-	    new TableColumn(table, SWT.LEFT).setText(View.CONTROLLER);
-	    new TableColumn(table, SWT.LEFT).setText(View.PM);
-	    new TableColumn(table, SWT.LEFT).setText(View.PMV);
-	    new TableColumn(table, SWT.LEFT).setText(View.PMVV);
-	    new TableColumn(table, SWT.LEFT).setText(View.COMMENTS);
+	    TableViewerColumn valuesColumn = new TableViewerColumn(mainViewer, SWT.LEFT);
+	    valuesColumn.getColumn().setText(View.CONTROLLER);
+	    valuesColumn.setLabelProvider(new ValueLabelsProvider() {
+	    	public String getText(Object element) {
+				return ((ProcessModelValue) element).getController();
+			}
+		});
+	    
+	    tLayout.setColumnData(valuesColumn.getColumn(), new ColumnWeightData(1, 30, false));
+	    
+	    valuesColumn = new TableViewerColumn(mainViewer, SWT.LEFT);
+	    valuesColumn.getColumn().setText(View.PM);
+	    valuesColumn.setLabelProvider(new ValueLabelsProvider() {
+	    	public String getText(Object element) {
+				return ((ProcessModelValue) element).getPM();
+			}
+		});
+	    
+	    tLayout.setColumnData(valuesColumn.getColumn(), new ColumnWeightData(1, 30, false));
+	    
+	    valuesColumn = new TableViewerColumn(mainViewer, SWT.LEFT);
+	    valuesColumn.getColumn().setText(View.PMV);
+	    valuesColumn.setLabelProvider(new ValueLabelsProvider() {
+	    	public String getText(Object element) {
+				return ((ProcessModelValue) element).getPMV();
+			}
+		});
+	    
+	    tLayout.setColumnData(valuesColumn.getColumn(), new ColumnWeightData(2, 50, false));
+	    
+	    valuesColumn = new TableViewerColumn(mainViewer, SWT.LEFT);
+	    valuesColumn.getColumn().setText(View.PMVV);
+	    valuesColumn.setLabelProvider(new ValueLabelsProvider() {
+	    	public String getText(Object element) {
+				return ((ProcessModelValue) element).getValueText();
+			}
+		});
+	    
+	    tLayout.setColumnData(valuesColumn.getColumn(), new ColumnWeightData(1, 30, false));
+	    
+	    valuesColumn = new TableViewerColumn(mainViewer, SWT.LEFT);
+	    valuesColumn.getColumn().setText(View.COMMENTS);
+	    valuesColumn.setLabelProvider(new ValueLabelsProvider() {
+	    	public String getText(Object element) {
+				return ((ProcessModelValue) element).getComments();
+			}
+		});
+	    tLayout.setColumnData(valuesColumn.getColumn(), new ColumnWeightData(1, 30, false));
 
 	    setVisible(false);
 	}

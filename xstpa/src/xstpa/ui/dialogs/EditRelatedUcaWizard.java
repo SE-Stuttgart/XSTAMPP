@@ -90,8 +90,7 @@ public class EditRelatedUcaWizard {
 	    data.minimumHeight = 200;
 	    availableList.setLayoutData(data);
 	    for (ICorrespondingUnsafeControlAction uca : availableLinks) {
-	    	int number = model.getAllUnsafeControlActions().indexOf(uca);
-	    	
+	    	int number = model.getUCANumber(uca.getId());
 			availableList.add("UCA-"+number+" : " +uca.getDescription());
 		}
 	    
@@ -163,7 +162,7 @@ public class EditRelatedUcaWizard {
 		linkedList.removeAll();
 		for (ICorrespondingUnsafeControlAction uca : availableLinks) {
 			if(ucaLinks.contains(uca.getId())){
-		    	int number = model.getAllUnsafeControlActions().indexOf(uca);
+		    	int number = model.getUCANumber(uca.getId());
 		    	linkedList.add("UCA-"+number);
 			}
 		}

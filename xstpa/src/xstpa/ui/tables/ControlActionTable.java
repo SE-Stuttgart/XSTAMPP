@@ -2,8 +2,11 @@ package xstpa.ui.tables;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.layout.AbstractColumnLayout;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -12,8 +15,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -87,15 +88,14 @@ public class ControlActionTable extends AbstractTableComposite{
 
 	public ControlActionTable(Composite parent, XSTPADataController controller) {
 		super(parent, controller);
-		setLayout(new GridLayout(1, false));
+		setLayout(new TableColumnLayout());
 		
-		controlActionViewer = new TableViewer(this, SWT.FULL_SELECTION );
+		controlActionViewer = new TableViewer(this, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
 		controlActionViewer.setContentProvider(new MainViewContentProvider());
 		controlActionViewer.setLabelProvider(new ControlActionLableProvider());
 		controlActionTable = controlActionViewer.getTable();
 	    controlActionTable.setHeaderVisible(true);
 	    controlActionTable.setLinesVisible(true);
-		controlActionTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		CellEditor[] controlActionEditors = new CellEditor[4];
 	    controlActionEditors[1] = new CheckboxCellEditor(controlActionTable);
@@ -106,9 +106,15 @@ public class ControlActionTable extends AbstractTableComposite{
 		
  // add Columns for Control Actions table (list of control actions)
 	    
-	    new TableColumn(controlActionTable, SWT.LEFT).setText(View.CONTROL_ACTIONS);
-	    new TableColumn(controlActionTable, SWT.LEFT).setText(View.SAFETY_CRITICAL);
-	    new TableColumn(controlActionTable, SWT.LEFT).setText(View.COMMENTS);
+	    TableColumn caColumn = new TableColumn(controlActionTable, SWT.LEFT);
+	    caColumn.setText(View.CONTROL_ACTIONS);
+	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
+	    caColumn = new TableColumn(controlActionTable, SWT.LEFT);
+	    caColumn.setText(View.SAFETY_CRITICAL);
+	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
+	    caColumn = new TableColumn(controlActionTable, SWT.LEFT);
+	    caColumn.setText(View.COMMENTS);
+	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
 	    
 	 // listener for the checkboxes in the control Action table so they get drawn right
 	    controlActionTable.addListener(SWT.PaintItem, new Listener() {

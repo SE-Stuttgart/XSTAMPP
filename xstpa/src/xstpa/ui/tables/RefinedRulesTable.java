@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -101,18 +103,24 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 		super(parent, controller);
 		this.refinedSafetyContent = new ArrayList<>();
 	    setLayout( new GridLayout(2, false));	
-	    refinedSafetyViewer = new TableViewer(this, SWT.FULL_SELECTION );
+	    Composite tableComp = new Composite(this, SWT.None);
+	    tableComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		TableColumnLayout tLayout = new TableColumnLayout();
+		tableComp.setLayout(tLayout);
+		
+	    refinedSafetyViewer = new TableViewer(tableComp,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
 		refinedSafetyViewer.setContentProvider(new MainViewContentProvider());
 		refinedSafetyViewer.setLabelProvider(new RefinedSafetyViewLabelProvider());
 		refinedSafetyTable = refinedSafetyViewer.getTable();
-	    refinedSafetyTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    
 	    refinedSafetyTable.setHeaderVisible(true);
 	    refinedSafetyTable.setLinesVisible(true);
 	    
 	    // add columns for ltl tables	
 	    for(int i= 0;i<columns.length;i++){
-	    	new TableColumn(refinedSafetyTable, SWT.LEFT).setText(columns[i]);
+	    	TableColumn col = new TableColumn(refinedSafetyTable, SWT.LEFT);
+	    	col.setText(columns[i]);
+		    tLayout.setColumnData(col, new ColumnWeightData(1, 30, false));
 	    }
 	    
 	    /*
@@ -156,7 +164,7 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	    Composite editRefinedSafetyTableComposite = new Composite( this, SWT.NONE);
 	    editRefinedSafetyTableComposite.setLayout( new GridLayout(1, false) );
 	    GridData data = new GridData(SWT.RIGHT, SWT.TOP, false, true); 
-	    data.verticalIndent = 5;
+//	    data.verticalIndent = 5;
 	    editRefinedSafetyTableComposite.setLayoutData(data);
 	    
 		// Add a button to switch tables (LTL Button)

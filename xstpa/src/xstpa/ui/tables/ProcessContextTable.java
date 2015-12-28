@@ -693,6 +693,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		//===============================================================================
 		//END
 		//================================================================================
+		setVisible(false);
 	}
 
 	public Boolean checkForConflicts(ProcessModelVariables item1, ProcessModelVariables item2) {

@@ -93,7 +93,7 @@ public class View extends ViewPart implements Observer{
 
 	public static final String REL_HAZ = "Linked Hazards";
 	
-	public static final String REFINED_RULES = "Rules";
+	public static final String REFINED_RULES = "generated Rules";
 	
 	public static final String CRITICAL_COMBI = "Critical Combinations";
 
@@ -215,10 +215,10 @@ public class View extends ViewPart implements Observer{
 	    this.tableButtons = new ArrayList<>();
 	    this.tableList = new ArrayList<>();
 	    
-	    AbstractTableComposite compositeTable = new ProcessValuesTable(xstpaTableComposite, dataController);
-	    addTable(compositeTable, PM);
+	    AbstractTableComposite mainTable = new ProcessValuesTable(xstpaTableComposite, dataController);
+	    addTable(mainTable, PM);
 	    
-	    compositeTable = new ControlActionTable(xstpaTableComposite, dataController);
+	    AbstractTableComposite compositeTable = new ControlActionTable(xstpaTableComposite, dataController);
 	    addTable(compositeTable, "Control Actions");
 	    
 	    compositeTable = new CADependenciesTable(xstpaTableComposite, dataController);
@@ -233,10 +233,11 @@ public class View extends ViewPart implements Observer{
 	    	}
 	    };
 	    addTable(compositeTable, RULES_TABLE);
-	    
 	    // ltl Composite
 	    ltlComposite = new LTLPropertiesTable(xstpaTableComposite, dataController);
 	    addTable(ltlComposite, null);
+	    
+	    openTable(mainTable, null);
 	    /**
 		 * Listener which Gets the project-id of the currently active editor
 		 */
@@ -364,7 +365,6 @@ public class View extends ViewPart implements Observer{
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
-		tableList.get(0).setFocus();
 	}
 
 

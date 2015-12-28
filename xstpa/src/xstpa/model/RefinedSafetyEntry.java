@@ -1,5 +1,7 @@
 package xstpa.model;
 
+import java.util.UUID;
+
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -51,12 +53,9 @@ public class RefinedSafetyEntry {
 	public String getUCALinks(){
 		String tempUcas ="";
 		
-			for(int i= 0 ; i< model.getAllUnsafeControlActions().size();i++){
-				if(variable.getUcaLinks(type).contains(model.getAllUnsafeControlActions().get(i).getId())){
-					tempUcas = tempUcas.concat("UCA-" +i +",");
-				}
+			for (UUID ucaID : variable.getUcaLinks(type)) {
+				tempUcas = tempUcas.concat("UCA-" +model.getUCANumber(ucaID) +",");
 			}
-		
 		if(tempUcas.endsWith(",")){
 			tempUcas = tempUcas.substring(0, tempUcas.length()-1);
 		}

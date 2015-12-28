@@ -1,22 +1,20 @@
 package xstpa.ui.tables;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import xstpa.model.ProcessModelVariables;
 import xstpa.model.XSTPADataController;
 import xstpa.ui.View;
 
@@ -48,25 +46,30 @@ public class LTLPropertiesTable extends AbstractTableComposite{
 	
 	private TableViewer ltlViewer;
 	private Table ltlTable;
-	private List<ProcessModelVariables> ltlContent;
 
 	public LTLPropertiesTable(Composite parent, XSTPADataController controller) {
 		super(parent, controller);
-		setLayout( new GridLayout(1, false));	    
-		ltlViewer = new TableViewer(this, SWT.FULL_SELECTION );
+
+		TableColumnLayout tLayout = new TableColumnLayout();
+		setLayout(tLayout);
+		
+		ltlViewer = new TableViewer(this, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL );
 		ltlViewer.setContentProvider(new ArrayContentProvider());
 		ltlViewer.setLabelProvider(new LtlViewLabelProvider());
-		ltlContent = new ArrayList<>();
 	    ltlTable = ltlViewer.getTable();
 	    ltlTable.setHeaderVisible(true);
 	    ltlTable.setLinesVisible(true);
 	    ltlTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	    // add columns for ltl tables	   
-	    new TableColumn(ltlTable, SWT.LEFT).setText(View.ENTRY_ID);
-	    new TableColumn(ltlTable, SWT.LEFT).setText(View.LTL_RULES);
-	    ltlTable.setLinesVisible(true);
-	    ltlTable.setHeaderVisible(true);
+	    TableColumn ltlColumn = new TableColumn(ltlTable, SWT.LEFT);
+	    ltlColumn.setText(View.ENTRY_ID);
+	    tLayout.setColumnData(ltlColumn, new ColumnWeightData(1, 30, false));
 	    
+	    ltlColumn = new TableColumn(ltlTable, SWT.LEFT);
+	    ltlColumn.setText(View.LTL_RULES);
+	    tLayout.setColumnData(ltlColumn, new ColumnWeightData(1, 30, false));
+	    
+	    setVisible(false);
 	}
 
 	@Override
