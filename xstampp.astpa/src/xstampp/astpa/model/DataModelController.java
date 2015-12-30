@@ -1787,11 +1787,13 @@ public class DataModelController extends Observable implements
 						valueBuffer = new StringBuffer();
 						valueBuffer.append(START);
 						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(values);
-						valueBuffer.append(IMPLIES_NOT);
-						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
-						valueBuffer.append(BRACKET_CLOSE);
+							valueBuffer.append(values);
+							valueBuffer.append(IMPLIES);
+							valueBuffer.append(BRACKET_OPEN);
+								valueBuffer.append(values);
+								valueBuffer.append(UNTIL);
+								valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+							valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
 					}
@@ -1803,11 +1805,11 @@ public class DataModelController extends Observable implements
 						valueBuffer = new StringBuffer();
 						valueBuffer.append(START);
 						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(values);
-						valueBuffer.append(IMPLIES);
-						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
-						valueBuffer.append(BRACKET_CLOSE);
+							valueBuffer.append(values);
+							valueBuffer.append(IMPLIES);
+							valueBuffer.append(BRACKET_OPEN);
+								valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+							valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
 					}
