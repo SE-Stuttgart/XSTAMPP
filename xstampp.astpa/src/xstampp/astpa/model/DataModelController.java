@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerRepository;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -1632,7 +1633,7 @@ public class DataModelController extends Observable implements
 		if(this.controlStructureController.getComponent(providedVariable) != null){
 			this.controlActionController.addProvidedVariable(caID,providedVariable);
 		}else{
-			System.out.println("given provided id is not related to a valid component");
+			LOGGER.debug("given provided id is not related to a valid component");
 		}
 	}
 

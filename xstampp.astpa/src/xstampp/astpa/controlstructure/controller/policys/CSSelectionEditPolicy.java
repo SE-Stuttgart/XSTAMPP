@@ -12,7 +12,6 @@ public class CSSelectionEditPolicy extends SelectionEditPolicy {
 	}
 	@Override
 	protected void showFocus() {
-		System.out.println("focus");
 		super.showFocus();
 	}
 	@Override

@@ -39,7 +39,7 @@ public class RunWizard extends AbstractExportWizard {
 		File outputDir =new File(Platform.getInstanceLocation().getURL().getPath().toString()
 								+ OUTPUT);
 		if(!outputDir.exists()){
-				System.out.println(outputDir.mkdirs());
+				outputDir.mkdirs();
 		}
 		this.page = new RunPage("Run Export", projectName);
 		this.setExportPage(this.page);
