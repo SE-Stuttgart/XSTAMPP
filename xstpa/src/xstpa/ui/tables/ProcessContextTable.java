@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -538,14 +539,14 @@ public class ProcessContextTable extends AbstractTableComposite {
 				    	  EditWindow settingsWindow = new EditWindow(dataController.getLinkedCAE());
 				    	 
 				    	  if(settingsWindow.open()){
-				    			createTableColumns();
-				    			ACTSController.writeFile(false,
-	    											 	 dataController.isControlActionProvided(),
-	    											 	dataController.getLinkedCAE().getLinkedItems());
-				    			storeEntrys(ACTSController.open(false,
-				    								contextTable.getColumnCount(),
-				    								contextContentFolder.getSelectionIndex() == 0,
-				    								dataController.getLinkedCAE().getControlAction()));
+//				    			createTableColumns();
+//				    			ACTSController.writeFile(false,
+//	    											 	 dataController.isControlActionProvided(),
+//	    											 	dataController.getLinkedCAE().getLinkedItems());
+//				    			storeEntrys(ACTSController.open(false,
+//				    								contextTable.getColumnCount(),
+//				    								contextContentFolder.getSelectionIndex() == 0,
+//				    								dataController.getLinkedCAE()), false);
 				    	  }
 			    	  }
 			    	  
@@ -604,9 +605,12 @@ public class ProcessContextTable extends AbstractTableComposite {
 			    		  MessageDialog.openInformation(null,"Select a Control Action", "Please Select a Control Action to generate the Table!");
 			    	  }
 			    	  else if (!dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
-
-			    		  if (MessageDialog.openConfirm(null,"Generate a new Testset","Are you sure to generate a new Testset? "
-			    		  		+ "The old Data will get lost" )) {
+			    		  MessageDialog dialog = new MessageDialog(getShell(),"keep Rules",null,
+			    				  "do you want to keep the Rules which are defined for this Control Action?",
+			    				  MessageDialog.QUESTION_WITH_CANCEL, new String[]{IDialogConstants.YES_LABEL,
+			    			  IDialogConstants.NO_LABEL,IDialogConstants.CANCEL_LABEL}, 0);
+			    		  int code = dialog.open();
+			    		  if (code != 2) {
 
 				    		  // If the Path for ACTS is not set, the PreferencePage opens
 				    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
@@ -618,13 +622,13 @@ public class ProcessContextTable extends AbstractTableComposite {
 				    		  }
 					    	  // creates the correct number of rows for the context table
 					    	  createTableColumns();
-					    	  ACTSController.writeFile(true,
+					    	  ACTSController.writeFile(false,
 									 	 dataController.isControlActionProvided(),
 									 	 dataController.getLinkedCAE().getLinkedItems());
-					    	  storeEntrys(ACTSController.open(true,
+					    	  storeEntrys(ACTSController.open(false,
 				 								contextRightTable.getColumnCount(),
 				 								contextContentFolder.getSelectionIndex() == 0,
-				 								dataController.getLinkedCAE().getControlAction()));
+				 								dataController.getLinkedCAE()), code == 0);
 			    		  }
 			    	  }
 			    	  else {
@@ -656,7 +660,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 				    			pmVars.add(contextRightTable.getColumn(i).getText().replace(" ", "_"));
 				    		}
 							// add the New Variable
-				    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, dataController.getLinkedCAE().getControlAction());
+				    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, dataController.getLinkedCAE());
 				    		if(event.data instanceof String[]){
 				    			
 				    			for(String valueName:(String[]) event.data){
@@ -720,18 +724,17 @@ public class ProcessContextTable extends AbstractTableComposite {
 		List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
 		// if the tabfolder is on "Context Provided"
 	  	if (dataController.isControlActionProvided()) {
-	  		  
-			 for (int i = 0; i<dataController.getDependenciesIFProvided().size();i++) {
-				if (dataController.getDependenciesIFProvided().get(i).getSafetyCritical()) {
-					contextTableInput.add(dataController.getDependenciesIFProvided().get(i));
+	  		for(ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
+	    		if (entry.getSafetyCritical()) {
+					contextTableInput.add(entry);
 				}
-			 }
+			}
 	  	}
 	  	  // if its on the other tab
 	  	else {
-  			for (int i = 0; i<dataController.getDependenciesIFProvided().size();i++) {
-				if (dataController.getDependenciesIFProvided().get(i).getSafetyCritical()) {
-					contextTableInput.add(dataController.getDependenciesNotProvided().get(i));
+	  		for(ControlActionEntrys entry : dataController.getDependenciesNotProvided()) {
+	    		if (entry.getSafetyCritical()) {
+					contextTableInput.add(entry);
 				}
 			}
 	  	}
@@ -746,8 +749,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 			//if the former index returns cannot be selected try 0 
 			contextTable.select(0);
 		}
-		  
-		dataController.setLinkedCAE(contextTable.getSelectionIndex());
+		ControlActionEntrys entry = contextTableInput.get(contextTable.getSelectionIndex());
+		dataController.setLinkedCAE(entry.getId());
 		
 		refreshTable();
 	}
@@ -837,8 +840,8 @@ public class ProcessContextTable extends AbstractTableComposite {
   	  }
     }
 	
-	private void storeEntrys(List<ProcessModelVariables> entrys){
-		if(MessageDialog.openQuestion(getShell(), "keep Rules", "do you want to keep the Rules which are defined for this Control Action?")){
+	private void storeEntrys(List<ProcessModelVariables> entrys, boolean keepOldCombies){
+		if(keepOldCombies){
 			for(ProcessModelVariables variable: dataController.getLinkedCAE().getContextTableCombinations()){
 				if(variable.getHazardous()){
 					variable.setArchived(true);
@@ -856,9 +859,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 		
 		// create Input for contextTableViewer
 		List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
-    	for (int i = 0; i<dataController.getDependenciesIFProvided().size();i++) {
-    		if (dataController.getDependenciesIFProvided().get(i).getSafetyCritical()) {
-    			contextTableInput.add(dataController.getDependenciesNotProvided().get(i));
+    	for (ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
+    		if (entry.getSafetyCritical()) {
+    			contextTableInput.add(entry);
     		}
     	}
     	contextViewer.setInput(contextTableInput);
@@ -866,7 +869,9 @@ public class ProcessContextTable extends AbstractTableComposite {
   	  	if (contextTable.getSelectionIndex() == -1) {
   		  contextTable.select(0);
   	  	}
-  	  	dataController.setLinkedCAE(contextTable.getSelectionIndex());
+
+		ControlActionEntrys entry = contextTableInput.get(contextTable.getSelectionIndex());
+  	  	dataController.setLinkedCAE(entry.getId());
   	  	if(dataController.getLinkedCAE() == null){
     		contextRightViewer.setInput(null);
   	  		
@@ -890,13 +895,10 @@ public class ProcessContextTable extends AbstractTableComposite {
 	@Override
 	public void refreshTable() {
 		if(contextTable.getSelectionCount() == 0){
-			dataController.setLinkedCAE(-1);
+			dataController.setLinkedCAE(null);
 		}else{
-			int relativeI = dataController.getDependenciesIFProvided().indexOf(contextTable.getSelection()[0].getData());
-		    if(relativeI == -1){
-		    	relativeI = dataController.getDependenciesNotProvided().indexOf(contextTable.getSelection()[0].getData());
-		    }
-	  	  	dataController.setLinkedCAE(contextContentFolder.getSelectionIndex() == 0,contextTable.getSelectionIndex());
+			ControlActionEntrys entry = (ControlActionEntrys) contextTable.getSelection()[0].getData();
+	  	  	dataController.setLinkedCAE(contextContentFolder.getSelectionIndex() == 0,entry.getId());
 	  	  	createTableColumns();
 	  	  	
 	  	  	ArrayList<ProcessModelVariables> viewerContent = new ArrayList<>();

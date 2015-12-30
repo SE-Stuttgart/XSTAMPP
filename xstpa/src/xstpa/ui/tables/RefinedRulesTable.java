@@ -26,7 +26,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
+import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.util.STPAPluginUtils;
 import xstpa.model.ControlActionEntrys;
 import xstpa.model.ProcessModelVariables;
@@ -179,6 +182,17 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	    exportBtn.setImage(View.EXPORT);
 	    exportBtn.pack();
 	    
+	    // Add a button to switch tables (LTL Button)
+	    final Button bRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
+	    bRemoveEntry.setToolTipText("removes the selected entry in the from the rules table");
+	    bRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+	    bRemoveEntry.pack();
+	    
+	    // Add a button to switch tables (LTL Button)
+	    final Button bAllRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
+	    bAllRemoveEntry.setToolTipText("removes all entries from the rules table");
+	    bAllRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVEALL));
+	    bAllRemoveEntry.pack();
 	    /**
 	     * Functionality for the ltl Button to change to ltlComposite
 	     */
@@ -200,9 +214,54 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	    	  STPAPluginUtils.executeParaCommand("xstampp.command.openWizard", values);
 	      }
 	    });
+	    
+	    bRemoveEntry.addSelectionListener(new SelectionAdapter() {
+	    	@Override
+	    	public void widgetSelected(SelectionEvent e) {
+	    		if (refinedSafetyTable.getSelectionIndex() != -1) {
+	    			RefinedSafetyEntry entry = (RefinedSafetyEntry) refinedSafetyTable.getSelection()[0].getData();
+		    		removeEntry(entry);
+					refreshTable();
+				}
+	    	}
+		});
+	    bAllRemoveEntry.addSelectionListener(new SelectionAdapter() {
+	    	@Override
+	    	public void widgetSelected(SelectionEvent e) {
+	    		for(TableItem entry : refinedSafetyTable.getItems()) {
+		    		removeEntry((RefinedSafetyEntry) entry.getData());
+				}
+				refreshTable();
+	    	}
+		});
 	    setVisible(false);
 	}
 
+	private void removeEntry(RefinedSafetyEntry entry){
+		List<ProcessModelVariables> combinations = dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
+				 entry.getVariable().getLinkedControlActionID()).getContextTableCombinations();
+		switch(entry.getType()){
+			case IValueCombie.TYPE_ANYTIME: 
+				entry.getVariable().setHAnytime(false);
+				break;
+			case IValueCombie.TYPE_TOO_EARLY:  
+				entry.getVariable().setHEarly(false);
+				break;
+			case IValueCombie.TYPE_TOO_LATE:  
+				entry.getVariable().setHLate(false);
+				break;
+			case IValueCombie.TYPE_NOT_PROVIDED:  
+				entry.getVariable().setHazardous(false);
+				break;
+			default:
+				return;
+		}
+		if (entry.getVariable().isArchived() && !entry.getVariable().getHazardous()) {
+			combinations.remove(entry.getVariable());
+		}
+		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
+				 entry.getVariable().getLinkedControlActionID()));
+	}
 	
 	@Override
 	public void activate() {
@@ -239,7 +298,7 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 			}
 		}
   	    if (refinedSafetyContent.isEmpty()) {
-  	    	MessageDialog.openInformation(null, "No Hazardous Combinations", "Please check some Combinations as Hazardous");
+  	    	writeStatus("No Hazardous Combinations - Please check some Combinations as Hazardous");
   	    }
   
   	    refinedSafetyViewer.setInput(refinedSafetyContent);

@@ -49,7 +49,7 @@ public class ProcessModelVariables {
 	
 
 	private String linkedControlActionName = "";
-	
+	private UUID linkedControlActionID = null;
 
 	private String refinedSafetyRequirements ="";
 	
@@ -93,9 +93,10 @@ public class ProcessModelVariables {
 	@XmlElement(name = "id")
 	private List<UUID> relatedUCAsTooLate;
 	
-	public ProcessModelVariables (List<String> pmVariables,String linkedControlActionName ) {
-		this.linkedControlActionName = linkedControlActionName;
+	public ProcessModelVariables (List<String> pmVariables,ControlActionEntrys linkedControlAction ) {
+		this.linkedControlActionName = linkedControlAction.getControlAction();
 		this.pmVariables = pmVariables;
+		this.linkedControlActionID = linkedControlAction.getId();
 	}
 	
 	public ProcessModelVariables() {
@@ -202,8 +203,9 @@ public class ProcessModelVariables {
 	public String getLinkedControlActionName() {
 		return linkedControlActionName;
 	}
-	public void setLinkedControlActionName(String linkedControlActionName) {
+	public void setLinkedControlActionName(String linkedControlActionName, UUID caID) {
 		this.linkedControlActionName = linkedControlActionName;
+		this.linkedControlActionID = caID;
 	}
 	
 //**************************************************************************************************
@@ -356,6 +358,20 @@ public class ProcessModelVariables {
 				this.ucaLinks = ucaLinks;
 				break;
 		}
+	}
+
+	/**
+	 * @return the linkedControlActionID
+	 */
+	public UUID getLinkedControlActionID() {
+		return this.linkedControlActionID;
+	}
+
+	/**
+	 * @param linkedControlActionID the linkedControlActionID to set
+	 */
+	public void setLinkedControlActionID(UUID linkedControlActionID) {
+		this.linkedControlActionID = linkedControlActionID;
 	}
 
 

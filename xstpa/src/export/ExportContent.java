@@ -1,6 +1,7 @@
 package export;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -44,8 +45,10 @@ public class ExportContent {
 	public List<ControlActionEntrys> getProvidedCA() {
 		return providedCA;
 	}
-	public void setProvidedCA(List<ControlActionEntrys> providedCA) {
-		this.providedCA = providedCA;
+	public void setProvidedCA(Collection<ControlActionEntrys> providedCA) {
+		this.providedCA = new ArrayList<>();
+		this.providedCA.addAll(providedCA);
+		
 	}
 	
 	@XmlElementWrapper(name = "notprovidedca")
@@ -53,8 +56,9 @@ public class ExportContent {
 	public List<ControlActionEntrys> getNotProvidedCA() {
 		return notProvidedCA;
 	}
-	public void setNotProvidedCA(List<ControlActionEntrys> notProvidedCA) {
-		this.notProvidedCA = notProvidedCA;
+	public void setNotProvidedCA(Collection<ControlActionEntrys> notProvidedCA) {
+		this.notProvidedCA = new ArrayList<>();
+		this.notProvidedCA.addAll(notProvidedCA);
 	}
 	
 	

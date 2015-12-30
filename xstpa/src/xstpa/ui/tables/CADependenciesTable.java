@@ -320,13 +320,11 @@ public class CADependenciesTable extends AbstractTableComposite {
 	public void activate() {
 		// create input for dependencyTableViewer
     	List<ControlActionEntrys> dependencyTableInput= new ArrayList<ControlActionEntrys>();
-    	for (int i = 0; i<dataController.getDependenciesIFProvided().size();i++) {
-    		if (dataController.getDependenciesIFProvided().get(i).getSafetyCritical()) {
-    			dependencyTableInput.add(dataController.getDependenciesIFProvided().get(i));
-    		}
-    		
-    		
-    	}
+    	for(ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
+    		if (entry.getSafetyCritical()) {
+				dependencyTableInput.add(entry);
+			}
+		}
     	
         dependencyTableViewer.setInput(dependencyTableInput);
         
@@ -367,12 +365,9 @@ public class CADependenciesTable extends AbstractTableComposite {
 	public void refreshTable() {
 		//calculate index of selected dependency in the dependencies list
     	if(dependencyTable.getSelectionCount() > 0){
-    		int relativeI = dataController.getDependenciesIFProvided().indexOf(dependencyTable.getSelection()[0].getData());
-		    if(relativeI == -1){
-		    	relativeI = dataController.getDependenciesNotProvided().indexOf(dependencyTable.getSelection()[0].getData());
-		    }
 	    	  //get the selected Control Action to link it to a Process model Variable
-	    	dataController.setLinkedCAE((dependenciesFolder.getSelectionIndex() == 0),relativeI);
+    		ControlActionEntrys entry = (ControlActionEntrys) dependencyTable.getSelection()[0].getData();
+	    	dataController.setLinkedCAE((dependenciesFolder.getSelectionIndex() == 0),entry.getId());
 	    	dependencyTopTableViewer.setInput(dataController.getLinkedCAE().getAvailableItems());
 	    	dependencyBottomTableViewer.setInput(dataController.getLinkedCAE().getLinkedItems());
     	}

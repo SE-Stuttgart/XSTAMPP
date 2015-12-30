@@ -111,7 +111,7 @@ public class ACTSController {
 		
 	}
 	
-	public static List<ProcessModelVariables> open(Boolean defaultSettings,int columns,boolean providedContext,String context) {
+	public static List<ProcessModelVariables> open(Boolean defaultSettings,int columns,boolean providedContext,ControlActionEntrys context) {
 		// Run ACTS in a separate system process
 		Process proc;
 		String modes;
@@ -183,7 +183,7 @@ public class ACTSController {
 	}
 	
 	
-	private static List<ProcessModelVariables> getEntrysFromFile (BufferedReader reader,boolean providedContext,String context) {
+	private static List<ProcessModelVariables> getEntrysFromFile (BufferedReader reader,boolean providedContext,ControlActionEntrys context) {
 		List<ProcessModelVariables> contextEntries = new ArrayList<ProcessModelVariables>();
 		try {
 			
@@ -209,8 +209,8 @@ public class ACTSController {
 			while ((line = reader.readLine()) != null) {
 				if (line.contains("Configuration #")) {
 					ProcessModelVariables entry = new ProcessModelVariables();
-					entry.setLinkedControlActionName(context);
-					
+					entry.setLinkedControlActionName(context.getControlAction(), null);
+					entry.setLinkedControlActionID(context.getId());
 					temp = line.charAt(line.length()-2);
 //					System.out.println(temp);
 					Character.getNumericValue(temp);

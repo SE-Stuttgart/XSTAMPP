@@ -1,6 +1,7 @@
 package xstpa.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,9 @@ public class XSTPADataController {
 	private static final String CONTEXT_PROVIDED ="provided";
 	private static final String CONTEXT_NOT_PROVIDED ="not provided";
 	private List<ProcessModelValue> valuesList;
-	private List<ControlActionEntrys> dependenciesIFProvided;
+	private Map<UUID,ControlActionEntrys> dependenciesIFProvided;
 	private ArrayList<ProcessModelVariables> variablesList;
-	private List<ControlActionEntrys> dependenciesNotProvided = new ArrayList<ControlActionEntrys>();
+	private Map<UUID,ControlActionEntrys> dependenciesNotProvided;
 	private ControlActionEntrys linkedCAE;
 	private ProcessModelVariables linkedPMV;
 	private DataModelController model;
@@ -32,8 +33,8 @@ public class XSTPADataController {
 	public XSTPADataController() {
 		this.valuesList = new ArrayList<>();
 		this.variablesList = new ArrayList<>();
-		this.dependenciesIFProvided  = new ArrayList<>();
-		this.dependenciesNotProvided = new ArrayList<>();
+		this.dependenciesIFProvided  = new HashMap<>();
+		this.dependenciesNotProvided = new HashMap<>();
 	}
 	
 	public void clear(DataModelController model) {
@@ -44,20 +45,7 @@ public class XSTPADataController {
 		this.fetchProcessComponents(model);
 		this.fetchControlActions(model);
 	}
-	/**
-	 * @return the dependenciesIFProvided
-	 */
-	public List<ControlActionEntrys> getDependenciesIFProvided() {
-		return this.dependenciesIFProvided;
-	}
-
-	/**
-	 * @param dependenciesIFProvided the dependenciesIFProvided to set
-	 */
-	public void setDependenciesIFProvided(List<ControlActionEntrys> dependenciesIFProvided) {
-		this.dependenciesIFProvided = dependenciesIFProvided;
-	}
-
+	
 //********************************************************************************************************************
 // Management of the PROCESS MODEL VALUES
  
@@ -123,6 +111,7 @@ public class XSTPADataController {
 		varible.setNumber(this.variablesList.size()+1);
 		this.variablesList.add(varible);
 	}
+	
 	
 	/**
 	 * fetches the current available values and variable components from the data model
@@ -190,8 +179,8 @@ public class XSTPADataController {
 	private void fetchControlActions(DataModelController model){
 		  // get the controlActions
 	      for (IControlAction entry : model.getAllControlActionsU()) {
-	    	  this.dependenciesIFProvided.add(getEntryFor(entry, model.getValuesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
-	    	  this.dependenciesNotProvided.add(getEntryFor(entry, model.getValuesWhenCANotProvided(entry.getId()),CONTEXT_NOT_PROVIDED));
+	    	  this.dependenciesIFProvided.put(entry.getId(),getEntryFor(entry, model.getValuesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
+	    	  this.dependenciesNotProvided.put(entry.getId(),getEntryFor(entry, model.getValuesWhenCANotProvided(entry.getId()),CONTEXT_NOT_PROVIDED));
 	      }
 	}
 	
@@ -252,7 +241,7 @@ public class XSTPADataController {
 						tempValuesList.add(model.getComponent(varId).getText()+ "="
 								+ getValue(j).getValueText());
 						contextTableEntry.addValue(getValue(j).getValueText());		    						  
-						contextTableEntry.setLinkedControlActionName(entry.getTitle());
+						contextTableEntry.setLinkedControlActionName(entry.getTitle(), entry.getId());
 						contextTableEntry.addValueId(getValue(j).getId());
   						  
 					}
@@ -286,7 +275,7 @@ public class XSTPADataController {
 		if(temp == null){
 			temp = this.linkedCAE;
 		}
-		if (controlActionProvided) {
+		if (this.dependenciesIFProvided.containsValue(temp)) {
 			syncCombiesWhenProvided(temp);
 		}
 		else {
@@ -295,11 +284,10 @@ public class XSTPADataController {
 	}
 	
 	private void syncCombiesWhenProvided(ControlActionEntrys caEntry){
-		try {
   		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
   		  ProvidedValuesCombi val = new ProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
-  		  for (ProcessModelVariables combie : getLinkedCAE().getContextTableCombinations()) {
+  		  for (ProcessModelVariables combie :caEntry.getContextTableCombinations()) {
   			  val = new ProvidedValuesCombi();
   			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
    				 val.setValues(getCombieUUIDs(combie));
@@ -318,21 +306,14 @@ public class XSTPADataController {
   			  val.setHazardousToLate(combie.getHLate());
   			  valuesIfProvided.add(val);
   		  }
-  		  model.setValuesWhenCAProvided(getLinkedCAE().getId(),valuesIfProvided);
-  	  }
-
-  	  catch (Exception e) {
-  		  System.out.println("Couldn't save ContextTableCombis if Provided");
-  	  }
-		
+  		  model.setValuesWhenCAProvided(caEntry.getId(),valuesIfProvided);
 	}
 	
 	private void syncCombiesWhenNotProvided(ControlActionEntrys caEntry){
-		try {
   		  List<NotProvidedValuesCombi> valuesIfProvided = new ArrayList<NotProvidedValuesCombi>();
   		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
-  		  for (ProcessModelVariables combie : getLinkedCAE().getContextTableCombinations()) {
+  		  for (ProcessModelVariables combie : caEntry.getContextTableCombinations()) {
   			  val = new NotProvidedValuesCombi();
   			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
   				 val.setValues(getCombieUUIDs(combie));
@@ -346,12 +327,7 @@ public class XSTPADataController {
   			  val.setHazardous(combie.getHazardous());
   			  valuesIfProvided.add(val);
   		  }
-  		  model.setValuesWhenCANotProvided(getLinkedCAE().getId(),valuesIfProvided);
-  	  }
-
-  	  catch (Exception e) {
-  		  System.out.println("Couldn't save ContextTableCombis if Provided");
-  	  }
+  		  model.setValuesWhenCANotProvided(caEntry.getId(),valuesIfProvided);
 		
 	}
 	
@@ -409,19 +385,32 @@ public class XSTPADataController {
 		
 
 	/**
+	 * @return the dependenciesIFProvided
+	 */
+	public Collection<ControlActionEntrys> getDependenciesIFProvided() {
+		return this.dependenciesIFProvided.values();
+	}
+	
+	/**
 	 * @return the dependenciesNotProvided
 	 */
-	public List<ControlActionEntrys> getDependenciesNotProvided() {
-		return this.dependenciesNotProvided;
+	public Collection<ControlActionEntrys> getDependenciesNotProvided() {
+		return this.dependenciesNotProvided.values();
 	}
 
 	/**
-	 * @param dependenciesNotProvided the dependenciesNotProvided to set
+	 * 
+	 * @param providedContext whether the context is 'provided' or not
+	 * @param id the id which is provided by astpa for the requested controlAction
+	 * @return the control action entry stored in the context map for the given id
 	 */
-	public void setDependenciesNotProvided(List<ControlActionEntrys> dependenciesNotProvided) {
-		this.dependenciesNotProvided = dependenciesNotProvided;
+	public ControlActionEntrys getControlActionEntry(boolean providedContext,UUID id){
+		if(providedContext){
+			return this.dependenciesIFProvided.get(id);
+		}
+		return this.dependenciesNotProvided.get(id);
 	}
-
+	
 	/**
 	 * @return the linkedPMV
 	 */
@@ -449,7 +438,7 @@ public class XSTPADataController {
 	 * 					chosen out of the provided list or not 
 	 * @param i the linkedCAE to set
 	 */
-	public boolean setLinkedCAE(boolean provided,int i) {
+	public boolean setLinkedCAE(boolean provided,UUID i) {
 		
 		this.controlActionProvided = provided;
 		return setLinkedCAE(i);
@@ -463,8 +452,8 @@ public class XSTPADataController {
 	 * 
 	 * @return whether the linked control action has changed
 	 */
-	public boolean setLinkedCAE(int i) {
-		if(i < 0 || i >= this.dependenciesIFProvided.size()){
+	public boolean setLinkedCAE(UUID i) {
+		if(i == null || !(this.dependenciesIFProvided.containsKey(i) || this.dependenciesNotProvided.containsKey(i))){
 			this.linkedCAE = null;
 			return true;
 		}
