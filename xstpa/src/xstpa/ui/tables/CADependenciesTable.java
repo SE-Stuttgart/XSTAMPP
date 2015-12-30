@@ -366,7 +366,7 @@ public class CADependenciesTable extends AbstractTableComposite {
 	@Override
 	public void refreshTable() {
 		//calculate index of selected dependency in the dependencies list
-    	if(dependencyTable.getSelectionCount() > 0 && dataController.getLinkedCAE() != null){
+    	if(dependencyTable.getSelectionCount() > 0){
     		int relativeI = dataController.getDependenciesIFProvided().indexOf(dependencyTable.getSelection()[0].getData());
 		    if(relativeI == -1){
 		    	relativeI = dataController.getDependenciesNotProvided().indexOf(dependencyTable.getSelection()[0].getData());
