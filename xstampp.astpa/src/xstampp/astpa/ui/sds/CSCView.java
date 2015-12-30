@@ -202,8 +202,7 @@ public class CSCView extends StandartEditorPart{
 
 		TableViewerColumn ucaIdColumn = new TableViewerColumn(
 				this.tableViewer, SWT.NONE);
-		ucaIdColumn.getColumn().setText(
-				Messages.UnsafeControlActions);
+		ucaIdColumn.getColumn().setText(Messages.ID);
 		tableColumnLayout.setColumnData(
 				ucaIdColumn.getColumn(),
 				new ColumnWeightData(10, 10, false));
