@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -34,7 +33,6 @@ import xstampp.util.STPAPluginUtils;
 import xstpa.model.ControlActionEntrys;
 import xstpa.model.ProcessModelVariables;
 import xstpa.model.RefinedSafetyEntry;
-import xstpa.model.XSTPADataController;
 import xstpa.ui.View;
 import xstpa.ui.dialogs.EditRelatedUcaWizard;
 import xstpa.ui.tables.utils.MainViewContentProvider;
@@ -102,8 +100,8 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 			View.CRITICAL_COMBI,View.UCA,View.REL_HAZ,View.REFINED_RULES
 	};
 	
-	public RefinedRulesTable(Composite parent, XSTPADataController controller) {
-		super(parent, controller);
+	public RefinedRulesTable(Composite parent) {
+		super(parent);
 		this.refinedSafetyContent = new ArrayList<>();
 	    setLayout( new GridLayout(2, false));	
 	    Composite tableComp = new Composite(this, SWT.None);

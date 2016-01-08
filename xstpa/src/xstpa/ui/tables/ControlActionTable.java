@@ -86,8 +86,8 @@ public class ControlActionTable extends AbstractTableComposite{
 	private TableViewer controlActionViewer;
 	private Table controlActionTable;
 
-	public ControlActionTable(Composite parent, XSTPADataController controller) {
-		super(parent, controller);
+	public ControlActionTable(Composite parent) {
+		super(parent);
 		setLayout(new TableColumnLayout());
 		
 		controlActionViewer = new TableViewer(this, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -101,7 +101,6 @@ public class ControlActionTable extends AbstractTableComposite{
 	    controlActionEditors[1] = new CheckboxCellEditor(controlActionTable);
 	    controlActionEditors[2] = new TextCellEditor(controlActionTable);
 	    controlActionViewer.setColumnProperties(View.CA_PROPS_COLUMNS);
-	    controlActionViewer.setCellModifier(new EntryCellModifier(controlActionViewer));
 	    controlActionViewer.setCellEditors(controlActionEditors);
 		
  // add Columns for Control Actions table (list of control actions)
@@ -153,6 +152,11 @@ public class ControlActionTable extends AbstractTableComposite{
 	    setVisible(false);
 	}
 
+	@Override
+	public void setController(XSTPADataController controller) {
+	    controlActionViewer.setCellModifier(new EntryCellModifier(controlActionViewer,controller.getModel()));
+		super.setController(controller);
+	}
 	@Override
 	public void activate() {
 		ArrayList<ControlActionEntrys> contentList = new ArrayList<>();

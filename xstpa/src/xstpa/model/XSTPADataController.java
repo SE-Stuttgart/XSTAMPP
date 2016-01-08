@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.UUID;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
@@ -17,7 +19,7 @@ import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 
-public class XSTPADataController {
+public class XSTPADataController extends Observable implements Observer{
 
 	private static final String CONTEXT_PROVIDED ="provided";
 	private static final String CONTEXT_NOT_PROVIDED ="not provided";
@@ -30,20 +32,26 @@ public class XSTPADataController {
 	private DataModelController model;
 	private boolean controlActionProvided;
 	
-	public XSTPADataController() {
+	public XSTPADataController(DataModelController model) {
 		this.valuesList = new ArrayList<>();
 		this.variablesList = new ArrayList<>();
 		this.dependenciesIFProvided  = new HashMap<>();
 		this.dependenciesNotProvided = new HashMap<>();
+		this.model = model;
+		clear();
+		
+		
 	}
 	
-	public void clear(DataModelController model) {
+	public void clear() {
 		this.linkedCAE = null;
 		this.linkedPMV = null;
 		this.dependenciesIFProvided.clear();
 		this.dependenciesNotProvided.clear();
-		this.fetchProcessComponents(model);
-		this.fetchControlActions(model);
+		if(model != null){
+			this.fetchProcessComponents();
+			this.fetchControlActions();
+		}
 	}
 	
 //********************************************************************************************************************
@@ -118,7 +126,7 @@ public class XSTPADataController {
 	 * 
 	 * @param model the current data model 
 	 */
-	private void fetchProcessComponents(DataModelController model){
+	private void fetchProcessComponents(){
 
 		this.valuesList.clear();
 		this.variablesList.clear();
@@ -176,7 +184,7 @@ public class XSTPADataController {
 	 * 
 	 * @param model the data model which should be used
 	 */
-	private void fetchControlActions(DataModelController model){
+	private void fetchControlActions(){
 		  // get the controlActions
 	      for (IControlAction entry : model.getAllControlActionsU()) {
 	    	  this.dependenciesIFProvided.put(entry.getId(),getEntryFor(entry, model.getValuesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
@@ -448,7 +456,8 @@ public class XSTPADataController {
 	 * this method sets the linked control action to the entry stored <br>
 	 * at the index i either in the {@link #dependenciesIFProvided} or the {@link #dependenciesNotProvided} list<br>
 	 * depending on the {@link #controlActionProvided} choice
-	 * @param i the index in either the {@link #dependenciesIFProvided} or the {@link #dependenciesNotProvided} list
+	 * @param i the index in either the {@link #dependenciesIFProvided} or the {@link #dependenciesNotProvided} list or null if 
+	 * 			there is no linked control action at the time
 	 * 
 	 * @return whether the linked control action has changed
 	 */
@@ -483,5 +492,12 @@ public class XSTPADataController {
 	 */
 	public void setModel(DataModelController model) {
 		this.model = model;
+	}
+
+	@Override
+	public void update(Observable arg0, Object updatedValue) {
+		clear();
+		setChanged();
+		notifyObservers(updatedValue);
 	}
 }

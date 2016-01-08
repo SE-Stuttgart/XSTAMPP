@@ -15,9 +15,8 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 
 	protected XSTPADataController dataController;
 
-	AbstractTableComposite(Composite parent,XSTPADataController controller) {
+	AbstractTableComposite(Composite parent) {
 		super(parent,SWT.BORDER);
-		this.dataController = controller;
 	}
 	
 	public abstract void activate();
@@ -34,7 +33,16 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
+		refreshTable();
 		
+	}
+
+	public void setController(XSTPADataController controller) {
+		if(dataController != null){
+			dataController.deleteObserver(this);
+		}
+		dataController = controller;
+		dataController.addObserver(this);
+		refreshTable();
 	}
 }

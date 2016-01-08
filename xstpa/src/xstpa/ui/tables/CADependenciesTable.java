@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import xstpa.model.ControlActionEntrys;
 import xstpa.model.ProcessModelVariables;
-import xstpa.model.XSTPADataController;
 import xstpa.ui.View;
 import xstpa.ui.tables.utils.DependencyViewLabelProvider;
 import xstpa.ui.tables.utils.MainViewContentProvider;
@@ -41,8 +40,8 @@ public class CADependenciesTable extends AbstractTableComposite {
 	private Table dependencyBottomTable;
 	private Table dependencyTopTable;
 
-	public CADependenciesTable(Composite parent, XSTPADataController controller) {
-		super(parent, controller);
+	public CADependenciesTable(Composite parent) {
+		super(parent);
 		setLayout(new FillLayout());
 		
 		// the tabfolder for the dependencies Composite
@@ -318,20 +317,6 @@ public class CADependenciesTable extends AbstractTableComposite {
 
 	@Override
 	public void activate() {
-		// create input for dependencyTableViewer
-    	List<ControlActionEntrys> dependencyTableInput= new ArrayList<ControlActionEntrys>();
-    	for(ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
-    		if (entry.getSafetyCritical()) {
-				dependencyTableInput.add(entry);
-			}
-		}
-    	
-        dependencyTableViewer.setInput(dependencyTableInput);
-        
-    	// If the view was already shown, select the old values, if not select default
-    	if (dependencyTable.getSelectionIndex() == -1) {
-			dependencyTable.select(0);
-		}
     	refreshTable();
         
 		for (int i = 0, n = dependencyTable.getColumnCount(); i < n; i++) {
@@ -363,6 +348,21 @@ public class CADependenciesTable extends AbstractTableComposite {
 
 	@Override
 	public void refreshTable() {
+		// create input for dependencyTableViewer
+    	List<ControlActionEntrys> dependencyTableInput= new ArrayList<ControlActionEntrys>();
+    	for(ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
+    		if (entry.getSafetyCritical()) {
+				dependencyTableInput.add(entry);
+			}
+		}
+    	
+        dependencyTableViewer.setInput(dependencyTableInput);
+        
+    	// If the view was already shown, select the old values, if not select default
+    	if (dependencyTable.getSelectionIndex() == -1) {
+			dependencyTable.select(0);
+		}
+    	
 		//calculate index of selected dependency in the dependencies list
     	if(dependencyTable.getSelectionCount() > 0){
 	    	  //get the selected Control Action to link it to a Process model Variable

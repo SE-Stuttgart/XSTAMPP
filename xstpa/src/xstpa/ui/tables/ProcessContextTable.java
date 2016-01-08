@@ -50,11 +50,9 @@ import xstampp.util.STPAPluginUtils;
 import xstpa.model.ACTSController;
 import xstpa.model.ControlActionEntrys;
 import xstpa.model.ProcessModelVariables;
-import xstpa.model.XSTPADataController;
 import xstpa.ui.View;
 import xstpa.ui.dialogs.AddEntryShell;
 import xstpa.ui.dialogs.EditWindow;
-import xstpa.ui.tables.utils.ContextCellModifier;
 import xstpa.ui.tables.utils.MainViewContentProvider;
 
 public class ProcessContextTable extends AbstractTableComposite {
@@ -127,8 +125,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 	private TabFolder contextContentFolder;
 	protected List<ProcessModelVariables> contextRightContent;
 	
-	public ProcessContextTable(Composite parent, XSTPADataController controller) {
-		super(parent, controller);
+	public ProcessContextTable(Composite parent) {
+		super(parent);
 		setLayout(new FormLayout());
 		contextCompositeLeft = new Composite(this, SWT.BORDER);
 	    contextCompositeLeft.setLayout( new GridLayout(1, false));
@@ -790,7 +788,6 @@ public class ProcessContextTable extends AbstractTableComposite {
   				View.contextProps[i] = contextRightTable.getColumn(i).getText();
   			}
   			contextRightViewer.setColumnProperties(View.contextProps);
-  			contextRightViewer.setCellModifier(new ContextCellModifier(contextRightViewer));
   			contextRightViewer.setCellEditors(contextEditors);
   		}
 
@@ -869,9 +866,12 @@ public class ProcessContextTable extends AbstractTableComposite {
   	  	if (contextTable.getSelectionIndex() == -1) {
   		  contextTable.select(0);
   	  	}
-
-		ControlActionEntrys entry = contextTableInput.get(contextTable.getSelectionIndex());
-  	  	dataController.setLinkedCAE(entry.getId());
+  	  	if(contextTable.getSelectionIndex() != -1){
+			ControlActionEntrys entry = contextTableInput.get(contextTable.getSelectionIndex());
+	  	  	dataController.setLinkedCAE(entry.getId());
+	  	}else{
+	  		dataController.setLinkedCAE(null);
+	  	}
   	  	if(dataController.getLinkedCAE() == null){
     		contextRightViewer.setInput(null);
   	  		

@@ -4,6 +4,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
 
+import xstampp.astpa.model.DataModelController;
 import xstpa.model.ControlActionEntrys;
 import xstpa.model.ProcessModelValue;
 import xstpa.model.ProcessModelVariables;
@@ -12,8 +13,11 @@ import xstpa.ui.View;
 public class EntryCellModifier implements ICellModifier {
 	  private Viewer viewer;
 	  private View view;
-	  public EntryCellModifier(Viewer viewer) {
+	private DataModelController model;
+	  
+	  public EntryCellModifier(Viewer viewer,DataModelController controller) {
 	    this.viewer = viewer;
+	    this.model = controller;
 	  }
 
 	  /**
@@ -113,7 +117,7 @@ public class EntryCellModifier implements ICellModifier {
 	    	ProcessModelValue entry = (ProcessModelValue) element;
 	    	if (View.COMMENTS.equals(property)) {
 	  	      	entry.setComments((String)value);
-	  	      	View.model.setCSComponentComment(entry.getId(), (String) value); 
+	  	      	model.setCSComponentComment(entry.getId(), (String) value); 
 	  	      	//View.model.setCSComponentComment(entry.getId(), (String) value);      
 	  	    //System.out.println(entry.getId());
 	  	      //View.model.getControlActionU(controlActionId).setControlActionDescription(entry.getId(), (String)value);
@@ -124,11 +128,11 @@ public class EntryCellModifier implements ICellModifier {
 	    	ControlActionEntrys entry = (ControlActionEntrys) element;
 	    	if (View.SAFETY_CRITICAL.equals(property)) {
 	  	      entry.setSafetyCritical(!(Boolean)entry.getSafetyCritical());
-	  	      View.model.setCASafetyCritical(entry.getId(), entry.getSafetyCritical());
+	  	      model.setCASafetyCritical(entry.getId(), entry.getSafetyCritical());
 	    	}
 	    	else if (View.COMMENTS.equals(property)){
 	    		entry.setComments((String) value);
-	    		View.model.setControlActionDescription(entry.getId(), (String)value);
+	    		model.setControlActionDescription(entry.getId(), (String)value);
 	    	}
 	    }
 	    

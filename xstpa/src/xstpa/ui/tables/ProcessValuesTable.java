@@ -4,19 +4,13 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 
@@ -45,8 +39,8 @@ public class ProcessValuesTable extends AbstractTableComposite {
 	private TableViewer mainViewer;
 	private Table table;
 
-	public ProcessValuesTable(Composite parent,XSTPADataController controller) {
-		super(parent, controller);
+	public ProcessValuesTable(Composite parent) {
+		super(parent);
 		TableColumnLayout tLayout = new TableColumnLayout();
 		setLayout(tLayout);
 		 // Add the TableViewers   
@@ -61,7 +55,6 @@ public class ProcessValuesTable extends AbstractTableComposite {
 	    editors[4] = new TextCellEditor(table);
 	    
 	    mainViewer.setColumnProperties(View.PROPS_COLUMNS);
-	    mainViewer.setCellModifier(new EntryCellModifier(mainViewer));
 	    mainViewer.setCellEditors(editors);
 	    
 		// add Columns for the mainTable
@@ -117,6 +110,11 @@ public class ProcessValuesTable extends AbstractTableComposite {
 	    setVisible(false);
 	}
 
+	@Override
+	public void setController(XSTPADataController controller) {
+	    mainViewer.setCellModifier(new EntryCellModifier(mainViewer,controller.getModel()));
+		super.setController(controller);
+	}
 	public void activate(){
 		 mainViewer.setInput(dataController.getValuesList());
 		  for (int i = 0, n = table.getColumnCount(); i < n; i++) {

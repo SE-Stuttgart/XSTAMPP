@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.UUID;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,18 +22,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.editors.STPAEditorInput;
-import xstampp.ui.editors.StandartEditorPart;
 import xstpa.Activator;
 import xstpa.model.XSTPADataController;
 import xstpa.ui.tables.AbstractTableComposite;
@@ -46,7 +37,7 @@ import xstpa.ui.tables.ProcessValuesTable;
 import xstpa.ui.tables.RefinedRulesTable;
 import export.ExportContent;
 
-public class View extends ViewPart implements Observer{
+public class View extends ViewPart{
 	public static final String ID = "xstpa.view";
 	
 	// Table column names/properties
@@ -152,17 +143,12 @@ public class View extends ViewPart implements Observer{
 	
 	public static final Color NORMAL = new Color(device,224,224,224);
 	
-	private XSTPADataController dataController =new XSTPADataController();
+	private XSTPADataController dataController;
 	
 	Table  ltlTable;
 	
-	
-	private IPartListener editorListener;
-	
 	private ExportContent exportContent = new ExportContent();
 	
-	public static DataModelController model;
-	public static UUID projectId;
 
 	private List<AbstractTableComposite> tableList;
 	private List<Button> tableButtons;
@@ -178,7 +164,7 @@ public class View extends ViewPart implements Observer{
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {
-
+		
 	    // set title and Image
 	    setPartName("XSTPA");
 	    //this.setContentDescription("Shows the Process Models and Context Tables");
@@ -215,18 +201,18 @@ public class View extends ViewPart implements Observer{
 	    this.tableButtons = new ArrayList<>();
 	    this.tableList = new ArrayList<>();
 	    
-	    AbstractTableComposite mainTable = new ProcessValuesTable(xstpaTableComposite, dataController);
+	    AbstractTableComposite mainTable = new ProcessValuesTable(xstpaTableComposite);
 	    addTable(mainTable, PM);
 	    
-	    AbstractTableComposite compositeTable = new ControlActionTable(xstpaTableComposite, dataController);
+	    AbstractTableComposite compositeTable = new ControlActionTable(xstpaTableComposite);
 	    addTable(compositeTable, "Control Actions");
 	    
-	    compositeTable = new CADependenciesTable(xstpaTableComposite, dataController);
+	    compositeTable = new CADependenciesTable(xstpaTableComposite);
 	    addTable(compositeTable, "Dependencies");
 	    
-	    compositeTable = new ProcessContextTable(xstpaTableComposite, dataController);
+	    compositeTable = new ProcessContextTable(xstpaTableComposite);
 	    addTable(compositeTable, "Context Table");
-	    compositeTable = new RefinedRulesTable(xstpaTableComposite, dataController){
+	    compositeTable = new RefinedRulesTable(xstpaTableComposite){
 	    	@Override
 	    	protected void openLTL() {
 	    		openTable(ltlComposite, null);
@@ -234,72 +220,13 @@ public class View extends ViewPart implements Observer{
 	    };
 	    addTable(compositeTable, RULES_TABLE);
 	    // ltl Composite
-	    ltlComposite = new LTLPropertiesTable(xstpaTableComposite, dataController);
+	    ltlComposite = new LTLPropertiesTable(xstpaTableComposite);
 	    addTable(ltlComposite, null);
-	    
+	    setController(new XSTPADataController(null));
 	    openTable(mainTable, null);
 	    /**
 		 * Listener which Gets the project-id of the currently active editor
 		 */
-	    
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(editorListener = new IPartListener() {
-		
-		    
-		    @Override
-		    public void partOpened(IWorkbenchPart part) {
-		    //if the view is active, get the projectId from the ControlStructure Editor
-		     
-		     try{
-		    	 //PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
-		    	 IEditorPart editorPart =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		    	 if (editorPart == null) {
-		    	 }
-		    	 else if(editorPart instanceof StandartEditorPart){
-		    		 
-			    	 IEditorInput input = editorPart.getEditorInput();
-			    	 projectId=((STPAEditorInput) input).getProjectID();
-			      
-			    	 model = (DataModelController) ProjectManager.getContainerInstance().getDataModel(projectId);
-			    	 dataController.setModel(model);
-			    	 // observer gets added, so whenever a value changes, the view gets updated;
-					 model.addObserver(View.this);
-					 
-					 getTableEntrys();
-		    	 }  
-		    	 
-		     }
-		     catch(ClassCastException e){
-		    	 e.printStackTrace();
-		     } 
-
-		    }
-
-			@Override
-			public void partActivated(IWorkbenchPart part) {
-				//  Auto-generated method stub
-				
-			}
-
-			@Override
-			public void partBroughtToTop(IWorkbenchPart part) {
-				//  Auto-generated method stub
-				
-			}
-
-			@Override
-			public void partClosed(IWorkbenchPart part) {
-				//PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				//.hideView(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID));
-				
-			}
-
-			@Override
-			public void partDeactivated(IWorkbenchPart part) {
-				// Auto-generated method stub
-				
-			}    
-		   
-		   });
 	}
 	
 	private void addTable(final AbstractTableComposite table, String name){
@@ -347,13 +274,11 @@ public class View extends ViewPart implements Observer{
 	public void getTableEntrys() {
 		//List<ICorrespondingUnsafeControlAction> unsafeCA = model.getAllUnsafeControlActions();
 		
-		dataController.clear(model);
-		
-	      
 		// store the Export Data for later Use
 		exportContent.setNotProvidedCA(dataController.getDependenciesNotProvided());
 		exportContent.setProvidedCA(dataController.getDependenciesIFProvided());
-		ProjectManager.getContainerInstance().addProjectAdditionForUUID(projectId, exportContent);
+		ProjectManager.getContainerInstance().addProjectAdditionForUUID(ProjectManager.getContainerInstance().
+																		getProjectID(dataController.getModel()), exportContent);
 		for(AbstractTableComposite comp: tableList){
 			comp.refreshTable();
 		}
@@ -366,36 +291,12 @@ public class View extends ViewPart implements Observer{
 	 */
 	public void setFocus() {
 	}
-
-
-	@Override
-	public void dispose() {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(editorListener);
-		if(model != null){
-			model.deleteObserver(this);
-		}
-		super.dispose();
-	}
 	
-	
-	/**
-	 * updates the table dynamically if something changes in the Datamodel
-	 */
-	@Override
-	public void update(Observable o, Object updatedValue) {
-		ObserverValue type = (ObserverValue) updatedValue;
-		
-		switch (type) {
-		case CONTROL_ACTION:
-
-		case CONTROL_STRUCTURE: {
-				getTableEntrys();
-			break;
+	public void setController(XSTPADataController controller){
+		for(AbstractTableComposite table : this.tableList){
+			table.setController(controller);
 		}
-		default:
-			break;
-		}
-
-		
+		dataController = controller;
+		getTableEntrys();
 	}
 }

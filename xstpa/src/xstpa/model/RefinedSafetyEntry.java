@@ -2,6 +2,7 @@ package xstpa.model;
 
 import java.util.UUID;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -88,7 +89,16 @@ public class RefinedSafetyEntry {
 	}
 
 	public String getRelatedHazards() {
-		// TODO Auto-generated method stub
-		return null;
+
+		String tempHazLinks ="";
+		for (UUID ucaID : variable.getUcaLinks(type)) {
+			for (ITableModel tableModel : model.getLinkedHazardsOfUCA(ucaID)) {
+				tempHazLinks = tempHazLinks.concat("H-"+tableModel.getNumber() + ",");
+			}
+		}
+		if(!tempHazLinks.isEmpty()){
+			return tempHazLinks.substring(0, tempHazLinks.length() -1);
+		}
+		return "not hazardous";
 	}
 }

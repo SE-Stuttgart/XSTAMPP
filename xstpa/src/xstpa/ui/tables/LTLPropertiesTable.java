@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import xstpa.model.XSTPADataController;
 import xstpa.ui.View;
 
 public class LTLPropertiesTable extends AbstractTableComposite{
@@ -47,8 +46,8 @@ public class LTLPropertiesTable extends AbstractTableComposite{
 	private TableViewer ltlViewer;
 	private Table ltlTable;
 
-	public LTLPropertiesTable(Composite parent, XSTPADataController controller) {
-		super(parent, controller);
+	public LTLPropertiesTable(Composite parent) {
+		super(parent);
 
 		TableColumnLayout tLayout = new TableColumnLayout();
 		setLayout(tLayout);

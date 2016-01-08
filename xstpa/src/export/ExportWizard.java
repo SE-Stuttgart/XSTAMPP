@@ -11,14 +11,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.util.jobs.Run;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
-import xstpa.ui.View;
 
 public class ExportWizard extends AbstractExportWizard {
 	private String OUTPUT; //$NON-NLS-1$
@@ -65,16 +66,16 @@ public class ExportWizard extends AbstractExportWizard {
 
 		if (this.page.getPdfCheckbox().getSelection() == true) {
 			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.PDF_DIR + File.separator +"xstpa-tables.pdf", "/src/fopXstpa.xsl",
-					View.projectId);
+					this.page.getProjectID());
 		    exportjob.schedule();
 		}
 		if (this.page.getCsvCheckbox().getSelection() == true) {
 			new CsvExport(outputDir + File.separator + Run.CSV_DIR+ File.separator, 
-					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(View.projectId));
+					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(this.page.getProjectID()));
 		}
 		if (this.page.getImgCheckbox().getSelection() == true) {
 			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.IMAGE_DIR+ File.separator +"xstpa-tables.png", "/src/fopXstpa.xsl",
-					View.projectId);
+					this.page.getProjectID());
 		    exportjob.schedule();
 		}
 
@@ -93,7 +94,10 @@ public class ExportWizard extends AbstractExportWizard {
 		@Override
 		public void createControl(Composite parent) {
 			super.createControl(parent);
-			setProjectChoice(View.projectId);
+			IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			if(editor != null && editor instanceof StandartEditorPart){
+				setProjectChoice(((StandartEditorPart)editor).getProjectID());
+			}
 			this.pathChooser.setText(Platform.getInstanceLocation().getURL().getFile()
 					+ OUTPUT);
 			FormData data = new FormData();
