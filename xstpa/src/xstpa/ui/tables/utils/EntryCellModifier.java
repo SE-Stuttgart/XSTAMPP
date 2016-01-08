@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
 
 import xstampp.astpa.model.DataModelController;
-import xstpa.model.ControlActionEntrys;
+import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelValue;
 import xstpa.model.ProcessModelVariables;
 import xstpa.ui.View;
@@ -57,8 +57,8 @@ public class EntryCellModifier implements ICellModifier {
 			}
 		}
 		// if Control ActionEntry calls
-		else if (ControlActionEntrys.class == element.getClass()){
-			ControlActionEntrys entry = (ControlActionEntrys) element;
+		else if (ControlActionEntry.class == element.getClass()){
+			ControlActionEntry entry = (ControlActionEntry) element;
 			if (View.SAFETY_CRITICAL.equals(property)) {
 		      return Boolean.valueOf(entry.getSafetyCritical());
 			}
@@ -124,8 +124,8 @@ public class EntryCellModifier implements ICellModifier {
 	    	}
 	    }
 	    // if ControlActionEntrys calls
-	    else if (ControlActionEntrys.class == element.getClass()){
-	    	ControlActionEntrys entry = (ControlActionEntrys) element;
+	    else if (ControlActionEntry.class == element.getClass()){
+	    	ControlActionEntry entry = (ControlActionEntry) element;
 	    	if (View.SAFETY_CRITICAL.equals(property)) {
 	  	      entry.setSafetyCritical(!(Boolean)entry.getSafetyCritical());
 	  	      model.setCASafetyCritical(entry.getId(), entry.getSafetyCritical());

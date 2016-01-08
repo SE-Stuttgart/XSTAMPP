@@ -30,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.util.STPAPluginUtils;
-import xstpa.model.ControlActionEntrys;
+import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.model.RefinedSafetyEntry;
 import xstpa.ui.View;
@@ -268,30 +268,33 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	}
 
 	@Override
-	public void refreshTable() {
+	public boolean refreshTable() {
+		if(refinedSafetyViewer.getControl() == null || refinedSafetyViewer.getControl().isDisposed()){
+			return false;
+		}
 		refinedSafetyContent.clear();
-  	    ArrayList<ControlActionEntrys> allCAEntrys = new ArrayList<>();
+  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
   	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
   	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
   	    
-  	    for (ControlActionEntrys entrys : allCAEntrys) {
-			for(ProcessModelVariables variable : entrys.getContextTableCombinations()){
-				RefinedSafetyEntry entry = null;
+  	    for (ControlActionEntry caEntry : allCAEntrys) {
+			for(ProcessModelVariables variable : caEntry.getContextTableCombinations()){
+				RefinedSafetyEntry rsEntry = null;
 				if(variable.getHAnytime()){
-					entry = RefinedSafetyEntry.getAnytimeEntry(variable,dataController.getModel());
-					refinedSafetyContent.add(entry);
+					rsEntry = RefinedSafetyEntry.getAnytimeEntry(variable,dataController.getModel());
+					refinedSafetyContent.add(rsEntry);
 				}
 				if(variable.getHEarly()){
-					entry = RefinedSafetyEntry.getTooEarlyEntry(variable,dataController.getModel());
-					refinedSafetyContent.add(entry);
+					rsEntry = RefinedSafetyEntry.getTooEarlyEntry(variable,dataController.getModel());
+					refinedSafetyContent.add(rsEntry);
 				}
 				if(variable.getHLate()){
-					entry = RefinedSafetyEntry.getTooLateEntry(variable,dataController.getModel());
-					refinedSafetyContent.add(entry);
+					rsEntry = RefinedSafetyEntry.getTooLateEntry(variable,dataController.getModel());
+					refinedSafetyContent.add(rsEntry);
 				}
-				if(variable.getHazardous() && entry == null){
-					entry = RefinedSafetyEntry.getNotProvidedEntry(variable,dataController.getModel());
-					refinedSafetyContent.add(entry);
+				if(variable.getHazardous() && rsEntry == null){
+					rsEntry = RefinedSafetyEntry.getNotProvidedEntry(variable,dataController.getModel());
+					refinedSafetyContent.add(rsEntry);
 				}
 			}
 		}
@@ -303,6 +306,7 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
   	    for (int i = 0, n = refinedSafetyTable.getColumnCount(); i < n; i++) {
   	    	refinedSafetyTable.getColumn(i).pack();
   	    }
+		return true;
 	}
 
 	/**
@@ -310,11 +314,11 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	 */
 	public void storeRefinedSafety() {
 		
-  	    ArrayList<ControlActionEntrys> allCAEntrys = new ArrayList<>();
+  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
   	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
   	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
   	    
-	    for (ControlActionEntrys caEntry : allCAEntrys) {	
+	    for (ControlActionEntry caEntry : allCAEntrys) {	
 	    	dataController.storeBooleans(caEntry);	
 	    }
 	}

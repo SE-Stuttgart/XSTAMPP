@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import xstpa.model.ControlActionEntrys;
+import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.ui.View;
 import xstpa.ui.tables.utils.DependencyViewLabelProvider;
@@ -347,10 +347,13 @@ public class CADependenciesTable extends AbstractTableComposite {
 	}
 
 	@Override
-	public void refreshTable() {
+	public boolean refreshTable() {
+		if(dependencyTableViewer.getControl() == null || dependencyTableViewer.getControl().isDisposed()){
+			return false;
+		}
 		// create input for dependencyTableViewer
-    	List<ControlActionEntrys> dependencyTableInput= new ArrayList<ControlActionEntrys>();
-    	for(ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
+    	List<ControlActionEntry> dependencyTableInput= new ArrayList<ControlActionEntry>();
+    	for(ControlActionEntry entry : dataController.getDependenciesIFProvided()) {
     		if (entry.getSafetyCritical()) {
 				dependencyTableInput.add(entry);
 			}
@@ -366,11 +369,12 @@ public class CADependenciesTable extends AbstractTableComposite {
 		//calculate index of selected dependency in the dependencies list
     	if(dependencyTable.getSelectionCount() > 0){
 	    	  //get the selected Control Action to link it to a Process model Variable
-    		ControlActionEntrys entry = (ControlActionEntrys) dependencyTable.getSelection()[0].getData();
+    		ControlActionEntry entry = (ControlActionEntry) dependencyTable.getSelection()[0].getData();
 	    	dataController.setLinkedCAE((dependenciesFolder.getSelectionIndex() == 0),entry.getId());
 	    	dependencyTopTableViewer.setInput(dataController.getLinkedCAE().getAvailableItems());
 	    	dependencyBottomTableViewer.setInput(dataController.getLinkedCAE().getLinkedItems());
     	}
+		return true;
 	}
 
 }

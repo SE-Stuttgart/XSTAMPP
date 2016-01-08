@@ -18,23 +18,24 @@ import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.model.ObserverValue;
 
 public class XSTPADataController extends Observable implements Observer{
 
 	private static final String CONTEXT_PROVIDED ="provided";
 	private static final String CONTEXT_NOT_PROVIDED ="not provided";
-	private List<ProcessModelValue> valuesList;
-	private Map<UUID,ControlActionEntrys> dependenciesIFProvided;
-	private ArrayList<ProcessModelVariables> variablesList;
-	private Map<UUID,ControlActionEntrys> dependenciesNotProvided;
-	private ControlActionEntrys linkedCAE;
+	private Map<UUID,ProcessModelValue> valuesList;
+	private Map<UUID,ControlActionEntry> dependenciesIFProvided;
+	private Map<UUID,ProcessModelVariables> variablesList;
+	private Map<UUID,ControlActionEntry> dependenciesNotProvided;
+	private ControlActionEntry linkedCAE;
 	private ProcessModelVariables linkedPMV;
 	private DataModelController model;
 	private boolean controlActionProvided;
 	
 	public XSTPADataController(DataModelController model) {
-		this.valuesList = new ArrayList<>();
-		this.variablesList = new ArrayList<>();
+		this.valuesList = new HashMap<>();
+		this.variablesList = new HashMap<>();
 		this.dependenciesIFProvided  = new HashMap<>();
 		this.dependenciesNotProvided = new HashMap<>();
 		this.model = model;
@@ -62,7 +63,7 @@ public class XSTPADataController extends Observable implements Observer{
 	 * @see ProcessModelValue
 	 */
 	public List<ProcessModelValue> getValuesList() {
-		return this.valuesList;
+		return new ArrayList<ProcessModelValue>(this.valuesList.values());
 	}
 
 	public int getValueCount() {
@@ -82,7 +83,7 @@ public class XSTPADataController extends Observable implements Observer{
 	 * @param value the value which is to add to the valuesList
 	 */
 	public void addValue(ProcessModelValue value) {
-		this.valuesList.add(value);
+		this.valuesList.put(value.getId(),value);
 	}
 
 	public boolean removeValue(int index) {
@@ -95,7 +96,7 @@ public class XSTPADataController extends Observable implements Observer{
 	 * @return the variablesList
 	 */
 	public ArrayList<ProcessModelVariables> getVariablesList() {
-		return this.variablesList;
+		return new ArrayList<ProcessModelVariables>(this.variablesList.values());
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class XSTPADataController extends Observable implements Observer{
 	 */
 	public void addVariable(ProcessModelVariables varible) {
 		varible.setNumber(this.variablesList.size()+1);
-		this.variablesList.add(varible);
+		this.variablesList.put(varible.getId(),varible);
 	}
 	
 	
@@ -192,8 +193,8 @@ public class XSTPADataController extends Observable implements Observer{
 	      }
 	}
 	
-	private ControlActionEntrys getEntryFor(IControlAction entry,List<IValueCombie> combies,String context){
-		ControlActionEntrys tempCAEntry = new ControlActionEntrys();
+	private ControlActionEntry getEntryFor(IControlAction entry,List<IValueCombie> combies,String context){
+		ControlActionEntry tempCAEntry = new ControlActionEntry();
   	  
 		//tempCAE.setController(entry.);
 		tempCAEntry.setComments(entry.getDescription());
@@ -241,19 +242,23 @@ public class XSTPADataController extends Observable implements Observer{
 				}
 				valueCombie.setValues(valuesIdsTOvariableIDs);
 			}
-			for (UUID varId : valueCombie.getPMValues().keySet()) {
-				contextTableEntry.addVariableId(varId);
-				tempVarialesList.add(model.getComponent(varId).getText());
-				for (int j = 0; j<getValueCount();j++) {
-					if (valueCombie.getPMValues().get(varId).equals(getValue(j).getId())) {
-						tempValuesList.add(model.getComponent(varId).getText()+ "="
-								+ getValue(j).getValueText());
-						contextTableEntry.addValue(getValue(j).getValueText());		    						  
-						contextTableEntry.setLinkedControlActionName(entry.getTitle(), entry.getId());
-						contextTableEntry.addValueId(getValue(j).getId());
-  						  
-					}
+			if(valueCombie.getPMValues() == null){
+				HashMap<UUID, UUID> map = new HashMap<>();
+				for(UUID valueId : valueCombie.getValueList()){
+					map.put(valuesList.get(valueId).getVariableID(),valueId);
 				}
+				valueCombie.setValues(map);
+			}
+			for (UUID valId : valueCombie.getPMValues().values()) {
+				contextTableEntry.addVariableId(valuesList.get(valId).getVariableID());
+				tempVarialesList.add(model.getComponent(valuesList.get(valId).getVariableID()).getText());
+				
+				tempValuesList.add(model.getComponent(valuesList.get(valId).getVariableID()).getText()+ "="
+						+ valuesList.get(valId).getValueText());
+				contextTableEntry.addValue(valuesList.get(valId).getValueText());		    						  
+				contextTableEntry.setLinkedControlActionName(entry.getTitle(), entry.getId());
+				contextTableEntry.addValueId(valId);
+  					
 			}
 		  
 			contextTableEntry.setPmValues(tempValuesList);
@@ -278,8 +283,8 @@ public class XSTPADataController extends Observable implements Observer{
 	 * Store the Boolean Data (from the Context Table) in the Datamodel
 	 * @param caEntry the ControlActionEntrys or null for the currently linked which should be stored in the data model
 	 */
-	public void storeBooleans(ControlActionEntrys caEntry) {
-		ControlActionEntrys temp = caEntry;
+	public void storeBooleans(ControlActionEntry caEntry) {
+		ControlActionEntry temp = caEntry;
 		if(temp == null){
 			temp = this.linkedCAE;
 		}
@@ -291,7 +296,7 @@ public class XSTPADataController extends Observable implements Observer{
 		}
 	}
 	
-	private void syncCombiesWhenProvided(ControlActionEntrys caEntry){
+	private void syncCombiesWhenProvided(ControlActionEntry caEntry){
   		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
   		  ProvidedValuesCombi val = new ProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
@@ -317,7 +322,7 @@ public class XSTPADataController extends Observable implements Observer{
   		  model.setValuesWhenCAProvided(caEntry.getId(),valuesIfProvided);
 	}
 	
-	private void syncCombiesWhenNotProvided(ControlActionEntrys caEntry){
+	private void syncCombiesWhenNotProvided(ControlActionEntry caEntry){
   		  List<NotProvidedValuesCombi> valuesIfProvided = new ArrayList<NotProvidedValuesCombi>();
   		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
@@ -359,22 +364,22 @@ public class XSTPADataController extends Observable implements Observer{
 			  
 			  //iteration over all available and in the data model stored values
 			  //to get the uuids mapped to the components
-			  for (int n = 0; n<getValueCount();n++) {
+			  for (ProcessModelValue value :valuesList.values()) {
 				  
 				  //2 if cases are used to find find the right variable-value combination 
-				  if (getValue(n).getId().equals(model.getIgnoreLTLValue().getId()) || getValue(n).getVariableID().equals(variableID)) {
+				  if (value.getId().equals(model.getIgnoreLTLValue().getId()) || value.getVariableID().equals(variableID)) {
 					  
-					  String tempValue =getValue(n).getValueText().trim();
+					  String tempValue =value.getValueText().trim();
 					  
 					  if ((tempValue.equals(sValueName))) {
-						  combis.put(variableID,getValue(n).getId());
-						  variables.addValueId(getValue(n).getId());
-						  variables.addVariableId(getValue(n).getVariableID());
+						  combis.put(variableID,value.getId());
+						  variables.addValueId(value.getId());
+						  variables.addVariableId(value.getVariableID());
 					  }
 					  else if ("(don't care)".equals(sValueName)) {
 						  combis.put(variableID,model.getIgnoreLTLValue().getId());
 						  variables.addValueId(model.getIgnoreLTLValue().getId());
-						  variables.addVariableId(getValue(n).getVariableID());
+						  variables.addVariableId(value.getVariableID());
 					  }
 				  }
 			  }
@@ -395,14 +400,14 @@ public class XSTPADataController extends Observable implements Observer{
 	/**
 	 * @return the dependenciesIFProvided
 	 */
-	public Collection<ControlActionEntrys> getDependenciesIFProvided() {
+	public Collection<ControlActionEntry> getDependenciesIFProvided() {
 		return this.dependenciesIFProvided.values();
 	}
 	
 	/**
 	 * @return the dependenciesNotProvided
 	 */
-	public Collection<ControlActionEntrys> getDependenciesNotProvided() {
+	public Collection<ControlActionEntry> getDependenciesNotProvided() {
 		return this.dependenciesNotProvided.values();
 	}
 
@@ -412,7 +417,7 @@ public class XSTPADataController extends Observable implements Observer{
 	 * @param id the id which is provided by astpa for the requested controlAction
 	 * @return the control action entry stored in the context map for the given id
 	 */
-	public ControlActionEntrys getControlActionEntry(boolean providedContext,UUID id){
+	public ControlActionEntry getControlActionEntry(boolean providedContext,UUID id){
 		if(providedContext){
 			return this.dependenciesIFProvided.get(id);
 		}
@@ -436,7 +441,7 @@ public class XSTPADataController extends Observable implements Observer{
 	/**
 	 * @return the linkedCAE
 	 */
-	public ControlActionEntrys getLinkedCAE() {
+	public ControlActionEntry getLinkedCAE() {
 		return this.linkedCAE;
 	}
 
@@ -496,8 +501,14 @@ public class XSTPADataController extends Observable implements Observer{
 
 	@Override
 	public void update(Observable arg0, Object updatedValue) {
-		clear();
-		setChanged();
-		notifyObservers(updatedValue);
+		final ObserverValue value= (ObserverValue) updatedValue; 
+		new Runnable() {
+			@Override
+			public void run() {
+				clear();
+				setChanged();
+				notifyObservers(value);
+			}
+		};
 	}
 }

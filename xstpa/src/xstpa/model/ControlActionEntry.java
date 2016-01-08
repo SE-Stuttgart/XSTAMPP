@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-public class ControlActionEntrys {
+public class ControlActionEntry {
 	
 	private String controller;
 	private String controlAction;
@@ -25,7 +25,7 @@ public class ControlActionEntrys {
 
 	private List<ProcessModelVariables>  contextTableCombinations = new ArrayList<ProcessModelVariables>();
 	
-	public ControlActionEntrys() {
+	public ControlActionEntry() {
 		comments = "";
 		safety_critical = true;
 		

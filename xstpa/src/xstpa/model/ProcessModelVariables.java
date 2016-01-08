@@ -93,7 +93,7 @@ public class ProcessModelVariables {
 	@XmlElement(name = "id")
 	private List<UUID> relatedUCAsTooLate;
 	
-	public ProcessModelVariables (List<String> pmVariables,ControlActionEntrys linkedControlAction ) {
+	public ProcessModelVariables (List<String> pmVariables,ControlActionEntry linkedControlAction ) {
 		this.linkedControlActionName = linkedControlAction.getControlAction();
 		this.pmVariables = pmVariables;
 		this.linkedControlActionID = linkedControlAction.getId();

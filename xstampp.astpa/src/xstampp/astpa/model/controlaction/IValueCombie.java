@@ -33,11 +33,12 @@ public interface IValueCombie {
 	static final String TYPE_NOT_PROVIDED ="not provided";
 	
 	/**
-	 * @return a copie of the list of process model value ids
+	 * @return a map containing the ids of the combined values mapped to their parent
+	 * 				variable ids
 	 */
 	public abstract Map<UUID, UUID> getPMValues();
 
-	List<UUID> getValueList();
+	public List<UUID> getValueList();
 	/**
 	 * @return the refinedSC
 	 */
@@ -50,7 +51,8 @@ public interface IValueCombie {
 	public abstract String getSafetyConstraint();
 
 	/**
-	 * @param valuesIdsTOvariableIDs TODO
+	 * @param valuesIdsTOvariableIDs a map containing the ids of the combined values mapped to their parent
+	 * 				variable ids
 	 */
 	public abstract void setValues(Map<UUID, UUID> valuesIdsTOvariableIDs);
 

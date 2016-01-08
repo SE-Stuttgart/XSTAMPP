@@ -48,7 +48,7 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
 import xstpa.model.ACTSController;
-import xstpa.model.ControlActionEntrys;
+import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.ui.View;
 import xstpa.ui.dialogs.AddEntryShell;
@@ -230,7 +230,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			contextViewer.setLabelProvider(new LabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return ((ControlActionEntrys) element).getControlAction();
+					return ((ControlActionEntry) element).getControlAction();
 				}
 			});
 			contextTable = contextViewer.getTable();
@@ -719,10 +719,10 @@ public class ProcessContextTable extends AbstractTableComposite {
 	
 	private void updateContextInput(int formerIndex){
 		// create Input for contextTableViewer
-		List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
+		List<ControlActionEntry> contextTableInput= new ArrayList<ControlActionEntry>();
 		// if the tabfolder is on "Context Provided"
 	  	if (dataController.isControlActionProvided()) {
-	  		for(ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
+	  		for(ControlActionEntry entry : dataController.getDependenciesIFProvided()) {
 	    		if (entry.getSafetyCritical()) {
 					contextTableInput.add(entry);
 				}
@@ -730,7 +730,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	  	}
 	  	  // if its on the other tab
 	  	else {
-	  		for(ControlActionEntrys entry : dataController.getDependenciesNotProvided()) {
+	  		for(ControlActionEntry entry : dataController.getDependenciesNotProvided()) {
 	    		if (entry.getSafetyCritical()) {
 					contextTableInput.add(entry);
 				}
@@ -747,7 +747,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			//if the former index returns cannot be selected try 0 
 			contextTable.select(0);
 		}
-		ControlActionEntrys entry = contextTableInput.get(contextTable.getSelectionIndex());
+		ControlActionEntry entry = contextTableInput.get(contextTable.getSelectionIndex());
 		dataController.setLinkedCAE(entry.getId());
 		
 		refreshTable();
@@ -855,8 +855,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 	public void activate() {
 		
 		// create Input for contextTableViewer
-		List<ControlActionEntrys> contextTableInput= new ArrayList<ControlActionEntrys>();
-    	for (ControlActionEntrys entry : dataController.getDependenciesIFProvided()) {
+		List<ControlActionEntry> contextTableInput= new ArrayList<ControlActionEntry>();
+    	for (ControlActionEntry entry : dataController.getDependenciesIFProvided()) {
     		if (entry.getSafetyCritical()) {
     			contextTableInput.add(entry);
     		}
@@ -867,7 +867,7 @@ public class ProcessContextTable extends AbstractTableComposite {
   		  contextTable.select(0);
   	  	}
   	  	if(contextTable.getSelectionIndex() != -1){
-			ControlActionEntrys entry = contextTableInput.get(contextTable.getSelectionIndex());
+			ControlActionEntry entry = contextTableInput.get(contextTable.getSelectionIndex());
 	  	  	dataController.setLinkedCAE(entry.getId());
 	  	}else{
 	  		dataController.setLinkedCAE(null);
@@ -893,11 +893,14 @@ public class ProcessContextTable extends AbstractTableComposite {
 	}
 
 	@Override
-	public void refreshTable() {
+	public boolean refreshTable() {
+		if(contextRightViewer.getControl() == null || contextRightViewer.getControl().isDisposed()){
+			return false;
+		}
 		if(contextTable.getSelectionCount() == 0){
 			dataController.setLinkedCAE(null);
 		}else{
-			ControlActionEntrys entry = (ControlActionEntrys) contextTable.getSelection()[0].getData();
+			ControlActionEntry entry = (ControlActionEntry) contextTable.getSelection()[0].getData();
 	  	  	dataController.setLinkedCAE(contextContentFolder.getSelectionIndex() == 0,entry.getId());
 	  	  	createTableColumns();
 	  	  	
@@ -926,6 +929,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 				showContent(filterCombo.getText(), viewerContent);
 			}
 		}
+		return true;
 	}
 
 	/**

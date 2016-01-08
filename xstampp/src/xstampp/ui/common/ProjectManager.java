@@ -1,4 +1,5 @@
 /*******************************************************************************
+
 # * Copyright (c) 2013 ASTPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac Jarkko, Heidenwag, Benedikt Markt, Jaqueline Patzek Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksey Babkovic, Aleksander
@@ -340,6 +341,7 @@ public class ProjectManager implements IPropertyChangeListener {
 					tmpController.setStored();
 				}catch(SWTException e){
 					LOGGER.debug("cant't mark DataModel ad saved!");
+					e.printStackTrace();
 				}
 				
 			}

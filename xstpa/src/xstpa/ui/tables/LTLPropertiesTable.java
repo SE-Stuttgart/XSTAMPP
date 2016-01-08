@@ -85,8 +85,8 @@ public class LTLPropertiesTable extends AbstractTableComposite{
 	}
 
 	@Override
-	public void refreshTable() {
-		// TODO Auto-generated method stub
+	public boolean refreshTable() {
+		return true;
 		
 	}
 

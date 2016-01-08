@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import xstpa.model.ControlActionEntrys;
+import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelValue;
 import xstpa.model.ProcessModelVariables;
 
@@ -29,8 +29,8 @@ public class DependencyViewLabelProvider extends LabelProvider implements
 		    }
 		    return null;
 		}
-		else if (element.getClass() == ControlActionEntrys.class) {
-			ControlActionEntrys entry = (ControlActionEntrys) element;
+		else if (element.getClass() == ControlActionEntry.class) {
+			ControlActionEntry entry = (ControlActionEntry) element;
 			switch (columnIndex) {
 			case 0:
 				return String.valueOf(entry.getNumber());

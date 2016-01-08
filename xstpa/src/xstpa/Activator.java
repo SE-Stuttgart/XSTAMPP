@@ -78,6 +78,7 @@ public class Activator extends AbstractUIPlugin {
 				XSTPADataController data = this.xstpaDataToIDataModel.get(model);
 				if(data == null && model instanceof DataModelController){
 					data = new XSTPADataController((DataModelController) model);
+					model.addObserver(data);
 					this.xstpaDataToIDataModel.put(model, data);
 				}else if(data == null){
 					data = defaultController;

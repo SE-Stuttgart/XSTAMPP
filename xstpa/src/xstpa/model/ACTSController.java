@@ -111,7 +111,7 @@ public class ACTSController {
 		
 	}
 	
-	public static List<ProcessModelVariables> open(Boolean defaultSettings,int columns,boolean providedContext,ControlActionEntrys context) {
+	public static List<ProcessModelVariables> open(Boolean defaultSettings,int columns,boolean providedContext,ControlActionEntry context) {
 		// Run ACTS in a separate system process
 		Process proc;
 		String modes;
@@ -183,7 +183,7 @@ public class ACTSController {
 	}
 	
 	
-	private static List<ProcessModelVariables> getEntrysFromFile (BufferedReader reader,boolean providedContext,ControlActionEntrys context) {
+	private static List<ProcessModelVariables> getEntrysFromFile (BufferedReader reader,boolean providedContext,ControlActionEntry context) {
 		List<ProcessModelVariables> contextEntries = new ArrayList<ProcessModelVariables>();
 		try {
 			

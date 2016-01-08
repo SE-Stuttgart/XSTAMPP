@@ -87,7 +87,7 @@ public class NotProvidedValuesCombi implements IValueCombie{
 	public Map<UUID, UUID> getPMValues() {
 
 		if(this.variables == null){
-			return new HashMap<>();
+			return null;
 		}
 		HashMap<UUID, UUID> valueMap = new HashMap<>();
 		for(int i=0;i < this.values.size();i++){

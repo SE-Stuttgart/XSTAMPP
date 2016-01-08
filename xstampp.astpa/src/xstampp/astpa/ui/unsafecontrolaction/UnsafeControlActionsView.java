@@ -297,7 +297,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		return maxHeight;
 	}
 
-	private void fillTable(List<IControlAction> controlActions) {
+	protected void fillTable(List<IControlAction> controlActions) {
 		
 		if (controlActions.isEmpty()) {
 			return;
@@ -500,6 +500,9 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 				(IUnsafeControlActionDataModel) controlActionsInterface);
 	}
 
+	protected IDataModel getDataModel(){
+		return this.ucaInterface;
+	}
 	private void reloadTable() {
 		if(!this.lockreload){
 			int tmp= this.grid.getGrid().getVerticalBar().getSelection();

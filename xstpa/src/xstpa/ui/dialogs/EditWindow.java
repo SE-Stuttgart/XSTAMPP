@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.util.STPAPluginUtils;
-import xstpa.model.ControlActionEntrys;
+import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.model.Relation;
 import xstpa.ui.View;
@@ -70,7 +70,7 @@ public class EditWindow
     private boolean refreshView;
     public static List<String> modes = new ArrayList<String>();
     public static List<String> constraints = new ArrayList<String>();
-    private ControlActionEntrys linkedCAE;
+    private ControlActionEntry linkedCAE;
 	private Button ipogfButton, ipogButton, ipogf2Button, ipogdButton, baseChoiceButton,ignoreConstraints;
 	private Combo strengthCombo,modeCombo,handlingCombo;
     public static List<Relation> relations = new ArrayList<Relation>();
@@ -191,7 +191,7 @@ public class EditWindow
     // ==================== 4. Constructors ===============================
 
 
-	public EditWindow(ControlActionEntrys linkedCAE)
+	public EditWindow(ControlActionEntry linkedCAE)
     {
 		this.refreshView = false;
 		this.isDirty = false;

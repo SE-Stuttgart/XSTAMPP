@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import xstpa.model.ControlActionEntrys;
+import xstpa.model.ControlActionEntry;
 import xstpa.model.XSTPADataController;
 import xstpa.ui.View;
 import xstpa.ui.tables.utils.EntryCellModifier;
@@ -34,7 +34,7 @@ public class ControlActionTable extends AbstractTableComposite{
 		
 		public String getColumnText(Object element, int columnIndex) {
 			
-			ControlActionEntrys entry = (ControlActionEntrys) element;
+			ControlActionEntry entry = (ControlActionEntry) element;
 			switch (columnIndex) {
 			case 0:
 				return entry.getControlAction();
@@ -122,8 +122,8 @@ public class ControlActionTable extends AbstractTableComposite{
 	        public void handleEvent(Event event) {
 	            // if column 7 (Safety critical), draw the right image
 	        	
-	            if((event.index == 1)&(event.item.getData().getClass() == ControlActionEntrys.class))  {
-	            	ControlActionEntrys entry = (ControlActionEntrys) event.item.getData();
+	            if((event.index == 1)&(event.item.getData().getClass() == ControlActionEntry.class))  {
+	            	ControlActionEntry entry = (ControlActionEntry) event.item.getData();
 	            	Image tmpImage = View.UNCHECKED;
 	            	if (entry.getSafetyCritical()){
 	                tmpImage = View.CHECKED;
@@ -159,9 +159,7 @@ public class ControlActionTable extends AbstractTableComposite{
 	}
 	@Override
 	public void activate() {
-		ArrayList<ControlActionEntrys> contentList = new ArrayList<>();
-		contentList.addAll(dataController.getDependenciesIFProvided());
-		controlActionViewer.setInput(contentList);
+		refreshTable();
 		controlActionViewer.getControl().setFocus();
 	  
 	  
@@ -172,7 +170,14 @@ public class ControlActionTable extends AbstractTableComposite{
 	}
 
 	@Override
-	public void refreshTable() {
+	public boolean refreshTable() {
+		if(controlActionViewer.getControl() == null || controlActionViewer.getControl().isDisposed()){
+			return false;
+		}
+		ArrayList<ControlActionEntry> contentList = new ArrayList<>();
+		contentList.addAll(dataController.getDependenciesIFProvided());
+		controlActionViewer.setInput(contentList);
+		return true;
 		// TODO Auto-generated method stub
 		
 	}

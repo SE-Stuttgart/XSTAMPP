@@ -21,7 +21,7 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 	
 	public abstract void activate();
 	
-	public abstract void refreshTable();
+	public abstract boolean refreshTable();
 
 	protected void writeStatus(String status){
 		IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
@@ -33,7 +33,10 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		refreshTable();
+		
+		if(!refreshTable()){
+			o.deleteObserver(this);
+		}
 		
 	}
 

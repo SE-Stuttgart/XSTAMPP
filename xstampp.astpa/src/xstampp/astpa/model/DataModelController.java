@@ -1692,6 +1692,11 @@ public class DataModelController extends Observable implements
 		return this.ignoreLtlValue;
 	}
 	
+	/**
+	 * 
+	 * @param offset the first property in the list is mapped to 'RSR<code>offset</code>
+	 * @return a Map with LTL property strings mapped to key strings like 'RSR<i>N</i>'
+	 */
 	public Map<String,String> getLTLPropertys(int offset){
 		TreeMap<String,String> ltlList = new TreeMap<String, String>(new Comparator<String>() {
 
@@ -1742,7 +1747,11 @@ public class DataModelController extends Observable implements
 					valueBuffer.delete(valueBuffer.length() - AND.length(), valueBuffer.length());
 				}
 				String values = valueBuffer.toString();
-				
+				/*
+				 * for TYPE_ANYTIME rules the LTL can be generated as following: 
+				 * 
+				 * G((critical combinations set ) !-> (control_action==true))
+				 */
 				if (combie.isCombiHazardous(IValueCombie.TYPE_ANYTIME) && !combie.getPMValues().isEmpty()) {
 					key = LITERAL + count;
 					count++;
@@ -1758,7 +1767,13 @@ public class DataModelController extends Observable implements
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
 					}
-				}if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_EARLY) && !combie.getPMValues().isEmpty()) {
+				}
+				/*
+				 * for too early rules the Timed LTL can be generated as following: 
+				 * 
+				 * G( <control_action==value> -> (control_action==value> U (critical combinations set ))
+				 */
+				if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_EARLY) && !combie.getPMValues().isEmpty()) {
 					key = LITERAL + count;
 					count++;
 					if(values != null && !values.isEmpty()){
@@ -1781,7 +1796,12 @@ public class DataModelController extends Observable implements
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
 					}
-				}if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_LATE) && !combie.getPMValues().isEmpty()) {
+				}
+				/*
+				 * for too late rules the Timed LTL can be generated as following:
+				 * G(  (critical combinations set ) -> ( (critical combinations set ) U (<control_action==value>) ) )
+				 */
+				if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_LATE) && !combie.getPMValues().isEmpty()) {
 					key = LITERAL + count;
 					count++;
 					if(values != null && !values.isEmpty()){
@@ -1799,6 +1819,11 @@ public class DataModelController extends Observable implements
 						ltlList.put(key, valueBuffer.toString());
 					}
 				}
+				/*
+				 * for TYPE_NOT_PROVIDED rules the LTL can be generated as following: 
+				 * 
+				 * G((critical combinations set ) -> (control_action==true))
+				 */
 				if (combie.isCombiHazardous(IValueCombie.TYPE_NOT_PROVIDED)) {
 					key = LITERAL + count;
 					count++;
