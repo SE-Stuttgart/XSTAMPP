@@ -42,13 +42,19 @@
          point="xstampp.extension.stepEditors">
       <stepPerspective
             id="xstpa.stepPerspective1"
-            name="Xstpa"
+            name="XSTPA"
             parentStep="astpa.navigation.step3_1"
             targetId="xstampp.defaultPerspective">
          <view
                id="xstpa.view">
          </view>
       </stepPerspective>
+      <stepEditor
+            editorId="xstpa.editor.ruca"
+            id="xstpa.views.ruca"
+            name="RUCA"
+            parentStep="astpa.navigation.step3_1">
+      </stepEditor>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -94,6 +100,15 @@
       <config
             class="xstpa.AbstractHelpUI1">
       </config>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="xstpa.ui.RefinedUCAView"
+            default="false"
+            id="xstpa.editor.ruca"
+            name="Refined Unsafe Control Actions">
+      </editor>
    </extension>
 
 </plugin>

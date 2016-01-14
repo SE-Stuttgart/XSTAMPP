@@ -13,13 +13,14 @@ public class RefinedSafetyEntry {
 	private final String context;
 	private final String type;
 	private DataModelController model;
+	private int number;
 	
-	
-	private RefinedSafetyEntry(String type,String context,ProcessModelVariables var, DataModelController controller) {
+	private RefinedSafetyEntry(int number,String type,String context,ProcessModelVariables var, DataModelController controller) {
 		this.context = context;
 		this.type = type;
 		this.variable = var;
 		this.model = controller;
+		this.number = number;
 	}
 
 	/**
@@ -71,20 +72,20 @@ public class RefinedSafetyEntry {
 	}
 	
 
-	public static RefinedSafetyEntry getAnytimeEntry(ProcessModelVariables var,DataModelController controller){
-		return new RefinedSafetyEntry(IValueCombie.TYPE_ANYTIME, IValueCombie.CONTEXT_PROVIDED, var,controller);
+	public static RefinedSafetyEntry getAnytimeEntry(int number,ProcessModelVariables var,DataModelController controller){
+		return new RefinedSafetyEntry(number,IValueCombie.TYPE_ANYTIME, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		
 	}
-	public static RefinedSafetyEntry getTooLateEntry(ProcessModelVariables var,DataModelController controller){
-		return new RefinedSafetyEntry(IValueCombie.TYPE_TOO_LATE, IValueCombie.CONTEXT_PROVIDED, var,controller);
+	public static RefinedSafetyEntry getTooLateEntry(int number,ProcessModelVariables var,DataModelController controller){
+		return new RefinedSafetyEntry(number,IValueCombie.TYPE_TOO_LATE, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		
 	}
-	public static RefinedSafetyEntry getTooEarlyEntry(ProcessModelVariables var,DataModelController controller){
-		return new RefinedSafetyEntry(IValueCombie.TYPE_TOO_EARLY, IValueCombie.CONTEXT_PROVIDED, var,controller);
+	public static RefinedSafetyEntry getTooEarlyEntry(int number,ProcessModelVariables var,DataModelController controller){
+		return new RefinedSafetyEntry(number,IValueCombie.TYPE_TOO_EARLY, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		
 	}
-	public static RefinedSafetyEntry getNotProvidedEntry(ProcessModelVariables var,DataModelController controller){
-		return new RefinedSafetyEntry(IValueCombie.TYPE_NOT_PROVIDED, IValueCombie.CONTEXT_NOT_PROVIDED, var,controller);
+	public static RefinedSafetyEntry getNotProvidedEntry(int number,ProcessModelVariables var,DataModelController controller){
+		return new RefinedSafetyEntry(number,IValueCombie.TYPE_NOT_PROVIDED, IValueCombie.CONTEXT_NOT_PROVIDED, var,controller);
 		
 	}
 
@@ -100,5 +101,29 @@ public class RefinedSafetyEntry {
 			return tempHazLinks.substring(0, tempHazLinks.length() -1);
 		}
 		return "not hazardous";
+	}
+	
+	public String getRUCA(){
+		StringBuffer ruca = new StringBuffer();
+		ruca.append(variable.getLinkedControlActionName());
+		ruca.append(" command ");
+		ruca.append(getType());
+		ruca.append(" when ");
+		ruca.append(getCriticalCombinations());
+		return ruca.toString();
+	}
+
+	/**
+	 * @return the number
+	 */
+	public int getNumber() {
+		return this.number;
+	}
+
+	/**
+	 * @param number the number to set
+	 */
+	public void setNumber(int number) {
+		this.number = number;
 	}
 }

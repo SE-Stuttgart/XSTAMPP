@@ -294,6 +294,9 @@ public class XSTPADataController extends Observable implements Observer{
 		else {
 	    	syncCombiesWhenNotProvided(temp);
 		}
+		
+		setChanged();
+		notifyObservers(ObserverValue.CONTROL_ACTION);
 	}
 	
 	private void syncCombiesWhenProvided(ControlActionEntry caEntry){

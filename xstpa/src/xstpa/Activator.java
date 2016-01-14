@@ -20,6 +20,7 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.editors.StandartEditorPart;
 import xstpa.model.XSTPADataController;
+import xstpa.ui.RefinedUCAView;
 import xstpa.ui.View;
 
 /**
@@ -88,6 +89,11 @@ public class Activator extends AbstractUIPlugin {
 			
 			@Override
 		    public void partOpened(IWorkbenchPart part) {
+				if(part instanceof RefinedUCAView){
+					RefinedUCAView rucaView =((RefinedUCAView) part);
+					rucaView.setDataController(getDataFor(ProjectManager.getContainerInstance()
+																		.getDataModel(rucaView.getProjectID())));
+				}
 			      refreshView();
 		    }
 			
@@ -121,7 +127,6 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(editorListener);
 		super.stop(context);
 	}
 
