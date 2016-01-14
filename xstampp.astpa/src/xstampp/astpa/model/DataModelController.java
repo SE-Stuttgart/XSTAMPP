@@ -1718,6 +1718,7 @@ public class DataModelController extends Observable implements
 		final String UNTIL = " U ";
 		final char BRACKET_OPEN ='(';
 		final char BRACKET_CLOSE =')';
+		final String CONTROLACTION = "controlAction";
 		
 		for(IControlAction action: this.controlActionController.getAllControlActionsU()){
 			
@@ -1762,7 +1763,7 @@ public class DataModelController extends Observable implements
 						valueBuffer.append(values);
 						valueBuffer.append(IMPLIES_NOT);
 						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+						valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
 						valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
@@ -1786,7 +1787,7 @@ public class DataModelController extends Observable implements
 							valueBuffer.append(IMPLIES);
 							valueBuffer.append(BRACKET_OPEN);
 								valueBuffer.append(BRACKET_OPEN);
-								valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+								valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
 								valueBuffer.append(BRACKET_CLOSE);
 								valueBuffer.append(UNTIL);
 								valueBuffer.append(BRACKET_OPEN);
@@ -1813,7 +1814,7 @@ public class DataModelController extends Observable implements
 							valueBuffer.append(BRACKET_OPEN);
 								valueBuffer.append(values);
 								valueBuffer.append(UNTIL);
-								valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+								valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
 							valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
@@ -1834,7 +1835,7 @@ public class DataModelController extends Observable implements
 							valueBuffer.append(values);
 							valueBuffer.append(IMPLIES);
 							valueBuffer.append(BRACKET_OPEN);
-								valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
+								valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
 							valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(BRACKET_CLOSE);
 						ltlList.put(key, valueBuffer.toString());
