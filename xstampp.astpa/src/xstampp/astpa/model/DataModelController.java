@@ -1716,6 +1716,7 @@ public class DataModelController extends Observable implements
 		final String IMPLIES_NOT = " ->! ";
 		final String START = "[] ";
 		final String UNTIL = " U ";
+		final String RELEASE = " R ";
 		final char BRACKET_OPEN ='(';
 		final char BRACKET_CLOSE =')';
 		final String CONTROLACTION = "controlAction";
@@ -1813,7 +1814,7 @@ public class DataModelController extends Observable implements
 							valueBuffer.append(IMPLIES);
 							valueBuffer.append(BRACKET_OPEN);
 								valueBuffer.append(values);
-								valueBuffer.append(UNTIL);
+								valueBuffer.append(RELEASE);
 								valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
 							valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(BRACKET_CLOSE);
