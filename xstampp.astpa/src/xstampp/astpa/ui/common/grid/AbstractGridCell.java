@@ -303,4 +303,10 @@ public abstract class AbstractGridCell implements IGridCell {
 		}
 		return (int) _end;
 	}
+	
+	@Override
+	public boolean needsRefresh() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

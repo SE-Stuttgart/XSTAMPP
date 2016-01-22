@@ -32,6 +32,8 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -434,6 +436,22 @@ public class GridWrapper {
 
 		this.setColumnLabels(columnLabels);
 
+		this.actualGrid.addPaintListener(new PaintListener() {
+			
+			@Override
+			public void paintControl(PaintEvent e) {
+				for (GridRow row : getRows()) {
+					for (GridRow childRow : row.getChildren()) {
+						for(IGridCell cell:childRow.getCells()){
+							if(cell.needsRefresh()){
+								resizeRows();
+								return;
+							}
+						}
+					}
+				}
+			}
+		});
 		this.actualGrid.addControlListener(new ControlListener() {
 
 			@Override

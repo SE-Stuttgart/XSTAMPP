@@ -151,4 +151,6 @@ public interface IGridCell {
 	 * 
 	 */
 	void activate();
+	
+	boolean needsRefresh();
 }

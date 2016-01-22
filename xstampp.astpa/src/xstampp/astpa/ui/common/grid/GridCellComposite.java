@@ -200,4 +200,10 @@ public class GridCellComposite extends Composite implements IGridCell {
 		// intentionally empty
 
 	}
+	
+	@Override
+	public boolean needsRefresh() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

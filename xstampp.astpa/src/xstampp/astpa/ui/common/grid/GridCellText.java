@@ -16,9 +16,7 @@ package xstampp.astpa.ui.common.grid;
 import java.util.UUID;
 
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.astpa.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
@@ -34,6 +32,8 @@ public class GridCellText extends AbstractGridCell {
 	private String text;
 
 	private int textHeight;
+
+	private boolean needRefresh;
 
 	private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0,
 			0, 0);
@@ -59,6 +59,7 @@ public class GridCellText extends AbstractGridCell {
 	 */
 	public GridCellText(String text) {
 		this.text = text;
+		this.needRefresh = true;
 	}
 
 	@Override
@@ -72,7 +73,9 @@ public class GridCellText extends AbstractGridCell {
 		Color fgColor = gc.getForeground();
 		gc.setForeground(GridCellText.TEXT_COLOR);
 		
-		this.textHeight = wrapText(renderer.getDrawBounds(), gc, this.text,2, 0);
+		int newHeight =  wrapText(renderer.getDrawBounds(), gc, this.text,2, 0);
+		this.needRefresh = newHeight != this.textHeight;
+		this.textHeight = newHeight;
 				
 		// restore bg color
 		gc.setBackground(bgColor);
@@ -89,6 +92,10 @@ public class GridCellText extends AbstractGridCell {
 		// intentionally empty
 	}
 
+	@Override
+	public boolean needsRefresh() {
+		return needRefresh;
+	}
 	@Override
 	public int getPreferredHeight() {
 		int height = Math.max(this.textHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
