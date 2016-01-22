@@ -6,13 +6,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.TreeItem;
 
+import xstampp.model.IDataModel;
+
 /**
  * Describes a project item selection in a tree
  * and provides an interface for the interaction with it  
  * @author Lukas Balzer
  * @since 1.0
  */
-public interface IProjectSelection extends ISelection {
+public interface IProjectSelection extends ISelection{
 	/**
 	 * @param id
 	 *            the id of the Contribution Group the
@@ -77,6 +79,6 @@ public interface IProjectSelection extends ISelection {
 	 */
 	void cleanUp();
 	
-	
-	
+
+	IDataModel getProjectData();
 }
