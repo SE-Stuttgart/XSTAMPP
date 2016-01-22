@@ -10,10 +10,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
-import acast.Activator;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.preferences.IControlStructureConstants;
+import acast.Activator;
 
 public class CSConnectionModeProviderCAST extends AbstractSourceProvider implements IPropertyChangeListener {
 	public static final String CONNECTION_MODE = "xstampp.acast.connectionMode";

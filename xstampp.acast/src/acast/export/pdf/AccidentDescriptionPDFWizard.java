@@ -1,13 +1,9 @@
 package acast.export.pdf;
 
-import java.io.File;
-
+import messages.Messages;
 import acast.export.TableExportPage;
-import acast.jobs.ExportJob;
 import acast.ui.accidentDescription.AccidentDescriptionView;
 import acast.wizards.AbstractExportWizard;
-import messages.Messages;
-import xstampp.ui.common.ProjectManager;
 
 public class AccidentDescriptionPDFWizard extends AbstractExportWizard{
 	

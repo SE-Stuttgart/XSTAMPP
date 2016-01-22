@@ -1,5 +1,7 @@
 package acast.wizards.pages;
 
+import messages.Messages;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -11,10 +13,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import acast.Activator;
-import messages.Messages;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
+import acast.Activator;
 
 /**
  * a page to prepare and execute a CSV Export

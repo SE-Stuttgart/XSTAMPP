@@ -27,11 +27,11 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
-import acast.Activator;
-import acast.model.interfaces.IResponsibilityDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
+import acast.Activator;
+import acast.model.interfaces.IResponsibilityDataModel;
 
 public class RecommandationsView extends StandartEditorPart {
 

@@ -1,10 +1,9 @@
 package acast.export.pdf;
 
+import messages.Messages;
 import acast.export.TableExportPage;
-import acast.ui.accidentDescription.AccidentDescriptionView;
 import acast.ui.sds.SafetyConstraintView;
 import acast.wizards.AbstractExportWizard;
-import messages.Messages;
 
 public class SafetyConstraintsPDFWizard extends AbstractExportWizard{
 	public SafetyConstraintsPDFWizard() {

@@ -1,9 +1,9 @@
 package acast.export.csv;
 
+import xstampp.preferences.IPreferenceConstants;
 import acast.export.CASTDataPage;
 import acast.ui.acchaz.HazardsView;
 import acast.wizards.AbstractExportWizard;
-import xstampp.preferences.IPreferenceConstants;
 
 public class AllCSVDataWizard extends AbstractExportWizard {
 

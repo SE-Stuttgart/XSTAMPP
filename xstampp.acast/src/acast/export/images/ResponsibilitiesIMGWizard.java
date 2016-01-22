@@ -1,9 +1,9 @@
 package acast.export.images;
 
+import messages.Messages;
 import acast.export.TableExportPage;
 import acast.jobs.ICSVExportConstants;
 import acast.wizards.AbstractExportWizard;
-import messages.Messages;
 
 public class ResponsibilitiesIMGWizard extends AbstractExportWizard {
 	public ResponsibilitiesIMGWizard() {

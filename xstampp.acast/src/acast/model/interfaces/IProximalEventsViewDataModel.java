@@ -2,8 +2,8 @@ package acast.model.interfaces;
 
 import java.util.List;
 
-import acast.ui.accidentDescription.ProximalEvent;
 import xstampp.model.IDataModel;
+import acast.ui.accidentDescription.ProximalEvent;
 
 public interface IProximalEventsViewDataModel extends IDataModel {
 

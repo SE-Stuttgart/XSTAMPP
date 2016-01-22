@@ -1,11 +1,10 @@
 package acast.export.images;
 
+import messages.Messages;
 import acast.export.TableExportPage;
 import acast.jobs.ICSVExportConstants;
 import acast.ui.acchaz.HazardsView;
 import acast.wizards.AbstractExportWizard;
-import acast.wizards.pages.CSVExportPage;
-import messages.Messages;
 
 public class HazardExportIMGWizard extends AbstractExportWizard {
 

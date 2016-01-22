@@ -16,6 +16,8 @@ package acast.ui.acchaz;
 import java.util.Iterator;
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -46,13 +48,11 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
 import acast.Activator;
 import acast.model.hazacc.Hazard;
 import acast.model.interfaces.IHazardViewDataModel;
-import acast.ui.accidentDescription.TableView;
-import messages.Messages;
-import xstampp.model.IDataModel;
-import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag

@@ -24,6 +24,8 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
+import messages.Messages;
+
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
@@ -37,14 +39,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.xml.sax.SAXException;
 
-import acast.controller.Controller;
-import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
+import acast.controller.Controller;
 
 /**
  * Eclipse job that handles the export

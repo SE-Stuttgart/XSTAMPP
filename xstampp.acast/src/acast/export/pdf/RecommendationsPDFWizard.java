@@ -1,9 +1,9 @@
 package acast.export.pdf;
 
+import messages.Messages;
 import acast.export.TableExportPage;
 import acast.ui.accidentDescription.RecommandationsView;
 import acast.wizards.AbstractExportWizard;
-import messages.Messages;
 
 public class RecommendationsPDFWizard extends AbstractExportWizard {
 	public RecommendationsPDFWizard() {

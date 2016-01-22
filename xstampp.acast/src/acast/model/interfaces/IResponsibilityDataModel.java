@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import acast.ui.accidentDescription.Responsibility;
 import xstampp.model.IDataModel;
+import acast.ui.accidentDescription.Responsibility;
 
 /**
  * @author Martin

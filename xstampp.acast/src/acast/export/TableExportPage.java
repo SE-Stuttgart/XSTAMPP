@@ -2,6 +2,8 @@ package acast.export;
 
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -11,11 +13,10 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import acast.Activator;
-import messages.Messages;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
+import acast.Activator;
 
 /**
  * Creates a Page which collects basic informations about formatting the table

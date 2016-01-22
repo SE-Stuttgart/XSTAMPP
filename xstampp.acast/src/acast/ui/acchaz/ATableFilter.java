@@ -16,8 +16,8 @@ package acast.ui.acchaz;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import acast.model.ATableModelCAST;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import acast.model.ATableModelCAST;
 
 /**
  *

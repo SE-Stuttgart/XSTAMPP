@@ -36,12 +36,12 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
-import acast.Activator;
-import acast.model.interfaces.IProximalEventsViewDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
+import acast.Activator;
+import acast.model.interfaces.IProximalEventsViewDataModel;
 
 public class ProximalEventsView extends StandartEditorPart implements IPropertyChangeListener {
 

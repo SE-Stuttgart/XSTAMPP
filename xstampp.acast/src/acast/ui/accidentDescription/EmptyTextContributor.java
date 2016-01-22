@@ -1,10 +1,7 @@
 package acast.ui.accidentDescription;
 
-import java.rmi.activation.Activator;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 

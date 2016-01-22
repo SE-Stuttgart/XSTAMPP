@@ -1,9 +1,9 @@
 package acast.export.pdf;
 
-import acast.wizards.AbstractExportWizard;
-import acast.wizards.pages.PdfExportPage;
 import messages.Messages;
 import xstampp.preferences.IPreferenceConstants;
+import acast.wizards.AbstractExportWizard;
+import acast.wizards.pages.PdfExportPage;
 
 public class ReportPDFWizard extends AbstractExportWizard {
 	private final PdfExportPage page;

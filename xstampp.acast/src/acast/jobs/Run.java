@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.model.ObserverValue;

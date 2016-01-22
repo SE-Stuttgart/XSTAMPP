@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import messages.Messages;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -21,10 +23,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import xstampp.util.AbstractWizardPage;
 import acast.jobs.ICSVExportConstants;
 import acast.wizards.pages.CSVExportPage;
-import messages.Messages;
-import xstampp.util.AbstractWizardPage;
 
 /**
  *

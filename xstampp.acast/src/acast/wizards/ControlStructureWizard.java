@@ -1,7 +1,7 @@
 package acast.wizards;
 
-import acast.jobs.CSExportJob;
 import messages.Messages;
+import acast.jobs.CSExportJob;
 
 /**
  * The Wizard for Exporting the control structure as image

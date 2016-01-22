@@ -1,10 +1,10 @@
 package acast.export.csv;
 
+import messages.Messages;
 import acast.jobs.ICSVExportConstants;
 import acast.ui.sds.SafetyConstraintView;
 import acast.wizards.AbstractExportWizard;
 import acast.wizards.pages.CSVExportPage;
-import messages.Messages;
 
 public class SafetyConstraintsCSVWizard extends AbstractExportWizard{
 	public SafetyConstraintsCSVWizard() {

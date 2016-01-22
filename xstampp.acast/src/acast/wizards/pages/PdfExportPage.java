@@ -2,6 +2,8 @@ package acast.wizards.pages;
 
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -16,11 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import acast.Activator;
-import messages.Messages;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.util.AbstractExportPage;
 import xstampp.util.AbstractWizardPage;
+import acast.Activator;
 
 /**
  * Create export page.

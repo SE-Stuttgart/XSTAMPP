@@ -1,11 +1,10 @@
 package acast.export.csv;
 
-import acast.export.TableExportPage;
+import messages.Messages;
 import acast.jobs.ICSVExportConstants;
 import acast.ui.acchaz.HazardsView;
 import acast.wizards.AbstractExportWizard;
 import acast.wizards.pages.CSVExportPage;
-import messages.Messages;
 
 public class HazardExportCSVWizard extends AbstractExportWizard {
 

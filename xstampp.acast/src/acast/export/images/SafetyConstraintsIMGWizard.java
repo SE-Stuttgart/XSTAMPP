@@ -1,10 +1,10 @@
 package acast.export.images;
 
+import messages.Messages;
 import acast.export.TableExportPage;
 import acast.jobs.ICSVExportConstants;
 import acast.ui.sds.SafetyConstraintView;
 import acast.wizards.AbstractExportWizard;
-import messages.Messages;
 
 public class SafetyConstraintsIMGWizard extends AbstractExportWizard{
 	public SafetyConstraintsIMGWizard() {

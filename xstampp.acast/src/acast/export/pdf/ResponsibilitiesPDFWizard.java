@@ -1,8 +1,8 @@
 package acast.export.pdf;
 
+import messages.Messages;
 import acast.export.TableExportPage;
 import acast.wizards.AbstractExportWizard;
-import messages.Messages;
 
 public class ResponsibilitiesPDFWizard extends AbstractExportWizard {
 	public ResponsibilitiesPDFWizard() {
