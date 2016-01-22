@@ -146,6 +146,8 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="xstampp" autoStart="true" startLevel="5" />
+      <property name="-Dosgi.configuration.area.default" value="null" />
    </configurations>
 
 </product>

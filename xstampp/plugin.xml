@@ -40,7 +40,7 @@
   </property>
   <property
         name="aboutText"
-        value="XSTAMPP - An eXtensible STAMP Platform for Safety Engineering&#x0A;&#x0A;©2014 - 2015&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html&#x0A;&#x0A;Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner&#x0A;Institute of Software Technology, Software Engineering Group&#x0A;University of Stuttgart, Germany">
+        value="XSTAMPP - An eXtensible STAMP Platform for Safety Engineering&#x0A;&#x0A;©2014 - 2015&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html&#x0A;&#x0A;Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner&#x0A;Institute of Software Technology, Software Engineering Group&#x0A;University of Stuttgart, Germany&#x0A;&#x0A;X-STPA &#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstpa.html&#x0A;&#x0A;A-CAST&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html">
   </property>
       	</product>
    </extension>
@@ -54,7 +54,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="xstampp.Perspective"
-            fixed="false"
+            fixed="true"
             id="astpa.welcome.perspective"
             name="Welcome perspective">
       </perspective>
@@ -63,7 +63,7 @@
             fixed="false"
             icon="icons/xstampp/logox32.png"
             id="xstampp.defaultPerspective"
-            name="Default Perspective">
+            name="XSTAMPP">
       </perspective>
    </extension>
    <extension
@@ -247,10 +247,6 @@
                   style="push">
             </command>
             <command
-                  commandId="org.eclipse.equinox.p2.ui.sdk.install"
-                  style="push">
-            </command>
-            <command
                   commandId="xstampp.command.openPath"
                   label="Open Log Path"
                   style="push">
@@ -258,6 +254,22 @@
                      name="xstampp.commandParameter.openFolder"
                      value="log">
                </parameter>
+            </command>
+            <separator
+                  name="xstampp.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.install"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.update"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.installationDetails"
+                  style="push">
             </command>
          </menu>
       </menuContribution>
@@ -938,7 +950,7 @@
    <perspectiveExtension
          targetID="xstampp.defaultPerspective">
       <perspectiveShortcut
-            id="TestPlugin.perspective1">
+            id="stpaVerifier.perspective">
       </perspectiveShortcut>
    </perspectiveExtension>
 </extension>
