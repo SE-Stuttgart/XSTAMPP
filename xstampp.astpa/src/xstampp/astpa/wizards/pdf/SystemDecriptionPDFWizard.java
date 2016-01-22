@@ -19,7 +19,7 @@ public class SystemDecriptionPDFWizard extends AbstractExportWizard {
 	 */
 	public SystemDecriptionPDFWizard() {
 		super(SystemDescriptionView.ID);
-		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$
+		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new SystemDescriptionExportPage(filters,
 				Messages.ExportPreferences + Messages.AsPDF));
 	}

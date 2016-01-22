@@ -1,7 +1,5 @@
 package xstampp.astpa.controlstructure.utilities;
 
-import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.Viewport;
@@ -21,7 +19,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import xstampp.astpa.controlstructure.CSAbstractEditor;
-import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 
 public class GraphicalViewerOutline extends ViewPart implements IPartListener {
 

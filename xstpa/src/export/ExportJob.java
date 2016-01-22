@@ -42,7 +42,8 @@ import org.xml.sax.SAXException;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
-import xstpa.ui.View;
+import xstpa.Activator;
+import xstpa.model.XSTPADataController;
 
 /**
  * Eclipse job that handles the export
@@ -76,7 +77,6 @@ public class ExportJob extends XstamppJob {
 	 * @param xslName
 	 *            the name of the file in which the xsl file is stored which
 	 *            should be used
-	 * @param projectId TODO
 	 * @param projectId
 	 *            the project which
 	 * @param asOne
@@ -92,7 +92,11 @@ public class ExportJob extends XstamppJob {
 		this.filePath = filePath;
 		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);
 		this.xslName = xslName;
-		this.exportContent = (ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(projectId);
+		XSTPADataController controller = Activator.getDataFor(projectId);
+		exportContent = new ExportContent();
+		exportContent.setNotProvidedCA(((XSTPADataController)controller).getDependenciesNotProvided());
+		exportContent.setProvidedCA(((XSTPADataController)controller).getDependenciesIFProvided());
+		
 		this.tableHeadSize = 14;
 		this.titleSize = 24;
 		this.textSize = 12;

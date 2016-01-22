@@ -4,7 +4,6 @@ import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.tools.PanningSelectionTool;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 
 public class DragSelectionTool extends PanningSelectionTool{

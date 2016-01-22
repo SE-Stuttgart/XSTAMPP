@@ -14,7 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.draw2d;bundle-version="3.9.101",
  xstampp.astpa
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  org.apache.commons.io,
  org.eclipse.core.resources,
@@ -33,3 +32,4 @@ Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  xstampp.astpa.ui.common.grid,
  xstampp.astpa.util.jobs,
  xstampp.astpa.wizards
+Bundle-ActivationPolicy: lazy

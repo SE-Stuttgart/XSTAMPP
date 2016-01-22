@@ -85,7 +85,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 	private static final String CONFIRMATION_TITLE = Messages.DeleteUnsafeControlAction;
 	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheUCA;
 
-	private static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
+	protected static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 
 	/**
 	 * Interfaces to communicate with the data model.
@@ -94,12 +94,13 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 
 	private IUnsafeControlActionDataModel ucaInterface;
 	private Map<UUID,String> descriptionsToUUIDs = new HashMap<>();
-	private GridWrapper grid;
+	protected GridWrapper grid;
 
-	private Text filterText;
+	protected Text filterText;
 
 	private boolean lockreload;
-
+	protected boolean useFilter = true;
+	
 	private class UnsafeControlActionCell extends GridCellTextEditor{
 
 		private UUID unsafeControlAction;
@@ -199,9 +200,13 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 				}
 			}
 		});
-		
 		data = new FormData();
-		data.top = new FormAttachment(filter);
+		if(useFilter){
+			data.top = new FormAttachment(filter);
+		}else{
+			filter.setVisible(false);
+			data.top = new FormAttachment(0);
+		}
 		data.left= new FormAttachment(0);
 		data.right= new FormAttachment(100);
 		data.bottom = new FormAttachment(100);

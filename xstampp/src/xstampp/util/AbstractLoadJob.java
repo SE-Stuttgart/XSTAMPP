@@ -7,8 +7,6 @@ import java.util.List;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 
 import xstampp.model.IDataModel;

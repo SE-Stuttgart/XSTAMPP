@@ -20,7 +20,6 @@ import org.eclipse.gef.requests.GroupRequest;
 import xstampp.astpa.controlstructure.controller.commands.ConnectionDeleteCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
-import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

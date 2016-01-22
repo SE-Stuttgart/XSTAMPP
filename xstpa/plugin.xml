@@ -52,7 +52,19 @@
       <stepEditor
             editorId="xstpa.editor.ruca"
             id="xstpa.views.ruca"
-            name="RUCA"
+            name="Refined Unsafe Control Actions"
+            parentStep="astpa.navigation.step3_1">
+      </stepEditor>
+      <stepEditor
+            editorId="xstpa.editor.refinedSC"
+            id="xstpa.stepEditor.RefinedSC"
+            name="Refined Safety Constraints"
+            parentStep="astpa.navigation.step3_1">
+      </stepEditor>
+      <stepEditor
+            editorId="xstpa.editor.ltl"
+            id="xstpa.stepEditor.ltl"
+            name="LTL Formula Table"
             parentStep="astpa.navigation.step3_1">
       </stepEditor>
    </extension>
@@ -109,6 +121,26 @@
             id="xstpa.editor.ruca"
             name="Refined Unsafe Control Actions">
       </editor>
+      <editor
+            class="xstpa.ui.RefinedSafetyConstraintsView"
+            default="false"
+            id="xstpa.editor.refinedSC"
+            name="Refined Safety Constraints">
+      </editor>
+      <editor
+            class="xstpa.ui.tables.LTLPropertiesTable"
+            default="false"
+            id="xstpa.editor.ltl"
+            name="LTL Formulas">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="xstpa.AbstractServiceFactory:1">
+         <service
+               serviceClass="xstpa.XstpaService"></service>
+      </serviceFactory>
    </extension>
 
 </plugin>

@@ -13,8 +13,6 @@
 
 package xstampp.astpa.model.controlstructure.interfaces;
 
-import java.util.List;
-
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 
 /**

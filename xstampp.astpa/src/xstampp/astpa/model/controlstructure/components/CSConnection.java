@@ -13,14 +13,11 @@
 
 package xstampp.astpa.model.controlstructure.components;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;

@@ -23,8 +23,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -462,7 +462,7 @@ public class CSConnectionRouter extends AbstractRouter {
 		while (childIterator.hasNext()) {
 			Rectangle childRect = childIterator.next().getLayout(
 					this.owner.getViewer()
-							.getProperty(CSAbstractEditor.STEP_EDITOR)
+							.getProperty(IControlStructureEditor.STEP_EDITOR)
 							.toString().equals(CSEditor.ID));
 
 			// iterates over all points of the child and sets them to 0

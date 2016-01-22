@@ -19,9 +19,7 @@ import java.util.UUID;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.model.IDataModel;
 
 /**
@@ -55,7 +53,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	/**
 	 * Add an unsafe control action to a given control action.<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#UNSAFE_CONTROL_ACTION}
+	 * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
 	 * 
 	 * @author Benedikt Markt, Patrick Wickenhaeuser
 	 * @param controlActionId
@@ -73,7 +71,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	/**
 	 * Set the description of an unsafe control action. <br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#UNSAFE_CONTROL_ACTION}
+	 * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
 	 * 
 	 * @param controlActionId
 	 *            the id of the parent.
@@ -90,7 +88,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	/**
 	 * Removes a unsafe control action.<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#UNSAFE_CONTROL_ACTION}
+	 * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
 	 * 
 	 * @author Fabian Toth
 	 * 
@@ -114,7 +112,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	/**
 	 * Adds a link between a unsafe control action and a hazard.<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#UNSAFE_CONTROL_ACTION}
+	 * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
 	 * 
 	 * @param unsafeControlActionId
 	 *            the id of the unsafe control action
@@ -129,7 +127,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	/**
 	 * Deletes the link between an accident and a hazard. <br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#UNSAFE_CONTROL_ACTION}
+	 * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
 	 * 
 	 * @param unsafeControlActionId
 	 *            the unsafe control action of which a link will be deleted.

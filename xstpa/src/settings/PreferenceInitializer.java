@@ -15,7 +15,6 @@ package settings;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-
 import xstampp.Activator;
 
 /**

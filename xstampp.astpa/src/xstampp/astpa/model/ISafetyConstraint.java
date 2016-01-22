@@ -31,6 +31,7 @@ public interface ISafetyConstraint extends xstampp.astpa.haz.ISafetyConstraint{
 	 * 
 	 * @author Fabian Toth
 	 */
+	@Override
 	UUID getId();
 
 	/**
@@ -40,5 +41,6 @@ public interface ISafetyConstraint extends xstampp.astpa.haz.ISafetyConstraint{
 	 * 
 	 * @author Fabian Toth
 	 */
+	@Override
 	String getText();
 }

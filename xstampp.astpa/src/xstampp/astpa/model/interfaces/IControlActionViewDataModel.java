@@ -79,7 +79,7 @@ public interface IControlActionViewDataModel extends IDataModel {
 	
 	/**
 	 * Removes a control action. <br>
-	 * Triggers an update for {@link xstampp.model.ObserverValue#CONTROL_ACTION}
+	 * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
 	 * 
 	 * @author Jarkko Heidenwag
 	 * 

@@ -73,7 +73,7 @@ public class EntryCellModifier implements ICellModifier {
 		else {
 			ProcessModelVariables entry = (ProcessModelVariables) element;
 			if (View.IS_HAZARDOUS.equals(property)) {
-		      return Boolean.valueOf(entry.getHazardous());
+		      return Boolean.valueOf(entry.getGlobalHazardous());
 			}
 			
 			else if (View.HAZ_IF_ANYTIME.equals(property)) {
@@ -139,7 +139,7 @@ public class EntryCellModifier implements ICellModifier {
 	    else {
 	    	ProcessModelVariables entry = (ProcessModelVariables) element;
 	    	if (View.IS_HAZARDOUS.equals(property)) {
-		  	      entry.setHazardous((!(Boolean)entry.getHazardous()));
+		  	      entry.setHazardous((!(Boolean)entry.getGlobalHazardous()));
 		    	}
 	    	if (View.HAZ_IF_ANYTIME.equals(property)) {
 		  	      entry.setHAnytime((!(Boolean)entry.getHAnytime()));

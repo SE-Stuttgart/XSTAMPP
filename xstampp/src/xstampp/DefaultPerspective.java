@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * a simple perspective for displaying the projectExplorer and editor window

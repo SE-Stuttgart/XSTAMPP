@@ -20,6 +20,7 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
+import xstpa.Activator;
 
 public class ExportWizard extends AbstractExportWizard {
 	private String OUTPUT; //$NON-NLS-1$
@@ -70,8 +71,10 @@ public class ExportWizard extends AbstractExportWizard {
 		    exportjob.schedule();
 		}
 		if (this.page.getCsvCheckbox().getSelection() == true) {
-			new CsvExport(outputDir + File.separator + Run.CSV_DIR+ File.separator, 
-					(ExportContent)ProjectManager.getContainerInstance().getProjectAdditionsFromUUID(this.page.getProjectID()));
+			ExportContent content = new ExportContent();
+			content.setProvidedCA(Activator.getDataFor(this.page.getProjectID()).getDependenciesIFProvided());
+			content.setNotProvidedCA(Activator.getDataFor(this.page.getProjectID()).getDependenciesNotProvided());
+			new CsvExport(outputDir + File.separator + Run.CSV_DIR+ File.separator, content);
 		}
 		if (this.page.getImgCheckbox().getSelection() == true) {
 			ExportJob exportjob = new ExportJob(this.page.getProjectName(),outputDir + File.separator + Run.IMAGE_DIR+ File.separator +"xstpa-tables.png", "/src/fopXstpa.xsl",

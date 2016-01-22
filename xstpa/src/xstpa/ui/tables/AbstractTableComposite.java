@@ -14,12 +14,22 @@ import xstpa.model.XSTPADataController;
 public abstract class AbstractTableComposite extends Composite implements Observer{
 
 	protected XSTPADataController dataController;
+	private boolean isActiv;
+	
 
 	AbstractTableComposite(Composite parent) {
 		super(parent,SWT.BORDER);
 	}
 	
-	public abstract void activate();
+	public final void activateTable(){
+		this.isActiv = true;
+		activate();
+	}
+	
+	public final void deactivateTable() {
+		this.isActiv = false;
+	}
+	protected abstract void activate();
 	
 	public abstract boolean refreshTable();
 
@@ -34,9 +44,16 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 	@Override
 	public void update(Observable o, Object arg) {
 		
-		if(!refreshTable()){
-			o.deleteObserver(this);
-		}
+		new Runnable() {
+			
+			@Override
+			public void run() {
+				if(isActiv && !refreshTable()){
+					dataController.getModel().deleteObserver(AbstractTableComposite.this);
+				}
+			}
+		};
+		
 		
 	}
 

@@ -6,7 +6,6 @@ package xstampp.astpa.controlstructure.controller.editparts;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;

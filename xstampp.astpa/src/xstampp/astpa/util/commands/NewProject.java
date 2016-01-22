@@ -13,8 +13,6 @@
 
 package xstampp.astpa.util.commands;
 
-import messages.Messages;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

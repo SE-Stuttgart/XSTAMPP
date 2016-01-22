@@ -21,14 +21,11 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlstructure.components.Anchor;
-import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
-import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.model.IDataModel;
@@ -45,7 +42,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	/**
 	 * Adds a new component to a root component with the given values. <br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param parentId
 	 *            the id of the parent
@@ -67,7 +64,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	/**
 	 * Adds a new component to a root component with the given values. <br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * @param controlActionId
 	 * @param parentId
 	 *            the id of the parent
@@ -89,7 +86,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 
 	/**
 	 * Removes a control action. <br>
-	 * Triggers an update for {@link xstampp.model.ObserverValue#CONTROL_ACTION}
+	 * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
 	 * 
 	 * @author Jarkko Heidenwag
 	 * 
@@ -102,7 +99,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	/**
 	 * Adds a new root component with the given values. <br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param layout
 	 *            the layout of the new component
@@ -117,7 +114,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 
 	/**
 	 * Adds a control action. <br>
-	 * Triggers an update for {@link xstampp.model.ObserverValue#CONTROL_ACTION}
+	 * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
 	 * 
 	 * @author Jarkko Heidenwag
 	 * 
@@ -131,7 +128,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 
 	/**
 	 * Setter for the title of a control action. <br>
-	 * Triggers an update for {@link xstampp.model.ObserverValue#CONTROL_ACTION}
+	 * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
 	 * 
 	 * @author Jarkko Heidenwag
 	 * @param controlActionId
@@ -167,7 +164,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * Searches for the component with the given id and changes the layout of
 	 * it. Can also change root components<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param componentId
 	 *            the id of the component
@@ -199,7 +196,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * Searches for the component with the given id and changes the text of it.
 	 * Can also change root components<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param componentId
 	 *            the id of the component
@@ -215,7 +212,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * Searches recursively for the component with the given id and removes it.
 	 * Can also remove root components<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param componentId
 	 *            the id of the component to delete
@@ -285,7 +282,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	/**
 	 * Adds a new connection with the given values<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param sourceAnchor
 	 *            the anchor at the source component
@@ -304,7 +301,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * Searches for the connection with the given id and changes the connection
 	 * type to the new value<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param connectionId
 	 *            the id of the connection to change
@@ -321,7 +318,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * Searches for the connection with the given id and changes the targetId to
 	 * the new value<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param connectionId
 	 *            the id of the connection to change
@@ -337,7 +334,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * Searches for the connection with the given id and changes the sourceId to
 	 * the new value<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param connectionId
 	 *            the id of the connection to change
@@ -352,7 +349,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	/**
 	 * Deletes the connection with the given id<br>
 	 * Triggers an update for
-	 * {@link xstampp.model.ObserverValue#CONTROL_STRUCTURE}
+	 * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
 	 * 
 	 * @param connectionId
 	 *            the id of the connection
@@ -463,7 +460,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 *
 	 * @param componentId
 	 *            the id of the component
-	 * @param variableID the variable which should be rmoved
+	 * @param variableID the variable which should be added
 	 * @return whether or not the add was successful, it also returns false if
 	 * 			the given uuid belongs to no component
 	 */

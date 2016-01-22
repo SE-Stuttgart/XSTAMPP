@@ -94,7 +94,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	 */
 	public void setFontStyle(int style) {
 		this.content.setFont(new Font(null,
-				this.currentFont.getName(), this.currentFont.getHeight(), style)); //$NON-NLS-1$
+				this.currentFont.getName(), this.currentFont.getHeight(), style)); 
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT)){
 			this.currentFont= PreferenceConverter.getFontData(this.store, property);
 			this.content.setFont(new Font(null,
-					this.currentFont)); //$NON-NLS-1$
+					this.currentFont)); 
 		}else if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR)){
 			Color fontColor = new Color(Display.getCurrent(), PreferenceConverter
 					.getColor(this.store, property));

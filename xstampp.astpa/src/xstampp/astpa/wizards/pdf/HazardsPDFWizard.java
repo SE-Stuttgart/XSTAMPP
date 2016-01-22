@@ -9,7 +9,7 @@ public class HazardsPDFWizard extends AbstractExportWizard {
 
 	public HazardsPDFWizard() {
 		super(HazardsView.ID);
-		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
 				Messages.CorrespondingSafetyConstraints + Messages.AsPDF));
 	}

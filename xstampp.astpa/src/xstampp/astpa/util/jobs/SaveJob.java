@@ -11,7 +11,6 @@ import java.io.Writer;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.annotation.XmlElement;
 
 import messages.Messages;
 
@@ -28,7 +27,6 @@ import xstampp.ui.common.ProjectManager;
 
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
-import com.sun.xml.bind.v2.schemagen.xmlschema.Annotation;
 
 /**
  * a runtime job which is stores a DataModel in a given File

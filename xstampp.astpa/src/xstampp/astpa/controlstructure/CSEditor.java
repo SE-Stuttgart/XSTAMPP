@@ -16,6 +16,8 @@ package xstampp.astpa.controlstructure;
 import java.util.HashMap;
 import java.util.Map;
 
+import messages.Messages;
+
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -23,7 +25,6 @@ import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
-import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.gef.tools.MarqueeSelectionTool;
@@ -35,7 +36,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 
-import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;

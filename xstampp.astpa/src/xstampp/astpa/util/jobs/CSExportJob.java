@@ -10,7 +10,6 @@ import messages.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -29,9 +28,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import xstampp.astpa.Activator;
-import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import xstampp.astpa.controlstructure.figure.RootFigure;
@@ -282,7 +281,7 @@ public class CSExportJob extends XstamppJob {
 			viewer.createControl(canvas);
 			viewer.setEditPartFactory(new CSEditPartFactory(
 					CSExportJob.this.model, CSExportJob.this.editorId, Activator.getDefault().getPreferenceStore()));
-			viewer.setProperty(CSAbstractEditor.STEP_EDITOR,
+			viewer.setProperty(IControlStructureEditor.STEP_EDITOR,
 					CSExportJob.this.editorId);
 
 			ScalableRootEditPart rootEditPart = new ScalableRootEditPart();

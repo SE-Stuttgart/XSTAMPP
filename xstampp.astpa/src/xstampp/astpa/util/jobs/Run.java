@@ -1,7 +1,6 @@
 package xstampp.astpa.util.jobs;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -119,7 +118,7 @@ public class Run extends XstamppJob{
 			List<String> values = new ArrayList<>();
 			values.add(this.csvMap[i+1]);
 			fileName = this.csvMap[i] +".csv";
-			StpaCSVExport job = new StpaCSVExport(getJobName(fileName),this.dir+ CSV_DIR + File.separator + fileName,//$NON-NLS-1$
+			StpaCSVExport job = new StpaCSVExport(getJobName(fileName),this.dir+ CSV_DIR + File.separator + fileName,
 										 	';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),values);
 			job.showPreview(false);
 			if(!addJob(job)){
@@ -130,7 +129,7 @@ public class Run extends XstamppJob{
 		for(int i= 0;i<this.xslMap.length && this.exportImages;i+=2){
 			fileName = this.xslMap[i] +".png";
 			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
-											this.dir+ IMAGE_DIR + File.separator + fileName,  //$NON-NLS-1$
+											this.dir+ IMAGE_DIR + File.separator + fileName,  
 										 	this.xslMap[i+1], true, false);
 			job.showPreview(false);
 			if(!addJob(job)){

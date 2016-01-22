@@ -1,7 +1,6 @@
 package xstampp.astpa.controlstructure.utilities;
 
 import org.eclipse.gef.palette.SelectionToolEntry;
-import org.eclipse.gef.tools.PanningSelectionTool;
 
 public class DragSelectionToolEntry extends SelectionToolEntry {	
 	

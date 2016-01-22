@@ -21,8 +21,8 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Translatable;
 
-import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -58,7 +58,7 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 	 */
 	@Override
 	protected void refreshVisuals() {
-		if (this.getViewer().getProperty(CSAbstractEditor.STEP_EDITOR)
+		if (this.getViewer().getProperty(IControlStructureEditor.STEP_EDITOR)
 				.equals(CSEditorWithPM.ID)) {
 			super.refreshVisuals();
 		}

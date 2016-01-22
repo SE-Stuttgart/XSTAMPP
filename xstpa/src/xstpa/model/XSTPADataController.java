@@ -32,10 +32,12 @@ public class XSTPADataController extends Observable implements Observer{
 	private ProcessModelVariables linkedPMV;
 	private DataModelController model;
 	private boolean controlActionProvided;
+	private List<RefinedSafetyEntry> refinedEntrys;
 	
 	public XSTPADataController(DataModelController model) {
 		this.valuesList = new HashMap<>();
 		this.variablesList = new HashMap<>();
+		this.refinedEntrys = new ArrayList<>();
 		this.dependenciesIFProvided  = new HashMap<>();
 		this.dependenciesNotProvided = new HashMap<>();
 		this.model = model;
@@ -186,6 +188,8 @@ public class XSTPADataController extends Observable implements Observer{
 	 * @param model the data model which should be used
 	 */
 	private void fetchControlActions(){
+		this.dependenciesIFProvided.clear();
+		this.dependenciesNotProvided.clear();
 		  // get the controlActions
 	      for (IControlAction entry : model.getAllControlActionsU()) {
 	    	  this.dependenciesIFProvided.put(entry.getId(),getEntryFor(entry, model.getValuesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
@@ -194,7 +198,7 @@ public class XSTPADataController extends Observable implements Observer{
 	}
 	
 	private ControlActionEntry getEntryFor(IControlAction entry,List<IValueCombie> combies,String context){
-		ControlActionEntry tempCAEntry = new ControlActionEntry();
+		ControlActionEntry tempCAEntry = new ControlActionEntry(context);
   	  
 		//tempCAE.setController(entry.);
 		tempCAEntry.setComments(entry.getDescription());
@@ -232,7 +236,11 @@ public class XSTPADataController extends Observable implements Observer{
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_ANYTIME),IValueCombie.TYPE_ANYTIME);
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_TOO_EARLY),IValueCombie.TYPE_TOO_EARLY);
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_TOO_LATE),IValueCombie.TYPE_TOO_LATE);
-			
+			if(context.equals(CONTEXT_PROVIDED)){
+				contextTableEntry.setAnytimeRule(((ProvidedValuesCombi)valueCombie).getAnytimeRuleId());
+	  	  	}else{
+	  	  		linkedIDs = ((ControlAction)entry).getNotProvidedVariables();
+	  	  	}
 			if(valueCombie.getPMValues() == null){
 				Map<UUID, UUID> valuesIdsTOvariableIDs= new HashMap<>();
 				for(ProcessModelValue value : getValuesList()){
@@ -275,8 +283,85 @@ public class XSTPADataController extends Observable implements Observer{
 		return tempCAEntry;
 	}
 
+	
+	public Map<String,ArrayList<RefinedSafetyEntry>> getHazardousCombinations(UUID caID){
+		HashMap<String,ArrayList<RefinedSafetyEntry>> combiesToContextID = new HashMap<>();
+
+		combiesToContextID.put(IValueCombie.HAZ_IF_NOT_PROVIDED, new ArrayList<RefinedSafetyEntry>());
+		combiesToContextID.put(IValueCombie.HAZ_IF_PROVIDED, new ArrayList<RefinedSafetyEntry>());
+		combiesToContextID.put(IValueCombie.HAZ_IF_WRONG_PROVIDED, new ArrayList<RefinedSafetyEntry>());
+		if(getModel() == null){
+			return combiesToContextID;
+		}
+
+		model.lockUpdate();
+		ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
+  	    allCAEntrys.addAll(getDependenciesIFProvided());
+  	    allCAEntrys.addAll(getDependenciesNotProvided());
+
+		int count = 0;
+		boolean consider;
+		ArrayList<UUID> currentRSR= new ArrayList<>();
+		for (IControlAction ca : getModel().getAllControlActions()) {
+  	    	consider = (caID == null) || ca.getId().equals(caID);
+  	    	if(getControlActionEntry(true, ca.getId()) == null){
+  	    		fetchControlActions();
+  	    	}
+			RefinedSafetyEntry entry;
+			for(ProcessModelVariables variable : getControlActionEntry(true, ca.getId()).getContextTableCombinations()){
+				if(variable.getHAnytime()){
+					count++;
+					if(consider){
+						entry = RefinedSafetyEntry.getAnytimeEntry(count,variable,getModel());
+						currentRSR.add(entry.getDataRef());
+						combiesToContextID.get(IValueCombie.HAZ_IF_PROVIDED)
+												.add(entry);
+					}
+				}
+				if(variable.getHEarly()){
+					count++;
+					if(consider){
+						entry = RefinedSafetyEntry.getTooEarlyEntry(count,variable,getModel());
+						currentRSR.add(entry.getDataRef());
+						combiesToContextID.get(IValueCombie.HAZ_IF_WRONG_PROVIDED)
+												.add(entry);
+					}
+				}
+				if(variable.getHLate()){
+					count++;
+					if(consider){
+						entry = RefinedSafetyEntry.getTooEarlyEntry(count,variable,getModel());
+						currentRSR.add(entry.getDataRef());
+						combiesToContextID.get(IValueCombie.HAZ_IF_WRONG_PROVIDED).
+											add(entry);
+					}
+				}
+			}
+			
+			for (ProcessModelVariables variable : getControlActionEntry(false, ca.getId()).
+					getContextTableCombinations()) {
+				if(variable.getGlobalHazardous()){
+					count++;
+					if(consider){
+						entry = RefinedSafetyEntry.getNotProvidedEntry(count,variable,getModel());
+						currentRSR.add(entry.getDataRef());
+						combiesToContextID.get(IValueCombie.HAZ_IF_NOT_PROVIDED).
+											add(entry);
+					}
+				}
+			}
+		}
+		int total =model.getLTLPropertys().size()-1;
+		for (int i = total; i >= 0; i--) {
+			if(!currentRSR.contains(model.getLTLPropertys().get(i).getRuleId())){
+				model.removeSafetyRule(false, model.getLTLPropertys().get(i).getRuleId());
+			}
+		}
+		model.releaseLockAndUpdate(ObserverValue.Extended_DATA);
+		return combiesToContextID;
+	}
 //=====================================================================
-//START 
+//START Save function
 //=====================================================================
 
 	/**
@@ -340,7 +425,7 @@ public class XSTPADataController extends Observable implements Observer{
   				  
   			  val.setArchived(combie.isArchived());
   			  val.setConstraint(combie.getRefinedSafetyRequirements());
-  			  val.setHazardous(combie.getHazardous());
+  			  val.setHazardous(combie.getGlobalHazardous());
   			  valuesIfProvided.add(val);
   		  }
   		  model.setValuesWhenCANotProvided(caEntry.getId(),valuesIfProvided);
@@ -391,7 +476,7 @@ public class XSTPADataController extends Observable implements Observer{
 	}
 	
 //=====================================================================
-//END 
+//END Save function
 //=====================================================================
 
 	
@@ -505,13 +590,34 @@ public class XSTPADataController extends Observable implements Observer{
 	@Override
 	public void update(Observable arg0, Object updatedValue) {
 		final ObserverValue value= (ObserverValue) updatedValue; 
-		new Runnable() {
-			@Override
-			public void run() {
-				clear();
-				setChanged();
-				notifyObservers(value);
-			}
-		};
+		switch(value){
+			case CONTROL_ACTION:
+			case CONTROL_STRUCTURE:
+				new Runnable() {
+					@Override
+					public void run() {
+						clear();
+						setChanged();
+						notifyObservers(value);
+					}
+				}.run();
+			default:
+				break;
+			
+		}
+	}
+
+	/**
+	 * @return the refinedEntrys
+	 */
+	public List<RefinedSafetyEntry> getRefinedEntrys() {
+		return this.refinedEntrys;
+	}
+
+	/**
+	 * @param refinedEntrys the refinedEntrys to set
+	 */
+	public void setRefinedEntrys(List<RefinedSafetyEntry> refinedEntrys) {
+		this.refinedEntrys = refinedEntrys;
 	}
 }

@@ -2,6 +2,7 @@ package xstpa;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 import java.util.UUID;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -20,6 +21,7 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.editors.StandartEditorPart;
 import xstpa.model.XSTPADataController;
+import xstpa.ui.RefinedSafetyConstraintsView;
 import xstpa.ui.RefinedUCAView;
 import xstpa.ui.View;
 
@@ -34,6 +36,7 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 
+    private static Map<IDataModel,XSTPADataController> xstpaDataToIDataModel = new HashMap<>();
 	private IPartListener editorListener;
 	
 	/**
@@ -49,11 +52,8 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(editorListener = new IPartListener() {
 		
-		    private XSTPADataController defaultController = new XSTPADataController(null);
-		    private Map<IDataModel,XSTPADataController> xstpaDataToIDataModel = new HashMap<>();
 		    
 			
 			private void refreshView() {
@@ -67,7 +67,7 @@ public class Activator extends AbstractUIPlugin {
 			    	 IEditorInput input = editorPart.getEditorInput();
 			    	 UUID projectId = ((STPAEditorInput) input).getProjectID();
 			      
-			    	 XSTPADataController dataController = getDataFor(ProjectManager.getContainerInstance().getDataModel(projectId));
+			    	 XSTPADataController dataController = getDataFor(projectId);
 			    	 // observer gets added, so whenever a value changes, the view gets updated;
 			    	 IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("xstpa.view");
 			    	 if(view != null){
@@ -75,24 +75,16 @@ public class Activator extends AbstractUIPlugin {
 			    	 }
 		    	 }
 			}
-			private XSTPADataController getDataFor(IDataModel model){
-				XSTPADataController data = this.xstpaDataToIDataModel.get(model);
-				if(data == null && model instanceof DataModelController){
-					data = new XSTPADataController((DataModelController) model);
-					model.addObserver(data);
-					this.xstpaDataToIDataModel.put(model, data);
-				}else if(data == null){
-					data = defaultController;
-				}
-				return data;
-			}
+			
 			
 			@Override
 		    public void partOpened(IWorkbenchPart part) {
 				if(part instanceof RefinedUCAView){
 					RefinedUCAView rucaView =((RefinedUCAView) part);
-					rucaView.setDataController(getDataFor(ProjectManager.getContainerInstance()
-																		.getDataModel(rucaView.getProjectID())));
+					rucaView.setDataController(getDataFor(rucaView.getProjectID()));
+				}else if(part instanceof RefinedSafetyConstraintsView){
+					RefinedSafetyConstraintsView rucaView =((RefinedSafetyConstraintsView) part);
+					rucaView.setDataController(getDataFor(rucaView.getProjectID()));
 				}
 			      refreshView();
 		    }
@@ -139,6 +131,24 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public static XSTPADataController getDataFor(UUID modelID){
+		IDataModel model = ProjectManager.getContainerInstance()
+				.getDataModel(modelID);
+			if(model != null){
+			XSTPADataController data = xstpaDataToIDataModel.get(model);
+			if(data == null && model instanceof DataModelController){
+				data = new XSTPADataController((DataModelController) model);
+				ProjectManager.getContainerInstance().addProjectAdditionForUUID(ProjectManager.getContainerInstance().
+						getProjectID((Observable) model), data);
+				model.addObserver(data);
+				xstpaDataToIDataModel.put(model, data);
+			}else if(data == null){
+				data = new XSTPADataController(null);;
+			}
+			return data;
+		}
+		return null;
+	}
 	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path

@@ -58,8 +58,8 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 			throw new IllegalArgumentException();
 		}
 		this.connId = conn.getId();
-		this.oldSourceAnchorModel = (Anchor) conn.getSourceAnchor();
-		this.oldTargetAnchorModel = (Anchor) conn.getTargetAnchor();
+		this.oldSourceAnchorModel = conn.getSourceAnchor();
+		this.oldTargetAnchorModel = conn.getTargetAnchor();
 
 	}
 

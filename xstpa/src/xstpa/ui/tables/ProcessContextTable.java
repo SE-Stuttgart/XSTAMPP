@@ -352,7 +352,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		                	dataController.storeBooleans(null);
 		                }
 		                else  if ((contextTableCellX == contextRightTable.getColumnCount()-1)&&(!dataController.isControlActionProvided())) {
-		                	contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getHazardous());
+		                	contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
 		            		if (contextRightContent.get(contextTableCellY).getConflict()) {
 		            			conflictCounter--;
 		            		}
@@ -413,7 +413,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		        		ProcessModelVariables entry = (ProcessModelVariables) event.item.getData();
 		        		Image tmpImage = View.UNCHECKED;
 		        		if(event.index == contextRightTable.getColumnCount()-1)  {
-			            	if (entry.getHazardous()){
+			            	if (entry.getGlobalHazardous()){
 				                tmpImage = View.CHECKED;
 			            	}
 			            	getPosition(event, tmpImage);
@@ -700,7 +700,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 	public Boolean checkForConflicts(ProcessModelVariables item1, ProcessModelVariables item2) {
 		Boolean conflict = true;
-		if (!((item1.getHAnytime() == true) && (item2.getHazardous()== true))) {
+		if (!((item1.getHAnytime() == true) && (item2.getGlobalHazardous()== true))) {
 			return false;
 		}
 		if (item1.getSizeOfValues() != item2.getSizeOfValues()) {
@@ -760,7 +760,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 		for (TableColumn column : contextRightTable.getColumns()) {
 			column.dispose();
 		}
-  		
+  		if(dataController.getLinkedCAE() == null){
+  			return;
+  		}
   		if (!dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
   			new TableColumn(contextRightTable, SWT.NONE).setText(View.ENTRY_ID);
   			// creates new TableColumns dynamically so that the context table has the right size (and labels)
@@ -813,7 +815,7 @@ public class ProcessContextTable extends AbstractTableComposite {
   			  if ((dataController.isControlActionProvided())&&(input.get(i).getHAnytime() | (input.get(i).getHEarly()) | (input.get(i).getHLate()))) {
   				content.add(contextRightContent.get(i));
   			  }
-  			  else if ((!dataController.isControlActionProvided())&&(input.get(i).getHazardous())) {
+  			  else if ((!dataController.isControlActionProvided())&&(input.get(i).getGlobalHazardous())) {
   				content.add(contextRightContent.get(i));
   			  }
   		  }
@@ -825,7 +827,7 @@ public class ProcessContextTable extends AbstractTableComposite {
   			  if ((dataController.isControlActionProvided())&&(!input.get(i).getHAnytime())) {
   				content.add(contextRightContent.get(i));
   			  }
-  			  else if ((!dataController.isControlActionProvided())&&(!input.get(i).getHazardous())) {
+  			  else if ((!dataController.isControlActionProvided())&&(!input.get(i).getGlobalHazardous())) {
   				content.add(contextRightContent.get(i));
   			  }
   		  }
@@ -840,7 +842,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	private void storeEntrys(List<ProcessModelVariables> entrys, boolean keepOldCombies){
 		if(keepOldCombies){
 			for(ProcessModelVariables variable: dataController.getLinkedCAE().getContextTableCombinations()){
-				if(variable.getHazardous()){
+				if(variable.getGlobalHazardous()){
 					variable.setArchived(true);
 					entrys.add(variable);
 				}

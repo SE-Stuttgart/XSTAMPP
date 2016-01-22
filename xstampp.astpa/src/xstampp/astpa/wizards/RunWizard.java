@@ -2,10 +2,7 @@ package xstampp.astpa.wizards;
 
 import java.io.File;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;

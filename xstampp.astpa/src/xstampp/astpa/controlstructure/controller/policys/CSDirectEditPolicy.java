@@ -19,7 +19,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 
-import xstampp.astpa.controlstructure.CSAbstractEditor;
+import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.commands.ComponentRenameCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.figure.CSFigure;
@@ -72,7 +72,7 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 	@Override
 	protected Command getDirectEditCommand(DirectEditRequest request) {
 		String stepID = (String) this.getHost().getViewer()
-				.getProperty(CSAbstractEditor.STEP_EDITOR);
+				.getProperty(IControlStructureEditor.STEP_EDITOR);
 
 		ComponentRenameCommand command = new ComponentRenameCommand(
 				this.oldName, this.dataModel, stepID);

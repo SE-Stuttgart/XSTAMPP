@@ -59,7 +59,7 @@ public class CsvExport {
 					writer.print("Provided" + delimiter);
 					
 					// Prints the critical Combinations
-					writer.print(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues() + delimiter);
+					writer.print(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues("==", false) + delimiter);
 					
 					// Prints the SafetyRequirements
 					writer.print(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getRefinedSafetyRequirements() + delimiter + crlf);
@@ -74,7 +74,7 @@ public class CsvExport {
 		for (int i=0; i<exportContent.getProvidedCA().size();i++) {
 			
 			for (int j=0; j<exportContent.getNotProvidedCA().get(i).getContextTableCombinations().size(); j++) {
-				if (exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getHazardous() == true) {
+				if (exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getGlobalHazardous() == true) {
 					// Prints the ID
 					writer.print(counter + delimiter);
 					
@@ -85,7 +85,7 @@ public class CsvExport {
 					writer.print("Provided" + delimiter);
 					
 					// Prints the critical Combinations
-					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues() + delimiter);
+					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues("==", false) + delimiter);
 					
 					// Prints the SafetyRequirements
 					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getRefinedSafetyRequirements() + delimiter + crlf);
@@ -217,7 +217,7 @@ public class CsvExport {
 					}
 					
 					// Prints the value of hazardous
-					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getHazardous().toString() + delimiter + crlf);
+					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getGlobalHazardous().toString() + delimiter + crlf);
 					
 					// Counts Up, this is for the ID
 					counter2++;
@@ -303,7 +303,7 @@ public class CsvExport {
 		for (int i=0; i<exportContent.getProvidedCA().size();i++) {
 			
 			for (int j=0; j<exportContent.getNotProvidedCA().get(i).getContextTableCombinations().size(); j++) {
-				if (exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getHazardous() == true) {
+				if (exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getGlobalHazardous() == true) {
 					// Prints the ID
 					writer.print(counter + delimiter);
 					

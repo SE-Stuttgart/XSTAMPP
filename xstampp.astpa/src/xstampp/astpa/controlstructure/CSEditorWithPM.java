@@ -21,7 +21,6 @@ import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
-import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -165,7 +164,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 			public void focusLost(FocusEvent e) {
 				IContextService contextService=(IContextService)getSite().getService(IContextService.class);
 				
-				 contextService.deactivateContext(this.activation); //$NON-NLS-1$
+				 contextService.deactivateContext(this.activation); 
 			}
 			
 			@Override

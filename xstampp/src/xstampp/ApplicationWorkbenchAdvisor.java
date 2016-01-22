@@ -13,20 +13,11 @@
 
 package xstampp;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-
-import xstampp.ui.common.ProjectManager;
-import xstampp.util.STPAPluginUtils;
 
 /**
  * Configures the workbench.
@@ -58,11 +49,11 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		// remove default preference page for Install/Update and Security
 		PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
 
-				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.ProvisioningPreferencePage"); //$NON-NLS-1$
-				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.SitesPreferencePage "); //$NON-NLS-1$
-				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdatesPreferencePage"); //$NON-NLS-1$
-				pm.remove("org.eclipse.equinox.security.ui.category"); //$NON-NLS-1$
-				pm.remove("org.eclipse.equinox.security.ui.storage"); //$NON-NLS-1$
+//				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.ProvisioningPreferencePage"); //$NON-NLS-1$
+//				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.SitesPreferencePage "); //$NON-NLS-1$
+//				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdatesPreferencePage"); //$NON-NLS-1$
+//				pm.remove("org.eclipse.equinox.security.ui.category"); //$NON-NLS-1$
+//				pm.remove("org.eclipse.equinox.security.ui.storage"); //$NON-NLS-1$
 	}
 	
 

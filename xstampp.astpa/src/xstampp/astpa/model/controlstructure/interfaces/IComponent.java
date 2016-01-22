@@ -43,6 +43,7 @@ public interface IComponent extends xstampp.astpa.haz.controlstructure.interface
 	 * 
 	 * @author Fabian Toth
 	 */
+	@Override
 	UUID getId();
 
 	/**

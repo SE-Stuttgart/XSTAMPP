@@ -11,15 +11,12 @@ package settings;
  *******************************************************************************/
 
 
-import messages.Messages;
-
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import xstampp.Activator;
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  * Generate the export preference page.

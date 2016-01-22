@@ -256,7 +256,7 @@ public class CausalFactorController {
 					linkedHazards.add(hazAccController.getHazard(id));
 				}
 				Collections.sort(linkedHazards);
-				StringBuffer linkString = new StringBuffer(); //$NON-NLS-1$
+				StringBuffer linkString = new StringBuffer(); 
 				if (linkedHazards.size() == 0) {
 					linkString.append(Messages.NotHazardous);
 				} else {

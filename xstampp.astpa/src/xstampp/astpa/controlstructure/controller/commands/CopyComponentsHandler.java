@@ -7,8 +7,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.controlstructure.CSAbstractEditor;
-import xstampp.astpa.controlstructure.CSEditor;
-import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 
 public class CopyComponentsHandler extends AbstractHandler {
 

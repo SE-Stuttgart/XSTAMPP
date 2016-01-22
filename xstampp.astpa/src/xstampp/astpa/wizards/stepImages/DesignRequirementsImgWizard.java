@@ -9,7 +9,7 @@ public class DesignRequirementsImgWizard extends AbstractExportWizard {
 
 	public DesignRequirementsImgWizard() {
 		super(DesignRequirementView.ID);
-		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 		this.setExportPage(new TableExportPage(filters,
 				Messages.DesignRequirements + Messages.AsImage));
 	}

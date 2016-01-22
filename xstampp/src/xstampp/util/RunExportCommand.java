@@ -3,7 +3,6 @@ package xstampp.util;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;

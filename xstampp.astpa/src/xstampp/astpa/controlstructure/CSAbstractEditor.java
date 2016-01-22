@@ -84,6 +84,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -996,8 +997,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 *
 	 * @param dataInterface
 	 */
+	@Deprecated
 	public void setDataModelInterface(IDataModel dataInterface) {
-		this.setModelInterface((IControlStructureEditorDataModel) dataInterface);
+		this.setModelInterface(dataInterface);
 		this.getModelInterface().addObserver(this);
 
 //		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
@@ -1158,7 +1160,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 													String.format(Messages.InformationCannotBeStored,obj.toString()),
 													Messages.DontPromtThisMsgAgain,false,null,null);
 				hideWarning = dialog.getToggleState();
-				if(dialog.getReturnCode() == MessageDialogWithToggle.OK){
+				if(dialog.getReturnCode() == Window.OK){
 					ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx");
 				}
 				PlatformUI.getPreferenceStore().setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);

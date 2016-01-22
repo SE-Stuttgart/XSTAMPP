@@ -24,9 +24,7 @@ import messages.Messages;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.w3c.dom.svg.GetSVGDocument;
 
 import xstampp.astpa.controlstructure.controller.editparts.ActuatorEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;

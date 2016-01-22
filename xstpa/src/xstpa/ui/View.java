@@ -4,8 +4,6 @@ package xstpa.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,8 +22,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.part.ViewPart;
 
-import xstampp.model.ObserverValue;
-import xstampp.ui.common.ProjectManager;
 import xstpa.Activator;
 import xstpa.model.XSTPADataController;
 import xstpa.ui.tables.AbstractTableComposite;
@@ -212,16 +208,10 @@ public class View extends ViewPart{
 	    
 	    compositeTable = new ProcessContextTable(xstpaTableComposite);
 	    addTable(compositeTable, "Context Table");
-	    compositeTable = new RefinedRulesTable(xstpaTableComposite){
-	    	@Override
-	    	protected void openLTL() {
-	    		openTable(ltlComposite, null);
-	    	}
-	    };
+	    
+	    compositeTable = new RefinedRulesTable(xstpaTableComposite);
 	    addTable(compositeTable, RULES_TABLE);
-	    // ltl Composite
-	    ltlComposite = new LTLPropertiesTable(xstpaTableComposite);
-	    addTable(ltlComposite, null);
+	    
 	    setController(new XSTPADataController(null));
 	    openTable(mainTable, null);
 	    /**
@@ -260,31 +250,16 @@ public class View extends ViewPart{
 		}
 		for(AbstractTableComposite comp: tableList){
 			comp.setVisible(false);
+			comp.deactivateTable();
 		}
   	    if(table != null){
-  	    	table.activate();
+  	    	table.activateTable();
   	    }
   	    if(button != null){
   	    	button.setBackground(HIGHLIGHT);
   	    }
 	}
-	/**
-	 * Provide the input to the ContentProvider
-	 */
-	public void getTableEntrys() {
-		//List<ICorrespondingUnsafeControlAction> unsafeCA = model.getAllUnsafeControlActions();
-		
-		// store the Export Data for later Use
-		exportContent.setNotProvidedCA(dataController.getDependenciesNotProvided());
-		exportContent.setProvidedCA(dataController.getDependenciesIFProvided());
-		ProjectManager.getContainerInstance().addProjectAdditionForUUID(ProjectManager.getContainerInstance().
-																		getProjectID(dataController.getModel()), exportContent);
-		for(AbstractTableComposite comp: tableList){
-			comp.refreshTable();
-		}
-	}
-	
-	
+
 	
 	/**
 	 * Passing the focus request to the viewer's control.
@@ -297,6 +272,5 @@ public class View extends ViewPart{
 			table.setController(controller);
 		}
 		dataController = controller;
-		getTableEntrys();
 	}
 }

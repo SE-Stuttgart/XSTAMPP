@@ -23,8 +23,6 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import messages.Messages;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
@@ -127,7 +125,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 			File tmp = new File(this.filePath);
-			this.imgPath = tmp.getParent(); //$NON-NLS-1$
+			this.imgPath = tmp.getParent(); 
 			
 		this.csPath = new File(this.imgPath + File.separator
 				+ getThread().getId() + "cs.png");

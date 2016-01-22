@@ -3,7 +3,6 @@ package xstampp.astpa.controlstructure.controller.commands;
 import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

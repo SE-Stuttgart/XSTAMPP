@@ -17,10 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.requests.CreationFactory;
 
-import messages.Messages;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;

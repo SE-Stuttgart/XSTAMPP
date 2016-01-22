@@ -1,6 +1,7 @@
 package xstpa.ui.tables;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ import xstpa.ui.View;
 import xstpa.ui.dialogs.EditRelatedUcaWizard;
 import xstpa.ui.tables.utils.MainViewContentProvider;
 
-public abstract class RefinedRulesTable extends AbstractTableComposite {
+public class RefinedRulesTable extends AbstractTableComposite {
 	
 	private class RefinedSafetyViewLabelProvider extends LabelProvider implements
 	ITableLabelProvider{
@@ -65,7 +66,7 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 			case View.CONTEXT_TYPE:
 				return entry.getType();
 			case View.CRITICAL_COMBI:	
-				return entry.getCriticalCombinations();
+				return entry.getCriticalCombinations(" == ", ",", false, false);
 				
 			case View.UCA:
 				String tempUcas =entry.getUCALinks();
@@ -82,7 +83,7 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 				rule.append(entry.getType());
 				rule.append(" ");
 				rule.append("is hazardous when ");
-				rule.append(entry.getCriticalCombinations());
+				rule.append(entry.getCriticalCombinations(" == ", ",", false, false));
 				return rule.toString();
 			}
 
@@ -168,12 +169,6 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 //	    data.verticalIndent = 5;
 	    editRefinedSafetyTableComposite.setLayoutData(data);
 	    
-		// Add a button to switch tables (LTL Button)
-	    final Button ltlBtn = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
-	    ltlBtn.setToolTipText("Opens the LTL Table for all Hazardous Combinations");
-	    ltlBtn.setImage(View.LTL);
-	    ltlBtn.pack();
-	    
 		// Add a button to export all tables
 	    final Button exportBtn = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
 	    exportBtn.setToolTipText("Exports all Tables");
@@ -191,15 +186,7 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	    bAllRemoveEntry.setToolTipText("removes all entries from the rules table");
 	    bAllRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVEALL));
 	    bAllRemoveEntry.pack();
-	    /**
-	     * Functionality for the ltl Button to change to ltlComposite
-	     */
-	    ltlBtn.addSelectionListener(new SelectionAdapter() {
-	      public void widgetSelected(SelectionEvent event) {
-	    	 openLTL();
-	  	        	    
-	      }
-	    });
+	    
 	    
 	    /**
 	     * Functionality for the Export Button
@@ -226,9 +213,17 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	    bAllRemoveEntry.addSelectionListener(new SelectionAdapter() {
 	    	@Override
 	    	public void widgetSelected(SelectionEvent e) {
-	    		for(TableItem entry : refinedSafetyTable.getItems()) {
-		    		removeEntry((RefinedSafetyEntry) entry.getData());
-				}
+	    		ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
+	      	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
+	      	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
+	      	    
+	    	    for (ControlActionEntry caEntry : allCAEntrys) {
+	    	    	for(ProcessModelVariables variable: caEntry.getContextTableCombinations()){
+	    	    		variable.setGlobalHazardous(false);
+	    	    	}
+		    	    dataController.storeBooleans(caEntry);
+	    	    }
+				dataController.getModel().removeSafetyRule(true, null);
 				refreshTable();
 	    	}
 		});
@@ -254,9 +249,12 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 			default:
 				return;
 		}
-		if (entry.getVariable().isArchived() && !entry.getVariable().getHazardous()) {
+		if (entry.getVariable().isArchived() && !entry.getVariable().getGlobalHazardous()) {
 			combinations.remove(entry.getVariable());
 		}
+		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
+				 entry.getVariable().getLinkedControlActionID()));
+		dataController.getModel().removeSafetyRule(false, entry.getDataRef());
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
 				 entry.getVariable().getLinkedControlActionID()));
 	}
@@ -273,32 +271,12 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 			return false;
 		}
 		refinedSafetyContent.clear();
-  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
-  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
-  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
+		Map<String, ArrayList<RefinedSafetyEntry>> refinedEntrys = dataController.getHazardousCombinations(null); 
+  	    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_PROVIDED));
+  	    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_WRONG_PROVIDED));
+  	    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_NOT_PROVIDED));
 
-		int count = 0;
-  	    for (ControlActionEntry caEntry : allCAEntrys) {
-			for(ProcessModelVariables variable : caEntry.getContextTableCombinations()){
-				RefinedSafetyEntry rsEntry = null;
-				if(variable.getHAnytime()){
-					rsEntry = RefinedSafetyEntry.getAnytimeEntry(count++,variable,dataController.getModel());
-					refinedSafetyContent.add(rsEntry);
-				}
-				if(variable.getHEarly()){
-					rsEntry = RefinedSafetyEntry.getTooEarlyEntry(count++,variable,dataController.getModel());
-					refinedSafetyContent.add(rsEntry);
-				}
-				if(variable.getHLate()){
-					rsEntry = RefinedSafetyEntry.getTooLateEntry(count++,variable,dataController.getModel());
-					refinedSafetyContent.add(rsEntry);
-				}
-				if(variable.getHazardous() && rsEntry == null){
-					rsEntry = RefinedSafetyEntry.getNotProvidedEntry(count++,variable,dataController.getModel());
-					refinedSafetyContent.add(rsEntry);
-				}
-			}
-		}
+  	    Collections.sort(refinedSafetyContent);
   	    if (refinedSafetyContent.isEmpty()) {
   	    	writeStatus("No Hazardous Combinations - Please check some Combinations as Hazardous");
   	    }
@@ -323,7 +301,5 @@ public abstract class RefinedRulesTable extends AbstractTableComposite {
 	    	dataController.storeBooleans(caEntry);	
 	    }
 	}
-	
 
-	protected abstract void openLTL();
 }

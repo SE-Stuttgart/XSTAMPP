@@ -13,12 +13,10 @@
 
 package export;
 
-import java.io.File;
 import java.util.UUID;
 
 import messages.Messages;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;

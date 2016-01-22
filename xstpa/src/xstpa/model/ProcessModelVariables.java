@@ -22,7 +22,8 @@ import xstampp.astpa.model.controlaction.IValueCombie;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "variableIdsList", "name", "linkedControlActionName",
 		"refinedSafetyRequirements", "context",	"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict",
-		"archived","singleVarId", "isInRSRTable", "ucaLinks","relatedUCAsAnytime","relatedUCAsTooEarly","relatedUCAsTooLate"})
+		"archived","singleVarId", "isInRSRTable", "ucaLinks","relatedUCAsAnytime","relatedUCAsTooEarly","relatedUCAsTooLate",
+		"rule","refinedUnsafeControlAction"})
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")
@@ -77,6 +78,11 @@ public class ProcessModelVariables {
 
 	private UUID singleVarId;
 
+	private UUID notProvidedRule = null;
+	private UUID anytimeRule = null;
+	private UUID tooEarlyRule = null;
+	private UUID tooLateRule = null;
+	
 	@XmlElementWrapper(name = "ucaLinks")
 	@XmlElement(name = "id")
 	private List<UUID> ucaLinks= new ArrayList<>();
@@ -92,6 +98,12 @@ public class ProcessModelVariables {
 	@XmlElementWrapper(name = "relatedUCAsTooLate")
 	@XmlElement(name = "id")
 	private List<UUID> relatedUCAsTooLate;
+	
+	@XmlElement(name="rule")
+	private String rule;
+	
+	@XmlElement(name="refinedUnsafeControlAction")
+	private String ruca;
 	
 	public ProcessModelVariables (List<String> pmVariables,ControlActionEntry linkedControlAction ) {
 		this.linkedControlActionName = linkedControlAction.getControlAction();
@@ -133,8 +145,18 @@ public class ProcessModelVariables {
 	//******************************
 	//Management of the pm values which are used to represent the value state
 	
-	public List<String> getPmValues() {
-		return pmValues;
+	public List<String> getPmValues(String equalsSeq, boolean writeBoolean) {
+		ArrayList<String> list = new ArrayList<>();
+		boolean checkBool =equalsSeq.trim().equals("==");
+		for (int i = 0; i < this.values.size(); i++) {
+			char c = this.values.get(i).trim().charAt(0);
+			if(checkBool && (c == '>' || c == '<' || c == '=')){
+				list.add(this.pmVariables.get(i) +" "+ this.values.get(i));
+			}else{
+				list.add(this.pmVariables.get(i) + equalsSeq +this.values.get(i));
+			}
+		}
+		return list;
 	}
 	public void setPmValues(List<String> pmValues) {
 		this.pmValues = pmValues;
@@ -168,8 +190,17 @@ public class ProcessModelVariables {
 	
 //********************************************************************************************
 // Management of the Hazardous state
-	public Boolean getHazardous() {
+	public Boolean getGlobalHazardous() {
 		return hazardous || hLate || hEarly || hAnytime;
+	}
+	public void setGlobalHazardous(Boolean hazardous) {
+		this.hazardous = hazardous;
+		this.hLate = hazardous;
+		this.hEarly = hazardous;
+		this.hAnytime = hazardous;
+	}
+	public Boolean getHazardous() {
+		return hazardous;
 	}
 	public void setHazardous(Boolean hazardous) {
 		this.hazardous = hazardous;
@@ -374,7 +405,89 @@ public class ProcessModelVariables {
 		this.linkedControlActionID = linkedControlActionID;
 	}
 
+	/**
+	 * @return the rule
+	 */
+	public String getSafetyRule() {
+		return this.rule;
+	}
 
+	/**
+	 * @param rule the rule to set
+	 */
+	public void setSafetyRule(String rule) {
+		this.rule = rule;
+	}
+
+	/**
+	 * @return the ruca
+	 */
+	public String getRefinedUnsafeControlAction() {
+		return this.ruca;
+	}
+
+	/**
+	 * @param ruca the ruca to set
+	 */
+	public void setRefinedUnsafeControlAction(String ruca) {
+		this.ruca = ruca;
+	}
+
+	/**
+	 * @return the notProvidedRule
+	 */
+	public UUID getNotProvidedRule() {
+		return this.notProvidedRule;
+	}
+
+	/**
+	 * @param notProvidedRule the notProvidedRule to set
+	 */
+	public void setNotProvidedRule(UUID notProvidedRule) {
+		this.notProvidedRule = notProvidedRule;
+	}
+
+	/**
+	 * @return the anytimeRule
+	 */
+	public UUID getAnytimeRule() {
+		return this.anytimeRule;
+	}
+
+	/**
+	 * @param uuid the anytimeRule to set
+	 */
+	public void setAnytimeRule(UUID uuid) {
+		this.anytimeRule = uuid;
+	}
+
+	/**
+	 * @return the tooEarlyRule
+	 */
+	public UUID getTooEarlyRule() {
+		return this.tooEarlyRule;
+	}
+
+	/**
+	 * @param tooEarlyRule the tooEarlyRule to set
+	 */
+	public void setTooEarlyRule(UUID tooEarlyRule) {
+		this.tooEarlyRule = tooEarlyRule;
+	}
+
+	/**
+	 * @return the tooLateRule
+	 */
+	public UUID getTooLateRule() {
+		return this.tooLateRule;
+	}
+
+	/**
+	 * @param tooLateRule the tooLateRule to set
+	 */
+	public void setTooLateRule(UUID tooLateRule) {
+		this.tooLateRule = tooLateRule;
+	}
 
 
 

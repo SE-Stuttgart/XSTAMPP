@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import messages.Messages;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
+import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.ui.common.grid.GridCellBlank;
 import xstampp.astpa.ui.common.grid.GridCellColored;
 import xstampp.astpa.ui.common.grid.GridCellText;
 import xstampp.astpa.ui.common.grid.GridRow;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
+import xstampp.model.ILTLProvider;
 import xstpa.model.ControlActionEntry;
-import xstpa.model.ProcessModelVariables;
-import xstpa.model.RefinedSafetyEntry;
 import xstpa.model.XSTPADataController;
 
 public class RefinedUCAView extends UnsafeControlActionsView {
@@ -20,11 +22,17 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	private static final String ID = "xstpa.editors.refinedUCA";
 	private XSTPADataController dataController;
 	
+	public RefinedUCAView() {
+		this.useFilter = false;
+	}
 	@Override
 	public String getId() {
 		return ID;
 	}
-	
+	@Override
+	public String getTitle() {
+		return "Refined Unsafe Control Actions";
+	}
 	@Override
 	protected void fillTable(List<IControlAction> controlActions) {
 		if(dataController == null){
@@ -42,46 +50,38 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 			filterID = Integer.parseInt(this.filterText.getText());
 		}
 		
-			ArrayList<RefinedSafetyEntry> allNotProvidedRUCA = new ArrayList<>();
-	  	    ArrayList<RefinedSafetyEntry> allProvidedRUCA = new ArrayList<>();
-	  	    ArrayList<RefinedSafetyEntry> allWrongTimedRUCA = new ArrayList<>();
+			ArrayList<ILTLProvider> allNotProvidedRUCA = new ArrayList<>();
+	  	    ArrayList<ILTLProvider> allProvidedRUCA = new ArrayList<>();
+	  	    ArrayList<ILTLProvider> allWrongTimedRUCA = new ArrayList<>();
+	  	    List<ILTLProvider> refinedEntrys = dataController.getModel().getAllRefinedRules();
 	  	    
 	  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
 	  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
 	  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
-	  	    int count = 0; 
-	  	    for (IControlAction ca : controlActions) {
-	  	    	allNotProvidedRUCA = new ArrayList<>();
-		  	    allProvidedRUCA = new ArrayList<>();
-		  	    allWrongTimedRUCA = new ArrayList<>();
-				for (ProcessModelVariables variable : dataController.getControlActionEntry(true, ca.getId()).
-																									getContextTableCombinations()) {
-					
-					RefinedSafetyEntry rsEntry = null;
-					if(variable.getHAnytime()){
-						rsEntry = RefinedSafetyEntry.getAnytimeEntry(count++,variable,dataController.getModel());
-						allProvidedRUCA.add(rsEntry);
-					}
-					if(variable.getHEarly()){
-						rsEntry = RefinedSafetyEntry.getTooEarlyEntry(count++,variable,dataController.getModel());
-						allWrongTimedRUCA.add(rsEntry);
-					}
-					if(variable.getHLate()){
-						rsEntry = RefinedSafetyEntry.getTooLateEntry(count++,variable,dataController.getModel());
-						allWrongTimedRUCA.add(rsEntry);
-					}
+	  	    for (IControlAction ca : dataController.getModel().getAllControlActions()) {
+	  	    	
+	  	    	allNotProvidedRUCA.clear();
+	  	    	allProvidedRUCA.clear();
+	  	    	allWrongTimedRUCA.clear();
+	  	    	
+	  			for (ILTLProvider provider : refinedEntrys) {
+	  				if(provider.getRelatedControlActionID().equals(ca.getId())){
+	  					switch(provider.getType()){
+	  					case IValueCombie.TYPE_NOT_PROVIDED :
+	  						allNotProvidedRUCA.add(provider);
+	  						break;
+	  					case IValueCombie.TYPE_ANYTIME :
+	  						allProvidedRUCA.add(provider);
+							break;
+	  					case IValueCombie.TYPE_TOO_EARLY :
+	  					case IValueCombie.TYPE_TOO_LATE :
+	  						allWrongTimedRUCA.add(provider);
+							break;
+	  					}
+	  				}
 				}
-		  	    int localRows=Math.max(allProvidedRUCA.size(), allWrongTimedRUCA.size());
 		  	    
-				for (ProcessModelVariables variable : dataController.getControlActionEntry(true, ca.getId()).
-						getContextTableCombinations()) {
-
-					RefinedSafetyEntry rsEntry = null;
-					if(variable.getHazardous()){
-						rsEntry = RefinedSafetyEntry.getNotProvidedEntry(count++,variable,dataController.getModel());
-						allNotProvidedRUCA.add(rsEntry);
-					}
-				}
+		  	    int localRows=Math.max(allProvidedRUCA.size(), allWrongTimedRUCA.size());
 				localRows=Math.max(localRows, allNotProvidedRUCA.size());
 		  	    GridRow controlActionRow =new GridRow(1);
 		  	    
@@ -107,20 +107,13 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 					controlActionRow.addChildRow(ucaRow);
 					controlActionRow.addChildRow(linkRow);
 
-					RefinedSafetyEntry notGivenUca = null;
-					RefinedSafetyEntry incorrectUca = null;
-					RefinedSafetyEntry timingUca = null;
+					ILTLProvider notGivenUca = null;
+					ILTLProvider incorrectUca = null;
+					ILTLProvider timingUca = null;
 					
 					if (allNotProvidedRUCA.size() > i ) {
 						notGivenUca = allNotProvidedRUCA.get(i);
-						if(notGivenUca.getRelatedHazards().isEmpty()){
-							idRow.addCell(new GridCellBlank());
-						}else{
-							idRow.addCell(new GridCellText("RUCA1." + notGivenUca.getNumber()));
-						}
-						GridCellText editor = new GridCellText(notGivenUca.getRUCA());
-						ucaRow.addCell(editor);
-						linkRow.addCell(new GridCellText(notGivenUca.getRelatedHazards()));
+						addRUCA(idRow, ucaRow, linkRow,notGivenUca);
 					}else {
 						// add placeholders
 						idRow.addCell(new GridCellBlank());
@@ -130,14 +123,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 
 					if (allProvidedRUCA.size() > i) {
 						incorrectUca = allProvidedRUCA.get(i);
-						if(incorrectUca.getRelatedHazards().isEmpty()){
-							idRow.addCell(new GridCellBlank());
-						}else{
-							idRow.addCell(new GridCellText("RUCA1." + incorrectUca.getNumber()));
-						}
-						GridCellText editor = new GridCellText(incorrectUca.getRUCA());
-						ucaRow.addCell(editor);
-						linkRow.addCell(new GridCellText(incorrectUca.getRelatedHazards()));
+						addRUCA(idRow, ucaRow, linkRow, incorrectUca);
 					}else {
 						// add placeholders
 						idRow.addCell(new GridCellBlank());
@@ -147,14 +133,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 
 					if (allWrongTimedRUCA.size() > i) {
 						timingUca = allWrongTimedRUCA.get(i);
-						if(timingUca.getRelatedHazards().isEmpty()){
-							idRow.addCell(new GridCellBlank());
-						}else{
-							idRow.addCell(new GridCellText("RUCA1." + timingUca.getNumber()));
-						}
-						GridCellText editor = new GridCellText(timingUca.getRUCA());
-						ucaRow.addCell(editor);
-						linkRow.addCell(new GridCellText(timingUca.getRelatedHazards()));
+						addRUCA(idRow, ucaRow, linkRow, timingUca);
 					}else {
 						// add placeholders
 						idRow.addCell(new GridCellBlank());
@@ -171,9 +150,30 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 					this.grid.addRow(controlActionRow);
 				}
 			}
+	  	    this.grid.reloadTable();
+	  	    this.grid.resizeRows();
 	  	    
 	}
 
+	private void addRUCA(GridRow idRow,GridRow ucaRow,GridRow linkRow,ILTLProvider provider){
+		String links = "";
+		
+		for (IUCAHazLink ucaLink: dataController.getModel().getAllUCALinks()) {
+			if(provider.getUCALinks() != null && provider.getUCALinks().contains(ucaLink.getUnsafeControlActionId())){
+				links = links.concat("[H-"+dataController.getModel().getHazard(ucaLink.getHazardId()).getNumber()+"],");
+			}
+		}
+		if(links.isEmpty()){
+			links = "not hazardous";
+		}else{
+			links = links.substring(0, links.length()-1);			
+		}
+		idRow.addCell(new GridCellText("RUCA1."+provider.getNumber()));
+		
+		GridCellText editor = new GridCellText(provider.getRefinedUCA());
+		ucaRow.addCell(editor);
+		linkRow.addCell(new GridCellText(links));
+	}
 	/**
 	 * @return the dataController
 	 */
@@ -196,7 +196,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	}
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
-		if (!this.grid.getGrid().isDisposed()) {
+		if (!this.grid.getGrid().isDisposed() && dataModelController instanceof XSTPADataController) {
 			this.grid.clearRows();
 			this.fillTable(((XSTPADataController)dataModelController).getModel().getAllControlActions());
 			this.grid.reloadTable();
