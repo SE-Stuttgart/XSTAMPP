@@ -60,6 +60,15 @@ public class ProvidedValuesCombi implements IValueCombie{
 
 	@XmlElement(name="combieId")
 	private UUID id;
+	
+	@XmlElement(name="anytimeRuleId")
+	private UUID anytimeRule;
+	
+	@XmlElement(name="tooEarlyRuleId")
+	private UUID tooEarlyRule;
+	
+	@XmlElement(name="tooLateRuleId")
+	private UUID tooLateRule;
 
 	@XmlElement(name="archived")
 	private boolean archived;
@@ -252,5 +261,47 @@ public class ProvidedValuesCombi implements IValueCombie{
 				this.relatedUCAsTooLate = relatedUCAs;
 				break;
 		}
+	}
+
+	/**
+	 * @return the anytimeRuleId
+	 */
+	public UUID getAnytimeRuleId() {
+		return this.anytimeRule;
+	}
+
+	/**
+	 * @param anytimeRuleId the anytimeRuleId to set
+	 */
+	public void setAnytimeRuleId(UUID anytimeRuleId) {
+		this.anytimeRule = anytimeRuleId;
+	}
+
+	/**
+	 * @return the tooEarlyRuleId
+	 */
+	public UUID getTooEarlyRuleId() {
+		return this.tooEarlyRule;
+	}
+
+	/**
+	 * @param tooEarlyRuleId the tooEarlyRuleId to set
+	 */
+	public void setTooEarlyRuleId(UUID tooEarlyRuleId) {
+		this.tooEarlyRule = tooEarlyRuleId;
+	}
+
+	/**
+	 * @return the tooLateRuleId
+	 */
+	public UUID getTooLateRuleId() {
+		return this.tooLateRule;
+	}
+
+	/**
+	 * @param tooLateRuleId the tooLateRuleId to set
+	 */
+	public void setTooLateRuleId(UUID tooLateRuleId) {
+		this.tooLateRule = tooLateRuleId;
 	}
 }

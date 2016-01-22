@@ -32,9 +32,10 @@ import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.model.ILTLProvider;
 
 /**
  * Manager class for control actions.
@@ -52,6 +53,11 @@ public class ControlActionController {
 	@XmlElement(name = "link")
 	private List<UCAHazLink> links;
 
+
+	@XmlElementWrapper(name = "rules")
+	@XmlElement(name = "rule")
+	private List<RefinedSafetyRule> rules;
+	
 	private final Map<UUID, ControlAction> trash;
 
 	/**
@@ -262,7 +268,7 @@ public class ControlActionController {
 		List<IUCAHazLink> result = new ArrayList<>();
 		for (UCAHazLink link : this.links) {
 			if (link.containsId(unsafeControlActionId)) {
-				result.add((IUCAHazLink) link);
+				result.add(link);
 			}
 		}
 		return result;
@@ -467,7 +473,7 @@ public class ControlActionController {
 							.getHazardId()));
 				}
 				Collections.sort(linkedHazards);
-				StringBuffer linkString = new StringBuffer(); //$NON-NLS-1$
+				StringBuffer linkString = new StringBuffer(); 
 				if (linkedHazards.size() == 0) {
 					linkString.append(Messages.ControlActionController_NotHazardous);
 				} else {
@@ -723,6 +729,43 @@ public class ControlActionController {
 		}
 		
 		return action.removeProvidedVariable(providedVariable);
+	}
+	
+	public List<ILTLProvider> getAllRefinedRules(){
+		if(rules == null){
+			return new ArrayList<>();
+		}
+		return new ArrayList<>(rules);
+	}
+	
+	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
+		if(ucaLinks != null && ltlExp != null && rule != null && constraint != null){
+			if(rules == null){
+				this.rules= new ArrayList<>();
+			}
+			RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks,caID, ltlExp, rule, ruca, constraint,type, nr);
+			if(this.rules.add(safetyRule)){
+				return safetyRule.getRuleId();
+			}
+		}
+		return null;
+	}
+	
+	public boolean removeSafetyRule(boolean removeAll, UUID id){
+		if(removeAll){
+			this.rules.clear();
+			return true;
+		}
+		if(id != null){
+			for (int i = 0; i < rules.size(); i++) {
+				if(rules.get(i).getRuleId().equals(id)){
+					RefinedSafetyRule rule = rules.get(i);
+					rules.remove(i);
+					return !rules.contains(rule);
+				}
+			}
+		}
+		return false;
 	}
 	
 	public boolean usesHAZXData(){

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -20,7 +22,6 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-import messages.Messages;
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;

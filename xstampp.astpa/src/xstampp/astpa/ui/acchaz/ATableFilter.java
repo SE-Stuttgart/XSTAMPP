@@ -14,34 +14,17 @@
 package xstampp.astpa.ui.acchaz;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.ui.sds.ModeFilter;
 
 /**
  * 
  * @author Jarkko Heidenwag
  * 
  */
-public class ATableFilter extends ViewerFilter {
-
-	private String searchString;
-	// CSCView filter both (0) Unsafe Control Actions (1) or Resulting Safety
-	// Constraints (2)
-	private int cscFilterMode = 0;
-
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @param s
-	 *            the string for the filter
-	 */
-	public void setSearchText(String s) {
-		// ensure that the value can be used for matching
-		this.searchString = ".*" + s.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
-	}
+public class ATableFilter extends ModeFilter{
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -64,9 +47,7 @@ public class ATableFilter extends ViewerFilter {
 	}
 
 	private boolean checkCSC(ICorrespondingUnsafeControlAction cuca) {
-		final int both = 0;
-		final int uca = 1;
-		final int rsc = 2;
+		
 		if ((this.getCSCFilterMode() == rsc)) {
 			if (cuca.getCorrespondingSafetyConstraint().getText().toLowerCase()
 					.matches(this.searchString)) {
@@ -89,21 +70,6 @@ public class ATableFilter extends ViewerFilter {
 		} else {
 			return false;
 		}
-	}
-
-	/**
-	 * @return the rsc
-	 */
-	public int getCSCFilterMode() {
-		return this.cscFilterMode;
-	}
-
-	/**
-	 * @param cscFilterMode
-	 *            the cscFilterMode to set
-	 */
-	public void setCSCFilterMode(int cscFilterMode) {
-		this.cscFilterMode = cscFilterMode;
 	}
 
 }

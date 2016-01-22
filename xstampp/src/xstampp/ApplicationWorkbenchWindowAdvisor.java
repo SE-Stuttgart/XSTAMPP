@@ -119,7 +119,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer
 				.setInitialSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
 		configurer.setShowCoolBar(true);
-		configurer.setShowPerspectiveBar(true);
+		configurer.setShowPerspectiveBar(false);
 		configurer.setShellStyle(SWT.APPLICATION_MODAL);
 		configurer.getActionBarConfigurer().getCoolBarManager()
 				.setLockLayout(false);

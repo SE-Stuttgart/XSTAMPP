@@ -51,7 +51,6 @@ import org.eclipse.swt.widgets.Text;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
@@ -489,11 +488,11 @@ public class ControlActionView extends CommonTableView {
 		@Override
 		protected void setValue(Object element, Object value) {
 			if (element instanceof ControlAction) {
-				((ControlAction) element).setTitle(String.valueOf(value));
+				dataInterface.setControlActionTitle(((ControlAction) element).getId(), String.valueOf(value));
 				// Fill in the default title if the user left it blank
 				if (((ControlAction) element).getTitle().length() == 0) {
-					((ControlAction) element)
-							.setTitle(Messages.DoubleClickToEditTitle);
+					dataInterface.setControlActionTitle(((ControlAction) element).getId(),
+														Messages.DoubleClickToEditTitle);
 				}
 			}
 			ControlActionView.this.refreshView();

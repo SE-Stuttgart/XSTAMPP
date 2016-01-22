@@ -9,6 +9,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 
 /**
@@ -92,4 +93,9 @@ public abstract class AbstractSelector implements IProjectSelection {
 		return "Output"+ File.separator + ProjectManager.getContainerInstance().getTitle(getProjectId())+File.separator;
 	}
 	
+	@Override
+	public IDataModel getProjectData() {
+		
+		return ProjectManager.getContainerInstance().getDataModel(projectId);
+	}
 }

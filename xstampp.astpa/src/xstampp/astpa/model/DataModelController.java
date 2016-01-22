@@ -15,12 +15,10 @@ package xstampp.astpa.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -31,7 +29,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import messages.Messages;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerRepository;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -92,6 +89,8 @@ import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.util.jobs.SaveJob;
+import xstampp.model.ILTLProvider;
+import xstampp.model.ISafetyDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.menu.file.commands.CommandState;
@@ -105,7 +104,7 @@ import xstampp.ui.menu.file.commands.CommandState;
  */
 @XmlRootElement(namespace = "astpa.model")
 public class DataModelController extends Observable implements
-		IHAZXModel,ILinkingViewDataModel, INavigationViewDataModel,
+		ISafetyDataModel,IHAZXModel,ILinkingViewDataModel, INavigationViewDataModel,
 		ISystemDescriptionViewDataModel, IAccidentViewDataModel,
 		IHazardViewDataModel, IStatusLineDataModel,
 		IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel,
@@ -196,12 +195,16 @@ public class DataModelController extends Observable implements
 	@Override
 	public void lockUpdate(){
 		this.refreshLock = true;
+		DataModelController.LOGGER.debug("setData update lock to prevent system lacks");
 	}
 	
 	@Override
 	public void releaseLockAndUpdate(ObserverValue value){
 		this.refreshLock = false;
-		updateValue(value);
+
+		DataModelController.LOGGER.debug("released update lock");
+		setUnsavedAndChanged(value);
+		
 	}
 	@Override
 	public boolean hasUnsavedChanges() {
@@ -1509,6 +1512,7 @@ public class DataModelController extends Observable implements
 	 */
 	public void setValuesWhenCANotProvided(UUID caID, List<NotProvidedValuesCombi> valuesWhenNotProvided) {
 		this.controlActionController.setValuesWhenNotProvided(caID, valuesWhenNotProvided);
+		setUnsavedAndChanged();
 	}
 	/**
 	 * adds the given values combination to the list of value combinations
@@ -1519,7 +1523,11 @@ public class DataModelController extends Observable implements
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
 	public boolean addValuesWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
-		return this.controlActionController.addValueWhenNotProvided(caID, valueWhenNotProvided);
+		if(this.controlActionController.addValueWhenNotProvided(caID, valueWhenNotProvided)){
+			setUnsavedAndChanged();
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1531,7 +1539,11 @@ public class DataModelController extends Observable implements
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
 	public boolean removeValueWhenNotProvided(UUID caID, UUID combieId) {
-		return this.controlActionController.removeValueWhenNotProvided(caID, combieId);
+		if(this.controlActionController.removeValueWhenNotProvided(caID, combieId)){
+			setUnsavedAndChanged();
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1553,6 +1565,8 @@ public class DataModelController extends Observable implements
 	 */
 	public void setValuesWhenCAProvided(UUID caID, List<ProvidedValuesCombi> valuesWhenProvided) {
 		this.controlActionController.setValuesWhenProvided(caID, valuesWhenProvided);
+		setUnsavedAndChanged();
+		
 	}
 
 	/**
@@ -1564,7 +1578,11 @@ public class DataModelController extends Observable implements
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
 	public boolean addValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
-		return this.controlActionController.addValueWhenProvided(caID,valueWhenProvided);
+		if(this.controlActionController.addValueWhenProvided(caID,valueWhenProvided)){
+			setUnsavedAndChanged();
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1576,7 +1594,11 @@ public class DataModelController extends Observable implements
 	 * @return whether or not the operation was successful, null if the given uuid is no legal controlAction id 
 	 */
 	public boolean removeValueWhenProvided(UUID caID, UUID combieId) {
-		return this.controlActionController.removeValueWhenProvided(caID,combieId);
+		if(this.controlActionController.removeValueWhenProvided(caID,combieId)){
+			setUnsavedAndChanged();
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * {@link ControlAction#getNotProvidedVariables()}
@@ -1602,7 +1624,13 @@ public class DataModelController extends Observable implements
 	 * @param notProvidedVariable the notProvidedVariables to set
 	 */
 	public void addCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
-		this.controlActionController.addNotProvidedVariable(caID, notProvidedVariable);
+
+		if(this.controlStructureController.getComponent(notProvidedVariable) != null){
+			this.controlActionController.addNotProvidedVariable(caID, notProvidedVariable);
+			setUnsavedAndChanged();
+		}else{
+				LOGGER.debug("given provided id is not related to a valid component");
+		}
 	}
 
 
@@ -1632,6 +1660,7 @@ public class DataModelController extends Observable implements
 
 		if(this.controlStructureController.getComponent(providedVariable) != null){
 			this.controlActionController.addProvidedVariable(caID,providedVariable);
+			setUnsavedAndChanged();
 		}else{
 			LOGGER.debug("given provided id is not related to a valid component");
 		}
@@ -1653,7 +1682,11 @@ public class DataModelController extends Observable implements
 	 * 			if the list is null or the uuid is not contained in the list 
 	 */
 	public boolean removeCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
-		return this.controlActionController.removeNotProvidedVariable(caID, notProvidedVariable);
+		if(this.controlActionController.removeNotProvidedVariable(caID, notProvidedVariable)){
+			setUnsavedAndChanged();
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -1667,7 +1700,11 @@ public class DataModelController extends Observable implements
 	 * 			if the list is null or the uuid is not contained in the list 
 	 */
 	public boolean removeCAProvidedVariable(UUID caID, UUID providedVariable) {
-		return this.controlActionController.removeProvidedVariable(caID, providedVariable);
+		if(this.controlActionController.removeProvidedVariable(caID, providedVariable)){
+			setUnsavedAndChanged();
+			return true;
+		}
+		return false;
 	}
 	public boolean usesHAZXData(){
 		if(this.controlActionController.usesHAZXData()) return true;
@@ -1692,159 +1729,39 @@ public class DataModelController extends Observable implements
 		return this.ignoreLtlValue;
 	}
 	
-	/**
-	 * 
-	 * @param offset the first property in the list is mapped to 'RSR<code>offset</code>
-	 * @return a Map with LTL property strings mapped to key strings like 'RSR<i>N</i>'
-	 */
-	public Map<String,String> getLTLPropertys(int offset){
-		TreeMap<String,String> ltlList = new TreeMap<String, String>(new Comparator<String>() {
-
-			@Override
-			public int compare(String o1, String o2) {
-				int res =o1.compareTo(o2);
-				return res;
-			}
-		});
-		int count =offset;
-		String key;
-		StringBuffer valueBuffer;
-		final String LITERAL ="RSR";
-		final String AND = " && ";
-		final String EQUALS ="==";
-		final String IMPLIES = " -> ";
-		final String IMPLIES_NOT = " ->! ";
-		final String START = "[] ";
-		final String UNTIL = " U ";
-		final String RELEASE = " R ";
-		final char BRACKET_OPEN ='(';
-		final char BRACKET_CLOSE =')';
-		final String CONTROLACTION = "controlAction";
+	public List<ILTLProvider> getAllRefinedRules(){
 		
-		for(IControlAction action: this.controlActionController.getAllControlActionsU()){
-			
-			if(!isCASafetyCritical(action.getId())){
-				continue;
-			}
-			List<IValueCombie> allCombies= new ArrayList<>();
-			allCombies.addAll(getValuesWhenCAProvided(action.getId()));
-			allCombies.addAll(getValuesWhenCANotProvided(action.getId()));
-			for(IValueCombie combie : allCombies){
-				if(combie.getPMValues().isEmpty()){
-					continue;
-				}
-				valueBuffer = new StringBuffer(); 
-				for(UUID varKey : combie.getPMValues().keySet()){
-					if (!combie.getPMValues().get(varKey).equals(this.ignoreLtlValue.getId())) {
-						
-						valueBuffer.append(BRACKET_OPEN);					
-						valueBuffer.append(getComponent(varKey).getText());
-						valueBuffer.append(EQUALS);
-						valueBuffer.append(getComponent(combie.getPMValues().get(varKey)).getText());
-						valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(AND);
-					}
-				}
-				if(valueBuffer.length() > AND.length()){
-					valueBuffer.delete(valueBuffer.length() - AND.length(), valueBuffer.length());
-				}
-				String values = valueBuffer.toString();
-				/*
-				 * for TYPE_ANYTIME rules the LTL can be generated as following: 
-				 * 
-				 * G((critical combinations set ) !-> (control_action==true))
-				 */
-				if (combie.isCombiHazardous(IValueCombie.TYPE_ANYTIME) && !combie.getPMValues().isEmpty()) {
-					key = LITERAL + count;
-					count++;
-					if(values != null && !values.isEmpty()){
-						valueBuffer = new StringBuffer();
-						valueBuffer.append(START);
-						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(values);
-						valueBuffer.append(IMPLIES_NOT);
-						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
-						valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(BRACKET_CLOSE);
-						ltlList.put(key, valueBuffer.toString());
-					}
-				}
-				/*
-				 * for too early rules the Timed LTL can be generated as following: 
-				 * 
-				 * G( <control_action==value> -> (control_action==value> U (critical combinations set ))
-				 */
-				if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_EARLY) && !combie.getPMValues().isEmpty()) {
-					key = LITERAL + count;
-					count++;
-					if(values != null && !values.isEmpty()){
-						valueBuffer = new StringBuffer();
-						valueBuffer.append(START);
-						valueBuffer.append(BRACKET_OPEN);
-							valueBuffer.append(BRACKET_OPEN);
-							valueBuffer.append(action.getTitle() + EQUALS + Boolean.TRUE);
-							valueBuffer.append(BRACKET_CLOSE);
-							valueBuffer.append(IMPLIES);
-							valueBuffer.append(BRACKET_OPEN);
-								valueBuffer.append(BRACKET_OPEN);
-								valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
-								valueBuffer.append(BRACKET_CLOSE);
-								valueBuffer.append(UNTIL);
-								valueBuffer.append(BRACKET_OPEN);
-								valueBuffer.append(values);
-								valueBuffer.append(BRACKET_CLOSE);
-							valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(BRACKET_CLOSE);
-						ltlList.put(key, valueBuffer.toString());
-					}
-				}
-				/*
-				 * for too late rules the Timed LTL can be generated as following:
-				 * G(  (critical combinations set ) -> ( (critical combinations set ) U (<control_action==value>) ) )
-				 */
-				if (combie.isCombiHazardous(IValueCombie.TYPE_TOO_LATE) && !combie.getPMValues().isEmpty()) {
-					key = LITERAL + count;
-					count++;
-					if(values != null && !values.isEmpty()){
-						valueBuffer = new StringBuffer();
-						valueBuffer.append(START);
-						valueBuffer.append(BRACKET_OPEN);
-							valueBuffer.append(values);
-							valueBuffer.append(IMPLIES);
-							valueBuffer.append(BRACKET_OPEN);
-								valueBuffer.append(values);
-								valueBuffer.append(RELEASE);
-								valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
-							valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(BRACKET_CLOSE);
-						ltlList.put(key, valueBuffer.toString());
-					}
-				}
-				/*
-				 * for TYPE_NOT_PROVIDED rules the LTL can be generated as following: 
-				 * 
-				 * G((critical combinations set ) -> (control_action==true))
-				 */
-				if (combie.isCombiHazardous(IValueCombie.TYPE_NOT_PROVIDED)) {
-					key = LITERAL + count;
-					count++;
-					if(values != null && !values.isEmpty()){
-						valueBuffer = new StringBuffer();
-						valueBuffer.append(START);
-						valueBuffer.append(BRACKET_OPEN);
-							valueBuffer.append(values);
-							valueBuffer.append(IMPLIES);
-							valueBuffer.append(BRACKET_OPEN);
-								valueBuffer.append(CONTROLACTION + EQUALS + action.getTitle());
-							valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(BRACKET_CLOSE);
-						ltlList.put(key, valueBuffer.toString());
-					}
-				}
+		return this.controlActionController.getAllRefinedRules();
+	}
+	
+	public ILTLProvider getRefinedRule(UUID id){
+	
+		for(ILTLProvider rule : this.controlActionController.getAllRefinedRules()){
+			if(rule.getLtlProperty().equals(id)){
+				return rule;
 			}
 		}
-		
-		return ltlList;
+		return null;
+	}
+
+	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
+		UUID newRuleId = this.controlActionController.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID,type);
+		if(newRuleId != null){
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
+		}
+		return newRuleId;
+	}
+	
+	public boolean removeSafetyRule(boolean removeAll, UUID id){
+		if(this.controlActionController.removeSafetyRule(removeAll, id)){
+			setUnsavedAndChanged();
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public List<ILTLProvider> getLTLPropertys(){
+		return getAllRefinedRules();
 	}
 }

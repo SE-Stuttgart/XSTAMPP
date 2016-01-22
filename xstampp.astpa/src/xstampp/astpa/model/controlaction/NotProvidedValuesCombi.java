@@ -47,6 +47,9 @@ public class NotProvidedValuesCombi implements IValueCombie{
 	@XmlElement(name="id")
 	private UUID id;
 
+	@XmlElement(name="refinedRuleId")
+	private UUID ruleId;
+	
 	@XmlElement(name="archived")
 	private boolean archived;
 	/**
@@ -201,6 +204,20 @@ public class NotProvidedValuesCombi implements IValueCombie{
 		if(type.equals(TYPE_NOT_PROVIDED)){
 			this.relatedUCAs = relatedUCAs;
 		}
+	}
+
+	/**
+	 * @return the ruleId
+	 */
+	public UUID getRefinedRuleIdId() {
+		return this.ruleId;
+	}
+
+	/**
+	 * @param ruleId the ruleId to set
+	 */
+	public void setRefinedRuleId(UUID ruleId) {
+		this.ruleId = ruleId;
 	}
 	
 }

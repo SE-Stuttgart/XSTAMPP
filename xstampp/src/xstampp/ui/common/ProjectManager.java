@@ -444,9 +444,9 @@ public class ProjectManager implements IPropertyChangeListener {
 		Object jobObject = null;
 		String pluginName = ""; //$NON-NLS-1$
 		for (Entry<String, IConfigurationElement> extElement : 
-			this.elementsToExtensions.entrySet()) { //$NON-NLS-1$
+			this.elementsToExtensions.entrySet()) { 
 			
-			if(loadFile.endsWith(extElement.getKey())){ //$NON-NLS-1$
+			if(loadFile.endsWith(extElement.getKey())){ 
 				pluginName = extElement.getValue().getAttribute("id"); //$NON-NLS-1$
 				jobObject = STPAPluginUtils.
 						executeCommand(extElement.getValue().getAttribute("command")); //$NON-NLS-1$

@@ -8,6 +8,10 @@ public interface IValueCombie {
 	static final String CONTEXT_PROVIDED = "provided";
 	static final String CONTEXT_NOT_PROVIDED ="not provided";
 	
+	static final String HAZ_IF_PROVIDED = "provided";
+	static final String HAZ_IF_NOT_PROVIDED ="not provided";
+	static final String HAZ_IF_WRONG_PROVIDED ="provided with wrong timing";
+	
 	/**
 	 * a string constant for a value combination that always leads to a hazardous situation 
 	 * when the parent control action is provided

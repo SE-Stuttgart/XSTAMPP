@@ -93,8 +93,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		this.store.setDefault(IPreferenceConstants.NAVIGATION_EXTENSION_SORT, 1); //$NON-NLS-1$
-		this.store.setDefault(IPreferenceConstants.NAVIGATION_NAME_SORT, 1); //$NON-NLS-1$
+		this.store.setDefault(IPreferenceConstants.NAVIGATION_EXTENSION_SORT, 1); 
+		this.store.setDefault(IPreferenceConstants.NAVIGATION_NAME_SORT, 1); 
 		// Colors
 		PreferenceConverter
 				.setDefault(

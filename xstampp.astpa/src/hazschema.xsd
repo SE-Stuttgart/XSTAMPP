@@ -150,6 +150,16 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       						</xs:sequence>
       					</xs:complexType>
       				</xs:element>
+      				<xs:element name="rules" maxOccurs="unbounded"
+      					minOccurs="0">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="rule"
+      								type="Q1:rsrType" maxOccurs="unbounded" minOccurs="0">
+      							</xs:element>
+      						</xs:sequence>
+      					</xs:complexType>
+      				</xs:element>
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
@@ -301,9 +311,10 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       		type="Q1:processModelVariableIDsType" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
-            <xs:element name="relatedUnsafeCOntrolActionIDs" type="Q1:ucaIDType" maxOccurs="1" minOccurs="0">
+      	<xs:element name="relatedUnsafeCOntrolActionIDs"
+      		type="Q1:ucaIDType" maxOccurs="1" minOccurs="0">
       	</xs:element>
-            <xs:element name="refinedSafetyConstraint" maxOccurs="1"
+      	<xs:element name="refinedSafetyConstraint" maxOccurs="1"
       		minOccurs="0">
       		<xs:complexType>
       			<xs:sequence>
@@ -314,9 +325,10 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       	</xs:element>
       	<xs:element type="xs:boolean" name="hazardous" />
       	<xs:element type="xs:string" name="safetyConstraint" />
-      	<xs:element name="combieId" type="xs:string" maxOccurs="1"
+      	<xs:element name="id" type="xs:string" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
+      	<xs:element name="refinedRuleId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
       	<xs:element name="archived" type="xs:boolean" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
@@ -368,6 +380,13 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       	<xs:element name="combieId" type="xs:string" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
+      	<xs:element name="anytimeRuleId" type="xs:string"
+      		maxOccurs="1" minOccurs="0">
+      	</xs:element>
+      	<xs:element name="tooEarlyRuleId" type="xs:string"
+      		maxOccurs="1" minOccurs="0">
+      	</xs:element>
+      	<xs:element name="tooLateRuleId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
       	<xs:element name="archived" type="xs:boolean" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
@@ -453,6 +472,30 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   <xs:complexType name="ucaIDType">
   	<xs:sequence>
   		<xs:element name="ucaID" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+  	</xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rsrType">
+  	<xs:sequence>
+  		<xs:element name="ruleID" type="xs:string"></xs:element>
+  		<xs:element name="ruleNR" type="xs:int"></xs:element>
+  		<xs:element name="RefinedSafetyRule" type="xs:string"></xs:element>
+  		<xs:element name="refinedUCA"
+  			type="xs:string">
+  		</xs:element>
+  		<xs:element name="refinedSC" type="xs:string"></xs:element>
+  		<xs:element name="ltlProp" type="xs:string"></xs:element>
+  		<xs:element name="type" type="xs:string"></xs:element>
+  		<xs:element name="relatedUCAIDs" maxOccurs="1" minOccurs="0">
+  			<xs:complexType>
+  				<xs:sequence>
+  					<xs:element name="ucaID" type="xs:string"
+  						maxOccurs="1" minOccurs="0">
+  					</xs:element>
+  				</xs:sequence>
+  			</xs:complexType>
+  		</xs:element>
+  		<xs:element name="relatedCaID" type="xs:string"></xs:element>
   	</xs:sequence>
   </xs:complexType>
 </xs:schema>
