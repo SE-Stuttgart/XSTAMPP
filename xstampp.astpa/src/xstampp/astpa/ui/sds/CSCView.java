@@ -69,17 +69,22 @@ public class CSCView extends StandartEditorPart{
 
 	private ICorrespondingSafetyConstraintDataModel dataInterface;
 	private TableViewer tableViewer;
-	private ATableFilter filter;
+	protected ModeFilter filter;
 	private Text filterTextField;
-	TableViewerColumn unsafeControlActionsColumn;
-	TableViewerColumn safetyConstraintsColumn;
-
+	private TableViewerColumn unsafeControlActionsColumn;
+	private TableViewerColumn safetyConstraintsColumn;
+	protected final String[] headers = new String[4];
 	/**
 	 * 
 	 * @author Jarkko Heidenwag
 	 * 
 	 */
 	public CSCView() {
+		this.filter = new ATableFilter();
+		this.headers[0] = Messages.ID;
+		this.headers[1] = Messages.UnsafeControlActions;
+		this.headers[2] = Messages.ID;
+		this.headers[3] = Messages.CorrespondingSafetyConstraints;
 	}
 
 	/**
@@ -172,8 +177,7 @@ public class CSCView extends StandartEditorPart{
 				CSCView.this.filter.setSearchText(CSCView.this.filterTextField
 						.getText());
 				CSCView.this.tableViewer.refresh(true, true);
-				CSCView.this.tableViewer.setInput(CSCView.this.dataInterface
-						.getAllUnsafeControlActions());
+				tableViewer.setInput(getInput());
 			}
 		});
 
@@ -191,9 +195,9 @@ public class CSCView extends StandartEditorPart{
 		this.tableViewer.setContentProvider(new ArrayContentProvider());
 		this.tableViewer.getTable().setLinesVisible(true);
 		this.tableViewer.getTable().setHeaderVisible(true);
-
-		this.filter = new ATableFilter();
-		CSCView.this.tableViewer.addFilter(this.filter);
+		if(this.filter != null){
+			CSCView.this.tableViewer.addFilter(this.filter);
+		}
 
 		// since both columns should behave the same both will use these
 		// constants as their ColumnWeightData
@@ -202,88 +206,37 @@ public class CSCView extends StandartEditorPart{
 
 		TableViewerColumn ucaIdColumn = new TableViewerColumn(
 				this.tableViewer, SWT.NONE);
-		ucaIdColumn.getColumn().setText(Messages.ID);
+		ucaIdColumn.setLabelProvider(getColumnProvider(0));
+		ucaIdColumn.getColumn().setText(this.headers[0]);
 		tableColumnLayout.setColumnData(
 				ucaIdColumn.getColumn(),
-				new ColumnWeightData(10, 10, false));
-
-		ucaIdColumn.setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof ICorrespondingUnsafeControlAction) {
-					return "UCA1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
-							.getId());
-				}
-				return null;
-			}
-		});
+				new ColumnWeightData(3, false));
 		
 		// the left column is for the unsafe control actions
 		this.unsafeControlActionsColumn = new TableViewerColumn(
 				this.tableViewer, SWT.NONE);
+		unsafeControlActionsColumn.setLabelProvider(getColumnProvider(1));
 		this.unsafeControlActionsColumn.getColumn().setText(
-				Messages.UnsafeControlActions);
+				this.headers[1]);
 		tableColumnLayout.setColumnData(
 				this.unsafeControlActionsColumn.getColumn(),
 				new ColumnWeightData(weight, minWidth, false));
 
-		this.unsafeControlActionsColumn
-				.setLabelProvider(new ColumnLabelProvider() {
-
-					@Override
-					public String getText(Object element) {
-						if (element instanceof ICorrespondingUnsafeControlAction) {
-							return ((ICorrespondingUnsafeControlAction) element)
-									.getDescription();
-						}
-						return null;
-					}
-				});
-
-
+		
 		TableViewerColumn srIdColumn = new TableViewerColumn(
 				this.tableViewer, SWT.NONE);
-		srIdColumn.getColumn().setText(
-				Messages.UnsafeControlActions);
+		srIdColumn.setLabelProvider(getColumnProvider(2));
+		srIdColumn.getColumn().setText(this.headers[2]);
 		tableColumnLayout.setColumnData(
 				srIdColumn.getColumn(),
-				new ColumnWeightData(10, 10, false));
-
-		srIdColumn.setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof ICorrespondingUnsafeControlAction) {
-					return "SR2."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
-							.getId());
-				}
-				return null;
-			}
-		});
-		
+				new ColumnWeightData(3, false));
 		// the right column is for the resulting safety constraints
 		this.safetyConstraintsColumn = new TableViewerColumn(this.tableViewer,
 				SWT.NONE);
-		this.safetyConstraintsColumn.getColumn().setText(
-				Messages.CorrespondingSafetyConstraints);
+		safetyConstraintsColumn.setLabelProvider(getColumnProvider(3));
+		this.safetyConstraintsColumn.getColumn().setText(this.headers[3]);
 		tableColumnLayout.setColumnData(this.safetyConstraintsColumn
 				.getColumn(), new ColumnWeightData(weight, minWidth, false));
-
-		
-		this.safetyConstraintsColumn
-				.setLabelProvider(new ColumnLabelProvider() {
-
-					@Override
-					public String getText(Object element) {
-						if (element instanceof ICorrespondingUnsafeControlAction) {
-							return ((ICorrespondingUnsafeControlAction) element)
-									.getCorrespondingSafetyConstraint()
-									.getText();
-						}
-						return null;
-					}
-				});
 
 		// detecting a double click
 		ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
@@ -334,8 +287,7 @@ public class CSCView extends StandartEditorPart{
 				this.tableViewer, SWT.NONE);
 		this.safetyConstraintsColumn
 				.setEditingSupport(correspondingSafetyConstraintEditingSupport);
-		this.tableViewer.setInput(this.dataInterface
-				.getAllUnsafeControlActions());
+		this.tableViewer.setInput(getInput());
 
 	}
 
@@ -362,14 +314,23 @@ public class CSCView extends StandartEditorPart{
 		switch (type) {
 		case UNSAFE_CONTROL_ACTION:
 			this.tableViewer.refresh(true, true);
-			this.tableViewer.setInput(this.dataInterface
-					.getAllUnsafeControlActions());
+			this.tableViewer.setInput(getInput());
 			break;
 		default:
 			break;
 		}
 	}
 
+	protected void refresh(){
+		if(!this.tableViewer.getTable().isDisposed()){
+			this.tableViewer.refresh(true, true);
+			this.tableViewer.setInput(getInput());
+		}
+	}
+	
+	protected Object getInput() {
+		return this.dataInterface.getAllUnsafeControlActions();
+	}
 	/**
 	 * deletes any String contained in the filter text field
 	 * 
@@ -380,8 +341,7 @@ public class CSCView extends StandartEditorPart{
 		this.filter.setSearchText(""); //$NON-NLS-1$
 		this.filterTextField.setText(""); //$NON-NLS-1$
 		this.tableViewer.refresh(true, true);
-		this.tableViewer.setInput(CSCView.this.dataInterface
-				.getAllUnsafeControlActions());
+		this.tableViewer.setInput(getInput());
 	}
 
 	private class CSCEditingSupport extends EditingSupport {
@@ -427,8 +387,7 @@ public class CSCView extends StandartEditorPart{
 						String.valueOf(value));
 			}
 			CSCView.this.tableViewer.refresh(true, true);
-			CSCView.this.tableViewer.setInput(CSCView.this.dataInterface
-					.getAllUnsafeControlActions());
+			tableViewer.setInput(getInput());
 		}
 	}
 
@@ -439,4 +398,45 @@ public class CSCView extends StandartEditorPart{
 		super.dispose();
 	}
 
+	protected ColumnLabelProvider getColumnProvider(int columnIndex){
+		switch(columnIndex){
+		case 0: 
+			return new ColumnLabelProvider(){
+				@Override
+				public String getText(Object element) {
+					return "UCA1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
+							.getId());
+				}
+			};
+		case 1:
+			return new ColumnLabelProvider(){
+				@Override
+				public String getText(Object element) {
+					return ((ICorrespondingUnsafeControlAction) element)
+							.getDescription();
+				}
+			};
+		case 2:
+			return new ColumnLabelProvider(){
+				@Override
+				public String getText(Object element) {
+					return "SR1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
+							.getId());
+				}
+			};
+		case 3:
+			return new ColumnLabelProvider(){
+				@Override
+				public String getText(Object element) {
+					return ((ICorrespondingUnsafeControlAction) element)
+							.getCorrespondingSafetyConstraint()
+							.getText();
+				}
+			};
+			
+			
+		}
+		return null;
+	}
+	
 }

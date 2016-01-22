@@ -82,6 +82,7 @@ Export-Package: com.sun.xml.bind,
  xstampp.astpa.model.projectdata;uses:="javax.xml.bind.annotation.adapters,org.eclipse.swt.custom",
  xstampp.astpa.model.sds;uses:="xstampp.astpa.model",
  xstampp.astpa.ui.common.grid,
+ xstampp.astpa.ui.sds,
  xstampp.astpa.ui.systemdescription;
   uses:="xstampp.model,
    org.eclipse.ui,
