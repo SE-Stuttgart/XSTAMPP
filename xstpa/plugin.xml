@@ -26,7 +26,7 @@
       <view
             allowMultiple="false"
             class="xstpa.ui.View"
-            icon="icons/logo.png"
+            icon="icons/xstpa_logo.png"
             id="xstpa.view"
             name="Plugin View"
             restorable="true">
@@ -51,6 +51,7 @@
       </stepPerspective>
       <stepEditor
             editorId="xstpa.editor.ruca"
+            icon="icons/ruca_logo.png"
             id="xstpa.views.ruca"
             name="Refined Unsafe Control Actions"
             parentStep="astpa.navigation.step3_1">

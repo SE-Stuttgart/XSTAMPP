@@ -236,7 +236,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		}
 		subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
 		subItem.addListener(SWT.SELECTED, this.listener);
-		this.addImage(subItem, element.getAttribute("icon"), pluginID);//$NON-NLS-1$
+		this.addImage(subItem, element.getAttribute("icon"), element.getNamespaceIdentifier());//$NON-NLS-1$
 		IProjectSelection selector;
 		if(name.equals("step") || name.equals("stepEditor")){
 			selector = new StepSelector(subItem, projectID,
