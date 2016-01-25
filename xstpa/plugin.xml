@@ -64,6 +64,7 @@
       </stepEditor>
       <stepEditor
             editorId="xstpa.editor.ltl"
+            icon="icons/ltl.png"
             id="xstpa.stepEditor.ltl"
             name="LTL Formula Table"
             parentStep="astpa.navigation.step3_1">
