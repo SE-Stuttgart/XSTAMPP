@@ -58,6 +58,7 @@
       </stepEditor>
       <stepEditor
             editorId="xstpa.editor.refinedSC"
+            icon="icons/rsc_logox16.png"
             id="xstpa.stepEditor.RefinedSC"
             name="Refined Safety Constraints"
             parentStep="astpa.navigation.step3_1">
