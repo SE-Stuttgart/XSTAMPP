@@ -330,7 +330,7 @@ public class XSTPADataController extends Observable implements Observer{
 				if(variable.getHLate()){
 					count++;
 					if(consider){
-						entry = RefinedSafetyEntry.getTooEarlyEntry(count,variable,getModel());
+						entry = RefinedSafetyEntry.getTooLateEntry(count,variable,getModel());
 						currentRSR.add(entry.getDataRef());
 						combiesToContextID.get(IValueCombie.HAZ_IF_WRONG_PROVIDED).
 											add(entry);

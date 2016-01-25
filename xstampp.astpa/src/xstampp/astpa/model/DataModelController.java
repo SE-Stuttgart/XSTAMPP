@@ -57,6 +57,7 @@ import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
@@ -769,8 +770,13 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
+		
 		((ControlAction) this.controlActionController
 				.getControlAction(controlActionId)).setTitle(title);
+		if(changeComponentText(((ControlAction) this.controlActionController
+				.getControlAction(controlActionId)).getComponentLink(), title)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		}
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 		return true;
 	}
@@ -1750,6 +1756,25 @@ public class DataModelController extends Observable implements
 			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		}
 		return newRuleId;
+	}
+	
+	public UUID updateRefinedRule(UUID ruleID,List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
+		for(ILTLProvider provider: this.controlActionController.getAllRefinedRules()){
+			if(provider.getRuleId().equals(ruleID)){
+				((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
+				((RefinedSafetyRule) provider).setRefinedSafetyConstraint(constraint);
+				((RefinedSafetyRule) provider).setRefinedUCA(ruca);
+				((RefinedSafetyRule) provider).setSafetyRule(rule);
+				((RefinedSafetyRule) provider).setUCALinks(ucaLinks);
+				((RefinedSafetyRule) provider).setNumber(nr);
+				((RefinedSafetyRule) provider).setCaID(caID);
+				((RefinedSafetyRule) provider).setType(type);
+				setUnsavedAndChanged(ObserverValue.Extended_DATA);
+				return ruleID;
+			}
+		}
+		return null;
+			
 	}
 	
 	public boolean removeSafetyRule(boolean removeAll, UUID id){

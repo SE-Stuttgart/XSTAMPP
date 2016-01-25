@@ -145,15 +145,39 @@ public class ProcessModelVariables {
 	//******************************
 	//Management of the pm values which are used to represent the value state
 	
-	public List<String> getPmValues(String equalsSeq, boolean writeBoolean) {
+	/**
+	 * 
+	 * @param equalsSeq the sequence that is used to separate the variable-value tuples
+	 * @param parseBoolean whether or not  getPmValues should translate any boolean expressions into natural language
+	 * @param useSpaces
+	 * @return
+	 */
+	public List<String> getPmValues(String equalsSeq, boolean parseBoolean, boolean useSpaces) {
 		ArrayList<String> list = new ArrayList<>();
-		boolean checkBool =equalsSeq.trim().equals("==");
+		String valueString;
+		String prefix;
 		for (int i = 0; i < this.values.size(); i++) {
+			valueString = this.values.get(i).replaceAll(">|<|=| ", "").trim();
+			prefix = equalsSeq.trim();
 			char c = this.values.get(i).trim().charAt(0);
-			if(checkBool && (c == '>' || c == '<' || c == '=')){
-				list.add(this.pmVariables.get(i) +" "+ this.values.get(i));
+			if(c == '>' || c == '<' || c == '='){
+				
+				if(!parseBoolean){
+					if(c != '='){
+						prefix = String.valueOf(this.values.get(i).trim().charAt(0));
+					}
+				}else{
+					if(c == '<'){
+						prefix = "is less than";
+					}else if(c == '>'){
+						prefix = "is greater than";
+					}
+				}
+			}
+			if(useSpaces){
+				list.add(this.pmVariables.get(i) + ' ' +prefix +' '+valueString);
 			}else{
-				list.add(this.pmVariables.get(i) + equalsSeq +this.values.get(i));
+				list.add(this.pmVariables.get(i) + prefix +valueString);
 			}
 		}
 		return list;

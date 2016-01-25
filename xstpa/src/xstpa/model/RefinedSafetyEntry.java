@@ -7,6 +7,18 @@ import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.IValueCombie;
 
+/**
+ * an object of this class is used to generate the refined data of a hazardous process state.
+ * An object of this class can only be created by using one of the static methods provided.
+ * 
+ * @author Lukas Balzer
+ * @since 1.0.1
+ *
+ *@see RefinedSafetyEntry#getTooLateEntry(int, ProcessModelVariables, DataModelController)
+ *@see RefinedSafetyEntry#getTooEarlyEntry(int, ProcessModelVariables, DataModelController)
+ *@see RefinedSafetyEntry#getAnytimeEntry(int, ProcessModelVariables, DataModelController)
+ *@see RefinedSafetyEntry#getNotProvidedEntry(int, ProcessModelVariables, DataModelController)
+ */
 public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	
 	private final ProcessModelVariables variable;
@@ -19,6 +31,23 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	private String refinedRule;
 	private String ruca;
 	private String ltlProperty;
+	
+	/**
+	 * This private constructor is only called by one of the four static methods provided by this class
+	 * 
+	 * @param number the number of the created Refined Data must be a positive nr > 0
+	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
+	 * 				Defined in IValueCombie
+	 * @param context the context of the refinement
+	 * @param var the variable object which represents a hazardous value combination
+	 * @param controller the astpa data model in which the refined data should be stored
+	 * 
+	 * @see IValueCombie
+	 *@see RefinedSafetyEntry#getTooLateEntry(int, ProcessModelVariables, DataModelController)
+	 *@see RefinedSafetyEntry#getTooEarlyEntry(int, ProcessModelVariables, DataModelController)
+	 *@see RefinedSafetyEntry#getAnytimeEntry(int, ProcessModelVariables, DataModelController)
+	 *@see RefinedSafetyEntry#getNotProvidedEntry(int, ProcessModelVariables, DataModelController)
+	 */
 	private RefinedSafetyEntry(int number,String type,String context,ProcessModelVariables var, DataModelController controller) {
 		this.context = context;
 		this.type = type;
@@ -27,10 +56,26 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		this.number = number;
 	}
 
-
-	public String getCriticalCombinations(String equalsSeq, String andSeq, boolean useBrackets, boolean parseBoolean){
+	/**
+	 * 
+	 * @param equalsSeq the sequence that is used to separate the variable-value tuples
+	 * @param andSeq the sequence that is used to separate the variable string from the value string<p>
+	 * 					NOTE: all Whitespaces are ignored
+	 * @param useBrackets whether or not the tuples should put into brackets
+	 * @param parseBoolean whether or not  getPmValues should translate any boolean expressions into natural language
+	 * @param useSpaces TODO
+	 * @return A string containing the critical combinations separated by the equalsSeq
+	 */
+	public String getCriticalCombinations(String equalsSeq, String andSeq, boolean useBrackets, boolean parseBoolean, boolean useSpaces){
 		String temp ="";
-		List<String> valueCombies = variable.getPmValues(equalsSeq, false);
+		List<String> valueCombies = variable.getPmValues(equalsSeq, parseBoolean, useSpaces);
+		String andLiteral = andSeq.trim();
+		if(useSpaces){
+			andLiteral = andLiteral +' ';
+		}
+		if(!andLiteral.equals(",") && useSpaces){
+			andLiteral = ' ' + andLiteral;
+		}
 		for (int i=0; i<valueCombies.size(); i++){
 			if(useBrackets){
 				temp = temp.concat('(' + valueCombies.get(i) + ')');
@@ -39,7 +84,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 			}
 
 			if (!(i==valueCombies.size()-1)) {
-				temp = temp.concat(andSeq);
+				temp = temp.concat(andLiteral);
 			}
 		}
 		return temp;
@@ -59,20 +104,30 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	}
 	
 	private void update(){
-		if(this.getDataRef() != null){
-			model.removeSafetyRule(false, dataRef);
-			setDataRef(null);
-		}
+		
 		calcConstraint();
 		calcLTL();
 		calcRUCA();
 		calcRule();
-		setDataRef(model.addRefinedRule(getUCALinkIDs(),
-				getLTLProperty(), 
-				getRefinedRule(), 
-				getRefinedUCA(), "", getNumber(),
-				variable.getLinkedControlActionID(),
-				type));
+		if(this.getDataRef() != null){
+			model.updateRefinedRule(getDataRef(), 
+									getUCALinkIDs(), 
+									getLTLProperty(), 
+									getRefinedRule(),
+									getRefinedUCA(), 
+									constraint,
+									getNumber(), 
+									variable.getLinkedControlActionID(), 
+									getType());
+		}else{
+			setDataRef(model.addRefinedRule(getUCALinkIDs(),
+					getLTLProperty(), 
+					getRefinedRule(), 
+					getRefinedUCA(), constraint, getNumber(),
+					variable.getLinkedControlActionID(),
+					type));
+		}
+		
 	}
 	public String getRelatedHazards() {
 
@@ -94,7 +149,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		buffer.append(" command ");
 		buffer.append(getType());
 		buffer.append(" when ");
-		buffer.append(getCriticalCombinations(" == ", ",", false, false));
+		buffer.append(getCriticalCombinations("is", "and", false, true, true));
 		ruca = buffer.toString();
 	}
 
@@ -102,22 +157,29 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(" Control Action ");
 		buffer.append(variable.getLinkedControlActionName());
-		buffer.append(" must not be ");
-		buffer.append(getType());
+		if(getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
+			buffer.append(" must be provided");
+		}else{
+			buffer.append(" must not be ");
+			buffer.append(getType());
+		}
 		buffer.append(" when ");
-		buffer.append(getCriticalCombinations(" is ", " and ", false, false));
+		buffer.append(getCriticalCombinations("=", "and", false, false, true));
 		refinedRule = buffer.toString();
 	}
 
 	private void calcConstraint(){
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("when Control Action ");
 		buffer.append(variable.getLinkedControlActionName());
-		buffer.append(" must not be ");
-		buffer.append(getType());
+		if(getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
+			buffer.append(" must be provided");
+		}else{
+			buffer.append(" must not be ");
+			buffer.append(getType());
+		}
 		buffer.append(" when ");
-		buffer.append(getCriticalCombinations(" is ", " and ", false, false));
-		refinedRule = buffer.toString();
+		buffer.append(getCriticalCombinations("is", "and", false, false, true));
+		constraint = buffer.toString();
 	}
 	
 	
@@ -131,10 +193,10 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		final String RELEASE = " R ";
 		final char BRACKET_OPEN ='(';
 		final char BRACKET_CLOSE =')';
-		final String CONTROLACTION = "controlAction" + EQUALS + getVariable().getLinkedControlActionName();
+		final String CONTROLACTION = "(controlAction" + EQUALS + getVariable().getLinkedControlActionName().replaceAll(" ", "")+")";
 		StringBuffer valueBuffer = new StringBuffer(); 
 		
-		String values = getCriticalCombinations("==", "&&", true, false);
+		String values = getCriticalCombinations("==", "&&", true, false, false);
 		/*
 		 * for TYPE_ANYTIME rules the LTL can be generated as following: 
 		 * 
@@ -168,9 +230,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 					valueBuffer.append(BRACKET_CLOSE);
 					valueBuffer.append(IMPLIES);
 					valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(BRACKET_OPEN);
 						valueBuffer.append(CONTROLACTION);
-						valueBuffer.append(BRACKET_CLOSE);
 						valueBuffer.append(UNTIL);
 						valueBuffer.append(BRACKET_OPEN);
 						valueBuffer.append(values);
@@ -181,7 +241,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		}
 		/*
 		 * for too late rules the Timed LTL can be generated as following:
-		 * G(  (critical combinations set ) -> ( (critical combinations set ) U (<control_action==value>) ) )
+		 * G(  (critical combinations set ) -> !( !(critical combinations set ) U !(<controlAction==value>) ) )
 		 */
 		else if (type.equals(IValueCombie.TYPE_TOO_LATE)) {
 			if(values != null && !values.isEmpty()){
@@ -190,10 +250,12 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 				valueBuffer.append(BRACKET_OPEN);
 					valueBuffer.append(values);
 					valueBuffer.append(IMPLIES);
-					valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(values);
-						valueBuffer.append(RELEASE);
-						valueBuffer.append(CONTROLACTION);
+					valueBuffer.append("!"+BRACKET_OPEN);
+						valueBuffer.append("!"+BRACKET_OPEN);
+							valueBuffer.append(values);
+						valueBuffer.append(BRACKET_CLOSE);
+						valueBuffer.append(UNTIL);
+						valueBuffer.append('!'+CONTROLACTION);
 					valueBuffer.append(BRACKET_CLOSE);
 				valueBuffer.append(BRACKET_CLOSE);
 			}
@@ -210,9 +272,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 				valueBuffer.append(BRACKET_OPEN);
 					valueBuffer.append(values);
 					valueBuffer.append(IMPLIES);
-					valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(CONTROLACTION);
-					valueBuffer.append(BRACKET_CLOSE);
+					valueBuffer.append(CONTROLACTION);
 				valueBuffer.append(BRACKET_CLOSE);
 			}
 		}
@@ -264,13 +324,6 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		return this.number;
 	}
 
-	/**
-	 * @param number the number to set
-	 */
-	public void setNumber(int number) {
-		this.number = number;
-	}
-
 	@Override
 	public int compareTo(RefinedSafetyEntry sibling) {
 		int sign =(int) Math.signum(getNumber() - sibling.getNumber());
@@ -293,6 +346,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	public void setDataRef(UUID dataRef) {
 		this.dataRef = dataRef;
 	}
+	
 	
 	public static RefinedSafetyEntry getAnytimeEntry(int number,ProcessModelVariables var,DataModelController controller){
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_ANYTIME, IValueCombie.CONTEXT_PROVIDED, var,controller);

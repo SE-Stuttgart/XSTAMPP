@@ -16,7 +16,7 @@ public interface IValueCombie {
 	 * a string constant for a value combination that always leads to a hazardous situation 
 	 * when the parent control action is provided
 	 */
-	static final String TYPE_ANYTIME ="anytime";
+	static final String TYPE_ANYTIME ="provided";
 	
 	/**
 	 * a string constant for a value combination that leads to a hazardous situation 

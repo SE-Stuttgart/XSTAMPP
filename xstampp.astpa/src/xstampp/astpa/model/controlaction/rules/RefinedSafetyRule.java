@@ -1,6 +1,5 @@
 package xstampp.astpa.model.controlaction.rules;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,11 +64,8 @@ public class RefinedSafetyRule implements ILTLProvider{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void addUCALink(UUID id){
-		if(this.relatedUCAs == null){
-			this.relatedUCAs = new ArrayList<>();
-		}
-		this.relatedUCAs.add(id);
+	public void setUCALinks(List<UUID> ids){
+			this.relatedUCAs = ids;
 	}
 	
 	public void removeUCALink(UUID id) {
@@ -162,5 +158,26 @@ public class RefinedSafetyRule implements ILTLProvider{
 	 */
 	public void setRelatedControlActionID(UUID controlActionID) {
 		this.caID = controlActionID;
+	}
+
+	/**
+	 * @param number the number to set
+	 */
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @param caID the caID to set
+	 */
+	public void setCaID(UUID caID) {
+		this.caID = caID;
 	}
 }

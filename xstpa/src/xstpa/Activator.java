@@ -15,6 +15,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
@@ -70,7 +71,7 @@ public class Activator extends AbstractUIPlugin {
 			    	 XSTPADataController dataController = getDataFor(projectId);
 			    	 // observer gets added, so whenever a value changes, the view gets updated;
 			    	 IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("xstpa.view");
-			    	 if(view != null){
+			    	 if(view != null && view instanceof View){
 			    		 ((View) view).setController(dataController);
 			    	 }
 		    	 }
@@ -91,12 +92,22 @@ public class Activator extends AbstractUIPlugin {
 			
 			@Override
 			public void partActivated(IWorkbenchPart part) {
+				
 			      refreshView();
 			}
 
 			@Override
 			public void partBroughtToTop(IWorkbenchPart part) {
-			      refreshView();
+				if(part instanceof View){
+					
+				}else if(part instanceof CSEditorWithPM){
+					refreshView();
+				}else{
+					IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("xstpa.view");
+			    	 if(view != null && view instanceof View){
+			    		 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(((View) view));
+			    	 }
+				}
 			}
 
 			@Override
@@ -143,7 +154,7 @@ public class Activator extends AbstractUIPlugin {
 				model.addObserver(data);
 				xstpaDataToIDataModel.put(model, data);
 			}else if(data == null){
-				data = new XSTPADataController(null);;
+				data = null;
 			}
 			return data;
 		}
