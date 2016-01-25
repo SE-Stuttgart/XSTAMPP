@@ -59,7 +59,7 @@ public class CsvExport {
 					writer.print("Provided" + delimiter);
 					
 					// Prints the critical Combinations
-					writer.print(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues("==", false) + delimiter);
+					writer.print(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues("==", false, true) + delimiter);
 					
 					// Prints the SafetyRequirements
 					writer.print(exportContent.getProvidedCA().get(i).getContextTableCombinations().get(j).getRefinedSafetyRequirements() + delimiter + crlf);
@@ -85,7 +85,7 @@ public class CsvExport {
 					writer.print("Provided" + delimiter);
 					
 					// Prints the critical Combinations
-					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues("==", false) + delimiter);
+					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getPmValues("==", false, true) + delimiter);
 					
 					// Prints the SafetyRequirements
 					writer.print(exportContent.getNotProvidedCA().get(i).getContextTableCombinations().get(j).getRefinedSafetyRequirements() + delimiter + crlf);

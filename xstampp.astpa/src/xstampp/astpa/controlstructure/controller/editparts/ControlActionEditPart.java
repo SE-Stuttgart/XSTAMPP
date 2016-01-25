@@ -63,8 +63,13 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 			this.getDataModel().removeComponent(modelTemp.getId());
 			this.deactivate();
 		}
-		this.getDataModel().setControlActionTitle(
-				modelTemp.getControlActionLink(), modelTemp.getText());
+		//if this component is linked to a control action than the titles of of both are synchtonised,
+		//this if makes sure that the titles are only sync when they are different
+		if(!this.getDataModel().getControlActionU(modelTemp.getControlActionLink()).getTitle().equals(modelTemp.getText())){
+			this.getDataModel().setControlActionTitle(
+					modelTemp.getControlActionLink(), modelTemp.getText());
+		}
+		
 		
 	}
 	@Override

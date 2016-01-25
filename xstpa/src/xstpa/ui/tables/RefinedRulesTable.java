@@ -66,7 +66,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 			case View.CONTEXT_TYPE:
 				return entry.getType();
 			case View.CRITICAL_COMBI:	
-				return entry.getCriticalCombinations(" == ", ",", false, false);
+				return entry.getCriticalCombinations(" == ", ",", false, false, true);
 				
 			case View.UCA:
 				String tempUcas =entry.getUCALinks();
@@ -77,14 +77,8 @@ public class RefinedRulesTable extends AbstractTableComposite {
 			case View.REL_HAZ:
 				return entry.getRelatedHazards();
 			case View.REFINED_RULES:
-				StringBuffer rule = new StringBuffer();
-				rule.append(entry.getVariable().getLinkedControlActionName());
-				rule.append(" ");
-				rule.append(entry.getType());
-				rule.append(" ");
-				rule.append("is hazardous when ");
-				rule.append(entry.getCriticalCombinations(" == ", ",", false, false));
-				return rule.toString();
+
+				return entry.getRefinedRule();
 			}
 
 				

@@ -116,12 +116,15 @@ public class ProcessValuesTable extends AbstractTableComposite {
 		super.setController(controller);
 	}
 	public void activate(){
-		 mainViewer.setInput(dataController.getValuesList());
-		  for (int i = 0, n = table.getColumnCount(); i < n; i++) {
-			  
+		if(dataController == null){
+			mainViewer.setInput(null);
+		}else{
+			mainViewer.setInput(dataController.getValuesList());
+			for (int i = 0, n = table.getColumnCount(); i < n; i++) {
 			  table.getColumn(i).pack();
-		  }
-		  setVisible(true);
+			}
+		}
+		setVisible(true);
 	}
 	
 	public boolean refreshTable(){

@@ -52,7 +52,7 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 					dataController.getModel().deleteObserver(AbstractTableComposite.this);
 				}
 			}
-		};
+		}.run();
 		
 		
 	}

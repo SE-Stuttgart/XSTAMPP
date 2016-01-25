@@ -20,8 +20,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import xstampp.ui.editors.StandartEditorPart;
 import xstpa.Activator;
 import xstpa.model.XSTPADataController;
 import xstpa.ui.tables.AbstractTableComposite;
@@ -212,7 +215,15 @@ public class View extends ViewPart{
 	    compositeTable = new RefinedRulesTable(xstpaTableComposite);
 	    addTable(compositeTable, RULES_TABLE);
 	    
-	    setController(new XSTPADataController(null));
+	    IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+	    if(part != null && part instanceof StandartEditorPart){
+	    	XSTPADataController controller = Activator.getDataFor(((StandartEditorPart)part).getProjectID());
+	    	if(controller!= null){
+	    		setController(controller);
+	    	}else{
+	    		setController(new XSTPADataController(null));
+	    	}
+	    }
 	    openTable(mainTable, null);
 	    /**
 		 * Listener which Gets the project-id of the currently active editor
@@ -268,9 +279,11 @@ public class View extends ViewPart{
 	}
 	
 	public void setController(XSTPADataController controller){
-		for(AbstractTableComposite table : this.tableList){
-			table.setController(controller);
+		if(controller != dataController){
+			for(AbstractTableComposite table : this.tableList){
+				table.setController(controller);
+			}
+			dataController = controller;
 		}
-		dataController = controller;
 	}
 }
