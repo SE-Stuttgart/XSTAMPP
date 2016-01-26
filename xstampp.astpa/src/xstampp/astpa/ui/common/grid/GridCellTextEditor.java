@@ -178,21 +178,26 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 			
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				GridCellTextEditor.this.currentText = ((Text)e.widget).getText();
-				GridCellTextEditor.this.editField = ((Text)e.widget).getBounds();
-				GridCellTextEditor.this.grid.resizeRows();
-				updateDataModel(((Text)e.widget).getText());
-				onTextChange();
+				if(!currentText.equals(((Text)e.widget).getText())){
+					GridCellTextEditor.this.currentText = ((Text)e.widget).getText();
+					GridCellTextEditor.this.editField = ((Text)e.widget).getBounds();
+					GridCellTextEditor.this.grid.resizeRows();
+					updateDataModel(((Text)e.widget).getText());
+					onTextChange();
+				}
 			}
 		});
 		this.editor.addModifyListener(new ModifyListener() {
 			
 			@Override
 			public void modifyText(ModifyEvent e) {
-				if(e.getSource() instanceof Text){
+				if(e.getSource() instanceof Text && !currentText.equals(((Text)e.widget).getText())){
+					GridCellTextEditor.this.currentText = ((Text)e.widget).getText();
 					getPreferredHeight();
 					Rectangle rect = GridCellTextEditor.this.editField;
 					Text text = (Text) e.getSource();
+
+					updateDataModel(text.getText());
 
 					// if the size is determined to be larger than the text lines itself
 					// this the original size, will be displayed as long as it not
