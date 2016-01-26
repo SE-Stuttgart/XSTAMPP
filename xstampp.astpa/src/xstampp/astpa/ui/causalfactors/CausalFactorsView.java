@@ -86,18 +86,20 @@ public class CausalFactorsView extends StandartEditorPart{
 
 		private UUID safetyConstraintId;
 		private UUID factorId;
-
+		private ICausalFactor factor;
+		
 		public SafetyConstraintEditorCell(GridWrapper gridWrapper,
 				String initialText, ICausalFactor factor) {
 			super(gridWrapper, initialText,false);
 			this.factorId = factor.getId();
+			this.factor = factor;
 			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
 		@Override
 		public void updateDataModel(String newText) {
+			dataInterface.setCausalSafetyConstraintText(factorId, newText);
 			
-			CausalFactorsView.this.addOrGetFactor(this.factorId, this.safetyConstraintId).getSafetyConstraint().setText(newText);
 		}
 		
 		@Override
@@ -111,8 +113,8 @@ public class CausalFactorsView extends StandartEditorPart{
 		}
 
 		@Override
-		public void onTextChange() {
-			reloadTable();
+		public void onTextChange(String newValue) {
+			factor.getSafetyConstraint().setText(newValue);
 		}
 	}
 
@@ -120,11 +122,13 @@ public class CausalFactorsView extends StandartEditorPart{
 
 		private UUID factorId;
 		private UUID safetyConstraintId;
+		private ICausalFactor factor;
 
 		public NoteCell(GridWrapper gridWrapper, String initialText,
 				ICausalFactor factor) {
 			super(gridWrapper, initialText,false);
 			this.factorId = factor.getId();
+			this.factor = factor;
 			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
@@ -135,9 +139,13 @@ public class CausalFactorsView extends StandartEditorPart{
 
 		@Override
 		public void updateDataModel(String newValue) {
-			CausalFactorsView.this.addOrGetFactor(this.factorId, this.safetyConstraintId).setNote(newValue);
+			dataInterface.setNoteText(factorId, newValue);
 		}
 
+		@Override
+		public void onTextChange(String newValue) {
+			((CausalFactor)factor).setNote(newValue);
+		}
 		@Override
 		public UUID getUUID() {
 			return this.factorId;
@@ -148,11 +156,13 @@ public class CausalFactorsView extends StandartEditorPart{
 
 		private UUID factorID;
 		private UUID safetyConstraintId;
+		private ICausalFactor factor;
 
 		public CausalFactorCell(GridWrapper gridWrapper, String initialText,
 				ICausalFactor factor) {
 			super(gridWrapper, initialText,true);
 			this.factorID = factor.getId();
+			this.factor = factor;
 			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
@@ -176,7 +186,12 @@ public class CausalFactorsView extends StandartEditorPart{
 
 		@Override
 		public void updateDataModel(String newValue) {
-			CausalFactorsView.this.addOrGetFactor(this.factorID, this.safetyConstraintId).setText(newValue);
+			dataInterface.setCausalFactorText(factorID,newValue);
+		}
+		
+		@Override
+		public void onTextChange(String newValue) {
+			((CausalFactor)factor).setText(newValue);
 		}
 	}
 

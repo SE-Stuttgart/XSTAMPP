@@ -16,6 +16,7 @@ package xstampp.astpa.ui.unsafecontrolaction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -129,9 +130,15 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		}
 		@Override
 		public void updateDataModel(String newValue) {
-			UnsafeControlActionsView.this.descriptionsToUUIDs.put(this.unsafeControlAction,newValue);
+			ucaInterface.setUcaDescription(unsafeControlAction, newValue);
+			descriptionsToUUIDs.remove(unsafeControlAction);
 		}
 		
+		@Override
+		public void onTextChange(String newValue) {
+			UnsafeControlActionsView.this.descriptionsToUUIDs.put(this.unsafeControlAction,newValue);
+			
+		}
 	}
 
 	private class AddUcaButton extends GridCellButton {
@@ -556,6 +563,17 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 			this.lockreload = false;
 		}
 		super.partBroughtToTop(arg0);
+	}
+	
+	@Override
+	public void partDeactivated(IWorkbenchPart arg0) {
+		if(arg0 == this){
+			for(Entry<UUID,String> ucaID: this.descriptionsToUUIDs.entrySet()){
+				this.ucaInterface.setUcaDescription(ucaID.getKey(), ucaID.getValue());
+			}
+			this.descriptionsToUUIDs.clear();
+		}
+		super.partDeactivated(arg0);
 	}
 	@Override
 	public void dispose() {

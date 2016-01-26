@@ -183,7 +183,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 					GridCellTextEditor.this.editField = ((Text)e.widget).getBounds();
 					GridCellTextEditor.this.grid.resizeRows();
 					updateDataModel(((Text)e.widget).getText());
-					onTextChange();
+					updateDataModel(GridCellTextEditor.this.currentText);
 				}
 			}
 		});
@@ -197,8 +197,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 					Rectangle rect = GridCellTextEditor.this.editField;
 					Text text = (Text) e.getSource();
 
-					updateDataModel(text.getText());
 
+					onTextChange(GridCellTextEditor.this.currentText);
 					// if the size is determined to be larger than the text lines itself
 					// this the original size, will be displayed as long as it not
 					// overwritten by text
@@ -218,7 +218,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 		
 	}
 
-	public void onTextChange(){
+	public void onTextChange(String newValue){
 		//do nothing by default
 	}
 	@Override
