@@ -479,14 +479,14 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   	<xs:sequence>
   		<xs:element name="ruleID" type="xs:string"></xs:element>
   		<xs:element name="ruleNR" type="xs:int"></xs:element>
+  		<xs:element name="criticalCombies" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
   		<xs:element name="RefinedSafetyRule" type="xs:string"></xs:element>
-  		<xs:element name="refinedUCA"
-  			type="xs:string">
-  		</xs:element>
+  		<xs:element name="refinedUCA" type="xs:string"></xs:element>
   		<xs:element name="refinedSC" type="xs:string"></xs:element>
   		<xs:element name="ltlProp" type="xs:string"></xs:element>
   		<xs:element name="type" type="xs:string"></xs:element>
-  		<xs:element name="relatedUCAIDs" maxOccurs="1" minOccurs="0">
+  		<xs:element name="relatedUCAIDs" maxOccurs="1"
+  			minOccurs="0">
   			<xs:complexType>
   				<xs:sequence>
   					<xs:element name="ucaID" type="xs:string"

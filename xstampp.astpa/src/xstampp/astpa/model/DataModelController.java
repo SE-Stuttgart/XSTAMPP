@@ -1503,14 +1503,21 @@ public class DataModelController extends Observable implements
 	 * @param caID the control action id which is used to look up the action
 	 * @return the valuesWhenNotProvided
 	 */
-	public List<IValueCombie> getValuesWhenCANotProvided(UUID caID) {
+	public List<IValueCombie> getIValuesWhenCANotProvided(UUID caID) {
 		ArrayList<IValueCombie> combies = new ArrayList<>();
 		for(IValueCombie combie : this.controlActionController.getValuesWhenNotProvided(caID)){
 			combies.add(combie);
 		}
 		return combies;
 	}
-
+	
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @return the NotProvidedValuesCombi objects when not provided
+	 */
+	public List<NotProvidedValuesCombi> getValuesWhenCANotProvided(UUID caID) {
+		return this.controlActionController.getValuesWhenNotProvided(caID);
+	}
 
 	/**
 	 * @param caID the control action id which is used to look up the action
@@ -1554,9 +1561,9 @@ public class DataModelController extends Observable implements
 
 	/**
 	 * @param caID the control action id which is used to look up the action
-	 * @return the valuesWhenProvided
+	 * @return the IValueCombie objects when provided
 	 */
-	public List<IValueCombie> getValuesWhenCAProvided(UUID caID) {
+	public List<IValueCombie> getIvaluesWhenCAProvided(UUID caID) {
 		ArrayList<IValueCombie> combies = new ArrayList<>();
 		for(IValueCombie combie : this.controlActionController.getValuesWhenProvided(caID)){
 			combies.add(combie);
@@ -1564,7 +1571,13 @@ public class DataModelController extends Observable implements
 		return combies;
 	}
 
-
+	/**
+	 * @param caID the control action id which is used to look up the action
+	 * @return the ProvidedValuesCombi when provided
+	 */
+	public List<ProvidedValuesCombi> getValuesWhenCAProvided(UUID caID) {
+		return this.controlActionController.getValuesWhenProvided(caID);
+	}
 	/**
 	 * @param caID the control action id which is used to look up the action
 	 * @param valuesWhenProvided the valuesWhenProvided to set
@@ -1750,15 +1763,15 @@ public class DataModelController extends Observable implements
 		return null;
 	}
 
-	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
-		UUID newRuleId = this.controlActionController.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID,type);
+	public UUID addRefinedRule(List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
+		UUID newRuleId = this.controlActionController.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID,type, combies);
 		if(newRuleId != null){
 			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		}
 		return newRuleId;
 	}
 	
-	public UUID updateRefinedRule(UUID ruleID,List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
+	public UUID updateRefinedRule(UUID ruleID,List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
 		for(ILTLProvider provider: this.controlActionController.getAllRefinedRules()){
 			if(provider.getRuleId().equals(ruleID)){
 				((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
@@ -1769,6 +1782,8 @@ public class DataModelController extends Observable implements
 				((RefinedSafetyRule) provider).setNumber(nr);
 				((RefinedSafetyRule) provider).setCaID(caID);
 				((RefinedSafetyRule) provider).setType(type);
+				((RefinedSafetyRule) provider).setCriticalCombies(combies);
+				
 				setUnsavedAndChanged(ObserverValue.Extended_DATA);
 				return ruleID;
 			}

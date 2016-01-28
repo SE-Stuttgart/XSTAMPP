@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 import xstampp.model.ILTLProvider;
 @XmlRootElement(name = "rule")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "id", "number","rule","rUCA", "rSCt", "ltl",
+@XmlType(propOrder = { "id", "number","combies","rule","rUCA", "rSCt", "ltl",
 		"type", "relatedUCAs", "caID"})
 public class RefinedSafetyRule implements ILTLProvider{
 
@@ -23,6 +23,9 @@ public class RefinedSafetyRule implements ILTLProvider{
 
 	@XmlElement(name="ruleNR")
 	private int number;
+
+	@XmlElement(name="criticalCombies")
+	private String combies;
 	
 	@XmlElement(name="RefinedSafetyRule")
 	private String rule;
@@ -47,9 +50,10 @@ public class RefinedSafetyRule implements ILTLProvider{
 	@XmlElement(name="relatedCaID")
 	private UUID caID;
 	
-	public RefinedSafetyRule(List<UUID> ucaLinks,UUID caId,String ltlExp,String rule,String ruca,String constraint,String type, int nr) {
+	public RefinedSafetyRule(List<UUID> ucaLinks,UUID caId,String ltlExp,String rule,String ruca,String constraint,String type, int nr, String combies) {
 		id = UUID.randomUUID();
 		this.number = nr;
+		this.combies = combies;
 		this.rule = rule;
 		this.rSCt = constraint;
 		this.rUCA = ruca;
@@ -154,6 +158,13 @@ public class RefinedSafetyRule implements ILTLProvider{
 	}
 
 	/**
+	 * @return the criticalCombies
+	 */
+	public String getCriticalCombies() {
+		return this.combies;
+	}
+	
+	/**
 	 * @param controlActionID the controlActionID to set
 	 */
 	public void setRelatedControlActionID(UUID controlActionID) {
@@ -179,5 +190,13 @@ public class RefinedSafetyRule implements ILTLProvider{
 	 */
 	public void setCaID(UUID caID) {
 		this.caID = caID;
+	}
+
+
+	/**
+	 * @param criticalCombies the criticalCombies to set
+	 */
+	public void setCriticalCombies(String criticalCombies) {
+		this.combies = criticalCombies;
 	}
 }

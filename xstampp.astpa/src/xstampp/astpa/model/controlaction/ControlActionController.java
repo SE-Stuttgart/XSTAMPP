@@ -735,15 +735,20 @@ public class ControlActionController {
 		if(rules == null){
 			return new ArrayList<>();
 		}
-		return new ArrayList<>(rules);
+		ArrayList<ILTLProvider> tmp = new ArrayList<>();
+		for (RefinedSafetyRule refinedSafetyRule : rules) {
+			tmp.add(refinedSafetyRule);
+		}
+		return tmp;
 	}
-	
-	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
+
+
+	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type, String combies){
 		if(ucaLinks != null && ltlExp != null && rule != null && constraint != null){
 			if(rules == null){
 				this.rules= new ArrayList<>();
 			}
-			RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks,caID, ltlExp, rule, ruca, constraint,type, nr);
+			RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks,caID, ltlExp, rule, ruca, constraint,type, nr, combies);
 			if(this.rules.add(safetyRule)){
 				return safetyRule.getRuleId();
 			}

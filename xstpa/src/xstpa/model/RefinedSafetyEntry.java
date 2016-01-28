@@ -112,6 +112,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		if(this.getDataRef() != null){
 			model.updateRefinedRule(getDataRef(), 
 									getUCALinkIDs(), 
+									getCriticalCombinations("==", ",", false, false, false),
 									getLTLProperty(), 
 									getRefinedRule(),
 									getRefinedUCA(), 
@@ -121,11 +122,12 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 									getType());
 		}else{
 			setDataRef(model.addRefinedRule(getUCALinkIDs(),
-					getLTLProperty(), 
-					getRefinedRule(), 
-					getRefinedUCA(), constraint, getNumber(),
-					variable.getLinkedControlActionID(),
-					type));
+											getCriticalCombinations("==", ",", false, false, false),
+											getLTLProperty(), 
+											getRefinedRule(), 
+											getRefinedUCA(), constraint, getNumber(),
+											variable.getLinkedControlActionID(),
+											type));
 		}
 		
 	}

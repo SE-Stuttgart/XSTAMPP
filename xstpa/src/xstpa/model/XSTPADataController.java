@@ -192,8 +192,8 @@ public class XSTPADataController extends Observable implements Observer{
 		this.dependenciesNotProvided.clear();
 		  // get the controlActions
 	      for (IControlAction entry : model.getAllControlActionsU()) {
-	    	  this.dependenciesIFProvided.put(entry.getId(),getEntryFor(entry, model.getValuesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
-	    	  this.dependenciesNotProvided.put(entry.getId(),getEntryFor(entry, model.getValuesWhenCANotProvided(entry.getId()),CONTEXT_NOT_PROVIDED));
+	    	  this.dependenciesIFProvided.put(entry.getId(),getEntryFor(entry, model.getIvaluesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
+	    	  this.dependenciesNotProvided.put(entry.getId(),getEntryFor(entry, model.getIValuesWhenCANotProvided(entry.getId()),CONTEXT_NOT_PROVIDED));
 	      }
 	}
 	
