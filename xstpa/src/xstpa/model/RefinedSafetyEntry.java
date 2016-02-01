@@ -142,7 +142,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		if(!tempHazLinks.isEmpty()){
 			return tempHazLinks.substring(0, tempHazLinks.length() -1);
 		}
-		return "not hazardous";
+		return "";
 	}
 	
 	private void calcRUCA(){	

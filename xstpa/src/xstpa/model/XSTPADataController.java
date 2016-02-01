@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
@@ -225,7 +226,7 @@ public class XSTPADataController extends Observable implements Observer{
   	  
 
 		// add all the value combinations for the context table to the two dependencies lists 
-  		  
+  		 boolean invalid= false;
 		ProcessModelVariables contextTableEntry;
 		for (IValueCombie valueCombie :  combies) {
 			List<String> tempValuesList = new ArrayList<String>();
@@ -257,18 +258,23 @@ public class XSTPADataController extends Observable implements Observer{
 				}
 				valueCombie.setValues(map);
 			}
-			for (UUID valId : valueCombie.getPMValues().values()) {
-				contextTableEntry.addVariableId(valuesList.get(valId).getVariableID());
-				tempVarialesList.add(model.getComponent(valuesList.get(valId).getVariableID()).getText());
-				
-				tempValuesList.add(model.getComponent(valuesList.get(valId).getVariableID()).getText()+ "="
-						+ valuesList.get(valId).getValueText());
-				contextTableEntry.addValue(valuesList.get(valId).getValueText());		    						  
-				contextTableEntry.setLinkedControlActionName(entry.getTitle(), entry.getId());
-				contextTableEntry.addValueId(valId);
+			
+			for (Entry<UUID, UUID> valEntry : valueCombie.getPMValues().entrySet()) {
+				if(!valuesList.containsKey(valEntry.getValue()) ||!variablesList.containsKey(valEntry.getKey())){
+					invalid = true;
+					break;
+				}else{
+					tempVarialesList.add(model.getComponent(valEntry.getKey()).getText());
+					
+					tempValuesList.add(model.getComponent(valEntry.getKey()).getText()+ "="
+							+ model.getComponent(valEntry.getValue()).getText());
+					contextTableEntry.addValue(model.getComponent(valEntry.getValue()).getText());		    						  
+					contextTableEntry.setLinkedControlActionName(entry.getTitle(), entry.getId());
+					contextTableEntry.addValueId(valEntry.getValue());
+					contextTableEntry.addVariableId(valEntry.getKey());
+				}
   					
 			}
-		  
 			contextTableEntry.setPmValues(tempValuesList);
 			contextTableEntry.setPmVariables(tempVarialesList);
 			contextTableEntry.setContext(context);
@@ -277,7 +283,10 @@ public class XSTPADataController extends Observable implements Observer{
 			contextTableEntry.setHAnytime(valueCombie.isCombiHazardous(IValueCombie.TYPE_ANYTIME));
 			contextTableEntry.setHEarly(valueCombie.isCombiHazardous(IValueCombie.TYPE_TOO_EARLY));
 			contextTableEntry.setHLate(valueCombie.isCombiHazardous(IValueCombie.TYPE_TOO_LATE));
-			tempCAEntry.addContextTableCombination(contextTableEntry);
+
+			if(!invalid){
+				tempCAEntry.addContextTableCombination(contextTableEntry);
+			}
 		}
 		
 		return tempCAEntry;

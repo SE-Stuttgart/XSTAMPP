@@ -124,8 +124,9 @@ public class Activator extends AbstractUIPlugin {
 				.getConfigurationElementsFor("xstampp.extension.steppedProcess");
 		for (IConfigurationElement extElement : elements) { 
 			String[] ext = extElement.getAttribute("extension").split(";"); 	//$NON-NLS-1$
+			String modelClass = extElement.getAttribute("DataModelClass");
 			for(int i=0;i< ext.length;i++){
-				ProjectManager.getContainerInstance().registerExtension(ext[i], extElement);
+				ProjectManager.getContainerInstance().registerExtension(modelClass,ext[i], extElement);
 			}
 		}
 		

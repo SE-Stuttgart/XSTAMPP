@@ -182,6 +182,7 @@ class UpdateJobChangeAdapter extends JobChangeAdapter {
 		this.viewContainer = viewContainer;
 	}
 
+	
 	@Override
 	public void done(final IJobChangeEvent event) {
 		if (event.getResult().isOK()) {

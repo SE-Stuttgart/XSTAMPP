@@ -164,7 +164,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 			}
 		}
 		if(links.isEmpty()){
-			links = "not hazardous";
+			links = "";
 		}else{
 			links = links.substring(0, links.length()-1);			
 		}

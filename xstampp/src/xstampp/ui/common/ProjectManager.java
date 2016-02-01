@@ -91,6 +91,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	private Map<UUID, Object> projectAdditionsToUUID;
 	private Map<UUID, File> projectSaveFilesToUUID;
 	private Map<UUID, String> extensionsToUUID;
+	private Map<String, String> extensionsToModelClass;
 	private Map<String, IConfigurationElement> elementsToExtensions;
 	private final IPreferenceStore store = Activator.getDefault()
 			.getPreferenceStore();
@@ -175,6 +176,7 @@ public class ProjectManager implements IPropertyChangeListener {
 		this.extensionsToUUID = new HashMap<>();
 		this.projectDataToUUID = new HashMap<>();
 		this.projectSaveFilesToUUID = new HashMap<>();
+		this.extensionsToModelClass = new HashMap<>();
 		this.store.addPropertyChangeListener(this);
 	}
 	
@@ -721,23 +723,23 @@ public class ProjectManager implements IPropertyChangeListener {
 	
 	/**
 	 * maps the given Configuration to the extension string 
-	 * @author Lukas
+	 * @author Lukas Balzer
 	 *
 	 * @param ext the extension e.g.: "ext"
 	 * @param element the registered stepped process
 	 */
-	public void registerExtension(String ext,IConfigurationElement element){
+	public void registerExtension(String modelClass,String ext,IConfigurationElement element){
 		if(this.elementsToExtensions == null){
 			this.elementsToExtensions = new HashMap<>();
 		}
 		this.elementsToExtensions.put(ext, element);
-
+		this.extensionsToModelClass.put(modelClass, ext);
 		LOGGER.debug("registered extension: " + ext); //$NON-NLS-1$
 	}
 
 	/**
 	 *
-	 * @author Lukas
+	 * @author Lukas Balzer
 	 *
 	 * @param ext the extension e.g.: "ext"
 	 * @return if elementsToExtensions contains the extension
@@ -756,6 +758,8 @@ public class ProjectManager implements IPropertyChangeListener {
 	 * @return the configuration element as defined in the steppedProcess extension Point
 	 */
 	public IConfigurationElement getConfigurationFor(UUID projectID){
+		String name =this.projectDataToUUID.get(projectID).getClass().getName();
+		String ext = this.extensionsToModelClass.get(name);
 		return this.elementsToExtensions.get(getProjectExtension(projectID));
 	}
 	/**

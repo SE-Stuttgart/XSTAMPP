@@ -71,6 +71,7 @@
    <extension
          point="xstampp.extension.steppedProcess">
       <process
+            DataModelClass="acast.controller.Controller"
             command="acast.command.load"
             extension="acc"
             icon="icons/A-CAST-icon16.png"

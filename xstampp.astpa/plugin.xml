@@ -4,6 +4,7 @@
    <extension
          point="xstampp.extension.steppedProcess">
       <process
+            DataModelClass="xstampp.astpa.model.DataModelController"
             command="astpa.command.load"
             editorId="astpa.steps.step1_1"
             extension="hazx;haz"

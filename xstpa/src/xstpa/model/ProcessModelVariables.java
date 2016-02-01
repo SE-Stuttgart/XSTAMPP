@@ -19,11 +19,6 @@ import xstampp.astpa.model.controlaction.IValueCombie;
 
 
 @XmlRootElement(name = "contexttablecombination")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "values", "valueIds", "pmVariables","pmValues", "variableIdsList", "name", "linkedControlActionName",
-		"refinedSafetyRequirements", "context",	"number", "hazardous", "hLate", "hEarly", "hAnytime", "conflict",
-		"archived","singleVarId", "isInRSRTable", "ucaLinks","relatedUCAsAnytime","relatedUCAsTooEarly","relatedUCAsTooLate",
-		"rule","refinedUnsafeControlAction"})
 public class ProcessModelVariables {
 
 	@XmlElementWrapper(name = "values")

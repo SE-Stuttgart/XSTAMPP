@@ -60,7 +60,10 @@ public class EditRelatedUcaWizard {
         this.ucaLinks = list;
         this.availableLinks = new ArrayList<>();
         for(ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()){
-        	this.availableLinks.add(uca);
+        	if(!ucaLinks.contains(uca.getId())){
+        		this.availableLinks.add(uca);
+        	}
+        	
         }
         createContents(shell);
         shell.pack();
@@ -89,13 +92,6 @@ public class EditRelatedUcaWizard {
 	    data.minimumWidth = 350;
 	    data.minimumHeight = 200;
 	    availableList.setLayoutData(data);
-	    for (ICorrespondingUnsafeControlAction uca : availableLinks) {
-	    	int number = model.getUCANumber(uca.getId());
-			availableList.add("UCA-"+number+" : " +uca.getDescription());
-		}
-	    
-	    	
-	    
 	    
 	    // Add the List for relationParamListComposite
 	    linkedList = new org.eclipse.swt.widgets.List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
@@ -160,12 +156,21 @@ public class EditRelatedUcaWizard {
     
 	private void refreshLists(){
 		linkedList.removeAll();
-		for (ICorrespondingUnsafeControlAction uca : availableLinks) {
+		availableList.removeAll();
+		ArrayList<UUID> linkedIDs = new ArrayList<>();
+		List<ICorrespondingUnsafeControlAction> availableIDs = new ArrayList<>();
+		for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
+	    	int number = model.getUCANumber(uca.getId());
 			if(ucaLinks.contains(uca.getId())){
-		    	int number = model.getUCANumber(uca.getId());
 		    	linkedList.add("UCA-"+number);
+		    	linkedIDs.add(uca.getId());
+			}else{
+				availableList.add("UCA-"+number+" : " +uca.getDescription());
+				availableIDs.add(uca);
 			}
 		}
+		ucaLinks = linkedIDs;
+		availableLinks = availableIDs;
 	}
     public boolean open()
     {
