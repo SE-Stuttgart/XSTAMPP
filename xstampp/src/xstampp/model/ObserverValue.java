@@ -70,6 +70,13 @@ public enum ObserverValue {
 	CONTROL_ACTION,
 
 	/**
+	 * Enum for changes of the process model value combination states
+	 * 
+	 * @author Benedikt Markt
+	 */
+	COMBINATION_STATES,
+	
+	/**
 	 * Enum for changes in Unsafe Control Actions Table
 	 * 
 	 * @author Benedikt Markt

@@ -322,9 +322,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 			            		}
 		                		contextRightViewer.refresh();
 		    	    			// packs the columns
-		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-		    	    		  	}
+//		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
+//		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
+//		    	    		  	}
 		    	    		  	contextRightTable.deselectAll();
 		    	    		  	errorLabel.setText("There are "+conflictCounter+ " Conflicts!");
 		    	    		  	
@@ -334,9 +334,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 		                		contextRightContent.get(contextTableCellY).setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
 		                		contextRightViewer.refresh();
 		    	    			// packs the columns
-		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-		    	    		  	}
+//		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
+//		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
+//		    	    		  	}
 		    	    		  	contextRightTable.deselectAll();
 		    	    		  	
 		                	}
@@ -344,9 +344,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 		                		contextRightContent.get(contextTableCellY).setHLate(!contextRightContent.get(contextTableCellY).getHLate());
 		                		contextRightViewer.refresh();
 		    	    			// packs the columns
-		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-		    	    		  	}
+//		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
+//		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
+//		    	    		  	}
 		    	    		  	contextRightTable.deselectAll();
 		    	    		  	
 		                	}
@@ -359,9 +359,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 		            		}
 	                		contextRightViewer.refresh();
 	    	    			// packs the columns
-	    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-	    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-	    	    		  	}
+//	    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
+//	    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
+//	    	    		  	}
 	    	    		  	contextRightTable.deselectAll();
 	    	    		  	errorLabel.setText("There are "+conflictCounter+ " Conflicts!");
 	    	    		  	dataController.storeBooleans(null);

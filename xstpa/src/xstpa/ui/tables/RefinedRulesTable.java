@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -31,6 +32,7 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.util.STPAPluginUtils;
+import xstpa.Messages;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.model.RefinedSafetyEntry;
@@ -58,7 +60,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 			RefinedSafetyEntry entry = (RefinedSafetyEntry) element;
 			switch (columnName) {
 			case View.ENTRY_ID:
-				return "SR" + String.valueOf(refinedSafetyContent.indexOf(entry)+1);
+				return RefinedSafetyEntry.Literal + String.valueOf(refinedSafetyContent.indexOf(entry)+1);
 			case View.CONTROL_ACTIONS:
 				return entry.getVariable().getLinkedControlActionName();
 			case View.CONTEXT:
@@ -66,12 +68,12 @@ public class RefinedRulesTable extends AbstractTableComposite {
 			case View.CONTEXT_TYPE:
 				return entry.getType();
 			case View.CRITICAL_COMBI:	
-				return entry.getCriticalCombinations(" == ", ",", false, false, true);
+				return entry.getCriticalCombinations(" == ", ",", false, false, true); //$NON-NLS-1$ //$NON-NLS-2$
 				
 			case View.UCA:
 				String tempUcas =entry.getUCALinks();
 				if (tempUcas.isEmpty()) {
-					return "Click to see UCA's";
+					return Messages.RefinedRulesTable_EditUCALinks;
 				}
 				return tempUcas;
 			case View.REL_HAZ:
@@ -91,7 +93,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 	private List<RefinedSafetyEntry> refinedSafetyContent;
 	private Table refinedSafetyTable;
 	private String[] columns = new String[]{
-			View.ENTRY_ID,View.CONTROL_ACTIONS,View.CONTEXT,"Type",
+			View.ENTRY_ID,View.CONTROL_ACTIONS,View.CONTEXT,Messages.RefinedRulesTable_Type,
 			View.CRITICAL_COMBI,View.UCA,View.REL_HAZ,View.REFINED_RULES
 	};
 	
@@ -165,19 +167,19 @@ public class RefinedRulesTable extends AbstractTableComposite {
 	    
 		// Add a button to export all tables
 	    final Button exportBtn = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
-	    exportBtn.setToolTipText("Exports all Tables");
+	    exportBtn.setToolTipText(Messages.RefinedRulesTable_Export);
 	    exportBtn.setImage(View.EXPORT);
 	    exportBtn.pack();
 	    
 	    // Add a button to switch tables (LTL Button)
 	    final Button bRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
-	    bRemoveEntry.setToolTipText("removes the selected entry in the from the rules table");
+	    bRemoveEntry.setToolTipText(Messages.RefinedRulesTable_Remove);
 	    bRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
 	    bRemoveEntry.pack();
 	    
 	    // Add a button to switch tables (LTL Button)
 	    final Button bAllRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
-	    bAllRemoveEntry.setToolTipText("removes all entries from the rules table");
+	    bAllRemoveEntry.setToolTipText(Messages.RefinedRulesTable_RemoveAll);
 	    bAllRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVEALL));
 	    bAllRemoveEntry.pack();
 	    
@@ -189,8 +191,8 @@ public class RefinedRulesTable extends AbstractTableComposite {
 	      public void widgetSelected(SelectionEvent event) {
 	    	  
 	    	  Map<String,String> values=new HashMap<>();
-	    	  values.put("xstampp.commandParameter.openwizard", "export.wizard");
-	    	  STPAPluginUtils.executeParaCommand("xstampp.command.openWizard", values);
+	    	  values.put("xstampp.commandParameter.openwizard", "export.wizard"); //$NON-NLS-1$ //$NON-NLS-2$
+	    	  STPAPluginUtils.executeParaCommand("xstampp.command.openWizard", values); //$NON-NLS-1$
 	      }
 	    });
 	    
@@ -199,26 +201,34 @@ public class RefinedRulesTable extends AbstractTableComposite {
 	    	public void widgetSelected(SelectionEvent e) {
 	    		if (refinedSafetyTable.getSelectionIndex() != -1) {
 	    			RefinedSafetyEntry entry = (RefinedSafetyEntry) refinedSafetyTable.getSelection()[0].getData();
-		    		removeEntry(entry);
-					refreshTable();
+	    			if(MessageDialog.openConfirm(getShell(), Messages.RefinedRulesTable_ConfirmDelete, 
+	    										String.format(Messages.RefinedRulesTable_ReallyDeleteRefinedSafety,
+	    										RefinedSafetyEntry.Literal + entry.getNumber()))){
+			    		removeEntry(entry);
+						refreshTable();
+	    				
+	    			}
 				}
 	    	}
 		});
 	    bAllRemoveEntry.addSelectionListener(new SelectionAdapter() {
 	    	@Override
 	    	public void widgetSelected(SelectionEvent e) {
-	    		ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
-	      	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
-	      	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
-	      	    
-	    	    for (ControlActionEntry caEntry : allCAEntrys) {
-	    	    	for(ProcessModelVariables variable: caEntry.getContextTableCombinations()){
-	    	    		variable.setGlobalHazardous(false);
-	    	    	}
-		    	    dataController.storeBooleans(caEntry);
-	    	    }
-				dataController.getModel().removeSafetyRule(true, null);
-				refreshTable();
+	    		if(MessageDialog.openConfirm(getShell(), Messages.RefinedRulesTable_ConfirmDelete, 
+	    				Messages.RefinedRulesTable_DeleteAll)){
+		    		ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
+		      	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
+		      	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
+		      	    
+		    	    for (ControlActionEntry caEntry : allCAEntrys) {
+		    	    	for(ProcessModelVariables variable: caEntry.getContextTableCombinations()){
+		    	    		variable.setGlobalHazardous(false);
+		    	    	}
+			    	    dataController.storeBooleans(caEntry);
+		    	    }
+					dataController.getModel().removeSafetyRule(true, null);
+					refreshTable();
+	    		}
 	    	}
 		});
 	    setVisible(false);
@@ -272,7 +282,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 
   	    Collections.sort(refinedSafetyContent);
   	    if (refinedSafetyContent.isEmpty()) {
-  	    	writeStatus("No Hazardous Combinations - Please check some Combinations as Hazardous");
+  	    	writeStatus(Messages.RefinedRulesTable_NoHazardousCombies);
   	    }
   
   	    refinedSafetyViewer.setInput(refinedSafetyContent);

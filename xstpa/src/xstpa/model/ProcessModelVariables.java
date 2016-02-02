@@ -170,9 +170,9 @@ public class ProcessModelVariables {
 				}
 			}
 			if(useSpaces){
-				list.add(this.pmVariables.get(i) + ' ' +prefix +' '+valueString);
+				list.add(this.pmVariables.get(i).trim() + ' ' +prefix +' '+valueString);
 			}else{
-				list.add(this.pmVariables.get(i) + prefix +valueString);
+				list.add(this.pmVariables.get(i).trim() + prefix +valueString);
 			}
 		}
 		return list;

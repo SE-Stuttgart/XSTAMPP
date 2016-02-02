@@ -100,7 +100,7 @@ public class RefinedSafetyConstraintsView extends CSCView{
 			return new ColumnLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return ((ILTLProvider)element).getSafetyRule();
+					return ((ILTLProvider)element).getRefinedSafetyConstraint();
 				}
 			};
 			

@@ -21,6 +21,7 @@ import xstampp.astpa.model.controlaction.IValueCombie;
  */
 public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	
+	public static final String Literal ="SR"; //$NON-NLS-1$
 	private final ProcessModelVariables variable;
 	private final String context;
 	private final String type;
@@ -68,6 +69,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	 */
 	public String getCriticalCombinations(String equalsSeq, String andSeq, boolean useBrackets, boolean parseBoolean, boolean useSpaces){
 		String temp ="";
+		
 		List<String> valueCombies = variable.getPmValues(equalsSeq, parseBoolean, useSpaces);
 		String andLiteral = andSeq.trim();
 		if(useSpaces){
@@ -180,7 +182,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 			buffer.append(getType());
 		}
 		buffer.append(" when ");
-		buffer.append(getCriticalCombinations("is", "and", false, false, true));
+		buffer.append(getCriticalCombinations("is", "and", false, true, true));
 		constraint = buffer.toString();
 	}
 	

@@ -399,7 +399,7 @@ public class XSTPADataController extends Observable implements Observer{
 		}
 		
 		setChanged();
-		notifyObservers(ObserverValue.CONTROL_ACTION);
+		notifyObservers(ObserverValue.COMBINATION_STATES);
 	}
 	
 	private void syncCombiesWhenProvided(ControlActionEntry caEntry){
