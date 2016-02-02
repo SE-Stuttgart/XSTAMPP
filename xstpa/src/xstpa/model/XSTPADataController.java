@@ -2,12 +2,14 @@ package xstpa.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
@@ -25,7 +27,7 @@ public class XSTPADataController extends Observable implements Observer{
 
 	private static final String CONTEXT_PROVIDED ="provided";
 	private static final String CONTEXT_NOT_PROVIDED ="not provided";
-	private Map<UUID,ProcessModelValue> valuesList;
+	private HashMap<UUID,ProcessModelValue> valuesList;
 	private Map<UUID,ControlActionEntry> dependenciesIFProvided;
 	private Map<UUID,ProcessModelVariables> variablesList;
 	private Map<UUID,ControlActionEntry> dependenciesNotProvided;
@@ -62,11 +64,19 @@ public class XSTPADataController extends Observable implements Observer{
 // Management of the PROCESS MODEL VALUES
  
 	/**
+	 * @param includeDontCare TODO
 	 * @return the valuesList
 	 * @see ProcessModelValue
 	 */
-	public List<ProcessModelValue> getValuesList() {
-		return new ArrayList<ProcessModelValue>(this.valuesList.values());
+	public List<ProcessModelValue> getValuesList(boolean includeDontCare) {
+		ArrayList<ProcessModelValue> returnedValues = new ArrayList<>();
+		for (ProcessModelValue value : this.valuesList.values()) {
+			if(includeDontCare || !value.getId().equals(model.getIgnoreLTLValue().getId())){
+				returnedValues.add(value);
+			}
+		}
+		Collections.sort(returnedValues);
+		return returnedValues;
 	}
 
 	public int getValueCount() {
@@ -244,7 +254,7 @@ public class XSTPADataController extends Observable implements Observer{
 	  	  	}
 			if(valueCombie.getPMValues() == null){
 				Map<UUID, UUID> valuesIdsTOvariableIDs= new HashMap<>();
-				for(ProcessModelValue value : getValuesList()){
+				for(ProcessModelValue value : getValuesList(true)){
 					if(valueCombie.getValueList().contains(value.getId())){
 						valuesIdsTOvariableIDs.put(value.getVariableID(), value.getId());
 					}

@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author Janik Sowodnic, LukasBalzer
  *
  */
-public class ProcessModelValue {
+public class ProcessModelValue implements Comparable<ProcessModelValue>{
 
 	  private String controller;
 
@@ -150,6 +150,23 @@ public class ProcessModelValue {
 	 */
 	public void setVariableID(UUID variableID) {
 		this.variableID = variableID;
+	}
+
+	@Override
+	public int compareTo(ProcessModelValue o) {
+		try{
+			int returnValue = getController().compareTo(o.getController());
+			if(returnValue == 0){
+				returnValue = getPMV().compareTo(o.getPMV());
+			}
+			if(returnValue == 0){
+				returnValue = getValueText().compareTo(o.getValueText());
+			}
+			
+			return returnValue;
+		}catch(NullPointerException e){
+			return 0;
+		}
 	}
 	}
 
