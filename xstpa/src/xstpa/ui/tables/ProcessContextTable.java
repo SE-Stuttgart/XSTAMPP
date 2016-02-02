@@ -121,10 +121,10 @@ public class ProcessContextTable extends AbstractTableComposite {
 	private Table contextRightTable;
 	protected int contextTableCellX;
 	protected int contextTableCellY;
-	private int conflictCounter;
 	private Combo filterCombo;
 	private TabFolder contextContentFolder;
 	protected List<ProcessModelVariables> contextRightContent;
+	private Label errorLabel;
 	
 	public ProcessContextTable(Composite parent) {
 		super(parent);
@@ -208,7 +208,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		      }  
 	    }; 
 	 // Add a Label which displays if there are any Error Messages
-	    final Label errorLabel = new Label(contextCompositeErrorLabel, SWT.NULL);
+	    errorLabel = new Label(contextCompositeErrorLabel, SWT.NULL);
 	    errorLabel.setText("There are 0 Conflicts!  ");
 	    
 	 // Add a Combobox for the Filter
@@ -272,6 +272,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 		     */
 		    contextRightMenu.getItem(0).addSelectionListener(new SelectionAdapter() {
 		    	public void widgetSelected(SelectionEvent event) {
+		    		//this listener uses the information contextTableCellX which provides the current table item index
+		    		//calculated in the contextRightTable.mouseListener
 		    		if ((contextTableCellX < contextRightTable.getColumnCount()-1)&(contextTableCellX != 0)) {
 		    			ProcessModelVariables contextCombie = contextRightContent.get(contextRightTable.getSelectionIndex());
 		    			List<String> strings = contextCombie.getValues();
@@ -297,86 +299,55 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 
 				public void handleEvent(Event event) {
-		          Rectangle clientArea = contextRightTable.getClientArea();
-		          Point pt = new Point(event.x, event.y);
-		          int index = contextRightTable.getTopIndex();
+					Point pt = new Point(event.x, event.y);
+					int index = contextRightTable.getTopIndex();
 		          
-		          while (index < contextRightTable.getItemCount()) {
-		            boolean visible = false;
+					while (index < contextRightTable.getItemCount()) {
 		            TableItem item = contextRightTable.getItem(index);
 		            for (int i = 0; i < contextRightTable.getColumnCount(); i++) {
-		              Rectangle rect = item.getBounds(i);
-		              
-		              if (rect.contains(pt)) {
-		                
-		                contextTableCellX = i;
-		                contextTableCellY = index;
-
-		                if ((contextTableCellX == contextRightTable.getColumnCount()-1)&&(dataController.isControlActionProvided())) {
-		                	int tempWidth = rect.width / 3;
-		                	if ((rect.x < pt.x)&(pt.x < rect.x+tempWidth)) {
-		                		contextRightContent.get(contextTableCellY).setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
-			            		if (contextRightContent.get(contextTableCellY).getConflict()) {
-			            			contextRightContent.get(contextTableCellY).setConflict(false);
-			            			conflictCounter--;
-			            		}
+			            Rectangle rect = item.getBounds(i);
+			            contextTableCellX = i;
+			            if (contextTableCellX == contextRightTable.getColumnCount()-1 && rect.contains(pt)) {
+			            	
+			            	contextTableCellY = index;
+		                	boolean changed = false;
+		                	if (dataController.isControlActionProvided()) {
+			                	int tempWidth = rect.width / 3;
+			                	boolean checkboxAnytimeClicked =(rect.x < pt.x)&(pt.x < rect.x+tempWidth);
+			                	boolean checkboxtooEarlyClicked =(rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth));
+					            boolean checkboxtooLateClicked =(rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width);
+			                	changed = checkboxAnytimeClicked || checkboxtooEarlyClicked || checkboxtooLateClicked;
+			                	if (checkboxAnytimeClicked) {
+			                		contextRightContent.get(contextTableCellY).
+			                							setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
+			                	}else if (checkboxtooEarlyClicked) {
+			                		contextRightContent.get(contextTableCellY).
+			                							setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
+			                	}else if (checkboxtooLateClicked) {
+			                		contextRightContent.get(contextTableCellY).
+			                							setHLate(!contextRightContent.get(contextTableCellY).getHLate());
+			                	}
+		                	}else  if (!dataController.isControlActionProvided()) {
+		                		contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
+		                		changed = true;
+		                	}
+		                	if(changed){
 		                		contextRightViewer.refresh();
 		    	    			// packs the columns
-//		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-//		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-//		    	    		  	}
+		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
+		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
+		    	    		  	}
 		    	    		  	contextRightTable.deselectAll();
-		    	    		  	errorLabel.setText("There are "+conflictCounter+ " Conflicts!");
-		    	    		  	
+		    	    		  	dataController.storeBooleans(null);
+				                setConflictLabel();
 		                	}
-		                	
-		                	else if ((rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth))) {
-		                		contextRightContent.get(contextTableCellY).setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
-		                		contextRightViewer.refresh();
-		    	    			// packs the columns
-//		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-//		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-//		    	    		  	}
-		    	    		  	contextRightTable.deselectAll();
-		    	    		  	
-		                	}
-		                	else if ((rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width)) {
-		                		contextRightContent.get(contextTableCellY).setHLate(!contextRightContent.get(contextTableCellY).getHLate());
-		                		contextRightViewer.refresh();
-		    	    			// packs the columns
-//		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-//		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-//		    	    		  	}
-		    	    		  	contextRightTable.deselectAll();
-		    	    		  	
-		                	}
-		                	dataController.storeBooleans(null);
-		                }
-		                else  if ((contextTableCellX == contextRightTable.getColumnCount()-1)&&(!dataController.isControlActionProvided())) {
-		                	contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
-		            		if (contextRightContent.get(contextTableCellY).getConflict()) {
-		            			conflictCounter--;
-		            		}
-	                		contextRightViewer.refresh();
-	    	    			// packs the columns
-//	    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-//	    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-//	    	    		  	}
-	    	    		  	contextRightTable.deselectAll();
-	    	    		  	errorLabel.setText("There are "+conflictCounter+ " Conflicts!");
-	    	    		  	dataController.storeBooleans(null);
-		                }
-		              }
-		              if (!visible && rect.intersects(clientArea)) {
-		                visible = true;
-		              }
+		                	break;
+			            }
 		            }
-		            if (!visible)
-		              return;
-		            index++;
-		          }
+			            index++;
+					}
 		        }
-		      });
+		    });
 		    
 		    
 		    
@@ -558,39 +529,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 			 */
 		    checkConflictsBtn.addSelectionListener(new SelectionAdapter() {
 			      public void widgetSelected(SelectionEvent event) {
-			    	  //verfies if there are no conflicts between CAProvided and not provided
-			    	  Boolean redraw = false;
-			    	  conflictCounter = 0;
-			    	  // set all conflicts to false
-			    	  for (int i = 0; i < contextRightContent.size(); i++) {
-			    		  contextRightContent.get(i).setConflict(false);
-			    	  }
-			    	  // set all conflicts to false
-			    	  for (int j = 0; j < contextRightContent.size(); j++) {
-			    		  contextRightContent.get(j).setConflict(false);
-			    	  }
-			    	  // checks every element with each other if they are the same!
-			    	  for (int i = 0; i < contextRightContent.size(); i++) {
-			    		  for (int j = 0; j < contextRightContent.size(); j++) {
-			    			  if (checkForConflicts(contextRightContent.get(i), contextRightContent.get(j))) {
-				    			  contextRightContent.get(i).setConflict(true);
-				    			  contextRightContent.get(j).setConflict(true);
-				    			  redraw = true;
-				    		  }
-			    		  
-			    		  }
-			    		  
-			    	  }
-			    	  if (redraw) {
-			    		  contextRightTable.redraw();
-			    		  contextRightViewer.refresh();
-			    		  // packs the columns
-			    		  for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-			    			  contextRightTable.getColumn(j).pack();	    		  		  
-			    		  }
-			    		  contextRightTable.deselectAll();
-			    		  errorLabel.setText("There are " +conflictCounter+ " Conflicts!");
-			    	  }
+			    	
+			    	 setConflictLabel();
 			    	  
 			      }  
 			});
@@ -697,25 +637,6 @@ public class ProcessContextTable extends AbstractTableComposite {
 		//END
 		//================================================================================
 		setVisible(false);
-	}
-
-	public Boolean checkForConflicts(ProcessModelVariables item1, ProcessModelVariables item2) {
-		Boolean conflict = true;
-		if (!((item1.getHAnytime() == true) && (item2.getGlobalHazardous()== true))) {
-			return false;
-		}
-		if (item1.getSizeOfValues() != item2.getSizeOfValues()) {
-			return false;
-		}
-		for (int i = 0; i<item1.getValues().size(); i++) {
-			if (!item1.getValues().get(i).equals(item2.getValues().get(i))) {
-				conflict = false;
-			}
-		}
-		if (conflict) {
-			conflictCounter++;
-		}
-		return conflict;
 	}
 	
 	private void updateContextInput(int formerIndex){
@@ -935,6 +856,61 @@ public class ProcessContextTable extends AbstractTableComposite {
 		return true;
 	}
 
+	private void setConflictLabel() {
+			
+		//verfies if there are no conflicts between CAProvided and not provided
+		UUID caID= dataController.getLinkedCAE().getId();
+		List<ProcessModelVariables> notProvidedContext =dataController.getControlActionEntry(false, caID).getContextTableCombinations();
+		List<ProcessModelVariables> providedContext =dataController.getControlActionEntry(true, caID).getContextTableCombinations();
+		int conflictCounter = 0;
+		boolean combiesFit;
+		//initially all stored contextTableCombinations are set too non conflicting
+		for (ProcessModelVariables NPCombie : notProvidedContext) {
+			NPCombie.setConflict(false);
+		}
+		for (ProcessModelVariables pCombie : providedContext) {
+			pCombie.setConflict(false);
+		}
+		
+		for (ProcessModelVariables NPCombie : notProvidedContext) {
+			for (ProcessModelVariables pCombie : providedContext) {
+				if(pCombie.getConflict() || NPCombie.getConflict()){
+					continue;
+				}
+				//check if the combies are defining a combination of the same values
+				combiesFit = true;
+				if(NPCombie.getValueIds().size() == pCombie.getValueIds().size()){
+					for(int i=0;i<NPCombie.getValueIds().size();i++){
+						if(!NPCombie.getValueIds().contains(pCombie.getValueIds().get(i))){
+							combiesFit =false;
+						}
+					}
+				}
+				//if the combies fit than it is checked if both cases are hazardous
+				if(combiesFit){
+					if(NPCombie.getHazardous() && pCombie.getGlobalHazardous()){
+						conflictCounter++;
+						NPCombie.setConflict(true);
+						pCombie.setConflict(true);
+						break;
+					}else{
+						NPCombie.setConflict(false);
+						pCombie.setConflict(false);
+					}
+				}else{
+					NPCombie.setConflict(false);
+					pCombie.setConflict(false);
+				}
+			}
+		}
+   	 
+		if(conflictCounter > 0){
+   		 	errorLabel.setText("There are " +conflictCounter+ " Conflicts!");
+   	 	}else{
+   		 	errorLabel.setText("");
+   	 	}
+		contextRightViewer.refresh();
+	}
 	/**
 	 * updates the table dynamically if something changes in the Datamodel
 	 */

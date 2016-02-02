@@ -353,6 +353,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	
 	
 	public static RefinedSafetyEntry getAnytimeEntry(int number,ProcessModelVariables var,DataModelController controller){
+		
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_ANYTIME, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		entry.setDataRef(var.getAnytimeRule());
 		entry.update();

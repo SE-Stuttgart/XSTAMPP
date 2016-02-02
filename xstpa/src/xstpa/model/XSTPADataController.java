@@ -301,7 +301,16 @@ public class XSTPADataController extends Observable implements Observer{
 		return tempCAEntry;
 	}
 
-	
+	/**
+	 * 
+	 * @param caID an uuid for filtering by a specific controlaction, if null than all ltlEntrys are generated
+	 * 				
+	 * @return a map containing three mappings containing:</ul>
+	 * 		 	<li>List of RefinedSafetyEntrys to {@value IValueCombie#HAZ_IF_NOT_PROVIDED}
+	 * 		 	<li>List of RefinedSafetyEntrys to {@value IValueCombie#HAZ_IF_PROVIDED}
+	 * 		 	<li>List of RefinedSafetyEntrys to {@value IValueCombie#HAZ_IF_WRONG_PROVIDED}
+	 * </ul>
+	 */
 	public Map<String,ArrayList<RefinedSafetyEntry>> getHazardousCombinations(UUID caID){
 		HashMap<String,ArrayList<RefinedSafetyEntry>> combiesToContextID = new HashMap<>();
 
@@ -327,29 +336,33 @@ public class XSTPADataController extends Observable implements Observer{
   	    	}
 			RefinedSafetyEntry entry;
 			for(ProcessModelVariables variable : getControlActionEntry(true, ca.getId()).getContextTableCombinations()){
+				if(variable.getConflict()){
+					//only variables without confilcts are forming rules
+					continue;
+				}
 				if(variable.getHAnytime()){
 					count++;
-					if(consider){
 						entry = RefinedSafetyEntry.getAnytimeEntry(count,variable,getModel());
 						currentRSR.add(entry.getDataRef());
+					if(consider){
 						combiesToContextID.get(IValueCombie.HAZ_IF_PROVIDED)
 												.add(entry);
 					}
 				}
 				if(variable.getHEarly()){
 					count++;
-					if(consider){
 						entry = RefinedSafetyEntry.getTooEarlyEntry(count,variable,getModel());
 						currentRSR.add(entry.getDataRef());
+					if(consider){
 						combiesToContextID.get(IValueCombie.HAZ_IF_WRONG_PROVIDED)
 												.add(entry);
 					}
 				}
 				if(variable.getHLate()){
 					count++;
-					if(consider){
 						entry = RefinedSafetyEntry.getTooLateEntry(count,variable,getModel());
 						currentRSR.add(entry.getDataRef());
+					if(consider){
 						combiesToContextID.get(IValueCombie.HAZ_IF_WRONG_PROVIDED).
 											add(entry);
 					}
@@ -358,11 +371,11 @@ public class XSTPADataController extends Observable implements Observer{
 			
 			for (ProcessModelVariables variable : getControlActionEntry(false, ca.getId()).
 					getContextTableCombinations()) {
-				if(variable.getGlobalHazardous()){
+				if(variable.getGlobalHazardous() && !variable.getConflict()){
 					count++;
-					if(consider){
 						entry = RefinedSafetyEntry.getNotProvidedEntry(count,variable,getModel());
 						currentRSR.add(entry.getDataRef());
+					if(consider){
 						combiesToContextID.get(IValueCombie.HAZ_IF_NOT_PROVIDED).
 											add(entry);
 					}
