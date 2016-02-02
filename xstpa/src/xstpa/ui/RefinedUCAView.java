@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import messages.Messages;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.ui.common.grid.GridCellBlank;
 import xstampp.astpa.ui.common.grid.GridCellColored;
@@ -14,6 +14,7 @@ import xstampp.astpa.ui.common.grid.GridCellText;
 import xstampp.astpa.ui.common.grid.GridRow;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
 import xstampp.model.ILTLProvider;
+import xstampp.model.ObserverValue;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.XSTPADataController;
 
@@ -54,7 +55,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	  	    ArrayList<ILTLProvider> allProvidedRUCA = new ArrayList<>();
 	  	    ArrayList<ILTLProvider> allWrongTimedRUCA = new ArrayList<>();
 	  	    List<ILTLProvider> refinedEntrys = dataController.getModel().getAllRefinedRules();
-	  	    
+	  	    System.out.println("refined entrys contains " + refinedEntrys.size()+" Entrys");
 	  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
 	  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
 	  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
@@ -196,10 +197,16 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	}
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
-		if (!this.grid.getGrid().isDisposed() && dataModelController instanceof XSTPADataController) {
-			this.grid.clearRows();
-			this.fillTable(((XSTPADataController)dataModelController).getModel().getAllControlActions());
-			this.grid.reloadTable();
+		ObserverValue type = (ObserverValue) updatedValue;
+		switch (type) {
+			case Extended_DATA:
+				if (!this.grid.getGrid().isDisposed() && dataModelController instanceof DataModelController) {
+					this.grid.clearRows();
+					this.fillTable(((DataModelController)dataModelController).getAllControlActions());
+					this.grid.reloadTable();
+				}
+		default:
+			break;
 		}
 	}
 	

@@ -8,6 +8,7 @@ import messages.Messages;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.ui.sds.CSCView;
 import xstampp.model.ILTLProvider;
 import xstampp.model.ObserverValue;
@@ -26,10 +27,10 @@ public class RefinedSafetyConstraintsView extends CSCView{
 	}
 	@Override
 	protected Object getInput() {
-		if(dataController == null){
+		if(getDataInterface() == null){
 			return null;
 		}
-		List<ILTLProvider> allRUCA = dataController.getModel().getAllRefinedRules();
+		List<ILTLProvider> allRUCA = ((DataModelController)getDataInterface()).getAllRefinedRules();
   	    Collections.sort(allRUCA);
   	    
   	    return allRUCA;
@@ -63,8 +64,8 @@ public class RefinedSafetyConstraintsView extends CSCView{
 	public void update(Observable dataModelController, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
-			case CONTROL_ACTION:
-					refresh();
+			case Extended_DATA:
+					packColumns();
 		default:
 			break;
 		}

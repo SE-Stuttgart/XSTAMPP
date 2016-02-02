@@ -44,8 +44,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.ui.acchaz.ATableFilter;
@@ -210,7 +212,7 @@ public class CSCView extends StandartEditorPart{
 		ucaIdColumn.getColumn().setText(this.headers[0]);
 		tableColumnLayout.setColumnData(
 				ucaIdColumn.getColumn(),
-				new ColumnWeightData(3, false));
+				new ColumnWeightData(2, false));
 		
 		// the left column is for the unsafe control actions
 		this.unsafeControlActionsColumn = new TableViewerColumn(
@@ -287,7 +289,8 @@ public class CSCView extends StandartEditorPart{
 				this.tableViewer, SWT.NONE);
 		this.safetyConstraintsColumn
 				.setEditingSupport(correspondingSafetyConstraintEditingSupport);
-		this.tableViewer.setInput(getInput());
+		packColumns();
+		
 
 	}
 
@@ -296,6 +299,12 @@ public class CSCView extends StandartEditorPart{
 		return CSCView.ID;
 	}
 
+	protected void packColumns() {
+		this.tableViewer.refresh(true, true);
+		this.tableViewer.setInput(getInput());
+		this.tableViewer.getTable().getColumn(0).pack();
+		this.tableViewer.getTable().getColumn(2).pack();
+	}
 	@Override
 	public String getTitle() {
 		return Messages.CorrespondingSafetyConstraints;
@@ -313,8 +322,7 @@ public class CSCView extends StandartEditorPart{
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 		case UNSAFE_CONTROL_ACTION:
-			this.tableViewer.refresh(true, true);
-			this.tableViewer.setInput(getInput());
+			packColumns();
 			break;
 		default:
 			break;
@@ -328,6 +336,9 @@ public class CSCView extends StandartEditorPart{
 		}
 	}
 	
+	protected ICorrespondingSafetyConstraintDataModel getDataInterface(){
+		return dataInterface;
+	}
 	protected Object getInput() {
 		return this.dataInterface.getAllUnsafeControlActions();
 	}
