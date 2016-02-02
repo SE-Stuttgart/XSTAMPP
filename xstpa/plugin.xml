@@ -42,7 +42,7 @@
          point="xstampp.extension.stepEditors">
       <stepPerspective
             id="xstpa.stepPerspective1"
-            name="XSTPA"
+            name="Context Tables"
             parentStep="astpa.navigation.step3_1"
             targetId="xstampp.defaultPerspective">
          <view
