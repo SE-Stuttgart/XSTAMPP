@@ -146,7 +146,11 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 	@Override
 	public void onMouseDown(MouseEvent e,
 			org.eclipse.swt.graphics.Point relativeMouse, Rectangle cellBounds) {
-		this.activate();
+		if(this.showDelete && GridCellTextEditor.this.deleteSpace.contains(e.x,e.y)){
+			delete();
+		}else{
+			this.activate();
+		}
 	}
 
 	@Override
@@ -238,11 +242,10 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 	 */
 	@Override
 	public void onMouseUp(MouseEvent e) {
-		if(this.showDelete && GridCellTextEditor.this.deleteSpace.contains(e.x,e.y)){
-			delete();
-		}
+		
 		super.onMouseUp(e);
 	}
+	
 	
 	/**
 	 *The abstract methode which is linked with the delete button

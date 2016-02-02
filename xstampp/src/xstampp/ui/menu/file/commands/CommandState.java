@@ -183,26 +183,28 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 
 			@Override
 			public void run() {
-				IWorkbenchPart part =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
-				IStatusLineManager manager = null;
-				if(part instanceof IViewPart){
-					manager =((IViewPart)part).getViewSite().getActionBars().getStatusLineManager();
-				}else if(part instanceof IEditorPart){
-					manager =((IEditorPart)part).getEditorSite().getActionBars().getStatusLineManager();
-				}
+				try{
+					IWorkbenchPart part =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
 				
-				if (ProjectManager.getContainerInstance().getUnsavedChanges() && manager != null) {
-					try{
+					IStatusLineManager manager = null;
+					if(part instanceof IViewPart){
+						manager =((IViewPart)part).getViewSite().getActionBars().getStatusLineManager();
+					}else if(part instanceof IEditorPart){
+						manager =((IEditorPart)part).getEditorSite().getActionBars().getStatusLineManager();
+					}
+					
+					if (ProjectManager.getContainerInstance().getUnsavedChanges() && manager != null) {
+						
 						Image image = Activator.getImageDescriptor(
 								"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
 						manager.setMessage(image, Messages.ThereAreUnsafedChanges);
-						
-						
-					}catch(SWTError e){
-						ProjectManager.getLOGGER().debug("Cannot write on the status line");
+					} else if(manager != null){
+						manager.setMessage(null);
 					}
-				} else if(manager != null){
-					manager.setMessage(null);
+				}catch(SWTError e){
+					ProjectManager.getLOGGER().debug("Cannot write on the status line");
+				}catch(NullPointerException e){
+					
 				}
 			}
 		});

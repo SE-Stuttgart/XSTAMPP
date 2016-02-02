@@ -207,10 +207,11 @@ public abstract class AbstractGridCell implements IGridCell {
 		FontMetrics metrics= gc.getFontMetrics();
 		//the line height is set absolute so that the strings are drawn on the right position
 		int line_height = bounds.y;
-		String[] words= text.split(" ");
+		String[] words= text.split(" |\t");
 		String line="";
 		String tmpLine=words[0];
 		String space = "";
+		int charHeight = metrics.getHeight();
 		boolean first = true;
 		boolean carryOver=false;
 		int i=1;
@@ -221,29 +222,30 @@ public abstract class AbstractGridCell implements IGridCell {
 			}else{
 				space="";
 			}
-			if(tmpLine.startsWith(System.lineSeparator())){
+			//the first statement checks whether the tmpLine starts with a line break and when it does
+			//a new line is started and the line break is removed
+			if(tmpLine.startsWith(System.lineSeparator()) || tmpLine.startsWith("\n")){
 				gc.drawString(line,bounds.x + left_space ,line_height);
 				line = "";
-				tmpLine = tmpLine.replaceFirst(System.lineSeparator(), "");
+				tmpLine = tmpLine.replaceFirst("\n|"+System.lineSeparator(), "");
 				line_height += metrics.getHeight();
 				first=true;
 				carryOver= false;
 				continue;
 			}
-			if(tmpLine.contains(System.lineSeparator())){
-				words[i-1] = tmpLine.substring(tmpLine.indexOf(System.lineSeparator()));
-				
-				tmpLine = tmpLine.substring(0,tmpLine.indexOf(System.lineSeparator()));
+			//the second statement checks whether there is a line break or not when there is one the string is seperated
+			//in line and carryover which is placed in words[i-1]
+			if(tmpLine.contains("\n") || tmpLine.contains(System.lineSeparator())){
+				words[i-1] = tmpLine.substring(tmpLine.indexOf("\n"));
+				tmpLine = tmpLine.substring(0,tmpLine.indexOf("\n"));
 				first = line.isEmpty();
 				carryOver= true;
-			}else if(gc.stringExtent(tmpLine).x >= width){
+			}else if(!tmpLine.isEmpty() && gc.stringExtent(tmpLine).x >= width){
 				int end= wrap(gc, tmpLine, width-1, 0,tmpLine.length()-1, 0,1,1);
 				gc.drawString(tmpLine.substring(0, end), bounds.x + left_space ,line_height);			
 				line_height += metrics.getHeight();	
 				tmpLine=tmpLine.substring(end);
-			}else
-			
-			if(gc.stringExtent(line + space + tmpLine).x >= width){
+			}else if(gc.stringExtent(line + space + tmpLine).x >= width){
 							
 				gc.drawString(line, bounds.x + left_space ,line_height);			
 				line_height += metrics.getHeight();	

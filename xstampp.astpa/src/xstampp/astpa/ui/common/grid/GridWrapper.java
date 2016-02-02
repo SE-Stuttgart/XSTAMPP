@@ -441,6 +441,12 @@ public class GridWrapper {
 			@Override
 			public void paintControl(PaintEvent e) {
 				for (GridRow row : getRows()) {
+					for(IGridCell cell:row.getCells()){
+						if(cell.needsRefresh()){
+							resizeRows();
+							return;
+						}
+					}
 					for (GridRow childRow : row.getChildren()) {
 						for(IGridCell cell:childRow.getCells()){
 							if(cell.needsRefresh()){
@@ -553,11 +559,15 @@ public class GridWrapper {
 
 			NebulaGridRowWrapper parentItem = new NebulaGridRowWrapper(
 					this.getGrid(), SWT.NONE, row, null);
+
+			parentItem.setHeight(row.getPreferredHeight());
 			parentItem.setRowSpan(0, parentSpan);
 			// parentItem.pack();
 			if(i ==this.rows.size() -1 ){
 				item=parentItem;
 			}
+
+			this.nebulaRows.add(parentItem);
 			// add cells for children cells
 			for (int childI = 0; childI < childCount; childI++) {
 				GridRow childRow = row.getChildren().get(childI);
@@ -765,6 +775,7 @@ public class GridWrapper {
 	 * 
 	 */
 	public void resizeRows() {
+		System.out.println("resize grid");
 		for (int i = 0; i < this.nebulaRows.size(); i++) {
 			if (!this.nebulaRows.get(i).isDisposed()) {
 
@@ -776,6 +787,7 @@ public class GridWrapper {
 	}
 
 	/**
+	 * 
 	 * Get a list of the rows.
 	 * 
 	 * @author Patrick Wickenhaeuser

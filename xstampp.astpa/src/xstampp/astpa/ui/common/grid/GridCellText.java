@@ -35,6 +35,8 @@ public class GridCellText extends AbstractGridCell {
 
 	private boolean needRefresh;
 
+	private int cellHeight;
+
 	private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0,
 			0, 0);
 
@@ -74,7 +76,7 @@ public class GridCellText extends AbstractGridCell {
 		gc.setForeground(GridCellText.TEXT_COLOR);
 		
 		int newHeight =  wrapText(renderer.getDrawBounds(), gc, this.text,2, 0);
-		this.needRefresh = newHeight != this.textHeight;
+		this.needRefresh = newHeight > AbstractGridCell.DEFAULT_CELL_HEIGHT && newHeight != this.cellHeight;
 		this.textHeight = newHeight;
 				
 		// restore bg color
@@ -98,8 +100,8 @@ public class GridCellText extends AbstractGridCell {
 	}
 	@Override
 	public int getPreferredHeight() {
-		int height = Math.max(this.textHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
-		return height;
+		cellHeight = Math.max(this.textHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
+		return cellHeight;
 	}
 
 	@Override

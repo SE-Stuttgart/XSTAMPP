@@ -398,7 +398,7 @@ public class CausalFactorsView extends StandartEditorPart{
 				org.eclipse.swt.graphics.Point relativeMouse,
 				Rectangle cellBounds) {
 			CausalFactorsView.LOGGER.info(Messages.AddingNewCausalFactor);
-
+			e.data = "hallo";
 			UUID factorId = CausalFactorsView.this.dataInterface
 					.addCausalFactor(this.component.getId(), ""); //$NON-NLS-1$
 			CausalFactorsView.this.dataInterface.setNoteText(factorId,
