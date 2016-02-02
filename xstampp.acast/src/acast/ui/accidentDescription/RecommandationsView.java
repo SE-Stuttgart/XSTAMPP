@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
@@ -46,6 +47,8 @@ public class RecommandationsView extends StandartEditorPart {
 	private String selectedItem;
 
 	private TableViewer viewer;
+
+	private IPartListener2 partListener;
 
 	public void setDataModelInterface(IDataModel dataInterface) {
 		this.dataInterface = (IResponsibilityDataModel) dataInterface;
@@ -84,8 +87,13 @@ public class RecommandationsView extends StandartEditorPart {
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
+	public void dispose() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(partListener);
+	}
+	
+	@Override
+	public void createPartControl(final Composite parent) {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(partListener = new IPartListener2() {
 
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {

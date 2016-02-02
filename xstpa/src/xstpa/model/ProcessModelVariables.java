@@ -248,7 +248,6 @@ public class ProcessModelVariables {
 		return conflict;
 	}
 	public void setConflict(Boolean conflict) {
-		if(conflict && rule)
 		this.conflict = conflict;
 	}
 	public String getLinkedControlActionName() {

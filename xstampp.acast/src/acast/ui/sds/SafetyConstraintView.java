@@ -71,6 +71,8 @@ public class SafetyConstraintView extends CommonTableView {
 
 	private ISafetyConstraintViewDataModel dataInterface;
 
+	private IPartListener2 partListener;
+
 	/**
 	 *
 	 */
@@ -78,16 +80,9 @@ public class SafetyConstraintView extends CommonTableView {
 
 	}
 
-	/**
-	 * Create contents of the view part.
-	 *
-	 * @param parent
-	 *            The parent composite
-	 */
 	@Override
-	public void createPartControl(Composite parent) {
-
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
+	public void createPartControl(final Composite parent) {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(partListener = new IPartListener2() {
 
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {
@@ -497,6 +492,7 @@ public class SafetyConstraintView extends CommonTableView {
 
 	@Override
 	public void dispose() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(partListener);
 		this.dataInterface.deleteObserver(this);
 		super.dispose();
 	}

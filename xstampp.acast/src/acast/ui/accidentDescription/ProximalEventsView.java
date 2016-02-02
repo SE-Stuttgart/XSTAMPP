@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
@@ -75,6 +76,8 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 	private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
 	private TableViewer viewer;
+
+	private IPartListener2 partListener;
 
 	@Override
 	public String getId() {
@@ -135,8 +138,13 @@ public class ProximalEventsView extends StandartEditorPart implements IPropertyC
 	}
 
 	@Override
+	public void dispose() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(partListener);
+	}
+	
+	@Override
 	public void createPartControl(final Composite parent) {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(partListener = new IPartListener2() {
 
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {

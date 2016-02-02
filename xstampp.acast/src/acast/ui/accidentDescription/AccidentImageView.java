@@ -35,9 +35,11 @@ public class AccidentImageView extends EditorPart {
 	private Label accidentImage;
 	private ImageData imageData;
 
+	private IPartListener2 partListener;
+
 	@Override
 	public void createPartControl(Composite parent) {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(partListener = new IPartListener2() {
 
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {
@@ -173,4 +175,8 @@ public class AccidentImageView extends EditorPart {
 
 	}
 
+	@Override
+	public void dispose() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(partListener);
+	}
 }

@@ -10,6 +10,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -53,6 +55,21 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
+			
+			@Override
+			public boolean preShutdown(IWorkbench workbench, boolean forced) {
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(editorListener);
+				PlatformUI.getWorkbench().removeWorkbenchListener(this);
+				return true;
+			}
+			
+			@Override
+			public void postShutdown(IWorkbench workbench) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(editorListener = new IPartListener() {
 		
 		    

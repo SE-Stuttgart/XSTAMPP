@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -63,6 +64,8 @@ public class GraphicalViewerOutline extends ViewPart implements IPartListener {
 		if(this.thumbnail != null){
 			this.thumbnail= null;
 		}
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+		
 	}
 
 	@Override

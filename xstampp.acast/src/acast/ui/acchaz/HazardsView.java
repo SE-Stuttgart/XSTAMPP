@@ -67,6 +67,8 @@ public class HazardsView extends CommonTableView {
 
 	private IHazardViewDataModel dataInterface;
 
+	private IPartListener2 partListener;
+
 	/**
 	 * Create contents of the view part.
 	 *
@@ -76,7 +78,7 @@ public class HazardsView extends CommonTableView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new IPartListener2() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(partListener = new IPartListener2() {
 
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {
@@ -487,6 +489,7 @@ public class HazardsView extends CommonTableView {
 
 	@Override
 	public void dispose() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(partListener);
 		this.dataInterface.deleteObserver(this);
 		super.dispose();
 	}
