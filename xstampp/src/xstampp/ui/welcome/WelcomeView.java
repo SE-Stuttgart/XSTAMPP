@@ -243,7 +243,7 @@ public class WelcomeView extends ViewPart implements IEditorBase {
 						WelcomeView.getSettingsImage(),
 						"Opens the Preference Window where you can edit the plugin custumization settings",
 						new Point(WelcomeView.MAIN_ICONS_COLUMN, 510),
-						Messages.Preferences, "astpa.preferencepage"); //$NON-NLS-1$
+						Messages.Preferences, "org.eclipse.ui.window.preferences"); //$NON-NLS-1$
 		settings.setToolTipText(Messages.PreferencesToolTip);
 
 		final Canvas toWorkbench = this.addHoveredLabel(background, WelcomeView

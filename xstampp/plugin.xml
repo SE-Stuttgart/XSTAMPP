@@ -170,7 +170,7 @@
                id="editMenu"
                label="Edit">
             <command
-                  commandId="astpa.preferencepage"
+                  commandId="org.eclipse.ui.window.preferences"
                   helpContextId="Opens the preference page"
                   label="Preferences"
                   style="push">
@@ -643,16 +643,6 @@
             defaultHandler="xstampp.ui.menu.file.commands.AboutHandler"
             id="astpa.about"
             name="About">
-      </command>
-      <command
-            defaultHandler="xstampp.ui.menu.file.commands.Preferences"
-            id="astpa.preferencepage"
-            name="Preferences">
-         <commandParameter
-               id="xstampp.command.preferencePage"
-               name="preference page"
-               optional="true">
-         </commandParameter>
       </command>
       <command
             id="astpa.ExportUCATable"

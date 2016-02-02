@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import settings.PreferencePageSettings;
 import xstampp.util.STPAPluginUtils;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
@@ -446,8 +447,8 @@ public class EditWindow
 	    setPathBtn.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		Map<String,String> values=new HashMap<>();
-  	    	  	values.put("xstampp.command.preferencePage", "xstpa.preferencePage");
-  	    	  	STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
+  	    	  	values.put("preferencePageId", PreferencePageSettings.ID);
+  	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values);
   	    	  
 	    	}
 	    });

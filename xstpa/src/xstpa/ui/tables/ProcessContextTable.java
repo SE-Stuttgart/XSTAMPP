@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+import settings.PreferencePageSettings;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
@@ -614,8 +615,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 				    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
 				    				  .equals(xstampp.Activator.getDefault().getPreferenceStore().getDefaultString(("ACTS_Path")))) {
 				    			  Map<String,String> values=new HashMap<>();
-				    	    	  values.put("xstampp.command.preferencePage", "xstpa.preferencePage");
-				    	    	  STPAPluginUtils.executeParaCommand("astpa.preferencepage", values);
+				    			  values.put("preferencePageId", PreferencePageSettings.ID);
+				    	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values);
 				    	    	  
 				    		  }
 					    	  // creates the correct number of rows for the context table

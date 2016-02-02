@@ -479,12 +479,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Map<String, String> values = new HashMap<>();
-				values.put("xstampp.command.preferencePage", "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$ //$NON-NLS-2$
-				STPAPluginUtils.executeParaCommand("astpa.preferencepage", values); //$NON-NLS-1$
+				values.put("preferencePageId", "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$ //$NON-NLS-2$
+  	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
 			}
 		});
 		
-				if (getModelInterface().getFileExtension().equals("acc")) {
+				if (getModelInterface().getFileExtension().equals("acc")) { //$NON-NLS-1$
 			final Button showResponsibilityViewButton = new Button(
 					this.toolBar, SWT.None);
 			showResponsibilityViewButton.setText("Show Responsibilities");
@@ -499,7 +499,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 							try {
 								PlatformUI.getWorkbench()
 										.getActiveWorkbenchWindow().getActivePage()
-										.showView("A-CAST.view1");
+										.showView("A-CAST.view1"); //$NON-NLS-1$
 							} catch (PartInitException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -516,7 +516,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
 		data.left = new FormAttachment(preferenceButton, 30);
 		this.positionLabel= new Label(this.toolBar, SWT.NONE);
-		this.positionLabel.setText(" --- x --- ");
+		this.positionLabel.setText(" --- x --- "); //$NON-NLS-1$
 		this.positionLabel.setLayoutData(data);
 		
 		data = new FormData();
@@ -768,7 +768,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				root.getFigure().translateToRelative(point);
 				CSAbstractEditor.this.mousePosition = new Point(point.x, point.y);
 				CSAbstractEditor.this.positionLabel.setText(CSAbstractEditor.this.mousePosition.x 
-															+ " x " + CSAbstractEditor.this.mousePosition.y);
+															+ " x " + CSAbstractEditor.this.mousePosition.y); //$NON-NLS-1$
 				super.mouseMove(mouseEvent, viewer);
 			}
 		};
@@ -1161,7 +1161,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 													Messages.DontPromtThisMsgAgain,false,null,null);
 				hideWarning = dialog.getToggleState();
 				if(dialog.getReturnCode() == Window.OK){
-					ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx");
+					ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx"); //$NON-NLS-1$
 				}
 				PlatformUI.getPreferenceStore().setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);
 			}

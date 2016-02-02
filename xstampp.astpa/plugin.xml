@@ -618,11 +618,11 @@
             </parameter>
          </command>
          <command
-               commandId="astpa.preferencepage"
+               commandId="org.eclipse.ui.window.preferences"
                label="Preferences"
                style="push">
             <parameter
-                  name="xstampp.command.preferencePage"
+                  name="preferencePageId"
                   value="xstampp.astpa.preferencepage.cs">
             </parameter>
          </command>
@@ -838,11 +838,11 @@
             </parameter>
          </command>
          <command
-               commandId="astpa.preferencepage"
+               commandId="org.eclipse.ui.window.preferences"
                label="Preferences"
                style="push">
             <parameter
-                  name="xstampp.command.preferencePage"
+                  name="preferencePageId"
                   value="xstampp.astpa.preferencepage.cs">
             </parameter>
          </command>

@@ -75,7 +75,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="settings.PreferencePageSettings"
-            id="xstpa.preferencePage"
+            id="xstpa.preferences.choosePath"
             name="XSTPA Preferences">
       </page>
    </extension>

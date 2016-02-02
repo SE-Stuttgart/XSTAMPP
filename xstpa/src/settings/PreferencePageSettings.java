@@ -28,6 +28,7 @@ public class PreferencePageSettings extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
 
+	public static final String ID ="xstpa.preferences.choosePath"; 
 	private FileFieldEditor actsSettingsFieldEditor;
 
 
