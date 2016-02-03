@@ -86,7 +86,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private TreeViewer treeViewer;
 	private MenuManager contextMenu;
 	private IMenuManager openWithMenu;
-	private FontData defaultFontData;
+	private Font defaultFont;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -200,10 +200,13 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 							+ ProjectManager.getContainerInstance().getTitle(projectID);
 		final TreeItem projectItem = new TreeItem(this.tree, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
-		defaultFontData = PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
-		if(defaultFontData != null){
-			projectItem.setFont(new Font(null, defaultFontData));
+		FontData fData = PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
+		if(fData != null){
+			defaultFont = new Font(null, fData);
+		}else{
+			defaultFont = new Font(null, projectItem.getFont().getFontData());
 		}
+		projectItem.setFont(defaultFont);
 		IProjectSelection selector = new ProjectSelector(projectItem, projectID);
 		this.addOrReplaceItem(selectionId, selector, projectItem);
 		projectItem.addListener(SWT.MouseDown, this.listener);
@@ -231,9 +234,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		String navigationPath=pathName + PATH_SEPERATOR + element.getAttribute("name");
 		final TreeItem subItem = new TreeItem(projectItem, SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
-		if(defaultFontData != null){
-			subItem.setFont(new Font(null, defaultFontData));
-		}
+		subItem.setFont(defaultFont);
 		subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
 		subItem.addListener(SWT.SELECTED, this.listener);
 		this.addImage(subItem, element.getAttribute("icon"), element.getNamespaceIdentifier());//$NON-NLS-1$
@@ -256,6 +257,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 					
 					Image img = PlatformUI.getWorkbench().getViewRegistry().find(viewID).getImageDescriptor().createImage();
 					perspectiveItem = new TreeItem(subItem, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+					perspectiveItem.setFont(defaultFont);
 					this.perspectiveElementsToTreeItems.put(perspectiveItem,perspConf);
 					perspectiveItem.setText(perspConf.getAttribute("name"));
 					this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
