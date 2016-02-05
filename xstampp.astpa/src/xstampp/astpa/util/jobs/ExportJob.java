@@ -44,6 +44,7 @@ import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.AbstractExportPage;
 import xstampp.util.XstamppJob;
 
 /**
@@ -65,6 +66,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 	private final boolean asOne;
 	private final UUID id;
 	private float textSize,titleSize,tableHeadSize;
+	private String pageFormat = AbstractExportPage.A4_PORTRAIT;
 
 	private final boolean decorate;
 	private String imgPath;
@@ -203,7 +205,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 				return Status.CANCEL_STATUS;
 			}
 			this.xslfoTransformer = transfact.newTransformer(transformXSLSource);
-		
+			this.xslfoTransformer.setParameter("page.layout", pageFormat);
 			try (OutputStream out = new BufferedOutputStream(
 					new FileOutputStream(pdfFile));
 					FileOutputStream str = new FileOutputStream(pdfFile);) {
@@ -322,6 +324,13 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 		ExportJob.this.csPath.delete();
 		ExportJob.this.csPmPath.delete();
 		super.done(event);
+	}
+
+	/**
+	 * @param pageFormat the pageFormat to set
+	 */
+	public void setPageFormat(String pageFormat) {
+		this.pageFormat = pageFormat;
 	}
 
 }

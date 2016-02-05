@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
@@ -548,7 +551,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			    				  "do you want to keep the Rules which are defined for this Control Action?",
 			    				  MessageDialog.QUESTION_WITH_CANCEL, new String[]{IDialogConstants.YES_LABEL,
 			    			  IDialogConstants.NO_LABEL,IDialogConstants.CANCEL_LABEL}, 0);
-			    		  int code = dialog.open();
+			    		  final int code = dialog.open();
 			    		  if (code != 2) {
 
 				    		  // If the Path for ACTS is not set, the PreferencePage opens
@@ -559,15 +562,24 @@ public class ProcessContextTable extends AbstractTableComposite {
 				    	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values);
 				    	    	  
 				    		  }
-					    	  // creates the correct number of rows for the context table
-					    	  createTableColumns();
-					    	  ACTSController.writeFile(false,
-									 	 dataController.isControlActionProvided(),
-									 	 dataController.getLinkedCAE().getLinkedItems());
-					    	  storeEntrys(ACTSController.open(false,
-				 								contextRightTable.getColumnCount(),
-				 								contextContentFolder.getSelectionIndex() == 0,
-				 								dataController.getLinkedCAE()), code == 0);
+					    	  
+					    	  final ACTSController job = new ACTSController(contextRightTable.getColumnCount(), dataController.getLinkedCAE());
+					    	  job.addJobChangeListener(new JobChangeAdapter() {
+					    		  @Override
+					    		  public void done(IJobChangeEvent event) {
+					    			  Display.getDefault().asyncExec(new Runnable() {
+										
+										@Override
+										public void run() {
+											// creates the correct number of rows for the context table
+									    	  createTableColumns();
+							    			  storeEntrys(job.getEntryList(), code == 0);
+										}
+									});
+					    		  }
+					    	  });
+					    	  job.schedule();
+					    	  
 			    		  }
 			    	  }
 			    	  else {

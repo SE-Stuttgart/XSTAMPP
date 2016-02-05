@@ -7,6 +7,75 @@
 	<!-- ################### Templates of the PDF ###################-->
 	<!-- ############################################################-->
 	
+    <!-- Page layout -->
+    <xsl:template name="layout">
+    
+		<!-- Page-Master for the common pages -->
+		<fo:simple-page-master margin="5mm 5mm 5mm 5mm"
+			page-height="297mm" page-width="210mm" master-name="titel">
+			<fo:region-body margin="5mm 0mm 10mm 5mm" />
+		</fo:simple-page-master>
+				
+		<fo:simple-page-master margin="5mm 5mm 10mm 5mm"
+				page-height="210mm" page-width="297mm" master-name="A4Landscape">
+				<fo:region-body margin="15mm 0mm 10mm 5mm" />
+				<fo:region-before extent="20mm" display-align="before" />
+				<fo:region-after extent="10mm" display-align="after" />
+		</fo:simple-page-master>
+				
+		<fo:simple-page-master margin="5mm 5mm 10mm 5mm"
+				page-height="297mm" page-width="210mm" master-name="A4">
+				<fo:region-body margin="15mm 0mm 10mm 5mm" />
+				<fo:region-before extent="20mm" display-align="before" />
+				<fo:region-after extent="10mm" display-align="after" />
+		</fo:simple-page-master>
+	</xsl:template>	
+	
+	<!-- ################### Head ################### -->
+	<xsl:template name="astpaHead">
+		<fo:table background-color="#DEDEDE">
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell padding="4px">
+						<fo:block font-size="10pt">
+							<xsl:value-of select="projectdata/projectName" />
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding="4px">
+						<fo:block font-size="10pt" text-align="right">
+							<xsl:value-of select="exportinformation/date" />
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	
+	<!-- ################### Footer ################### -->
+	<xsl:template name="astpaFooter">
+		<fo:table>
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell background-color="#DEDEDE" padding="4px">
+						<!-- Page Numbering -->
+						<fo:block font-size="10pt" text-align="center">
+							Page &#x0020;
+							<fo:page-number />
+							of
+							<fo:page-number-citation-last ref-id="total"/>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+				<fo:table-row>
+					<fo:table-cell padding="2px">
+						<fo:block font-size="8pt">Created with A-STPA</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
 	<!-- ################### Heading-Background-Color ################### -->
 	<xsl:template name="headTheme">
 		<xsl:if test="exportinformation/backgroundColor">
@@ -158,6 +227,15 @@
 			<!-- Sets the PDF-Theme-Color -->
 				<xsl:call-template name="headTheme"/>
 				<xsl:call-template name="fontTheme"/>
+				
+				<fo:table-row>
+					<fo:table-cell padding="3px">
+						<fo:block font-weight="bold">No.</fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding="3px" number-columns-spanned="3">
+						<fo:block text-align="center" font-weight="bold">Title</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">No.</fo:block>
@@ -236,6 +314,8 @@
 		</fo:table>
 	</xsl:template>
 	
+	
+
 	<!-- ################### Safety Constraints Table ################### -->
 	<xsl:template name="safetyConstraintsTable">
       <xsl:param name="varSize" select="12"/> 

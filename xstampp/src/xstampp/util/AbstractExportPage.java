@@ -17,10 +17,12 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
@@ -36,11 +38,14 @@ import xstampp.ui.navigation.IProjectSelection;
 public abstract class AbstractExportPage extends AbstractWizardPage implements
 		IExportPage {
 
+	public static final String A4_LANDSCAPE = "A4Landscape";
+	public static final String A4_PORTRAIT = "A4";
 	private Map<UUID, String> projects;
 	private Combo chooseList;
 	protected PathComposite pathChooser;
 	private String pluginID;
 	private String nameSuggestion;
+	protected String pageFormat;
 
 	/**
 	 * 
@@ -56,6 +61,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		super(pageName);
 		this.projects = new HashMap<>();
 		this.pluginID = pluginID;
+		this.pageFormat = A4_PORTRAIT;
 	}
 
 	/**
@@ -158,7 +164,33 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	}
 
 
-
+	/**
+	 * @param composite
+	 */
+	protected void addFormatChooser(Composite composite,Object layoutData){
+		Group formatGroup = new Group(composite, SWT.NONE);
+		formatGroup.setLayoutData(layoutData);
+		formatGroup.setLayout(new GridLayout(2, true));
+		Button chFormat = null;
+		for(final String format:new String[]{A4_LANDSCAPE,A4_PORTRAIT}){
+			chFormat = new Button(formatGroup, SWT.RADIO);
+			chFormat.setText(format);
+			chFormat.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+			chFormat.addSelectionListener(new SelectionAdapter() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					pageFormat = format;
+				}
+			});
+		}
+		if(chFormat != null){
+			chFormat.setSelection(true);
+		}
+		
+		
+	}
+	
 	@Override
 	public String getExportPath() {
 		if (this.pathChooser == null) {
@@ -220,5 +252,12 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 				}
 			}
 		}
+	}
+
+	/**
+	 * @return the pageFormat
+	 */
+	public String getPageFormat() {
+		return this.pageFormat;
 	}
 }

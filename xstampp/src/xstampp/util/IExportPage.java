@@ -30,4 +30,9 @@ public interface IExportPage extends IWizardPage {
 	 *         has not be instantiated
 	 */
 	public UUID getProjectID();
+	
+	/**
+	 * @return the pageFormat
+	 */
+	public String getPageFormat();
 }

@@ -52,6 +52,10 @@ public class NotProvidedValuesCombi implements IValueCombie{
 	
 	@XmlElement(name="archived")
 	private boolean archived;
+
+	@XmlElementWrapper(name="valueNames")
+	@XmlElement(name="name")
+	private List<String> valueNames;
 	/**
 	 * constructs a combination of values.legth PM value ids 
 	 * 
@@ -219,5 +223,10 @@ public class NotProvidedValuesCombi implements IValueCombie{
 	public void setRefinedRuleId(UUID ruleId) {
 		this.ruleId = ruleId;
 	}
-	
+	/**
+	 * @param valueNames the valueNames to set
+	 */
+	public void setValueNames(List<String> valueNames) {
+		this.valueNames = valueNames;
+	}
 }

@@ -24,6 +24,9 @@ import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlstructure.ControlStructureController;
+import xstampp.astpa.model.controlstructure.components.Component;
+import xstampp.astpa.model.hazacc.HazAccController;
 
 /**
  * Class representing the control action objects
@@ -65,7 +68,13 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		return this.componentLink;
 	}
 
+	@XmlElementWrapper(name = "dependenciesForNotProvided")
+	@XmlElement(name = "variableName")
+    private List<String> notProvidedVariableNames;
 
+	@XmlElementWrapper(name = "dependenciesForProvided")
+	@XmlElement(name = "variableName")
+    private List<String> providedVariableNames;
 	/**
 	 * @param componentLink the componentLink to set
 	 */
@@ -356,5 +365,79 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 			return this.providedVariables.remove(providedVariable);
 		}
 		return false;
+	}
+	
+	/**
+	 * Prepares the control actions for the export
+	 * 
+	 * @author Fabian Toth
+	 * 
+	 * @param hazAccController
+	 *            the hazAccController to get the Accidents as objects
+	 * 
+	 */
+	public void prepareForExport(ControlStructureController csController) {
+		
+		if(notProvidedVariables != null){
+			notProvidedVariableNames = new ArrayList<>();
+			for(UUID id:notProvidedVariables){
+				notProvidedVariableNames.add(csController.getComponent(id).getText());
+			}
+		}
+		if(providedVariables != null){
+
+			providedVariableNames = new ArrayList<>();
+			for(UUID id:providedVariables){
+			providedVariableNames.add(csController.getComponent(id).getText());
+			}
+		}
+		if(notProvidedVariableNames != null && !notProvidedVariableNames.isEmpty() && valuesWhenNotProvided != null){
+			for(NotProvidedValuesCombi combie : valuesWhenNotProvided){
+				if(combie.getValueList().size() == notProvidedVariableNames.size()){
+					ArrayList<String> list = new ArrayList<>();
+					for(UUID id:combie.getValueList()){
+						list.add(csController.getComponent(id).getText());
+					}
+					combie.setValueNames(list);
+				}else{
+					combie.setValueNames(null);
+				}
+			}
+		}
+		if(providedVariableNames != null && !providedVariableNames.isEmpty() && valuesWhenProvided != null){
+			for(ProvidedValuesCombi combie : valuesWhenProvided){
+				if(combie.getValueList().size() == providedVariableNames.size()){
+					ArrayList<String> list = new ArrayList<>();
+					for(UUID id:combie.getValueList()){
+						list.add(csController.getComponent(id).getText());
+					}
+					combie.setValueNames(list);
+				}else{
+					combie.setValueNames(null);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Prepares the control actions for save
+	 * 
+	 * @author Fabian Toth
+	 * 
+	 */
+	public void prepareForSave() {
+		notProvidedVariableNames = null;
+		providedVariableNames = null;
+		
+		if(valuesWhenNotProvided != null){
+			for(NotProvidedValuesCombi combie : valuesWhenNotProvided){
+				combie.setValueNames(null);
+			}
+		}
+		if(valuesWhenProvided != null){
+			for(ProvidedValuesCombi combie : valuesWhenProvided){
+				combie.setValueNames(null);
+			}
+		}
 	}
 }

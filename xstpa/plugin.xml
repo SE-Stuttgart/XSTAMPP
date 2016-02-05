@@ -51,7 +51,7 @@
       </stepPerspective>
       <stepEditor
             editorId="xstpa.editor.ruca"
-            icon="icons/ruca_logo.png"
+            icon="icons/ruca_logo2x16.png"
             id="xstpa.views.ruca"
             name="Refined Unsafe Control Actions"
             parentStep="astpa.navigation.step3_1">
@@ -87,6 +87,11 @@
             id="export.wizard"
             name="XstpaExport">
       </wizard>
+      <wizard
+            class="export.ContextTablePDFWizard"
+            id="xstpa.wizard.contextTables"
+            name="STPA Context Tables">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.help.toc">
@@ -121,18 +126,21 @@
       <editor
             class="xstpa.ui.RefinedUCAView"
             default="false"
+            icon="icons/ruca_logo2x16.png"
             id="xstpa.editor.ruca"
             name="Refined Unsafe Control Actions">
       </editor>
       <editor
             class="xstpa.ui.RefinedSafetyConstraintsView"
             default="false"
+            icon="icons/rsc_logox16.png"
             id="xstpa.editor.refinedSC"
             name="Refined Safety Constraints">
       </editor>
       <editor
             class="xstpa.ui.tables.LTLPropertiesTable"
             default="false"
+            icon="icons/ltl.png"
             id="xstpa.editor.ltl"
             name="LTL Formulas">
       </editor>

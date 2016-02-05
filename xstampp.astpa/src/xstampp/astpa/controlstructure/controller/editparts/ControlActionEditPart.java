@@ -58,14 +58,13 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 		super.refreshVisuals();
 		IRectangleComponent modelTemp = this.getDataModel().getComponent(
 				this.getId());
-		if (this.getDataModel().getControlActionU(
-				modelTemp.getControlActionLink()) == null) {
+		if (this.getDataModel().getControlActionU(modelTemp.getControlActionLink()) == null) {
 			this.getDataModel().removeComponent(modelTemp.getId());
 			this.deactivate();
 		}
 		//if this component is linked to a control action than the titles of of both are synchtonised,
 		//this if makes sure that the titles are only sync when they are different
-		if(!this.getDataModel().getControlActionU(modelTemp.getControlActionLink()).getTitle().equals(modelTemp.getText())){
+		else if(!this.getDataModel().getControlActionU(modelTemp.getControlActionLink()).getTitle().equals(modelTemp.getText())){
 			this.getDataModel().setControlActionTitle(
 					modelTemp.getControlActionLink(), modelTemp.getText());
 		}

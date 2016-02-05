@@ -9,18 +9,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.resource.FontDescriptor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -57,6 +61,36 @@ import xstpa.ui.View;
 public class EditWindow
 {
 
+	private abstract class CopyEditor extends EditingSupport{
+
+		private TextCellEditor editor;
+
+		public CopyEditor(TableViewer viewer) {
+			super(viewer);
+		    this.editor = new TextCellEditor(viewer.getTable()){
+		    	@Override
+		    	public boolean isDeleteEnabled() {
+		    		return false;
+		    	}
+		    };
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			return this.editor;
+		}
+
+		@Override
+		protected boolean canEdit(Object element) {
+			return true;
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
     // ==================== 2. Instance Fields ============================
 
     private Shell shell;
@@ -65,9 +99,11 @@ public class EditWindow
     
     
     public static final String[] DMODE = { "scratch", "extend" };
-    
+
     public static final String[] DCHANDLER = { "no", "solver", "forbiddentuples" };
-    
+    public static final String[] BOOL_TABLE = {"&&", "||", "=>"};
+    public static final String[] RATIONAL_TABLE = {">", "<", "=", "!=", ">=", "<="};
+    public static final String[] ARITHMETIC_TABLE = {"+", "-", "*", "/", "%"};
     private boolean refreshView;
     public static List<String> modes = new ArrayList<String>();
     public static List<String> constraints = new ArrayList<String>();
@@ -75,6 +111,7 @@ public class EditWindow
 	private Button ipogfButton, ipogButton, ipogf2Button, ipogdButton, baseChoiceButton,ignoreConstraints;
 	private Combo strengthCombo,modeCombo,handlingCombo;
     public static List<Relation> relations = new ArrayList<Relation>();
+    private HashMap<String,List<String>> valuesToVariables = new HashMap<>();
     private boolean isDirty;
     private SelectionAdapter dirtyListener= new SelectionAdapter() {
     	@Override
@@ -82,6 +119,8 @@ public class EditWindow
     		isDirty = true;
     	}
 	};
+	private Text editor;
+	private Label errorMsg;
     
     
     // ====================== 3. Subclasses ===================================
@@ -109,50 +148,7 @@ public class EditWindow
 		    return ((List<?>) inputElement).toArray();
 		  }
 	}
-    
-    class settingsViewLabelProvider extends LabelProvider implements
-	ITableLabelProvider {
-		
-		@Override
-		public Image getColumnImage(Object element, int columnIndex) {
-			
-			return null;
-		}
-
-		@Override
-		public String getColumnText(Object element, int columnIndex) {
-			
-			ProcessModelVariables entry = (ProcessModelVariables) element;
 	
-			switch (columnIndex) {
-		    case 0:
-		    	String tempName = "";
-		    	tempName = entry.getName().replace(" ", "_");
-		    	return tempName;
-		    case 1:
-		    	String temp = "";
-		    	List<String> tempList = entry.getValues();
-		    	for (int i =0; i<tempList.size(); i++) {
-		    		
-		    		if (i == tempList.size()-1) {
-		    			temp = temp.concat(tempList.get(i));
-		    		}
-		    		else {
-		    			temp = temp.concat(tempList.get(i).concat(", "));
-		    		}
-		    	}
-		      return temp;
-			}
-	
-				
-			return null;
-			}
-			
-			
-		}
-    
-    
-    
     class relationsViewLabelProvider extends LabelProvider implements
 	ITableLabelProvider {
 		
@@ -212,7 +208,7 @@ public class EditWindow
 		});
         
         
-        shell.setLayout(new GridLayout(1, false));
+        shell.setLayout(new FormLayout());
         shell.setText("Context Table Settings");
         shell.setImage(View.LOGO);
         this.linkedCAE = linkedCAE;
@@ -235,19 +231,73 @@ public class EditWindow
     private void createContents(final Composite parent) {
     	
     	TabFolder folder = new TabFolder(parent, SWT.NONE);
-      	 
-	    // ===================== Tab 1 (Constraints)Start ===============================
-	    TabItem tab1 = new TabItem(folder, SWT.NONE);
-	    tab1.setText("General Options");
-    	
-    	Composite outercomposite = new Composite(folder, SWT.NONE);	
-    	
-	    // The FormLayout for the outer Composite
+
+	    FormData fData = new FormData();
+	    fData.top = new FormAttachment( 0 );
+	    fData.left = new FormAttachment( 0 );
+	    fData.right = new FormAttachment(100);
+    	folder.setLayoutData(fData);
+    	 // The FormLayout for the outer Composite
 	    FormLayout formLayout = new FormLayout();
 	    formLayout.marginHeight = 5;
 	    formLayout.marginWidth = 5;
 	    formLayout.spacing = 5;
-	    outercomposite.setLayout( formLayout );
+	    
+	    TabItem tab1 = new TabItem(folder, SWT.NONE);
+	    tab1.setText("General Options");
+	    tab1.setControl(createConfigComposite(folder, formLayout));
+
+	    TabItem tab2 = new TabItem(folder, SWT.NONE);
+	    tab2.setText("Relations");
+	    tab2.setControl(createRelationsComposite(folder, formLayout));
+	    
+	    TabItem tab3 = new TabItem(folder, SWT.NONE);
+	    tab3.setText("Constraints");
+	    tab3.setControl(createConstraintsPage(folder, formLayout));
+	    
+	    
+	    // Apply Button
+	    Button ok = new Button(parent, SWT.PUSH);
+	    ok.setText("Ok");
+	    fData = new FormData();
+	    fData.top = new FormAttachment(folder,5);
+	    fData.right = new FormAttachment(100);
+	    fData.bottom = new FormAttachment(100);
+	    ok.setLayoutData(fData);
+	    
+	    // Functionality of the Apply Button
+	    ok.addSelectionListener(new SelectionAdapter() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		apply();
+	    	}	  
+	    });
+	    
+	    Button cancel = new Button(parent, SWT.PUSH);
+	    cancel.setText("Cancel");
+	    fData = new FormData();
+	    fData.top = new FormAttachment(folder,5);
+	    fData.right = new FormAttachment(ok,-20);
+	    fData.bottom = new FormAttachment(100);
+	    cancel.setLayoutData(fData);
+	    
+	    cancel.addSelectionListener(new SelectionAdapter() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		close();
+	    	}
+	    });
+	    errorMsg = new Label(parent, SWT.READ_ONLY);
+	    fData = new FormData();
+	    fData.top = new FormAttachment(folder,5);
+	    fData.left = new FormAttachment(0);
+	    fData.right = new FormAttachment(cancel);
+	    fData.bottom = new FormAttachment(100);
+	    errorMsg.setLayoutData(fData);
+	   
+    }
+
+    private Composite createConfigComposite(TabFolder folder,FormLayout formLayout){
+    	Composite outercomposite = new Composite(folder, SWT.NONE);	
+    	outercomposite.setLayout(formLayout);
 	    
 	    Composite radioButtonsLabelComposite = new Composite( outercomposite, SWT.NONE );
 	    
@@ -281,8 +331,6 @@ public class EditWindow
 	    fData = new FormData();
 	    fData.top = new FormAttachment( radioButtonsLabelComposite );
 	    fData.left = new FormAttachment( 0 );
-	    
-	    
 	    mainComposite.setLayoutData( fData );
 	    
 	    Composite buttonsComposite = new Composite( outercomposite, SWT.NONE );
@@ -296,8 +344,6 @@ public class EditWindow
 	    fData = new FormData();
 	    fData.top = new FormAttachment( mainComposite );
 	    fData.left = new FormAttachment( 0 );
-	    
-	    
 	    buttonsComposite.setLayoutData( fData );
 	    
 	    
@@ -456,42 +502,11 @@ public class EditWindow
 	    
 	    Label spacerLabel = new Label(buttonsComposite, SWT.NONE);
 	    spacerLabel.setText("");
-	    
-	    // Apply Button
-	    Button apply = new Button(buttonsComposite, SWT.PUSH);
-	    apply.setText("Apply");
-	    data = new GridData(100, 30);
-	    apply.setLayoutData(data);
-	    
-	    // Functionality of the Apply Button
-	    apply.addSelectionListener(new SelectionAdapter() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		apply();
-	    	}	  
-	    });
-	    
-	    Button cancel = new Button(buttonsComposite, SWT.PUSH);
-	    cancel.setText("Cancel");
-	    data = new GridData(100, 30);
-	    cancel.setLayoutData(data);
-	    
-	    cancel.addSelectionListener(new SelectionAdapter() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		close();
-	    	}
-	    });
-	    		
-	    	
-	    // =============================== tab1 END ===================================
-	    
-	    
-	    
-	    
-	    // ============================== tab2 (Relations) START =========================
-	    TabItem tab2 = new TabItem(folder, SWT.NONE);
-	    tab2.setText("Relations");
-	    
-	    Composite relationsComposite = new Composite(folder, SWT.NONE);
+		return outercomposite;
+    	
+    }
+    private Composite createRelationsComposite(TabFolder folder,FormLayout formLayout){
+    	Composite relationsComposite = new Composite(folder, SWT.NONE);
 	    
 	    // The FormLayout for the relations Composite
 	    relationsComposite.setLayout( formLayout );
@@ -507,7 +522,7 @@ public class EditWindow
 	    
 	    relationParamlistComposite.setLayout( relationParamlistGrid );
 	    
-	    fData = new FormData();
+	    FormData fData = new FormData();
 	    fData.top = new FormAttachment( 0 );
 	    fData.left = new FormAttachment( 0 );
 	    
@@ -554,7 +569,7 @@ public class EditWindow
 	    
 	    // Add the List for relationParamListComposite
 	    final org.eclipse.swt.widgets.List paramList = new org.eclipse.swt.widgets.List(relationParamlistComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-	    data = new GridData(200, 350);
+	    GridData data = new GridData(200, 350);
 	    paramList.setLayoutData(data);
 	    for (ProcessModelVariables entry : linkedCAE.getLinkedItems()) {
 	    	paramList.add(entry.getName());
@@ -580,11 +595,6 @@ public class EditWindow
 	    removeRel.setLayoutData(data);
 	    removeRel.setEnabled(false);
 	    
-	    final Button applyRel = new Button(relationButtonsComposite, SWT.PUSH);
-	    applyRel.setText("Apply");
-	    data = new GridData(77, SWT.DEFAULT);
-	    applyRel.setLayoutData(data);
-	    applyRel.setEnabled(true);
 	    
 	    //Add an empty Label, so the table spawns on same height as the other components
 	    Label filler = new Label(relationTableComposite, SWT.NONE);
@@ -665,28 +675,12 @@ public class EditWindow
 	    		
 	    	}
 	    });
-	    
-	    // Functionality of the Apply Button
-	    applyRel.addSelectionListener(new SelectionAdapter() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		apply();
-	    	}	  
-	    });
-	    
-	    tab2.setControl(relationsComposite);
+		return relationsComposite;
 	    
 	    
-	    // ============================== tab2 (Relations) END ==========================
-	    
-	    
-	    
-	    
-	    
-	    // ============================== tab3 (General Options) START ======================
-	    TabItem tab3 = new TabItem(folder, SWT.NONE);
-	    tab3.setText("Constraints");
-	    
-	    Composite constraintComposite = new Composite(folder, SWT.NONE);
+    }
+    private Composite createConstraintsPage(TabFolder folder,FormLayout formLayout){
+    	Composite constraintComposite = new Composite(folder, SWT.NONE);
 	    
 	    // The FormLayout for the constraints Composite
 	    constraintComposite.setLayout( formLayout );
@@ -702,9 +696,10 @@ public class EditWindow
 	    
 	    constraintCommandsComposite.setLayout( constraintCommandsGrid );
 	    
-	    fData = new FormData();
+	    FormData fData = new FormData();
 	    fData.top = new FormAttachment( 0 );
 	    fData.left = new FormAttachment( 0 );
+	    fData.right = new FormAttachment( 50 );
 	    
 	    constraintCommandsComposite.setLayoutData( fData );
 	    
@@ -722,6 +717,7 @@ public class EditWindow
 	    fData = new FormData();
 	    fData.top = new FormAttachment( constraintCommandsComposite );
 	    fData.left = new FormAttachment( 0 );	
+	    fData.right = new FormAttachment( 50 );
 	    
 	    constraintTableComposite.setLayoutData( fData );
 	    
@@ -738,7 +734,7 @@ public class EditWindow
 	    
 	    fData = new FormData();
 	    fData.top = new FormAttachment( 0 );
-	    fData.left = new FormAttachment( constraintCommandsComposite );
+	    fData.left = new FormAttachment( 50 );
 	    fData.right = new FormAttachment (100);
 
 	    constraintEditorComposite.setLayoutData( fData );
@@ -772,7 +768,8 @@ public class EditWindow
 	    
 	    fData = new FormData();
 	    fData.top = new FormAttachment( constraintEditorComposite );
-	    fData.left = new FormAttachment( constraintCommandsComposite );	    
+	    fData.left = new FormAttachment( 50 );	    
+	    fData.right = new FormAttachment( 100 );	    
 	    constraintDisplayComposite.setLayoutData( fData );	    
 	    
 	    
@@ -798,86 +795,13 @@ public class EditWindow
 	    
 	    
 	    // Add the Labels for constraintCommands
-	    Label separator = new Label(constraintCommandsGroup, SWT.NONE);
-	    separator.setText(" | ");
-	    
-	    Label leftBrace = new Label(constraintCommandsGroup, SWT.NONE);	    
-	    FontDescriptor boldDescriptor = FontDescriptor.createFrom(leftBrace.getFont()).setStyle(SWT.BOLD);
-	    Font boldFont = boldDescriptor.createFont(leftBrace.getDisplay());
-	    leftBrace.setFont( boldFont );
-	    leftBrace.setText("( ");
-	    
-	    Label rightBrace = new Label(constraintCommandsGroup, SWT.NONE);
-	    rightBrace.setFont( boldFont );
-	    rightBrace.setText(") ");
-	    
-	    separator = new Label(constraintCommandsGroup, SWT.NONE);
-	    separator.setText("| ");
-	    
-	    Label equalTo = new Label(constraintCommandsGroup, SWT.NONE);
-	    equalTo.setFont( boldFont );
-	    equalTo.setText("= ");
-	    
-	    Label notEqualTo = new Label(constraintCommandsGroup, SWT.NONE);
-	    notEqualTo.setFont( boldFont );
-	    notEqualTo.setText("!= ");
-	    
-	    Label greaterThan = new Label(constraintCommandsGroup, SWT.NONE);
-	    greaterThan.setFont( boldFont );
-	    greaterThan.setText("> ");
-	    
-	    Label lessThan = new Label(constraintCommandsGroup, SWT.NONE);
-	    lessThan.setFont( boldFont );
-	    lessThan.setText("< ");
-	    
-	    Label lessOrEqualTo = new Label(constraintCommandsGroup, SWT.NONE);
-	    lessOrEqualTo.setFont( boldFont );
-	    lessOrEqualTo.setText("<= ");
-	    
-	    Label greaterOrEqualTo = new Label(constraintCommandsGroup, SWT.NONE);
-	    greaterOrEqualTo.setFont( boldFont );
-	    greaterOrEqualTo.setText(">= ");
-	    
-	    separator = new Label(constraintCommandsGroup, SWT.NONE);
-	    separator.setText("| ");
-	    
-	    Label and = new Label(constraintCommandsGroup, SWT.NONE);
-	    and.setFont( boldFont );
-	    and.setText("&& ");
-	    
-	    Label imply = new Label(constraintCommandsGroup, SWT.NONE);
-	    imply.setFont( boldFont );
-	    imply.setText("|| ");
-	    
-	    Label not = new Label(constraintCommandsGroup, SWT.NONE);
-	    not.setFont( boldFont );
-	    not.setText("! ");
-	    
-	    separator = new Label(constraintCommandsGroup, SWT.NONE);
-	    separator.setText("| ");
-	    
-	    Label multiply = new Label(constraintCommandsGroup, SWT.NONE);
-	    multiply.setFont( boldFont );
-	    multiply.setText("* ");
-	    
-	    Label divide = new Label(constraintCommandsGroup, SWT.NONE);
-	    divide.setFont( boldFont );
-	    divide.setText("/ ");
-	    
-	    Label minus = new Label(constraintCommandsGroup, SWT.NONE);
-	    minus.setFont( boldFont );
-	    minus.setText("- ");
-	    
-	    Label mod = new Label(constraintCommandsGroup, SWT.NONE);
-	    mod.setFont( boldFont );
-	    mod.setText("% ");
-	    
-	    Label add = new Label(constraintCommandsGroup, SWT.NONE);
-	    add.setFont( boldFont );
-	    add.setText("+ ");
-	    
-	    separator = new Label(constraintCommandsGroup, SWT.NONE);
-	    separator.setText("| ");
+	    for (String string : BOOL_TABLE) {
+	    	new Label(constraintCommandsGroup, SWT.NONE).setText(string);
+	    }for (String string : ARITHMETIC_TABLE) {
+	    	new Label(constraintCommandsGroup, SWT.NONE).setText(string);
+	    }for (String string : RATIONAL_TABLE) {
+	    	new Label(constraintCommandsGroup, SWT.NONE).setText(string);
+	    }
 	    // add the group for constraintTableComposite
 	    Group constraintTableGroup = new Group(constraintTableComposite, SWT.NONE);
 	    constraintTableGroup.setText("Parameters");
@@ -886,19 +810,64 @@ public class EditWindow
 	    // add the table for constraintTableComposite
 		TableViewer constraintTableViewer = new TableViewer(constraintTableGroup, SWT.FULL_SELECTION );
 		constraintTableViewer.setContentProvider(new MainViewContentProvider());
-		constraintTableViewer.setLabelProvider(new settingsViewLabelProvider());
-		
 	    Table parameterTable = constraintTableViewer.getTable();
-	    data = new GridData(SWT.FILL, SWT.FILL, true, true);
+	    GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 	    data.heightHint = 300;
 	    data.widthHint = 296;
 	    parameterTable.setLayoutData(data);
 	    
 	    // add Columns for the parameterTable
-	    new TableColumn(parameterTable, SWT.CENTER).setText("Parameter Name");
-	    new TableColumn(parameterTable, SWT.CENTER).setText("Parameter Value");
+	    TableViewerColumn variableCViewer = new TableViewerColumn(constraintTableViewer, SWT.CENTER);
+	    variableCViewer.getColumn().setText("Parameter Name");
+	    final ColumnLabelProvider variableProvider =new ColumnLabelProvider(){
+	    	@Override
+	    	public String getText(Object element) {
+	    		return ((ProcessModelVariables) element).getName();
+	    	}
+	    };
+	    variableCViewer.setEditingSupport(new CopyEditor(constraintTableViewer){
+	    	@Override
+	    	protected String getValue(Object element) {
+	    		return variableProvider.getText(element);
+	    	}
+	    });
+	    variableCViewer.setLabelProvider(variableProvider);
+	    TableViewerColumn valueCViewer = new TableViewerColumn(constraintTableViewer, SWT.CENTER);
+	    final ColumnLabelProvider valueProvider =new ColumnLabelProvider(){
+	    	@Override
+	    	public String getText(Object element) {
+	    		
+	    		String temp = "";
+	        	List<String> tempList = ((ProcessModelVariables) element).getValues();
+	        	
+	        	for (int i =0; i<tempList.size(); i++) {
+	        		
+	        		if (i == tempList.size()-1) {
+	        			temp = temp.concat(tempList.get(i));
+	        		}
+	        		else {
+	        			temp = temp.concat(tempList.get(i).concat(", "));
+	        		}
+	        	}
+	        	return temp;
+	    	}
+	    };
+
+	    valueCViewer.setEditingSupport(new CopyEditor(constraintTableViewer){
+	    	@Override
+	    	protected String getValue(Object element) {
+	    		return valueProvider.getText(element);
+	    	}
+	    });
+	    valueCViewer.getColumn().setText("Parameter Value");
+	    valueCViewer.setLabelProvider(valueProvider);
+	    
 	    parameterTable.setHeaderVisible(true);
 	    parameterTable.setLinesVisible(true);
+	    for(ProcessModelVariables variable: linkedCAE.getLinkedItems()){
+	    	ArrayList<String> list = new ArrayList<>(variable.getValues());
+	    	this.valuesToVariables.put(variable.getName(),list);
+	    }
 	    constraintTableViewer.setInput(linkedCAE.getLinkedItems());
 	    // pack the table
 	    for (int i = 0, n = parameterTable.getColumnCount(); i < n; i++) {
@@ -907,7 +876,7 @@ public class EditWindow
 	    
 
 	    // Add the Editor Field
-	    final Text editor = new Text(constraintEditorGroup, SWT.BORDER);    
+	    editor = new Text(constraintEditorGroup, SWT.BORDER);    
 	    data = new GridData(310, 124);
 	    editor.setLayoutData(data);
 	    editor.setMessage("Enter a Expression: e.g. Variable == \"Value\"");
@@ -940,18 +909,20 @@ public class EditWindow
 	    remove.setText("Remove");
 	    remove.setLayoutData(new GridData());
 	    
-	    // The Apply Button
-	    Button applyConstraints = new Button (constraintDisplayButtonsComposite, SWT.PUSH);
-	    applyConstraints.setText("Apply");
-	    applyConstraints.setLayoutData(new GridData());
 	    
 	    // adds the constraint to the list and clears the editor
 	    addConstraint.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		displayList.add(editor.getText());
-	    		constraints.add(editor.getText());
-	    		editor.setText("");
-	    		editor.setFocus();
+	    		
+	    		if(!editor.getText().isEmpty()){
+	    			errorMsg.setText("");
+		    		displayList.add(editor.getText());
+		    		constraints.add(editor.getText());
+		    		editor.setText("");
+		    		editor.setFocus();
+	    		}else{
+	    			errorMsg.setText("The given constraint is not valid for the current model!");
+	    		}
 	    		
 	    	}
 	    });
@@ -962,25 +933,80 @@ public class EditWindow
 	    		displayList.remove(displayList.getSelectionIndex());
 	    	}
 	    });
-	    
-	 // Functionality of the Apply Button
-	    applyConstraints.addSelectionListener(new SelectionAdapter() {
-	    	public void widgetSelected(SelectionEvent event) {apply();}	  
-	    });
-	    
-	    // TODO LOAD FROM FILE?
-	    tab1.setControl(outercomposite);
-	    tab3.setControl(constraintComposite);
+		return constraintComposite;
 	    
 	    
-	    // ============================== tab3 (Constraints) END =========================
     }
-
-
     // ==================== 6. Action Methods =============================
 
 
+    /**
+     * <Constraint> ::= <Simple_Constraint> | <Constraint> <Boolean_Op>   <Constraint> 
+     * @param constraint <Constraint>
+     * @return whether the Syntax for <Constraint> is satisfied
+     */
+    private boolean validate(String editorText){
+    	String constraint = editorText.replaceAll("(|)","");
+    	
+    	if(constraint == null){
+    		return false;
+    	}
+    	for (String string : BOOL_TABLE) {
+			if((constraint.contains(string))){
+				String left = constraint.substring(0, constraint.indexOf(string)); 
+				String right=constraint.substring(constraint.indexOf(string)+string.length());
+				return validate(left) && validate(right);
+			}
+		}
+    	return checkConstraint(constraint);
+    	
+    	
+    }
+    /**
+     * <Simple_Constraint> ::= <Term> <Relational_Op> <Term>
+     * 
+     * @param constraint <Simple_Constraint>
+     * @return whether the syntax of <Simple_Constraint> is correct or not
+     */
+    private boolean checkConstraint(String constraint){
+    	for (String string : RATIONAL_TABLE) {
+			if((constraint.contains(string))){
+				String leftSide = constraint.substring(0, constraint.indexOf(string));
+				String rightSide = constraint.substring(constraint.indexOf(string)+string.length());
+				return checkTerm(leftSide) && checkTerm(rightSide);
+			}
+		}
+    	return false;
+    }
     
+    /**
+	 * <Term> ::= <Parameter> | <Parameter> <Arithmetic_Op> <Parameter> | 
+	 * 			  <Parameter> <Arithmetic_Op> <Value>
+	 */
+    private boolean checkTerm(String term){
+    	boolean isTerm = this.valuesToVariables.containsKey(term);
+    	if(!isTerm){
+    		
+    		for (String string : ARITHMETIC_TABLE) {
+    			if((term.contains(string))){
+    				String leftSide = term.substring(0, term.indexOf(string));
+    				String rightSide = term.substring(term.indexOf(string)+string.length());
+    				if(this.valuesToVariables.containsKey(leftSide)){
+    					isTerm = this.valuesToVariables.get(leftSide).contains(rightSide);
+    					isTerm = isTerm || this.valuesToVariables.containsKey(rightSide);
+    					
+    					if(!isTerm){
+    						isTerm = true;
+	    					for(char c:rightSide.toCharArray()){
+	    						isTerm = isTerm && Character.isDigit(c);
+	    					}
+    					}
+    				}
+    			}
+    		}
+    	}
+    	return isTerm;
+    }
     public boolean open()
     {
         shell.open();

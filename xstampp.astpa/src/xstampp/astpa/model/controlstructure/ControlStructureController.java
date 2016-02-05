@@ -208,11 +208,14 @@ public class ControlStructureController {
 	 * @author Fabian Toth
 	 */
 	public boolean removeComponent(UUID componentId) {
-		Component component = this.getInternalComponent(componentId);
-		this.removeAllLinks(componentId);
-		this.componentTrash.put(componentId, component);
-		this.componentIndexTrash.put(componentId, this.root.getChildren().indexOf(component));
-		return this.root.removeChild(componentId);
+		if(componentId != null){
+			Component component = this.getInternalComponent(componentId);
+			this.removeAllLinks(componentId);
+			this.componentTrash.put(componentId, component);
+			this.componentIndexTrash.put(componentId, this.root.getChildren().indexOf(component));
+			return this.root.removeChild(componentId);
+		}
+		return false;
 	}
 
 	/**

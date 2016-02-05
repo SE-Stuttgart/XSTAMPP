@@ -227,7 +227,7 @@ public class DataModelController extends Observable implements
 	@Override
 	public boolean prepareForExport() {
 		this.hazAccController.prepareForExport();
-		this.controlActionController.prepareForExport(this.hazAccController);
+		this.controlActionController.prepareForExport(this.hazAccController,this.controlStructureController);
 		this.causalFactorController.prepareForExport(this.hazAccController,
 				this.controlStructureController.getInternalComponents());
 		this.exportInformation = new ExportInformation();
@@ -751,10 +751,12 @@ public class DataModelController extends Observable implements
 		if (controlActionId == null) {
 			return false;
 		}
-		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
+		ITableModel caObject =this.controlActionController.getControlAction(controlActionId);
+		if (caObject == null || !(caObject instanceof ControlAction)) {
 			return false;
+		}else if(this.controlStructureController.removeComponent(((ControlAction)caObject).getComponentLink())){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		}
-
 		boolean result = this.controlActionController
 				.removeControlAction(controlActionId);
 		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);

@@ -12,152 +12,73 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 import xstpa.ui.dialogs.EditWindow;
 
-public class ACTSController {
+public class ACTSController extends Job{
 	
 	private final static String INPUT = Platform.getInstanceLocation().getURL().getPath()+".metadata"+File.separator+"input.txt";
-	
-	private final static String INPUT2 =  Platform.getInstanceLocation().getURL().getPath()+".metadata"+File.separator+"input2.txt";
-	
+
 	private final static String OUTPUT =  Platform.getInstanceLocation().getURL().getPath()+".metadata"+File.separator+"output.txt";
+
+	private List<ProcessModelVariables> entryList;
+
+	private ControlActionEntry context;
+
+	private int columns;
 	
-	private final static String OUTPUT2 =  Platform.getInstanceLocation().getURL().getPath()+".metadata"+File.separator+"output2.txt";
-
-	/**
-	 * Writing the later used input file for ACTS
-	 */
-	public static Boolean writeFile(Boolean defaultSettings,boolean isProvidedContext,List<ProcessModelVariables> items) {
-		PrintWriter writer = null;
-		String paramName = null;
-		try {
-			if (isProvidedContext) {
-				writer = new PrintWriter(INPUT, "UTF-8");
-			}
-			else {
-				writer = new PrintWriter(INPUT2, "UTF-8");
-			}
-		} catch (FileNotFoundException e) {
-			
-			e.printStackTrace();
-			return false;
-		} catch (UnsupportedEncodingException e) {
-			
-			e.printStackTrace();
-			return false;
-		}
-		writer.println("[System]");
-		
-		writer.println("Name : test");
-		// Print the Parameters
-		writer.println("");
-		writer.println("[Parameter]");
-		for (ProcessModelVariables entry : items) {
-			List<String> values = entry.getValues();
-			 if (entry.getName().contains(" ")) {
-				 paramName = entry.getName().replace(" ", "_");
-			 }
-			 else {
-				 paramName = entry.getName();
-			 }
-			writer.write(paramName+ " (enum)" + " : ");
-			for (int i = 0, size = entry.getSizeOfValues();i<size; i++) {
-				if (i < entry.getSizeOfValues()-1) {
-					writer.write(values.get(i) + ", " );
-					
-				}
-				else {
-					writer.write(values.get(i));
-				}
-			}
-			writer.println("");
-			
-		}
-		// Print the Relations
-		writer.println("");
-		writer.println("[Relation]");
-		if (!defaultSettings) {
-			for (int entry = 0; entry<EditWindow.relations.size(); entry++) {
-				String temp = "";
-		    	List<String> tempList = EditWindow.relations.get(entry).getVariables();
-		    	for (int i =0; i<tempList.size(); i++) {
-		    		
-		    		if (i == tempList.size()-1) {
-		    			temp = temp.concat(tempList.get(i).replace(" ", "_"));
-		    		}
-		    		else {
-		    			temp = temp.concat(tempList.get(i).replace(" ", "_").concat(", "));
-		    		}
-		    	}
-				writer.println("R"+entry+ " : ("+temp+", "+EditWindow.relations.get(entry).getStrength()+")");
-			}
-		}
-
-		// Print the Constraints
-		writer.println("");
-		writer.println("[Constraint]");
-		if (!defaultSettings) {
-			for (String entry : EditWindow.constraints) {
-				writer.println(entry);
-			}
-		}
-
-		writer.println("");
-		
-		writer.close();
-		return true;
-		
+	public ACTSController(int columns,ControlActionEntry context) {
+		super("Calculating Combinations..");
+		this.columns = context.getLinkedItems().size();
+		this.context = context;
 	}
 	
-	public static List<ProcessModelVariables> open(Boolean defaultSettings,int columns,boolean providedContext,ControlActionEntry context) {
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
 		// Run ACTS in a separate system process
-		Process proc;
-		String modes;
-		if (columns-2 <= 6) {
-			modes = " -Ddoi=" + Integer.toString(columns-2) + " ";	
-		}
-		else {
-			modes = " -Ddoi=6 " ;	
-		}
 		
 		try {
-			if (!defaultSettings) {
-				for (int i=0; i<EditWindow.modes.size(); i++) {
+			Process proc;
+			String modes;
+			if (columns-2 <= 6) {
+				modes = " -Ddoi=" + Integer.toString(columns-2) + " ";	
+			}
+			else {
+				modes = " -Ddoi=6 " ;	
+			}
+			for (int i=0; i<EditWindow.modes.size(); i++) {
 					
-						if (i==0) {
-							modes = " -Dalgo="+EditWindow.modes.get(i)+" ";
-						}
-					
-						else if (i==1) {
-							if (EditWindow.relations.isEmpty()) {
-								modes = modes.concat("-Ddoi="+EditWindow.modes.get(i)+" ");
-							}
-							else {
-								modes = modes.concat("-Ddoi=-1 ");
-							}
-							
-						}
-						else if (i==2) {
-							modes = modes.concat("-Dmode="+EditWindow.modes.get(i)+" ");
-						}
-						else if (i == 3) {
-							modes = modes.concat("-Dchandler="+EditWindow.modes.get(i)+" ");
-						}
+				if (i==0) {
+					modes = " -Dalgo="+EditWindow.modes.get(i)+" ";
 				}
+				
+				else if (i==1) {
+					if (EditWindow.relations.isEmpty()) {
+						modes = modes.concat("-Ddoi="+EditWindow.modes.get(i)+" ");
+					}
+					else {
+						modes = modes.concat("-Ddoi=-1 ");
+					}
+					
+				}
+				else if (i==2) {
+					modes = modes.concat("-Dmode="+EditWindow.modes.get(i)+" ");
+				}
+				else if (i == 3) {
+					modes = modes.concat("-Dchandler="+EditWindow.modes.get(i)+" ");
+				}
+				
 				// clear so that the default mode gets selected again
-//				editWindow.modes.clear();
 			}
 			String location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
 			//location = location.substring(1, location.length());
-			if (providedContext) {
-				proc = Runtime.getRuntime().exec("java"+modes+"-jar " +location+" cmd "+INPUT+ " " + OUTPUT);
-			}
-			else {
-				proc = Runtime.getRuntime().exec("java"+modes+"-jar " +location+" cmd "+INPUT2+ " " + OUTPUT2);
-			}
-			
+			writeFile(context.getLinkedItems());
+			proc = Runtime.getRuntime().exec("java"+modes+"-jar " +location+" cmd "+INPUT+ " " + OUTPUT);
 			
 			// Then retreive the process output
 			InputStream in = proc.getInputStream();
@@ -171,29 +92,22 @@ public class ACTSController {
 	        System.out.println(out.toString());   //Prints the string content read from input stream
 	        reader.close();
 
-	        return getEntrysFromFile(reader,providedContext,context);
-			
-		} catch (IOException e) {
-			
-			e.printStackTrace();
+	        entryList = getEntrysFromFile(reader,context);
+			return Status.OK_STATUS;
+		}catch (IOException e) {
+			entryList = new ArrayList<>();
+			return Status.CANCEL_STATUS;
 		}
 		
-		return new ArrayList<>();
 		
 	}
 	
 	
-	private static List<ProcessModelVariables> getEntrysFromFile (BufferedReader reader,boolean providedContext,ControlActionEntry context) {
+	private List<ProcessModelVariables> getEntrysFromFile (BufferedReader reader,ControlActionEntry context) {
 		List<ProcessModelVariables> contextEntries = new ArrayList<ProcessModelVariables>();
 		try {
+			reader = new BufferedReader(new FileReader(OUTPUT));
 			
-			if (providedContext) {			
-				reader = new BufferedReader(new FileReader(OUTPUT));
-			}
-			else {
-				reader = new BufferedReader(new FileReader(OUTPUT2));
-	
-			}
 			// go to the fourth line in the file to read the number of Configurations
 			reader.readLine();
 			reader.readLine();
@@ -245,5 +159,90 @@ public class ACTSController {
 			e.printStackTrace();
 		}
 		return contextEntries;
+	}
+	
+	/**
+	 * Writing the later used input file for ACTS
+	 * @param items the ProcessModelVariables that where linked to the selected control action 
+	 * 				in the currently active context
+	 * @return whether the file could be written successfully or not 
+	 */
+	private boolean writeFile(List<ProcessModelVariables> items) {
+		
+		try {
+			PrintWriter writer = null;
+			String paramName = null;
+			writer = new PrintWriter(INPUT, "UTF-8");
+			
+			writer.println("[System]");
+			
+			writer.println("Name : test");
+			// Print the Parameters
+			writer.println("");
+			writer.println("[Parameter]");
+			for (ProcessModelVariables entry : items) {
+				List<String> values = entry.getValues();
+				 if (entry.getName().contains(" ")) {
+					 paramName = entry.getName().replace(" ", "_");
+				 }
+				 else {
+					 paramName = entry.getName();
+				 }
+				writer.write(paramName+ " (enum)" + " : ");
+				for (int i = 0, size = entry.getSizeOfValues();i<size; i++) {
+					if (i < entry.getSizeOfValues()-1) {
+						writer.write(values.get(i) + ", " );
+						
+					}
+					else {
+						writer.write(values.get(i));
+					}
+				}
+				writer.println("");
+				
+			}
+			// Print the Relations
+			writer.println("");
+			writer.println("[Relation]");
+			for (int entry = 0; entry<EditWindow.relations.size(); entry++) {
+				String temp = "";
+		    	List<String> tempList = EditWindow.relations.get(entry).getVariables();
+		    	for (int i =0; i<tempList.size(); i++) {
+		    		
+		    		if (i == tempList.size()-1) {
+		    			temp = temp.concat(tempList.get(i).replace(" ", "_"));
+		    		}
+		    		else {
+		    			temp = temp.concat(tempList.get(i).replace(" ", "_").concat(", "));
+		    		}
+		    	}
+				writer.println("R"+entry+ " : ("+temp+", "+EditWindow.relations.get(entry).getStrength()+")");
+			}
+			
+			// Print the Constraints
+			writer.println("");
+			writer.println("[Constraint]");
+			
+			for (String entry : EditWindow.constraints) {
+				writer.println(entry);
+			}
+			writer.println("");
+			
+			writer.close();
+			return true;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * @return the entryList
+	 */
+	public List<ProcessModelVariables> getEntryList() {
+		return this.entryList;
 	}
 }

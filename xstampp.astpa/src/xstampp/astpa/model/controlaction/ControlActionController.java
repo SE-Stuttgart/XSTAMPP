@@ -34,6 +34,8 @@ import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.controlstructure.ControlStructureController;
+import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.model.ILTLProvider;
 
@@ -462,8 +464,9 @@ public class ControlActionController {
 	 *            the hazAccController to get the Accidents as objects
 	 * 
 	 */
-	public void prepareForExport(HazAccController hazAccController) {
+	public void prepareForExport(HazAccController hazAccController,ControlStructureController csController) {
 		for (ControlAction controlAction : this.controlActions) {
+			controlAction.prepareForExport(csController);
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				List<ITableModel> linkedHazards = new ArrayList<>();
@@ -498,6 +501,7 @@ public class ControlActionController {
 	 */
 	public void prepareForSave() {
 		for (ControlAction controlAction : this.controlActions) {
+			controlAction.prepareForSave();
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				unsafeControlAction.setLinks(null);

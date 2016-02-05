@@ -133,7 +133,9 @@ public abstract class AbstractExportWizard extends Wizard implements
 			}
 			ExportJob exportJob = new ExportJob(this.getExportPage().getProjectID(),
 					jobMessage, filePath,fopName, true, forceCSDeco);
-
+			if(getExportPage().getPageFormat() != null){
+				exportJob.setPageFormat(getExportPage().getPageFormat());
+			}
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
 			exportJob.setCSDirty();
 			exportJob.schedule();
