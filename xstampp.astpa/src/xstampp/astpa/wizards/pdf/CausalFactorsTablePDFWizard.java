@@ -27,6 +27,6 @@ public class CausalFactorsTablePDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(
-				"/fopcausal.xsl", Messages.ExportingCFTable, false); ////$NON-NLS-1$
+				"/fopcausal.xsl", Messages.ExportingCFTable, false, Messages.CausalFactorsTable); ////$NON-NLS-1$
 	}
 }

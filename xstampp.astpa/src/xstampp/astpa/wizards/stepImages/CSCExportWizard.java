@@ -17,6 +17,6 @@ public class CSCExportWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopCorrespondingSafetyConstraints.xsl", Messages.ExportingCSC, false); ////$NON-NLS-1$
+				"/fopCorrespondingSafetyConstraints.xsl", Messages.ExportingCSC, false, ""); ////$NON-NLS-1$
 	}
 }

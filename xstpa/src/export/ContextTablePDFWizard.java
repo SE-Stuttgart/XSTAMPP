@@ -11,13 +11,13 @@ public class ContextTablePDFWizard extends AbstractExportWizard {
 		super(View.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				"Context Tables" + Messages.AsPDF));
+				Messages.ContextTables + Messages.AsPDF));
 		
 	}
 
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopContextTable.xsl", "exporting context tables...", false); ////$NON-NLS-1$
+				"/fopContextTable.xsl", Messages.ExportingContextTables, false, Messages.ContextTables); ////$NON-NLS-1$ //$NON-NLS-3$
 	}
 }

@@ -103,7 +103,13 @@ public abstract class AbstractExportWizard extends Wizard implements
 	}
 
 	protected boolean performXSLExport(String fopName, String jobMessage,
-			boolean forceCSDeco) {
+	boolean forceCSDeco) {
+		return performXSLExport(fopName, jobMessage, forceCSDeco,
+				"");
+	}
+
+	protected boolean performXSLExport(String fopName, String jobMessage,
+			boolean forceCSDeco, String pdfTitle) {
 
 		String filePath = this.getExportPage().getExportPath();
 		if ((filePath != null) && !filePath.isEmpty()) {
@@ -133,6 +139,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 			}
 			ExportJob exportJob = new ExportJob(this.getExportPage().getProjectID(),
 					jobMessage, filePath,fopName, true, forceCSDeco);
+			exportJob.setPdfTitle(pdfTitle);
 			if(getExportPage().getPageFormat() != null){
 				exportJob.setPageFormat(getExportPage().getPageFormat());
 			}

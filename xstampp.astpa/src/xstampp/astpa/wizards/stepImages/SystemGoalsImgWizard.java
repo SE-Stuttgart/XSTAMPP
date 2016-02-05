@@ -17,6 +17,6 @@ public class SystemGoalsImgWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopCorrespondingSafetyConstraints.xsl", Messages.ExportingPdf, false); ////$NON-NLS-1$
+				"/fopCorrespondingSafetyConstraints.xsl", Messages.ExportingPdf, false, ""); ////$NON-NLS-1$
 	}
 }

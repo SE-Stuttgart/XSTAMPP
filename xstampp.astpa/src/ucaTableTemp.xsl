@@ -33,14 +33,24 @@
 	
 	<!-- ################### Head ################### -->
 	<xsl:template name="astpaHead">
+      <xsl:param name="pdfTitle" select="NON"/> 
 		<fo:table background-color="#DEDEDE">
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell padding="4px">
-						<fo:block font-size="10pt">
-							<xsl:value-of select="projectdata/projectName" />
-						</fo:block>
+								<fo:block font-size="10pt">
+									<xsl:value-of select="projectdata/projectName" />
+								</fo:block>
 					</fo:table-cell>
+					
+							<fo:table-cell padding="4px">
+								<fo:block font-size="10pt">
+									<xsl:value-of select="$pdfTitle" />
+								</fo:block>
+							</fo:table-cell>
+							
+					
+					
 					<fo:table-cell padding="4px">
 						<fo:block font-size="10pt" text-align="right">
 							<xsl:value-of select="exportinformation/date" />

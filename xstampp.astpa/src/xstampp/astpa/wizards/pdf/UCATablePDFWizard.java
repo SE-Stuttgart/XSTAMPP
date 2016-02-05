@@ -34,6 +34,6 @@ public class UCATablePDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(
-				"/fopuca.xsl", Messages.ExportingUCATable, false); //$NON-NLS-1$
+				"/fopuca.xsl", Messages.ExportingUCATable, false, Messages.UnsafeControlActionsTable); //$NON-NLS-1$
 	}
 }

@@ -17,6 +17,6 @@ public class DesignRequirementsPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopDesignRequironments.xsl", Messages.ExportingPdf, false); ////$NON-NLS-1$
+				"/fopDesignRequironments.xsl", Messages.ExportingPdf, false, Messages.DesignRequirements); ////$NON-NLS-1$
 	}
 }

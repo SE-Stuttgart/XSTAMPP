@@ -18,6 +18,6 @@ public class AccidentsPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopAccidents.xsl", Messages.ExportingCSC, false); ////$NON-NLS-1$
+				"/fopAccidents.xsl", Messages.ExportingCSC, false, Messages.Accidents); ////$NON-NLS-1$
 	}
 }

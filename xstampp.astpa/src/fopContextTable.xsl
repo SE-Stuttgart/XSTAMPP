@@ -10,6 +10,7 @@
     <xsl:param name="text.size" select="12"/>
     <xsl:param name="header.omit" select="false"/> 
     <xsl:param name="page.layout" select="A4"/>   
+         <xsl:param name="page.title" select=""/>   
     
     <xsl:template match="/*">
     <fo:root>
@@ -20,7 +21,9 @@
          <fo:page-sequence white-space-collapse="true" id="total">  
          	<xsl:attribute name="master-reference"><xsl:value-of select="$page.layout"/></xsl:attribute>
             	<fo:static-content flow-name="xsl-region-before">
-						<xsl:call-template name="astpaHead"/>
+						<xsl:call-template name="astpaHead">
+                            <xsl:with-param name="pdfTitle" select="$page.title" />
+						</xsl:call-template>
 				</fo:static-content>
 
 				<!-- Footer-Block -->

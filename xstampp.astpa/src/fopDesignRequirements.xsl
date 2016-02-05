@@ -8,17 +8,28 @@
     <xsl:param name="table.head.size" select="14"/> 
     <xsl:param name="text.size" select="12"/> 
     <xsl:param name="header.omit" select="false"/>  
+     <xsl:param name="page.layout" select="A4"/>  
+     <xsl:param name="page.title" select=""/>    
     
     <xsl:template match="/*">
     <fo:root>
         <!-- Page layout -->
-        <fo:layout-master-set>
+	    <fo:layout-master-set>
+			<xsl:call-template name="layout"/>
+		</fo:layout-master-set>	
+         <fo:page-sequence white-space-collapse="true" id="total">  
+         	<xsl:attribute name="master-reference"><xsl:value-of select="$page.layout"/></xsl:attribute>
+            	<fo:static-content flow-name="xsl-region-before">
+						<xsl:call-template name="astpaHead">
+                            <xsl:with-param name="pdfTitle" select="$page.title" />
+						</xsl:call-template>
+				</fo:static-content>
 
-            <fo:simple-page-master master-name="HelloWorld" page-width="auto" page-height="auto">    
-                <fo:region-body/>                               
-            </fo:simple-page-master>
-        </fo:layout-master-set>
-			<fo:page-sequence master-reference="HelloWorld" white-space-collapse="true"> 	
+				<!-- Footer-Block -->
+				<fo:static-content flow-name="xsl-region-after">
+						<xsl:call-template name="astpaFooter"/>
+				</fo:static-content>
+				 	
 				<fo:flow flow-name="xsl-region-body">
 					
                   <!-- ################### Design Requirements Table ################### -->

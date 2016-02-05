@@ -106,6 +106,8 @@ public final class Messages extends NLS {
 	public static String Comma;
 	@SuppressWarnings("javadoc")
 	public static String CommonTable;
+	public static String ContextTables;
+	public static String ExportingContextTables;
 	@SuppressWarnings("javadoc")
 	public static String Controller;
 	@SuppressWarnings("javadoc")
@@ -308,6 +310,7 @@ public final class Messages extends NLS {
 	public static String ExportingUCATable;
 	@SuppressWarnings("javadoc")
 	public static String ExportingCFTable;
+	public static String ExportingRefinedSafety;
 	@SuppressWarnings("javadoc")
 	public static String Export;
 	@SuppressWarnings("javadoc")
@@ -478,6 +481,7 @@ public final class Messages extends NLS {
 	public static String ProjectExists;
 	@SuppressWarnings("javadoc")
 	public static String ProjectName;
+	public static String RunExport;
 	//*-------Q-------------------------------------------------------------------*
 	//*-------R-------------------------------------------------------------------*
 	@SuppressWarnings("javadoc")
@@ -486,6 +490,7 @@ public final class Messages extends NLS {
 	public static String ReallyInstallUpdates;
 	@SuppressWarnings("javadoc")
 	public static String RecentProjects;
+	public static String RefinedSafetyConstraintsTable;
 	@SuppressWarnings("javadoc")
 	public static String RememberWorkspace;
 	@SuppressWarnings("javadoc")
@@ -535,6 +540,7 @@ public final class Messages extends NLS {
 	public static String StartTyping;
 	@SuppressWarnings("javadoc")
 	public static String StatusLine;
+	public static String STPAPDFReport;
 	@SuppressWarnings("javadoc")
 	public static String SwitchToHazards;
 	@SuppressWarnings("javadoc")

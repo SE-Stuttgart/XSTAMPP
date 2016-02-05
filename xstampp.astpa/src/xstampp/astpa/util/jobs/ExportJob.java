@@ -67,7 +67,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 	private final UUID id;
 	private float textSize,titleSize,tableHeadSize;
 	private String pageFormat = AbstractExportPage.A4_PORTRAIT;
-
+	private String  pdfTitle="";
 	private final boolean decorate;
 	private String imgPath;
 	private boolean isCsDirty;
@@ -206,6 +206,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 			}
 			this.xslfoTransformer = transfact.newTransformer(transformXSLSource);
 			this.xslfoTransformer.setParameter("page.layout", pageFormat);
+			this.xslfoTransformer.setParameter("page.title", pdfTitle);
 			try (OutputStream out = new BufferedOutputStream(
 					new FileOutputStream(pdfFile));
 					FileOutputStream str = new FileOutputStream(pdfFile);) {
@@ -331,6 +332,13 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 	 */
 	public void setPageFormat(String pageFormat) {
 		this.pageFormat = pageFormat;
+	}
+
+	/**
+	 * @param pdfTitle the pdfTitle to set
+	 */
+	public void setPdfTitle(String pdfTitle) {
+		this.pdfTitle = pdfTitle;
 	}
 
 }

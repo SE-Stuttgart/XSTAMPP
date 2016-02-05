@@ -21,12 +21,12 @@ public class SystemDecriptionPDFWizard extends AbstractExportWizard {
 		super(SystemDescriptionView.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new SystemDescriptionExportPage(filters,
-				Messages.ExportPreferences + Messages.AsPDF));
+				Messages.SystemDescription + Messages.AsPDF));
 	}
 
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(
-				"/fopSystemDescription.xsl", Messages.ExportingPdf, false); //$NON-NLS-1$
+				"/fopSystemDescription.xsl", Messages.ExportingPdf, false, Messages.SystemDescription); //$NON-NLS-1$
 	}
 }

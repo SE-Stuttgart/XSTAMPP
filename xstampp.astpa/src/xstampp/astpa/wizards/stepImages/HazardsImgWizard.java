@@ -17,6 +17,6 @@ public class HazardsImgWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopHazards.xsl", Messages.ExportingPdf, false); ////$NON-NLS-1$
+				"/fopHazards.xsl", Messages.ExportingPdf, false, ""); ////$NON-NLS-1$
 	}
 }

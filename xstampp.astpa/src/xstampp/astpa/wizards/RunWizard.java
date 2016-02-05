@@ -2,6 +2,8 @@ package xstampp.astpa.wizards;
 
 import java.io.File;
 
+import messages.Messages;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
@@ -28,7 +30,7 @@ public class RunWizard extends AbstractExportWizard {
 		Object selection =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 				.findView(ProjectExplorer.ID).getViewSite()
 				.getSelectionProvider().getSelection();
-		String projectName="";
+		String projectName=""; //$NON-NLS-1$
 		if(selection instanceof IProjectSelection){
 			projectName = ProjectManager.getContainerInstance().
 									getTitle(((IProjectSelection) selection).getProjectId());
@@ -38,7 +40,7 @@ public class RunWizard extends AbstractExportWizard {
 		if(!outputDir.exists()){
 				outputDir.mkdirs();
 		}
-		this.page = new RunPage("Run Export", projectName);
+		this.page = new RunPage(Messages.RunExport, projectName);
 		this.setExportPage(this.page);
 	}
 
@@ -107,7 +109,7 @@ public class RunWizard extends AbstractExportWizard {
 			this.csvCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 			
 			this.reportCheckbox = new Button(exportScope, SWT.CHECK);
-			this.reportCheckbox.setText("final PDF Report");
+			this.reportCheckbox.setText(Messages.STPAPDFReport);
 			this.reportCheckbox.setSelection(true);
 			this.reportCheckbox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 			
