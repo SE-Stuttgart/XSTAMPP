@@ -455,6 +455,19 @@ public class ControlActionController {
 		return result;
 	}
 
+	private void moveRulesInCA(){
+		if(rules != null){
+			for (ControlAction controlAction : this.controlActions) {
+				for(int i=this.rules.size()-1;i>= 0;i--){
+					if(controlAction.intern_addRefinedRule(rules.get(i))){
+						rules.remove(rules.get(i));
+					}
+				}
+			}
+			rules=null;
+		}
+		
+	}
 	/**
 	 * Prepares the control actions for the export
 	 * 
@@ -465,6 +478,7 @@ public class ControlActionController {
 	 * 
 	 */
 	public void prepareForExport(HazAccController hazAccController,ControlStructureController csController) {
+		moveRulesInCA();
 		for (ControlAction controlAction : this.controlActions) {
 			controlAction.prepareForExport(csController);
 			for (UnsafeControlAction unsafeControlAction : controlAction
@@ -490,6 +504,33 @@ public class ControlActionController {
 				}
 				unsafeControlAction.setLinks(linkString.toString());
 			}
+
+			
+			for(ILTLProvider rule : controlAction.getAllRefinedRules()){
+
+				if(rule.getUCALinks() != null){
+					StringBuffer linkString = new StringBuffer(); 
+					for(UUID id:rule.getUCALinks()){
+						List<ITableModel> linkedHazards = new ArrayList<>();
+						for (IUCAHazLink link : this.getLinksOfUCA(id)) {
+							linkedHazards.add(hazAccController.getHazard(link
+									.getHazardId()));
+						}
+						Collections.sort(linkedHazards);
+						if (linkedHazards.size() == 0) {
+							linkString.append(Messages.ControlActionController_NotHazardous);
+						} else {
+							
+							for (int i = 0;i < linkedHazards.size(); i++) {
+								linkString.append("H-" + linkedHazards.get(i).getNumber()+",");
+							}
+						}
+					}
+					if(linkString.length()>0){
+						((RefinedSafetyRule)rule).setLinks(linkString.toString().substring(0,linkString.length()-1));
+					}
+				}
+			}
 		}
 	}
 
@@ -500,8 +541,9 @@ public class ControlActionController {
 	 * 
 	 */
 	public void prepareForSave() {
+		moveRulesInCA();
 		for (ControlAction controlAction : this.controlActions) {
-			controlAction.prepareForSave();
+			
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				unsafeControlAction.setLinks(null);
@@ -736,44 +778,60 @@ public class ControlActionController {
 	}
 	
 	public List<ILTLProvider> getAllRefinedRules(){
-		if(rules == null){
-			return new ArrayList<>();
+		moveRulesInCA();
+		List<ILTLProvider> list = new ArrayList<>();
+		
+		for (ControlAction controlAction : controlActions) {
+			if(controlAction.getAllRefinedRules()!=null){
+				list.addAll(controlAction.getAllRefinedRules());
+			}
 		}
-		ArrayList<ILTLProvider> tmp = new ArrayList<>();
-		for (RefinedSafetyRule refinedSafetyRule : rules) {
-			tmp.add(refinedSafetyRule);
-		}
-		return tmp;
+		return list;
 	}
 
 
+	/**
+	 * 
+	 * @param ucaLinks
+	 * @param ltlExp
+	 * @param rule
+	 * @param ruca
+	 * @param constraint
+	 * @param nr
+	 * @param caID
+	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
+	 * 				Defined in IValueCombie
+	 * @param combies
+	 * 
+	 * @see IValueCombie
+	 * @return
+	 */
 	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type, String combies){
-		if(ucaLinks != null && ltlExp != null && rule != null && constraint != null){
-			if(rules == null){
-				this.rules= new ArrayList<>();
-			}
-			RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks,caID, ltlExp, rule, ruca, constraint,type, nr, combies);
-			if(this.rules.add(safetyRule)){
-				return safetyRule.getRuleId();
+		for (ControlAction controlAction : controlActions) {
+			if(controlAction.getId().equals(caID)){
+				return controlAction.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID, type, combies);
 			}
 		}
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
+	 * 					when this is true than the ruleId will be ignored
+	 * @param ruleId an id of a RefinedSafetyRule object stored in a controlAction 
+	 * 
+	 * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
+	 * 					id was illegal
+	 */
 	public boolean removeSafetyRule(boolean removeAll, UUID id){
-		if(removeAll){
-			this.rules.clear();
-			return true;
-		}
-		if(id != null){
-			for (int i = 0; i < rules.size(); i++) {
-				if(rules.get(i).getRuleId().equals(id)){
-					RefinedSafetyRule rule = rules.get(i);
-					rules.remove(i);
-					return !rules.contains(rule);
-				}
+		moveRulesInCA();
+		for (ControlAction controlAction : controlActions) {
+			if(controlAction.removeSafetyRule(removeAll,id)){
+				return true;
 			}
 		}
+		
 		return false;
 	}
 	

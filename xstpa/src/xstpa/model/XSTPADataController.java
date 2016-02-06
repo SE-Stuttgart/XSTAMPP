@@ -20,6 +20,7 @@ import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.model.ILTLProvider;
 import xstampp.model.ObserverValue;
 
 public class XSTPADataController extends Observable implements Observer{
@@ -322,9 +323,6 @@ public class XSTPADataController extends Observable implements Observer{
 		}
 
 		model.lockUpdate();
-		ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
-  	    allCAEntrys.addAll(getDependenciesIFProvided());
-  	    allCAEntrys.addAll(getDependenciesNotProvided());
 
 		int count = 0;
 		boolean consider;
@@ -383,11 +381,13 @@ public class XSTPADataController extends Observable implements Observer{
 			}
 		}
 		int total =model.getLTLPropertys().size()-1;
+		List<ILTLProvider> list = new ArrayList<>(model.getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
-			if(!currentRSR.contains(model.getLTLPropertys().get(i).getRuleId())){
-				model.removeSafetyRule(false, model.getLTLPropertys().get(i).getRuleId());
+			if(!currentRSR.contains(list.get(i).getRuleId())){
+				model.removeRefinedSafetyRule(false, list.get(i).getRuleId());
 			}
 		}
+		total =model.getLTLPropertys().size()-1;
 		model.releaseLockAndUpdate(ObserverValue.Extended_DATA);
 		return combiesToContextID;
 	}

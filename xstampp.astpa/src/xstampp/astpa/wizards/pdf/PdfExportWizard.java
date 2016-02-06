@@ -51,7 +51,7 @@ public class PdfExportWizard extends AbstractExportWizard {
 
 		return this
 				.performXSLExport(
-						"/fopxsl.xsl", Messages.ExportingPdf, this.page.getDecoChoice(),Messages.STPAPDFReport); //$NON-NLS-1$
+						"/fopxsl.xsl", this.page.getDecoChoice(), Messages.STPAPDFReport); //$NON-NLS-1$
 	}
 
 }

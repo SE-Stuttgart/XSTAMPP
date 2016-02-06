@@ -1765,6 +1765,22 @@ public class DataModelController extends Observable implements
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param ucaLinks
+	 * @param combies
+	 * @param ltlExp
+	 * @param rule
+	 * @param ruca
+	 * @param constraint
+	 * @param nr
+	 * @param caID
+	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
+	 * 				Defined in IValueCombie
+	 * 
+	 * @see IValueCombie
+	 * @return the id of rule which has been added if 
+	 */
 	public UUID addRefinedRule(List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
 		UUID newRuleId = this.controlActionController.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID,type, combies);
 		if(newRuleId != null){
@@ -1794,8 +1810,17 @@ public class DataModelController extends Observable implements
 			
 	}
 	
-	public boolean removeSafetyRule(boolean removeAll, UUID id){
-		if(this.controlActionController.removeSafetyRule(removeAll, id)){
+	/**
+	 * 
+	 * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
+	 * 					when this is true than the ruleId will be ignored
+	 * @param ruleId an id of a RefinedSafetyRule object stored in a controlAction 
+	 * 
+	 * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
+	 * 					id was illegal
+	 */
+	public boolean removeRefinedSafetyRule(boolean removeAll, UUID ruleId){
+		if(this.controlActionController.removeSafetyRule(removeAll, ruleId)){
 			setUnsavedAndChanged();
 			return true;
 		}

@@ -107,6 +107,7 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String CommonTable;
 	public static String ContextTables;
+	public static String Exporting_Format;
 	public static String ExportingContextTables;
 	@SuppressWarnings("javadoc")
 	public static String Controller;
@@ -396,6 +397,7 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String Logo;
 	public static String LossOfData;
+	public static String LTLFormulasTable;
 	@SuppressWarnings("javadoc")
 	public static String loadHaz;
 	@SuppressWarnings("javadoc")
@@ -491,6 +493,7 @@ public final class Messages extends NLS {
 	@SuppressWarnings("javadoc")
 	public static String RecentProjects;
 	public static String RefinedSafetyConstraintsTable;
+	public static String RefinedUnsafeControlActions;
 	@SuppressWarnings("javadoc")
 	public static String RememberWorkspace;
 	@SuppressWarnings("javadoc")

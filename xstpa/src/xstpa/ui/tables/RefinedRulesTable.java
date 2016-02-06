@@ -226,7 +226,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		    	    	}
 			    	    dataController.storeBooleans(caEntry);
 		    	    }
-					dataController.getModel().removeSafetyRule(true, null);
+					dataController.getModel().removeRefinedSafetyRule(true, null);
 					refreshTable();
 	    		}
 	    	}
@@ -258,7 +258,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		}
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
 				 entry.getVariable().getLinkedControlActionID()));
-		dataController.getModel().removeSafetyRule(false, entry.getDataRef());
+		dataController.getModel().removeRefinedSafetyRule(false, entry.getDataRef());
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
 				 entry.getVariable().getLinkedControlActionID()));
 	}

@@ -17,6 +17,6 @@ public class SafetyConstraintsPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopSafetyConstraints.xsl", Messages.ExportingPdf, false, Messages.SafetyConstraints); ////$NON-NLS-1$
+				"/fopSafetyConstraints.xsl", false, Messages.SafetyConstraints); ////$NON-NLS-1$
 	}
 }

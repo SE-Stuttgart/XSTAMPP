@@ -96,7 +96,11 @@ public class GridCellText extends AbstractGridCell {
 
 	@Override
 	public boolean needsRefresh() {
-		return needRefresh;
+		if(needRefresh){
+			needRefresh = false;
+			return true;
+		}
+		return false;
 	}
 	@Override
 	public int getPreferredHeight() {

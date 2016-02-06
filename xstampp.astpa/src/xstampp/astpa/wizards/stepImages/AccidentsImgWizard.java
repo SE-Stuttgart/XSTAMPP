@@ -17,6 +17,6 @@ public class AccidentsImgWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopAccidents.xsl", Messages.ExportingCSC, false, ""); ////$NON-NLS-1$
+				"/fopAccidents.xsl", false, ""); ////$NON-NLS-1$
 	}
 }

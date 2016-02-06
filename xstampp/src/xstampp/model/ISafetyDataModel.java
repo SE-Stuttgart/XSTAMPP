@@ -21,7 +21,9 @@ public interface ISafetyDataModel{
 
 	/**
 	 * 
-	 * @return a Map with LTL property strings mapped to key strings like 'RSR<i>N</i>'
+	 * @return a List with all ILTLProvider objects currently stored in that dataModel
+	 * 
+	 * @see ILTLProvider
 	 */
 	List<ILTLProvider> getLTLPropertys();
 }

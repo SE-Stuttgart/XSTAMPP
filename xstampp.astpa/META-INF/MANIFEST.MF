@@ -109,7 +109,8 @@ Export-Package: com.sun.xml.bind,
    org.eclipse.core.runtime,
    xstampp.astpa.wizards,
    org.apache.log4j",
- xstampp.astpa.wizards
+ xstampp.astpa.wizards,
+ xstampp.astpa.wizards.pages
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/avalon-framework-4.2.0.jar,
  lib/batik-all-1.7.jar,

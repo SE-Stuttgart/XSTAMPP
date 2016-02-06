@@ -104,13 +104,12 @@ public abstract class AbstractExportWizard extends Wizard implements
 
 	protected boolean performXSLExport(String fopName, String jobMessage,
 	boolean forceCSDeco) {
-		return performXSLExport(fopName, jobMessage, forceCSDeco,
-				"");
+		return performXSLExport(fopName, forceCSDeco, "");
 	}
 
-	protected boolean performXSLExport(String fopName, String jobMessage,
-			boolean forceCSDeco, String pdfTitle) {
-
+	protected boolean performXSLExport(String fopName, boolean forceCSDeco,
+			String pdfTitle) {
+		String jobMessage = String.format(Messages.Exporting_Format, pdfTitle);
 		String filePath = this.getExportPage().getExportPath();
 		if ((filePath != null) && !filePath.isEmpty()) {
 			File newPDF = new File(filePath);

@@ -24,9 +24,11 @@ import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.model.ILTLProvider;
 
 /**
  * Class representing the control action objects
@@ -75,6 +77,11 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	@XmlElementWrapper(name = "dependenciesForProvided")
 	@XmlElement(name = "variableName")
     private List<String> providedVariableNames;
+	
+
+	@XmlElementWrapper(name = "rules")
+	@XmlElement(name = "rule")
+	private List<RefinedSafetyRule> rules;
 	/**
 	 * @param componentLink the componentLink to set
 	 */
@@ -367,6 +374,74 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		return false;
 	}
 	
+	public List<ILTLProvider> getAllRefinedRules(){
+		if(rules == null){
+			return new ArrayList<>();
+		}
+		ArrayList<ILTLProvider> tmp = new ArrayList<>();
+		for (RefinedSafetyRule refinedSafetyRule : rules) {
+			tmp.add(refinedSafetyRule);
+		}
+		return tmp;
+	}
+
+
+	/**
+	 * 
+	 * @param ucaLinks
+	 * @param ltlExp
+	 * @param rule
+	 * @param ruca
+	 * @param constraint
+	 * @param nr
+	 * @param caID
+	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
+	 * 				Defined in IValueCombie
+	 * @param combies
+	 * 
+	 * @see IValueCombie
+	 * @return
+	 */
+	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type, String combies){
+		if(ucaLinks != null && ltlExp != null && rule != null && constraint != null){
+			if(rules == null){
+				this.rules= new ArrayList<>();
+			}
+			RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks,caID, ltlExp, rule, ruca, constraint,type, nr, combies);
+			if(this.rules.add(safetyRule)){
+				return safetyRule.getRuleId();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
+	 * 					when this is true than the ruleId will be ignored
+	 * @param ruleId an id of a RefinedSafetyRule object stored in a controlAction 
+	 * 
+	 * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
+	 * 					id was illegal
+	 */
+	public boolean removeSafetyRule(boolean removeAll, UUID id){
+		if(removeAll){
+			this.rules.clear();
+			return true;
+		}
+		if(id != null && rules != null){
+			for (int i = 0; i < rules.size(); i++) {
+				if(rules.get(i).getRuleId().equals(id)){
+					RefinedSafetyRule rule = rules.get(i);
+					rules.remove(i);
+					return !rules.contains(rule);
+				}
+			}
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * Prepares the control actions for the export
 	 * 
@@ -439,5 +514,17 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 				combie.setValueNames(null);
 			}
 		}
+	}
+
+
+	public boolean intern_addRefinedRule(RefinedSafetyRule rule) {
+		if(rule.getRelatedControlActionID().equals(getId())){
+			if(this.rules == null){
+				this.rules = new ArrayList<>();
+			}
+			this.rules.add(rule);
+			return true;
+		}
+		return false;
 	}
 }

@@ -5,19 +5,19 @@ import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
 import xstpa.ui.View;
 
-public class ContextTablePDFWizard extends AbstractExportWizard {
+public class RefinedSCPDFWizard extends AbstractExportWizard {
 
-	public ContextTablePDFWizard() {
+	public RefinedSCPDFWizard() {
 		super(View.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.ContextTables + Messages.AsPDF));
+				Messages.RefinedSafetyConstraintsTable + " " + Messages.AsPDF)); //$NON-NLS-1$
 		
 	}
 
 	@Override
 	public boolean performFinish() {
-		return this.performXSLExport(				
-				"/fopContextTable.xsl",  false, Messages.ContextTables); ////$NON-NLS-1$ //$NON-NLS-3$
+		return this.performXSLExport("/fopRefinedConstraints.xsl", false,//$NON-NLS-1$
+									Messages.RefinedSafetyConstraintsTable); 
 	}
 }

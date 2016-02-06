@@ -151,8 +151,23 @@ public interface IDataModel{
 	 */
 	String getPluginID();
 	
+	
+	/**
+	 * This method should set up a lock for prevents the DataModel from
+	 * being updated
+	 * this can be useful when the DataModel receives a lot of changes.
+	 * Implementors should see that {@link IDataModel#releaseLockAndUpdate(ObserverValue)} resets the lock
+	 * and triggers an update of the requested value
+	 * 
+	 */
 	void lockUpdate();
 	
+	/**
+	 * This method should act as counterpart of {@link IDataModel#lockUpdate()}
+	 * it should release the lock and trigger an update of the requested value
+	 * 
+	 * @param value a value that should be updated
+	 */
 	void releaseLockAndUpdate(ObserverValue value);
 	
 	void setUnsavedAndChanged();

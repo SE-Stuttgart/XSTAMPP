@@ -10,11 +10,12 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.model.ILTLProvider;
 @XmlRootElement(name = "rule")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "id", "number","combies","rule","rUCA", "rSCt", "ltl",
-		"type", "relatedUCAs", "caID"})
+		"type","controlAction","links", "relatedUCAs", "caID"})
 public class RefinedSafetyRule implements ILTLProvider{
 
 	
@@ -41,7 +42,12 @@ public class RefinedSafetyRule implements ILTLProvider{
 	
 	@XmlElement(name="type")
 	private String type;
+
+	@XmlElement(name="controlAction")
+	private String controlAction;
 	
+	@XmlElement(name="links")
+	private String links;
 	
 	@XmlElementWrapper(name="relatedUCAIDs")
 	@XmlElement(name="ucaID")
@@ -50,6 +56,21 @@ public class RefinedSafetyRule implements ILTLProvider{
 	@XmlElement(name="relatedCaID")
 	private UUID caID;
 	
+	/**
+	 * 
+	 * @param ucaLinks
+	 * @param caId
+	 * @param ltlExp
+	 * @param rule
+	 * @param ruca
+	 * @param constraint
+	 * @param nr
+	 * @param combies
+	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
+	 * 				Defined in IValueCombie
+	 * 
+	 * @see IValueCombie
+	 */
 	public RefinedSafetyRule(List<UUID> ucaLinks,UUID caId,String ltlExp,String rule,String ruca,String constraint,String type, int nr, String combies) {
 		id = UUID.randomUUID();
 		this.number = nr;
@@ -179,7 +200,9 @@ public class RefinedSafetyRule implements ILTLProvider{
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
+	 * 				Defined in IValueCombie
+	 * @see IValueCombie
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -198,5 +221,18 @@ public class RefinedSafetyRule implements ILTLProvider{
 	 */
 	public void setCriticalCombies(String criticalCombies) {
 		this.combies = criticalCombies;
+	}
+	/**
+	 * @param controlAction the controlAction to set
+	 */
+	public void setControlAction(String controlAction) {
+		this.controlAction = controlAction;
+	}
+
+	/**
+	 * @param links the links to set
+	 */
+	public void setLinks(String links) {
+		this.links = links;
 	}
 }
