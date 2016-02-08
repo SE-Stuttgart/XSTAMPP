@@ -38,7 +38,7 @@ public class StpaCSVExport extends Job {
 	private final char seperator;
 	private final String path;
 	private final DataModelController model;
-	private final List<String> type;
+	private final int type;
 	private boolean enablePreview;
 
 	/**
@@ -57,7 +57,7 @@ public class StpaCSVExport extends Job {
 	 *            the type of the export
 	 */
 	public StpaCSVExport(String name, String filePath, char seperator,
-			IDataModel controller, List<String> types) {
+			IDataModel controller, int types) {
 		super(name);
 		this.path = filePath;
 		this.seperator = seperator;
@@ -77,41 +77,40 @@ public class StpaCSVExport extends Job {
 		try (BufferedCSVWriter csvWriter = new BufferedCSVWriter(
 				new FileWriter(tableCSV), this.seperator);) {
 
-			if (this.type.contains(ICSVExportConstants.PROJECT_DESCRIPTION)) {
+			if ((type & ICSVExportConstants.PROJECT_DESCRIPTION) != 0) {
 				this.writeSystemDescCSV(csvWriter, Messages.SystemDescription);
 			}
-			if (this.type.contains(ICSVExportConstants.ACCIDENT)) {
+			if ((type & ICSVExportConstants.ACCIDENT) != 0) {
 				this.exportAsCSV(this.model.getAllAccidents(), csvWriter,
 						Messages.Accidents);
 			}
-			if (this.type.contains(ICSVExportConstants.HAZARD)) {
+			if ((type & ICSVExportConstants.HAZARD) != 0) {
 				this.exportAsCSV(this.model.getAllHazards(), csvWriter,
 						Messages.Hazards);
 			}
-			if (this.type.contains(ICSVExportConstants.SAFETY_CONSTRAINT)) {
+			if ((type & ICSVExportConstants.SAFETY_CONSTRAINT) != 0) {
 				this.exportAsCSV(this.model.getAllSafetyConstraints(),
 						csvWriter, Messages.SafetyConstraints);
 			}
-			if (this.type.contains(ICSVExportConstants.SYSTEM_GOAL)) {
+			if ((type & ICSVExportConstants.SYSTEM_GOAL) != 0) {
 				this.exportAsCSV(this.model.getAllSystemGoals(), csvWriter,
 						Messages.SystemGoals);
 			}
-			if (this.type.contains(ICSVExportConstants.DESIGN_REQUIREMENT)) {
+			if ((type & ICSVExportConstants.DESIGN_REQUIREMENT) != 0) {
 				this.exportAsCSV(this.model.getAllDesignRequirements(),
 						csvWriter, Messages.DesignRequirements);
 			}
-			if (this.type.contains(ICSVExportConstants.CONTROL_ACTION)) {
+			if ((type & ICSVExportConstants.CONTROL_ACTION) != 0) {
 				this.exportCAcAsCSV(this.model.getAllControlActions(), csvWriter,
 						Messages.ControlActions);
 			}
-			if (this.type
-					.contains(ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS)) {
+			if ((type & ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS) != 0) {
 				this.writeCscCSV(csvWriter);
 			}
-			if (this.type.contains(ICSVExportConstants.UNSAFE_CONTROL_ACTION)) {
+			if ((type & ICSVExportConstants.UNSAFE_CONTROL_ACTION) != 0) {
 				this.writeUCACSV(csvWriter, Messages.UnsafeControlActionsTable);
 			}
-			if (this.type.contains(ICSVExportConstants.CAUSAL_FACTOR)) {
+			if ((type & ICSVExportConstants.CAUSAL_FACTOR) != 0) {
 				this.writeCausalFactorsCSV(csvWriter,
 						Messages.CausalFactorsTable);
 			}

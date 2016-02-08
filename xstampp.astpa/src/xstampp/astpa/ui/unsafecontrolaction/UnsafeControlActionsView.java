@@ -51,6 +51,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.common.grid.GridCellBlank;
 import xstampp.astpa.ui.common.grid.GridCellButton;
@@ -309,12 +310,12 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		return maxHeight;
 	}
 
-	protected void fillTable(List<IControlAction> controlActions) {
+	protected void fillTable(List<IHAZXControlAction> list) {
 		
-		if (controlActions.isEmpty()) {
+		if (list.isEmpty()) {
 			return;
 		}
-		for (IControlAction cAction : controlActions) {
+		for (IControlAction cAction : list) {
 			//fiter by the title of the control action
 			boolean isDigit = false;
 			int filterID = -1;

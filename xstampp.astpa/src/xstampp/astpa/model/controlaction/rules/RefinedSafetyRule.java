@@ -235,4 +235,7 @@ public class RefinedSafetyRule implements ILTLProvider{
 	public void setLinks(String links) {
 		this.links = links;
 	}
+	public String getLinks() {
+		return this.links;
+	}
 }

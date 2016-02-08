@@ -74,20 +74,14 @@ public abstract class AbstractExportWizard extends Wizard implements
 		this.viewId = viewId;
 	}
 
-	protected boolean performCSVExport(String data) {
-		ArrayList<String> dataList = new ArrayList<>();
-		dataList.add(data);
-		return this.performCSVExport(dataList);
-	}
-
-	protected boolean performCSVExport(ArrayList<String> data) {
+	protected boolean performCSVExport(int data) {
+		
 		String filePath = this.exportPage.getExportPath();
 		try {
 			if (this.checkError(this.checkPath(filePath))) {
 				IDataModel model = ProjectManager.getContainerInstance()
 						.getDataModel(this.exportPage.getProjectID());
-				StpaCSVExport export = new StpaCSVExport("Export CSV",
-						filePath,
+				StpaCSVExport export = new StpaCSVExport("Export CSV",	filePath,
 						((CSVExportPage) this.exportPage).getSeperator(),
 						model, data);
 				export.schedule();

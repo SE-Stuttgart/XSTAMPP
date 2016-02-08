@@ -37,7 +37,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	 *
 	 * @return the list of Control Actions
 	 */
-	List<IControlAction> getAllControlActionsU();
+	List<IHAZXControlAction> getAllControlActionsU();
 
 	/**
 	 * Get the control action by its id

@@ -13,6 +13,7 @@ import java.util.Map;
 import messages.Messages;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
@@ -34,7 +35,7 @@ import xstampp.util.AbstractWizardPage;
 public class STPADataPage extends CSVExportPage {
 
 	private Composite control;
-	Map<Button, String> steps;
+	private List<Button> steps;
 	private List<String> stepViews;
 
 	/**
@@ -47,22 +48,11 @@ public class STPADataPage extends CSVExportPage {
 	 * @param projectName
 	 *            The Name of the project
 	 */
-	public STPADataPage(String[] filters, String pageName, String projectName) {
+	public STPADataPage(ArrayList<String> expOptions, String[] filters, String pageName, String projectName) {
 		super(filters, pageName);
 		this.setTitle(pageName);
-		this.stepViews = new ArrayList<>();
-		for (Field f : ICSVExportConstants.class.getDeclaredFields()) {
-			if (f.getType() == String.class) {
-				try {
-					String string = (String) f.get(null);
-					this.stepViews.add(string);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		this.stepViews = expOptions;
+		
 		this.setDescription(Messages.SetValuesForTheExportFile);
 	}
 
@@ -79,13 +69,19 @@ public class STPADataPage extends CSVExportPage {
 		data.top = new FormAttachment(AbstractWizardPage.COMPONENT_OFFSET);
 		data.width = parent.getBounds().width;
 		group.setLayoutData(data);
-		this.steps = new HashMap<>();
+		this.steps = new ArrayList<>();
 		for (String ref : this.stepViews) {
 			Button stepButton = new Button(group, SWT.CHECK);
 			stepButton.setText(ref);
 			stepButton.setSelection(true);
+			stepButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					STPADataPage.this.setPageComplete(checkFinish());
+				}
+			});
 			// each button is mapped to a view id, so it can later be tracked
-			this.steps.put(stepButton, ref);
+			this.steps.add(stepButton);
 		}
 		Composite selectionComp = new Composite(group, SWT.NONE);
 		selectionComp.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -95,7 +91,7 @@ public class STPADataPage extends CSVExportPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				for (Button selector : STPADataPage.this.steps.keySet()) {
+				for (Button selector : STPADataPage.this.steps) {
 					selector.setSelection(true);
 				}
 			}
@@ -113,7 +109,7 @@ public class STPADataPage extends CSVExportPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				for (Button selector : STPADataPage.this.steps.keySet()) {
+				for (Button selector : STPADataPage.this.steps) {
 					selector.setSelection(false);
 				}
 			}
@@ -137,7 +133,7 @@ public class STPADataPage extends CSVExportPage {
 
 	@Override
 	public boolean checkFinish() {
-		if (this.getSteps().size() < 1) {
+		if (this.getSteps() == 0) {
 			this.setErrorMessage(Messages.NoDataSelected);
 			return false;
 		}
@@ -148,17 +144,17 @@ public class STPADataPage extends CSVExportPage {
 	 * 
 	 * @author Lukas Balzer
 	 * 
-	 * @return return an array containing all
+	 * @return return an steps.size() long integer where a the selection are coded as bit states 
 	 */
-	public ArrayList<String> getSteps() {
-		ArrayList<String> stepArray = new ArrayList<>();
-		for (Button stepSelector : this.steps.keySet()) {
-			if (stepSelector.getSelection()) {
-				stepArray.add(this.steps.get(stepSelector));
+	public int getSteps() {
+		int stepCode = 0;
+		for (int i=0;i<this.steps.size();i++) {
+			if (this.steps.get(i).getSelection()) {
+				stepCode = stepCode | (1 << i);
 			}
 		}
 
-		return stepArray;
+		return stepCode;
 
 	}
 

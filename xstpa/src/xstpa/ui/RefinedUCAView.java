@@ -8,6 +8,7 @@ import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.IValueCombie;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.ui.common.grid.GridCellBlank;
 import xstampp.astpa.ui.common.grid.GridCellColored;
 import xstampp.astpa.ui.common.grid.GridCellText;
@@ -35,7 +36,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 		return "Refined Unsafe Control Actions";
 	}
 	@Override
-	protected void fillTable(List<IControlAction> controlActions) {
+	protected void fillTable(List<IHAZXControlAction> controlActions) {
 		if(dataController == null){
 			return;
 		}
@@ -202,7 +203,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 			case Extended_DATA:
 				if (!this.grid.getGrid().isDisposed() && dataModelController instanceof DataModelController) {
 					this.grid.clearRows();
-					this.fillTable(((DataModelController)dataModelController).getAllControlActions());
+					this.fillTable(((DataModelController)dataModelController).getAllControlActionsU());
 					this.grid.reloadTable();
 				}
 		default:

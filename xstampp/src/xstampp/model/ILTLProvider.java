@@ -40,4 +40,6 @@ public interface ILTLProvider extends Comparable<ILTLProvider>{
 	
 
 	public String getType();
+
+	public String getLinks();
 }

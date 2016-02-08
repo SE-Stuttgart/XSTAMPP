@@ -731,7 +731,11 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public List<IControlAction> getAllControlActions() {
-		return this.controlActionController.getAllControlActionsU();
+		List<IControlAction> result = new ArrayList<>();
+		for (IHAZXControlAction controlAction : this.controlActionController.getAllControlActionsU()) {
+			result.add(controlAction);
+		}
+		return result;
 	}
 
 	@Override
@@ -987,7 +991,7 @@ public class DataModelController extends Observable implements
 	}
 
 	@Override
-	public List<IControlAction> getAllControlActionsU() {
+	public List<IHAZXControlAction> getAllControlActionsU() {
 		return this.controlActionController.getAllControlActionsU();
 	}
 

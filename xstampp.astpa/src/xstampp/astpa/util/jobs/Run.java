@@ -62,15 +62,6 @@ public class Run extends XstamppJob{
 											Messages.SystemGoals,"/fopSystemGoals.xsl",//$NON-NLS-1$
 											Messages.UnsafeControlActionsTable,"/fopuca.xsl"};//$NON-NLS-1$
 	
-	private String[] csvMap = new String[] {Messages.Accidents,ICSVExportConstants.ACCIDENT,
-											Messages.Hazards,ICSVExportConstants.HAZARD,
-											Messages.CausalFactors,ICSVExportConstants.CAUSAL_FACTOR,
-											Messages.CorrespondingSafetyConstraints,ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS,
-											Messages.DesignRequirements,ICSVExportConstants.DESIGN_REQUIREMENT,
-											Messages.SafetyConstraints,ICSVExportConstants.SAFETY_CONSTRAINT,
-											Messages.SystemDescription,ICSVExportConstants.PROJECT_DESCRIPTION,
-											Messages.SystemGoals,ICSVExportConstants.SYSTEM_GOAL,
-											Messages.UnsafeControlActionsTable,ICSVExportConstants.UNSAFE_CONTROL_ACTION};
 	private boolean exportReport;
 	private boolean exportImages;
 	private boolean exportCSVs;
@@ -114,12 +105,11 @@ public class Run extends XstamppJob{
 		String fileName;
 		ProjectManager.getContainerInstance().getDataModel(getProjectId()).prepareForExport();
 		
-		for(int i= 0;i<this.csvMap.length && this.exportCSVs;i+=2){
-			List<String> values = new ArrayList<>();
-			values.add(this.csvMap[i+1]);
-			fileName = this.csvMap[i] +".csv";
+		for(int i= 0;i<ICSVExportConstants.STEPS.size() && this.exportCSVs;i+=2){
+			
+			fileName = ICSVExportConstants.STEPS.get(i) +".csv";
 			StpaCSVExport job = new StpaCSVExport(getJobName(fileName),this.dir+ CSV_DIR + File.separator + fileName,
-										 	';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),values);
+										 	';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),1<<i);
 			job.showPreview(false);
 			if(!addJob(job)){
 				return Status.CANCEL_STATUS;

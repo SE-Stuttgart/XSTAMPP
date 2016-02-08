@@ -30,11 +30,9 @@ import xstpa.model.XSTPADataController;
 import xstpa.ui.tables.AbstractTableComposite;
 import xstpa.ui.tables.CADependenciesTable;
 import xstpa.ui.tables.ControlActionTable;
-import xstpa.ui.tables.LTLPropertiesTable;
 import xstpa.ui.tables.ProcessContextTable;
 import xstpa.ui.tables.ProcessValuesTable;
 import xstpa.ui.tables.RefinedRulesTable;
-import export.ExportContent;
 
 public class View extends ViewPart{
 	public static final String ID = "xstpa.view";
@@ -146,7 +144,6 @@ public class View extends ViewPart{
 	
 	Table  ltlTable;
 	
-	private ExportContent exportContent = new ExportContent();
 	
 
 	private List<AbstractTableComposite> tableList;

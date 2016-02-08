@@ -88,28 +88,42 @@
             name="XstpaExport">
       </wizard>
       <wizard
+            category="xstpa.category.pdf"
             class="export.ContextTablePDFWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.contextTables"
             name="STPA Context Tables">
       </wizard>
       <wizard
+            category="xstpa.category.pdf"
             class="export.RefinedSCPDFWizard"
             icon="icons/rsc_logox16.png"
             id="xstpa.wizard.refinedsafetyconstraints"
             name="Refined Safety Constraints Table">
       </wizard>
       <wizard
+            category="xstpa.category.pdf"
             class="export.RefinedUCAPDFWizard"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.wizard.ruca"
             name="Refined Unsafe Control Actions">
       </wizard>
       <wizard
+            category="xstpa.category.pdf"
             class="export.LTLPDFWizard"
             icon="icons/ltl.png"
             id="xstpa.wizard.ltl"
             name="LTL Formulas Table">
+      </wizard>
+      <category
+            id="xstpa.category.pdf"
+            name="Extended STPA PDFs">
+      </category>
+      <wizard
+            class="export.XSTPAdataWizard"
+            icon="icons/logo.png"
+            id="xstpa.wizard.csv"
+            name="Export extended stpa data">
       </wizard>
    </extension>
    <extension

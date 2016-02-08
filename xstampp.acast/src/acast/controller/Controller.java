@@ -1,6 +1,7 @@
 package acast.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
@@ -421,7 +422,11 @@ public class Controller extends Observable implements IDataModel,
 
 	@Override
 	public List<IControlAction> getAllControlActions() {
-		return this.controlActionController.getAllControlActionsU();
+		List<IControlAction> result = new ArrayList<>();
+		for (IHAZXControlAction controlAction : this.controlActionController.getAllControlActionsU()) {
+			result.add(controlAction);
+		}
+		return result;
 	}
 
 	@Override

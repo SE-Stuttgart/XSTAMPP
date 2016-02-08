@@ -175,8 +175,8 @@ public class ControlActionController {
 	 * 
 	 * @author Fabian Toth
 	 */
-	public List<IControlAction> getAllControlActionsU() {
-		List<IControlAction> result = new ArrayList<>();
+	public List<IHAZXControlAction> getAllControlActionsU() {
+		List<IHAZXControlAction> result = new ArrayList<>();
 		for (ControlAction controlAction : this.controlActions) {
 			result.add(controlAction);
 		}

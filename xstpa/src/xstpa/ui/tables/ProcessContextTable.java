@@ -8,7 +8,6 @@ import java.util.Observable;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -51,6 +50,7 @@ import settings.PreferencePageSettings;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
+import xstpa.Messages;
 import xstpa.model.ACTSController;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
@@ -61,9 +61,9 @@ import xstpa.ui.tables.utils.MainViewContentProvider;
 
 public class ProcessContextTable extends AbstractTableComposite {
 	
-	private static final String FILTER_SHOW_NOT_HAZARDOUS = "Show Not Hazardous";
-	private static final String FILTER_SHOW_HAZARDOUS = "Show Hazardous";
-	private static final String FILTER_SHOW_ALL = "Show All";
+	private static final String FILTER_SHOW_NOT_HAZARDOUS = Messages.ContextTableFilter_NotHazardous;
+	private static final String FILTER_SHOW_HAZARDOUS = Messages.ContextTableFilter_Hazardous;
+	private static final String FILTER_SHOW_ALL = Messages.ContextTableFilter_All;
 	class ContextViewLabelProvider extends LabelProvider implements
 	ITableLabelProvider, IColorProvider {
 
@@ -159,9 +159,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 	    contextContentFolder = new TabFolder(contextCompositeRight, SWT.NONE);
 	    
 	    TabItem contextRightTab1 = new TabItem(contextContentFolder, SWT.NONE);
-	    contextRightTab1.setText("Control Action Provided");
+	    contextRightTab1.setText(Messages.ContextTableContext_Provided);
 	    TabItem contextRightTab2 = new TabItem(contextContentFolder, SWT.NONE);
-	    contextRightTab2.setText("Control Action Not Provided");
+	    contextRightTab2.setText(Messages.ContextTableContext_NotProvided);
 	    
 	    //Composite in which the folder items are located
 	    Composite contextContentComposite = new Composite(contextContentFolder, SWT.NONE);
@@ -212,7 +212,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	    }; 
 	 // Add a Label which displays if there are any Error Messages
 	    errorLabel = new Label(contextCompositeErrorLabel, SWT.NULL);
-	    errorLabel.setText("There are 0 Conflicts!  ");
+	    errorLabel.setText("There are 0 Conflicts!  "); //$NON-NLS-1$
 	    
 	 // Add a Combobox for the Filter
 	    filterCombo = new Combo(contextTableComposite, SWT.READ_ONLY);
@@ -259,7 +259,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    final Menu contextRightMenu = new Menu(contextRightTable);
 		    contextRightTable.setMenu(contextRightMenu);
 		    MenuItem newItem = new MenuItem(contextRightMenu, SWT.NONE);
-	        newItem.setText("(don't care)");
+	        newItem.setText("(don't care)"); //$NON-NLS-1$
 	        
 	        /**
 			 * Listener for the context table (middle)
@@ -465,32 +465,32 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    
 		    // Add a button to add table entrys to contextRightTable
 		    Button generateEntry = new Button(editTableComposite, SWT.PUSH);
-		    generateEntry.setToolTipText("Generates a new Table with default Settings");
+		    generateEntry.setToolTipText(Messages.GenerateNewTableMsg);
 		    generateEntry.setImage(View.GENERATE);
 		    generateEntry.pack();
 		    
 		    // Add a button to add table entrys to contextRightTable
 		    Button addEntry = new Button(editTableComposite, SWT.PUSH);
 		    addEntry.setImage(View.ADD);
-		    addEntry.setToolTipText("Adds a new Entry");
+		    addEntry.setToolTipText(Messages.AddsNewTableEntry);
 		    addEntry.pack();
 		    
 		    // Add a button to delete table entrys to contextRightTable
 		    Button deleteEntry = new Button(editTableComposite, SWT.PUSH);
-		    deleteEntry.setToolTipText("Deletes the selected Row");
+		    deleteEntry.setToolTipText(Messages.DeletesRow);
 		    deleteEntry.setImage(View.DELETE);
 		    deleteEntry.pack();
 		    
 		    // Add a button to change to the settings for ACTS
 		    //Button settingsBtn = new Button(contextCompositeInnerRight, SWT.PUSH);
 		    Button settingsBtn = new Button(editTableComposite, SWT.PUSH);
-		    settingsBtn.setToolTipText("Opens the Settings for the Combinatorial Algorithm");
+		    settingsBtn.setToolTipText(Messages.OpensSettingsACTS);
 		    settingsBtn.setImage(View.SETTINGS);
 		    //settingsBtn.setLayoutData(new GridData(100,30));
 		    settingsBtn.pack();
 		    
 		    Button checkConflictsBtn = new Button(editTableComposite, SWT.PUSH);
-		    checkConflictsBtn.setToolTipText("Checks the Table for any (logical) Conflicts");
+		    checkConflictsBtn.setToolTipText(Messages.ChecksTableForConflicts);
 		    checkConflictsBtn.setImage(View.CHECK_CONFLICTS);
 		    checkConflictsBtn.pack();
 		    
@@ -500,11 +500,11 @@ public class ProcessContextTable extends AbstractTableComposite {
 			 */
 		    settingsBtn.addSelectionListener(new SelectionAdapter() {
 			      public void widgetSelected(SelectionEvent event) {
-			    	  if(System.getProperty("os.name").toLowerCase().contains("linux")){
-			    		  ProjectManager.getLOGGER().debug("The Acts settings shell is not working on linux at the moment");
+			    	  if(System.getProperty("os.name").toLowerCase().contains("linux")){ //$NON-NLS-1$ //$NON-NLS-2$
+			    		  ProjectManager.getLOGGER().debug("The Acts settings shell is not working on linux at the moment"); //$NON-NLS-1$
 			    	  }
 			    	  else if (dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
-			    		  MessageDialog.openInformation(null, "No linked Variables", "There are no Variables linked with this Control Action");
+			    		  MessageDialog.openInformation(null, Messages.NoLinkedVariables, Messages.NoLinkedVariablesMsg);
 			    	  }
 			    	  else{
 			    	  
@@ -544,22 +544,22 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    	public void widgetSelected(SelectionEvent event) {
 			    	  
 			    	  if (dataController.getLinkedCAE() == null) {
-			    		  MessageDialog.openInformation(null,"Select a Control Action", "Please Select a Control Action to generate the Table!");
+			    		  MessageDialog.openInformation(null,"Select a Control Action", Messages.SelectAControlAction); //$NON-NLS-1$
 			    	  }
 			    	  else if (!dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
-			    		  MessageDialog dialog = new MessageDialog(getShell(),"keep Rules",null,
-			    				  "do you want to keep the Rules which are defined for this Control Action?",
+			    		  MessageDialog dialog = new MessageDialog(getShell(),Messages.KeepRules,null,
+			    				  Messages.PreserveOldRules,
 			    				  MessageDialog.QUESTION_WITH_CANCEL, new String[]{IDialogConstants.YES_LABEL,
 			    			  IDialogConstants.NO_LABEL,IDialogConstants.CANCEL_LABEL}, 0);
 			    		  final int code = dialog.open();
 			    		  if (code != 2) {
 
 				    		  // If the Path for ACTS is not set, the PreferencePage opens
-				    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path")
-				    				  .equals(xstampp.Activator.getDefault().getPreferenceStore().getDefaultString(("ACTS_Path")))) {
+				    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path") //$NON-NLS-1$
+				    				  .equals(xstampp.Activator.getDefault().getPreferenceStore().getDefaultString(("ACTS_Path")))) { //$NON-NLS-1$
 				    			  Map<String,String> values=new HashMap<>();
-				    			  values.put("preferencePageId", PreferencePageSettings.ID);
-				    	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values);
+				    			  values.put("preferencePageId", PreferencePageSettings.ID); //$NON-NLS-1$
+				    	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
 				    	    	  
 				    		  }
 					    	  
@@ -583,8 +583,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 			    		  }
 			    	  }
 			    	  else {
-			    		  MessageDialog.openInformation(null, "Link some Variables",
-			    				  "Please link some Variables to the selected Control Action to succesfully generate a new Testset");
+			    		  MessageDialog.openInformation(null, Messages.LinkSomeVariables,
+			    				  Messages.LinkVariablesMessage);
 			    	  }
 		    	}
 		    });
@@ -608,7 +608,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 							//Create values for the Constructor
 				    		List<String> pmVars = new ArrayList<String>();
 				    		for (int i = 1; i<contextRightTable.getColumnCount()-1;i++) {
-				    			pmVars.add(contextRightTable.getColumn(i).getText().replace(" ", "_"));
+				    			pmVars.add(contextRightTable.getColumn(i).getText().replace(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 				    		}
 							// add the New Variable
 				    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, dataController.getLinkedCAE());
@@ -858,9 +858,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 			if(viewerContent.isEmpty()){
 				contextRightContent= null;
 				contextRightViewer.setInput(null);
-	    		writeStatus("There was no Stored Testset. Please Generate a new Testset for this Control Action");
+	    		writeStatus(Messages.NOTestsetsAvailable);
 			}else{
-				writeStatus("");
+				writeStatus(""); //$NON-NLS-1$
 				contextRightContent = viewerContent;
 				showContent(filterCombo.getText(), viewerContent);
 			}
@@ -917,9 +917,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 		}
    	 
 		if(conflictCounter > 0){
-   		 	errorLabel.setText("There are " +conflictCounter+ " Conflicts!");
+   		 	errorLabel.setText(Messages.Param_ConflictsMsg +conflictCounter+ " Conflicts!");
    	 	}else{
-   		 	errorLabel.setText("");
+   		 	errorLabel.setText(""); //$NON-NLS-1$
    	 	}
 		contextRightViewer.refresh();
 	}
