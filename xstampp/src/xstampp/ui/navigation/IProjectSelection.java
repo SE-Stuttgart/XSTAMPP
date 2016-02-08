@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
 import xstampp.model.IDataModel;
@@ -35,8 +36,10 @@ public interface IProjectSelection extends ISelection{
 	 * 
 	 * @param expand
 	 *            expand or not
+	 * @param first TODO
+	 * @return TODO
 	 */
-	void expandTree(boolean expand);
+	boolean expandTree(boolean expand, boolean first);
 
 	/**
 	 * changes the related tree item to the given
@@ -79,6 +82,10 @@ public interface IProjectSelection extends ISelection{
 	 */
 	void cleanUp();
 	
-
+	/**
+	 * @param children the children to set
+	 */
+	public void addChild(IProjectSelection child);
+	public void setSelectionListener(Listener selectionListener);
 	IDataModel getProjectData();
 }

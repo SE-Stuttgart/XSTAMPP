@@ -29,7 +29,7 @@ public class ExpandHandler extends AbstractHandler {
 		}
 		boolean exp = Boolean.parseBoolean(shouldExpand);
 		if (currentSelection instanceof IProjectSelection) {
-			((IProjectSelection) currentSelection).expandTree(exp);
+			((IProjectSelection) currentSelection).expandTree(exp, true);
 		} else if (part instanceof ProjectExplorer) {
 			((ProjectExplorer) part).expandTree(exp);
 		}

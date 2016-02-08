@@ -162,7 +162,7 @@ public class View extends ViewPart{
 	public void createPartControl(Composite parent) {
 		
 	    // set title and Image
-	    setPartName("XSTPA");
+	    setPartName("Context Tables");
 	    //this.setContentDescription("Shows the Process Models and Context Tables");
 	    setTitleImage(LOGO);
 	    

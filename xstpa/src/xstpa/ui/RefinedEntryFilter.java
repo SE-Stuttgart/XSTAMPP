@@ -3,6 +3,7 @@ package xstpa.ui;
 import org.eclipse.jface.viewers.Viewer;
 
 import xstampp.astpa.ui.sds.ModeFilter;
+import xstampp.model.ILTLProvider;
 import xstpa.model.RefinedSafetyEntry;
 
 public class RefinedEntryFilter extends ModeFilter{
@@ -10,18 +11,21 @@ public class RefinedEntryFilter extends ModeFilter{
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if ((this.searchString == null) || (this.searchString.length() == 0)) {
+		if ((this.searchString == null) || (this.searchString.equals(".*.*"))) {
 			return true;
 		}
-		if(element instanceof RefinedSafetyEntry){
-			RefinedSafetyEntry entry = (RefinedSafetyEntry) element;
+		if(element instanceof ILTLProvider){
+			ILTLProvider entry = (ILTLProvider) element;
+			if(String.valueOf(entry.getNumber()).matches(searchString)){
+				return true;
+			}
 			if(String.valueOf(entry.getNumber()).matches(searchString)){
 				return true;
 			}
 			switch(this.cscFilterMode){
 				case both:
 				case rsc:
-					if(entry.getRefinedRule().toLowerCase().matches(searchString)){
+					if(entry.getSafetyRule().toLowerCase().matches(searchString)){
 						return true;
 					}
 					if(this.cscFilterMode != both){
@@ -33,6 +37,7 @@ public class RefinedEntryFilter extends ModeFilter{
 					}
 					
 			}
+			
 		}
 		
 		return false;

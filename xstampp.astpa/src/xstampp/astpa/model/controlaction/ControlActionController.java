@@ -786,6 +786,7 @@ public class ControlActionController {
 				list.addAll(controlAction.getAllRefinedRules());
 			}
 		}
+		Collections.sort(list);
 		return list;
 	}
 

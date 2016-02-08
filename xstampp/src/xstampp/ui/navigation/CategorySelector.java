@@ -18,8 +18,8 @@ public class CategorySelector extends AbstractSelector  {
 	 * @param item {@link AbstractSelector#getItem()}
 	 * @param projectId {@link AbstractSelector#getProjectId()}
  	 */
-	public CategorySelector(TreeItem item, UUID projectId) {
-		super(item, projectId);
+	public CategorySelector(TreeItem item, UUID projectId, IProjectSelection parent) {
+		super(item, projectId, parent);
 	}
 
 }

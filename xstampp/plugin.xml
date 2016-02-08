@@ -837,7 +837,7 @@
          sequence="ARROW_LEFT">
       <parameter
             id="xstampp.expand"
-            value="Flase">
+            value="False">
       </parameter>
    </key>
    <key

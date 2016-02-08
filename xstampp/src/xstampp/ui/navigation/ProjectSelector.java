@@ -25,8 +25,8 @@ public class ProjectSelector extends AbstractSelector {
 	 * @param item {@link AbstractSelector#getItem()}
 	 * @param projectId {@link AbstractSelector#getProjectId()}
 	 */
-	public ProjectSelector(TreeItem item, UUID projectId) {
-		super(item, projectId);
+	public ProjectSelector(TreeItem item, UUID projectId, IProjectSelection parent) {
+		super(item, projectId, parent);
 		
 	}
 

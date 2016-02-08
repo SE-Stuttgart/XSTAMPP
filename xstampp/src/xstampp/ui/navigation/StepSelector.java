@@ -15,6 +15,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+
 import xstampp.ui.editors.STPAEditorInput;
 
 /**
@@ -41,8 +42,8 @@ public class StepSelector extends AbstractSelector implements IMenuListener{
 	 * @param editorId the editor id as defined in the plugin.xml
 	 * @param editorName the name of the editor which shall be dispayed in the workbench 
 	 */
-	public StepSelector(TreeItem item, UUID projectId, String editorId, String editorName) {
-		super(item, projectId);
+	public StepSelector(TreeItem item, IProjectSelection parent,UUID projectId, String editorId, String editorName) {
+		super(item, projectId, parent);
 		this.editorId = editorId;
 		this.inputs=new HashMap<>();
 		STPAEditorInput input = new STPAEditorInput(projectId, editorId, item);

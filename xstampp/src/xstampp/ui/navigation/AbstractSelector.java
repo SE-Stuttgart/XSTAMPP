@@ -1,11 +1,14 @@
 package xstampp.ui.navigation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import messages.Messages;
 
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
 
@@ -20,8 +23,11 @@ import xstampp.ui.common.ProjectManager;
 public abstract class AbstractSelector implements IProjectSelection {
 
 	private TreeItem treeItem;
+	private Listener selectionListener;
 	private UUID projectId;
 	private String pathHistory;
+	private ArrayList<IProjectSelection> children;
+	private IProjectSelection parent;
 
 	/**
 	 *constructs a new Selector for the given treeItem and project
@@ -29,10 +35,13 @@ public abstract class AbstractSelector implements IProjectSelection {
 	 *
 	 * @param item {@link #getItem()}
 	 * @param projectId {@link #getProjectId()}
+	 * @param parent TODO
 	 */
-	public AbstractSelector(TreeItem item, UUID projectId) {
+	public AbstractSelector(TreeItem item, UUID projectId, IProjectSelection parent) {
 		this.treeItem = item;
 		this.projectId = projectId;
+		this.children = new ArrayList<>();
+		this.parent = parent;
 	}
 
 	
@@ -58,11 +67,31 @@ public abstract class AbstractSelector implements IProjectSelection {
 	}
 
 	@Override
-	public void expandTree(boolean expand) {
+	public boolean expandTree(boolean expand, boolean first) {
+		boolean affected = !(this.children.size() == 0 || this.treeItem.getExpanded() == expand);
 		this.treeItem.setExpanded(expand);
-		for (TreeItem item : this.treeItem.getItems()) {
-			item.setExpanded(expand);
+		for (IProjectSelection item : this.children) {
+			affected = item.expandTree(expand, false) ||affected;
 		}
+		if(first && expand && !affected){
+			if(children.size() > 0){
+				this.treeItem.getParent().select(children.get(0).getItem());
+				if(selectionListener != null){
+					selectionListener.handleEvent(null);
+				}
+				affected = true;
+			}
+		}else if(first && !expand && !affected){
+			if(parent != null){
+				this.treeItem.getParent().select(parent.getItem());
+				
+				if(selectionListener != null){
+					selectionListener.handleEvent(null);
+				}
+				affected = true;
+			}
+		}
+		return affected;
 	}
 
 	@Override
@@ -76,6 +105,8 @@ public abstract class AbstractSelector implements IProjectSelection {
 	public void activate() {
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().
 									setText(Messages.PlatformName + " -" +this.pathHistory);
+
+		
 	}
 
 
@@ -98,4 +129,36 @@ public abstract class AbstractSelector implements IProjectSelection {
 		
 		return ProjectManager.getContainerInstance().getDataModel(projectId);
 	}
+
+
+	/**
+	 * @return the children
+	 */
+	public ArrayList<IProjectSelection> getChildren() {
+		return this.children;
+	}
+
+
+	/**
+	 * @param children the children to set
+	 */
+	public void addChild(IProjectSelection child) {
+		if(this.children == null){
+			this.children = new ArrayList<>();
+		}
+		this.children.add(child);
+	}
+
+
+	/**
+	 * @return the parent
+	 */
+	public IProjectSelection getParent() {
+		return this.parent;
+	}
+	
+	public void setSelectionListener(Listener selectionListener) {
+		this.selectionListener = selectionListener;
+	}
+	
 }

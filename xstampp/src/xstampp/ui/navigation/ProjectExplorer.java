@@ -207,7 +207,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			defaultFont = new Font(null, projectItem.getFont().getFontData());
 		}
 		projectItem.setFont(defaultFont);
-		IProjectSelection selector = new ProjectSelector(projectItem, projectID);
+		IProjectSelection selector = new ProjectSelector(projectItem, projectID,null);
 		this.addOrReplaceItem(selectionId, selector, projectItem);
 		projectItem.addListener(SWT.MouseDown, this.listener);
 		projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
@@ -222,25 +222,26 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		//steps grouped by categorys, each step or category is represented by a treeItem 
 		//which is accosiated with a Step/CategorySelector which handles the linking to the step editor
 		for (IConfigurationElement categoryExt : projectExt.getChildren()) {
-			addTreeItem(categoryExt,projectItem,projectName,projectID, pluginID);
+			addTreeItem(categoryExt,selector,projectName,projectID, pluginID);
 		}
 	}
 
 	
 	private void addTreeItem(IConfigurationElement element,
-			TreeItem projectItem, String pathName, UUID projectID, String pluginID) {
+			IProjectSelection parent, String pathName, UUID projectID, String pluginID) {
 		String name = element.getName();
 		String selectionId = element.getAttribute("id") + projectID.toString();
 		String navigationPath=pathName + PATH_SEPERATOR + element.getAttribute("name");
-		final TreeItem subItem = new TreeItem(projectItem, SWT.BORDER
+		final TreeItem subItem = new TreeItem(parent.getItem(), SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
 		subItem.setFont(defaultFont);
 		subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
 		subItem.addListener(SWT.SELECTED, this.listener);
 		this.addImage(subItem, element.getAttribute("icon"), element.getNamespaceIdentifier());//$NON-NLS-1$
 		IProjectSelection selector;
+		
 		if(name.equals("step") || name.equals("stepEditor")){
-			selector = new StepSelector(subItem, projectID,
+			selector = new StepSelector(subItem, parent, projectID,
 					element.getAttribute("editorId"), //$NON-NLS-1$
 					element.getAttribute("name")); //$NON-NLS-1$
 			//register all additional stepEditors defined as xstampp.extension.stepEditor extension in any of the plugins
@@ -266,22 +267,26 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			}
 			if(this.stepEditorsToStepId.containsKey(element.getAttribute("id"))){
 				for(IConfigurationElement subEditorConf : this.stepEditorsToStepId.get(element.getAttribute("id"))){
-					addTreeItem(subEditorConf,subItem,navigationPath,projectID, pluginID);
+					addTreeItem(subEditorConf,selector,navigationPath,projectID, pluginID);
 				}
 			}
 
-			selector.setPathHistory(navigationPath + PATH_SEPERATOR + subItem.getText());
+			selector.setPathHistory(navigationPath);
 			this.contextMenu.addMenuListener((IMenuListener) selector);
 			this.addOrReplaceItem(selectionId, selector, subItem);
+			
 		}else{
-			selector = new CategorySelector(subItem, projectID);
+			selector = new CategorySelector(subItem, projectID,parent);
 			selector.setPathHistory(navigationPath);
 			this.addOrReplaceItem(selectionId, selector, subItem);
-	
+			final ArrayList<TreeItem> list = new ArrayList<>(); 
 			for (IConfigurationElement childExt : element.getChildren()) {
-				addTreeItem(childExt,subItem,navigationPath,projectID, pluginID);
+				addTreeItem(childExt,selector,navigationPath,projectID, pluginID);
 			}
+			
 		}
+		selector.setSelectionListener(listener);
+		parent.addChild(selector);
 	}
 
 	/**
