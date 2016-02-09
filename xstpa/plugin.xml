@@ -71,7 +71,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="settings.PreferencePageSettings"
+            class="xstpa.settings.PreferencePageSettings"
             id="xstpa.preferences.choosePath"
             name="XSTPA Preferences">
       </page>
@@ -79,35 +79,29 @@
    <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
-            class="export.ExportWizard"
-            icon="icons/logo.png"
-            id="export.wizard"
-            name="XstpaExport">
-      </wizard>
-      <wizard
             category="xstpa.category.pdf"
-            class="export.ContextTablePDFWizard"
+            class="xstpa.export.ContextTablePDFWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.contextTables"
             name="STPA Context Tables">
       </wizard>
       <wizard
             category="xstpa.category.pdf"
-            class="export.RefinedSCPDFWizard"
+            class="xstpa.export.RefinedSCPDFWizard"
             icon="icons/rsc_logox16.png"
             id="xstpa.wizard.refinedsafetyconstraints"
             name="Refined Safety Constraints Table">
       </wizard>
       <wizard
             category="xstpa.category.pdf"
-            class="export.RefinedUCAPDFWizard"
+            class="xstpa.export.RefinedUCAPDFWizard"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.wizard.ruca"
             name="Refined Unsafe Control Actions">
       </wizard>
       <wizard
             category="xstpa.category.pdf"
-            class="export.LTLPDFWizard"
+            class="xstpa.export.LTLPDFWizard"
             icon="icons/ltl.png"
             id="xstpa.wizard.ltl"
             name="LTL Formulas Table">
@@ -117,7 +111,7 @@
             name="Extended STPA PDFs">
       </category>
       <wizard
-            class="export.XSTPAdataWizard"
+            class="xstpa.export.XSTPAdataWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.csv"
             name="Export extended stpa data">

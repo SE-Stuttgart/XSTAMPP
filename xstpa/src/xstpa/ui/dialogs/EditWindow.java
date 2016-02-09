@@ -46,11 +46,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-import settings.PreferencePageSettings;
 import xstampp.util.STPAPluginUtils;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.model.Relation;
+import xstpa.settings.PreferencePageSettings;
 import xstpa.ui.View;
 
 /**

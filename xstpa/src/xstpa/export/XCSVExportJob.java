@@ -1,4 +1,4 @@
-package export;
+package xstpa.export;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -183,10 +183,12 @@ public class XCSVExportJob extends Job {
 		writer.println(View.REFINED_RULES + " of project " + controller.getProjectName());
 		writer.print("ID" +seperator);
 		writer.print("Type" +seperator);
+		writer.print("Links" +seperator);
 		writer.println(View.REFINED_RULES);
 		for(ILTLProvider provider: controller.getLTLPropertys()){
 			writer.print("RSR1."+provider.getNumber() +seperator);
 			writer.print(provider.getType() +seperator);
+			writer.print(provider.getLinks() +seperator);
 			writer.println(provider.getRefinedSafetyConstraint());
 		}
 		writer.println();

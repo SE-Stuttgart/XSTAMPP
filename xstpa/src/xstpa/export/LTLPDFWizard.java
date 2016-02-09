@@ -1,23 +1,23 @@
-package export;
+package xstpa.export;
 
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
 import xstpa.ui.View;
 
-public class RefinedUCAPDFWizard extends AbstractExportWizard {
+public class LTLPDFWizard extends AbstractExportWizard {
 
-	public RefinedUCAPDFWizard() {
+	public LTLPDFWizard() {
 		super(View.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.RefinedUnsafeControlActions + Messages.AsPDF)); //$NON-NLS-1$
+				Messages.LTLFormulasTable + " " + Messages.AsPDF)); //$NON-NLS-2$
 		
 	}
 
 	@Override
 	public boolean performFinish() {
-		return this.performXSLExport(				
-				"/fopRefinedUnsafeControlActions.xsl", false,Messages.RefinedUnsafeControlActions); ////$NON-NLS-1$
+		return this.performXSLExport("/fopLTLPropertys.xsl", false,//$NON-NLS-1$
+						Messages.LTLFormulasTable); 
 	}
 }

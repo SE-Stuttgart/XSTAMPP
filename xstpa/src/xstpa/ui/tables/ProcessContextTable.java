@@ -46,7 +46,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import settings.PreferencePageSettings;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
@@ -54,6 +53,7 @@ import xstpa.Messages;
 import xstpa.model.ACTSController;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
+import xstpa.settings.PreferencePageSettings;
 import xstpa.ui.View;
 import xstpa.ui.dialogs.AddEntryShell;
 import xstpa.ui.dialogs.EditWindow;

@@ -14,8 +14,18 @@ import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.model.ILTLProvider;
 @XmlRootElement(name = "rule")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "id", "number","combies","rule","rUCA", "rSCt", "ltl",
-		"type","controlAction","links", "relatedUCAs", "caID"})
+@XmlType(propOrder = { "id",
+					   "number",
+					   "combies",
+					   "rule",
+					   "rUCA", 
+					   "rSCt", 
+					   "ltl",
+					   "type",
+					   "controlAction",
+					   "links", 
+					   "relatedUCAs", 
+					   "caID"})
 public class RefinedSafetyRule implements ILTLProvider{
 
 	

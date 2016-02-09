@@ -1,23 +1,23 @@
-package export;
+package xstpa.export;
 
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.TableExportPage;
 import xstpa.ui.View;
 
-public class RefinedSCPDFWizard extends AbstractExportWizard {
+public class ContextTablePDFWizard extends AbstractExportWizard {
 
-	public RefinedSCPDFWizard() {
+	public ContextTablePDFWizard() {
 		super(View.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.RefinedSafetyConstraintsTable + " " + Messages.AsPDF)); //$NON-NLS-1$
+				Messages.ContextTables + Messages.AsPDF));
 		
 	}
 
 	@Override
 	public boolean performFinish() {
-		return this.performXSLExport("/fopRefinedConstraints.xsl", false,//$NON-NLS-1$
-									Messages.RefinedSafetyConstraintsTable); 
+		return this.performXSLExport(				
+				"/fopContextTable.xsl",  false, Messages.ContextTables); ////$NON-NLS-1$ //$NON-NLS-3$
 	}
 }

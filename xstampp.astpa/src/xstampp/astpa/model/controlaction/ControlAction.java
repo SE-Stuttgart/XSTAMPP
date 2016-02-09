@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
@@ -35,6 +36,17 @@ import xstampp.model.ILTLProvider;
  * 
  * @author Fabian Toth
  */
+
+@XmlType(propOrder = { "unsafeControlActions",
+					   "isSafetyCritical",
+					   "notProvidedVariables", 
+					   "providedVariables", 
+					   "valuesWhenNotProvided",
+					   "valuesWhenProvided", 
+					   "notProvidedVariableNames",
+					   "providedVariableNames",
+					   "rules",
+					   "componentLink"})
 public class ControlAction extends ATableModel implements IHAZXControlAction {
 
 	@XmlElementWrapper(name = "unsafecontrolactions")

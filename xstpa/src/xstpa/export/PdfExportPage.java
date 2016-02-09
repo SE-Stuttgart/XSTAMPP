@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
+ * Sieber, Fabian Toth, Patrick Wickenhï¿½user, Aliaksei Babkovich, Aleksander
  * Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made
@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package export;
+package xstpa.export;
 
 import java.util.UUID;
 

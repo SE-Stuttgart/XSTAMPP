@@ -1,4 +1,4 @@
-package settings;
+package xstpa.settings;
 
 /*******************************************************************************
  * Copyright (c) 2015 Yannic Sowoidnich
