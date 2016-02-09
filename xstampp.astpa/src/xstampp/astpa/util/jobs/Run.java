@@ -18,6 +18,7 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.AbstractExportPage;
 import xstampp.util.STPAPluginUtils;
 import xstampp.util.XstamppJob;
 
@@ -49,6 +50,23 @@ public class Run extends XstamppJob{
 	 */
 	public static final String CSV_DIR="csv"; //$NON-NLS-1$
 	
+	public static final String Extended_DIR="Extended"; //$NON-NLS-1$
+	/**
+	 * the name for the image export folder
+	 * @author Lukas Balzer
+	 */
+	public static final String EX_IMAGE_DIR=Extended_DIR+File.separator+"images"; //$NON-NLS-1$
+	/**
+	 * the name for the pdf export folder
+	 * @author Lukas Balzer
+	 */
+	public static final String EX_PDF_DIR=Extended_DIR+File.separator+"pdf"; //$NON-NLS-1$
+	/**
+	 * the name for the csv export folder
+	 * @author Lukas Balzer
+	 */
+	public static final String EX_CSV_DIR=Extended_DIR+File.separator+"csv"; //$NON-NLS-1$
+	
 	private List<Job> jobList;
 	private String dir;
 	private boolean isCanceled;
@@ -61,14 +79,26 @@ public class Run extends XstamppJob{
 											Messages.SystemDescription,"/fopSystemDescription.xsl",//$NON-NLS-1$
 											Messages.SystemGoals,"/fopSystemGoals.xsl",//$NON-NLS-1$
 											Messages.UnsafeControlActionsTable,"/fopuca.xsl"};//$NON-NLS-1$
-	
+
+	private String[] xstpaXslMap = new String[] {Messages.ContextTables,"/fopContextTable.xsl",//$NON-NLS-1$
+											Messages.RefinedSafetyConstraintsTable,"/fopRefinedConstraints.xsl",//$NON-NLS-1$
+											Messages.RefinedUnsafeControlActions,"/fopRefinedUnsafeControlActions.xsl",//$NON-NLS-1$
+											Messages.LTLFormulasTable,"/fopLTLPropertys.xsl"};//$NON-NLS-1$
 	private boolean exportReport;
 	private boolean exportImages;
 	private boolean exportCSVs;
 	private boolean exportPDFs;
+	private boolean exportExtendedCSVs;
+	private boolean exportExtendedPDFs;
+	private boolean exportExtendedIMGs;
 	private boolean decorateCS;
 							
-
+	private String exportReportFormat;
+	private String exportImagesFormat;
+	private String exportPDFsFormat;
+	private String exportExtendedPDFsFormat;
+	private String exportExtendedIMGsFormat;
+	
 	/**
 	 * this constructor creates a run export job which 
 	 * registeres it selfe as it's job listener to guarantie that
@@ -101,7 +131,7 @@ public class Run extends XstamppJob{
 	}
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("Main Run Export...", 10);
+		monitor.beginTask("Main Run Export...", 15);
 		String fileName;
 		ProjectManager.getContainerInstance().getDataModel(getProjectId()).prepareForExport();
 		
@@ -116,18 +146,38 @@ public class Run extends XstamppJob{
 			}
 		}
 		monitor.worked(1);
+		if(this.exportExtendedCSVs){
+			fileName = "Extended STPA Data.csv";
+			XCSVExportJob export = new XCSVExportJob(getJobName(fileName),	this.dir+ EX_CSV_DIR + File.separator + fileName,
+					';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),XCSVExportJob.REFINED_DATA);
+			export.schedule();
+		}
+		monitor.worked(1);
 		for(int i= 0;i<this.xslMap.length && this.exportImages;i+=2){
 			fileName = this.xslMap[i] +".png";
 			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
 											this.dir+ IMAGE_DIR + File.separator + fileName,  
 										 	this.xslMap[i+1], true, false);
+			job.setPageFormat(exportImagesFormat);
 			job.showPreview(false);
 			if(!addJob(job)){
 				return Status.CANCEL_STATUS;
 			}
 		}
-		monitor.worked(1);
-		if(this.exportImages){
+		monitor.worked(3);
+		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedIMGs;i+=2){
+			fileName = this.xstpaXslMap[i] +".png";
+			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
+											this.dir+ EX_IMAGE_DIR + File.separator + fileName,  
+										 	this.xstpaXslMap[i+1], true, false);
+			job.setPageFormat(exportExtendedIMGsFormat);
+			job.showPreview(false);
+			if(!addJob(job)){
+				return Status.CANCEL_STATUS;
+			}
+		}
+		monitor.worked(3);
+		if(this.exportImages || this.exportReport){
 			String csPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructure +".png";
 			String csPMPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructureDiagramWithProcessModel +".png";
 			CSExportJob job = new CSExportJob(csPath, 5	, CSEditor.ID, getProjectId(), false,this.decorateCS);
@@ -140,28 +190,40 @@ public class Run extends XstamppJob{
 				return Status.CANCEL_STATUS;
 			}
 		}
-		monitor.worked(5);
+		monitor.worked(1);
 		for(int i= 0;i<this.xslMap.length && this.exportPDFs;i+=2){
 			ExportJob pdfJob = new ExportJob(getProjectId(), "Expoting " +this.xslMap[i] +".pdf",
 											this.dir + PDF_DIR + File.separator + this.xslMap[i] +".pdf", //$NON-NLS-1$
 											this.xslMap[i+1], true, false);
 			pdfJob.showPreview(false);
+			pdfJob.setPageFormat(exportPDFsFormat);
 			if(!addJob(pdfJob)){
 				return Status.CANCEL_STATUS;
 			}
 		}
-		monitor.worked(8);
+		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedPDFs;i+=2){
+			ExportJob pdfJob = new ExportJob(getProjectId(), "Expoting " +this.xstpaXslMap[i] +".pdf",
+											this.dir + EX_PDF_DIR + File.separator + this.xstpaXslMap[i] +".pdf", //$NON-NLS-1$
+											this.xstpaXslMap[i+1], true, false);
+			pdfJob.setPageFormat(exportExtendedPDFsFormat);
+			pdfJob.showPreview(false);
+			if(!addJob(pdfJob)){
+				return Status.CANCEL_STATUS;
+			}
+		}
+		monitor.worked(3);
 		if(this.exportReport){
 			ExportJob pdfRepJob = new ExportJob(getProjectId(), getJobName("Final Report"),
 					this.dir + getName()+".pdf", //$NON-NLS-1$
 					"/fopxsl.xsl", true, false); //$NON-NLS-1$
 			pdfRepJob.setCSDirty();
+			pdfRepJob.setPageFormat(exportReportFormat);
 			pdfRepJob.showPreview(false);
 			if(!addJob(pdfRepJob)){
 				return Status.CANCEL_STATUS;
 			}
 		}
-		monitor.worked(10);
+		monitor.worked(2);
 		return Status.OK_STATUS;
 	}
 
@@ -217,8 +279,9 @@ public class Run extends XstamppJob{
 	 *
 	 * @param choice the choice whether or not to export the pdf files
 	 */
-	public void exportPDFs(boolean choice) {
-		this.exportPDFs = choice;
+	public void exportPDFs(String format) {
+		this.exportPDFs = !format.equals(AbstractExportPage.NON);
+		this.exportPDFsFormat = format;
 		
 	}
 
@@ -240,8 +303,9 @@ public class Run extends XstamppJob{
 	 *
 	 * @param choice the choice whether or not to export the images
 	 */
-	public void exportImages(boolean choice) {
-		this.exportImages = choice;
+	public void exportImages(String format) {
+		this.exportImages = !format.equals(AbstractExportPage.NON);
+		this.exportImagesFormat = format;
 	}
 
 	/**
@@ -251,8 +315,9 @@ public class Run extends XstamppJob{
 	 *
 	 * @param choice the choice whether or not to export the report
 	 */
-	public void exportReport(boolean choice) {
-		this.exportReport = choice;
+	public void exportReport(String format) {
+		this.exportReport = !format.equals(AbstractExportPage.NON);
+		this.exportReportFormat = format;
 	}
 
 	/**
@@ -264,5 +329,25 @@ public class Run extends XstamppJob{
 	 */
 	public void setcsDecoration(boolean decoChoice) {
 		this.decorateCS = decoChoice;
+	}
+
+	/**
+	 * @param exportExtendedCSVs the exportExtendedCSVs to set
+	 */
+	public void setExportExtendedCSVs(boolean exportExtendedCSVs) {
+		this.exportExtendedCSVs = exportExtendedCSVs;
+	}
+
+	/**
+	 * @param exportExtendedPDFs the exportExtendedPDFs to set
+	 */
+	public void setExportExtendedPDFs(String format) {
+		this.exportExtendedPDFs = !format.equals(AbstractExportPage.NON);
+		this.exportExtendedPDFsFormat = format;
+	}
+	
+	public void setExportExtendedIMGs(String format) {
+		this.exportExtendedIMGs = !format.equals(AbstractExportPage.NON);
+		this.exportExtendedIMGsFormat = format;
 	}
 }

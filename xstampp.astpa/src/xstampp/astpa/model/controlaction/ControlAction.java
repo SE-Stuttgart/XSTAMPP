@@ -526,8 +526,10 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 				combie.setValueNames(null);
 			}
 		}
-		for(RefinedSafetyRule rule : rules){
-			rule.setLinks(null);
+		if(rules != null){
+			for(RefinedSafetyRule rule : rules){
+				rule.setLinks(null);
+			}
 		}
 	}
 

@@ -543,7 +543,7 @@ public class ControlActionController {
 	public void prepareForSave() {
 		moveRulesInCA();
 		for (ControlAction controlAction : this.controlActions) {
-			
+			controlAction.prepareForSave();
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				unsafeControlAction.setLinks(null);

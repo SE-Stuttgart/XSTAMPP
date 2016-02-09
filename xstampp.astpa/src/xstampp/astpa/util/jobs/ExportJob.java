@@ -128,12 +128,14 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 			File tmp = new File(this.filePath);
 			this.imgPath = tmp.getParent(); 
+		IDataModel model = ProjectManager.getContainerInstance().getDataModel(this.id);
 			
-		this.csPath = new File(this.imgPath + File.separator
-				+ getThread().getId() + "cs.png");
-		this.csPmPath = new File(this.imgPath + File.separator
-				+ getThread().getId() + "cspm.png");
-		if(this.isCsDirty || !this.csPath.exists() || !this.csPmPath.exists()){
+		
+		if(this.isCsDirty ){
+			this.csPath = new File(this.imgPath + File.separator
+					+ getThread().getId() + "cs.png");
+			this.csPmPath = new File(this.imgPath + File.separator
+					+ getThread().getId() + "cspm.png");
 			CSExportJob csExport = new CSExportJob(this.csPath.getPath(), CSEditor.ID, this.id,
 					10, this.decorate);
 			CSExportJob csPmExport = new CSExportJob(this.csPmPath.getPath(), CSEditorWithPM.ID,
@@ -141,13 +143,11 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 	
 			csExport.getPrintableRoot();
 			csPmExport.getPrintableRoot();
+
+			((DataModelController) model).setCSImagePath(this.csPath.getPath());
+			((DataModelController) model).setCSPMImagePath(this.csPmPath.getPath());
 		}
 //		monitor.worked(1);
-
-		IDataModel model = ProjectManager.getContainerInstance().getDataModel(
-				this.id);
-		((DataModelController) model).setCSImagePath(this.csPath.getPath());
-		((DataModelController) model).setCSPMImagePath(this.csPmPath.getPath());
 		// put the xml jaxb content into an output stream
 		this.outStream = new ByteArrayOutputStream();
 		if (this.filePath != null) {
@@ -216,6 +216,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 					this.tableHeadSize *=2;
 					float width = Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
 					fopFactory.setPageWidth(2 * width + "in");
+					this.xslfoTransformer.setParameter("page.layout", "auto");
 					this.xslfoTransformer.setParameter("title.size", this.titleSize);
 					this.xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
 					this.xslfoTransformer.setParameter("text.size", this.textSize);
@@ -224,6 +225,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 //					float height = Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
 //					fopFactory.setPageHeight(2 * height + "in");
 				}else{
+					this.xslfoTransformer.setParameter("page.layout", pageFormat);
 					this.xslfoTransformer.setParameter("title.size", this.titleSize);
 					this.xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
 					this.xslfoTransformer.setParameter("text.size", this.textSize);
@@ -322,8 +324,11 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 
 	@Override
 	public void done(IJobChangeEvent event) {
-		ExportJob.this.csPath.delete();
-		ExportJob.this.csPmPath.delete();
+		if(ExportJob.this.csPath != null && ExportJob.this.csPath.exists()){
+			ExportJob.this.csPath.delete();
+		}if(ExportJob.this.csPmPath != null && ExportJob.this.csPath.exists()){
+			ExportJob.this.csPmPath.delete();
+		}
 		super.done(event);
 	}
 

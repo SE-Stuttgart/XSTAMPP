@@ -1036,5 +1036,85 @@
             class="xstampp.astpa.preferences.StpaPreferenceInitializor">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            category="xstpa.category.pdf"
+            class="xstampp.astpa.wizards.pdf.ContextTablePDFWizard"
+            icon="icons/logo.png"
+            id="xstpa.wizard.contextTables"
+            name="STPA Context Tables">
+      </wizard>
+      <wizard
+            category="xstpa.category.pdf"
+            class="xstampp.astpa.wizards.pdf.RefinedSCPDFWizard"
+            icon="icons/rsc_logox16.png"
+            id="xstpa.wizard.refinedsafetyconstraints"
+            name="Refined Safety Constraints Table">
+      </wizard>
+      <wizard
+            category="xstpa.category.pdf"
+            class="xstampp.astpa.wizards.pdf.RefinedUCAPDFWizard"
+            icon="icons/ruca_logo2x16.png"
+            id="xstpa.wizard.ruca"
+            name="Refined Unsafe Control Actions">
+      </wizard>
+      <wizard
+            category="xstpa.category.pdf"
+            class="xstampp.astpa.wizards.pdf.LTLPDFWizard"
+            icon="icons/ltl.png"
+            id="xstpa.wizard.ltl"
+            name="LTL Formulas Table">
+      </wizard>
+      <category
+            id="xstpa.category.pdf"
+            name="Extended STPA PDFs">
+      </category>
+      <wizard
+            category="xstpa.category.csv"
+            class="xstampp.astpa.wizards.stepData.XSTPAdataWizard"
+            icon="icons/logo.png"
+            id="xstpa.wizard.csv"
+            name="Export extended stpa data">
+      </wizard>
+      <category
+            id="xstpa.category.csv"
+            name="Extended STPA CSVs">
+      </category>
+      <wizard
+            category="xstpa.category.csv"
+            class="xstampp.astpa.wizards.stepData.LTLCSVWizard"
+            icon="icons/ltl.png"
+            id="xstpa.wizard.csv.ltl"
+            name="LTL Formulas csv">
+      </wizard>
+      <wizard
+            category="xstpa.category.csv"
+            class="xstampp.astpa.wizards.stepData.RefinedUCACSVWizard"
+            icon="icons/ruca_logo2x16.png"
+            id="xstpa.wizard.csv.ruca"
+            name="Refined Unsafe Control Actions csv">
+      </wizard>
+      <wizard
+            category="xstpa.category.csv"
+            class="xstampp.astpa.wizards.stepData.RefinedSCCSVWizard"
+            icon="icons/rsc_logox16.png"
+            id="xstpa.wizard.csv.rsc"
+            name="Refined Safety Constraints csv">
+      </wizard>
+      <wizard
+            category="xstpa.category.csv"
+            class="xstampp.astpa.wizards.stepData.ContextTablesCSVWizard"
+            icon="icons/xstpa_logo.png"
+            id="xstpa.wizard.csv.contextTables"
+            name="Context Tables csv">
+      </wizard>
+      <wizard
+            category="xstpa.category.csv"
+            class="xstampp.astpa.wizards.stepData.RulesCSVWizard"
+            id="xstpa.wizard.csv.rules"
+            name="Refined Rules csv">
+      </wizard>
+   </extension>
 
 </plugin>

@@ -1,4 +1,8 @@
-package xstpa.export;
+/**
+ * 
+ * @author Lukas Balzer
+ */
+package xstampp.astpa.wizards.stepData;
 
 import java.io.IOException;
 
@@ -6,37 +10,28 @@ import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 
-import xstampp.astpa.util.jobs.ICSVExportConstants;
-import xstampp.astpa.util.jobs.StpaCSVExport;
+import xstampp.astpa.util.jobs.XCSVExportJob;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.CSVExportPage;
-import xstampp.astpa.wizards.pages.STPADataPage;
 import xstampp.model.IDataModel;
-import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
-import xstpa.ui.View;
 
 /**
  * 
  * @author Lukas Balzer
  * 
  */
-public class XSTPAdataWizard extends AbstractExportWizard {
-
-	STPADataPage site;
+public class RefinedSCCSVWizard extends AbstractExportWizard {
 
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 * 
 	 */
-	public XSTPAdataWizard() {
-		super(View.ID);
+	public RefinedSCCSVWizard() {
+		super("");
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
-		
-		this.site = new STPADataPage(XCSVExportJob.STEPS,filters, "Custom Data", this.getStore()
-				.getString(IPreferenceConstants.PROJECT_NAME));
-		this.setExportPage(this.site);
+		this.setExportPage(new CSVExportPage(filters, Messages.RefinedSafetyConstraintsTable + Messages.AsDataSet));
 	}
 
 	@Override
@@ -48,7 +43,7 @@ public class XSTPAdataWizard extends AbstractExportWizard {
 						.getDataModel(this.getExportPage().getProjectID());
 				XCSVExportJob export = new XCSVExportJob("Export CSV",	filePath,
 						((CSVExportPage) this.getExportPage()).getSeperator(),
-						model, this.site.getSteps());
+						model, XCSVExportJob.REFINED_CONSTRAINTS);
 				export.schedule();
 			} else {
 				return false;

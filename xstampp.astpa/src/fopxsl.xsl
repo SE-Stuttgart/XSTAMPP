@@ -9,7 +9,7 @@
 	<!-- ViewContainer.java -->
     <xsl:import href="ucaTableTemp.xsl"/>
 	<xsl:param name="page.layout" select="A4"/>
-     <xsl:param name="page.title" select=""/>   
+     <xsl:param name="page.title" select="''"/>   
     
     <xsl:template match="/*">
     <fo:root>
@@ -23,7 +23,8 @@
 			<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 			
 			<!-- +++++ Front-Page +++++ -->
-			<fo:page-sequence master-reference="titel">
+			<fo:page-sequence >
+         		<xsl:attribute name="master-reference"><xsl:value-of select="$page.layout"/></xsl:attribute>
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block intrusion-displace="line">
 						<fo:table space-after="30pt">

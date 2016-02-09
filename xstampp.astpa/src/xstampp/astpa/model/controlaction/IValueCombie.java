@@ -22,13 +22,13 @@ public interface IValueCombie {
 	 * a string constant for a value combination that leads to a hazardous situation 
 	 * when the parent control action is provided to late
 	 */
-	static final String TYPE_TOO_LATE ="provided too late";
+	static final String TYPE_TOO_LATE ="too late";
 	
 	/**
 	 * a string constant for a value combination that leads to a hazardous situation 
 	 * when the parent control action is provided to early
 	 */
-	static final String TYPE_TOO_EARLY ="provided too early";
+	static final String TYPE_TOO_EARLY ="too early";
 	
 	/**
 	 * a string constant for a value combination that leads to a hazardous situation 

@@ -9,8 +9,13 @@ import java.util.UUID;
 import messages.Messages;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -24,8 +29,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.Activator;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 
@@ -38,8 +46,11 @@ import xstampp.ui.navigation.IProjectSelection;
 public abstract class AbstractExportPage extends AbstractWizardPage implements
 		IExportPage {
 
+	public static final String EXPORT_DATA = "Export data";
 	public static final String A4_LANDSCAPE = "A4Landscape";
 	public static final String A4_PORTRAIT = "A4";
+	public static final String NON = "no exprot";
+	public static final String EXPORT = "include in exprot";
 	private Map<UUID, String> projects;
 	private Combo chooseList;
 	protected PathComposite pathChooser;
@@ -162,32 +173,119 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		return projectChooser;
 
 	}
+	protected void addLabelWithAssist(Composite parent,Object layoutData, String title,String tip){
+		Label text = new Label(parent, SWT.NONE);
+		text.setText(title);
+		FieldDecorationRegistry decRegistry = FieldDecorationRegistry.getDefault();
 
+		FieldDecoration infoField = decRegistry.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 
+		ControlDecoration decoration = new ControlDecoration(text, SWT.TOP | SWT.RIGHT);
+		decoration.setImage(infoField.getImage());
+
+		decoration.setDescriptionText(tip);
+		text.setLayoutData(layoutData);
+	}
+	protected Label addFormatWidget(Composite composite,Object layoutData, String title, final boolean chooseFormat){
+			Composite widget= new Composite(composite, SWT.NONE);
+			widget.setLayoutData(layoutData);
+			widget.setLayout(new GridLayout(2, false));
+			final Label chooser = new Label(widget, SWT.None);
+			chooser.setLayoutData(new GridData(SWT.BEGINNING,SWT.FILL,false,true));
+			if(chooseFormat){
+				chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
+				chooser.setData(EXPORT_DATA,A4_PORTRAIT);
+				chooser.setToolTipText("Export in DinA4 portrait mode");
+			}else{
+				chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+				chooser.setData(EXPORT_DATA,EXPORT);
+				chooser.setToolTipText("include in export");
+			}
+			MouseAdapter listener =new MouseAdapter() {
+				@Override
+				public void mouseUp(MouseEvent e) {
+					if(chooser.getData(EXPORT_DATA).equals(A4_PORTRAIT)){
+						chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage());
+						chooser.setData(EXPORT_DATA,A4_LANDSCAPE);
+						chooser.setToolTipText("Export in DinA4 landscape mode");
+					}
+					else if(chooser.getData(EXPORT_DATA).equals(A4_LANDSCAPE)){
+						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+						chooser.setData(EXPORT_DATA,NON);
+						chooser.setToolTipText("exclude from export");
+					}
+					else if(chooser.getData(EXPORT_DATA).equals(NON) && !chooseFormat){
+						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+						chooser.setData(EXPORT_DATA,EXPORT);
+						chooser.setToolTipText("include in export");
+					}
+					else if(chooser.getData(EXPORT_DATA).equals(EXPORT)){
+						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+						chooser.setData(EXPORT_DATA,NON);
+						chooser.setToolTipText("exclude from export");
+					}
+					else{
+						chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
+						chooser.setData(EXPORT_DATA,A4_PORTRAIT);
+						chooser.setToolTipText("Export in DinA4 portrait mode");
+					}
+				}
+			};
+			chooser.addMouseListener(listener);
+			final Label textLabel = new Label(widget, SWT.NO);
+			textLabel.setText(title);
+			textLabel.addMouseListener(listener);
+			textLabel.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+//			widget.setSize(widget.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			return chooser;
+		}
 	/**
 	 * @param composite
+	 * @param minimal TODO
 	 */
-	protected void addFormatChooser(Composite composite,Object layoutData){
-		Group formatGroup = new Group(composite, SWT.NONE);
-		formatGroup.setLayoutData(layoutData);
-		formatGroup.setLayout(new GridLayout(2, true));
-		Button chFormat = null;
-		for(final String format:new String[]{A4_LANDSCAPE,A4_PORTRAIT}){
-			chFormat = new Button(formatGroup, SWT.RADIO);
-			chFormat.setText(format);
-			chFormat.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-			chFormat.addSelectionListener(new SelectionAdapter() {
-				
+	protected Control addFormatChooser(Composite composite,Object layoutData, boolean minimal){
+		if(minimal){
+			final Label chooser = new Label(composite, SWT.None);
+			chooser.setLayoutData(layoutData);
+			chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
+			chooser.addMouseListener(new MouseAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent e) {
-					pageFormat = format;
+				public void mouseUp(MouseEvent e) {
+					if(pageFormat.equals(A4_PORTRAIT)){
+						chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage());
+						pageFormat = A4_LANDSCAPE;
+					}else if(pageFormat.equals(A4_LANDSCAPE)){
+						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+						pageFormat = "";
+					}else{
+						chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
+						pageFormat = A4_PORTRAIT;
+					}
 				}
 			});
+			return chooser;
+		}else{
+			Group formatGroup = new Group(composite, SWT.NONE);
+			formatGroup.setLayoutData(layoutData);
+			formatGroup.setLayout(new GridLayout(2, true));
+			Button chFormat = null;
+			for(final String format:new String[]{A4_LANDSCAPE,A4_PORTRAIT}){
+				chFormat = new Button(formatGroup, SWT.RADIO);
+				chFormat.setText(format);
+				chFormat.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+				chFormat.addSelectionListener(new SelectionAdapter() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						pageFormat = format;
+					}
+				});
+			}
+			if(chFormat != null){
+				chFormat.setSelection(true);
+			}
+			return formatGroup;
 		}
-		if(chFormat != null){
-			chFormat.setSelection(true);
-		}
-		
 		
 	}
 	

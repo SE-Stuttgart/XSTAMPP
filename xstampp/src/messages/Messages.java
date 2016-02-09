@@ -483,6 +483,7 @@ public final class Messages extends NLS {
 	public static String ProjectExists;
 	@SuppressWarnings("javadoc")
 	public static String ProjectName;
+	public static String RulesTable;
 	public static String RunExport;
 	//*-------Q-------------------------------------------------------------------*
 	//*-------R-------------------------------------------------------------------*

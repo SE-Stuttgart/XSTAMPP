@@ -15,7 +15,12 @@
 			page-height="297mm" page-width="210mm" master-name="titel">
 			<fo:region-body margin="5mm 0mm 10mm 5mm" />
 		</fo:simple-page-master>
-				
+		
+		<fo:simple-page-master margin="5mm 5mm 5mm 5mm"
+			page-width="auto" page-height="auto" master-name="auto">
+			<fo:region-body margin="5mm 0mm 10mm 5mm" />
+		</fo:simple-page-master>
+			
 		<fo:simple-page-master margin="5mm 5mm 10mm 5mm"
 				page-height="210mm" page-width="297mm" master-name="A4Landscape">
 				<fo:region-body margin="15mm 0mm 10mm 5mm" />

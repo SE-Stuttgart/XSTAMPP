@@ -1,6 +1,9 @@
-package xstpa.export;
+package xstampp.astpa.util.jobs;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -21,7 +24,6 @@ import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.model.IDataModel;
 import xstampp.model.ILTLProvider;
-import xstpa.ui.View;
 
 public class XCSVExportJob extends Job {
 	/**
@@ -50,11 +52,13 @@ public class XCSVExportJob extends Job {
 	public static final int RULES_TABLE = 1 << 2;
 	public static final int REFINED_CONSTRAINTS = 1 << 3;
 	public static final int REFINED_UCA = 1 << 4;
+	public static final int REFINED_DATA = CONTEXT_TABLES | LTL_FORMULAS |REFINED_CONSTRAINTS | REFINED_UCA | RULES_TABLE;
 
 	private DataModelController controller;
 	private int tableConstant;
 	private String filepath;
 	private String seperator = ";";
+	private boolean enablePreview;
 
 	public XCSVExportJob(String name, String filePath, char seperator2,
 			IDataModel model, int tableConstant) {
@@ -72,8 +76,9 @@ public class XCSVExportJob extends Job {
 			controller.prepareForExport();
 		
 		try {
-				
-				PrintWriter writer = new PrintWriter(filepath, "UTF-8");
+
+				File tableCSV=new File(filepath);
+				PrintWriter writer = new PrintWriter(tableCSV);
 				if((tableConstant & CONTEXT_TABLES) != 0){
 					getContextTableString(writer);
 				}if((tableConstant & RULES_TABLE) != 0){
@@ -87,6 +92,9 @@ public class XCSVExportJob extends Job {
 				}
 				writer.close();
 				controller.prepareForSave();
+				if (this.enablePreview && tableCSV.exists() && Desktop.isDesktopSupported()) {
+					Desktop.getDesktop().open(tableCSV);
+				}
 		} catch (FileNotFoundException e) {
 			
 			e.printStackTrace();
@@ -95,6 +103,9 @@ public class XCSVExportJob extends Job {
 			
 			e.printStackTrace();
 			return Status.CANCEL_STATUS;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return Status.OK_STATUS;
 	}
@@ -180,11 +191,11 @@ public class XCSVExportJob extends Job {
 		writer.println();
 	}
 	private void getRulesTableString(PrintWriter writer){
-		writer.println(View.REFINED_RULES + " of project " + controller.getProjectName());
+		writer.println(Messages.RulesTable + " of project " + controller.getProjectName());
 		writer.print("ID" +seperator);
 		writer.print("Type" +seperator);
 		writer.print("Links" +seperator);
-		writer.println(View.REFINED_RULES);
+		writer.println(Messages.RulesTable);
 		for(ILTLProvider provider: controller.getLTLPropertys()){
 			writer.print("RSR1."+provider.getNumber() +seperator);
 			writer.print(provider.getType() +seperator);
@@ -283,4 +294,7 @@ public class XCSVExportJob extends Job {
 		writer.println();
 	}
 
+	public void setEnablePreview(boolean enablePreview) {
+		this.enablePreview = enablePreview;
+	}
 }

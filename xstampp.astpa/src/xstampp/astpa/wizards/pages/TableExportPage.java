@@ -96,7 +96,7 @@ public class TableExportPage extends AbstractExportPage implements
 		data.right = new FormAttachment(96);
 		data.top = new FormAttachment(this.sampleCanvas,
 				AbstractWizardPage.COMPONENT_OFFSET);
-		addFormatChooser(control, data);
+		addFormatChooser(control, data, false);
 		// Required to avoid an error in the system
 		this.setControl(this.control);
 

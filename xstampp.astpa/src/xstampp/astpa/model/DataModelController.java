@@ -1289,12 +1289,9 @@ public class DataModelController extends Observable implements
 		}
 		Image img = new Image(null, path);
 		File imgFile = new File(path);
-		this.exportInformation
-				.setCsImageWidth(String.valueOf(img.getBounds().width));
-		this.exportInformation
-				.setCsImageHeight(String.valueOf(img.getBounds().height));
-		return this.exportInformation
-				.setCsImagePath(imgFile.toURI().toString());
+		this.exportInformation.setCsImageWidth(String.valueOf(img.getBounds().width));
+		this.exportInformation.setCsImageHeight(String.valueOf(img.getBounds().height));
+		return this.exportInformation.setCsImagePath(imgFile.toURI().toString());
 	}
 
 	@Override

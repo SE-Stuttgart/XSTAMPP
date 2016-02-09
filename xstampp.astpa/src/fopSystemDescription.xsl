@@ -10,7 +10,7 @@
 	<!-- ViewContainer.java -->
     <xsl:import href="ucaTableTemp.xsl"/>
 	<xsl:param name="page.layout" select="A4"/>   
-     <xsl:param name="page.title" select=""/>   
+     <xsl:param name="page.title" select="''"/>   
     
     <xsl:template match="/*">
     <fo:root>

@@ -193,6 +193,22 @@
 								</fo:table-row>
 							</xsl:for-each>
 						</xsl:when>
+						<xsl:otherwise>
+							<fo:table-row >
+								<fo:table-cell padding="3px">
+										<fo:block ><xsl:value-of select="$caTitle" /></fo:block>
+								</fo:table-cell>
+								<xsl:for-each select="dependenciesForProvided/variableName">
+									<fo:table-cell padding="3px">
+										<fo:block >-</fo:block>
+									</fo:table-cell>
+								</xsl:for-each>
+								
+								<fo:table-cell padding="3px" number-columns-spanned="3">
+									<fo:block >-</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</xsl:otherwise>
 					</xsl:choose>
 				</fo:table-body>
 		</fo:table>
@@ -277,6 +293,22 @@
 								</fo:table-row>
 							</xsl:for-each>
 						</xsl:when>
+						<xsl:otherwise>
+							<fo:table-row >
+								<fo:table-cell padding="3px" >
+										<fo:block ><xsl:value-of select="$caTitle" /></fo:block>
+								</fo:table-cell>
+								<xsl:for-each select="dependenciesForProvided/variableName">
+									<fo:table-cell padding="3px">
+										<fo:block >-</fo:block>
+									</fo:table-cell>
+								</xsl:for-each>
+								
+								<fo:table-cell padding="3px" >
+									<fo:block >-</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</xsl:otherwise>
 					</xsl:choose>
 				</fo:table-body>
 		</fo:table>

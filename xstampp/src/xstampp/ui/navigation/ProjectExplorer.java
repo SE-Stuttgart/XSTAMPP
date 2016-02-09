@@ -498,7 +498,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 	@Override
 	public ISelection getSelection() {
-		if ((this.tree.getSelectionCount() > 0)
+		if (!this.tree.isDisposed() && (this.tree.getSelectionCount() > 0)
 				&& this.selectionIdsToTreeItems.containsKey(this.tree.getSelection()[0])) {
 			TreeItem item = this.tree.getSelection()[0];
 			String stepId = this.selectionIdsToTreeItems.get(this.tree.getSelection()[0]);

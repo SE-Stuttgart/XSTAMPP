@@ -336,16 +336,27 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
-      	<xs:element type="xs:boolean" name="hazardous" maxOccurs="1" minOccurs="0"/>
-      	<xs:element type="xs:string" name="safetyConstraint" maxOccurs="1" minOccurs="0"/>
+      	<xs:element type="xs:boolean" name="hazardous" maxOccurs="1"
+      		minOccurs="0" />
+      	<xs:element type="xs:string" name="safetyConstraint"
+      		maxOccurs="1" minOccurs="0" />
       	<xs:element name="id" type="xs:string" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
-      	<xs:element name="refinedRuleId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+      	<xs:element name="refinedRuleId" type="xs:string"
+      		maxOccurs="1" minOccurs="0">
+      	</xs:element>
       	<xs:element name="archived" type="xs:boolean" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
 
+      	<xs:element name="valueNames" maxOccurs="1" minOccurs="0">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="name" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
       </xs:all>
    </xs:complexType>
     
@@ -385,11 +396,14 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       		</xs:complexType>
       	</xs:element>
 
-      	<xs:element type="xs:boolean" name="hazardousAnyTime" maxOccurs="1" minOccurs="1"/>
-      	<xs:element type="xs:boolean" name="hazardousToLate" maxOccurs="1" minOccurs="1"/>
+      	<xs:element type="xs:boolean" name="hazardousAnyTime"
+      		maxOccurs="1" minOccurs="1" />
+      	<xs:element type="xs:boolean" name="hazardousToLate"
+      		maxOccurs="1" minOccurs="1" />
       	<xs:element type="xs:boolean"
-      		name="hazardousifProvidedToEarly" maxOccurs="1" minOccurs="1"/>
-      	<xs:element type="xs:string" name="safetyConstraint" maxOccurs="1" minOccurs="0"/>
+      		name="hazardousifProvidedToEarly" maxOccurs="1" minOccurs="1" />
+      	<xs:element type="xs:string" name="safetyConstraint"
+      		maxOccurs="1" minOccurs="0" />
       	<xs:element name="combieId" type="xs:string" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
@@ -399,11 +413,20 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       	<xs:element name="tooEarlyRuleId" type="xs:string"
       		maxOccurs="1" minOccurs="0">
       	</xs:element>
-      	<xs:element name="tooLateRuleId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+      	<xs:element name="tooLateRuleId" type="xs:string"
+      		maxOccurs="1" minOccurs="0">
+      	</xs:element>
       	<xs:element name="archived" type="xs:boolean" maxOccurs="1"
       		minOccurs="0">
       	</xs:element>
 
+      	<xs:element name="valueNames" maxOccurs="1" minOccurs="0">
+      		<xs:complexType>
+      			<xs:sequence>
+      				<xs:element name="name" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+      			</xs:sequence>
+      		</xs:complexType>
+      	</xs:element>
       </xs:all>
    </xs:complexType>
 <xs:complexType name="id">

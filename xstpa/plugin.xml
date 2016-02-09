@@ -33,9 +33,6 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.menus">
-   </extension>
-   <extension
          point="xstampp.extension.stepEditors">
       <stepPerspective
             id="xstpa.stepPerspective1"
@@ -75,47 +72,6 @@
             id="xstpa.preferences.choosePath"
             name="XSTPA Preferences">
       </page>
-   </extension>
-   <extension
-         point="org.eclipse.ui.exportWizards">
-      <wizard
-            category="xstpa.category.pdf"
-            class="xstpa.export.ContextTablePDFWizard"
-            icon="icons/logo.png"
-            id="xstpa.wizard.contextTables"
-            name="STPA Context Tables">
-      </wizard>
-      <wizard
-            category="xstpa.category.pdf"
-            class="xstpa.export.RefinedSCPDFWizard"
-            icon="icons/rsc_logox16.png"
-            id="xstpa.wizard.refinedsafetyconstraints"
-            name="Refined Safety Constraints Table">
-      </wizard>
-      <wizard
-            category="xstpa.category.pdf"
-            class="xstpa.export.RefinedUCAPDFWizard"
-            icon="icons/ruca_logo2x16.png"
-            id="xstpa.wizard.ruca"
-            name="Refined Unsafe Control Actions">
-      </wizard>
-      <wizard
-            category="xstpa.category.pdf"
-            class="xstpa.export.LTLPDFWizard"
-            icon="icons/ltl.png"
-            id="xstpa.wizard.ltl"
-            name="LTL Formulas Table">
-      </wizard>
-      <category
-            id="xstpa.category.pdf"
-            name="Extended STPA PDFs">
-      </category>
-      <wizard
-            class="xstpa.export.XSTPAdataWizard"
-            icon="icons/logo.png"
-            id="xstpa.wizard.csv"
-            name="Export extended stpa data">
-      </wizard>
    </extension>
    <extension
          point="org.eclipse.help.toc">
