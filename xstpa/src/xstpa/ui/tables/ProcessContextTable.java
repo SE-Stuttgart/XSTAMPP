@@ -1,5 +1,6 @@
 package xstpa.ui.tables;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -554,16 +556,29 @@ public class ProcessContextTable extends AbstractTableComposite {
 			    		  final int code = dialog.open();
 			    		  if (code != 2) {
 
+			    			String location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
+			    				
 				    		  // If the Path for ACTS is not set, the PreferencePage opens
-				    		  if (xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path") //$NON-NLS-1$
-				    				  .equals(xstampp.Activator.getDefault().getPreferenceStore().getDefaultString(("ACTS_Path")))) { //$NON-NLS-1$
+				    		  if (location.isEmpty() && Platform.getInstallLocation() == null) {
 				    			  Map<String,String> values=new HashMap<>();
 				    			  values.put("preferencePageId", PreferencePageSettings.ID); //$NON-NLS-1$
 				    	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
-				    	    	  
+				    	    	  	location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
+				    		  }else if(location.isEmpty()){
+				    			  File root = new File(Platform.getInstallLocation().getURL().getFile() + File.separator +"features");
+				    				for (File feature : root.listFiles()) {
+				    					if(location.isEmpty() && feature.getName().startsWith("xstpa")){
+				    						for(File algFile:feature.listFiles()){
+				    							if(algFile.getName().contains("acts")){
+				    								location = algFile.getAbsolutePath();
+				    								break;
+				    							}
+				    						}
+				    					}
+				    				}
 				    		  }
 					    	  
-					    	  final ACTSController job = new ACTSController(contextRightTable.getColumnCount(), dataController.getLinkedCAE());
+					    	  final ACTSController job = new ACTSController(contextRightTable.getColumnCount(), dataController.getLinkedCAE(),location);
 					    	  job.addJobChangeListener(new JobChangeAdapter() {
 					    		  @Override
 					    		  public void done(IJobChangeEvent event) {

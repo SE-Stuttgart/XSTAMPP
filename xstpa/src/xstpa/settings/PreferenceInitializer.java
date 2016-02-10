@@ -12,8 +12,12 @@ package xstpa.settings;
 
 
 
+import java.io.File;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osgi.service.datalocation.Location;
 
 import xstampp.Activator;
 
@@ -53,7 +57,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-
+		
 		// ACTS Settings
 		this.store.setDefault("ACTS_Path", "");
 				

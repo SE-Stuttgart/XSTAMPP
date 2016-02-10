@@ -386,3 +386,59 @@ Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tych
 
 !ENTRY org.eclipse.equinox.p2.touchpoint.natives 2 0 2015-11-07 19:25:22.565
 !MESSAGE Could not remove temporary backup directory (it is safe to manually delete it and its contents): C:\Users\Lukas\AppData\Local\Temp\DefaultProfile_2a1c66430721_c0a8b225d86d
+!SESSION 2016-02-10 09:38:17.115 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_66
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\LUKASB~1\AppData\Local\Temp\tycho7877189091643507103secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\LUKASB~1\AppData\Local\Temp\tycho7877189091643507103secure_storage
+
+!ENTRY org.eclipse.equinox.p2.engine 4 4 2016-02-10 09:38:17.115
+!MESSAGE An error occurred while configuring the installed items
+!SUBENTRY 1 org.eclipse.equinox.p2.engine 4 0 2016-02-10 09:38:17.115
+!MESSAGE session context was:(profile=DefaultProfile, phase=org.eclipse.equinox.internal.p2.engine.phases.Configure, operand=null --> [R]xstampp_product 2.0.1, action=org.eclipse.equinox.internal.p2.touchpoint.natives.actions.CopyAction).
+!SUBENTRY 1 org.eclipse.equinox.p2.touchpoint.natives 4 0 2016-02-10 09:38:17.115
+!MESSAGE I/O Error while copying D:\Lukas\Documents\xstampp\astpa.repository\target\products\xstampp_product\win32\win32\x86_64\plugin_customization.ini - see details.
+!STACK 0
+java.io.IOException: Source: D:\Lukas\Documents\xstampp\astpa.repository\target\products\xstampp_product\win32\win32\x86_64\plugin_customization.inidoes not exists
+	at org.eclipse.equinox.internal.p2.touchpoint.natives.actions.CopyAction.xcopy(CopyAction.java:118)
+	at org.eclipse.equinox.internal.p2.touchpoint.natives.actions.CopyAction.mergeCopy(CopyAction.java:104)
+	at org.eclipse.equinox.internal.p2.touchpoint.natives.actions.CopyAction.copy(CopyAction.java:77)
+	at org.eclipse.equinox.internal.p2.touchpoint.natives.actions.CopyAction.execute(CopyAction.java:39)
+	at org.eclipse.equinox.internal.p2.engine.ParameterizedProvisioningAction.execute(ParameterizedProvisioningAction.java:38)
+	at org.eclipse.equinox.internal.p2.engine.Phase.mainPerform(Phase.java:183)
+	at org.eclipse.equinox.internal.p2.engine.Phase.perform(Phase.java:95)
+	at org.eclipse.equinox.internal.p2.engine.PhaseSet.perform(PhaseSet.java:47)
+	at org.eclipse.equinox.internal.p2.engine.Engine.perform(Engine.java:75)
+	at org.eclipse.equinox.internal.p2.engine.Engine.perform(Engine.java:44)
+	at org.eclipse.equinox.internal.provisional.p2.director.PlanExecutionHelper.executePlan(PlanExecutionHelper.java:41)
+	at org.eclipse.equinox.internal.provisional.p2.director.PlanExecutionHelper.executePlan(PlanExecutionHelper.java:23)
+	at org.eclipse.equinox.internal.p2.director.app.DirectorApplication.executePlan(DirectorApplication.java:802)
+	at org.eclipse.equinox.internal.p2.director.app.DirectorApplication.planAndExecute(DirectorApplication.java:795)
+	at org.eclipse.equinox.internal.p2.director.app.DirectorApplication.performProvisioningActions(DirectorApplication.java:782)
+	at org.eclipse.equinox.internal.p2.director.app.DirectorApplication.run(DirectorApplication.java:1099)
+	at org.eclipse.tycho.p2.tools.director.DirectorApplicationWrapper$DirectorApplicationWrapperCommand.execute(DirectorApplicationWrapper.java:43)
+	at org.eclipse.tycho.plugins.p2.director.DirectorMojo.execute(DirectorMojo.java:140)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:134)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:207)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:116)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:80)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:51)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:307)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:193)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:106)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:863)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:288)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:199)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:289)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:229)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:415)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:356)

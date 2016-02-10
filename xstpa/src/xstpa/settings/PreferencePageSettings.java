@@ -11,8 +11,17 @@ package xstpa.settings;
  *******************************************************************************/
 
 
+import java.io.File;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.osgi.service.datalocation.Location;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -50,8 +59,18 @@ public class PreferencePageSettings extends FieldEditorPreferencePage implements
 
 
 		this.actsSettingsFieldEditor = new FileFieldEditor(
-				"ACTS_Path", "Please select the Path to the ACTS-File",
-				this.getFieldEditorParent());
+				"ACTS_Path", "Path to the ACTS-File:",
+				this.getFieldEditorParent()){
+			@Override
+			protected void createControl(Composite parent) {
+				super.createControl(parent);
+				Label help = new Label(parent, SWT.None);
+				help.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+				help.setForeground(new Color(null, 100, 0, 20));
+				help.setText("if the value is empty the default acts file stored in this installation will be used");
+			}
+		};
+		actsSettingsFieldEditor.setErrorMessage("");
 		this.addField(this.actsSettingsFieldEditor);
 
 
@@ -59,7 +78,7 @@ public class PreferencePageSettings extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void performDefaults() {
-
+		
 		this.actsSettingsFieldEditor.loadDefault();
 		
 	}

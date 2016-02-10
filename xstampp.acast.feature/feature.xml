@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="xstampp.acast.feature"
+      label="A-CAST Feature"
+      version="1.0.1"
+      plugin="xstampp.acast">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="xstampp" version="1.0.2" match="greaterOrEqual"/>
+      <import plugin="xstampp.extension" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.draw2d"/>
+      <import plugin="xstampp.astpa" version="2.0.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+   </requires>
+
+   <plugin
+         id="xstampp.acast"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

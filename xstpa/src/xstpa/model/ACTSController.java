@@ -17,7 +17,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.service.datalocation.Location;
 
+import xstampp.ui.common.ProjectManager;
 import xstpa.ui.dialogs.EditWindow;
 
 public class ACTSController extends Job{
@@ -31,17 +33,24 @@ public class ACTSController extends Job{
 	private ControlActionEntry context;
 
 	private int columns;
+
+	private String location;
 	
-	public ACTSController(int columns,ControlActionEntry context) {
+	public ACTSController(int columns,ControlActionEntry context,String location) {
 		super("Calculating Combinations..");
 		this.columns = context.getLinkedItems().size();
 		this.context = context;
+		this.location = location;
 	}
 	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		// Run ACTS in a separate system process
-		
+		File algFile = new File(location);
+		if(!algFile.exists()){
+			ProjectManager.getLOGGER().error("Context Table generation failed because the given location for the algorithm was wrong");
+			return Status.CANCEL_STATUS;
+		}
 		try {
 			Process proc;
 			String modes;
@@ -75,7 +84,7 @@ public class ACTSController extends Job{
 				
 				// clear so that the default mode gets selected again
 			}
-			String location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
+
 			//location = location.substring(1, location.length());
 			writeFile(context.getLinkedItems());
 			proc = Runtime.getRuntime().exec("java"+modes+"-jar " +location+" cmd "+INPUT+ " " + OUTPUT);
