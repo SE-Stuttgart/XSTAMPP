@@ -232,11 +232,7 @@ public class EditWindow
     	
     	TabFolder folder = new TabFolder(parent, SWT.NONE);
 
-	    FormData fData = new FormData();
-	    fData.top = new FormAttachment( 0 );
-	    fData.left = new FormAttachment( 0 );
-	    fData.right = new FormAttachment(100);
-    	folder.setLayoutData(fData);
+	  
     	 // The FormLayout for the outer Composite
 	    FormLayout formLayout = new FormLayout();
 	    formLayout.marginHeight = 5;
@@ -259,10 +255,10 @@ public class EditWindow
 	    // Apply Button
 	    Button ok = new Button(parent, SWT.PUSH);
 	    ok.setText("Ok");
-	    fData = new FormData();
-	    fData.top = new FormAttachment(folder,5);
+	    FormData fData = new FormData();
 	    fData.right = new FormAttachment(100);
 	    fData.bottom = new FormAttachment(100);
+	    fData.height = SWT.DEFAULT;
 	    ok.setLayoutData(fData);
 	    
 	    // Functionality of the Apply Button
@@ -275,9 +271,9 @@ public class EditWindow
 	    Button cancel = new Button(parent, SWT.PUSH);
 	    cancel.setText("Cancel");
 	    fData = new FormData();
-	    fData.top = new FormAttachment(folder,5);
 	    fData.right = new FormAttachment(ok,-20);
 	    fData.bottom = new FormAttachment(100);
+	    fData.height = SWT.DEFAULT;
 	    cancel.setLayoutData(fData);
 	    
 	    cancel.addSelectionListener(new SelectionAdapter() {
@@ -292,6 +288,13 @@ public class EditWindow
 	    fData.right = new FormAttachment(cancel);
 	    fData.bottom = new FormAttachment(100);
 	    errorMsg.setLayoutData(fData);
+	    
+	    fData = new FormData();
+	    fData.top = new FormAttachment( 0 );
+	    fData.left = new FormAttachment( 0 );
+	    fData.right = new FormAttachment(100);
+	    fData.bottom = new FormAttachment(ok);
+    	folder.setLayoutData(fData);
 	   
     }
 
