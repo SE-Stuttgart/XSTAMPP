@@ -2,7 +2,6 @@ package xstpa.ui.tables;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.model.controlaction.IValueCombie;
-import xstampp.util.STPAPluginUtils;
 import xstpa.Messages;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
@@ -66,7 +64,11 @@ public class RefinedRulesTable extends AbstractTableComposite {
 			case View.CONTEXT:
 				return entry.getContext();
 			case View.CONTEXT_TYPE:
-				return entry.getType();
+				if(!entry.getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
+					return entry.getType();
+				}else{
+					return null;
+				}
 			case View.CRITICAL_COMBI:	
 				return entry.getCriticalCombinations(" == ", ",", false, false, true); //$NON-NLS-1$ //$NON-NLS-2$
 				
@@ -165,11 +167,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 //	    data.verticalIndent = 5;
 	    editRefinedSafetyTableComposite.setLayoutData(data);
 	    
-		// Add a button to export all tables
-	    final Button exportBtn = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
-	    exportBtn.setToolTipText(Messages.RefinedRulesTable_Export);
-	    exportBtn.setImage(View.EXPORT);
-	    exportBtn.pack();
+		
 	    
 	    // Add a button to switch tables (LTL Button)
 	    final Button bRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
@@ -183,19 +181,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 	    bAllRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVEALL));
 	    bAllRemoveEntry.pack();
 	    
-	    
-	    /**
-	     * Functionality for the Export Button
-	     */
-	    exportBtn.addSelectionListener(new SelectionAdapter() {
-	      public void widgetSelected(SelectionEvent event) {
-	    	  
-	    	  Map<String,String> values=new HashMap<>();
-	    	  values.put("xstampp.commandParameter.openwizard", "export.wizard"); //$NON-NLS-1$ //$NON-NLS-2$
-	    	  STPAPluginUtils.executeParaCommand("xstampp.command.openWizard", values); //$NON-NLS-1$
-	      }
-	    });
-	    
+	   
 	    bRemoveEntry.addSelectionListener(new SelectionAdapter() {
 	    	@Override
 	    	public void widgetSelected(SelectionEvent e) {

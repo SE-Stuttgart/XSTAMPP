@@ -151,7 +151,10 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(variable.getLinkedControlActionName());
 		buffer.append(" command ");
-		buffer.append(getType());
+		buffer.append(getContext());//$NON-NLS-1$
+		if(!getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
+			buffer.append(" " + getType());
+		}
 		buffer.append(" when ");
 		buffer.append(getCriticalCombinations("is", "and", false, true, true));
 		ruca = buffer.toString();
@@ -164,7 +167,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		if(getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
 			buffer.append(" must be provided");
 		}else{
-			buffer.append(" must not be ");
+			buffer.append(" must not be provided ");
 			buffer.append(getType());
 		}
 		buffer.append(" when ");
@@ -178,7 +181,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		if(getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
 			buffer.append(" must be provided");
 		}else{
-			buffer.append(" must not be ");
+			buffer.append(" must not be provided ");
 			buffer.append(getType());
 		}
 		buffer.append(" when ");

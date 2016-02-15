@@ -242,15 +242,6 @@
 			<!-- Sets the PDF-Theme-Color -->
 				<xsl:call-template name="headTheme"/>
 				<xsl:call-template name="fontTheme"/>
-				
-				<fo:table-row>
-					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">No.</fo:block>
-					</fo:table-cell>
-					<fo:table-cell padding="3px" number-columns-spanned="3">
-						<fo:block text-align="center" font-weight="bold">Title</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">No.</fo:block>
@@ -329,8 +320,6 @@
 		</fo:table>
 	</xsl:template>
 	
-	
-
 	<!-- ################### Safety Constraints Table ################### -->
 	<xsl:template name="safetyConstraintsTable">
       <xsl:param name="varSize" select="12"/> 
@@ -714,7 +703,7 @@
 				<xsl:choose>
 					<!-- Checks for hazardous UCA -->
 					<xsl:when
-						test="cac/controlactions/controlaction/unsafecontrolactions/unsafecontrolaction/correspondingSafetyConstraint/text != ''">
+						test="cac/controlactions/controlaction/unsafecontrolactions/unsafecontrolaction[links != 'Not Hazardous']">
 						<xsl:for-each
 							select="cac/controlactions/controlaction/unsafecontrolactions/unsafecontrolaction[links != 'Not Hazardous']">
 	
