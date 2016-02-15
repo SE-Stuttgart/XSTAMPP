@@ -44,10 +44,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.ui.acchaz.ATableFilter;
@@ -135,7 +133,7 @@ public class CSCView extends StandartEditorPart{
 		});
 
 		Button ucaButton = new Button(filterComposite, SWT.RADIO);
-		ucaButton.setText(Messages.UnsafeControlActions);
+		ucaButton.setText(headers[1]);
 		ucaButton.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -151,7 +149,7 @@ public class CSCView extends StandartEditorPart{
 		});
 
 		Button rscButton = new Button(filterComposite, SWT.RADIO);
-		rscButton.setText(Messages.CorrespondingSafetyConstraints);
+		rscButton.setText(headers[3]);
 		rscButton.addSelectionListener(new SelectionListener() {
 
 			@Override
