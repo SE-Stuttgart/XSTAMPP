@@ -51,10 +51,15 @@ public interface IControlStructureConstants {
 	 * @author Lukas Balzer
 	 */
 	String CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS="ConnectionMode"; //$NON-NLS-1$ 
-	
+
 	/**
 	 * 
 	 * @author Lukas Balzer
 	 */
 	String CONTROLSTRUCTURE_PROCESS_MODEL_BORDER="ShowProcessModelBorder"; //$NON-NLS-1$ 
+	/**
+	 * 
+	 * @author Lukas Balzer
+	 */
+	String CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER="ShowListOfControlActionBorder"; //$NON-NLS-1$ 
 }

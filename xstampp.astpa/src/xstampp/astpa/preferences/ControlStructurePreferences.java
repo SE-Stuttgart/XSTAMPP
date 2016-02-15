@@ -30,6 +30,7 @@ implements IWorkbenchPreferencePage {
 	private ColorFieldEditor CSProcessDeco;
 	private ColorFieldEditor CSActuatorDeco;
 	private ColorFieldEditor CSControllerDeco;
+	private BooleanFieldEditor ListOfCABorderSwitch;
 
 	public ControlStructurePreferences() {
 		super(FieldEditorPreferencePage.GRID);
@@ -77,10 +78,14 @@ implements IWorkbenchPreferencePage {
 		this.ConnectorSwitch = new BooleanFieldEditor(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, "Activate manual connection mode",
 						this.getFieldEditorParent());
 		this.addField(this.ConnectorSwitch);
-		
+
 		this.ProcessModelBorderSwitch = new BooleanFieldEditor(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, "Show the border of the process Model Variables",
 						this.getFieldEditorParent());
 		this.addField(this.ProcessModelBorderSwitch);
+		
+		this.ListOfCABorderSwitch = new BooleanFieldEditor(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER, "Show the border of the list of control action component",
+				this.getFieldEditorParent());
+		this.addField(this.ListOfCABorderSwitch);
 	}
 
 	@Override
@@ -93,6 +98,7 @@ implements IWorkbenchPreferencePage {
 		this.CSActuatorDeco.store();
 		this.ConnectorSwitch.store();
 		this.ProcessModelBorderSwitch.store();
+		ListOfCABorderSwitch.store();
 		return super.performOk();
 	}
 	
@@ -105,6 +111,7 @@ implements IWorkbenchPreferencePage {
 		this.CSSensorDeco.loadDefault();
 		this.CSActuatorDeco.loadDefault();
 		this.ConnectorSwitch.loadDefault();
+		ListOfCABorderSwitch.loadDefault();
 	}
 	@Override
 	protected void performApply() {
@@ -115,5 +122,6 @@ implements IWorkbenchPreferencePage {
 		this.ConnectorSwitch.store();
 		this.CSSensorDeco.store();
 		this.CSActuatorDeco.store();
+		ListOfCABorderSwitch.store();
 	}
 }

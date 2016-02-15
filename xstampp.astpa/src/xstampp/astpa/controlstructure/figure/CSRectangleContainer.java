@@ -1,5 +1,6 @@
 package xstampp.astpa.controlstructure.figure;
 
+import java.rmi.activation.Activator;
 import java.util.UUID;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -13,13 +14,16 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
+import xstampp.preferences.IControlStructureConstants;
 
-public class CSRectangleContainer extends Figure implements IControlStructureFigure{
+public class CSRectangleContainer extends Figure implements IControlStructureFigure, IPropertyChangeListener{
 	private UUID id;
 	private boolean selected;
 	private IPreferenceStore store;
@@ -191,6 +195,17 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 	@Override
 	public void setPreferenceStore(IPreferenceStore store) {
 		this.store = store;
+		store.addPropertyChangeListener(this);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER)
+					&& ((boolean)event.getNewValue())){
+			setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH));
+		}else if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER)){
+			setBorder(null);
+		}
 	}
 	 
 

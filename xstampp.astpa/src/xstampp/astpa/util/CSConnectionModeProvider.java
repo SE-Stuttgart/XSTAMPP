@@ -19,6 +19,7 @@ import xstampp.preferences.IControlStructureConstants;
 public class CSConnectionModeProvider extends AbstractSourceProvider implements IPropertyChangeListener{
 	public static final String CONNECTION_MODE= "xstampp.astpa.connectionMode";
 	public static final String PROCESS_MODEL_BORDER= "xstampp.astpa.ProcessModelBorder";
+	public static final String SHOW_CALIST_BORDER= "xstampp.astpa.ShowCAListBorder";
 	
 	public CSConnectionModeProvider() {
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
@@ -42,12 +43,15 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 		}
 		f =Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER); 
 		map.put(PROCESS_MODEL_BORDER, f);
+		
+		f =Activator.getDefault().getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER); 
+		map.put(SHOW_CALIST_BORDER, f);
 		return map;
 	}
 
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[]{CONNECTION_MODE,PROCESS_MODEL_BORDER};
+		return new String[]{CONNECTION_MODE,PROCESS_MODEL_BORDER,SHOW_CALIST_BORDER};
 	}
 
 	@Override
@@ -72,6 +76,11 @@ public class CSConnectionModeProvider extends AbstractSourceProvider implements 
 
 			boolean newValue=(boolean) event.getNewValue();
 			fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.PROCESS_MODEL_BORDER,newValue);
+			
+		}else if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER)){
+
+			boolean newValue=(boolean) event.getNewValue();
+			fireSourceChanged(ISources.WORKBENCH,CSConnectionModeProvider.SHOW_CALIST_BORDER,newValue);
 			
 		}
 	}

@@ -67,6 +67,7 @@ public class StpaPreferenceInitializor extends AbstractPreferenceInitializer {
 				   ColorConstants.green.getRGB());
 		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, true);
 		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, true);
+		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER, true);
 
 	}
 	

@@ -83,6 +83,8 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -147,7 +149,7 @@ import xstampp.util.STPAPluginUtils;
  * 
  */
 public abstract class CSAbstractEditor extends StandartEditorPart implements
-		IControlStructureEditor,IZoomContributor, IPropertyChangeListener {
+		IControlStructureEditor,IZoomContributor, IPropertyChangeListener, ISelectionProvider {
 
 
 
@@ -209,6 +211,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	private IPreferenceStore store;
 
+	private ArrayList<ISelectionChangedListener> selectionListeners;
+
 	/**
 	 * This constructor defines the Domain where the editable content should be
 	 * displayed in
@@ -264,7 +268,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 
 		this.store.addPropertyChangeListener(this);
-		
+		getSite().setSelectionProvider(this);
 		
 	}
 
@@ -619,6 +623,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// If not the active editor, ignore selection changed.
 		this.updateActions(this.selectionActions);
+		
 	}
 
 	/**
@@ -1217,6 +1222,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		this.updateActions(this.selectionActions);
+		if(this.selectionListeners != null){
+			for(ISelectionChangedListener listener:selectionListeners){
+				listener.selectionChanged(event);
+			}
+		}
 	}
 
 	private void setDecoration(boolean deco){
@@ -1338,6 +1348,31 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.selectAddedParts  = true;
 		
 		return true;
+	}
+	
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		if(selectionListeners == null){
+			this.selectionListeners=new ArrayList<>();
+		}
+		this.selectionListeners.add(listener);
+	}
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		if(selectionListeners != null){
+			this.selectionListeners.remove(listener);
+		}
+	}
+	@Override
+	public void setSelection(ISelection selection) {
+		//the selection can not be changed here
+	}
+
+	@Override
+	public ISelection getSelection() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 
