@@ -100,6 +100,7 @@ public class ProcessModelVariables {
 	@XmlElement(name="refinedUnsafeControlAction")
 	private String ruca;
 	
+	private UUID controllerID;
 	public ProcessModelVariables (List<String> pmVariables,ControlActionEntry linkedControlAction ) {
 		this.linkedControlActionName = linkedControlAction.getControlAction();
 		this.pmVariables = pmVariables;
@@ -506,6 +507,20 @@ public class ProcessModelVariables {
 	 */
 	public void setTooLateRule(UUID tooLateRule) {
 		this.tooLateRule = tooLateRule;
+	}
+
+	/**
+	 * @return the controllerID
+	 */
+	public UUID getControllerID() {
+		return this.controllerID;
+	}
+
+	/**
+	 * @param controllerID the controllerID to set
+	 */
+	public void setControllerID(UUID controllerID) {
+		this.controllerID = controllerID;
 	}
 
 

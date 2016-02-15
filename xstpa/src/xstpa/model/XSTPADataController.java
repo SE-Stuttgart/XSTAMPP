@@ -170,6 +170,7 @@ public class XSTPADataController extends Observable implements Observer{
 		    				  pmValueObject.setId(tempPMVV.getId());
 		    				  pmValueObject.setVariableID(tempPMV.getId());
 		    				  pmValueObject.setComments(tempPMVV.getComment());
+		    				  variable.setControllerID(parentComponent.getId());
 		    				  variable.addValue(tempPMVV.getText());
 		    				  variable.addValueId(tempPMVV.getId());
 		    				  addValue(pmValueObject);

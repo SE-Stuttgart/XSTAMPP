@@ -3,10 +3,13 @@ package xstpa.ui.tables;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -23,12 +26,60 @@ import org.eclipse.swt.widgets.TableColumn;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.ui.View;
-import xstpa.ui.tables.utils.DependencyViewLabelProvider;
 import xstpa.ui.tables.utils.MainViewContentProvider;
 
 public class CADependenciesTable extends AbstractTableComposite {
 
+	/**
+	 * this private class returns the content for the dependencies view 
+	 * which is devided into four tables which have different entry types
+	 *
+	 */
+	private class DependencyViewLabelProvider extends LabelProvider implements
+			ITableLabelProvider{
+		
+		public String getColumnText(Object element, int columnIndex) {
+			
+			if (element.getClass() == ControlActionEntry.class) {
+				ControlActionEntry entry = (ControlActionEntry) element;
+				switch (columnIndex) {
+				case 0:
+					return String.valueOf(entry.getNumber());
+				case 1:
+						
+					return entry.getControlAction();
+						
+				}
+				return null;
+			}
+			
+			else if (element.getClass() == ProcessModelVariables.class) {
+				ProcessModelVariables entry = (ProcessModelVariables) element;
+				switch (columnIndex) {
+				case 0:
+					return String.valueOf(entry.getNumber());
+				case 1:
+					if(dataController.getModel().getComponent(entry.getControllerID()) != null){
+						return dataController.getModel().getComponent(entry.getControllerID()).getText();
+					}
+					return null;
+				case 2:
+					return entry.getName();
+				}
+			}
+			return null;
+		}
 
+		public Image getColumnImage(Object obj, int index) {			
+			return getImage(obj);		
+		}
+		
+
+
+		public Image getImage(Object obj) {
+	        return null;
+		}
+	}
 	private Composite compositeDependenciesTopRight;
 	private Composite compositeDependenciesBottomRight;
 	private TableViewer dependencyTableViewer;
@@ -130,6 +181,7 @@ public class CADependenciesTable extends AbstractTableComposite {
 		    dependencyTopTable.setLinesVisible(true);
 		    // Columns for dependencies top (Process model Variables)
 		    new TableColumn(dependencyTopTable, SWT.LEFT).setText(View.ENTRY_ID);
+		    new TableColumn(dependencyTopTable, SWT.LEFT).setText(View.CONTROLLER);
 		    new TableColumn(dependencyTopTable, SWT.LEFT).setText(View.PMV);
 		    
 			dependencyBottomTable = dependencyBottomTableViewer.getTable();
@@ -138,6 +190,7 @@ public class CADependenciesTable extends AbstractTableComposite {
 		    dependencyBottomTable.setLinesVisible(true);
 		    // Columns for dependencies bottom (Dependencies)
 		    new TableColumn(dependencyBottomTable, SWT.LEFT).setText(View.ENTRY_ID);
+		    new TableColumn(dependencyBottomTable, SWT.LEFT).setText(View.CONTROLLER);
 		    new TableColumn(dependencyBottomTable, SWT.LEFT).setText(View.PMV);
 		//==============================================================================
 		//START Table functionality definition
