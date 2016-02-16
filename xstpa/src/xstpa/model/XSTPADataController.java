@@ -11,6 +11,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
+import org.eclipse.swt.widgets.Display;
+
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
@@ -334,7 +336,7 @@ public class XSTPADataController extends Observable implements Observer{
   	    		fetchControlActions();
   	    	}
 			RefinedSafetyEntry entry;
-			for(ProcessModelVariables variable : getControlActionEntry(true, ca.getId()).getContextTableCombinations()){
+			for(ProcessModelVariables variable : getControlActionEntry(true, ca.getId()).getContextTableCombinations(false)){
 				if(variable.getConflict()){
 					//only variables without confilcts are forming rules
 					continue;
@@ -369,7 +371,7 @@ public class XSTPADataController extends Observable implements Observer{
 			}
 			
 			for (ProcessModelVariables variable : getControlActionEntry(false, ca.getId()).
-					getContextTableCombinations()) {
+					getContextTableCombinations(false)) {
 				if(variable.getGlobalHazardous() && !variable.getConflict()){
 					count++;
 						entry = RefinedSafetyEntry.getNotProvidedEntry(count,variable,getModel());
@@ -401,28 +403,35 @@ public class XSTPADataController extends Observable implements Observer{
 	 * @param caEntry the ControlActionEntrys or null for the currently linked which should be stored in the data model
 	 * @param updateValue TODO
 	 */
-	public void storeBooleans(ControlActionEntry caEntry, ObserverValue updateValue) {
-		ControlActionEntry temp = caEntry;
-		if(temp == null){
-			temp = this.linkedCAE;
-		}
-		if (this.dependenciesIFProvided.containsValue(temp)) {
-			syncCombiesWhenProvided(temp);
-		}
-		else {
-	    	syncCombiesWhenNotProvided(temp);
-		}
-		if(updateValue != null){
-			setChanged();
-			notifyObservers(updateValue);
-		}
+	public void storeBooleans(final ControlActionEntry caEntry, final ObserverValue updateValue) {
+		Display.getDefault().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				ControlActionEntry temp = caEntry;
+				if(temp == null){
+					temp = linkedCAE;
+				}
+				if (dependenciesIFProvided.containsValue(temp)) {
+					syncCombiesWhenProvided(temp);
+				}
+				else {
+			    	syncCombiesWhenNotProvided(temp);
+				}
+				if(updateValue != null){
+					setChanged();
+					notifyObservers(updateValue);
+				}
+			}
+		});
+		
 	}
 	
 	private void syncCombiesWhenProvided(ControlActionEntry caEntry){
   		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
   		  ProvidedValuesCombi val = new ProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
-  		  for (ProcessModelVariables combie :caEntry.getContextTableCombinations()) {
+  		  for (ProcessModelVariables combie :caEntry.getContextTableCombinations(false)) {
   			  val = new ProvidedValuesCombi();
   			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
    				 val.setValues(getCombieUUIDs(combie));
@@ -448,7 +457,7 @@ public class XSTPADataController extends Observable implements Observer{
   		  List<NotProvidedValuesCombi> valuesIfProvided = new ArrayList<NotProvidedValuesCombi>();
   		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
-  		  for (ProcessModelVariables combie : caEntry.getContextTableCombinations()) {
+  		  for (ProcessModelVariables combie : caEntry.getContextTableCombinations(false)) {
   			  val = new NotProvidedValuesCombi();
   			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
   				 val.setValues(getCombieUUIDs(combie));

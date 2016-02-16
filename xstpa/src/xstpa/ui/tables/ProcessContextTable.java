@@ -2,6 +2,7 @@ package xstpa.ui.tables;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -281,13 +282,13 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    		//this listener uses the information contextTableCellX which provides the current table item index
 		    		//calculated in the contextRightTable.mouseListener
 		    		if ((contextTableCellX < contextRightTable.getColumnCount()-1) && (contextTableCellX >= 0)) {
-		    			ProcessModelVariables contextCombie = contextRightContent.get(contextRightTable.getSelectionIndex());
+		    			ProcessModelVariables contextCombie = (ProcessModelVariables) contextRightTable.getSelection()[0].getData();
 		    			List<String> strings = contextCombie.getValues();
 		    			List<UUID> uuids = contextCombie.getValueIds();
 		    			contextCombie.setValueIds(new ArrayList<UUID>());
 		    			contextCombie.setValues(new ArrayList<String>());
 		    			for(int i = 0;i<strings.size();i++){
-		    				if(i == contextTableCellX + 1){
+		    				if(i == contextTableCellX - 1){
 		    					contextCombie.addValue(dataController.getModel().getIgnoreLTLValue().getText());
 		    					contextCombie.addValueId(dataController.getModel().getIgnoreLTLValue().getId());
 		    				}else{
@@ -305,49 +306,48 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 				public void handleEvent(Event event) {
 					Point pt = new Point(event.x, event.y);
-					
 					//this for loop iterates over all visible table items
 					for(int index = contextRightTable.getTopIndex();index < contextRightTable.getItemCount();index++) {
 			            TableItem item = contextRightTable.getItem(index);
 			            for (int i = 0; i < contextRightTable.getColumnCount(); i++) {
 			            	//for each column we check whether the mouse is inside the related tableitem
 				            Rectangle rect = item.getBounds(i);
-				            if (contextTableCellX == contextRightTable.getColumnCount()-1 && rect.contains(pt)) {
-
+			            	contextTableCellY = index;
+			            	boolean doesContain = rect.contains(pt);
+				            if(doesContain){
 					            contextTableCellX = i;
-				            	contextTableCellY = index;
-			                	boolean changed = false;
-			                	if (dataController.isControlActionProvided()) {
-				                	int tempWidth = rect.width / 3;
-				                	boolean checkboxAnytimeClicked =(rect.x < pt.x)&(pt.x < rect.x+tempWidth);
-				                	boolean checkboxtooEarlyClicked =(rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth));
-						            boolean checkboxtooLateClicked =(rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width);
-				                	changed = checkboxAnytimeClicked || checkboxtooEarlyClicked || checkboxtooLateClicked;
-				                	if (checkboxAnytimeClicked) {
-				                		contextRightContent.get(contextTableCellY).
-				                							setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
-				                	}else if (checkboxtooEarlyClicked) {
-				                		contextRightContent.get(contextTableCellY).
-				                							setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
-				                	}else if (checkboxtooLateClicked) {
-				                		contextRightContent.get(contextTableCellY).
-				                							setHLate(!contextRightContent.get(contextTableCellY).getHLate());
+				            
+					            if (contextTableCellX == contextRightTable.getColumnCount()-1) {
+	
+				                	boolean changed = false;
+				                	if (dataController.isControlActionProvided()) {
+					                	int tempWidth = rect.width / 3;
+					                	boolean checkboxAnytimeClicked =(rect.x < pt.x)&(pt.x < rect.x+tempWidth);
+					                	boolean checkboxtooEarlyClicked =(rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth));
+							            boolean checkboxtooLateClicked =(rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width);
+					                	changed = checkboxAnytimeClicked || checkboxtooEarlyClicked || checkboxtooLateClicked;
+					                	if (checkboxAnytimeClicked) {
+					                		contextRightContent.get(contextTableCellY).
+					                							setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
+					                	}else if (checkboxtooEarlyClicked) {
+					                		contextRightContent.get(contextTableCellY).
+					                							setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
+					                	}else if (checkboxtooLateClicked) {
+					                		contextRightContent.get(contextTableCellY).
+					                							setHLate(!contextRightContent.get(contextTableCellY).getHLate());
+					                	}
+				                	}else  if (!dataController.isControlActionProvided()) {
+				                		contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
+				                		changed = true;
 				                	}
-			                	}else  if (!dataController.isControlActionProvided()) {
-			                		contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
-			                		changed = true;
-			                	}
-			                	if(changed){
-			                		contextRightViewer.refresh();
-			    	    			// packs the columns
-			    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-			    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-			    	    		  	}
-			    	    		  	contextRightTable.deselectAll();
-			    	    		  	dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
-					                setConflictLabel();
-			                	}
-			                	break;
+				                	if(changed){
+//				                		contextRightViewer.refresh();
+//				    	    		  	contextRightTable.deselectAll();
+				    	    		  	dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
+						                setConflictLabel();
+				                	}
+					            }
+			                	return;
 				            }
 			            }
 			            
@@ -555,7 +555,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			    				  MessageDialog.QUESTION_WITH_CANCEL, new String[]{IDialogConstants.YES_LABEL,
 			    			  IDialogConstants.NO_LABEL,IDialogConstants.CANCEL_LABEL}, 0);
 			    		  int result;
-			    		  if(dataController.getLinkedCAE().getContextTableCombinations() == null){
+			    		  if(dataController.getLinkedCAE().getContextTableCombinations(false) == null){
 			    			  result = 1;
 			    		  }else{
 			    			  result = dialog.open();
@@ -630,22 +630,14 @@ public class ProcessContextTable extends AbstractTableComposite {
 						
 						@Override
 						public void handleEvent(Event event) {
-							//Create values for the Constructor
-				    		List<String> pmVars = new ArrayList<String>();
-				    		for (int i = 1; i<contextRightTable.getColumnCount()-1;i++) {
-				    			pmVars.add(contextRightTable.getColumn(i).getText().replace(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
-				    		}
+							
 							// add the New Variable
-				    		ProcessModelVariables temp = new ProcessModelVariables(pmVars, dataController.getLinkedCAE());
-				    		if(event.data instanceof String[]){
-				    			
-				    			for(String valueName:(String[]) event.data){
-				    				temp.addValue(valueName);
-				    			}
-				    		}
+				    		ProcessModelVariables temp = (ProcessModelVariables) event.data;
+				    		temp.setLinkedControlActionName(dataController.getLinkedCAE().getControlAction(),
+				    				dataController.getLinkedCAE().getId());
 							contextRightContent.add(temp);
 							// set the ContextTableCombinations
-							dataController.getLinkedCAE().setContextTableCombinations(contextRightContent);
+							dataController.getLinkedCAE().addContextTableCombination(temp);
 							// refresh the Viewer
 							dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
 							contextRightViewer.refresh();
@@ -725,8 +717,8 @@ public class ProcessContextTable extends AbstractTableComposite {
   		if (!dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
   			new TableColumn(contextRightTable, SWT.NONE).setText(View.ENTRY_ID);
   			// creates new TableColumns dynamically so that the context table has the right size (and labels)
-  			for (ProcessModelVariables entry:dataController.getLinkedCAE().getLinkedItems()) {
-  				new TableColumn(contextRightTable, SWT.NONE).setText(entry.getName());
+  			for (int i=0;i<dataController.getLinkedCAE().getLinkedItems().size();i++) {
+  				new TableColumn(contextRightTable, SWT.NONE).setText(dataController.getLinkedCAE().getLinkedItems().get(i).getName());
   			}
 	  	
   			if (dataController.isControlActionProvided()) {
@@ -799,8 +791,8 @@ public class ProcessContextTable extends AbstractTableComposite {
     }
 	
 	private void storeEntrys(List<ProcessModelVariables> entrys, boolean keepOldCombies){
-		if(keepOldCombies && dataController.getLinkedCAE().getContextTableCombinations() != null){
-			for(ProcessModelVariables variable: dataController.getLinkedCAE().getContextTableCombinations()){
+		if(keepOldCombies && dataController.getLinkedCAE().getContextTableCombinations(false) != null){
+			for(ProcessModelVariables variable: dataController.getLinkedCAE().getContextTableCombinations(false)){
 				if(variable.getGlobalHazardous()){
 					variable.setArchived(true);
 					entrys.add(variable);
@@ -836,8 +828,8 @@ public class ProcessContextTable extends AbstractTableComposite {
   	  	if(dataController.getLinkedCAE() == null){
     		contextRightViewer.setInput(null);
   	  		
-  	  	}else if ((!dataController.getLinkedCAE().getContextTableCombinations().isEmpty()) & (!dataController.getLinkedCAE().getLinkedItems().isEmpty())) {
-  		  createTableColumns();
+  	  	}else if ((!dataController.getLinkedCAE().getContextTableCombinations(false).isEmpty()) &&
+  	  			  (!dataController.getLinkedCAE().getLinkedItems().isEmpty())) {
   		  refreshTable();
   	  	}
   	  	else {
@@ -855,6 +847,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 	@Override
 	public boolean refreshTable() {
+		System.out.println("triggered refresh");
 		if(contextRightViewer.getControl() == null || contextRightViewer.getControl().isDisposed()){
 			return false;
 		}
@@ -863,32 +856,24 @@ public class ProcessContextTable extends AbstractTableComposite {
 		}else{
 			ControlActionEntry entry = (ControlActionEntry) contextTable.getSelection()[0].getData();
 	  	  	dataController.setLinkedCAE(contextContentFolder.getSelectionIndex() == 0,entry.getId());
-	  	  	createTableColumns();
-	  	  	
-	  	  	ArrayList<ProcessModelVariables> viewerContent = new ArrayList<>();
-			for(ProcessModelVariables variable : dataController.getLinkedCAE().getContextTableCombinations()){
-				if(variable.getVariableIds().size() != dataController.getLinkedCAE().getLinkedItems().size()){
-					continue;
-				}
-				boolean consider = true;
-				for(int idIndex=0; idIndex<variable.getVariableIds().size();idIndex++){
-					if(!variable.getVariableIds().contains(dataController.getLinkedCAE().getLinkedItem(idIndex+1).getId())){
-						consider = false;
+	  	  	contextRightTable.setVisible(false);
+			Display.getCurrent().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					contextRightContent = dataController.getLinkedCAE().getContextTableCombinations(true);
+					createTableColumns();
+					if(contextRightContent == null || contextRightContent.isEmpty()){
+						contextRightViewer.setInput(null);
+			    		writeStatus(Messages.NOTestsetsAvailable);
+					}else{
+						writeStatus(""); //$NON-NLS-1$
+						showContent(filterCombo.getText(), contextRightContent);
 					}
+			  	  	contextRightTable.setVisible(true);
 				}
-				if(consider && !variable.isArchived()){
-					viewerContent.add(variable);
-				}
-			}
-			if(viewerContent.isEmpty()){
-				contextRightContent= null;
-				contextRightViewer.setInput(null);
-	    		writeStatus(Messages.NOTestsetsAvailable);
-			}else{
-				writeStatus(""); //$NON-NLS-1$
-				contextRightContent = viewerContent;
-				showContent(filterCombo.getText(), viewerContent);
-			}
+			});
+			
 		}
 		return true;
 	}
@@ -897,8 +882,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 			
 		//verfies if there are no conflicts between CAProvided and not provided
 		UUID caID= dataController.getLinkedCAE().getId();
-		List<ProcessModelVariables> notProvidedContext =dataController.getControlActionEntry(false, caID).getContextTableCombinations();
-		List<ProcessModelVariables> providedContext =dataController.getControlActionEntry(true, caID).getContextTableCombinations();
+		List<ProcessModelVariables> notProvidedContext =dataController.getControlActionEntry(false, caID).getContextTableCombinations(false);
+		List<ProcessModelVariables> providedContext =dataController.getControlActionEntry(true, caID).getContextTableCombinations(false);
 		int conflictCounter = 0;
 		boolean combiesFit;
 		//initially all stored contextTableCombinations are set too non conflicting

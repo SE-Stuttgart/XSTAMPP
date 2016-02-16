@@ -1,7 +1,9 @@
 package xstpa.ui.dialogs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.swt.SWT;
@@ -24,20 +26,25 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstpa.model.ControlActionEntry;
+import xstpa.model.ProcessModelVariables;
 
 
 public class AddEntryShell {
 
 	private Shell shell;
 	private List<UUID> variables;
+	private List<String> varNames;
 	private DataModelController model;
 	private Listener listener;
-	private List<Combo> idListToCombo;
+	private Map<UUID,Combo> comboToId;
+	private Map<UUID,List<UUID>> idListToID;
 
 	public AddEntryShell(List<UUID> vars,DataModelController controller) {
 		this.variables = vars;
 		this.model = controller;
-		this.idListToCombo = new ArrayList<>();
+		this.comboToId = new HashMap<>();
+		this.idListToID = new HashMap<>();
 	}
 	
 	public void open(int x, int y){
@@ -57,6 +64,7 @@ public class AddEntryShell {
 		Composite combos = new Composite(this.shell, SWT.NONE);
 		combos.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, false, 2, 1));
 		combos.setLayout(new GridLayout(this.variables.size(), false));
+		varNames = new ArrayList<>();
 		for(UUID id:this.variables){
 			//for each variable a composite with the variable name and
 			//a combo with all the values is added 
@@ -66,12 +74,16 @@ public class AddEntryShell {
 			IRectangleComponent variable = this.model.getComponent(id);
 			Label label = new Label(comp, SWT.None);
 			label.setText(variable.getText()+":");
+			varNames.add(variable.getText());
 			Combo varCombo = new Combo(comp, SWT.READ_ONLY);
+			ArrayList<UUID> valueList = new ArrayList<>();
 			for(IRectangleComponent value : variable.getChildren()){
 				varCombo.add(value.getText());
+				valueList.add(value.getId());
 			}
 			//all value ids are stored in a list mapped to the combo they are chosen from
-			this.idListToCombo.add(varCombo);
+			this.idListToID.put(id,valueList);
+			this.comboToId.put(id,varCombo);
 			varCombo.select(0);		
 		}
 		Composite btnComp = new Composite(shell, SWT.None);
@@ -108,18 +120,23 @@ public class AddEntryShell {
 		}
 	}
 	
-	private String[] getValueList(){
-		String[] list = new String[this.idListToCombo.size()];
-		for(int i=0;i < list.length;i++){
-			list[i] = this.idListToCombo.get(i).getText();
+	private ProcessModelVariables getValueList(){
+		ProcessModelVariables variable = new ProcessModelVariables();
+		
+		variable.setPmVariables(varNames);
+		for(int i= 0; i<variables.size();i++){
+			variable.addVariableId(variables.get(i));
+			Combo tmp =comboToId.get(variables.get(i));
+			variable.addValue(tmp.getText());
+			variable.addValueId(idListToID.get(variables.get(i)).get(tmp.getSelectionIndex()));
 		}
-		return list;
+		return variable;
 	}
 	public void addApplyListener(Listener listener){
 		this.listener = listener;
 	}
 	
-	private void notifyListener(String[] values){
+	private void notifyListener(ProcessModelVariables values){
 		if(listener != null && values != null){
 			Event e = new Event();
 			e.data = values;

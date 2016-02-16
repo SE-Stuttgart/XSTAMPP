@@ -275,6 +275,9 @@ public class ProcessModelVariables {
 	 * @return the variableIds
 	 */
 	public List<UUID> getVariableIds() {
+		if(variableIdsList == null){
+			variableIdsList = new ArrayList<>();
+		}
 		return variableIdsList;
 	}
 

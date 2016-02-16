@@ -208,7 +208,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		      	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
 		      	    
 		    	    for (ControlActionEntry caEntry : allCAEntrys) {
-		    	    	for(ProcessModelVariables variable: caEntry.getContextTableCombinations()){
+		    	    	for(ProcessModelVariables variable: caEntry.getContextTableCombinations(false)){
 		    	    		variable.setGlobalHazardous(false);
 		    	    	}
 			    	    dataController.storeBooleans(caEntry, ObserverValue.CONTROL_ACTION);
@@ -223,7 +223,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 
 	private void removeEntry(RefinedSafetyEntry entry){
 		List<ProcessModelVariables> combinations = dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getVariable().getLinkedControlActionID()).getContextTableCombinations();
+				 entry.getVariable().getLinkedControlActionID()).getContextTableCombinations(false);
 		switch(entry.getType()){
 			case IValueCombie.TYPE_ANYTIME: 
 				entry.getVariable().setHAnytime(false);

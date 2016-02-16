@@ -900,7 +900,9 @@ public class DataModelController extends Observable implements
 		if ((componentId == null)) {
 			return null;
 		}
-
+		if(ignoreLtlValue != null && componentId.equals(ignoreLtlValue.getId())){
+			return ignoreLtlValue;
+		}
 		return this.controlStructureController.getComponent(componentId);
 	}
 
