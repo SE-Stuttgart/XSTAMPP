@@ -9,6 +9,7 @@ import java.util.Observable;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -294,7 +295,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    					contextCombie.addValueId(uuids.get(i));
 		    				}
 		    			}
-		    			dataController.storeBooleans(null);
+		    			dataController.storeBooleans(null, ObserverValue.CONTROL_ACTION);
 		    			refreshTable();
 		    		}
 		    	}
@@ -343,7 +344,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
 		    	    		  	}
 		    	    		  	contextRightTable.deselectAll();
-		    	    		  	dataController.storeBooleans(null);
+		    	    		  	dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
 				                setConflictLabel();
 		                	}
 		                	break;
@@ -553,18 +554,19 @@ public class ProcessContextTable extends AbstractTableComposite {
 			    				  Messages.PreserveOldRules,
 			    				  MessageDialog.QUESTION_WITH_CANCEL, new String[]{IDialogConstants.YES_LABEL,
 			    			  IDialogConstants.NO_LABEL,IDialogConstants.CANCEL_LABEL}, 0);
-			    		  final int code = dialog.open();
+			    		  int result;
+			    		  if(dataController.getLinkedCAE().getContextTableCombinations() == null){
+			    			  result = 1;
+			    		  }else{
+			    			  result = dialog.open();
+			    		  }
+			    		  final int code = result;
 			    		  if (code != 2) {
 
 			    			String location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
-			    				
+			    			
 				    		  // If the Path for ACTS is not set, the PreferencePage opens
-				    		  if (location.isEmpty() && Platform.getInstallLocation() == null) {
-				    			  Map<String,String> values=new HashMap<>();
-				    			  values.put("preferencePageId", PreferencePageSettings.ID); //$NON-NLS-1$
-				    	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
-				    	    	  	location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
-				    		  }else if(location.isEmpty()){
+				    		  if(location.isEmpty()){
 				    			  File root = new File(Platform.getInstallLocation().getURL().getFile() + File.separator +"features");
 				    				for (File feature : root.listFiles()) {
 				    					if(location.isEmpty() && feature.getName().startsWith("xstpa")){
@@ -577,20 +579,28 @@ public class ProcessContextTable extends AbstractTableComposite {
 				    					}
 				    				}
 				    		  }
+				    		  if (location.isEmpty()) {
+				    			  Map<String,String> values=new HashMap<>();
+				    			  values.put("preferencePageId", PreferencePageSettings.ID); //$NON-NLS-1$
+				    	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
+				    	    	  	location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
+				    		  }
 					    	  
 					    	  final ACTSController job = new ACTSController(contextRightTable.getColumnCount(), dataController.getLinkedCAE(),location);
 					    	  job.addJobChangeListener(new JobChangeAdapter() {
 					    		  @Override
 					    		  public void done(IJobChangeEvent event) {
-					    			  Display.getDefault().asyncExec(new Runnable() {
-										
-										@Override
-										public void run() {
-											// creates the correct number of rows for the context table
-									    	  createTableColumns();
-							    			  storeEntrys(job.getEntryList(), code == 0);
-										}
-									});
+					    			  if(event.getResult().equals(Status.OK_STATUS)){
+						    			  Display.getDefault().asyncExec(new Runnable() {
+											
+											@Override
+											public void run() {
+												// creates the correct number of rows for the context table
+										    	  createTableColumns();
+								    			  storeEntrys(job.getEntryList(), code == 0);
+											}
+						    			  });
+					    			  }
 					    		  }
 					    	  });
 					    	  job.schedule();
@@ -637,7 +647,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 							// set the ContextTableCombinations
 							dataController.getLinkedCAE().setContextTableCombinations(contextRightContent);
 							// refresh the Viewer
-							dataController.storeBooleans(null);
+							dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
 							contextRightViewer.refresh();
 							
 						}
@@ -657,7 +667,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    		contextRightContent.remove(contextRightTable.getSelectionIndex());
 		    		contextRightTable.remove(contextRightTable.getSelectionIndex());
 
-		    		dataController.storeBooleans(null);
+		    		dataController.storeBooleans(null, null);
 		    	}
 		    });
 		//===============================================================================
@@ -789,7 +799,7 @@ public class ProcessContextTable extends AbstractTableComposite {
     }
 	
 	private void storeEntrys(List<ProcessModelVariables> entrys, boolean keepOldCombies){
-		if(keepOldCombies){
+		if(keepOldCombies && dataController.getLinkedCAE().getContextTableCombinations() != null){
 			for(ProcessModelVariables variable: dataController.getLinkedCAE().getContextTableCombinations()){
 				if(variable.getGlobalHazardous()){
 					variable.setArchived(true);
@@ -798,7 +808,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			}
 		}
 		dataController.getLinkedCAE().setContextTableCombinations(entrys);
-		dataController.storeBooleans(null);
+		dataController.storeBooleans(null, ObserverValue.CONTROL_ACTION);
 		refreshTable();
 	}
 	

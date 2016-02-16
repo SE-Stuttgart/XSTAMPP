@@ -399,8 +399,9 @@ public class XSTPADataController extends Observable implements Observer{
 	/**
 	 * Store the Boolean Data (from the Context Table) in the Datamodel
 	 * @param caEntry the ControlActionEntrys or null for the currently linked which should be stored in the data model
+	 * @param updateValue TODO
 	 */
-	public void storeBooleans(ControlActionEntry caEntry) {
+	public void storeBooleans(ControlActionEntry caEntry, ObserverValue updateValue) {
 		ControlActionEntry temp = caEntry;
 		if(temp == null){
 			temp = this.linkedCAE;
@@ -411,9 +412,10 @@ public class XSTPADataController extends Observable implements Observer{
 		else {
 	    	syncCombiesWhenNotProvided(temp);
 		}
-		
-		setChanged();
-		notifyObservers(ObserverValue.COMBINATION_STATES);
+		if(updateValue != null){
+			setChanged();
+			notifyObservers(updateValue);
+		}
 	}
 	
 	private void syncCombiesWhenProvided(ControlActionEntry caEntry){

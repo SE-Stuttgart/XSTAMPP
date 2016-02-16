@@ -70,7 +70,11 @@ public class SaveJob extends Job {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
 		try {
-			initiateRecovery(file);
+			if(file.exists()){
+				initiateRecovery(file);
+			}else{
+				file.createNewFile();
+			}
 			
 				Object haz;
 				if(this.file.getName().endsWith("haz")){
@@ -98,7 +102,6 @@ public class SaveJob extends Job {
 					
 				}
 				writer.close();
-				recover(file);
 				
 		} catch (Exception e) {
 			recover(file);
@@ -130,21 +133,25 @@ public class SaveJob extends Job {
 	}
 	
 	private void recover(File file){
-		BufferedWriter writer;
-		try {
-			writer = new BufferedWriter(new FileWriter(file));
-			BufferedReader reader = new BufferedReader(new StringReader(oldContent.toString()));
-			String line = reader.readLine();
-			while(line != null){
-				writer.write(line);
-				writer.newLine();
-				line = reader.readLine();
+		if(oldContent != null && !oldContent.toString().isEmpty()){
+				
+			
+			BufferedWriter writer;
+			try {
+				writer = new BufferedWriter(new FileWriter(file));
+				BufferedReader reader = new BufferedReader(new StringReader(oldContent.toString()));
+				String line = reader.readLine();
+				while(line != null){
+					writer.write(line);
+					writer.newLine();
+					line = reader.readLine();
+				}
+				writer.close();
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			writer.close();
-			reader.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 }

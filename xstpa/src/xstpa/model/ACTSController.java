@@ -121,10 +121,17 @@ public class ACTSController extends Job{
 			reader.readLine();
 			reader.readLine();
 			String line = reader.readLine();
+			String parameter_nr=new String();
+			for(char c :line.toCharArray()){
+				if(Character.isDigit(c)){
+					parameter_nr = parameter_nr + c;
+				}
+			}
+			
+			int paramCount = Integer.parseInt(parameter_nr);
 			
 			char temp = line.charAt(line.length()-1);
 			
-			int paramCount = Character.getNumericValue(temp);
 			line = reader.readLine();
 			temp = line.charAt(line.length()-1);
 			Character.getNumericValue(temp);

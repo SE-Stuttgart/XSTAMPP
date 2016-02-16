@@ -30,6 +30,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.model.controlaction.IValueCombie;
+import xstampp.model.ObserverValue;
 import xstpa.Messages;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
@@ -210,7 +211,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		    	    	for(ProcessModelVariables variable: caEntry.getContextTableCombinations()){
 		    	    		variable.setGlobalHazardous(false);
 		    	    	}
-			    	    dataController.storeBooleans(caEntry);
+			    	    dataController.storeBooleans(caEntry, ObserverValue.CONTROL_ACTION);
 		    	    }
 					dataController.getModel().removeRefinedSafetyRule(true, null);
 					refreshTable();
@@ -243,10 +244,10 @@ public class RefinedRulesTable extends AbstractTableComposite {
 			combinations.remove(entry.getVariable());
 		}
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getVariable().getLinkedControlActionID()));
+				 entry.getVariable().getLinkedControlActionID()), ObserverValue.CONTROL_ACTION);
 		dataController.getModel().removeRefinedSafetyRule(false, entry.getDataRef());
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getVariable().getLinkedControlActionID()));
+				 entry.getVariable().getLinkedControlActionID()), null);
 	}
 	
 	@Override
@@ -288,7 +289,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
   	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
   	    
 	    for (ControlActionEntry caEntry : allCAEntrys) {	
-	    	dataController.storeBooleans(caEntry);	
+	    	dataController.storeBooleans(caEntry, ObserverValue.CONTROL_ACTION);	
 	    }
 	}
 
