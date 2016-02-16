@@ -37,6 +37,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.wizards.stepData.UnsafeControlActionsDataWizard;
 import xstampp.model.ILTLProvider;
 
 /**
@@ -382,8 +383,14 @@ public class ControlActionController {
 		for (ControlAction controlAction : this.controlActions) {
 			for (IUnsafeControlAction unsafeControlAction : controlAction
 					.getUnsafeControlActions()) {
-				counter++;
-				if(unsafeControlAction.getId().equals(ucaID)){
+				boolean isNotHazardous = this.getLinksOfUCA(unsafeControlAction.getId()).isEmpty();
+				boolean isSearched = unsafeControlAction.getId().equals(ucaID);
+				if(isNotHazardous && isSearched){
+					return -1;
+				}else if(!isNotHazardous){
+					counter++;
+				}
+				if(isSearched){
 					return counter;
 				}
 			}

@@ -58,6 +58,11 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 
 	@Override
 	public boolean canExecute() {
+		if((this.model == null) || (this.parentModel == null)){
+			System.out.println("delete not provided");
+		}else{
+			System.out.println("delete is provided");
+		}
 		return ((this.model != null) && (this.parentModel != null));
 	}
 

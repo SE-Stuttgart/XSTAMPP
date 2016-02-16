@@ -776,20 +776,6 @@
                   value="ConnectionMode">
             </parameter>
          </command>
-         <command
-               commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               style="push">
-            <parameter
-                  name="xstampp.astpa.cseditor.toolconstant"
-                  value="ShowListOfControlActionBorder">
-            </parameter>
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="xstampp.astpa.ShowCAListBorder">
-               </with>
-            </visibleWhen>
-         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"

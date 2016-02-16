@@ -65,6 +65,7 @@ import org.eclipse.gef.ui.actions.PrintAction;
 import org.eclipse.gef.ui.actions.RedoAction;
 import org.eclipse.gef.ui.actions.SaveAction;
 import org.eclipse.gef.ui.actions.SelectAllAction;
+import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.gef.ui.actions.UndoAction;
 import org.eclipse.gef.ui.actions.UpdateAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
@@ -285,7 +286,15 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		this.hookGraphicalViewer();
 		this.initializeGraphicalViewer(viewer);
 		viewer.getControl().addMouseListener(this);
-		
+		ActionRegistry registry = this.getActionRegistry();
+		Iterator<String> iter = this.selectionActions.iterator();
+		while (iter.hasNext()) {
+			IAction action = registry.getAction(iter.next());
+			if (action instanceof SelectionAction) {
+				
+				((SelectionAction) action).setSelectionProvider(viewer);
+			}
+		}
 		
 
 	}
@@ -365,9 +374,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				});
 		this.getActionRegistry().registerAction(new ZoomInAction(this.zoomManager));
 
-		this.getActionRegistry()
-				.registerAction(new ZoomOutAction(this.zoomManager));
-
+		this.getActionRegistry().registerAction(new ZoomOutAction(this.zoomManager));
 		// array of possibles zoom levels. 0.2 = 20%, 3.0 = 300%
 		for (int zoomFactor = 0; zoomFactor < CSAbstractEditor.ZOOM_LEVEL; zoomFactor++) {
 			zoomLevel[zoomFactor] = CSAbstractEditor.MIN_ZOOM
@@ -649,10 +656,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 		action = new DeleteAction((IWorkbenchPart) this);
 		registry.registerAction(action);
+		((SelectionAction)action).setSelectionProvider(getGraphicalViewer());
 		this.selectionActions.add(action.getId());
 
 		action = new DirectEditAction(this);
 		registry.registerAction(action);
+		((SelectionAction)action).setSelectionProvider(getGraphicalViewer());
 		this.selectionActions.add(action.getId());
 
 		action = new SaveAction(this);
