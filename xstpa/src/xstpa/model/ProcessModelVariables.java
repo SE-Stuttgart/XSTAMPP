@@ -153,7 +153,7 @@ public class ProcessModelVariables {
 		String valueString;
 		String prefix;
 		for (int i = 0; i < this.values.size(); i++) {
-			valueString = this.values.get(i).replaceAll(">|<|=| ", "").trim();
+			valueString = this.values.get(i).replaceAll(">|<|=", "").trim();
 			prefix = equalsSeq.trim();
 			char c = this.values.get(i).trim().charAt(0);
 			if(c == '>' || c == '<' || c == '='){

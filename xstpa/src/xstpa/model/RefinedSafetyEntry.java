@@ -79,14 +79,16 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 			andLiteral = ' ' + andLiteral;
 		}
 		for (int i=0; i<valueCombies.size(); i++){
-			if(useBrackets){
-				temp = temp.concat('(' + valueCombies.get(i) + ')');
-			}else{
-				temp = temp.concat(valueCombies.get(i));
-			}
-
-			if (!(i==valueCombies.size()-1)) {
-				temp = temp.concat(andLiteral);
+			if(!valueCombies.get(i).contains(model.getIgnoreLTLValue().getText())){
+				if(useBrackets){
+					temp = temp.concat('(' + valueCombies.get(i) + ')');
+				}else{
+					temp = temp.concat(valueCombies.get(i));
+				}
+	
+				if (!(i==valueCombies.size()-1)) {
+					temp = temp.concat(andLiteral);
+				}
 			}
 		}
 		return temp;

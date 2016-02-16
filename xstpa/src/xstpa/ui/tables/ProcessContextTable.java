@@ -280,14 +280,14 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    	public void widgetSelected(SelectionEvent event) {
 		    		//this listener uses the information contextTableCellX which provides the current table item index
 		    		//calculated in the contextRightTable.mouseListener
-		    		if ((contextTableCellX < contextRightTable.getColumnCount()-1)&(contextTableCellX != 0)) {
+		    		if ((contextTableCellX < contextRightTable.getColumnCount()-1) && (contextTableCellX >= 0)) {
 		    			ProcessModelVariables contextCombie = contextRightContent.get(contextRightTable.getSelectionIndex());
 		    			List<String> strings = contextCombie.getValues();
 		    			List<UUID> uuids = contextCombie.getValueIds();
 		    			contextCombie.setValueIds(new ArrayList<UUID>());
 		    			contextCombie.setValues(new ArrayList<String>());
 		    			for(int i = 0;i<strings.size();i++){
-		    				if(i == contextTableCellX){
+		    				if(i == contextTableCellX + 1){
 		    					contextCombie.addValue(dataController.getModel().getIgnoreLTLValue().getText());
 		    					contextCombie.addValueId(dataController.getModel().getIgnoreLTLValue().getId());
 		    				}else{
@@ -296,7 +296,6 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    				}
 		    			}
 		    			dataController.storeBooleans(null, ObserverValue.CONTROL_ACTION);
-		    			refreshTable();
 		    		}
 		    	}
 		    });
@@ -306,51 +305,52 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 				public void handleEvent(Event event) {
 					Point pt = new Point(event.x, event.y);
-					int index = contextRightTable.getTopIndex();
-		          
-					while (index < contextRightTable.getItemCount()) {
-		            TableItem item = contextRightTable.getItem(index);
-		            for (int i = 0; i < contextRightTable.getColumnCount(); i++) {
-			            Rectangle rect = item.getBounds(i);
-			            contextTableCellX = i;
-			            if (contextTableCellX == contextRightTable.getColumnCount()-1 && rect.contains(pt)) {
-			            	
-			            	contextTableCellY = index;
-		                	boolean changed = false;
-		                	if (dataController.isControlActionProvided()) {
-			                	int tempWidth = rect.width / 3;
-			                	boolean checkboxAnytimeClicked =(rect.x < pt.x)&(pt.x < rect.x+tempWidth);
-			                	boolean checkboxtooEarlyClicked =(rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth));
-					            boolean checkboxtooLateClicked =(rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width);
-			                	changed = checkboxAnytimeClicked || checkboxtooEarlyClicked || checkboxtooLateClicked;
-			                	if (checkboxAnytimeClicked) {
-			                		contextRightContent.get(contextTableCellY).
-			                							setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
-			                	}else if (checkboxtooEarlyClicked) {
-			                		contextRightContent.get(contextTableCellY).
-			                							setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
-			                	}else if (checkboxtooLateClicked) {
-			                		contextRightContent.get(contextTableCellY).
-			                							setHLate(!contextRightContent.get(contextTableCellY).getHLate());
+					
+					//this for loop iterates over all visible table items
+					for(int index = contextRightTable.getTopIndex();index < contextRightTable.getItemCount();index++) {
+			            TableItem item = contextRightTable.getItem(index);
+			            for (int i = 0; i < contextRightTable.getColumnCount(); i++) {
+			            	//for each column we check whether the mouse is inside the related tableitem
+				            Rectangle rect = item.getBounds(i);
+				            if (contextTableCellX == contextRightTable.getColumnCount()-1 && rect.contains(pt)) {
+
+					            contextTableCellX = i;
+				            	contextTableCellY = index;
+			                	boolean changed = false;
+			                	if (dataController.isControlActionProvided()) {
+				                	int tempWidth = rect.width / 3;
+				                	boolean checkboxAnytimeClicked =(rect.x < pt.x)&(pt.x < rect.x+tempWidth);
+				                	boolean checkboxtooEarlyClicked =(rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth));
+						            boolean checkboxtooLateClicked =(rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width);
+				                	changed = checkboxAnytimeClicked || checkboxtooEarlyClicked || checkboxtooLateClicked;
+				                	if (checkboxAnytimeClicked) {
+				                		contextRightContent.get(contextTableCellY).
+				                							setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
+				                	}else if (checkboxtooEarlyClicked) {
+				                		contextRightContent.get(contextTableCellY).
+				                							setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
+				                	}else if (checkboxtooLateClicked) {
+				                		contextRightContent.get(contextTableCellY).
+				                							setHLate(!contextRightContent.get(contextTableCellY).getHLate());
+				                	}
+			                	}else  if (!dataController.isControlActionProvided()) {
+			                		contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
+			                		changed = true;
 			                	}
-		                	}else  if (!dataController.isControlActionProvided()) {
-		                		contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
-		                		changed = true;
-		                	}
-		                	if(changed){
-		                		contextRightViewer.refresh();
-		    	    			// packs the columns
-		    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
-		    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
-		    	    		  	}
-		    	    		  	contextRightTable.deselectAll();
-		    	    		  	dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
-				                setConflictLabel();
-		                	}
-		                	break;
+			                	if(changed){
+			                		contextRightViewer.refresh();
+			    	    			// packs the columns
+			    	    		  	for (int j = 0, n = contextRightTable.getColumnCount(); j < n; j++) {
+			    	    		  		contextRightTable.getColumn(j).pack();	    		  		  
+			    	    		  	}
+			    	    		  	contextRightTable.deselectAll();
+			    	    		  	dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
+					                setConflictLabel();
+			                	}
+			                	break;
+				            }
 			            }
-		            }
-			            index++;
+			            
 					}
 		        }
 		    });
