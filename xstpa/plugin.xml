@@ -133,5 +133,11 @@
                serviceClass="xstpa.XstpaService"></service>
       </serviceFactory>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="xstpa.settings.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

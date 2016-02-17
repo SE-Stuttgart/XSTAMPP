@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -50,7 +49,9 @@ import xstampp.util.STPAPluginUtils;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.model.Relation;
+import xstpa.settings.PreferenceInitializer;
 import xstpa.settings.PreferencePageSettings;
+import xstpa.settings.XSTPAPreferenceConstants;
 import xstpa.ui.View;
 
 /**
@@ -96,19 +97,32 @@ public class EditWindow
     private Shell shell;
     // this Variables store the modes for ACTS   
     public static final String[] DALGO = { "ipog", "ipof", "ipof2", "ipog_d", "basechoice" };
-    
-    
+    public static final String[] DALGO_TIP={
+    	"For a moderate size System (max. 20 Parameters)",
+    	"For a moderate size System (20 Parameters)",
+    	"For a moderate size System (20 Parameters)",
+    	"For a large size System",
+    	"A special oneway testing Algorithm"
+    };
+
+    public static final String[] DSTRENGTH_LABELS ={"1","2","3","4","5","6","mixed"}; 
+    public static final int[] DSTRENGTH ={1,2,3,4,5,6,-1}; 
+    public Button[] algoButtons = new Button[DALGO.length];
     public static final String[] DMODE = { "scratch", "extend" };
 
-    public static final String[] DCHANDLER = { "no", "solver", "forbiddentuples" };
+    public static final String[] DCHANDLER = { "no", "forbiddentuples" , "solver"};
+    public static final String[] DCHANDLER_LABELS = {"Ignore Constraints",
+    												"Forbidden Tuples (default)",
+    												"CSP Solver"};
+    
     public static final String[] BOOL_TABLE = {"&&", "||", "=>"};
     public static final String[] RATIONAL_TABLE = {">", "<", "=", "!=", ">=", "<="};
     public static final String[] ARITHMETIC_TABLE = {"+", "-", "*", "/", "%"};
     private boolean refreshView;
+
     public static List<String> modes = new ArrayList<String>();
     public static List<String> constraints = new ArrayList<String>();
     private ControlActionEntry linkedCAE;
-	private Button ipogfButton, ipogButton, ipogf2Button, ipogdButton, baseChoiceButton,ignoreConstraints;
 	private Combo strengthCombo,modeCombo,handlingCombo;
     public static List<Relation> relations = new ArrayList<Relation>();
     private HashMap<String,List<String>> valuesToVariables = new HashMap<>();
@@ -349,85 +363,23 @@ public class EditWindow
 	    fData.left = new FormAttachment( 0 );
 	    buttonsComposite.setLayoutData( fData );
 	    
-	    
-	    // Add the radio Buttons
-	    ipogButton = new Button(algoGroup, SWT.RADIO);
-	    ipogButton.addSelectionListener(dirtyListener);
-	    ipogButton.setText("IPOG(Recommended)");
-	    ipogButton.setToolTipText("For a moderate size System (max. 20 Parameters)");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(0).equals(DALGO[0])) {
-	    		ipogButton.setSelection(true);
-	    	}
+	    for(int i= 0;i< DALGO.length;i++){
+	    	algoButtons[i] = new Button(algoGroup, SWT.RADIO);
+	    	algoButtons[i].addSelectionListener(dirtyListener);
+	    	algoButtons[i].setText(DALGO[i]);
+	    	algoButtons[i].setToolTipText(DALGO_TIP[i]);
 	    }
-	    else {
-	    	ipogButton.setSelection(true);
-	    }
-	    
-	    
-	    ipogfButton = new Button(algoGroup, SWT.RADIO);
-	    ipogfButton.addSelectionListener(dirtyListener);
-	    ipogfButton.setToolTipText("For a moderate size System (20 Parameters)");
-	    ipogfButton.setText("IPOG-F");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(0).equals(DALGO[1])) {
-	    		ipogfButton.setSelection(true);
-	    	}
-	    }
-	    
-	    ipogf2Button = new Button(algoGroup, SWT.RADIO);
-	    ipogf2Button.addSelectionListener(dirtyListener);
-	    ipogf2Button.setToolTipText("For a moderate size System (20 Parameters)");
-	    ipogf2Button.setText("IPOG-F2");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(0).equals(DALGO[2])) {
-	    		ipogf2Button.setSelection(true);
-	    	}
-	    }
-	    
-	    ipogdButton = new Button(algoGroup, SWT.RADIO);
-	    ipogdButton.addSelectionListener(dirtyListener);
-	    ipogdButton.setToolTipText("For a large size System");
-	    ipogdButton.setText("IPOG-D");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(0).equals(DALGO[3])) {
-	    		ipogdButton.setSelection(true);
-	    	}
-	    }
-	    
-	    baseChoiceButton = new Button(algoGroup, SWT.RADIO);
-	    baseChoiceButton.addSelectionListener(dirtyListener);
-	    baseChoiceButton.setText("Base Choice");
-	    baseChoiceButton.setToolTipText("A special oneway testing Algorithm");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(0).equals(DALGO[4])) {
-	    		baseChoiceButton.setSelection(true);
-	    	}
-	    }
+	   
 	    // Add the components for the middle (main) part
 	    Label strengthLabel = new Label(mainComposite, SWT.NONE);
 	    strengthLabel.setText("Strength: ");
 	    
 	    strengthCombo = new Combo(mainComposite, SWT.READ_ONLY);
 	    strengthCombo.addSelectionListener(dirtyListener);
-	    strengthCombo.add("1");
-	    strengthCombo.add("2");
-	    strengthCombo.add("3");
-	    strengthCombo.add("4");
-	    strengthCombo.add("5");
-	    strengthCombo.add("6");
-	    strengthCombo.add("Mixed");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(1).equals("-1")) {
-	    		strengthCombo.select(6);
-	    	}
-	    	else {
-	    		strengthCombo.select(Integer.parseInt(modes.get(1))-1);
-	    	}
+	    for(String strength:DSTRENGTH_LABELS){
+	    	strengthCombo.add(strength);
 	    }
-	    else {
-	    	strengthCombo.select(1);
-	    }
+	   
 	    
 	    GridData data = new GridData(150, 80);
 	    strengthCombo.setLayoutData(data);
@@ -441,40 +393,23 @@ public class EditWindow
 	    
 	    modeCombo = new Combo(mainComposite, SWT.READ_ONLY);
 	    modeCombo.addSelectionListener(dirtyListener);
-	    modeCombo.add("Scratch");
+	    modeCombo.add(DMODE[0]);
 //	    modeCombo.add("Extend");
 	    
 	    modeCombo.select(0);
 	    data = new GridData(150, 80);
 	    modeCombo.setLayoutData(data);
-	    
-	    ignoreConstraints = new Button(mainComposite, SWT.CHECK);
-	    ignoreConstraints.setText("Ignore Constraints");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(3).equals(DCHANDLER[0])) {
-	    		ignoreConstraints.setSelection(true);
-	    	}
-	    }
-	    
+	   
 	    //Third Row
 	    Label constraintHandlingLabel = new Label(mainComposite, SWT.WRAP);
 	    constraintHandlingLabel.setText("Constraint\nHandling: ");
 	    constraintHandlingLabel.pack();
 	    
 	    handlingCombo = new Combo(mainComposite, SWT.READ_ONLY);
-	    handlingCombo.add("Forbidden Tuples (default)");
-	    handlingCombo.add("CSP Solver");
-	    if (!modes.isEmpty()) {
-	    	if (modes.get(3).equals(DCHANDLER[2])) {
-	    		handlingCombo.select(0);
-	    	}
-	    	else {
-	    		handlingCombo.select(0);
-	    	}
-	    }
-	    else {
-	    	handlingCombo.select(0);
-	    }
+	    handlingCombo.add(DCHANDLER_LABELS[0]);
+	    handlingCombo.add(DCHANDLER_LABELS[1]);
+	    handlingCombo.add(DCHANDLER_LABELS[2]);
+	   
 	    data = new GridData(150, 80);
 	    handlingCombo.setLayoutData(data);
 	    
@@ -487,9 +422,11 @@ public class EditWindow
 	    // Button which calls the PreferencePage for the ACTS Path
 	    Button setPathBtn = new Button(buttonsComposite, SWT.PUSH);
 	    setPathBtn.setText("Set ACTS Path");
-	    data = new GridData(100, 30);
-	    setPathBtn.setLayoutData(data);
+	    setPathBtn.setLayoutData(new GridData(100, 30));
 	    
+	    Button loadDefaults = new Button(buttonsComposite, SWT.PUSH);
+	    loadDefaults.setText("Load Defaults");
+	    loadDefaults.setLayoutData(new GridData(100, 30));
 	    /**
 	     * Functionality of the setPathBtn
 	     */
@@ -501,8 +438,14 @@ public class EditWindow
   	    	  
 	    	}
 	    });
-
 	    
+	    loadDefaults.addSelectionListener(new SelectionAdapter() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		load(true);
+	    	}
+	    });
+	    
+	    load(false);
 	    Label spacerLabel = new Label(buttonsComposite, SWT.NONE);
 	    spacerLabel.setText("");
 		return outercomposite;
@@ -640,8 +583,11 @@ public class EditWindow
 	    // adds an Element to the table
 	    addRel.addSelectionListener(new SelectionAdapter() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		
-	    		if ( (isNumeric(strengthBox.getText())) && (Integer.parseInt(strengthBox.getText()) <= paramList.getSelectionCount()) ) {
+	    		boolean isNumeric = true;
+	    		for(char c:strengthBox.getText().toCharArray()){
+	    			isNumeric = Character.isDigit(c);
+	    		}
+	    		if ( isNumeric && (Integer.parseInt(strengthBox.getText()) <= paramList.getSelectionCount()) ) {
 	    			relations.add(new Relation(Integer.parseInt(strengthBox.getText()), Arrays.asList(paramList.getSelection())));
 	    			relationsTable.setVisible(false);
 	    			relationsTableViewer.refresh();
@@ -1023,53 +969,63 @@ public class EditWindow
     }
 
     private void apply(){
-    	// clear modes
-		modes.clear();
-    	//get the values and apply them
-		// get the algo
-		if (ipogButton.getSelection()) {
-			modes.add(DALGO[0]);
+    	
+    	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_STRENGTH, DSTRENGTH[strengthCombo.getSelectionIndex()]);
+    	for (int i=0;i<DALGO.length;i++) {
+			if(algoButtons[i].getSelection()){
+		    	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_ALGORITHMUS, DALGO[i]);
+			}
 		}
-		if (ipogfButton.getSelection()) {
-			modes.add(DALGO[1]);
-		}
-		if (ipogf2Button.getSelection()) {
-			modes.add(DALGO[2]);
-		}
-		if (ipogdButton.getSelection()) {
-			modes.add(DALGO[3]);
-		}
-		if (baseChoiceButton.getSelection()) {
-			modes.add(DALGO[4]);
-		}
-		// add ddoi
-		if (strengthCombo.getSelectionIndex() == 6) {
-			modes.add("-1");
-		}
-		else {
-			modes.add(Integer.toString(strengthCombo.getSelectionIndex()+1));
-		}
-		// dmode
-		if (modeCombo.getSelectionIndex() == 0) {
-			modes.add(DMODE[0]);
-		}
-		else {
-			modes.add(DMODE[1]);
-		}
-		// dchandler
-		if (ignoreConstraints.getSelection()) {
-			modes.add(DCHANDLER[0]);
-		}
-		else if (handlingCombo.getSelectionIndex() == 0) {
-			modes.add(DCHANDLER[1]);
-		}
-		else {
-			modes.add(DCHANDLER[2]);
-		}
+    	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_MODE, modeCombo.getText());
+    	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_CHANDLER, DCHANDLER[handlingCombo.getSelectionIndex()]);
 		refreshView = true;
 		close();
     }
     
+    private void load(boolean defaultValues){
+    	int strength;
+    	String alg;
+    	String mode;
+    	String chandler;
+    	if(defaultValues){
+        	alg= DALGO[0];
+        	strength =  1;
+        	mode= DMODE[0];
+        	chandler= DCHANDLER[1];
+    	}else{
+        	strength =  PreferenceInitializer.store.getInt(XSTPAPreferenceConstants.ACTS_STRENGTH);
+        	alg= PreferenceInitializer.store.getString(XSTPAPreferenceConstants.ACTS_ALGORITHMUS);
+        	mode= PreferenceInitializer.store.getString(XSTPAPreferenceConstants.ACTS_MODE);
+        	chandler= PreferenceInitializer.store.getString(XSTPAPreferenceConstants.ACTS_CHANDLER);
+    		
+    	}
+    	for(int i= 0; i<DSTRENGTH.length; i++){
+    		if(DSTRENGTH[i] ==strength){
+    			this.strengthCombo.select(i);
+    		}
+    	}
+    	
+    	for(int i=0;i<DALGO.length;i++){
+    		if(DALGO[i].equals(alg)){
+        		algoButtons[i].setSelection(true);
+        	}else{
+        		algoButtons[i].setSelection(false);
+        	}
+    	}
+
+    	for(int i=0;i<DMODE.length;i++){
+    		if(DMODE[i].equals(mode)){
+        		modeCombo.select(i);
+        	}
+    	}
+    	
+    	for(int i=0;i<DCHANDLER.length;i++){
+    		if(DCHANDLER[i].equals(chandler)){
+        		handlingCombo.select(i);
+        	}
+    	}
+    	
+    }
     public void close()
     {
     	// Don't call shell.close(), because then
@@ -1080,20 +1036,4 @@ public class EditWindow
     public List<String> getModes() {
 		return modes;
 	}
-
-	public boolean isNumeric(String str)  
-	{  
-	  try  
-	  {  
-	    double d = Double.parseDouble(str);  
-	  }  
-	  catch(NumberFormatException nfe)  
-	  {  
-	    return false;  
-	  }  
-	  return true;  
-	}
-
-
-
 }

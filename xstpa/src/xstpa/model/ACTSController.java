@@ -11,15 +11,17 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osgi.service.datalocation.Location;
 
 import xstampp.ui.common.ProjectManager;
+import xstpa.settings.PreferenceInitializer;
+import xstpa.settings.XSTPAPreferenceConstants;
 import xstpa.ui.dialogs.EditWindow;
 
 public class ACTSController extends Job{
@@ -28,7 +30,8 @@ public class ACTSController extends Job{
 
 	private final static String OUTPUT =  Platform.getInstanceLocation().getURL().getPath()+".metadata"+File.separator+"output.txt";
 
-	private List<ProcessModelVariables> entryList;
+	private List<ContextTableCombination> entryList;
+	private List<ProcessModelValue> valueList;
 
 	private ControlActionEntry context;
 
@@ -36,10 +39,19 @@ public class ACTSController extends Job{
 
 	private String location;
 	
-	public ACTSController(int columns,ControlActionEntry context,String location) {
+	public ACTSController(int columns,XSTPADataController controller,String location) {
 		super("Calculating Combinations..");
+		if(!PreferenceInitializer.store.contains(XSTPAPreferenceConstants.ACTS_ALGORITHMUS)){
+		
+        	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_STRENGTH,1);
+        	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_ALGORITHMUS,"ipog");
+        	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_MODE,"scratch");
+        	PreferenceInitializer.store.setValue(XSTPAPreferenceConstants.ACTS_CHANDLER,"forbiddentuples");
+		}
+
+		this.context = controller.getLinkedCAE();
+		this.valueList = controller.getValuesList(true);
 		this.columns = context.getLinkedItems().size();
-		this.context = context;
 		this.location = location;
 	}
 	
@@ -54,36 +66,33 @@ public class ACTSController extends Job{
 		try {
 			Process proc;
 			String modes;
+			String alg = PreferenceInitializer.store.getString(XSTPAPreferenceConstants.ACTS_ALGORITHMUS);
+        	int strength = PreferenceInitializer.store.getInt(XSTPAPreferenceConstants.ACTS_STRENGTH);
+        	String mode = PreferenceInitializer.store.getString(XSTPAPreferenceConstants.ACTS_MODE);
+        	String chandler = PreferenceInitializer.store.getString(XSTPAPreferenceConstants.ACTS_CHANDLER);
+        	
+			if (strength > columns) {
+				strength = columns;	
+			}
+			
+			modes = " -Dalgo="+alg+" ";
+			
 			if (columns-2 <= 6) {
 				modes = " -Ddoi=" + Integer.toString(columns-2) + " ";	
 			}
-			else {
-				modes = " -Ddoi=6 " ;	
+			if (EditWindow.relations.isEmpty()) {
+				modes = modes.concat("-Ddoi="+strength+" ");
 			}
-			for (int i=0; i<EditWindow.modes.size(); i++) {
-					
-				if (i==0) {
-					modes = " -Dalgo="+EditWindow.modes.get(i)+" ";
-				}
+			else {
+				modes = modes.concat("-Ddoi=-1 ");
+			}
+			modes = modes.concat("-Dmode="+mode+" ");
+			
+			modes = modes.concat("-Dchandler="+chandler+" ");
 				
-				else if (i==1) {
-					if (EditWindow.relations.isEmpty()) {
-						modes = modes.concat("-Ddoi="+EditWindow.modes.get(i)+" ");
-					}
-					else {
-						modes = modes.concat("-Ddoi=-1 ");
-					}
-					
-				}
-				else if (i==2) {
-					modes = modes.concat("-Dmode="+EditWindow.modes.get(i)+" ");
-				}
-				else if (i == 3) {
-					modes = modes.concat("-Dchandler="+EditWindow.modes.get(i)+" ");
-				}
 				
 				// clear so that the default mode gets selected again
-			}
+			
 
 			//location = location.substring(1, location.length());
 			writeFile(context.getLinkedItems());
@@ -98,9 +107,12 @@ public class ACTSController extends Job{
 	        while ((line = reader.readLine()) != null) {
 	            out.append(line);
 	        }
-	        System.out.println(out.toString());   //Prints the string content read from input stream
+	        String message = out.toString();
+	        System.out.println(message);   //Prints the string content read from input stream
 	        reader.close();
-
+	        if(message.contains("cancelled")){
+	        	return Status.CANCEL_STATUS;
+	        }
 	        entryList = getEntrysFromFile(reader,context);
 			return Status.OK_STATUS;
 		}catch (IOException e) {
@@ -112,8 +124,8 @@ public class ACTSController extends Job{
 	}
 	
 	
-	private List<ProcessModelVariables> getEntrysFromFile (BufferedReader reader,ControlActionEntry context) {
-		List<ProcessModelVariables> contextEntries = new ArrayList<ProcessModelVariables>();
+	private List<ContextTableCombination> getEntrysFromFile (BufferedReader reader,ControlActionEntry context) {
+		List<ContextTableCombination> contextEntries = new ArrayList<ContextTableCombination>();
 		try {
 			reader = new BufferedReader(new FileReader(OUTPUT));
 			
@@ -138,7 +150,7 @@ public class ACTSController extends Job{
 			//contextRightTable.setVisible(false);
 			while ((line = reader.readLine()) != null) {
 				if (line.contains("Configuration #")) {
-					ProcessModelVariables entry = new ProcessModelVariables();
+					ContextTableCombination entry = new ContextTableCombination();
 					entry.setLinkedControlActionName(context.getControlAction(), null);
 					entry.setLinkedControlActionID(context.getId());
 					temp = line.charAt(line.length()-2);
@@ -147,26 +159,49 @@ public class ACTSController extends Job{
 					reader.readLine();
 					List<String> values = new ArrayList<String>();
 					List<String> variables = new ArrayList<String>();
+					List<UUID> varIds = new ArrayList<>();
+					List<UUID> valueIds = new ArrayList<>();
 					for (int i = 0; i<paramCount; i++) {
 						line = reader.readLine();
 						temp = line.charAt(0);
 						Character.getNumericValue(temp);
 						try {
 							line = line.substring(line.indexOf("=")+2, line.length());
-							variables.add(line.substring(0, line.indexOf("=")));
+							String var = line.substring(0, line.indexOf("="));
+							for(ProcessModelVariables linkedVariable:context.getLinkedItems()){
+								if(linkedVariable.getName().replaceAll(" ","_").equals(var)){
+									variables.add(linkedVariable.getName());
+									varIds.add(linkedVariable.getId());
+									var =linkedVariable.getName();
+									break;
+								}
+							}
+							
 							//entry.setName(line.substring(line.indexOf("=")+2, line.length()));
 							line = line.substring(line.indexOf("=")+1, line.length());
+							boolean valueFound = false;
+							for(ProcessModelValue value : valueList){
+								if(value.getPMV() != null && value.getPMV().equals(var) && value.getValueText().replaceAll(" |,","_").equals(line)){
+									values.add(value.getValueText());
+									valueIds.add(value.getId());
+									valueFound = true;
+									continue;
+								}
+							}
+							if (!valueFound) {
+								System.out.println(valueFound);
+							}
 						}
 						catch (StringIndexOutOfBoundsException siobe) {
 							
 						}
-						entry.addValue(line);
 						
-						values.add(line);
 									
 					}
-					entry.setPmValues(values);
+					entry.setValues(values);
 					entry.setPmVariables(variables);
+					entry.setValueIds(valueIds);
+					entry.setVariableIds(varIds);
 					contextEntries.add(entry);
 				}
 				
@@ -198,20 +233,13 @@ public class ACTSController extends Job{
 			writer.println("[Parameter]");
 			for (ProcessModelVariables entry : items) {
 				List<String> values = entry.getValues();
-				 if (entry.getName().contains(" ")) {
-					 paramName = entry.getName().replace(" ", "_");
-				 }
-				 else {
-					 paramName = entry.getName();
-				 }
+				paramName = entry.getName().replace(" ", "_");
+				
 				writer.write(paramName+ " (enum)" + " : ");
 				for (int i = 0, size = entry.getSizeOfValues();i<size; i++) {
+					writer.write(values.get(i).replaceAll(" |,", "_"));
 					if (i < entry.getSizeOfValues()-1) {
-						writer.write(values.get(i) + ", " );
-						
-					}
-					else {
-						writer.write(values.get(i));
+						writer.write(", ");
 					}
 				}
 				writer.println("");
@@ -258,7 +286,7 @@ public class ACTSController extends Job{
 	/**
 	 * @return the entryList
 	 */
-	public List<ProcessModelVariables> getEntryList() {
+	public List<ContextTableCombination> getEntryList() {
 		return this.entryList;
 	}
 }

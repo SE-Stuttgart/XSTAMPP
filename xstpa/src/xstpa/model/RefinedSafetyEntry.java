@@ -22,7 +22,7 @@ import xstampp.astpa.model.controlaction.IValueCombie;
 public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	
 	public static final String Literal ="SR"; //$NON-NLS-1$
-	private final ProcessModelVariables variable;
+	private final ContextTableCombination variable;
 	private final String context;
 	private final String type;
 	private DataModelController model;
@@ -49,7 +49,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	 *@see RefinedSafetyEntry#getAnytimeEntry(int, ProcessModelVariables, DataModelController)
 	 *@see RefinedSafetyEntry#getNotProvidedEntry(int, ProcessModelVariables, DataModelController)
 	 */
-	private RefinedSafetyEntry(int number,String type,String context,ProcessModelVariables var, DataModelController controller) {
+	private RefinedSafetyEntry(int number,String type,String context,ContextTableCombination var, DataModelController controller) {
 		this.context = context;
 		this.type = type;
 		this.variable = var;
@@ -202,7 +202,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		final String RELEASE = " R ";
 		final char BRACKET_OPEN ='(';
 		final char BRACKET_CLOSE =')';
-		final String CONTROLACTION = "(controlAction" + EQUALS + getVariable().getLinkedControlActionName().replaceAll(" ", "")+")";
+		final String CONTROLACTION = "(controlAction" + EQUALS + getCombination().getLinkedControlActionName().replaceAll(" ", "")+")";
 		StringBuffer valueBuffer = new StringBuffer(); 
 		
 		String values = getCriticalCombinations("==", "&&", true, false, false);
@@ -308,7 +308,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	/**
 	 * @return the variable
 	 */
-	public ProcessModelVariables getVariable() {
+	public ContextTableCombination getCombination() {
 		return this.variable;
 	}
 	public String getRefinedUCA(){
@@ -357,7 +357,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	}
 	
 	
-	public static RefinedSafetyEntry getAnytimeEntry(int number,ProcessModelVariables var,DataModelController controller){
+	public static RefinedSafetyEntry getAnytimeEntry(int number,ContextTableCombination var,DataModelController controller){
 		
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_ANYTIME, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		entry.setDataRef(var.getAnytimeRule());
@@ -366,7 +366,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		
 		return entry;
 	}
-	public static RefinedSafetyEntry getTooLateEntry(int number,ProcessModelVariables var,DataModelController controller){
+	public static RefinedSafetyEntry getTooLateEntry(int number,ContextTableCombination var,DataModelController controller){
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_TOO_LATE, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		entry.setDataRef(var.getTooLateRule());
 		entry.update();
@@ -374,7 +374,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		
 		return entry;
 	}
-	public static RefinedSafetyEntry getTooEarlyEntry(int number,ProcessModelVariables var,DataModelController controller){
+	public static RefinedSafetyEntry getTooEarlyEntry(int number,ContextTableCombination var,DataModelController controller){
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_TOO_EARLY, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		entry.setDataRef(var.getTooEarlyRule());
 		entry.update();
@@ -382,7 +382,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		
 		return entry;
 	}
-	public static RefinedSafetyEntry getNotProvidedEntry(int number,ProcessModelVariables var,DataModelController controller){
+	public static RefinedSafetyEntry getNotProvidedEntry(int number,ContextTableCombination var,DataModelController controller){
 		
 			RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_NOT_PROVIDED, IValueCombie.CONTEXT_NOT_PROVIDED, var,controller);
 			entry.setDataRef(var.getNotProvidedRule());

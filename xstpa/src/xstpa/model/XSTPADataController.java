@@ -240,11 +240,11 @@ public class XSTPADataController extends Observable implements Observer{
 
 		// add all the value combinations for the context table to the two dependencies lists 
   		 boolean invalid= false;
-		ProcessModelVariables contextTableEntry;
+		ContextTableCombination contextTableEntry;
 		for (IValueCombie valueCombie :  combies) {
 			List<String> tempValuesList = new ArrayList<String>();
 			List<String> tempVarialesList = new ArrayList<String>();
-			contextTableEntry = new ProcessModelVariables();
+			contextTableEntry = new ContextTableCombination();
 			
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_NOT_PROVIDED),IValueCombie.TYPE_NOT_PROVIDED);
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_ANYTIME),IValueCombie.TYPE_ANYTIME);
@@ -288,7 +288,7 @@ public class XSTPADataController extends Observable implements Observer{
 				}
   					
 			}
-			contextTableEntry.setPmValues(tempValuesList);
+			contextTableEntry.setValues(tempValuesList);
 			contextTableEntry.setPmVariables(tempVarialesList);
 			contextTableEntry.setContext(context);
 			contextTableEntry.setRefinedSafetyRequirements(valueCombie.getSafetyConstraint());
@@ -336,7 +336,7 @@ public class XSTPADataController extends Observable implements Observer{
   	    		fetchControlActions();
   	    	}
 			RefinedSafetyEntry entry;
-			for(ProcessModelVariables variable : getControlActionEntry(true, ca.getId()).getContextTableCombinations(false)){
+			for(ContextTableCombination variable : getControlActionEntry(true, ca.getId()).getContextTableCombinations(false)){
 				if(variable.getConflict()){
 					//only variables without confilcts are forming rules
 					continue;
@@ -370,7 +370,7 @@ public class XSTPADataController extends Observable implements Observer{
 				}
 			}
 			
-			for (ProcessModelVariables variable : getControlActionEntry(false, ca.getId()).
+			for (ContextTableCombination variable : getControlActionEntry(false, ca.getId()).
 					getContextTableCombinations(false)) {
 				if(variable.getGlobalHazardous() && !variable.getConflict()){
 					count++;
@@ -431,7 +431,7 @@ public class XSTPADataController extends Observable implements Observer{
   		  List<ProvidedValuesCombi> valuesIfProvided = new ArrayList<ProvidedValuesCombi>();
   		  ProvidedValuesCombi val = new ProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
-  		  for (ProcessModelVariables combie :caEntry.getContextTableCombinations(false)) {
+  		  for (ContextTableCombination combie :caEntry.getContextTableCombinations(false)) {
   			  val = new ProvidedValuesCombi();
   			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
    				 val.setValues(getCombieUUIDs(combie));
@@ -457,7 +457,7 @@ public class XSTPADataController extends Observable implements Observer{
   		  List<NotProvidedValuesCombi> valuesIfProvided = new ArrayList<NotProvidedValuesCombi>();
   		  NotProvidedValuesCombi val = new NotProvidedValuesCombi();
   		  //iteration over all value combinations registered for the linked control action
-  		  for (ProcessModelVariables combie : caEntry.getContextTableCombinations(false)) {
+  		  for (ContextTableCombination combie : caEntry.getContextTableCombinations(false)) {
   			  val = new NotProvidedValuesCombi();
   			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
   				 val.setValues(getCombieUUIDs(combie));
@@ -476,7 +476,7 @@ public class XSTPADataController extends Observable implements Observer{
 	}
 	
 	
-	public Map<UUID,UUID> getCombieUUIDs(ProcessModelVariables variables){
+	public Map<UUID,UUID> getCombieUUIDs(ContextTableCombination variables){
 		Map<UUID,UUID> combis = new HashMap<>();
 		  //iterate over all values stored in that combination
 		  for (int z = 0; z<variables.getValues().size();z++) {

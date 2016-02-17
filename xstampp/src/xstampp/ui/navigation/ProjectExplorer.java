@@ -348,10 +348,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		Set<UUID> oldProjects=this.treeItemsToProjectIDs.keySet();
 		this.treeItemsToProjectIDs= new HashMap<>();
 		for (UUID id : ProjectManager.getContainerInstance().getProjectKeys()) {
-			ProjectManager.getContainerInstance().getDataModel(id)
-					.addObserver(this);
-			String plugin = ProjectManager.getContainerInstance().getDataModel(id).getPluginID();
-			this.buildTree(id,plugin);
+			
 			this.updateProject(id);
 			oldProjects.remove(id);
 		}
@@ -382,19 +379,27 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 
 	/**
 	 * 
-	 * 
 	 * @author Lukas Balzer
 	 * 
 	 * @param projectID
 	 *            the id of the project
 	 */
 	public void updateProject(UUID projectID) {
-		String temp = ProjectManager.getContainerInstance().getTitle(projectID);
-
-		if (this.treeItemsToProjectIDs.containsKey(projectID)
-				&& !this.treeItemsToProjectIDs.get(projectID).equals(temp)) {
-			this.treeItemsToProjectIDs.get(projectID).setText(temp + " ["+ ProjectManager.getContainerInstance().getProjectExtension(projectID) +"]");
+		if(projectID == null){
+			updateProjects();
+		}else if(ProjectManager.getContainerInstance().getProjectKeys().contains(projectID)){
+			ProjectManager.getContainerInstance().getDataModel(projectID).addObserver(this);
+			String plugin = ProjectManager.getContainerInstance().getDataModel(projectID).getPluginID();
+			this.buildTree(projectID,plugin);
+		}else if(this.treeItemsToProjectIDs.containsKey(projectID)){
+			this.treeItemsToProjectIDs.get(projectID).dispose();
+			for(String idEntry: this.selectorsToSelectionId.keySet()){
+				if(idEntry.contains(projectID.toString())){
+					this.selectorsToSelectionId.get(idEntry).cleanUp();
+				}
+			}
 		}
+		
 	}
 
 	@Override
@@ -424,12 +429,9 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
+		UUID id = ProjectManager.getContainerInstance().getProjectID(dataModelController);
 		switch (type) {
-		case DELETE: {
-			this.updateProjects();
-			
-			break;
-		}
+		case DELETE:
 		case PROJECT_NAME: {
 			this.updateProjects();
 			break;

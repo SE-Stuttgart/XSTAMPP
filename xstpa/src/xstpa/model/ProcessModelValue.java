@@ -78,7 +78,7 @@ public class ProcessModelValue implements Comparable<ProcessModelValue>{
 
 	  /**
 	   * @param pmv
-	   *            The PMV to set.
+	   *            The process model variable to set.
 	   */
 	  public void setPMV(String pmv) {
 	    this.pm_variable = pmv;
@@ -155,12 +155,29 @@ public class ProcessModelValue implements Comparable<ProcessModelValue>{
 	@Override
 	public int compareTo(ProcessModelValue o) {
 		try{
-			int returnValue = getController().compareTo(o.getController());
-			if(returnValue == 0){
-				returnValue = getPMV().compareTo(o.getPMV());
+			int returnValue = 0;
+			if(!(getController() == null || o.getController() == null)){
+				returnValue = getController().compareTo(o.getController());
+			}else if(getController() != null){
+				returnValue = 1;
+			}else if(o.getController() != null){
+				returnValue = -1;
 			}
-			if(returnValue == 0){
+			
+			if(returnValue == 0 && !(getPMV() == null || o.getPMV() == null)){
+				returnValue = getPMV().compareTo(o.getPMV());
+			}else if(returnValue == 0 && getPMV() != null){
+				returnValue = 1;
+			}else if(returnValue == 0 && o.getPMV() != null){
+				returnValue = -1;
+			}
+			
+			if(returnValue == 0 && !(getValueText() == null || o.getValueText() == null)){
 				returnValue = getValueText().compareTo(o.getValueText());
+			}else if(returnValue == 0 && getValueText() != null){
+				returnValue = 1;
+			}else if(returnValue == 0 && o.getValueText() != null){
+				returnValue = -1;
 			}
 			
 			return returnValue;

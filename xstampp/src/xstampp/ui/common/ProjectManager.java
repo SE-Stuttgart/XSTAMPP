@@ -107,8 +107,8 @@ public class ProjectManager implements IPropertyChangeListener {
 
 		@Override
 		public void done(IJobChangeEvent event) {
+			final AbstractLoadJob job = (AbstractLoadJob) event.getJob();
 			if (event.getResult() == Status.CANCEL_STATUS) {
-				final AbstractLoadJob job = (AbstractLoadJob) event.getJob();
 				final String name = job.getFile().getName();
 				Display.getDefault().syncExec(new Runnable() {
 
@@ -124,27 +124,29 @@ public class ProjectManager implements IPropertyChangeListener {
 				});
 			}
 			if (event.getResult().isOK()) {
-				Display.getDefault().syncExec(new LoadRunnable(event));
+				
+				Display.getDefault().syncExec(new LoadRunnable(job.getSaveFile(),job.getController()));
 				super.done(event);
 			}
 		}
 	}
 
 	private class LoadRunnable implements Runnable {
-		private final AbstractLoadJob job;
-
-		public LoadRunnable(IJobChangeEvent event) {
-			this.job = (AbstractLoadJob) event.getJob();
+		private File saveFile;
+		private IDataModel controller;
+		
+		public LoadRunnable(File saveFile,IDataModel controller) {
+			this.saveFile = saveFile;
+			this.controller = controller;
 		}
 
 		@Override
 		public void run() {
 			UUID projectId = UUID.randomUUID();
-			ProjectManager.getContainerInstance().projectDataToUUID.put(projectId, this.job.getController());
+			ProjectManager.getContainerInstance().projectDataToUUID.put(projectId, this.controller);
 			IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage().findView(ProjectExplorer.ID);
 			
-			File saveFile = this.job.getSaveFile();
 			ProjectManager.getContainerInstance().extensionsToUUID.put(projectId, saveFile.getName().split("\\.")[1]);//$NON-NLS-1$
 			ProjectManager.getContainerInstance().projectSaveFilesToUUID.put(
 					projectId, saveFile);
@@ -380,7 +382,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	 * 
 	 * @return whether the operation was successful or not
 	 */
-	public boolean importDataModel() {
+	public Job importDataModel() {
 		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench()
 				.getDisplay().getActiveShell(), SWT.OPEN);
 		ArrayList<String> extensions= new ArrayList<>();
@@ -409,11 +411,11 @@ public class ProjectManager implements IPropertyChangeListener {
 					for(UUID id: idSet){
 						if(this.projectSaveFilesToUUID.get(id).equals(copy) && !removeProjectData(id)){
 							MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
-							return false;
+							return null;
 						}
 					}
 				}else{
-					return false;
+					return null;
 				}
 			}
 
@@ -424,7 +426,7 @@ public class ProjectManager implements IPropertyChangeListener {
 
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -442,7 +444,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	 * 
 	 * @return whether the operation was successful or not
 	 */
-	public boolean loadDataModelFile(String loadFile,String saveFile) {
+	public Job loadDataModelFile(String loadFile,String saveFile) {
 		Object jobObject = null;
 		String pluginName = ""; //$NON-NLS-1$
 		for (Entry<String, IConfigurationElement> extElement : 
@@ -461,7 +463,7 @@ public class ProjectManager implements IPropertyChangeListener {
 			((AbstractLoadJob) jobObject).setSaveFile(saveFile);
 			((AbstractLoadJob) jobObject).schedule();
 			((AbstractLoadJob) jobObject).addJobChangeListener(new LoadJobChangeAdapter());
-			return true;
+			return ((AbstractLoadJob) jobObject);
 		}
 		else if(jobObject == null){
 			LOGGER.error(Messages.FileFormatNotSupported + ": " + loadFile); //$NON-NLS-1$
@@ -471,7 +473,7 @@ public class ProjectManager implements IPropertyChangeListener {
 		}
 
 
-		return false;
+		return null;
 	}
 
 
@@ -622,11 +624,8 @@ public class ProjectManager implements IPropertyChangeListener {
 
 		File projectFile = this.projectSaveFilesToUUID.get(projectId);
 		if (projectFile.delete()) {
-			this.projectDataToUUID.remove(projectId);
+			this.projectDataToUUID.remove(projectId).updateValue(ObserverValue.DELETE);
 			this.projectSaveFilesToUUID.remove(projectId);
-			IViewPart explorer = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-									.getActivePage().findView("astpa.explorer"); //$NON-NLS-1$
-			((ProjectExplorer)explorer).update(null, ObserverValue.DELETE);
 			return !this.projectDataToUUID.containsKey(projectId);
 		}
 

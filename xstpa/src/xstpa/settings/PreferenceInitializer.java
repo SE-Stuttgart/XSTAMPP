@@ -26,9 +26,9 @@ import xstampp.Activator;
  * 
  * @author Yannic Sowoidnich
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer {
+public class PreferenceInitializer extends AbstractPreferenceInitializer implements XSTPAPreferenceConstants {
 
-	private final IPreferenceStore store = Activator.getDefault()
+	public static final IPreferenceStore store = Activator.getDefault()
 			.getPreferenceStore();
 
 	/**
@@ -59,7 +59,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		
 		// ACTS Settings
-		this.store.setDefault("ACTS_Path", "");
+		store.setDefault("ACTS_Path", "");
+		store.setDefault(ACTS_STRENGTH, 1);
+		store.setDefault(ACTS_ALGORITHMUS, "ipog");
+		store.setDefault(ACTS_MODE, "scratch");
+		store.setDefault(ACTS_CHANDLER, "forbiddentuples");
 				
 	}
 }

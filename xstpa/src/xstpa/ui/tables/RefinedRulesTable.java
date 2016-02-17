@@ -32,8 +32,8 @@ import org.eclipse.ui.PlatformUI;
 import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstpa.Messages;
+import xstpa.model.ContextTableCombination;
 import xstpa.model.ControlActionEntry;
-import xstpa.model.ProcessModelVariables;
 import xstpa.model.RefinedSafetyEntry;
 import xstpa.ui.View;
 import xstpa.ui.dialogs.EditRelatedUcaWizard;
@@ -61,7 +61,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 			case View.ENTRY_ID:
 				return RefinedSafetyEntry.Literal + String.valueOf(refinedSafetyContent.indexOf(entry)+1);
 			case View.CONTROL_ACTIONS:
-				return entry.getVariable().getLinkedControlActionName();
+				return entry.getCombination().getLinkedControlActionName();
 			case View.CONTEXT:
 				return entry.getContext();
 			case View.CONTEXT_TYPE:
@@ -144,9 +144,9 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		  		    	  		RefinedSafetyEntry entry = (RefinedSafetyEntry) refinedSafetyTable.getSelection()[0].getData();
 		  		    	  		
 		  		    	  		EditRelatedUcaWizard editUCALinks = new EditRelatedUcaWizard(dataController.getModel(),
-		  		    	  																	 entry.getVariable().getUcaLinks(entry.getType()));
+		  		    	  																	 entry.getCombination().getUcaLinks(entry.getType()));
 		  		    	  		if(editUCALinks.open()){
-		  		    	  			entry.getVariable().setUcaLinks(editUCALinks.getUcaLinks(),entry.getType());
+		  		    	  			entry.getCombination().setUcaLinks(editUCALinks.getUcaLinks(),entry.getType());
 		  		    	  			storeRefinedSafety();
 		  		    	  		}
 		  		    	  		refinedSafetyViewer.setInput(refinedSafetyContent);
@@ -208,7 +208,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		      	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
 		      	    
 		    	    for (ControlActionEntry caEntry : allCAEntrys) {
-		    	    	for(ProcessModelVariables variable: caEntry.getContextTableCombinations(false)){
+		    	    	for(ContextTableCombination variable: caEntry.getContextTableCombinations(false)){
 		    	    		variable.setGlobalHazardous(false);
 		    	    	}
 			    	    dataController.storeBooleans(caEntry, ObserverValue.CONTROL_ACTION);
@@ -222,32 +222,32 @@ public class RefinedRulesTable extends AbstractTableComposite {
 	}
 
 	private void removeEntry(RefinedSafetyEntry entry){
-		List<ProcessModelVariables> combinations = dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getVariable().getLinkedControlActionID()).getContextTableCombinations(false);
+		List<ContextTableCombination> combinations = dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
+				 entry.getCombination().getLinkedControlActionID()).getContextTableCombinations(false);
 		switch(entry.getType()){
 			case IValueCombie.TYPE_ANYTIME: 
-				entry.getVariable().setHAnytime(false);
+				entry.getCombination().setHAnytime(false);
 				break;
 			case IValueCombie.TYPE_TOO_EARLY:  
-				entry.getVariable().setHEarly(false);
+				entry.getCombination().setHEarly(false);
 				break;
 			case IValueCombie.TYPE_TOO_LATE:  
-				entry.getVariable().setHLate(false);
+				entry.getCombination().setHLate(false);
 				break;
 			case IValueCombie.TYPE_NOT_PROVIDED:  
-				entry.getVariable().setHazardous(false);
+				entry.getCombination().setHazardous(false);
 				break;
 			default:
 				return;
 		}
-		if (entry.getVariable().isArchived() && !entry.getVariable().getGlobalHazardous()) {
-			combinations.remove(entry.getVariable());
+		if (entry.getCombination().isArchived() && !entry.getCombination().getGlobalHazardous()) {
+			combinations.remove(entry.getCombination());
 		}
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getVariable().getLinkedControlActionID()), ObserverValue.CONTROL_ACTION);
+				 entry.getCombination().getLinkedControlActionID()), ObserverValue.CONTROL_ACTION);
 		dataController.getModel().removeRefinedSafetyRule(false, entry.getDataRef());
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getVariable().getLinkedControlActionID()), null);
+				 entry.getCombination().getLinkedControlActionID()), null);
 	}
 	
 	@Override

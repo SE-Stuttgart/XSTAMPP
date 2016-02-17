@@ -2,7 +2,6 @@ package xstpa.ui.tables;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +54,7 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
 import xstpa.Messages;
 import xstpa.model.ACTSController;
+import xstpa.model.ContextTableCombination;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelVariables;
 import xstpa.settings.PreferencePageSettings;
@@ -79,7 +79,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			
-			ProcessModelVariables entry = (ProcessModelVariables) element;
+			ContextTableCombination entry = (ContextTableCombination) element;
 				if (columnIndex == 0) {
 					return String.valueOf(contextRightContent.indexOf(entry)+1);
 				}
@@ -102,7 +102,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 		@Override
 		public Color getBackground(Object element) {
-			ProcessModelVariables entry = (ProcessModelVariables) element;
+			ContextTableCombination entry = (ContextTableCombination) element;
 			if (entry.getConflict()) {
 				return View.CONFLICT;
 			}
@@ -130,7 +130,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	protected int contextTableCellY;
 	private Combo filterCombo;
 	private TabFolder contextContentFolder;
-	protected List<ProcessModelVariables> contextRightContent;
+	protected List<ContextTableCombination> contextRightContent;
 	private Label errorLabel;
 	
 	public ProcessContextTable(Composite parent) {
@@ -282,7 +282,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    		//this listener uses the information contextTableCellX which provides the current table item index
 		    		//calculated in the contextRightTable.mouseListener
 		    		if ((contextTableCellX < contextRightTable.getColumnCount()-1) && (contextTableCellX >= 0)) {
-		    			ProcessModelVariables contextCombie = (ProcessModelVariables) contextRightTable.getSelection()[0].getData();
+		    			ContextTableCombination contextCombie = (ContextTableCombination) contextRightTable.getSelection()[0].getData();
 		    			List<String> strings = contextCombie.getValues();
 		    			List<UUID> uuids = contextCombie.getValueIds();
 		    			contextCombie.setValueIds(new ArrayList<UUID>());
@@ -364,7 +364,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		        public void handleEvent(Event event) {
 		            // if column = Hazardous, draw the right image
 		        	if (dataController.isControlActionProvided()) {
-			        	ProcessModelVariables entry = (ProcessModelVariables) event.item.getData();
+		        		ContextTableCombination entry = (ContextTableCombination) event.item.getData();
 		            	Image anytimeImage = View.UNCHECKED;
 		            	Image earlyImage = View.UNCHECKED;
 		            	Image lateImage = View.UNCHECKED;
@@ -388,7 +388,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		        	
 		        	else {
 		        		
-		        		ProcessModelVariables entry = (ProcessModelVariables) event.item.getData();
+		        		ContextTableCombination entry = (ContextTableCombination) event.item.getData();
 		        		Image tmpImage = View.UNCHECKED;
 		        		if(event.index == contextRightTable.getColumnCount()-1)  {
 			            	if (entry.getGlobalHazardous()){
@@ -586,7 +586,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 				    	    	  	location = xstampp.Activator.getDefault().getPreferenceStore().getString("ACTS_Path");
 				    		  }
 					    	  
-					    	  final ACTSController job = new ACTSController(contextRightTable.getColumnCount(), dataController.getLinkedCAE(),location);
+					    	  final ACTSController job = new ACTSController(contextRightTable.getColumnCount(), dataController,location);
 					    	  job.addJobChangeListener(new JobChangeAdapter() {
 					    		  @Override
 					    		  public void done(IJobChangeEvent event) {
@@ -632,7 +632,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 						public void handleEvent(Event event) {
 							
 							// add the New Variable
-				    		ProcessModelVariables temp = (ProcessModelVariables) event.data;
+							ContextTableCombination temp = (ContextTableCombination) event.data;
 				    		temp.setLinkedControlActionName(dataController.getLinkedCAE().getControlAction(),
 				    				dataController.getLinkedCAE().getId());
 							contextRightContent.add(temp);
@@ -754,8 +754,8 @@ public class ProcessContextTable extends AbstractTableComposite {
 	 * 
 	 * @param filter a string describing the property
 	 */
-	public void showContent(String filter, List<ProcessModelVariables> input) {
-		ArrayList<ProcessModelVariables> content = new ArrayList<>();
+	public void showContent(String filter, List<ContextTableCombination> input) {
+		ArrayList<ContextTableCombination> content = new ArrayList<>();
 		// checks which option is selected and shows the right content
   	  if (filter.equals(FILTER_SHOW_ALL)) {
   		  contextRightViewer.setInput(input);
@@ -790,9 +790,9 @@ public class ProcessContextTable extends AbstractTableComposite {
   	  }
     }
 	
-	private void storeEntrys(List<ProcessModelVariables> entrys, boolean keepOldCombies){
+	private void storeEntrys(List<ContextTableCombination> entrys, boolean keepOldCombies){
 		if(keepOldCombies && dataController.getLinkedCAE().getContextTableCombinations(false) != null){
-			for(ProcessModelVariables variable: dataController.getLinkedCAE().getContextTableCombinations(false)){
+			for(ContextTableCombination variable: dataController.getLinkedCAE().getContextTableCombinations(false)){
 				if(variable.getGlobalHazardous()){
 					variable.setArchived(true);
 					entrys.add(variable);
@@ -882,20 +882,20 @@ public class ProcessContextTable extends AbstractTableComposite {
 			
 		//verfies if there are no conflicts between CAProvided and not provided
 		UUID caID= dataController.getLinkedCAE().getId();
-		List<ProcessModelVariables> notProvidedContext =dataController.getControlActionEntry(false, caID).getContextTableCombinations(false);
-		List<ProcessModelVariables> providedContext =dataController.getControlActionEntry(true, caID).getContextTableCombinations(false);
+		List<ContextTableCombination> notProvidedContext =dataController.getControlActionEntry(false, caID).getContextTableCombinations(false);
+		List<ContextTableCombination> providedContext =dataController.getControlActionEntry(true, caID).getContextTableCombinations(false);
 		int conflictCounter = 0;
 		boolean combiesFit;
 		//initially all stored contextTableCombinations are set too non conflicting
-		for (ProcessModelVariables NPCombie : notProvidedContext) {
+		for (ContextTableCombination NPCombie : notProvidedContext) {
 			NPCombie.setConflict(false);
 		}
-		for (ProcessModelVariables pCombie : providedContext) {
+		for (ContextTableCombination pCombie : providedContext) {
 			pCombie.setConflict(false);
 		}
 		
-		for (ProcessModelVariables NPCombie : notProvidedContext) {
-			for (ProcessModelVariables pCombie : providedContext) {
+		for (ContextTableCombination NPCombie : notProvidedContext) {
+			for (ContextTableCombination pCombie : providedContext) {
 				if(pCombie.getConflict() || NPCombie.getConflict()){
 					continue;
 				}

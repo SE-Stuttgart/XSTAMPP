@@ -26,8 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstpa.model.ControlActionEntry;
-import xstpa.model.ProcessModelVariables;
+import xstpa.model.ContextTableCombination;
 
 
 public class AddEntryShell {
@@ -120,8 +119,8 @@ public class AddEntryShell {
 		}
 	}
 	
-	private ProcessModelVariables getValueList(){
-		ProcessModelVariables variable = new ProcessModelVariables();
+	private ContextTableCombination getValueList(){
+		ContextTableCombination variable = new ContextTableCombination();
 		
 		variable.setPmVariables(varNames);
 		for(int i= 0; i<variables.size();i++){
@@ -136,7 +135,7 @@ public class AddEntryShell {
 		this.listener = listener;
 	}
 	
-	private void notifyListener(ProcessModelVariables values){
+	private void notifyListener(ContextTableCombination values){
 		if(listener != null && values != null){
 			Event e = new Event();
 			e.data = values;

@@ -13,11 +13,14 @@
 
 package xstampp;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+
+import xstampp.util.LoadWorkspace;
 
 /**
  * Configures the workbench.
@@ -45,7 +48,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	@Override
 	public void postStartup() {
-		Activator.getDefault().loadProjects();
+		Job loadWs = new LoadWorkspace("Load Projects...");
+		loadWs.schedule();
 		// remove default preference page for Install/Update and Security
 		PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
 

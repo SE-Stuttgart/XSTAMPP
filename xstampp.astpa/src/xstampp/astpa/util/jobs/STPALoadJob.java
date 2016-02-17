@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
 import xstampp.util.AbstractLoadJob;
 
 /**
@@ -47,8 +48,8 @@ public class STPALoadJob extends AbstractLoadJob {
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(Messages.loadingHaz, 2);
-
+		setName("Loading " +getFile().getName() + "...");
+		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
 			// validate the file
 			URL schemaFile;
@@ -89,7 +90,6 @@ public class STPALoadJob extends AbstractLoadJob {
 			Schema schema = schemaFactory.newSchema(schemaFile);
 	
 			Validator validator = schema.newValidator();
-			monitor.worked(1);
 			validator.validate(xmlFile);
 			System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 			JAXBContext context = JAXBContext.newInstance(DataModelController.class);
@@ -98,9 +98,8 @@ public class STPALoadJob extends AbstractLoadJob {
 			StringReader stringReader=new StringReader(buffer.toString());
 			this.setController((IDataModel) um.unmarshal(stringReader));
 			reader.close();
-			monitor.worked(2);
-			monitor.done();
-			 System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize"); //$NON-NLS-1$
+			ProjectManager.getLOGGER().debug("Loading of " + getFile().getName() +" successful");
+			System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize"); //$NON-NLS-1$
 
 		} catch (SAXException e) {
 			this.getLog().error(e.getMessage(), e);

@@ -5,9 +5,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
 
 import xstampp.astpa.model.DataModelController;
+import xstpa.model.ContextTableCombination;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelValue;
-import xstpa.model.ProcessModelVariables;
 import xstpa.ui.View;
 
 public class EntryCellModifier implements ICellModifier {
@@ -71,7 +71,7 @@ public class EntryCellModifier implements ICellModifier {
 		}
 		
 		else {
-			ProcessModelVariables entry = (ProcessModelVariables) element;
+			ContextTableCombination entry = (ContextTableCombination) element;
 			if (View.IS_HAZARDOUS.equals(property)) {
 		      return Boolean.valueOf(entry.getGlobalHazardous());
 			}
@@ -137,7 +137,7 @@ public class EntryCellModifier implements ICellModifier {
 	    }
 	    
 	    else {
-	    	ProcessModelVariables entry = (ProcessModelVariables) element;
+	    	ContextTableCombination entry = (ContextTableCombination) element;
 	    	if (View.IS_HAZARDOUS.equals(property)) {
 		  	      entry.setHazardous((!(Boolean)entry.getGlobalHazardous()));
 		    	}
