@@ -260,7 +260,9 @@ public class ControlActionEntry implements Comparable<ControlActionEntry>{
 			this.contextTableCombinations = new ArrayList<>();
 		}
 		contextTableCombinations.add(entry);
-		if(entry.getPmVariables().size() == linkedCompIds.size() && linkedCompNames.containsAll(entry.getPmVariables())){
+		if(entry.getPmVariables().size() == linkedCompIds.size() 
+				&& linkedCompNames.containsAll(entry.getPmVariables())
+				&& !entry.isArchived()){
 			if(this.currentCombinations == null){
 				this.currentCombinations = new ArrayList<ContextTableCombination>();
 			}

@@ -22,8 +22,10 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 	}
 	
 	public final void activateTable(){
-		this.isActiv = true;
-		activate();
+		if(!isActiv){
+			activate();
+			this.isActiv = true;
+		}
 	}
 	
 	public final void deactivateTable() {

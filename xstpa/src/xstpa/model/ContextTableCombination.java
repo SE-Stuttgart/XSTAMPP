@@ -218,7 +218,6 @@ public class ContextTableCombination {
 
 	/**
 	 * adds a variable id to this object<br>
-	 * NOTE: an object of ProcessModelVariables can only have one of singleId and variableIdsList
 	 * 
 	 * @param variableId the variableId to add
 	 */
@@ -229,7 +228,19 @@ public class ContextTableCombination {
 		variableIds.add(variableId);
 		
 	}
-
+	
+	/**
+	 * adds a variable to this object
+	 * 
+	 * @param variable the name of a combined variable
+	 */
+	public void addVariable (String variable) {
+		if(this.variableNames == null){
+			this.variableNames = new ArrayList<>();
+		}
+		variableNames.add(variable);
+		
+	}
 
 	/**
 	 * sets a list of variable ids to this object<br>

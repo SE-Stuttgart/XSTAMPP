@@ -86,11 +86,11 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 					temp = temp.concat(valueCombies.get(i));
 				}
 	
-				if (!(i==valueCombies.size()-1)) {
-					temp = temp.concat(andLiteral);
-				}
+				temp = temp.concat(andLiteral);
+				
 			}
 		}
+		temp = temp.substring(0, temp.length() - andLiteral.length());
 		return temp;
 	}
 	

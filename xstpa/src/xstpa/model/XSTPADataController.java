@@ -242,19 +242,13 @@ public class XSTPADataController extends Observable implements Observer{
   		 boolean invalid= false;
 		ContextTableCombination contextTableEntry;
 		for (IValueCombie valueCombie :  combies) {
-			List<String> tempValuesList = new ArrayList<String>();
-			List<String> tempVarialesList = new ArrayList<String>();
 			contextTableEntry = new ContextTableCombination();
-			
+
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_NOT_PROVIDED),IValueCombie.TYPE_NOT_PROVIDED);
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_ANYTIME),IValueCombie.TYPE_ANYTIME);
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_TOO_EARLY),IValueCombie.TYPE_TOO_EARLY);
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_TOO_LATE),IValueCombie.TYPE_TOO_LATE);
-			if(context.equals(CONTEXT_PROVIDED)){
-				contextTableEntry.setAnytimeRule(((ProvidedValuesCombi)valueCombie).getAnytimeRuleId());
-	  	  	}else{
-	  	  		linkedIDs = ((ControlAction)entry).getNotProvidedVariables();
-	  	  	}
+			
 			if(valueCombie.getPMValues() == null){
 				Map<UUID, UUID> valuesIdsTOvariableIDs= new HashMap<>();
 				for(ProcessModelValue value : getValuesList(true)){
@@ -273,23 +267,20 @@ public class XSTPADataController extends Observable implements Observer{
 			}
 			
 			for (Entry<UUID, UUID> valEntry : valueCombie.getPMValues().entrySet()) {
+				//if the valueCombie contains a value or a variable that is not registered, it is considered invalid 
+				//and not added 
 				if(!valuesList.containsKey(valEntry.getValue()) ||!variablesList.containsKey(valEntry.getKey())){
 					invalid = true;
 					break;
 				}else{
-					tempVarialesList.add(model.getComponent(valEntry.getKey()).getText());
-					
-					tempValuesList.add(model.getComponent(valEntry.getKey()).getText()+ "="
-							+ model.getComponent(valEntry.getValue()).getText());
-					contextTableEntry.addValue(model.getComponent(valEntry.getValue()).getText());		    						  
-					contextTableEntry.setLinkedControlActionName(entry.getTitle(), entry.getId());
+					contextTableEntry.addVariable(model.getComponent(valEntry.getKey()).getText());
+					contextTableEntry.addValue(model.getComponent(valEntry.getValue()).getText());	
 					contextTableEntry.addValueId(valEntry.getValue());
 					contextTableEntry.addVariableId(valEntry.getKey());
 				}
   					
 			}
-			contextTableEntry.setValues(tempValuesList);
-			contextTableEntry.setPmVariables(tempVarialesList);
+			contextTableEntry.setLinkedControlActionName(entry.getTitle(), entry.getId());
 			contextTableEntry.setContext(context);
 			contextTableEntry.setRefinedSafetyRequirements(valueCombie.getSafetyConstraint());
 			contextTableEntry.setHazardous(valueCombie.isCombiHazardous(IValueCombie.TYPE_NOT_PROVIDED));

@@ -257,8 +257,10 @@ public class View extends ViewPart{
 			btn.setBackground(NORMAL);
 		}
 		for(AbstractTableComposite comp: tableList){
-			comp.setVisible(false);
-			comp.deactivateTable();
+			if(comp != table){
+				comp.setVisible(false);
+				comp.deactivateTable();
+			}
 		}
   	    if(table != null){
   	    	table.activateTable();
