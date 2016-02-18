@@ -57,15 +57,16 @@ public class LoadWorkspace extends Job {
 				@Override
 				public int compare(File o1, File o2) {
 					long sign = o1.length()-o2.length();
+					if(sign == 0){
+						return 0;
+					}
 					return (int) (sign/Math.abs(sign));
 				}
 				
 			});
 			for (File projectFile : fileList) {
 				try {
-					Map<String, String> values = new HashMap<>();
-					values.put("loadRecentProject", projectFile.getAbsolutePath()); //$NON-NLS-1$
-					Object ob = STPAPluginUtils.executeParaCommand("xstampp.command.load", values);//$NON-NLS-1$
+					Object ob = ProjectManager.getContainerInstance().loadDataModelFile(projectFile.getAbsolutePath(),projectFile.getAbsolutePath());
 					if(ob instanceof AbstractLoadJob){
 						((AbstractLoadJob) ob).join();
 					}
