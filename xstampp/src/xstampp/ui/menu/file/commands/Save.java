@@ -47,12 +47,10 @@ public class Save extends AbstractHandler {
 		IEditorPart editor = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		
-		if(part != null){
+		if(part != null && part.getViewSite().getSelectionProvider().getSelection() instanceof IProjectSelection){
 			Object selection= part.getViewSite().getSelectionProvider().getSelection();
 			//if there is any project or step  selected in the explorer, this project is stored 
-			if(selection instanceof IProjectSelection){
-				saveId=((IProjectSelection)selection).getProjectId();
-			}
+			saveId=((IProjectSelection)selection).getProjectId();
 		}
 		//if the focus is currectly not on the explorer and the selection is not project related,
 		//the project related to the active editor is stored

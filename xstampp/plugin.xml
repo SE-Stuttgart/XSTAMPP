@@ -561,18 +561,6 @@
          </enabledWhen>
       </handler>
       <handler
-            class="xstampp.ui.editors.commands.StyleHandler"
-            commandId="xstampp.command.style">
-         <enabledWhen>
-            <with
-                  variable="xstampp.ui.menu.file.commands.textstate">
-               <equals
-                     value="ENABLED">
-               </equals>
-            </with>
-         </enabledWhen>
-      </handler>
-      <handler
             class="xstampp.util.RunExportCommand"
             commandId="xstampp.command.run">
          <enabledWhen>
@@ -702,6 +690,7 @@
          </commandParameter>
       </command>
       <command
+            defaultHandler="xstampp.ui.editors.commands.StyleHandler"
             id="xstampp.command.style"
             name="Apply Style">
          <commandParameter

@@ -97,7 +97,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 	private Table refinedSafetyTable;
 	private String[] columns = new String[]{
 			View.ENTRY_ID,View.CONTROL_ACTIONS,View.CONTEXT,Messages.RefinedRulesTable_Type,
-			View.CRITICAL_COMBI,View.UCA,View.REL_HAZ,View.REFINED_RULES
+			View.UCA,View.REL_HAZ,View.REFINED_RULES
 	};
 	
 	public RefinedRulesTable(Composite parent) {
@@ -270,6 +270,8 @@ public class RefinedRulesTable extends AbstractTableComposite {
   	    Collections.sort(refinedSafetyContent);
   	    if (refinedSafetyContent.isEmpty()) {
   	    	writeStatus(Messages.RefinedRulesTable_NoHazardousCombies);
+  	    }else{
+  	    	writeStatus(null);
   	    }
   
   	    refinedSafetyViewer.setInput(refinedSafetyContent);

@@ -8,7 +8,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.ISourceProviderService;
 
+import xstampp.ui.menu.file.commands.CommandState;
 import xstpa.model.XSTPADataController;
 
 public abstract class AbstractTableComposite extends Composite implements Observer{
@@ -36,10 +38,17 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 	public abstract boolean refreshTable();
 
 	protected void writeStatus(String status){
-		IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
-		if(part instanceof IViewPart){
-			((IViewPart) part).getViewSite().getActionBars().getStatusLineManager().
-									setMessage(status);
+		if(status == null){
+			// Enable the save entries in the menu
+			ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+					.getWorkbench().getService(ISourceProviderService.class);
+			((CommandState) sourceProviderService
+					.getSourceProvider(CommandState.SAVE_STATE)).setStatusLine();
+		}else{
+			IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
+			if(part instanceof IViewPart){
+				((IViewPart) part).getViewSite().getActionBars().getStatusLineManager().setMessage(status);
+			}
 		}
 	}
 	

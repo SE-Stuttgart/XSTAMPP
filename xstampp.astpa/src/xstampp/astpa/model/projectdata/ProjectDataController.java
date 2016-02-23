@@ -40,6 +40,11 @@ public class ProjectDataController {
 	@XmlElement(name = "styleRange")
 	private List<StyleRange> styleRanges;
 
+
+	@XmlElementWrapper(name = "rangeObjects")
+	@XmlElement(name = "range")
+	private List<DescriptionObject> rangeObjects;
+	
 	/**
 	 * Constructor of the project data controller
 	 * 
@@ -139,5 +144,49 @@ public class ProjectDataController {
 	public StyleRange[] getStyleRangesAsArray() {
 		return this.styleRanges
 				.toArray(new StyleRange[this.styleRanges.size()]);
+	}
+	
+	
+	public void prepareForExport(){
+		this.rangeObjects = new ArrayList<>();
+		String descriptionPart;
+		int next=0;
+		
+		for(int i=0;i<this.styleRanges.size();i++){
+			StyleRange range = (StyleRange) this.styleRanges.get(i).clone();
+			if(range.start > next){
+				DescriptionObject obj = new DescriptionObject();
+				if(obj.addRanges(null, projectDescription.substring(next, range.start))){
+					this.rangeObjects.add(obj);
+				}
+			}
+			if(range.start + range.length < projectDescription.length()){
+				next = range.start + range.length;
+				descriptionPart = projectDescription.substring(range.start, range.start + range.length);
+//				if(descriptionPart.contains("\n")){
+//					if(!descriptionPart.substring(0, descriptionPart.indexOf('\n')).isEmpty()){
+//						DescriptionObject obj = new DescriptionObject();
+//						if(obj.addRanges(range, descriptionPart.substring(0, descriptionPart.indexOf('\n')))){
+//							this.rangeObjects.add(obj);
+//						}
+//					}
+//					while(descriptionPart.contains("\n")){
+//						this.rangeObjects.add(new DescriptionObject());
+//						descriptionPart = descriptionPart.replaceFirst("\n", "");
+//					}
+//				}
+				if(!descriptionPart.isEmpty()){
+					
+					DescriptionObject obj = new DescriptionObject();
+					if(obj.addRanges(range, descriptionPart)){
+						this.rangeObjects.add(obj);
+					}
+				}
+			}
+		}
+	}
+	
+	public void prepareForSave(){
+		this.rangeObjects= null;
 	}
 }

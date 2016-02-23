@@ -19,7 +19,7 @@ import xstampp.ui.common.ProjectManager;
  * @author Lukas Balzer
  *
  */
-public abstract class AbstractLoadJob extends Job {
+public abstract class AbstractLoadJob extends XstamppJob {
 	private File file;
 	private final Logger log = ProjectManager.getLOGGER();
 	private IDataModel controller;

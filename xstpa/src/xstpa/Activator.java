@@ -6,9 +6,9 @@ import java.util.Observable;
 import java.util.UUID;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -17,13 +17,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import xstampp.DefaultPerspective;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
-import xstampp.ui.editors.StandartEditorPart;
+import xstampp.util.STPAPluginUtils;
 import xstpa.model.XSTPADataController;
+import xstpa.ui.CSContextEditor;
 import xstpa.ui.RefinedSafetyConstraintsView;
 import xstpa.ui.RefinedUCAView;
 import xstpa.ui.View;
@@ -72,29 +74,9 @@ public class Activator extends AbstractUIPlugin {
 		});
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(editorListener = new IPartListener() {
 		
-		    
-			
-			private void refreshView() {
-				//if the view is active, get the projectId from the ControlStructure Editor
-			     
-		    	 IEditorPart editorPart =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		    	 if (editorPart == null) {
-		    	 }
-		    	 else if(editorPart instanceof StandartEditorPart){
-		    		 
-			    	 IEditorInput input = editorPart.getEditorInput();
-			    	 UUID projectId = ((STPAEditorInput) input).getProjectID();
-			      
-			    	 XSTPADataController dataController = getDataFor(projectId);
-			    	 // observer gets added, so whenever a value changes, the view gets updated;
-			    	 IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("xstpa.view");
-			    	 if(view != null && view instanceof View){
-			    		 ((View) view).setController(dataController);
-			    	 }
-		    	 }
-			}
-			
-			
+			private IWorkbenchPart activePart;
+			private String oldPerspective = DefaultPerspective.ID;;
+
 			@Override
 		    public void partOpened(IWorkbenchPart part) {
 				if(part instanceof RefinedUCAView){
@@ -104,37 +86,54 @@ public class Activator extends AbstractUIPlugin {
 					RefinedSafetyConstraintsView rucaView =((RefinedSafetyConstraintsView) part);
 					rucaView.setDataController(getDataFor(rucaView.getProjectID()));
 				}
-			      refreshView();
 		    }
 			
 			@Override
 			public void partActivated(IWorkbenchPart part) {
 				
-			      refreshView();
 			}
 
 			@Override
 			public void partBroughtToTop(IWorkbenchPart part) {
-				if(part instanceof View){
+				if(part instanceof CSContextEditor && !part.equals(activePart)){
+					STPAEditorInput input = ((STPAEditorInput)((CSEditorWithPM) part).getEditorInput());
+					UUID projectId = ((STPAEditorInput) input).getProjectID();
+			      
+					XSTPADataController dataController = getDataFor(projectId);
+					// observer gets added, so whenever a value changes, the view gets updated;
+					IPerspectiveDescriptor currentPerspective = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
+					if(currentPerspective != null){
+						oldPerspective = currentPerspective.getId();
+					}else{
+						oldPerspective = DefaultPerspective.ID;
+					}
+					Map<String,String> values = new HashMap<>();
+					values.put("org.eclipse.ui.perspectives.showPerspective.perspectiveId", xstpaPerspective.ID);
+					STPAPluginUtils.executeParaCommand("org.eclipse.ui.perspectives.showPerspective", values);
 					
-				}else if(part instanceof CSEditorWithPM){
-					refreshView();
-				}else{
-					IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("xstpa.view");
-			    	 if(view != null && view instanceof View){
-			    		 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(((View) view));
-			    	 }
+					IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("xstpa.view.contextTables");
+					
+					if(view != null && view instanceof View){
+						((View) view).setController(dataController);
+					}
+				}//if an CSContextEditor is open than the perspective that was last shown is shown
+				else if(activePart instanceof CSContextEditor && !part.equals(activePart)){
+					Map<String,String> values = new HashMap<>();
+					values.put("org.eclipse.ui.perspectives.showPerspective.perspectiveId", oldPerspective);
+					STPAPluginUtils.executeParaCommand("org.eclipse.ui.perspectives.showPerspective", values);
+					
+				}
+				if(part instanceof IEditorPart){
+					activePart = part;
 				}
 			}
 
 			@Override
 			public void partClosed(IWorkbenchPart part) {
-			      refreshView();
 			}
 
 			@Override
 			public void partDeactivated(IWorkbenchPart part) {
-			      refreshView();
 			}    
 		   
 			

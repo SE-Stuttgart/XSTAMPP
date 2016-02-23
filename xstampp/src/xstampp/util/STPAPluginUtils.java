@@ -17,6 +17,7 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -43,41 +44,11 @@ public final class STPAPluginUtils {
 			unfinishedJobs = new ArrayList<>();
 		}
 		unfinishedJobs.add(job);
-		job.addJobChangeListener(new IJobChangeListener() {
-			
-			@Override
-			public void sleeping(IJobChangeEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void scheduled(IJobChangeEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void running(IJobChangeEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
+		job.addJobChangeListener(new JobChangeAdapter() {
 			
 			@Override
 			public void done(IJobChangeEvent event) {
 				unfinishedJobs.remove(event.getJob());
-			}
-			
-			@Override
-			public void awake(IJobChangeEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void aboutToRun(IJobChangeEvent event) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 	}

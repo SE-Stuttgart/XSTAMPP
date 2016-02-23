@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -137,8 +138,12 @@ public class ProvidedValuesCombi implements IValueCombie{
 
 	@Override
 	public void setValues(Map<UUID, UUID> valuesIdsTOvariableIDs) {
-		this.values = new ArrayList<>(valuesIdsTOvariableIDs.values());
-		this.variables = new ArrayList<>(valuesIdsTOvariableIDs.keySet());
+		this.values = new ArrayList<>();
+		this.variables = new ArrayList<>();
+		for(Entry<UUID, UUID> entry : valuesIdsTOvariableIDs.entrySet()){
+			this.values.add(entry.getValue());
+			this.variables.add(entry.getKey());
+		}
 	}
 
 

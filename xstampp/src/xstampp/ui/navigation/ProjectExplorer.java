@@ -87,7 +87,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private MenuManager contextMenu;
 	private IMenuManager openWithMenu;
 	private Font defaultFont;
-	
+	private Listener expandListener;
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setBackground(null);
@@ -96,7 +96,17 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		this.selectionListener = new ArrayList<>();
 		this.treeItemsToProjectIDs = new HashMap<>();
 		this.perspectiveElementsToTreeItems = new HashMap<>();
-		
+		this.expandListener = new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				if(event.item instanceof TreeItem && ((TreeItem)event.item).getItemCount() > 0){
+					for(TreeItem item: ((TreeItem)event.item).getItems()){
+						item.setExpanded(true);
+					}
+				}
+			}
+		};
 		
 		Composite container = new Composite(parent, SWT.None);
 		container.setBackground(null);
@@ -142,6 +152,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				  this.activation=  contextService.activateContext("xstampp.navigation.context"); //$NON-NLS-1$
 			}
 		});
+		this.tree.addListener(SWT.Expand, expandListener);
 		this.tree.addListener(SWT.MouseDown, this.listener);
 		this.tree.addListener(SWT.KeyDown, this.listener);
 		this.tree.addListener(SWT.MouseDoubleClick, new Listener() {
@@ -234,6 +245,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		String navigationPath=pathName + PATH_SEPERATOR + element.getAttribute("name");
 		final TreeItem subItem = new TreeItem(parent.getItem(), SWT.BORDER
 				| SWT.MULTI | SWT.V_SCROLL);
+		subItem.addListener(SWT.Selection, expandListener);
 		subItem.setFont(defaultFont);
 		subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
 		subItem.addListener(SWT.SELECTED, this.listener);

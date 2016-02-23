@@ -4,20 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.eclipse.core.runtime.Assert;
-
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.IValueCombie;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 
 
 public class ContextTableCombination {
-
-	private List<String> valueNames = new ArrayList<String>();
-	private List<UUID> valueIds = new ArrayList<UUID>();
-	private List<String> variableNames = new ArrayList<String>();
-	private List<UUID> variableIds;
 	
+	private Map<UUID,UUID> valueIdTOvariableId = new HashMap<>();
 	private String linkedControlActionName = "";
 	private UUID linkedControlActionID = null;
 	private String refinedSafetyRequirements ="";
@@ -47,12 +44,6 @@ public class ContextTableCombination {
 	
 	private String ruca;
 	
-	public ContextTableCombination (List<String> pmVariables,ControlActionEntry linkedControlAction ) {
-		this.linkedControlActionName = linkedControlAction.getControlAction();
-		this.variableNames = pmVariables;
-		this.linkedControlActionID = linkedControlAction.getId();
-	}
-	
 	public ContextTableCombination() {
 		// Empty Constructor for JAXB
 	}
@@ -60,21 +51,66 @@ public class ContextTableCombination {
 //********************************************************************************************
 // Management of the value name list
 
-	public List<String> getValues() {
-		return valueNames;
+	/**
+	 * removes all entries from the {@link #valueIdTOvariableId} map
+	 */
+	public void clearIDsMap(){
+		valueIdTOvariableId.clear();
 	}
-	public void setValues(List<String> values) {
-		this.valueNames = values;
+	
+	/**
+	 * removes all entries from the {@link #valueNameTOvariableId} map
+	 */
+	public void clearNameMap(){
+		valueIdTOvariableId.clear();
 	}
-	public void addValue (String value) {
-		valueNames.add(value);
-		
+	/**
+	 * adds an entry in the {@link #valueIdTOvariableId} map
+	 * that maps the given valueID to the variableId 
+	 * 
+	 * @param variableId the UUID with which a variable component is stored in the data model
+	 * @param valueId the UUID with which a value component is stored in the data model
+	 * 
+	 * @return {@link HashMap#put(Object, Object)}
+	 * @see HashMap#put(Object, Object)
+	 */
+	public UUID addValueMapping(UUID variableId,UUID valueId){
+		if(variableId != null && valueId != null){
+			return valueIdTOvariableId.put(variableId, valueId);
+		}
+		return null;
 	}
-	public void removeValue (int index) {
-		valueNames.remove(index);
+	
+	/**
+	 * 
+	 * @param variableId should be the id of a variable stored in the data Model
+	 * @return the value which is contained in the {@link #valueIdTOvariableId} for the given UUID or 
+	 * 				null if there is no stored mapping or the variableId is null
+	 */
+	public UUID getValueIDForVariable(UUID variableId){
+		if(variableId == null || !valueIdTOvariableId.containsKey(variableId)){
+			return null;
+		}
+		return valueIdTOvariableId.get(variableId);
 	}
+	
+	/**
+	 * 
+	 * @return a copy of {@link #valueIdTOvariableId}
+	 */
+	public HashMap<UUID,UUID> getValueIDTOVariableIdMap(){
+		new HashMap<>(this.valueIdTOvariableId);
+		return new HashMap<>(this.valueIdTOvariableId);
+	}
+	
+	/**
+	 * 
+	 * @return the size of {@link #valueIdTOvariableId}
+	 * 
+	 * @see HashMap#size()
+	 */
 	public int getSizeOfValues() {
-		return valueNames.size();
+		return valueIdTOvariableId.size();
 	}	
 	
 	//******************************
@@ -82,24 +118,27 @@ public class ContextTableCombination {
 	
 	/**
 	 * 
+	 * @param root 
 	 * @param equalsSeq the sequence that is used to separate the variable-value tuples
 	 * @param parseBoolean whether or not  getPmValues should translate any boolean expressions into natural language
 	 * @param useSpaces
 	 * @return
 	 */
-	public List<String> getPmValues(String equalsSeq, boolean parseBoolean, boolean useSpaces) {
+	public List<String> getPmValues(DataModelController controller, String equalsSeq, boolean parseBoolean, boolean useSpaces) {
 		ArrayList<String> list = new ArrayList<>();
 		String valueString;
 		String prefix;
-		for (int i = 0; i < this.valueNames.size(); i++) {
-			valueString = this.valueNames.get(i).replaceAll(">|<|=", "").trim();
+		for (Entry<UUID, UUID> valueMapping : this.valueIdTOvariableId.entrySet()) {
+			IRectangleComponent value = controller.getComponent(valueMapping.getValue());
+			IRectangleComponent variable = controller.getComponent(valueMapping.getKey());
+			valueString = value.getText().replaceAll(">|<|=", "").trim();
 			prefix = equalsSeq.trim();
-			char c = this.valueNames.get(i).trim().charAt(0);
+			char c = value.getText().trim().charAt(0);
 			if(c == '>' || c == '<' || c == '='){
 				
 				if(!parseBoolean){
 					if(c != '='){
-						prefix = String.valueOf(this.valueNames.get(i).trim().charAt(0));
+						prefix = String.valueOf(c);
 					}
 				}else{
 					if(c == '<'){
@@ -110,9 +149,9 @@ public class ContextTableCombination {
 				}
 			}
 			if(useSpaces){
-				list.add(this.variableNames.get(i).trim() + ' ' +prefix +' '+valueString);
+				list.add(variable.getText().trim() + ' ' +prefix +' '+valueString);
 			}else{
-				list.add(this.variableNames.get(i).trim() + prefix +valueString);
+				list.add(variable.getText().trim() + prefix +valueString);
 			}
 		}
 		return list;
@@ -120,20 +159,6 @@ public class ContextTableCombination {
 	//**********************************
 	//Management of the value ids
 	
-	public List<UUID> getValueIds() {
-		return valueIds;
-	}
-
-	public void setValueIds(List<UUID> valueIds) {
-		this.valueIds = valueIds;
-	}
-	public void addValueId (UUID valueId) {
-		if(this.valueIds == null){
-			this.valueIds = new ArrayList<>();
-		}
-		valueIds.add(valueId);
-		
-	}
 // 
 //********************************************************************************************
 	public int getNumber() {
@@ -194,72 +219,7 @@ public class ContextTableCombination {
 		this.linkedControlActionID = caID;
 	}
 	
-//**************************************************************************************************
-//Management of the process model variables
-	
-	public List<String> getPmVariables() {
-		return variableNames;
-	}
-	public void setPmVariables(List<String> pmVariables) {
-		this.variableNames = pmVariables;
-	}
-	/**
-	 * this returns the variableId list which can be defined to 
-	 * declare this object as a value combination
-	 * 
-	 * @return the variableIds
-	 */
-	public List<UUID> getVariableIds() {
-		if(variableIds == null){
-			variableIds = new ArrayList<>();
-		}
-		return variableIds;
-	}
 
-	/**
-	 * adds a variable id to this object<br>
-	 * 
-	 * @param variableId the variableId to add
-	 */
-	public void addVariableId (UUID variableId) {
-		if(this.variableIds == null){
-			this.variableIds = new ArrayList<>();
-		}
-		variableIds.add(variableId);
-		
-	}
-	
-	/**
-	 * adds a variable to this object
-	 * 
-	 * @param variable the name of a combined variable
-	 */
-	public void addVariable (String variable) {
-		if(this.variableNames == null){
-			this.variableNames = new ArrayList<>();
-		}
-		variableNames.add(variable);
-		
-	}
-
-	/**
-	 * sets a list of variable ids to this object<br>
-	 * @param variableIds the variableIds to set
-	 */
-	public void setVariableIds(List<UUID> variableIds) {
-		this.variableIds = variableIds;
-	}
-	
-	public Map<UUID,UUID> getValueMap(){
-		Assert.isTrue(this.variableIds.size() == this.valueIds.size());
-		HashMap<UUID, UUID> valueMap = new HashMap<>();
-		for(int i=0;i < this.variableIds.size();i++){
-			valueMap.put(variableIds.get(i), valueIds.get(i));
-		}
-		return valueMap;
-	}
-	
-	
 //****************************************************************************************************
 	public String getRefinedSafetyRequirements() {
 		return refinedSafetyRequirements;

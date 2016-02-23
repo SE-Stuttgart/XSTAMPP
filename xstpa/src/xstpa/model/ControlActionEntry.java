@@ -126,7 +126,7 @@ public class ControlActionEntry implements Comparable<ControlActionEntry>{
 	}
 	
 	public ProcessModelVariables getLinkedItem(int id) {
-		return linkedItems.get(id-1);
+		return linkedItems.get(id);
 	}
 
 //======================================================================
@@ -260,8 +260,8 @@ public class ControlActionEntry implements Comparable<ControlActionEntry>{
 			this.contextTableCombinations = new ArrayList<>();
 		}
 		contextTableCombinations.add(entry);
-		if(entry.getPmVariables().size() == linkedCompIds.size() 
-				&& linkedCompNames.containsAll(entry.getPmVariables())
+		if(entry.getSizeOfValues() == linkedCompIds.size() 
+				&& linkedCompIds.containsAll(entry.getValueIDTOVariableIdMap().keySet())
 				&& !entry.isArchived()){
 			if(this.currentCombinations == null){
 				this.currentCombinations = new ArrayList<ContextTableCombination>();

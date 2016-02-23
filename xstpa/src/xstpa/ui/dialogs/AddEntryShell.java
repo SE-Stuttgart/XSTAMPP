@@ -120,16 +120,13 @@ public class AddEntryShell {
 	}
 	
 	private ContextTableCombination getValueList(){
-		ContextTableCombination variable = new ContextTableCombination();
+		ContextTableCombination combination = new ContextTableCombination();
 		
-		variable.setPmVariables(varNames);
 		for(int i= 0; i<variables.size();i++){
-			variable.addVariableId(variables.get(i));
 			Combo tmp =comboToId.get(variables.get(i));
-			variable.addValue(tmp.getText());
-			variable.addValueId(idListToID.get(variables.get(i)).get(tmp.getSelectionIndex()));
+			combination.addValueMapping(variables.get(i),idListToID.get(variables.get(i)).get(tmp.getSelectionIndex()));
 		}
-		return variable;
+		return combination;
 	}
 	public void addApplyListener(Listener listener){
 		this.listener = listener;

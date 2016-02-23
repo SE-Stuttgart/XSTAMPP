@@ -99,8 +99,12 @@ public class RefinedSafetyRule implements ILTLProvider{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void setUCALinks(List<UUID> ids){
-			this.relatedUCAs = ids;
+	public boolean setUCALinks(List<UUID> ids){
+		if(this.relatedUCAs != null && this.relatedUCAs.equals(ids)){
+			return false;
+		}
+		this.relatedUCAs = ids;
+		return true;
 	}
 	
 	public void removeUCALink(UUID id) {
@@ -124,9 +128,14 @@ public class RefinedSafetyRule implements ILTLProvider{
 
 	/**
 	 * @param rule the rule to set
+	 * @return 
 	 */
-	public void setSafetyRule(String rule) {
+	public boolean setSafetyRule(String rule) {
+		if(this.rule != null && this.rule.equals(rule)){
+			return false;
+		}
 		this.rule = rule;
+		return true;
 	}
 
 
@@ -137,9 +146,14 @@ public class RefinedSafetyRule implements ILTLProvider{
 
 	/**
 	 * @param refinedUCA the refinedUCA to set
+	 * @return 
 	 */
-	public void setRefinedUCA(String refinedUCA) {
+	public boolean setRefinedUCA(String refinedUCA) {
+		if(this.rUCA != null && this.rUCA.equals(refinedUCA)){
+			return false;
+		}
 		this.rUCA = refinedUCA;
+		return true;
 	}
 
 
@@ -150,9 +164,14 @@ public class RefinedSafetyRule implements ILTLProvider{
 
 	/**
 	 * @param refinedSafetyConstraint the refinedSafetyConstraint to set
+	 * @return 
 	 */
-	public void setRefinedSafetyConstraint(String refinedSafetyConstraint) {
+	public boolean setRefinedSafetyConstraint(String refinedSafetyConstraint) {
+		if(this.rSCt != null && this.rSCt.equals(refinedSafetyConstraint)){
+			return false;
+		}
 		this.rSCt = refinedSafetyConstraint;
+		return true;
 	}
 
 	@Override
@@ -168,8 +187,12 @@ public class RefinedSafetyRule implements ILTLProvider{
 	/**
 	 * @param ltlProperty the ltlProperty to set
 	 */
-	public void setLtlProperty(String ltlProperty) {
+	public boolean setLtlProperty(String ltlProperty) {
+		if(this.ltl != null && this.ltl.equals(ltlProperty)){
+			return false;
+		}
 		this.ltl = ltlProperty;
+		return true;
 	}
 
 	@Override
@@ -197,53 +220,87 @@ public class RefinedSafetyRule implements ILTLProvider{
 	
 	/**
 	 * @param controlActionID the controlActionID to set
+	 * @return 
 	 */
-	public void setRelatedControlActionID(UUID controlActionID) {
+	public boolean setRelatedControlActionID(UUID controlActionID) {
+		if(this.caID != null && this.caID.equals(controlActionID)){
+			return false;
+		}
 		this.caID = controlActionID;
+		return true;
 	}
 
 	/**
 	 * @param number the number to set
+	 * @return 
 	 */
-	public void setNumber(int number) {
+	public boolean setNumber(int number) {
+		if(this.number == number){
+			return false;
+		}
 		this.number = number;
+		return true;
 	}
 
 	/**
 	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
 	 * 				Defined in IValueCombie
+	 * @return 
 	 * @see IValueCombie
 	 */
-	public void setType(String type) {
+	public boolean setType(String type) {
+		if(this.type != null && this.type.equals(type)){
+			return false;
+		}
 		this.type = type;
+		return true;
 	}
 
 	/**
 	 * @param caID the caID to set
 	 */
-	public void setCaID(UUID caID) {
+	public boolean setCaID(UUID caID) {
+		if(this.caID != null && this.caID.equals(caID)){
+			return false;
+		}
 		this.caID = caID;
+		return true;
 	}
 
 
 	/**
 	 * @param criticalCombies the criticalCombies to set
+	 * @return 
 	 */
-	public void setCriticalCombies(String criticalCombies) {
+	public boolean setCriticalCombies(String criticalCombies) {
+		if(this.combies != null && this.combies.equals(criticalCombies)){
+			return false;
+		}
 		this.combies = criticalCombies;
+		return true;
 	}
 	/**
 	 * @param controlAction the controlAction to set
+	 * @return 
 	 */
-	public void setControlAction(String controlAction) {
+	public boolean setControlAction(String controlAction) {
+		if(this.controlAction != null && this.controlAction.equals(controlAction)){
+			return false;
+		}
 		this.controlAction = controlAction;
+		return true;
 	}
 
 	/**
 	 * @param links the links to set
+	 * @return 
 	 */
-	public void setLinks(String links) {
+	public boolean setLinks(String links) {
+		if(this.links != null && this.links.equals(links)){
+			return false;
+		}
 		this.links = links;
+		return true;
 	}
 	public String getLinks() {
 		return this.links;

@@ -226,10 +226,13 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public boolean prepareForExport() {
+
+		this.exportInformation = null;
 		this.hazAccController.prepareForExport();
 		this.controlActionController.prepareForExport(this.hazAccController,this.controlStructureController);
 		this.causalFactorController.prepareForExport(this.hazAccController,
 				this.controlStructureController.getInternalComponents());
+		this.projectDataManager.prepareForExport();
 		this.exportInformation = new ExportInformation();
 		Display.getDefault().asyncExec(new Runnable() {
 			
@@ -249,6 +252,7 @@ public class DataModelController extends Observable implements
 		this.causalFactorController
 				.prepareForSave(this.controlStructureController
 						.getInternalComponents());
+		this.projectDataManager.prepareForSave();
 		this.exportInformation = null;
 		Display.getDefault().asyncExec(new Runnable() {
 			
@@ -1284,6 +1288,10 @@ public class DataModelController extends Observable implements
 			this.unsavedChanges = true;
 			this.updateValue(ObserverValue.UNSAVED_CHANGES);
 	}
+	
+	public boolean isReadyForExport(){
+		return this.exportInformation != null;
+	}
 	@Override
 	public boolean setCSImagePath(String path) {
 		if (this.exportInformation == null) {
@@ -1793,22 +1801,23 @@ public class DataModelController extends Observable implements
 	}
 	
 	public UUID updateRefinedRule(UUID ruleID,List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
+		boolean changed=false;
 		for(ILTLProvider provider: this.controlActionController.getAllRefinedRules()){
 			if(provider.getRuleId().equals(ruleID)){
-				((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
-				((RefinedSafetyRule) provider).setRefinedSafetyConstraint(constraint);
-				((RefinedSafetyRule) provider).setRefinedUCA(ruca);
-				((RefinedSafetyRule) provider).setSafetyRule(rule);
-				((RefinedSafetyRule) provider).setUCALinks(ucaLinks);
-				((RefinedSafetyRule) provider).setNumber(nr);
-				((RefinedSafetyRule) provider).setCaID(caID);
-				((RefinedSafetyRule) provider).setType(type);
-				((RefinedSafetyRule) provider).setCriticalCombies(combies);
+				changed = changed ||((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
+				changed = changed ||((RefinedSafetyRule) provider).setRefinedSafetyConstraint(constraint);
+				changed = changed ||((RefinedSafetyRule) provider).setRefinedUCA(ruca);
+				changed = changed ||((RefinedSafetyRule) provider).setSafetyRule(rule);
+				changed = changed ||((RefinedSafetyRule) provider).setUCALinks(ucaLinks);
+				changed = changed ||((RefinedSafetyRule) provider).setNumber(nr);
+				changed = changed ||((RefinedSafetyRule) provider).setCaID(caID);
+				changed = changed ||((RefinedSafetyRule) provider).setType(type);
+				changed = changed ||((RefinedSafetyRule) provider).setCriticalCombies(combies);
 				
-				setUnsavedAndChanged(ObserverValue.Extended_DATA);
 				return ruleID;
 			}
 		}
+		setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		return null;
 			
 	}

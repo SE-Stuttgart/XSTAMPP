@@ -273,10 +273,7 @@ public class XSTPADataController extends Observable implements Observer{
 					invalid = true;
 					break;
 				}else{
-					contextTableEntry.addVariable(model.getComponent(valEntry.getKey()).getText());
-					contextTableEntry.addValue(model.getComponent(valEntry.getValue()).getText());	
-					contextTableEntry.addValueId(valEntry.getValue());
-					contextTableEntry.addVariableId(valEntry.getKey());
+					contextTableEntry.addValueMapping(valEntry.getKey(), valEntry.getValue());
 				}
   					
 			}
@@ -382,7 +379,6 @@ public class XSTPADataController extends Observable implements Observer{
 			}
 		}
 		total =model.getLTLPropertys().size()-1;
-		model.releaseLockAndUpdate(ObserverValue.Extended_DATA);
 		return combiesToContextID;
 	}
 //=====================================================================
@@ -424,11 +420,7 @@ public class XSTPADataController extends Observable implements Observer{
   		  //iteration over all value combinations registered for the linked control action
   		  for (ContextTableCombination combie :caEntry.getContextTableCombinations(false)) {
   			  val = new ProvidedValuesCombi();
-  			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
-   				 val.setValues(getCombieUUIDs(combie));
-  			  }else{
-  				  val.setValues(combie.getValueMap());
-  			  }
+  			  val.setValues(combie.getValueIDTOVariableIdMap());
 
   			  val.setUCALinks(combie.getUcaLinks(IValueCombie.TYPE_ANYTIME),IValueCombie.TYPE_ANYTIME);
   			  val.setUCALinks(combie.getUcaLinks(IValueCombie.TYPE_TOO_EARLY),IValueCombie.TYPE_TOO_EARLY);
@@ -450,11 +442,8 @@ public class XSTPADataController extends Observable implements Observer{
   		  //iteration over all value combinations registered for the linked control action
   		  for (ContextTableCombination combie : caEntry.getContextTableCombinations(false)) {
   			  val = new NotProvidedValuesCombi();
-  			  if(combie.getValueIds().isEmpty() || combie.getVariableIds() == null){
-  				 val.setValues(getCombieUUIDs(combie));
-  			  }else{
-  				  val.setValues(combie.getValueMap());
-  			  }
+  			  val.setValues(combie.getValueIDTOVariableIdMap());
+  			  
   			  val.setUCALinks(combie.getUcaLinks(IValueCombie.TYPE_NOT_PROVIDED),IValueCombie.TYPE_NOT_PROVIDED);
   				  
   			  val.setArchived(combie.isArchived());
@@ -464,49 +453,6 @@ public class XSTPADataController extends Observable implements Observer{
   		  }
   		  model.setValuesWhenCANotProvided(caEntry.getId(),valuesIfProvided);
 		
-	}
-	
-	
-	public Map<UUID,UUID> getCombieUUIDs(ContextTableCombination variables){
-		Map<UUID,UUID> combis = new HashMap<>();
-		  //iterate over all values stored in that combination
-		  for (int z = 0; z<variables.getValues().size();z++) {
-			  String sVarName =variables.getPmVariables().get(z);
-			  String sValueName =variables.getValues().get(z);
-			  UUID variableID =null;
-			  for(ProcessModelVariables variable : getVariablesList()){
-				  String variableString = variable.getName();
-				  if(sVarName.contains("_")){
-					  variableString = variableString.replace(" ", "_");
-				  }
-				  if(variableString.equals(sVarName)){
-					  variableID = variable.getId();
-				  }
-			  }
-			  
-			  //iteration over all available and in the data model stored values
-			  //to get the uuids mapped to the components
-			  for (ProcessModelValue value :valuesList.values()) {
-				  
-				  //2 if cases are used to find find the right variable-value combination 
-				  if (value.getId().equals(model.getIgnoreLTLValue().getId()) || value.getVariableID().equals(variableID)) {
-					  
-					  String tempValue =value.getValueText().trim();
-					  
-					  if ((tempValue.equals(sValueName))) {
-						  combis.put(variableID,value.getId());
-						  variables.addValueId(value.getId());
-						  variables.addVariableId(value.getVariableID());
-					  }
-					  else if ("(don't care)".equals(sValueName)) {
-						  combis.put(variableID,model.getIgnoreLTLValue().getId());
-						  variables.addValueId(model.getIgnoreLTLValue().getId());
-						  variables.addVariableId(value.getVariableID());
-					  }
-				  }
-			  }
-		  }
-		 return combis;
 	}
 	
 //=====================================================================

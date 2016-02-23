@@ -34,6 +34,12 @@ public class ProcessModelVariables {
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * sets the name defined as text of the defined IRectangleComponent 
+	 * 
+	 * @param name the name of the variable
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -67,10 +73,21 @@ public class ProcessModelVariables {
 	public List<UUID> getValueIds() {
 		return valueIds;
 	}
-
+	
+	/**
+	 * sets the value ids defined as children of the represented variable to the given list
+	 * 
+	 * @param valueIds the list of id's of a value components stored in the dataModel
+	 */
 	public void setValueIds(List<UUID> valueIds) {
 		this.valueIds = valueIds;
 	}
+	
+	/**
+	 * adds a value id that is defined as child of the represented variable,
+	 * this method creates a new list if the valueIds list is null  
+	 * @param valueId the id of a value component stored in the dataModel
+	 */
 	public void addValueId (UUID valueId) {
 		if(this.valueIds == null){
 			this.valueIds = new ArrayList<>();

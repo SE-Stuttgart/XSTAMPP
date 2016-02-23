@@ -393,6 +393,11 @@ public class ProjectManager implements IPropertyChangeListener {
 		fileDialog.setFilterExtensions(extensions.toArray(new String[]{}));
 		
 		String file = fileDialog.open();
+		if(this.projectSaveFilesToUUID.containsValue(new File(file))){
+			MessageDialog.openError(PlatformUI.getWorkbench()	
+							.getDisplay().getActiveShell(), "Project is allready open!", "This project allready exists in the workspace!");
+			return null;
+		}
 		//if the file is not null but also not located in the workspace the project is loaded from the choosen file
 		//but later stored in the workspace
 		if ((file != null) && !file.contains(Platform.getInstanceLocation().getURL().getPath())) {
@@ -445,6 +450,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	 * @return whether the operation was successful or not
 	 */
 	public Job loadDataModelFile(String loadFile,String saveFile) {
+		
 		Object jobObject = null;
 		String pluginName = ""; //$NON-NLS-1$
 		for (Entry<String, IConfigurationElement> extElement : 

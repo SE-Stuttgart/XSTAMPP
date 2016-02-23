@@ -126,7 +126,15 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
+
+		while(!((DataModelController)ProjectManager.getContainerInstance().getDataModel(getProjectId())).isReadyForExport()){
+			if(monitor.isCanceled()){
+				return Status.CANCEL_STATUS;
+			}
+		}
+			
 			File tmp = new File(this.filePath);
+			((DataModelController)ProjectManager.getContainerInstance().getDataModel(getProjectId())).isReadyForExport();
 			this.imgPath = tmp.getParent(); 
 		IDataModel model = ProjectManager.getContainerInstance().getDataModel(this.id);
 			
@@ -156,8 +164,8 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 				context = JAXBContext.newInstance(DataModelController.class);
 				Marshaller m = context.createMarshaller();
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
 				m.marshal(model, this.outStream);
+				System.out.println();
 			} catch (JAXBException e) {
 				ExportJob.LOGGER.error(e.getMessage(), e);
 				return Status.OK_STATUS;
@@ -254,6 +262,7 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 				}
 			}
 		} catch (SAXException | IOException | TransformerException e) {
+				ProjectManager.getLOGGER().error(e.getMessage());
 			return Status.CANCEL_STATUS;
 		}
 		return Status.OK_STATUS;

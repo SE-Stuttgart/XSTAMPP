@@ -119,9 +119,35 @@
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell padding="4px">
-										<fo:block font-size="12pt">
-											<xsl:value-of select="projectdata/projectDescription" />
-										</fo:block>
+										<xsl:choose>
+											<xsl:when test="projectdata/rangeObjects/range">
+												<fo:block font-size="12pt" linefeed-treatment="preserve">
+													<xsl:for-each select="projectdata/rangeObjects/range">
+														<xsl:choose>
+															<xsl:when test="linebreak='true'">
+																<fo:block/>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline>
+																	<xsl:if test="foreground">
+																		<xsl:attribute name="color"><xsl:value-of select="foreground"/></xsl:attribute>
+																	</xsl:if>
+																	<xsl:attribute name="font-size"><xsl:value-of select="fontSize"/></xsl:attribute>
+																	<xsl:attribute name="font-weight"><xsl:value-of select="weight"/></xsl:attribute>
+																	<xsl:attribute name="font-style"><xsl:value-of select="style"/></xsl:attribute>
+																	<xsl:value-of select="descriptionPart" />
+																</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</xsl:for-each>
+												</fo:block>
+											</xsl:when>
+											<xsl:otherwise>
+												<fo:block font-size="12pt">
+													<xsl:value-of select="projectdata/projectDescription" />
+												</fo:block>
+											</xsl:otherwise>
+										</xsl:choose>
 									</fo:table-cell>
 								</fo:table-row>
 							</fo:table-body>

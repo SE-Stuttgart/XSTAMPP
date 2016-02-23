@@ -241,14 +241,14 @@ public class STPAEditorInput implements IEditorInput {
 		if (!this.lock && isActive) {
 
 			this.lock = true;
-			for (int i = 0; this.additionalViews != null && i < this.additionalViews.size(); i++) {
-				IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-						.findView(this.additionalViews.get(i));
-				if (part != null
-						&& PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(part)) {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(part);
-				}
-			}
+//			for (int i = 0; this.additionalViews != null && i < this.additionalViews.size(); i++) {
+//				IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+//						.findView(this.additionalViews.get(i));
+//				if (part != null
+//						&& PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(part)) {
+//					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(part);
+//				}
+//			}
 			this.stepItem.setBackground(null);
 
 			this.stepItem.getParentItem().setBackground(null);

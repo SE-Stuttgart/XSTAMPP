@@ -11,7 +11,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  *
  */
 public class DefaultPerspective implements IPerspectiveFactory {
-
+	public static final String ID ="xstampp.defaultPerspective";
 	private static final Logger LOGGER = Logger.getRootLogger();
 
 	@Override
@@ -28,7 +28,6 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		IFolderLayout folder = layout.createFolder("buttomfolder", IPageLayout.BOTTOM, 0.65f, layout.getEditorArea());
 
 		folder.addPlaceholder("A-CAST.view1");
-		folder.addPlaceholder("xstpa.view");
 		
 
 	}

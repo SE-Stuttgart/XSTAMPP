@@ -8,8 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Observable;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -20,12 +20,12 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 
 import xstampp.astpa.haz.HAZController;
 import xstampp.astpa.haz.IHAZModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
@@ -37,7 +37,7 @@ import com.sun.xml.bind.marshaller.DataWriter;
  * @since 2.0
  * 
  */
-public class SaveJob extends Job {
+public class SaveJob extends XstamppJob {
 
 	final File file;
 	final IDataModel controller;
@@ -57,7 +57,7 @@ public class SaveJob extends Job {
 	 *            JAXBContext
 	 */
 	public SaveJob(File file, IDataModel controller) {
-		super(Messages.saveHaz);
+		super(Messages.saveHaz, ProjectManager.getContainerInstance().getProjectID((Observable) controller));
 		this.compatibilityMode = false;
 		this.file = file;
 		this.controller = controller;

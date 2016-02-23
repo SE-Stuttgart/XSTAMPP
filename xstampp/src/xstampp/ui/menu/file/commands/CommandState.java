@@ -147,9 +147,9 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 		case UNSAVED_CHANGES :
 			setStatusLine();
 			if(dataModel.hasUnsavedChanges()){
-				changeState(SAVE_STATE,S_ENABLED, null);
+				changeState(SAVE_STATE,S_ENABLED, dataModel);
 			}else{
-				changeState(SAVE_STATE,S_DISABLED, null);
+				changeState(SAVE_STATE,S_DISABLED, dataModel);
 			}
 		default:
 			break;
@@ -168,7 +168,8 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 		}else{
 			this.fireSourceChanged(ISources.WORKBENCH, SAVE_ALL_STATE,S_ENABLED);
 		}
-		
+
+		setStatusLine();
 	}
 	
 	/**
@@ -178,7 +179,7 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 	 *
 	 *
 	 */
-	private void setStatusLine() {
+	public void setStatusLine() {
 		Display.getDefault().syncExec(new Runnable() {
 
 			@Override
@@ -192,8 +193,7 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
 					}else if(part instanceof IEditorPart){
 						manager =((IEditorPart)part).getEditorSite().getActionBars().getStatusLineManager();
 					}
-					
-					if (ProjectManager.getContainerInstance().getUnsavedChanges() && manager != null) {
+					if (!saveList.isEmpty() && manager != null) {
 						
 						Image image = Activator.getImageDescriptor(
 								"/icons/statusline/warning.png").createImage(); //$NON-NLS-1$

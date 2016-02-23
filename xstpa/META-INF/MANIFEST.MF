@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.eclipse.draw2d;bundle-version="3.9.101",
  xstampp.astpa,
- org.junit
+ org.junit,
+ org.eclipse.gef
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  org.apache.commons.io,

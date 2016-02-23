@@ -147,9 +147,10 @@ public class ACTSController extends Job{
 			line = reader.readLine();
 			temp = line.charAt(line.length()-1);
 			Character.getNumericValue(temp);
-			//contextRightTable.setVisible(false);
+
 			while ((line = reader.readLine()) != null) {
 				if (line.contains("Configuration #")) {
+					
 					ContextTableCombination entry = new ContextTableCombination();
 					entry.setLinkedControlActionName(context.getControlAction(), null);
 					entry.setLinkedControlActionID(context.getId());
@@ -157,11 +158,15 @@ public class ACTSController extends Job{
 //					System.out.println(temp);
 					Character.getNumericValue(temp);
 					reader.readLine();
-					List<String> values = new ArrayList<String>();
-					List<String> variables = new ArrayList<String>();
-					List<UUID> varIds = new ArrayList<>();
-					List<UUID> valueIds = new ArrayList<>();
+					entry.clearIDsMap();
+					entry.clearNameMap();
+					UUID valueID,variableID;
+					String valueName,variableName;
 					for (int i = 0; i<paramCount; i++) {
+						valueID = null;
+						variableID = null;
+						valueName = null;
+						variableName = null;
 						line = reader.readLine();
 						temp = line.charAt(0);
 						Character.getNumericValue(temp);
@@ -170,8 +175,8 @@ public class ACTSController extends Job{
 							String var = line.substring(0, line.indexOf("="));
 							for(ProcessModelVariables linkedVariable:context.getLinkedItems()){
 								if(linkedVariable.getName().replaceAll(" ","_").equals(var)){
-									variables.add(linkedVariable.getName());
-									varIds.add(linkedVariable.getId());
+									variableName = linkedVariable.getName();
+									variableID = linkedVariable.getId();
 									var =linkedVariable.getName();
 									break;
 								}
@@ -179,18 +184,20 @@ public class ACTSController extends Job{
 							
 							//entry.setName(line.substring(line.indexOf("=")+2, line.length()));
 							line = line.substring(line.indexOf("=")+1, line.length());
-							boolean valueFound = false;
 							for(ProcessModelValue value : valueList){
 								if(value.getPMV() != null && value.getPMV().equals(var) && value.getValueText().replaceAll(" |,","_").equals(line)){
-									values.add(value.getValueText());
-									valueIds.add(value.getId());
-									valueFound = true;
+									valueName = value.getValueText();
+									valueID = value.getId();
 									continue;
 								}
 							}
-							if (!valueFound) {
-								System.out.println(valueFound);
+
+							if(valueID == null || valueName == null || variableID == null || variableName == null){
+								
+							}else{
+								entry.addValueMapping(variableID, valueID);
 							}
+
 						}
 						catch (StringIndexOutOfBoundsException siobe) {
 							
@@ -198,10 +205,6 @@ public class ACTSController extends Job{
 						
 									
 					}
-					entry.setValues(values);
-					entry.setPmVariables(variables);
-					entry.setValueIds(valueIds);
-					entry.setVariableIds(varIds);
 					contextEntries.add(entry);
 				}
 				

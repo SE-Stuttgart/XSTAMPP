@@ -24,6 +24,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstpa.Activator;
 import xstpa.model.XSTPADataController;
@@ -35,7 +36,7 @@ import xstpa.ui.tables.ProcessValuesTable;
 import xstpa.ui.tables.RefinedRulesTable;
 
 public class View extends ViewPart{
-	public static final String ID = "xstpa.view";
+	public static final String ID = "xstpa.view.contextTables";
 	
 	// Table column names/properties
 	public static final String CONTROLLER = "Controllers";
@@ -160,7 +161,6 @@ public class View extends ViewPart{
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {
-		
 	    // set title and Image
 	    setPartName("Context Tables");
 	    //this.setContentDescription("Shows the Process Models and Context Tables");
@@ -225,6 +225,7 @@ public class View extends ViewPart{
 	    /**
 		 * Listener which Gets the project-id of the currently active editor
 		 */
+		ProjectManager.getLOGGER().debug("Set up the XSTPA context tabels");
 	}
 	
 	private void addTable(final AbstractTableComposite table, String name){

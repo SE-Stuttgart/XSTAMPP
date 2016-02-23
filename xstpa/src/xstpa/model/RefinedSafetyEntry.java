@@ -70,7 +70,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	public String getCriticalCombinations(String equalsSeq, String andSeq, boolean useBrackets, boolean parseBoolean, boolean useSpaces){
 		String temp ="";
 		
-		List<String> valueCombies = variable.getPmValues(equalsSeq, parseBoolean, useSpaces);
+		List<String> valueCombies = variable.getPmValues(model, equalsSeq, parseBoolean, useSpaces);
 		String andLiteral = andSeq.trim();
 		if(useSpaces){
 			andLiteral = andLiteral +' ';
@@ -199,7 +199,6 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		final String IMPLIES_NOT = " ->! ";
 		final String START = "[] ";
 		final String UNTIL = " U ";
-		final String RELEASE = " R ";
 		final char BRACKET_OPEN ='(';
 		final char BRACKET_CLOSE =')';
 		final String CONTROLACTION = "(controlAction" + EQUALS + getCombination().getLinkedControlActionName().replaceAll(" ", "")+")";

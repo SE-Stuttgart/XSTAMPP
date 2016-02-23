@@ -15,6 +15,12 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
 
 	private UUID projectId;
 
+	public XstamppJob(String name) {
+		super(name);
+		this.projectId = null;
+		addJobChangeListener(this);
+	}
+	
 	public XstamppJob(String name,UUID id) {
 		super(name);
 		this.projectId = id;
@@ -41,8 +47,9 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
 
 	@Override
 	public void done(IJobChangeEvent event) {
-
-		ProjectManager.getContainerInstance().getDataModel(projectId).deleteObserver(this);
+		if(projectId != null){
+			ProjectManager.getContainerInstance().getDataModel(projectId).deleteObserver(this);
+		}
 	}
 
 	@Override
