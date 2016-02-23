@@ -102,7 +102,7 @@ public class Activator extends AbstractUIPlugin {
 					XSTPADataController dataController = getDataFor(projectId);
 					// observer gets added, so whenever a value changes, the view gets updated;
 					IPerspectiveDescriptor currentPerspective = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
-					if(currentPerspective != null){
+					if(currentPerspective != null && !currentPerspective.getId().equals(xstpaPerspective.ID)){
 						oldPerspective = currentPerspective.getId();
 					}else{
 						oldPerspective = DefaultPerspective.ID;
@@ -118,9 +118,12 @@ public class Activator extends AbstractUIPlugin {
 					}
 				}//if an CSContextEditor is open than the perspective that was last shown is shown
 				else if(activePart instanceof CSContextEditor && !part.equals(activePart)){
-					Map<String,String> values = new HashMap<>();
-					values.put("org.eclipse.ui.perspectives.showPerspective.perspectiveId", oldPerspective);
-					STPAPluginUtils.executeParaCommand("org.eclipse.ui.perspectives.showPerspective", values);
+					IPerspectiveDescriptor currentPerspective = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
+					if(currentPerspective != null && currentPerspective.getId().equals(xstpaPerspective.ID)){
+						Map<String,String> values = new HashMap<>();
+						values.put("org.eclipse.ui.perspectives.showPerspective.perspectiveId", oldPerspective);
+						STPAPluginUtils.executeParaCommand("org.eclipse.ui.perspectives.showPerspective", values);
+					}
 					
 				}
 				if(part instanceof IEditorPart){

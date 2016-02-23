@@ -186,17 +186,9 @@
                   commandId="org.eclipse.ui.views.showView"
                   style="pulldown">
             </command>
-            <command
-                  commandId="org.eclipse.ui.perspectives.showPerspective"
-                  style="pulldown">
-            </command>
             <separator
                   name="xstampp.separator1">
             </separator>
-            <command
-                  commandId="org.eclipse.ui.window.resetPerspective"
-                  style="push">
-            </command>
             <menu
                   label="Navigation">
                <command
@@ -470,20 +462,6 @@
                   </with>
                </visibleWhen>
             </control>
-         </toolbar>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-         <toolbar
-               id="xstampp.toolbar.contribution.perspectives">
-            <control
-                  class="xstampp.ui.workbench.contributions.SeperatorContribution">
-            </control>
-            <command
-                  commandId="org.eclipse.ui.perspectives.showPerspective"
-                  style="push">
-            </command>
          </toolbar>
       </menuContribution>
       <menuContribution
