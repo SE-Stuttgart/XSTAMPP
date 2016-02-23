@@ -372,6 +372,7 @@ public class XSTPADataController extends Observable implements Observer{
 			}
 		}
 		int total =model.getLTLPropertys().size()-1;
+		
 		List<ILTLProvider> list = new ArrayList<>(model.getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
 			if(!currentRSR.contains(list.get(i).getRuleId())){
@@ -379,6 +380,8 @@ public class XSTPADataController extends Observable implements Observer{
 			}
 		}
 		total =model.getLTLPropertys().size()-1;
+		System.out.println(total);
+		model.releaseLockAndUpdate(ObserverValue.Extended_DATA);
 		return combiesToContextID;
 	}
 //=====================================================================
@@ -405,11 +408,13 @@ public class XSTPADataController extends Observable implements Observer{
 				else {
 			    	syncCombiesWhenNotProvided(temp);
 				}
+				getHazardousCombinations(null);
 				if(updateValue != null){
 					setChanged();
 					notifyObservers(updateValue);
 				}
 			}
+			
 		});
 		
 	}

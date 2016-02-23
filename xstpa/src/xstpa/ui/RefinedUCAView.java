@@ -200,6 +200,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	public void update(Observable dataModelController, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
+			case COMBINATION_STATES:
 			case Extended_DATA:
 				if (!this.grid.getGrid().isDisposed() && dataModelController instanceof DataModelController) {
 					this.grid.clearRows();
@@ -211,5 +212,9 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 		}
 	}
 	
+	@Override
+	public void dispose() {
+		this.dataController.deleteObserver(this);
+	}
 
 }

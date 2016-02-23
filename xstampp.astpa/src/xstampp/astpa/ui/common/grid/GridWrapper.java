@@ -775,7 +775,6 @@ public class GridWrapper {
 	 * 
 	 */
 	public void resizeRows() {
-		System.out.println("resize grid");
 		for (int i = 0; i < this.nebulaRows.size(); i++) {
 			if (!this.nebulaRows.get(i).isDisposed()) {
 

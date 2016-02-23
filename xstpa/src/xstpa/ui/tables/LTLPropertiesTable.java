@@ -93,7 +93,6 @@ public class LTLPropertiesTable extends StandartEditorPart{
 	@Override
 	public void dispose() {
 		ProjectManager.getContainerInstance().getDataModel(getProjectID()).deleteObserver(LTLPropertiesTable.this);
-		
 	}
 	@Override
 	public void update(final Observable dataModelController, Object updatedValue) {

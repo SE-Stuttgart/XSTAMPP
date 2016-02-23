@@ -107,11 +107,17 @@ public class Activator extends AbstractUIPlugin {
 					}else{
 						oldPerspective = DefaultPerspective.ID;
 					}
+					
 					Map<String,String> values = new HashMap<>();
 					values.put("org.eclipse.ui.perspectives.showPerspective.perspectiveId", xstpaPerspective.ID);
 					STPAPluginUtils.executeParaCommand("org.eclipse.ui.perspectives.showPerspective", values);
 					
-					IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("xstpa.view.contextTables");
+					
+					IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(View.ID);
+					if(view == null){
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().resetPerspective();
+						view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(View.ID);
+					}
 					
 					if(view != null && view instanceof View){
 						((View) view).setController(dataController);
@@ -133,6 +139,15 @@ public class Activator extends AbstractUIPlugin {
 
 			@Override
 			public void partClosed(IWorkbenchPart part) {
+				IWorkbenchPart part2 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
+				if(part.equals(activePart) && part instanceof CSContextEditor && !(part2 instanceof CSContextEditor)){
+					IPerspectiveDescriptor currentPerspective = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
+					if(currentPerspective != null && currentPerspective.getId().equals(xstpaPerspective.ID)){
+						Map<String,String> values = new HashMap<>();
+						values.put("org.eclipse.ui.perspectives.showPerspective.perspectiveId", oldPerspective);
+						STPAPluginUtils.executeParaCommand("org.eclipse.ui.perspectives.showPerspective", values);
+					}
+				}
 			}
 
 			@Override

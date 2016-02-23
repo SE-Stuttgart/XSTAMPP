@@ -15,6 +15,7 @@ public class xstpaPerspective extends DefaultPerspective {
 		IFolderLayout folder = layout.createFolder("xstpafolder", IPageLayout.BOTTOM, 0.65f, layout.getEditorArea());
 
 		folder.addView(View.ID);
+		layout.getViewLayout(View.ID).setCloseable(false);
 	}
 
 }

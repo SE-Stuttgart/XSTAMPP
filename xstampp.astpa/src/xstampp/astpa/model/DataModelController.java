@@ -186,9 +186,9 @@ public class DataModelController extends Observable implements
 
 	@Override
 	public void updateValue(ObserverValue value) {
+		this.setChanged();
 		if(!this.refreshLock){
 			DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
-			this.setChanged();
 			this.notifyObservers(value);
 		}
 	}
@@ -202,9 +202,10 @@ public class DataModelController extends Observable implements
 	@Override
 	public void releaseLockAndUpdate(ObserverValue value){
 		this.refreshLock = false;
-
 		DataModelController.LOGGER.debug("released update lock");
-		setUnsavedAndChanged(value);
+		if(hasChanged()){
+			setUnsavedAndChanged(value);
+		}
 		
 	}
 	@Override
@@ -1538,7 +1539,7 @@ public class DataModelController extends Observable implements
 	 */
 	public void setValuesWhenCANotProvided(UUID caID, List<NotProvidedValuesCombi> valuesWhenNotProvided) {
 		this.controlActionController.setValuesWhenNotProvided(caID, valuesWhenNotProvided);
-		setUnsavedAndChanged();
+		setUnsavedAndChanged(ObserverValue.Extended_DATA);
 	}
 	/**
 	 * adds the given values combination to the list of value combinations
@@ -1597,7 +1598,7 @@ public class DataModelController extends Observable implements
 	 */
 	public void setValuesWhenCAProvided(UUID caID, List<ProvidedValuesCombi> valuesWhenProvided) {
 		this.controlActionController.setValuesWhenProvided(caID, valuesWhenProvided);
-		setUnsavedAndChanged();
+		setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		
 	}
 
@@ -1802,6 +1803,8 @@ public class DataModelController extends Observable implements
 	
 	public UUID updateRefinedRule(UUID ruleID,List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
 		boolean changed=false;
+		boolean updated = false;
+		UUID resultID = ruleID;
 		for(ILTLProvider provider: this.controlActionController.getAllRefinedRules()){
 			if(provider.getRuleId().equals(ruleID)){
 				changed = changed ||((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
@@ -1813,12 +1816,17 @@ public class DataModelController extends Observable implements
 				changed = changed ||((RefinedSafetyRule) provider).setCaID(caID);
 				changed = changed ||((RefinedSafetyRule) provider).setType(type);
 				changed = changed ||((RefinedSafetyRule) provider).setCriticalCombies(combies);
-				
-				return ruleID;
+				updated = true;
+				resultID = ruleID;
 			}
 		}
-		setUnsavedAndChanged(ObserverValue.Extended_DATA);
-		return null;
+		if(!updated){
+			resultID = addRefinedRule(ucaLinks, combies, ltlExp, rule, ruca, constraint, nr, caID, type);
+		}
+		if(changed){
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
+		}
+		return resultID;
 			
 	}
 	

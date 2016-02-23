@@ -114,7 +114,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		calcRUCA();
 		calcRule();
 		if(this.getDataRef() != null){
-			model.updateRefinedRule(getDataRef(), 
+			setDataRef(model.updateRefinedRule(getDataRef(), 
 									getUCALinkIDs(), 
 									getCriticalCombinations("==", ",", false, false, false),
 									getLTLProperty(), 
@@ -123,7 +123,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 									constraint,
 									getNumber(), 
 									variable.getLinkedControlActionID(), 
-									getType());
+									getType()));
 		}else{
 			setDataRef(model.addRefinedRule(getUCALinkIDs(),
 											getCriticalCombinations("==", ",", false, false, false),
@@ -151,8 +151,8 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	
 	private void calcRUCA(){	
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(variable.getLinkedControlActionName());
-		buffer.append(" command ");
+		buffer.append("The "+variable.getLinkedControlActionName());
+		buffer.append(" command is ");
 		buffer.append(getContext());//$NON-NLS-1$
 		if(!getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
 			buffer.append(" " + getType());
@@ -164,8 +164,8 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 
 	private void calcRule(){
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(" Control Action ");
-		buffer.append(variable.getLinkedControlActionName());
+		buffer.append("The " + variable.getLinkedControlActionName());
+		buffer.append(" command");
 		if(getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
 			buffer.append(" must be provided");
 		}else{
