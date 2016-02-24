@@ -235,14 +235,7 @@ public class DataModelController extends Observable implements
 				this.controlStructureController.getInternalComponents());
 		this.projectDataManager.prepareForExport();
 		this.exportInformation = new ExportInformation();
-		Display.getDefault().asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				updateValue(ObserverValue.SAVE);
-				updateValue(ObserverValue.EXPORT);
-			}
-		});
+		ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");
 		return true;
 	}
 
@@ -255,13 +248,8 @@ public class DataModelController extends Observable implements
 						.getInternalComponents());
 		this.projectDataManager.prepareForSave();
 		this.exportInformation = null;
-		Display.getDefault().asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				updateValue(ObserverValue.SAVE);
-			}
-		});
+		ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
+		
 	}
 
 	@XmlTransient
@@ -1851,4 +1839,5 @@ public class DataModelController extends Observable implements
 	public List<ILTLProvider> getLTLPropertys(){
 		return getAllRefinedRules();
 	}
+
 }

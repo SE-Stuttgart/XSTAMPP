@@ -3,12 +3,12 @@
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *******************************************************************************/
 
 package xstampp.astpa.controlstructure.controller.commands;
@@ -22,25 +22,23 @@ import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
- * 
- * 
- * 
+ *
+ *
+ *
  * @author Aliaksei Babkovich, Lukas Balzer
  * @version 1.0
  */
 public class ComponentChangeLayoutCommand extends
-		ControlStructureAbstractCommand {
+ControlStructureAbstractCommand {
 
 	private IRectangleComponent model;
 	private Rectangle layout;
 	private Rectangle oldLayout;
-	private static final int MIN_WIDTH = 80;
-	private static final int MIN_HEIGHT = 25;
 	private int heightConstraint;
 	private int widthConstraint;
 
 	/**
-	 * 
+	 *
 	 * @author Lukas Balzer
 	 * @param model
 	 *            The dataModel which contains all model classes
@@ -62,9 +60,9 @@ public class ComponentChangeLayoutCommand extends
 
 	/**
 	 * set the minimum width/height for the component
-	 * 
+	 *
 	 * @author Lukas Balzer
-	 * 
+	 *
 	 * @param constraint
 	 *            the minimum width and height to which the component can be
 	 *            scaled
@@ -75,9 +73,9 @@ public class ComponentChangeLayoutCommand extends
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Lukas Balzer
-	 * 
+	 *
 	 * @param rect
 	 *            the new layout constraint
 	 */
@@ -90,9 +88,9 @@ public class ComponentChangeLayoutCommand extends
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Lukas
-	 * 
+	 *
 	 * @param layout
 	 *            the layout
 	 */
@@ -106,9 +104,9 @@ public class ComponentChangeLayoutCommand extends
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Lukas Balzer
-	 * 
+	 *
 	 * @param model
 	 *            the new model
 	 */

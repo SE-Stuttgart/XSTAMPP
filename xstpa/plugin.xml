@@ -3,25 +3,6 @@
 <plugin>
 
    <extension
-         id="application"
-         point="org.eclipse.core.runtime.applications">
-      <application>
-         <run
-               class="xstpa.Application">
-         </run>
-      </application>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="xstpa.Perspective"
-            fixed="false"
-            icon="icons/logo.png"
-            id="xstpa.perspective"
-            name="XSTPA">
-      </perspective>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
@@ -93,12 +74,6 @@
       </toc>
    </extension>
    <extension
-         point="org.eclipse.ui.helpSupport">
-      <config
-            class="xstpa.AbstractHelpUI1">
-      </config>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="xstpa.ui.RefinedUCAView"
@@ -127,14 +102,6 @@
             id="xstpa.editor.context"
             name="Context Tables">
       </editor>
-   </extension>
-   <extension
-         point="org.eclipse.ui.services">
-      <serviceFactory
-            factoryClass="xstpa.AbstractServiceFactory:1">
-         <service
-               serviceClass="xstpa.XstpaService"></service>
-      </serviceFactory>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

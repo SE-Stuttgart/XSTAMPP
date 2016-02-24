@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 
 import xstampp.util.XstamppJob;
 import xstpa.model.ContextTableCombination;
@@ -19,7 +18,6 @@ public class ContextCheckJob extends XstamppJob {
 
 	public ContextCheckJob(String name,XSTPADataController dataController) {
 		super(name);
-		// TODO Auto-generated constructor stub
 		this.dataController = dataController;
 	}
 

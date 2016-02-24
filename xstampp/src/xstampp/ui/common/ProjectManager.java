@@ -329,14 +329,15 @@ public class ProjectManager implements IPropertyChangeListener {
 			return this.saveDataModelAs(projectId);
 		}
 		final IDataModel tmpController = this.projectDataToUUID.get(projectId);
-
+		
 		tmpController.prepareForSave();
 		
-		Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId),
+		final Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId),
 				ProjectManager.getLOGGER(), isUIcall);
 		if(save == null){
 			return false;
 		}
+		
 		save.addJobChangeListener(new JobChangeAdapter() {
 
 			@Override

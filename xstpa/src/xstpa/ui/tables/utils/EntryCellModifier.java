@@ -118,9 +118,6 @@ public class EntryCellModifier implements ICellModifier {
 	    	if (View.COMMENTS.equals(property)) {
 	  	      	entry.setComments((String)value);
 	  	      	model.setCSComponentComment(entry.getId(), (String) value); 
-	  	      	//View.model.setCSComponentComment(entry.getId(), (String) value);      
-	  	    //System.out.println(entry.getId());
-	  	      //View.model.getControlActionU(controlActionId).setControlActionDescription(entry.getId(), (String)value);
 	    	}
 	    }
 	    // if ControlActionEntrys calls

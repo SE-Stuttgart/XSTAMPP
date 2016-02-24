@@ -6,7 +6,6 @@ import java.util.Observable;
 import java.util.UUID;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewPart;
@@ -68,7 +67,7 @@ public class Activator extends AbstractUIPlugin {
 			
 			@Override
 			public void postShutdown(IWorkbench workbench) {
-				// TODO Auto-generated method stub
+				// this listener kills itself in preShudown
 				
 			}
 		});
@@ -122,23 +121,22 @@ public class Activator extends AbstractUIPlugin {
 					if(view != null && view instanceof View){
 						((View) view).setController(dataController);
 					}
+
+					activePart = part;
 				}//if an CSContextEditor is open than the perspective that was last shown is shown
-				else if(activePart instanceof CSContextEditor && !part.equals(activePart)){
+				else if(activePart == null ||  !PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(activePart)){
+					activePart = null;
 					IPerspectiveDescriptor currentPerspective = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
 					if(currentPerspective != null && currentPerspective.getId().equals(xstpaPerspective.ID)){
 						Map<String,String> values = new HashMap<>();
 						values.put("org.eclipse.ui.perspectives.showPerspective.perspectiveId", oldPerspective);
 						STPAPluginUtils.executeParaCommand("org.eclipse.ui.perspectives.showPerspective", values);
 					}
-					
-				}
-				if(part instanceof IEditorPart){
-					activePart = part;
 				}
 			}
-
 			@Override
 			public void partClosed(IWorkbenchPart part) {
+
 				IWorkbenchPart part2 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
 				if(part.equals(activePart) && part instanceof CSContextEditor && !(part2 instanceof CSContextEditor)){
 					IPerspectiveDescriptor currentPerspective = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();

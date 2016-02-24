@@ -126,13 +126,6 @@ public class EditWindow
 	private Combo strengthCombo,modeCombo,handlingCombo;
     public static List<Relation> relations = new ArrayList<Relation>();
     private HashMap<String,List<String>> valuesToVariables = new HashMap<>();
-    private boolean isDirty;
-    private SelectionAdapter dirtyListener= new SelectionAdapter() {
-    	@Override
-    	public void widgetSelected(SelectionEvent e) {
-    		isDirty = true;
-    	}
-	};
 	private Text editor;
 	private Label errorMsg;
     
@@ -205,7 +198,6 @@ public class EditWindow
 	public EditWindow(ControlActionEntry linkedCAE)
     {
 		this.refreshView = false;
-		this.isDirty = false;
         shell = new Shell(SWT.SHELL_TRIM & (~SWT.RESIZE & SWT.MIN)| SWT.APPLICATION_MODAL);
         shell.addShellListener(new ShellAdapter() {
         	@Override
@@ -365,7 +357,6 @@ public class EditWindow
 	    
 	    for(int i= 0;i< DALGO.length;i++){
 	    	algoButtons[i] = new Button(algoGroup, SWT.RADIO);
-	    	algoButtons[i].addSelectionListener(dirtyListener);
 	    	algoButtons[i].setText(DALGO[i]);
 	    	algoButtons[i].setToolTipText(DALGO_TIP[i]);
 	    }
@@ -375,7 +366,6 @@ public class EditWindow
 	    strengthLabel.setText("Strength: ");
 	    
 	    strengthCombo = new Combo(mainComposite, SWT.READ_ONLY);
-	    strengthCombo.addSelectionListener(dirtyListener);
 	    for(String strength:DSTRENGTH_LABELS){
 	    	strengthCombo.add(strength);
 	    }
@@ -392,7 +382,6 @@ public class EditWindow
 	    modeLabel.setText("Mode: ");
 	    
 	    modeCombo = new Combo(mainComposite, SWT.READ_ONLY);
-	    modeCombo.addSelectionListener(dirtyListener);
 	    modeCombo.add(DMODE[0]);
 //	    modeCombo.add("Extend");
 	    
@@ -894,7 +883,8 @@ public class EditWindow
      * @param constraint <Constraint>
      * @return whether the Syntax for <Constraint> is satisfied
      */
-    private boolean validate(String editorText){
+    @SuppressWarnings("unused")
+	private boolean validate(String editorText){
     	String constraint = editorText.replaceAll("(|)","");
     	
     	if(constraint == null){

@@ -4,7 +4,6 @@ import org.eclipse.jface.viewers.Viewer;
 
 import xstampp.astpa.ui.sds.ModeFilter;
 import xstampp.model.ILTLProvider;
-import xstpa.model.RefinedSafetyEntry;
 
 public class RefinedEntryFilter extends ModeFilter{
 

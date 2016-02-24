@@ -73,7 +73,6 @@ public class XCSVExportJob extends Job {
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-			controller.prepareForExport();
 		
 		try {
 
@@ -91,7 +90,6 @@ public class XCSVExportJob extends Job {
 					getRUCATableString(writer);
 				}
 				writer.close();
-				controller.prepareForSave();
 				if (this.enablePreview && tableCSV.exists() && Desktop.isDesktopSupported()) {
 					Desktop.getDesktop().open(tableCSV);
 				}

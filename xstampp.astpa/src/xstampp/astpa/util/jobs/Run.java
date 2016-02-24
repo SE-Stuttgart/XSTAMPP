@@ -68,6 +68,10 @@ public class Run extends XstamppJob{
 	public static final String EX_CSV_DIR=Extended_DIR+File.separator+"csv"; //$NON-NLS-1$
 	
 	private List<Job> jobList;
+	private static final int CSV_WORK = 1;
+	private static final int XSL_WORK = 4;
+	private static final int CS_IMG_WORK = 1;
+	private static final int REPORT_WORK =8;
 	private String dir;
 	private boolean isCanceled;
 	private String[] xslMap = new String[] {Messages.Accidents,"/fopAccidents.xsl",//$NON-NLS-1$
@@ -131,7 +135,7 @@ public class Run extends XstamppJob{
 	}
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("Main Run Export...", 15);
+		monitor.beginTask("Main Run Export...", calcWork());
 		String fileName;
 		ProjectManager.getContainerInstance().getDataModel(getProjectId()).prepareForExport();
 		
@@ -144,15 +148,17 @@ public class Run extends XstamppJob{
 			if(!addJob(job)){
 				return Status.CANCEL_STATUS;
 			}
+			monitor.worked(CSV_WORK);
 		}
-		monitor.worked(1);
 		if(this.exportExtendedCSVs){
 			fileName = "Extended STPA Data.csv";
 			XCSVExportJob export = new XCSVExportJob(getJobName(fileName),	this.dir+ EX_CSV_DIR + File.separator + fileName,
 					';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),XCSVExportJob.REFINED_DATA);
-			export.schedule();
+			if(!addJob(export)){
+				return Status.CANCEL_STATUS;
+			}
+			monitor.worked(CSV_WORK);
 		}
-		monitor.worked(1);
 		for(int i= 0;i<this.xslMap.length && this.exportImages;i+=2){
 			fileName = this.xslMap[i] +".png";
 			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
@@ -163,8 +169,8 @@ public class Run extends XstamppJob{
 			if(!addJob(job)){
 				return Status.CANCEL_STATUS;
 			}
+			monitor.worked(XSL_WORK);
 		}
-		monitor.worked(3);
 		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedIMGs;i+=2){
 			fileName = this.xstpaXslMap[i] +".png";
 			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
@@ -175,8 +181,8 @@ public class Run extends XstamppJob{
 			if(!addJob(job)){
 				return Status.CANCEL_STATUS;
 			}
+			monitor.worked(XSL_WORK);
 		}
-		monitor.worked(3);
 		if(this.exportImages || this.exportReport){
 			String csPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructure +".png";
 			String csPMPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructureDiagramWithProcessModel +".png";
@@ -189,8 +195,8 @@ public class Run extends XstamppJob{
 			if(!addJob(pmJob)){
 				return Status.CANCEL_STATUS;
 			}
+			monitor.worked(CS_IMG_WORK);
 		}
-		monitor.worked(1);
 		for(int i= 0;i<this.xslMap.length && this.exportPDFs;i+=2){
 			ExportJob pdfJob = new ExportJob(getProjectId(), "Expoting " +this.xslMap[i] +".pdf",
 											this.dir + PDF_DIR + File.separator + this.xslMap[i] +".pdf", //$NON-NLS-1$
@@ -200,6 +206,7 @@ public class Run extends XstamppJob{
 			if(!addJob(pdfJob)){
 				return Status.CANCEL_STATUS;
 			}
+			monitor.worked(XSL_WORK);
 		}
 		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedPDFs;i+=2){
 			ExportJob pdfJob = new ExportJob(getProjectId(), "Expoting " +this.xstpaXslMap[i] +".pdf",
@@ -210,8 +217,8 @@ public class Run extends XstamppJob{
 			if(!addJob(pdfJob)){
 				return Status.CANCEL_STATUS;
 			}
+			monitor.worked(XSL_WORK);
 		}
-		monitor.worked(3);
 		if(this.exportReport){
 			ExportJob pdfRepJob = new ExportJob(getProjectId(), getJobName("Final Report"),
 					this.dir + getName()+".pdf", //$NON-NLS-1$
@@ -222,8 +229,8 @@ public class Run extends XstamppJob{
 			if(!addJob(pdfRepJob)){
 				return Status.CANCEL_STATUS;
 			}
+			monitor.worked(REPORT_WORK);
 		}
-		monitor.worked(2);
 		return Status.OK_STATUS;
 	}
 
@@ -246,6 +253,37 @@ public class Run extends XstamppJob{
 		
 	}
 
+	/**
+	 * @return the work that has to be done by this job
+	 */
+	private int calcWork(){
+		int totalWork = 0;
+		for(int i= 0;i<ICSVExportConstants.STEPS.size() && this.exportCSVs;i+=2){
+			totalWork += CSV_WORK;
+		}
+		if(this.exportExtendedCSVs){
+			totalWork += CSV_WORK;
+		}
+		for(int i= 0;i<this.xslMap.length && this.exportImages;i+=2){
+			totalWork += XSL_WORK;
+		}
+		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedIMGs;i+=2){
+			totalWork += XSL_WORK;
+		}
+		if(this.exportImages || this.exportReport){
+			totalWork += CS_IMG_WORK;
+		}
+		for(int i= 0;i<this.xslMap.length && this.exportPDFs;i+=2){
+			totalWork += XSL_WORK;
+		}
+		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedPDFs;i+=2){
+			totalWork += XSL_WORK;
+		}
+		if(this.exportReport){
+			totalWork += REPORT_WORK;
+		}
+		return totalWork;
+	}
 	@Override
 	public void done(IJobChangeEvent event) {
 		if(this.isCanceled){

@@ -31,9 +31,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -88,6 +91,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	private IMenuManager openWithMenu;
 	private Font defaultFont;
 	private Listener expandListener;
+	private GC gc;
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setBackground(null);
@@ -111,18 +115,11 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		Composite container = new Composite(parent, SWT.None);
 		container.setBackground(null);
 		container.setLayout(new FillLayout());
-		this.tree = new Tree(container, SWT.NONE);
-		this.treeViewer = new TreeViewer(this.tree, SWT.FULL_SELECTION);
 		this.contextMenu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		this.contextMenu.addMenuListener(this);
 		this.contextMenu.setRemoveAllWhenShown(true);
-		Menu context = this.contextMenu.createContextMenu(this.tree);
-		this.tree.setMenu(context);
-		this.getSite().registerContextMenu(this.contextMenu, this.treeViewer);
-		this.openWithMenu = new MenuManager("Open With..",MENU_ID);
-		this.getSite().setSelectionProvider(this);
 		this.listener= new Listener() {
-		
+			
 
 			@Override
 			public void handleEvent(Event event) {
@@ -136,6 +133,43 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				}
 			}
 		};
+		initializeTree(container);
+		this.getSite().registerContextMenu(this.contextMenu, this.treeViewer);
+		this.openWithMenu = new MenuManager("Open With..",MENU_ID);
+		this.getSite().setSelectionProvider(this);
+		
+		
+		gc = new GC(Display.getDefault());
+		final FontMetrics m = new GC(Display.getDefault()).getFontMetrics();
+		this.tree.addListener(SWT.MeasureItem, new Listener() {
+		     public void handleEvent(Event event) {
+		    	 int size =gc.getFontMetrics().getHeight();
+		    	 if(event.height != size){
+		    		 event.height = size;
+		    	 }
+		        
+		      }
+		});
+		
+		this.searchExtensions();
+
+		this.updateProjects();
+		
+		// Enable the save entries in the menu
+		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+				.getWorkbench().getService(ISourceProviderService.class);
+		CommandState saveStateService = (CommandState) sourceProviderService
+				.getSourceProvider(CommandState.SAVE_STATE);
+		addSelectionChangedListener(saveStateService);
+	}
+	
+	private void initializeTree(Composite container){
+		this.tree = new Tree(container, SWT.NONE);
+		this.treeViewer = new TreeViewer(this.tree, SWT.FULL_SELECTION);
+		if(contextMenu.getMenu() == null){
+			this.contextMenu.createContextMenu(this.tree);
+		}
+		this.tree.setMenu(contextMenu.getMenu());
 		this.tree.addFocusListener(new FocusListener() {
 			private IContextActivation activation;
 			@Override
@@ -180,19 +214,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				//not used by this implementation
 			}
 		});
-
-		this.searchExtensions();
-
-		this.updateProjects();
-		
-		// Enable the save entries in the menu
-		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
-				.getWorkbench().getService(ISourceProviderService.class);
-		CommandState saveStateService = (CommandState) sourceProviderService
-				.getSourceProvider(CommandState.SAVE_STATE);
-		addSelectionChangedListener(saveStateService);
 	}
-	
 	/**
 	 * 
 	 * 
@@ -217,6 +239,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		}else{
 			defaultFont = new Font(null, projectItem.getFont().getFontData());
 		}
+		gc.setFont(defaultFont);
+		this.tree.setFont(defaultFont);
 		projectItem.setFont(defaultFont);
 		IProjectSelection selector = new ProjectSelector(projectItem, projectID,null);
 		this.addOrReplaceItem(selectionId, selector, projectItem);
@@ -357,6 +381,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			item.dispose();
 		}
 		this.tree.clearAll(true);
+		this.treeViewer.refresh();
 		Set<UUID> oldProjects=this.treeItemsToProjectIDs.keySet();
 		this.treeItemsToProjectIDs= new HashMap<>();
 		for (UUID id : ProjectManager.getContainerInstance().getProjectKeys()) {

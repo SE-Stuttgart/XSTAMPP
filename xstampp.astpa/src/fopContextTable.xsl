@@ -140,7 +140,7 @@
 					<xsl:choose>
 						<!-- Checks whether some hazards are defined -->
 						<xsl:when test="PMCombisWhenProvided/combinationOfPMValues">
-							<xsl:for-each select="PMCombisWhenProvided/combinationOfPMValues">
+							<xsl:for-each select="PMCombisWhenProvided/combinationOfPMValues[valueNames/name]">
 								<fo:table-row border="none">
 									<xsl:if test="position() mod 2 = 0">
 										<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
@@ -264,7 +264,7 @@
 					<xsl:choose>
 						<!-- Checks whether some hazards are defined -->
 						<xsl:when test="PMCombisWhenNotProvided/combinationOfPMValues">
-							<xsl:for-each select="PMCombisWhenNotProvided/combinationOfPMValues">
+							<xsl:for-each select="PMCombisWhenNotProvided/combinationOfPMValues[valueNames/name]">
 								<fo:table-row border="none">
 									<xsl:if test="position() mod 2 = 0">
 										<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>

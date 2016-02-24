@@ -484,7 +484,8 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		}
 		if(notProvidedVariableNames != null && !notProvidedVariableNames.isEmpty() && valuesWhenNotProvided != null){
 			for(NotProvidedValuesCombi combie : valuesWhenNotProvided){
-				if(combie.getValueList().size() == notProvidedVariableNames.size()){
+				if(combie.getPMValues().keySet().containsAll(notProvidedVariables) &&
+						combie.getValueList().size() == notProvidedVariableNames.size()){
 					ArrayList<String> list = new ArrayList<>();
 					for(UUID id:combie.getValueList()){
 						if(csController.getComponent(id) != null){
@@ -499,7 +500,8 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		}
 		if(providedVariableNames != null && !providedVariableNames.isEmpty() && valuesWhenProvided != null){
 			for(ProvidedValuesCombi combie : valuesWhenProvided){
-				if(combie.getValueList().size() == providedVariableNames.size()){
+				if(combie.getPMValues().keySet().containsAll(providedVariables) &&
+						combie.getValueList().size() == providedVariableNames.size()){
 					ArrayList<String> list = new ArrayList<>();
 					for(UUID id:combie.getValueList()){
 						if(csController.getComponent(id) != null){

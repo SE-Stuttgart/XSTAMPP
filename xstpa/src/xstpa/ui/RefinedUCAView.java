@@ -41,22 +41,17 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 			return;
 		}
 		boolean isDigit = false;
-		int filterID = -1;
 		for(Character c : this.filterText.getText().toCharArray()){
 			isDigit = Character.isDigit(c);
 			if(!isDigit){
 				break;
 			}
 		}
-		if(isDigit){
-			filterID = Integer.parseInt(this.filterText.getText());
-		}
 		
 			ArrayList<ILTLProvider> allNotProvidedRUCA = new ArrayList<>();
 	  	    ArrayList<ILTLProvider> allProvidedRUCA = new ArrayList<>();
 	  	    ArrayList<ILTLProvider> allWrongTimedRUCA = new ArrayList<>();
 	  	    List<ILTLProvider> refinedEntrys = dataController.getModel().getAllRefinedRules();
-	  	    System.out.println("refined entrys contains " + refinedEntrys.size()+" Entrys");
 	  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
 	  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
 	  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());

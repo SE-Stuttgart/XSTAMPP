@@ -155,7 +155,6 @@ public class ACTSController extends Job{
 					entry.setLinkedControlActionName(context.getControlAction(), null);
 					entry.setLinkedControlActionID(context.getId());
 					temp = line.charAt(line.length()-2);
-//					System.out.println(temp);
 					Character.getNumericValue(temp);
 					reader.readLine();
 					entry.clearIDsMap();

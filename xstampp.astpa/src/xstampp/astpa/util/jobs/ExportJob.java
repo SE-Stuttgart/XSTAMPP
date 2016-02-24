@@ -165,7 +165,6 @@ public class ExportJob extends XstamppJob implements IJobChangeListener {
 				Marshaller m = context.createMarshaller();
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 				m.marshal(model, this.outStream);
-				System.out.println();
 			} catch (JAXBException e) {
 				ExportJob.LOGGER.error(e.getMessage(), e);
 				return Status.OK_STATUS;

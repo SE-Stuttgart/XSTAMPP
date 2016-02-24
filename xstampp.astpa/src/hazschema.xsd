@@ -6,7 +6,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       <xs:sequence>
       	<xs:element name="projectdata">
       		<xs:complexType>
-      			<xs:sequence>
+      			<xs:all>
       				<xs:element name="styleRanges" minOccurs="0"
       					maxOccurs="1">
       					<xs:complexType>
@@ -17,9 +17,11 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       					</xs:complexType>
       				</xs:element>
       				<xs:element name="projectDescription"
-      					type="xs:string" />
-      				<xs:element name="projectName" type="xs:string" />
-      			</xs:sequence>
+      					type="xs:string" maxOccurs="1" minOccurs="1" />
+      				<xs:element name="projectId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+      				<xs:element name="projectName" type="xs:string"
+      					maxOccurs="1" minOccurs="1" />
+      			</xs:all>
       		</xs:complexType>
       	</xs:element>
       	<xs:element name="hazacc">

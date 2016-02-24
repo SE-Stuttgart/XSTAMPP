@@ -178,6 +178,7 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean flyAnchorConstraint(IAnchor source, IAnchor target) {
 		ComponentType targetType = this.getDataModel()
 				.getComponent(this.targetAnchorModel.getOwnerId())
