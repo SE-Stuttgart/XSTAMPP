@@ -12,17 +12,23 @@
 <h3>1.0.1:</h3>
 	<b>Features:</b>
 	<ul>
-	<li> new delete/delete all function in refined rules table
-	<li> LTL Formulas in context 'controlaction provided' are nor derived in timed ltl
-	<li> added new steps for automatic generated Refined unsafe control actions, refined safety constraints and
-			LTL formulas
+	<li> New delete/delete all function in refined rules table
+	<li> LTL Formulas in context 'control action provided' are now derived in timed ltl
+	<li> Integration of the Refined UCA, Refined Safety Constraints and LTL Formulas table in the xstpa subtree 
+	<li> Support for automatically generated the rules of the refined unsafe control action based on the critical combinations and add them in column rules in rules table.
+	<li> Enhanced adding and editing of value/(don't care) entries in the context table
+	<li> Export function for context tables, refined unsafe control actions, rules,safety constraints and ltl properties 
+	<li> Added Acts algorithm in the installation folder so that it not longer has to be added manually
 	</ul>
 
 	<b>Bugfixes:</b>
 	<ul>
+	<li>ACTS algorithm can now be executed for more than 9 variables
+	<li>Values that are marked as (don't care) can now be restored to any available value 
+	<li>Enhanced 'check for conflicts' function in the context table
+	<li>Fixed a bug that led to loss of changes in the Context Tables configuration dialog
 	<li>enhanced the performance of the xstpa view 
 	<li>fixed the bug that sometimes the Scrollbars are not displayed when needed
-	<li>Fixed a bug when having more than 10 Variables
 	</ul>
 
 </body>
