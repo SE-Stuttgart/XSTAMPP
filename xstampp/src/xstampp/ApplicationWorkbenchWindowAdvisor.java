@@ -151,9 +151,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		final IProvisioningAgent agent = (IProvisioningAgent) Activator
 				.getContext().getService(reference);
 		Activator.getContext().ungetService(reference);
-		this.updateJob = new UpdateJob(Messages.UpdatingASTPA, agent, shell,
-				 true);
-		this.updateJob.schedule();
+//		this.updateJob = new UpdateJob(Messages.UpdatingASTPA, agent, shell,
+//				 true);
+//		this.updateJob.schedule();
 	}
 
 	@Override
