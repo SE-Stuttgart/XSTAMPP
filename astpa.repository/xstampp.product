@@ -153,7 +153,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </configurations>
 
    <repositories>
-      <repository location="http://https://sourceforge.net/projects/stampp/files/updatesite/" enabled="true" />
+      <repository location="http://sourceforge.net/projects/stampp/files/updatesite/" enabled="true" />
    </repositories>
 
 </product>

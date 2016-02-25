@@ -3,6 +3,7 @@ XSTAMPP 2.0.1:
 
 	Features:
 		- Added 'Install New Software' menu to manually install/deinstall features and plugins for xstampp
+		- Updates are now available over the Edit->Preferences->Install/Update preferences please see adapt these preferences to build your update schedule
 	
 	Improvements:
 		- Enhanced Load and Save Funktion to prevent data loss

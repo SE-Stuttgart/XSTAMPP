@@ -166,7 +166,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		ProjectManager manager = ProjectManager
 				.getContainerInstance();
 		
-		this.updateJob.cancel();
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		if (page.findView("A-CAST.view1") != null) { 
 		   page.hideView(page.findView("A-CAST.view1"));
