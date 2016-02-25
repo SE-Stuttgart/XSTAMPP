@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: STAMP Platform
 Bundle-SymbolicName: xstampp;singleton:=true
-Bundle-Version: 2.0.1
+Bundle-Version: 2.0.2.qualifier
 Bundle-Activator: xstampp.Activator
 Require-Bundle: org.eclipse.gef,
  org.eclipse.equinox.p2.core,
