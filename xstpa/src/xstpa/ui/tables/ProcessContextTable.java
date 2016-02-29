@@ -276,6 +276,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 				public void handleEvent(Event event) {
 					Point pt = new Point(event.x, event.y);
+					if(contextTable.getSelection() == null ||contextTable.getSelectionCount() == 0){
+						return;
+					}
 					TableItem item = contextTable.getSelection()[0];
 					//this for loop iterates over all visible table items
 					if(item != null) {

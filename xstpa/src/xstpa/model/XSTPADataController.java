@@ -242,6 +242,7 @@ public class XSTPADataController extends Observable implements Observer{
   		 boolean invalid= false;
 		ContextTableCombination contextTableEntry;
 		for (IValueCombie valueCombie :  combies) {
+			
 			contextTableEntry = new ContextTableCombination();
 
 			contextTableEntry.setUcaLinks(valueCombie.getUCALinks(IValueCombie.TYPE_NOT_PROVIDED),IValueCombie.TYPE_NOT_PROVIDED);
@@ -266,14 +267,14 @@ public class XSTPADataController extends Observable implements Observer{
 				valueCombie.setValues(map);
 			}
 			
-			for (Entry<UUID, UUID> valEntry : valueCombie.getPMValues().entrySet()) {
+			for (ProcessModelVariables var :  tempCAEntry.getLinkedItems()) {
 				//if the valueCombie contains a value or a variable that is not registered, it is considered invalid 
 				//and not added 
-				if(!valuesList.containsKey(valEntry.getValue()) ||!variablesList.containsKey(valEntry.getKey())){
+				if(!valuesList.containsKey(valueCombie.getPMValues().get(var.getId()))){
 					invalid = true;
 					break;
 				}else{
-					contextTableEntry.addValueMapping(valEntry.getKey(), valEntry.getValue());
+					contextTableEntry.addValueMapping(var.getId(), valueCombie.getPMValues().get(var.getId()));
 				}
   					
 			}
@@ -288,6 +289,7 @@ public class XSTPADataController extends Observable implements Observer{
 			if(!invalid){
 				tempCAEntry.addContextTableCombination(contextTableEntry);
 			}
+			invalid= false;
 		}
 		
 		return tempCAEntry;
