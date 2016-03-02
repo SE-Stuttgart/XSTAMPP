@@ -27,14 +27,6 @@ public class BufferedCSVWriter extends BufferedWriter {
 		this.seperator = seperator;
 	}
 
-	/**
-	 * this implementation replaces all occurrences of the seperator char with a
-	 * space
-	 */
-	@Override
-	public void write(String text) throws IOException {
-		super.write(text.replace(this.seperator, ' '));
-	}
 
 	/**
 	 * writes a cell to the CSV file which ends with the separator character
@@ -47,7 +39,8 @@ public class BufferedCSVWriter extends BufferedWriter {
 	 *             if the text can not be written
 	 */
 	public void writeCell(String text) throws IOException {
-		super.write(text.replace(this.seperator, ' ') + this.seperator);
+		write(text.replaceAll("\\n|[\\r]\\n|"+seperator, ""));
+		write(this.seperator);
 	}
 
 	/**

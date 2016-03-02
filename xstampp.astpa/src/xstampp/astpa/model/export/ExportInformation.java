@@ -123,7 +123,7 @@ public class ExportInformation {
 	 * @return the logoPath
 	 */
 	public String getLogoPath() {
-		if (this.logoPath.isEmpty()) {
+		if (this.logoPath != null && this.logoPath.isEmpty()) {
 			return null;
 		}
 		return this.logoPath;

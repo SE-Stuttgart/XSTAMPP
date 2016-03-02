@@ -139,7 +139,7 @@ public class Run extends XstamppJob{
 		String fileName;
 		ProjectManager.getContainerInstance().getDataModel(getProjectId()).prepareForExport();
 		
-		for(int i= 0;i<ICSVExportConstants.STEPS.size() && this.exportCSVs;i+=2){
+		for(int i= 0;i<ICSVExportConstants.STEPS.size() && this.exportCSVs;i++){
 			
 			fileName = ICSVExportConstants.STEPS.get(i) +".csv";
 			StpaCSVExport job = new StpaCSVExport(getJobName(fileName),this.dir+ CSV_DIR + File.separator + fileName,

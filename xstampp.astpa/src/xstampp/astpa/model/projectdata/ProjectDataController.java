@@ -156,25 +156,23 @@ public class ProjectDataController {
 			StyleRange range = (StyleRange) this.styleRanges.get(i).clone();
 			if(range.start > next){
 				DescriptionObject obj = new DescriptionObject();
-				if(obj.addRanges(null, projectDescription.substring(next, range.start))){
-					this.rangeObjects.add(obj);
+				try{
+					if(range.start >= projectDescription.length()){
+						if(obj.addRanges(null, projectDescription.substring(next))){
+								this.rangeObjects.add(obj);
+							}
+						
+					}
+					else if(obj.addRanges(null, projectDescription.substring(next,range.start))){
+						this.rangeObjects.add(obj);
+					}
+				}catch(IndexOutOfBoundsException e){
+					e.fillInStackTrace();
 				}
 			}
 			if(range.start + range.length < projectDescription.length()){
 				next = range.start + range.length;
 				descriptionPart = projectDescription.substring(range.start, range.start + range.length);
-//				if(descriptionPart.contains("\n")){
-//					if(!descriptionPart.substring(0, descriptionPart.indexOf('\n')).isEmpty()){
-//						DescriptionObject obj = new DescriptionObject();
-//						if(obj.addRanges(range, descriptionPart.substring(0, descriptionPart.indexOf('\n')))){
-//							this.rangeObjects.add(obj);
-//						}
-//					}
-//					while(descriptionPart.contains("\n")){
-//						this.rangeObjects.add(new DescriptionObject());
-//						descriptionPart = descriptionPart.replaceFirst("\n", "");
-//					}
-//				}
 				if(!descriptionPart.isEmpty()){
 					
 					DescriptionObject obj = new DescriptionObject();

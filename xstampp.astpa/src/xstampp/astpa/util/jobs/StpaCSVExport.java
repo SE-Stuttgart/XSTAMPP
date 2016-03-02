@@ -40,7 +40,6 @@ public class StpaCSVExport extends Job {
 	private final DataModelController model;
 	private final int type;
 	private boolean enablePreview;
-
 	/**
 	 * calls the Export function in the given view.
 	 * 
@@ -89,7 +88,7 @@ public class StpaCSVExport extends Job {
 						Messages.Hazards);
 			}
 			if ((type & ICSVExportConstants.SAFETY_CONSTRAINT) != 0) {
-				this.exportAsCSV(this.model.getAllSafetyConstraints(),
+				this.exportAsCSV(this.model.getAllSafetyConstraints(),"SR0.",
 						csvWriter, Messages.SafetyConstraints);
 			}
 			if ((type & ICSVExportConstants.SYSTEM_GOAL) != 0) {
@@ -105,7 +104,7 @@ public class StpaCSVExport extends Job {
 						Messages.ControlActions);
 			}
 			if ((type & ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS) != 0) {
-				this.writeCscCSV(csvWriter);
+				this.writeCscCSV(csvWriter,Messages.CorrespondingSafetyConstraints);
 			}
 			if ((type & ICSVExportConstants.UNSAFE_CONTROL_ACTION) != 0) {
 				this.writeUCACSV(csvWriter, Messages.UnsafeControlActionsTable);
@@ -125,7 +124,11 @@ public class StpaCSVExport extends Job {
 		return Status.OK_STATUS;
 
 	}
-
+	protected void exportAsCSV(List<ITableModel> models,
+			BufferedCSVWriter csvWriter, String title) throws IOException {
+		exportAsCSV(models, "", csvWriter, title);
+	}
+	
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -134,7 +137,7 @@ public class StpaCSVExport extends Job {
 	 *            the data which shall be exported as CSV
 	 * @throws IOException
 	 */
-	protected void exportAsCSV(List<ITableModel> models,
+	protected void exportAsCSV(List<ITableModel> models,String literals,
 			BufferedCSVWriter csvWriter, String title) throws IOException {
 		csvWriter.newLine();
 		csvWriter.write(title);
@@ -146,7 +149,7 @@ public class StpaCSVExport extends Job {
 		int i = 0;
 		for (ITableModel data : models) {
 			i++;
-			csvWriter.writeCell(Integer.toString(i));
+			csvWriter.writeCell(literals + Integer.toString(i));
 
 			csvWriter.writeCell(data.getTitle());
 			csvWriter.write(data.getDescription());
@@ -283,6 +286,21 @@ public class StpaCSVExport extends Job {
 				} else {
 					writer.writeCell();
 				}
+				if(!this.model.getLinkedHazardsOfUCA(notGiven.getUCAId(i)).isEmpty()) {
+					writer.writeCell("UCA1." + model.getUCANumber(notGiven.getUCAId(i)));
+				}
+				if(!this.model.getLinkedHazardsOfUCA(givenInc.getUCAId(i)).isEmpty()) {
+					writer.writeCell("UCA1." + model.getUCANumber(givenInc.getUCAId(i)));
+				}
+				if(!this.model.getLinkedHazardsOfUCA(wrongTiming.getUCAId(i)).isEmpty()) {
+					writer.writeCell("UCA1." + model.getUCANumber(wrongTiming.getUCAId(i)));
+				}
+				if(!this.model.getLinkedHazardsOfUCA(stoppedTooSoon.getUCAId(i)).isEmpty()) {
+					writer.writeCell("UCA1." + model.getUCANumber(stoppedTooSoon.getUCAId(i)));
+				}
+				writer.newLine();
+				// the description line starting with an empty cell
+				writer.writeCell();
 				// write the Descriptions in one line
 				writer.writeCell(notGiven.getUCADescription(i));
 				writer.writeCell(givenInc.getUCADescription(i));
@@ -347,14 +365,23 @@ public class StpaCSVExport extends Job {
 
 	}
 
-	private void writeCscCSV(BufferedCSVWriter csvWriter) throws IOException {
-
+	private void writeCscCSV(BufferedCSVWriter csvWriter, String title) throws IOException {
+		// the First two Rows are filled with the view- and the Column-titles
+		csvWriter.newLine();
+		csvWriter.write(title + " - "); ////$NON-NLS-1$
+		csvWriter.write(this.model.getProjectName());
+		csvWriter.newLine();
+		csvWriter.writeCell(Messages.ID);
+		csvWriter.writeCell(Messages.UnsafeControlActions);
+		csvWriter.writeCell(Messages.ID);
 		csvWriter.writeCell(Messages.CorrespondingSafetyConstraints);
 		csvWriter.newLine();
 		for (ICorrespondingUnsafeControlAction data : this.model
 				.getAllUnsafeControlActions()) {
-			csvWriter.writeCell();
-			csvWriter.writeCell(data.getDescription() );
+			
+			csvWriter.writeCell("UCA1."+this.model.getUCANumber(data.getId()));
+			csvWriter.writeCell(data.getDescription());
+			csvWriter.writeCell("SR1."+this.model.getUCANumber(data.getId()));
 			csvWriter.writeCell(data.getCorrespondingSafetyConstraint().getText());
 			csvWriter.newLine();
 		}
