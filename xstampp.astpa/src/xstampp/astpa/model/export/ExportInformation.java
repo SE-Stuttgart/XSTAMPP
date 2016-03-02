@@ -13,6 +13,7 @@
 
 package xstampp.astpa.model.export;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -56,7 +57,11 @@ public class ExportInformation {
 	 */
 	public ExportInformation() {
 		this.creationDate = new Date();
-		this.logoPath = this.store.getString(IPreferenceConstants.COMPANY_LOGO);
+		File logo = new File(this.store.getString(IPreferenceConstants.COMPANY_LOGO));
+		if(logo.exists()){
+			this.logoPath = logo.toURI().toString();
+		}
+		
 		this.company = this.store.getString(IPreferenceConstants.COMPANY_NAME);
 		this.colorBackground = this.rgbToHex(PreferenceConverter.getColor(
 				this.store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR));

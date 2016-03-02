@@ -2,7 +2,6 @@ package xstampp.astpa.wizards;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import messages.Messages;
 
@@ -17,7 +16,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
-import xstampp.Activator;
+import xstampp.astpa.Activator;
 import xstampp.astpa.util.jobs.ExportJob;
 import xstampp.astpa.util.jobs.StpaCSVExport;
 import xstampp.astpa.wizards.pages.CSVExportPage;

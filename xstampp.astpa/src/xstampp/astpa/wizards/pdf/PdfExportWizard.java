@@ -13,7 +13,10 @@
 
 package xstampp.astpa.wizards.pdf;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import messages.Messages;
+import xstampp.Activator;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.astpa.wizards.pages.PdfExportPage;
 import xstampp.preferences.IPreferenceConstants;
@@ -54,4 +57,8 @@ public class PdfExportWizard extends AbstractExportWizard {
 						"/fopxsl.xsl", this.page.getDecoChoice(), Messages.STPAPDFReport); //$NON-NLS-1$
 	}
 
+	@Override
+	public IPreferenceStore getStore() {
+		return Activator.getDefault().getPreferenceStore();
+	}
 }

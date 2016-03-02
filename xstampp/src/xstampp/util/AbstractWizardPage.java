@@ -438,11 +438,10 @@ public abstract class AbstractWizardPage extends WizardPage {
 			for (String filterExtension : filterExtensions) {
 				if (filterExtension.equalsIgnoreCase(ext)) {
 					supported = true;
+					break;
 				}
 			}
-			if (supported) {
-				File tmp = new File(path);
-				path = tmp.toURI().toString();
+			if (supported && new File(path).exists()) {
 				return path;
 			}
 			MessageDialog.openWarning(this.getShell(), Messages.Warning,

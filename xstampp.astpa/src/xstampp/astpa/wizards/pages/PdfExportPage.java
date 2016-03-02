@@ -49,7 +49,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	private Text textCompany;
 	private ColorChooser bgChooser, fontChooser;
 	private DemoCanvas sampleComp;
-	private final IPreferenceStore store = Activator.getDefault()
+	private final IPreferenceStore store = xstampp.Activator.getDefault()
 			.getPreferenceStore();
 	private Button decoSwitch;
 	private PathComposite logoComposite;
@@ -127,7 +127,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 				.getString(IPreferenceConstants.COMPANY_LOGO);
 
 		if (logoName != null) {
-			this.textCompany.setText(logoName);
+			this.logoComposite.setText(logoName);
 		}
 		data = new FormData();
 		data.top = new FormAttachment(labelComposite,
