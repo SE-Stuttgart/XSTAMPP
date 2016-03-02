@@ -22,13 +22,6 @@ import java.util.UUID;
  */
 public class ProcessModelFigure extends CSFigure {
 
-	/**
-	 * the offset of the process variables and values
-	 * 
-	 * @author Lukas Balzer
-	 */
-	private static final int PROCESS_MODEL_COLUMN = 10;
-	private static final int ROW_OFFSET = 4;
 	private final int topOffset;
 
 	/**
@@ -43,6 +36,7 @@ public class ProcessModelFigure extends CSFigure {
 		this.setOpaque(false);
 		this.topOffset = top;
 	}
+
 
 	@Override
 	public void setDeco(boolean deco) {

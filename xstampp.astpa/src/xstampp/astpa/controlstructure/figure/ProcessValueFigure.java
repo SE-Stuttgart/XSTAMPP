@@ -16,6 +16,7 @@ package xstampp.astpa.controlstructure.figure;
 import java.util.UUID;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
@@ -52,17 +53,13 @@ public class ProcessValueFigure extends CSFigure {
 	@Override
 	public void setLayout(Rectangle rect) {
 		rect.setX(ProcessValueFigure.PROCESS_MODEL_COLUMN);
-
-		// rect.setWidth(this.getParent().getBounds().width - (2 *
-		// ProcessFigure.PROCESS_MODEL_COLUMN)
-		// - CSFigure.CENTER_COMPENSATION);
-		this.getTextField().setSize(this.getBounds().width,
-				this.getTextField().getTextBounds().getSize().height);
+		this.getTextField().setLocation(new Point(0,0));
+		this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width,-1));
 		this.getTextField().revalidate();
-		this.setConstraint(this.getTextField(), new Rectangle(1, 1, rect.width,
-				-1));
-
+		this.setConstraint(this.getTextField(),this.getTextField().getBounds());
+		rect.setSize(this.getTextField().getSize());
 		// the component is drawn right below its previous child
+		
 		int previousIndex = this.getParent().getChildren().indexOf(this) - 1;
 		if (previousIndex < 0) {
 			rect.setY(((IControlStructureFigure) this.getParent())

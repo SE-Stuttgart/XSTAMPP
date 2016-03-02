@@ -81,8 +81,10 @@ ControlStructureAbstractCommand {
 	 */
 	public void setConstraint(Rectangle rect) {
 		this.layout = new Rectangle();
-		this.layout.width = Math.max(rect.width, this.widthConstraint);
-		this.layout.height = Math.max(rect.height, this.heightConstraint);
+//		this.layout.width = Math.max(rect.width, this.widthConstraint);
+//		this.layout.height = Math.max(rect.height, this.heightConstraint);
+		this.layout.width = rect.width;
+		this.layout.height =rect.height;
 		this.layout.x = Math.max(rect.x, 0);
 		this.layout.y = Math.max(rect.y, 0);
 	}

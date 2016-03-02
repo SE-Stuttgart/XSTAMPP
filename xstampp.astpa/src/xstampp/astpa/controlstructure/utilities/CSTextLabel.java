@@ -201,7 +201,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		super.paint(graphics);
 		if(this.extraLine && this.store.
 							getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
-			graphics.drawLine(0, getBounds().height, getParent().getBounds().width, getBounds().height);
+			graphics.drawLine(0, getBounds().height,getParent().getBounds().x+ getParent().getBounds().width, getBounds().height);
 		}
 	}
 
