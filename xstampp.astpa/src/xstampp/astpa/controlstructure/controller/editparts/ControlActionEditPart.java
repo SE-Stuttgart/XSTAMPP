@@ -45,6 +45,7 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 	@Override
 	protected IFigure createFigure() {
 		IControlStructureFigure tmpFigure = new TextFieldFigure(this.getId());
+		
 		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setToolTip(new Label(Messages.ControlAction));
 		tmpFigure.addMouseMotionListener(this);
@@ -77,8 +78,8 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
 				new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
 		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(this.getDataModel(), this.getStepId()));
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+//		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+//				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
 		this.installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new CSSelectionEditPolicy());
 	}
 

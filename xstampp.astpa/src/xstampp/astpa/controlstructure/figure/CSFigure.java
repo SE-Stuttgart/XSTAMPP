@@ -47,6 +47,7 @@ public abstract class CSFigure extends Figure implements
 
 	private final CSTextLabel textLabel;
 	private final Image image;
+	private boolean canConnect = false;
 	private final UUID componentID;
 	private int leftMargin = 0;
 	protected static final int CENTER_COMPENSATION = 2;
@@ -344,5 +345,19 @@ public abstract class CSFigure extends Figure implements
 	
 	protected IPreferenceStore getPreferenceStore(){
 		return this.store;
+	}
+
+	/**
+	 * @return the canConnect
+	 */
+	public boolean isCanConnect() {
+		return this.canConnect;
+	}
+
+	/**
+	 * @param canConnect the canConnect to set
+	 */
+	public void setCanConnect(boolean canConnect) {
+		this.canConnect = canConnect;
 	}
 }

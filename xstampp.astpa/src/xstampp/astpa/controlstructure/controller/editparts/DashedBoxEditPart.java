@@ -7,6 +7,7 @@ package xstampp.astpa.controlstructure.controller.editparts;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 
+import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
@@ -36,6 +37,7 @@ public class DashedBoxEditPart extends CSAbstractEditPart {
 		TextFieldFigure tmpFigure = new TextFieldFigure(this.getId());
 		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setDashed();
+		tmpFigure.setCanConnect(true);
 		tmpFigure.setBackgroundColor(null);
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		return tmpFigure;
@@ -54,5 +56,7 @@ public class DashedBoxEditPart extends CSAbstractEditPart {
 //				this.getDataModel(), this.getStepId()));
 		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
 				this.getDataModel(), this.getStepId()));
+		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
 	}
 }

@@ -1154,13 +1154,16 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 					.enableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents())
 					.addAnchorsGrid();
-		} else if(tool instanceof CombinedTemplateCreationEntry){
+		}else{
 			((RootEditPart) this.getGraphicalViewer().getContents())
-					.getFigure().removeHighlighter();
+				.getFigure().removeHighlighter();
 			((RootEditPart) this.getGraphicalViewer().getContents())
-					.disableFigureOffset();
+				.disableFigureOffset();
 			((RootEditPart) this.getGraphicalViewer().getContents())
-					.setAnchorsGrid(false);
+				.setAnchorsGrid(false);
+		}
+		
+		if(tool instanceof CombinedTemplateCreationEntry){
 			
 			//if the current project should be stored as a haz file, a warning is promted when the user trys to insert not storeable
 			//components

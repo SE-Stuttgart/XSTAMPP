@@ -28,7 +28,6 @@ import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.preferences.IControlStructureConstants;
 
@@ -120,11 +119,10 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		List<Point> childrenAnchorsPoints = new ArrayList<>();
 		Rectangle childLayout;
 		Figure anchorHighlighter = null;
-
-		for (IRectangleComponent child : childrenList) {
-			if (child.getComponentType() != ComponentType.TEXTFIELD &&
-					child.getComponentType() != ComponentType.DASHEDBOX) {
-				childLayout = new Rectangle(child.getLayout(true));
+		List<?> childFigures = new ArrayList<>(getChildren());
+		for (Object child : childFigures) {
+			if (child instanceof CSFigure && ((CSFigure)child).isCanConnect()) {
+				childLayout = new Rectangle(((CSFigure)child).getBounds());
 				for (float factor : CSFigure.X_ORIENTATIONS) {
 					// for each entry in the array two anchorPoints are created
 					// for
@@ -205,7 +203,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 			for (int deltaY = 0; deltaY < ((2 * RootFigure.COMP_OFFSET) + 1); deltaY++) {
 				tmpDescendant = super.findFigureAt(tmpX + deltaX,
 						tmpY + deltaY, search);
-				if (tmpDescendant instanceof ComponentFigure) {
+				if (tmpDescendant instanceof CSFigure && ((CSFigure) tmpDescendant).isCanConnect()) {
 					return tmpDescendant;
 				}
 			}

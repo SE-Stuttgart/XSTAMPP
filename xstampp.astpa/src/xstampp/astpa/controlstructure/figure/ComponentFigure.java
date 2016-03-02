@@ -76,6 +76,7 @@ public class ComponentFigure extends CSFigure  implements IPropertyChangeListene
 	public ComponentFigure(UUID id, Image img, String colorPreference) {
 
 		super(id, img, false);
+		setCanConnect(true);
 		this.setForegroundColor(ColorConstants.black);
 		this.colorPreference=colorPreference;
 		this.decoBorderColor =  CSFigure.STANDARD_BORDER_COLOR;
