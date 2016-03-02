@@ -29,6 +29,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -310,7 +311,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		return maxHeight;
 	}
 
-	protected void fillTable(List<IHAZXControlAction> list) {
+	protected void fillTable(List<IHAZXControlAction> list) throws SWTException{
 		
 		if (list.isEmpty()) {
 			return;
@@ -516,7 +517,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 	protected IDataModel getDataModel(){
 		return this.ucaInterface;
 	}
-	private void reloadTable() {
+	private void reloadTable() throws SWTException {
 		if(!this.lockreload){
 			int tmp= this.grid.getGrid().getVerticalBar().getSelection();
 			this.lockreload = true;
@@ -542,8 +543,10 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		switch (type) {
 		case UNSAFE_CONTROL_ACTION:
 		case CONTROL_ACTION:
-			if (!this.grid.getGrid().isDisposed()) {
+			try{
 				this.reloadTable();
+			}catch(SWTException e){
+				dataModelController.deleteObserver(this);
 			}
 			break;
 
