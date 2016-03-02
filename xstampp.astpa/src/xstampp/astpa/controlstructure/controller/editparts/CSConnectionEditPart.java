@@ -97,12 +97,14 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		connection.setLayoutManager(new XYLayout());
 		connection.setLineWidth(1);
 		connection.setTolerance(2);
+		connection.setLineStyle(SWT.LINE_CUSTOM);
 		switch (((CSConnection) this.getModel()).getConnectionType()) {
 		case ARROW_SIMPLE: {
 			connection.setLineStyle(SWT.LINE_SOLID);
 			break;
 		}
 		case ARROW_DASHED: {
+			connection.setLineDashOffset(CSConnectionEditPart.DASH);
 			connection.setLineDash(new float[] { CSConnectionEditPart.DASH });
 			break;
 		}
