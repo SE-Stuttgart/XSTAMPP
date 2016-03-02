@@ -14,6 +14,7 @@
 package xstampp.model;
 
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -26,4 +27,10 @@ public interface ISafetyDataModel{
 	 * @see ILTLProvider
 	 */
 	List<ILTLProvider> getLTLPropertys();
+	
+	/**
+	 * 
+	 * @return a map containing value lists mapped to their variables
+	 */
+	Map<String,List<String>> getValuesTOVariables();
 }

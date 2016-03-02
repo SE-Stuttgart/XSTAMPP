@@ -114,10 +114,11 @@
          point="org.eclipse.ui.exportWizards">
       <category
             id="astpa.pdf.mainCategory"
-            name="STPA PDF Export">
+            name="STPA PDF Export"
+            parentCategory="xstampp.astpa.export.main">
       </category>
       <wizard
-            category="xstampp.astpa.export.final"
+            category="xstampp.astpa.export.main"
             class="xstampp.astpa.wizards.pdf.PdfExportWizard"
             icon="icons/Logo_small.png"
             id="xstampp.astpa.export.pdf"
@@ -127,42 +128,42 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.HazardsPDFWizard"
             icon="icons/buttons/navigation/STEP1_3(16).png"
             id="xstampp.astpa.export.pdf.1_3"
             name="Hazards">
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.SafetyConstraintsPDFWizard"
             icon="icons/buttons/navigation/STEP1_5(16).png"
             id="xstampp.astpa.export.pdf.1_5"
             name="SafetyConstraints">
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.SystemGoalsPDFWizard"
             icon="icons/buttons/navigation/STEP1_6(16).png"
             id="xstampp.astpa.export.pdf.1_6"
             name="SystemGoals">
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.DesignRequirementsPDFWizard"
             icon="icons/buttons/navigation/STEP1_7(16).png"
             id="xstampp.astpa.export.pdf.1_7"
             name="DesignRequirements">
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.AccidentsPDFWizard"
             icon="icons/buttons/navigation/STEP1_2(16).png"
             id="xstampp.astpa.export.pdf.1_2"
             name="Accidents">
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.SystemDecriptionPDFWizard"
             icon="icons/buttons/navigation/STEP1_1.png"
             id="xstampp.astpa.export.pdf.1_1"
@@ -172,7 +173,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.UCATablePDFWizard"
             icon="icons/buttons/navigation/STEP2_2.png"
             id="xstampp.astpa.export.pdf.2_2"
@@ -182,7 +183,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.CausalFactorsTablePDFWizard"
             icon="icons/buttons/navigation/STEP3_2.png"
             id="xstampp.astpa.export.pdf.3_2"
@@ -192,15 +193,15 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.pdf.mainCategory"
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.CSCPDFWizard"
             icon="icons/buttons/navigation/STEP2_2(16).png"
             id="xstampp.astpa.export.pdf.2_3"
             name="Corresponding Safety Constraints">
       </wizard>
       <category
-            id="xstampp.astpa.export.final"
-            name="Final STPA Report">
+            id="xstampp.astpa.export.main"
+            name="STPA Export">
       </category>
    </extension>
    <extension
@@ -209,10 +210,11 @@
          point="org.eclipse.ui.exportWizards">
       <category
             id="astpa.stepData"
-            name="STPA Data Sheets">
+            name="STPA Data Sheets"
+            parentCategory="xstampp.astpa.export.main">
       </category>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main"
             class="xstampp.astpa.wizards.stepData.STPAdataWizard"
             icon="icons/Logo_small.png"
             id="astpa.datawizard"
@@ -222,7 +224,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.AccidentsWizard"
             icon="icons/buttons/navigation/STEP1_2.png"
             id="astpa.wizard1_2data"
@@ -232,7 +234,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.HazardsWizard"
             icon="icons/buttons/navigation/STEP1_3.png"
             id="astpa.wizard1_3data"
@@ -242,7 +244,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.DesignRequirementsWizard"
             icon="icons/buttons/navigation/STEP1_7.png"
             id="astpa.wizard1_7data"
@@ -252,7 +254,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.ControlActionsWizard"
             icon="icons/buttons/navigation/STEP2_1.png"
             id="astpa.wizard2_1data"
@@ -262,7 +264,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.CSCWizard"
             icon="icons/buttons/navigation/STEP2_3.png"
             id="astpa.wizard2_3data"
@@ -272,7 +274,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.SafetyConstraintsWizard"
             icon="icons/buttons/navigation/STEP1_5.png"
             id="astpa.wizard1_5data"
@@ -282,7 +284,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.SystemGoalsWizard"
             icon="icons/buttons/navigation/STEP1_6.png"
             id="astpa.wizard1_6data"
@@ -292,7 +294,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.UnsafeControlActionsDataWizard"
             icon="icons/buttons/navigation/STEP2_2.png"
             id="astpa.wizard2_2data"
@@ -302,7 +304,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.CausalFactorsDataWizard"
             icon="icons/buttons/navigation/STEP3_2.png"
             id="astpa.wizard3_2data"
@@ -312,7 +314,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepData"
+            category="xstampp.astpa.export.main/astpa.stepData"
             class="xstampp.astpa.wizards.stepData.SystemDecriptionDataWizard"
             icon="icons/buttons/navigation/STEP1_1.png"
             id="astpa.wizard1_1data"
@@ -327,10 +329,11 @@
          point="org.eclipse.ui.exportWizards">
       <category
             id="astpa.stepImages"
-            name="STPA Images">
+            name="STPA Images"
+            parentCategory="xstampp.astpa.export.main">
       </category>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.SystemDecriptionWizard"
             icon="icons/buttons/navigation/STEP1_1.png"
             id="astpa.wizard1_1"
@@ -340,42 +343,42 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.AccidentsImgWizard"
             icon="icons/buttons/navigation/STEP1_2(16).png"
             id="xstampp.astpa.imageExport."
             name="Accidents">
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.HazardsImgWizard"
             icon="icons/buttons/navigation/STEP1_3(16).png"
             id="xstampp.astpa.imageExport.1_3"
             name="Hazards">
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.SafetyConstraintsImgWizard"
             icon="icons/buttons/navigation/STEP1_5(16).png"
             id="xstampp.astpa.imageExport.1_5"
             name="SafetyConstraints">
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.SystemGoalsImgWizard"
             icon="icons/buttons/navigation/STEP1_6(16).png"
             id="xstampp.astpa.imageExport.1_6"
             name="SystemGoals">
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.DesignRequirementsImgWizard"
             icon="icons/buttons/navigation/STEP1_7(16).png"
             id="xstampp.astpa.imageExport.1_7"
             name="DesignRequirements">
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.ControlStructureWizard"
             icon="icons/buttons/navigation/STEP1_8.png"
             id="astpa.wizard1_8"
@@ -385,7 +388,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.UCATableExportWizard"
             icon="icons/buttons/navigation/STEP2_2.png"
             id="astpa.wizard2_2"
@@ -398,7 +401,7 @@
          </keywordReference>
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.ControlStructureWithPMWizard"
             icon="icons/buttons/navigation/STEP3_1.png"
             id="astpa.wizard3_1"
@@ -408,7 +411,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.CausalFactorsTableWizard"
             icon="icons/buttons/navigation/STEP3_2.png"
             id="astpa.3_2"
@@ -418,7 +421,7 @@
          </description>
       </wizard>
       <wizard
-            category="astpa.stepImages"
+            category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.CSCExportWizard"
             icon="icons/buttons/navigation/STEP2_2(16).png"
             id="xstampp.astpa.imageExport.2_3"
@@ -1043,28 +1046,28 @@
    <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
-            category="xstpa.category.pdf"
+            category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.ContextTablePDFWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.contextTables"
             name="STPA Context Tables">
       </wizard>
       <wizard
-            category="xstpa.category.pdf"
+            category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.RefinedSCPDFWizard"
             icon="icons/rsc_logox16.png"
             id="xstpa.wizard.refinedsafetyconstraints"
             name="Refined Safety Constraints Table">
       </wizard>
       <wizard
-            category="xstpa.category.pdf"
+            category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.RefinedUCAPDFWizard"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.wizard.ruca"
             name="Refined Unsafe Control Actions">
       </wizard>
       <wizard
-            category="xstpa.category.pdf"
+            category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.LTLPDFWizard"
             icon="icons/ltl.png"
             id="xstpa.wizard.ltl"
@@ -1072,10 +1075,11 @@
       </wizard>
       <category
             id="xstpa.category.pdf"
-            name="Extended STPA PDFs">
+            name="Extended STPA PDFs"
+            parentCategory="xstpa.main.export">
       </category>
       <wizard
-            category="xstpa.category.csv"
+            category="xstpa.main.export"
             class="xstampp.astpa.wizards.stepData.XSTPAdataWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.csv"
@@ -1083,42 +1087,47 @@
       </wizard>
       <category
             id="xstpa.category.csv"
-            name="Extended STPA CSVs">
+            name="Extended STPA CSVs"
+            parentCategory="xstpa.main.export">
       </category>
       <wizard
-            category="xstpa.category.csv"
+            category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.LTLCSVWizard"
             icon="icons/ltl.png"
             id="xstpa.wizard.csv.ltl"
             name="LTL Formulas csv">
       </wizard>
       <wizard
-            category="xstpa.category.csv"
+            category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RefinedUCACSVWizard"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.wizard.csv.ruca"
             name="Refined Unsafe Control Actions csv">
       </wizard>
       <wizard
-            category="xstpa.category.csv"
+            category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RefinedSCCSVWizard"
             icon="icons/rsc_logox16.png"
             id="xstpa.wizard.csv.rsc"
             name="Refined Safety Constraints csv">
       </wizard>
       <wizard
-            category="xstpa.category.csv"
+            category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.ContextTablesCSVWizard"
             icon="icons/xstpa_logo.png"
             id="xstpa.wizard.csv.contextTables"
             name="Context Tables csv">
       </wizard>
       <wizard
-            category="xstpa.category.csv"
+            category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RulesCSVWizard"
             id="xstpa.wizard.csv.rules"
             name="Refined Rules csv">
       </wizard>
+      <category
+            id="xstpa.main.export"
+            name="Extended STPA">
+      </category>
    </extension>
 
 </plugin>

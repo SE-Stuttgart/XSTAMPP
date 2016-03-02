@@ -2,7 +2,7 @@
 <feature
       id="astpa.feature"
       label="A-STPA feature"
-      version="2.0.1"
+      version="2.0.2.qualifier"
       plugin="xstampp.astpa">
 
    <description>
@@ -174,7 +174,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="xstpa"
          download-size="0"
          install-size="0"
-         version="1.0.1"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.gef"

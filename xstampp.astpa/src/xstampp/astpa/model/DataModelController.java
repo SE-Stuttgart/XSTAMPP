@@ -16,6 +16,7 @@ package xstampp.astpa.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
@@ -1838,6 +1839,31 @@ public class DataModelController extends Observable implements
 	@Override
 	public List<ILTLProvider> getLTLPropertys(){
 		return getAllRefinedRules();
+	}
+
+	@Override
+	public Map<String, List<String>> getValuesTOVariables() {
+		
+		Map<String, List<String>> resultMap = new HashMap<>();
+		List<String> valueNames;
+		for (IRectangleComponent parentComponent:getRoot().getChildren()) {
+			if (parentComponent.getComponentType().name().equals("CONTROLLER")) {
+		    	  
+				// get the process models
+				for (IRectangleComponent tempPM :  parentComponent.getChildren()) {
+		    		  // get the variables
+		    		  for (IRectangleComponent tempPMV : tempPM.getChildren()) {
+		    			  valueNames = new ArrayList<>();
+		    			  // get the values and add the new object to the processmodel list
+		    			  for (IRectangleComponent tempPMVV : tempPMV.getChildren()) {
+		    				  valueNames.add(tempPMVV.getText());
+		    			  }
+		    			  resultMap.put(tempPMV.getText(), valueNames);
+		    		  }
+				}
+			}
+		}
+		return resultMap;
 	}
 
 }

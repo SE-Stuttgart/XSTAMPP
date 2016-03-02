@@ -199,109 +199,115 @@
          point="org.eclipse.ui.exportWizards">
       <category
             id="xstampp.acast.category-csv"
-            name="CAST CSV Export">
+            name="CAST CSV Export"
+            parentCategory="xstampp.acast.export.main">
       </category>
       <wizard
-            category="xstampp.acast.category-csv"
+            category="xstampp.acast.export.main/xstampp.acast.category-csv"
             class="acast.export.csv.AccidentDescriptionCSVWizard"
             icon="icons/buttons/navigation/Car_collision_16.png"
             id="xstampp.acast.csv-accidentDescription"
             name="Accident Description">
       </wizard>
       <wizard
-            category="xstampp.acast.category-csv"
+            category="xstampp.acast.export.main/xstampp.acast.category-csv"
             class="acast.export.csv.HazardExportCSVWizard"
             icon="icons/buttons/navigation/Toxic_sign_16.png"
             id="xstampp.acast.csv-hazards"
             name="Hazards">
       </wizard>
       <wizard
-            category="xstampp.acast.category-csv"
+            category="xstampp.acast.export.main/xstampp.acast.category-csv"
             class="acast.export.csv.SafetyConstraintsCSVWizard"
             icon="icons/buttons/navigation/Protection_shield_with_a_check_mark_16.png"
             id="xstampp.acast.csv-safetyConstraints"
             name="Safety Constraints">
       </wizard>
       <wizard
-            category="xstampp.acast.category-csv"
+            category="xstampp.acast.export.main/xstampp.acast.category-csv"
             class="acast.export.csv.ProximalEventsCSVWizard"
             icon="icons/buttons/navigation/calendar_clock_16.png"
             id="xstampp.acast.csv-proximalEvents"
             name="Proximal Events">
       </wizard>
       <wizard
-            category="xstampp.acast.category-csv"
+            category="xstampp.acast.export.main/xstampp.acast.category-csv"
             class="acast.export.csv.ResponsibilitiesCSVWizard"
             icon="icons/buttons/navigation/Verification_of_delivery_list_clipboard_symbol_16.png"
             id="xstampp.acast.csv-responsibilities"
             name="Roles and Responsibilities">
       </wizard>
       <wizard
-            category="xstampp.acast.category-csv"
+            category="xstampp.acast.export.main/xstampp.acast.category-csv"
             class="acast.export.csv.RecommendationsCSVWizard"
             icon="icons/buttons/navigation/Search_in_document_16.png"
             id="xstampp.acast.csv-recommendations"
             name="Findings and Recommendations">
       </wizard>
       <wizard
-            category="xstampp.acast.category-csv"
+            category="xstampp.acast.export.main"
             class="acast.export.csv.AllCSVDataWizard"
             icon="icons/A-CAST-icon16.png"
             id="xstampp.acast.csv-all"
             name="All Data">
       </wizard>
+      <category
+            id="xstampp.acast.export.main"
+            name="CAST">
+      </category>
    </extension>
    <extension
          name="Image Export"
          point="org.eclipse.ui.exportWizards">
       <category
             id="xstampp.acast.category-image"
-            name="CAST Image Export">
+            name="CAST Image Export"
+            parentCategory="xstampp.acast.export.main">
       </category>
       <wizard
-            category="xstampp.acast.category-image"
+            category="xstampp.acast.export.main/xstampp.acast.category-image"
             class="acast.export.images.AccidentDescriptionIMGWizard"
             icon="icons/buttons/navigation/Car_collision_16.png"
             id="xstampp.acast.img-accidentDescription"
             name="Accident Description">
       </wizard>
       <wizard
-            category="xstampp.acast.category-image"
+            category="xstampp.acast.export.main/xstampp.acast.category-image"
             class="acast.export.images.HazardExportIMGWizard"
             icon="icons/buttons/navigation/Toxic_sign_16.png"
             id="xstampp.acast.img-hazards"
             name="Hazards">
       </wizard>
       <wizard
-            category="xstampp.acast.category-image"
+            category="xstampp.acast.export.main/xstampp.acast.category-image"
             class="acast.export.images.SafetyConstraintsIMGWizard"
             icon="icons/buttons/navigation/Protection_shield_with_a_check_mark_16.png"
             id="xstampp.acast.img-safetyConstraints"
             name="Safety Constraints">
       </wizard>
       <wizard
-            category="xstampp.acast.category-image"
+            category="xstampp.acast.export.main/xstampp.acast.category-image"
             class="acast.export.images.ProximalEventsIMGWizard"
             icon="icons/buttons/navigation/calendar_clock_16.png"
             id="xstampp.acast.img-proximalEvents"
             name="Proximal Events">
       </wizard>
       <wizard
-            category="xstampp.acast.category-image"
+            category="xstampp.acast.export.main/xstampp.acast.category-image"
             class="acast.export.images.ResponsibilitiesIMGWizard"
             icon="icons/buttons/navigation/Verification_of_delivery_list_clipboard_symbol_16.png"
             id="xstampp.acast.img-responsibilities"
             name="Roles and Responsibilities">
       </wizard>
       <wizard
-            category="xstampp.acast.category-image"
+            category="xstampp.acast.export.main/xstampp.acast.category-image"
             class="acast.export.images.RecommendationsIMGWizard"
             icon="icons/buttons/navigation/Search_in_document_16.png"
             id="xstampp.acast.img-recommendations"
             name="Findings and Recommendations">
       </wizard>
       <wizard
-            category="xstampp.acast.category-image"
+            category="xstampp.acast.export.main/xstampp.acast.category-image"
             class="acast.export.images.ControlStructureWizard"
             icon="icons/buttons/navigation/Site_Map_16.png"
             id="xstampp.acast.img-controlstructure"
@@ -313,52 +319,53 @@
          point="org.eclipse.ui.exportWizards">
       <category
             id="xstampp.acast.category-pdf"
-            name="CAST PDF Export">
+            name="CAST PDF Export"
+            parentCategory="xstampp.acast.export.main">
       </category>
       <wizard
-            category="xstampp.acast.category-pdf"
+            category="xstampp.acast.export.main/xstampp.acast.category-pdf"
             class="acast.export.pdf.AccidentDescriptionPDFWizard"
             icon="icons/buttons/navigation/Car_collision_16.png"
             id="xstampp.acast.pdf-accidentDescription"
             name="Accident Description">
       </wizard>
       <wizard
-            category="xstampp.acast.category-pdf"
+            category="xstampp.acast.export.main/xstampp.acast.category-pdf"
             class="acast.export.pdf.HazardExportPDFWizard"
             icon="icons/buttons/navigation/Toxic_sign_16.png"
             id="xstampp.acast.pdf-hazards"
             name="Hazards">
       </wizard>
       <wizard
-            category="xstampp.acast.category-pdf"
+            category="xstampp.acast.export.main/xstampp.acast.category-pdf"
             class="acast.export.pdf.SafetyConstraintsPDFWizard"
             icon="icons/buttons/navigation/Protection_shield_with_a_check_mark_16.png"
             id="xstampp.acast.pdf-safetyConstraints"
             name="Safety Constraints">
       </wizard>
       <wizard
-            category="xstampp.acast.category-pdf"
+            category="xstampp.acast.export.main/xstampp.acast.category-pdf"
             class="acast.export.pdf.ProximalEventsPDFWizard"
             icon="icons/buttons/navigation/calendar_clock_16.png"
             id="xstampp.acast.pdf-proximalEvents"
             name="Proximal Events">
       </wizard>
       <wizard
-            category="xstampp.acast.category-pdf"
+            category="xstampp.acast.export.main/xstampp.acast.category-pdf"
             class="acast.export.pdf.ResponsibilitiesPDFWizard"
             icon="icons/buttons/navigation/Verification_of_delivery_list_clipboard_symbol_16.png"
             id="xstampp.acast.pdf-responsibilities"
             name="Roles and Responsibilities">
       </wizard>
       <wizard
-            category="xstampp.acast.category-pdf"
+            category="xstampp.acast.export.main/xstampp.acast.category-pdf"
             class="acast.export.pdf.RecommendationsPDFWizard"
             icon="icons/buttons/navigation/Search_in_document_16.png"
             id="xstampp.acast.pdf-recommendations"
             name="Findings and Recommendations">
       </wizard>
       <wizard
-            category="xstampp.acast.category-pdf"
+            category="xstampp.acast.export.main"
             class="acast.export.pdf.ReportPDFWizard"
             icon="icons/A-CAST-icon16.png"
             id="xstampp.acast.pdf-finalReport"
