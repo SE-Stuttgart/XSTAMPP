@@ -1103,11 +1103,8 @@
 					</xsl:attribute>
 						</xsl:if>
 						<fo:table-cell padding="3px">
-							<fo:block>
-								<xsl:value-of select="description" />
 								<!-- Chooses the Link-Colour depending on the hazardous-state -->
 								<xsl:call-template name="ucaHazLinkColor"/>
-							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</xsl:for-each>
@@ -1137,11 +1134,8 @@
 				</xsl:attribute>
 					</xsl:if>
 					<fo:table-cell padding="3px">
-						<fo:block>
-							<xsl:value-of select="description" />
 							<!-- Chooses the Link-Colour depending on the hazardous-state -->
 							<xsl:call-template name="ucaHazLinkColor"/>
-						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 			</xsl:for-each>
@@ -1173,11 +1167,8 @@
 					</xsl:attribute>
 						</xsl:if>
 						<fo:table-cell padding="3px">
-							<fo:block>
-								<xsl:value-of select="description" />
 								<!-- Chooses the Link-Colour depending on the hazardous-state -->
 								<xsl:call-template name="ucaHazLinkColor"/>
-							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</xsl:for-each>
@@ -1207,11 +1198,8 @@
 						</xsl:attribute>
 							</xsl:if>
 							<fo:table-cell padding="3px">
-								<fo:block>
-									<xsl:value-of select="description" />
 								<!-- Chooses the Link-Colour depending on the hazardous-state -->
 								<xsl:call-template name="ucaHazLinkColor"/>
-								</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
 					</xsl:for-each>
@@ -1221,22 +1209,47 @@
 	
 	<!-- ################### UCA - Hazardous-Color-Chooser ################### -->
 	<xsl:template name="ucaHazLinkColor">
-		<xsl:choose>
-			<xsl:when test="links = 'Not Hazardous'">
-				<fo:block color="#2D7500">
-					&#x005B;
-					<xsl:value-of select="links" />
-					&#x005D;
-				</fo:block>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block color="#820000">
-					&#x005B;
-					<xsl:value-of select="links" />
-					&#x005D;
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
+	
+		<fo:block page-break-inside="avoid">
+			<fo:table>
+				<fo:table-column column-width="100%" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block color="#820000">
+								<xsl:value-of select="identifier" />
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+					<fo:table-row>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								<xsl:value-of select="description" />
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="links = 'Not Hazardous'">
+									<fo:block color="#2D7500">
+										&#x005B;
+										<xsl:value-of select="links" />
+										&#x005D;
+									</fo:block>
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:block color="#820000">
+										&#x005B;
+										<xsl:value-of select="links" />
+										&#x005D;
+									</fo:block>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
 	</xsl:template>
-      
 </xsl:stylesheet>

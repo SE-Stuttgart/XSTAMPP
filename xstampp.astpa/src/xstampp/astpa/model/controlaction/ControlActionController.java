@@ -27,7 +27,6 @@ import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.ISafetyConstraint;
@@ -35,9 +34,7 @@ import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
-import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.astpa.wizards.stepData.UnsafeControlActionsDataWizard;
 import xstampp.model.ILTLProvider;
 
 /**
@@ -498,10 +495,12 @@ public class ControlActionController {
 				}
 				Collections.sort(linkedHazards);
 				StringBuffer linkString = new StringBuffer(); 
+				String id = "";
 				if (linkedHazards.size() == 0) {
 					linkString.append(Messages.ControlActionController_NotHazardous);
 				} else {
-					
+
+					id = "UCA1."+getUCANumber(unsafeControlAction.getId());
 					for (int i = 0;i < linkedHazards.size(); i++) {
 						if (i != 0) {
 							linkString.append(","); //$NON-NLS-1$
@@ -509,6 +508,7 @@ public class ControlActionController {
 						linkString.append("H-" + linkedHazards.get(i).getNumber());
 					}
 				}
+				unsafeControlAction.identifier = id;
 				unsafeControlAction.setLinks(linkString.toString());
 			}
 
@@ -553,6 +553,8 @@ public class ControlActionController {
 			controlAction.prepareForSave();
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
+
+				unsafeControlAction.identifier = null;
 				unsafeControlAction.setLinks(null);
 			}
 		}

@@ -37,6 +37,7 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	private UnsafeControlActionType type;
 	private CorrespondingSafetyConstraint correspondingSafetyConstraint;
 	private String links;
+	public String identifier;
 	/**
 	 * Constructs a new unsafe control action with the given values
 	 * 
