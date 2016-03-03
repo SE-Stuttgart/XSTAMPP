@@ -23,8 +23,8 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.wizards.BufferedCSVWriter;
 import xstampp.model.IDataModel;
+import xstampp.util.BufferedCSVWriter;
 
 /**
  * This job exports all data from the STPA DataModelController a CSV

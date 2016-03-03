@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards;
+package xstampp.util;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
