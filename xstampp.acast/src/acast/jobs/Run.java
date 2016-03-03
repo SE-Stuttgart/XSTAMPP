@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.UUID;
 
 import messages.Messages;
@@ -82,7 +83,7 @@ public class Run extends XstamppJob implements IJobChangeListener {
 	 *            the project id
 	 */
 	public Run(String name, String path, UUID id) {
-		super(name,id);
+		super(name);
 		this.dir = path;
 		this.projectID = id;
 		this.exportCSVs = true;
@@ -305,5 +306,10 @@ public class Run extends XstamppJob implements IJobChangeListener {
 
 	public void setDecoSwitch(boolean decoSwitch) {
 		this.decoSwitch = decoSwitch;
+	}
+
+	@Override
+	protected Observable getModelObserver() {
+		return (Observable) ProjectManager.getContainerInstance().getDataModel(this.projectID);
 	}
 }

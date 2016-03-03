@@ -1,6 +1,7 @@
 package xstpa.ui.tables.utils;
 
 import java.util.List;
+import java.util.Observable;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -73,6 +74,12 @@ public class ContextCheckJob extends XstamppJob {
 	
 	public int getConflictCounter() {
 		return this.conflictCounter;
+	}
+
+	@Override
+	protected Observable getModelObserver() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

@@ -260,7 +260,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 		@Override
 		public void aboutToRun(IJobChangeEvent event) {
 			ProjectManager.getContainerInstance()
-			.getDataModel(((ExportJob) event.getJob()).getId())
+			.getDataModel(((ExportJob) event.getJob()).getProjectId())
 			.prepareForExport();
 			super.aboutToRun(event);
 		}
@@ -275,7 +275,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 						ProjectManager.getContainerInstance().callObserverValue(
 								ObserverValue.EXPORT_FINISHED);
 						ProjectManager.getContainerInstance()
-								.getDataModel(((ExportJob) event.getJob()).getId())
+								.getDataModel(((ExportJob) event.getJob()).getProjectId())
 								.prepareForSave();
 					}
 				});

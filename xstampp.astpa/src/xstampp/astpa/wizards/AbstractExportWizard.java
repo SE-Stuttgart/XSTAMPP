@@ -37,6 +37,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 			.getPreferenceStore();
 	private IExportPage exportPage;
 	private String[] viewId;
+	private Object exportAddition;
 	private enum Error {
 		OK, CANT_OVERWRITE, EXIT, CANT_FIND;
 	}
@@ -71,6 +72,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 		super();
 		this.setHelpAvailable(true);
 		this.viewId = viewId;
+		this.exportAddition = null;
 	}
 
 	protected boolean performCSVExport(int data) {
@@ -137,6 +139,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 			}
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
 			exportJob.setCSDirty();
+			exportJob.setExportAddition(exportAddition);
 			exportJob.schedule();
 		} else {
 			MessageDialog.openWarning(this.getShell(), Messages.Warning,
@@ -251,6 +254,12 @@ public abstract class AbstractExportWizard extends Wizard implements
 	protected String[] getExportedViews() {
 		return this.viewId;
 	}
+	/**
+	 * @param exportAddition the exportAddition to set
+	 */
+	public void setExportAddition(Object exportAddition) {
+		this.exportAddition = exportAddition;
+	}
 
 	private class ExportJobChangeAdapter extends JobChangeAdapter {
 		@Override
@@ -261,7 +270,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 		@Override
 		public void aboutToRun(IJobChangeEvent event) {
 			ProjectManager.getContainerInstance()
-			.getDataModel(((ExportJob) event.getJob()).getId())
+			.getDataModel(((ExportJob) event.getJob()).getProjectId())
 			.prepareForExport();
 			super.aboutToRun(event);
 		}
@@ -276,7 +285,7 @@ public abstract class AbstractExportWizard extends Wizard implements
 						ProjectManager.getContainerInstance().callObserverValue(
 								ObserverValue.EXPORT_FINISHED);
 						ProjectManager.getContainerInstance()
-								.getDataModel(((ExportJob) event.getJob()).getId())
+								.getDataModel(((ExportJob) event.getJob()).getProjectId())
 								.prepareForSave();
 					}
 				});

@@ -1,7 +1,7 @@
 package acast.export.images;
 
 import messages.Messages;
-import acast.jobs.CSExportJob;
+import xstampp.astpa.util.jobs.CSExportJob;
 import acast.wizards.AbstractExportWizard;
 import acast.wizards.ControlStructureExportPage;
 

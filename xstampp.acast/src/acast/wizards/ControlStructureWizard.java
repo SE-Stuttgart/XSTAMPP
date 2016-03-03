@@ -1,7 +1,7 @@
 package acast.wizards;
 
 import messages.Messages;
-import acast.jobs.CSExportJob;
+import xstampp.astpa.util.jobs.CSExportJob;
 
 /**
  * The Wizard for Exporting the control structure as image

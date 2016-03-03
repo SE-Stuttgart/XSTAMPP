@@ -48,6 +48,8 @@ public class ExportInformation {
 	private String company;
 	private String colorBackground;
 	private String colorFont;
+	private Object addition;
+	private int contentSize;
 
 	/**
 	 * Constructor of the export information
@@ -61,7 +63,7 @@ public class ExportInformation {
 		if(logo.exists()){
 			this.logoPath = logo.toURI().toString();
 		}
-		
+		contentSize = 7;
 		this.company = this.store.getString(IPreferenceConstants.COMPANY_NAME);
 		this.colorBackground = this.rgbToHex(PreferenceConverter.getColor(
 				this.store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
@@ -268,5 +270,30 @@ public class ExportInformation {
 	public void setCsPmImageHeight(String csPmImageheight) {
 		this.csPmImageHeight = csPmImageheight;
 	}
+
+	/**
+	 * @param addition the addition to set
+	 */
+	public void setAddition(Object addition) {
+		this.addition = addition;
+	}
+
+public Object getAddition() {
+	return this.addition;
+}
+
+/**
+ * @return the contentSize
+ */
+public int getContentSize() {
+	return this.contentSize;
+}
+
+/**
+ * @param contentSize the contentSize to set
+ */
+public void setContentSize(int contentSize) {
+	this.contentSize = contentSize;
+}	
 
 }

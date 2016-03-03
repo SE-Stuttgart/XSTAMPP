@@ -13,21 +13,13 @@ import xstampp.ui.common.ProjectManager;
 
 public abstract class XstamppJob extends Job implements Observer, IJobChangeListener {
 
-	private UUID projectId;
 
 	public XstamppJob(String name) {
 		super(name);
-		this.projectId = null;
 		addJobChangeListener(this);
 	}
 	
-	public XstamppJob(String name,UUID id) {
-		super(name);
-		this.projectId = id;
-		addJobChangeListener(this);
-		ProjectManager.getContainerInstance().getDataModel(id).addObserver(this);
-	}
-
+	
 	@Override
 	public void update(Observable o, Object arg) {
 		if(arg.equals(ObserverValue.CLEAN_UP) ||arg.equals(ObserverValue.DELETE)){
@@ -47,8 +39,8 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
 
 	@Override
 	public void done(IJobChangeEvent event) {
-		if(projectId != null){
-			ProjectManager.getContainerInstance().getDataModel(projectId).deleteObserver(this);
+		if(getModelObserver() != null){
+			getModelObserver().deleteObserver(this);
 		}
 	}
 
@@ -60,6 +52,9 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
 	@Override
 	public void scheduled(IJobChangeEvent event) {
 		STPAPluginUtils.listJob(event.getJob());
+		if(getModelObserver() != null){
+			getModelObserver().addObserver(this);
+		}
 	}
 
 	@Override
@@ -67,12 +62,7 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
 		//this listener needs only to handle the scheduled() and the done() methode
 	}
 
+	protected abstract Observable getModelObserver();
 	
-	/**
-	 * @return the projectId
-	 */
-	public UUID getProjectId() {
-		return projectId;
-	}
 
 }

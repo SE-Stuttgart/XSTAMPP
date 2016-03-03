@@ -10,7 +10,7 @@
     <xsl:param name="text.size" select="12"/>
     <xsl:param name="header.omit" select="false"/> 
     <xsl:param name="page.layout" select="A4"/>   
-         <xsl:param name="page.title" select="''"/>   
+    <xsl:param name="page.title" select="''"/>    
     
     <xsl:template match="/*">
     <fo:root>
@@ -35,14 +35,17 @@
 				
 				<!-- *************** Context Table Template *************** -->
 				<fo:block>
+					<xsl:variable name="contentSize">
+    					<xsl:attribute name="select">7</xsl:attribute>
+ 					</xsl:variable>  
 					<xsl:for-each select="cac/controlactions/controlaction[isSafetyCritical = 'true']">
 						<xsl:choose>
 								<!-- ################### Context Table Template ################### -->
-							<xsl:when test="dependenciesForProvided/variableName">
+							<xsl:when test="dependenciesForProvided/variableName and PMCombisWhenProvided/combinationOfPMValues[valueNames/name]">
 								<fo:block space-after="5pt" page-break-after="avoid">
 				               
 									<xsl:attribute name="font-size"><xsl:value-of select="$title.size" />pt</xsl:attribute>
-									   Context Table of control action <xsl:value-of select="title" /> in context provided
+									  Context Table of control action <xsl:value-of select="$contentSize" /> in context provided
 								</fo:block> 
 								<fo:block text-align="center" page-break-after="always">
 								<xsl:call-template name="contextProvidedTable">
@@ -54,7 +57,7 @@
 							</xsl:when>
 						</xsl:choose>
 						<xsl:choose>
-							<xsl:when test="dependenciesForNotProvided/variableName">
+							<xsl:when test="dependenciesForNotProvided/variableName and PMCombisWhenNotProvided/combinationOfPMValues[valueNames/name]">
 								<fo:block space-after="5pt" page-break-after="avoid">
 				               
 									<xsl:attribute name="font-size"><xsl:value-of select="$title.size" />pt</xsl:attribute>
@@ -84,16 +87,18 @@
       <xsl:param name="caTitle" select="title"/> 
       <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
+			<xsl:variable name="columns" select="count(dependenciesForProvided/variableName)+4"/>
+			<xsl:variable name="variables" select="count(dependenciesForProvided/variableName)"/>
+			
 			<xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" 	border-style="solid" />
-			<fo:table-column column-number="2" border-style="solid" />
-			<fo:table-column column-number="3" 	border-style="solid" />
-			<fo:table-column column-number="4" 	border-style="solid" />
 			<xsl:for-each select="dependenciesForProvided/variableName">
 				<fo:table-column border-style="solid" />
 			</xsl:for-each>
+			<fo:table-column column-width="5%" border-style="solid" />
+			<fo:table-column column-width="5%" 	border-style="solid" />
+			<fo:table-column column-width="5%" 	border-style="solid" />
 		
-			<xsl:variable name="columns" select="count(dependenciesForProvided/variableName)+4"/>
 			<fo:table-header border="solid" background-color="#1A277A"
 				color="#FFFFFF" padding="3px">
 	          <!-- <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>-->
@@ -112,18 +117,18 @@
 						</xsl:for-each>
 						
 						<fo:table-cell padding="3px" number-columns-spanned="3">
-							<fo:block text-align="center" font-weight="bold" border-style="none">Hazardous control action</fo:block>
+							<fo:block text-align="center" font-weight="bold" border-style="none">Hazardous control action if provided</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 					<fo:table-row>
 						<fo:table-cell padding="3px">
-							<fo:block font-weight="bold">If provided any time in this context</fo:block>
+							<fo:block font-weight="bold">any time</fo:block>
 						</fo:table-cell>
 						<fo:table-cell padding="3px">
-							<fo:block font-weight="bold">If provided too early in this context</fo:block>
+							<fo:block font-weight="bold">too early</fo:block>
 						</fo:table-cell>
 						<fo:table-cell padding="3px">
-							<fo:block font-weight="bold">If provided too late in this context</fo:block>
+							<fo:block font-weight="bold">too late</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-header>
@@ -137,6 +142,20 @@
 					</fo:table-row>
 				</fo:table-footer>
 				<fo:table-body>
+					<fo:table-row >
+						<fo:table-cell padding="3px" >
+								<fo:block ></fo:block>
+						</fo:table-cell>
+						<xsl:for-each select="dependenciesForProvided/variableName">
+							<fo:table-cell padding="3px">
+								<fo:block ></fo:block>
+							</fo:table-cell>
+						</xsl:for-each>
+						
+						<fo:table-cell padding="3px" >
+							<fo:block ></fo:block>
+						</fo:table-cell>
+					</fo:table-row>
 					<xsl:choose>
 						<!-- Checks whether some hazards are defined -->
 						<xsl:when test="PMCombisWhenProvided/combinationOfPMValues">
@@ -223,10 +242,10 @@
 		<fo:table  border="none" space-after="30pt">
 			<xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column 	border-style="solid" />
-			<fo:table-column border-style="solid" />
 			<xsl:for-each select="dependenciesForNotProvided/variableName">
 				<fo:table-column  border-style="solid" />
 			</xsl:for-each>
+			<fo:table-column column-width="15%" border-style="solid" />
 		
 			<xsl:variable name="columns" select="count(dependenciesForNotProvided/variableName)+2"/>
 			<fo:table-header  border="solid" background-color="#1A277A"
@@ -261,6 +280,20 @@
 					</fo:table-row>
 				</fo:table-footer>
 				<fo:table-body>
+					<fo:table-row >
+						<fo:table-cell padding="3px" >
+								<fo:block ></fo:block>
+						</fo:table-cell>
+						<xsl:for-each select="dependenciesForProvided/variableName">
+							<fo:table-cell padding="3px">
+								<fo:block ></fo:block>
+							</fo:table-cell>
+						</xsl:for-each>
+						
+						<fo:table-cell padding="3px" >
+							<fo:block ></fo:block>
+						</fo:table-cell>
+					</fo:table-row>
 					<xsl:choose>
 						<!-- Checks whether some hazards are defined -->
 						<xsl:when test="PMCombisWhenNotProvided/combinationOfPMValues">

@@ -3,6 +3,7 @@ package xstampp.astpa.util.jobs;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.UUID;
 
 import messages.Messages;
@@ -16,6 +17,7 @@ import org.eclipse.swt.widgets.Display;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.model.DataModelController;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.AbstractExportPage;
@@ -102,6 +104,7 @@ public class Run extends XstamppJob{
 	private String exportPDFsFormat;
 	private String exportExtendedPDFsFormat;
 	private String exportExtendedIMGsFormat;
+	private UUID projectID;
 	
 	/**
 	 * this constructor creates a run export job which 
@@ -115,8 +118,9 @@ public class Run extends XstamppJob{
 	 * @param id the project id
 	 */
 	public Run(String name,String path,UUID id) {
-		super(name,id);
+		super(name);
 		this.dir = path;
+		this.projectID = id;
 		this.exportCSVs = true;
 		this.exportImages = true;
 		this.exportPDFs = true;
@@ -125,6 +129,11 @@ public class Run extends XstamppJob{
 		this.jobList = new ArrayList<>();
 	}
 
+	@Override
+	protected Observable getModelObserver() {
+		return (DataModelController)ProjectManager.getContainerInstance().getDataModel(projectID);
+	}
+	
 	@Override
 	protected void canceling() {
 		this.isCanceled = true;
@@ -137,13 +146,13 @@ public class Run extends XstamppJob{
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Main Run Export...", calcWork());
 		String fileName;
-		ProjectManager.getContainerInstance().getDataModel(getProjectId()).prepareForExport();
+		ProjectManager.getContainerInstance().getDataModel(getProjectID()).prepareForExport();
 		
 		for(int i= 0;i<ICSVExportConstants.STEPS.size() && this.exportCSVs;i++){
 			
 			fileName = ICSVExportConstants.STEPS.get(i) +".csv";
 			StpaCSVExport job = new StpaCSVExport(getJobName(fileName),this.dir+ CSV_DIR + File.separator + fileName,
-										 	';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),1<<i);
+										 	';',ProjectManager.getContainerInstance().getDataModel(getProjectID()),1<<i);
 			job.showPreview(false);
 			if(!addJob(job)){
 				return Status.CANCEL_STATUS;
@@ -153,7 +162,7 @@ public class Run extends XstamppJob{
 		if(this.exportExtendedCSVs){
 			fileName = "Extended STPA Data.csv";
 			XCSVExportJob export = new XCSVExportJob(getJobName(fileName),	this.dir+ EX_CSV_DIR + File.separator + fileName,
-					';',ProjectManager.getContainerInstance().getDataModel(getProjectId()),XCSVExportJob.REFINED_DATA);
+					';',ProjectManager.getContainerInstance().getDataModel(getProjectID()),XCSVExportJob.REFINED_DATA);
 			if(!addJob(export)){
 				return Status.CANCEL_STATUS;
 			}
@@ -161,7 +170,7 @@ public class Run extends XstamppJob{
 		}
 		for(int i= 0;i<this.xslMap.length && this.exportImages;i+=2){
 			fileName = this.xslMap[i] +".png";
-			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
+			ExportJob job = new ExportJob(getProjectID(), getJobName(fileName), 
 											this.dir+ IMAGE_DIR + File.separator + fileName,  
 										 	this.xslMap[i+1], true, false);
 			job.setPageFormat(exportImagesFormat);
@@ -173,7 +182,7 @@ public class Run extends XstamppJob{
 		}
 		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedIMGs;i+=2){
 			fileName = this.xstpaXslMap[i] +".png";
-			ExportJob job = new ExportJob(getProjectId(), getJobName(fileName), 
+			ExportJob job = new ExportJob(getProjectID(), getJobName(fileName), 
 											this.dir+ EX_IMAGE_DIR + File.separator + fileName,  
 										 	this.xstpaXslMap[i+1], true, false);
 			job.setPageFormat(exportExtendedIMGsFormat);
@@ -186,8 +195,8 @@ public class Run extends XstamppJob{
 		if(this.exportImages || this.exportReport){
 			String csPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructure +".png";
 			String csPMPath = this.dir+ IMAGE_DIR + File.separator + Messages.ControlStructureDiagramWithProcessModel +".png";
-			CSExportJob job = new CSExportJob(csPath, 5	, CSEditor.ID, getProjectId(), false,this.decorateCS);
-			CSExportJob pmJob = new CSExportJob(csPMPath, 5	, CSEditorWithPM.ID, getProjectId(), false,this.decorateCS);
+			CSExportJob job = new CSExportJob(csPath, 5	, CSEditor.ID, getProjectID(), false,this.decorateCS);
+			CSExportJob pmJob = new CSExportJob(csPMPath, 5	, CSEditorWithPM.ID, getProjectID(), false,this.decorateCS);
 			
 			if(!addJob(job)){
 				return Status.CANCEL_STATUS;
@@ -198,7 +207,7 @@ public class Run extends XstamppJob{
 			monitor.worked(CS_IMG_WORK);
 		}
 		for(int i= 0;i<this.xslMap.length && this.exportPDFs;i+=2){
-			ExportJob pdfJob = new ExportJob(getProjectId(), "Expoting " +this.xslMap[i] +".pdf",
+			ExportJob pdfJob = new ExportJob(getProjectID(), "Expoting " +this.xslMap[i] +".pdf",
 											this.dir + PDF_DIR + File.separator + this.xslMap[i] +".pdf", //$NON-NLS-1$
 											this.xslMap[i+1], true, false);
 			pdfJob.showPreview(false);
@@ -209,7 +218,7 @@ public class Run extends XstamppJob{
 			monitor.worked(XSL_WORK);
 		}
 		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedPDFs;i+=2){
-			ExportJob pdfJob = new ExportJob(getProjectId(), "Expoting " +this.xstpaXslMap[i] +".pdf",
+			ExportJob pdfJob = new ExportJob(getProjectID(), "Expoting " +this.xstpaXslMap[i] +".pdf",
 											this.dir + EX_PDF_DIR + File.separator + this.xstpaXslMap[i] +".pdf", //$NON-NLS-1$
 											this.xstpaXslMap[i+1], true, false);
 			pdfJob.setPageFormat(exportExtendedPDFsFormat);
@@ -220,7 +229,7 @@ public class Run extends XstamppJob{
 			monitor.worked(XSL_WORK);
 		}
 		if(this.exportReport){
-			ExportJob pdfRepJob = new ExportJob(getProjectId(), getJobName("Final Report"),
+			ExportJob pdfRepJob = new ExportJob(getProjectID(), getJobName("Final Report"),
 					this.dir + getName()+".pdf", //$NON-NLS-1$
 					"/fopxsl.xsl", true, false); //$NON-NLS-1$
 			pdfRepJob.setCSDirty();
@@ -299,7 +308,7 @@ public class Run extends XstamppJob{
 					ProjectManager.getContainerInstance().callObserverValue(
 							ObserverValue.EXPORT_FINISHED);
 					ProjectManager.getContainerInstance()
-							.getDataModel(getProjectId()).prepareForSave();
+							.getDataModel(getProjectID()).prepareForSave();
 				}
 			});
 			ProjectManager.getLOGGER().debug("STPA run export finished"); //$NON-NLS-1$
@@ -387,5 +396,12 @@ public class Run extends XstamppJob{
 	public void setExportExtendedIMGs(String format) {
 		this.exportExtendedIMGs = !format.equals(AbstractExportPage.NON);
 		this.exportExtendedIMGsFormat = format;
+	}
+
+	/**
+	 * @return the projectID
+	 */
+	public UUID getProjectID() {
+		return this.projectID;
 	}
 }

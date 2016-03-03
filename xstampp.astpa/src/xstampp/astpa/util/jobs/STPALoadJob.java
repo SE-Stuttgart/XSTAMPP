@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.Observable;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -118,5 +119,10 @@ public class STPALoadJob extends AbstractLoadJob {
 
 		}
 		return Status.OK_STATUS;
+	}
+
+	@Override
+	protected Observable getModelObserver() {
+		return null;
 	}
 }

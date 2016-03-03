@@ -57,7 +57,7 @@ public class SaveJob extends XstamppJob {
 	 *            JAXBContext
 	 */
 	public SaveJob(File file, IDataModel controller) {
-		super(Messages.saveHaz, ProjectManager.getContainerInstance().getProjectID((Observable) controller));
+		super(Messages.saveHaz);
 		this.compatibilityMode = false;
 		this.file = file;
 		this.controller = controller;
@@ -65,6 +65,11 @@ public class SaveJob extends XstamppJob {
 	}
 	
 
+	@Override
+	protected Observable getModelObserver() {
+		return (Observable) controller;
+	}
+	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);

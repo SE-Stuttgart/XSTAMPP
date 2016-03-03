@@ -231,7 +231,7 @@ public class DataModelController extends Observable implements
 
 		this.exportInformation = null;
 		this.hazAccController.prepareForExport();
-		this.controlActionController.prepareForExport(this.hazAccController,this.controlStructureController);
+		this.controlActionController.prepareForExport(this.hazAccController,this.controlStructureController,ignoreLtlValue.getText());
 		this.causalFactorController.prepareForExport(this.hazAccController,
 				this.controlStructureController.getInternalComponents());
 		this.projectDataManager.prepareForExport();
@@ -1279,8 +1279,8 @@ public class DataModelController extends Observable implements
 			this.updateValue(ObserverValue.UNSAVED_CHANGES);
 	}
 	
-	public boolean isReadyForExport(){
-		return this.exportInformation != null;
+	public ExportInformation getExportInfo(){
+		return this.exportInformation;
 	}
 	@Override
 	public boolean setCSImagePath(String path) {

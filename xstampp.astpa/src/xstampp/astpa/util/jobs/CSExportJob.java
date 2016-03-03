@@ -3,6 +3,7 @@ package xstampp.astpa.util.jobs;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.util.Observable;
 import java.util.UUID;
 
 import messages.Messages;
@@ -34,6 +35,7 @@ import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import xstampp.astpa.controlstructure.figure.RootFigure;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
@@ -48,7 +50,6 @@ import xstampp.util.XstamppJob;
 public class CSExportJob extends XstamppJob {
 
 	private String path;
-	private String process;
 	private String editorId;
 	private int imageType;
 	private int imgOffset;
@@ -85,16 +86,11 @@ public class CSExportJob extends XstamppJob {
 	 */
 	public CSExportJob(String path, int imgOffset, String editorId,
 			UUID projectId, boolean showPreview, boolean decorate) {
-		super(Messages.ExportCS,projectId);
+		super(Messages.ExportCS);
 		this.projectID=projectId;
 		this.model = (IControlStructureEditorDataModel) ProjectManager
 				.getContainerInstance().getDataModel(projectId);
 		this.path = path;
-		if (editorId.equals(CSEditor.ID)) {
-			this.process = Messages.ExportingCS;
-		} else {
-			this.process = Messages.ExportingCSwithPM;
-		}
 		this.imgOffset = imgOffset;
 		this.showPreview = showPreview;
 		this.editorId = editorId;
@@ -325,6 +321,11 @@ public class CSExportJob extends XstamppJob {
 			CSExportJob.this.printableFigure = tmpFigure;
 		}
 		
+	}
+
+	@Override
+	protected Observable getModelObserver() {
+		return (DataModelController)ProjectManager.getContainerInstance().getDataModel(projectID);
 	}
 	
 	@Override

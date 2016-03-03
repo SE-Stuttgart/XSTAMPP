@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.Observable;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -109,6 +110,12 @@ public class CASTLoadJob extends AbstractLoadJob {
 
 		}
 		return Status.OK_STATUS;
+	}
+
+	@Override
+	protected Observable getModelObserver() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

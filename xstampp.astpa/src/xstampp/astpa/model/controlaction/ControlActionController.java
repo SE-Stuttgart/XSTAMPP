@@ -481,10 +481,10 @@ public class ControlActionController {
 	 *            the hazAccController to get the Accidents as objects
 	 * 
 	 */
-	public void prepareForExport(HazAccController hazAccController,ControlStructureController csController) {
+	public void prepareForExport(HazAccController hazAccController,ControlStructureController csController,String defaultLabel) {
 		moveRulesInCA();
 		for (ControlAction controlAction : this.controlActions) {
-			controlAction.prepareForExport(csController);
+			controlAction.prepareForExport(csController,defaultLabel);
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				List<ITableModel> linkedHazards = new ArrayList<>();

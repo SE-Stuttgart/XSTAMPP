@@ -90,7 +90,11 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 				
 			}
 		}
-		temp = temp.substring(0, temp.length() - andLiteral.length());
+		try{
+			temp = temp.substring(0, temp.length() - andLiteral.length());
+		}catch(Exception e){
+			
+		}
 		return temp;
 	}
 	
@@ -157,8 +161,11 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		if(!getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
 			buffer.append(" " + getType());
 		}
-		buffer.append(" when ");
-		buffer.append(getCriticalCombinations("is", "and", false, true, true));
+		String criticalString =getCriticalCombinations("is", "and", false, true, true);
+		if(!criticalString.isEmpty()){
+			buffer.append(" when ");
+			buffer.append(criticalString);
+		}
 		ruca = buffer.toString();
 	}
 
@@ -172,8 +179,11 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 			buffer.append(" must not be provided ");
 			buffer.append(getType());
 		}
-		buffer.append(" when ");
-		buffer.append(getCriticalCombinations("=", "and", false, false, true));
+		String criticalString =getCriticalCombinations("=", "and", false, false, true);
+		if(!criticalString.isEmpty()){
+			buffer.append(" when ");
+			buffer.append(criticalString);
+		}
 		refinedRule = buffer.toString();
 	}
 
@@ -186,8 +196,11 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 			buffer.append(" must not be provided ");
 			buffer.append(getType());
 		}
-		buffer.append(" when ");
-		buffer.append(getCriticalCombinations("is", "and", false, true, true));
+		String criticalString =getCriticalCombinations("is", "and", false, true, true);
+		if(!criticalString.isEmpty()){
+			buffer.append(" when ");
+			buffer.append(criticalString);
+		}
 		constraint = buffer.toString();
 	}
 	

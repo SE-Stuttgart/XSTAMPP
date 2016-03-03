@@ -27,8 +27,6 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
-import xstampp.astpa.model.controlstructure.components.Component;
-import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.model.ILTLProvider;
 
 /**
@@ -463,24 +461,31 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 *            the hazAccController to get the Accidents as objects
 	 * 
 	 */
-	public void prepareForExport(ControlStructureController csController) {
-		
+	public void prepareForExport(ControlStructureController csController,String defaultLabel) {
+
+		List<UUID> trash = new ArrayList<>();
 		if(notProvidedVariables != null){
 			notProvidedVariableNames = new ArrayList<>();
 			for(UUID id:notProvidedVariables){
 				if(csController.getComponent(id) != null){
 					notProvidedVariableNames.add(csController.getComponent(id).getText());
+				}else{
+					trash.add(id);
 				}
 			}
+			notProvidedVariables.removeAll(trash);
 		}
 		if(providedVariables != null){
-
+			trash.clear();
 			providedVariableNames = new ArrayList<>();
 			for(UUID id:providedVariables){
 				if(csController.getComponent(id) != null){
 					providedVariableNames.add(csController.getComponent(id).getText());
+				}else{
+					trash.add(id);
 				}
 			}
+			providedVariables.removeAll(trash);
 		}
 		if(notProvidedVariableNames != null && !notProvidedVariableNames.isEmpty() && valuesWhenNotProvided != null){
 			for(NotProvidedValuesCombi combie : valuesWhenNotProvided){
@@ -490,6 +495,8 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 					for(UUID id:combie.getValueList()){
 						if(csController.getComponent(id) != null){
 							list.add(csController.getComponent(id).getText());
+						}else{
+							list.add(defaultLabel);
 						}
 					}
 					combie.setValueNames(list);
@@ -506,6 +513,8 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 					for(UUID id:combie.getValueList()){
 						if(csController.getComponent(id) != null){
 							list.add(csController.getComponent(id).getText());
+						}else{
+							list.add(defaultLabel);
 						}
 					}
 					combie.setValueNames(list);
