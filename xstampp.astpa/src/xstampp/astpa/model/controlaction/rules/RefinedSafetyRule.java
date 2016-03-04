@@ -11,60 +11,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.model.controlaction.IValueCombie;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 @XmlRootElement(name = "rule")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "id",
-					   "number",
-					   "combies",
-					   "rule",
-					   "rUCA", 
-					   "rSCt", 
-					   "ltl",
-					   "type",
-					   "controlAction",
-					   "links", 
-					   "relatedUCAs", 
-					   "caID"})
-public class RefinedSafetyRule implements ILTLProvider{
+
+public class RefinedSafetyRule extends AbstractLTLProvider{
 
 	
-	@XmlElement(name="ruleID")
-	private UUID id;
 
-	@XmlElement(name="ruleNR")
-	private int number;
-
-	@XmlElement(name="criticalCombies")
-	private String combies;
-	
-	@XmlElement(name="RefinedSafetyRule")
-	private String rule;
-
-	@XmlElement(name="refinedUCA")
-	private String rUCA;
-
-	@XmlElement(name="refinedSC")
-	private String rSCt;
-
-	@XmlElement(name="ltlProp")
-	private String ltl;
-	
-	@XmlElement(name="type")
-	private String type;
-
-	@XmlElement(name="controlAction")
-	private String controlAction;
-	
-	@XmlElement(name="links")
-	private String links;
-	
-	@XmlElementWrapper(name="relatedUCAIDs")
-	@XmlElement(name="ucaID")
-	private List<UUID> relatedUCAs;
-
-	@XmlElement(name="relatedCaID")
-	private UUID caID;
 	
 	/**
 	 * 
@@ -112,19 +66,6 @@ public class RefinedSafetyRule implements ILTLProvider{
 		
 	}
 	
-	public String getType() {
-		return this.type;
-	}
-	
-	@Override
-	public List<UUID> getUCALinks(){
-		return this.relatedUCAs;
-	}
-
-	@Override
-	public String getSafetyRule() {
-		return this.rule;
-	}
 
 	/**
 	 * @param rule the rule to set
@@ -139,10 +80,7 @@ public class RefinedSafetyRule implements ILTLProvider{
 	}
 
 
-	@Override
-	public String getRefinedUCA() {
-		return this.rUCA;
-	}
+	
 
 	/**
 	 * @param refinedUCA the refinedUCA to set
@@ -157,11 +95,6 @@ public class RefinedSafetyRule implements ILTLProvider{
 	}
 
 
-	@Override
-	public String getRefinedSafetyConstraint() {
-		return this.rSCt;
-	}
-
 	/**
 	 * @param refinedSafetyConstraint the refinedSafetyConstraint to set
 	 * @return 
@@ -174,15 +107,7 @@ public class RefinedSafetyRule implements ILTLProvider{
 		return true;
 	}
 
-	@Override
-	public UUID getRuleId() {
-		return this.id;
-	}
-
-	@Override
-	public String getLtlProperty() {
-		return this.ltl;
-	}
+	
 
 	/**
 	 * @param ltlProperty the ltlProperty to set
@@ -195,20 +120,12 @@ public class RefinedSafetyRule implements ILTLProvider{
 		return true;
 	}
 
-	@Override
-	public int getNumber() {
-		return this.number;
-	}
+	
 	
 	@Override
-	public int compareTo(ILTLProvider sibling) {
+	public int compareTo(AbstractLTLProvider sibling) {
 		int sign =(int) Math.signum(getNumber() - sibling.getNumber());
 		return sign;
-	}
-
-	@Override
-	public UUID getRelatedControlActionID() {
-		return this.caID;
 	}
 
 	/**
@@ -301,8 +218,5 @@ public class RefinedSafetyRule implements ILTLProvider{
 		}
 		this.links = links;
 		return true;
-	}
-	public String getLinks() {
-		return this.links;
 	}
 }

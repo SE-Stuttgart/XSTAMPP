@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 import xstampp.astpa.Activator;
-import xstampp.util.AbstractExportPage;
-import xstampp.util.AbstractWizardPage;
+import xstampp.ui.wizards.AbstractExportPage;
+import xstampp.ui.wizards.AbstractWizardPage;
 
 /**
  * A Simple implementation of the ApstactExportPage containing elements for the

@@ -21,7 +21,7 @@ import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.util.IExportPage;
+import xstampp.ui.wizards.IExportPage;
 import acast.jobs.CastCSVExport;
 import acast.jobs.ExportJob;
 import acast.wizards.pages.CSVExportPage;

@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards.pages;
+package xstampp.ui.wizards;
 
 import messages.Messages;
 
@@ -13,10 +13,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import xstampp.astpa.Activator;
-import xstampp.util.AbstractExportPage;
-import xstampp.util.AbstractWizardPage;
-
 /**
  * a page to prepare and execute a CSV Export
  * 
@@ -27,6 +23,10 @@ public class CSVExportPage extends AbstractExportPage {
 	private char seperator;
 	private String[] filters;
 
+	public CSVExportPage(String pageName, String pluginID){
+		this(new String[]{"*.csv"}, pageName, pluginID);
+		
+	}
 	/**
 	 * @author Lukas Balzer
 	 * @param filters
@@ -34,11 +34,12 @@ public class CSVExportPage extends AbstractExportPage {
 	 * @param pageName
 	 *            the Name of this page, that is displayed in the header of the
 	 *            wizard
+	 * @param pluginID TODO
 	 * @param projectName
 	 *            The Name of the project
 	 */
-	public CSVExportPage(String[] filters, String pageName) {
-		super(pageName, Activator.PLUGIN_ID);
+	public CSVExportPage(String[] filters, String pageName, String pluginID) {
+		super(pageName,pluginID);
 		this.setTitle(pageName);
 		this.filters = filters;
 		this.setDescription(Messages.PrepareDataExport);
@@ -112,7 +113,7 @@ public class CSVExportPage extends AbstractExportPage {
 		seperatorGroup.setLayoutData(data);
 
 		this.pathChooser = new PathComposite(this.filters, control, PathComposite.PATH_DIALOG);
-
+		
 		data = new FormData();
 		data.top = new FormAttachment(seperatorGroup,
 				AbstractWizardPage.COMPONENT_OFFSET);

@@ -1,4 +1,4 @@
-package xstampp.util;
+package xstampp.ui.wizards;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -373,6 +373,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	 * @author Sebastian Sieber,Lukas Balzer
 	 * @param filters
 	 *            the file extensions, which shall be excepted by in the dialog
+	 * @param nameSuggestion suggestion for the name that should be choosen for the file
 	 * 
 	 */
 	protected String openExportDialog(String[] filters, String[] names) {
@@ -522,7 +523,6 @@ public abstract class AbstractWizardPage extends WizardPage {
 		private Button pathButton;
 		private final Text path;
 		private final Label labelExport;
-		private String nameSuggestion;
 		private String[] filter;
 		private String[] filterNames;
 		private int dialogStyle;
@@ -655,20 +655,6 @@ public abstract class AbstractWizardPage extends WizardPage {
 			AbstractWizardPage.this
 					.setPageComplete(AbstractWizardPage.this
 							.checkFinish());
-		}
-
-		/**
-		 * @return the nameSuggestion
-		 */
-		public String getNameSuggestion() {
-			return this.nameSuggestion;
-		}
-
-		/**
-		 * @param nameSuggestion the nameSuggestion to set
-		 */
-		public void setNameSuggestion(String nameSuggestion) {
-			this.nameSuggestion = nameSuggestion;
 		}
 
 	}

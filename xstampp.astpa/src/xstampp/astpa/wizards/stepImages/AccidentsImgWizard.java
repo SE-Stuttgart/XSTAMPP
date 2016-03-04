@@ -1,9 +1,10 @@
 package xstampp.astpa.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.acchaz.AccidentsView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 public class AccidentsImgWizard extends AbstractExportWizard {
 
@@ -11,7 +12,7 @@ public class AccidentsImgWizard extends AbstractExportWizard {
 		super(AccidentsView.ID);
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.Accidents + Messages.AsImage));
+				Messages.Accidents + Messages.AsImage, Activator.PLUGIN_ID));
 	}
 
 	@Override

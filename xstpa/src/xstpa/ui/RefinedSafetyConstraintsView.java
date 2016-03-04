@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.ui.sds.CSCView;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 import xstpa.model.XSTPADataController;
 
@@ -30,7 +30,7 @@ public class RefinedSafetyConstraintsView extends CSCView{
 		if(getDataInterface() == null){
 			return null;
 		}
-		List<ILTLProvider> allRUCA = ((DataModelController)getDataInterface()).getAllRefinedRules();
+		List<AbstractLTLProvider> allRUCA = ((DataModelController)getDataInterface()).getAllRefinedRules();
   	    Collections.sort(allRUCA);
   	    
   	    return allRUCA;
@@ -79,28 +79,28 @@ public class RefinedSafetyConstraintsView extends CSCView{
 			return new ColumnLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "RSR1."+((ILTLProvider)element).getNumber();
+					return "RSR1."+((AbstractLTLProvider)element).getNumber();
 				}
 			};
 		case 1:
 			return new ColumnLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return ((ILTLProvider)element).getRefinedUCA();
+					return ((AbstractLTLProvider)element).getRefinedUCA();
 				}
 			};
 		case 2:
 			return new ColumnLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "RSC2."+((ILTLProvider)element).getNumber();
+					return "RSC2."+((AbstractLTLProvider)element).getNumber();
 				}
 			};
 		case 3:
 			return new ColumnLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return ((ILTLProvider)element).getRefinedSafetyConstraint();
+					return ((AbstractLTLProvider)element).getRefinedSafetyConstraint();
 				}
 			};
 			

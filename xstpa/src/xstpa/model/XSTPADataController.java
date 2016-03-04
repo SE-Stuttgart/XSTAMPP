@@ -22,7 +22,7 @@ import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 
 public class XSTPADataController extends Observable implements Observer{
@@ -375,7 +375,7 @@ public class XSTPADataController extends Observable implements Observer{
 		}
 		int total =model.getLTLPropertys().size()-1;
 		
-		List<ILTLProvider> list = new ArrayList<>(model.getLTLPropertys());
+		List<AbstractLTLProvider> list = new ArrayList<>(model.getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
 			if(!currentRSR.contains(list.get(i).getRuleId())){
 				model.removeRefinedSafetyRule(false, list.get(i).getRuleId());

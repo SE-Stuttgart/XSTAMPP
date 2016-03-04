@@ -91,7 +91,7 @@ import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.util.jobs.SaveJob;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ISafetyDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -1751,14 +1751,14 @@ public class DataModelController extends Observable implements
 		return this.ignoreLtlValue;
 	}
 	
-	public List<ILTLProvider> getAllRefinedRules(){
+	public List<AbstractLTLProvider> getAllRefinedRules(){
 		
 		return this.controlActionController.getAllRefinedRules();
 	}
 	
-	public ILTLProvider getRefinedRule(UUID id){
+	public AbstractLTLProvider getRefinedRule(UUID id){
 	
-		for(ILTLProvider rule : this.controlActionController.getAllRefinedRules()){
+		for(AbstractLTLProvider rule : this.controlActionController.getAllRefinedRules()){
 			if(rule.getLtlProperty().equals(id)){
 				return rule;
 			}
@@ -1794,7 +1794,7 @@ public class DataModelController extends Observable implements
 		boolean changed=false;
 		boolean updated = false;
 		UUID resultID = ruleID;
-		for(ILTLProvider provider: this.controlActionController.getAllRefinedRules()){
+		for(AbstractLTLProvider provider: this.controlActionController.getAllRefinedRules()){
 			if(provider.getRuleId().equals(ruleID)){
 				changed = changed ||((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
 				changed = changed ||((RefinedSafetyRule) provider).setRefinedSafetyConstraint(constraint);
@@ -1837,7 +1837,7 @@ public class DataModelController extends Observable implements
 	}
 	
 	@Override
-	public List<ILTLProvider> getLTLPropertys(){
+	public List<AbstractLTLProvider> getLTLPropertys(){
 		return getAllRefinedRules();
 	}
 

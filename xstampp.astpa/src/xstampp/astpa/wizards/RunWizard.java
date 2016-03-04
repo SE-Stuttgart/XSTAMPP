@@ -8,26 +8,20 @@ import messages.Messages;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.util.jobs.Run;
-import xstampp.astpa.wizards.pages.PdfExportPage;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
+import xstampp.ui.wizards.PdfExportPage;
 
 public class RunWizard extends AbstractExportWizard {
 
@@ -100,7 +94,7 @@ public class RunWizard extends AbstractExportWizard {
 		private Label pdfCheckbox,imgCheckbox,reportCheckbox,xstpaPDFCheckbox,xstpaIMGCheckbox;
 		
 		public RunPage(String pageName, String projectName) {
-			super(pageName, projectName, PathComposite.DIR_DIALOG);
+			super(pageName, projectName, PathComposite.DIR_DIALOG, Activator.PLUGIN_ID);
 		}
 		
 		@Override

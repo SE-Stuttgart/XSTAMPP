@@ -1,10 +1,11 @@
 package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.wizards.TableExportPage;
 
 public class ContextTablePDFWizard extends AbstractExportWizard {
 
@@ -12,7 +13,7 @@ public class ContextTablePDFWizard extends AbstractExportWizard {
 		super("");
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.ContextTables + Messages.AsPDF));
+				Messages.ContextTables + Messages.AsPDF, Activator.PLUGIN_ID));
 		
 	}
 

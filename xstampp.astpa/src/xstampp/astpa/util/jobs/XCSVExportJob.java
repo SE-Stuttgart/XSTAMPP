@@ -23,7 +23,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.model.IDataModel;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 
 public class XCSVExportJob extends Job {
 	/**
@@ -182,7 +182,7 @@ public class XCSVExportJob extends Job {
 		writer.println(Messages.LTLFormulasTable +" of project " + controller.getProjectName());
 		writer.print("ID" +seperator);
 		writer.println("LTL Formulas");
-		for(ILTLProvider provider: controller.getLTLPropertys()){
+		for(AbstractLTLProvider provider: controller.getLTLPropertys()){
 			writer.print("SSR1." +provider.getNumber() +seperator);
 			writer.println(provider.getLtlProperty());
 		}
@@ -194,7 +194,7 @@ public class XCSVExportJob extends Job {
 		writer.print("Type" +seperator);
 		writer.print("Links" +seperator);
 		writer.println(Messages.RulesTable);
-		for(ILTLProvider provider: controller.getLTLPropertys()){
+		for(AbstractLTLProvider provider: controller.getLTLPropertys()){
 			writer.print("RSR1."+provider.getNumber() +seperator);
 			writer.print(provider.getType() +seperator);
 			writer.print(provider.getLinks() +seperator);
@@ -204,9 +204,9 @@ public class XCSVExportJob extends Job {
 	}
 	private void getRUCATableString(PrintWriter writer){
 		writer.println(Messages.RefinedUnsafeControlActions + " of project " + controller.getProjectName());
-		ArrayList<ILTLProvider> list_notProvided;
-		ArrayList<ILTLProvider> list_provided;
-		ArrayList<ILTLProvider> list_wrongProvided;
+		ArrayList<AbstractLTLProvider> list_notProvided;
+		ArrayList<AbstractLTLProvider> list_provided;
+		ArrayList<AbstractLTLProvider> list_wrongProvided;
 
 		writer.print(Messages.ControlAction);
 		writer.print("Hazardous if not provided");
@@ -217,7 +217,7 @@ public class XCSVExportJob extends Job {
 			list_notProvided = new ArrayList<>();
 			list_provided = new ArrayList<>();
 			list_wrongProvided = new ArrayList<>();
-			for(ILTLProvider provider: action.getAllRefinedRules()){
+			for(AbstractLTLProvider provider: action.getAllRefinedRules()){
 				if(provider.getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
 					list_notProvided.add(provider);
 				}else if(provider.getType().equals(IValueCombie.TYPE_ANYTIME)){
@@ -260,21 +260,21 @@ public class XCSVExportJob extends Job {
 		
 		writer.println();
 	}
-	private String getLinks(List<ILTLProvider> list, int index){
+	private String getLinks(List<AbstractLTLProvider> list, int index){
 		if(index < list.size() && list.get(index).getLinks() != null){
 			return list.get(index).getLinks() + seperator;
 		}
 		return seperator;
 		
 	}
-	private String getRUCA(List<ILTLProvider> list, int index){
+	private String getRUCA(List<AbstractLTLProvider> list, int index){
 		if(index < list.size()){
 			return list.get(index).getRefinedUCA() + seperator;
 		}
 		return seperator;
 		
 	}
-	private String getRucaID(List<ILTLProvider> list, int index){
+	private String getRucaID(List<AbstractLTLProvider> list, int index){
 		if(index < list.size()){
 			return "RUCA1." +list.get(index).getNumber() + seperator;
 		}
@@ -285,7 +285,7 @@ public class XCSVExportJob extends Job {
 		writer.println(Messages.RefinedSafetyConstraintsTable + " of project " + controller.getProjectName());
 		writer.print("ID" +seperator);
 		writer.println("Refined Safety Constraint");
-		for(ILTLProvider provider: controller.getLTLPropertys()){
+		for(AbstractLTLProvider provider: controller.getLTLPropertys()){
 			writer.print("SC3." +provider.getNumber() +seperator);
 			writer.println(provider.getRefinedSafetyConstraint());
 		}

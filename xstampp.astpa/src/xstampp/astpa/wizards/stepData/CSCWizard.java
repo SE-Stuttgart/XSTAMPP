@@ -1,10 +1,11 @@
 package xstampp.astpa.wizards.stepData;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.sds.CSCView;
 import xstampp.astpa.util.jobs.ICSVExportConstants;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.CSVExportPage;
+import xstampp.ui.wizards.CSVExportPage;
 
 /**
  * 
@@ -24,7 +25,7 @@ public class CSCWizard extends AbstractExportWizard {
 		super(CSCView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$ 
 		this.setExportPage(new CSVExportPage(filters,
-				Messages.CorrespondingSafetyConstraints + Messages.AsDataSet));
+				Messages.CorrespondingSafetyConstraints + Messages.AsDataSet, Activator.PLUGIN_ID));
 	}
 
 	@Override

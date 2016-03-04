@@ -1,4 +1,4 @@
-package xstampp.util;
+package xstampp.ui.wizards;
 
 import java.io.File;
 

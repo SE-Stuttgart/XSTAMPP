@@ -13,8 +13,8 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import xstampp.astpa.Activator;
-import xstampp.util.AbstractExportPage;
-import xstampp.util.AbstractWizardPage;
+import xstampp.ui.wizards.AbstractExportPage;
+import xstampp.ui.wizards.AbstractWizardPage;
 
 /**
  * 

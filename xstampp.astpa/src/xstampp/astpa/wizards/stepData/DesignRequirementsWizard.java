@@ -1,10 +1,11 @@
 package xstampp.astpa.wizards.stepData;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.sds.DesignRequirementView;
 import xstampp.astpa.util.jobs.ICSVExportConstants;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.CSVExportPage;
+import xstampp.ui.wizards.CSVExportPage;
 
 /**
  * 
@@ -22,7 +23,7 @@ public class DesignRequirementsWizard extends AbstractExportWizard {
 		super(DesignRequirementView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$ 
 		this.setExportPage(new CSVExportPage(filters,
-				Messages.DesignRequirements + Messages.AsDataSet));
+				Messages.DesignRequirements + Messages.AsDataSet, Activator.PLUGIN_ID));
 	}
 
 	@Override

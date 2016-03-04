@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package xstampp.astpa.wizards.pages;
+package xstampp.ui.wizards;
 
 import java.util.UUID;
 
@@ -31,10 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.util.AbstractExportPage;
-import xstampp.util.AbstractWizardPage;
 
 /**
  * Create export page.
@@ -66,8 +63,8 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	 *            the name of the project
 	 * @param pathConstant TODO
 	 */
-	public PdfExportPage(String pageName, String projectName) {
-		this(pageName, projectName,PathComposite.PATH_DIALOG);
+	public PdfExportPage(String pageName, String projectName, String pluginID) {
+		this(pageName, projectName,PathComposite.PATH_DIALOG, pluginID);
 	}
 	/**
 	 * Constructor.
@@ -79,9 +76,10 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	 * @param projectName
 	 *            the name of the project
 	 * @param pathConstant TODO
+	 * @param PluginID TODO
 	 */
-	public PdfExportPage(String pageName, String projectName, int pathConstant) {
-		super(pageName, Activator.PLUGIN_ID);
+	public PdfExportPage(String pageName, String projectName, int pathConstant, String pluginID) {
+		super(pageName, pluginID);
 		this.setTitle(Messages.Export);
 		this.setDescription(Messages.SetValuesForTheExportFile);
 		this.pathConstant = pathConstant;

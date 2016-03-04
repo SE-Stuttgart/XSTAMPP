@@ -10,11 +10,12 @@ import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.util.jobs.XCSVExportJob;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.CSVExportPage;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.wizards.CSVExportPage;
 
 /**
  * 
@@ -31,7 +32,7 @@ public class RefinedUCACSVWizard extends AbstractExportWizard {
 	public RefinedUCACSVWizard() {
 		super("");
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
-		this.setExportPage(new CSVExportPage(filters, Messages.RefinedUnsafeControlActions + Messages.AsDataSet));
+		this.setExportPage(new CSVExportPage(filters, Messages.RefinedUnsafeControlActions + Messages.AsDataSet, Activator.PLUGIN_ID));
 	}
 
 	@Override

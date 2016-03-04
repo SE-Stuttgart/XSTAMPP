@@ -19,11 +19,11 @@ import org.eclipse.ui.IWorkbench;
 import xstampp.astpa.Activator;
 import xstampp.astpa.util.jobs.ExportJob;
 import xstampp.astpa.util.jobs.StpaCSVExport;
-import xstampp.astpa.wizards.pages.CSVExportPage;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.util.IExportPage;
+import xstampp.ui.wizards.CSVExportPage;
+import xstampp.ui.wizards.IExportPage;
 
 /**
  * 

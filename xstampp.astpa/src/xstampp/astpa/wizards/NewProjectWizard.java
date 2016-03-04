@@ -12,7 +12,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 import xstampp.astpa.Activator;
-import xstampp.util.NewProjectPage;
+import xstampp.ui.wizards.NewProjectPage;
 import xstampp.util.STPAPluginUtils;
 
 /**

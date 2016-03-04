@@ -24,9 +24,9 @@ public interface ISafetyDataModel{
 	 * 
 	 * @return a List with all ILTLProvider objects currently stored in that dataModel
 	 * 
-	 * @see ILTLProvider
+	 * @see AbstractLTLProvider
 	 */
-	List<ILTLProvider> getLTLPropertys();
+	List<AbstractLTLProvider> getLTLPropertys();
 	
 	/**
 	 * 

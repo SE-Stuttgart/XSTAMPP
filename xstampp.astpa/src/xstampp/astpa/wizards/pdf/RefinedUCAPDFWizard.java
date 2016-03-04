@@ -1,8 +1,9 @@
 package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 public class RefinedUCAPDFWizard extends AbstractExportWizard {
 
@@ -10,7 +11,7 @@ public class RefinedUCAPDFWizard extends AbstractExportWizard {
 		super("");
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.RefinedUnsafeControlActions + Messages.AsPDF)); //$NON-NLS-1$
+				Messages.RefinedUnsafeControlActions + Messages.AsPDF, Activator.PLUGIN_ID)); //$NON-NLS-1$
 		
 	}
 
@@ -20,3 +21,4 @@ public class RefinedUCAPDFWizard extends AbstractExportWizard {
 				"/fopRefinedUnsafeControlActions.xsl", false,Messages.RefinedUnsafeControlActions); ////$NON-NLS-1$
 	}
 }
+

@@ -27,7 +27,7 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 
 /**
  * Class representing the control action objects
@@ -384,11 +384,11 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		return false;
 	}
 	
-	public List<ILTLProvider> getAllRefinedRules(){
+	public List<AbstractLTLProvider> getAllRefinedRules(){
 		if(rules == null){
 			return new ArrayList<>();
 		}
-		ArrayList<ILTLProvider> tmp = new ArrayList<>();
+		ArrayList<AbstractLTLProvider> tmp = new ArrayList<>();
 		for (RefinedSafetyRule refinedSafetyRule : rules) {
 			tmp.add(refinedSafetyRule);
 		}

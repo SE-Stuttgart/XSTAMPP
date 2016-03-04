@@ -1,4 +1,4 @@
-package xstampp.util;
+package xstampp.ui.wizards;
 
 import java.io.File;
 import java.util.HashMap;
@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -57,6 +56,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	private String pluginID;
 	private String nameSuggestion;
 	protected String pageFormat;
+	private boolean needProjectID;
 
 	/**
 	 * 
@@ -73,6 +73,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		this.projects = new HashMap<>();
 		this.pluginID = pluginID;
 		this.pageFormat = A4_PORTRAIT;
+		this.needProjectID = true;
 	}
 
 	/**
@@ -299,10 +300,18 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		return this.pathChooser.getText();
 	}
 
+	public void setNeedProject(boolean needProjectID){
+		this.needProjectID = needProjectID;
+		
+	}
+	
+	public boolean needsAProject() {
+		return needProjectID;
+	}
 	@Override
 	public boolean checkFinish() {
 		this.setErrorMessage(null);
-		if (this.getProjectID() == null) {
+		if (this.getProjectID() == null && needProjectID) {
 			this.setErrorMessage(Messages.NoProjectSelected);
 			return false;
 		}

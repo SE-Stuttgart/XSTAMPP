@@ -1,11 +1,12 @@
 package xstampp.astpa.wizards.stepData;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.acchaz.AccidentsView;
 import xstampp.astpa.ui.acchaz.HazardsView;
 import xstampp.astpa.util.jobs.ICSVExportConstants;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.STPADataPage;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.wizards.MultiDataPage;
 
 /**
  * 
@@ -14,7 +15,7 @@ import xstampp.preferences.IPreferenceConstants;
  */
 public class STPAdataWizard extends AbstractExportWizard {
 
-	STPADataPage site;
+	MultiDataPage site;
 
 	/**
 	 * 
@@ -25,8 +26,8 @@ public class STPAdataWizard extends AbstractExportWizard {
 		super(new String[] { AccidentsView.ID, HazardsView.ID });
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 		
-		this.site = new STPADataPage(ICSVExportConstants.STEPS,filters, "Custom Data", this.getStore()
-				.getString(IPreferenceConstants.PROJECT_NAME));
+		this.site = new MultiDataPage(ICSVExportConstants.STEPS,filters, "Custom Data", this.getStore()
+				.getString(IPreferenceConstants.PROJECT_NAME), Activator.PLUGIN_ID);
 		this.setExportPage(this.site);
 	}
 

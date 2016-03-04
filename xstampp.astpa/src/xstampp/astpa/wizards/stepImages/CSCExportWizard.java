@@ -1,9 +1,10 @@
 package xstampp.astpa.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.sds.CSCView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 public class CSCExportWizard extends AbstractExportWizard {
 
@@ -11,7 +12,7 @@ public class CSCExportWizard extends AbstractExportWizard {
 		super(CSCView.ID);
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.CorrespondingSafetyConstraints + Messages.AsImage));
+				Messages.CorrespondingSafetyConstraints + Messages.AsImage, Activator.PLUGIN_ID));
 	}
 
 	@Override
@@ -20,3 +21,4 @@ public class CSCExportWizard extends AbstractExportWizard {
 				"/fopCorrespondingSafetyConstraints.xsl", false, ""); ////$NON-NLS-1$
 	}
 }
+

@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import xstampp.util.AbstractWizardPage;
+import xstampp.ui.wizards.AbstractWizardPage;
 import acast.jobs.ICSVExportConstants;
 import acast.wizards.pages.CSVExportPage;
 

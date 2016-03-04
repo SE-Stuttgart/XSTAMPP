@@ -35,7 +35,7 @@ import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 
 /**
  * Manager class for control actions.
@@ -513,7 +513,7 @@ public class ControlActionController {
 			}
 
 			
-			for(ILTLProvider rule : controlAction.getAllRefinedRules()){
+			for(AbstractLTLProvider rule : controlAction.getAllRefinedRules()){
 
 				if(rule.getUCALinks() != null){
 					StringBuffer linkString = new StringBuffer(); 
@@ -786,9 +786,9 @@ public class ControlActionController {
 		return action.removeProvidedVariable(providedVariable);
 	}
 	
-	public List<ILTLProvider> getAllRefinedRules(){
+	public List<AbstractLTLProvider> getAllRefinedRules(){
 		moveRulesInCA();
-		List<ILTLProvider> list = new ArrayList<>();
+		List<AbstractLTLProvider> list = new ArrayList<>();
 		
 		for (ControlAction controlAction : controlActions) {
 			if(controlAction.getAllRefinedRules()!=null){

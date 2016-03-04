@@ -25,6 +25,12 @@
                   name="System Description">
             </step>
             <step
+                  editorId="astpa.steps.step1_6"
+                  icon="icons/buttons/navigation/STEP1_6(16).png"
+                  id="astpa.navigation.step1_6"
+                  name="System Goals">
+            </step>
+            <step
                   editorId="astpa.steps.step1_2"
                   icon="icons/buttons/navigation/STEP1_2(16).png"
                   id="astpa.navigation.step1_2"
@@ -47,12 +53,6 @@
                   icon="icons/buttons/navigation/STEP1_5(16).png"
                   id="astpa.navigation.step1_5"
                   name="Safety Constraints">
-            </step>
-            <step
-                  editorId="astpa.steps.step1_6"
-                  icon="icons/buttons/navigation/STEP1_6(16).png"
-                  id="astpa.navigation.step1_6"
-                  name="System Goals">
             </step>
             <step
                   editorId="astpa.steps.step1_7"

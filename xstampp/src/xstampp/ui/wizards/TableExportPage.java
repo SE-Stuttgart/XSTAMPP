@@ -1,4 +1,4 @@
-package xstampp.astpa.wizards.pages;
+package xstampp.ui.wizards;
 
 import java.util.UUID;
 
@@ -13,10 +13,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import xstampp.astpa.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.util.AbstractExportPage;
-import xstampp.util.AbstractWizardPage;
 
 /**
  * Creates a Page which collects basic informations about formatting the table
@@ -29,7 +26,6 @@ public class TableExportPage extends AbstractExportPage implements
 		ModifyListener {
 	private Composite control;
 	private Button singlePage;
-	private Button multiPage;
 	private final String[] filters;
 	private DemoCanvas sampleCanvas;
 
@@ -41,9 +37,10 @@ public class TableExportPage extends AbstractExportPage implements
 	 * @param pageName
 	 *            the Name of this page, that is displayed in the header of the
 	 *            wizard
+	 * @param pluginID TODO
 	 */
-	public TableExportPage(String[] filters, String pageName) {
-		super(pageName, Activator.PLUGIN_ID);
+	public TableExportPage(String[] filters, String pageName, String pluginID) {
+		super(pageName, pluginID);
 		this.setTitle(pageName);
 		this.filters = filters;
 		this.setDescription(Messages.SetValuesForTheExportFile);
@@ -54,8 +51,11 @@ public class TableExportPage extends AbstractExportPage implements
 		this.control = new Composite(parent, SWT.NONE);
 		this.control.setLayout(new FormLayout());
 
-		Composite projectChooser = this.addProjectChooser(this.control,
-				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+		Composite projectChooser = null;
+		if(needsAProject()){
+			projectChooser = this.addProjectChooser(this.control,
+					new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+		}
 		FormData data;
 		
 		ColorChooser bgChooser = new ColorChooser(this.control, SWT.NONE,

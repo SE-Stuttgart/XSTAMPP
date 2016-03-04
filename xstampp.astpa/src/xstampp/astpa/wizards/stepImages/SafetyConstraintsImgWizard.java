@@ -1,9 +1,10 @@
 package xstampp.astpa.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.sds.SafetyConstraintView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 public class SafetyConstraintsImgWizard extends AbstractExportWizard {
 
@@ -11,7 +12,7 @@ public class SafetyConstraintsImgWizard extends AbstractExportWizard {
 		super(SafetyConstraintView.ID);
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.SafetyConstraints + Messages.AsImage));
+				Messages.SafetyConstraints + Messages.AsImage, Activator.PLUGIN_ID));
 	}
 
 	@Override

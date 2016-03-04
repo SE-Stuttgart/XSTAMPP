@@ -1,8 +1,9 @@
 package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 public class LTLPDFWizard extends AbstractExportWizard {
 
@@ -10,7 +11,7 @@ public class LTLPDFWizard extends AbstractExportWizard {
 		super("");
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.LTLFormulasTable + " " + Messages.AsPDF)); //$NON-NLS-2$
+				Messages.LTLFormulasTable + " " + Messages.AsPDF, Activator.PLUGIN_ID)); //$NON-NLS-2$
 		
 	}
 

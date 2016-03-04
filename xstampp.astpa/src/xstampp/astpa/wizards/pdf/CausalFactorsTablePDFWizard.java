@@ -1,9 +1,10 @@
 package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.causalfactors.CausalFactorsView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 /**
  * 
@@ -21,7 +22,7 @@ public class CausalFactorsTablePDFWizard extends AbstractExportWizard {
 		super(CausalFactorsView.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$
 		this.setExportPage(new TableExportPage(filters,
-				Messages.CausalFactorsTable + Messages.AsPDF));
+				Messages.CausalFactorsTable + Messages.AsPDF, Activator.PLUGIN_ID));
 	}
 
 	@Override

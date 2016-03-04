@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
@@ -36,12 +36,12 @@ public class LTLPropertiesTable extends StandartEditorPart{
 
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			if(element instanceof ILTLProvider){
+			if(element instanceof AbstractLTLProvider){
 				switch(columnIndex){
 				case 0: 
-					return  "SSR1." + ((ILTLProvider) element).getNumber();
+					return  "SSR1." + ((AbstractLTLProvider) element).getNumber();
 				case 1:
-					return  ((ILTLProvider) element).getLtlProperty();
+					return  ((AbstractLTLProvider) element).getLtlProperty();
 					
 				}
 				

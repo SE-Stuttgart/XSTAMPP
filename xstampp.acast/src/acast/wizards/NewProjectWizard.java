@@ -12,7 +12,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.util.NewProjectPage;
+import xstampp.ui.wizards.NewProjectPage;
 import xstampp.util.STPAPluginUtils;
 
 public class NewProjectWizard extends Wizard implements INewWizard {

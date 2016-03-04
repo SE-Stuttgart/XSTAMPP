@@ -1,9 +1,10 @@
 package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.sds.SafetyConstraintView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 public class SafetyConstraintsPDFWizard extends AbstractExportWizard {
 
@@ -11,7 +12,7 @@ public class SafetyConstraintsPDFWizard extends AbstractExportWizard {
 		super(SafetyConstraintView.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.SafetyConstraints + Messages.AsPDF));
+				Messages.SafetyConstraints + Messages.AsPDF, Activator.PLUGIN_ID));
 	}
 
 	@Override

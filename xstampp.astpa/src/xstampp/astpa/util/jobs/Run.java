@@ -20,7 +20,7 @@ import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.util.AbstractExportPage;
+import xstampp.ui.wizards.AbstractExportPage;
 import xstampp.util.STPAPluginUtils;
 import xstampp.util.XstamppJob;
 

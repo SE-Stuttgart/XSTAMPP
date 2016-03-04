@@ -6,13 +6,14 @@ import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.util.jobs.XCSVExportJob;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.CSVExportPage;
-import xstampp.astpa.wizards.pages.STPADataPage;
 import xstampp.model.IDataModel;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.wizards.CSVExportPage;
+import xstampp.ui.wizards.MultiDataPage;
 
 /**
  * 
@@ -21,7 +22,7 @@ import xstampp.ui.common.ProjectManager;
  */
 public class XSTPAdataWizard extends AbstractExportWizard {
 
-	STPADataPage site;
+	MultiDataPage site;
 
 	/**
 	 * 
@@ -32,8 +33,8 @@ public class XSTPAdataWizard extends AbstractExportWizard {
 		super("");
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 		
-		this.site = new STPADataPage(XCSVExportJob.STEPS,filters, "Custom Data", this.getStore()
-				.getString(IPreferenceConstants.PROJECT_NAME));
+		this.site = new MultiDataPage(XCSVExportJob.STEPS,filters, "Custom Data", this.getStore()
+				.getString(IPreferenceConstants.PROJECT_NAME), Activator.PLUGIN_ID);
 		this.setExportPage(this.site);
 	}
 

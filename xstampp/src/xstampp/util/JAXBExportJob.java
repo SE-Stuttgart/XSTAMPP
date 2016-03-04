@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.xml.sax.SAXException;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.wizards.AbstractExportPage;
 
 /**
  * Eclipse job that handles the export
@@ -109,7 +110,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 				context = getModelContent();
 				Marshaller m = context.createMarshaller();
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-				m.marshal(getModel(), this.outStream);
+				m.marshal(getModel(), System.out);
 			} catch (JAXBException e) {
 				JAXBExportJob.LOGGER.error(e.getMessage(), e);
 				return Status.OK_STATUS;

@@ -1,9 +1,10 @@
 package xstampp.astpa.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 /**
  * 
@@ -22,7 +23,7 @@ public class UCATableExportWizard extends AbstractExportWizard {
 		super(UnsafeControlActionsView.ID);
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$
 		this.exportPage = new TableExportPage(filters,
-				Messages.ExportPreferences + Messages.AsImage);
+				Messages.ExportPreferences + Messages.AsImage, Activator.PLUGIN_ID);
 		this.setExportPage(this.exportPage);
 	}
 

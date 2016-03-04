@@ -14,7 +14,7 @@ import xstampp.astpa.ui.common.grid.GridCellColored;
 import xstampp.astpa.ui.common.grid.GridCellText;
 import xstampp.astpa.ui.common.grid.GridRow;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
-import xstampp.model.ILTLProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.XSTPADataController;
@@ -48,10 +48,10 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 			}
 		}
 		
-			ArrayList<ILTLProvider> allNotProvidedRUCA = new ArrayList<>();
-	  	    ArrayList<ILTLProvider> allProvidedRUCA = new ArrayList<>();
-	  	    ArrayList<ILTLProvider> allWrongTimedRUCA = new ArrayList<>();
-	  	    List<ILTLProvider> refinedEntrys = dataController.getModel().getAllRefinedRules();
+			ArrayList<AbstractLTLProvider> allNotProvidedRUCA = new ArrayList<>();
+	  	    ArrayList<AbstractLTLProvider> allProvidedRUCA = new ArrayList<>();
+	  	    ArrayList<AbstractLTLProvider> allWrongTimedRUCA = new ArrayList<>();
+	  	    List<AbstractLTLProvider> refinedEntrys = dataController.getModel().getAllRefinedRules();
 	  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
 	  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
 	  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
@@ -61,7 +61,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	  	    	allProvidedRUCA.clear();
 	  	    	allWrongTimedRUCA.clear();
 	  	    	
-	  			for (ILTLProvider provider : refinedEntrys) {
+	  			for (AbstractLTLProvider provider : refinedEntrys) {
 	  				if(provider.getRelatedControlActionID().equals(ca.getId())){
 	  					switch(provider.getType()){
 	  					case IValueCombie.TYPE_NOT_PROVIDED :
@@ -104,9 +104,9 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 					controlActionRow.addChildRow(ucaRow);
 					controlActionRow.addChildRow(linkRow);
 
-					ILTLProvider notGivenUca = null;
-					ILTLProvider incorrectUca = null;
-					ILTLProvider timingUca = null;
+					AbstractLTLProvider notGivenUca = null;
+					AbstractLTLProvider incorrectUca = null;
+					AbstractLTLProvider timingUca = null;
 					
 					if (allNotProvidedRUCA.size() > i ) {
 						notGivenUca = allNotProvidedRUCA.get(i);
@@ -152,7 +152,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	  	    
 	}
 
-	private void addRUCA(GridRow idRow,GridRow ucaRow,GridRow linkRow,ILTLProvider provider){
+	private void addRUCA(GridRow idRow,GridRow ucaRow,GridRow linkRow,AbstractLTLProvider provider){
 		String links = "";
 		
 		for (IUCAHazLink ucaLink: dataController.getModel().getAllUCALinks()) {

@@ -1,9 +1,10 @@
 package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.sds.SystemGoalView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.TableExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 public class SystemGoalsPDFWizard extends AbstractExportWizard {
 
@@ -11,7 +12,7 @@ public class SystemGoalsPDFWizard extends AbstractExportWizard {
 		super(SystemGoalView.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				Messages.SystemGoals + Messages.AsPDF));
+				Messages.SystemGoals + Messages.AsPDF, Activator.PLUGIN_ID));
 	}
 
 	@Override

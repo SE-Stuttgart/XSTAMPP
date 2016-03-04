@@ -13,13 +13,14 @@
 
 package xstampp.astpa.wizards.pdf;
 
+import messages.Messages;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import messages.Messages;
 import xstampp.Activator;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.PdfExportPage;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.wizards.PdfExportPage;
 
 /**
  * Creates wizard for export.
@@ -40,7 +41,7 @@ public class PdfExportWizard extends AbstractExportWizard {
 		super();
 		String projectName = this.getStore().getString(
 				IPreferenceConstants.PROJECT_NAME);
-		this.page = new PdfExportPage("PDF Report", projectName);
+		this.page = new PdfExportPage("PDF Report", projectName,Activator.PLUGIN_ID);
 		this.setExportPage(this.page);
 	}
 

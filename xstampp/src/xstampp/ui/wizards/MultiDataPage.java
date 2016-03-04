@@ -2,13 +2,10 @@
  * 
  * @author Lukas Balzer
  */
-package xstampp.astpa.wizards.pages;
+package xstampp.ui.wizards;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import messages.Messages;
 
@@ -24,15 +21,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import xstampp.astpa.util.jobs.ICSVExportConstants;
-import xstampp.util.AbstractWizardPage;
-
 /**
  * 
  * @author Lukas Balzer
  * 
  */
-public class STPADataPage extends CSVExportPage {
+public class MultiDataPage extends CSVExportPage {
 
 	private Composite control;
 	private List<Button> steps;
@@ -47,9 +41,10 @@ public class STPADataPage extends CSVExportPage {
 	 *            wizard
 	 * @param projectName
 	 *            The Name of the project
+	 * @param pluginID TODO
 	 */
-	public STPADataPage(ArrayList<String> expOptions, String[] filters, String pageName, String projectName) {
-		super(filters, pageName);
+	public MultiDataPage(ArrayList<String> expOptions, String[] filters, String pageName, String projectName, String pluginID) {
+		super(filters, pageName, pluginID);
 		this.setTitle(pageName);
 		this.stepViews = expOptions;
 		
@@ -77,7 +72,7 @@ public class STPADataPage extends CSVExportPage {
 			stepButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					STPADataPage.this.setPageComplete(checkFinish());
+					MultiDataPage.this.setPageComplete(checkFinish());
 				}
 			});
 			// each button is mapped to a view id, so it can later be tracked
@@ -91,7 +86,7 @@ public class STPADataPage extends CSVExportPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				for (Button selector : STPADataPage.this.steps) {
+				for (Button selector : MultiDataPage.this.steps) {
 					selector.setSelection(true);
 				}
 			}
@@ -109,7 +104,7 @@ public class STPADataPage extends CSVExportPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				for (Button selector : STPADataPage.this.steps) {
+				for (Button selector : MultiDataPage.this.steps) {
 					selector.setSelection(false);
 				}
 			}

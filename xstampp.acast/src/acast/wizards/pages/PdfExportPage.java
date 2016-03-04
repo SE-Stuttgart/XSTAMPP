@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.util.AbstractExportPage;
-import xstampp.util.AbstractWizardPage;
+import xstampp.ui.wizards.AbstractExportPage;
+import xstampp.ui.wizards.AbstractWizardPage;
 import acast.Activator;
 
 /**
