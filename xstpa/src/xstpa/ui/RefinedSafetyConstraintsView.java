@@ -84,11 +84,6 @@ public class RefinedSafetyConstraintsView extends CSCView{
 			};
 		case 1:
 			return new CSCLabelProvider(){
-				@Override
-				public Color getBackground(Object element) {
-					
-					return super.getBackground(element);
-				}
 				
 				@Override
 				public String getText(Object element) {
@@ -99,7 +94,7 @@ public class RefinedSafetyConstraintsView extends CSCView{
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "RSC2."+((AbstractLTLProvider)element).getNumber();
+					return "SC2."+((AbstractLTLProvider)element).getNumber();
 				}
 			};
 		case 3:

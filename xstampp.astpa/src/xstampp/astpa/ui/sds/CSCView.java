@@ -442,7 +442,7 @@ public class CSCView extends StandartEditorPart{
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "SR1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
+					return "SC1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
 							.getId());
 				}
 			};

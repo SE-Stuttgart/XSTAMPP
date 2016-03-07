@@ -224,7 +224,7 @@ public class SafetyConstraintView extends CommonTableView {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof SafetyConstraint) {
-					return "SR0." + Integer.toString(((SafetyConstraint) element)
+					return "SC0." + Integer.toString(((SafetyConstraint) element)
 							.getNumber());
 				}
 				return null;

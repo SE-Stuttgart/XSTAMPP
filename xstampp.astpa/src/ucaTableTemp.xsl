@@ -342,7 +342,7 @@
 				<fo:table-row>
            <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">No.</fo:block>
+						<fo:block font-weight="bold">ID</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Safety Constraint</fo:block>
@@ -367,7 +367,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block>
-										<xsl:value-of select="number" />
+										SC0.<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -674,9 +674,13 @@
       <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
-			<fo:table-column column-number="1" column-width="50%"
+			<fo:table-column column-number="1" column-width="10%"
 				border-style="none" />
-			<fo:table-column column-number="2" column-width="50%"
+			<fo:table-column column-number="2" column-width="40%"
+				border-style="none" />
+			<fo:table-column column-number="1" column-width="10%"
+				border-style="none" />
+			<fo:table-column column-number="2" column-width="40%"
 				border-style="none" />
 			<fo:table-header border="none" background-color="#1A277A"
 				color="#FFFFFF">
@@ -686,8 +690,20 @@
 				<fo:table-row>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">
-                     <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+                     		<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+						   ID
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding="3px">
+						<fo:block font-weight="bold">
+                     		<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 						   Unsafe Control Actions
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding="3px">
+						<fo:block font-weight="bold">
+                     		<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+						   ID
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
@@ -714,7 +730,19 @@
 									<fo:table-cell padding="3px">
 										<fo:block>
 										   <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
+											UCA1.<xsl:value-of select="identifier" />
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell padding="3px">
+										<fo:block>
+										   <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 											<xsl:value-of select="description" />
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell padding="3px">
+										<fo:block>
+										   <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
+											SC1.<xsl:value-of select="identifier" />
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell padding="3px">
@@ -1217,7 +1245,7 @@
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block color="#820000">
-								<xsl:value-of select="identifier" />
+								UCA1.<xsl:value-of select="identifier" />
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

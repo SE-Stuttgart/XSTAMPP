@@ -128,7 +128,7 @@
 											<fo:table-cell padding="3px">
 												<fo:block>
 												   <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
-													RSC2.<xsl:value-of select="ruleNR" />
+													SC2.<xsl:value-of select="ruleNR" />
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell padding="3px">

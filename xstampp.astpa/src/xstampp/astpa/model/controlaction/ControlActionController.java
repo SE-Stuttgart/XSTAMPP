@@ -500,7 +500,7 @@ public class ControlActionController {
 					linkString.append(Messages.ControlActionController_NotHazardous);
 				} else {
 
-					id = "UCA1."+getUCANumber(unsafeControlAction.getId());
+					id = Integer.toString(getUCANumber(unsafeControlAction.getId()));
 					for (int i = 0;i < linkedHazards.size(); i++) {
 						if (i != 0) {
 							linkString.append(","); //$NON-NLS-1$
