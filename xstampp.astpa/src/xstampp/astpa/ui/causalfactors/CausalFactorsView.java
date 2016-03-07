@@ -90,7 +90,7 @@ public class CausalFactorsView extends StandartEditorPart{
 		
 		public SafetyConstraintEditorCell(GridWrapper gridWrapper,
 				String initialText, ICausalFactor factor) {
-			super(gridWrapper, initialText,false);
+			super(gridWrapper, initialText,true);
 			this.factorId = factor.getId();
 			this.factor = factor;
 			this.safetyConstraintId = factor.getSafetyConstraint().getId();
@@ -98,13 +98,13 @@ public class CausalFactorsView extends StandartEditorPart{
 
 		@Override
 		public void updateDataModel(String newText) {
-			dataInterface.setCausalSafetyConstraintText(factorId, newText);
+			dataInterface.setCausalSafetyConstraintText(safetyConstraintId, newText);
 			
 		}
 		
 		@Override
 		public void delete() {
-			// a safety constraint cannot be deleted
+			dataInterface.setCausalSafetyConstraintText(safetyConstraintId, "");
 			
 		}
 		@Override
