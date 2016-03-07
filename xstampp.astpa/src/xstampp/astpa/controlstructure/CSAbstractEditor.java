@@ -696,10 +696,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 					.getImage(ISharedImages.IMG_TOOL_FORWARD));
 			this.redo.setGrayed(false);
 			this.redo.setEnabled(true);
+			this.redo.addMouseListener(this);
 
 		} else {
 			this.redo.setGrayed(true);
 			this.redo.setEnabled(false);
+			this.redo.removeMouseListener(this);
 
 		}
 
