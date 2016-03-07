@@ -17,6 +17,7 @@ import java.util.Observable;
 
 import messages.Messages;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -47,6 +48,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
+import xstampp.astpa.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -73,12 +75,10 @@ public abstract class CommonTableView extends StandartEditorPart {
 	private TableViewerColumn idColumn;
 	private TableViewerColumn titleColumn;
 	private Button addNewItemButton;
-	private Button deleteItemsButton;
-	private Button deleteAllItemsButton;
 	private ATableFilter filter;
 	private Text filterTextField;
 
-	private Composite parent;
+
 
 	/**
 	 * 
@@ -269,28 +269,6 @@ public abstract class CommonTableView extends StandartEditorPart {
 	public void setAddNewItemButton(Button addNewItemButton) {
 		this.addNewItemButton = addNewItemButton;
 	}
-
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return the delete button
-	 */
-	public Button getDeleteItemsButton() {
-		return this.deleteItemsButton;
-	}
-
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @param deleteItemsButton
-	 *            the delete button
-	 */
-	public void setDeleteItemsButton(Button deleteItemsButton) {
-		this.deleteItemsButton = deleteItemsButton;
-	}
-
 	/**
 	 * 
 	 * @author Jarkko Heidenwag
@@ -363,7 +341,6 @@ public abstract class CommonTableView extends StandartEditorPart {
 	 */
 	public void createCommonTableView(Composite parent, String tableHeader) {
 		
-		this.parent = parent;
 
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
 
@@ -417,32 +394,56 @@ public abstract class CommonTableView extends StandartEditorPart {
 		this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
 		this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 				true, false));
-		this.buttonComposite.setLayout(new GridLayout(3, true));
-
-		// the Button for adding new items
-		this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);
-
+		this.buttonComposite.setLayout(new GridLayout(5, true));
 		GridData gridData = new GridData(SWT.NONE, SWT.NONE, false, false);
 		final int buttonSize = 46;
 		gridData.widthHint = buttonSize;
 		gridData.heightHint = buttonSize;
-		this.addNewItemButton.setLayoutData(gridData);
-
+		
+		
+		// the Button for adding new items
+			this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);
+			this.addNewItemButton.setLayoutData(gridData);
+			this.addNewItemButton.setImage(
+					Activator.getImageDescriptor(
+							"/icons/buttons/commontables/add.png") //$NON-NLS-1$
+							.createImage());
+		
 		// the Button for deleting selected items
-		this.deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
+			Button deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
+			deleteItemsButton.setLayoutData(gridData);
+			deleteItemsButton.setImage(
+					Activator.getImageDescriptor(
+							"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
+							.createImage());
+	
+			deleteItemsButton.addListener(SWT.Selection, new Listener() {
+	
+				@Override
+				public void handleEvent(Event event) {
+					CommonTableView.this.deleteItems();
+				}
+			});
 
-		this.deleteItemsButton.setLayoutData(gridData);
+		// the Button for deleting all items
+			Button deleteAllButton = new Button(this.buttonComposite, SWT.PUSH);
+			deleteAllButton.setLayoutData(gridData);
 
-		Listener deleteItemListener = new Listener() {
+			deleteAllButton.addListener(SWT.Selection,  new Listener() {
 
-			@Override
-			public void handleEvent(Event event) {
-				CommonTableView.this.deleteItems();
-			}
-		};
-
-		this.deleteItemsButton.addListener(SWT.Selection, deleteItemListener);
-
+				@Override
+				public void handleEvent(Event event) {
+					if(MessageDialog.openConfirm(getEditorSite().getShell(),
+							"Delete All Entrys?", "Do you really want to delete all Entrys?")){
+						CommonTableView.this.deleteAllItems();
+					}
+				}
+			});
+			deleteAllButton.setImage(
+					Activator.getImageDescriptor(
+							"/icons/buttons/commontables/removeAll.png") //$NON-NLS-1$
+							.createImage());
+				
 		Composite rightHeadComposite = new Composite(textContainer, SWT.NONE);
 		rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
 				false));
@@ -562,6 +563,8 @@ public abstract class CommonTableView extends StandartEditorPart {
 				tableComposite };
 		this.tableContainer.setTabList(controls);
 	}
+
+	protected abstract void deleteAllItems();
 
 	/**
 	 * @author Jarkko Heidenwag

@@ -48,7 +48,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
@@ -105,15 +104,6 @@ public class AccidentsView extends CommonTableView {
 
 		this.setFilter(new ATableFilter());
 		this.getTableViewer().addFilter(this.getFilter());
-
-		this.getAddNewItemButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/add.png") //$NON-NLS-1$
-						.createImage());
-		this.getDeleteItemsButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
-						.createImage());
 
 		Listener addAccidentListener = new Listener() {
 
@@ -389,8 +379,8 @@ public class AccidentsView extends CommonTableView {
 		}
 	}
 
-	private void delOne(boolean b, UUID id) {
-		if (b) {
+	private void delOne(boolean shouldDelete, UUID id) {
+		if (shouldDelete) {
 			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 			AccidentsView.this.displayedAccident = null;
 			this.dataInterface.removeAccident(id);
@@ -523,6 +513,13 @@ public class AccidentsView extends CommonTableView {
 	public void dispose() {
 		this.dataInterface.deleteObserver(this);
 		super.dispose();
+	}
+
+	@Override
+	protected void deleteAllItems() {
+		for(ITableModel model: this.dataInterface.getAllAccidents()){
+			delOne(true, model.getId());
+		}
 	}
 
 }

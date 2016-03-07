@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
@@ -111,15 +112,6 @@ public class ControlActionView extends CommonTableView {
 
 		this.setFilter(new ATableFilter());
 		this.getTableViewer().addFilter(this.getFilter());
-
-		this.getAddNewItemButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/add.png") //$NON-NLS-1$
-						.createImage());
-		this.getDeleteItemsButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
-						.createImage());
 
 		Listener addControlActionListener = new Listener() {
 
@@ -585,5 +577,12 @@ public class ControlActionView extends CommonTableView {
 	public void dispose() {
 		this.dataInterface.deleteObserver(this);
 		super.dispose();
+	}
+
+	@Override
+	protected void deleteAllItems() {
+		for(ITableModel model: this.dataInterface.getAllControlActions()){
+			this.dataInterface.removeControlAction(model.getId());
+		}
 	}
 }

@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.ui.acchaz.ATableFilter;
@@ -104,15 +105,6 @@ public class SystemGoalView extends CommonTableView {
 
 		this.setFilter(new ATableFilter());
 		this.getTableViewer().addFilter(this.getFilter());
-
-		this.getAddNewItemButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/add.png") //$NON-NLS-1$
-						.createImage());
-		this.getDeleteItemsButton().setImage(
-				Activator.getImageDescriptor(
-						"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
-						.createImage());
 
 		Listener addSystemGoalListener = new Listener() {
 
@@ -497,5 +489,12 @@ public class SystemGoalView extends CommonTableView {
 	public void dispose() {
 		this.dataInterface.deleteObserver(this);
 		super.dispose();
+	}
+
+	@Override
+	protected void deleteAllItems() {
+		for(ITableModel model: this.dataInterface.getAllSystemGoals()){
+			this.dataInterface.removeSystemGoal(model.getId());
+		}
 	}
 }
