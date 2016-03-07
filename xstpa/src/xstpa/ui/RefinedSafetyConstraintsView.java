@@ -6,7 +6,7 @@ import java.util.Observable;
 
 import messages.Messages;
 
-import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.swt.graphics.Color;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.ui.sds.CSCView;
@@ -26,7 +26,7 @@ public class RefinedSafetyConstraintsView extends CSCView{
 		this.headers[3] = getTitle();
 	}
 	@Override
-	protected Object getInput() {
+	protected List<?> getInput() {
 		if(getDataInterface() == null){
 			return null;
 		}
@@ -72,32 +72,38 @@ public class RefinedSafetyConstraintsView extends CSCView{
 	}
 	
 	@Override
-	protected ColumnLabelProvider getColumnProvider(int columnIndex) {
+	protected CSCLabelProvider getColumnProvider(int columnIndex) {
 
 		switch(columnIndex){
 		case 0: 
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
 					return "RSR1."+((AbstractLTLProvider)element).getNumber();
 				}
 			};
 		case 1:
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
+				@Override
+				public Color getBackground(Object element) {
+					
+					return super.getBackground(element);
+				}
+				
 				@Override
 				public String getText(Object element) {
 					return ((AbstractLTLProvider)element).getRefinedUCA();
 				}
 			};
 		case 2:
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
 					return "RSC2."+((AbstractLTLProvider)element).getNumber();
 				}
 			};
 		case 3:
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
 					return ((AbstractLTLProvider)element).getRefinedSafetyConstraint();

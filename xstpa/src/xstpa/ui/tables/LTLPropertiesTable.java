@@ -1,16 +1,19 @@
 package xstpa.ui.tables;
 
+import java.util.List;
 import java.util.Observable;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -26,14 +29,21 @@ import xstpa.ui.View;
 
 public class LTLPropertiesTable extends StandartEditorPart{
 	private class LtlViewLabelProvider extends LabelProvider implements
-	ITableLabelProvider{
+	ITableLabelProvider,IColorProvider{
 		
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 
 			return null;
 		}
-
+		@Override
+		public Color getBackground(Object element) {
+			int index = ((List<?>)ltlViewer.getInput()).indexOf(element);
+			if(index % 2 == 0){
+				return new Color(null, 230,230,230);
+			}
+			return new Color(null, 255,255,255);
+		}
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			if(element instanceof AbstractLTLProvider){
@@ -46,6 +56,11 @@ public class LTLPropertiesTable extends StandartEditorPart{
 				}
 				
 			}
+			return null;
+		}
+		@Override
+		public Color getForeground(Object element) {
+			// TODO Auto-generated method stub
 			return null;
 		}
 	}

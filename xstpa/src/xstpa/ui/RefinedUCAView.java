@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.swt.graphics.Color;
+
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.model.DataModelController;
@@ -20,6 +23,7 @@ import xstpa.model.ControlActionEntry;
 import xstpa.model.XSTPADataController;
 
 public class RefinedUCAView extends UnsafeControlActionsView {
+	
 	
 	private static final String ID = "xstpa.editors.refinedUCA";
 	private XSTPADataController dataController;

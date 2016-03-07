@@ -13,6 +13,7 @@
 
 package xstampp.astpa.ui.sds;
 
+import java.util.List;
 import java.util.Observable;
 
 import messages.Messages;
@@ -37,6 +38,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -60,7 +62,17 @@ import xstampp.ui.editors.StandartEditorPart;
  * 
  */
 public class CSCView extends StandartEditorPart{
-
+	
+	protected class CSCLabelProvider extends ColumnLabelProvider{
+		@Override
+		public Color getBackground(Object element) {
+			int index = ((List<?>)tableViewer.getInput()).indexOf(element);
+			if(index % 2 == 0){
+				return new Color(null, 230,230,230);
+			}
+			return new Color(null, 255,255,255);
+		}
+	}
 	/**
 	 * @author Jarkko Heidenwag
 	 * 
@@ -334,10 +346,11 @@ public class CSCView extends StandartEditorPart{
 		}
 	}
 	
+	
 	protected ICorrespondingSafetyConstraintDataModel getDataInterface(){
 		return dataInterface;
 	}
-	protected Object getInput() {
+	protected List<?> getInput() {
 		return this.dataInterface.getAllUnsafeControlActions();
 	}
 	/**
@@ -407,10 +420,10 @@ public class CSCView extends StandartEditorPart{
 		super.dispose();
 	}
 
-	protected ColumnLabelProvider getColumnProvider(int columnIndex){
+	protected CSCLabelProvider getColumnProvider(int columnIndex){
 		switch(columnIndex){
 		case 0: 
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
 					return "UCA1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
@@ -418,7 +431,7 @@ public class CSCView extends StandartEditorPart{
 				}
 			};
 		case 1:
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
 					return ((ICorrespondingUnsafeControlAction) element)
@@ -426,7 +439,7 @@ public class CSCView extends StandartEditorPart{
 				}
 			};
 		case 2:
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
 					return "SR1."+ CSCView.this.dataInterface.getUCANumber(((ICorrespondingUnsafeControlAction) element)
@@ -434,7 +447,7 @@ public class CSCView extends StandartEditorPart{
 				}
 			};
 		case 3:
-			return new ColumnLabelProvider(){
+			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
 					return ((ICorrespondingUnsafeControlAction) element)
