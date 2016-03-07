@@ -16,22 +16,31 @@ import javax.xml.transform.stream.StreamSource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.JAXBExportJob;
 
 /**
- * Eclipse job that handles the export
+ * Eclipse job that handles the export, by extending the JaxbExportJob defined in xstampp
+ * with the additional creation of a temporary image of the control structure and the control structure
+ * with process model
+ * therefore the model is assumed to be an IControlStructureDataModel
+ * <p/>
+ * <i>possible substitutes should also be aware that the function</i> {@link #canExport()}<br>
+ * <i>should be overwritten as well to prevent class cast a exception</i> 
  * 
  * @author Fabian Toth,Lukas Balzer
  * @since 2.0
  * 
+ * @see IControlStructureDataModel
+ * 
  */
-public class ExportJob extends JAXBExportJob implements IJobChangeListener {
+public class ExportJob extends JAXBExportJob{
 
 	private final boolean decorate;
 	private String imgPath;
@@ -81,11 +90,17 @@ public class ExportJob extends JAXBExportJob implements IJobChangeListener {
 	public void setCSDirty(){
 		this.isCsDirty= true;
 	}
+	protected boolean canExport(){
+		return ((DataModelController)getModel()).getExportInfo() == null;
+		
+	}
+	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 
-		while(((DataModelController)getModel()).getExportInfo() == null){
+		
+		while(canExport()){
 			if(monitor.isCanceled()){
 				return Status.CANCEL_STATUS;
 			}
@@ -104,8 +119,8 @@ public class ExportJob extends JAXBExportJob implements IJobChangeListener {
 			csExport.getPrintableRoot();
 			csPmExport.getPrintableRoot();
 
-			((DataModelController) getModel()).setCSImagePath(this.csPath.getPath());
-			((DataModelController) getModel()).setCSPMImagePath(this.csPmPath.getPath());
+			((IControlStructureEditorDataModel) getModel()).setCSImagePath(this.csPath.getPath());
+			((IControlStructureEditorDataModel) getModel()).setCSPMImagePath(this.csPmPath.getPath());
 		}
 
 		return super.run(monitor);
@@ -123,7 +138,7 @@ public class ExportJob extends JAXBExportJob implements IJobChangeListener {
 
 	@Override
 	protected Observable getModelObserver() {
-		return (DataModelController)getModel();
+		return (Observable)getModel();
 	}
 	
 	public UUID getProjectId() {
@@ -159,5 +174,24 @@ public class ExportJob extends JAXBExportJob implements IJobChangeListener {
 	public void setExportAddition(Object exportAddition) {
 		this.exportAddition = exportAddition;
 	}
-	
+	@Override
+	protected void canceling() {
+		if(this.csPath != null){
+			ExportJob.this.csPath.deleteOnExit();
+		}
+		if(this.csPmPath != null){
+			this.csPmPath.deleteOnExit();
+		}
+		super.canceling();
+	}
+
+	@Override
+	public void done(IJobChangeEvent event) {
+		if(this.csPath != null && this.csPath.exists()){
+			this.csPath.delete();
+		}if(this.csPmPath != null && this.csPath.exists()){
+			this.csPmPath.delete();
+		}
+		super.done(event);
+	}
 }

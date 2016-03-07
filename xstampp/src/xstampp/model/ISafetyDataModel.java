@@ -33,4 +33,12 @@ public interface ISafetyDataModel{
 	 * @return a map containing value lists mapped to their variables
 	 */
 	Map<String,List<String>> getValuesTOVariables();
+	
+	/**
+	 *
+	 * @author Lukas Balzer
+	 *
+	 * @return returns the project Name <b>must not be null</b>
+	 */
+	String getProjectName();
 }

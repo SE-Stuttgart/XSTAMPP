@@ -8,17 +8,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -34,7 +30,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.xml.sax.SAXException;
 
@@ -60,8 +55,6 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 	private float textSize,titleSize,tableHeadSize;
 	private String pageFormat = AbstractExportPage.A4_PORTRAIT;
 	private String  pdfTitle="";
-	private File csPath;
-	private File csPmPath;
 	/**
 	 * the xslfoTransormer is beeing related to the xsl which describes the
 	 * pdf export
@@ -110,7 +103,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 				context = getModelContent();
 				Marshaller m = context.createMarshaller();
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-				m.marshal(getModel(), System.out);
+				m.marshal(getModel(), this.outStream);
 			} catch (JAXBException e) {
 				JAXBExportJob.LOGGER.error(e.getMessage(), e);
 				return Status.OK_STATUS;
@@ -243,12 +236,6 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 		if(this.xslfoTransformer != null){
 			this.xslfoTransformer.reset();
 		}
-		if(this.csPath != null){
-			JAXBExportJob.this.csPath.deleteOnExit();
-		}
-		if(this.csPmPath != null){
-			JAXBExportJob.this.csPmPath.deleteOnExit();
-		}
 		super.canceling();
 	}
 	
@@ -256,17 +243,10 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 		this.enablePreview = preview;
 	}
 
-	@Override
-	public void done(IJobChangeEvent event) {
-		if(JAXBExportJob.this.csPath != null && JAXBExportJob.this.csPath.exists()){
-			JAXBExportJob.this.csPath.delete();
-		}if(JAXBExportJob.this.csPmPath != null && JAXBExportJob.this.csPath.exists()){
-			JAXBExportJob.this.csPmPath.delete();
-		}
-		super.done(event);
-	}
-
 	/**
+	 * one of the two constants {@link AbstractExportPage#A4_PORTRAIT} or {@link AbstractExportPage#A4_LANDSCAPE}
+	 *  defined in AbstractExportPage
+	 * 
 	 * @param pageFormat the pageFormat to set
 	 */
 	public void setPageFormat(String pageFormat) {

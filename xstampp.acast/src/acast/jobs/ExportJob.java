@@ -49,6 +49,10 @@ public class ExportJob extends xstampp.astpa.util.jobs.ExportJob {
 	}
 
 	@Override
+	protected boolean canExport() {
+		return false;
+	}
+	@Override
 	protected Object getModel() {
 		return ProjectManager.getContainerInstance().getDataModel(getProjectId());
 	}

@@ -46,7 +46,19 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		IExportPage {
 
 	public static final String EXPORT_DATA = "Export data";
+	
+	/**
+	 * a constant which is used by a {@link JAXBExportJob} 
+	 * sets it as a parameter in the creation of the pdf
+	 * to print in landscape mode  
+	 */
 	public static final String A4_LANDSCAPE = "A4Landscape";
+	
+	/**
+	 * a constant which is used by a {@link JAXBExportJob} 
+	 * sets it as a parameter in the creation of the pdf
+	 * to print in portrait mode  
+	 */
 	public static final String A4_PORTRAIT = "A4";
 	public static final String NON = "no exprot";
 	public static final String EXPORT = "include in exprot";

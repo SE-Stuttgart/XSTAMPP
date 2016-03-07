@@ -1,19 +1,8 @@
 package xstampp.ui.wizards;
 
-import java.util.UUID;
-
 import messages.Messages;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  * Creates a Page which collects basic informations about formatting the table
@@ -22,12 +11,8 @@ import xstampp.preferences.IPreferenceConstants;
  * @author Lukas Balzer
  * 
  */
-public class TableExportPage extends AbstractExportPage implements
+public class TableExportPage extends PdfExportPage implements
 		ModifyListener {
-	private Composite control;
-	private Button singlePage;
-	private final String[] filters;
-	private DemoCanvas sampleCanvas;
 
 	/**
 	 * 
@@ -40,84 +25,10 @@ public class TableExportPage extends AbstractExportPage implements
 	 * @param pluginID TODO
 	 */
 	public TableExportPage(String[] filters, String pageName, String pluginID) {
-		super(pageName, pluginID);
-		this.setTitle(pageName);
-		this.filters = filters;
+		super(pageName, pageName, pluginID);
+		setFilterExtensions(filters, filters);
+		setShowCompanyFields(false);
 		this.setDescription(Messages.SetValuesForTheExportFile);
 	}
 
-	@Override
-	public void createControl(Composite parent) {
-		this.control = new Composite(parent, SWT.NONE);
-		this.control.setLayout(new FormLayout());
-
-		Composite projectChooser = null;
-		if(needsAProject()){
-			projectChooser = this.addProjectChooser(this.control,
-					new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
-		}
-		FormData data;
-		
-		ColorChooser bgChooser = new ColorChooser(this.control, SWT.NONE,
-				Messages.BackgroundColor,
-				IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
-		data = new FormData();
-		data.top = new FormAttachment(projectChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		bgChooser.setLayoutData(data);
-		bgChooser.addColorChangeListener(this);
-
-		ColorChooser fontChooser = new ColorChooser(this.control, SWT.NONE,
-				Messages.FontColor, IPreferenceConstants.COMPANY_FONT_COLOR);
-		data = new FormData();
-		data.top = new FormAttachment(bgChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		fontChooser.setLayoutData(data);
-		fontChooser.addColorChangeListener(this);
-
-		this.pathChooser = new PathComposite(this.filters, this.control,
-				PathComposite.PATH_DIALOG);
-		data = new FormData();
-		data.top = new FormAttachment(fontChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		this.pathChooser.setLayoutData(data);
-
-		this.sampleCanvas = new DemoCanvas(this.control, SWT.NONE);
-		this.sampleCanvas.setProjectID(this.getProjectID());
-		data = new FormData();
-		data.width = parent.getBounds().width;
-		data.height = AbstractWizardPage.DEMOCANVAS_HEIGHT;
-		data.top = new FormAttachment(this.pathChooser,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		this.sampleCanvas.setLayoutData(data);
-		
-		data = new FormData();
-		data.left = new FormAttachment(4);
-		data.right = new FormAttachment(96);
-		data.top = new FormAttachment(this.sampleCanvas,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		addFormatChooser(control, data, false);
-		// Required to avoid an error in the system
-		this.setControl(this.control);
-
-	}
-
-	@Override
-	public boolean asOne() {
-		return this.singlePage.getSelection();
-	}
-
-	@Override
-	public void modifyText(ModifyEvent e) {
-		this.sampleCanvas.redraw();
-	}
-
-	
-	@Override
-	public void setProjectID(UUID projectID) {
-		super.setProjectID(projectID);
-		if(this.sampleCanvas != null){
-			this.sampleCanvas.setProjectID(projectID);
-		}
-	}
 }

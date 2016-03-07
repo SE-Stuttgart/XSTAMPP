@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
 /**
@@ -50,8 +51,11 @@ public class CSVExportPage extends AbstractExportPage {
 	public void createControl(Composite parent) {
 		Composite control = new Composite(parent, SWT.NONE);
 		control.setLayout(new FormLayout());
-		Composite projectChooser = this.addProjectChooser(control,
-				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+		Control projectChooser = null;
+		if(needsAProject()){
+			projectChooser = this.addProjectChooser(control,
+					new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+		}
 		Group seperatorGroup = new Group(control, SWT.SHADOW_NONE);
 		seperatorGroup.setLayout(new RowLayout(SWT.VERTICAL));
 		seperatorGroup.setText(Messages.SeperatorCharacter);
