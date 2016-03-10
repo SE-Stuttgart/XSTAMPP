@@ -13,13 +13,13 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISelectionListener;
@@ -56,6 +56,9 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	private static final String[] FONT_SIZES = new String[] {
 			"6", "8", "9", "10", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			"11", "12", "14", "24", "36", "48" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+	
+	public static final FontData SYSTEM_FONT_DATA =Display.getDefault().getSystemFont().getFontData()[0];
+	public static final Font SYSTEM_FONT =Display.getDefault().getSystemFont();
 	private ComboContribiution fontCombo;
 	private ComboContribiution fontSizeCombo;
 	private ButtonContribution boldControl;
@@ -67,7 +70,6 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	private ButtonContribution bulletListControl;
 	private ButtonContribution baselineDownControl;
 	private ButtonContribution underlineControl;
-	private SelectionListener listener;
 	private RGB foregroundColor;
 	private RGB backgroundColor;
 	private boolean forceDraw = false;
@@ -187,7 +189,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	private void addStyleItems(ToolBarManager manager) {
 
 		// Bold item
-		this.boldControl = new ButtonContribution("boldControl",SWT.None){
+		this.boldControl = new ButtonContribution("boldControl",SWT.TOGGLE){
 			@Override
 			protected Control createControl(Composite parent) {
 				Control control = super.createControl(parent);
@@ -204,7 +206,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 		manager.add(boldControl);
 		
 		// Italic item
-		this.italicControl = new ButtonContribution("italicControl",SWT.None){
+		this.italicControl = new ButtonContribution("italicControl",SWT.TOGGLE){
 			@Override
 			protected Control createControl(Composite parent) {
 				Control control = super.createControl(parent);
@@ -630,16 +632,29 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if(selection instanceof StyledTextSelection){
+			StyledTextSelection styleSelection = (StyledTextSelection) selection;
+			this.boldControl.getButtonControl().setSelection((styleSelection.getFontStyle() & SWT.BOLD)!= 0);
+			this.italicControl.getButtonControl().setSelection((styleSelection.getFontStyle() & SWT.ITALIC)!= 0);
+
+			this.underlineControl.getButtonControl().setSelection(styleSelection.isUnderline());
+			this.strikeoutControl.getButtonControl().setSelection(styleSelection.isStrikeout());
 			
-			this.fontSizeCombo.getComboControl().setText(((StyledTextSelection) selection).getFontSize() + "");
-			if(((StyledTextSelection) selection).getFontSize() < 0){
-				
+			this.fontSizeCombo.getComboControl().setText(styleSelection.getFontSize() + "");
+			if(styleSelection.getFontSize() < 0){
 				this.fontSizeCombo.getComboControl().setText(String.valueOf(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
 			}
-			this.fontCombo.getComboControl().setText(((StyledTextSelection) selection).getFontName());
+			this.fontCombo.getComboControl().setText(styleSelection.getFontName());
 			if(this.fontCombo.getComboControl().getText().equals("")){
 				this.fontCombo.getComboControl().setText(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
 			}
+		}else{
+			this.boldControl.getButtonControl().setSelection(false);
+			this.italicControl.getButtonControl().setSelection(false);
+
+			this.underlineControl.getButtonControl().setSelection(false);
+			this.strikeoutControl.getButtonControl().setSelection(false);
+			this.fontSizeCombo.getComboControl().setText(String.valueOf(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
+			this.fontCombo.getComboControl().setText(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
 		}
 		
 	}

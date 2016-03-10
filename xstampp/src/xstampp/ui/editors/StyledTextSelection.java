@@ -14,6 +14,9 @@ public class StyledTextSelection implements ISelection {
 	private int fontSize;
 	private Point selectionRange;
 	private String fontName;
+	private int fontStyle;
+	private boolean underline;
+	private boolean strikeout;
 
 	/**
 	 *
@@ -23,6 +26,9 @@ public class StyledTextSelection implements ISelection {
 	 */
 	public StyledTextSelection(Point range) {
 		this.setSelectionRange(range);
+		fontStyle = 0;
+		underline = false;
+		strikeout = false;
 	}
 	@Override
 	public boolean isEmpty() {
@@ -67,4 +73,42 @@ public class StyledTextSelection implements ISelection {
 	public void setFontName(String fontName) {
 		this.fontName = fontName;
 	}
+	/**
+	 * @return the fontStyle
+	 */
+	public int getFontStyle() {
+		return this.fontStyle;
+	}
+	/**
+	 * @param fontStyle the fontStyle to set
+	 */
+	public void setFontStyle(int fontStyle) {
+		this.fontStyle = fontStyle;
+	}
+	/**
+	 * @return the underline
+	 */
+	public boolean isUnderline() {
+		return this.underline;
+	}
+	/**
+	 * @param underline the underline to set
+	 */
+	public void setUnderline(boolean underline) {
+		this.underline = underline;
+	}
+	/**
+	 * @return the strikeout
+	 */
+	public boolean isStrikeout() {
+		return this.strikeout;
+	}
+	/**
+	 * @param strikeout the strikeout to set
+	 */
+	public void setStrikeout(boolean strikeout) {
+		this.strikeout = strikeout;
+	}
+
+
 }

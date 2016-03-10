@@ -789,7 +789,7 @@ public class Controller extends Observable implements IDataModel,
 		}
 		this.projectDataManager.setAccidentLocation(Location);
 		// TODO SET OBSERVER
-		this.setUnsavedAndChanged(ObserverValue.UNSAVED_CHANGES);
+		this.setUnsavedAndChanged();
 		return true;
 	}
 
@@ -800,7 +800,7 @@ public class Controller extends Observable implements IDataModel,
 		}
 		this.projectDataManager.setAccidentDate(Date);
 		// TODO SET OBSERVER
-		this.setUnsavedAndChanged(ObserverValue.UNSAVED_CHANGES);
+		this.setUnsavedAndChanged();
 		return true;
 	}
 
@@ -810,7 +810,7 @@ public class Controller extends Observable implements IDataModel,
 			return false;
 		}
 		boolean result = this.projectDataManager.setPictureList(pictureList);
-		this.setUnsavedAndChanged(ObserverValue.UNSAVED_CHANGES);
+		this.setUnsavedAndChanged();
 		return result;
 	}
 

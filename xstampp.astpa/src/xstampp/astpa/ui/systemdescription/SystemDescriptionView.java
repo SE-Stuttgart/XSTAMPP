@@ -14,7 +14,6 @@
 package xstampp.astpa.ui.systemdescription;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import messages.Messages;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -56,7 +56,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -65,7 +64,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
@@ -115,8 +113,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			foregroundControl, backgroundControl, baselineUpControl,
 			baselineDownControl, underlineControl, bulletListControl;
 
-	private final static int stateForeground = 0;
-	private final static int stateBackground = 1;
 	private ITextEditContribution toolContributor;
 	/**
 	 * Contains different font sizes.
@@ -132,7 +128,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	public static final String ID = "astpa.steps.step1_1"; //$NON-NLS-1$
 
 	private List<ISelectionChangedListener> listener;
-	
+	private List<Font> fontHandles;
 
 
 	/**
@@ -171,7 +167,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				
 				@Override
 				public void run() {
-					applyProjectDescriptionToDataModel();
+					applyProjectDescriptionToDataModel(false);
 					
 				}
 			});
@@ -192,6 +188,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		this.fontHandles = new ArrayList<>();
 		if(this.toolContributor== null){
 			this.toolContributor= new EmptyTextContributor();
 		}
@@ -281,6 +278,8 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 */
 	private Color textForegroundColor, textBackgroundColor;
 
+	private List<StyleRange> allRanges = new ArrayList<>();
+
 	/**
 	 * Image path used for button images.
 	 */
@@ -304,21 +303,25 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 * description text.
 	 * 
 	 * @author Sebastian Sieber, Patrick Wickenhaeuser
+	 * @param stylesChanged TODO
 	 * 
 	 */
-	private void applyProjectDescriptionToDataModel() {
-		if (!this.descriptionText.getStyleRanges().equals(
-				this.dataInterface.getStyleRanges())) {
+	private void applyProjectDescriptionToDataModel(boolean stylesChanged) {
+		if (stylesChanged) {
 			this.dataInterface.getStyleRanges().clear();
 			for (StyleRange styleRange : this.descriptionText.getStyleRanges()) {
-				this.dataInterface.addStyleRange(styleRange);
+				if(styleRange.font == null || !styleRange.font.isDisposed()){
+					this.dataInterface.addStyleRange((StyleRange) styleRange);
+				}
 			}
+			dataInterface.setUnsavedAndChanged();
 		}
-		if (!(this.descriptionText.getText().equals(this.dataInterface
-				.getProjectDescription()))) {
-			this.dataInterface.setProjectDescription(this.descriptionText
-					.getText());
+		String projectDesc= descriptionText.getText();
+		if(projectDesc.contains(System.lineSeparator())){
+			projectDesc = projectDesc.replaceAll(System.lineSeparator(),"\n");
 		}
+		this.dataInterface.setProjectDescription(projectDesc);
+		
 	}
 
 	/**
@@ -357,8 +360,9 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		String projectDesc = this.dataInterface.getProjectDescription();
 		StyleRange[] ranges = this.dataInterface.getStyleRangesAsArray();
 		if (projectDesc != null) {
-			if(!projectDesc.contains("\r")){
-				projectDesc = projectDesc.replaceAll("\n", "\r\n");
+			String sep= System.lineSeparator();
+			if(!projectDesc.contains(sep)){
+				projectDesc = projectDesc.replaceAll("\n", sep);
 			}
 			this.descriptionText.setText(projectDesc);
 			if (ranges != null) {
@@ -440,19 +444,15 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 
 					@Override
 					public void modifyText(ExtendedModifyEvent event) {
-						SystemDescriptionView.this
-								.handleDescriptionModify(event);
-						
-						SystemDescriptionView.this.setStyle(event.widget);
-						ProjectManager.getContainerInstance().getDataModel(getProjectID()).setUnsavedAndChanged();
+						SystemDescriptionView.this.handleDescriptionModify(event);
+						applyProjectDescriptionToDataModel(false);
 					}
 				});
 		this.descriptionText.addFocusListener(new FocusListener() {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				SystemDescriptionView.this.applyProjectDescriptionToDataModel();
-//				SystemDescriptionView.this.setStyle(e.widget);
+				SystemDescriptionView.this.applyProjectDescriptionToDataModel(false);
 			}
 
 			@Override
@@ -607,7 +607,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.values.put(this.foregroundControl, FOREGROUND);
 		this.values.put(this.italicControl, ITALIC);
 		this.values.put(this.descriptionText, DESCRIPTION);
-		setStyle(this.values.get(widget));
+//		setStyle(this.values.get(widget));
 	}
 	
 	@Override
@@ -623,6 +623,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	@Override
 	public void setFontSize(String style, int fontSize) {
 		addStyleRangesFor(style,new String(), fontSize, SWT.NORMAL);
+		
 	}
 	
 	private void addStyleRangesFor(String style, String fontName, int fontSize,int fontStyle) {
@@ -630,28 +631,71 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		if ((selectionRange == null) || (selectionRange.y == 0)) {
 			return;
 		}
-		int end = selectionRange.x + selectionRange.y;
-		
-		StyleRange[] ranges = this.descriptionText.getStyleRanges(selectionRange.x, selectionRange.y,true);
-		for(int i=0;i< ranges.length;i++){
-			StyleRange range = (StyleRange) ranges[i].clone();
-			if(range.start < selectionRange.x){
-				range.length = range.length - (selectionRange.x - range.start);
-				range.start = selectionRange.x;
-			}
-			if(range.start + range.length  -1> end){
-				range.length= end - range.start;
+		StyleRange newRange = null;
+		int next=0;
+			StyleRange[] ranges = descriptionText.getStyleRanges(selectionRange.x, selectionRange.y, false);
+	//		for (int i = 0; i < ranges.length; i++) {
+	//			ranges[i] = setFontItemRange(style, ranges[i], fontSize, fontName);
+	//		}
+
+			int count = 0;
+			for(int i= selectionRange.x; i < selectionRange.x + selectionRange.y;i++){
+				if(ranges.length > next && ranges[next].start < i){
+					StyleRange range = (StyleRange) ranges[next].clone();
+					range.font = FontDescriptor.createFrom(ranges[next].font).createFont(null);
+					fontHandles.add(range.font);
+					range.start = i;
+					range.length = Math.min(selectionRange.y,ranges[next].length- (i-ranges[next].start));
+					if(range.length >0){
+						i = i +(ranges[next].length- (i-ranges[next].start)) -1;
+						descriptionText.setStyleRange(setFontItemRange(style, range, fontSize, fontName));
+						count++;
+						next++;
+					}
+				}else if(ranges.length > next && ranges[next].start == i){
+					if(newRange != null){
+						descriptionText.setStyleRange(setFontItemRange(style, newRange, fontSize, fontName));
+						count++;
+						newRange = null;
+					}
+					i = i +(ranges[next].length- (i-ranges[next].start)) -1;
+					descriptionText.setStyleRange(setFontItemRange(style, ranges[next], fontSize, fontName));
+					count++;
+					next++;
+				}else if(newRange != null){
+					newRange.length++;
+				}else{
+					newRange = new StyleRange();
+					newRange.font = FontDescriptor.createFrom(TextToolbarContribution.SYSTEM_FONT).createFont(null);
+					newRange.start = i;
+					newRange.length = 1;
+				}
 			}
 			
-			this.descriptionText.setStyleRange(setFontItemRange(style, range, new FontData(fontName, fontSize, fontStyle)));
-		}
-		if(ranges.length == 0){
-			StyleRange newRange = new StyleRange();
-			newRange.start = selectionRange.x;
-			newRange.length = selectionRange.y;
-			this.descriptionText.setStyleRange(setFontItemRange(style, newRange, new FontData(fontName, fontSize, fontStyle)));
-		}
-		
+			if(newRange != null){
+				descriptionText.setStyleRange(setFontItemRange(style, newRange, fontSize, fontName));
+				count++;
+				newRange = null;
+			}
+			System.out.println(count);
+		applyProjectDescriptionToDataModel(true);
+		getEditorSite().getShell().getDisplay().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				for(StyleRange range: descriptionText.getStyleRanges()){
+					if(fontHandles.contains(range.font)){
+						fontHandles.remove(range.font);
+					}
+				}
+				for(Font font:fontHandles){
+					font.dispose();
+				}
+				fontHandles.clear();
+			}
+		});
+		selectionRange = null;
 	}
 	
 
@@ -668,13 +712,14 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 * @param newDataSet TODO
 	 * @return styleRange StyleRange
 	 */
-	private StyleRange setFontItemRange(String style, StyleRange styleRange, FontData newDataSet) {
-
-		if(styleRange.font == null){
-			styleRange.font = Display.getDefault().getSystemFont(); 
+	private StyleRange setFontItemRange(String style, StyleRange styleRange, int height,String name) {
+		FontData data = null;
+		if(styleRange.font != null){
+			data = styleRange.font.getFontData()[0]; 
+		}else{
+			data = FontDescriptor.copy(TextToolbarContribution.SYSTEM_FONT_DATA);
 		}
-		FontData data = styleRange.font.getFontData()[0];
-		
+		boolean setFont= false;
 		switch(style){
 			case(FOREGROUND):{
 				styleRange.foreground = this.textForegroundColor;
@@ -684,21 +729,27 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				break;
 			}case(INCREASE):{
 				data.setHeight(data.getHeight() + 1);
+				setFont= true;
 				break;
 			}case(DECREASE):{
 				data.setHeight(data.getHeight() - 1);
+				setFont= true;
 				break;
 			}case(FONT_SIZE):{
-				data.setHeight(newDataSet.getHeight());
+				data.setHeight(height);
+				setFont= true;
 				break;
 			}case(FONT_FAMILY):{
-				data.setName(newDataSet.getName());
+				data.setName(name);
+				setFont= true;
 				break;
 			}case(BOLD): {
 				data.setStyle(data.getStyle() ^ SWT.BOLD);
+				setFont= true;
 				break;
 			}case(ITALIC): {
 				data.setStyle(data.getStyle() ^ SWT.ITALIC);
+				setFont= true;
 				break;
 			}case(UNDERLINE): {
 				styleRange.underline = !styleRange.underline;
@@ -708,85 +759,13 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				break;
 			}
 		}
-		styleRange.font= new Font(null, data);
+		if(setFont){
+			
+			Font newFonte = styleRange.font;
+			styleRange.font= new Font(null, data.getName(),data.getHeight(),data.getStyle());
+			fontHandles.add(newFonte);
+		}
 		return styleRange;
-	}
-
-	/**
-	 * Set text background color
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param event
-	 *            SelectionEvent
-	 * @param composite
-	 *            Composite
-	 * @param colorControl
-	 *            ToolItem
-	 */
-	public void setTextBackground(SelectionEvent event, Composite composite,
-			ToolItem colorControl) {
-		Shell shell = composite.getShell();
-		if ((event.detail == SWT.ARROW) || (this.textBackgroundColor == null)) {
-			ColorDialog dialog = new ColorDialog(shell);
-			RGB rgb;
-			if (this.textBackgroundColor != null) {
-				rgb = this.textBackgroundColor.getRGB();
-			} else {
-				rgb = null;
-			}
-			dialog.setRGB(rgb);
-			RGB newRgb = dialog.open();
-			if (newRgb == null) {
-				return;
-			}
-			// new color chosen
-			if (!newRgb.equals(rgb)) {
-				setStyleColor(this.values.get(event.widget), newRgb);
-				// change icon
-				this.setToolItemIcon(colorControl, newRgb,
-						SystemDescriptionView.stateBackground);
-			}
-		}
-	}
-
-	/**
-	 * Set text foreground color
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param event
-	 *            SelectionEvent
-	 * @param composite
-	 *            Composite
-	 * @param colorControl
-	 *            ToolItem
-	 */
-	public void setTextForeground(SelectionEvent event, Composite composite,
-			ToolItem colorControl) {
-		Shell shell= composite.getShell();
-		if ((event.detail == SWT.ARROW) || (this.textForegroundColor == null)) {
-			ColorDialog dialog = new ColorDialog(shell);
-			RGB rgb;
-			if (this.textForegroundColor != null) {
-				rgb = this.textForegroundColor.getRGB();
-			} else {
-				rgb = null;
-			}
-			dialog.setRGB(rgb);
-			RGB newRgb = dialog.open();
-			if (newRgb == null) {
-				return;
-			}
-			// new color chosen
-			if (!newRgb.equals(this.textForegroundColor)) {
-				setStyleColor(this.values.get(event.widget), newRgb);
-				// change icon
-				this.setToolItemIcon(colorControl, newRgb,
-						SystemDescriptionView.stateForeground);
-			}
-
-		}
 	}
 
 	@Override
@@ -801,218 +780,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		}
 		this.setColorStyleRange(color,selectionRange);
 	}
-	/**
-	 * Set different color icons for different color shades.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param rgb
-	 *            RGB
-	 */
-	private void setToolItemIcon(ToolItem colorControl, RGB rgb, int state) {
-		String imagePath = ""; //$NON-NLS-1$
-		// Shade lists
-		ArrayList<RGB> redShades = new ArrayList<>();
-		ArrayList<RGB> blackShades = new ArrayList<>();
-		ArrayList<RGB> yellowShades = new ArrayList<>();
-		ArrayList<RGB> greenShades = new ArrayList<>();
-		ArrayList<RGB> purpleShades = new ArrayList<>();
-		ArrayList<RGB> whiteShades = new ArrayList<>();
-		ArrayList<RGB> blueShades = new ArrayList<>();
-		ArrayList<RGB> grayShades = new ArrayList<>();
 
-		this.initShadeLists(redShades, blackShades, yellowShades, greenShades,
-				purpleShades, whiteShades, blueShades, grayShades);
-
-		if (state == SystemDescriptionView.stateForeground) {
-			imagePath = "/colors/foreground"; //$NON-NLS-1$
-		} else {
-			imagePath = "/colors/background"; //$NON-NLS-1$
-		}
-
-		// set icon
-		if (redShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textRed.ico").createImage()); //$NON-NLS-1$
-		} else if (blackShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textBlack.ico") //$NON-NLS-1$
-					.createImage());
-		} else if (yellowShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textYellow.ico") //$NON-NLS-1$
-					.createImage());
-		} else if (greenShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textGreen.ico") //$NON-NLS-1$
-					.createImage());
-		} else if (purpleShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textPurple.ico") //$NON-NLS-1$
-					.createImage());
-		} else if (whiteShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textWhite.ico") //$NON-NLS-1$
-					.createImage());
-		} else if (blueShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textBlue.ico") //$NON-NLS-1$
-					.createImage());
-		} else if (grayShades.contains(rgb)) {
-			colorControl.setImage(Activator.getImageDescriptor(
-					SystemDescriptionView.getImagePath() + imagePath
-							+ "/textGrey.ico") //$NON-NLS-1$
-					.createImage());
-		}
-
-	}
-
-	/**
-	 * Initialize ArrayList with RGB values of color shades.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param redShades
-	 *            ArrayList<RGB>
-	 * @param blackShades
-	 *            ArrayList<RGB>
-	 * @param yellowShades
-	 *            ArrayList<RGB>
-	 * @param greenShades
-	 *            ArrayList<RGB>
-	 * @param purpleShades
-	 *            ArrayList<RGB>
-	 * @param whiteShades
-	 *            ArrayList<RGB>
-	 * @param blueShades
-	 *            ArrayList<RGB>
-	 * @param grayShades
-	 *            ArrayList<RGB>
-	 */
-	private void initShadeLists(ArrayList<RGB> redShades,
-			ArrayList<RGB> blackShades, ArrayList<RGB> yellowShades,
-			ArrayList<RGB> greenShades, ArrayList<RGB> purpleShades,
-			ArrayList<RGB> whiteShades, ArrayList<RGB> blueShades,
-			ArrayList<RGB> grayShades) {
-
-		// RGB values
-		final int twoHundredAndFiftyFive = 255;
-		final int zero = 0;
-		final int sixtyfour = 64;
-		final int oneHundredAndTwentyEight = 128;
-		// initialize
-		if (redShades.size() == 0) {
-			redShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, oneHundredAndTwentyEight));
-			redShades.add(new RGB(twoHundredAndFiftyFive, zero, zero));
-			redShades.add(new RGB(oneHundredAndTwentyEight, sixtyfour,
-					sixtyfour));
-			redShades.add(new RGB(oneHundredAndTwentyEight, zero, zero));
-			redShades.add(new RGB(sixtyfour, zero, zero));
-		}
-
-		if (blackShades.size() == 0) {
-			blackShades.add(new RGB(zero, zero, zero));
-		}
-
-		if (yellowShades.size() == 0) {
-			yellowShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, zero));
-			yellowShades
-					.add(new RGB(oneHundredAndTwentyEight, sixtyfour, zero));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, zero));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, sixtyfour));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive, zero));
-			yellowShades.add(new RGB(twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive, oneHundredAndTwentyEight));
-		}
-
-		if (greenShades.size() == 0) {
-			greenShades.add(new RGB(oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive, oneHundredAndTwentyEight));
-			greenShades.add(new RGB(oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive, zero));
-			greenShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, sixtyfour));
-			greenShades.add(new RGB(sixtyfour, oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight));
-			greenShades.add(new RGB(zero, twoHundredAndFiftyFive, zero));
-			greenShades.add(new RGB(zero, oneHundredAndTwentyEight, zero));
-			greenShades.add(new RGB(zero, sixtyfour, zero));
-			greenShades.add(new RGB(zero, twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight));
-			greenShades.add(new RGB(zero, twoHundredAndFiftyFive, sixtyfour));
-			greenShades.add(new RGB(zero, oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight));
-			greenShades.add(new RGB(zero, oneHundredAndTwentyEight, sixtyfour));
-			greenShades.add(new RGB(zero, sixtyfour, sixtyfour));
-		}
-
-		final int onehundredAndNinetyTwo = 192;
-		if (purpleShades.size() == 0) {
-			purpleShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, onehundredAndNinetyTwo));
-			purpleShades.add(new RGB(twoHundredAndFiftyFive,
-					oneHundredAndTwentyEight, twoHundredAndFiftyFive));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, onehundredAndNinetyTwo));
-			purpleShades.add(new RGB(twoHundredAndFiftyFive, zero,
-					twoHundredAndFiftyFive));
-			purpleShades
-					.add(new RGB(oneHundredAndTwentyEight, zero, sixtyfour));
-			purpleShades.add(new RGB(twoHundredAndFiftyFive, zero,
-					oneHundredAndTwentyEight));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight, zero,
-					oneHundredAndTwentyEight));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight, zero,
-					twoHundredAndFiftyFive));
-			purpleShades.add(new RGB(sixtyfour, zero, sixtyfour));
-			purpleShades
-					.add(new RGB(sixtyfour, zero, oneHundredAndTwentyEight));
-			purpleShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, twoHundredAndFiftyFive));
-		}
-
-		if (whiteShades.size() == 0) {
-			whiteShades.add(new RGB(twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive, twoHundredAndFiftyFive));
-		}
-
-		final int onehundredAndSixty = 160;
-		if (blueShades.size() == 0) {
-			blueShades.add(new RGB(oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive, twoHundredAndFiftyFive));
-			blueShades.add(new RGB(zero, twoHundredAndFiftyFive,
-					twoHundredAndFiftyFive));
-			blueShades.add(new RGB(zero, sixtyfour, oneHundredAndTwentyEight));
-			blueShades.add(new RGB(zero, zero, twoHundredAndFiftyFive));
-			blueShades.add(new RGB(zero, zero, oneHundredAndTwentyEight));
-			blueShades.add(new RGB(zero, oneHundredAndTwentyEight,
-					twoHundredAndFiftyFive));
-			blueShades.add(new RGB(zero, oneHundredAndTwentyEight,
-					onehundredAndNinetyTwo));
-			blueShades.add(new RGB(zero, zero, onehundredAndSixty));
-			blueShades.add(new RGB(zero, zero, sixtyfour));
-		}
-
-		if (grayShades.size() == 0) {
-			grayShades.add(new RGB(oneHundredAndTwentyEight,
-					oneHundredAndTwentyEight, oneHundredAndTwentyEight));
-			grayShades.add(new RGB(onehundredAndNinetyTwo,
-					onehundredAndNinetyTwo, onehundredAndNinetyTwo));
-		}
-
-	}
 
 	/**
 	 * Handles changes occurring in the TextArea depending on the CaretOffset
@@ -1066,68 +834,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		}
 	}
 
-	// private void setTextForeground(SelectionEvent event, Composite composite)
-	// {
-	// Shell shell = composite.getShell();
-	// Display display = composite.getDisplay();
-	// Point selectionRange = this.descriptionText.getSelectionRange();
-	// if ((event.detail == SWT.ARROW)
-	// || (this.editor.getTextForegroundColor() == null)) {
-	// ColorDialog dialog = new ColorDialog(shell);
-	// RGB rgb;
-	// if (this.editor.getTextForegroundColor() != null) {
-	// rgb = this.editor.getTextForegroundColor().getRGB();
-	// } else {
-	// rgb = null;
-	// }
-	// dialog.setRGB(rgb);
-	// RGB newRgb = dialog.open();
-	// if (newRgb == null) {
-	// return;
-	// }
-	// // new color chosen
-	// if (!newRgb.equals(this.editor.getTextForegroundColor())) {
-	// // SystemDescriptionView.this.textForegroundColor = new Color(
-	// // display, newRgb);
-	// this.editor.setTextForegroundColor(new Color(display, newRgb));
-	// this.setColorStyleRange(event.widget, selectionRange);
-	// }
-	// }
-	//
-	// }
-
-	// private void setColorStyleRange(Widget widget, Point selectionRange) {
-	// if ((selectionRange == null) || (selectionRange.y == 0)) {
-	// return;
-	// }
-	//
-	// StyleRange styleRange;
-	// for (int i = selectionRange.x; i < (selectionRange.x + selectionRange.y);
-	// i++) {
-	// StyleRange range = this.descriptionText.getStyleRangeAtOffset(i);
-	// if (range != null) {
-	// styleRange = (StyleRange) range.clone();
-	// styleRange.start = i;
-	// styleRange.length = 1;
-	// } else {
-	// styleRange = new StyleRange(i, 1, null, null, SWT.NORMAL);
-	// }
-	// if (widget == this.foregroundControl) {
-	// styleRange.foreground = this.editor.getTextForegroundColor();
-	// } else if (widget == this.backgroundControl) {
-	// // styleRange.background = this.textBackgroundColor;
-	// }
-	// this.descriptionText.setStyleRange(styleRange);
-	// }
-	// this.descriptionText.setSelectionRange(selectionRange.x
-	// + selectionRange.y, 0);
-	//
-	// // mark text as selected
-	// this.descriptionText.setSelection(selectionRange.x, selectionRange.x
-	// + selectionRange.y);
-	//
-	// }
-
 	/**
 	 * Set style range for given range. Used to set foreground and background
 	 * color when chosen a new color from dialog.
@@ -1168,34 +874,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				+ selectionRange.y);
 	}
 
-	/**
-	 * Get font names from system and sort alphabetically.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param composite
-	 *            Composite
-	 * @return names font names
-	 */
-	public static String[] getFontNames(Composite composite) {
-		FontData[] fontNames = composite.getDisplay().getFontList(null, true);
-		List<String> names = new ArrayList<String>();
-		String[] sortedNames;
-		for (FontData fontName2 : fontNames) {
-			String fontName = fontName2.getName();
-			if (!(names.contains(fontName))) {
-				if (!(fontName.substring(0, 1).equals(Messages.CharacterAt))) {
-					names.add(fontName);
-				}
-			}
-		}
-		Collections.sort(names);
-		sortedNames = new String[names.size()];
-		for (int i = 0; i < names.size(); i++) {
-			sortedNames[i] = names.get(i);
-		}
-		return sortedNames;
-	}
 
 	/**
 	 * Set default font sizes to combo.
@@ -1367,6 +1045,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	@Override
 	public void dispose() {
 		this.dataInterface.deleteObserver(this);
+//		descriptionText.dispose();
 		Activator.getDefault().getPreferenceStore()
 		.removePropertyChangeListener(this);
 		super.dispose();
@@ -1379,18 +1058,37 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		StyleRange[] selctedRanges=this.descriptionText.getStyleRanges(selection.x, selection.y);
 		int size=-1;
 		String fontName="";
+		int fontStyle = -1;
+		boolean underline = selctedRanges.length != 0;
+		boolean strikeout = selctedRanges.length != 0;
 		for(StyleRange range:selctedRanges){
+			if(!range.strikeout){
+				strikeout = false;
+			}if(!range.underline){
+				underline = false;
+			}
 			if(range.font != null){
 				for(FontData data:range.font.getFontData()){
 					if(size<data.getHeight()){
 						size =data.getHeight();
 					}
 					fontName=data.getName();
+					if(fontStyle == -1){
+						fontStyle = data.getStyle();
+					}else if(data.getStyle() != fontStyle){
+						fontStyle = 0;
+					}
 				}
 			}
 		}
+		if(fontStyle == -1){
+			fontStyle = 0;
+		}
 		styledSelection.setFontSize(size);
+		styledSelection.setFontStyle(fontStyle);
 		styledSelection.setFontName(fontName);
+		styledSelection.setUnderline(underline);
+		styledSelection.setStrikeout(strikeout);
 		return styledSelection;
 			
 	}
@@ -1433,27 +1131,20 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
-		this.projectNameLabel.setFont(new Font(
-				Display.getCurrent(),
-				PreferenceConverter.getFontData(
-						IEditorBase.STORE,
-						IPreferenceConstants.DEFAULT_FONT)));
-		this.statusBar.setFont(new Font(
-				Display.getCurrent(),
-				PreferenceConverter.getFontData(
-						IEditorBase.STORE,
-						IPreferenceConstants.DEFAULT_FONT)));
+		propertyChange(null);
 		super.partActivated(arg0);
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		SystemDescriptionView.this.statusBar.setFont(new Font(
+		this.projectNameLabel.getFont().dispose();
+		this.projectNameLabel.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
 						IEditorBase.STORE,
 						IPreferenceConstants.DEFAULT_FONT)));
-		SystemDescriptionView.this.projectNameLabel.setFont(new Font(
+		this.statusBar.getFont().dispose();
+		this.statusBar.setFont(new Font(
 				Display.getCurrent(),
 				PreferenceConverter.getFontData(
 						IEditorBase.STORE,

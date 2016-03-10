@@ -94,7 +94,7 @@ public class StyleRangeAdapter extends XmlAdapter<String, StyleRange> {
 					Integer.parseInt(data[8]));
 		}
 		if (data[9].equals("null")) { //$NON-NLS-1$
-			sr.foreground = null;
+			sr.background = null;
 		} else {
 			sr.background = new Color(Display.getCurrent(),
 					Integer.parseInt(data[9]), Integer.parseInt(data[10]),

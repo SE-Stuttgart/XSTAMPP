@@ -44,6 +44,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
@@ -88,6 +89,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 	private static final String CONFIRMATION_TITLE = Messages.DeleteUnsafeControlAction;
 	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheUCA;
 
+	private int internalUpdate;
 	protected static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 
 	/**
@@ -139,7 +141,15 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		@Override
 		public void onTextChange(String newValue) {
 			UnsafeControlActionsView.this.descriptionsToUUIDs.put(this.unsafeControlAction,newValue);
-			
+			final String value=newValue;
+			Display.getDefault().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					internalUpdate++;
+					updateDataModel(value);
+				}
+			});
 		}
 	}
 
@@ -176,6 +186,7 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		internalUpdate = 0;
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 		UnsafeControlActionsView.LOGGER.info("createPartControl()"); //$NON-NLS-1$
@@ -543,10 +554,14 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		switch (type) {
 		case UNSAFE_CONTROL_ACTION:
 		case CONTROL_ACTION:
-			try{
-				this.reloadTable();
-			}catch(SWTException e){
-				dataModelController.deleteObserver(this);
+			if(internalUpdate!=0){
+				internalUpdate--;
+			}else{
+				try{
+					this.reloadTable();
+				}catch(SWTException e){
+					dataModelController.deleteObserver(this);
+				}
 			}
 			break;
 
