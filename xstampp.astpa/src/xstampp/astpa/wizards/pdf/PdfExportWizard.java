@@ -15,6 +15,8 @@ package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.Activator;
@@ -58,15 +60,24 @@ public class PdfExportWizard extends AbstractExportWizard {
 		this.getStore().setValue(IPreferenceConstants.COMPANY_LOGO,
 				this.page.getTextLogo());
 		if(getExportPage().getExportPath().endsWith("docx")){
-			DataModelController controller = (DataModelController) ProjectManager.getContainerInstance().getDataModel(page.getProjectID());
+			final DataModelController controller = (DataModelController) ProjectManager.getContainerInstance().getDataModel(page.getProjectID());
 
 			STPAWordJob exportJob = new STPAWordJob("STPA Word Report",getExportPage().getExportPath(),controller,true);
-
+			exportJob.addJobChangeListener(new JobChangeAdapter(){
+				@Override
+				public void scheduled(IJobChangeEvent event) {
+					controller.prepareForExport();
+				}
+				@Override
+				public void done(IJobChangeEvent event) {
+					controller.prepareForSave();
+				}
+			});
 			exportJob.setPdfTitle("A-STPA Final Report");
 			exportJob.setTextSize(getExportPage().getContentSize());
 			exportJob.setTableHeadSize(getExportPage().getHeadSize());
 			exportJob.setTitleSize(getExportPage().getTitleSize());
-			
+			exportJob.setDecorate(page.getDecoChoice());
 			exportJob.schedule();
 			return true;
 		}else{

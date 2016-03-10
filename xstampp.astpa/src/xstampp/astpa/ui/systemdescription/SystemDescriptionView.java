@@ -872,6 +872,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		// mark text as selected
 		this.descriptionText.setSelection(selectionRange.x, selectionRange.x
 				+ selectionRange.y);
+		applyProjectDescriptionToDataModel(true);
 	}
 
 

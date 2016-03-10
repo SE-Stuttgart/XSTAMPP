@@ -1,13 +1,17 @@
 package xstampp.astpa.util.jobs;
 
 import java.awt.Desktop;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.UUID;
 
+import javax.imageio.stream.ImageInputStreamImpl;
+
 import messages.Messages;
 
+import org.apache.xmlgraphics.image.loader.util.ImageInputStreamAdapter;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -60,6 +64,8 @@ public class CSExportJob extends XstamppJob {
 	private IControlStructureEditorDataModel model;
 	private final double factor = 5.0;
 	private UUID projectID;
+	private ByteArrayOutputStream outputStream;
+	private float ratio;
 
 	
 
@@ -108,6 +114,12 @@ public class CSExportJob extends XstamppJob {
 		}
 	}
 
+	public CSExportJob(ByteArrayOutputStream stream, int imgOffset, String editorId,
+			UUID projectId, boolean decorate){
+		this((String)null, imgOffset, editorId, projectId, false, decorate);
+		this.outputStream = stream;
+		this.imageType = SWT.IMAGE_PNG;
+	}
 	/**
 	 * this constructor creates a new Job to print the current Control Structure
 	 * 
@@ -176,23 +188,29 @@ public class CSExportJob extends XstamppJob {
 					this.imgOffset, this.imgOffset, clipRectangle.width,
 					clipRectangle.height));
 		}
+		ratio = (float) scaledImage.getBounds().width / scaledImage.getBounds().height;
 		ImageLoader imgLoader = new ImageLoader();
 		imgLoader.data = new ImageData[] { scaledImage.getImageData() };
+		if(outputStream != null){
+			imgLoader.save(outputStream, this.imageType);
+		}else{
 		
-		imgLoader.save(this.path, this.imageType);
-		File imageFile = new File(this.path);
-		if (imageFile.exists() && this.showPreview) {
-			if (Desktop.isDesktopSupported()) {
-				try {
-					Desktop.getDesktop().open(imageFile);
-				} catch (IOException e) {
-					return Status.CANCEL_STATUS;
+			imgLoader.save(this.path, this.imageType);
+			File imageFile = new File(this.path);
+			if (imageFile.exists() && this.showPreview) {
+				if (Desktop.isDesktopSupported()) {
+					try {
+						Desktop.getDesktop().open(imageFile);
+					} catch (IOException e) {
+						return Status.CANCEL_STATUS;
+					}
 				}
 			}
 		}
 		return Status.OK_STATUS;
 	}
 
+	
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -332,5 +350,19 @@ public class CSExportJob extends XstamppJob {
 	protected void canceling() {
 		
 		super.canceling();
+	}
+
+	/**
+	 * @return the ratio
+	 */
+	public float getRatio() {
+		return this.ratio;
+	}
+
+	/**
+	 * @param ratio the ratio to set
+	 */
+	public void setRatio(float ratio) {
+		this.ratio = ratio;
 	}
 }
