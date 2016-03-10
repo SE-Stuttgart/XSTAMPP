@@ -101,7 +101,7 @@
 		
 			<fo:table-header border="solid" background-color="#1A277A"
 				color="#FFFFFF" padding="3px">
-	          <!-- <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>-->
+					<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 				<!-- Sets the PDF-Theme-Color -->
 					<xsl:call-template name="headTheme"/>
 					<xsl:call-template name="fontTheme"/>
@@ -142,6 +142,7 @@
 					</fo:table-row>
 				</fo:table-footer>
 				<fo:table-body>
+					<xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 					<fo:table-row >
 						<fo:table-cell padding="3px" >
 								<fo:block ></fo:block>
@@ -250,7 +251,7 @@
 			<xsl:variable name="columns" select="count(dependenciesForNotProvided/variableName)+2"/>
 			<fo:table-header  border="solid" background-color="#1A277A"
 				color="#FFFFFF" padding="3px">
-	          <!-- <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>-->
+					<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 				<!-- Sets the PDF-Theme-Color -->
 					<xsl:call-template name="headTheme"/>
 					<xsl:call-template name="fontTheme"/>
@@ -280,6 +281,7 @@
 					</fo:table-row>
 				</fo:table-footer>
 				<fo:table-body>
+					<xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 					<fo:table-row >
 						<fo:table-cell padding="3px" >
 								<fo:block ></fo:block>

@@ -8,21 +8,28 @@ import java.util.UUID;
 
 import messages.Messages;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -33,8 +40,10 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
+import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
+import xstampp.util.JAXBExportJob;
 
 /**
  * a class to prevent code cloning in the export Pages
@@ -44,7 +53,94 @@ import xstampp.ui.navigation.IProjectSelection;
  */
 public abstract class AbstractExportPage extends AbstractWizardPage implements
 		IExportPage {
+	protected class DemoCanvas extends Canvas implements PaintListener {
+		private String title;
+		
+		private Font normalFont = new Font(null,"normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
+		private Font previewFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+		private Font titleFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+		private Color fontColor;
+		private Color bgColor;
+		private UUID projectId;
+		private static final int string_xPos = 10;
+		private static final int string_yPos = 0;
+		private static final int PREVIEW_XPOS = 8;
 
+		public DemoCanvas(Composite parent, int style) {
+			super(parent, style);
+			this.addPaintListener(this);
+		}
+
+		public void setProjectID(UUID id) {
+			this.projectId = id;
+			this.redraw();
+		}
+		
+		/**
+		 * @param contentSize the contentSize to set
+		 */
+		public void setContentSize(int contentSize) {
+			this.normalFont.dispose();
+			this.normalFont = new Font(null, "normalFont", contentSize, SWT.NORMAL); //$NON-NLS-1$
+			redraw();
+		}
+		/**
+		 * @param headSize the headSize to set
+		 */
+		public void setHeadSize(int headSize) {
+			this.previewFont.dispose();
+			this.previewFont = new Font(null, "font", headSize, SWT.NORMAL); //$NON-NLS-1$
+			redraw();
+		}
+
+		/**
+		 * @param headSize the headSize to set
+		 */
+		public void setTitleSize(int size) {
+			this.titleFont.dispose();
+			this.titleFont = new Font(null, "font", size, SWT.NORMAL); //$NON-NLS-1$
+			redraw();
+		}
+		
+		@Override
+		public void paintControl(PaintEvent e) {
+			if (this.projectId == null) {
+				title = Messages.NewProject;
+			} else {
+				title = ProjectManager.getContainerInstance()
+						.getTitle(this.projectId);
+			}
+			e.gc.setFont(DemoCanvas.this.titleFont);
+			int top_offset = e.gc.getFontMetrics().getHeight();
+			e.gc.setFont(DemoCanvas.this.previewFont);
+			int title_offset = top_offset + e.gc.getFontMetrics().getHeight();
+			e.gc.setFont(DemoCanvas.this.normalFont);
+			int text_offset =title_offset + e.gc.getFontMetrics().getHeight();
+			e.gc.setBackground(ColorConstants.white);
+			e.gc.fillRectangle(0, top_offset/2, 400, text_offset);
+
+			setSize(400, text_offset);
+			this.fontColor = new Color(null, PreferenceConverter.getColor(
+					store,
+					IPreferenceConstants.COMPANY_FONT_COLOR));
+			this.bgColor = new Color(null, PreferenceConverter.getColor(
+					store,
+					IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
+			e.gc.setForeground(this.fontColor);
+			e.gc.setFont(DemoCanvas.this.previewFont);
+			e.gc.setBackground(this.bgColor);
+			e.gc.drawString(title,
+					DemoCanvas.PREVIEW_XPOS, top_offset, false);
+			e.gc.setFont(DemoCanvas.this.normalFont);
+			e.gc.drawString("text",
+					DemoCanvas.PREVIEW_XPOS + 6, title_offset, true);
+			e.gc.setForeground(ColorConstants.black);
+			e.gc.setFont(DemoCanvas.this.titleFont);
+			e.gc.drawText(Messages.Preview, DemoCanvas.string_xPos, DemoCanvas.string_yPos,
+					true);
+		}
+	}
+	
 	public static final String EXPORT_DATA = "Export data";
 	
 	/**
@@ -62,13 +158,16 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	public static final String A4_PORTRAIT = "A4";
 	public static final String NON = "no exprot";
 	public static final String EXPORT = "include in exprot";
-	private Map<UUID, String> projects;
+	private Map<String, UUID> projects;
 	private Combo chooseList;
 	protected PathComposite pathChooser;
 	private String pluginID;
 	private String nameSuggestion;
 	protected String pageFormat;
 	private boolean needProjectID;
+	private int contentSize;
+	private int headSize;
+	private int titleSize;
 
 	/**
 	 * 
@@ -86,6 +185,9 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		this.pluginID = pluginID;
 		this.pageFormat = A4_PORTRAIT;
 		this.needProjectID = true;
+		contentSize = 10;
+		headSize = 12;
+		titleSize = 14;
 	}
 
 	/**
@@ -157,9 +259,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				projectChooser.notifyListeners(SWT.Selection, null);
-				AbstractExportPage.this.setProjectID(AbstractExportPage.this.projects.keySet().
-															toArray(new UUID[0])[AbstractExportPage.this.chooseList
-				                                                                       .getSelectionIndex()]);
+				setProjectID(projects.get(chooseList.getText()));
 				
 				AbstractExportPage.this.setPageComplete(AbstractExportPage.this
 						.checkFinish());
@@ -168,8 +268,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		});
 		for (Entry<UUID, String> entry : ProjectManager.getContainerInstance().getProjects().entrySet()) {
 			if(canExport(entry.getKey())){
-				this.projects.put(entry.getKey(), entry.getValue());
-				this.chooseList.add( entry.getValue());
+				this.projects.put(entry.getValue(),entry.getKey());
+				this.chooseList.add(entry.getValue());
 			}
 		}
 		if(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
@@ -180,7 +280,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	
 			if(selection instanceof IProjectSelection && this.projects.containsKey(((IProjectSelection) selection).getProjectId())){		
 				this.setProjectID(((IProjectSelection) selection).getProjectId());
-				this.chooseList.setText(this.projects.get(((IProjectSelection) selection).getProjectId()));
+				this.chooseList.setText(((IProjectSelection) selection).getItem().getText());
 			}
 		}
 		return projectChooser;
@@ -362,21 +462,63 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 	public boolean canExport(UUID id){
 		return ProjectManager.getContainerInstance().getDataModel(id).getPluginID().equals(this.pluginID);
 	}
-	public void setProjectChoice(UUID projectId){
-		if(this.projects.containsKey(projectId)){
-			String projectName = this.projects.get(projectId);
-			for(int i=0;i<this.chooseList.getItemCount();i++){
-				if(projectName.equals(this.chooseList.getItems()[i])){
-					this.chooseList.select(i);
-				}
-			}
-		}
-	}
+//	public void setProjectChoice(UUID projectId){
+//		if(this.projects.containsKey(projectId)){
+//			String projectName = this.projects.get(projectId);
+//			for(int i=0;i<this.chooseList.getItemCount();i++){
+//				if(projectName.equals(this.chooseList.getItems()[i])){
+//					this.chooseList.select(i);
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * @return the pageFormat
 	 */
 	public String getPageFormat() {
 		return this.pageFormat;
+	}
+
+	/**
+	 * @return the contentSize
+	 */
+	public int getContentSize() {
+		return this.contentSize;
+	}
+
+	/**
+	 * @param contentSize the contentSize to set
+	 */
+	public void setContentSize(int contentSize) {
+		this.contentSize = contentSize;
+	}
+
+	/**
+	 * @return the headSize
+	 */
+	public int getHeadSize() {
+		return this.headSize;
+	}
+
+	/**
+	 * @param headSize the headSize to set
+	 */
+	public void setHeadSize(int headSize) {
+		this.headSize = headSize;
+	}
+
+	/**
+	 * @return the titleSize
+	 */
+	public int getTitleSize() {
+		return this.titleSize;
+	}
+
+	/**
+	 * @param titleSize the titleSize to set
+	 */
+	public void setTitleSize(int titleSize) {
+		this.titleSize = titleSize;
 	}
 }

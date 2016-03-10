@@ -26,6 +26,7 @@ import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.Span;
+import org.apache.fop.fo.FOTreeBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -137,25 +138,33 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 			if(monitor.isCanceled()){
 				return Status.CANCEL_STATUS;
 			}
-			this.xslfoTransformer.setParameter("page.layout", pageFormat);
+//			this.xslfoTransformer.setParameter("page.layout", pageFormat);
 			this.xslfoTransformer.setParameter("page.title", pdfTitle);
 			try (OutputStream out = new BufferedOutputStream(
 					new FileOutputStream(pdfFile));
-					FileOutputStream str = new FileOutputStream(pdfFile);) {
+					FileOutputStream str = new FileOutputStream(pdfFile);
+					) {
 				if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {	
 					this.titleSize *=2;
 					this.textSize *= 2;
 					this.tableHeadSize *=2;
-					float width = Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
-					fopFactory.setPageWidth(2 * width + "in");
+					
+					float width = 2 *Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
+					float height = 2 * Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
+					if(pageFormat.equals(AbstractExportPage.A4_LANDSCAPE)){
+						fopFactory.setPageWidth(height + "in");
+						fopFactory.setPageHeight(width + "in");
+					}else{
+						fopFactory.setPageWidth(width + "in");
+						fopFactory.setPageHeight(height + "in");
+					}
+
 					this.xslfoTransformer.setParameter("page.layout", "auto");
 					this.xslfoTransformer.setParameter("title.size", this.titleSize);
 					this.xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
 					this.xslfoTransformer.setParameter("text.size", this.textSize);
 					this.xslfoTransformer.setParameter("header.omit", "true"); //$NON-NLS-1$
-					this.getFirstDocumentSpan(this.xslfoTransformer,fopFactory);
-//					float height = Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
-//					fopFactory.setPageHeight(2 * height + "in");
+//					this.getFirstDocumentSpan(this.xslfoTransformer,fopFactory);
 				}else{
 					this.xslfoTransformer.setParameter("page.layout", pageFormat);
 					this.xslfoTransformer.setParameter("title.size", this.titleSize);
@@ -163,13 +172,15 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 					this.xslfoTransformer.setParameter("text.size", this.textSize);
 					this.xslfoTransformer.setParameter("header.omit", "false"); //$NON-NLS-1$
 				}
+//				
 //				monitor.worked(4);
 				Fop fop;
 				FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+				foUserAgent.setOutputFile(pdfFile);
 				fop = fopFactory.newFop(this.fileType, foUserAgent,
 						pdfoutStream);
 				
-				Result res = new SAXResult(fop.getDefaultHandler());
+				SAXResult res = new SAXResult(fop.getDefaultHandler());
 
 				// transform the informationSource with the transformXSLSource
 				
@@ -177,7 +188,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 				
 				str.write(pdfoutStream.toByteArray());
 				str.close();
-
+				
 //				monitor.worked(5);
 				if (pdfFile.exists() && this.enablePreview) {
 					if (Desktop.isDesktopSupported()) {
@@ -223,7 +234,8 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 			Span span = (Span) treeModel.getCurrentPageSequence().getPage(i)
 					.getBodyRegion().getMainReference().getSpans().get(0);
 			addition = span.getBPD()/ JAXBExportJob.MP_TO_INCH;
-			
+
+			treeModel.getCurrentPageSequence().getPage(1).toString();
 			pageHeight += addition;
 		}
 		fopFactory.setPageHeight(Float.toString(pageHeight + 1) + "in"); //$NON-NLS-1$
@@ -288,4 +300,26 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
+
+	/**
+	 * @param textSize the textSize to set
+	 */
+	public void setTextSize(float textSize) {
+		this.textSize = textSize;
+	}
+
+	/**
+	 * @param titleSize the titleSize to set
+	 */
+	public void setTitleSize(float titleSize) {
+		this.titleSize = titleSize;
+	}
+
+	/**
+	 * @param tableHeadSize the tableHeadSize to set
+	 */
+	public void setTableHeadSize(float tableHeadSize) {
+		this.tableHeadSize = tableHeadSize;
+	}
+	
 }

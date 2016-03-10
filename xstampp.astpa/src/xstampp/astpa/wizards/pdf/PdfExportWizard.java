@@ -17,9 +17,12 @@ import messages.Messages;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import xstampp.Activator;
+import xstampp.astpa.Activator;
+import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.util.jobs.STPAWordJob;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.PdfExportPage;
 
 /**
@@ -42,20 +45,35 @@ public class PdfExportWizard extends AbstractExportWizard {
 		String projectName = this.getStore().getString(
 				IPreferenceConstants.PROJECT_NAME);
 		this.page = new PdfExportPage("PDF Report", projectName,Activator.PLUGIN_ID);
+		this.page.setFilterExtensions(new String[]{"*.pdf","*.docx"}, new String[]{"PDF","Word Document"});
 		this.setExportPage(this.page);
 	}
 
 	@Override
 	public boolean performFinish() {
+		
 		this.getStore().setValue(IPreferenceConstants.COMPANY_NAME,
 				this.page.getTextCompany().getText());
 
 		this.getStore().setValue(IPreferenceConstants.COMPANY_LOGO,
 				this.page.getTextLogo());
+		if(getExportPage().getExportPath().endsWith("docx")){
+			DataModelController controller = (DataModelController) ProjectManager.getContainerInstance().getDataModel(page.getProjectID());
 
-		return this
-				.performXSLExport(
-						"/fopxsl.xsl", this.page.getDecoChoice(), Messages.STPAPDFReport); //$NON-NLS-1$
+			STPAWordJob exportJob = new STPAWordJob("STPA Word Report",getExportPage().getExportPath(),controller,true);
+
+			exportJob.setPdfTitle("A-STPA Final Report");
+			exportJob.setTextSize(getExportPage().getContentSize());
+			exportJob.setTableHeadSize(getExportPage().getHeadSize());
+			exportJob.setTitleSize(getExportPage().getTitleSize());
+			
+			exportJob.schedule();
+			return true;
+		}else{
+			return this
+					.performXSLExport(
+							"/fopxsl.xsl", this.page.getDecoChoice(), Messages.STPAPDFReport); //$NON-NLS-1$
+		}
 	}
 
 	@Override

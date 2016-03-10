@@ -21,12 +21,17 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -41,7 +46,8 @@ import xstampp.preferences.IPreferenceConstants;
  * 
  */
 public class PdfExportPage extends AbstractExportPage implements ModifyListener {
-
+	
+	
 	private static final int ENTRY_HEIGTH = 25;
 	private Composite container;
 	private Text textCompany;
@@ -221,6 +227,67 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data.width = parent.getBounds().width;
 		this.sampleComp.setLayoutData(data);
 
+		Composite fontComposite = new Composite(container, SWT.NONE);
+
+		data = new FormData();
+		data.left = new FormAttachment(4);
+		data.right = new FormAttachment(96);
+		data.top = new FormAttachment(topElement,
+				AbstractWizardPage.COMPONENT_OFFSET);
+		fontComposite.setLayoutData(data);
+		fontComposite.setLayout(new GridLayout(6,false));
+			GridData textData = new GridData(SWT.FILL,SWT.CENTER,true,false);
+			GridData gData = new GridData(SWT.FILL,SWT.CENTER,true,false);
+			Label text = new Label(fontComposite, SWT.READ_ONLY);
+			text.setText("Title size:");
+			text.setLayoutData(textData);
+			
+			Combo textCombo = new Combo(fontComposite, SWT.None);
+			textCombo.setItems(new String[]{"6","8","10","12","14","16","18","20","24"});
+			textCombo.setText("14");
+			this.sampleComp.setTitleSize(14);
+			textCombo.setLayoutData(gData);
+			textCombo.addSelectionListener(new SelectionAdapter() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					setTitleSize(Integer.parseInt(((Combo)e.getSource()).getText()));
+				}
+			});
+			
+			text = new Label(fontComposite, SWT.READ_ONLY);
+			text.setText("Header size:");
+			text.setLayoutData(textData);
+			textCombo = new Combo(fontComposite, SWT.None);
+			textCombo.setItems(new String[]{"6","8","10","12","14","16","18"});
+			textCombo.setText("12");
+			this.sampleComp.setContentSize(12);
+			textCombo.setLayoutData(gData);
+			textCombo.addSelectionListener(new SelectionAdapter() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					setHeadSize(Integer.parseInt(((Combo)e.getSource()).getText()));
+				}
+			});
+
+			text = new Label(fontComposite, SWT.READ_ONLY);
+			text.setText("Text size:");
+			text.setLayoutData(textData);
+			textCombo = new Combo(fontComposite, SWT.DROP_DOWN);
+			textCombo.setItems(new String[]{"6","8","10","12","14"});
+			textCombo.setText("10");
+			this.sampleComp.setContentSize(10);
+			textCombo.setLayoutData(gData);
+			textCombo.addSelectionListener(new SelectionAdapter() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					setContentSize(Integer.parseInt(((Combo)e.getSource()).getText()));
+				}
+			});
+
+			topElement = fontComposite;
 		data = new FormData();
 		data.left = new FormAttachment(4);
 		data.right = new FormAttachment(96);
@@ -338,4 +405,21 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		this.filterNames = filterNames;
 	}
 
+	@Override
+	public void setContentSize(int contentSize) {
+		super.setContentSize(contentSize);
+		this.sampleComp.setContentSize(contentSize);
+	}
+	
+	@Override
+	public void setTitleSize(int titleSize) {
+		super.setTitleSize(titleSize);
+		this.sampleComp.setTitleSize(titleSize);
+	}
+	
+	@Override
+	public void setHeadSize(int headSize) {
+		this.sampleComp.setHeadSize(headSize);
+		super.setHeadSize(headSize);
+	}
 }

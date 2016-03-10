@@ -60,7 +60,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 			+ AbstractWizardPage.LABEL_WIDTH + 1;
 	protected static final int BUTTON_COLUMN = 430;
 	private int fontState = 0;
-	private final IPreferenceStore store = Activator.getDefault()
+	protected final IPreferenceStore store = Activator.getDefault()
 			.getPreferenceStore();
 
 	/**
@@ -746,66 +746,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 		}
 	}
 
-	protected class DemoCanvas extends Canvas implements PaintListener {
-		private final Text sampleTitle;
-		private final Font normalFont = new Font(null,
-				"normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
-		private final Font previewFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
-		private Color fontColor;
-		private Color bgColor;
-		private UUID projectId;
-		private static final int string_xPos = 10;
-		private static final int string_yPos = 0;
-		private static final int bgRec_yPos = 7;
-		private static final int PREVIEW_XPOS = 8;
-		private static final int PREVIEW_YPOS = 19;
 
-		public DemoCanvas(Composite parent, int style) {
-			super(parent, style);
-			
-			this.sampleTitle = new Text(DemoCanvas.this, SWT.NONE);
-			this.sampleTitle.setFont(this.previewFont);
-			this.sampleTitle.setVisible(false);
-			this.sampleTitle.setText(AbstractWizardPage.this.store
-					.getString(IPreferenceConstants.PROJECT_NAME));
-			this.sampleTitle.pack();
-			this.addPaintListener(this);
-		}
-
-		public void setProjectID(UUID id) {
-			this.projectId = id;
-			this.redraw();
-		}
-
-		@Override
-		public void paintControl(PaintEvent e) {
-			if (this.projectId == null) {
-				this.sampleTitle.setText(Messages.NewProject);
-			} else {
-				this.sampleTitle.setText(ProjectManager.getContainerInstance()
-						.getTitle(this.projectId));
-			}
-			e.gc.setBackground(ColorConstants.white);
-			e.gc.fillRectangle(0, DemoCanvas.bgRec_yPos, 400, 40);
-
-			this.fontColor = new Color(null, PreferenceConverter.getColor(
-					AbstractWizardPage.this.store,
-					IPreferenceConstants.COMPANY_FONT_COLOR));
-			this.bgColor = new Color(null, PreferenceConverter.getColor(
-					AbstractWizardPage.this.store,
-					IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
-			e.gc.setForeground(this.fontColor);
-			e.gc.setFont(DemoCanvas.this.previewFont);
-			e.gc.setBackground(this.bgColor);
-			e.gc.drawString(DemoCanvas.this.sampleTitle.getText(),
-					DemoCanvas.PREVIEW_XPOS, DemoCanvas.PREVIEW_YPOS, false);
-
-			e.gc.setForeground(ColorConstants.black);
-			e.gc.setFont(DemoCanvas.this.normalFont);
-			e.gc.drawText(Messages.Preview, DemoCanvas.string_xPos, DemoCanvas.string_yPos,
-					true);
-		}
-	}
 
 
 }

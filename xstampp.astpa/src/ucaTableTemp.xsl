@@ -1244,8 +1244,12 @@
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell>
+							
 							<fo:block color="#820000">
+								<xsl:if test="identifier!=''">
 								UCA1.<xsl:value-of select="identifier" />
+								</xsl:if>
+								
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

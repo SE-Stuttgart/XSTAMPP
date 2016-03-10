@@ -35,4 +35,19 @@ public interface IExportPage extends IWizardPage {
 	 * @return the pageFormat
 	 */
 	public String getPageFormat();
+	
+	/**
+	 * @return the contentSize
+	 */
+	public int getContentSize();
+
+	/**
+	 * @return the headSize
+	 */
+	public int getHeadSize();
+
+	/**
+	 * @return the titleSize
+	 */
+	public int getTitleSize();
 }

@@ -134,6 +134,9 @@ public abstract class AbstractExportWizard extends Wizard implements
 			ExportJob exportJob = new ExportJob(this.getExportPage().getProjectID(),
 					jobMessage, filePath,fopName, true, forceCSDeco);
 			exportJob.setPdfTitle(pdfTitle);
+			exportJob.setTextSize(getExportPage().getContentSize());
+			exportJob.setTableHeadSize(getExportPage().getHeadSize());
+			exportJob.setTitleSize(getExportPage().getTitleSize());
 			if(getExportPage().getPageFormat() != null){
 				exportJob.setPageFormat(getExportPage().getPageFormat());
 			}
@@ -261,7 +264,10 @@ public abstract class AbstractExportWizard extends Wizard implements
 		this.exportAddition = exportAddition;
 	}
 
-	private class ExportJobChangeAdapter extends JobChangeAdapter {
+	protected class ExportJobChangeAdapter extends JobChangeAdapter {
+		public ExportJobChangeAdapter() {
+			// TODO Auto-generated constructor stub
+		}
 		@Override
 		public void scheduled(IJobChangeEvent event) {
 

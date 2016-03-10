@@ -51,6 +51,7 @@ import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
 import xstampp.util.AbstractLoadJob;
 import xstampp.util.STPAPluginUtils;
@@ -72,6 +73,7 @@ import xstampp.util.STPAPluginUtils;
  */
 public class ProjectManager implements IPropertyChangeListener {
 
+	private final static String OUTPUT ="Output"; //$NON-NLS-1$
 	/**
 	 * The log4j logger
 	 */
@@ -575,6 +577,15 @@ public class ProjectManager implements IPropertyChangeListener {
 		return null;
 	}
 	
+	public File getOutputDir(UUID projectId){
+		String projectName = getTitle(projectId);
+		File outputDir =new File(Platform.getInstanceLocation().getURL().getPath().toString()
+				+ OUTPUT+File.separator+projectName);
+		if(!outputDir.exists()){
+			outputDir.mkdirs();
+		}
+		return outputDir;
+	}
 	/**
 	 * 
 	 * @author Lukas Balzer
@@ -814,6 +825,8 @@ public class ProjectManager implements IPropertyChangeListener {
 	public void addSaveStateListener(IPropertyChangeListener listener){
 		listeners.add(listener);
 	}
+	
+	
 }
 
 

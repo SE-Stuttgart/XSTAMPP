@@ -25,7 +25,6 @@ import xstampp.ui.wizards.PdfExportPage;
 
 public class RunWizard extends AbstractExportWizard {
 
-	private final static String OUTPUT ="Output"; //$NON-NLS-1$
 	private RunPage page;
 
 	public RunWizard() {
@@ -38,11 +37,8 @@ public class RunWizard extends AbstractExportWizard {
 			projectName = ProjectManager.getContainerInstance().
 									getTitle(((IProjectSelection) selection).getProjectId());
 		}
-		File outputDir =new File(Platform.getInstanceLocation().getURL().getPath().toString()
-								+ OUTPUT);
-		if(!outputDir.exists()){
-				outputDir.mkdirs();
-		}
+		
+		
 		this.page = new RunPage(Messages.RunExport, projectName);
 		this.setExportPage(this.page);
 	}
@@ -100,8 +96,8 @@ public class RunWizard extends AbstractExportWizard {
 		@Override
 		public void createControl(Composite parent) {
 			super.createControl(parent);
-			this.pathChooser.setText(Platform.getInstanceLocation().getURL().getFile()
-					+ OUTPUT + File.separator + getProjectName());
+			
+			this.pathChooser.setText(ProjectManager.getContainerInstance().getOutputDir(getProjectID()).getAbsolutePath());
 			FormData data = new FormData();
 			data.bottom = new FormAttachment(100,0);
 			data.left = new FormAttachment(0);
