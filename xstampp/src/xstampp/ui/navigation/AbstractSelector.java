@@ -68,7 +68,7 @@ public abstract class AbstractSelector implements IProjectSelection {
 
 	@Override
 	public boolean expandTree(boolean expand, boolean first) {
-		boolean affected = !(this.children.size() == 0 || this.treeItem.getExpanded() == expand);
+ 		boolean affected = !(this.children.size() == 0 || this.treeItem.getExpanded() == expand);
 		this.treeItem.setExpanded(expand);
 		for (IProjectSelection item : this.children) {
 			affected = item.expandTree(expand, false) ||affected;

@@ -106,12 +106,6 @@
                   id="astpa.navigation.step3_2"
                   name="Causal Factors Table">
             </step>
-            <step
-                  default_editor="true"
-                  editorId="stpa.results.editor.ltl"
-                  id="xstampp.astpa.step.results"
-                  name="STPA Results">
-            </step>
          </category>
       </process>
    </extension>

@@ -31,7 +31,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -39,7 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
@@ -107,6 +105,11 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				if(event.item instanceof TreeItem && ((TreeItem)event.item).getItemCount() > 0){
 					for(TreeItem item: ((TreeItem)event.item).getItems()){
 						item.setExpanded(true);
+						if(item.getItemCount() > 0){
+							for(TreeItem step: item.getItems()){
+								step.setExpanded(true);
+							}
+						}
 					}
 				}
 			}
@@ -140,7 +143,6 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		
 		
 		gc = new GC(Display.getDefault());
-		final FontMetrics m = new GC(Display.getDefault()).getFontMetrics();
 		this.tree.addListener(SWT.MeasureItem, new Listener() {
 		     public void handleEvent(Event event) {
 		    	 int size =gc.getFontMetrics().getHeight();
@@ -150,7 +152,6 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 		        
 		      }
 		});
-		
 		this.searchExtensions();
 
 		this.updateProjects();
@@ -271,6 +272,14 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 				| SWT.MULTI | SWT.V_SCROLL);
 		subItem.addListener(SWT.Selection, expandListener);
 		subItem.setFont(defaultFont);
+		subItem.addListener(SWT.Expand, new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
 		subItem.addListener(SWT.SELECTED, this.listener);
 		this.addImage(subItem, element.getAttribute("icon"), element.getNamespaceIdentifier());//$NON-NLS-1$
@@ -315,7 +324,6 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 			selector = new CategorySelector(subItem, projectID,parent);
 			selector.setPathHistory(navigationPath);
 			this.addOrReplaceItem(selectionId, selector, subItem);
-			final ArrayList<TreeItem> list = new ArrayList<>(); 
 			for (IConfigurationElement childExt : element.getChildren()) {
 				addTreeItem(childExt,selector,navigationPath,projectID, pluginID);
 			}
@@ -466,7 +474,6 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener,
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
-		UUID id = ProjectManager.getContainerInstance().getProjectID(dataModelController);
 		switch (type) {
 		case DELETE:
 		case PROJECT_NAME: {
