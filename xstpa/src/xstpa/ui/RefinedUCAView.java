@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.swt.graphics.Color;
-
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.model.DataModelController;
@@ -24,13 +21,22 @@ import xstpa.model.XSTPADataController;
 
 public class RefinedUCAView extends UnsafeControlActionsView {
 	
+
+	private static final String CA="control action";
+	private static final String UCA="refined unsafe control actions";
 	
 	private static final String ID = "xstpa.editors.refinedUCA";
 	private XSTPADataController dataController;
 	
 	public RefinedUCAView() {
-		this.useFilter = false;
+		setUseFilter(true);
 	}
+	
+	@Override
+	protected String[] getCategories() {
+		return new String[]{CA,UCA};
+	}
+	
 	@Override
 	public String getId() {
 		return ID;
@@ -44,14 +50,6 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 		if(dataController == null){
 			return;
 		}
-		boolean isDigit = false;
-		for(Character c : this.filterText.getText().toCharArray()){
-			isDigit = Character.isDigit(c);
-			if(!isDigit){
-				break;
-			}
-		}
-		
 			ArrayList<AbstractLTLProvider> allNotProvidedRUCA = new ArrayList<>();
 	  	    ArrayList<AbstractLTLProvider> allProvidedRUCA = new ArrayList<>();
 	  	    ArrayList<AbstractLTLProvider> allWrongTimedRUCA = new ArrayList<>();
@@ -59,8 +57,11 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
 	  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
 	  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
+	  	    
 	  	    for (IControlAction ca : dataController.getModel().getAllControlActions()) {
-	  	    	
+	  	    	if(isFiltered(ca.getTitle(), CA)){
+	  	    		continue;
+	  	    	}
 	  	    	allNotProvidedRUCA.clear();
 	  	    	allProvidedRUCA.clear();
 	  	    	allWrongTimedRUCA.clear();
@@ -104,15 +105,14 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 					GridRow ucaRow = new GridRow(3);
 					GridRow linkRow = new GridRow(3);
 
-					controlActionRow.addChildRow(idRow);
-					controlActionRow.addChildRow(ucaRow);
-					controlActionRow.addChildRow(linkRow);
-
 					AbstractLTLProvider notGivenUca = null;
 					AbstractLTLProvider incorrectUca = null;
 					AbstractLTLProvider timingUca = null;
+					boolean addRow = false;
 					
-					if (allNotProvidedRUCA.size() > i ) {
+					if (allNotProvidedRUCA.size() > i
+							&& !isFiltered(allNotProvidedRUCA.get(i).getRefinedUCA(), UCA)) {
+						addRow=true;
 						notGivenUca = allNotProvidedRUCA.get(i);
 						addRUCA(idRow, ucaRow, linkRow,notGivenUca);
 					}else {
@@ -122,7 +122,9 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 						linkRow.addCell(new GridCellBlank());
 					}
 
-					if (allProvidedRUCA.size() > i) {
+					if (allProvidedRUCA.size() > i
+							&& !isFiltered(allProvidedRUCA.get(i).getRefinedUCA(), UCA)) {
+						addRow=true;
 						incorrectUca = allProvidedRUCA.get(i);
 						addRUCA(idRow, ucaRow, linkRow, incorrectUca);
 					}else {
@@ -132,7 +134,9 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 						linkRow.addCell(new GridCellBlank());
 					}
 
-					if (allWrongTimedRUCA.size() > i) {
+					if (allWrongTimedRUCA.size() > i
+							&& !isFiltered(allWrongTimedRUCA.get(i).getRefinedUCA(), UCA)) {
+						addRow=true;
 						timingUca = allWrongTimedRUCA.get(i);
 						addRUCA(idRow, ucaRow, linkRow, timingUca);
 					}else {
@@ -145,6 +149,12 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 					idRow.addCell(new GridCellBlank());
 					ucaRow.addCell(new GridCellBlank());
 					linkRow.addCell(new GridCellBlank());
+					
+					if(addRow){
+						controlActionRow.addChildRow(idRow);
+						controlActionRow.addChildRow(ucaRow);
+						controlActionRow.addChildRow(linkRow);
+					}
 					
 				}
 				if(localRows > 0){

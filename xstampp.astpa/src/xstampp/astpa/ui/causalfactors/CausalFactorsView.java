@@ -329,7 +329,7 @@ public class CausalFactorsView extends StandartEditorPart{
 	public void createPartControl(Composite parent) {
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
-		parent.setLayout(new GridLayout(1, false));
+parent.setLayout(new GridLayout(1, false));
 		
 		Composite filter= new Composite(parent, SWT.None);
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));

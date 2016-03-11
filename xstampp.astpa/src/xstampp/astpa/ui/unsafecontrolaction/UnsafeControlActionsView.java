@@ -30,24 +30,17 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
@@ -55,6 +48,7 @@ import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.astpa.ui.AbstractFilteredEditor;
 import xstampp.astpa.ui.common.grid.GridCellBlank;
 import xstampp.astpa.ui.common.grid.GridCellButton;
 import xstampp.astpa.ui.common.grid.GridCellColored;
@@ -67,20 +61,22 @@ import xstampp.astpa.ui.common.grid.IGridCell;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.editors.StandartEditorPart;
 
 /**
  * View used to handle the unsafe control actions.
  * 
  * @author Benedikt Markt, Patrick Wickenhaeuser
  */
-public class UnsafeControlActionsView extends StandartEditorPart{
+public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
 	/**
 	 * ViewPart ID.
 	 */
 	public static final String ID = "astpa.steps.step2_2"; //$NON-NLS-1$
 
+	private static final String CA="control action";
+	private static final String UCA="unsafe control actions";
+	private static final String UCAID="uca ID";
 	/**
 	 * The log4j logger.
 	 */
@@ -100,12 +96,20 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 	private IUnsafeControlActionDataModel ucaInterface;
 	private Map<UUID,String> descriptionsToUUIDs = new HashMap<>();
 	protected GridWrapper grid;
-
-	protected Text filterText;
-
 	private boolean lockreload;
-	protected boolean useFilter = true;
 	
+	public UnsafeControlActionsView() {
+		setUseFilter(true);
+	}
+	
+	@Override
+	protected String[] getCategories() {
+		return new String[]{CA,UCA,UCAID};
+	}
+	@Override
+	protected void updateFilter() {
+		reloadTable();
+	}
 	private class UnsafeControlActionCell extends GridCellTextEditor{
 
 		private UUID unsafeControlAction;
@@ -198,35 +202,9 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		
 		Composite filter= new Composite(parent, SWT.None);
 		filter.setLayoutData(data);
-		filter.setLayout(new GridLayout(2, false));
-		Label label= new Label(filter,SWT.LEFT);
-		label.setText("Filter");
-		this.filterText= new Text(filter, SWT.LEFT |SWT.BORDER);
-		this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		this.filterText.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent e) {
-				reloadTable();
-				
-			}
-		});
-		this.filterText.addKeyListener(new KeyAdapter() {
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if(e.character == 13){
-					reloadTable();
-				}
-			}
-		});
+		super.createPartControl(filter);
 		data = new FormData();
-		if(useFilter){
-			data.top = new FormAttachment(filter);
-		}else{
-			filter.setVisible(false);
-			data.top = new FormAttachment(0);
-		}
+		data.top = new FormAttachment(filter);
 		data.left= new FormAttachment(0);
 		data.right= new FormAttachment(100);
 		data.bottom = new FormAttachment(100);
@@ -329,18 +307,8 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 		}
 		for (IControlAction cAction : list) {
 			//fiter by the title of the control action
-			boolean isDigit = false;
-			int filterID = -1;
-			for(Character c : this.filterText.getText().toCharArray()){
-				isDigit = Character.isDigit(c);
-				if(!isDigit){
-					break;
-				}
-			}
-			if(isDigit){
-				filterID = Integer.parseInt(this.filterText.getText());
-			}
-			if(!cAction.getTitle().startsWith(this.filterText.getText()) || isDigit){
+			
+			if(isFiltered(cAction.getTitle(), CA)){
 				continue;
 			}
 			GridRow controlActionRow = new GridRow(1);
@@ -384,7 +352,9 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 				IUnsafeControlAction tooSoonUca = null;
 
 				// set descriptions
-				if (allNotGiven.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allNotGiven.get(i).getId()) == filterID)) {
+				if (allNotGiven.size() > i 
+						&& !isFiltered(this.ucaInterface.getUCANumber(allNotGiven.get(i).getId()),UCAID)
+						&& !isFiltered(allNotGiven.get(i).getDescription(),UCA)) {
 					notGivenUca = allNotGiven.get(i);
 					if(this.ucaContentProvider.getLinkedItems(notGivenUca.getId()).isEmpty()){
 						idRow.addCell(new GridCellBlank());
@@ -412,7 +382,8 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 					linkRow.addCell(new GridCellBlank());
 				}
 
-				if (allIncorrect.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allIncorrect.get(i).getId()) == filterID)) {
+				if (allIncorrect.size() > i && !isFiltered(this.ucaInterface.getUCANumber(allIncorrect.get(i).getId()),UCAID)
+						&& !isFiltered(allIncorrect.get(i).getDescription(),UCA)) {
 					incorrectUca = allIncorrect.get(i);
 					if(this.ucaContentProvider.getLinkedItems(incorrectUca.getId()).isEmpty()){
 						idRow.addCell(new GridCellBlank());
@@ -440,7 +411,8 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 					linkRow.addCell(new GridCellBlank());
 				}
 
-				if (allWrongTiming.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allWrongTiming.get(i).getId()) == filterID)) {
+				if (allWrongTiming.size() > i && !isFiltered(this.ucaInterface.getUCANumber(allWrongTiming.get(i).getId()),UCAID)
+						&& !isFiltered(allWrongTiming.get(i).getDescription(),UCA)) {
 					timingUca = allWrongTiming.get(i);
 					if(this.ucaContentProvider.getLinkedItems(timingUca.getId()).isEmpty()){
 						idRow.addCell(new GridCellBlank());
@@ -468,7 +440,8 @@ public class UnsafeControlActionsView extends StandartEditorPart{
 					linkRow.addCell(new GridCellBlank());
 				}
 
-				if (allTooSoon.size() > i && (!isDigit || this.ucaInterface.getUCANumber(allTooSoon.get(i).getId()) == filterID)) {
+				if (allTooSoon.size() > i && !isFiltered(this.ucaInterface.getUCANumber(allTooSoon.get(i).getId()),UCAID)
+						&& !isFiltered(allTooSoon.get(i).getDescription(),UCA)) {
 					tooSoonUca = allTooSoon.get(i);
 					if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
 						idRow.addCell(new GridCellBlank());
