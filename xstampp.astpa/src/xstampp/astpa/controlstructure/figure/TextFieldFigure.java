@@ -16,8 +16,11 @@ package xstampp.astpa.controlstructure.figure;
 import java.util.UUID;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 
@@ -93,7 +96,15 @@ public class TextFieldFigure extends CSFigure {
 	 * @param dashed whther the component is dashed or not
 	 */
 	public void setDashed() {
-		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH));
+		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH){
+			@Override
+			public void paint(IFigure figure, Graphics graphics,
+					Insets insets) {
+
+				graphics.setLineDash(new int[]{4});
+				super.paint(figure, graphics, insets);
+			}
+		});
 		this.isDashed = true;
 	}
 }
