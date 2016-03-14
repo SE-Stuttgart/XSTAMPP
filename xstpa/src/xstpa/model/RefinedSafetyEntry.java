@@ -189,7 +189,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 
 	private void calcConstraint(){
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(variable.getLinkedControlActionName());
+		buffer.append(variable.getLinkedControlActionName() + " command");
 		if(getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
 			buffer.append(" must be provided");
 		}else{
