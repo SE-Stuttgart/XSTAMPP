@@ -53,6 +53,8 @@ import xstampp.util.JAXBExportJob;
  */
 public abstract class AbstractExportPage extends AbstractWizardPage implements
 		IExportPage {
+	
+	
 	protected class DemoCanvas extends Canvas implements PaintListener {
 		private String title;
 		
@@ -278,9 +280,9 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 					.getActivePage().findView("astpa.explorer").getSite()
 					.getSelectionProvider().getSelection();
 	
-			if(selection instanceof IProjectSelection && this.projects.containsKey(((IProjectSelection) selection).getProjectId())){		
+			if(selection instanceof IProjectSelection && this.projects.containsKey(((IProjectSelection) selection).getProjectData().getProjectName())){		
 				this.setProjectID(((IProjectSelection) selection).getProjectId());
-				this.chooseList.setText(((IProjectSelection) selection).getItem().getText());
+				this.chooseList.setText(((IProjectSelection) selection).getProjectData().getProjectName());
 			}
 		}
 		return projectChooser;

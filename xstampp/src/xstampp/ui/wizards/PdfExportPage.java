@@ -100,6 +100,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		showCompanyFields = true;
 		showDecorateCSButton = true;
 		showFormatChooser = true;
+		showTextConfig = true;
 		this.filterExtensions = new String[] { "*.pdf" };
 		this.filterNames = new String[] { "A-STPA Report *.pdf" };
 	}
@@ -220,6 +221,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		// ----Creates a Composite for a Canvas which provides a preview of the
 		// projectname with the chosen fore-/background colors
 		this.sampleComp = new DemoCanvas(this.container, SWT.NONE);
+		if(getProjectID() != null){
+			this.sampleComp.setProjectID(getProjectID());
+		}
 		data = new FormData();
 		data.top = new FormAttachment(topElement,
 				AbstractWizardPage.COMPONENT_OFFSET);
