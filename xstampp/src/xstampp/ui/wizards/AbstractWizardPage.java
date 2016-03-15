@@ -50,7 +50,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	public static final String ESSENTIAL = "*"; //$NON-NLS-1$
 	private String projectName;
 	private UUID projectID;
-	protected static final int DEMOCANVAS_HEIGHT = 60;
+	protected static final int DEMOCANVAS_HEIGHT = 80;
 	protected static final int COMPONENT_OFFSET = 10;
 	private static final String IMAGE_PATH = "/icons/buttons/export"; //$NON-NLS-1$
 	protected static final int LABEL_COLUMN = 5;

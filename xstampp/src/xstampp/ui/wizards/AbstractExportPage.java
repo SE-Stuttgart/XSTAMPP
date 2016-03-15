@@ -59,8 +59,9 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		private String title;
 		
 		private Font normalFont = new Font(null,"normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
-		private Font previewFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+		private Font headerFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
 		private Font titleFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+		private Font previewFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
 		private Color fontColor;
 		private Color bgColor;
 		private UUID projectId;
@@ -90,8 +91,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 		 * @param headSize the headSize to set
 		 */
 		public void setHeadSize(int headSize) {
-			this.previewFont.dispose();
-			this.previewFont = new Font(null, "font", headSize, SWT.NORMAL); //$NON-NLS-1$
+			this.headerFont.dispose();
+			this.headerFont = new Font(null, "font", headSize, SWT.NORMAL); //$NON-NLS-1$
 			redraw();
 		}
 
@@ -114,7 +115,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 			}
 			e.gc.setFont(DemoCanvas.this.titleFont);
 			int top_offset = e.gc.getFontMetrics().getHeight();
-			e.gc.setFont(DemoCanvas.this.previewFont);
+			e.gc.setFont(DemoCanvas.this.headerFont);
 			int title_offset = top_offset + e.gc.getFontMetrics().getHeight();
 			e.gc.setFont(DemoCanvas.this.normalFont);
 			int text_offset =title_offset + e.gc.getFontMetrics().getHeight();
@@ -129,7 +130,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements
 					store,
 					IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
 			e.gc.setForeground(this.fontColor);
-			e.gc.setFont(DemoCanvas.this.previewFont);
+			e.gc.setFont(DemoCanvas.this.headerFont);
 			e.gc.setBackground(this.bgColor);
 			e.gc.drawString(title,
 					DemoCanvas.PREVIEW_XPOS, top_offset, false);

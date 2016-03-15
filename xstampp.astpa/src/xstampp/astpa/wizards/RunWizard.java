@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import messages.Messages;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -97,11 +96,12 @@ public class RunWizard extends AbstractExportWizard {
 		
 		@Override
 		public void createControl(Composite parent) {
-			
+			setShowPreviewCanvas(false);
 			super.createControl(parent);
 			
 			this.pathChooser.setText(ProjectManager.getContainerInstance().getOutputDir(getProjectID()).getAbsolutePath());
 			FormData data = new FormData();
+			data.top = new FormAttachment(getBottomControl(),5);
 			data.bottom = new FormAttachment(100,0);
 			data.left = new FormAttachment(0);
 			data.right = new FormAttachment(100);

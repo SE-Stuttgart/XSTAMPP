@@ -60,11 +60,13 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	private int pathConstant;
 	private boolean showCompanyFields;
 	private boolean showDecorateCSButton;
+	private boolean showPreviewCanvas;
 
 	private boolean showTextConfig;
 	private boolean showFormatChooser;
 	private String[] filterExtensions;
 	private String[] filterNames;
+	private Control topElement;
 
 	/**
 	 * Constructor.
@@ -101,13 +103,14 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		showDecorateCSButton = true;
 		showFormatChooser = true;
 		showTextConfig = true;
+		setShowPreviewCanvas(true);
 		this.filterExtensions = new String[] { "*.pdf" };
 		this.filterNames = new String[] { "A-STPA Report *.pdf" };
 	}
 
 	@Override
 	public void createControl(Composite parent) {
-		Control topElement = null;
+		topElement = null;
 		FormData data;
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setLayout(new FormLayout());
@@ -218,20 +221,15 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 			topElement = decoSwitchComposite;
 		}
 
-		// ----Creates a Composite for a Canvas which provides a preview of the
-		// projectname with the chosen fore-/background colors
-		this.sampleComp = new DemoCanvas(this.container, SWT.NONE);
-		if(getProjectID() != null){
-			this.sampleComp.setProjectID(getProjectID());
+		if(showFormatChooser){
+			data = new FormData();
+			data.left = new FormAttachment(4);
+			data.right = new FormAttachment(96);
+			data.top = new FormAttachment(topElement,
+					AbstractWizardPage.COMPONENT_OFFSET);
+			topElement = addFormatChooser(container, data, false);
 		}
-		data = new FormData();
-		data.top = new FormAttachment(topElement,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		data.height = AbstractWizardPage.DEMOCANVAS_HEIGHT;
-		data.width = parent.getBounds().width;
-		this.sampleComp.setLayoutData(data);
-		topElement = this.sampleComp;
-
+		
 		if(showTextConfig){
 				data = new FormData();
 				data.left = new FormAttachment(4);
@@ -250,7 +248,6 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 				Combo textCombo = new Combo(fontComposite, SWT.None);
 				textCombo.setItems(new String[]{"6","8","10","12","14","16","18","20","24"});
 				textCombo.setText("14");
-				this.sampleComp.setTitleSize(14);
 				textCombo.setLayoutData(gData);
 				textCombo.addSelectionListener(new SelectionAdapter() {
 					
@@ -266,7 +263,6 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 				textCombo = new Combo(fontComposite, SWT.None);
 				textCombo.setItems(new String[]{"6","8","10","12","14","16","18"});
 				textCombo.setText("12");
-				this.sampleComp.setContentSize(12);
 				textCombo.setLayoutData(gData);
 				textCombo.addSelectionListener(new SelectionAdapter() {
 					
@@ -282,7 +278,6 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 				textCombo = new Combo(fontComposite, SWT.DROP_DOWN);
 				textCombo.setItems(new String[]{"6","8","10","12","14"});
 				textCombo.setText("10");
-				this.sampleComp.setContentSize(10);
 				textCombo.setLayoutData(gData);
 				textCombo.addSelectionListener(new SelectionAdapter() {
 					
@@ -294,19 +289,35 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	
 				topElement = fontComposite;
 		}
-		if(showFormatChooser){
+		
+		// ----Creates a Composite for a Canvas which provides a preview of the
+		// projectname with the chosen fore-/background colors
+		if(showPreviewCanvas){
+			this.sampleComp = new DemoCanvas(this.container, SWT.NONE);
+			this.sampleComp.setTitleSize(14);
+			this.sampleComp.setContentSize(10);
+			this.sampleComp.setContentSize(12);
+			if(getProjectID() != null){
+				this.sampleComp.setProjectID(getProjectID());
+			}
 			data = new FormData();
-			data.left = new FormAttachment(4);
-			data.right = new FormAttachment(96);
 			data.top = new FormAttachment(topElement,
 					AbstractWizardPage.COMPONENT_OFFSET);
-			addFormatChooser(container, data, false);
+			data.left = new FormAttachment(4);
+			data.right = new FormAttachment(96);
+			data.height = DEMOCANVAS_HEIGHT;
+			data.width = parent.getBounds().width;
+			this.sampleComp.setLayoutData(data);
+			topElement = this.sampleComp;
 		}
 		// Required to avoid an error in the system
 		this.setControl(this.container);
 
 	}
 
+	protected Control getBottomControl(){
+		return topElement;
+	}
 	/**
 	 * @return the textCompany
 	 */
@@ -350,7 +361,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		this.sampleComp.redraw();
+		if(this.sampleComp != null){
+			this.sampleComp.redraw();
+		}
 	}
 
 	/**
@@ -416,18 +429,26 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	@Override
 	public void setContentSize(int contentSize) {
 		super.setContentSize(contentSize);
-		this.sampleComp.setContentSize(contentSize);
+
+		if(this.sampleComp != null){
+			this.sampleComp.setContentSize(contentSize);
+		}
 	}
 	
 	@Override
 	public void setTitleSize(int titleSize) {
 		super.setTitleSize(titleSize);
-		this.sampleComp.setTitleSize(titleSize);
+
+		if(this.sampleComp != null){
+			this.sampleComp.setTitleSize(titleSize);
+		}
 	}
 	
 	@Override
 	public void setHeadSize(int headSize) {
-		this.sampleComp.setHeadSize(headSize);
+		if(this.sampleComp != null){
+			this.sampleComp.setHeadSize(headSize);
+		}
 		super.setHeadSize(headSize);
 	}
 	/**
@@ -435,5 +456,17 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	 */
 	public void setShowTextConfig(boolean showTextConfig) {
 		this.showTextConfig = showTextConfig;
+	}
+	/**
+	 * @return the showPreviewCanvas
+	 */
+	public boolean isShowPreviewCanvas() {
+		return this.showPreviewCanvas;
+	}
+	/**
+	 * @param showPreviewCanvas the showPreviewCanvas to set
+	 */
+	public void setShowPreviewCanvas(boolean showPreviewCanvas) {
+		this.showPreviewCanvas = showPreviewCanvas;
 	}
 }
