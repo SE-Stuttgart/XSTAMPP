@@ -91,10 +91,13 @@ public class RunWizard extends AbstractExportWizard {
 		
 		public RunPage(String pageName, String projectName) {
 			super(pageName, projectName, PathComposite.DIR_DIALOG, Activator.PLUGIN_ID);
+			setShowFormatChooser(false);
+			setShowTextConfig(false);
 		}
 		
 		@Override
 		public void createControl(Composite parent) {
+			
 			super.createControl(parent);
 			
 			this.pathChooser.setText(ProjectManager.getContainerInstance().getOutputDir(getProjectID()).getAbsolutePath());

@@ -60,6 +60,8 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	private int pathConstant;
 	private boolean showCompanyFields;
 	private boolean showDecorateCSButton;
+
+	private boolean showTextConfig;
 	private boolean showFormatChooser;
 	private String[] filterExtensions;
 	private String[] filterNames;
@@ -197,15 +199,13 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		this.pathChooser.setLayoutData(data);
 		this.pathChooser.setVisible(true);
 
-		Composite decoSwitchComposite= null;
 		if(isShowDecorateCSButton()){
 			// ----Creates a Composite for the switch which turns the decoration of
 			// the control structure on/off
-			decoSwitchComposite = new Composite(this.container, SWT.NONE);
+			Composite decoSwitchComposite = new Composite(this.container, SWT.NONE);
 			data = new FormData();
 			data.top = new FormAttachment(topElement,
 					AbstractWizardPage.COMPONENT_OFFSET);
-			topElement = decoSwitchComposite;
 			decoSwitchComposite.setLayoutData(data);
 			decoSwitchComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 			Label decoLabel = new Label(decoSwitchComposite, SWT.NONE);
@@ -214,6 +214,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 			decoLabel.setLayoutData(new RowData(160,
 					AbstractWizardPage.LABEL_HEIGHT));
 			this.decoSwitch = new Button(decoSwitchComposite, SWT.CHECK);
+			topElement = decoSwitchComposite;
 		}
 
 		// ----Creates a Composite for a Canvas which provides a preview of the
@@ -222,78 +223,81 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		data = new FormData();
 		data.top = new FormAttachment(topElement,
 				AbstractWizardPage.COMPONENT_OFFSET);
-		topElement = this.sampleComp;
 		data.height = AbstractWizardPage.DEMOCANVAS_HEIGHT;
 		data.width = parent.getBounds().width;
 		this.sampleComp.setLayoutData(data);
+		topElement = this.sampleComp;
 
-		Composite fontComposite = new Composite(container, SWT.NONE);
-
-		data = new FormData();
-		data.left = new FormAttachment(4);
-		data.right = new FormAttachment(96);
-		data.top = new FormAttachment(topElement,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		fontComposite.setLayoutData(data);
-		fontComposite.setLayout(new GridLayout(6,false));
-			GridData textData = new GridData(SWT.FILL,SWT.CENTER,true,false);
-			GridData gData = new GridData(SWT.FILL,SWT.CENTER,true,false);
-			Label text = new Label(fontComposite, SWT.READ_ONLY);
-			text.setText("Title size:");
-			text.setLayoutData(textData);
-			
-			Combo textCombo = new Combo(fontComposite, SWT.None);
-			textCombo.setItems(new String[]{"6","8","10","12","14","16","18","20","24"});
-			textCombo.setText("14");
-			this.sampleComp.setTitleSize(14);
-			textCombo.setLayoutData(gData);
-			textCombo.addSelectionListener(new SelectionAdapter() {
+		if(showTextConfig){
+				data = new FormData();
+				data.left = new FormAttachment(4);
+				data.right = new FormAttachment(96);
+				data.top = new FormAttachment(topElement,
+					AbstractWizardPage.COMPONENT_OFFSET);
+				Composite fontComposite = new Composite(container, SWT.NONE);
+				fontComposite.setLayoutData(data);
+				fontComposite.setLayout(new GridLayout(6,false));
+				GridData textData = new GridData(SWT.FILL,SWT.CENTER,true,false);
+				GridData gData = new GridData(SWT.FILL,SWT.CENTER,true,false);
+				Label text = new Label(fontComposite, SWT.READ_ONLY);
+				text.setText("Title size:");
+				text.setLayoutData(textData);
 				
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					setTitleSize(Integer.parseInt(((Combo)e.getSource()).getText()));
-				}
-			});
-			
-			text = new Label(fontComposite, SWT.READ_ONLY);
-			text.setText("Header size:");
-			text.setLayoutData(textData);
-			textCombo = new Combo(fontComposite, SWT.None);
-			textCombo.setItems(new String[]{"6","8","10","12","14","16","18"});
-			textCombo.setText("12");
-			this.sampleComp.setContentSize(12);
-			textCombo.setLayoutData(gData);
-			textCombo.addSelectionListener(new SelectionAdapter() {
+				Combo textCombo = new Combo(fontComposite, SWT.None);
+				textCombo.setItems(new String[]{"6","8","10","12","14","16","18","20","24"});
+				textCombo.setText("14");
+				this.sampleComp.setTitleSize(14);
+				textCombo.setLayoutData(gData);
+				textCombo.addSelectionListener(new SelectionAdapter() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						setTitleSize(Integer.parseInt(((Combo)e.getSource()).getText()));
+					}
+				});
 				
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					setHeadSize(Integer.parseInt(((Combo)e.getSource()).getText()));
-				}
-			});
-
-			text = new Label(fontComposite, SWT.READ_ONLY);
-			text.setText("Text size:");
-			text.setLayoutData(textData);
-			textCombo = new Combo(fontComposite, SWT.DROP_DOWN);
-			textCombo.setItems(new String[]{"6","8","10","12","14"});
-			textCombo.setText("10");
-			this.sampleComp.setContentSize(10);
-			textCombo.setLayoutData(gData);
-			textCombo.addSelectionListener(new SelectionAdapter() {
-				
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					setContentSize(Integer.parseInt(((Combo)e.getSource()).getText()));
-				}
-			});
-
-			topElement = fontComposite;
-		data = new FormData();
-		data.left = new FormAttachment(4);
-		data.right = new FormAttachment(96);
-		data.top = new FormAttachment(topElement,
-				AbstractWizardPage.COMPONENT_OFFSET);
-		addFormatChooser(container, data, false);
+				text = new Label(fontComposite, SWT.READ_ONLY);
+				text.setText("Header size:");
+				text.setLayoutData(textData);
+				textCombo = new Combo(fontComposite, SWT.None);
+				textCombo.setItems(new String[]{"6","8","10","12","14","16","18"});
+				textCombo.setText("12");
+				this.sampleComp.setContentSize(12);
+				textCombo.setLayoutData(gData);
+				textCombo.addSelectionListener(new SelectionAdapter() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						setHeadSize(Integer.parseInt(((Combo)e.getSource()).getText()));
+					}
+				});
+	
+				text = new Label(fontComposite, SWT.READ_ONLY);
+				text.setText("Text size:");
+				text.setLayoutData(textData);
+				textCombo = new Combo(fontComposite, SWT.DROP_DOWN);
+				textCombo.setItems(new String[]{"6","8","10","12","14"});
+				textCombo.setText("10");
+				this.sampleComp.setContentSize(10);
+				textCombo.setLayoutData(gData);
+				textCombo.addSelectionListener(new SelectionAdapter() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						setContentSize(Integer.parseInt(((Combo)e.getSource()).getText()));
+					}
+				});
+	
+				topElement = fontComposite;
+		}
+		if(showFormatChooser){
+			data = new FormData();
+			data.left = new FormAttachment(4);
+			data.right = new FormAttachment(96);
+			data.top = new FormAttachment(topElement,
+					AbstractWizardPage.COMPONENT_OFFSET);
+			addFormatChooser(container, data, false);
+		}
 		// Required to avoid an error in the system
 		this.setControl(this.container);
 
@@ -421,5 +425,11 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	public void setHeadSize(int headSize) {
 		this.sampleComp.setHeadSize(headSize);
 		super.setHeadSize(headSize);
+	}
+	/**
+	 * @param showTextConfig the showTextConfig to set
+	 */
+	public void setShowTextConfig(boolean showTextConfig) {
+		this.showTextConfig = showTextConfig;
 	}
 }
