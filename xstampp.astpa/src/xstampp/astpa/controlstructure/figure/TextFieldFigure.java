@@ -93,14 +93,14 @@ public class TextFieldFigure extends CSFigure {
 	 *
 	 * @author Lukas Balzer
 	 *
-	 * @param dashed whther the component is dashed or not
+	 * @param dashed whether the component is dashed or not
 	 */
 	public void setDashed() {
 		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH){
 			@Override
 			public void paint(IFigure figure, Graphics graphics,
 					Insets insets) {
-
+				graphics.setLineStyle(SWT.LINE_CUSTOM);
 				graphics.setLineDash(new int[]{4});
 				super.paint(figure, graphics, insets);
 			}
