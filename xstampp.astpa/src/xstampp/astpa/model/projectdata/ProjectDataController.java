@@ -157,13 +157,13 @@ public class ProjectDataController {
 			if(range.start > next){
 				DescriptionObject obj = new DescriptionObject();
 				try{
-					if(range.start >= projectDescription.length()){
+					if(range.start >= projectDescription.length() && next < projectDescription.length()){
 						if(obj.addRanges(null, projectDescription.substring(next))){
 								this.rangeObjects.add(obj);
 							}
 						
-					}
-					else if(obj.addRanges(null, projectDescription.substring(next,range.start))){
+					}else if(next < projectDescription.length() &&
+							obj.addRanges(null, projectDescription.substring(next,range.start))){
 						this.rangeObjects.add(obj);
 					}
 				}catch(IndexOutOfBoundsException e){

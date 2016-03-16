@@ -157,7 +157,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 		case PROJECT_DESCRIPTION:
-			this.resetProjectDescription();
+//			this.resetProjectDescription();
 			break;
 		case PROJECT_NAME:
 			this.resetProjectName();
@@ -637,7 +637,10 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	//		for (int i = 0; i < ranges.length; i++) {
 	//			ranges[i] = setFontItemRange(style, ranges[i], fontSize, fontName);
 	//		}
-
+			boolean shouldSET= false;
+			if(ranges.length > 0){
+				 shouldSET = propertyToSET(style, ranges[0]);
+			}
 			int count = 0;
 			for(int i= selectionRange.x; i < selectionRange.x + selectionRange.y;i++){
 				if(ranges.length > next && ranges[next].start < i){
@@ -648,18 +651,18 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 					range.length = Math.min(selectionRange.y,ranges[next].length- (i-ranges[next].start));
 					if(range.length >0){
 						i = i +(ranges[next].length- (i-ranges[next].start)) -1;
-						descriptionText.setStyleRange(setFontItemRange(style, range, fontSize, fontName));
+						descriptionText.setStyleRange(setFontItemRange(style,shouldSET, range, fontSize, fontName));
 						count++;
 						next++;
 					}
 				}else if(ranges.length > next && ranges[next].start == i){
 					if(newRange != null){
-						descriptionText.setStyleRange(setFontItemRange(style, newRange, fontSize, fontName));
+						descriptionText.setStyleRange(setFontItemRange(style,shouldSET, newRange, fontSize, fontName));
 						count++;
 						newRange = null;
 					}
 					i = i +(ranges[next].length- (i-ranges[next].start)) -1;
-					descriptionText.setStyleRange(setFontItemRange(style, ranges[next], fontSize, fontName));
+					descriptionText.setStyleRange(setFontItemRange(style,shouldSET, ranges[next], fontSize, fontName));
 					count++;
 					next++;
 				}else if(newRange != null){
@@ -673,7 +676,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			}
 			
 			if(newRange != null){
-				descriptionText.setStyleRange(setFontItemRange(style, newRange, fontSize, fontName));
+				descriptionText.setStyleRange(setFontItemRange(style,shouldSET, newRange, fontSize, fontName));
 				count++;
 				newRange = null;
 			}
@@ -698,6 +701,26 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		selectionRange = null;
 	}
 	
+	private boolean propertyToSET(String style,StyleRange range){
+		FontData data = null;
+		boolean mustSET=false;
+		if(range.font != null){
+			data = range.font.getFontData()[0]; 
+			switch(style){
+				case(BOLD): {
+					return (data.getStyle() & SWT.BOLD) == 0;
+				}case(ITALIC): {
+					return (data.getStyle() & SWT.ITALIC) == 0;
+				}case(UNDERLINE): {
+					return !range.underline;
+				}case(STRIKEOUT): {
+					return !range.strikeout;
+				}
+			}
+		}
+		return mustSET;
+		
+	}
 
 	/**
 	 * Set the style range if text get modified and widget is selected. Also
@@ -712,7 +735,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 * @param newDataSet TODO
 	 * @return styleRange StyleRange
 	 */
-	private StyleRange setFontItemRange(String style, StyleRange styleRange, int height,String name) {
+	private StyleRange setFontItemRange(String style,boolean setProp, StyleRange styleRange, int height,String name) {
 		FontData data = null;
 		if(styleRange.font != null){
 			data = styleRange.font.getFontData()[0]; 
@@ -744,18 +767,26 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				setFont= true;
 				break;
 			}case(BOLD): {
-				data.setStyle(data.getStyle() ^ SWT.BOLD);
+				if(setProp){
+					data.setStyle(data.getStyle() | SWT.BOLD);
+				}else{
+					data.setStyle(data.getStyle() - SWT.BOLD);
+				}
 				setFont= true;
 				break;
 			}case(ITALIC): {
-				data.setStyle(data.getStyle() ^ SWT.ITALIC);
+				if(setProp){
+					data.setStyle(data.getStyle() | SWT.ITALIC);
+				}else{
+					data.setStyle(data.getStyle() - SWT.ITALIC);
+				}
 				setFont= true;
 				break;
 			}case(UNDERLINE): {
-				styleRange.underline = !styleRange.underline;
+				styleRange.underline = setProp;
 				break;
 			}case(STRIKEOUT): {
-				styleRange.strikeout = !styleRange.strikeout;
+				styleRange.strikeout = setProp;
 				break;
 			}
 		}
