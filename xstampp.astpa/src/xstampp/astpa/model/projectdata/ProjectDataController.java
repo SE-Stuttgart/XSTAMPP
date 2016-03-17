@@ -149,37 +149,40 @@ public class ProjectDataController {
 	
 	public void prepareForExport(){
 		this.rangeObjects = new ArrayList<>();
-		String descriptionPart;
 		int next=0;
 		
-		for(int i=0;i<this.styleRanges.size();i++){
-			StyleRange range = (StyleRange) this.styleRanges.get(i).clone();
-			if(range.start > next){
+		StyleRange[] ranges = this.styleRanges.toArray(new StyleRange[0]);
+		this.styleRanges.clear();
+		int i=0;
+		while(i < projectDescription.length()){
+			
+			if(ranges.length > next && ranges[next].start == i){
+				StyleRange range = ranges[next];
+				this.styleRanges.add(range);
+				next++;
+				i += range.length;
 				DescriptionObject obj = new DescriptionObject();
 				try{
-					if(range.start >= projectDescription.length() && next < projectDescription.length()){
-						if(obj.addRanges(null, projectDescription.substring(next))){
-								this.rangeObjects.add(obj);
-							}
-						
-					}else if(next < projectDescription.length() &&
-							obj.addRanges(null, projectDescription.substring(next,range.start))){
-						this.rangeObjects.add(obj);
+					if(range.start + range.length <= projectDescription.length()){
+						obj.addRanges(range, projectDescription.substring(range.start,i));
+					}else{
+						obj.addRanges(range, projectDescription.substring(range.start));
 					}
+					this.rangeObjects.add(obj);
 				}catch(IndexOutOfBoundsException e){
 					e.fillInStackTrace();
 				}
-			}
-			if(range.start + range.length < projectDescription.length()){
-				next = range.start + range.length;
-				descriptionPart = projectDescription.substring(range.start, range.start + range.length);
-				if(!descriptionPart.isEmpty()){
-					
-					DescriptionObject obj = new DescriptionObject();
-					if(obj.addRanges(range, descriptionPart)){
-						this.rangeObjects.add(obj);
-					}
-				}
+			}else if(ranges.length > next && ranges[next].start < projectDescription.length()){
+				StyleRange range = ranges[next];
+				DescriptionObject obj = new DescriptionObject();
+				obj.addRanges(null, projectDescription.substring(i,range.start));
+				this.rangeObjects.add(obj);
+				
+			}else{
+				DescriptionObject obj = new DescriptionObject();
+				obj.addRanges(null, projectDescription.substring(i));
+				this.rangeObjects.add(obj);
+				i = projectDescription.length();
 			}
 		}
 	}

@@ -307,7 +307,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 * 
 	 */
 	private void applyProjectDescriptionToDataModel(boolean stylesChanged) {
-		if (stylesChanged) {
+//		if (stylesChanged) {
 			this.dataInterface.getStyleRanges().clear();
 			for (StyleRange styleRange : this.descriptionText.getStyleRanges()) {
 				if(styleRange.font == null || !styleRange.font.isDisposed()){
@@ -315,7 +315,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				}
 			}
 			dataInterface.setUnsavedAndChanged();
-		}
+//		}
 		String projectDesc= descriptionText.getText();
 		if(projectDesc.contains(System.lineSeparator())){
 			projectDesc = projectDesc.replaceAll(System.lineSeparator(),"\n");
@@ -680,7 +680,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				count++;
 				newRange = null;
 			}
-			System.out.println(count);
 		applyProjectDescriptionToDataModel(true);
 		getEditorSite().getShell().getDisplay().asyncExec(new Runnable() {
 			
