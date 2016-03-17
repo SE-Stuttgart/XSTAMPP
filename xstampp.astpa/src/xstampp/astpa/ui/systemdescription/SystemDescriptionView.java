@@ -14,9 +14,7 @@
 package xstampp.astpa.ui.systemdescription;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 
 import messages.Messages;
@@ -56,7 +54,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -65,8 +62,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
@@ -109,9 +104,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 */
 	private StyledText descriptionText;
 
-	private ToolItem boldControl, italicControl, strikeoutControl,
-			foregroundControl, backgroundControl, baselineUpControl,
-			baselineDownControl, underlineControl, bulletListControl;
 
 	private ITextEditContribution toolContributor;
 	/**
@@ -121,7 +113,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			"6", "8", "9", "10", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			"11", "12", "14", "24", "36", "48" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
-	private Map<Widget,String> values;
 	/**
 	 * ViewPart ID.
 	 */
@@ -264,11 +255,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	private GridData gridData;
 
 	/**
-	 * Combo to display font size and font name.
-	 */
-	private Combo fontNameControl, fontSizeControl;
-
-	/**
 	 * Text fonts
 	 */
 	private Font textFont;
@@ -277,8 +263,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	 * Colors
 	 */
 	private Color textForegroundColor, textBackgroundColor;
-
-	private List<StyleRange> allRanges = new ArrayList<>();
 
 	/**
 	 * Image path used for button images.
@@ -595,21 +579,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		this.projectNameText.setSelection(modifiedProjectName.length());
 	}
 
-	private void setStyle(Widget widget){
-		this.values=new HashMap<>();
-		this.values.put(this.backgroundControl, BACKGROUND);
-		this.values.put(this.baselineDownControl, FONT_SIZE_DOWN);
-		this.values.put(this.baselineUpControl, FONT_SIZE_UP);
-		this.values.put(this.boldControl, BOLD);
-		this.values.put(this.bulletListControl, DOT_LIST);
-		this.values.put(this.fontNameControl, FONT_FAMILY);
-		this.values.put(this.fontSizeControl, FONT_SIZE);
-		this.values.put(this.foregroundControl, FOREGROUND);
-		this.values.put(this.italicControl, ITALIC);
-		this.values.put(this.descriptionText, DESCRIPTION);
-//		setStyle(this.values.get(widget));
-	}
-	
 	@Override
 	public void setStyle(String style) {
 		addStyleRangesFor(style, new String(), 0, 0);
@@ -633,37 +602,35 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 		}
 		StyleRange newRange = null;
 		int next=0;
-			StyleRange[] ranges = descriptionText.getStyleRanges(selectionRange.x, selectionRange.y, false);
-	//		for (int i = 0; i < ranges.length; i++) {
-	//			ranges[i] = setFontItemRange(style, ranges[i], fontSize, fontName);
-	//		}
+			descriptionText.getStyleRanges();
+			StyleRange[] ranges = descriptionText.getStyleRanges(selectionRange.x, selectionRange.y, true);
 			boolean shouldSET= false;
 			if(ranges.length > 0){
 				 shouldSET = propertyToSET(style, ranges[0]);
 			}
-			int count = 0;
 			for(int i= selectionRange.x; i < selectionRange.x + selectionRange.y;i++){
-				if(ranges.length > next && ranges[next].start < i){
+				/*
+				 * if there is a range that starts before or at the selected region it is than cloned and adapted
+				 * if the range that was found has a length greater than 0 the index is increased			
+				 */
+				if(ranges.length > next && ranges[next].start <= i){
+					if(newRange != null){
+						descriptionText.setStyleRange(setFontItemRange(style,shouldSET, newRange, fontSize, fontName));
+						newRange = null;
+					}
 					StyleRange range = (StyleRange) ranges[next].clone();
 					range.font = FontDescriptor.createFrom(ranges[next].font).createFont(null);
 					fontHandles.add(range.font);
 					range.start = i;
+					/*
+					 * the new length of the range is the minimum of the selection range and the style length
+					 * which is calculated from the old length minus the offset between the index and the range start
+					 */
 					range.length = Math.min(selectionRange.y,ranges[next].length- (i-ranges[next].start));
 					if(range.length >0){
 						i = i +(ranges[next].length- (i-ranges[next].start)) -1;
 						descriptionText.setStyleRange(setFontItemRange(style,shouldSET, range, fontSize, fontName));
-						count++;
-						next++;
 					}
-				}else if(ranges.length > next && ranges[next].start == i){
-					if(newRange != null){
-						descriptionText.setStyleRange(setFontItemRange(style,shouldSET, newRange, fontSize, fontName));
-						count++;
-						newRange = null;
-					}
-					i = i +(ranges[next].length- (i-ranges[next].start)) -1;
-					descriptionText.setStyleRange(setFontItemRange(style,shouldSET, ranges[next], fontSize, fontName));
-					count++;
 					next++;
 				}else if(newRange != null){
 					newRange.length++;
@@ -677,7 +644,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			
 			if(newRange != null){
 				descriptionText.setStyleRange(setFontItemRange(style,shouldSET, newRange, fontSize, fontName));
-				count++;
 				newRange = null;
 			}
 		applyProjectDescriptionToDataModel(true);
@@ -687,9 +653,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			public void run() {
 				
 				for(StyleRange range: descriptionText.getStyleRanges()){
-					if(fontHandles.contains(range.font)){
-						fontHandles.remove(range.font);
-					}
+					fontHandles.remove(range.font);
 				}
 				for(Font font:fontHandles){
 					font.dispose();
@@ -802,13 +766,12 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	public void setStyleColor(String color, RGB rgb) {
 
 		Display display = PlatformUI.getWorkbench().getDisplay();
-		Point selectionRange = this.descriptionText.getSelectionRange();
 		if(color.equals(BACKGROUND)){
 			this.textBackgroundColor = new Color(display, rgb);
 		}else{
 			this.textForegroundColor = new Color(display, rgb);
 		}
-		this.setColorStyleRange(color,selectionRange);
+		this.addStyleRangesFor(color,null,0,0);
 	}
 
 
@@ -861,106 +824,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 			if (!styleRange.isUnstyled()) {
 				this.descriptionText.setStyleRange(styleRange);
 			}
-		}
-	}
-
-	/**
-	 * Set style range for given range. Used to set foreground and background
-	 * color when chosen a new color from dialog.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 * @param selectionRange
-	 *            selected range
-	 * @param widget
-	 *            color control
-	 */
-	private void setColorStyleRange(String style, Point selectionRange) {
-		if ((selectionRange == null) || (selectionRange.y == 0)) {
-			return;
-		}
-		StyleRange styleRange;
-		for (int i = selectionRange.x; i < (selectionRange.x + selectionRange.y); i++) {
-			StyleRange range = this.descriptionText.getStyleRangeAtOffset(i);
-			if (range != null) {
-				styleRange = (StyleRange) range.clone();
-				styleRange.start = i;
-				styleRange.length = 1;
-			} else {
-				styleRange = new StyleRange(i, 1, null, null, SWT.NORMAL);
-			}
-			if (style.equals(FOREGROUND)) {
-				styleRange.foreground = this.textForegroundColor;
-			} else if (style.equals(BACKGROUND)) {
-				styleRange.background = this.textBackgroundColor;
-			}
-			this.descriptionText.setStyleRange(styleRange);
-		}
-		this.descriptionText.setSelectionRange(selectionRange.x
-				+ selectionRange.y, 0);
-
-		// mark text as selected
-		this.descriptionText.setSelection(selectionRange.x, selectionRange.x
-				+ selectionRange.y);
-		applyProjectDescriptionToDataModel(true);
-	}
-
-
-	/**
-	 * Set default font sizes to combo.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 */
-	public void setDefaultFontSize() {
-		FontData fontData;
-		if (this.textFont != null) {
-			fontData = this.textFont.getFontData()[0];
-		} else {
-			fontData = this.descriptionText.getFont().getFontData()[0];
-		}
-
-		int index = 0;
-		int count = this.fontSizeControl.getItemCount();
-
-		int fontSize = fontData.getHeight();
-		while (index < count) {
-			int size = Integer.parseInt(this.fontSizeControl.getItem(index));
-			if (fontSize == size) {
-				this.fontSizeControl.select(index);
-				break;
-			}
-			if (size > fontSize) {
-				this.fontSizeControl.add(String.valueOf(fontSize), index);
-				this.fontSizeControl.select(index);
-				break;
-			}
-			index++;
-		}
-	}
-
-	/**
-	 * Set default font names to combo.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 */
-	public void setDefaultFontName() {
-		FontData fontData;
-		if (this.textFont != null) {
-			fontData = this.textFont.getFontData()[0];
-		} else {
-			fontData = this.descriptionText.getFont().getFontData()[0];
-		}
-		int index = 0;
-		int count = this.fontNameControl.getItemCount();
-		String fontName = fontData.getName();
-		while (index < count) {
-			if (this.fontNameControl.getItem(index).equals(fontName)) {
-				this.fontNameControl.select(index);
-				break;
-			}
-			index++;
 		}
 	}
 
@@ -1022,40 +885,6 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 				+ lineIndex + "\t"); //$NON-NLS-1$
 	}
 
-	/**
-	 * Update CoolBar items if caret position changed.
-	 * 
-	 * @author Sebastian Sieber
-	 * 
-	 */@Deprecated
-	public void updateCoolBar() {
-		boolean italicState = false, underlineState = false, strikeoutState = false, boldState = false;
-		int offset = this.descriptionText.getCaretOffset();
-		StyleRange styleRange;
-		if (offset > 0) {
-			styleRange = this.descriptionText.getStyleRangeAtOffset(offset - 1);
-		} else {
-			styleRange = null;
-		}
-
-		if (styleRange != null) {
-			boldState = (styleRange.fontStyle & SWT.BOLD) != 0;
-			this.boldControl.setSelection(boldState);
-
-			italicState = (styleRange.fontStyle & SWT.ITALIC) != 0;
-			this.italicControl.setSelection(italicState);
-
-			if (styleRange.underline) {
-				underlineState = true;
-			}
-			this.underlineControl.setSelection(underlineState);
-
-			if (styleRange.strikeout) {
-				strikeoutState = true;
-			}
-			this.strikeoutControl.setSelection(strikeoutState);
-		}
-	}
 
 	/**
 	 * @return the imagePath

@@ -44,9 +44,10 @@ public class ColorChooseHandle extends AbstractHandler {
 				ColorDialog dialog = new ColorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 				
 				newRgb = dialog.open();
-				if(newRgb != null){
-					((ITextEditor)activeEditor).setStyleColor(colorType, newRgb);
-				}
+				
+			}
+			if(newRgb != null){
+				((ITextEditor)activeEditor).setStyleColor(colorType, newRgb);
 			}
 			return newRgb;
 		}
