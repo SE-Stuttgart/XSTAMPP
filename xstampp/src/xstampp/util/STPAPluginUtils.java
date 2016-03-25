@@ -15,7 +15,6 @@ import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.ui.PlatformUI;
@@ -81,7 +80,7 @@ public final class STPAPluginUtils {
 		if (command != null) {
 			try {
 				return command.executeWithChecks(new ExecutionEvent());
-			} catch (ExecutionException | NotDefinedException
+			} catch (ExecutionException | NotDefinedException|NullPointerException
 					| NotEnabledException | NotHandledException e) {
 				ProjectManager.getLOGGER().error(
 						"Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$

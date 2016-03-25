@@ -859,12 +859,19 @@ public class ProcessContextTable extends AbstractTableComposite {
 			@Override
 			public void done(IJobChangeEvent event) {
 				if(event.getResult() ==Status.OK_STATUS){
-					if(checkJob.getConflictCounter() > 0){
-			   		 	errorLabel.setText(Messages.Param_ConflictsMsg +checkJob.getConflictCounter()+ " Conflicts!");
-			   	 	}else{
-			   		 	errorLabel.setText(""); //$NON-NLS-1$
-			   	 	}
-					contextTableViewer.refresh();
+					Display.getCurrent().asyncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							if(checkJob.getConflictCounter() > 0){
+					   		 	errorLabel.setText(Messages.Param_ConflictsMsg +checkJob.getConflictCounter()+ " Conflicts!");
+					   	 	}else{
+					   		 	errorLabel.setText(""); //$NON-NLS-1$
+					   	 	}
+							contextTableViewer.refresh();
+						}
+					});
+					
 				}
 			}
 		});
