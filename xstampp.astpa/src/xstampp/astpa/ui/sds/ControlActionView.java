@@ -65,7 +65,7 @@ import xstampp.ui.common.ProjectManager;
  * @author Jarkko Heidenwag
  * 
  */
-public class ControlActionView extends CommonTableView {
+public class ControlActionView extends CommonTableView<IControlActionViewDataModel> {
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -76,7 +76,6 @@ public class ControlActionView extends CommonTableView {
 	// the control action currently displayed in the text widget
 	private ControlAction displayedControlAction;
 
-	private IControlActionViewDataModel dataInterface;
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -123,9 +122,9 @@ public class ControlActionView extends CommonTableView {
 				ControlActionView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				ControlActionView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				ControlActionView.this.refreshView();
-				ControlActionView.this.dataInterface.addControlAction(
+				ControlActionView.this.getDataInterface().addControlAction(
 						"", Messages.DescriptionOfThisControlAction); //$NON-NLS-1$
-				int newID = ControlActionView.this.dataInterface
+				int newID = ControlActionView.this.getDataInterface()
 						.getAllControlActions().size() - 1;
 				ControlActionView.this.updateTable();
 				ControlActionView.this.refreshView();
@@ -183,7 +182,7 @@ public class ControlActionView extends CommonTableView {
 						.compareTo(Messages.DescriptionOfThisControlAction) == 0) {
 					UUID id = ControlActionView.this.displayedControlAction
 							.getId();
-					ControlActionView.this.dataInterface
+					ControlActionView.this.getDataInterface()
 							.setControlActionDescription(id, ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
@@ -206,7 +205,7 @@ public class ControlActionView extends CommonTableView {
 					String description = text.getText();
 					UUID id = ControlActionView.this.displayedControlAction
 							.getId();
-					ControlActionView.this.dataInterface
+					ControlActionView.this.getDataInterface()
 							.setControlActionDescription(id, description);
 				}
 			}
@@ -308,16 +307,16 @@ public class ControlActionView extends CommonTableView {
 					@Override
 					public String getText(Object element) {
 						if (element instanceof IHAZXControlAction) {
-							IRectangleComponent comp=ControlActionView.this.dataInterface.
+							IRectangleComponent comp=ControlActionView.this.getDataInterface().
 									getComponent(((IHAZXControlAction) element).getComponentLink());
 							if(comp == null){
 								return null;
 							}
-							IConnection conn = ControlActionView.this.dataInterface.getConnection(comp.getRelative());
+							IConnection conn = ControlActionView.this.getDataInterface().getConnection(comp.getRelative());
 							if(conn == null){
 								return null;
 							}
-							comp=ControlActionView.this.dataInterface.getComponent(conn.getSourceAnchor().getOwnerId());
+							comp=ControlActionView.this.getDataInterface().getComponent(conn.getSourceAnchor().getOwnerId());
 							return comp.getText();
 						}
 						return null;
@@ -337,16 +336,16 @@ public class ControlActionView extends CommonTableView {
 					@Override
 					public String getText(Object element) {
 						if (element instanceof IHAZXControlAction) {
-							IRectangleComponent comp=ControlActionView.this.dataInterface.
+							IRectangleComponent comp=ControlActionView.this.getDataInterface().
 									getComponent(((IHAZXControlAction) element).getComponentLink());
 							if(comp == null){
 								return null;
 							}
-							IConnection conn = ControlActionView.this.dataInterface.getConnection(comp.getRelative());
+							IConnection conn = ControlActionView.this.getDataInterface().getConnection(comp.getRelative());
 							if(conn == null){
 								return null;
 							}
-							comp=ControlActionView.this.dataInterface.getComponent(conn.getTargetAnchor().getOwnerId());
+							comp=ControlActionView.this.getDataInterface().getComponent(conn.getTargetAnchor().getOwnerId());
 							return comp.getText();
 						}
 						return null;
@@ -387,9 +386,9 @@ public class ControlActionView extends CommonTableView {
 			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
 			for (Iterator<ControlAction> i = selection.iterator(); i.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.dataInterface.getControlAction(id)
+				String title = this.getDataInterface().getControlAction(id)
 						.getTitle();
-				int num = this.dataInterface.getControlAction(id).getNumber();
+				int num = this.getDataInterface().getControlAction(id).getNumber();
 				String controlAction = newline + num + ": " + title; //$NON-NLS-1$
 				controlActions = controlActions + controlAction;
 			}
@@ -402,7 +401,7 @@ public class ControlActionView extends CommonTableView {
 				ControlActionView.this.displayedControlAction = null;
 				for (Iterator<ControlAction> i = selection.iterator(); i
 						.hasNext();) {
-					this.dataInterface.removeControlAction(i.next().getId());
+					this.getDataInterface().removeControlAction(i.next().getId());
 				}
 				ControlActionView.this.updateTable();
 				this.refreshView();
@@ -419,7 +418,7 @@ public class ControlActionView extends CommonTableView {
 				ControlActionView.this.displayedControlAction = null;
 				for (Iterator<ControlAction> i = selection.iterator(); i
 						.hasNext();) {
-					this.dataInterface.removeControlAction(i.next().getId());
+					this.getDataInterface().removeControlAction(i.next().getId());
 				}
 				ControlActionView.this.updateTable();
 				this.refreshView();
@@ -434,7 +433,7 @@ public class ControlActionView extends CommonTableView {
 		if (b) {
 			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 			ControlActionView.this.displayedControlAction = null;
-			this.dataInterface.removeControlAction(id);
+			this.getDataInterface().removeControlAction(id);
 			ControlActionView.this.updateTable();
 			this.refreshView();
 		}
@@ -480,10 +479,10 @@ public class ControlActionView extends CommonTableView {
 		@Override
 		protected void setValue(Object element, Object value) {
 			if (element instanceof ControlAction) {
-				dataInterface.setControlActionTitle(((ControlAction) element).getId(), String.valueOf(value));
+				getDataInterface().setControlActionTitle(((ControlAction) element).getId(), String.valueOf(value));
 				// Fill in the default title if the user left it blank
 				if (((ControlAction) element).getTitle().length() == 0) {
-					dataInterface.setControlActionTitle(((ControlAction) element).getId(),
+					getDataInterface().setControlActionTitle(((ControlAction) element).getId(),
 														Messages.DoubleClickToEditTitle);
 				}
 			}
@@ -530,7 +529,7 @@ public class ControlActionView extends CommonTableView {
 	@Override
 	public void updateTable() {
 		ControlActionView.this.getTableViewer().setInput(
-				this.dataInterface.getAllControlActions());
+				this.getDataInterface().getAllControlActions());
 	}
 	
 	@Override
@@ -555,12 +554,6 @@ public class ControlActionView extends CommonTableView {
 		return Messages.ControlActions;
 	}
 
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = (IControlActionViewDataModel) dataInterface;
-		this.dataInterface.addObserver(this);
-	}
-
 	/**
 	 * 
 	 * @author Jarkko Heidenwag
@@ -575,14 +568,20 @@ public class ControlActionView extends CommonTableView {
 
 	@Override
 	public void dispose() {
-		this.dataInterface.deleteObserver(this);
+		this.getDataInterface().deleteObserver(this);
 		super.dispose();
 	}
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.dataInterface.getAllControlActions()){
-			this.dataInterface.removeControlAction(model.getId());
+		for(ITableModel model: this.getDataInterface().getAllControlActions()){
+			this.getDataInterface().removeControlAction(model.getId());
 		}
+	}
+
+	@Override
+	protected void moveEntry(UUID id, boolean moveUp) {
+		// TODO Auto-generated method stub
+		
 	}
 }

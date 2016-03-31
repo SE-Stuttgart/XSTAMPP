@@ -53,13 +53,14 @@ import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
  * 
  */
-public class HazardsView extends CommonTableView {
+public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -70,7 +71,6 @@ public class HazardsView extends CommonTableView {
 	// the hazard currently displayed in the text widget
 	private Hazard displayedHazard;
 
-	private IHazardViewDataModel dataInterface;
 
 	/**
 	 * Create contents of the view part.
@@ -111,9 +111,9 @@ public class HazardsView extends CommonTableView {
 				HazardsView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				HazardsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				HazardsView.this.refreshView();
-				HazardsView.this.dataInterface.addHazard(
+				HazardsView.this.getDataInterface().addHazard(
 						Messages.DoubleClickToEditTitle, Messages.DescriptionOfThisHazard);
-				int newID = HazardsView.this.dataInterface.getAllHazards()
+				int newID = HazardsView.this.getDataInterface().getAllHazards()
 						.size() - 1;
 				HazardsView.this.updateTable();
 				HazardsView.this.refreshView();
@@ -169,7 +169,7 @@ public class HazardsView extends CommonTableView {
 				String description = text.getText();
 				if (description.compareTo(Messages.DescriptionOfThisHazard) == 0) {
 					UUID id = HazardsView.this.displayedHazard.getId();
-					HazardsView.this.dataInterface.setHazardDescription(id, ""); //$NON-NLS-1$
+					HazardsView.this.getDataInterface().setHazardDescription(id, ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
 			}
@@ -190,7 +190,7 @@ public class HazardsView extends CommonTableView {
 					Text text = (Text) e.widget;
 					String description = text.getText();
 					UUID id = HazardsView.this.displayedHazard.getId();
-					HazardsView.this.dataInterface.setHazardDescription(id,
+					HazardsView.this.getDataInterface().setHazardDescription(id,
 							description);
 				}
 			}
@@ -236,7 +236,7 @@ public class HazardsView extends CommonTableView {
 			@Override
 			public String getText(Object element) {
 				String linkString = ""; //$NON-NLS-1$
-				List<ITableModel> links = HazardsView.this.dataInterface
+				List<ITableModel> links = HazardsView.this.getDataInterface()
 						.getLinkedAccidents(((Hazard) element).getId());
 				if (!(links == null)) {
 					for (int i = 0; i < links.size(); i++) {
@@ -337,8 +337,8 @@ public class HazardsView extends CommonTableView {
 			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
 			for (Iterator<Hazard> i = selection.iterator(); i.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.dataInterface.getHazard(id).getTitle();
-				int num = this.dataInterface.getHazard(id).getNumber();
+				String title = this.getDataInterface().getHazard(id).getTitle();
+				int num = this.getDataInterface().getHazard(id).getNumber();
 				String hazard = newline + num + ": " + title; //$NON-NLS-1$
 				hazards = hazards + hazard;
 			}
@@ -350,7 +350,7 @@ public class HazardsView extends CommonTableView {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				HazardsView.this.displayedHazard = null;
 				for (Iterator<Hazard> i = selection.iterator(); i.hasNext();) {
-					this.dataInterface.removeHazard(i.next().getId());
+					this.getDataInterface().removeHazard(i.next().getId());
 				}
 				HazardsView.this.updateTable();
 				this.refreshView();
@@ -364,7 +364,7 @@ public class HazardsView extends CommonTableView {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				HazardsView.this.displayedHazard = null;
 				for (Iterator<Hazard> i = selection.iterator(); i.hasNext();) {
-					this.dataInterface.removeHazard(i.next().getId());
+					this.getDataInterface().removeHazard(i.next().getId());
 				}
 				HazardsView.this.updateTable();
 				this.refreshView();
@@ -379,7 +379,7 @@ public class HazardsView extends CommonTableView {
 		if (b) {
 			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 			HazardsView.this.displayedHazard = null;
-			this.dataInterface.removeHazard(id);
+			this.getDataInterface().removeHazard(id);
 			HazardsView.this.updateTable();
 			this.refreshView();
 		}
@@ -425,11 +425,11 @@ public class HazardsView extends CommonTableView {
 		@Override
 		protected void setValue(Object element, Object value) {
 			if (element instanceof Hazard) {
-				HazardsView.this.dataInterface.setHazardTitle(((Hazard) element).getId(),
+				HazardsView.this.getDataInterface().setHazardTitle(((Hazard) element).getId(),
 						String.valueOf(value));
 				// Fill in the default title if the user left it blank
 				if (String.valueOf(value).length() == 0) {
-					HazardsView.this.dataInterface.setHazardTitle(((Hazard) element).getId(),
+					HazardsView.this.getDataInterface().setHazardTitle(((Hazard) element).getId(),
 							Messages.DoubleClickToEditTitle);
 				}
 			}
@@ -476,7 +476,7 @@ public class HazardsView extends CommonTableView {
 	@Override
 	public void updateTable() {
 		HazardsView.this.getTableViewer().setInput(
-				this.dataInterface.getAllHazards());
+				this.getDataInterface().getAllHazards());
 	}
 
 	@Override
@@ -489,11 +489,6 @@ public class HazardsView extends CommonTableView {
 		return Messages.Hazards;
 	}
 
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = (IHazardViewDataModel) dataInterface;
-		this.dataInterface.addObserver(this);
-	}
 
 	/**
 	 * 
@@ -508,14 +503,19 @@ public class HazardsView extends CommonTableView {
 
 	@Override
 	public void dispose() {
-		this.dataInterface.deleteObserver(this);
+		this.getDataInterface().deleteObserver(this);
 		super.dispose();
 	}
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.dataInterface.getAllHazards()){
-			this.dataInterface.removeHazard(model.getId());
+		for(ITableModel model: this.getDataInterface().getAllHazards()){
+			this.getDataInterface().removeHazard(model.getId());
 		}
+	}
+
+	@Override
+	protected void moveEntry(UUID id, boolean moveUp) {
+		getDataInterface().moveEntry(moveUp, id, ObserverValue.HAZARD);
 	}
 }

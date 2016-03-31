@@ -52,13 +52,14 @@ import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.astpa.ui.acchaz.CommonTableView;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
  * 
  */
-public class SafetyConstraintView extends CommonTableView {
+public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewDataModel> {
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -68,8 +69,6 @@ public class SafetyConstraintView extends CommonTableView {
 
 	// the safety constraint currently displayed in the text widget
 	private SafetyConstraint displayedSafetyConstraint;
-
-	private ISafetyConstraintViewDataModel dataInterface;
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -117,9 +116,9 @@ public class SafetyConstraintView extends CommonTableView {
 				SafetyConstraintView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.refreshView();
-				SafetyConstraintView.this.dataInterface.addSafetyConstraint(
+				SafetyConstraintView.this.getDataInterface().addSafetyConstraint(
 						"", Messages.DescriptionOfThisSafetyConstr); //$NON-NLS-1$
-				int newID = SafetyConstraintView.this.dataInterface
+				int newID = SafetyConstraintView.this.getDataInterface()
 						.getAllSafetyConstraints().size() - 1;
 				SafetyConstraintView.this.updateTable();
 				SafetyConstraintView.this.refreshView();
@@ -177,7 +176,7 @@ public class SafetyConstraintView extends CommonTableView {
 						.compareTo(Messages.DescriptionOfThisSafetyConstr) == 0) {
 					UUID id = SafetyConstraintView.this.displayedSafetyConstraint
 							.getId();
-					SafetyConstraintView.this.dataInterface
+					SafetyConstraintView.this.getDataInterface()
 							.setSafetyConstraintDescription(id, ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
@@ -200,7 +199,7 @@ public class SafetyConstraintView extends CommonTableView {
 					String description = text.getText();
 					UUID id = SafetyConstraintView.this.displayedSafetyConstraint
 							.getId();
-					SafetyConstraintView.this.dataInterface
+					SafetyConstraintView.this.getDataInterface()
 							.setSafetyConstraintDescription(id, description);
 				}
 			}
@@ -324,9 +323,9 @@ public class SafetyConstraintView extends CommonTableView {
 			for (Iterator<SafetyConstraint> i = selection.iterator(); i
 					.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.dataInterface.getSafetyConstraint(id)
+				String title = this.getDataInterface().getSafetyConstraint(id)
 						.getTitle();
-				int num = this.dataInterface.getSafetyConstraint(id)
+				int num = this.getDataInterface().getSafetyConstraint(id)
 						.getNumber();
 				String safetyConstraint = newline + num + ": " + title; //$NON-NLS-1$
 				safetyConstraints = safetyConstraints + safetyConstraint;
@@ -340,7 +339,7 @@ public class SafetyConstraintView extends CommonTableView {
 				SafetyConstraintView.this.displayedSafetyConstraint = null;
 				for (Iterator<SafetyConstraint> i = selection.iterator(); i
 						.hasNext();) {
-					this.dataInterface.removeSafetyConstraint(i.next().getId());
+					this.getDataInterface().removeSafetyConstraint(i.next().getId());
 				}
 				SafetyConstraintView.this.updateTable();
 				this.refreshView();
@@ -357,7 +356,7 @@ public class SafetyConstraintView extends CommonTableView {
 				SafetyConstraintView.this.displayedSafetyConstraint = null;
 				for (Iterator<SafetyConstraint> i = selection.iterator(); i
 						.hasNext();) {
-					this.dataInterface.removeSafetyConstraint(i.next().getId());
+					this.getDataInterface().removeSafetyConstraint(i.next().getId());
 				}
 				SafetyConstraintView.this.updateTable();
 				this.refreshView();
@@ -372,7 +371,7 @@ public class SafetyConstraintView extends CommonTableView {
 		if (b) {
 			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 			SafetyConstraintView.this.displayedSafetyConstraint = null;
-			this.dataInterface.removeSafetyConstraint(id);
+			this.getDataInterface().removeSafetyConstraint(id);
 			SafetyConstraintView.this.updateTable();
 			this.refreshView();
 		}
@@ -469,7 +468,7 @@ public class SafetyConstraintView extends CommonTableView {
 	@Override
 	public void updateTable() {
 		SafetyConstraintView.this.getTableViewer().setInput(
-				this.dataInterface.getAllSafetyConstraints());
+				this.getDataInterface().getAllSafetyConstraints());
 	}
 
 	@Override
@@ -482,11 +481,6 @@ public class SafetyConstraintView extends CommonTableView {
 		return Messages.SafetyConstraints;
 	}
 
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = (ISafetyConstraintViewDataModel) dataInterface;
-		this.dataInterface.addObserver(this);
-	}
 
 	/**
 	 * 
@@ -501,14 +495,19 @@ public class SafetyConstraintView extends CommonTableView {
 
 	@Override
 	public void dispose() {
-		this.dataInterface.deleteObserver(this);
+		this.getDataInterface().deleteObserver(this);
 		super.dispose();
 	}
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.dataInterface.getAllSafetyConstraints()){
-			this.dataInterface.removeSafetyConstraint(model.getId());
+		for(ITableModel model: this.getDataInterface().getAllSafetyConstraints()){
+			this.getDataInterface().removeSafetyConstraint(model.getId());
 		}
+	}
+
+	@Override
+	protected void moveEntry(UUID id, boolean moveUp) {
+		getDataInterface().moveEntry(moveUp, id, ObserverValue.SAFETY_CONSTRAINT);
 	}
 }

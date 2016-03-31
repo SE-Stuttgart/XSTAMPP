@@ -45,20 +45,20 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.astpa.ui.acchaz.CommonTableView;
-import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
- * 
+ * @since 1.0.0
+ * @version 2.0.2
  */
-public class SystemGoalView extends CommonTableView {
+public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -69,7 +69,6 @@ public class SystemGoalView extends CommonTableView {
 	// the system goal currently displayed in the text widget
 	private SystemGoal displayedSystemGoal;
 
-	private ISystemGoalViewDataModel dataInterface;
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -116,9 +115,9 @@ public class SystemGoalView extends CommonTableView {
 				SystemGoalView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				SystemGoalView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				SystemGoalView.this.refreshView();
-				SystemGoalView.this.dataInterface.addSystemGoal(
+				SystemGoalView.this.getDataInterface().addSystemGoal(
 						"", Messages.DescriptionOfThisSystemGoal); //$NON-NLS-1$
-				int newID = SystemGoalView.this.dataInterface
+				int newID = SystemGoalView.this.getDataInterface()
 						.getAllSystemGoals().size() - 1;
 				SystemGoalView.this.updateTable();
 				SystemGoalView.this.refreshView();
@@ -174,7 +173,7 @@ public class SystemGoalView extends CommonTableView {
 				String description = text.getText();
 				if (description.compareTo(Messages.DescriptionOfThisSystemGoal) == 0) {
 					UUID id = SystemGoalView.this.displayedSystemGoal.getId();
-					SystemGoalView.this.dataInterface.setSystemGoalDescription(
+					SystemGoalView.this.getDataInterface().setSystemGoalDescription(
 							id, ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
@@ -196,7 +195,7 @@ public class SystemGoalView extends CommonTableView {
 					Text text = (Text) e.widget;
 					String description = text.getText();
 					UUID id = SystemGoalView.this.displayedSystemGoal.getId();
-					SystemGoalView.this.dataInterface.setSystemGoalDescription(
+					SystemGoalView.this.getDataInterface().setSystemGoalDescription(
 							id, description);
 				}
 			}
@@ -317,8 +316,8 @@ public class SystemGoalView extends CommonTableView {
 			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
 			for (Iterator<SystemGoal> i = selection.iterator(); i.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.dataInterface.getSystemGoal(id).getTitle();
-				int num = this.dataInterface.getSystemGoal(id).getNumber();
+				String title = this.getDataInterface().getSystemGoal(id).getTitle();
+				int num = this.getDataInterface().getSystemGoal(id).getNumber();
 				String systemGoal = newline + num + ": " + title; //$NON-NLS-1$
 				systemGoals = systemGoals + systemGoal;
 			}
@@ -330,7 +329,7 @@ public class SystemGoalView extends CommonTableView {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				SystemGoalView.this.displayedSystemGoal = null;
 				for (Iterator<SystemGoal> i = selection.iterator(); i.hasNext();) {
-					this.dataInterface.removeSystemGoal(i.next().getId());
+					this.getDataInterface().removeSystemGoal(i.next().getId());
 				}
 				SystemGoalView.this.updateTable();
 				this.refreshView();
@@ -344,7 +343,7 @@ public class SystemGoalView extends CommonTableView {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				SystemGoalView.this.displayedSystemGoal = null;
 				for (Iterator<SystemGoal> i = selection.iterator(); i.hasNext();) {
-					this.dataInterface.removeSystemGoal(i.next().getId());
+					this.getDataInterface().removeSystemGoal(i.next().getId());
 				}
 				SystemGoalView.this.updateTable();
 				this.refreshView();
@@ -359,7 +358,7 @@ public class SystemGoalView extends CommonTableView {
 		if (b) {
 			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 			SystemGoalView.this.displayedSystemGoal = null;
-			this.dataInterface.removeSystemGoal(id);
+			this.getDataInterface().removeSystemGoal(id);
 			SystemGoalView.this.updateTable();
 			this.refreshView();
 		}
@@ -455,7 +454,7 @@ public class SystemGoalView extends CommonTableView {
 	@Override
 	public void updateTable() {
 		SystemGoalView.this.getTableViewer().setInput(
-				this.dataInterface.getAllSystemGoals());
+				this.getDataInterface().getAllSystemGoals());
 	}
 
 	@Override
@@ -468,11 +467,6 @@ public class SystemGoalView extends CommonTableView {
 		return Messages.SystemGoals;
 	}
 
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = (ISystemGoalViewDataModel) dataInterface;
-		this.dataInterface.addObserver(this);
-	}
 
 	/**
 	 * 
@@ -487,14 +481,19 @@ public class SystemGoalView extends CommonTableView {
 
 	@Override
 	public void dispose() {
-		this.dataInterface.deleteObserver(this);
+		this.getDataInterface().deleteObserver(this);
 		super.dispose();
 	}
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.dataInterface.getAllSystemGoals()){
-			this.dataInterface.removeSystemGoal(model.getId());
+		for(ITableModel model: this.getDataInterface().getAllSystemGoals()){
+			this.getDataInterface().removeSystemGoal(model.getId());
 		}
+	}
+
+	@Override
+	protected void moveEntry(UUID id, boolean moveUp) {
+		getDataInterface().moveEntry(moveUp, id, ObserverValue.SYSTEM_GOAL);
 	}
 }

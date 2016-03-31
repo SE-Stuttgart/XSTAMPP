@@ -25,7 +25,7 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag
  * 
  */
-public interface IHazardViewDataModel extends IDataModel {
+public interface IHazardViewDataModel extends IDataModel,ICommonTables {
 
 	/**
 	 * Getter for all existing hazards

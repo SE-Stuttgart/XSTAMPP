@@ -25,7 +25,7 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag
  * 
  */
-public interface ISystemGoalViewDataModel extends IDataModel {
+public interface ISystemGoalViewDataModel extends IDataModel,ICommonTables {
 
 	/**
 	 * Getter for all existing system goals

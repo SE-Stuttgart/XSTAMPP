@@ -25,7 +25,7 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag
  * 
  */
-public interface IDesignRequirementViewDataModel extends IDataModel {
+public interface IDesignRequirementViewDataModel extends IDataModel,ICommonTables {
 
 	/**
 	 * Getter for all existing design requirements

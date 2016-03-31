@@ -52,13 +52,14 @@ import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.ui.acchaz.ATableFilter;
 import xstampp.astpa.ui.acchaz.CommonTableView;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
  * 
  */
-public class DesignRequirementView extends CommonTableView {
+public class DesignRequirementView extends CommonTableView<IDesignRequirementViewDataModel> {
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -69,7 +70,6 @@ public class DesignRequirementView extends CommonTableView {
 	// the design requirement currently displayed in the text widget
 	private DesignRequirement displayedDesignRequirement;
 
-	private IDesignRequirementViewDataModel dataInterface;
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -117,9 +117,9 @@ public class DesignRequirementView extends CommonTableView {
 				DesignRequirementView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				DesignRequirementView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				DesignRequirementView.this.refreshView();
-				DesignRequirementView.this.dataInterface.addDesignRequirement(
+				DesignRequirementView.this.getDataInterface().addDesignRequirement(
 						"", Messages.DescriptionOfThisDesignReq); //$NON-NLS-1$
-				int newID = DesignRequirementView.this.dataInterface
+				int newID = DesignRequirementView.this.getDataInterface()
 						.getAllDesignRequirements().size() - 1;
 				DesignRequirementView.this.updateTable();
 				DesignRequirementView.this.refreshView();
@@ -176,7 +176,7 @@ public class DesignRequirementView extends CommonTableView {
 				if (description.compareTo(Messages.DescriptionOfThisDesignReq) == 0) {
 					UUID id = DesignRequirementView.this.displayedDesignRequirement
 							.getId();
-					DesignRequirementView.this.dataInterface
+					DesignRequirementView.this.getDataInterface()
 							.setDesignRequirementDescription(id, ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
@@ -199,7 +199,7 @@ public class DesignRequirementView extends CommonTableView {
 					String description = text.getText();
 					UUID id = DesignRequirementView.this.displayedDesignRequirement
 							.getId();
-					DesignRequirementView.this.dataInterface
+					DesignRequirementView.this.getDataInterface()
 							.setDesignRequirementDescription(id, description);
 				}
 			}
@@ -323,9 +323,9 @@ public class DesignRequirementView extends CommonTableView {
 			for (Iterator<DesignRequirement> i = selection.iterator(); i
 					.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.dataInterface.getDesignRequirement(id)
+				String title = this.getDataInterface().getDesignRequirement(id)
 						.getTitle();
-				int num = this.dataInterface.getDesignRequirement(id)
+				int num = this.getDataInterface().getDesignRequirement(id)
 						.getNumber();
 				String designRequirement = newline + num + ": " + title; //$NON-NLS-1$
 				designRequirements = designRequirements + designRequirement;
@@ -339,7 +339,7 @@ public class DesignRequirementView extends CommonTableView {
 				DesignRequirementView.this.displayedDesignRequirement = null;
 				for (Iterator<DesignRequirement> i = selection.iterator(); i
 						.hasNext();) {
-					this.dataInterface
+					this.getDataInterface()
 							.removeDesignRequirement(i.next().getId());
 				}
 				DesignRequirementView.this.updateTable();
@@ -357,7 +357,7 @@ public class DesignRequirementView extends CommonTableView {
 				DesignRequirementView.this.displayedDesignRequirement = null;
 				for (Iterator<DesignRequirement> i = selection.iterator(); i
 						.hasNext();) {
-					this.dataInterface
+					this.getDataInterface()
 							.removeDesignRequirement(i.next().getId());
 				}
 				DesignRequirementView.this.updateTable();
@@ -373,7 +373,7 @@ public class DesignRequirementView extends CommonTableView {
 		if (b) {
 			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 			this.displayedDesignRequirement = null;
-			this.dataInterface.removeDesignRequirement(id);
+			this.getDataInterface().removeDesignRequirement(id);
 			DesignRequirementView.this.updateTable();
 			this.refreshView();
 		}
@@ -470,7 +470,7 @@ public class DesignRequirementView extends CommonTableView {
 	@Override
 	public void updateTable() {
 		DesignRequirementView.this.getTableViewer().setInput(
-				this.dataInterface.getAllDesignRequirements());
+				this.getDataInterface().getAllDesignRequirements());
 	}
 
 	@Override
@@ -481,12 +481,6 @@ public class DesignRequirementView extends CommonTableView {
 	@Override
 	public String getTitle() {
 		return Messages.DesignRequirements;
-	}
-
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = (IDesignRequirementViewDataModel) dataInterface;
-		this.dataInterface.addObserver(this);
 	}
 
 	/**
@@ -502,14 +496,19 @@ public class DesignRequirementView extends CommonTableView {
 
 	@Override
 	public void dispose() {
-		this.dataInterface.deleteObserver(this);
+		this.getDataInterface().deleteObserver(this);
 		super.dispose();
 	}
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.dataInterface.getAllDesignRequirements()){
-			this.dataInterface.removeDesignRequirement(model.getId());
+		for(ITableModel model: this.getDataInterface().getAllDesignRequirements()){
+			this.getDataInterface().removeDesignRequirement(model.getId());
 		}
+	}
+
+	@Override
+	protected void moveEntry(UUID id, boolean moveUp) {
+		getDataInterface().moveEntry(moveUp, id, ObserverValue.DESIGN_REQUIREMENT);
 	}
 }

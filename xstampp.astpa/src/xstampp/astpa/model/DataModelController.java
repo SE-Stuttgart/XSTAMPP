@@ -200,6 +200,26 @@ public class DataModelController extends Observable implements
 		DataModelController.LOGGER.debug("setData update lock to prevent system lacks");
 	}
 	
+	public boolean moveEntry(boolean moveUp,UUID id,ObserverValue value){
+		boolean result = false;
+		switch(value){
+		case HAZARD:
+		case ACCIDENT:
+			result = hazAccController.moveEntry(moveUp, id, value);
+			break;
+		case DESIGN_REQUIREMENT:
+		case SAFETY_CONSTRAINT:
+		case SYSTEM_GOAL:
+			result = sdsController.moveEntry(moveUp, id, value);
+			break;
+		default:
+			break;
+		}
+		if(result){
+			setUnsavedAndChanged(value);
+		}
+		return result;
+	}
 	@Override
 	public void releaseLockAndUpdate(ObserverValue value){
 		this.refreshLock = false;

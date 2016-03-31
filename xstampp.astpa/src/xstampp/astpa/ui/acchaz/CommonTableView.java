@@ -14,6 +14,7 @@
 package xstampp.astpa.ui.acchaz;
 
 import java.util.Observable;
+import java.util.UUID;
 
 import messages.Messages;
 
@@ -36,6 +37,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -49,6 +51,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.haz.ITableModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -58,8 +61,11 @@ import xstampp.ui.editors.interfaces.IEditorBase;
 /**
  * @author Jarkko Heidenwag
  * 
+ * @since 1.0.0
+ * @version 2.0.2
+ * 
  */
-public abstract class CommonTableView extends StandartEditorPart {
+public abstract class CommonTableView<T> extends StandartEditorPart {
 
 	private static String id;
 
@@ -77,8 +83,23 @@ public abstract class CommonTableView extends StandartEditorPart {
 	private Button addNewItemButton;
 	private ATableFilter filter;
 	private Text filterTextField;
-
-
+	private T dataInterface;
+	private static final Image DELETE =	Activator.getImageDescriptor(
+					"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
+					.createImage();
+	private static final Image DELETE_ALL =
+			Activator.getImageDescriptor(
+					"/icons/buttons/commontables/removeAll.png") //$NON-NLS-1$
+					.createImage();
+	private static final Image ADD = Activator.getImageDescriptor(
+					"/icons/buttons/commontables/add.png") //$NON-NLS-1$
+					.createImage();
+	private static final Image MOVE_UP =	Activator.getImageDescriptor(
+					"/icons/buttons/commontables/up.png") //$NON-NLS-1$
+					.createImage();
+	private static final Image MOVE_DOWN =Activator.getImageDescriptor(
+			"/icons/buttons/commontables/down.png") //$NON-NLS-1$
+			.createImage();
 
 	/**
 	 * 
@@ -394,7 +415,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 		this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
 		this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 				true, false));
-		this.buttonComposite.setLayout(new GridLayout(5, true));
+		this.buttonComposite.setLayout(new GridLayout(6, true));
 		GridData gridData = new GridData(SWT.NONE, SWT.NONE, false, false);
 		final int buttonSize = 46;
 		gridData.widthHint = buttonSize;
@@ -404,18 +425,12 @@ public abstract class CommonTableView extends StandartEditorPart {
 		// the Button for adding new items
 			this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);
 			this.addNewItemButton.setLayoutData(gridData);
-			this.addNewItemButton.setImage(
-					Activator.getImageDescriptor(
-							"/icons/buttons/commontables/add.png") //$NON-NLS-1$
-							.createImage());
+			this.addNewItemButton.setImage(ADD);
 		
 		// the Button for deleting selected items
 			Button deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
 			deleteItemsButton.setLayoutData(gridData);
-			deleteItemsButton.setImage(
-					Activator.getImageDescriptor(
-							"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
-							.createImage());
+			deleteItemsButton.setImage(DELETE);
 	
 			deleteItemsButton.addListener(SWT.Selection, new Listener() {
 	
@@ -439,11 +454,41 @@ public abstract class CommonTableView extends StandartEditorPart {
 					}
 				}
 			});
-			deleteAllButton.setImage(
-					Activator.getImageDescriptor(
-							"/icons/buttons/commontables/removeAll.png") //$NON-NLS-1$
-							.createImage());
-				
+			deleteAllButton.setImage(DELETE_ALL);
+			new Label(buttonComposite, SWT.NONE);
+		// the Button for deleting all items
+			Button moveUp = new Button(this.buttonComposite, SWT.PUSH);
+			moveUp.setToolTipText("Decreases the index of the selected entry");
+			moveUp.setLayoutData(gridData);
+
+			moveUp.addListener(SWT.Selection,  new Listener() {
+
+				@Override
+				public void handleEvent(Event event) {
+					if(tableViewer.getTable().getSelectionCount() == 1 && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel){
+						ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
+						moveEntry(model.getId(), true);
+					}
+				}
+			});
+			moveUp.setImage(MOVE_UP);
+
+		// the Button for deleting all items
+			Button moveDown = new Button(this.buttonComposite, SWT.PUSH);
+			moveDown.setLayoutData(gridData);
+			moveUp.setToolTipText("Increases the index of the selected entry");
+
+			moveDown.addListener(SWT.Selection,  new Listener() {
+
+				@Override
+				public void handleEvent(Event event) {
+					if(tableViewer.getTable().getSelectionCount() == 1 && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel){
+						ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
+						moveEntry(model.getId(), false);
+					}
+				}
+			});
+			moveDown.setImage(MOVE_DOWN);
 		Composite rightHeadComposite = new Composite(textContainer, SWT.NONE);
 		rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
 				false));
@@ -566,6 +611,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 
 	protected abstract void deleteAllItems();
 
+	protected abstract void moveEntry(UUID id,boolean moveUp);
 	/**
 	 * @author Jarkko Heidenwag
 	 * 
@@ -629,8 +675,17 @@ public abstract class CommonTableView extends StandartEditorPart {
 	 */
 	public abstract void updateTable();
 
-	public abstract void setDataModelInterface(IDataModel dataInterface);
+	@SuppressWarnings("unchecked")
+	public void setDataModelInterface(IDataModel dataInterface){
+		this.dataInterface = (T) dataInterface;
+		dataInterface.addObserver(this);
+		
+	}
 
+	public T getDataInterface(){
+		
+		return dataInterface;
+	}
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
 		if(arg0 == this){

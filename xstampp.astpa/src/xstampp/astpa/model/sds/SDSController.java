@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.ATableModel;
+import xstampp.model.ObserverValue;
 
 /**
  * Class for managing safety constraints, system goals and design requirements.
@@ -89,7 +91,50 @@ public class SDSController {
 		}
 		return result;
 	}
-
+	public boolean moveEntry(boolean moveUp,UUID id,ObserverValue value){
+		if(value.equals(ObserverValue.SYSTEM_GOAL)){
+			move(moveUp, id, systemGoals);
+		}else if(value.equals(ObserverValue.SAFETY_CONSTRAINT)){
+			move(moveUp, id, safetyConstraints);
+		}else if(value.equals(ObserverValue.DESIGN_REQUIREMENT)){
+			move(moveUp, id, designRequirements);
+		}
+		return true;
+	}
+	
+	private <T> boolean move(boolean up,UUID id, List<T> list){
+		for (int i = 0; i < list.size(); i++) {
+			if(((ITableModel)list.get(i)).getId().equals(id)){
+				T downModel = null;
+				T upModel = null;
+				int moveIndex = i;
+				/* if up is true than the ITable model with the given id should move up
+				 * if this is possible(if there is a model right to it in the list) than 
+				 * the model which is right to it is moved down else the model itself is moved down
+				 */
+				if(up && i + 1 > list.size()){
+					return false;
+				}else if(up){
+					downModel = ((T)list.get(i+1));
+					moveIndex = i;
+				}else if(i == 0){
+					return false;
+				}else{
+					downModel = ((T)list.get(i));
+					moveIndex = i-1;
+				}
+				upModel = ((T)list.get(moveIndex));
+				if(upModel instanceof ATableModel && downModel instanceof ATableModel){
+					((ATableModel) downModel).setNumber(moveIndex + 1);
+					((ATableModel) upModel).setNumber(moveIndex + 2);
+				}
+				list.remove(downModel);
+				list.add(moveIndex, downModel);
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Getter for a specific Safety Constraint. Returns null if there is no
 	 * safety constraint with this id

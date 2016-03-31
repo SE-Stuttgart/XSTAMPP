@@ -25,7 +25,7 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag
  * 
  */
-public interface ISafetyConstraintViewDataModel extends IDataModel {
+public interface ISafetyConstraintViewDataModel extends IDataModel,ICommonTables {
 
 	/**
 	 * Getter for all existing safety constraints

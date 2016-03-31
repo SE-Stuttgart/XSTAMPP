@@ -52,13 +52,14 @@ import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
  * 
  */
-public class AccidentsView extends CommonTableView {
+public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -69,7 +70,6 @@ public class AccidentsView extends CommonTableView {
 	// the accident currently displayed in the text widget
 	private Accident displayedAccident;
 
-	private IAccidentViewDataModel dataInterface;
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -115,9 +115,9 @@ public class AccidentsView extends CommonTableView {
 				AccidentsView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				AccidentsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				AccidentsView.this.refreshView();
-				AccidentsView.this.dataInterface.addAccident(
+				AccidentsView.this.getDataInterface().addAccident(
 						Messages.DoubleClickToEditTitle, Messages.DescriptionOfThisAccident);
-				int newID = AccidentsView.this.dataInterface.getAllAccidents()
+				int newID = AccidentsView.this.getDataInterface().getAllAccidents()
 						.size() - 1;
 				AccidentsView.this.updateTable();
 				AccidentsView.this.refreshView();
@@ -173,7 +173,7 @@ public class AccidentsView extends CommonTableView {
 				String description = text.getText();
 				if (description.compareTo(Messages.DescriptionOfThisAccident) == 0) {
 					UUID id = AccidentsView.this.displayedAccident.getId();
-					AccidentsView.this.dataInterface.setAccidentDescription(id,
+					AccidentsView.this.getDataInterface().setAccidentDescription(id,
 							""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
@@ -194,7 +194,7 @@ public class AccidentsView extends CommonTableView {
 					Text text = (Text) e.widget;
 					String description = text.getText();
 					UUID id = AccidentsView.this.displayedAccident.getId();
-					AccidentsView.this.dataInterface.setAccidentDescription(id,
+					AccidentsView.this.getDataInterface().setAccidentDescription(id,
 							description);
 				}
 			}
@@ -239,7 +239,7 @@ public class AccidentsView extends CommonTableView {
 			@Override
 			public String getText(Object element) {
 				String linkString = ""; //$NON-NLS-1$
-				List<ITableModel> links = AccidentsView.this.dataInterface
+				List<ITableModel> links = AccidentsView.this.getDataInterface()
 						.getLinkedHazards(((Accident) element).getId());
 				if (!(links == null)) {
 					for (int i = 0; i < links.size(); i++) {
@@ -341,8 +341,8 @@ public class AccidentsView extends CommonTableView {
 			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
 			for (Iterator<Accident> i = selection.iterator(); i.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.dataInterface.getAccident(id).getTitle();
-				int num = this.dataInterface.getAccident(id).getNumber();
+				String title = this.getDataInterface().getAccident(id).getTitle();
+				int num = this.getDataInterface().getAccident(id).getNumber();
 				String accident = newline + num + ": " + title; //$NON-NLS-1$
 				accidents = accidents + accident;
 			}
@@ -354,7 +354,7 @@ public class AccidentsView extends CommonTableView {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				AccidentsView.this.displayedAccident = null;
 				for (Iterator<Accident> i = selection.iterator(); i.hasNext();) {
-					this.dataInterface.removeAccident(i.next().getId());
+					this.getDataInterface().removeAccident(i.next().getId());
 				}
 				AccidentsView.this.updateTable();
 				this.refreshView();
@@ -368,7 +368,7 @@ public class AccidentsView extends CommonTableView {
 				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 				AccidentsView.this.displayedAccident = null;
 				for (Iterator<Accident> i = selection.iterator(); i.hasNext();) {
-					this.dataInterface.removeAccident(i.next().getId());
+					this.getDataInterface().removeAccident(i.next().getId());
 				}
 				AccidentsView.this.updateTable();
 				this.refreshView();
@@ -383,7 +383,7 @@ public class AccidentsView extends CommonTableView {
 		if (shouldDelete) {
 			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
 			AccidentsView.this.displayedAccident = null;
-			this.dataInterface.removeAccident(id);
+			this.getDataInterface().removeAccident(id);
 			AccidentsView.this.updateTable();
 			this.refreshView();
 		}
@@ -430,10 +430,10 @@ public class AccidentsView extends CommonTableView {
 		@Override
 		protected void setValue(Object element, Object value) {
 			if (element instanceof Accident) {
-				AccidentsView.this.dataInterface.setAccidentTitle(((Accident) element).getId(),String.valueOf(value));
+				AccidentsView.this.getDataInterface().setAccidentTitle(((Accident) element).getId(),String.valueOf(value));
 				// Fill in the default title if the user left it blank
 				if (String.valueOf(value).length() == 0) {
-					AccidentsView.this.dataInterface.setAccidentTitle(((Accident) element).getId(),Messages.DoubleClickToEditTitle);
+					AccidentsView.this.getDataInterface().setAccidentTitle(((Accident) element).getId(),Messages.DoubleClickToEditTitle);
 				}
 			}
 			AccidentsView.this.refreshView();
@@ -479,7 +479,7 @@ public class AccidentsView extends CommonTableView {
 	@Override
 	public void updateTable() {
 		AccidentsView.this.getTableViewer().setInput(
-				this.dataInterface.getAllAccidents());
+				this.getDataInterface().getAllAccidents());
 	}
 
 	@Override
@@ -492,11 +492,7 @@ public class AccidentsView extends CommonTableView {
 		return Messages.Accidents;
 	}
 
-	@Override
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = (IAccidentViewDataModel) dataInterface;
-		this.dataInterface.addObserver(this);
-	}
+	
 
 	/**
 	 * 
@@ -511,15 +507,20 @@ public class AccidentsView extends CommonTableView {
 
 	@Override
 	public void dispose() {
-		this.dataInterface.deleteObserver(this);
+		this.getDataInterface().deleteObserver(this);
 		super.dispose();
 	}
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.dataInterface.getAllAccidents()){
+		for(ITableModel model: this.getDataInterface().getAllAccidents()){
 			delOne(true, model.getId());
 		}
+	}
+
+	@Override
+	protected void moveEntry(UUID id, boolean moveUp) {
+		getDataInterface().moveEntry(moveUp, id, ObserverValue.ACCIDENT);
 	}
 
 }
