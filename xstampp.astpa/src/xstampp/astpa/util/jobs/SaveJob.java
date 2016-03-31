@@ -74,15 +74,13 @@ public class SaveJob extends XstamppJob {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
+
+		File tmpFile = new File(file.getParentFile(),".&"+file.getName());
 		try {
-			if(file.exists()){
-				initiateRecovery(file);
-			}else{
-				file.createNewFile();
-			}
-			
+
+				tmpFile.createNewFile();
 				Object haz;
-				if(this.file.getName().endsWith("haz")){
+				if(tmpFile.getName().endsWith("haz")){
 					haz = new HAZController((IHAZModel) this.controller);
 				}else{
 					haz = this.controller;
@@ -94,7 +92,7 @@ public class SaveJob extends XstamppJob {
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 				// Write to file
 				m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-				FileWriter writer = new FileWriter(this.file);
+				FileWriter writer = new FileWriter(tmpFile);
 				
 				if(this.compatibilityMode){
 					m.marshal(haz,writer);
@@ -107,9 +105,10 @@ public class SaveJob extends XstamppJob {
 					
 				}
 				writer.close();
-				
+				copy(tmpFile, file);
 		} catch (Exception e) {
-			recover(file);
+			
+			setError(e);
 			ProjectManager.getLOGGER().error(e.getMessage(), e);
 			return Status.CANCEL_STATUS;
 		}
@@ -124,7 +123,24 @@ public class SaveJob extends XstamppJob {
 	public boolean isReady() {
 		return this.ready;
 	}
-	
+	private void copy(File fromFile, File toFile) throws IOException{
+		try{
+			BufferedWriter writer = new BufferedWriter(new FileWriter(toFile));
+			BufferedReader reader = new BufferedReader(new FileReader(fromFile));
+			String line = reader.readLine();
+			while(line != null){
+				writer.write(line);
+				writer.newLine();
+				line = reader.readLine();
+			}
+			writer.close();
+			reader.close();
+			fromFile.delete();
+		}catch(IOException e){
+			fromFile.delete();
+			throw e;
+		}
+	}
 	private void initiateRecovery(File file) throws IOException{
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = reader.readLine();

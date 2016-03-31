@@ -344,11 +344,13 @@ public class ProjectManager implements IPropertyChangeListener {
 
 			@Override
 			public void done(IJobChangeEvent event) {
-				try{
-					tmpController.setStored();
-				}catch(SWTException e){
-					LOGGER.debug("cant't mark DataModel ad saved!");
-					e.printStackTrace();
+				if(event.getResult().isOK()){
+					try{
+						tmpController.setStored();
+					}catch(SWTException e){
+						LOGGER.debug("cant't mark DataModel ad saved!");
+						e.printStackTrace();
+					}
 				}
 				
 			}
