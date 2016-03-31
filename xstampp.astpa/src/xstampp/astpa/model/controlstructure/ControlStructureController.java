@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -55,8 +56,16 @@ public class ControlStructureController {
 	private final Map<UUID, Integer> componentIndexTrash;
 	private final Map<UUID, IConnection> connectionTrash;
 	private final Map<UUID, List<UUID>> removedLinks;
-	private boolean initiateStep1;
-	private boolean initiateStep2;
+
+	
+	@XmlTransient
+	private PMSTATE step2Initialiesed=PMSTATE.UNKNOWN;
+	
+	private enum PMSTATE{
+		UNKNOWN,
+		INITIALISED,
+		UNTOUCHED;
+	}
 	/**
 	 * Constructor of the control structure controller
 	 * 
@@ -69,8 +78,6 @@ public class ControlStructureController {
 		this.connectionTrash = new HashMap<>();
 		this.removedLinks = new HashMap<>();
 		this.setRoot(new Rectangle(), new String());
-		this.initiateStep1=false;
-		this.initiateStep2=false;
 	}
 
 	/**
@@ -158,21 +165,30 @@ public class ControlStructureController {
 	 */
 	public boolean changeComponentLayout(UUID componentId, Rectangle layout,
 			boolean step1) {
+		//every time the layout is changed the controller checks if both
+		//steps have been initialized and if not synchronizes the two layouts
+		if(!step1){
+			step2Initialiesed = PMSTATE.INITIALISED;
+		}
+		//if it is unkown if the step two was initially opened till now,
+		//than this is calculated by comparing the layouts of the two steps
+		else if(this.step2Initialiesed.equals(PMSTATE.UNKNOWN) && step1){
+			this.step2Initialiesed = PMSTATE.UNTOUCHED;
+			for(IRectangleComponent child :root.getChildren()){
+				if(!child.getLayout(true).equals(child.getLayout(false))){
+					step2Initialiesed = PMSTATE.INITIALISED;
+					break;
+				}
+			}
+		}
+		
+		
 	Component component = this.getInternalComponent(componentId);
 		if (component != null) {
-			//every time the layout is changed the controller checks if both
-			//steps have been initialized and if not synchronizes the two layouts
-			if		(step1 && this.initiateStep1){
-				this.initiateStep2=true;
-				component.setLayout(layout, false);
-			}
-			else if	(step1 && !this.initiateStep1){
-				this.initiateStep2=false;
-			}
-			else if	(!step1 &&this.initiateStep2){
-				this.initiateStep1=false;
-			}
 			component.setLayout(layout, step1);
+			if(step2Initialiesed.equals(PMSTATE.UNTOUCHED)){
+				component.setLayout(layout, !step1);
+			}
 			return true;
 		}
 		return false;
@@ -578,7 +594,6 @@ public class ControlStructureController {
 	 *
 	 */
 	 public void initializeCSS(){
-			this.initiateStep1=true;
 	 }
 	 
 
