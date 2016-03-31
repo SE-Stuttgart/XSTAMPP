@@ -562,8 +562,16 @@ public class ControlStructureController {
 	 *            the id of the component
 	 * @return true, if the layout has been synchronized
 	 */
-	public boolean sychronizeLayout(UUID id) {
-		return this.root.getChild(id).sychronizeLayout();
+	public boolean sychronizeLayout() {
+		boolean result = false;
+		for (Component child : this.root.getInternalChildren()) {
+			result = child.sychronizeLayout() || result;
+		}
+		if(result){
+			step2Initialiesed = PMSTATE.UNTOUCHED;
+			return true;
+		}
+		return false;
 	}
 
 	/**

@@ -855,14 +855,11 @@ public class DataModelController extends Observable implements
 		if (this.getRoot() == null) {
 			return false;
 		}
-
-		boolean result = true;
-		for (IRectangleComponent child : this.getRoot().getChildren()) {
-			result = result
-					&& this.controlStructureController.sychronizeLayout(child
-							.getId());
+		if(this.controlStructureController.sychronizeLayout()){
+			setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
 		}
-		return result;
+		return false;
 	}
 
 	@Override

@@ -459,14 +459,7 @@ public class Controller extends Observable implements IDataModel,
 		if (this.getRoot() == null) {
 			return false;
 		}
-
-		boolean result = true;
-		for (IRectangleComponent child : this.getRoot().getChildren()) {
-			result = result
-					&& this.controlStructureController.sychronizeLayout(child
-							.getId());
-		}
-		return result;
+		return this.controlStructureController.sychronizeLayout();
 	}
 
 	@Override

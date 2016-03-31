@@ -46,7 +46,7 @@
                   editorId="astpa.steps.step1_4"
                   icon="icons/buttons/navigation/STEP1_4(16).png"
                   id="astpa.navigation.step1_4"
-                  name="Linking of Accidents and Hazzards">
+                  name="Linking of Accidents and Hazards">
             </step>
             <step
                   editorId="astpa.steps.step1_5"
@@ -58,7 +58,7 @@
                   editorId="astpa.steps.step1_7"
                   icon="icons/buttons/navigation/STEP1_7(16).png"
                   id="astpa.navigation.step1_7"
-                  name="Design Requirenments">
+                  name="Design Requirements">
             </step>
             <step
                   editorId="astpa.steps.step1_8"

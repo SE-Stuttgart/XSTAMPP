@@ -356,6 +356,9 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	 * @return true, if the layouts have been synchronized
 	 */
 	public boolean sychronizeLayout() {
+		if(layout.equals(layoutPM)){
+			return false;
+		}
 		this.layoutPM = this.layout;
 		return true;
 	}

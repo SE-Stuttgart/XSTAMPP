@@ -80,6 +80,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -495,13 +496,20 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			}
 		});
 		
-				if (getModelInterface().getFileExtension().equals("acc")) { //$NON-NLS-1$
+		data = new FormData();
+		data.height = CSAbstractEditor.TOOL_HEIGHT;
+		data.left = new FormAttachment(preferenceButton, 30);
+		this.positionLabel= new Label(this.toolBar, SWT.NONE);
+		this.positionLabel.setText(" --- x --- "); //$NON-NLS-1$
+		this.positionLabel.setLayoutData(data);
+		
+		if (getModelInterface().getFileExtension().equals("acc")) { //$NON-NLS-1$
 			final Button showResponsibilityViewButton = new Button(
 					this.toolBar, SWT.None);
 			showResponsibilityViewButton.setText("Show Responsibilities");
 			data = new FormData();
 			data.height = CSAbstractEditor.TOOL_HEIGHT;
-			data.left = new FormAttachment(preferenceButton, 30);
+			data.left = new FormAttachment(positionLabel, 30);
 			showResponsibilityViewButton.setLayoutData(data);
 			showResponsibilityViewButton
 					.addSelectionListener(new SelectionAdapter() {
@@ -521,14 +529,27 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 
 
+		}else if(this instanceof CSEditorWithPM){
+			Button bSyncSteps = new Button(this.toolBar, SWT.None);
+			bSyncSteps.setText("Synchronise with Step 0");
+			data = new FormData();
+			data.height = CSAbstractEditor.TOOL_HEIGHT;
+			data.left = new FormAttachment(positionLabel, 30);
+			bSyncSteps.setLayoutData(data);
+			bSyncSteps.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							if(MessageDialog.openConfirm(getSite().getShell(), "Synchronise Layouts?", "Do you really want to set the layouts\n"
+																				+ "of all components in the control structure to those of the components\n"
+																				+ "defined in " + '"'+"Establish Fundamentals/Control Structure"+'"'+"?")){
+								getModelInterface().synchronizeLayouts();
+							}
+						}
+
+					});
 		}
 		
-		data = new FormData();
-		data.height = CSAbstractEditor.TOOL_HEIGHT;
-		data.left = new FormAttachment(preferenceButton, 30);
-		this.positionLabel= new Label(this.toolBar, SWT.NONE);
-		this.positionLabel.setText(" --- x --- "); //$NON-NLS-1$
-		this.positionLabel.setLayoutData(data);
+		
 		
 		data = new FormData();
 		data.top = new FormAttachment(0);
