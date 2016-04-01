@@ -29,6 +29,7 @@ import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
@@ -36,6 +37,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.model.AbstractLTLProvider;
+import xstampp.model.ObserverValue;
 
 /**
  * Manager class for control actions.
@@ -852,5 +854,12 @@ public class ControlActionController {
 			if(!action.getProvidedVariables().isEmpty()) return true;
 		}
 		return false;
+	}
+	
+	public boolean moveEntry(boolean moveUp,UUID id,ObserverValue value){
+		if(value.equals(ObserverValue.CONTROL_ACTION)){
+			return ATableModel.move(moveUp, id, controlActions);
+		}
+		return true;
 	}
 }

@@ -96,7 +96,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	 */
 	public PdfExportPage(String pageName, String projectName, int pathConstant, String pluginID) {
 		super(pageName, pluginID);
-		this.setTitle(Messages.Export);
+		this.setTitle(pageName);
 		this.setDescription(Messages.SetValuesForTheExportFile);
 		this.pathConstant = pathConstant;
 		showCompanyFields = true;

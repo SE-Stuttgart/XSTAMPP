@@ -53,6 +53,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	private static final int CENTER_COMPENSATION = 2;
 	private boolean extraLine = false;
 	private IPreferenceStore store;
+	private int style;
 	/**
 	 * This constructor initializes the <code>blockFlow</code> and the
 	 * <code>content</code> It also sets the Layout Manager to
@@ -93,6 +94,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	 * @see SWT#ITALIC
 	 */
 	public void setFontStyle(int style) {
+		this.style = style;
 		this.content.setFont(new Font(null,
 				this.currentFont.getName(), this.currentFont.getHeight(), style)); 
 	}
@@ -213,6 +215,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	private void syncProperty(String property){
 		if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT)){
 			this.currentFont= PreferenceConverter.getFontData(this.store, property);
+			this.currentFont.setStyle(style);
 			this.content.setFont(new Font(null,
 					this.currentFont)); 
 		}else if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR)){

@@ -1134,6 +1134,39 @@
             id="xstpa.main.export"
             name="Extended STPA">
       </category>
+      <category
+            id="xstpa.category.img"
+            name="Extended STPA Images"
+            parentCategory="xstpa.main.export">
+      </category>
+      <wizard
+            category="xstpa.main.export/xstpa.category.img"
+            class="xstampp.astpa.wizards.stepImages.XContextTableIMGWizard"
+            icon="icons/logo.png"
+            id="xstpa.wizard.img.contextTables"
+            name="STPA Context Tables">
+      </wizard>
+      <wizard
+            category="xstpa.main.export/xstpa.category.img"
+            class="xstampp.astpa.wizards.stepImages.XRefinedSCIMGWizard"
+            icon="icons/rsc_logox16.png"
+            id="xstpa.wizard.img.refinedsafetyconstraints"
+            name="Refined Safety Constraints Table">
+      </wizard>
+      <wizard
+            category="xstpa.main.export/xstpa.category.img"
+            class="xstampp.astpa.wizards.stepImages.XRefinedUCAIMGWizard"
+            icon="icons/ruca_logo2x16.png"
+            id="xstpa.wizard.img.ruca"
+            name="Refined Unsafe Control Actions">
+      </wizard>
+      <wizard
+            category="xstpa.main.export/xstpa.category.img"
+            class="xstampp.astpa.wizards.stepImages.XLTLIMGWizard"
+            icon="icons/ltl.png"
+            id="xstpa.wizard.img.ltl"
+            name="LTL Formulas Table">
+      </wizard>
    </extension>
 
 </plugin>

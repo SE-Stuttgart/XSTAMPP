@@ -212,6 +212,9 @@ public class DataModelController extends Observable implements
 		case SYSTEM_GOAL:
 			result = sdsController.moveEntry(moveUp, id, value);
 			break;
+		case CONTROL_ACTION:
+			result = controlActionController.moveEntry(moveUp, id, value);
+			break;
 		default:
 			break;
 		}

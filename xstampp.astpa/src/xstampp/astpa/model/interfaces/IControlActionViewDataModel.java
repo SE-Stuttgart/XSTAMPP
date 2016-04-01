@@ -28,7 +28,7 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag, Fabian Toth
  * 
  */
-public interface IControlActionViewDataModel extends IDataModel {
+public interface IControlActionViewDataModel extends IDataModel,ICommonTables {
 
 	/**
 	 * Getter for all existing control actions

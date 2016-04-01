@@ -218,6 +218,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		StringBuffer valueBuffer = new StringBuffer(); 
 		
 		String values = getCriticalCombinations("==", "&&", true, false, false);
+		values = BRACKET_OPEN + values + BRACKET_CLOSE;
 		/*
 		 * for TYPE_ANYTIME rules the LTL can be generated as following: 
 		 * 
@@ -260,6 +261,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 				valueBuffer.append(BRACKET_CLOSE);
 			}
 		}
+		
 		/*
 		 * for too late rules the Timed LTL can be generated as following:
 		 * G(  (critical combinations set ) -> !( !(critical combinations set ) U !(<controlAction==value>) ) )
@@ -281,6 +283,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 				valueBuffer.append(BRACKET_CLOSE);
 			}
 		}
+		
 		/*
 		 * for TYPE_NOT_PROVIDED rules the LTL can be generated as following: 
 		 * 

@@ -13,6 +13,8 @@
 
 package xstampp.astpa.ui.acchaz;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -26,6 +28,8 @@ import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -84,6 +88,10 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 	private ATableFilter filter;
 	private Text filterTextField;
 	private T dataInterface;
+
+	private Button moveUp;
+
+	private Button moveDown;
 	private static final Image DELETE =	Activator.getImageDescriptor(
 					"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
 					.createImage();
@@ -457,7 +465,7 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 			deleteAllButton.setImage(DELETE_ALL);
 			new Label(buttonComposite, SWT.NONE);
 		// the Button for deleting all items
-			Button moveUp = new Button(this.buttonComposite, SWT.PUSH);
+			moveUp = new Button(this.buttonComposite, SWT.PUSH);
 			moveUp.setToolTipText("Decreases the index of the selected entry");
 			moveUp.setLayoutData(gridData);
 
@@ -472,11 +480,10 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 				}
 			});
 			moveUp.setImage(MOVE_UP);
-
 		// the Button for deleting all items
-			Button moveDown = new Button(this.buttonComposite, SWT.PUSH);
+			moveDown = new Button(this.buttonComposite, SWT.PUSH);
 			moveDown.setLayoutData(gridData);
-			moveUp.setToolTipText("Increases the index of the selected entry");
+			moveDown.setToolTipText("Increases the index of the selected entry");
 
 			moveDown.addListener(SWT.Selection,  new Listener() {
 
@@ -489,6 +496,9 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 				}
 			});
 			moveDown.setImage(MOVE_DOWN);
+
+			moveUp.setEnabled(false);
+			moveDown.setEnabled(false);
 		Composite rightHeadComposite = new Composite(textContainer, SWT.NONE);
 		rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
 				false));
@@ -601,7 +611,13 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 				// nothing happens
 			}
 		});
-
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				updateButtons();
+			}
+		});
 		// tab order: if tableComposite is active and tab is pressed,
 		// you will leave the tableContainer and enter the description
 		Control[] controls = { leftHeadComposite, this.buttonComposite,
@@ -609,6 +625,17 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 		this.tableContainer.setTabList(controls);
 	}
 
+	private void updateButtons(){
+		if(tableViewer.getTable().getSelectionCount() == 1 && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel){
+			ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
+			moveUp.setEnabled(model.getNumber() < ((List<?>)tableViewer.getInput()).size());
+			moveDown.setEnabled(model.getNumber() >1);
+			
+		}else{
+			moveUp.setEnabled(false);
+			moveDown.setEnabled(false);
+		}
+	}
 	protected abstract void deleteAllItems();
 
 	protected abstract void moveEntry(UUID id,boolean moveUp);
@@ -618,6 +645,7 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 	 */
 	public void refreshView() {
 		this.getTableViewer().refresh(true, true);
+		updateButtons();
 		this.updateTable();
 	}
 

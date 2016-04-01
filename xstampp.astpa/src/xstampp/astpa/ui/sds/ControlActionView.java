@@ -581,7 +581,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
 	@Override
 	protected void moveEntry(UUID id, boolean moveUp) {
-		// TODO Auto-generated method stub
-		
+		getDataInterface().moveEntry(moveUp, id, ObserverValue.CONTROL_ACTION);
 	}
 }

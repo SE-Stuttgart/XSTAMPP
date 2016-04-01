@@ -13,6 +13,7 @@
 
 package xstampp.astpa.model;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlType;
@@ -62,7 +63,39 @@ public abstract class ATableModel implements ITableModel {
 	public ATableModel() {
 		// empty constructor for JAXB
 	}
-
+	public static <T> boolean move(boolean up,UUID id, List<T> list){
+		for (int i = 0; i < list.size(); i++) {
+			if(((ITableModel)list.get(i)).getId().equals(id)){
+				T downModel = null;
+				T upModel = null;
+				int moveIndex = i;
+				/* if up is true than the ITable model with the given id should move up
+				 * if this is possible(if there is a model right to it in the list) than 
+				 * the model which is right to it is moved down else the model itself is moved down
+				 */
+				if(up && i + 1 > list.size()){
+					return false;
+				}else if(up){
+					downModel = ((T)list.get(i+1));
+					moveIndex = i;
+				}else if(i == 0){
+					return false;
+				}else{
+					downModel = ((T)list.get(i));
+					moveIndex = i-1;
+				}
+				upModel = ((T)list.get(moveIndex));
+				if(upModel instanceof ATableModel && downModel instanceof ATableModel){
+					((ATableModel) downModel).setNumber(moveIndex + 1);
+					((ATableModel) upModel).setNumber(moveIndex + 2);
+				}
+				list.remove(downModel);
+				list.add(moveIndex, downModel);
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Setter for the description
 	 * 

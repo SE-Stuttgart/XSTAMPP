@@ -1201,6 +1201,12 @@ public class Controller extends Observable implements IDataModel,
 		//method not used at the moment
 	}
 
+	@Override
+	public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 
 
