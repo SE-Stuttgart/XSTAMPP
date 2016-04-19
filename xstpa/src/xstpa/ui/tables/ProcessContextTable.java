@@ -887,6 +887,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		
 		switch (type) {
 		case CONTROL_ACTION:
+		case Extended_DATA:
 		case CONTROL_STRUCTURE: {
 			if(controlActionTable != null && !controlActionTable.isDisposed()){
 				int formerIndex = controlActionTable.getSelectionIndex();

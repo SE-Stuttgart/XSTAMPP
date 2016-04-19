@@ -16,11 +16,13 @@ import messages.Messages;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.Document;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -29,20 +31,34 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.FontData;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STShd;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.controlaction.UnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
 
+/**
+ * This Job creates a word document in the docx format using the <code>Apache Poi</code> Framework
+ *
+ * @author Lukas Balzer
+ * @since 2.0.2
+ * @see org.apache.poi.xwpf.usermodel
+ * @see org.openxmlformats.schemas
+ */
 public class STPAWordJob extends XstamppJob {
 
 	private String path;
 	private DataModelController controller;
-	private int textSize,titleSize,tableHeadSize;
+	private int titleSize;
 	private String title;
 	private boolean enablePreview;
 	private String backgoundColorStr;
@@ -119,6 +135,7 @@ public class STPAWordJob extends XstamppJob {
 			addTableModel(controller.getAllDesignRequirements(), "",Messages.DesignRequirements, document);
 			addPicture(document, Messages.ControlStructure, normalCSArray,csRatio);
 			addPicture(document, Messages.ControlStructureDiagramWithProcessModel, pmCSArray,csPmRatio);
+			addUCATable(document, controller.getAllControlActionsU());
 			document.write(out);
 			out.close();
 			 
@@ -145,7 +162,6 @@ public class STPAWordJob extends XstamppJob {
 	 * @param textSize the textSize to set
 	 */
 	public void setTextSize(int textSize) {
-		this.textSize = textSize;
 	}
 
 	/**
@@ -159,7 +175,6 @@ public class STPAWordJob extends XstamppJob {
 	 * @param tableHeadSize the tableHeadSize to set
 	 */
 	public void setTableHeadSize(int tableHeadSize) {
-		this.tableHeadSize = tableHeadSize;
 	}
 
 	public void setPdfTitle(String title) {
@@ -201,6 +216,105 @@ public class STPAWordJob extends XstamppJob {
 		}
 	}
 	
+	/**
+	 * This internal method adds the Table of unsafe Control Actions
+	 * 
+	 * @param paragraph 
+	 */
+	private void addUCATable(XWPFDocument document,List<IHAZXControlAction> list){
+		addNewTitle(Messages.UnsafeControlActionsTable, document);
+		XWPFTable ucaTable = document.createTable(1,5);
+		XWPFTableRow row = ucaTable.getRow(0);
+		row.getCell(0);
+		
+		String[] heads = new String[] {
+				Messages.ControlAction, Messages.NotGiven,
+				Messages.GivenIncorrectly, Messages.WrongTiming,
+				Messages.StoppedTooSoon };
+		XWPFRun run;
+		XWPFParagraph paragraph;
+		for (int i = 0; i < heads.length; i++) {
+			row.getCell(i).setColor(backgoundColorStr);
+			paragraph = row.getCell(i).addParagraph();
+			run = paragraph.createRun();
+			run.setColor(textColorStr);
+			run.setBold(true);
+			run.setText(heads[i]);
+		}
+		XWPFTableCell caCell;
+		for(IControlAction cAction: list){
+			row = ucaTable.createRow();
+			
+			caCell = row.getCell(0);
+			caCell.setText(cAction.getTitle());
+			// The first merged cell is set with RESTART merge value
+			caCell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
+			
+			//all related unsafe control actions are fetched and stored in multiple list one for each column
+			List<IUnsafeControlAction> allNotGiven = cAction
+					.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);
+			List<IUnsafeControlAction> allIncorrect = cAction
+					.getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY);
+			List<IUnsafeControlAction> allWrongTiming = cAction
+					.getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING);
+			List<IUnsafeControlAction> allTooSoon = cAction
+					.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
+			int maxNr= Math.max(allNotGiven.size(),allIncorrect.size());
+			maxNr= Math.max(maxNr,allTooSoon.size());
+			maxNr= Math.max(maxNr,allWrongTiming.size());
+			//This loop runs form 0 to the size of the largest ucaList
+			for (int i = 0; i < maxNr; i++) {
+				XWPFTableRow idRow = ucaTable.createRow();
+				XWPFTableRow descRow = ucaTable.createRow();
+				XWPFTableRow linkRow = ucaTable.createRow();
+
+                // Cells which join (merge) the first one, are set with CONTINUE
+				idRow.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+				descRow.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+				linkRow.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+				
+				addUCAEntry(idRow,descRow,linkRow,allNotGiven, i,1);
+				addUCAEntry(idRow,descRow,linkRow,allIncorrect, i,2);
+				addUCAEntry(idRow,descRow,linkRow,allWrongTiming, i,3);
+				addUCAEntry(idRow,descRow,linkRow,allTooSoon, i,4);
+				
+			}
+		}
+	}
+	
+	private void addUCAEntry(XWPFTableRow idRow,XWPFTableRow descRow,XWPFTableRow linkRow,List<IUnsafeControlAction> list,int index,int colNr){
+		
+		if(index < list.size()){
+			String identifier = ((UnsafeControlAction)list.get(index)).identifier;
+			if(identifier != null && !identifier.isEmpty()){
+				identifier = "UCA1."+identifier;
+			}
+			addCell(idRow.getCell(colNr),index,identifier,ParagraphAlignment.CENTER);
+			addCell(descRow.getCell(colNr),index,((UnsafeControlAction)list.get(index)).getDescription());
+			addCell(linkRow.getCell(colNr),index,((UnsafeControlAction)list.get(index)).getLinks());
+		}else{
+			addCell(idRow.getCell(colNr),index,"");
+			addCell(descRow.getCell(colNr),index,"");
+			addCell(linkRow.getCell(colNr),index,"");
+		}
+	}
+	private void addCell(XWPFTableCell cell, int index,String text){
+		addCell(cell, index, text, ParagraphAlignment.LEFT);
+	}
+	private void addCell(XWPFTableCell cell, int index,String text,ParagraphAlignment alignment){
+		String color;
+		XWPFParagraph paragraph = cell.addParagraph();
+		paragraph.setAlignment(alignment);
+		XWPFRun run = paragraph.createRun();
+		if(index % 2 == 0){
+			color = "dd"+"dd"+"dd";
+		}else{
+			color = "ff"+"ff"+"ff";
+		}
+		cell.setColor(color);
+		run.setBold(false);
+		run.setText(text);
+	}
 	/**
 	 * This internal method adds and formats the system description as defined in the 
 	 * system description editor

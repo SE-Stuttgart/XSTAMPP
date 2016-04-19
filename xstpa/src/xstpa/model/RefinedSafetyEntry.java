@@ -229,57 +229,34 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 				valueBuffer = new StringBuffer();
 				valueBuffer.append(START);
 				valueBuffer.append(BRACKET_OPEN);
-				valueBuffer.append(values);
-				valueBuffer.append(IMPLIES_NOT);
-				valueBuffer.append(BRACKET_OPEN);
-				valueBuffer.append(CONTROLACTION);
-				valueBuffer.append(BRACKET_CLOSE);
+					valueBuffer.append(implies(values, not(CONTROLACTION)));
 				valueBuffer.append(BRACKET_CLOSE);
 			}
 		}
-		/*
-		 * for too early rules the Timed LTL can be generated as following: 
-		 * 
-		 * G( <control_action==value> -> (control_action==value> U (critical combinations set ))
+		/*e
+		 * for too early rules the Timed LTL can b generated as following: 
+		 * G ( ((CA -> CS) & !(CA U CS)))
 		 */
 		else if (type.equals(IValueCombie.TYPE_TOO_EARLY)) {
 			if(values != null && !values.isEmpty()){
 				valueBuffer = new StringBuffer();
 				valueBuffer.append(START);
 				valueBuffer.append(BRACKET_OPEN);
-					valueBuffer.append(BRACKET_OPEN);
-					valueBuffer.append(CONTROLACTION);
-					valueBuffer.append(BRACKET_CLOSE);
-					valueBuffer.append(IMPLIES);
-					valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(CONTROLACTION);
-						valueBuffer.append(UNTIL);
-						valueBuffer.append(BRACKET_OPEN);
-						valueBuffer.append(values);
-						valueBuffer.append(BRACKET_CLOSE);
-					valueBuffer.append(BRACKET_CLOSE);
+					valueBuffer.append(implies(CONTROLACTION, until(not(CONTROLACTION),values)));
 				valueBuffer.append(BRACKET_CLOSE);
 			}
 		}
 		
 		/*
 		 * for too late rules the Timed LTL can be generated as following:
-		 * G(  (critical combinations set ) -> !( !(critical combinations set ) U !(<controlAction==value>) ) )
+		 * G ( ((CS -> CA) & !(CS U CA)))
 		 */
 		else if (type.equals(IValueCombie.TYPE_TOO_LATE)) {
 			if(values != null && !values.isEmpty()){
 				valueBuffer = new StringBuffer();
 				valueBuffer.append(START);
 				valueBuffer.append(BRACKET_OPEN);
-					valueBuffer.append(values);
-					valueBuffer.append(IMPLIES);
-					valueBuffer.append("!"+BRACKET_OPEN);
-						valueBuffer.append("!"+BRACKET_OPEN);
-							valueBuffer.append(values);
-						valueBuffer.append(BRACKET_CLOSE);
-						valueBuffer.append(UNTIL);
-						valueBuffer.append('!'+CONTROLACTION);
-					valueBuffer.append(BRACKET_CLOSE);
+					valueBuffer.append(and(implies(values,CONTROLACTION),not(until(values,CONTROLACTION))));
 				valueBuffer.append(BRACKET_CLOSE);
 			}
 		}
@@ -294,14 +271,58 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 				valueBuffer = new StringBuffer();
 				valueBuffer.append(START);
 				valueBuffer.append(BRACKET_OPEN);
-					valueBuffer.append(values);
-					valueBuffer.append(IMPLIES);
-					valueBuffer.append(CONTROLACTION);
+					valueBuffer.append(implies(values,CONTROLACTION));
 				valueBuffer.append(BRACKET_CLOSE);
 			}
 		}
 		
 		ltlProperty = valueBuffer.toString();
+	}
+	
+	/**
+	 * this function creates a next statement in the form LTL = X(p) \n according to the ltl syntax
+	 * @param p the formular which sahould be valid in the next step
+	 * @return a LTL property with the syntax X(p)
+	 */
+	private String next(String p){
+		return "X " + p+"";
+	}
+	
+	/**
+	 * this function creates a and statement 
+	 * @param p the left formular
+	 * @param q the right formular
+	 * @return a LTL property with the syntax ((p)&&(q))
+	 */
+	private String and(String p,String q){
+		return "((" + p+")&&("+q+"))";
+	}
+	/**
+	 * this function creates a and statement 
+	 * @param p the left formular
+	 * @param q the right formular
+	 * @return a LTL property with the syntax ((p)&&(q))
+	 */
+	private String until(String p,String q){
+		return "((" + p+")U("+q+"))";
+	}
+	
+	/**
+	 * this function creates an or statement 
+	 * @param p the left formular
+	 * @param q the right formular
+	 * @return a LTL property with the syntax ((p)||(q))
+	 */
+	private String or(String p,String q){
+		return "((" + p+")||("+q+"))";
+	}
+	
+	private String implies(String p,String q){
+		return "((" + p+")->("+q+"))";
+	}
+	
+	private String not(String formula){
+		return "!("+formula+")";
 	}
 	/**
 	 * @return the context

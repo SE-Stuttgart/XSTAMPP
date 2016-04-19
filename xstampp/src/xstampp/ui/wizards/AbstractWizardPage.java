@@ -626,6 +626,9 @@ public abstract class AbstractWizardPage extends WizardPage {
 			this.path.setText(text);
 		}
 
+		public void addTextListener(ModifyListener listener){
+			this.path.addModifyListener(listener);
+		}
 		@Override
 		public void setEnabled(boolean enabled) {
 			super.setEnabled(enabled);
@@ -645,6 +648,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 			if (this.dialogStyle == PathComposite.LOGO_DIALOG) {
 				PathComposite.this.path.setText(AbstractWizardPage.this
 						.openLogoDialog());
+				
 			} else if(this.dialogStyle == PathComposite.PATH_DIALOG) {
 				PathComposite.this.path.setText(AbstractWizardPage.this
 						.openExportDialog(this.filter, this.filterNames));

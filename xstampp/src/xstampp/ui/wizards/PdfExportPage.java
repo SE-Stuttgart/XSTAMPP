@@ -139,7 +139,14 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 	
 			String companyName = this.store
 					.getString(IPreferenceConstants.COMPANY_NAME);
-	
+			this.textCompany.addModifyListener(new ModifyListener() {
+				
+				@Override
+				public void modifyText(ModifyEvent e) {
+					store.setValue(IPreferenceConstants.COMPANY_NAME, textCompany.getText());
+					
+				}
+			});
 			if (companyName != null) {
 				this.textCompany.setText(companyName);
 				this.textCompany.setSelection(companyName.length());
@@ -150,6 +157,13 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 			// ----Create the logo path chooser composite---------------------------
 			this.logoComposite = new PathComposite(null, null, this.container,
 					PathComposite.LOGO_DIALOG, Messages.Logo);
+			this.logoComposite.addTextListener(new ModifyListener() {
+				
+				@Override
+				public void modifyText(ModifyEvent e) {
+					store.setValue(IPreferenceConstants.COMPANY_LOGO, logoComposite.getText());
+				}
+			});
 			String logoName = this.store
 					.getString(IPreferenceConstants.COMPANY_LOGO);
 	

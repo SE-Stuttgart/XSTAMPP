@@ -212,6 +212,10 @@
                      style="push">
                </command>
             </menu>
+            <command
+                  commandId="org.eclipse.ui.window.resetPerspective"
+                  style="push">
+            </command>
          </menu>
          <menu
                id="helpMenu"

@@ -26,7 +26,6 @@ import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.Span;
-import org.apache.fop.fo.FOTreeBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
