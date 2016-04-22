@@ -102,6 +102,7 @@ public class TextFieldFigure extends CSFigure {
 					Insets insets) {
 				graphics.setLineStyle(SWT.LINE_CUSTOM);
 				graphics.setLineDash(new int[]{4});
+				graphics.setLineDashOffset(4);
 				super.paint(figure, graphics, insets);
 			}
 		});
