@@ -41,8 +41,10 @@ public interface IAnchorFigure extends ConnectionAnchor {
 	 * 
 	 * @param model
 	 *            The DataModel which contains all model classes
+	 *@param owner the owner of this anchor, will only be changed if a legal owner is given and 
+ *					the new owner is not equal to the old
 	 */
-	void updateAnchor(IAnchor model);
+	void updateAnchor(IAnchor model, Object owner);
 
 	/**
 	 * 

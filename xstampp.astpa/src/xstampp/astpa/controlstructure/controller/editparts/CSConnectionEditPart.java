@@ -36,6 +36,7 @@ import xstampp.astpa.controlstructure.figure.IAnchorFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
+import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -156,7 +157,10 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	protected ConnectionAnchor getTargetConnectionAnchor() {
 		IAnchor target = this.dataModel.getConnection(this.ownID)
 				.getTargetAnchor();
-		this.targetAnchor.updateAnchor(target);
+		IComponent targetOwner = this.dataModel.getComponent(target.getOwnerId());
+		Object o = getViewer().getEditPartRegistry().get(targetOwner);
+		
+		this.targetAnchor.updateAnchor(target,o);
 		this.getFigure().revalidate();
 		return this.targetAnchor;
 	}
@@ -165,7 +169,10 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	protected ConnectionAnchor getSourceConnectionAnchor() {
 		IAnchor source = this.dataModel.getConnection(this.ownID)
 				.getSourceAnchor();
-		this.sourceAnchor.updateAnchor(source);
+
+		IComponent sourceOwner = this.dataModel.getComponent(source.getOwnerId());
+		Object o = getViewer().getEditPartRegistry().get(sourceOwner);
+		this.sourceAnchor.updateAnchor(source,o);
 		this.getFigure().revalidate();
 		return this.sourceAnchor;
 	}

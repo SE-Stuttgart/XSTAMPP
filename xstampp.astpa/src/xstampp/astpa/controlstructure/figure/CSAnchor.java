@@ -22,6 +22,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.preferences.IControlStructureConstants;
 
@@ -154,10 +155,13 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	}
 
 	@Override
-	public void updateAnchor(IAnchor model) {
+	public void updateAnchor(IAnchor model, Object owner) {
 		((CSFigure) this.getOwner()).removeHighlighter();
 		this.anchorFactor.x = model.getxOrientation();
 		this.anchorFactor.y = model.getyOrientation();
+		if(owner instanceof CSAbstractEditPart && ((CSAbstractEditPart) owner).getFigure() != getOwner()){
+			this.setOwner(((CSAbstractEditPart) owner).getFigure());
+		}
 	}
 
 	@Override
