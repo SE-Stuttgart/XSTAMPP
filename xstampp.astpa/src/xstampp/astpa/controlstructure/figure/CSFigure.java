@@ -357,6 +357,9 @@ public abstract class CSFigure extends Figure implements
 	}
 
 	/**
+	 * Setter that decides whether or not a component is taken into account 
+	 * by the {@link RootFigure#findFigureAt(int, int, org.eclipse.draw2d.TreeSearch)} method.
+	 * This also enables/disables the connection grid in the connection mode
 	 * @param canConnect the canConnect to set
 	 */
 	public void setCanConnect(boolean canConnect) {

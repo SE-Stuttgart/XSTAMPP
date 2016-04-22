@@ -196,13 +196,17 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		if (!this.useOffset) {
 			return super.findFigureAt(x, y, search);
 		}
-		int tmpX = x - RootFigure.COMP_OFFSET;
-		int tmpY = y - RootFigure.COMP_OFFSET;
+		int tmpX;
+		int tmpY;
+		int[] xNet = new int[]{0,-1,1,-1,1};
+		int[] yNet = new int[]{0,-1,-1,1,1};
 		IFigure tmpDescendant;
-		for (int deltaX = 0; deltaX < ((2 * RootFigure.COMP_OFFSET) + 1); deltaX++) {
-			for (int deltaY = 0; deltaY < ((2 * RootFigure.COMP_OFFSET) + 1); deltaY++) {
-				tmpDescendant = super.findFigureAt(tmpX + deltaX,
-						tmpY + deltaY, search);
+		for (int i = 0; i < xNet.length; i++) {
+			for (int delta = 0; delta < ((2 * RootFigure.COMP_OFFSET) + 1); delta++) {
+				tmpX = x + xNet[i]*delta;
+				tmpY = y + yNet[i]*delta;
+				tmpDescendant = super.findFigureAt(tmpX,
+						tmpY, search);
 				if (tmpDescendant instanceof CSFigure && ((CSFigure) tmpDescendant).isCanConnect()) {
 					return tmpDescendant;
 				}
