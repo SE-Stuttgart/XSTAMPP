@@ -1,13 +1,10 @@
 package xstampp.astpa.controlstructure.figure;
 
-import java.rmi.activation.Activator;
 import java.util.UUID;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -16,7 +13,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
@@ -26,16 +22,13 @@ import xstampp.preferences.IControlStructureConstants;
 public class CSRectangleContainer extends Figure implements IControlStructureFigure, IPropertyChangeListener{
 	private UUID id;
 	private boolean selected;
-	private IPreferenceStore store;
 	private static final int TOP_OFFSET= 5;
-	private static final int BOTTOM_OFFSET= 5;
 	
 	public CSRectangleContainer(UUID id) {
 		super();
 		this.selected = false;
 		this.id= id;
 		setLayoutManager(new XYLayout());
-		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH));
 	}
 	
 	@Override
@@ -194,15 +187,19 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 
 	@Override
 	public void setPreferenceStore(IPreferenceStore store) {
-		this.store = store;
 		store.addPropertyChangeListener(this);
+		if(store.getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER)){
+		setBorder(DASHED_BORDER);
+		}else{
+			setBorder(null);
+		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER)
 					&& ((boolean)event.getNewValue())){
-			setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH));
+			setBorder(DASHED_BORDER);
 		}else if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER)){
 			setBorder(null);
 		}

@@ -56,7 +56,7 @@ public class ControllerEditPart extends CSAbstractEditPart {
 	@Override
 	protected IFigure createFigure() {
 		ImageDescriptor imgDesc = Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/controller_icon.png"); //$NON-NLS-1$
+				.getImageDescriptor("/icons/buttons/controlstructure/Controller100.png"); //$NON-NLS-1$
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
 				IControlStructureConstants.CONTROLSTRUCTURE_CONTROLLER_COLOR);

@@ -785,6 +785,42 @@
                   value="ConnectionMode">
             </parameter>
          </command>
+         <command
+               commandId="xstampp.astpa.controlstructure.preferenceToggle"
+               label="Enable border of &apos;List of Control Actions&apos;"
+               tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="xstampp.astpa.ShowCAListBorder">
+                  <equals
+                        value="false">
+                  </equals>
+               </with>
+            </visibleWhen>
+            <parameter
+                  name="xstampp.astpa.command.preference"
+                  value="ShowListOfControlActionBorder">
+            </parameter>
+         </command>
+         <command
+               commandId="xstampp.astpa.controlstructure.preferenceToggle"
+               label="Disable border of &apos;List of Control Actions&apos;"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="xstampp.astpa.ShowCAListBorder">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+            <parameter
+                  name="xstampp.astpa.command.preference"
+                  value="ShowListOfControlActionBorder">
+            </parameter>
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -803,7 +839,7 @@
          </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Enable Process Variable Borders"
+               label="Enable &apos;Process Variable&apos; borders"
                tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
             <visibleWhen
                   checkEnabled="false">
@@ -821,7 +857,7 @@
          </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Disable Process Variable Borders"
+               label="Disable &apos;Process Variable&apos; borders"
                style="push">
             <visibleWhen
                   checkEnabled="true">

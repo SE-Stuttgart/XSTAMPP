@@ -53,7 +53,7 @@ public class ActuatorEditPart extends CSAbstractEditPart {
 	@Override
 	protected IFigure createFigure() {
 		ImageDescriptor imgDesc = Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/actuator_icon.png"); //$NON-NLS-1$
+				.getImageDescriptor("/icons/buttons/controlstructure/actuator80.png"); //$NON-NLS-1$
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
 				IControlStructureConstants.CONTROLSTRUCTURE_ACTUATOR_COLOR);

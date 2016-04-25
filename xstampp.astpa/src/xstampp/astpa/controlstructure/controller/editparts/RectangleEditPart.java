@@ -14,9 +14,11 @@
 package xstampp.astpa.controlstructure.controller.editparts;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -32,6 +34,7 @@ import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
 import xstampp.astpa.controlstructure.figure.CSRectangleContainer;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.preferences.IControlStructureConstants;
 
 /**
  * 
@@ -74,7 +77,18 @@ public class RectangleEditPart extends AbstractMemberEditPart implements ISelect
 	@Override
 	protected IFigure createFigure() {
 	CSRectangleContainer tmp = new CSRectangleContainer(getId());
-
+	tmp.setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH){
+		@Override
+		public void paint(IFigure figure, Graphics graphics,
+				Insets insets) {
+			if(getStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER)){
+				graphics.setLineStyle(SWT.LINE_CUSTOM);
+				graphics.setLineDash(new int[]{4});
+				graphics.setLineDashOffset(4);
+				super.paint(figure, graphics, insets);
+			}
+		}
+	});
 	tmp.setPreferenceStore(getStore());
 	tmp.addMouseMotionListener(this);
 	tmp.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());

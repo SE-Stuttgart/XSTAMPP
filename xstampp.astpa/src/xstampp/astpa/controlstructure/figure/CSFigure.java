@@ -124,13 +124,13 @@ public abstract class CSFigure extends Figure implements
 					rect.y, rect.width, rect.height));
 			double scale = graphics.getAbsoluteScale();
 			double zoom = graphics.getAbsoluteScale();
-			if(scale > 1){
-				graphics.scale(1/scale);
+//			if(scale > 1){
+				graphics.scale(0.25);
 				graphics.drawImage(this.image, 1, 1);
-				graphics.scale(zoom);
-			}else{
-				graphics.drawImage(this.image, 1, 1);
-			}
+				graphics.scale(4);
+//			}else{
+//				graphics.drawImage(this.image, 1, 1);
+//			}
 		}
 		super.paintChildren(graphics);
 	}

@@ -52,7 +52,7 @@ public class SensorEditPart extends CSAbstractEditPart {
 	@Override
 	protected IFigure createFigure() {
 		ImageDescriptor imgDesc = Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/sensor_icon.png"); //$NON-NLS-1$
+				.getImageDescriptor("/icons/buttons/controlstructure/Sensor100.png"); //$NON-NLS-1$
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
 				IControlStructureConstants.CONTROLSTRUCTURE_SENSOR_COLOR);

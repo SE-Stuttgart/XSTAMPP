@@ -15,10 +15,16 @@ package xstampp.astpa.controlstructure.figure;
 
 import java.util.UUID;
 
+import org.eclipse.draw2d.Border;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
@@ -29,6 +35,16 @@ import xstampp.astpa.controlstructure.utilities.CSTextLabel;
  */
 public interface IControlStructureFigure extends IFigure {
 
+	public static final Border DASHED_BORDER = new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH){
+		@Override
+		public void paint(IFigure figure, Graphics graphics,
+				Insets insets) {
+				graphics.setLineStyle(SWT.LINE_CUSTOM);
+				graphics.setLineDash(new int[]{4});
+				graphics.setLineDashOffset(4);
+				super.paint(figure, graphics, insets);
+		}
+	};
 	/**
 	 * 
 	 * 
