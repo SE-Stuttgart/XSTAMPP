@@ -91,7 +91,14 @@ public class RootEditPart extends CSAbstractEditPart {
 
 	@Override
 	public void refresh() {
-		super.refresh();
+		this.refreshChildren();
+		for (Object child : this.getChildren()) {
+			((CSAbstractEditPart) child).refreshModel();
+		}
+ 		for (Object child : this.getChildren()) {
+			((CSAbstractEditPart) child).refreshVisuals();
+		}
+		this.refreshConnections();
 		for (IRectangleComponent f : this.getModelChildren()) {
 			if ((f.getComponentType() == ComponentType.CONTROLACTION)
 					&& (this.getDataModel().getControlActionU(
@@ -104,13 +111,7 @@ public class RootEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected void refreshVisuals() {
-	
 		
-		this.refreshChildren();
-		this.refreshConnections();
-		for (Object child : this.getChildren()) {
-			((CSAbstractEditPart) child).refreshVisuals();
-		}
 	}
 
 	@Override

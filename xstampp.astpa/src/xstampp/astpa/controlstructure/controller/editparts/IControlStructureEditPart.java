@@ -51,4 +51,5 @@ public interface IControlStructureEditPart extends GraphicalEditPart,MouseMotion
 	 */
 	public void setPreferenceStore(IPreferenceStore store);
 
+	void refreshModel();
 }

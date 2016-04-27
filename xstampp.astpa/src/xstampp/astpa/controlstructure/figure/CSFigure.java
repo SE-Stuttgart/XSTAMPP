@@ -62,6 +62,8 @@ public abstract class CSFigure extends Figure implements
 	private boolean withIcon;
 	private LineBorder border;
 	private IPreferenceStore store;
+	protected Rectangle rect;
+	private String text;
 
 	/**
 	 * the xOrientations array which stores the locations on the x-axis as
@@ -137,7 +139,7 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public void setText(String text) {
-		this.textLabel.setText(text);
+		this.text = text;
 	}
 
 	@Override
@@ -171,27 +173,36 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public void setLayout(Rectangle rect) {
-		if (this.getChildren().size() > 1) {
-			// the height of the rectangle is set to the ideal height for the
-			// given width
-			this.getTextField().setSize(
-					this.getBounds().width - this.leftMargin,
-					this.getTextField().getTextBounds().getSize().height);
-			this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
-					1, this.getBounds().width - this.leftMargin, -1));
-		} else {
-
-			this.getTextField().setSize(
-					new Dimension(rect.width - this.leftMargin, rect.height));
-			this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
-					1, rect.width - this.leftMargin, rect.height));
-		}
-		// rect.width += this.leftMargin;
-		this.getTextField().repaint();
-		this.getParent().setConstraint(this, rect);
-		this.getTextField().repaint();
+		this.rect = rect;
 	}
 
+	 @Override
+	public void refresh() {
+			if (this.getChildren().size() > 1) {
+				// the height of the rectangle is set to the ideal height for the
+				// given width
+				this.getTextField().setSize(
+						this.getBounds().width - this.leftMargin,
+						this.getTextField().getTextBounds().getSize().height);
+				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
+						1, this.getBounds().width - this.leftMargin, -1));
+			} else {
+
+				this.getTextField().setSize(new Dimension(rect.width - this.leftMargin, rect.height));
+				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
+						1, rect.width - this.leftMargin, rect.height));
+			}
+//			// rect.width += this.leftMargin;
+//			this.getTextField().repaint();
+			this.textLabel.setText(text);
+			this.getParent().setConstraint(this, rect);
+//			this.getTextField().repaint();
+			for (Object child : getChildren()) {
+				if(child instanceof IControlStructureFigure){
+					((IControlStructureFigure) child).refresh();
+				}
+			}
+	}
 	/**
 	 * 
 	 * 

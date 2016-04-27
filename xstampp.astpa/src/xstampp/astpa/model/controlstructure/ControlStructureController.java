@@ -57,6 +57,8 @@ public class ControlStructureController {
 	private final Map<UUID, IConnection> connectionTrash;
 	private final Map<UUID, List<UUID>> removedLinks;
 
+	@XmlTransient
+	private boolean changed = true;
 	
 	@XmlTransient
 	private PMSTATE step2Initialiesed=PMSTATE.UNKNOWN;
@@ -150,6 +152,20 @@ public class ControlStructureController {
 	}
 
 	/**
+	 * returns whether or not the dataModel controlled by this controller has been changed
+	 * and sets the changed flag to false if there are changes
+	 * 
+	 * @author Lukas Balzer
+	 */
+	public boolean hasChanges(){
+		if(changed){
+			changed = false;
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Searches for the component with the given id and changes the layout of it
 	 * 
 	 * @param componentId
@@ -183,12 +199,13 @@ public class ControlStructureController {
 		}
 		
 		
-	Component component = this.getInternalComponent(componentId);
+		Component component = this.getInternalComponent(componentId);
 		if (component != null) {
 			component.setLayout(layout, step1);
 			if(step2Initialiesed.equals(PMSTATE.UNTOUCHED)){
 				component.setLayout(layout, !step1);
 			}
+			changed = true;
 			return true;
 		}
 		return false;
@@ -209,6 +226,7 @@ public class ControlStructureController {
 		Component component = this.getInternalComponent(componentId);
 		if (component != null) {
 			component.setText(text);
+			changed = true;
 			return true;
 		}
 		return false;
@@ -229,7 +247,10 @@ public class ControlStructureController {
 			this.removeAllLinks(componentId);
 			this.componentTrash.put(componentId, component);
 			this.componentIndexTrash.put(componentId, this.root.getChildren().indexOf(component));
-			return this.root.removeChild(componentId);
+			if(this.root.removeChild(componentId)){
+				changed = true;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -257,7 +278,10 @@ public class ControlStructureController {
 					this.recoverConnection(connectionId);
 				}
 			}
-			return success;
+			if(success){
+				changed = true;
+				return true;
+			}
 		}
 
 		return false;
@@ -329,6 +353,7 @@ public class ControlStructureController {
 		IConnection connection = this.getConnection(connectionId);
 		if (connection != null) {
 			((CSConnection) connection).setConnectionType(connectionType);
+			changed = true;
 			return true;
 		}
 		return false;
@@ -350,6 +375,7 @@ public class ControlStructureController {
 		IConnection connection = this.getConnection(connectionId);
 		if (connection != null) {
 			((CSConnection) connection).setTargetAnchor(targetAnchor);
+			changed = true;
 			return true;
 		}
 		return false;
@@ -410,7 +436,10 @@ public class ControlStructureController {
 			boolean success = this.connections
 					.add((CSConnection) this.connectionTrash.get(connectionId));
 			this.connectionTrash.remove(connectionId);
-			return success;
+			if(success){
+				changed = true;
+				return true;
+			}
 		}
 		return false;
 

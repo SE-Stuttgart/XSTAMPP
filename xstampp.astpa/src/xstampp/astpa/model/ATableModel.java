@@ -103,9 +103,14 @@ public abstract class ATableModel implements ITableModel {
 	 *            the new description
 	 * 
 	 * @author Fabian Toth
+	 * @return TODO
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public boolean setDescription(String description) {
+		if(this.description == null || !this.description.equals(description)){
+			this.description = description;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -120,9 +125,14 @@ public abstract class ATableModel implements ITableModel {
 	 *            the new title
 	 * 
 	 * @author Fabian Toth
+	 * @return TODO
 	 */
-	public void setTitle(String title) {
-		this.title = title;
+	public boolean setTitle(String title) {
+		if(this.title == null || !this.title.equals(title)){
+			this.title = title;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -142,9 +152,14 @@ public abstract class ATableModel implements ITableModel {
 	 *            the new id
 	 * 
 	 * @author Fabian Toth
+	 * @return TODO
 	 */
-	public void setId(UUID id) {
-		this.id = id;
+	public boolean setId(UUID id) {
+		if(this.id == null || !this.id.equals(id)){
+			this.id = id;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -159,9 +174,14 @@ public abstract class ATableModel implements ITableModel {
 	 *            the new number
 	 * 
 	 * @author Fabian Toth
+	 * @return 
 	 */
-	public void setNumber(int number) {
-		this.number = number;
+	public boolean setNumber(int number) {
+		if(this.number !=number){
+			this.number = number;
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -174,9 +194,14 @@ public abstract class ATableModel implements ITableModel {
 	/**
 	 * @param links
 	 *            the links to set
+	 * @return 
 	 */
-	public void setLinks(String links) {
-		this.links = links;
+	public boolean setLinks(String links) {
+		if(this.links == null ||!this.links.equals(links)){
+			this.links = links;
+			return true;
+		}
+		return false;
 	}
 
 	@Override

@@ -188,7 +188,7 @@ public class DataModelController extends Observable implements
 	@Override
 	public void updateValue(ObserverValue value) {
 		this.setChanged();
-		if(!this.refreshLock){
+		if(!refreshLock && (!value.equals(ObserverValue.CONTROL_STRUCTURE) || controlStructureController.hasChanges())){
 			DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
 			this.notifyObservers(value);
 		}
@@ -378,7 +378,9 @@ public class DataModelController extends Observable implements
 		}
 
 		boolean result = this.hazAccController.removeAccident(accidentId);
-		this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+		if(result){
+			this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+		}
 		return result;
 	}
 
@@ -390,11 +392,12 @@ public class DataModelController extends Observable implements
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		((Accident) this.hazAccController.getAccident(accidentId))
-				.setDescription(description);
-
-		this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
-		return true;
+		if(((Accident) this.hazAccController.getAccident(accidentId))
+				.setDescription(description)){
+			this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -405,11 +408,12 @@ public class DataModelController extends Observable implements
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		((Accident) this.hazAccController.getAccident(accidentId))
-				.setTitle(title);
-
-		this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
-		return true;
+		if(((Accident) this.hazAccController.getAccident(accidentId))
+				.setTitle(title)){
+			this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -448,9 +452,11 @@ public class DataModelController extends Observable implements
 		}
 		this.causalFactorController.removeAllLinks(hazardId);
 		this.controlActionController.removeAllLinks(hazardId);
-		boolean result = this.hazAccController.removeHazard(hazardId);
-		this.setUnsavedAndChanged(ObserverValue.HAZARD);
-		return result;
+		if(this.hazAccController.removeHazard(hazardId)){
+			this.setUnsavedAndChanged(ObserverValue.HAZARD);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -460,7 +466,9 @@ public class DataModelController extends Observable implements
 		}
 
 		UUID id = this.hazAccController.addHazard(title, description);
-		this.setUnsavedAndChanged(ObserverValue.HAZARD);
+		if(id != null){
+			this.setUnsavedAndChanged(ObserverValue.HAZARD);
+		}
 		return id;
 	}
 
@@ -473,9 +481,11 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((Hazard) this.hazAccController.getHazard(hazardId)).setTitle(title);
-		this.setUnsavedAndChanged(ObserverValue.HAZARD);
-		return true;
+		if(((Hazard) this.hazAccController.getHazard(hazardId)).setTitle(title)){
+			this.setUnsavedAndChanged(ObserverValue.HAZARD);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -487,10 +497,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((Hazard) this.hazAccController.getHazard(hazardId))
-				.setDescription(description);
-		this.setUnsavedAndChanged(ObserverValue.HAZARD);
-		return true;
+		if(((Hazard) this.hazAccController.getHazard(hazardId))
+				.setDescription(description)){
+			this.setUnsavedAndChanged(ObserverValue.HAZARD);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -505,9 +517,11 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		this.hazAccController.addLink(accidentId, hazardId);
-		this.setUnsavedAndChanged(ObserverValue.HAZ_ACC_LINK);
-		return true;
+		if(this.hazAccController.addLink(accidentId, hazardId)){
+			this.setUnsavedAndChanged(ObserverValue.HAZ_ACC_LINK);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -516,9 +530,11 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.hazAccController.deleteLink(accidentId, hazardId);
-		this.setUnsavedAndChanged(ObserverValue.HAZ_ACC_LINK);
-		return result;
+		if(this.hazAccController.deleteLink(accidentId, hazardId)){
+			this.setUnsavedAndChanged(ObserverValue.HAZ_ACC_LINK);
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -533,7 +549,9 @@ public class DataModelController extends Observable implements
 		}
 
 		UUID id = this.sdsController.addDesignRequirement(title, description);
-		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
+		if(id != null){
+			this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
+		}
 		return id;
 	}
 
@@ -545,10 +563,11 @@ public class DataModelController extends Observable implements
 		if (!(this.sdsController.getDesignRequirement(designRequirementId) instanceof DesignRequirement)) {
 			return false;
 		}
-		boolean result = this.sdsController
-				.removeDesignRequirement(designRequirementId);
-		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-		return result;
+		if(this.sdsController.removeDesignRequirement(designRequirementId)){
+			this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -561,10 +580,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((DesignRequirement) this.sdsController
-				.getDesignRequirement(designRequirementId)).setTitle(title);
-		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-		return true;
+		if(((DesignRequirement) this.sdsController.getDesignRequirement(designRequirementId))
+				.setTitle(title)){
+			this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -577,11 +598,13 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((DesignRequirement) this.sdsController
+		if(((DesignRequirement) this.sdsController
 				.getDesignRequirement(designRequirementId))
-				.setDescription(description);
-		this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-		return true;
+				.setDescription(description)){
+			this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -609,7 +632,9 @@ public class DataModelController extends Observable implements
 		}
 
 		UUID id = this.sdsController.addSafetyConstraint(title, description);
-		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+		if(id != null){
+			this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+		}
 		return id;
 	}
 
@@ -622,10 +647,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.sdsController
-				.removeSafetyConstraint(safetyConstraintId);
-		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-		return result;
+		if(this.sdsController
+				.removeSafetyConstraint(safetyConstraintId)){
+			this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -638,10 +665,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((SafetyConstraint) this.sdsController
-				.getSafetyConstraint(safetyConstraintId)).setTitle(title);
-		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-		return true;
+		if(((SafetyConstraint) this.sdsController
+				.getSafetyConstraint(safetyConstraintId)).setTitle(title)){
+			this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -654,11 +683,13 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((SafetyConstraint) this.sdsController
+		if(((SafetyConstraint) this.sdsController
 				.getSafetyConstraint(safetyConstraintId))
-				.setDescription(description);
-		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-		return true;
+				.setDescription(description)){
+			this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -685,7 +716,9 @@ public class DataModelController extends Observable implements
 		}
 
 		UUID id = this.sdsController.addSystemGoal(title, description);
-		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+		if(id != null){
+			this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+		}
 		return id;
 	}
 
@@ -698,9 +731,11 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.sdsController.removeSystemGoal(systemGoalId);
-		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
-		return result;
+		if(this.sdsController.removeSystemGoal(systemGoalId)){
+			this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -712,10 +747,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
-				.setTitle(title);
-		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
-		return true;
+		if(((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
+				.setTitle(title)){
+			this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -728,10 +765,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
-				.setDescription(description);
-		this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
-		return true;
+		if(((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
+				.setDescription(description)){
+			this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -763,7 +802,9 @@ public class DataModelController extends Observable implements
 
 		UUID id = this.controlActionController.addControlAction(title,
 				description);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+		if(id != null){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+		}
 		return id;
 	}
 
@@ -778,10 +819,12 @@ public class DataModelController extends Observable implements
 		}else if(this.controlStructureController.removeComponent(((ControlAction)caObject).getComponentLink())){
 			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		}
-		boolean result = this.controlActionController
-				.removeControlAction(controlActionId);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
-		return result;
+		if(this.controlActionController
+				.removeControlAction(controlActionId)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -792,16 +835,19 @@ public class DataModelController extends Observable implements
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return false;
 		}
-
+		boolean result = false;
 		
-		((ControlAction) this.controlActionController
-				.getControlAction(controlActionId)).setTitle(title);
+		if(((ControlAction) this.controlActionController
+			.getControlAction(controlActionId)).setTitle(title)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+			result = true;
+		}
 		if(changeComponentText(((ControlAction) this.controlActionController
 				.getControlAction(controlActionId)).getComponentLink(), title)){
 			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			result = true;
 		}
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
-		return true;
+		return result;
 	}
 
 	@Override
@@ -814,10 +860,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		((ControlAction) this.controlActionController
-				.getControlAction(controlActionId)).setDescription(description);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
-		return true;
+		if(((ControlAction) this.controlActionController
+				.getControlAction(controlActionId)).setDescription(description)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -845,7 +893,9 @@ public class DataModelController extends Observable implements
 
 		UUID result = this.controlStructureController.addComponent(parentId,
 				layout, text, type, index);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		if(result != null){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		}
 		return result;
 	}
 
@@ -856,7 +906,9 @@ public class DataModelController extends Observable implements
 		}
 
 		UUID result = this.controlStructureController.setRoot(layout, text);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		if(result != null){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		}
 		return result;
 	}
 
@@ -867,10 +919,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlStructureController.changeComponentLayout(
-				componentId, layout, step1);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController.changeComponentLayout(
+				componentId, layout, step1)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -891,10 +945,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlStructureController.changeComponentText(
-				componentId, text);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController.changeComponentText(
+				componentId, text)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -903,10 +959,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlStructureController
-				.removeComponent(componentId);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController
+				.removeComponent(componentId)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -939,7 +997,9 @@ public class DataModelController extends Observable implements
 
 		UUID result = this.controlStructureController.addConnection(
 				sourceAnchor, targetAnchor, connectionType);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		if(result != null){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		}
 		return result;
 	}
 
@@ -950,10 +1010,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlStructureController.changeConnectionType(
-				connectionId, connectionType);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController.changeConnectionType(
+				connectionId, connectionType)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -962,10 +1024,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlStructureController
-				.changeConnectionTarget(connectionId, targetAnchor);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController
+				.changeConnectionTarget(connectionId, targetAnchor)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -974,10 +1038,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlStructureController
-				.changeConnectionSource(connectionId, sourceAnchor);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController
+				.changeConnectionSource(connectionId, sourceAnchor)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -986,10 +1052,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlStructureController
-				.removeConnection(connectionId);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController
+				.removeConnection(connectionId)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1021,8 +1089,12 @@ public class DataModelController extends Observable implements
 	}
 	
 	@Override
-	public void linkControlAction(UUID caId,UUID componentId) {
-		this.controlActionController.setComponentLink(componentId, caId);
+	public boolean linkControlAction(UUID caId,UUID componentId) {
+		if(this.controlActionController.setComponentLink(componentId, caId)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -1035,7 +1107,9 @@ public class DataModelController extends Observable implements
 
 		UUID result = this.controlActionController.addUnsafeControlAction(
 				controlActionId, description, unsafeControlActionType);
-		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+		if(result != null){
+			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+		}
 		return result;
 	}
 
@@ -1046,10 +1120,12 @@ public class DataModelController extends Observable implements
 		}
 
 		this.controlActionController.removeAllLinks(unsafeControlActionId);
-		boolean result = this.controlActionController
-				.removeUnsafeControlAction(unsafeControlActionId);
-		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
-		return result;
+		if(this.controlActionController
+				.removeUnsafeControlAction(unsafeControlActionId)){
+			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1080,11 +1156,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlActionController.addUCAHazardLink(
-				unsafeControlActionId, hazardId);
-
-		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
-		return result;
+		if(this.controlActionController.addUCAHazardLink(
+				unsafeControlActionId, hazardId)){
+			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1092,10 +1169,12 @@ public class DataModelController extends Observable implements
 		if ((unsafeControlActionId == null) || (hazardId == null)) {
 			return false;
 		}
-		boolean result = this.controlActionController.removeUCAHazardLink(
-				unsafeControlActionId, hazardId);
-		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
-		return result;
+		if(this.controlActionController.removeUCAHazardLink(
+				unsafeControlActionId, hazardId)){
+			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1105,10 +1184,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.controlActionController.setUcaDescription(
-				unsafeControlActionId, description);
-		this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
-		return result;
+		if(this.controlActionController.setUcaDescription(
+				unsafeControlActionId, description)){
+			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1151,7 +1232,9 @@ public class DataModelController extends Observable implements
 		UUID id = this.causalFactorController.addCausalFactor(
 				this.controlStructureController.getInternalComponents(),
 				causalComponentId, causalFactorText);
-		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+		if(id != null){
+			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+		}
 		return id;
 	}
 
@@ -1166,10 +1249,12 @@ public class DataModelController extends Observable implements
 		if (components == null) {
 			return false;
 		}
-		boolean result = this.causalFactorController.setCausalFactorText(
-				components, causalFactorId, causalFactorText);
-		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-		return result;
+		if(this.causalFactorController.setCausalFactorText(
+				components, causalFactorId, causalFactorText)){
+			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1199,10 +1284,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.causalFactorController.addCausalFactorHazardLink(
-				causalFactorId, hazardId);
-		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-		return result;
+		if(this.causalFactorController.addCausalFactorHazardLink(
+				causalFactorId, hazardId)){
+			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1228,10 +1315,12 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.causalFactorController
-				.removeCausalFactorHazardLink(causalFactorId, hazardId);
-		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-		return result;
+		if(this.causalFactorController
+				.removeCausalFactorHazardLink(causalFactorId, hazardId)){
+			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1239,11 +1328,13 @@ public class DataModelController extends Observable implements
 		if (causalFactorId == null) {
 			return false;
 		}
-		boolean result = this.controlStructureController
-				.removeCausalFactor(causalFactorId);
-		this.causalFactorController.removeAllLinks(causalFactorId);
-		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-		return result;
+		if(this.controlStructureController
+				.removeCausalFactor(causalFactorId)){
+			this.causalFactorController.removeAllLinks(causalFactorId);
+			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1264,11 +1355,13 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.causalFactorController
+		if(this.causalFactorController
 				.setCausalSafetyConstraintText(components,
-						causalSafetyCosntraintId, causalSafetyConstraintText);
-		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-		return result;
+						causalSafetyCosntraintId, causalSafetyConstraintText)){
+			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1282,15 +1375,18 @@ public class DataModelController extends Observable implements
 			return false;
 		}
 
-		boolean result = this.causalFactorController.setCausalFactorNoteText(
-				components, causalFactorId, noteText);
-		this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-		return result;
+		if(this.causalFactorController.setCausalFactorNoteText(
+				components, causalFactorId, noteText)){
+			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+			return true;
+		}
+		return false;
 	}
 
 	private void setUnsavedAndChanged(ObserverValue value) {
-		this.updateValue(value);
-		setUnsavedAndChanged();
+			this.updateValue(value);
+			setUnsavedAndChanged();
+		
 	}
 
 	@Override
@@ -1335,10 +1431,12 @@ public class DataModelController extends Observable implements
 		if ((parentId == null) || (componentId == null)) {
 			return false;
 		}
-		boolean result = this.controlStructureController.recoverComponent(
-				parentId, componentId);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController.recoverComponent(
+				parentId, componentId)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1346,10 +1444,12 @@ public class DataModelController extends Observable implements
 		if (connectionId == null) {
 			return false;
 		}
-		boolean result = this.controlStructureController
-				.recoverConnection(connectionId);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		return result;
+		if(this.controlStructureController
+				.recoverConnection(connectionId)){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1382,7 +1482,9 @@ public class DataModelController extends Observable implements
 		UUID result = this.controlStructureController.addComponent(
 				controlActionId, parentId, layout, text, type, index);
 //		this.controlActionController.setComponentLink(result, controlActionId);
-		this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		if(result != null){
+			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		}
 		return result;
 	}
 	
@@ -1485,9 +1587,8 @@ public class DataModelController extends Observable implements
 	@Override
 	public void setRelativeOfComponent(UUID componentId, UUID relativeId) {
 		this.controlStructureController.setRelativeOfComponent(componentId, relativeId);
-		updateValue(ObserverValue.CONTROL_STRUCTURE);
-		updateValue(ObserverValue.CONTROL_ACTION);
-		updateValue(ObserverValue.UNSAVED_CHANGES);
+		setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+		setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
 	}
 
 	

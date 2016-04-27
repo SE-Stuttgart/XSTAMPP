@@ -94,9 +94,14 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	private List<RefinedSafetyRule> rules;
 	/**
 	 * @param componentLink the componentLink to set
+	 * @return 
 	 */
-	public void setComponentLink(UUID componentLink) {
-		this.componentLink = componentLink;
+	public boolean setComponentLink(UUID componentLink) {
+		if(this.componentLink == null || !this.componentLink.equals(componentLink)){
+			this.componentLink = componentLink;
+			return true;
+		}
+		return false;
 	}
 
 

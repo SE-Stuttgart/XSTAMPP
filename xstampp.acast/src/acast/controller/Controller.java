@@ -886,8 +886,8 @@ public class Controller extends Observable implements IDataModel,
 	}
 
 	@Override
-	public void linkControlAction(UUID caId, UUID componentId) {
-		this.controlActionController.setComponentLink(componentId, caId);
+	public boolean linkControlAction(UUID caId, UUID componentId) {
+		return this.controlActionController.setComponentLink(componentId, caId);
 
 	}
 

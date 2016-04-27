@@ -146,6 +146,10 @@ public interface IControlStructureFigure extends IFigure {
 	 */
 	boolean hasDeco();
 	
+	/**
+	 * triggers a refresh of the component
+	 */
+	void refresh();
 	void showFeedback();
 	void disableFeedback();
 	void setPreferenceStore(IPreferenceStore store);

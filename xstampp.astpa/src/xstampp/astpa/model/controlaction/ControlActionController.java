@@ -569,10 +569,14 @@ public class ControlActionController {
 	/**
 	 * @param componentLink the componentLink to set
 	 * @param caId the control action which should be linked
+	 * @return 
 	 */
-	public void setComponentLink(UUID componentLink,UUID caId){
+	public boolean setComponentLink(UUID componentLink,UUID caId){
 		ControlAction action = getInternalControlAction(caId);
-		action.setComponentLink(componentLink);
+		if(action != null){
+			return action.setComponentLink(componentLink);
+		}
+		return false;
 	}
 	
 	/**

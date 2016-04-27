@@ -143,8 +143,16 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	protected void refreshVisuals() {
-		this.register();
+			getFigure().refresh();
 
+//			for (Object child : this.getChildren()) {
+//				((IControlStructureEditPart) child).refresh();
+//			}
+	}
+
+	public void refreshModel() {
+
+		this.refreshChildren();
 		if (this.dataModel.getComponent(this.getId()) == null) {
 			this.getViewer().getEditPartRegistry().remove(this);
 		} else {
@@ -154,29 +162,19 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 			String stepID = (String) this.getViewer().getProperty(
 					IControlStructureEditor.STEP_EDITOR);
 
-			this.refreshChildren();
 			
 			figureTemp.setLayout(modelTemp.getLayout(stepID
 					.equals(CSEditor.ID)));
 			figureTemp.setText(modelTemp.getText());
 			
 			for (Object child : this.getChildren()) {
-				((IControlStructureEditPart) child).refresh();
+				((IControlStructureEditPart) child).refreshModel();
 			}
 		}
-
 	}
-
-
 	@Override
 	public void refresh() {
-//		for (IRectangleComponent f : this.getModelChildren()) {
-//			if ((f.getComponentType() == ComponentType.CONTROLACTION)
-//					&& (this.getDataModel().getControlActionU(
-//							f.getControlActionLink()) == null)) {
-//				this.getDataModel().removeComponent(f.getId());
-//			}
-//		}
+		refreshModel();
 		this.refreshVisuals();
 	}
 
@@ -208,9 +206,14 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 			editPart = (CSConnectionEditPart) this
 					.createOrFindConnection(connection);
-			((IControlStructureEditPart)editPart).setPreferenceStore(this.store);
-			tmpRegistry.add(connection);
-			editPart.refresh();
+			if(editPart == null){
+				getViewer().getEditPartFactory().createEditPart(this, connection);
+			}
+			if(editPart != null){
+				((IControlStructureEditPart)editPart).setPreferenceStore(this.store);
+				tmpRegistry.add(connection);
+				editPart.refresh();
+			}
 		}
 		for (IConnection conn : this.connectionRegisty) {
 			if (!tmpRegistry.contains(conn)) {

@@ -56,31 +56,23 @@ public class TextFieldFigure extends CSFigure {
 //		this.getTextField().setOpaque(false);
 	}
 
-	/**
-	 * This method is called when the Layout of the Model changes. It calls
-	 * setConstraint() in the Parent Figure to change the Layout Constraint of
-	 * this Figure relatively to it.
-	 * 
-	 * @param rect
-	 *            describes the proportions of the changed layout
-	 * @author Lukas Balzer
-	 */
+	
 	@Override
-	public void setLayout(Rectangle rect) {
+	public void refresh() {
 
 		int width = this.getBounds().width;
 
 		this.getTextField().setSize(
 				this.getTextField().getPreferredSize(width, -1));
-		this.getTextField().repaint();
+//		this.getTextField().repaint();
 		// the height of the rectangle is set to the ideal height for the given
 		// width
 		if(!this.isDashed){
 			rect.height = this.getTextField().getPreferredSize(width, -1).height;
 		}
 
-		super.setLayout(rect);
-		this.getTextField().repaint();
+		super.refresh();
+//		this.getTextField().repaint();
 	}
 
 	@Override

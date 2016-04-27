@@ -279,6 +279,12 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 		}
 	}
 
+	@Override
+	public void refreshModel() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 
 class RectangleClipping implements IClippingStrategy{

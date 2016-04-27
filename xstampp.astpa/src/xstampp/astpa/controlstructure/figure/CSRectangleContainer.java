@@ -16,12 +16,14 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
+import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 import xstampp.preferences.IControlStructureConstants;
 
 public class CSRectangleContainer extends Figure implements IControlStructureFigure, IPropertyChangeListener{
 	private UUID id;
 	private boolean selected;
+	private Rectangle rect;
 	private static final int TOP_OFFSET= 5;
 	
 	public CSRectangleContainer(UUID id) {
@@ -98,7 +100,7 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 	}
 
 	@Override
-	public void setLayout(Rectangle rect) {
+	public void refresh() {
 		Rectangle bounds1 = rect.getCopy();
 		
 		if(getChildren().isEmpty()){
@@ -110,6 +112,16 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 
 		setBounds(bounds1);
 		this.getParent().setConstraint(this, bounds1);
+		for (Object child : getChildren()) {
+			if(child instanceof IControlStructureFigure){
+				((IControlStructureFigure) child).refresh();
+			}
+		}
+	}
+	
+	@Override
+	public void setLayout(Rectangle rect) {
+		this.rect = rect;
 	}
 	
 	@Override

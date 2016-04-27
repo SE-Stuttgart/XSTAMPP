@@ -122,6 +122,7 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
+import xstampp.astpa.controlstructure.figure.RootFigure;
 import xstampp.astpa.controlstructure.utilities.CSContextMenuProvider;
 import xstampp.astpa.controlstructure.utilities.CSPalettePage;
 import xstampp.astpa.controlstructure.utilities.CSPalettePreferences;
@@ -1056,7 +1057,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		switch (type) {
 		case CONTROL_STRUCTURE: {
 			if (root != null) {
+				((RootFigure)root.getFigure()).setPaintLock(true);
 				root.refresh();
+				((RootFigure)root.getFigure()).setPaintLock(false);
 			}
 			List<IControlStructureEditPart> addedParts =((CSEditPartFactory)this.getGraphicalViewer().getEditPartFactory()).fetchNewParts();
 			if(this.selectAddedParts && !addedParts.isEmpty()){

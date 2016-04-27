@@ -22,6 +22,7 @@ import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
 public class ConnectionFigure extends PolylineConnection implements IControlStructureFigure{
 
+	private int[] arrowHead;
 	private PolylineConnection feedback;
 	private UUID currentFeedbackId;
 	private UUID id;
@@ -70,11 +71,16 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		}
 		Rectangle rect= new Rectangle(p3, p4);
 		graphics.setClip(rect.getUnion(p1));
-		graphics.fillPolygon(new int[]{p1.x,p1.y,p3.x,p3.y,p4.x,p4.y});
+		if(arrowHead != null){
+			graphics.setBackgroundColor(xstampp.util.ColorManager.COLOR_WHITE);
+			graphics.fillPolygon(arrowHead);
+			graphics.setBackgroundColor(xstampp.util.ColorManager.COLOR_BLACK);
+		}
+		arrowHead = new int[]{p1.x,p1.y,p3.x,p3.y,p4.x,p4.y};
+		graphics.fillPolygon(arrowHead);
 	}
 	@Override
 	protected void paintChildren(Graphics graphics) {
-		// TODO Auto-generated method stub
 		super.paintChildren(graphics);
 	}
 	@Override
@@ -130,6 +136,11 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	public boolean hasDeco() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
 	}
 	@Override
 	public void showFeedback() {

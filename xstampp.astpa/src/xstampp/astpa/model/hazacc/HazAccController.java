@@ -213,9 +213,10 @@ public class HazAccController {
 	 *            the id of the hazard
 	 *
 	 * @author Fabian Toth
+	 * @return 
 	 */
-	public void addLink(UUID accidentId, UUID hazardId) {
-		this.links.add(new Link(accidentId, hazardId));
+	public boolean addLink(UUID accidentId, UUID hazardId) {
+		return this.links.add(new Link(accidentId, hazardId));
 	}
 
 	/**

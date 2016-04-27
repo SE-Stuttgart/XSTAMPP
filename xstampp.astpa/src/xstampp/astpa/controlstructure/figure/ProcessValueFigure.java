@@ -49,9 +49,8 @@ public class ProcessValueFigure extends CSFigure {
 		this.topOffset = top;
 	}
 
-
 	@Override
-	public void setLayout(Rectangle rect) {
+	public void refresh() {
 		rect.setX(ProcessValueFigure.PROCESS_MODEL_COLUMN);
 		this.getTextField().setLocation(new Point(0,0));
 		this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width,-1));

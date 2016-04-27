@@ -496,6 +496,7 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 *
 	 * @param componentId the componentLink to set
 	 * @param caId the control action which should be linked
+	 * @return TODO
 	 */
-	public void linkControlAction(UUID caId,UUID componentId);
+	public boolean linkControlAction(UUID caId,UUID componentId);
 }

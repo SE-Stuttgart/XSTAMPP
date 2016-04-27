@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MouseEvent;
@@ -27,6 +28,9 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.preferences.IControlStructureConstants;
@@ -52,6 +56,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	private List<IFigure> componentList = new ArrayList<>();
 	private boolean generalEnable = false;
 	private boolean hasDeco;
+	private boolean paintLock;
 
 	/**
 	 * Constructs the RootFigure which is used as the basis of the
@@ -67,6 +72,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		this.useLocalCoordinates();
 		this.hasDeco = true;
 		this.addMouseMotionListener(this);
+		this.paintLock= false;
 	}
 
 	
@@ -221,6 +227,15 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		this.removeHighlighter();
 	}
 
+	@Override
+	public void paintChildren(Graphics graphics) {
+//		if(!paintLock){
+			super.paintChildren(graphics);
+//		}
+	}
+	public void setPaintLock(boolean lock) {
+		this.paintLock = lock;
+	}
 	@Override
 	public void setLayout(Rectangle rect) {
 		this.setBounds(rect);
