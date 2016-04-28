@@ -75,7 +75,7 @@ public class SaveJob extends XstamppJob {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
 
-		File tmpFile = new File(file.getParentFile(),".&"+file.getName());
+		File tmpFile = new File(file.getParentFile(),"."+file.getName());
 		try {
 
 				tmpFile.createNewFile();
@@ -107,7 +107,7 @@ public class SaveJob extends XstamppJob {
 				writer.close();
 				copy(tmpFile, file);
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 			setError(e);
 			ProjectManager.getLOGGER().error(e.getMessage(), e);
 			return Status.CANCEL_STATUS;
