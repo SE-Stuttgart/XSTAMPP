@@ -70,8 +70,11 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public boolean isDirty() {
-		if (ProjectManager.getContainerInstance().getUnsavedChanges(
+		if(!ProjectManager.getContainerInstance().getProjects().containsKey(projectID)){
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(this, false);
+		}else if (ProjectManager.getContainerInstance().getUnsavedChanges(
 				this.projectID)) {
+			return true;
 		}
 		return false;
 	}

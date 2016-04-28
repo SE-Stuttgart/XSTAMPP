@@ -348,7 +348,7 @@ public class ProjectManager implements IPropertyChangeListener {
 					try{
 						tmpController.setStored();
 					}catch(SWTException e){
-						LOGGER.debug("cant't mark DataModel ad saved!");
+						LOGGER.debug("cant't mark DataModel as saved!");
 						e.printStackTrace();
 					}
 				}
@@ -499,7 +499,6 @@ public class ProjectManager implements IPropertyChangeListener {
 	 *            the id of the project for which the request is given
 	 */
 	public boolean getUnsavedChanges(UUID projectId) {
-
 		return this.projectDataToUUID.get(projectId).hasUnsavedChanges();
 	}
 
