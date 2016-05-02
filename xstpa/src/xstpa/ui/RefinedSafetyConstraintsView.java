@@ -5,25 +5,23 @@ import java.util.List;
 import java.util.Observable;
 
 import messages.Messages;
-
-import org.eclipse.swt.graphics.Color;
-
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.ui.sds.CSCView;
+import xstampp.astpa.ui.sds.AbstractFilteredTableView;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 import xstpa.model.XSTPADataController;
 
-public class RefinedSafetyConstraintsView extends CSCView{
+public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 
 	XSTPADataController dataController;
 	
 	public RefinedSafetyConstraintsView() {
-		this.filter = new RefinedEntryFilter();
-		this.headers[0] = Messages.ID;
-		this.headers[1] = "Refined Unsafe Control Actions";
-		this.headers[2] = Messages.ID;
-		this.headers[3] = getTitle();
+		super(new RefinedEntryFilter(), new String[]{ Messages.ID,
+													  "Refined Unsafe Control Actions", 
+													  Messages.ID, 
+													  "Refined Safety Constraints"});
+
+		setColumnWeights(new int[]{100,2,100,100});
 	}
 	@Override
 	protected List<?> getInput() {
@@ -109,6 +107,11 @@ public class RefinedSafetyConstraintsView extends CSCView{
 		}
 		return null;
 	
+	}
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

@@ -122,7 +122,7 @@ public class RectangleEditPart extends AbstractMemberEditPart implements ISelect
 	@Override
 	public void performRequest(Request req) {
 		
-		if(req.getType() == RequestConstants.REQ_OPEN) {
+		if(req.getType().equals(RequestConstants.REQ_OPEN) ||req.getType().equals(RequestConstants.REQ_SELECTION)) {
 	        ((CSRectangleContainer)getFigure()).setSelected(isActive());
 	        for(Object child :getFigure().getChildren()){
 				((IFigure) child).setBorder(new LineBorder(ColorConstants.gray, 1, SWT.BORDER_DASH));

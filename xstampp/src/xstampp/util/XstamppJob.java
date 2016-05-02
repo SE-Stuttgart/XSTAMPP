@@ -2,7 +2,6 @@ package xstampp.util;
 
 import java.util.Observable;
 import java.util.Observer;
-import java.util.UUID;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
@@ -11,7 +10,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ProjectManager;
 
 public abstract class XstamppJob extends Job implements Observer, IJobChangeListener {
 	private Throwable error;
@@ -41,7 +39,6 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
 
 	@Override
 	public void done(IJobChangeEvent event) {
-		String failMsg;
 		if(getModelObserver() != null){
 			getModelObserver().deleteObserver(this);
 		}
@@ -76,6 +73,11 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
 		//this listener needs only to handle the scheduled() and the done() methode
 	}
 
+	/**
+	 * if this method returns a valid observable than this job
+	 * will be added/removed as an observer
+	 * @return the controller object this job should observe during its runtime
+	 */
 	protected abstract Observable getModelObserver();
 
 

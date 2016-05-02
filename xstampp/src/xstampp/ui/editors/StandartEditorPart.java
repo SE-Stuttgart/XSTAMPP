@@ -34,12 +34,12 @@ public abstract class StandartEditorPart extends EditorPart implements
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		if (this.isDirty()) {
-			Map<String, String> values = new HashMap<>();
-			values.put("saveProjectId", this.projectID.toString());
-			STPAPluginUtils.executeParaCommand("astpa.save", values);
-			ProjectManager.getContainerInstance().getDataModel(projectID).setStored();
-		}
+//		if (this.isDirty()) {
+//			Map<String, String> values = new HashMap<>();
+//			values.put("saveProjectId", this.projectID.toString());
+//			STPAPluginUtils.executeParaCommand("astpa.save", values);
+//			ProjectManager.getContainerInstance().getDataModel(projectID).setStored();
+//		}
 	}
 
 	@Override

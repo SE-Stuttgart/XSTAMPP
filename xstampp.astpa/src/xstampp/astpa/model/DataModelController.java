@@ -188,7 +188,7 @@ public class DataModelController extends Observable implements
 	@Override
 	public void updateValue(ObserverValue value) {
 		this.setChanged();
-		if(!refreshLock && (!value.equals(ObserverValue.CONTROL_STRUCTURE) || controlStructureController.hasChanges())){
+		if(!refreshLock){
 			DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
 			this.notifyObservers(value);
 		}

@@ -1,14 +1,27 @@
 package xstampp.astpa.ui.sds;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ViewerFilter;
 
+/**
+ * A ViewerFilter which contains a category array which can be empty 
+ * so that the filter selection can be taken according to a category
+ * 
+ * @author Lukas Balzer
+ *
+ */
 public abstract class ModeFilter extends ViewerFilter{
-	protected static final int both = 0;
-	protected static final int uca = 1;
-	protected static final int rsc = 2;
 	protected int cscFilterMode;
+	private List<String> categorys;
 	protected String searchString;
 
+	public ModeFilter(String[] filters){
+		categorys = new ArrayList<>();
+		Collections.addAll(categorys, filters);
+	}
 	/**
 	 * @return the rsc
 	 */
@@ -20,8 +33,8 @@ public abstract class ModeFilter extends ViewerFilter{
 	 * @param cscFilterMode
 	 *            the cscFilterMode to set
 	 */
-	public void setCSCFilterMode(int cscFilterMode) {
-		this.cscFilterMode = cscFilterMode;
+	public void setCSCFilterMode(String cscFilterMode) {
+		this.cscFilterMode = categorys.indexOf(cscFilterMode);
 	}
 	
 	/**
@@ -34,5 +47,11 @@ public abstract class ModeFilter extends ViewerFilter{
 	public void setSearchText(String s) {
 		// ensure that the value can be used for matching
 		this.searchString = ".*" + s.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	/**
+	 * @return the categorys
+	 */
+	public List<String> getCategorys() {
+		return this.categorys;
 	}
 }

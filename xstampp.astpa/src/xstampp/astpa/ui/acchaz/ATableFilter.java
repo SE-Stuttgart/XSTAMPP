@@ -13,7 +13,11 @@
 
 package xstampp.astpa.ui.acchaz;
 
+import messages.Messages;
+
 import org.eclipse.jface.viewers.Viewer;
+
+
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -25,6 +29,10 @@ import xstampp.astpa.ui.sds.ModeFilter;
  * 
  */
 public class ATableFilter extends ModeFilter{
+	private static final String[] FILTERS = new String[]{Messages.All,Messages.CorrespondingSafetyConstraints};  	
+	public ATableFilter() {
+		super(FILTERS);
+	}
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -48,18 +56,18 @@ public class ATableFilter extends ModeFilter{
 
 	private boolean checkCSC(ICorrespondingUnsafeControlAction cuca) {
 		
-		if ((this.getCSCFilterMode() == rsc)) {
+		if ((this.getCSCFilterMode() == 1)) {
 			if (cuca.getCorrespondingSafetyConstraint().getText().toLowerCase()
 					.matches(this.searchString)) {
 				return true;
 			}
 			return false;
-		} else if ((this.getCSCFilterMode() == uca)) {
+		} else if ((this.getCSCFilterMode() == 2)) {
 			if (cuca.getDescription().toLowerCase().matches(this.searchString)) {
 				return true;
 			}
 			return false;
-		} else if (this.getCSCFilterMode() == both) {
+		} else if (this.getCSCFilterMode() == 0) {
 			if ((cuca.getCorrespondingSafetyConstraint().getText()
 					.toLowerCase().matches(this.searchString))
 					|| (cuca.getDescription().toLowerCase()

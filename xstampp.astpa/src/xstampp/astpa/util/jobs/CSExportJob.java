@@ -7,11 +7,8 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.UUID;
 
-import javax.imageio.stream.ImageInputStreamImpl;
-
 import messages.Messages;
 
-import org.apache.xmlgraphics.image.loader.util.ImageInputStreamAdapter;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
