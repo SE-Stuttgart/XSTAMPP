@@ -6,8 +6,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.ITableModel;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 

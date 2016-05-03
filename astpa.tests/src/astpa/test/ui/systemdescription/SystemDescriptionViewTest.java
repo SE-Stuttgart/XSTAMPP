@@ -23,6 +23,6 @@ public class SystemDescriptionViewTest {
 	public void systemDescriptionViewTest() {
 		SystemDescriptionView view = new SystemDescriptionView();
 		Assert.assertEquals("System Description", view.getTitle());
-		Assert.assertEquals("astpa.ui.systemdescription.SystemDescriptionViewPart", view.getId());
+		Assert.assertEquals("astpa.steps.step1_1", view.getId());
 	}
 }

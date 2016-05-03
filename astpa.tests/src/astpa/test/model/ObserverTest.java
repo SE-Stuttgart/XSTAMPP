@@ -10,8 +10,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
@@ -59,8 +59,7 @@ public class ObserverTest implements Observer {
 		this.addToNominal(ObserverValue.ACCIDENT);
 		this.dataModel.getAccident(accident);
 		this.dataModel.getAllAccidents();
-		this.dataModel.setAccidentTitle(accident, "");
-		this.addToNominal(ObserverValue.ACCIDENT);
+		this.dataModel.setAccidentTitle(accident, "new title");
 		this.dataModel.setAccidentDescription(accident, "");
 		this.addToNominal(ObserverValue.ACCIDENT);
 		this.dataModel.removeAccident(accident);
@@ -133,8 +132,7 @@ public class ObserverTest implements Observer {
 		this.dataModel.getAllControlActionsU();
 		this.dataModel.getControlAction(controlAction);
 		this.dataModel.setControlActionTitle(controlAction, "");
-		this.addToNominal(ObserverValue.CONTROL_ACTION);
-		this.dataModel.setControlActionDescription(controlAction, "");
+		this.dataModel.setControlActionDescription(controlAction, "desc");
 		this.addToNominal(ObserverValue.CONTROL_ACTION);
 		this.dataModel.removeControlAction(controlAction);
 		this.addToNominal(ObserverValue.CONTROL_ACTION);
@@ -247,8 +245,7 @@ public class ObserverTest implements Observer {
 		this.dataModel.getDesignRequirement(designRequirement);
 		this.dataModel.getAllDesignRequirements();
 		this.dataModel.setDesignRequirementTitle(designRequirement, "");
-		this.addToNominal(ObserverValue.DESIGN_REQUIREMENT);
-		this.dataModel.setDesignRequirementDescription(designRequirement, "");
+		this.dataModel.setDesignRequirementDescription(designRequirement, "desc");
 		this.addToNominal(ObserverValue.DESIGN_REQUIREMENT);
 		this.dataModel.removeDesignRequirement(designRequirement);
 		this.addToNominal(ObserverValue.DESIGN_REQUIREMENT);
@@ -274,8 +271,7 @@ public class ObserverTest implements Observer {
 		this.addToNominal(ObserverValue.HAZARD);
 		this.dataModel.getHazard(hazard);
 		this.dataModel.getAllHazards();
-		this.dataModel.setHazardTitle(hazard, "");
-		this.addToNominal(ObserverValue.HAZARD);
+		this.dataModel.setHazardTitle(hazard, "desc");
 		this.dataModel.setHazardDescription(hazard, "");
 		this.addToNominal(ObserverValue.HAZARD);
 		this.dataModel.removeHazard(hazard);
@@ -350,8 +346,7 @@ public class ObserverTest implements Observer {
 		this.dataModel.getAllSafetyConstraints();
 		this.dataModel.getSafetyConstraint(safetyConstraint);
 		this.dataModel.setSafetyConstraintTitle(safetyConstraint, "");
-		this.addToNominal(ObserverValue.SAFETY_CONSTRAINT);
-		this.dataModel.setSafetyConstraintDescription(safetyConstraint, "");
+		this.dataModel.setSafetyConstraintDescription(safetyConstraint, "desc");
 		this.addToNominal(ObserverValue.SAFETY_CONSTRAINT);
 		this.dataModel.removeSafetyConstraint(safetyConstraint);
 		this.addToNominal(ObserverValue.SAFETY_CONSTRAINT);
@@ -393,7 +388,7 @@ public class ObserverTest implements Observer {
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
 		this.dataModel.setProjectName("");
 		this.addToNominal(ObserverValue.PROJECT_NAME);
-		this.dataModel.setProjectDescription("");
+		this.dataModel.setProjectDescription("desc");
 		this.addToNominal(ObserverValue.PROJECT_DESCRIPTION);
 		this.dataModel.getProjectDescription();
 		this.dataModel.getProjectName();
@@ -423,8 +418,7 @@ public class ObserverTest implements Observer {
 		this.dataModel.getAllSystemGoals();
 		this.dataModel.getSystemGoal(systemGoal);
 		this.dataModel.setSystemGoalTitle(systemGoal, "");
-		this.addToNominal(ObserverValue.SYSTEM_GOAL);
-		this.dataModel.setSystemGoalDescription(systemGoal, "");
+		this.dataModel.setSystemGoalDescription(systemGoal, "desc");
 		this.addToNominal(ObserverValue.SYSTEM_GOAL);
 		this.dataModel.removeSystemGoal(systemGoal);
 		this.addToNominal(ObserverValue.SYSTEM_GOAL);

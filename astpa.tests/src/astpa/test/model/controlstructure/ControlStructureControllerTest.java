@@ -101,7 +101,8 @@ public class ControlStructureControllerTest {
 		Assert.assertEquals(layout2, dataModel.getComponent(id3).getLayout(true));
 		Assert.assertTrue(dataModel.changeComponentLayout(id3, layout3, false));
 		Assert.assertEquals(layout3, dataModel.getComponent(id3).getLayout(false));
-		Assert.assertTrue(dataModel.synchronizeLayouts());
+		//synchronize Layouts returns false because only components drawn on the root are considert and the component for 'id3' is drawn on 'id2'
+		Assert.assertFalse(dataModel.synchronizeLayouts());
 		Assert.assertTrue(dataModel.changeComponentLayout(id3, layout2, false));
 		Assert.assertEquals(layout2, dataModel.getComponent(id3).getLayout(false));
 		
