@@ -59,20 +59,22 @@ public class TextFieldFigure extends CSFigure {
 	
 	@Override
 	public void refresh() {
-
-		int width = this.getBounds().width;
-
-		this.getTextField().setSize(
-				this.getTextField().getPreferredSize(width, -1));
+	 	if(isDirty){
+	
+			int width = this.getBounds().width;
+	
+			this.getTextField().setSize(
+					this.getTextField().getPreferredSize(width, -1));
+	//		this.getTextField().repaint();
+			// the height of the rectangle is set to the ideal height for the given
+			// width
+			if(!this.isDashed){
+				rect.height = this.getTextField().getPreferredSize(width, -1).height;
+			}
+	
+			super.refresh();
 //		this.getTextField().repaint();
-		// the height of the rectangle is set to the ideal height for the given
-		// width
-		if(!this.isDashed){
-			rect.height = this.getTextField().getPreferredSize(width, -1).height;
-		}
-
-		super.refresh();
-//		this.getTextField().repaint();
+	 	}
 	}
 
 	@Override

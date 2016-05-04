@@ -72,9 +72,6 @@ public abstract class StandartEditorPart extends EditorPart implements
 	public boolean isDirty() {
 		if(!ProjectManager.getContainerInstance().getProjects().containsKey(projectID)){
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(this, false);
-		}else if (ProjectManager.getContainerInstance().getUnsavedChanges(
-				this.projectID)) {
-			return true;
 		}
 		return false;
 	}

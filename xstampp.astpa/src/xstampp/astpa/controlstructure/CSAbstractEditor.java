@@ -1052,15 +1052,21 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	public void update(Observable dataModelController, Object updatedValue) {
 		super.update(dataModelController, updatedValue);
 		ObserverValue type = (ObserverValue) updatedValue;
-		CSAbstractEditPart root = (CSAbstractEditPart) this
-				.getGraphicalViewer().getContents();
+		
 		switch (type) {
 		case CONTROL_STRUCTURE: {
-			if (root != null) {
-				((RootFigure)root.getFigure()).setPaintLock(true);
-				root.refresh();
-				((RootFigure)root.getFigure()).setPaintLock(false);
-			}
+				Display.getDefault().asyncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+						CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
+						if (root != null) {
+							((RootFigure)root.getFigure()).setPaintLock(true);
+							root.refresh();
+							((RootFigure)root.getFigure()).setPaintLock(false);
+						}
+					}
+				});
 			List<IControlStructureEditPart> addedParts =((CSEditPartFactory)this.getGraphicalViewer().getEditPartFactory()).fetchNewParts();
 			if(this.selectAddedParts && !addedParts.isEmpty()){
 				this.selectAddedParts = false;

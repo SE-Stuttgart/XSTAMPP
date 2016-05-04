@@ -21,11 +21,9 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -48,6 +46,7 @@ public abstract class CSFigure extends Figure implements
 		IControlStructureFigure {
 
 	private final CSTextLabel textLabel;
+	protected boolean isDirty=true;
 	private final Image image;
 	private boolean canConnect = false;
 	private final UUID componentID;
@@ -139,7 +138,11 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public void setText(String text) {
-		this.text = text;
+		if(!text.equals(this.text)){
+			this.text = text;
+			this.textLabel.setText(text);
+			this.isDirty = true;
+		}
 	}
 
 	@Override
@@ -160,6 +163,7 @@ public abstract class CSFigure extends Figure implements
 	 *            the Color of the new Border
 	 */
 	public void setBorder(Color color) {
+		this.isDirty = true;
 		this.border.setColor(color);
 		if (this.getChildren().size() > 1) {
 			this.border.setWidth(2);
@@ -173,11 +177,19 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public void setLayout(Rectangle rect) {
-		this.rect = rect;
+		if(!this.rect.equals(rect)){
+			this.isDirty = true;
+			this.rect = rect;
+		}
 	}
 
 	 @Override
 	public void refresh() {
+		 	if(isDirty){
+		 		isDirty= false;
+		 	}else{
+		 		return;
+		 	}
 			if (this.getChildren().size() > 1) {
 				// the height of the rectangle is set to the ideal height for the
 				// given width
