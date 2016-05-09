@@ -138,7 +138,7 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public void setText(String text) {
-		if(!text.equals(this.text)){
+		if(this.text == null || !text.equals(this.text)){
 			this.text = text;
 			this.textLabel.setText(text);
 			this.isDirty = true;
@@ -177,7 +177,7 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public void setLayout(Rectangle rect) {
-		if(!this.rect.equals(rect)){
+		if(this.rect == null || !this.rect.equals(rect)){
 			this.isDirty = true;
 			this.rect = rect;
 		}
