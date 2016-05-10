@@ -532,7 +532,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 		}else if(this instanceof CSEditorWithPM){
 			Button bSyncSteps = new Button(this.toolBar, SWT.None);
-			bSyncSteps.setText("Synchronise with Step 0");
+			bSyncSteps.setText("Synchronise with control structure diagram");
 			data = new FormData();
 			data.height = CSAbstractEditor.TOOL_HEIGHT;
 			data.left = new FormAttachment(positionLabel, 30);
