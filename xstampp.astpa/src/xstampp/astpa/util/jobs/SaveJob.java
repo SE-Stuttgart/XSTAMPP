@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.Writer;
 import java.util.Observable;
 
@@ -43,7 +42,6 @@ public class SaveJob extends XstamppJob {
 	final IDataModel controller;
 	private boolean compatibilityMode;
 	private boolean ready = false;
-	private StringBuffer oldContent;
 
 	/**
 	 * 
@@ -74,8 +72,11 @@ public class SaveJob extends XstamppJob {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
-
-		File tmpFile = new File(file.getParentFile(),"."+file.getName());
+		File backupDir = new File(file.getParentFile()+File.separator+".metadata"+File.separator+".backup");
+		if(!backupDir.isDirectory()){
+			backupDir.mkdirs();
+		}
+		File tmpFile = new File(backupDir,"."+file.getName());
 		try {
 
 				tmpFile.createNewFile();
@@ -135,46 +136,11 @@ public class SaveJob extends XstamppJob {
 			}
 			writer.close();
 			reader.close();
-			fromFile.delete();
 		}catch(IOException e){
-			fromFile.delete();
 			throw e;
 		}
 	}
-	private void initiateRecovery(File file) throws IOException{
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line = reader.readLine();
-		oldContent= new StringBuffer();
-		while(line != null){
-			oldContent.append(line);
-			oldContent.append(Character.toChars(Character.LINE_SEPARATOR));
-			line = reader.readLine();
-		}
-		reader.close();
-	}
 	
-	private void recover(File file){
-		if(oldContent != null && !oldContent.toString().isEmpty()){
-				
-			
-			BufferedWriter writer;
-			try {
-				writer = new BufferedWriter(new FileWriter(file));
-				BufferedReader reader = new BufferedReader(new StringReader(oldContent.toString()));
-				String line = reader.readLine();
-				while(line != null){
-					writer.write(line);
-					writer.newLine();
-					line = reader.readLine();
-				}
-				writer.close();
-				reader.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
 }
 
 class MyEscapeHandler implements CharacterEscapeHandler{
