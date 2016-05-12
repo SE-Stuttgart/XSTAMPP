@@ -102,7 +102,11 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 	@Override
 	public void refresh() {
 		Rectangle bounds1 = rect.getCopy();
-		
+		for (Object child : getChildren()) {
+			if(child instanceof IControlStructureFigure){
+				((IControlStructureFigure) child).refresh();
+			}
+		}
 		if(getChildren().isEmpty()){
 			bounds1.setSize(20,20);
 		}else{
@@ -112,11 +116,7 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 
 		setBounds(bounds1);
 		this.getParent().setConstraint(this, bounds1);
-		for (Object child : getChildren()) {
-			if(child instanceof IControlStructureFigure){
-				((IControlStructureFigure) child).refresh();
-			}
-		}
+		
 	}
 	
 	@Override
@@ -217,5 +217,9 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 		}
 	}
 	 
-
+	@Override
+	public void setDirty() {
+		// TODO Auto-generated method stub
+		
+	}
 }

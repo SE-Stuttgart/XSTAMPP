@@ -73,7 +73,15 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false);
+		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false){
+			@Override
+			public void refresh() {
+				if (getViewer().getProperty(IControlStructureEditor.STEP_EDITOR)
+						.equals(CSEditorWithPM.ID)) {
+					super.refresh();
+				}
+			}
+		};
 
 		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setBorder(new LineBorder(1));

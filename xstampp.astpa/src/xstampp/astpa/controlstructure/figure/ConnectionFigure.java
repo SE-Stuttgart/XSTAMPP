@@ -253,17 +253,17 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 			Point b=list.getPoint(list.size()-1);
 			Dimension diff = a.getDifference(b);
 			Point middle = b.getTranslated(diff.width/2, diff.height/2);
-			Rectangle tmp = this.targetFigure.getBounds().getCopy();
-			this.targetFigure.translateToAbsolute(tmp);
-			connection.translateToRelative(tmp);
-			Point center = tmp.getCenter().getCopy();
+			Rectangle targetBounds = this.targetFigure.getBounds().getCopy();
+			this.targetFigure.translateToAbsolute(targetBounds);
+			connection.translateToRelative(targetBounds);
+			Point center = targetBounds.getCenter().getCopy();
 			
 			for(int i=0;i<10;i++){
 //				this.targetFigure.translateToAbsolute(center);
 				Rectangle loop_tmp = new Rectangle(center,middle);
 //				this.targetFigure.translateToAbsolute(tmp);
-				tmp = tmp.intersect(loop_tmp);
-				center = tmp.getCenter().getCopy();
+				targetBounds = targetBounds.intersect(loop_tmp);
+				center = targetBounds.getCenter().getCopy();
 			}
 			list.addPoint(middle);
 			list.addPoint(center);
@@ -285,5 +285,10 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	@Override
 	public void setPreferenceStore(IPreferenceStore store) {
 		this.store = store;
+	}
+	@Override
+	public void setDirty() {
+		// TODO Auto-generated method stub
+		
 	}
 }

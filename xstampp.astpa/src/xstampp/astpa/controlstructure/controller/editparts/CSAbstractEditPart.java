@@ -145,9 +145,9 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	protected void refreshVisuals() {
 			getFigure().refresh();
 
-//			for (Object child : this.getChildren()) {
-//				((IControlStructureEditPart) child).refresh();
-//			}
+			for (Object child : this.getChildren()) {
+				((IControlStructureEditPart) child).refresh();
+			}
 	}
 
 	public void refreshModel() {

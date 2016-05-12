@@ -15,12 +15,14 @@ package xstampp.astpa.controlstructure.figure;
 
 import java.util.UUID;
 
+import org.apache.bcel.generic.NEW;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 
@@ -42,38 +44,58 @@ public class TextFieldFigure extends CSFigure {
 	 */
 	public static final Dimension TEXTBOX_FIGURE_DEFSIZE = new Dimension(100,
 			15);
+	private boolean freeWidth;
+	private boolean freeHeight;
 
-	private boolean isDashed;
+	
 	/**
 	 * @author Lukas Balzer
 	 * @param id
 	 *            the id which the figure inherits from its model
 	 */
 	public TextFieldFigure(UUID id) {
-		super(id, false);
-		this.isDashed = false;
-//		this.setOpaque(false);
-//		this.getTextField().setOpaque(false);
+		this(id, true,false);
 	}
 
+
 	
+	public TextFieldFigure(UUID id, boolean freeWidth, boolean freeHeight) {
+		super(id, false);
+		this.freeWidth = freeWidth;
+		this.freeHeight = freeHeight;
+	}
+
+
+
 	@Override
 	public void refresh() {
 	 	if(isDirty){
-	
-			int width = this.getBounds().width;
-	
-			this.getTextField().setSize(
-					this.getTextField().getPreferredSize(width, -1));
-	//		this.getTextField().repaint();
-			// the height of the rectangle is set to the ideal height for the given
-			// width
-			if(!this.isDashed){
-				rect.height = this.getTextField().getPreferredSize(width, -1).height;
+	 		this.isDirty = false;
+			this.getTextField().setText(getText());
+			int width = -1;
+			int height = -1;
+			if(freeWidth){
+				width = rect.width;
 			}
-	
-			super.refresh();
-//		this.getTextField().repaint();
+			if(freeHeight){
+				height = rect.height;
+			}
+			getTextField().setSize(this.getTextField().getPreferredSize(width,-1));
+			this.setConstraint(this.getTextField(), getTextField().getBounds());
+			rect = new Rectangle(rect.getLocation(), this.getTextField().getSize());
+			if(freeWidth){
+				rect.width = width;
+			}
+			if(freeHeight){
+				rect.height = height;
+			}
+			this.getParent().setConstraint(this, rect);
+			this.setBounds(rect);
+			for (Object child : getChildren()) {
+				if(child instanceof IControlStructureFigure){
+					((IControlStructureFigure) child).refresh();
+				}
+			}
 	 	}
 	}
 
@@ -92,14 +114,17 @@ public class TextFieldFigure extends CSFigure {
 	public void setDashed() {
 		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH){
 			@Override
+			public int getStyle() {
+				return SWT.LINE_CUSTOM;
+			}
+			@Override
 			public void paint(IFigure figure, Graphics graphics,
 					Insets insets) {
 				graphics.setLineStyle(SWT.LINE_CUSTOM);
-				graphics.setLineDash(new int[]{4});
 				graphics.setLineDashOffset(4);
+				graphics.setLineDash(new int[]{4});
 				super.paint(figure, graphics, insets);
 			}
 		});
-		this.isDashed = true;
 	}
 }

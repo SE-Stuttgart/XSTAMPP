@@ -313,4 +313,8 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	public boolean hasDeco() {
 		return this.hasDeco;
 	}
+	@Override
+	public void setDirty() {
+		//root component is always refreshed
+	}
 }

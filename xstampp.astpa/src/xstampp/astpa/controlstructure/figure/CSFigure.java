@@ -109,7 +109,7 @@ public abstract class CSFigure extends Figure implements
 		}
 		this.textLabel = new CSTextLabel(this);
 		this.add(this.textLabel);
-
+		isDirty=true;
 		this.setConstraint(this.textLabel, new Rectangle(1, 1, -1, -1));
 		this.setOpaque(true);
 		this.setBackgroundColor(ColorConstants.white);
@@ -133,6 +133,7 @@ public abstract class CSFigure extends Figure implements
 //				graphics.drawImage(this.image, 1, 1);
 //			}
 		}
+		
 		super.paintChildren(graphics);
 	}
 
@@ -141,7 +142,7 @@ public abstract class CSFigure extends Figure implements
 		if(this.text == null || !text.equals(this.text)){
 			this.text = text;
 			this.textLabel.setText(text);
-			this.isDirty = true;
+			setDirty();
 		}
 	}
 
@@ -163,7 +164,7 @@ public abstract class CSFigure extends Figure implements
 	 *            the Color of the new Border
 	 */
 	public void setBorder(Color color) {
-		this.isDirty = true;
+		setDirty();
 		this.border.setColor(color);
 		if (this.getChildren().size() > 1) {
 			this.border.setWidth(2);
@@ -178,42 +179,38 @@ public abstract class CSFigure extends Figure implements
 	@Override
 	public void setLayout(Rectangle rect) {
 		if(this.rect == null || !this.rect.equals(rect)){
-			this.isDirty = true;
+			setDirty();
 			this.rect = rect;
 		}
 	}
 
 	 @Override
 	public void refresh() {
-		 	if(isDirty){
-		 		isDirty= false;
-		 	}else{
-		 		return;
-		 	}
-			if (this.getChildren().size() > 1) {
+	 	if(isDirty){
+	 		isDirty= false;
+			setBounds(rect);
+	 		if (this.getChildren().size() > 1) {
 				// the height of the rectangle is set to the ideal height for the
 				// given width
 				this.getTextField().setSize(
-						this.getBounds().width - this.leftMargin,
-						this.getTextField().getTextBounds().getSize().height);
+						this.getBounds().width - 20,-1);
 				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
-						1, this.getBounds().width - this.leftMargin, -1));
+						1, this.getBounds().width - this.leftMargin, 15));
 			} else {
 
 				this.getTextField().setSize(new Dimension(rect.width - this.leftMargin, rect.height));
 				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
 						1, rect.width - this.leftMargin, rect.height));
 			}
-//			// rect.width += this.leftMargin;
-//			this.getTextField().repaint();
 			this.textLabel.setText(text);
+			this.textLabel.repaint();
 			this.getParent().setConstraint(this, rect);
-//			this.getTextField().repaint();
 			for (Object child : getChildren()) {
 				if(child instanceof IControlStructureFigure){
 					((IControlStructureFigure) child).refresh();
 				}
 			}
+	 	}
 	}
 	/**
 	 * 
@@ -387,5 +384,13 @@ public abstract class CSFigure extends Figure implements
 	 */
 	public void setCanConnect(boolean canConnect) {
 		this.canConnect = canConnect;
+	}
+	
+	@Override
+	public void setDirty() {
+		isDirty = true;
+		if(getParent() instanceof IControlStructureFigure){
+			((IControlStructureFigure) getParent()).setDirty();
+		}
 	}
 }

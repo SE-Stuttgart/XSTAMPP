@@ -53,7 +53,7 @@ public class DirectEditor extends TextCellEditor implements ModifyListener{
 	 * @param style the style which should be attached to the Text widget
 	 */
 	public DirectEditor(Composite composite, int style) {
-		super(composite,SWT.WRAP|style);
+		super(composite,style);
 		this.oldLineNumber = this.text.getCaretLineNumber();
 		this.text.setFocus();
 		this.text.addKeyListener(new KeyAdapter() {

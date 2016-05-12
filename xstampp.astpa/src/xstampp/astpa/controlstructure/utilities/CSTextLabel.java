@@ -72,7 +72,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		this.content.setBackgroundColor(ColorConstants.white);
 		this.content.setFont(Display.getDefault().getSystemFont());
 		this.content.setLayoutManager(new ParagraphTextLayout(this.content,
-				ParagraphTextLayout.WORD_WRAP_TRUNCATE));
+				ParagraphTextLayout.WORD_WRAP_SOFT));
 		this.content.setLocation(new Point(0, 0));
 		this.content.setForegroundColor(ColorConstants.black);
 		this.content.setVisible(true);

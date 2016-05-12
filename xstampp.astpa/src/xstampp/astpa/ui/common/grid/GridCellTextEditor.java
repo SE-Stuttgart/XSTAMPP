@@ -170,7 +170,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell{
 	}
 	@Override
 	public void activate() {
-		this.editor = new DirectEditor(this.grid.getGrid(), SWT.None);
+		this.editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP);
 		this.grid.setEditClient(this);
 		this.editor.activate(new TextLocator());
 		this.editor.setTextColor(ColorConstants.black);

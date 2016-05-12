@@ -153,5 +153,6 @@ public interface IControlStructureFigure extends IFigure {
 	void showFeedback();
 	void disableFeedback();
 	void setPreferenceStore(IPreferenceStore store);
+	void setDirty();
 	
 }
