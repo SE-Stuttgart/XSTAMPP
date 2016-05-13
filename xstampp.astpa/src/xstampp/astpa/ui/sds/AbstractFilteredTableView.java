@@ -149,6 +149,7 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 	private String[] headers;
 	private EditSupportProvider[] editingSupports;
 	private int[] columnWeights;
+	private boolean[] refreshVector;
 	/**
 	 * 
 	 * @author Jarkko Heidenwag
@@ -159,8 +160,10 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 		this.headers = cols;
 		columnWeights = new int[this.headers.length];
 		editingSupports = new EditSupportProvider[this.headers.length];
+		refreshVector = new boolean[this.headers.length];
 		Arrays.fill(columnWeights, 1);
 		Arrays.fill(editingSupports, null);
+		Arrays.fill(refreshVector, false);
 		
 	}
 
@@ -185,7 +188,7 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 	public void createPartControl(Composite parent) {
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
-		// setting up the outer composite
+		 // setting up the outer composite
 		Composite cscComposite = new Composite(parent, SWT.NONE);
 		cscComposite
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -245,7 +248,6 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 		tableComposite.setLayout(new GridLayout(1, true));
 		TableColumnLayout tableColumnLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableColumnLayout);
-
 		// setting up the table viewer
 		this.tableViewer = new TableViewer(tableComposite, SWT.BORDER
 				| SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI);
@@ -261,10 +263,20 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 					this.tableViewer, SWT.NONE);
 			column.setLabelProvider(getColumnProvider(i));
 			column.getColumn().setText(this.headers[i]);
-			tableColumnLayout.setColumnData(
+			if(columnWeights[i]<0){
+				refreshVector[i] = true;
+				tableColumnLayout.setColumnData(
+						column.getColumn(),
+						new ColumnWeightData(1,30, true));
+			}else{
+				tableColumnLayout.setColumnData(
 					column.getColumn(),
-					new ColumnWeightData(columnWeights[i], false));
-			column.setEditingSupport(new CSCEditingSupport(tableViewer, editingSupports[i]));
+					new ColumnWeightData(columnWeights[i],30, true));
+			}
+			
+			if(editingSupports[i] != null){
+				column.setEditingSupport(new CSCEditingSupport(tableViewer, editingSupports[i]));
+			}
 		}
 		
 		
@@ -307,11 +319,13 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 
 		this.tableViewer.getTable().addListener(SWT.KeyDown, returnListener);
 
-		TableViewerEditor.create(this.tableViewer, null, activationSupport,
-				ColumnViewerEditor.TABBING_HORIZONTAL
-						| ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
-						| ColumnViewerEditor.TABBING_VERTICAL
-						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
+		if(hasEditSupport()){
+			TableViewerEditor.create(this.tableViewer, null, activationSupport,
+					ColumnViewerEditor.TABBING_HORIZONTAL
+							| ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
+							| ColumnViewerEditor.TABBING_VERTICAL
+							| ColumnViewerEditor.KEYBOARD_ACTIVATION);
+		}
 		packColumns();
 		
 
@@ -320,11 +334,15 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 	protected final void packColumns() {
 		this.tableViewer.refresh(true, true);
 		this.tableViewer.setInput(getInput());
-		for(TableColumn col : this.tableViewer.getTable().getColumns()){
-			col.pack();
+		for(int i=0; i< refreshVector.length;i++){
+			TableColumn col = this.tableViewer.getTable().getColumn(i);
+			if(refreshVector[i]){
+				col.pack();
+			}
 		}
 	}
 
+	
 	public void setDataModelInterface(IDataModel dataInterface) {
 		this.dataInterface = dataInterface;
 		this.dataInterface.addObserver(this);
@@ -366,6 +384,6 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 	abstract protected CSCLabelProvider getColumnProvider(int columnIndex);
 	
 	abstract protected List<?> getInput();
-	
+	abstract protected boolean hasEditSupport();
 
 }

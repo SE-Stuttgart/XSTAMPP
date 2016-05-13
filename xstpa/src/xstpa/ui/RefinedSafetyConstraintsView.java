@@ -21,7 +21,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 													  Messages.ID, 
 													  "Refined Safety Constraints"});
 
-		setColumnWeights(new int[]{100,2,100,100});
+		setColumnWeights(new int[]{-1,5,-1,5});
 	}
 	@Override
 	protected List<?> getInput() {
@@ -112,6 +112,11 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 	public String getId() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	protected boolean hasEditSupport() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

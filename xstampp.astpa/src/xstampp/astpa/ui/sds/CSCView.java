@@ -46,7 +46,7 @@ public class CSCView extends AbstractFilteredTableView{
 											  Messages.UnsafeControlActions, 	
 											  Messages.ID,
 											  Messages.CorrespondingSafetyConstraints});
-		setColumnWeights(new int[]{100,2,100,100});
+		setColumnWeights(new int[]{-1,5,-1,5});
 		addEditingSupport(3, new EditSupportProvider(){
 			@Override
 			protected Object getEditingValue(Object element) {
@@ -146,6 +146,12 @@ public class CSCView extends AbstractFilteredTableView{
 			
 		}
 		return null;
+	}
+
+
+	@Override
+	protected boolean hasEditSupport() {
+		return true;
 	}
 	
 }

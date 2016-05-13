@@ -15,6 +15,7 @@ public class LTLPropertiesTable extends AbstractFilteredTableView{
 
 	public LTLPropertiesTable() {
 		super(new LTLEntryFilter(), new String[]{View.ENTRY_ID,View.LTL_RULES});
+		setColumnWeights(new int[]{-1,15});
 	}
 
 	@Override
@@ -63,6 +64,12 @@ public class LTLPropertiesTable extends AbstractFilteredTableView{
 	@Override
 	protected List<?> getInput() {
 		return ((DataModelController) ProjectManager.getContainerInstance().getDataModel(getProjectID())).getLTLPropertys();
+	}
+
+	@Override
+	protected boolean hasEditSupport() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	}
 
