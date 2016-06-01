@@ -29,21 +29,15 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -53,6 +47,7 @@ import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.ui.AbstractFilteredEditor;
 import xstampp.astpa.ui.common.grid.AutoCompleteField;
 import xstampp.astpa.ui.common.grid.CellButton;
 import xstampp.astpa.ui.common.grid.GridCellButton;
@@ -65,7 +60,6 @@ import xstampp.astpa.ui.common.grid.GridWrapper;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.editors.StandartEditorPart;
 
 /**
  * The view to add causal factors to control structure components, edit them and
@@ -73,11 +67,11 @@ import xstampp.ui.editors.StandartEditorPart;
  * 
  * @author Benedikt Markt, Patrick Wickenhaeuser
  */
-public class CausalFactorsView extends StandartEditorPart{
+public class CausalFactorsView extends AbstractFilteredEditor{
 
 	private static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 	private static final Point ADD_BUTTON_COORDINATE = new Point(40, 1);
-
+	private int internalUpdates;
 	private static final String CONFIRMATION_TITLE = Messages.DeleteCausalFactor;
 	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheCF;
 	private static final String CAUSALFACTORS= "Text filter for Causal Factors";
@@ -85,19 +79,18 @@ public class CausalFactorsView extends StandartEditorPart{
 	private class SafetyConstraintEditorCell extends GridCellTextEditor {
 
 		private UUID safetyConstraintId;
-		private UUID factorId;
 		private ICausalFactor factor;
 		
 		public SafetyConstraintEditorCell(GridWrapper gridWrapper,
 				String initialText, ICausalFactor factor) {
 			super(gridWrapper, initialText,true);
-			this.factorId = factor.getId();
 			this.factor = factor;
 			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
 		@Override
 		public void updateDataModel(String newText) {
+			internalUpdates++;
 			dataInterface.setCausalSafetyConstraintText(safetyConstraintId, newText);
 			
 		}
@@ -121,7 +114,6 @@ public class CausalFactorsView extends StandartEditorPart{
 	private class NoteCell extends GridCellTextEditor {
 
 		private UUID factorId;
-		private UUID safetyConstraintId;
 		private ICausalFactor factor;
 
 		public NoteCell(GridWrapper gridWrapper, String initialText,
@@ -129,7 +121,6 @@ public class CausalFactorsView extends StandartEditorPart{
 			super(gridWrapper, initialText,false);
 			this.factorId = factor.getId();
 			this.factor = factor;
-			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
 		@Override
@@ -155,7 +146,6 @@ public class CausalFactorsView extends StandartEditorPart{
 	private class CausalFactorCell extends GridCellTextEditor {
 
 		private UUID factorID;
-		private UUID safetyConstraintId;
 		private ICausalFactor factor;
 
 		public CausalFactorCell(GridWrapper gridWrapper, String initialText,
@@ -163,7 +153,6 @@ public class CausalFactorsView extends StandartEditorPart{
 			super(gridWrapper, initialText,true);
 			this.factorID = factor.getId();
 			this.factor = factor;
-			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
 		@Override
@@ -289,8 +278,6 @@ public class CausalFactorsView extends StandartEditorPart{
 	private GridWrapper grid;
 
 	private CausalContentProvider causalContentProvider;
-	private Text filterText;
-	private Combo componentCombo;
 	private boolean lockreload;
 
 	/**
@@ -303,8 +290,14 @@ public class CausalFactorsView extends StandartEditorPart{
 		this.factorsToUUIDs = new HashMap<>();
 		this.dataInterface = null;
 		this.grid = null;
+		setUseFilter(true);
 	}
 
+	@Override
+	protected void updateFilter() {
+
+		this.reloadTable();
+	}
 	@Override
 	public String getId() {
 		return CausalFactorsView.ID;
@@ -314,53 +307,13 @@ public class CausalFactorsView extends StandartEditorPart{
 	public String getTitle() {
 		return Messages.CausalFactorsTable;
 	}
-
-
-	private CausalFactor addOrGetFactor(UUID id, UUID constraintId){
-		if(this.factorsToUUIDs.containsKey(id)){
-			return this.factorsToUUIDs.get(id);
-		}
-		CausalFactor factor= new CausalFactor(new String());
-		factor.getSafetyConstraint().setId(constraintId);
-		this.factorsToUUIDs.put(id, factor);
-		return factor;
-	}
 	@Override
 	public void createPartControl(Composite parent) {
+		this.internalUpdates = 0;
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
-parent.setLayout(new GridLayout(1, false));
-		
-		Composite filter= new Composite(parent, SWT.None);
-		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		filter.setLayout(new GridLayout(3, false));
-		
-		Label label= new Label(filter,SWT.LEFT);
-		label.setText("Component Filter");
-		this.componentCombo = new Combo(filter, SWT.READ_ONLY|SWT.None);
-		this.componentCombo.add("ALL");
-		this.componentCombo.add(ComponentType.ACTUATOR.name());
-		this.componentCombo.add(ComponentType.CONTROLLER.name());
-		this.componentCombo.add(ComponentType.CONTROLLED_PROCESS.name());
-		this.componentCombo.add(ComponentType.SENSOR.name());
-		this.componentCombo.add(CAUSALFACTORS);
-		this.componentCombo.select(0);
-		this.componentCombo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				reloadTable();
-			}
-		});
-		this.filterText= new Text(filter, SWT.LEFT |SWT.BORDER);
-		this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
-		this.filterText.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent e) {
-				reloadTable();
-			}
-		});
+		parent.setLayout(new GridLayout(1, false));
+		super.createPartControl(parent);
 		this.grid = new GridWrapper(parent, new String[] { Messages.Component,
 				Messages.CausalFactors, Messages.HazardLinks,
 				Messages.SafetyConstraint, Messages.NotesSlashRationale });
@@ -368,7 +321,16 @@ parent.setLayout(new GridLayout(1, false));
 		
 		this.reloadTable();
 	}
-
+	@Override
+	protected String[] getCategories() {
+		String[] categories =new String[]{"ALL",
+							ComponentType.ACTUATOR.name(),
+							ComponentType.CONTROLLER.name(),
+							ComponentType.CONTROLLED_PROCESS.name(),
+							ComponentType.SENSOR.name(),
+							CAUSALFACTORS};
+		return categories;
+	}
 	/**
 	 * The add button.
 	 * 
@@ -406,25 +368,21 @@ parent.setLayout(new GridLayout(1, false));
 			CausalFactorsView.this.grid.activateCell(factorId);
 		}
 	}
-	private boolean isFiltered(ICausalFactor factor) {
-		return factor.getText().startsWith(this.filterText.getText());
-	}
 	
 	private boolean isFiltered(ICausalComponent component) {
 		//filters for the text filter 
-		boolean filter=component.getText().startsWith(this.filterText.getText());
-		if(this.componentCombo.getText().equals("ALL")){
-			return filter;
+		if(getActiveCategory().equals("ALL")){
+			return isFiltered(component.getText());
 		}
-		else if(this.componentCombo.getText().equals(CAUSALFACTORS)){
+		else if(getActiveCategory().equals(CAUSALFACTORS)){
 			for(ICausalFactor factor: component.getCausalFactors()){
-				if(isFiltered(factor)){
+				if(isFiltered(factor.getText())){
 					return true;
 				}
 			}
 			return false;
 		}
-		return filter && component.getComponentType().name().equals(this.componentCombo.getText());
+		return isFiltered(component.getText(),component.getComponentType().name());
 	}
 	/**
 	 * Fill the table.
@@ -436,7 +394,7 @@ parent.setLayout(new GridLayout(1, false));
 	 */
 	private void fillTable(List<ICausalComponent> components) {
 		for (ICausalComponent component : components) {
-			if(!isFiltered(component)){
+			if(isFiltered(component)){
 				continue;
 			}
 			GridRow csRow = new GridRow(1);
@@ -453,7 +411,7 @@ parent.setLayout(new GridLayout(1, false));
 			this.grid.addRow(csRow);
 
 			for (ICausalFactor factor : component.getCausalFactors()) {
-				if(!isFiltered(factor)){
+				if(isFiltered(factor.getText())){
 					continue;
 				}
 				GridRow childRow = new GridRow(1);
@@ -543,17 +501,22 @@ parent.setLayout(new GridLayout(1, false));
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
 		super.update(dataModelController, updatedValue);
-		ObserverValue type = (ObserverValue) updatedValue;
-		switch (type) {
-		default:
-			Display.getDefault().syncExec(new Runnable() {
-
-				@Override
-				public void run() {
-					CausalFactorsView.this.reloadTable();
-				}
-			});
-			break;
+		if(internalUpdates > 0){
+			internalUpdates--;
+		}else{
+			switch ((ObserverValue) updatedValue) {
+			case CAUSAL_FACTOR:
+				Display.getDefault().syncExec(new Runnable() {
+	
+					@Override
+					public void run() {
+						CausalFactorsView.this.reloadTable();
+					}
+				});
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

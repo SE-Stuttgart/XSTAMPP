@@ -65,7 +65,7 @@ import xstampp.ui.common.ProjectManager;
 /**
  * View used to handle the unsafe control actions.
  * 
- * @author Benedikt Markt, Patrick Wickenhaeuser
+ * @author Benedikt Markt, Patrick Wickenhaeuser, Lukas Balzer
  */
 public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
