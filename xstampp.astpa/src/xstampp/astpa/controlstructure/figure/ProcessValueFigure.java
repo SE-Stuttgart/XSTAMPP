@@ -51,11 +51,12 @@ public class ProcessValueFigure extends CSFigure {
 
 	@Override
 	public void refresh() {
-	 	if(isDirty){
-	 		isDirty= false;
-	 	}else{
-	 		return;
-	 	}
+//	 	if(isDirty){
+//	 		isDirty= false;
+//	 	}else{
+//	 		return;
+//	 	}
+//	 	layout();
 		rect.setX(ProcessValueFigure.PROCESS_MODEL_COLUMN);
 		this.getTextField().setLocation(new Point(0,0));
 		this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width,-1));
@@ -78,7 +79,7 @@ public class ProcessValueFigure extends CSFigure {
 		}
 
 		this.getParent().setConstraint(this, rect);
-		
+		setBounds(rect);
 		this.getTextField().repaint();
 	}
 

@@ -17,7 +17,13 @@ import java.util.List;
 import java.util.Map;
 
 
-
+/**
+ * an interface for migrating a data object containing System Properties in linear temporal logic, 
+ * a Map of the related values mapped to a variable and the name of the system
+ * 
+ * @author Lukas Balzer
+ *@since 2.0.2
+ */
 public interface ISafetyDataModel{
 
 	/**
