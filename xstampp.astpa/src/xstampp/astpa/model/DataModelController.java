@@ -19,7 +19,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -37,8 +36,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.framework.Bundle;
 
 import xstampp.astpa.Activator;
@@ -91,11 +88,11 @@ import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.util.jobs.SaveJob;
+import xstampp.model.AbstractDataModel;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ISafetyDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.menu.file.commands.CommandState;
 
 /**
  * Data Model controller class
@@ -105,7 +102,7 @@ import xstampp.ui.menu.file.commands.CommandState;
  * 
  */
 @XmlRootElement(namespace = "astpa.model")
-public class DataModelController extends Observable implements
+public class DataModelController extends AbstractDataModel implements
 		ISafetyDataModel,IHAZXModel,ILinkingViewDataModel, INavigationViewDataModel,
 		ISystemDescriptionViewDataModel, IAccidentViewDataModel,
 		IHazardViewDataModel, IStatusLineDataModel,
@@ -146,10 +143,7 @@ public class DataModelController extends Observable implements
 	@XmlElement(name = "causalfactor")
 	private CausalFactorController causalFactorController;
 
-	/**
-	 * Shows if there are unsaved changes or not
-	 */
-	private boolean unsavedChanges;
+	
 
 	
 	private String projectExtension;
@@ -161,13 +155,13 @@ public class DataModelController extends Observable implements
 	 * 
 	 */
 	public DataModelController() {
+		super();
 		this.projectDataManager = new ProjectDataController();
 		this.hazAccController = new HazAccController();
 		this.sdsController = new SDSController();
 		this.controlStructureController = new ControlStructureController();
 		this.controlActionController = new ControlActionController();
 		this.causalFactorController = new CausalFactorController();
-		this.unsavedChanges = false;
 		getIgnoreLTLValue();
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		if (bundle != null) {
@@ -177,12 +171,7 @@ public class DataModelController extends Observable implements
 			this.astpaVersion = versionWithQualifier.substring(0,
 					versionWithQualifier.lastIndexOf('.'));
 		}
-		// Enable the save entries in the menu
-		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
-				.getWorkbench().getService(ISourceProviderService.class);
-		CommandState saveStateService = (CommandState) sourceProviderService
-				.getSourceProvider(CommandState.SAVE_STATE);
-		addObserver(saveStateService);
+	
 	}
 
 	@Override
@@ -190,7 +179,7 @@ public class DataModelController extends Observable implements
 		this.setChanged();
 		if(!refreshLock){
 			DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
-			this.notifyObservers(value);
+			super.updateValue(value);
 		}
 	}
 
@@ -231,22 +220,6 @@ public class DataModelController extends Observable implements
 			setUnsavedAndChanged(value);
 		}
 		
-	}
-	@Override
-	public boolean hasUnsavedChanges() {
-		return this.unsavedChanges;
-	}
-
-	/**
-	 * Sets that there are no unsaved changes
-	 * 
-	 * @author Fabian Toth
-	 */
-	@Override
-	public void setStored() {
-		this.unsavedChanges = false;
-		this.setChanged();
-		this.notifyObservers(ObserverValue.UNSAVED_CHANGES);
 	}
 
 	@Override
@@ -1383,18 +1356,7 @@ public class DataModelController extends Observable implements
 		return false;
 	}
 
-	private void setUnsavedAndChanged(ObserverValue value) {
-			this.updateValue(value);
-			setUnsavedAndChanged();
-		
-	}
 
-	@Override
-	public void setUnsavedAndChanged() {
-			this.unsavedChanges = true;
-			this.updateValue(ObserverValue.UNSAVED_CHANGES);
-	}
-	
 	public ExportInformation getExportInfo(){
 		return this.exportInformation;
 	}

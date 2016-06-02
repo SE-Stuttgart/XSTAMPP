@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -38,6 +37,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.model.AbstractDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -59,7 +59,7 @@ import acast.ui.accidentDescription.ProximalEventsController;
 import acast.ui.accidentDescription.Responsibility;
 
 @XmlRootElement(namespace = "acast.model")
-public class Controller extends Observable implements IDataModel,
+public class Controller extends AbstractDataModel implements IDataModel,
 		IAccidentDescriptionViewDataModel, IHazardViewDataModel,
 		ISafetyConstraintViewDataModel, IControlActionViewDataModel,
 		IControlStructureEditorDataModel, IProximalEventsViewDataModel,
@@ -94,12 +94,9 @@ public class Controller extends Observable implements IDataModel,
 	@XmlElement(name = "crc")
 	private ResponsibilityController respController;
 
-	/**
-	 * Shows if there are unsaved changes or not
-	 */
-	private boolean unsavedChanges;
 
 	public Controller() {
+		super();
 		this.projectDataManager = new ProjectDataController();
 		this.hazController = new HazController();
 		this.controlActionController = new ControlActionController();
@@ -107,8 +104,8 @@ public class Controller extends Observable implements IDataModel,
 		this.controlStructureController = new ControlStructureController();
 		this.proximalEventsController = new ProximalEventsController();
 		this.respController = new ResponsibilityController();
-		this.unsavedChanges = false;
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+		
 		if (bundle != null) {
 			Dictionary<?, ?> dictionary = bundle.getHeaders();
 			String versionWithQualifier = (String) dictionary
@@ -150,7 +147,6 @@ public class Controller extends Observable implements IDataModel,
 	public void updateValue(ObserverValue value) {
 		Controller.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
 		this.setChanged();
-		int c = this.countObservers();
 		this.notifyObservers(value);
 	}
 
@@ -160,17 +156,6 @@ public class Controller extends Observable implements IDataModel,
 		return this.projectDataManager.getProjectName();
 	}
 
-	@Override
-	public void setStored() {
-		this.unsavedChanges = false;
-		this.setChanged();
-		this.notifyObservers(ObserverValue.UNSAVED_CHANGES);
-	}
-
-	@Override
-	public boolean hasUnsavedChanges() {
-		return this.unsavedChanges;
-	}
 
 	@Override
 	public boolean setProjectName(String projectName) {
@@ -184,17 +169,6 @@ public class Controller extends Observable implements IDataModel,
 		return true;
 	}
 
-	private void setUnsavedAndChanged(ObserverValue value) {
-		
-		this.updateValue(value);
-		setUnsavedAndChanged();
-	}
-
-	@Override
-	public void setUnsavedAndChanged() {
-		this.unsavedChanges = true;
-		this.updateValue(ObserverValue.UNSAVED_CHANGES);
-	}
 	
 	@XmlTransient
 	@Override

@@ -1240,7 +1240,8 @@ public class AccidentDescriptionView extends StandartEditorPart implements
 					public void modifyText(ExtendedModifyEvent event) {
 						AccidentDescriptionView.this
 								.handleDescriptionModify(event);
-
+						AccidentDescriptionView.this
+						.applyAccidentDescriptionToDataModel();
 						// AccidentDescriptionView.this.setStyle(event.widget);
 					}
 				});
