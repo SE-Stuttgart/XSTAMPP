@@ -1,7 +1,9 @@
 package xstpa.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
@@ -33,10 +35,16 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	}
 	
 	@Override
-	protected String[] getCategories() {
+	protected Map<String, Boolean> getCategories() {
+		Map<String, Boolean> categories= new HashMap<>();
+		categories.put(CA, false);
+		categories.put(UCA, false);
+		return categories;
+	}
+	@Override
+	protected String[] getCategoryArray() {
 		return new String[]{CA,UCA};
 	}
-	
 	@Override
 	public String getId() {
 		return ID;

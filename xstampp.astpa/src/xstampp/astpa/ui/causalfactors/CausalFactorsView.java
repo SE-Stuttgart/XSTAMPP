@@ -291,6 +291,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		this.dataInterface = null;
 		this.grid = null;
 		setUseFilter(true);
+		setGlobalCategory("ALL");
 	}
 
 	@Override
@@ -322,14 +323,24 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		this.reloadTable();
 	}
 	@Override
-	protected String[] getCategories() {
-		String[] categories =new String[]{"ALL",
-							ComponentType.ACTUATOR.name(),
-							ComponentType.CONTROLLER.name(),
-							ComponentType.CONTROLLED_PROCESS.name(),
-							ComponentType.SENSOR.name(),
-							CAUSALFACTORS};
+	protected Map<String, Boolean> getCategories() {
+		Map<String, Boolean> categories= new HashMap<>();
+		categories.put("ALL", false);
+		categories.put(ComponentType.ACTUATOR.name(), true);
+		categories.put(ComponentType.CONTROLLER.name(), true);
+		categories.put(ComponentType.CONTROLLED_PROCESS.name(), true);
+		categories.put(ComponentType.SENSOR.name(), true);
+		categories.put(CAUSALFACTORS, false);
 		return categories;
+	}
+	
+	@Override
+	protected String[] getCategoryArray() {
+		return new String[]{"ALL",ComponentType.ACTUATOR.name(), 
+				ComponentType.CONTROLLER.name(),
+				ComponentType.CONTROLLED_PROCESS.name(),
+				ComponentType.SENSOR.name(),
+				CAUSALFACTORS};
 	}
 	/**
 	 * The add button.

@@ -103,9 +103,21 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	}
 	
 	@Override
-	protected String[] getCategories() {
+	protected Map<String, Boolean> getCategories() {
+		Map<String, Boolean> categories= new HashMap<>();
+		categories.put(CA, false);
+		categories.put(UCA, false);
+		categories.put(UCAID, false);
+		return categories;
+
+	}
+	
+
+	@Override
+	protected String[] getCategoryArray() {
 		return new String[]{CA,UCA,UCAID};
 	}
+	
 	@Override
 	protected void updateFilter() {
 		reloadTable();
@@ -572,6 +584,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		this.ucaInterface.deleteObserver(this);
 		super.dispose();
 	}
+
 	
 	
 }

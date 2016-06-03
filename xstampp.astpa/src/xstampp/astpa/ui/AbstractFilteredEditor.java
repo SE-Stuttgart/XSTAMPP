@@ -1,5 +1,7 @@
 package xstampp.astpa.ui;
 
+import java.util.Map;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -27,6 +29,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 	private Combo categoryCombo;
 	private boolean useFilter;
 	private Text filterText;
+	private String globalCategory;
 	
 
 	@Override
@@ -36,11 +39,11 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 			Composite filter= new Composite(parent, SWT.None);
 			filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filter.setLayout(new GridLayout(3, false));
-			if(getCategories() != null && getCategories().length > 0){
+			if(getCategories() != null && getCategories().size() > 0){
 				Label label= new Label(filter,SWT.LEFT);
 				label.setText("Filter Categories");
 				this.categoryCombo = new Combo(filter, SWT.READ_ONLY|SWT.None);
-				for (String string : getCategories()) {
+				for (String string : getCategoryArray()) {
 					this.categoryCombo.add(string);
 				}
 				this.categoryCombo.select(0);
@@ -73,12 +76,13 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 	/**
 	 * <i>This method should be implemented by subclasses, for the defaul only returns null</i>
 	 * 
-	 * @return an array of String describing the Categorys which can chosen in the filter combo,
-	 * 			the categories must be unique since String matching is used to distinguish between categories
+	 * @return a Map containing booleans mapped to Strings describing the Categories which can be chosen in the filter combo,
+	 * 			the categories must be unique since String matching is used to distinguish between categories.
+	 * 			The booleans describe whether or not the category is handled as exclusive category, what means that all other categories are filtered 
 	 */
-	protected String[] getCategories(){
-		return null;
-	}
+	protected abstract Map<String, Boolean> getCategories();
+	
+	protected abstract String[] getCategoryArray();
 	/**
 	 * 
 	 * @param text the text which is to be filtered
@@ -92,8 +96,15 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 		if(!useFilter || this.filterText != null){
 			//if there are categories defined and there is a given category but the active category doesn't equals the given one
 			//the text is filtered
-			if(getActiveCategory() != null && category != null && !getActiveCategory().equals(category)){
-				return true;
+			
+			if(getActiveCategory() != null && category != null && !getActiveCategory().equals(globalCategory)){
+					//if the active category is exposed then all other categories are filtered
+				if(getCategories().get(getActiveCategory()) && !getActiveCategory().equals(category)){
+					return true;
+				}//if the active category is expi
+				if(!getCategories().get(getActiveCategory())&& !getActiveCategory().equals(category)){
+					return false;
+				}
 			}
 			if(this.filterText.getText().isEmpty()){
 				return false;
@@ -168,7 +179,21 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 		}
 		return this.categoryCombo.getText();
 	}
-	public void setUseFilter(boolean useFilter) {
+	protected void setUseFilter(boolean useFilter) {
 		this.useFilter = useFilter;
 	}
+	
+	/**
+	 * Sets one of the categories given by {@link AbstractFilteredEditor#getCategories()} as global category what means that all categories
+	 * will be ignored in the isFiltered(..) methods when the given category is chosen in the combo
+	 * 
+	 * @param global must be one of the categories given in {@link AbstractFilteredEditor#getCategories()}, will be ignored otherwise
+	 */
+	protected void setGlobalCategory(String global){
+		if(getCategories().containsKey(global)){
+			this.globalCategory = global;
+		}
+		
+	}
+	
 }
