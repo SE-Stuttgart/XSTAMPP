@@ -394,7 +394,7 @@ public class XSTPADataController extends Observable implements Observer{
 	 * @param updateValue TODO
 	 */
 	public void storeBooleans(final ControlActionEntry caEntry, final ObserverValue updateValue) {
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().syncExec(new Runnable() {
 			
 			@Override
 			public void run() {

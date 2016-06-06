@@ -82,10 +82,13 @@ public class ControlActionEntry implements Comparable<ControlActionEntry>{
 	 * 						components in the control structure
 	 */
 	public void setLinkedItems(List<ProcessModelVariables> linkedItems) {
-		if(linkedItems == null){
-			this.linkedItems = new ArrayList<>();
-		}else{
-			this.linkedItems = linkedItems;
+		this.linkedItems = new ArrayList<>();
+		this.linkedCompIds = new ArrayList<>();
+		this.linkedCompNames = new ArrayList<>();
+		if(linkedItems != null){
+			for(ProcessModelVariables var: linkedItems){
+				addLinkedItem(var);
+			}
 		}
 	}
 	

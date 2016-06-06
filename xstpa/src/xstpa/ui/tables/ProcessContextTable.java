@@ -575,7 +575,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 					    		  @Override
 					    		  public void done(IJobChangeEvent event) {
 					    			  if(event.getResult().equals(Status.OK_STATUS)){
-						    			  Display.getDefault().asyncExec(new Runnable() {
+						    			  Display.getDefault().syncExec(new Runnable() {
 											
 											@Override
 											public void run() {
@@ -652,6 +652,11 @@ public class ProcessContextTable extends AbstractTableComposite {
 		setVisible(false);
 	}
 	
+	/**
+	 * updates the list of critical controlActions
+	 * @param formerIndex the current index so if the controlActions are still the same than the
+	 * 						selected one stays the same
+	 */
 	private void updateContextInput(int formerIndex){
 		// create Input for contextTableViewer
 		List<ControlActionEntry> contextTableInput= new ArrayList<ControlActionEntry>();
@@ -672,20 +677,18 @@ public class ProcessContextTable extends AbstractTableComposite {
 			}
 	  	}
 	  	controlActionViewer.setInput(contextTableInput);
-	  	if(contextTableInput.isEmpty()){
-    		//if the context table input is empty than there is nothing to be shown
-    		return;
+	  	if(!contextTableInput.isEmpty()){ //if the context table input is empty than there is nothing to be shown
+	  		
+			controlActionTable.select(formerIndex);
+			if(controlActionTable.getSelectionIndex() == -1){
+				//if the former index returns cannot be selected try 0 
+				controlActionTable.select(0);
+			}
+			ControlActionEntry entry = contextTableInput.get(controlActionTable.getSelectionIndex());
+			dataController.setLinkedCAE(entry.getId());
+			
+			updateContextTable();
     	}
-		  
-		controlActionTable.select(formerIndex);
-		if(controlActionTable.getSelectionIndex() == -1){
-			//if the former index returns cannot be selected try 0 
-			controlActionTable.select(0);
-		}
-		ControlActionEntry entry = contextTableInput.get(controlActionTable.getSelectionIndex());
-		dataController.setLinkedCAE(entry.getId());
-		
-		refreshTable();
 	}
 	
 	/**
@@ -786,7 +789,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		}
 		dataController.getLinkedCAE().setContextTableCombinations(entrys);
 		dataController.storeBooleans(null, ObserverValue.CONTROL_ACTION);
-		refreshTable();
+//		refreshTable();
 	}
 	
 	@Override
