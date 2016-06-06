@@ -229,7 +229,7 @@ public class CSExportJob extends XstamppJob {
 	private Rectangle getClippingRectangle() {
 		boolean isFirst = true;
 
-		Rectangle clipRectangle = new Rectangle();
+		Rectangle clipRectangle = new Rectangle(0,0,0,0);
 		for (Object layers : this.printableFigure.getChildren()) {
 			// Layer&ConnectionLayer
 			for (Object part : ((IFigure) layers).getChildren()) {

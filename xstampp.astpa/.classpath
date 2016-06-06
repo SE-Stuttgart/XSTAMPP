@@ -15,7 +15,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis-1.3.04.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis-ext-1.3.04.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlgraphics-commons-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jaxb-impl-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar" sourcepath="C:/Users/Lukas/git/org.eclipse.nebula.widgets.grid.source_1.0.0.201506151822.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/haz.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/curvesapi-1.03.jar"/>

@@ -18,9 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.jobs,
  org.eclipse.swt
 Bundle-ActivationPolicy: lazy
-Export-Package: com.sun.xml.bind,
- com.sun.xml.bind.marshaller,
- xstampp.astpa;uses:="org.osgi.framework,org.eclipse.jface.resource,org.eclipse.ui.plugin",
+Export-Package: xstampp.astpa;uses:="org.osgi.framework,org.eclipse.jface.resource,org.eclipse.ui.plugin",
  xstampp.astpa.controlstructure;
   uses:="xstampp.model,
    org.eclipse.gef.palette,
@@ -131,7 +129,6 @@ Bundle-ClassPath: lib/avalon-framework-4.2.0.jar,
  lib/xml-apis-1.3.04.jar,
  lib/xml-apis-ext-1.3.04.jar,
  lib/xmlgraphics-commons-1.5.jar,
- lib/jaxb-impl-2.0.1.jar,
  .,
  lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar,
  lib/haz.jar,

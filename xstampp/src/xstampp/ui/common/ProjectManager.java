@@ -642,7 +642,7 @@ public class ProjectManager implements IPropertyChangeListener {
 	public boolean removeProjectData(UUID projectId) {
 
 		File projectFile = this.projectSaveFilesToUUID.get(projectId);
-		if (projectFile.delete()) {
+		if (!projectFile.exists() || projectFile.delete()) {
 			this.projectDataToUUID.remove(projectId).updateValue(ObserverValue.DELETE);
 			this.projectSaveFilesToUUID.remove(projectId);
 			return !this.projectDataToUUID.containsKey(projectId);
