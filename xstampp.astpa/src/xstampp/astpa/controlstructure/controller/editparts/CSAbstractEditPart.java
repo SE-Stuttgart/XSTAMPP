@@ -253,7 +253,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	public List<IRectangleComponent> getModelChildren() {
-		return ((IComponent) this.getModel()).getChildren();
+		return ((IComponent) this.getModel()).getChildren(this.getViewer().getProperty(IControlStructureEditor.STEP_EDITOR).equals(CSEditor.ID));
 	}
 
 	@Override

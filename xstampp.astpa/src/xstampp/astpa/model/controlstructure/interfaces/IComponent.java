@@ -27,6 +27,7 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
  */
 public interface IComponent extends xstampp.astpa.haz.controlstructure.interfaces.IComponent{
 
+	
 	/**
 	 * 
 	 * @return The ComponentType which is stored in the model
@@ -54,4 +55,20 @@ public interface IComponent extends xstampp.astpa.haz.controlstructure.interface
 	 * @author Fabian Toth
 	 */
 	List<IRectangleComponent> getChildren();
+	
+	/**
+	 * this function returns the children of the component depending on the 
+	 * argument <i>step0</i> if true than all process model components are excluded from the child list
+	 * 
+	 * @param step0 if false the control structure contains all components including the process Models
+	 * @return a List with all child components of the object
+	 */
+	public List<IRectangleComponent> getChildren(boolean step0);
+	
+	/**
+	 * equal to a call of getChildren(false).size()
+	 * 
+	 * @return the amount of children stored in the children list
+	 */
+	public int getChildCount();
 }

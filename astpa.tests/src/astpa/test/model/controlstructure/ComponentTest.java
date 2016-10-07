@@ -55,9 +55,11 @@ public class ComponentTest {
 		Component component2 = new Component("Test2", layout, ComponentType.CONTROLLER);
 		Component component3 = new Component("Test3", layout, ComponentType.CONTROLLED_PROCESS);
 		Component component4 = new Component("Test4", layout, ComponentType.SENSOR);
+		Component component5 = new Component("Test5", layout, ComponentType.PROCESS_MODEL);
 		Assert.assertTrue(component.addChild(component2, -1));
 		Assert.assertTrue(component.addChild(component3, -1));
 		Assert.assertTrue(component.addChild(component4, -1));
+		Assert.assertEquals(component.getChildCount(), component.getChildren().size());
 		Assert.assertEquals(3, component.getChildren().size());
 		Assert.assertEquals(component3, component.getChild(component3.getId()));
 		Assert.assertEquals(component4, component.getChild(component4.getId()));
@@ -65,7 +67,12 @@ public class ComponentTest {
 		Assert.assertTrue(component.removeChild(component4.getId()));
 		Assert.assertTrue(component.removeChild(component3.getId()));
 		Assert.assertTrue(component.removeChild(component2.getId()));
-		
 		Assert.assertFalse(component.removeChild(component2.getId()));
+
+		Assert.assertTrue(component2.addChild(component5, -1));
+		Assert.assertTrue(component2.addChild(component3, -1));
+		Assert.assertEquals(2, component2.getChildCount());
+		Assert.assertEquals(1, component2.getChildren(true).size());
+		
 	}
 }

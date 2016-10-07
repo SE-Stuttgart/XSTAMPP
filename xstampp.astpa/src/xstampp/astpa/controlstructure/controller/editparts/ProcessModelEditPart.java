@@ -52,17 +52,6 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 		this.activate();
 	}
 
-	/**
-	 * refreshVisuals is overwritten to prevent the process model from being
-	 * drawn in the 1st Step
-	 */
-	@Override
-	protected void refreshVisuals() {
-		if (this.getViewer().getProperty(IControlStructureEditor.STEP_EDITOR)
-				.equals(CSEditorWithPM.ID)) {
-			super.refreshVisuals();
-		}
-	}
 
 	@Override
 	public void deactivate() {
@@ -73,15 +62,7 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false){
-			@Override
-			public void refresh() {
-				if (getViewer().getProperty(IControlStructureEditor.STEP_EDITOR)
-						.equals(CSEditorWithPM.ID)) {
-					super.refresh();
-				}
-			}
-		};
+		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false);
 
 		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setBorder(new LineBorder(1));

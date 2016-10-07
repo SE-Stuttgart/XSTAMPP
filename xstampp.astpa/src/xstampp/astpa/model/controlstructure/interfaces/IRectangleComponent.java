@@ -16,6 +16,8 @@ package xstampp.astpa.model.controlstructure.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 
 /**
@@ -30,7 +32,12 @@ public interface IRectangleComponent extends IComponent,xstampp.astpa.haz.contro
 
 	@Override
 	public List<IRectangleComponent> getChildren();
+
+	@Override
+	public List<IRectangleComponent> getChildren(boolean step0);
 	
+	@Override
+	public int getChildCount();
 	/**
 	 * @return if the compoent is safety critical
 	 * 

@@ -74,7 +74,9 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	@XmlElement(name = "unsafeVariable")
 	private List<UUID> unsafeVariables;
 	
-	/**
+	
+	
+	/** 
 	 * this comparator compares two Objects from the type IRectangleComponent.
 	 * a component of the ComponentType DashedBox is always considered smaller and is therefor 
 	 * set below any other component(in any paint job)
@@ -188,8 +190,8 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	}
 
 	@Override
-	public Rectangle getLayout(boolean step1) {
-		if (step1) {
+	public Rectangle getLayout(boolean step0) {
+		if (step0) {
 			return this.layout;
 		}
 		return this.layoutPM;
@@ -205,8 +207,8 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	 * @see CSEditor#ID
 	 * @see CSEditorWithPM#ID
 	 */
-	public void setLayout(Rectangle layout, boolean step1) {
-		if (step1) {
+	public void setLayout(Rectangle layout, boolean step0) {
+		if (step0) {
 			this.layout = layout;
 		} else {
 			this.layoutPM = layout;
@@ -215,14 +217,25 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 
 	@Override
 	public List<IRectangleComponent> getChildren() {
+		return getChildren(false);
+	}
+	@Override
+	public List<IRectangleComponent> getChildren(boolean step0) {
 		Collections.sort(this.children);
 		List<IRectangleComponent> result = new ArrayList<>();
 		for (Component component : this.children) {
-			result.add(component);
+			if(!step0 || !component.getComponentType().equals(ComponentType.PROCESS_MODEL)){
+				result.add(component);
+			}
 		}
 		return result;
 	}
+	
 
+	@Override
+	public int getChildCount() {
+		return children.size();
+	}
 	/**
 	 * Gets the children in an internal type. Do not use outside the data model
 	 * 

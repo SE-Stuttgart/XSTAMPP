@@ -142,4 +142,15 @@ public class CSConnection implements IConnection {
 		return null;
 	}
 
+	@Override
+	public int getChildCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	@Override
+	public List<IRectangleComponent> getChildren(boolean step0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
