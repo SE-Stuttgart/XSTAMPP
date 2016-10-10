@@ -1171,7 +1171,7 @@ public class Controller extends AbstractDataModel implements IDataModel,
 	}
 
 	@Override
-	public void releaseLockAndUpdate(ObserverValue value) {
+	public void releaseLockAndUpdate(ObserverValue[] value) {
 		//method not used at the moment
 	}
 

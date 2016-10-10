@@ -213,11 +213,13 @@ public class DataModelController extends AbstractDataModel implements
 		return result;
 	}
 	@Override
-	public void releaseLockAndUpdate(ObserverValue value){
+	public void releaseLockAndUpdate(ObserverValue[] values){
 		this.refreshLock = false;
 		DataModelController.LOGGER.debug("released update lock");
 		if(hasChanged()){
-			setUnsavedAndChanged(value);
+			for (int i = 0; i < values.length; i++) {
+				setUnsavedAndChanged(values[i]);
+			}
 		}
 		
 	}
@@ -789,12 +791,16 @@ public class DataModelController extends AbstractDataModel implements
 		ITableModel caObject =this.controlActionController.getControlAction(controlActionId);
 		if (caObject == null || !(caObject instanceof ControlAction)) {
 			return false;
-		}else if(this.controlStructureController.removeComponent(((ControlAction)caObject).getComponentLink())){
-			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		}
+		boolean refreshCS= this.controlStructureController.removeComponent(((ControlAction)caObject).getComponentLink());
+		
 		if(this.controlActionController
 				.removeControlAction(controlActionId)){
+			
 			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+			if(refreshCS){
+				this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+			}
 			return true;
 		}
 		return false;
@@ -928,15 +934,21 @@ public class DataModelController extends AbstractDataModel implements
 
 	@Override
 	public boolean removeComponent(UUID componentId) {
-		if ((componentId == null)) {
+		IRectangleComponent comp = this.controlStructureController.getComponent(componentId);
+		if ((comp == null)) {
 			return false;
 		}
-
-		if(this.controlStructureController
+		for(IRectangleComponent child: comp.getChildren()){
+			removeComponent(child.getId());
+		}
+		if(comp.getControlActionLink() != null){
+			removeControlAction(comp.getControlActionLink());
+		}else if(this.controlStructureController
 				.removeComponent(componentId)){
 			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 			return true;
 		}
+		
 		return false;
 	}
 

@@ -166,9 +166,9 @@ public interface IDataModel{
 	 * This method should act as counterpart of {@link IDataModel#lockUpdate()}
 	 * it should release the lock and trigger an update of the requested value
 	 * 
-	 * @param value a value that should be updated
+	 * @param values  the values that should be updated
 	 */
-	void releaseLockAndUpdate(ObserverValue value);
+	void releaseLockAndUpdate(ObserverValue[] values);
 	
 	void setUnsavedAndChanged();
 	

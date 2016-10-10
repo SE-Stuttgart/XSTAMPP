@@ -381,7 +381,7 @@ public class XSTPADataController extends Observable implements Observer{
 			}
 		}
 		total =model.getLTLPropertys().size()-1;
-		model.releaseLockAndUpdate(ObserverValue.Extended_DATA);
+		model.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
 		return combiesToContextID;
 	}
 //=====================================================================

@@ -293,7 +293,7 @@ public class ControlStructureController {
 	 * 
 	 * @param componentId
 	 *            the id of the child
-	 * @return the component with the given id
+	 * @return the component with the given id or null
 	 * 
 	 * @author Fabian Toth
 	 */

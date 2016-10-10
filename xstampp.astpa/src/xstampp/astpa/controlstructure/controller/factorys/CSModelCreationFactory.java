@@ -83,9 +83,8 @@ public class CSModelCreationFactory implements CreationFactory {
 					text = text + " (2)";
 				}
 			}
-			UUID caLink = this.dataModel.addControlAction(text, Messages.DescriptionOfThisControlAction);
 			
-			return new Component(caLink, text, new Rectangle(), this.type);
+			return new Component(null, text, new Rectangle(), this.type);
 		}
 		case ACTUATOR: {
 			text = Messages.Actuator + " " + count; //$NON-NLS-1$

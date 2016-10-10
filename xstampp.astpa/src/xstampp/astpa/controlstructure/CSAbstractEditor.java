@@ -817,9 +817,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 				if(event.isPreChangeEvent()){
 					getModelInterface().lockUpdate();
 				}else if(event.isPostChangeEvent()){
-					getModelInterface().releaseLockAndUpdate(ObserverValue.CONTROL_STRUCTURE);
-
-					getModelInterface().releaseLockAndUpdate(ObserverValue.CONTROL_ACTION);
+					getModelInterface().releaseLockAndUpdate(new ObserverValue[]{ObserverValue.CONTROL_STRUCTURE,ObserverValue.CONTROL_ACTION});
 				}
 			}
 		});

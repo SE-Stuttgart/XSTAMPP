@@ -172,6 +172,6 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 		for(UUID connId:this.undoConnectionList){
 			this.getDataModel().removeConnection(connId);
 		}
-		this.getDataModel().releaseLockAndUpdate(ObserverValue.CONTROL_STRUCTURE);
+		this.getDataModel().releaseLockAndUpdate(new ObserverValue[]{ObserverValue.CONTROL_STRUCTURE});
 	}
 }

@@ -257,4 +257,24 @@ public class ControlStructureControllerTest {
 		Assert.assertFalse(dataModel.removeConnection(null));
 		Assert.assertNull(dataModel.getConnection(null));
 	}
+	/**
+	 * Tests the ControlAction Management from within the control structure by adding removing 
+	 * control action components and lists
+	 * 
+	 * @author Lukas Balzer
+	 */
+	@Test
+	public void testControlActions(){
+		DataModelController controller = new DataModelController();
+		
+		UUID rootID= controller.setRoot(new Rectangle(), new String());
+		Assert.assertNotNull(rootID);
+		UUID caID = controller.addControlAction(new String(), new String());
+		Assert.assertNotNull(caID);
+		UUID comp1ID= controller.addComponent(caID, rootID, new Rectangle(), new String(), ComponentType.CONTROLACTION, -1);
+		Assert.assertNotNull(comp1ID);
+		UUID listID = controller.addComponent(rootID, new Rectangle(), new String(), ComponentType.CONTAINER, -1);
+		Assert.assertNotNull(listID);
+		
+	}
 }
