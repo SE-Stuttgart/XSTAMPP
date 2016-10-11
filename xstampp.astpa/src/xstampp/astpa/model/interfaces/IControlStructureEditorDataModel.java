@@ -78,7 +78,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * 
 	 * @return the id of the created component. Null when the component could
 	 *         not be added
-	 * 
+	 * @deprecated the controlaction should be created by calling {@link #addComponent(UUID, Rectangle, String, ComponentType, Integer)} 
+	 * with type <code>ControlAction</code> 
 	 * @author Fabian Toth
 	 */
 	UUID addComponent(UUID controlActionId, UUID parentId, Rectangle layout,

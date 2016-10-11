@@ -141,7 +141,7 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	public Component(UUID caId, String text, Rectangle layout,
 			ComponentType type) {
 		this(text, layout, type);
-
+		
 		if (type != ComponentType.CONTROLACTION) {
 			this.controlActionId = null;
 		} else {

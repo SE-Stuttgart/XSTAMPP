@@ -869,9 +869,17 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.getComponent(parentId) instanceof Component)) {
 			return null;
 		}
-
-		UUID result = this.controlStructureController.addComponent(parentId,
+		UUID caLink= null;
+		UUID result;
+		if(type.equals(ComponentType.CONTROLACTION)){
+			caLink = addControlAction(text, Messages.DescriptionOfThisControlAction);
+			result = this.controlStructureController.addComponent(
+					caLink, parentId, layout, text, type, index);
+			this.controlActionController.setComponentLink(result, caLink);
+		}else{
+			result = this.controlStructureController.addComponent(parentId,
 				layout, text, type, index);
+		}
 		if(result != null){
 			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 		}
@@ -1445,21 +1453,7 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public UUID addComponent(UUID controlActionId, UUID parentId,
 			Rectangle layout, String text, ComponentType type, Integer index) {
-		if ((parentId == null) || (layout == null) || (text == null)
-				|| (type == null)) {
-			return null;
-		}
-//		if (!(this.getComponent(parentId) instanceof Component)) {
-//			return null;
-//		}
-
-		UUID result = this.controlStructureController.addComponent(
-				controlActionId, parentId, layout, text, type, index);
-//		this.controlActionController.setComponentLink(result, controlActionId);
-		if(result != null){
-			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-		}
-		return result;
+		return addComponent(parentId, layout, text, type, index);
 	}
 	
 	
