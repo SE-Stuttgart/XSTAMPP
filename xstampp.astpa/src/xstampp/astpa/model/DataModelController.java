@@ -931,9 +931,10 @@ public class DataModelController extends AbstractDataModel implements
 		if ((componentId == null) || (text == null)) {
 			return false;
 		}
-
+		
 		if(this.controlStructureController.changeComponentText(
 				componentId, text)){
+			this.setControlActionTitle(this.getComponent(componentId).getControlActionLink(), text);
 			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
 			return true;
 		}

@@ -220,16 +220,11 @@ public class ControlStructureController {
 	 *            the new text
 	 * @return true if the text could be changed
 	 * 
-	 * @author Fabian Toth
+	 * @author Fabian Toth, Lukas Balzer
 	 */
 	public boolean changeComponentText(UUID componentId, String text) {
 		Component component = this.getInternalComponent(componentId);
-		if (component != null) {
-			component.setText(text);
-			changed = true;
-			return true;
-		}
-		return false;
+		return component != null && component.setText(text);
 	}
 
 	/**

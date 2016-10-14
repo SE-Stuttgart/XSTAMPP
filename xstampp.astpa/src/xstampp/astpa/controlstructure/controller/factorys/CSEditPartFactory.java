@@ -100,17 +100,6 @@ public class CSEditPartFactory implements EditPartFactory {
 		case CONTROLACTION: {
 			part = new ControlActionEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
-			UUID caId = ((IRectangleComponent) model).getControlActionLink();
-			if ((this.dataModel.getControlActionU(caId) == null)
-					|| (caId == null)) {
-				UUID newLinkId = this.dataModel.addControlAction(
-						Messages.ControlAction,
-						Messages.DescriptionOfThisControlAction);
-				((IRectangleComponent) model).linktoControlAction(newLinkId);
-				this.dataModel.linkControlAction(newLinkId, id);
-			}else if(this.dataModel.getControlActionU(caId).getComponentLink() != id){
-				this.dataModel.linkControlAction(caId, id);
-			}
 			break;
 		}
 		case CONTAINER:{

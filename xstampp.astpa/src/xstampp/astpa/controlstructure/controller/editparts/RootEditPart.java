@@ -13,8 +13,6 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
-import messages.Messages;
-
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
@@ -26,11 +24,10 @@ import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import messages.Messages;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.controlstructure.figure.RootFigure;
-import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -99,13 +96,7 @@ public class RootEditPart extends CSAbstractEditPart {
 			((CSAbstractEditPart) child).refreshVisuals();
 		}
 		this.refreshConnections();
-		for (IRectangleComponent f : this.getModelChildren()) {
-			if ((f.getComponentType() == ComponentType.CONTROLACTION)
-					&& (this.getDataModel().getControlActionU(
-							f.getControlActionLink()) == null)) {
-				this.getDataModel().removeComponent(f.getId());
-			}
-		}
+		
 	}
 	
 

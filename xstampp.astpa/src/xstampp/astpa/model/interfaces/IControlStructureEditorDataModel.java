@@ -113,53 +113,6 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 */
 	UUID setRoot(Rectangle layout, String text);
 
-	/**
-	 * Adds a control action. <br>
-	 * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @param description
-	 *            The description of the new control action
-	 * @param title
-	 *            The title of the new control action
-	 * @return String ID of the new control action
-	 */
-	UUID addControlAction(String title, String description);
-
-	/**
-	 * Setter for the title of a control action. <br>
-	 * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * @param controlActionId
-	 *            The control action's id
-	 * 
-	 * @param title
-	 *            The control action's new title
-	 * @return true if the title has been set
-	 */
-	boolean setControlActionTitle(UUID controlActionId, String title);
-
-	/**
-	 * Getter for all existing control actions
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return All control actions
-	 */
-	List<IControlAction> getAllControlActions();
-
-	/**
-	 * Get a control action by it's ID.
-	 * 
-	 * @author Jarkko Heidenwag, Patrick Wickenhaeuser
-	 * @param controlActionId
-	 *            the ID of the control action.
-	 * 
-	 * @return the control action.
-	 */
-	public IHAZXControlAction getControlActionU(UUID controlActionId);
 
 	/**
 	 * Searches for the component with the given id and changes the layout of

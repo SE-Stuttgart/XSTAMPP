@@ -865,14 +865,7 @@ public class Controller extends AbstractDataModel implements IDataModel,
 
 	}
 
-	@Override
-	public IHAZXControlAction getControlActionU(UUID controlActionId) {
-		if (controlActionId == null) {
-			return null;
-		}
 
-		return this.controlActionController.getControlActionU(controlActionId);
-	}
 
 	@Override
 	public boolean isCSComponentSafetyCritical(UUID componentId) {

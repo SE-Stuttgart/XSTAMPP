@@ -184,9 +184,14 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	/**
 	 * @param text
 	 *            the text to set
+	 * @return whether the text was changed, or wasn't if the given text equals the current text  
 	 */
-	public void setText(String text) {
+	public boolean setText(String text) {
+		if(this.text.equals(text)){
+			return false;
+		}
 		this.text = text;
+		return true;
 	}
 
 	@Override
