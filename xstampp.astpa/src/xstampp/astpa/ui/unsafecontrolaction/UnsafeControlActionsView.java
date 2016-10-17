@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPart;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
@@ -74,9 +75,12 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 */
 	public static final String ID = "astpa.steps.step2_2"; //$NON-NLS-1$
 
-	private static final String CA="control action";
-	private static final String UCA="unsafe control actions";
-	private static final String UCAID="uca ID";
+	private static final String CA_FILTER="control action";
+	private static final String UCA_FILTER="unsafe control actions";
+	private static final String UCAID_FILTER="uca ID";
+	private static final String HAZ_FILTER="Hazards";
+	private static final String NOHAZ_FILTER="not hazardous";
+	private static final String HAZID_FILTER="hazard ID";
 	/**
 	 * The log4j logger.
 	 */
@@ -105,9 +109,12 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	@Override
 	protected Map<String, Boolean> getCategories() {
 		Map<String, Boolean> categories= new HashMap<>();
-		categories.put(CA, false);
-		categories.put(UCA, false);
-		categories.put(UCAID, false);
+		categories.put(CA_FILTER, false);
+		categories.put(UCA_FILTER, false);
+		categories.put(UCAID_FILTER, false);
+		categories.put(HAZ_FILTER, false);
+		categories.put(NOHAZ_FILTER, false);
+		categories.put(HAZID_FILTER, false);
 		return categories;
 
 	}
@@ -115,7 +122,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
 	@Override
 	protected String[] getCategoryArray() {
-		return new String[]{CA,UCA,UCAID};
+		return new String[]{CA_FILTER,UCA_FILTER,UCAID_FILTER,HAZ_FILTER,HAZID_FILTER,NOHAZ_FILTER};
 	}
 	
 	@Override
@@ -205,6 +212,8 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		internalUpdate = 0;
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
+
+		updateHazards();
 		UnsafeControlActionsView.LOGGER.info("createPartControl()"); //$NON-NLS-1$
 		parent.setLayout(new FormLayout());
 		FormData data = new FormData();
@@ -317,14 +326,16 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		if (list.isEmpty()) {
 			return;
 		}
+		boolean addControlAction;
 		for (IControlAction cAction : list) {
 			//fiter by the title of the control action
 			
-			if(isFiltered(cAction.getTitle(), CA)){
+			if(isFiltered(cAction.getTitle(), CA_FILTER)){
 				continue;
 			}
 			GridRow controlActionRow = new GridRow(1);
-			this.grid.addRow(controlActionRow);
+			addControlAction = false;
+			
 
 			GridCellText descriptionItem = new GridCellText(cAction.getTitle());
 //			descriptionItem.getTextEditor().setEditable(false);
@@ -347,7 +358,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 					.getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING);
 			List<IUnsafeControlAction> allTooSoon = cAction
 					.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
-
+			
 			for (int i = 0; i <= this.getMaxHeight(cAction); i++) {
 				
 				GridRow idRow = new GridRow(3);
@@ -358,132 +369,88 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 				controlActionRow.addChildRow(ucaRow);
 				controlActionRow.addChildRow(linkRow);
 
-				IUnsafeControlAction notGivenUca = null;
-				IUnsafeControlAction incorrectUca = null;
-				IUnsafeControlAction timingUca = null;
-				IUnsafeControlAction tooSoonUca = null;
-
-				// set descriptions
-				if (allNotGiven.size() > i 
-						&& !isFiltered(this.ucaInterface.getUCANumber(allNotGiven.get(i).getId()),UCAID)
-						&& !isFiltered(allNotGiven.get(i).getDescription(),UCA)) {
-					notGivenUca = allNotGiven.get(i);
-					if(this.ucaContentProvider.getLinkedItems(notGivenUca.getId()).isEmpty()){
-						idRow.addCell(new GridCellBlank());
-					}else{
-						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(notGivenUca.getId())));
-					}
-					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,notGivenUca.getDescription(),
-							notGivenUca.getId());
-					ucaRow.addCell(editor);
-					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
-							notGivenUca.getId(), this.ucaContentProvider,
-							this.grid,
-							UnsafeControlActionsView.HAZARD_ID_PREFIX));
-				} else if (allNotGiven.size() == i) {
-					// add placeholder
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new AddUcaButton(cAction,
-							Messages.AddNotGivenUCA,
-							UnsafeControlActionType.NOT_GIVEN));
-				} else {
-					// add placeholders
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new GridCellBlank());
-				}
-
-				if (allIncorrect.size() > i && !isFiltered(this.ucaInterface.getUCANumber(allIncorrect.get(i).getId()),UCAID)
-						&& !isFiltered(allIncorrect.get(i).getDescription(),UCA)) {
-					incorrectUca = allIncorrect.get(i);
-					if(this.ucaContentProvider.getLinkedItems(incorrectUca.getId()).isEmpty()){
-						idRow.addCell(new GridCellBlank());
-					}else{
-						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(incorrectUca.getId())));
-					}
-					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,incorrectUca.getDescription(),
-							incorrectUca.getId());
-					ucaRow.addCell(editor);
-					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
-							incorrectUca.getId(), this.ucaContentProvider,
-							this.grid,
-							UnsafeControlActionsView.HAZARD_ID_PREFIX));
-				} else if (allIncorrect.size() == i) {
-					// add placeholder
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new AddUcaButton(cAction,
-							Messages.AddGivenIncorrectlyUCA,
-							UnsafeControlActionType.GIVEN_INCORRECTLY));
-				} else {
-					// add placeholders
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new GridCellBlank());
-				}
-
-				if (allWrongTiming.size() > i && !isFiltered(this.ucaInterface.getUCANumber(allWrongTiming.get(i).getId()),UCAID)
-						&& !isFiltered(allWrongTiming.get(i).getDescription(),UCA)) {
-					timingUca = allWrongTiming.get(i);
-					if(this.ucaContentProvider.getLinkedItems(timingUca.getId()).isEmpty()){
-						idRow.addCell(new GridCellBlank());
-					}else{
-						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(timingUca.getId())));
-					}
-					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,timingUca.getDescription(),
-							timingUca.getId());
-					ucaRow.addCell(editor);
-					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
-							timingUca.getId(), this.ucaContentProvider,
-							this.grid,
-							UnsafeControlActionsView.HAZARD_ID_PREFIX));
-				} else if (allWrongTiming.size() == i) {
-					// add placeholder
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new AddUcaButton(cAction,
-							Messages.AddWrongTimingUCA,
-							UnsafeControlActionType.WRONG_TIMING));
-				} else {
-					// add placeholders
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new GridCellBlank());
-				}
-
-				if (allTooSoon.size() > i && !isFiltered(this.ucaInterface.getUCANumber(allTooSoon.get(i).getId()),UCAID)
-						&& !isFiltered(allTooSoon.get(i).getDescription(),UCA)) {
-					tooSoonUca = allTooSoon.get(i);
-					if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
-						idRow.addCell(new GridCellBlank());
-					}else{
-						idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(tooSoonUca.getId())));
-					}
-					UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
-							tooSoonUca.getId());
-					ucaRow.addCell(editor);
-					linkRow.addCell(new GridCellLinking<UcaContentProvider>(
-							tooSoonUca.getId(), this.ucaContentProvider,
-							this.grid,
-							UnsafeControlActionsView.HAZARD_ID_PREFIX));
-				} else if (allTooSoon.size() == i) {
-					// add placeholder
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new AddUcaButton(cAction,
-							Messages.AddStoppedTooSoonUCA,
-							UnsafeControlActionType.STOPPED_TOO_SOON));
-				} else {
-					// add placeholders
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new GridCellBlank());
-				}
+				addControlAction |= addUCAEntry(allNotGiven,
+											    i, 
+											    Messages.AddNotGivenUCA,
+											    UnsafeControlActionType.NOT_GIVEN,
+											    idRow,
+											    ucaRow,
+											    linkRow,
+											    cAction);
+				addControlAction |= addUCAEntry(allIncorrect,
+												i, 
+											    Messages.AddGivenIncorrectlyUCA,
+											    UnsafeControlActionType.GIVEN_INCORRECTLY,
+											    idRow,
+											    ucaRow,
+											    linkRow,
+											    cAction);
+				
+				addControlAction |= addUCAEntry(allWrongTiming,
+											    i, 
+											    Messages.AddWrongTimingUCA,
+											    UnsafeControlActionType.WRONG_TIMING,
+											    idRow,
+											    ucaRow,
+											    linkRow,
+											    cAction);
+				addControlAction |= addUCAEntry(allTooSoon,
+											    i, 
+											    Messages.AddStoppedTooSoonUCA,
+											    UnsafeControlActionType.STOPPED_TOO_SOON,
+											    idRow,
+											    ucaRow,
+											    linkRow,
+											    cAction);
+			}
+			if(addControlAction){
+				this.grid.addRow(controlActionRow);			
 			}
 		}
 	}
 
+	private boolean addUCAEntry(List<IUnsafeControlAction> ucaList,
+							 int i,
+							 String message,
+							 UnsafeControlActionType type,
+							 GridRow idRow,
+							 GridRow ucaRow,
+							 GridRow linkRow,
+							 IControlAction cAction){
+		if (ucaList.size() > i && !isUCAFiltered(ucaList.get(i))) {
+			IUnsafeControlAction tooSoonUca = ucaList.get(i);
+			if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
+				idRow.addCell(new GridCellBlank());
+			}else{
+				idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(tooSoonUca.getId())));
+			}
+			UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
+					tooSoonUca.getId());
+			ucaRow.addCell(editor);
+			linkRow.addCell(new GridCellLinking<UcaContentProvider>(
+					tooSoonUca.getId(), this.ucaContentProvider,
+					this.grid,
+					UnsafeControlActionsView.HAZARD_ID_PREFIX));
+			return true;
+		}
+
+		if (ucaList.size() == i) {
+			// add placeholder
+			idRow.addCell(new GridCellBlank());
+			ucaRow.addCell(new GridCellBlank());
+			linkRow.addCell(new AddUcaButton(cAction,
+					message,
+					UnsafeControlActionType.STOPPED_TOO_SOON));
+		} else {
+			// add placeholders
+			idRow.addCell(new GridCellBlank());
+			ucaRow.addCell(new GridCellBlank());
+			linkRow.addCell(new GridCellBlank());
+		}
+		return false;
+	}
+	
+	
 	@Override
 	public String getId() {
 		UnsafeControlActionsView.LOGGER.info("getID()"); //$NON-NLS-1$
@@ -496,6 +463,46 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		return "Unsafe Control Actions Table"; //$NON-NLS-1$
 	}
 	
+	/**
+	 * !isFiltered(this.ucaInterface.getUCANumber(allWrongTiming.get(i).getId()),UCAID)
+						&& !isFiltered(allWrongTiming.get(i).getDescription(),UCA)
+	 * @param uca
+	 * @return true if the uca is filtered out and should not be used
+	 */
+	private boolean isUCAFiltered(IUnsafeControlAction uca){
+		switch (getActiveCategory()) {
+		case UCAID_FILTER:
+			return isFiltered(this.ucaInterface.getUCANumber(uca.getId()),UCAID_FILTER);
+		case UCA_FILTER:
+			return isFiltered(uca.getDescription(),UCA_FILTER);
+		case HAZ_FILTER:
+			if(this.ucaInterface.getLinkedHazardsOfUCA(uca.getId()).size() == 0){
+				return true;
+			}
+			for(ITableModel model : this.ucaInterface.getLinkedHazardsOfUCA(uca.getId())){
+				if(!isFiltered(model.getTitle(), HAZ_FILTER) ||  !isFiltered(model.getDescription(), HAZ_FILTER)){
+					return false;
+				}
+				return true;
+			}
+		case NOHAZ_FILTER:
+			if(this.ucaInterface.getLinkedHazardsOfUCA(uca.getId()).size() != 0){
+				return true;
+			}
+		case HAZID_FILTER:
+			if(this.ucaInterface.getLinkedHazardsOfUCA(uca.getId()).size() == 0){
+				return true;
+			}
+			for(ITableModel model : this.ucaInterface.getLinkedHazardsOfUCA(uca.getId())){
+				if(!isFiltered(model.getNumber())){
+					return false;
+				}
+				return true;
+			}
+		default:
+			return isFiltered(uca.getDescription(),UCA_FILTER);
+		}
+	}
 	/**
 	 * sets the data model object for this editor
 	 *
@@ -531,6 +538,22 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		}
 	}
 
+	private void updateHazards(){
+		String[] choices= new String[ucaInterface.getAllHazards().size()];
+		String[] choiceIDs= new String[ucaInterface.getAllHazards().size()];
+		String[] choiceValues= new String[ucaInterface.getAllHazards().size()];
+		int index = 0;
+	
+		for (ITableModel model : ucaInterface.getAllHazards()) {
+			choices[index] = "H-" + model.getNumber() + ": "+ model.getTitle();
+			choiceIDs[index] = "" + model.getNumber();
+			choiceValues[index++] = model.getTitle();
+		}
+		this.addChoices(HAZID_FILTER, choices);
+		this.addChoiceValues(HAZID_FILTER,choiceIDs);
+		this.addChoices(HAZ_FILTER, choices);
+		this.addChoiceValues(HAZ_FILTER,choiceValues);
+	}
 	@Override
 	public void update(Observable dataModelController, Object updatedValue) {
 
@@ -538,6 +561,8 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 		case UNSAFE_CONTROL_ACTION:
+		case HAZARD:
+			updateHazards();
 		case CONTROL_ACTION:
 			if(internalUpdate!=0){
 				internalUpdate--;

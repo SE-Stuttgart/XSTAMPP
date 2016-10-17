@@ -1,5 +1,6 @@
 package xstampp.astpa.ui;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -28,8 +29,11 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 
 	private Combo categoryCombo;
 	private boolean useFilter;
-	private Text filterText;
+	private Combo filterText;
 	private String globalCategory;
+	private Map<String, String[]> comboChoicesToEntrys;
+	private Map<String, String[]> comboValuesToEntrys;
+	
 	
 
 	@Override
@@ -51,14 +55,24 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						filterText.setText("");
+						if(comboChoicesToEntrys.get(categoryCombo.getText()) != null){
+							filterText.setItems(comboChoicesToEntrys.get(categoryCombo.getText()));
+						}else{
+							filterText.removeAll();
+						}
 						updateFilter();
 					}
 				});
 			}
 			
-			this.filterText= new Text(filter, SWT.LEFT |SWT.BORDER);
+			this.filterText= new Combo(filter, SWT.LEFT |SWT.BORDER);
 			this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-			
+			this.filterText.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					filterText.setText(comboValuesToEntrys.get(categoryCombo.getText())[filterText.getSelectionIndex()]);
+				}
+			});
 			this.filterText.addModifyListener(new ModifyListener() {
 				
 				@Override
@@ -68,7 +82,21 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 			});
 		}
 	}
-
+	
+	protected final void addChoices(String id, String[] choices){
+		if(comboChoicesToEntrys == null){
+			comboChoicesToEntrys = new HashMap<>();
+		}
+		comboChoicesToEntrys.put(id, choices);
+	}
+	protected final void addChoiceValues(String id, String[] values){
+		if(comboValuesToEntrys == null){
+			comboValuesToEntrys = new HashMap<>();
+		}
+		comboValuesToEntrys.put(id, values);
+	}
+	
+	
 	protected void updateFilter(){
 		
 	}
@@ -101,7 +129,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 					//if the active category is exposed then all other categories are filtered
 				if(getCategories().get(getActiveCategory()) && !getActiveCategory().equals(category)){
 					return true;
-				}//if the active category is expi
+				}//if the active category is explicit
 				if(!getCategories().get(getActiveCategory())&& !getActiveCategory().equals(category)){
 					return false;
 				}
