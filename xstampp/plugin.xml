@@ -17,7 +17,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="xstampp.application"
-            name="STAMP Platform">
+            name="%product.name">
          <property
                name="appName"
                value="STAMP Platform">
@@ -56,14 +56,14 @@
             class="xstampp.Perspective"
             fixed="true"
             id="astpa.welcome.perspective"
-            name="Welcome perspective">
+            name="%perspective.name.welcome">
       </perspective>
       <perspective
             class="xstampp.DefaultPerspective"
             fixed="false"
             icon="icons/xstampp/logox32.png"
             id="xstampp.defaultPerspective"
-            name="XSTAMPP">
+            name="%perspective.name.standard">
       </perspective>
    </extension>
    <extension
@@ -72,7 +72,7 @@
             allowMultiple="false"
             class="xstampp.ui.welcome.WelcomeView"
             id="astpa.Welcome"
-            name="Welcome"
+            name="%view.name.welcome"
             restorable="true">
       </view>
       <view
@@ -80,7 +80,7 @@
             class="xstampp.ui.navigation.ProjectExplorer"
             fastViewWidthRatio="0.2f"
             id="astpa.explorer"
-            name="Project Explorer"
+            name="%view.name.explorer"
             restorable="true">
       </view>
    </extension>
@@ -92,21 +92,21 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                id="fileMenu"
-               label="File">
+               label="%menu.name.file">
             <command
                   commandId="org.eclipse.ui.newWizard"
-                  label="Create New Project"
+                  label="%command.name.newProject"
                   style="push"
-                  tooltip="Create a new STPA Project">
+                  tooltip="%command.tooltip.newProject">
                <visibleWhen
                      checkEnabled="true">
                </visibleWhen>
             </command>
             <command
                   commandId="xstampp.command.load"
-                  label="Load Project..."
+                  label="%command.name.loadProject"
                   style="push"
-                  tooltip="Imports the project file">
+                  tooltip="%command.tooltip.loadProject">
             </command>
             <separator
                   name="Separator 1"
@@ -114,15 +114,17 @@
             </separator>
             <command
                   commandId="astpa.save"
+                  label="%command.name.save"
                   style="push">
             </command>
             <command
                   commandId="xstampp.saveall"
+                  label="%command.name.saveall"
                   style="push">
             </command>
             <command
                   commandId="astpa.save"
-                  label="Save As..."
+                  label="%command.name.saveas"
                   style="push">
                <parameter
                      name="xstampp.commands.params.doSaveAs"
@@ -131,12 +133,12 @@
             </command>
             <command
                   commandId="org.eclipse.ui.file.import"
-                  label="Import..."
+                  label="%command.name.import"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.file.export"
-                  label="Export..."
+                  label="%command.name.export"
                   style="push">
             </command>
             <separator
@@ -146,13 +148,13 @@
             <command
                   commandId="astpa.switchworkspace"
                   id="xstampp.ui.menu.command.switchWS"
-                  label="Switch Workspace"
+                  label="%command.name.switchworkspace"
                   style="pulldown"
-                  tooltip="Restarts the Platform with the choose workspace dialog">
+                  tooltip="%command.tooltip.switchworkspace">
             </command>
             <command
                   commandId="xstampp.command.openPath"
-                  label="Open Workspace"
+                  label="%command.name.openWorkspace"
                   style="push">
                <parameter
                      name="xstampp.commandParameter.openFolder"
@@ -161,36 +163,42 @@
             </command>
             <command
                   commandId="astpa.exit"
-                  label="Exit Application"
+                  label="%command.name.exitPlatform"
                   style="push"
-                  tooltip="Exits the application">
+                  tooltip="%command.tooltip.exitPlatform">
+            </command>
+            <command
+                  commandId="org.eclipse.pde.ui.externalizeStrings"
+                  style="push">
             </command>
          </menu>
          <menu
                id="editMenu"
-               label="Edit">
+               label="%menu.name.edit">
             <command
                   commandId="org.eclipse.ui.window.preferences"
                   helpContextId="Opens the preference page"
-                  label="Preferences"
+                  label="%command.name.preferences"
                   style="push">
             </command>
          </menu>
          <menu
-               label="Window">
+               label="%menu.name.window">
             <command
                   commandId="org.eclipse.ui.window.switchToEditor"
+                  label="%command.name.switchToEditor"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.views.showView"
+                  label="%command.name.showView"
                   style="pulldown">
             </command>
             <separator
                   name="xstampp.separator1">
             </separator>
             <menu
-                  label="Navigation">
+                  label="%menu.name.navigation">
                <command
                      commandId="org.eclipse.ui.window.nextView"
                      style="push">
@@ -214,37 +222,40 @@
             </menu>
             <command
                   commandId="org.eclipse.ui.window.resetPerspective"
+                  label="%command.name.resetPerspective"
                   style="push">
             </command>
          </menu>
          <menu
                id="helpMenu"
-               label="Help">
+               label="%menu.name.help">
             <command
                   commandId="Welcome"
+                  label="command.name.welcome"
                   style="push"
-                  tooltip="Shows the welcome page">
+                  tooltip="%command.tooltip.showWelcome">
             </command>
             <command
-            
-            commandId="org.eclipse.ui.help.aboutAction" 
-			icon="icons/xstampp/logox16.png" 
-			id="x.ex.about" 
-			style="push" 
-			tooltip="Shows the about dialog">
+                  commandId="org.eclipse.ui.help.aboutAction"
+                  icon="icons/xstampp/logox16.png"
+                  id="x.ex.about"
+                  label="%command.name.about"
+                  style="push"
+                  tooltip="%command.tooltip.showAbout">
             </command>
             <command
                   commandId="astpa.update"
-                  label="Update"
+                  label="%command.name.searchForUpdate"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.help.helpContents"
+                  label="%command.name.helpContents"
                   style="push">
             </command>
             <command
                   commandId="xstampp.command.openPath"
-                  label="Open Log Path"
+                  label="%command.name.logPath"
                   style="push">
                <parameter
                      name="xstampp.commandParameter.openFolder"
@@ -301,7 +312,7 @@
          <command
                commandId="astpa.command.openStep"
                id="xstampp.explorer.menu.open"
-               label="Open"
+               label="%command.name.open"
                style="toggle">
             <visibleWhen
                   checkEnabled="false">
@@ -360,7 +371,7 @@
          <command
                commandId="astpa.commands.expandAll"
                icon="icons/eclipse/collapseall2.gif"
-               label="collapse all"
+               label="%command.name.collapseall"
                style="push">
             <parameter
                   name="xstampp.expand"
@@ -370,7 +381,7 @@
          <command
                commandId="astpa.commands.expandAll"
                icon="icons/eclipse/expandall.gif"
-               label="expand all"
+               label="%command.name.expandall"
                style="push">
             <parameter
                   name="xstampp.expand"
@@ -379,7 +390,7 @@
          </command>
          <command
                commandId="xstampp.command.openPath"
-               label="Open Output"
+               label="%command.name.openOutput"
                style="push">
             <parameter
                   name="xstampp.commandParameter.openFolder"
@@ -393,7 +404,7 @@
          <command
                commandId="astpa.commands.expandAll"
                icon="icons/eclipse/collapseall2.gif"
-               label="collapse all"
+               label="%command.name.collapseall"
                style="push">
             <parameter
                   name="xstampp.expand"
@@ -403,7 +414,7 @@
          <command
                commandId="astpa.commands.expandAll"
                icon="icons/eclipse/expandall.gif"
-               label="expand all"
+               label="%command.name.expandall"
                style="push">
             <parameter
                   name="xstampp.expand"
@@ -560,11 +571,11 @@
       <command
             defaultHandler="xstampp.ui.menu.file.commands.ExitApplication"
             id="astpa.exit"
-            name="Exit Application">
+            name="%command.name.exitPlatform">
       </command>
       <command
             id="astpa.saveas"
-            name="Save As...">
+            name="%command.name.saveas">
          <commandParameter
                id="saveAsProjectId"
                name="projectId"
@@ -573,11 +584,11 @@
       </command>
       <command
             id="astpa.exportas"
-            name="Export As...">
+            name="%command.name.exportAs">
       </command>
       <command
             id="astpa.save"
-            name="Save">
+            name="%command.name.save">
          <commandParameter
                id="saveProjectId"
                name="projectId"
@@ -592,7 +603,7 @@
       <command
             defaultHandler="xstampp.ui.menu.file.commands.Import"
             id="xstampp.command.load"
-            name="Import">
+            name="%command.name.import">
          <commandParameter
                id="loadRecentProject"
                name="recentProject"
@@ -612,11 +623,11 @@
       <command
             defaultHandler="xstampp.ui.menu.file.commands.AboutHandler"
             id="astpa.about"
-            name="About">
+            name="%command.name.about">
       </command>
       <command
             id="astpa.ExportUCATable"
-            name="export Table">
+            name="%command.name.exportTable">
       </command>
       <command defaultHandler="xstampp.ui.menu.file.commands.SwitchWorkspaceCommand"
             id="astpa.switchworkspace"
@@ -625,12 +636,12 @@
       <command
             defaultHandler="xstampp.ui.menu.file.commands.Delete"
             id="astpa.commands.delete"
-            name="Delete">
+            name="%command.name.delete">
       </command>
       <command
             defaultHandler="xstampp.ui.menu.file.commands.RenameCommand"
             id="astpa.commands.rename"
-            name="Rename Project...">
+            name="%command.name.renameProject">
       </command>
       <command
             defaultHandler="xstampp.ui.menu.file.commands.ExpandHandler"
@@ -645,7 +656,7 @@
       <command
             defaultHandler="xstampp.ui.menu.file.commands.ToWorkbenchHandler"
             id="astpa.commands.toWorkbench"
-            name="To Workbench">
+            name="%command.name.toWorkbench">
       </command>
       <command
             defaultHandler="xstampp.ui.menu.file.commands.OpenStepEditor"
@@ -659,12 +670,12 @@
       </command>
       <command
             id="xstampp.saveall"
-            name="Save All">
+            name="%command.name.saveAll">
       </command>
       <command
             defaultHandler="xstampp.ui.menu.file.commands.OpenWizardHandler"
             id="xstampp.command.openWizard"
-            name="open wizard">
+            name="%command.name.openWizard">
          <commandParameter
                id="xstampp.commandParameter.openwizard"
                name="wizard"
@@ -674,7 +685,7 @@
       <command
             defaultHandler="xstampp.ui.editors.commands.StyleHandler"
             id="xstampp.command.style"
-            name="Apply Style">
+            name="%command.name.text.applyStyle">
          <commandParameter
                id="xstampp.commandParameter.style"
                name="style"
@@ -684,7 +695,7 @@
       <command
             defaultHandler="xstampp.ui.editors.commands.FontChooserHandle"
             id="xstampp.command.choosefont"
-            name="choose Font">
+            name="%command.name.text.chooseFont">
          <commandParameter
                id="xstampp.commandParameter.fontfamily"
                name="name"
@@ -699,7 +710,7 @@
       <command
             defaultHandler="xstampp.ui.editors.commands.ColorChooseHandle"
             id="xstampp.command.choosecolor"
-            name="Choose a color">
+            name="%command.name.text.chooseAColor">
          <commandParameter
                id="xstampp.commandParameter.color.type"
                name="name"
@@ -724,7 +735,7 @@
       <command
             defaultHandler="xstampp.ui.editors.commands.TextBaselineHandler"
             id="xstampp.command.baseline"
-            name="set baseline">
+            name="%command.name.text.setBaseline">
          <commandParameter
                id="xstampp.commandParameter.baseline"
                name="name"
@@ -734,7 +745,7 @@
       <command
             defaultHandler="xstampp.ui.editors.commands.BulletListHandler"
             id="xstampp.command.addbulletlist"
-            name="ad a bullet list">
+            name="%command.name.addBulletList">
          <commandParameter
                id="xstampp.commandParameter.bulletlist"
                name="name"
@@ -743,18 +754,18 @@
       </command>
       <command
             id="xstampp.command.run"
-            name="Run">
+            name="%command.name.run">
       </command>
       <command
             defaultHandler="xstampp.ui.menu.file.commands.SelectAllHandler"
             description="org.eclipse.ui.edit.selectAll + callback in StandartEditorPart"
             id="xstampp.ui.commands.selectAll"
-            name="Select All">
+            name="%command.name.selectAll">
       </command>
       <command
             defaultHandler="xstampp.ui.menu.file.commands.OpenPathHandler"
             id="xstampp.command.openPath"
-            name="Open Path...">
+            name="%command.name.openPath">
          <commandParameter
                id="xstampp.commandParameter.openFolder"
                name="path"
@@ -868,17 +879,17 @@
    <page
          class="xstampp.preferences.PreferencePageColorAndFont"
          id="astpa.preferencePageColors"
-         name="Project Explorer">
+         name="%page.name.explorer">
    </page>
    <page
          class="xstampp.preferences.PreferencePageExport"
          id="astpa.preferencePageExport"
-         name="Export">
+         name="%page.name.export">
    </page>
    <page
          class="xstampp.preferences.PreferencePageUpdate"
          id="astpa.preferencePageUpdate"
-         name="Update">
+         name="%page.name.update">
    </page>
 </extension>
 <extension

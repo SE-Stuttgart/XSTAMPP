@@ -8,7 +8,7 @@
             allowMultiple="false"
             class="xstpa.ui.View"
             id="xstpa.view.contextTables"
-            name="Context Tables"
+            name="%view.name.contextTables"
             restorable="true">
       </view>
    </extension>
@@ -18,28 +18,28 @@
             editorId="xstpa.editor.context"
             icon="icons/logo.png"
             id="xstpa.stepEditor1"
-            name="Context Tables"
+            name="%stepEditor.name.contextTables"
             parentStep="astpa.navigation.step3_1">
       </stepEditor>
       <stepEditor
             editorId="xstpa.editor.ruca"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.views.ruca"
-            name="Refined Unsafe Control Actions"
+            name="%stepEditor.name.RefinedUnsafeControlActions"
             parentStep="astpa.navigation.step3_1">
       </stepEditor>
       <stepEditor
             editorId="xstpa.editor.refinedSC"
             icon="icons/rsc_logox16.png"
             id="xstpa.stepEditor.RefinedSC"
-            name="Refined Safety Constraints"
+            name="%stepEditor.name.RefinedSafetyConstraints"
             parentStep="astpa.navigation.step3_1">
       </stepEditor>
       <stepEditor
             editorId="xstpa.editor.ltl"
             icon="icons/ltl.png"
             id="xstpa.stepEditor.ltl"
-            name="LTL Formula Table"
+            name="%stepEditor.name.LTLFormulaTable"
             parentStep="astpa.navigation.step3_1">
       </stepEditor>
    </extension>
@@ -48,7 +48,7 @@
       <page
             class="xstpa.settings.PreferencePageSettings"
             id="xstpa.preferences.choosePath"
-            name="XSTPA Preferences">
+            name="%page.name.XSTPA_Preferences">
       </page>
    </extension>
    <extension
@@ -80,27 +80,27 @@
             default="false"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.editor.ruca"
-            name="Refined Unsafe Control Actions">
+            name="%editor.name.Refined_Unsafe_Control_Actions">
       </editor>
       <editor
             class="xstpa.ui.RefinedSafetyConstraintsView"
             default="false"
             icon="icons/rsc_logox16.png"
             id="xstpa.editor.refinedSC"
-            name="Refined Safety Constraints">
+            name="%editor.name.Refined_Safety_Constraints">
       </editor>
       <editor
             class="xstpa.ui.tables.LTLPropertiesTable"
             default="false"
             icon="icons/ltl.png"
             id="xstpa.editor.ltl"
-            name="LTL Formulas">
+            name="%editor.name.LTL_Formulas">
       </editor>
       <editor
             class="xstpa.ui.CSContextEditor"
             default="false"
             id="xstpa.editor.context"
-            name="Context Tables">
+            name="%editor.name.contextTables">
       </editor>
    </extension>
    <extension
@@ -115,7 +115,7 @@
             class="xstpa.xstpaPerspective"
             fixed="true"
             id="xstpa.perspective"
-            name="Context Tables">
+            name="%perspective.contextTables">
       </perspective>
    </extension>
 

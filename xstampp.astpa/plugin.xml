@@ -110,11 +110,11 @@
       </process>
    </extension>
    <extension
-         name="Pdf Export Wizard"
+         name="%extension.name.pdfExport"
          point="org.eclipse.ui.exportWizards">
       <category
             id="astpa.pdf.mainCategory"
-            name="STPA PDF Export"
+            name="%category.name.stpaPDFExport"
             parentCategory="xstampp.astpa.export.main">
       </category>
       <wizard
@@ -122,9 +122,9 @@
             class="xstampp.astpa.wizards.pdf.PdfExportWizard"
             icon="icons/Logo_small.png"
             id="xstampp.astpa.export.pdf"
-            name="Final PDF Report">
+            name="%wizard.name.finalReport">
          <description>
-            The whole STPA Analysis in as PDF Report
+            %wizard.description
          </description>
       </wizard>
       <wizard
@@ -132,44 +132,44 @@
             class="xstampp.astpa.wizards.pdf.HazardsPDFWizard"
             icon="icons/buttons/navigation/STEP1_3(16).png"
             id="xstampp.astpa.export.pdf.1_3"
-            name="Hazards">
+            name="%wizard.name.Hazards">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.SafetyConstraintsPDFWizard"
             icon="icons/buttons/navigation/STEP1_5(16).png"
             id="xstampp.astpa.export.pdf.1_5"
-            name="SafetyConstraints">
+            name="%wizard.name.SafetyConstraints">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.SystemGoalsPDFWizard"
             icon="icons/buttons/navigation/STEP1_6(16).png"
             id="xstampp.astpa.export.pdf.1_6"
-            name="SystemGoals">
+            name="%wizard.name.SystemGoals">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.DesignRequirementsPDFWizard"
             icon="icons/buttons/navigation/STEP1_7(16).png"
             id="xstampp.astpa.export.pdf.1_7"
-            name="DesignRequirements">
+            name="%wizard.name.DesignRequirements">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.AccidentsPDFWizard"
             icon="icons/buttons/navigation/STEP1_2(16).png"
             id="xstampp.astpa.export.pdf.1_2"
-            name="Accidents">
+            name="%wizard.name.Accidents">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
             class="xstampp.astpa.wizards.pdf.SystemDecriptionPDFWizard"
             icon="icons/buttons/navigation/STEP1_1.png"
             id="xstampp.astpa.export.pdf.1_1"
-            name="System Decription">
+            name="%wizard.name.SystemDecription">
          <description>
-            Export the description either as picture or as pdf file
+            %wizard.description.SystemDecription
          </description>
       </wizard>
       <wizard
@@ -177,9 +177,9 @@
             class="xstampp.astpa.wizards.pdf.UCATablePDFWizard"
             icon="icons/buttons/navigation/STEP2_2.png"
             id="xstampp.astpa.export.pdf.2_2"
-            name="Unsafe Control Actions Table">
+            name="%wizard.name.ucaTable">
          <description>
-            The Unsafe Control Actions Table as single Export , provided as PNG
+            %wizard.description.ucaExport
          </description>
       </wizard>
       <wizard
@@ -187,9 +187,9 @@
             class="xstampp.astpa.wizards.pdf.CausalFactorsTablePDFWizard"
             icon="icons/buttons/navigation/STEP3_2.png"
             id="xstampp.astpa.export.pdf.3_2"
-            name="Causal Factors Table">
+            name="%wizard.name.CausalFactorsTableExport">
          <description>
-            The Causal Factors Table as single Export , provided as PNG
+            %wizard.description.CausalFactorsTableExport
          </description>
       </wizard>
       <wizard
@@ -197,20 +197,20 @@
             class="xstampp.astpa.wizards.pdf.CSCPDFWizard"
             icon="icons/buttons/navigation/STEP2_2(16).png"
             id="xstampp.astpa.export.pdf.2_3"
-            name="Corresponding Safety Constraints">
+            name="%wizard.name.CorrespondingSafetyConstraints">
       </wizard>
       <category
             id="xstampp.astpa.export.main"
-            name="STPA Export">
+            name="%category.name.stpaExport">
       </category>
    </extension>
    <extension
          id="astpa.export"
-         name="Data Sheet"
+         name="%extension.name.datasheet"
          point="org.eclipse.ui.exportWizards">
       <category
             id="astpa.stepData"
-            name="STPA Data Sheets"
+            name="%category.name.stpadatasheet"
             parentCategory="xstampp.astpa.export.main">
       </category>
       <wizard
@@ -218,9 +218,9 @@
             class="xstampp.astpa.wizards.stepData.STPAdataWizard"
             icon="icons/Logo_small.png"
             id="astpa.datawizard"
-            name=" All STPA Data">
+            name="%wizard.name.allSTPAdata">
          <description>
-            opens a Wizard where you can choose multiple of the provided data sheets to be exported as CSV
+            %wizard.description.allSTPAdata
          </description>
       </wizard>
       <wizard
@@ -228,9 +228,9 @@
             class="xstampp.astpa.wizards.stepData.AccidentsWizard"
             icon="icons/buttons/navigation/STEP1_2.png"
             id="astpa.wizard1_2data"
-            name="List of Accidents">
+            name="%wizard.name.listOfAccidents">
          <description>
-            The Accidents as data sheet
+            %wizard.description.listOfAccidents
          </description>
       </wizard>
       <wizard
@@ -238,9 +238,9 @@
             class="xstampp.astpa.wizards.stepData.HazardsWizard"
             icon="icons/buttons/navigation/STEP1_3.png"
             id="astpa.wizard1_3data"
-            name="List of Hazards">
+            name="%wizard.name.listOfHazards">
          <description>
-            The Hazards as data sheet
+            %wizard.description.listOfHazards
          </description>
       </wizard>
       <wizard
@@ -248,9 +248,9 @@
             class="xstampp.astpa.wizards.stepData.DesignRequirementsWizard"
             icon="icons/buttons/navigation/STEP1_7.png"
             id="astpa.wizard1_7data"
-            name="List of Design Requirements">
+            name="%wizard.name.ListofDesignRequirements">
          <description>
-            The Design Requirements as data sheet
+            %wizard.description.ListofDesignRequirements
          </description>
       </wizard>
       <wizard
@@ -258,9 +258,9 @@
             class="xstampp.astpa.wizards.stepData.ControlActionsWizard"
             icon="icons/buttons/navigation/STEP2_1.png"
             id="astpa.wizard2_1data"
-            name="List of Control Actions">
+            name="%wizard.name.ListofControlActions">
          <description>
-            The Control Actions as data sheet
+            %wizard.description.ListofControlActions
          </description>
       </wizard>
       <wizard
@@ -268,9 +268,9 @@
             class="xstampp.astpa.wizards.stepData.CSCWizard"
             icon="icons/buttons/navigation/STEP2_3.png"
             id="astpa.wizard2_3data"
-            name="List of Corresponding Safety Constraints">
+            name="%wizard.name.ListofCorrespondingSafetyConstraints">
          <description>
-            The corresponding Safety Constrints defined in step two as data sheet
+            %wizard.description.ListofCorrespondingSafetyConstraints
          </description>
       </wizard>
       <wizard
@@ -278,9 +278,9 @@
             class="xstampp.astpa.wizards.stepData.SafetyConstraintsWizard"
             icon="icons/buttons/navigation/STEP1_5.png"
             id="astpa.wizard1_5data"
-            name="List of Safety Constraints">
+            name="%wizard.name.ListofSafetyConstraints">
          <description>
-            The Safety Constraint defined in step one as data sheet
+            %wizard.description.ListofSafetyConstraints
          </description>
       </wizard>
       <wizard
@@ -288,9 +288,9 @@
             class="xstampp.astpa.wizards.stepData.SystemGoalsWizard"
             icon="icons/buttons/navigation/STEP1_6.png"
             id="astpa.wizard1_6data"
-            name="List of System Goals">
+            name="%wizard.name.ListofSystemGoals">
          <description>
-            The System Goals as data sheet
+            %wizard.description.ListofSystemGoals
          </description>
       </wizard>
       <wizard
@@ -298,9 +298,9 @@
             class="xstampp.astpa.wizards.stepData.UnsafeControlActionsDataWizard"
             icon="icons/buttons/navigation/STEP2_2.png"
             id="astpa.wizard2_2data"
-            name="Unsafe Control Actions Table">
+            name="%wizard.name.ucaTable.1">
          <description>
-            The Unsafe Control Actions Table data Exported as data sheet
+            %wizard.description.ucaTable.1
          </description>
       </wizard>
       <wizard
@@ -308,9 +308,9 @@
             class="xstampp.astpa.wizards.stepData.CausalFactorsDataWizard"
             icon="icons/buttons/navigation/STEP3_2.png"
             id="astpa.wizard3_2data"
-            name="Causal Factors Table">
+            name="%wizard.name.data.causalFactorsTable">
          <description>
-            The Causal Factors Table data Exported as data sheet
+            %wizard.description.data.causalFactorsTable
          </description>
       </wizard>
       <wizard
@@ -318,9 +318,9 @@
             class="xstampp.astpa.wizards.stepData.SystemDecriptionDataWizard"
             icon="icons/buttons/navigation/STEP1_1.png"
             id="astpa.wizard1_1data"
-            name="System Decription">
+            name="%wizard.name.data.SystemDecription">
          <description>
-            description body text
+            %wizard.description.data.SystemDecription
          </description>
       </wizard>
    </extension>
@@ -329,7 +329,7 @@
          point="org.eclipse.ui.exportWizards">
       <category
             id="astpa.stepImages"
-            name="STPA Images"
+            name="%category.name.images.STPAImages"
             parentCategory="xstampp.astpa.export.main">
       </category>
       <wizard
@@ -337,9 +337,9 @@
             class="xstampp.astpa.wizards.stepImages.SystemDecriptionWizard"
             icon="icons/buttons/navigation/STEP1_1.png"
             id="astpa.wizard1_1"
-            name="System Decription">
+            name="%wizard.name.images.systemDescription">
          <description>
-            Export the description either as picture or as pdf file
+            %wizard.description.images.systemDescription
          </description>
       </wizard>
       <wizard
@@ -347,44 +347,44 @@
             class="xstampp.astpa.wizards.stepImages.AccidentsImgWizard"
             icon="icons/buttons/navigation/STEP1_2(16).png"
             id="xstampp.astpa.imageExport."
-            name="Accidents">
+            name="%wizard.name.images.Accidents">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.HazardsImgWizard"
             icon="icons/buttons/navigation/STEP1_3(16).png"
             id="xstampp.astpa.imageExport.1_3"
-            name="Hazards">
+            name="%wizard.name.images.Hazards">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.SafetyConstraintsImgWizard"
             icon="icons/buttons/navigation/STEP1_5(16).png"
             id="xstampp.astpa.imageExport.1_5"
-            name="SafetyConstraints">
+            name="%wizard.name.images.SafetyConstraints">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.SystemGoalsImgWizard"
             icon="icons/buttons/navigation/STEP1_6(16).png"
             id="xstampp.astpa.imageExport.1_6"
-            name="SystemGoals">
+            name="%wizard.name.images.SystemGoals">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.DesignRequirementsImgWizard"
             icon="icons/buttons/navigation/STEP1_7(16).png"
             id="xstampp.astpa.imageExport.1_7"
-            name="DesignRequirements">
+            name="%wizard.name.images.DesignRequirements">
       </wizard>
       <wizard
             category="xstampp.astpa.export.main/astpa.stepImages"
             class="xstampp.astpa.wizards.stepImages.ControlStructureWizard"
             icon="icons/buttons/navigation/STEP1_8.png"
             id="astpa.wizard1_8"
-            name="Control Structure">
+            name="%wizard.name.images.ControlStructure">
          <description>
-            Export the Control Structure as picture
+            %wizard.description.images.ControlStructure
          </description>
       </wizard>
       <wizard
@@ -392,9 +392,9 @@
             class="xstampp.astpa.wizards.stepImages.UCATableExportWizard"
             icon="icons/buttons/navigation/STEP2_2.png"
             id="astpa.wizard2_2"
-            name="Unsafe Control Actions Table">
+            name="%wizard.name.images.ucaTable">
          <description>
-            The Unsafe Control Actions Table as single Export , provided as PNG
+            %wizard.description.images.ucaTable
          </description>
          <keywordReference
                id="xstampp.astpa.keywordReference1">
@@ -405,9 +405,9 @@
             class="xstampp.astpa.wizards.stepImages.ControlStructureWithPMWizard"
             icon="icons/buttons/navigation/STEP3_1.png"
             id="astpa.wizard3_1"
-            name="ControlStructure With Process Model">
+            name="%wizard.name.images.ControlStructureWithProcessModel">
          <description>
-            Export the Control Structure with process model as picture
+            %wizard.description.images.ControlStructureWithProcessModel
          </description>
       </wizard>
       <wizard
@@ -415,9 +415,9 @@
             class="xstampp.astpa.wizards.stepImages.CausalFactorsTableWizard"
             icon="icons/buttons/navigation/STEP3_2.png"
             id="astpa.3_2"
-            name="Causal Factors Table">
+            name="%wizard.name.images.CausalFactorsTable">
          <description>
-            The Causal Factors Table as single Export , provided as PNG
+            %wizard.description.images.CausalFactorsTable
          </description>
       </wizard>
       <wizard
@@ -425,21 +425,21 @@
             class="xstampp.astpa.wizards.stepImages.CSCExportWizard"
             icon="icons/buttons/navigation/STEP2_2(16).png"
             id="xstampp.astpa.imageExport.2_3"
-            name="Corresponding Safety Constraints">
+            name="%wizard.name.images.CorrespondingSafetyConstraints">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
       <category
             id="astpa"
-            name="STPA Projects">
+            name="%category.name.newProject">
       </category>
       <wizard
             category="astpa"
             class="xstampp.astpa.wizards.NewProjectWizard"
             icon="icons/Logo_small.png"
             id="astpa.wizards.NewWizard"
-            name="STPA Project">
+            name="%wizard.name.STPAProject">
       </wizard>
    </extension>
    <extension
@@ -449,97 +449,97 @@
             default="false"
             icon="icons/buttons/navigation/STEP1_8(16).png"
             id="astpa.steps.step1_8"
-            name="Control Structure">
+            name="%editor.name.ControlStructure">
       </editor>
       <editor
             class="xstampp.astpa.controlstructure.CSEditorWithPM"
             default="false"
             icon="icons/buttons/navigation/STEP3_1(16).png"
             id="astpa.steps.step3_1"
-            name="Control Structure With Process Model">
+            name="%editor.name.ControlStructureWithProcessModel">
       </editor>
       <editor
             class="xstampp.astpa.ui.systemdescription.SystemDescriptionView"
             default="false"
             icon="icons/buttons/navigation/STEP1_1(16).png"
             id="astpa.steps.step1_1"
-            name="System Description">
+            name="%editor.name.SystemDescription">
       </editor>
       <editor
             class="xstampp.astpa.ui.acchaz.AccidentsView"
             default="false"
             icon="icons/buttons/navigation/STEP1_2(16).png"
             id="astpa.steps.step1_2"
-            name="Accidents">
+            name="%editor.name.Accidents">
       </editor>
       <editor
             class="xstampp.astpa.ui.acchaz.HazardsView"
             default="false"
             icon="icons/buttons/navigation/STEP1_3(16).png"
             id="astpa.steps.step1_3"
-            name="Hazzards">
+            name="%editor.name.Hazards">
       </editor>
       <editor
             class="xstampp.astpa.ui.linking.LinkingView"
             default="false"
             icon="icons/buttons/navigation/STEP1_4(16).png"
             id="astpa.steps.step1_4"
-            name="Linking ">
+            name="%editor.name.Accident/HazardLinking">
       </editor>
       <editor
             class="xstampp.astpa.ui.sds.SafetyConstraintView"
             default="false"
             icon="icons/buttons/navigation/STEP1_5(16).png"
             id="astpa.steps.step1_5"
-            name="Safety Constraints">
+            name="%editor.name.SafetyConstraints">
       </editor>
       <editor
             class="xstampp.astpa.ui.sds.SystemGoalView"
             default="false"
             icon="icons/buttons/navigation/STEP1_6(16).png"
             id="astpa.steps.step1_6"
-            name="System Goals">
+            name="%editor.name.SystemGoals">
       </editor>
       <editor
             class="xstampp.astpa.ui.sds.DesignRequirementView"
             default="false"
             icon="icons/buttons/navigation/STEP1_7(16).png"
             id="astpa.steps.step1_7"
-            name="Design Requironment">
+            name="%editor.name.DesignRequirenment">
       </editor>
       <editor
             class="xstampp.astpa.ui.sds.ControlActionView"
             default="false"
             icon="icons/buttons/navigation/STEP2_1(16).png"
             id="astpa.steps.step2_1"
-            name="Control Actions">
+            name="%editor.name.ControlActions">
       </editor>
       <editor
             class="xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView"
             default="false"
             icon="icons/buttons/navigation/STEP2_2(16).png"
             id="astpa.steps.step2_2"
-            name="UnsafeControlActions Table">
+            name="%editor.name.UnsafeControlActionsTable">
       </editor>
       <editor
             class="xstampp.astpa.ui.sds.CSCView"
             default="false"
             icon="icons/buttons/navigation/STEP2_3(16).png"
             id="astpa.steps.step2_3"
-            name="Corresponding Safety Constraints">
+            name="%editor.name.CorrespondingSafetyConstraints">
       </editor>
       <editor
             class="xstampp.astpa.ui.causalfactors.CausalFactorsView"
             default="false"
             icon="icons/buttons/navigation/STEP3_2(16).png"
             id="astpa.steps.step3_2"
-            name="Causal Factors Table">
+            name="%editor.name.CausalFactorsTable">
       </editor>
       <editor
             class="xstampp.astpa.ui.STPAResultsTable"
             default="false"
             id="stpa.results.editor.ltl"
-            name="STPA Results">
+            name="%editor.name.STPAResults">
       </editor>
    </extension>
    <extension
@@ -547,7 +547,7 @@
       <command
             defaultHandler="xstampp.astpa.util.commands.NewProject"
             id="astpa.commands.new"
-            name="New Project">
+            name="%command.name.newProject">
          <commandParameter
                id="astpa.new.path"
                name="name"
@@ -562,12 +562,12 @@
       <command
             defaultHandler="xstampp.astpa.util.commands.Load"
             id="astpa.command.load"
-            name="Load">
+            name="%command.name.Load">
       </command>
       <command
             defaultHandler="xstampp.astpa.controlstructure.controller.commands.OpenNewTool"
             id="xstampp.astpa.cseditor.changeTool"
-            name="Switch Tool">
+            name="%command.name.switchTool">
          <commandParameter
                id="xstampp.astpa.cseditor.toolconstant"
                name="name"
@@ -577,7 +577,7 @@
       <command
             defaultHandler="xstampp.astpa.util.commands.BoleanPreferenceToggle"
             id="xstampp.astpa.controlstructure.preferenceToggle"
-            name="preferenceToggle">
+            name="%command.name.preferenceToggle">
          <commandParameter
                id="xstampp.astpa.command.preference"
                name="preference name"
@@ -587,17 +587,17 @@
       <command
             defaultHandler="xstampp.astpa.util.commands.RunCommand"
             id="xstampp.astpa.command.run"
-            name="Run">
+            name="%command.name.Run">
       </command>
       <command
             defaultHandler="xstampp.astpa.controlstructure.controller.commands.PasteComponentsHandler"
             id="xstampp.astpa.command.cs.paste"
-            name="paste">
+            name="%command.name.Copy">
       </command>
       <command
             defaultHandler="xstampp.astpa.controlstructure.controller.commands.CopyComponentsHandler"
             id="xstampp.astpa.command.cs.copy"
-            name="copy">
+            name="%command.name.Paste">
       </command>
    </extension>
    <extension
@@ -619,7 +619,7 @@
          </command>
          <command
                commandId="xstampp.command.openWizard"
-               label="Export Image"
+               label="%command.label.ExportImage"
                style="push">
             <parameter
                   name="xstampp.commandParameter.openwizard"
@@ -628,7 +628,7 @@
          </command>
          <command
                commandId="org.eclipse.ui.window.preferences"
-               label="Preferences"
+               label="%command.label.Preferences"
                style="push">
             <parameter
                   name="preferencePageId"
@@ -637,7 +637,7 @@
          </command>
          <command
                commandId="xstampp.astpa.cseditor.changeTool"
-               label="Select"
+               label="%command.label.Select"
                style="push">
             <parameter
                   name="xstampp.astpa.cseditor.toolconstant"
@@ -646,7 +646,7 @@
          </command>
          <command
                commandId="xstampp.astpa.cseditor.changeTool"
-               label="Marquee"
+               label="%command.label.Marquee"
                style="push">
             <parameter
                   name="xstampp.astpa.cseditor.toolconstant"
@@ -654,11 +654,11 @@
             </parameter>
          </command>
          <menu
-               label="Connections">
+               label="%menu.label.Connections">
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/arrow_simple_16.png"
-                  label="new Connection.."
+                  label="%command.label.newConnection"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -668,7 +668,7 @@
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/arrow_dashed_16.png"
-                  label="new dashed Connection.."
+                  label="%command.label.dashedConnection"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -677,11 +677,11 @@
             </command>
          </menu>
          <menu
-               label="Components">
+               label="%menu.label.Components">
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/controller_16.png"
-                  label="Controller"
+                  label="%command.label.Controller"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -691,7 +691,7 @@
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/actuator_16.png"
-                  label="Actuator"
+                  label="%command.label.Actuator"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -701,7 +701,7 @@
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/process_16.png"
-                  label="Controlled Process"
+                  label="%command.label.ControlledProcess"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -711,7 +711,7 @@
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/sensor_16.png"
-                  label="Sensor"
+                  label="%command.label.Sensor"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -721,7 +721,7 @@
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/ControlAction_16.png"
-                  label="Control Action"
+                  label="%command.label.ControlAction"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -731,7 +731,7 @@
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/text_box_16.png"
-                  label="Text Box"
+                  label="%command.label.TextBox"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -741,7 +741,7 @@
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/dashed_box_16.png"
-                  label="Dashed Box"
+                  label="%command.label.DashedBox"
                   style="push">
                <parameter
                      name="xstampp.astpa.cseditor.toolconstant"
@@ -751,7 +751,7 @@
          </menu>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Connection Mode: Manual (switch to Snap-To)"
+               label="%command.label.ConnectionMode_switchToSnap-To"
                style="push">
             <visibleWhen
                   checkEnabled="true">
@@ -769,8 +769,8 @@
          </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Connection Mode: Snap-To (switch to manual)"
-               tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
+               label="%command.label.ConnectionMode_switchToManual"
+               tooltip="%command.tooltip.ConnectionMode_Snap-To">
             <visibleWhen
                   checkEnabled="false">
                <with
@@ -787,8 +787,8 @@
          </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Enable border of &apos;List of Control Actions&apos;"
-               tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
+               label="%command.label.ListOfControlActions_EnableBorder"
+               tooltip="%command.tooltip.ConnectionMode_manual">
             <visibleWhen
                   checkEnabled="false">
                <with
@@ -805,7 +805,7 @@
          </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Disable border of &apos;List of Control Actions&apos;"
+               label="%command.label.ListOfControlActions_DisableBorder"
                style="push">
             <visibleWhen
                   checkEnabled="true">
@@ -839,7 +839,7 @@
          </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Enable &apos;Process Variable&apos; borders"
+               label="%command.label.ProcessVariables_EnableBorder"
                tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
             <visibleWhen
                   checkEnabled="false">
@@ -857,7 +857,7 @@
          </command>
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
-               label="Disable &apos;Process Variable&apos; borders"
+               label="%command.label.ProcessVariables_DisableBorder"
                style="push">
             <visibleWhen
                   checkEnabled="true">
@@ -884,7 +884,7 @@
          </command>
          <command
                commandId="org.eclipse.ui.window.preferences"
-               label="Preferences"
+               label="%command.label.Preferences.1"
                style="push">
             <parameter
                   name="preferencePageId"
@@ -908,12 +908,12 @@
          point="org.eclipse.ui.importWizards">
       <category
             id="xstampp.astpa.category1"
-            name="name">
+            name="%category.name.4">
       </category>
       <wizard
             class="xstampp.astpa.ImportWizard1"
             id="xstampp.astpa.wizard1"
-            name="name">
+            name="%wizard.name.32">
       </wizard>
    </extension>
    <extension
@@ -1061,7 +1061,7 @@
       <view
             class="xstampp.astpa.controlstructure.utilities.GraphicalViewerOutline"
             id="xstampp.astpa.controlstructure.outline"
-            name="Outline"
+            name="%view.name.outline"
             restorable="true">
       </view>
    </extension>
@@ -1071,12 +1071,12 @@
             category="xstampp.astpa.preferencePage"
             class="xstampp.astpa.preferences.ControlStructurePreferences"
             id="xstampp.astpa.preferencePage.controlstructure"
-            name="Control Structure">
+            name="%preferencePage.name.controlStructure">
       </page>
       <page
             class="xstampp.astpa.preferences.StpaPreferencePage"
             id="xstampp.astpa.preferencePage"
-            name="A-STPA">
+            name="%preferencePage.name.a_stpa">
       </page>
    </extension>
    <extension
@@ -1092,32 +1092,32 @@
             class="xstampp.astpa.wizards.pdf.ContextTablePDFWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.contextTables"
-            name="STPA Context Tables">
+            name="%exportWizard.name.contextTable">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.RefinedSCPDFWizard"
             icon="icons/rsc_logox16.png"
             id="xstpa.wizard.refinedsafetyconstraints"
-            name="Refined Safety Constraints Table">
+            name="%exportWizard.name.refinedSafetyConstraints">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.RefinedUCAPDFWizard"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.wizard.ruca"
-            name="Refined Unsafe Control Actions">
+            name="%exportWizard.name.RefinedUnsafeControlActions">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.LTLPDFWizard"
             icon="icons/ltl.png"
             id="xstpa.wizard.ltl"
-            name="LTL Formulas Table">
+            name="%exportWizard.name.LTLFormulasTable">
       </wizard>
       <category
             id="xstpa.category.pdf"
-            name="Extended STPA PDFs"
+            name="%category.name.XSTPA_PDF"
             parentCategory="xstpa.main.export">
       </category>
       <wizard
@@ -1125,11 +1125,11 @@
             class="xstampp.astpa.wizards.stepData.XSTPAdataWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.csv"
-            name="Export extended stpa data">
+            name="%exportWizard.name.extendedStpaData">
       </wizard>
       <category
             id="xstpa.category.csv"
-            name="Extended STPA CSVs"
+            name="%category.name.XSTPA_CSV"
             parentCategory="xstpa.main.export">
       </category>
       <wizard
@@ -1137,42 +1137,42 @@
             class="xstampp.astpa.wizards.stepData.LTLCSVWizard"
             icon="icons/ltl.png"
             id="xstpa.wizard.csv.ltl"
-            name="LTL Formulas csv">
+            name="%exportWizard.name.LTLFormulasCSV">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RefinedUCACSVWizard"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.wizard.csv.ruca"
-            name="Refined Unsafe Control Actions csv">
+            name="%exportWizard.name.RefinedUnsafeControlActionsCSV">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RefinedSCCSVWizard"
             icon="icons/rsc_logox16.png"
             id="xstpa.wizard.csv.rsc"
-            name="Refined Safety Constraints csv">
+            name="%exportWizard.name.refinedSafetyConstraintsCSV">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.ContextTablesCSVWizard"
             icon="icons/xstpa_logo.png"
             id="xstpa.wizard.csv.contextTables"
-            name="Context Tables csv">
+            name="%exportWizard.name.contextTableCSV">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RulesCSVWizard"
             id="xstpa.wizard.csv.rules"
-            name="Refined Rules csv">
+            name="%exportWizard.name.refinedRulesCSV">
       </wizard>
       <category
             id="xstpa.main.export"
-            name="Extended STPA">
+            name="%category.name.XSTPA">
       </category>
       <category
             id="xstpa.category.img"
-            name="Extended STPA Images"
+            name="%category.name.XSTPA_IMG"
             parentCategory="xstpa.main.export">
       </category>
       <wizard
@@ -1180,28 +1180,28 @@
             class="xstampp.astpa.wizards.stepImages.XContextTableIMGWizard"
             icon="icons/logo.png"
             id="xstpa.wizard.img.contextTables"
-            name="STPA Context Tables">
+            name="%exportWizard.name.contextTableIMG">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.img"
             class="xstampp.astpa.wizards.stepImages.XRefinedSCIMGWizard"
             icon="icons/rsc_logox16.png"
             id="xstpa.wizard.img.refinedsafetyconstraints"
-            name="Refined Safety Constraints Table">
+            name="%exportWizard.name.refinedSafetyConstraintsIMG">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.img"
             class="xstampp.astpa.wizards.stepImages.XRefinedUCAIMGWizard"
             icon="icons/ruca_logo2x16.png"
             id="xstpa.wizard.img.ruca"
-            name="Refined Unsafe Control Actions">
+            name="%exportWizard.name.RefinedUnsafeControlActionsIMG">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.img"
             class="xstampp.astpa.wizards.stepImages.XLTLIMGWizard"
             icon="icons/ltl.png"
             id="xstpa.wizard.img.ltl"
-            name="LTL Formulas Table">
+            name="%exportWizard.name.LTLFormulasTableIMG">
       </wizard>
    </extension>
 

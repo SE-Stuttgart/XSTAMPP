@@ -22,7 +22,7 @@ import org.eclipse.osgi.util.NLS;
  */
 // CHECKSTYLE:OFF
 public final class Messages extends NLS {
-
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(Messages.BUNDLE_NAME, Messages.class);
@@ -638,12 +638,6 @@ public final class Messages extends NLS {
 	public static String ZoomItem;
 	@SuppressWarnings("javadoc")
 	public static String ZoomLevel;
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(Messages.BUNDLE_NAME, Messages.class);
-	}
-
-	private Messages() {
-	}
+	
 }
 // CHECKSTYLE:ON

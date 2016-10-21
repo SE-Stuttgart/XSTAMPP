@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: STAMP Platform
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: xstampp;singleton:=true
 Bundle-Version: 2.0.2
 Bundle-Activator: xstampp.Activator
@@ -75,6 +75,6 @@ Bundle-ClassPath: .,
  lib/org.eclipse.e4.ui.workbench_1.0.1.v20130910-2014.jar,
  lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar
 Import-Package: org.eclipse.emf.common.notify
-Bundle-Vendor: Universität Stuttgart
+Bundle-Vendor: %Bundle-Vendor
 
 
