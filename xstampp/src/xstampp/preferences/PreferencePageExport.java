@@ -30,65 +30,60 @@ import xstampp.Activator;
  * @author Sebastian Sieber
  * 
  */
-public class PreferencePageExport extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+public class PreferencePageExport extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-	private StringFieldEditor companyNameFieldEditor;
-	private FileFieldEditor companyLogoFieldEditor;
-	private ColorFieldEditor companyColorBackgroundFieldEditor;
-	private ColorFieldEditor companyColorFontFieldEditor;
+  private StringFieldEditor companyNameFieldEditor;
+  private FileFieldEditor companyLogoFieldEditor;
+  private ColorFieldEditor companyColorBackgroundFieldEditor;
+  private ColorFieldEditor companyColorFontFieldEditor;
 
-	/**
-	 * Constructor using grid layout.
-	 */
-	public PreferencePageExport() {
-		super(FieldEditorPreferencePage.GRID);
-	}
+  /**
+   * Constructor using grid layout.
+   */
+  public PreferencePageExport() {
+    super(FieldEditorPreferencePage.GRID);
+  }
 
-	@Override
-	public void init(IWorkbench workbench) {
-		this.setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		this.setDescription(Messages.ChangeExportValues);
-	}
+  @Override
+  public void init(IWorkbench workbench) {
+    this.setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    this.setDescription(Messages.ChangeExportValues);
+  }
 
-	@Override
-	protected void createFieldEditors() {
-		this.companyNameFieldEditor = new StringFieldEditor(
-				IPreferenceConstants.COMPANY_NAME, Messages.Company,
-				this.getFieldEditorParent());
-		this.addField(this.companyNameFieldEditor);
+  @Override
+  protected void createFieldEditors() {
+    this.companyNameFieldEditor = new StringFieldEditor(IPreferenceConstants.COMPANY_NAME, Messages.Company,
+        this.getFieldEditorParent());
+    this.addField(this.companyNameFieldEditor);
 
-		this.companyLogoFieldEditor = new FileFieldEditor(
-				IPreferenceConstants.COMPANY_LOGO, Messages.Logo,
-				this.getFieldEditorParent());
-		this.addField(this.companyLogoFieldEditor);
+    this.companyLogoFieldEditor = new FileFieldEditor(IPreferenceConstants.COMPANY_LOGO, Messages.Logo,
+        this.getFieldEditorParent());
+    this.addField(this.companyLogoFieldEditor);
 
-		this.companyColorBackgroundFieldEditor = new ColorFieldEditor(
-				IPreferenceConstants.COMPANY_BACKGROUND_COLOR,
-				Messages.BackgroundColor, this.getFieldEditorParent());
-		this.addField(this.companyColorBackgroundFieldEditor);
+    this.companyColorBackgroundFieldEditor = new ColorFieldEditor(IPreferenceConstants.COMPANY_BACKGROUND_COLOR,
+        Messages.BackgroundColor, this.getFieldEditorParent());
+    this.addField(this.companyColorBackgroundFieldEditor);
 
-		this.companyColorFontFieldEditor = new ColorFieldEditor(
-				IPreferenceConstants.COMPANY_FONT_COLOR, Messages.FontColor,
-				this.getFieldEditorParent());
-		this.addField(this.companyColorFontFieldEditor);
-	}
+    this.companyColorFontFieldEditor = new ColorFieldEditor(IPreferenceConstants.COMPANY_FONT_COLOR, Messages.FontColor,
+        this.getFieldEditorParent());
+    this.addField(this.companyColorFontFieldEditor);
+  }
 
-	@Override
-	protected void performDefaults() {
-		this.companyColorBackgroundFieldEditor.loadDefault();
-		this.companyColorFontFieldEditor.loadDefault();
-		this.companyLogoFieldEditor.loadDefault();
-		this.companyNameFieldEditor.loadDefault();
-	}
+  @Override
+  protected void performDefaults() {
+    this.companyColorBackgroundFieldEditor.loadDefault();
+    this.companyColorFontFieldEditor.loadDefault();
+    this.companyLogoFieldEditor.loadDefault();
+    this.companyNameFieldEditor.loadDefault();
+  }
 
-	@Override
-	public boolean performOk() {
-		this.companyNameFieldEditor.store();
-		this.companyLogoFieldEditor.store();
-		this.companyColorBackgroundFieldEditor.store();
-		this.companyColorFontFieldEditor.store();
-		return super.performOk();
-	}
+  @Override
+  public boolean performOk() {
+    this.companyNameFieldEditor.store();
+    this.companyLogoFieldEditor.store();
+    this.companyColorBackgroundFieldEditor.store();
+    this.companyColorFontFieldEditor.store();
+    return super.performOk();
+  }
 
 }

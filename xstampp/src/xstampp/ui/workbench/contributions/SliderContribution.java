@@ -7,38 +7,34 @@ import org.eclipse.swt.widgets.Slider;
 
 public class SliderContribution extends ControlContribution {
 
+  private Slider slider;
+  private int style;
+  private int size;
 
+  public SliderContribution(String id, int style, int size) {
+    super(id);
+    this.style = style;
+    this.size = size;
+  }
 
-    private Slider slider;
-    private int style;
-	private int size;
-    
-    
-    public SliderContribution(String id, int style,int size) {
-        super(id);
-        this.style = style;
-        this.size = size;
+  @Override
+  protected Control createControl(Composite parent) {
+    slider = new Slider(parent, style);
+    return slider;
+  }
+
+  @Override
+  public int computeWidth(Control control) {
+    return size;
+  }
+
+  public Slider getSliderControl() {
+    return slider;
+  }
+
+  public void setEnabled(boolean enabled) {
+    if (this.slider != null) {
+      this.slider.setEnabled(enabled);
     }
-
-    @Override
-    protected Control createControl(Composite parent) {
-        slider = new Slider(parent, style);
-        return slider;
-    }
-
-    @Override
-    public int computeWidth(Control control) {
-        return size;
-    }
-
-    public Slider getSliderControl() {
-        return slider;
-    }
-
-
-	public void setEnabled(boolean enabled) {
-		if(this.slider != null){
-			this.slider.setEnabled(enabled);
-		}
-	}
+  }
 }

@@ -24,51 +24,49 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
-
-
 /**
  * Configures the action bar.
  * 
  * @author Patrick Wickenhaeuser
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
-	
-	/**
-	 * Constructor of the advisor.
-	 * 
-	 * @param configurer
-	 *            the configurer used to configure the action bar in the
-	 *            workbench window.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 */
-	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
-		super(configurer);
-	}
 
-	@Override
-	protected void makeActions(final IWorkbenchWindow window) {
-		IWorkbenchAction action = ActionFactory.HELP_CONTENTS.create(window);
-		this.register(action);
+  /**
+   * Constructor of the advisor.
+   * 
+   * @param configurer
+   *          the configurer used to configure the action bar in the workbench
+   *          window.
+   * 
+   * @author Patrick Wickenhaeuser
+   */
+  public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
+    super(configurer);
+  }
 
-		IWorkbenchAction exportAction = ActionFactory.EXPORT.create(window);
-		this.register(exportAction);
-	}
+  @Override
+  protected void makeActions(final IWorkbenchWindow window) {
+    IWorkbenchAction action = ActionFactory.HELP_CONTENTS.create(window);
+    this.register(action);
 
-	@Override
-	protected void fillCoolBar(ICoolBarManager coolBar) {
-		coolBar.setLockLayout(false);
-		coolBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		super.fillCoolBar(coolBar);
-	}
+    IWorkbenchAction exportAction = ActionFactory.EXPORT.create(window);
+    this.register(exportAction);
+  }
 
-	@Override
-	protected void fillMenuBar(IMenuManager menuBar) {
-		super.fillMenuBar(menuBar);
-	}
+  @Override
+  protected void fillCoolBar(ICoolBarManager coolBar) {
+    coolBar.setLockLayout(false);
+    coolBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+    super.fillCoolBar(coolBar);
+  }
 
-	@Override
-	protected void fillStatusLine(IStatusLineManager statusLine) {
-		super.fillStatusLine(statusLine);
-	}
+  @Override
+  protected void fillMenuBar(IMenuManager menuBar) {
+    super.fillMenuBar(menuBar);
+  }
+
+  @Override
+  protected void fillStatusLine(IStatusLineManager statusLine) {
+    super.fillStatusLine(statusLine);
+  }
 }

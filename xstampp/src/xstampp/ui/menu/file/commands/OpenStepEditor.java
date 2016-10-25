@@ -14,38 +14,38 @@ import xstampp.ui.navigation.StepSelector;
  */
 public class OpenStepEditor extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-	
-		Object currentSelection = PlatformUI.getWorkbench().
-									getActiveWorkbenchWindow().
-									getActivePage().getSelection("astpa.explorer");
-		String openWithEditor = event.getParameter("xstampp.command.steps.open");
-		//if the currentSelection is a stepSelector than it is transfered in a proper object
-		if(!(currentSelection instanceof StepSelector )){
-			return null;
-		}
-		StepSelector selector =((StepSelector) currentSelection);
-//		if(!selector.getOpenWithPerspective().equals("")){
-//			
-//			String perspective = selector.getOpenWithPerspective();
-//			IPerspectiveDescriptor descriptor= PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(perspective);
-//			PlatformUI.getWorkbench().getPerspectiveRegistry().revertPerspective(descriptor);
-//			if (descriptor != null) {
-//				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-//					.getActivePage().setPerspective(descriptor);
-//			}
-//		
-//		}
-		if(openWithEditor != null){
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
 
-			selector.openEditor(openWithEditor);
-			
-		}else {
-			selector.openDefaultEditor();
-		}
-		return null;
-	}
+    Object currentSelection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .getSelection("astpa.explorer"); //$NON-NLS-1$
+    String openWithEditor = event.getParameter("xstampp.command.steps.open"); //$NON-NLS-1$
+    // if the currentSelection is a stepSelector than it is transfered in a
+    // proper object
+    if (!(currentSelection instanceof StepSelector)) {
+      return null;
+    }
+    StepSelector selector = ((StepSelector) currentSelection);
+    // if(!selector.getOpenWithPerspective().equals("")){
+    //
+    // String perspective = selector.getOpenWithPerspective();
+    // IPerspectiveDescriptor descriptor=
+    // PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(perspective);
+    // PlatformUI.getWorkbench().getPerspectiveRegistry().revertPerspective(descriptor);
+    // if (descriptor != null) {
+    // PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+    // .getActivePage().setPerspective(descriptor);
+    // }
+    //
+    // }
+    if (openWithEditor != null) {
 
-	
+      selector.openEditor(openWithEditor);
+
+    } else {
+      selector.openDefaultEditor();
+    }
+    return null;
+  }
+
 }

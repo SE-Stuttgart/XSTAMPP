@@ -33,201 +33,177 @@ import xstampp.ui.common.ProjectManager;
  */
 public final class STPAPluginUtils {
 
-	private static List<Job> unfinishedJobs;
-	private STPAPluginUtils() {
-		unfinishedJobs = new ArrayList<>();
-	}
+  private static List<Job> unfinishedJobs;
 
-	public static void listJob(Job job){
-		if(unfinishedJobs == null){
-			unfinishedJobs = new ArrayList<>();
-		}
-		unfinishedJobs.add(job);
-		job.addJobChangeListener(new JobChangeAdapter() {
-			
-			@Override
-			public void done(IJobChangeEvent event) {
-				unfinishedJobs.remove(event.getJob());
-			}
-		});
-	}
-	
-	public static List<Job> getUnfinishedJobs(){
-		if(unfinishedJobs == null){
-			return new ArrayList<>();
-		}
-		return unfinishedJobs;
-	}
-	
-	/**
-	 * Executes a registered command without command values
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param commandId
-	 *            the id under which the command is registered in the plugin
-	 * @return the command return value or null if non/ the command was not
-	 *         executed
-	 */
-	public static Object executeCommand(String commandId) {
-		if(commandId == null){
-			return false;
-		}
-		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
-		ICommandService commandService = (ICommandService) serviceLocator
-				.getService(ICommandService.class);
-		Command command = commandService.getCommand(commandId);
-		if (command != null) {
-			try {
-				return command.executeWithChecks(new ExecutionEvent());
-			} catch (ExecutionException | NotDefinedException|NullPointerException
-					| NotEnabledException | NotHandledException e) {
-				ProjectManager.getLOGGER().error(
-						"Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		} else {
-			ProjectManager.getLOGGER().error(
-					"Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		return null;
-	}
+  private STPAPluginUtils() {
+    unfinishedJobs = new ArrayList<>();
+  }
 
-	/**
-	 * Executes a registered command with command values
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param commandId
-	 *            the id under which the command is registered in the plugin
-	 * @param params
-	 *            a map containing values like
-	 *            <code> 'ParameterName,value' </code>
-	 * @return the command return value or null if non/ the command was not
-	 *         executed
-	 */
-	public static Object executeParaCommand(String commandId,
-			Map<String, String> params) {
-		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
-		ICommandService commandService = (ICommandService) serviceLocator
-				.getService(ICommandService.class);
-		IHandlerService handlerService = (IHandlerService) serviceLocator
-				.getService(IHandlerService.class);
-		Command command = commandService.getCommand(commandId);
-		if (command == null) {
-			ProjectManager.getLOGGER().debug(commandId + " is no valid command id");
-			return false;
-		}
-		ParameterizedCommand paraCommand = ParameterizedCommand
-				.generateCommand(command, params);
-		if(paraCommand == null){
-			ProjectManager.getLOGGER().debug("One of: "+params.toString()+ " is no valid parameter id");
-			return false;
-		}
-		try {
-			return handlerService.executeCommand(paraCommand, null);
-
-		} catch (ExecutionException | NotDefinedException
-				| NotEnabledException | NotHandledException e) {
-			Logger.getRootLogger().error(
-					"Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		
-		return true;
-	}
-
-	
-    private static void OpenInMacFileBrowser(String path)
-    {
-        Boolean openInsidesOfFolder = false;
-        // try mac
-        String macPath = path.replace("\\", "/"); // mac finder doesn't like backward slashes
-        File pathfile = new File(macPath);
-        // if path requested is a folder, automatically open insides of that folder
-        if (pathfile.isDirectory()) 
-        {
-            openInsidesOfFolder = true;
-        }
-
-        if (!macPath.startsWith("\""))
-        {
-            macPath = "\"" + macPath;
-        }
-        if (!macPath.endsWith("\""))
-        {
-            macPath = macPath + "\"";
-        }
-        //during the process of adding backslashes it is possible that quotes are added to the path
-       //those are removed with this command
-        macPath = macPath.replace('"', ' ').trim();
-        String arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
-        try
-        {
-        	Runtime.getRuntime().exec("open "+ arguments);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
+  public static void listJob(Job job) {
+    if (unfinishedJobs == null) {
+      unfinishedJobs = new ArrayList<>();
     }
-    
-    private static void OpenInLinuxFileBrowser(String path)
-    {
-        // try mac
-        String linuxPath = path.replace("\\", "/"); // mac finder doesn't like backward slashes
-        File pathfile = new File(linuxPath);
+    unfinishedJobs.add(job);
+    job.addJobChangeListener(new JobChangeAdapter() {
 
-        if (!linuxPath.startsWith("\""))
-        {
-            linuxPath = "\"" + linuxPath;
-        }
-        if (!linuxPath.endsWith("\""))
-        {
-            linuxPath = linuxPath + "\"";
-        }
-        //during the process of adding backslashes it is possible that quotes are added to the path
-       //those are removed with this command
-        linuxPath = linuxPath.replace('"', ' ').trim();
-        try
-        {
-        	Runtime.getRuntime().exec("gnome-open"+ linuxPath);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
+      @Override
+      public void done(IJobChangeEvent event) {
+        unfinishedJobs.remove(event.getJob());
+      }
+    });
+  }
+
+  public static List<Job> getUnfinishedJobs() {
+    if (unfinishedJobs == null) {
+      return new ArrayList<>();
+    }
+    return unfinishedJobs;
+  }
+
+  /**
+   * Executes a registered command without command values
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param commandId
+   *          the id under which the command is registered in the plugin
+   * @return the command return value or null if non/ the command was not
+   *         executed
+   */
+  public static Object executeCommand(String commandId) {
+    if (commandId == null) {
+      return false;
+    }
+    IServiceLocator serviceLocator = PlatformUI.getWorkbench();
+    ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
+    Command command = commandService.getCommand(commandId);
+    if (command != null) {
+      try {
+        return command.executeWithChecks(new ExecutionEvent());
+      } catch (ExecutionException | NotDefinedException | NullPointerException | NotEnabledException
+          | NotHandledException e) {
+        ProjectManager.getLOGGER().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+      }
+    } else {
+      ProjectManager.getLOGGER().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    return null;
+  }
+
+  /**
+   * Executes a registered command with command values
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param commandId
+   *          the id under which the command is registered in the plugin
+   * @param params
+   *          a map containing values like <code> 'ParameterName,value' </code>
+   * @return the command return value or null if non/ the command was not
+   *         executed
+   */
+  public static Object executeParaCommand(String commandId, Map<String, String> params) {
+    IServiceLocator serviceLocator = PlatformUI.getWorkbench();
+    ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
+    IHandlerService handlerService = (IHandlerService) serviceLocator.getService(IHandlerService.class);
+    Command command = commandService.getCommand(commandId);
+    if (command == null) {
+      ProjectManager.getLOGGER().debug(commandId + " is no valid command id");
+      return false;
+    }
+    ParameterizedCommand paraCommand = ParameterizedCommand.generateCommand(command, params);
+    if (paraCommand == null) {
+      ProjectManager.getLOGGER().debug("One of: " + params.toString() + " is no valid parameter id");
+      return false;
+    }
+    try {
+      return handlerService.executeCommand(paraCommand, null);
+
+    } catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
+      Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    private static void OpenInWinFileBrowser(String path)
-    {
-        Boolean openInsidesOfFolder = false;
+    return true;
+  }
 
-        // try windows
-        String winPath = path.replace("/", "\\"); // windows explorer doesn't like forward slashes
-        File pathfile = new File(winPath);
-        // if path requested is a folder, automatically open insides of that folder
-        if (pathfile.isDirectory()) 
-        {
-            openInsidesOfFolder = true;
-        }
-        try
-        {
-        	Runtime.getRuntime().exec("explorer.exe "+ (openInsidesOfFolder ? "/root," : "/select,") + winPath);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
+  private static void OpenInMacFileBrowser(String path) {
+    Boolean openInsidesOfFolder = false;
+    // try mac
+    String macPath = path.replace("\\", "/"); // mac finder doesn't like
+                                              // backward slashes
+    File pathfile = new File(macPath);
+    // if path requested is a folder, automatically open insides of that folder
+    if (pathfile.isDirectory()) {
+      openInsidesOfFolder = true;
     }
 
-    public static void OpenInFileBrowser(String path)
-    {
-    	String osName= System.getProperty("os.name").toLowerCase();
-    	if(osName.startsWith("win")){
-    		OpenInWinFileBrowser(path);
-    	}else if(osName.startsWith("mac")){
-    		OpenInMacFileBrowser(path);
-    	}else if(osName.startsWith("linux")){
-    		OpenInMacFileBrowser(path);
-    	}
+    if (!macPath.startsWith("\"")) {
+      macPath = "\"" + macPath;
     }
+    if (!macPath.endsWith("\"")) {
+      macPath = macPath + "\"";
+    }
+    // during the process of adding backslashes it is possible that quotes are
+    // added to the path
+    // those are removed with this command
+    macPath = macPath.replace('"', ' ').trim();
+    String arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
+    try {
+      Runtime.getRuntime().exec("open " + arguments);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static void OpenInLinuxFileBrowser(String path) {
+    // try mac
+    String linuxPath = path.replace("\\", "/"); // mac finder doesn't like
+                                                // backward slashes
+    File pathfile = new File(linuxPath);
+
+    if (!linuxPath.startsWith("\"")) {
+      linuxPath = "\"" + linuxPath;
+    }
+    if (!linuxPath.endsWith("\"")) {
+      linuxPath = linuxPath + "\"";
+    }
+    // during the process of adding backslashes it is possible that quotes are
+    // added to the path
+    // those are removed with this command
+    linuxPath = linuxPath.replace('"', ' ').trim();
+    try {
+      Runtime.getRuntime().exec("gnome-open" + linuxPath);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static void OpenInWinFileBrowser(String path) {
+    Boolean openInsidesOfFolder = false;
+
+    // try windows
+    String winPath = path.replace("/", "\\"); // windows explorer doesn't like
+                                              // forward slashes
+    File pathfile = new File(winPath);
+    // if path requested is a folder, automatically open insides of that folder
+    if (pathfile.isDirectory()) {
+      openInsidesOfFolder = true;
+    }
+    try {
+      Runtime.getRuntime().exec("explorer.exe " + (openInsidesOfFolder ? "/root," : "/select,") + winPath);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void OpenInFileBrowser(String path) {
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.startsWith("win")) {
+      OpenInWinFileBrowser(path);
+    } else if (osName.startsWith("mac")) {
+      OpenInMacFileBrowser(path);
+    } else if (osName.startsWith("linux")) {
+      OpenInMacFileBrowser(path);
+    }
+  }
 }

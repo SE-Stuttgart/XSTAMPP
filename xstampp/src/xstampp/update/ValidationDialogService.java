@@ -27,41 +27,38 @@ import org.eclipse.equinox.p2.core.UIServices;
  */
 public class ValidationDialogService extends UIServices {
 
-	@Override
-	public AuthenticationInfo getUsernamePassword(String location) {
-		// nothing yet
-		return null;
-	}
+  @Override
+  public AuthenticationInfo getUsernamePassword(String location) {
+    // nothing yet
+    return null;
+  }
 
-	@Override
-	public AuthenticationInfo getUsernamePassword(String location,
-			AuthenticationInfo previousInfo) {
-		// nothing yet
-		return null;
-	}
+  @Override
+  public AuthenticationInfo getUsernamePassword(String location, AuthenticationInfo previousInfo) {
+    // nothing yet
+    return null;
+  }
 
-	@Override
-	public TrustInfo getTrustInfo(Certificate[][] untrustedChain,
-			String[] unsignedDetail) {
-		boolean trustUnsigned = true;
-		boolean persistTrust = true;
+  @Override
+  public TrustInfo getTrustInfo(Certificate[][] untrustedChain, String[] unsignedDetail) {
+    boolean trustUnsigned = true;
+    boolean persistTrust = true;
 
-		Certificate[] trusted = new Certificate[0];
-		TrustInfo trustInfo = new TrustInfo(trusted, trustUnsigned,
-				persistTrust);
-		return trustInfo;
-	}
+    Certificate[] trusted = new Certificate[0];
+    TrustInfo trustInfo = new TrustInfo(trusted, trustUnsigned, persistTrust);
+    return trustInfo;
+  }
 
-	/**
-	 * This method will override the default UIServices instance within the
-	 * provisioning agent. This will prevent the blocking "...you're installing
-	 * untrusted content..." dialog to appear.
-	 * 
-	 * @param agent
-	 *            The P2 provisioning agent.
-	 */
-	public void bindProvisioningAgent(IProvisioningAgent agent) {
-		agent.registerService(UIServices.SERVICE_NAME, this);
-	}
+  /**
+   * This method will override the default UIServices instance within the
+   * provisioning agent. This will prevent the blocking "...you're installing
+   * untrusted content..." dialog to appear.
+   * 
+   * @param agent
+   *          The P2 provisioning agent.
+   */
+  public void bindProvisioningAgent(IProvisioningAgent agent) {
+    agent.registerService(UIServices.SERVICE_NAME, this);
+  }
 
 }

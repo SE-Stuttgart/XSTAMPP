@@ -16,35 +16,36 @@ package xstampp.model;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * an interface for migrating a data object containing System Properties in linear temporal logic, 
- * a Map of the related values mapped to a variable and the name of the system
+ * an interface for migrating a data object containing System Properties in
+ * linear temporal logic, a Map of the related values mapped to a variable and
+ * the name of the system
  * 
  * @author Lukas Balzer
- *@since 2.0.2
+ * @since 2.0.2
  */
-public interface ISafetyDataModel{
+public interface ISafetyDataModel {
 
-	/**
-	 * 
-	 * @return a List with all ILTLProvider objects currently stored in that dataModel
-	 * 
-	 * @see AbstractLTLProvider
-	 */
-	List<AbstractLTLProvider> getLTLPropertys();
-	
-	/**
-	 * 
-	 * @return a map containing value lists mapped to their variables
-	 */
-	Map<String,List<String>> getValuesTOVariables();
-	
-	/**
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @return returns the project Name <b>must not be null</b>
-	 */
-	String getProjectName();
+  /**
+   * 
+   * @return a List with all ILTLProvider objects currently stored in that
+   *         dataModel
+   * 
+   * @see AbstractLTLProvider
+   */
+  List<AbstractLTLProvider> getLTLPropertys();
+
+  /**
+   * 
+   * @return a map containing value lists mapped to their variables
+   */
+  Map<String, List<String>> getValuesTOVariables();
+
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   * @return returns the project Name <b>must not be null</b>
+   */
+  String getProjectName();
 }

@@ -32,16 +32,13 @@ import xstampp.Activator;
  */
 public class UpdateHandler extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ServiceReference<?> reference = Activator.getContext()
-				.getServiceReference(IProvisioningAgent.SERVICE_NAME);
-		final IProvisioningAgent agent = (IProvisioningAgent) Activator
-				.getContext().getService(reference);
-		Activator.getContext().ungetService(reference);
-		UpdateJob j = new UpdateJob(Messages.UpdatingASTPA, agent, Display
-				.getCurrent().getActiveShell(), false);
-		j.schedule();
-		return null;
-	}
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    ServiceReference<?> reference = Activator.getContext().getServiceReference(IProvisioningAgent.SERVICE_NAME);
+    final IProvisioningAgent agent = (IProvisioningAgent) Activator.getContext().getService(reference);
+    Activator.getContext().ungetService(reference);
+    UpdateJob j = new UpdateJob(Messages.UpdatingASTPA, agent, Display.getCurrent().getActiveShell(), false);
+    j.schedule();
+    return null;
+  }
 }

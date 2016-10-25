@@ -20,8 +20,6 @@ import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -43,6 +41,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPart;
 
+import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;

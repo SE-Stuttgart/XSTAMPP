@@ -11,15 +11,14 @@ import xstampp.util.STPAPluginUtils;
 
 public class SelectAllHandler extends AbstractHandler {
 
-
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if(editor != null && editor instanceof StandartEditorPart){
-			((StandartEditorPart)editor).selectAll();
-		}
-		STPAPluginUtils.executeCommand("org.eclipse.ui.edit.selectAll");
-		return null;
-	}
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+    if (editor != null && editor instanceof StandartEditorPart) {
+      ((StandartEditorPart) editor).selectAll();
+    }
+    STPAPluginUtils.executeCommand("org.eclipse.ui.edit.selectAll"); //$NON-NLS-1$
+    return null;
+  }
 
 }

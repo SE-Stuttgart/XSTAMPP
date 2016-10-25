@@ -25,19 +25,19 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class Perspective implements IPerspectiveFactory {
 
-	private static final Logger LOGGER = Logger.getRootLogger();
+  private static final Logger LOGGER = Logger.getRootLogger();
 
-	private static final float VIEW_CONTAINER_RATIO = 0.75f;
+  private static final float VIEW_CONTAINER_RATIO = 0.75f;
 
-	@Override
-	public void createInitialLayout(IPageLayout layout) {
-		Perspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
-		layout.setFixed(true);
-		layout.setEditorAreaVisible(false);
-		// create the view container
-		layout.addStandaloneView("astpa.Welcome", false, IPageLayout.LEFT,
-				Perspective.VIEW_CONTAINER_RATIO, layout.getEditorArea());
-		layout.addPerspectiveShortcut("stpaVerifier.perspective");
-		layout.setFixed(true);
-	}
+  @Override
+  public void createInitialLayout(IPageLayout layout) {
+    Perspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
+    layout.setFixed(true);
+    layout.setEditorAreaVisible(false);
+    // create the view container
+    layout.addStandaloneView("astpa.Welcome", false, IPageLayout.LEFT, //$NON-NLS-1$
+        Perspective.VIEW_CONTAINER_RATIO, layout.getEditorArea());
+    layout.addPerspectiveShortcut("stpaVerifier.perspective"); //$NON-NLS-1$
+    layout.setFixed(true);
+  }
 }

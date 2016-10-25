@@ -12,23 +12,20 @@ import xstampp.ui.navigation.ProjectExplorer;
 
 public class RunExportCommand extends AbstractHandler {
 
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ProjectExplorer.ID);
+    if (part != null) {
+      Object selection = part.getViewSite().getSelectionProvider().getSelection();
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IViewPart part =PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.findView(ProjectExplorer.ID);
-		if(part != null){
-			Object selection = part.getViewSite().getSelectionProvider().getSelection();
-			
-			if(selection instanceof IProjectSelection){
-				String command = ProjectManager.getContainerInstance().
-										getConfigurationFor(((IProjectSelection) selection).getProjectId()).
-										getAttribute("runCommand");
-										
-				STPAPluginUtils.executeCommand(command);
-			}
-		}
-		return null;
-	}
+      if (selection instanceof IProjectSelection) {
+        String command = ProjectManager.getContainerInstance()
+            .getConfigurationFor(((IProjectSelection) selection).getProjectId()).getAttribute("runCommand");
+
+        STPAPluginUtils.executeCommand(command);
+      }
+    }
+    return null;
+  }
 
 }

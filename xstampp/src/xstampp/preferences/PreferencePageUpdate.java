@@ -25,42 +25,40 @@ import xstampp.Activator;
  * @author Sebastian Sieber
  * 
  */
-public class PreferencePageUpdate extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+public class PreferencePageUpdate extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-	private StringFieldEditor updateLinkFieldEditor;
+  private StringFieldEditor updateLinkFieldEditor;
 
-	/**
-	 * Constructor using grid layout.
-	 */
-	public PreferencePageUpdate() {
-		super(FieldEditorPreferencePage.GRID);
-	}
+  /**
+   * Constructor using grid layout.
+   */
+  public PreferencePageUpdate() {
+    super(FieldEditorPreferencePage.GRID);
+  }
 
-	@Override
-	public void init(IWorkbench workbench) {
-		this.setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		this.setDescription("Change the URL to update the application");//$NON-NLS-1$
-	}
+  @Override
+  public void init(IWorkbench workbench) {
+    this.setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    this.setDescription("Change the URL to update the application");//$NON-NLS-1$
+  }
 
-	@Override
-	protected void createFieldEditors() {
-		this.updateLinkFieldEditor = new StringFieldEditor(
-				IPreferenceConstants.UPDATE_LINK, "URL:",//$NON-NLS-1$
-				this.getFieldEditorParent());
-		this.addField(this.updateLinkFieldEditor);
+  @Override
+  protected void createFieldEditors() {
+    this.updateLinkFieldEditor = new StringFieldEditor(IPreferenceConstants.UPDATE_LINK, "URL:", //$NON-NLS-1$
+        this.getFieldEditorParent());
+    this.addField(this.updateLinkFieldEditor);
 
-	}
+  }
 
-	@Override
-	protected void performDefaults() {
-		this.updateLinkFieldEditor.loadDefault();
-	}
+  @Override
+  protected void performDefaults() {
+    this.updateLinkFieldEditor.loadDefault();
+  }
 
-	@Override
-	public boolean performOk() {
-		this.updateLinkFieldEditor.store();
-		return super.performOk();
-	}
+  @Override
+  public boolean performOk() {
+    this.updateLinkFieldEditor.store();
+    return super.performOk();
+  }
 
 }

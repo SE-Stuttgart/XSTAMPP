@@ -29,57 +29,55 @@ import org.eclipse.ui.intro.IIntroPart;
 @SuppressWarnings("restriction")
 public class Welcome extends AbstractHandler {
 
-	private static Workbench workbench;
+  private static Workbench workbench;
 
-	private static IIntroPart currentIntro;
+  private static IIntroPart currentIntro;
 
-	/**
-	 * 
-	 * @author Jaqueline Patzek
-	 * 
-	 */
-	public Welcome() {
-		Welcome.setWorkbench((Workbench) PlatformUI.getWorkbench());
-	}
+  /**
+   * 
+   * @author Jaqueline Patzek
+   * 
+   */
+  public Welcome() {
+    Welcome.setWorkbench((Workbench) PlatformUI.getWorkbench());
+  }
 
-	/**
-	 * 
-	 * @author Jaqueline Patzek
-	 * 
-	 * @return returns the workbench
-	 */
-	public static Workbench getWorkbench() {
-		return Welcome.workbench;
-	}
+  /**
+   * 
+   * @author Jaqueline Patzek
+   * 
+   * @return returns the workbench
+   */
+  public static Workbench getWorkbench() {
+    return Welcome.workbench;
+  }
 
-	/**
-	 * @param workbench
-	 *            the workbench to set
-	 */
-	public static void setWorkbench(Workbench workbench) {
-		Welcome.workbench = workbench;
-	}
+  /**
+   * @param workbench
+   *          the workbench to set
+   */
+  public static void setWorkbench(Workbench workbench) {
+    Welcome.workbench = workbench;
+  }
 
-	/**
-	 * 
-	 * @author Jaqueline Patzek, Lukas Balzer
-	 * 
-	 * @return returns the currentIntro
-	 */
-	public static IIntroPart getcurrentIntro() {
-		return Welcome.currentIntro;
-	}
+  /**
+   * 
+   * @author Jaqueline Patzek, Lukas Balzer
+   * 
+   * @return returns the currentIntro
+   */
+  public static IIntroPart getcurrentIntro() {
+    return Welcome.currentIntro;
+  }
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
-				.getPerspectiveRegistry()
-				.findPerspectiveWithId("astpa.welcome.perspective");//$NON-NLS-1$
-		if (descriptor != null) {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().setPerspective(descriptor);
-		}
-		return null;
-	}
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench().getPerspectiveRegistry()
+        .findPerspectiveWithId("astpa.welcome.perspective");//$NON-NLS-1$
+    if (descriptor != null) {
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(descriptor);
+    }
+    return null;
+  }
 
 }

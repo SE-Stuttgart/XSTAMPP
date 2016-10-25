@@ -49,162 +49,153 @@ import xstampp.util.STPAPluginUtils;
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-	/**
-	 * The minimum and the initial size of the window
-	 */
-	private static final Point MINIMUM_WINDOW_SIZE = new Point(1024, 768);
+  /**
+   * The minimum and the initial size of the window
+   */
+  private static final Point MINIMUM_WINDOW_SIZE = new Point(1024, 768);
 
-	private UpdateJob updateJob;
+  private UpdateJob updateJob;
 
-	/**
-	 * Constructor of the advisor.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 * 
-	 * @param configurer
-	 *            the configurer used to configure the workbench.
-	 */
-	public ApplicationWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
-		super(configurer);
-	}
+  /**
+   * Constructor of the advisor.
+   * 
+   * @author Patrick Wickenhaeuser
+   * 
+   * @param configurer
+   *          the configurer used to configure the workbench.
+   */
+  public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+    super(configurer);
+  }
 
-	@Override
-	public ActionBarAdvisor createActionBarAdvisor(
-			IActionBarConfigurer configurer) {
-		return new ApplicationActionBarAdvisor(configurer);
-	}
+  @Override
+  public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
+    return new ApplicationActionBarAdvisor(configurer);
+  }
 
-	@SuppressWarnings("restriction")
-	@Override
-	public void postWindowOpen() {
-		ChooseWorkLocation.initiateWorkspace();
+  @SuppressWarnings("restriction")
+  @Override
+  public void postWindowOpen() {
+    ChooseWorkLocation.initiateWorkspace();
 
-//		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
-//				.getWorkbench().getExportWizardRegistry();
-//		IWizardCategory[] categories = wizardRegistry.getRootCategory()
-//				.getCategories();
-//		for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
-//
-//			if (wizard.getCategory().getId().matches("org.eclipse.ui.Basic") || //$NON-NLS-1$
-//					wizard.getCategory().getId().endsWith("category")) { //$NON-NLS-1$
-//
-//				WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-//				if (!wizardElement.getId().matches(
-//						"org.eclipse.ui.wizards.export.Preferences")) { //$NON-NLS-1$
-//					wizardRegistry.removeExtension(wizardElement
-//							.getConfigurationElement().getDeclaringExtension(),
-//							new Object[] { wizardElement });
-//				}
-//			}
-//		}
-//
-//		wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
-//				.getWorkbench().getImportWizardRegistry();
-//		categories = wizardRegistry.getRootCategory().getCategories();
-//		for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
-//			WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-//			if (!wizardElement.getId().matches(
-//					"org.eclipse.ui.wizards.import.Preferences")) { //$NON-NLS-1$
-//				wizardRegistry.removeExtension(wizardElement
-//						.getConfigurationElement().getDeclaringExtension(),
-//						new Object[] { wizardElement });
-//			}
-//		}
-	}
+    // AbstractExtensionWizardRegistry wizardRegistry =
+    // (AbstractExtensionWizardRegistry) PlatformUI
+    // .getWorkbench().getExportWizardRegistry();
+    // IWizardCategory[] categories = wizardRegistry.getRootCategory()
+    // .getCategories();
+    // for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
+    //
+    // if (wizard.getCategory().getId().matches("org.eclipse.ui.Basic") ||
+    // //$NON-NLS-1$
+    // wizard.getCategory().getId().endsWith("category")) { //$NON-NLS-1$
+    //
+    // WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+    // if (!wizardElement.getId().matches(
+    // "org.eclipse.ui.wizards.export.Preferences")) { //$NON-NLS-1$
+    // wizardRegistry.removeExtension(wizardElement
+    // .getConfigurationElement().getDeclaringExtension(),
+    // new Object[] { wizardElement });
+    // }
+    // }
+    // }
+    //
+    // wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
+    // .getWorkbench().getImportWizardRegistry();
+    // categories = wizardRegistry.getRootCategory().getCategories();
+    // for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
+    // WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+    // if (!wizardElement.getId().matches(
+    // "org.eclipse.ui.wizards.import.Preferences")) { //$NON-NLS-1$
+    // wizardRegistry.removeExtension(wizardElement
+    // .getConfigurationElement().getDeclaringExtension(),
+    // new Object[] { wizardElement });
+    // }
+    // }
+  }
 
-	@Override
-	public void preWindowOpen() {
-		IWorkbenchWindowConfigurer configurer = this.getWindowConfigurer();
-		configurer
-				.setInitialSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
-		configurer.setShowCoolBar(true);
-		configurer.setShowPerspectiveBar(false);
-		configurer.setShellStyle(SWT.APPLICATION_MODAL);
-		configurer.getActionBarConfigurer().getCoolBarManager()
-				.setLockLayout(false);
-		configurer.setShowStatusLine(true);
-		configurer.setShowProgressIndicator(true);
-		configurer.setTitle(Messages.PlatformName);
-//		configurer.setShowPerspectiveBar(true);
+  @Override
+  public void preWindowOpen() {
+    IWorkbenchWindowConfigurer configurer = this.getWindowConfigurer();
+    configurer.setInitialSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
+    configurer.setShowCoolBar(true);
+    configurer.setShowPerspectiveBar(false);
+    configurer.setShellStyle(SWT.APPLICATION_MODAL);
+    configurer.getActionBarConfigurer().getCoolBarManager().setLockLayout(false);
+    configurer.setShowStatusLine(true);
+    configurer.setShowProgressIndicator(true);
+    configurer.setTitle(Messages.PlatformName);
+    // configurer.setShowPerspectiveBar(true);
 
-	}
+  }
 
-	private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
-		List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
-		for (IWizardCategory wizardCategory : categories) {
-			results.addAll(Arrays.asList(wizardCategory.getWizards()));
-			results.addAll(Arrays.asList(this.getAllWizards(wizardCategory
-					.getCategories())));
-		}
-		return results.toArray(new IWizardDescriptor[0]);
-	}
+  private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
+    List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
+    for (IWizardCategory wizardCategory : categories) {
+      results.addAll(Arrays.asList(wizardCategory.getWizards()));
+      results.addAll(Arrays.asList(this.getAllWizards(wizardCategory.getCategories())));
+    }
+    return results.toArray(new IWizardDescriptor[0]);
+  }
 
-	@Override
-	public void postWindowCreate() {
-		super.postWindowCreate();
-		final Shell shell = this.getWindowConfigurer().getWindow().getShell();
-		shell.setMinimumSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
+  @Override
+  public void postWindowCreate() {
+    super.postWindowCreate();
+    final Shell shell = this.getWindowConfigurer().getWindow().getShell();
+    shell.setMinimumSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
 
-		ServiceReference<?> reference = Activator.getContext()
-				.getServiceReference(IProvisioningAgent.SERVICE_NAME);
-		final IProvisioningAgent agent = (IProvisioningAgent) Activator
-				.getContext().getService(reference);
-		Activator.getContext().ungetService(reference);
-//		this.updateJob = new UpdateJob(Messages.UpdatingASTPA, agent, shell,
-//				 true);
-//		this.updateJob.schedule();
-	}
+    ServiceReference<?> reference = Activator.getContext().getServiceReference(IProvisioningAgent.SERVICE_NAME);
+    final IProvisioningAgent agent = (IProvisioningAgent) Activator.getContext().getService(reference);
+    Activator.getContext().ungetService(reference);
+    // this.updateJob = new UpdateJob(Messages.UpdatingASTPA, agent, shell,
+    // true);
+    // this.updateJob.schedule();
+  }
 
-	@Override
-	public boolean isDurableFolder(String perspectiveId, String folderId) {
-		return true;
-	}
+  @Override
+  public boolean isDurableFolder(String perspectiveId, String folderId) {
+    return true;
+  }
 
-	@Override
-	public boolean preWindowShellClose() {
-		ProjectManager manager = ProjectManager
-				.getContainerInstance();
-		
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		if (page.findView("A-CAST.view1") != null) { 
-		   page.hideView(page.findView("A-CAST.view1"));
-		}
-		IPerspectiveRegistry registry = PlatformUI.getWorkbench().getPerspectiveRegistry();
-		for(IPerspectiveDescriptor dec:registry.getPerspectives()){
-			registry.revertPerspective(dec);
-		}
-		page.resetPerspective();
-//		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
-		if(!STPAPluginUtils.getUnfinishedJobs().isEmpty())
-		{
-			MessageDialog.openError(null, "Unfinished Jobs", "there are still unfinished jobs!"
-					+ " They need to be canceled or finished before the platform can shut down!");
-			return false;
-		}
-		ProjectManager viewContainer = manager;
-		if (manager.getUnsavedChanges()) {
-			MessageDialog dialog = new MessageDialog(Display.getCurrent()
-					.getActiveShell(), Messages.PlatformName, null,
-					Messages.ThereAreUnsafedChangesDoYouWantToStoreThem,
-					MessageDialog.CONFIRM, new String[] { Messages.Store,
-							Messages.Discard, Messages.Abort }, 0);
-			int resultNum = dialog.open();
-			switch (resultNum) {
-			case -1:
-				return false;
-			case 0:
-				return viewContainer.saveAllDataModels();
-			case 1:
-				return true;
-			case 2:
-				return false;
-			default:
-				break;
-			}
-		}
-		
-	
-		return true;
-	}
+  @Override
+  public boolean preWindowShellClose() {
+    ProjectManager manager = ProjectManager.getContainerInstance();
+
+    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    if (page.findView("A-CAST.view1") != null) { //$NON-NLS-1$
+      page.hideView(page.findView("A-CAST.view1")); //$NON-NLS-1$
+    }
+    IPerspectiveRegistry registry = PlatformUI.getWorkbench().getPerspectiveRegistry();
+    for (IPerspectiveDescriptor dec : registry.getPerspectives()) {
+      registry.revertPerspective(dec);
+    }
+    page.resetPerspective();
+    // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+    if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
+      MessageDialog.openError(null, Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
+          Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
+              + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
+      return false;
+    }
+    ProjectManager viewContainer = manager;
+    if (manager.getUnsavedChanges()) {
+      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.PlatformName, null,
+          Messages.ThereAreUnsafedChangesDoYouWantToStoreThem, MessageDialog.CONFIRM,
+          new String[] { Messages.Store, Messages.Discard, Messages.Abort }, 0);
+      int resultNum = dialog.open();
+      switch (resultNum) {
+      case -1:
+        return false;
+      case 0:
+        return viewContainer.saveAllDataModels();
+      case 1:
+        return true;
+      case 2:
+        return false;
+      default:
+        break;
+      }
+    }
+
+    return true;
+  }
 }

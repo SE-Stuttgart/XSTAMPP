@@ -24,190 +24,194 @@ import xstampp.ui.editors.STPAEditorInput;
  * @author Lukas Balzer
  * 
  */
-public class StepSelector extends AbstractSelector implements IMenuListener{
+public class StepSelector extends AbstractSelector implements IMenuListener {
 
-	private String editorId;
-	private Map<String,STPAEditorInput> inputs;
-	private boolean showOpenWith;
-	private String openWithPerspective;
-	private ArrayList<String> additionalViews;
+  private String editorId;
+  private Map<String, STPAEditorInput> inputs;
+  private boolean showOpenWith;
+  private String openWithPerspective;
+  private ArrayList<String> additionalViews;
 
-	/**
-	 * constructs a step selector which manages the selection and interaction with a 
-	 * step item in the project tree
-	 * @author Lukas Balzer
-	 *
-	 * @param item {@link AbstractSelector#getItem()}
-	 * @param projectId {@link AbstractSelector#getProjectId()}
-	 * @param editorId the editor id as defined in the plugin.xml
-	 * @param editorName the name of the editor which shall be dispayed in the workbench 
-	 */
-	public StepSelector(TreeItem item, IProjectSelection parent,UUID projectId, String editorId, String editorName) {
-		super(item, projectId, parent);
-		this.editorId = editorId;
-		this.inputs=new HashMap<>();
-		STPAEditorInput input = new STPAEditorInput(projectId, editorId, item);
-		input.setStepName(editorName);
-		this.inputs.put(editorId,input);
-		this.showOpenWith = false;
-	}
-	
-	@Override
-	public void changeItem(TreeItem item) {
-		for(STPAEditorInput input : this.inputs.values()){
-			input.setStepItem(item);
-		}
-		super.changeItem(item);
-	}
+  /**
+   * constructs a step selector which manages the selection and interaction with
+   * a step item in the project tree
+   * 
+   * @author Lukas Balzer
+   *
+   * @param item
+   *          {@link AbstractSelector#getItem()}
+   * @param projectId
+   *          {@link AbstractSelector#getProjectId()}
+   * @param editorId
+   *          the editor id as defined in the plugin.xml
+   * @param editorName
+   *          the name of the editor which shall be dispayed in the workbench
+   */
+  public StepSelector(TreeItem item, IProjectSelection parent, UUID projectId, String editorId, String editorName) {
+    super(item, projectId, parent);
+    this.editorId = editorId;
+    this.inputs = new HashMap<>();
+    STPAEditorInput input = new STPAEditorInput(projectId, editorId, item);
+    input.setStepName(editorName);
+    this.inputs.put(editorId, input);
+    this.showOpenWith = false;
+  }
 
-	/**
-	 * adds a editor which is registered for the step, the first editor which is
-	 * added is the default
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param id
-	 *            the id with which a EditorPart must be registered in the
-	 *            <code>plugin.xml</code>
-	 * @param editorName TODO
-	 */
-	public void addStepEditor(String id, String editorName) {
-		STPAEditorInput input = new STPAEditorInput(getProjectId(), id,getItem());
-		input.setStepName(editorName);
-		this.inputs.put(id, input);
-	}
+  @Override
+  public void changeItem(TreeItem item) {
+    for (STPAEditorInput input : this.inputs.values()) {
+      input.setStepItem(item);
+    }
+    super.changeItem(item);
+  }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 */
-	public void openDefaultEditor() {
-		openEditor(this.getDefaultEditorId());
-	}
+  /**
+   * adds a editor which is registered for the step, the first editor which is
+   * added is the default
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param id
+   *          the id with which a EditorPart must be registered in the
+   *          <code>plugin.xml</code>
+   * @param editorName
+   *          TODO
+   */
+  public void addStepEditor(String id, String editorName) {
+    STPAEditorInput input = new STPAEditorInput(getProjectId(), id, getItem());
+    input.setStepName(editorName);
+    this.inputs.put(id, input);
+  }
 
-	/**
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param id the id 
-	 */
-	public void openEditor(String id) {
-		STPAEditorInput input = this.inputs.get(id);
-		if (input != null) {
-			input.addViews(this.additionalViews);
-			if(id.equals("acast.steps.step2_1")){
-				List<String> tmp=new ArrayList<String>();
-				tmp.add("A-CAST.view1");
-				input.addViews(tmp);
-			}
-			input.setPerspective(openWithPerspective);
-			try {
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage()
-				.openEditor(input, id);
-				input.activate();
-			} catch (PartInitException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-	}
-	@Override
-	public void setPathHistory(String pathHistory) {
-		for(STPAEditorInput input : this.inputs.values()){
-			input.setPathHistory(pathHistory);
-		}
-		super.setPathHistory(pathHistory);
-	}
-	
-	/**
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @return the input which is used by the selector 
-	 */
-	public IEditorInput getEditorInput() {
-		return this.inputs.values().iterator().next();
-	}
-	
-	
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * @return string
-	 */
-	public String getDefaultEditorName(){
-		return this.inputs.values().iterator().next().getStepName();
-	}
-	
-	
-	@Override
-	public void cleanUp(){
-		for(STPAEditorInput input : this.inputs.values()){
-			IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().findEditor(input);
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-			.getActivePage().closeEditor(part, false);
-		}
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   */
+  public void openDefaultEditor() {
+    openEditor(this.getDefaultEditorId());
+  }
 
-	/**
-	 * @return the editorId
-	 */
-	public String getDefaultEditorId() {
-		return this.editorId;
-	}
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   * @param id
+   *          the id
+   */
+  public void openEditor(String id) {
+    STPAEditorInput input = this.inputs.get(id);
+    if (input != null) {
+      input.addViews(this.additionalViews);
+      if (id.equals("acast.steps.step2_1")) { //$NON-NLS-1$
+        List<String> tmp = new ArrayList<String>();
+        tmp.add("A-CAST.view1"); //$NON-NLS-1$
+        input.addViews(tmp);
+      }
+      input.setPerspective(openWithPerspective);
+      try {
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(input, id);
+        input.activate();
+      } catch (PartInitException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
 
-	/**
-	 * @param editorId the availableEditor to set
-	 */
-	public void setDefaultEditorId(String editorId) {
-		this.editorId = editorId;
-	}
+  }
 
-	@Override
-	public void menuAboutToShow(IMenuManager manager) {
-		
-	}
-	
-	public Collection<STPAEditorInput> getInputs() {
-		return this.inputs.values();
-		
-	}
+  @Override
+  public void setPathHistory(String pathHistory) {
+    for (STPAEditorInput input : this.inputs.values()) {
+      input.setPathHistory(pathHistory);
+    }
+    super.setPathHistory(pathHistory);
+  }
 
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   * @return the input which is used by the selector
+   */
+  public IEditorInput getEditorInput() {
+    return this.inputs.values().iterator().next();
+  }
 
-	/**
-	 * @return the openWithPerspective
-	 */
-	public String getOpenWithPerspective() {
-		return this.openWithPerspective;
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * @return string
+   */
+  public String getDefaultEditorName() {
+    return this.inputs.values().iterator().next().getStepName();
+  }
 
-	/**
-	 * @param configurationElement the openWithPerspective to set
-	 */
-	public void setOpenWithPerspective(IConfigurationElement configurationElement) {
-		
-		this.openWithPerspective = configurationElement.getAttribute("targetId"); //$NON-NLS-1$
-		this.additionalViews = new ArrayList<>();
-		for(IConfigurationElement element : configurationElement.getChildren("view")){  //$NON-NLS-1$
-			this.additionalViews.add(element.getAttribute("id")); //$NON-NLS-1$
-		}
-	}
-	
-	/**
-	 * @param perspectiveId the openWithPerspective to set
-	 */
-	public void setOpenWithPerspective(String perspectiveId) {
-		
-		this.openWithPerspective = perspectiveId;
-		this.additionalViews = new ArrayList<>();
-	}
-	
-	public void addViews() throws PartInitException {
-		for(int i=0;this.additionalViews != null && i< this.additionalViews.size();i++){
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(this.additionalViews.get(i));
-		}
-	}
+  @Override
+  public void cleanUp() {
+    for (STPAEditorInput input : this.inputs.values()) {
+      IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditor(input);
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(part, false);
+    }
+  }
+
+  /**
+   * @return the editorId
+   */
+  public String getDefaultEditorId() {
+    return this.editorId;
+  }
+
+  /**
+   * @param editorId
+   *          the availableEditor to set
+   */
+  public void setDefaultEditorId(String editorId) {
+    this.editorId = editorId;
+  }
+
+  @Override
+  public void menuAboutToShow(IMenuManager manager) {
+
+  }
+
+  public Collection<STPAEditorInput> getInputs() {
+    return this.inputs.values();
+
+  }
+
+  /**
+   * @return the openWithPerspective
+   */
+  public String getOpenWithPerspective() {
+    return this.openWithPerspective;
+  }
+
+  /**
+   * @param configurationElement
+   *          the openWithPerspective to set
+   */
+  public void setOpenWithPerspective(IConfigurationElement configurationElement) {
+
+    this.openWithPerspective = configurationElement.getAttribute("targetId"); //$NON-NLS-1$
+    this.additionalViews = new ArrayList<>();
+    for (IConfigurationElement element : configurationElement.getChildren("view")) { //$NON-NLS-1$
+      this.additionalViews.add(element.getAttribute("id")); //$NON-NLS-1$
+    }
+  }
+
+  /**
+   * @param perspectiveId
+   *          the openWithPerspective to set
+   */
+  public void setOpenWithPerspective(String perspectiveId) {
+
+    this.openWithPerspective = perspectiveId;
+    this.additionalViews = new ArrayList<>();
+  }
+
+  public void addViews() throws PartInitException {
+    for (int i = 0; this.additionalViews != null && i < this.additionalViews.size(); i++) {
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(this.additionalViews.get(i));
+    }
+  }
 }

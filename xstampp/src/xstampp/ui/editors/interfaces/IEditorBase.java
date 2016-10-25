@@ -30,33 +30,33 @@ import xstampp.Activator;
  */
 public interface IEditorBase extends Observer {
 
-	/**
-	 * Stores preferences
-	 * 
-	 * @author Sebastian Sieber
-	 */
-	IPreferenceStore STORE = Activator.getDefault().getPreferenceStore();
+  /**
+   * Stores preferences
+   * 
+   * @author Sebastian Sieber
+   */
+  IPreferenceStore STORE = Activator.getDefault().getPreferenceStore();
 
-	/**
-	 * Gets the ID of the view. It doesn't matter what the ID is, as long as it
-	 * is unique.
-	 * 
-	 * @return returns the view's ID.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 */
-	String getId();
+  /**
+   * Gets the ID of the view. It doesn't matter what the ID is, as long as it is
+   * unique.
+   * 
+   * @return returns the view's ID.
+   * 
+   * @author Patrick Wickenhaeuser
+   */
+  String getId();
 
-	/**
-	 * Get the title of the view.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 * 
-	 * @return the title of the view.
-	 */
-	String getTitle();
+  /**
+   * Get the title of the view.
+   * 
+   * @author Patrick Wickenhaeuser
+   * 
+   * @return the title of the view.
+   */
+  String getTitle();
 
-	@Override
-	void update(Observable dataModelController, Object updatedValue);
+  @Override
+  void update(Observable dataModelController, Object updatedValue);
 
 }

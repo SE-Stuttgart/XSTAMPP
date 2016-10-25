@@ -29,9 +29,9 @@ import xstampp.ui.common.ProjectManager;
  */
 public class SaveAs extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		UUID saveModel = UUID.fromString(event.getParameter("saveAsProjectId")); //$NON-NLS-1$
-		return ProjectManager.getContainerInstance().saveDataModelAs(saveModel);
-	}
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    UUID saveModel = UUID.fromString(event.getParameter("saveAsProjectId")); //$NON-NLS-1$
+    return ProjectManager.getContainerInstance().saveDataModelAs(saveModel);
+  }
 }

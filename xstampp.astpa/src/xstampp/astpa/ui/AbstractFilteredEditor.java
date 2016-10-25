@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,7 +15,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import xstampp.ui.editors.StandartEditorPart;
 
@@ -47,6 +48,13 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 				Label label= new Label(filter,SWT.LEFT);
 				label.setText("Filter Categories");
 				this.categoryCombo = new Combo(filter, SWT.READ_ONLY|SWT.None);
+				this.categoryCombo.addDisposeListener(new DisposeListener() {
+					
+					@Override
+					public void widgetDisposed(DisposeEvent e) {
+						System.out.println("Dispose of the category combo");
+					}
+				});
 				for (String string : getCategoryArray()) {
 					this.categoryCombo.add(string);
 				}
@@ -55,7 +63,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						filterText.setText("");
-						if(comboChoicesToEntrys.get(categoryCombo.getText()) != null){
+						if(comboChoicesToEntrys != null && comboChoicesToEntrys.get(categoryCombo.getText()) != null){
 							filterText.setItems(comboChoicesToEntrys.get(categoryCombo.getText()));
 						}else{
 							filterText.removeAll();
@@ -64,7 +72,6 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 					}
 				});
 			}
-			
 			this.filterText= new Combo(filter, SWT.LEFT |SWT.BORDER);
 			this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			this.filterText.addSelectionListener(new SelectionAdapter() {
@@ -106,7 +113,8 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 	 * 
 	 * @return a Map containing booleans mapped to Strings describing the Categories which can be chosen in the filter combo,
 	 * 			the categories must be unique since String matching is used to distinguish between categories.
-	 * 			The booleans describe whether or not the category is handled as exclusive category, what means that all other categories are filtered 
+	 * 			The booleans describe whether or not the category is handled as exclusive category,
+	 * 			what means that all other explicit categories are filtered 
 	 */
 	protected abstract Map<String, Boolean> getCategories();
 	
@@ -126,10 +134,10 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 			//the text is filtered
 			
 			if(getActiveCategory() != null && category != null && !getActiveCategory().equals(globalCategory)){
-					//if the active category is exposed then all other categories are filtered
+					//if the active category is explicit then all other expizit categories are filtered
 				if(getCategories().get(getActiveCategory()) && !getActiveCategory().equals(category)){
-					return true;
-				}//if the active category is explicit
+					return getCategories().get(category);
+				}//if the active category is not explicit
 				if(!getCategories().get(getActiveCategory())&& !getActiveCategory().equals(category)){
 					return false;
 				}

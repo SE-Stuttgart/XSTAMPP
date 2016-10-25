@@ -46,166 +46,144 @@ import xstampp.ui.common.ProjectManager;
  */
 public class UpdateJob extends Job {
 
-	/**
-	 * The location of the repository
-	 */
-	private static final String REPOSITORY_LOC = System.getProperty(
-			"UpdateHandler.Repo", //$NON-NLS-1$
-			Activator.getDefault().getPreferenceStore()
-					.getString(IPreferenceConstants.UPDATE_LINK));
+  /**
+   * The location of the repository
+   */
+  private static final String REPOSITORY_LOC = System.getProperty("UpdateHandler.Repo", //$NON-NLS-1$
+      Activator.getDefault().getPreferenceStore().getString(IPreferenceConstants.UPDATE_LINK));
 
-	private IProvisioningAgent agent;
-	private Shell parent;
-	private ProjectManager viewContainer;
-	private boolean startUp;
+  private IProvisioningAgent agent;
+  private Shell parent;
+  private ProjectManager viewContainer;
+  private boolean startUp;
 
-	/**
-	 * Constructor of the update Job
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param name
-	 *            the name of the job
-	 * @param agent
-	 *            the provisioning agent
-	 * @param parent
-	 *            the parent shell
-	 * @param startUp
-	 *            true, if this is the check at the startup
-	 */
-	public UpdateJob(String name, IProvisioningAgent agent, Shell parent,boolean startUp) {
-		super(name);
-		ProjectManager.getLOGGER().debug("Search " + UpdateJob.REPOSITORY_LOC + " for updates");
-		this.agent = agent;
-		this.parent = parent;
-		this.viewContainer = ProjectManager.getContainerInstance();
-		this.startUp = startUp;
-		ValidationDialogService dialogService = new ValidationDialogService();
-		dialogService.bindProvisioningAgent(agent);
-	}
+  /**
+   * Constructor of the update Job
+   * 
+   * @author Fabian Toth
+   * 
+   * @param name
+   *          the name of the job
+   * @param agent
+   *          the provisioning agent
+   * @param parent
+   *          the parent shell
+   * @param startUp
+   *          true, if this is the check at the startup
+   */
+  public UpdateJob(String name, IProvisioningAgent agent, Shell parent, boolean startUp) {
+    super(name);
+    ProjectManager.getLOGGER().debug("Search " + UpdateJob.REPOSITORY_LOC + " for updates");
+    this.agent = agent;
+    this.parent = parent;
+    this.viewContainer = ProjectManager.getContainerInstance();
+    this.startUp = startUp;
+    ValidationDialogService dialogService = new ValidationDialogService();
+    dialogService.bindProvisioningAgent(agent);
+  }
 
-	private boolean doInstall = false;
+  private boolean doInstall = false;
 
-	@Override
-	protected IStatus run(final IProgressMonitor monitor) {
+  @Override
+  protected IStatus run(final IProgressMonitor monitor) {
 
-		// 1. Prepare update plumbing
-		final ProvisioningSession session = new ProvisioningSession(this.agent);
-		final UpdateOperation operation = new UpdateOperation(session);
-		URI uri = null;
-		try {
-			uri = new URI(UpdateJob.REPOSITORY_LOC);
-		} catch (final URISyntaxException e) {
-			Display.getDefault().syncExec(new Runnable() {
+    // 1. Prepare update plumbing
+    final ProvisioningSession session = new ProvisioningSession(this.agent);
+    final UpdateOperation operation = new UpdateOperation(session);
+    URI uri = null;
+    try {
+      uri = new URI(UpdateJob.REPOSITORY_LOC);
+    } catch (final URISyntaxException e) {
+      Display.getDefault().syncExec(new Runnable() {
 
-				@Override
-				public void run() {
-					MessageDialog.openError(UpdateJob.this.parent,
-							"URI invalid", e.getMessage()); //$NON-NLS-1$
-				}
-			});
-			return Status.CANCEL_STATUS;
-		}
-		// set location of artifact and metadata repo
-		operation.getProvisioningContext().setArtifactRepositories(
-				new URI[] { uri });
-		operation.getProvisioningContext().setMetadataRepositories(
-				new URI[] { uri });
+        @Override
+        public void run() {
+          MessageDialog.openError(UpdateJob.this.parent, "URI invalid", e.getMessage()); //$NON-NLS-1$
+        }
+      });
+      return Status.CANCEL_STATUS;
+    }
+    // set location of artifact and metadata repo
+    operation.getProvisioningContext().setArtifactRepositories(new URI[] { uri });
+    operation.getProvisioningContext().setMetadataRepositories(new URI[] { uri });
 
-		// 2. check for updates
-		final IStatus status = operation.resolveModal(monitor);
-		// failed to find updates (inform user and exit)
-		if ((status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE)
-				&& !this.startUp) {
-			Display.getDefault().syncExec(new Runnable() {
+    // 2. check for updates
+    final IStatus status = operation.resolveModal(monitor);
+    // failed to find updates (inform user and exit)
+    if ((status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) && !this.startUp) {
+      Display.getDefault().syncExec(new Runnable() {
 
-				@Override
-				public void run() {
-					MessageDialog
-							.openWarning(
-									UpdateJob.this.parent,
-									Messages.NoUpdate,
-									Messages.NoUpdatesForTheCurrentInstallationHaveBeenFound);
-				}
-			});
-		}
-		// 3. Ask if updates should be installed and run installation
-		if (status.isOK() && (status.getSeverity() != IStatus.ERROR)) {
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					String updates = ""; //$NON-NLS-1$
-					for (Update update : operation.getPossibleUpdates()) {
-						updates += update.toString().replaceAll("==>", "to") + "\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					}
-					if (operation.getPossibleUpdates().length > 0) {
-						UpdateJob.this.doInstall = MessageDialog.openQuestion(
-								UpdateJob.this.parent,
-								Messages.ReallyInstallUpdates, updates);
-					} else if (!UpdateJob.this.startUp) {
-						MessageDialog
-								.openInformation(
-										UpdateJob.this.parent,
-										Messages.UpdateFromIDE,
-										Messages.TheUpdateRoutineDoesNotWorkWhenASTPAIsExecutedFromTheIDE);
-					}
-				}
-			});
-		}
+        @Override
+        public void run() {
+          MessageDialog.openWarning(UpdateJob.this.parent, Messages.NoUpdate,
+              Messages.NoUpdatesForTheCurrentInstallationHaveBeenFound);
+        }
+      });
+    }
+    // 3. Ask if updates should be installed and run installation
+    if (status.isOK() && (status.getSeverity() != IStatus.ERROR)) {
+      Display.getDefault().syncExec(new Runnable() {
+        @Override
+        public void run() {
+          String updates = ""; //$NON-NLS-1$
+          for (Update update : operation.getPossibleUpdates()) {
+            updates += update.toString().replaceAll("==>", "to") + "\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          }
+          if (operation.getPossibleUpdates().length > 0) {
+            UpdateJob.this.doInstall = MessageDialog.openQuestion(UpdateJob.this.parent, Messages.ReallyInstallUpdates,
+                updates);
+          } else if (!UpdateJob.this.startUp) {
+            MessageDialog.openInformation(UpdateJob.this.parent, Messages.UpdateFromIDE,
+                Messages.TheUpdateRoutineDoesNotWorkWhenASTPAIsExecutedFromTheIDE);
+          }
+        }
+      });
+    }
 
-		// start installation
-		if (this.doInstall) {
-			final ProvisioningJob provisioningJob = operation
-					.getProvisioningJob(monitor);
-			// updates cannot run from within Eclipse IDE!!!
-			if (provisioningJob == null) {
-				System.err
-						.println(Messages.RunningUpdateFromWithinEclipseIDEThisWontWork);
-				throw new NullPointerException();
-			}
-			// register a job change listener to track
-			provisioningJob.addJobChangeListener(new UpdateJobChangeAdapter(
-					this.parent, this.viewContainer));
-			provisioningJob.schedule();
-		}
-		return Status.OK_STATUS;
-	}
+    // start installation
+    if (this.doInstall) {
+      final ProvisioningJob provisioningJob = operation.getProvisioningJob(monitor);
+      // updates cannot run from within Eclipse IDE!!!
+      if (provisioningJob == null) {
+        System.err.println(Messages.RunningUpdateFromWithinEclipseIDEThisWontWork);
+        throw new NullPointerException();
+      }
+      // register a job change listener to track
+      provisioningJob.addJobChangeListener(new UpdateJobChangeAdapter(this.parent, this.viewContainer));
+      provisioningJob.schedule();
+    }
+    return Status.OK_STATUS;
+  }
 }
 
 class UpdateJobChangeAdapter extends JobChangeAdapter {
 
-	private Shell parent;
-	private ProjectManager viewContainer;
+  private Shell parent;
+  private ProjectManager viewContainer;
 
-	public UpdateJobChangeAdapter(Shell parent, ProjectManager viewContainer) {
-		this.parent = parent;
-		this.viewContainer = viewContainer;
-	}
+  public UpdateJobChangeAdapter(Shell parent, ProjectManager viewContainer) {
+    this.parent = parent;
+    this.viewContainer = viewContainer;
+  }
 
-	
-	@Override
-	public void done(final IJobChangeEvent event) {
-		if (event.getResult().isOK()) {
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					boolean restart = MessageDialog.openQuestion(
-									UpdateJobChangeAdapter.this.parent,
-									Messages.UpdatesInstalledRestart,
-									Messages.UpdatesHaveBeenInstalledSuccessfullyDoYouWantToRestart);
-					if (UpdateJobChangeAdapter.this.viewContainer
-							.getUnsavedChanges()) {
-						restart = restart
-								&& !MessageDialog.openQuestion(
-												UpdateJobChangeAdapter.this.parent,
-												Messages.PlatformName,
-												Messages.ThereAreUnsafedChangesDoYouWantToStoreThemAbort);
-					}if (restart) {
-						PlatformUI.getWorkbench().restart();
-					}
-				}
-			});
-			super.done(event);
-		}
-	}
+  @Override
+  public void done(final IJobChangeEvent event) {
+    if (event.getResult().isOK()) {
+      Display.getDefault().syncExec(new Runnable() {
+        @Override
+        public void run() {
+          boolean restart = MessageDialog.openQuestion(UpdateJobChangeAdapter.this.parent,
+              Messages.UpdatesInstalledRestart, Messages.UpdatesHaveBeenInstalledSuccessfullyDoYouWantToRestart);
+          if (UpdateJobChangeAdapter.this.viewContainer.getUnsavedChanges()) {
+            restart = restart && !MessageDialog.openQuestion(UpdateJobChangeAdapter.this.parent, Messages.PlatformName,
+                Messages.ThereAreUnsafedChangesDoYouWantToStoreThemAbort);
+          }
+          if (restart) {
+            PlatformUI.getWorkbench().restart();
+          }
+        }
+      });
+      super.done(event);
+    }
+  }
 }

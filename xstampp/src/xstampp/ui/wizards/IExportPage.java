@@ -11,43 +11,43 @@ import org.eclipse.jface.wizard.IWizardPage;
  */
 public interface IExportPage extends IWizardPage {
 
-	/**
-	 * @return The path as uri
-	 */
-	String getExportPath();
+  /**
+   * @return The path as uri
+   */
+  String getExportPath();
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return whether the table shall be exported as a single image or in
-	 *         multiple images
-	 */
-	public boolean asOne();
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return whether the table shall be exported as a single image or in
+   *         multiple images
+   */
+  public boolean asOne();
 
-	/**
-	 * @return the id for the currently selected project or null if the chooser
-	 *         has not be instantiated
-	 */
-	public UUID getProjectID();
-	
-	/**
-	 * @return the pageFormat
-	 */
-	public String getPageFormat();
-	
-	/**
-	 * @return the contentSize
-	 */
-	public int getContentSize();
+  /**
+   * @return the id for the currently selected project or null if the chooser
+   *         has not be instantiated
+   */
+  public UUID getProjectID();
 
-	/**
-	 * @return the headSize
-	 */
-	public int getHeadSize();
+  /**
+   * @return the pageFormat
+   */
+  public String getPageFormat();
 
-	/**
-	 * @return the titleSize
-	 */
-	public int getTitleSize();
+  /**
+   * @return the contentSize
+   */
+  public int getContentSize();
+
+  /**
+   * @return the headSize
+   */
+  public int getHeadSize();
+
+  /**
+   * @return the titleSize
+   */
+  public int getTitleSize();
 }

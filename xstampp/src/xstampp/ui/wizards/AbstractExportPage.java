@@ -51,477 +51,469 @@ import xstampp.util.JAXBExportJob;
  * @author Lukas Balzer
  * 
  */
-public abstract class AbstractExportPage extends AbstractWizardPage implements
-		IExportPage {
-	
-	
-	protected class DemoCanvas extends Canvas implements PaintListener {
-		private String title;
-		
-		private Font normalFont = new Font(null,"normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
-		private Font headerFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
-		private Font titleFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
-		private Font previewFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
-		private Color fontColor;
-		private Color bgColor;
-		private UUID projectId;
-		private static final int string_xPos = 10;
-		private static final int string_yPos = 0;
-		private static final int PREVIEW_XPOS = 8;
+public abstract class AbstractExportPage extends AbstractWizardPage implements IExportPage {
 
-		public DemoCanvas(Composite parent, int style) {
-			super(parent, style);
-			this.addPaintListener(this);
-		}
+  protected class DemoCanvas extends Canvas implements PaintListener {
+    private String title;
 
-		public void setProjectID(UUID id) {
-			this.projectId = id;
-			this.redraw();
-		}
-		
-		/**
-		 * @param contentSize the contentSize to set
-		 */
-		public void setContentSize(int contentSize) {
-			this.normalFont.dispose();
-			this.normalFont = new Font(null, "normalFont", contentSize, SWT.NORMAL); //$NON-NLS-1$
-			redraw();
-		}
-		/**
-		 * @param headSize the headSize to set
-		 */
-		public void setHeadSize(int headSize) {
-			this.headerFont.dispose();
-			this.headerFont = new Font(null, "font", headSize, SWT.NORMAL); //$NON-NLS-1$
-			redraw();
-		}
+    private Font normalFont = new Font(null, "normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
+    private Font headerFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+    private Font titleFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+    private Font previewFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+    private Color fontColor;
+    private Color bgColor;
+    private UUID projectId;
+    private static final int string_xPos = 10;
+    private static final int string_yPos = 0;
+    private static final int PREVIEW_XPOS = 8;
 
-		/**
-		 * @param headSize the headSize to set
-		 */
-		public void setTitleSize(int size) {
-			this.titleFont.dispose();
-			this.titleFont = new Font(null, "font", size, SWT.NORMAL); //$NON-NLS-1$
-			redraw();
-		}
-		
-		@Override
-		public void paintControl(PaintEvent e) {
-			if (this.projectId == null) {
-				title = Messages.NewProject;
-			} else {
-				title = ProjectManager.getContainerInstance()
-						.getTitle(this.projectId);
-			}
-			e.gc.setFont(DemoCanvas.this.titleFont);
-			int top_offset = e.gc.getFontMetrics().getHeight();
-			e.gc.setFont(DemoCanvas.this.headerFont);
-			int title_offset = top_offset + e.gc.getFontMetrics().getHeight();
-			e.gc.setFont(DemoCanvas.this.normalFont);
-			int text_offset =title_offset + e.gc.getFontMetrics().getHeight();
-			e.gc.setBackground(ColorConstants.white);
-			e.gc.fillRectangle(0, top_offset/2, 400, text_offset);
+    public DemoCanvas(Composite parent, int style) {
+      super(parent, style);
+      this.addPaintListener(this);
+    }
 
-			setSize(400, text_offset);
-			this.fontColor = new Color(null, PreferenceConverter.getColor(
-					store,
-					IPreferenceConstants.COMPANY_FONT_COLOR));
-			this.bgColor = new Color(null, PreferenceConverter.getColor(
-					store,
-					IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
-			e.gc.setForeground(this.fontColor);
-			e.gc.setFont(DemoCanvas.this.headerFont);
-			e.gc.setBackground(this.bgColor);
-			e.gc.drawString(title,
-					DemoCanvas.PREVIEW_XPOS, top_offset, false);
-			e.gc.setFont(DemoCanvas.this.normalFont);
-			e.gc.drawString("text",
-					DemoCanvas.PREVIEW_XPOS + 6, title_offset, true);
-			e.gc.setForeground(ColorConstants.black);
-			e.gc.setFont(DemoCanvas.this.titleFont);
-			e.gc.drawText(Messages.Preview, DemoCanvas.string_xPos, DemoCanvas.string_yPos,
-					true);
-		}
-	}
-	
-	public static final String EXPORT_DATA = "Export data";
-	
-	/**
-	 * a constant which is used by a {@link JAXBExportJob} 
-	 * sets it as a parameter in the creation of the pdf
-	 * to print in landscape mode  
-	 */
-	public static final String A4_LANDSCAPE = "A4Landscape";
-	
-	/**
-	 * a constant which is used by a {@link JAXBExportJob} 
-	 * sets it as a parameter in the creation of the pdf
-	 * to print in portrait mode  
-	 */
-	public static final String A4_PORTRAIT = "A4";
-	public static final String NON = "no exprot";
-	public static final String EXPORT = "include in exprot";
-	private Map<String, UUID> projects;
-	private Combo chooseList;
-	protected PathComposite pathChooser;
-	private String pluginID;
-	private String nameSuggestion;
-	protected String pageFormat;
-	private boolean needProjectID;
-	private int contentSize;
-	private int headSize;
-	private int titleSize;
+    public void setProjectID(UUID id) {
+      this.projectId = id;
+      this.redraw();
+    }
 
-	/**
-	 * 
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param pageName
-	 * 			the name of the export page
- 	 * @param pluginID
-	 * 			The plugin for which this export page is created
-	 */
-	protected AbstractExportPage(String pageName, String pluginID) {
-		super(pageName);
-		this.projects = new HashMap<>();
-		this.pluginID = pluginID;
-		this.pageFormat = A4_PORTRAIT;
-		this.needProjectID = true;
-		contentSize = 10;
-		headSize = 12;
-		titleSize = 14;
-	}
+    /**
+     * @param contentSize
+     *          the contentSize to set
+     */
+    public void setContentSize(int contentSize) {
+      this.normalFont.dispose();
+      this.normalFont = new Font(null, "normalFont", contentSize, SWT.NORMAL); //$NON-NLS-1$
+      redraw();
+    }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param path
-	 *            the path as String
-	 */
-	public void setExportPath(String path) {
-		this.pathChooser.setText(path);
+    /**
+     * @param headSize
+     *          the headSize to set
+     */
+    public void setHeadSize(int headSize) {
+      this.headerFont.dispose();
+      this.headerFont = new Font(null, "font", headSize, SWT.NORMAL); //$NON-NLS-1$
+      redraw();
+    }
 
-	}
+    /**
+     * @param headSize
+     *          the headSize to set
+     */
+    public void setTitleSize(int size) {
+      this.titleFont.dispose();
+      this.titleFont = new Font(null, "font", size, SWT.NORMAL); //$NON-NLS-1$
+      redraw();
+    }
 
-	
-	@Override
-	protected String openExportDialog(String[] filters, String[] names) {
-		FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.SAVE);
-		fileDialog.setFilterExtensions(filters);
-		fileDialog.setFilterNames(names);
-		if(this.nameSuggestion != null){
-			fileDialog.setFileName(nameSuggestion);
-		}else{
-			fileDialog.setFileName(this.getProjectName());
-		}
-		String filePath = fileDialog.open();
-		if (filePath != null) {
-			this.setExportPath(filePath);
-			this.setPageComplete(this.checkFinish());
-			return filePath;
-		}
+    @Override
+    public void paintControl(PaintEvent e) {
+      if (this.projectId == null) {
+        title = Messages.NewProject;
+      } else {
+        title = ProjectManager.getContainerInstance().getTitle(this.projectId);
+      }
+      e.gc.setFont(DemoCanvas.this.titleFont);
+      int top_offset = e.gc.getFontMetrics().getHeight();
+      e.gc.setFont(DemoCanvas.this.headerFont);
+      int title_offset = top_offset + e.gc.getFontMetrics().getHeight();
+      e.gc.setFont(DemoCanvas.this.normalFont);
+      int text_offset = title_offset + e.gc.getFontMetrics().getHeight();
+      e.gc.setBackground(ColorConstants.white);
+      e.gc.fillRectangle(0, top_offset / 2, 400, text_offset);
 
-		return ""; ////$NON-NLS-1$
-	}
+      setSize(400, text_offset);
+      this.fontColor = new Color(null, PreferenceConverter.getColor(store, IPreferenceConstants.COMPANY_FONT_COLOR));
+      this.bgColor = new Color(null,
+          PreferenceConverter.getColor(store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
+      e.gc.setForeground(this.fontColor);
+      e.gc.setFont(DemoCanvas.this.headerFont);
+      e.gc.setBackground(this.bgColor);
+      e.gc.drawString(title, DemoCanvas.PREVIEW_XPOS, top_offset, false);
+      e.gc.setFont(DemoCanvas.this.normalFont);
+      e.gc.drawString(Messages.AbstractExportPage_SampleText, DemoCanvas.PREVIEW_XPOS + 6, title_offset, true);
+      e.gc.setForeground(ColorConstants.black);
+      e.gc.setFont(DemoCanvas.this.titleFont);
+      e.gc.drawText(Messages.Preview, DemoCanvas.string_xPos, DemoCanvas.string_yPos, true);
+    }
+  }
 
-	/**
-	 * adds a drop down list to the wizard page where the user can choose
-	 * between all open projects <br>
-	 * <i>the parent must have a FormLayout</i>
-	 * 
-	 * @author Lukas Balzer
-	 * @param parent
-	 *            the parent composite
-	 * @param attachment
-	 *            the
-	 * @return the composite containing the project drop down list
-	 * 
-	 */
-	public Composite addProjectChooser(Composite parent,
-			FormAttachment attachment) {
-		FormData data = new FormData();
-		data.top = attachment;
-		data.left = new FormAttachment(0, AbstractWizardPage.LABEL_COLUMN);
-		final Composite projectChooser = new Composite(parent, SWT.NONE);
-		projectChooser.setToolTipText(Messages.ChooseProjectForExport);
-		projectChooser.setLayoutData(data);
-		projectChooser.setLayout(new GridLayout(3, false));
+  public static final String EXPORT_DATA = Messages.AbstractExportPage_ExportTheData;
 
-		Label chooseLabel = new Label(projectChooser, SWT.None);
-		chooseLabel.setLayoutData(new GridData(AbstractWizardPage.LABEL_WIDTH,
-				SWT.DEFAULT));
-		chooseLabel.setText(Messages.Project);
+  /**
+   * a constant which is used by a {@link JAXBExportJob} sets it as a parameter
+   * in the creation of the pdf to print in landscape mode
+   */
+  public static final String A4_LANDSCAPE = "A4Landscape"; //$NON-NLS-1$
 
-		this.chooseList = new Combo(projectChooser, SWT.DROP_DOWN);
-		this.chooseList.setLayoutData(new GridData(300, SWT.DEFAULT));
-		
-		this.chooseList.addSelectionListener(new SelectionAdapter() {
+  /**
+   * a constant which is used by a {@link JAXBExportJob} sets it as a parameter
+   * in the creation of the pdf to print in portrait mode
+   */
+  public static final String A4_PORTRAIT = "A4"; //$NON-NLS-1$
+  public static final String NON = Messages.AbstractExportPage_4;
+  public static final String EXPORT = Messages.AbstractExportPage_5;
+  private Map<String, UUID> projects;
+  private Combo chooseList;
+  protected PathComposite pathChooser;
+  private String pluginID;
+  private String nameSuggestion;
+  protected String pageFormat;
+  private boolean needProjectID;
+  private int contentSize;
+  private int headSize;
+  private int titleSize;
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				projectChooser.notifyListeners(SWT.Selection, null);
-				setProjectID(projects.get(chooseList.getText()));
-				
-				AbstractExportPage.this.setPageComplete(AbstractExportPage.this
-						.checkFinish());
-				
-			}
-		});
-		for (Entry<UUID, String> entry : ProjectManager.getContainerInstance().getProjects().entrySet()) {
-			if(canExport(entry.getKey())){
-				this.projects.put(entry.getValue(),entry.getKey());
-				this.chooseList.add(entry.getValue());
-			}
-		}
-		if(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage().findView("astpa.explorer") != null){
-			ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().findView("astpa.explorer").getSite()
-					.getSelectionProvider().getSelection();
-	
-			if(selection instanceof IProjectSelection && this.projects.containsKey(((IProjectSelection) selection).getProjectData().getProjectName())){		
-				this.setProjectID(((IProjectSelection) selection).getProjectId());
-				this.chooseList.setText(((IProjectSelection) selection).getProjectData().getProjectName());
-			}
-		}
-		return projectChooser;
+  /**
+   * 
+   *
+   * @author Lukas Balzer
+   *
+   * @param pageName
+   *          the name of the export page
+   * @param pluginID
+   *          The plugin for which this export page is created
+   */
+  protected AbstractExportPage(String pageName, String pluginID) {
+    super(pageName);
+    this.projects = new HashMap<>();
+    this.pluginID = pluginID;
+    this.pageFormat = A4_PORTRAIT;
+    this.needProjectID = true;
+    contentSize = 10;
+    headSize = 12;
+    titleSize = 14;
+  }
 
-	}
-	protected void addLabelWithAssist(Composite parent,Object layoutData, String title,String tip){
-		Label text = new Label(parent, SWT.NONE);
-		text.setText(title);
-		FieldDecorationRegistry decRegistry = FieldDecorationRegistry.getDefault();
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param path
+   *          the path as String
+   */
+  public void setExportPath(String path) {
+    this.pathChooser.setText(path);
 
-		FieldDecoration infoField = decRegistry.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+  }
 
-		ControlDecoration decoration = new ControlDecoration(text, SWT.TOP | SWT.RIGHT);
-		decoration.setImage(infoField.getImage());
+  @Override
+  protected String openExportDialog(String[] filters, String[] names) {
+    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.SAVE);
+    fileDialog.setFilterExtensions(filters);
+    fileDialog.setFilterNames(names);
+    if (this.nameSuggestion != null) {
+      fileDialog.setFileName(nameSuggestion);
+    } else {
+      fileDialog.setFileName(this.getProjectName());
+    }
+    String filePath = fileDialog.open();
+    if (filePath != null) {
+      this.setExportPath(filePath);
+      this.setPageComplete(this.checkFinish());
+      return filePath;
+    }
 
-		decoration.setDescriptionText(tip);
-		text.setLayoutData(layoutData);
-	}
-	protected Label addFormatWidget(Composite composite,Object layoutData, String title, final boolean chooseFormat){
-			Composite widget= new Composite(composite, SWT.NONE);
-			widget.setLayoutData(layoutData);
-			widget.setLayout(new GridLayout(2, false));
-			final Label chooser = new Label(widget, SWT.None);
-			chooser.setLayoutData(new GridData(SWT.BEGINNING,SWT.FILL,false,true));
-			if(chooseFormat){
-				chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
-				chooser.setData(EXPORT_DATA,A4_PORTRAIT);
-				chooser.setToolTipText("Export in DinA4 portrait mode");
-			}else{
-				chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
-				chooser.setData(EXPORT_DATA,EXPORT);
-				chooser.setToolTipText("include in export");
-			}
-			MouseAdapter listener =new MouseAdapter() {
-				@Override
-				public void mouseUp(MouseEvent e) {
-					if(chooser.getData(EXPORT_DATA).equals(A4_PORTRAIT)){
-						chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage());
-						chooser.setData(EXPORT_DATA,A4_LANDSCAPE);
-						chooser.setToolTipText("Export in DinA4 landscape mode");
-					}
-					else if(chooser.getData(EXPORT_DATA).equals(A4_LANDSCAPE)){
-						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
-						chooser.setData(EXPORT_DATA,NON);
-						chooser.setToolTipText("exclude from export");
-					}
-					else if(chooser.getData(EXPORT_DATA).equals(NON) && !chooseFormat){
-						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
-						chooser.setData(EXPORT_DATA,EXPORT);
-						chooser.setToolTipText("include in export");
-					}
-					else if(chooser.getData(EXPORT_DATA).equals(EXPORT)){
-						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
-						chooser.setData(EXPORT_DATA,NON);
-						chooser.setToolTipText("exclude from export");
-					}
-					else{
-						chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
-						chooser.setData(EXPORT_DATA,A4_PORTRAIT);
-						chooser.setToolTipText("Export in DinA4 portrait mode");
-					}
-				}
-			};
-			chooser.addMouseListener(listener);
-			final Label textLabel = new Label(widget, SWT.NO);
-			textLabel.setText(title);
-			textLabel.addMouseListener(listener);
-			textLabel.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-//			widget.setSize(widget.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-			return chooser;
-		}
-	/**
-	 * @param composite
-	 * @param minimal TODO
-	 */
-	protected Control addFormatChooser(Composite composite,Object layoutData, boolean minimal){
-		if(minimal){
-			final Label chooser = new Label(composite, SWT.None);
-			chooser.setLayoutData(layoutData);
-			chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
-			chooser.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseUp(MouseEvent e) {
-					if(pageFormat.equals(A4_PORTRAIT)){
-						chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage());
-						pageFormat = A4_LANDSCAPE;
-					}else if(pageFormat.equals(A4_LANDSCAPE)){
-						chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
-						pageFormat = "";
-					}else{
-						chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage());
-						pageFormat = A4_PORTRAIT;
-					}
-				}
-			});
-			return chooser;
-		}else{
-			Group formatGroup = new Group(composite, SWT.NONE);
-			formatGroup.setLayoutData(layoutData);
-			formatGroup.setLayout(new GridLayout(2, true));
-			Button chFormat = null;
-			for(final String format:new String[]{A4_LANDSCAPE,A4_PORTRAIT}){
-				chFormat = new Button(formatGroup, SWT.RADIO);
-				chFormat.setText(format);
-				chFormat.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-				chFormat.addSelectionListener(new SelectionAdapter() {
-					
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						pageFormat = format;
-					}
-				});
-			}
-			if(chFormat != null){
-				chFormat.setSelection(true);
-			}
-			return formatGroup;
-		}
-		
-	}
-	
-	@Override
-	public String getExportPath() {
-		if (this.pathChooser == null) {
-			ProjectManager.getLOGGER().debug(
-					"AbstractExportPage must define a pathChooser"); //$NON-NLS-1$
-			return null;
-		}
-		return this.pathChooser.getText();
-	}
+    return ""; ////$NON-NLS-1$
+  }
 
-	public void setNeedProject(boolean needProjectID){
-		this.needProjectID = needProjectID;
-		
-	}
-	
-	public boolean needsAProject() {
-		return needProjectID;
-	}
-	@Override
-	public boolean checkFinish() {
-		this.setErrorMessage(null);
-		if (this.getProjectID() == null && needProjectID) {
-			this.setErrorMessage(Messages.NoProjectSelected);
-			return false;
-		}
-		if ((this.getExportPath() == null) || this.getExportPath().equals("")) { //$NON-NLS-1$
-			this.setErrorMessage(Messages.IlegalPath);
-			return false;
-		}
-		File fileTmp = new File(this.getExportPath());
-		if (fileTmp.exists()) {
-			this.setMessage(String.format(Messages.DoYouReallyWantToOverwriteTheContentAt,getExportPath()),
-					IMessageProvider.WARNING);
-		}
-		return true;
-	}
+  /**
+   * adds a drop down list to the wizard page where the user can choose between
+   * all open projects <br>
+   * <i>the parent must have a FormLayout</i>
+   * 
+   * @author Lukas Balzer
+   * @param parent
+   *          the parent composite
+   * @param attachment
+   *          the
+   * @return the composite containing the project drop down list
+   * 
+   */
+  public Composite addProjectChooser(Composite parent, FormAttachment attachment) {
+    FormData data = new FormData();
+    data.top = attachment;
+    data.left = new FormAttachment(0, AbstractWizardPage.LABEL_COLUMN);
+    final Composite projectChooser = new Composite(parent, SWT.NONE);
+    projectChooser.setToolTipText(Messages.ChooseProjectForExport);
+    projectChooser.setLayoutData(data);
+    projectChooser.setLayout(new GridLayout(3, false));
 
-	@Override
-	protected void setControl(Control newControl) {
-		this.setPageComplete(this.checkFinish());
-		super.setControl(newControl);
-	}
+    Label chooseLabel = new Label(projectChooser, SWT.None);
+    chooseLabel.setLayoutData(new GridData(AbstractWizardPage.LABEL_WIDTH, SWT.DEFAULT));
+    chooseLabel.setText(Messages.Project);
 
-	/**
-	 * @return the nameSuggestion
-	 */
-	public String getNameSuggestion() {
-		return nameSuggestion;
-	}
+    this.chooseList = new Combo(projectChooser, SWT.DROP_DOWN);
+    this.chooseList.setLayoutData(new GridData(300, SWT.DEFAULT));
 
-	/**
-	 * @param nameSuggestion the nameSuggestion to set
-	 */
-	public void setNameSuggestion(String nameSuggestion) {
-		this.nameSuggestion = nameSuggestion;
-	}
-	
-	public boolean canExport(UUID id){
-		return ProjectManager.getContainerInstance().getDataModel(id).getPluginID().equals(this.pluginID);
-	}
-//	public void setProjectChoice(UUID projectId){
-//		if(this.projects.containsKey(projectId)){
-//			String projectName = this.projects.get(projectId);
-//			for(int i=0;i<this.chooseList.getItemCount();i++){
-//				if(projectName.equals(this.chooseList.getItems()[i])){
-//					this.chooseList.select(i);
-//				}
-//			}
-//		}
-//	}
+    this.chooseList.addSelectionListener(new SelectionAdapter() {
 
-	/**
-	 * @return the pageFormat
-	 */
-	public String getPageFormat() {
-		return this.pageFormat;
-	}
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        projectChooser.notifyListeners(SWT.Selection, null);
+        setProjectID(projects.get(chooseList.getText()));
 
-	/**
-	 * @return the contentSize
-	 */
-	public int getContentSize() {
-		return this.contentSize;
-	}
+        AbstractExportPage.this.setPageComplete(AbstractExportPage.this.checkFinish());
 
-	/**
-	 * @param contentSize the contentSize to set
-	 */
-	public void setContentSize(int contentSize) {
-		this.contentSize = contentSize;
-	}
+      }
+    });
+    for (Entry<UUID, String> entry : ProjectManager.getContainerInstance().getProjects().entrySet()) {
+      if (canExport(entry.getKey())) {
+        this.projects.put(entry.getValue(), entry.getKey());
+        this.chooseList.add(entry.getValue());
+      }
+    }
+    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("astpa.explorer") != null) { //$NON-NLS-1$
+      ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .findView("astpa.explorer").getSite().getSelectionProvider().getSelection(); //$NON-NLS-1$
 
-	/**
-	 * @return the headSize
-	 */
-	public int getHeadSize() {
-		return this.headSize;
-	}
+      if (selection instanceof IProjectSelection
+          && this.projects.containsKey(((IProjectSelection) selection).getProjectData().getProjectName())) {
+        this.setProjectID(((IProjectSelection) selection).getProjectId());
+        this.chooseList.setText(((IProjectSelection) selection).getProjectData().getProjectName());
+      }
+    }
+    return projectChooser;
 
-	/**
-	 * @param headSize the headSize to set
-	 */
-	public void setHeadSize(int headSize) {
-		this.headSize = headSize;
-	}
+  }
 
-	/**
-	 * @return the titleSize
-	 */
-	public int getTitleSize() {
-		return this.titleSize;
-	}
+  protected void addLabelWithAssist(Composite parent, Object layoutData, String title, String tip) {
+    Label text = new Label(parent, SWT.NONE);
+    text.setText(title);
+    FieldDecorationRegistry decRegistry = FieldDecorationRegistry.getDefault();
 
-	/**
-	 * @param titleSize the titleSize to set
-	 */
-	public void setTitleSize(int titleSize) {
-		this.titleSize = titleSize;
-	}
+    FieldDecoration infoField = decRegistry.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+
+    ControlDecoration decoration = new ControlDecoration(text, SWT.TOP | SWT.RIGHT);
+    decoration.setImage(infoField.getImage());
+
+    decoration.setDescriptionText(tip);
+    text.setLayoutData(layoutData);
+  }
+
+  protected Label addFormatWidget(Composite composite, Object layoutData, String title, final boolean chooseFormat) {
+    Composite widget = new Composite(composite, SWT.NONE);
+    widget.setLayoutData(layoutData);
+    widget.setLayout(new GridLayout(2, false));
+    final Label chooser = new Label(widget, SWT.None);
+    chooser.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
+    if (chooseFormat) {
+      chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); //$NON-NLS-1$
+      chooser.setData(EXPORT_DATA, A4_PORTRAIT);
+      chooser.setToolTipText(Messages.AbstractExportPage_ExportInA4PortraitFormat);
+    } else {
+      chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+      chooser.setData(EXPORT_DATA, EXPORT);
+      chooser.setToolTipText(Messages.AbstractExportPage_includeInExport);
+    }
+    MouseAdapter listener = new MouseAdapter() {
+      @Override
+      public void mouseUp(MouseEvent e) {
+        if (chooser.getData(EXPORT_DATA).equals(A4_PORTRAIT)) {
+          chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage()); //$NON-NLS-1$
+          chooser.setData(EXPORT_DATA, A4_LANDSCAPE);
+          chooser.setToolTipText(Messages.AbstractExportPage_ExportInA4LandscapeFormat);
+        } else if (chooser.getData(EXPORT_DATA).equals(A4_LANDSCAPE)) {
+          chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+          chooser.setData(EXPORT_DATA, NON);
+          chooser.setToolTipText(Messages.AbstractExportPage_excludeInExport);
+        } else if (chooser.getData(EXPORT_DATA).equals(NON) && !chooseFormat) {
+          chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+          chooser.setData(EXPORT_DATA, EXPORT);
+          chooser.setToolTipText(Messages.AbstractExportPage_includeInExport);
+        } else if (chooser.getData(EXPORT_DATA).equals(EXPORT)) {
+          chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+          chooser.setData(EXPORT_DATA, NON);
+          chooser.setToolTipText(Messages.AbstractExportPage_excludeInExport);
+        } else {
+          chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); //$NON-NLS-1$
+          chooser.setData(EXPORT_DATA, A4_PORTRAIT);
+          chooser.setToolTipText(Messages.AbstractExportPage_ExportInA4PortraitFormat);
+        }
+      }
+    };
+    chooser.addMouseListener(listener);
+    final Label textLabel = new Label(widget, SWT.NO);
+    textLabel.setText(title);
+    textLabel.addMouseListener(listener);
+    textLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    // widget.setSize(widget.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+    return chooser;
+  }
+
+  /**
+   * @param composite
+   * @param minimal
+   *          TODO
+   */
+  protected Control addFormatChooser(Composite composite, Object layoutData, boolean minimal) {
+    if (minimal) {
+      final Label chooser = new Label(composite, SWT.None);
+      chooser.setLayoutData(layoutData);
+      chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); //$NON-NLS-1$
+      chooser.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseUp(MouseEvent e) {
+          if (pageFormat.equals(A4_PORTRAIT)) {
+            chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage()); //$NON-NLS-1$
+            pageFormat = A4_LANDSCAPE;
+          } else if (pageFormat.equals(A4_LANDSCAPE)) {
+            chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+            pageFormat = ""; //$NON-NLS-1$
+          } else {
+            chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); //$NON-NLS-1$
+            pageFormat = A4_PORTRAIT;
+          }
+        }
+      });
+      return chooser;
+    } else {
+      Group formatGroup = new Group(composite, SWT.NONE);
+      formatGroup.setLayoutData(layoutData);
+      formatGroup.setLayout(new GridLayout(2, true));
+      Button chFormat = null;
+      for (final String format : new String[] { A4_LANDSCAPE, A4_PORTRAIT }) {
+        chFormat = new Button(formatGroup, SWT.RADIO);
+        chFormat.setText(format);
+        chFormat.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+        chFormat.addSelectionListener(new SelectionAdapter() {
+
+          @Override
+          public void widgetSelected(SelectionEvent e) {
+            pageFormat = format;
+          }
+        });
+      }
+      if (chFormat != null) {
+        chFormat.setSelection(true);
+      }
+      return formatGroup;
+    }
+
+  }
+
+  @Override
+  public String getExportPath() {
+    if (this.pathChooser == null) {
+      ProjectManager.getLOGGER().debug("AbstractExportPage must define a pathChooser"); //$NON-NLS-1$
+      return null;
+    }
+    return this.pathChooser.getText();
+  }
+
+  public void setNeedProject(boolean needProjectID) {
+    this.needProjectID = needProjectID;
+
+  }
+
+  public boolean needsAProject() {
+    return needProjectID;
+  }
+
+  @Override
+  public boolean checkFinish() {
+    this.setErrorMessage(null);
+    if (this.getProjectID() == null && needProjectID) {
+      this.setErrorMessage(Messages.NoProjectSelected);
+      return false;
+    }
+    if ((this.getExportPath() == null) || this.getExportPath().equals("")) { //$NON-NLS-1$
+      this.setErrorMessage(Messages.IlegalPath);
+      return false;
+    }
+    File fileTmp = new File(this.getExportPath());
+    if (fileTmp.exists()) {
+      this.setMessage(String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, getExportPath()),
+          IMessageProvider.WARNING);
+    }
+    return true;
+  }
+
+  @Override
+  protected void setControl(Control newControl) {
+    this.setPageComplete(this.checkFinish());
+    super.setControl(newControl);
+  }
+
+  /**
+   * @return the nameSuggestion
+   */
+  public String getNameSuggestion() {
+    return nameSuggestion;
+  }
+
+  /**
+   * @param nameSuggestion
+   *          the nameSuggestion to set
+   */
+  public void setNameSuggestion(String nameSuggestion) {
+    this.nameSuggestion = nameSuggestion;
+  }
+
+  public boolean canExport(UUID id) {
+    return ProjectManager.getContainerInstance().getDataModel(id).getPluginID().equals(this.pluginID);
+  }
+  // public void setProjectChoice(UUID projectId){
+  // if(this.projects.containsKey(projectId)){
+  // String projectName = this.projects.get(projectId);
+  // for(int i=0;i<this.chooseList.getItemCount();i++){
+  // if(projectName.equals(this.chooseList.getItems()[i])){
+  // this.chooseList.select(i);
+  // }
+  // }
+  // }
+  // }
+
+  /**
+   * @return the pageFormat
+   */
+  public String getPageFormat() {
+    return this.pageFormat;
+  }
+
+  /**
+   * @return the contentSize
+   */
+  public int getContentSize() {
+    return this.contentSize;
+  }
+
+  /**
+   * @param contentSize
+   *          the contentSize to set
+   */
+  public void setContentSize(int contentSize) {
+    this.contentSize = contentSize;
+  }
+
+  /**
+   * @return the headSize
+   */
+  public int getHeadSize() {
+    return this.headSize;
+  }
+
+  /**
+   * @param headSize
+   *          the headSize to set
+   */
+  public void setHeadSize(int headSize) {
+    this.headSize = headSize;
+  }
+
+  /**
+   * @return the titleSize
+   */
+  public int getTitleSize() {
+    return this.titleSize;
+  }
+
+  /**
+   * @param titleSize
+   *          the titleSize to set
+   */
+  public void setTitleSize(int titleSize) {
+    this.titleSize = titleSize;
+  }
 }

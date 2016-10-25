@@ -22,7 +22,6 @@ import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.ui.common.ProjectManager;
 
-
 /**
  * Handler that loads a analysis from the file system
  * 
@@ -31,33 +30,30 @@ import xstampp.ui.common.ProjectManager;
  */
 public class Import extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		ProjectManager viewContainer = ProjectManager.getContainerInstance();
-		// Enable the save entries in the menu
-		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
-				.getWorkbench().getService(ISourceProviderService.class);
-		CommandState saveStateService = (CommandState) sourceProviderService
-				.getSourceProvider(CommandState.SAVE_STATE);
-//		saveStateService.setEnabled();
-		String recentPath = event.getParameter("loadRecentProject"); //$NON-NLS-1$
+    ProjectManager viewContainer = ProjectManager.getContainerInstance();
+    // Enable the save entries in the menu
+    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI.getWorkbench()
+        .getService(ISourceProviderService.class);
+    CommandState saveStateService = (CommandState) sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
+    // saveStateService.setEnabled();
+    String recentPath = event.getParameter("loadRecentProject"); //$NON-NLS-1$
 
-		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
-				.getPerspectiveRegistry()
-				.findPerspectiveWithId("xstampp.defaultPerspective");//$NON-NLS-1$
-		//
-		if (descriptor != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().setPerspective(descriptor);
-		}
-		
-		if (recentPath == null) {
-			return viewContainer.importDataModel();
-		}
+    IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench().getPerspectiveRegistry()
+        .findPerspectiveWithId("xstampp.defaultPerspective");//$NON-NLS-1$
+    //
+    if (descriptor != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(descriptor);
+    }
 
-		return viewContainer.loadDataModelFile(recentPath,recentPath);
+    if (recentPath == null) {
+      return viewContainer.importDataModel();
+    }
 
-	}
+    return viewContainer.loadDataModelFile(recentPath, recentPath);
+
+  }
 
 }

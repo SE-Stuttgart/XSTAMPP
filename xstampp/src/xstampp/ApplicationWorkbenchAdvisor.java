@@ -20,6 +20,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+import messages.Messages;
 import xstampp.util.LoadWorkspace;
 
 /**
@@ -29,36 +30,37 @@ import xstampp.util.LoadWorkspace;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	/**
-	 * The perspective's ID.
-	 */
-	private static final String PERSPECTIVE_ID = "astpa.welcome.perspective"; //$NON-NLS-1$
+  /**
+   * The perspective's ID.
+   */
+  private static final String PERSPECTIVE_ID = "astpa.welcome.perspective"; //$NON-NLS-1$
 
-	@Override
-	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
-		return new ApplicationWorkbenchWindowAdvisor(configurer);
+  @Override
+  public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+    return new ApplicationWorkbenchWindowAdvisor(configurer);
 
-	}
+  }
 
-	@Override
-	public String getInitialWindowPerspectiveId() {
-		return ApplicationWorkbenchAdvisor.PERSPECTIVE_ID;
-	}
+  @Override
+  public String getInitialWindowPerspectiveId() {
+    return ApplicationWorkbenchAdvisor.PERSPECTIVE_ID;
+  }
 
-	@Override
-	public void postStartup() {
-		Job loadWs = new LoadWorkspace("Load Projects...");
-		loadWs.schedule();
-		// remove default preference page for Install/Update and Security
-		PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
+  @Override
+  public void postStartup() {
+    Job loadWs = new LoadWorkspace(Messages.ApplicationWorkbenchAdvisor_Load_Projects);
+    loadWs.schedule();
+    // remove default preference page for Install/Update and Security
+    PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
 
-//				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.ProvisioningPreferencePage"); //$NON-NLS-1$
-//				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.SitesPreferencePage "); //$NON-NLS-1$
-//				pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdatesPreferencePage"); //$NON-NLS-1$
-//				pm.remove("org.eclipse.equinox.security.ui.category"); //$NON-NLS-1$
-//				pm.remove("org.eclipse.equinox.security.ui.storage"); //$NON-NLS-1$
-	}
-	
+    // pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.ProvisioningPreferencePage");
+    // //$NON-NLS-1$
+    // pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.SitesPreferencePage ");
+    // //$NON-NLS-1$
+    // pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdatesPreferencePage");
+    // //$NON-NLS-1$
+    // pm.remove("org.eclipse.equinox.security.ui.category"); //$NON-NLS-1$
+    // pm.remove("org.eclipse.equinox.security.ui.storage"); //$NON-NLS-1$
+  }
 
 }

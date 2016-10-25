@@ -7,29 +7,27 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 /**
  * a simple perspective for displaying the projectExplorer and editor window
+ * 
  * @author Lukas Balzer
  *
  */
 public class DefaultPerspective implements IPerspectiveFactory {
-	public static final String ID ="xstampp.defaultPerspective";
-	private static final Logger LOGGER = Logger.getRootLogger();
+  public static final String ID = "xstampp.defaultPerspective"; //$NON-NLS-1$
+  private static final Logger LOGGER = Logger.getRootLogger();
 
-	@Override
-	public void createInitialLayout(IPageLayout layout) {
-		DefaultPerspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
-		layout.setFixed(false);
-		layout.setEditorAreaVisible(true);
-		layout.addView(
-				"astpa.explorer", IPageLayout.LEFT, 0.2f, layout.getEditorArea()); //$NON-NLS-1$
-		
-		layout.getViewLayout("astpa.explorer").setCloseable(false);
-		
-		
-		IFolderLayout folder = layout.createFolder("buttomfolder", IPageLayout.BOTTOM, 0.65f, layout.getEditorArea());
+  @Override
+  public void createInitialLayout(IPageLayout layout) {
+    DefaultPerspective.LOGGER.debug("Setup perspective"); //$NON-NLS-1$
+    layout.setFixed(false);
+    layout.setEditorAreaVisible(true);
+    layout.addView("astpa.explorer", IPageLayout.LEFT, 0.2f, layout.getEditorArea()); //$NON-NLS-1$
 
-		folder.addPlaceholder("A-CAST.view1");
-		
+    layout.getViewLayout("astpa.explorer").setCloseable(false); //$NON-NLS-1$
 
-	}
-	
+    IFolderLayout folder = layout.createFolder("buttomfolder", IPageLayout.BOTTOM, 0.65f, layout.getEditorArea()); //$NON-NLS-1$
+
+    folder.addPlaceholder("A-CAST.view1"); //$NON-NLS-1$
+
+  }
+
 }

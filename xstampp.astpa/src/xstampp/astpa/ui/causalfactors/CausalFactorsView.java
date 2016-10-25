@@ -387,11 +387,11 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		}
 		else if(getActiveCategory().equals(CAUSALFACTORS)){
 			for(ICausalFactor factor: component.getCausalFactors()){
-				if(isFiltered(factor.getText())){
-					return true;
+				if(!isFiltered(factor.getText())){
+					return false;
 				}
 			}
-			return false;
+			return true;
 		}
 		return isFiltered(component.getText(),component.getComponentType().name());
 	}
@@ -422,7 +422,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 			this.grid.addRow(csRow);
 
 			for (ICausalFactor factor : component.getCausalFactors()) {
-				if(isFiltered(factor.getText())){
+				if(isFiltered(factor.getText(),CAUSALFACTORS)){
 					continue;
 				}
 				GridRow childRow = new GridRow(1);

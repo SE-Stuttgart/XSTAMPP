@@ -26,9 +26,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class ExitApplication extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		HandlerUtil.getActiveWorkbenchWindow(event).getShell().close();
-		return null;
-	}
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    HandlerUtil.getActiveWorkbenchWindow(event).getShell().close();
+    return null;
+  }
 }

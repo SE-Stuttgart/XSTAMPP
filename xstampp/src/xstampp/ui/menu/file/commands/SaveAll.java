@@ -8,19 +8,19 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
 
 /**
- * this handler simply passes the call to {@link ProjectManager#saveAllDataModels()}
+ * this handler simply passes the call to
+ * {@link ProjectManager#saveAllDataModels()}
  *
  * @author Lukas Balzer
  * @since 1.0
  */
 public class SaveAll extends AbstractHandler {
 
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-
-		STPAPluginUtils.executeCommand("org.eclipse.ui.file.saveAll");
-		return ProjectManager.getContainerInstance().saveAllDataModels();
-	}
+    STPAPluginUtils.executeCommand("org.eclipse.ui.file.saveAll"); //$NON-NLS-1$
+    return ProjectManager.getContainerInstance().saveAllDataModels();
+  }
 
 }
