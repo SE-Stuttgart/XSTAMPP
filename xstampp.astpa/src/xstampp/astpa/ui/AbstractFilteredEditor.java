@@ -31,65 +31,94 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 	private Combo categoryCombo;
 	private boolean useFilter;
 	private Combo filterText;
+	private String activeCategory;
 	private String globalCategory;
 	private Map<String, String[]> comboChoicesToEntrys;
 	private Map<String, String[]> comboValuesToEntrys;
-	
+  private Composite filter;
 	
 
 	@Override
 	public void createPartControl(Composite parent) {
 		if(useFilter){
 			parent.setLayout(new GridLayout(1, false));
-			Composite filter= new Composite(parent, SWT.None);
+			filter= new Composite(parent, SWT.None){
+			  @Override
+			  public void dispose() {
+			  }
+			};
 			filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filter.setLayout(new GridLayout(3, false));
 			if(getCategories() != null && getCategories().size() > 0){
-				Label label= new Label(filter,SWT.LEFT);
-				label.setText("Filter Categories");
-				this.categoryCombo = new Combo(filter, SWT.READ_ONLY|SWT.None);
-				this.categoryCombo.addDisposeListener(new DisposeListener() {
-					
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						System.out.println("Dispose of the category combo");
-					}
-				});
-				for (String string : getCategoryArray()) {
-					this.categoryCombo.add(string);
-				}
-				this.categoryCombo.select(0);
-				this.categoryCombo.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						filterText.setText("");
-						if(comboChoicesToEntrys != null && comboChoicesToEntrys.get(categoryCombo.getText()) != null){
-							filterText.setItems(comboChoicesToEntrys.get(categoryCombo.getText()));
-						}else{
-							filterText.removeAll();
-						}
-						updateFilter();
-					}
-				});
+			  createCategoryWidget(new String());
 			}
-			this.filterText= new Combo(filter, SWT.LEFT |SWT.BORDER);
-			this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-			this.filterText.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					filterText.setText(comboValuesToEntrys.get(categoryCombo.getText())[filterText.getSelectionIndex()]);
-				}
-			});
-			this.filterText.addModifyListener(new ModifyListener() {
-				
-				@Override
-				public void modifyText(ModifyEvent e) {
-					updateFilter();
-				}
-			});
+		createFilter();
 		}
 	}
 	
+	/**
+	 * creates the label and category choose widget of the filter
+	 * 
+	 * @param category a category which can be set as initial category if the 
+	 *                 given string is a valid category
+	 */
+	private boolean createCategoryWidget(String category){
+	  if(useFilter){
+  	  Label label= new Label(filter,SWT.LEFT);
+      label.setText("Filter Categories");
+      this.categoryCombo = new Combo(filter, SWT.READ_ONLY|SWT.None);
+      activeCategory = new String();
+      int initialCategory = 0;
+      for (int i=0;i < getCategoryArray().length;i++) {
+        this.categoryCombo.add(getCategoryArray()[i]);
+        if(getCategoryArray()[i].equals(category)){
+          activeCategory = category;
+          initialCategory = i;
+        }
+      }
+      this.categoryCombo.select(initialCategory);
+      this.categoryCombo.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+          filterText.setText("");
+          activeCategory= e.text;
+          if(comboChoicesToEntrys != null && comboChoicesToEntrys.get(categoryCombo.getText()) != null){
+            filterText.setItems(comboChoicesToEntrys.get(categoryCombo.getText()));
+          }else{
+            filterText.removeAll();
+          }
+          updateFilter();
+        }
+      });
+      return true;
+	  }
+	  return false;
+	}
+	
+	/**
+	 * creates the filter input combo which can contain certain suggestions
+	 */
+	private boolean createFilter(){
+    if(useFilter){
+  	  this.filterText= new Combo(filter, SWT.LEFT |SWT.BORDER);
+      this.filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      this.filterText.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+          filterText.setText(comboValuesToEntrys.get(categoryCombo.getText())[filterText.getSelectionIndex()]);
+        }
+      });
+      this.filterText.addModifyListener(new ModifyListener() {
+        
+        @Override
+        public void modifyText(ModifyEvent e) {
+          updateFilter();
+        }
+      });
+      return true;
+    }
+    return false;
+	}
 	protected final void addChoices(String id, String[] choices){
 		if(comboChoicesToEntrys == null){
 			comboChoicesToEntrys = new HashMap<>();

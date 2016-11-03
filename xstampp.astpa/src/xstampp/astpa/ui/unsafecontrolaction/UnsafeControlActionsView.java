@@ -74,12 +74,12 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 */
 	public static final String ID = "astpa.steps.step2_2"; //$NON-NLS-1$
 
-	private static final String CA_FILTER="control action";
-	private static final String UCA_FILTER="unsafe control actions";
-	private static final String UCAID_FILTER="uca ID";
-	private static final String HAZ_FILTER="Hazards";
-	private static final String NOHAZ_FILTER="not hazardous";
-	private static final String HAZID_FILTER="hazard ID";
+	private static final String CA_FILTER="Control Action"; //$NON-NLS-1$
+	private static final String UCA_FILTER="unsafe Control Actions"; //$NON-NLS-1$
+	private static final String UCAID_FILTER="UCA ID"; //$NON-NLS-1$
+	private static final String HAZ_FILTER="Hazards"; //$NON-NLS-1$
+	private static final String NOHAZ_FILTER="not hazardous"; //$NON-NLS-1$
+	private static final String HAZID_FILTER="Hazard ID"; //$NON-NLS-1$
 	/**
 	 * The log4j logger.
 	 */
@@ -421,7 +421,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
 				idRow.addCell(new GridCellBlank());
 			}else{
-				idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(tooSoonUca.getId())));
+				idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
 			}
 			UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
 					tooSoonUca.getId());
@@ -544,8 +544,8 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		int index = 0;
 	
 		for (ITableModel model : ucaInterface.getAllHazards()) {
-			choices[index] = "H-" + model.getNumber() + ": "+ model.getTitle();
-			choiceIDs[index] = "" + model.getNumber();
+			choices[index] = "H-" + model.getNumber() + ": "+ model.getTitle(); //$NON-NLS-1$ //$NON-NLS-2$
+			choiceIDs[index] = "" + model.getNumber(); //$NON-NLS-1$
 			choiceValues[index++] = model.getTitle();
 		}
 		this.addChoices(HAZID_FILTER, choices);

@@ -365,6 +365,7 @@ public final class Messages extends NLS {
   // *-------H-------------------------------------------------------------------*
   @SuppressWarnings("javadoc")
   public static String HazardLinks;
+  public static String Hazard;
   @SuppressWarnings("javadoc")
   public static String Hazards;
   @SuppressWarnings("javadoc")

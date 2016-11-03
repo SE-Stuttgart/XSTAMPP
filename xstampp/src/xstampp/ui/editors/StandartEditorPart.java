@@ -59,7 +59,8 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   @Override
   public void dispose() {
-    ProjectManager.getLOGGER().debug("Editor: " + getTitle() + " closed"); //$NON-NLS-1$ //$NON-NLS-2$
+    ProjectManager.getLOGGER().debug("Editor: " 
+                   + getTitle() + " closed"); //$NON-NLS-1$ //$NON-NLS-2$
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
     super.dispose();
   }
@@ -101,20 +102,22 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
   public void update(Observable dataModelController, Object updatedValue) {
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-    case DELETE: {
-      this.getSite().getPage().closeEditor(this, false);
-      break;
-    }
-    default:
-      break;
+      case DELETE: {
+        this.getSite().getPage().closeEditor(this, false);
+        break;
+      }
+      default:
+        break;
     }
 
   }
 
   @Override
   public void partActivated(IWorkbenchPart arg0) {
-    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor() != null) {
-      if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getSite().getId()
+    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                  .getActivePage().getActiveEditor() != null) {
+      if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                      .getActivePage().getActiveEditor().getSite().getId()
           .equals("acast.steps.step2_1")) { //$NON-NLS-1$
         if (arg0 == this) {
           ((STPAEditorInput) getEditorInput()).activate();
