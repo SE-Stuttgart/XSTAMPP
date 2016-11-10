@@ -110,12 +110,11 @@ public class ProvidedValuesCombi implements IValueCombie{
 	
 	@Override
 	public Map<UUID, UUID> getPMValues() {
-		if(this.variables == null){
-			return null;
-		}
-		HashMap<UUID, UUID> valueMap = new HashMap<>();
-		for(int i=0;i < this.values.size();i++){
-			valueMap.put(this.variables.get(i), this.values.get(i));
+    HashMap<UUID, UUID> valueMap = new HashMap<>();
+		if(this.variables != null){
+  		for(int i=0;i < this.values.size();i++){
+  			valueMap.put(this.variables.get(i), this.values.get(i));
+  		}
 		}
 		return valueMap;
 	}

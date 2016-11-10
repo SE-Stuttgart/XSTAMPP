@@ -28,11 +28,6 @@
 	</modules>
 
 	<repositories>
-		<repository>
-			<id>eclipse-indigo</id>
-			<url>http://download.eclipse.org/releases/kepler</url>
-			<layout>p2</layout>
-		</repository>   
         <repository>
             <id>nebula</id>
             <url>http://download.eclipse.org/technology/nebula/snapshot</url>
@@ -41,6 +36,12 @@
 		<repository>
 			<id>eclipse-luna</id>
 			<url>http://download.eclipse.org/releases/luna</url>
+			<layout>p2</layout>
+		</repository>
+		
+		<repository>
+			<id>eclipse-mars</id>
+			<url>http://download.eclipse.org/releases/mars</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>

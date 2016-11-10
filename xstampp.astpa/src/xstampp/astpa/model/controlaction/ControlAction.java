@@ -510,6 +510,10 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 				}
 			}
 		}
+		/*
+		 * if he valuesWhenProvided list has been created and there are linked variables than
+		 * the list is traversed  
+		 */
 		if(providedVariableNames != null && !providedVariableNames.isEmpty() && valuesWhenProvided != null){
 			for(ProvidedValuesCombi combie : valuesWhenProvided){
 				if(combie.getPMValues().keySet().containsAll(providedVariables) &&
