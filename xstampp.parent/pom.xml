@@ -10,7 +10,7 @@
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
-		<tycho-version>0.21.0</tycho-version>
+		<tycho-version>0.24.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 	</properties>
@@ -91,11 +91,11 @@
 							<ws>cocoa</ws>
 							<arch>x86_64</arch>
 						</environment>
-						<environment>
+						<!-- <environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86</arch>
-						</environment>
+						</environment> -->
 					</environments>
 				</configuration>
 			</plugin>
