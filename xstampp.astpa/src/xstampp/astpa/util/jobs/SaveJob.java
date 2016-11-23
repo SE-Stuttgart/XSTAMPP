@@ -3,6 +3,7 @@ package xstampp.astpa.util.jobs;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -81,6 +82,8 @@ public class SaveJob extends XstamppJob {
 
 				tmpFile.createNewFile();
 				Object haz;
+				//if the user wants to use the old haz format, than a new controller is created 
+				//containing the old data model
 				if(tmpFile.getName().endsWith("haz")){
 					haz = new HAZController((IHAZModel) this.controller);
 				}else{
@@ -91,22 +94,25 @@ public class SaveJob extends XstamppJob {
 				Marshaller m = context.createMarshaller();
 				
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-				// Write to file
+				// set the Jaxb encoding format to set a more powerful encoding mechanism than the
+				// Standard UTF-8
 				m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-				FileWriter writer = new FileWriter(tmpFile);
 				
-				if(this.compatibilityMode){
-					m.marshal(haz,writer);
-				}
-				else{
-					PrintWriter printWriter = new PrintWriter(writer);
-					DataWriter dataWriter = new DataWriter(printWriter, "UTF-8", new MyEscapeHandler());
-					m.marshal(haz,dataWriter);
-					printWriter.close();
-					
-				}
+				FileOutputStream  writer = new FileOutputStream(file);
+				
+				m.marshal(haz,writer);
+//				if(this.compatibilityMode){
+//					m.marshal(haz,writer);
+//				}
+//				else{
+//					PrintWriter printWriter = new PrintWriter(writer);
+//					DataWriter dataWriter = new DataWriter(printWriter, "Unicode", new MyEscapeHandler());
+//					m.marshal(haz,dataWriter);
+//					printWriter.close();
+//					
+//				}
 				writer.close();
-				copy(tmpFile, file);
+//				copy(tmpFile, file);
 		} catch (Exception e) {
 			e.printStackTrace();
 			setError(e);
