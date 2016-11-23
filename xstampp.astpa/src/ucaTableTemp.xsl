@@ -851,7 +851,10 @@
 				<xsl:choose>
 				<!-- Checks if there are some components for the CausalFactors-Table -->
 					<xsl:when test="controlstructure/component/children/component">
-						<xsl:for-each select="controlstructure/component/children/component[componentType != 'TEXTFIELD']">
+						<xsl:for-each select="controlstructure/component/children/component[componentType != 'TEXTFIELD'  and
+																							componentType != 'DASHEDBOX' and
+																							componentType != 'CONTROLACTION' and
+																							componentType != 'CONTAINER']">
 							<fo:table-row border-bottom="2pt solid black"
 								border-top="2pt solid black">
 								<fo:table-cell padding="4px" background-color="#FFFFFF"

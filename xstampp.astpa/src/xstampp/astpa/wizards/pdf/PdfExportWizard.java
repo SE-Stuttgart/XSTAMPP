@@ -65,10 +65,6 @@ public class PdfExportWizard extends AbstractExportWizard {
 			STPAWordJob exportJob = new STPAWordJob("STPA Word Report",getExportPage().getExportPath(),controller,true);
 			exportJob.addJobChangeListener(new JobChangeAdapter(){
 				@Override
-				public void scheduled(IJobChangeEvent event) {
-					controller.prepareForExport();
-				}
-				@Override
 				public void done(IJobChangeEvent event) {
 					controller.prepareForSave();
 				}
@@ -78,6 +74,7 @@ public class PdfExportWizard extends AbstractExportWizard {
 			exportJob.setTableHeadSize(getExportPage().getHeadSize());
 			exportJob.setTitleSize(getExportPage().getTitleSize());
 			exportJob.setDecorate(page.getDecoChoice());
+			controller.prepareForExport();
 			exportJob.schedule();
 			return true;
 		}else{

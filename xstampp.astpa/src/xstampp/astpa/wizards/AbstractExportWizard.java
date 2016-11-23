@@ -143,6 +143,8 @@ public abstract class AbstractExportWizard extends Wizard implements
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
 			exportJob.setCSDirty();
 			exportJob.setExportAddition(exportAddition);
+			ProjectManager.getContainerInstance().getDataModel(this.getExportPage().getProjectID())
+                                           .prepareForExport();
 			exportJob.schedule();
 		} else {
 			MessageDialog.openWarning(this.getShell(), Messages.Warning,
@@ -275,9 +277,6 @@ public abstract class AbstractExportWizard extends Wizard implements
 		}
 		@Override
 		public void aboutToRun(IJobChangeEvent event) {
-			ProjectManager.getContainerInstance()
-			.getDataModel(((ExportJob) event.getJob()).getProjectId())
-			.prepareForExport();
 			super.aboutToRun(event);
 		}
 		@Override
