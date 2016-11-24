@@ -38,6 +38,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ScrollBar;
 
 import xstampp.astpa.Activator;
 
@@ -473,11 +474,20 @@ public class GridWrapper {
 	}
 
 	private void resizeColumns() {
-		int columnWidth = this.actualGrid.getSize().x
-				/ Math.max(1, GridWrapper.this.actualGrid.getColumnCount());
-
-		for (int i = 0; i < GridWrapper.this.actualGrid.getColumnCount(); i++) {
-			GridWrapper.this.actualGrid.getColumn(i).setWidth(columnWidth);
+	  int colNr = Math.max(1, GridWrapper.this.actualGrid.getColumnCount());
+		int columnWidth = this.actualGrid.getSize().x	/ colNr;
+    ScrollBar verticalBar = this.actualGrid.getVerticalBar();
+    int firstColumnWidth = columnWidth;
+    if(verticalBar != null && verticalBar.isVisible()){
+      firstColumnWidth -= verticalBar.getSize().x;
+    }
+    
+		for (int i = 0; i < colNr; i++) {
+		  if(i == 1){
+	      GridWrapper.this.actualGrid.getColumn(i).setWidth(firstColumnWidth);
+		  }else{
+	      GridWrapper.this.actualGrid.getColumn(i).setWidth(columnWidth);
+		  }
 		}
 		this.resizeRows();
 		this.actualGrid.recalculateHeader();
