@@ -7,6 +7,6 @@ public class CSContextEditor extends CSEditorWithPM {
 	public static final String ID = "xstpa.editor.context";
 	
 	public CSContextEditor() {
-		// TODO Auto-generated constructor stub
+    super();
 	}
 }

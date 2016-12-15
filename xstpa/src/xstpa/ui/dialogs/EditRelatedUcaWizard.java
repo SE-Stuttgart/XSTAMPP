@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstpa.ui.View;
 
 public class EditRelatedUcaWizard {
@@ -31,16 +31,17 @@ public class EditRelatedUcaWizard {
 	private boolean refreshView;
 	private List<UUID> ucaLinks;
 	private List<ICorrespondingUnsafeControlAction> availableLinks;
-	private DataModelController model;
+	private IExtendedDataModel model;
     
     // ==================== 4. Constructors ===============================
 
 
-	public EditRelatedUcaWizard(DataModelController model, List<UUID> list)
+	public EditRelatedUcaWizard(IExtendedDataModel model, List<UUID> list)
     {
 		this.refreshView = false;
-		shell = new Shell(Display.getCurrent().getActiveShell(),SWT.CLOSE | SWT.TITLE| SWT.APPLICATION_MODAL);
+		shell = new Shell(Display.getCurrent().getActiveShell(),SWT.CLOSE |SWT.RESIZE | SWT.TITLE| SWT.APPLICATION_MODAL );
         shell.setLayout(new GridLayout(2, false));
+        
         shell.setText("Add Unsafe Control Actions");
         shell.setImage(View.LOGO);
         shell.addShellListener(new ShellAdapter() {
@@ -53,8 +54,11 @@ public class EditRelatedUcaWizard {
         // Get the size of the screen
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (dim.width)/4;
-        int y = (dim.height)/2;
+        int y = (dim.height)/4;
+        int width = (dim.width)/2;
+        int height = (dim.height)/2;
         // set the Location
+        shell.setSize(width, height);
         shell.setLocation(x,y);
         this.model = model;
         this.ucaLinks = list;
@@ -66,7 +70,9 @@ public class EditRelatedUcaWizard {
         	
         }
         createContents(shell);
-        shell.pack();
+//        shell.pack();
+        shell.setSize(width, height);
+        shell.setLocation(x,y);
         
     }
 	
@@ -162,10 +168,10 @@ public class EditRelatedUcaWizard {
 		for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
 	    	int number = model.getUCANumber(uca.getId());
 			if(ucaLinks.contains(uca.getId())){
-		    	linkedList.add("UCA-"+number);
+		    	linkedList.add("UCA1."+number);
 		    	linkedIDs.add(uca.getId());
 			}else{
-				availableList.add("UCA-"+number+" : " +uca.getDescription());
+				availableList.add("UCA1."+number+" : " +uca.getDescription());
 				availableIDs.add(uca);
 			}
 		}

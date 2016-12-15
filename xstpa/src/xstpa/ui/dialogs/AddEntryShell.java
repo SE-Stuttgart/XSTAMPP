@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstpa.model.ContextTableCombination;
 
 
@@ -34,12 +34,12 @@ public class AddEntryShell {
 	private Shell shell;
 	private List<UUID> variables;
 	private List<String> varNames;
-	private DataModelController model;
+	private IExtendedDataModel model;
 	private Listener listener;
 	private Map<UUID,Combo> comboToId;
 	private Map<UUID,List<UUID>> idListToID;
 
-	public AddEntryShell(List<UUID> vars,DataModelController controller) {
+	public AddEntryShell(List<UUID> vars,IExtendedDataModel controller) {
 		this.variables = vars;
 		this.model = controller;
 		this.comboToId = new HashMap<>();

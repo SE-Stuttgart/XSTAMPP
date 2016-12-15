@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 
 import xstampp.DefaultPerspective;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
-import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
@@ -179,8 +179,8 @@ public class Activator extends AbstractUIPlugin {
 				.getDataModel(modelID);
 			if(model != null){
 			XSTPADataController data = xstpaDataToIDataModel.get(model);
-			if(data == null && model instanceof DataModelController){
-				data = new XSTPADataController((DataModelController) model);
+			if(data == null && model instanceof IExtendedDataModel){
+				data = new XSTPADataController((IExtendedDataModel) model);
 				ProjectManager.getContainerInstance().addProjectAdditionForUUID(ProjectManager.getContainerInstance().
 						getProjectID((Observable) model), data);
 				model.addObserver(data);

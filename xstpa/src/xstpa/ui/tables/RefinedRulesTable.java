@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.astpa.model.controlaction.IValueCombie;
+import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstpa.Messages;
 import xstpa.model.ContextTableCombination;

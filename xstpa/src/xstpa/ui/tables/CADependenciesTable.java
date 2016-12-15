@@ -401,7 +401,9 @@ public class CADependenciesTable extends AbstractTableComposite {
 
 	@Override
 	public boolean refreshTable() {
-		if(dependencyTableViewer.getControl() == null || dependencyTableViewer.getControl().isDisposed()){
+		if(dependencyTableViewer.getControl() == null 
+		    || dataController == null
+		    || dependencyTableViewer.getControl().isDisposed()){
 			return false;
 		}
 		// create input for dependencyTableViewer

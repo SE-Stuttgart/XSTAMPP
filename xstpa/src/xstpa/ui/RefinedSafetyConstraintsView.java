@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Observable;
 
 import messages.Messages;
-import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.ui.sds.AbstractFilteredTableView;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.model.AbstractLtlProvider;
 import xstampp.model.ObserverValue;
 import xstpa.model.XSTPADataController;
 
@@ -28,7 +28,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 		if(getDataInterface() == null){
 			return null;
 		}
-		List<AbstractLTLProvider> allRUCA = ((DataModelController)getDataInterface()).getAllRefinedRules();
+		List<AbstractLtlProvider> allRUCA = ((IExtendedDataModel)getDataInterface()).getAllRefinedRules(true);
   	    Collections.sort(allRUCA);
   	    
   	    return allRUCA;
@@ -59,7 +59,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 	}
 	
 	@Override
-	public void update(Observable dataModelController, Object updatedValue) {
+	public void update(Observable IExtendedDataModel, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 			case Extended_DATA:
@@ -77,7 +77,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "RSR1."+((AbstractLTLProvider)element).getNumber();
+					return "RSR1."+((AbstractLtlProvider)element).getNumber();
 				}
 			};
 		case 1:
@@ -85,21 +85,21 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 				
 				@Override
 				public String getText(Object element) {
-					return ((AbstractLTLProvider)element).getRefinedUCA();
+					return ((AbstractLtlProvider)element).getRefinedUCA();
 				}
 			};
 		case 2:
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "SC2."+((AbstractLTLProvider)element).getNumber();
+					return "SC2."+((AbstractLtlProvider)element).getNumber();
 				}
 			};
 		case 3:
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return ((AbstractLTLProvider)element).getRefinedSafetyConstraint();
+					return ((AbstractLtlProvider)element).getRefinedSafetyConstraint();
 				}
 			};
 			

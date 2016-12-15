@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.controlaction.IValueCombie;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.model.IValueCombie;
 
 /**
  * an object of this class is used to generate the refined data of a hazardous process state.
@@ -14,10 +14,10 @@ import xstampp.astpa.model.controlaction.IValueCombie;
  * @author Lukas Balzer
  * @since 1.0.1
  *
- *@see RefinedSafetyEntry#getTooLateEntry(int, ProcessModelVariables, DataModelController)
- *@see RefinedSafetyEntry#getTooEarlyEntry(int, ProcessModelVariables, DataModelController)
- *@see RefinedSafetyEntry#getAnytimeEntry(int, ProcessModelVariables, DataModelController)
- *@see RefinedSafetyEntry#getNotProvidedEntry(int, ProcessModelVariables, DataModelController)
+ *@see RefinedSafetyEntry#getTooLateEntry(int, ProcessModelVariables, IExtendedDataModel)
+ *@see RefinedSafetyEntry#getTooEarlyEntry(int, ProcessModelVariables, IExtendedDataModel)
+ *@see RefinedSafetyEntry#getAnytimeEntry(int, ProcessModelVariables, IExtendedDataModel)
+ *@see RefinedSafetyEntry#getNotProvidedEntry(int, ProcessModelVariables, IExtendedDataModel)
  */
 public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	
@@ -25,7 +25,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	private final ContextTableCombination variable;
 	private final String context;
 	private final String type;
-	private DataModelController model;
+	private IExtendedDataModel model;
 	private int number;
 	private UUID dataRef;
 	private String constraint;
@@ -44,12 +44,12 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	 * @param controller the astpa data model in which the refined data should be stored
 	 * 
 	 * @see IValueCombie
-	 *@see RefinedSafetyEntry#getTooLateEntry(int, ProcessModelVariables, DataModelController)
-	 *@see RefinedSafetyEntry#getTooEarlyEntry(int, ProcessModelVariables, DataModelController)
-	 *@see RefinedSafetyEntry#getAnytimeEntry(int, ProcessModelVariables, DataModelController)
-	 *@see RefinedSafetyEntry#getNotProvidedEntry(int, ProcessModelVariables, DataModelController)
+	 *@see RefinedSafetyEntry#getTooLateEntry(int, ProcessModelVariables, IExtendedDataModel)
+	 *@see RefinedSafetyEntry#getTooEarlyEntry(int, ProcessModelVariables, IExtendedDataModel)
+	 *@see RefinedSafetyEntry#getAnytimeEntry(int, ProcessModelVariables, IExtendedDataModel)
+	 *@see RefinedSafetyEntry#getNotProvidedEntry(int, ProcessModelVariables, IExtendedDataModel)
 	 */
-	private RefinedSafetyEntry(int number,String type,String context,ContextTableCombination var, DataModelController controller) {
+	private RefinedSafetyEntry(int number,String type,String context,ContextTableCombination var, IExtendedDataModel controller) {
 		this.context = context;
 		this.type = type;
 		this.variable = var;
@@ -393,7 +393,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 	}
 	
 	
-	public static RefinedSafetyEntry getAnytimeEntry(int number,ContextTableCombination var,DataModelController controller){
+	public static RefinedSafetyEntry getAnytimeEntry(int number,ContextTableCombination var,IExtendedDataModel controller){
 		
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_ANYTIME, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		entry.setDataRef(var.getAnytimeRule());
@@ -402,7 +402,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		
 		return entry;
 	}
-	public static RefinedSafetyEntry getTooLateEntry(int number,ContextTableCombination var,DataModelController controller){
+	public static RefinedSafetyEntry getTooLateEntry(int number,ContextTableCombination var,IExtendedDataModel controller){
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_TOO_LATE, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		entry.setDataRef(var.getTooLateRule());
 		entry.update();
@@ -410,7 +410,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		
 		return entry;
 	}
-	public static RefinedSafetyEntry getTooEarlyEntry(int number,ContextTableCombination var,DataModelController controller){
+	public static RefinedSafetyEntry getTooEarlyEntry(int number,ContextTableCombination var,IExtendedDataModel controller){
 		RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_TOO_EARLY, IValueCombie.CONTEXT_PROVIDED, var,controller);
 		entry.setDataRef(var.getTooEarlyRule());
 		entry.update();
@@ -418,7 +418,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		
 		return entry;
 	}
-	public static RefinedSafetyEntry getNotProvidedEntry(int number,ContextTableCombination var,DataModelController controller){
+	public static RefinedSafetyEntry getNotProvidedEntry(int number,ContextTableCombination var,IExtendedDataModel controller){
 		
 			RefinedSafetyEntry entry = new RefinedSafetyEntry(number,IValueCombie.TYPE_NOT_PROVIDED, IValueCombie.CONTEXT_NOT_PROVIDED, var,controller);
 			entry.setDataRef(var.getNotProvidedRule());

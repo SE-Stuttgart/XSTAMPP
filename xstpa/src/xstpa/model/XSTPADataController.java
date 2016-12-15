@@ -13,15 +13,15 @@ import java.util.UUID;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
-import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.model.AbstractLtlProvider;
+import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 
 public class XSTPADataController extends Observable implements Observer{
@@ -34,17 +34,17 @@ public class XSTPADataController extends Observable implements Observer{
 	private Map<UUID,ControlActionEntry> dependenciesNotProvided;
 	private ControlActionEntry linkedCAE;
 	private ProcessModelVariables linkedPMV;
-	private DataModelController model;
+	private IExtendedDataModel model;
 	private boolean controlActionProvided;
 	private List<RefinedSafetyEntry> refinedEntrys;
 	
-	public XSTPADataController(DataModelController model) {
+	public XSTPADataController(IExtendedDataModel model) {
 		this.valuesList = new HashMap<>();
 		this.variablesList = new HashMap<>();
 		this.refinedEntrys = new ArrayList<>();
 		this.dependenciesIFProvided  = new HashMap<>();
 		this.dependenciesNotProvided = new HashMap<>();
-		this.model = model;
+		this.model = (IExtendedDataModel) model;
 		clear();
 		
 		
@@ -196,7 +196,7 @@ public class XSTPADataController extends Observable implements Observer{
 	/**
 	 * this method pulls all control actions and fills the 
 	 * list of dependent variables with the information from 
-	 * this{@link #fetchProcessComponents(DataModelController)}
+	 * this{@link #fetchProcessComponents(IExtendedDataModel)}
 	 * 
 	 * @param model the data model which should be used
 	 */
@@ -319,7 +319,7 @@ public class XSTPADataController extends Observable implements Observer{
 		int count = 0;
 		boolean consider;
 		ArrayList<UUID> currentRSR= new ArrayList<>();
-		for (IControlAction ca : getModel().getAllControlActions()) {
+		for (IControlAction ca : getModel().getAllControlActionsU()) {
   	    	consider = (caID == null) || ca.getId().equals(caID);
   	    	if(getControlActionEntry(true, ca.getId()) == null){
   	    		fetchControlActions();
@@ -374,7 +374,7 @@ public class XSTPADataController extends Observable implements Observer{
 		}
 		int total =model.getLTLPropertys().size()-1;
 		
-		List<AbstractLTLProvider> list = new ArrayList<>(model.getLTLPropertys());
+		List<AbstractLtlProvider> list = new ArrayList<>(model.getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
 			if(!currentRSR.contains(list.get(i).getRuleId())){
 				model.removeRefinedSafetyRule(false, list.get(i).getRuleId());
@@ -561,15 +561,15 @@ public class XSTPADataController extends Observable implements Observer{
 	/**
 	 * @return the model
 	 */
-	public DataModelController getModel() {
+	public IExtendedDataModel getModel() {
 		return this.model;
 	}
 
 	/**
 	 * @param model the model to set
 	 */
-	public void setModel(DataModelController model) {
-		this.model = model;
+	public void setModel(IExtendedDataModel model) {
+		this.model = (IExtendedDataModel) model;
 	}
 
 	@Override

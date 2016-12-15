@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.model.IValueCombie;
 
 
 public class ContextTableCombination {
@@ -124,7 +124,7 @@ public class ContextTableCombination {
 	 * @param useSpaces
 	 * @return
 	 */
-	public List<String> getPmValues(DataModelController controller, String equalsSeq, boolean parseBoolean, boolean useSpaces) {
+	public List<String> getPmValues(IExtendedDataModel controller, String equalsSeq, boolean parseBoolean, boolean useSpaces) {
 		ArrayList<String> list = new ArrayList<>();
 		String valueString;
 		String prefix;

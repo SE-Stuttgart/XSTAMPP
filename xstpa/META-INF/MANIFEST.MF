@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.draw2d;bundle-version="3.9.101",
  xstampp.astpa,
  org.junit,
- org.eclipse.gef
+ org.eclipse.gef,
+ org.eclipse.nebula.widgets.grid
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  org.apache.commons.io,
@@ -23,7 +24,6 @@ Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  xstampp.astpa.haz,
  xstampp.astpa.haz.controlaction.interfaces,
  xstampp.astpa.haz.controlstructure.interfaces,
- xstampp.astpa.model,
  xstampp.astpa.model.causalfactor,
  xstampp.astpa.model.controlaction,
  xstampp.astpa.model.controlaction.interfaces,
@@ -31,7 +31,7 @@ Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  xstampp.astpa.model.controlstructure.components,
  xstampp.astpa.model.controlstructure.interfaces,
  xstampp.astpa.model.hazacc,
- xstampp.astpa.ui.common.grid,
  xstampp.astpa.util.jobs,
- xstampp.astpa.wizards
+ xstampp.astpa.wizards,
+ xstampp.ui.common.grid
 Bundle-ActivationPolicy: lazy

@@ -806,7 +806,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 
 	@Override
 	public boolean refreshTable() {
-		if(contextTableViewer.getControl() == null || contextTableViewer.getControl().isDisposed()){
+		if(contextTableViewer.getControl() == null  
+        || dataController == null
+        || contextTableViewer.getControl().isDisposed()){
 			//if the context table is null or disposed than this method return false
 			return false;
 		}

@@ -8,16 +8,16 @@ import java.util.Observable;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
-import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
-import xstampp.astpa.ui.common.grid.GridCellBlank;
-import xstampp.astpa.ui.common.grid.GridCellColored;
-import xstampp.astpa.ui.common.grid.GridCellText;
-import xstampp.astpa.ui.common.grid.GridRow;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.model.AbstractLtlProvider;
+import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
+import xstampp.ui.common.grid.GridCellBlank;
+import xstampp.ui.common.grid.GridCellColored;
+import xstampp.ui.common.grid.GridCellText;
+import xstampp.ui.common.grid.GridRow;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.XSTPADataController;
 
@@ -58,15 +58,15 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 		if(dataController == null){
 			return;
 		}
-			ArrayList<AbstractLTLProvider> allNotProvidedRUCA = new ArrayList<>();
-	  	    ArrayList<AbstractLTLProvider> allProvidedRUCA = new ArrayList<>();
-	  	    ArrayList<AbstractLTLProvider> allWrongTimedRUCA = new ArrayList<>();
-	  	    List<AbstractLTLProvider> refinedEntrys = dataController.getModel().getAllRefinedRules();
+			ArrayList<AbstractLtlProvider> allNotProvidedRUCA = new ArrayList<>();
+	  	    ArrayList<AbstractLtlProvider> allProvidedRUCA = new ArrayList<>();
+	  	    ArrayList<AbstractLtlProvider> allWrongTimedRUCA = new ArrayList<>();
+	  	    List<AbstractLtlProvider> refinedEntrys = dataController.getModel().getAllRefinedRules(true);
 	  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
 	  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
 	  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
 	  	    
-	  	    for (IControlAction ca : dataController.getModel().getAllControlActions()) {
+	  	    for (IControlAction ca : dataController.getModel().getAllControlActionsU()) {
 	  	    	if(isFiltered(ca.getTitle(), CA)){
 	  	    		continue;
 	  	    	}
@@ -74,7 +74,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	  	    	allProvidedRUCA.clear();
 	  	    	allWrongTimedRUCA.clear();
 	  	    	
-	  			for (AbstractLTLProvider provider : refinedEntrys) {
+	  			for (AbstractLtlProvider provider : refinedEntrys) {
 	  				if(provider.getRelatedControlActionID().equals(ca.getId())){
 	  					switch(provider.getType()){
 	  					case IValueCombie.TYPE_NOT_PROVIDED :
@@ -113,9 +113,9 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 					GridRow ucaRow = new GridRow(3);
 					GridRow linkRow = new GridRow(3);
 
-					AbstractLTLProvider notGivenUca = null;
-					AbstractLTLProvider incorrectUca = null;
-					AbstractLTLProvider timingUca = null;
+					AbstractLtlProvider notGivenUca = null;
+					AbstractLtlProvider incorrectUca = null;
+					AbstractLtlProvider timingUca = null;
 					boolean addRow = false;
 					
 					if (allNotProvidedRUCA.size() > i
@@ -174,7 +174,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	  	    
 	}
 
-	private void addRUCA(GridRow idRow,GridRow ucaRow,GridRow linkRow,AbstractLTLProvider provider){
+	private void addRUCA(GridRow idRow,GridRow ucaRow,GridRow linkRow,AbstractLtlProvider provider){
 		String links = "";
 		
 		for (IUCAHazLink ucaLink: dataController.getModel().getAllUCALinks()) {
@@ -214,14 +214,14 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 		}
 	}
 	@Override
-	public void update(Observable dataModelController, Object updatedValue) {
+	public void update(Observable IExtendedDataModel, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 			case COMBINATION_STATES:
 			case Extended_DATA:
-				if (!this.grid.getGrid().isDisposed() && dataModelController instanceof DataModelController) {
+				if (!this.grid.getGrid().isDisposed() && IExtendedDataModel instanceof IExtendedDataModel) {
 					this.grid.clearRows();
-					this.fillTable(((DataModelController)dataModelController).getAllControlActionsU());
+					this.fillTable(((IExtendedDataModel)IExtendedDataModel).getAllControlActionsU());
 					this.grid.reloadTable();
 				}
 		default:

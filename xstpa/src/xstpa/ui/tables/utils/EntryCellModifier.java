@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
 
-import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstpa.model.ContextTableCombination;
 import xstpa.model.ControlActionEntry;
 import xstpa.model.ProcessModelValue;
@@ -13,9 +13,9 @@ import xstpa.ui.View;
 public class EntryCellModifier implements ICellModifier {
 	  private Viewer viewer;
 	  private View view;
-	private DataModelController model;
+	private IExtendedDataModel model;
 	  
-	  public EntryCellModifier(Viewer viewer,DataModelController controller) {
+	  public EntryCellModifier(Viewer viewer,IExtendedDataModel controller) {
 	    this.viewer = viewer;
 	    this.model = controller;
 	  }

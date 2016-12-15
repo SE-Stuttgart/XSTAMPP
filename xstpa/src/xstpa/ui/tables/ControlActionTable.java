@@ -171,7 +171,9 @@ public class ControlActionTable extends AbstractTableComposite{
 
 	@Override
 	public boolean refreshTable() {
-		if(controlActionViewer.getControl() == null || controlActionViewer.getControl().isDisposed()){
+		if(controlActionViewer.getControl() == null 
+		    || controlActionViewer.getControl().isDisposed()
+		    || dataController == null){
 			return false;
 		}
 		ArrayList<ControlActionEntry> contentList = new ArrayList<>();
