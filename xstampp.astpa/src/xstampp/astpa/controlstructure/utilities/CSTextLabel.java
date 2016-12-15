@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -201,6 +201,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 	@Override
 	public void paint(Graphics graphics) {
 		super.paint(graphics);
+		
 		if(this.extraLine && this.store.
 							getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
 			graphics.drawLine(0, getBounds().height,getParent().getBounds().x+ getParent().getBounds().width, getBounds().height);

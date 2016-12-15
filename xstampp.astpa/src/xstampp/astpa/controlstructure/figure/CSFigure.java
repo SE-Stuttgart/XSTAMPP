@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -192,15 +192,15 @@ public abstract class CSFigure extends Figure implements
 	 		if (this.getChildren().size() > 1) {
 				// the height of the rectangle is set to the ideal height for the
 				// given width
-				this.getTextField().setSize(
-						this.getBounds().width - 20,-1);
+				this.textLabel.setSize(
+						this.getBounds().width - this.leftMargin-4,-1);
 				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
-						1, this.getBounds().width - this.leftMargin, 15));
+						1, this.getBounds().width - this.leftMargin-4, 15));
 			} else {
 
-				this.getTextField().setSize(new Dimension(rect.width - this.leftMargin, rect.height));
+				this.getTextField().setSize(new Dimension(rect.width - this.leftMargin-4, rect.height));
 				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
-						1, rect.width - this.leftMargin, rect.height));
+						1, rect.width - this.leftMargin-4, rect.height));
 			}
 			this.textLabel.setText(text);
 			this.textLabel.repaint();
