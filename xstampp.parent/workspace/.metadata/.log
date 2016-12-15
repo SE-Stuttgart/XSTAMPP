@@ -1,0 +1,156 @@
+!SESSION 2016-11-10 12:04:52.579 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.7.0_79
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho5716812327207782477secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho5716812327207782477secure_storage
+
+!ENTRY org.eclipse.equinox.p2.director 4 10053 2016-11-10 12:04:52.580
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-10 12:04:52.580
+!MESSAGE Software being installed: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-10 12:04:52.580
+!MESSAGE Missing requirement for filter properties ~= $0: xstampp_product.executable.cocoa.macosx.x86 2.0.2 requires 'org.eclipse.equinox.launcher.cocoa.macosx 0.0.0' but it could not be found
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-10 12:04:52.580
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 12:04:52.580
+!MESSAGE From: toolingxstampp_product.application 2.0.2
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 12:04:52.580
+!MESSAGE To: xstampp_product.executable.cocoa.macosx.x86 [2.0.2]
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-10 12:04:52.580
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 12:04:52.580
+!MESSAGE From: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 12:04:52.580
+!MESSAGE To: toolingxstampp_product.application [2.0.2]
+!SESSION 2016-11-10 13:07:26.903 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.7.0_79
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho681217021522701465secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho681217021522701465secure_storage
+
+!ENTRY org.eclipse.equinox.p2.director 4 10053 2016-11-10 13:07:26.904
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:07:26.904
+!MESSAGE Software being installed: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:07:26.904
+!MESSAGE Missing requirement: toolingorg.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316 requires 'bundle org.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316' but it could not be found
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-10 13:07:26.904
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:07:26.904
+!MESSAGE From: toolingxstampp_product.application 2.0.2
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:07:26.904
+!MESSAGE To: toolingorg.eclipse.equinox.launcher.cocoa.macosx [1.1.200.v20150204-1316]
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-10 13:07:26.904
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:07:26.904
+!MESSAGE From: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:07:26.904
+!MESSAGE To: toolingxstampp_product.application [2.0.2]
+!SESSION 2016-11-10 13:14:17.034 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_92
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho2211515819965617484secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho2211515819965617484secure_storage
+
+!ENTRY org.eclipse.equinox.p2.director 4 10053 2016-11-10 13:14:17.035
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:14:17.035
+!MESSAGE Software being installed: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:14:17.035
+!MESSAGE Missing requirement: toolingorg.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316 requires 'bundle org.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316' but it could not be found
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-10 13:14:17.035
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:14:17.035
+!MESSAGE From: toolingxstampp_product.application 2.0.2
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:14:17.035
+!MESSAGE To: toolingorg.eclipse.equinox.launcher.cocoa.macosx [1.1.200.v20150204-1316]
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-10 13:14:17.035
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:14:17.035
+!MESSAGE From: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-10 13:14:17.035
+!MESSAGE To: toolingxstampp_product.application [2.0.2]
+!SESSION 2016-11-11 09:00:15.899 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_92
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho4745731372445793432secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho4745731372445793432secure_storage
+
+!ENTRY org.eclipse.equinox.p2.director 4 10053 2016-11-11 09:00:15.900
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:00:15.900
+!MESSAGE Software being installed: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:00:15.900
+!MESSAGE Missing requirement: toolingorg.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316 requires 'bundle org.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316' but it could not be found
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-11 09:00:15.900
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:00:15.900
+!MESSAGE From: toolingxstampp_product.application 2.0.2
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:00:15.900
+!MESSAGE To: toolingorg.eclipse.equinox.launcher.cocoa.macosx [1.1.200.v20150204-1316]
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-11 09:00:15.900
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:00:15.900
+!MESSAGE From: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:00:15.900
+!MESSAGE To: toolingxstampp_product.application [2.0.2]
+!SESSION 2016-11-11 09:06:49.946 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_92
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho2777043829345190155secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho2777043829345190155secure_storage
+
+!ENTRY org.eclipse.equinox.p2.director 4 10053 2016-11-11 09:06:49.947
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:06:49.947
+!MESSAGE Software being installed: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:06:49.947
+!MESSAGE Missing requirement: toolingorg.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316 requires 'bundle org.eclipse.equinox.launcher.cocoa.macosx 1.1.200.v20150204-1316' but it could not be found
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-11 09:06:49.947
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:06:49.947
+!MESSAGE From: toolingxstampp_product.application 2.0.2
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:06:49.947
+!MESSAGE To: toolingorg.eclipse.equinox.launcher.cocoa.macosx [1.1.200.v20150204-1316]
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-11 09:06:49.947
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:06:49.947
+!MESSAGE From: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:06:49.947
+!MESSAGE To: toolingxstampp_product.application [2.0.2]
+!SESSION 2016-11-11 09:16:48.115 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_92
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho7933028143549096838secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\Lukas\AppData\Local\Temp\tycho7933028143549096838secure_storage
+
+!ENTRY org.eclipse.equinox.p2.director 4 10053 2016-11-11 09:16:48.116
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:16:48.116
+!MESSAGE Software being installed: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:16:48.116
+!MESSAGE Missing requirement for filter properties ~= $0: xstampp_product.executable.cocoa.macosx.x86 2.0.2 requires 'org.eclipse.equinox.launcher.cocoa.macosx 0.0.0' but it could not be found
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-11 09:16:48.116
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:16:48.116
+!MESSAGE From: toolingxstampp_product.application 2.0.2
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:16:48.116
+!MESSAGE To: xstampp_product.executable.cocoa.macosx.x86 [2.0.2]
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2016-11-11 09:16:48.116
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:16:48.116
+!MESSAGE From: STAMP Platform 2.0.2 (xstampp_product 2.0.2)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2016-11-11 09:16:48.116
+!MESSAGE To: toolingxstampp_product.application [2.0.2]

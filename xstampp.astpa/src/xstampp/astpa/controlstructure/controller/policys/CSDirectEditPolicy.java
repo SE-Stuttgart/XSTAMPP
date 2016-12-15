@@ -25,7 +25,7 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
 import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.astpa.util.DirectEditor;
+import xstampp.util.DirectEditor;
 
 /**
  * 

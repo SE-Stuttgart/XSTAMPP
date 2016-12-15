@@ -36,7 +36,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
   private static final String PERSPECTIVE_ID = "astpa.welcome.perspective"; //$NON-NLS-1$
 
   @Override
-  public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+  public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+                                    IWorkbenchWindowConfigurer configurer) {
     return new ApplicationWorkbenchWindowAdvisor(configurer);
 
   }
@@ -51,7 +52,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     Job loadWs = new LoadWorkspace(Messages.ApplicationWorkbenchAdvisor_Load_Projects);
     loadWs.schedule();
     // remove default preference page for Install/Update and Security
-    PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
+    // PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
 
     // pm.remove("org.eclipse.equinox.internal.p2.ui.sdk.ProvisioningPreferencePage");
     // //$NON-NLS-1$

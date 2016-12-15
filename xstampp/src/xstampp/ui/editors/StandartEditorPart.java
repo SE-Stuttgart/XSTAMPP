@@ -1,3 +1,14 @@
+/*************************************************************************
+ * Copyright (c) 2014-2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+ * Institute of Software Technology, Software Engineering Group
+ * University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ **************************************************************************/
+
 package xstampp.ui.editors;
 
 import java.util.HashMap;
@@ -6,6 +17,7 @@ import java.util.Observable;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
@@ -31,6 +43,7 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   private UUID projectID;
 
+  protected static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
   @Override
   public void doSave(IProgressMonitor monitor) {
     // if (this.isDirty()) {

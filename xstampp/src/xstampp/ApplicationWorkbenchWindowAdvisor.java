@@ -13,12 +13,6 @@
 
 package xstampp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import messages.Messages;
-
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -33,12 +27,10 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.wizards.IWizardCategory;
-import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.osgi.framework.ServiceReference;
 
+import messages.Messages;
 import xstampp.ui.common.ProjectManager;
-import xstampp.update.UpdateJob;
 import xstampp.util.ChooseWorkLocation;
 import xstampp.util.STPAPluginUtils;
 
@@ -50,11 +42,9 @@ import xstampp.util.STPAPluginUtils;
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
   /**
-   * The minimum and the initial size of the window
+   * The minimum and the initial size of the window:
    */
   private static final Point MINIMUM_WINDOW_SIZE = new Point(1024, 768);
-
-  private UpdateJob updateJob;
 
   /**
    * Constructor of the advisor.
@@ -73,44 +63,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     return new ApplicationActionBarAdvisor(configurer);
   }
 
-  @SuppressWarnings("restriction")
   @Override
   public void postWindowOpen() {
     ChooseWorkLocation.initiateWorkspace();
-
-    // AbstractExtensionWizardRegistry wizardRegistry =
-    // (AbstractExtensionWizardRegistry) PlatformUI
-    // .getWorkbench().getExportWizardRegistry();
-    // IWizardCategory[] categories = wizardRegistry.getRootCategory()
-    // .getCategories();
-    // for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
-    //
-    // if (wizard.getCategory().getId().matches("org.eclipse.ui.Basic") ||
-    // //$NON-NLS-1$
-    // wizard.getCategory().getId().endsWith("category")) { //$NON-NLS-1$
-    //
-    // WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-    // if (!wizardElement.getId().matches(
-    // "org.eclipse.ui.wizards.export.Preferences")) { //$NON-NLS-1$
-    // wizardRegistry.removeExtension(wizardElement
-    // .getConfigurationElement().getDeclaringExtension(),
-    // new Object[] { wizardElement });
-    // }
-    // }
-    // }
-    //
-    // wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI
-    // .getWorkbench().getImportWizardRegistry();
-    // categories = wizardRegistry.getRootCategory().getCategories();
-    // for (IWizardDescriptor wizard : this.getAllWizards(categories)) {
-    // WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-    // if (!wizardElement.getId().matches(
-    // "org.eclipse.ui.wizards.import.Preferences")) { //$NON-NLS-1$
-    // wizardRegistry.removeExtension(wizardElement
-    // .getConfigurationElement().getDeclaringExtension(),
-    // new Object[] { wizardElement });
-    // }
-    // }
   }
 
   @Override
@@ -128,27 +83,18 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
   }
 
-  private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
-    List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
-    for (IWizardCategory wizardCategory : categories) {
-      results.addAll(Arrays.asList(wizardCategory.getWizards()));
-      results.addAll(Arrays.asList(this.getAllWizards(wizardCategory.getCategories())));
-    }
-    return results.toArray(new IWizardDescriptor[0]);
-  }
 
   @Override
   public void postWindowCreate() {
     super.postWindowCreate();
     final Shell shell = this.getWindowConfigurer().getWindow().getShell();
     shell.setMinimumSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
-
-    ServiceReference<?> reference = Activator.getContext().getServiceReference(IProvisioningAgent.SERVICE_NAME);
-    final IProvisioningAgent agent = (IProvisioningAgent) Activator.getContext().getService(reference);
+    //to prevent any broken editor references to show up, this command makes sure
+    // xstampp always starts up without any open editors
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+    ServiceReference<?> reference = Activator.getContext()
+                                              .getServiceReference(IProvisioningAgent.SERVICE_NAME);
     Activator.getContext().ungetService(reference);
-    // this.updateJob = new UpdateJob(Messages.UpdatingASTPA, agent, shell,
-    // true);
-    // this.updateJob.schedule();
   }
 
   @Override
@@ -158,8 +104,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
   @Override
   public boolean preWindowShellClose() {
-    ProjectManager manager = ProjectManager.getContainerInstance();
-
     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
     if (page.findView("A-CAST.view1") != null) { //$NON-NLS-1$
       page.hideView(page.findView("A-CAST.view1")); //$NON-NLS-1$
@@ -171,28 +115,29 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     page.resetPerspective();
     // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
     if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
-      MessageDialog.openError(null, Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
-          Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
-              + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
+      MessageDialog.openError(null,
+                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
+                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
+                       + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
       return false;
     }
-    ProjectManager viewContainer = manager;
-    if (manager.getUnsavedChanges()) {
-      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.PlatformName, null,
+    if (ProjectManager.getContainerInstance().getUnsavedChanges()) {
+      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(),
+                                               Messages.PlatformName, null,
           Messages.ThereAreUnsafedChangesDoYouWantToStoreThem, MessageDialog.CONFIRM,
           new String[] { Messages.Store, Messages.Discard, Messages.Abort }, 0);
       int resultNum = dialog.open();
       switch (resultNum) {
-      case -1:
-        return false;
-      case 0:
-        return viewContainer.saveAllDataModels();
-      case 1:
-        return true;
-      case 2:
-        return false;
-      default:
-        break;
+        case -1:
+          return false;
+        case 0:
+          return ProjectManager.getContainerInstance().saveAllDataModels();
+        case 1:
+          return true;
+        case 2:
+          return false;
+        default:
+          break;
       }
     }
 

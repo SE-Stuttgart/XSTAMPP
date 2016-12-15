@@ -52,12 +52,14 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
   private ByteArrayOutputStream outStream;
   private final String fileType;
   private final String xslName;
-  private float textSize, titleSize, tableHeadSize;
+  private float textSize;
+  private float titleSize;
+  private float tableHeadSize;
   private String pageFormat = AbstractExportPage.A4_PORTRAIT;
   private String pdfTitle = "";
   /**
    * the xslfoTransormer is beeing related to the xsl which describes the pdf
-   * export
+   * export.
    */
   private Transformer xslfoTransformer;
 
@@ -101,9 +103,9 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
       JAXBContext context;
       try {
         context = getModelContent();
-        Marshaller m = context.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        m.marshal(getModel(), this.outStream);
+        Marshaller contextMarshaller = context.createMarshaller();
+        contextMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        contextMarshaller.marshal(getModel(), this.outStream);
       } catch (JAXBException e) {
         JAXBExportJob.LOGGER.error(e.getMessage(), e);
         return Status.OK_STATUS;
@@ -196,41 +198,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
     return Status.OK_STATUS;
   }
 
-  private void getFirstDocumentSpan(Transformer xslTransformer, FopFactory fopFactory)
-      throws TransformerException, FOPException {
-    FOUserAgent userAgent = fopFactory.newFOUserAgent();
-    StreamSource informationSource = new StreamSource(new ByteArrayInputStream(this.outStream.toByteArray()));
-    ByteArrayOutputStream areaTreeStream = new ByteArrayOutputStream();
-    Fop fop;
-
-    // creae a new fop as areaTree
-    fop = fopFactory.newFop(MimeConstants.MIME_FOP_AREA_TREE, userAgent, areaTreeStream);
-
-    Result areaTreeResult = new SAXResult(fop.getDefaultHandler());
-    // transform the informationSource with the transformXSLSource
-    // the areaTreeResult is a complete description of the export dokument
-    xslTransformer.transform(informationSource, areaTreeResult);
-
-    StreamSource treeSource = new StreamSource(new ByteArrayInputStream(areaTreeStream.toByteArray()));
-
-    AreaTreeModel treeModel = new AreaTreeModel();
-    AreaTreeParser areaTreeParser = new AreaTreeParser();
-    areaTreeParser.parse(treeSource, treeModel, userAgent);
-
-    float pageHeight = 0;
-    float addition;
-
-    for (int i = 0; i < treeModel.getCurrentPageSequence().getPageCount(); i++) {
-      Span span = (Span) treeModel.getCurrentPageSequence().getPage(i).getBodyRegion().getMainReference().getSpans()
-          .get(0);
-      addition = span.getBPD() / JAXBExportJob.MP_TO_INCH;
-
-      treeModel.getCurrentPageSequence().getPage(1).toString();
-      pageHeight += addition;
-    }
-    fopFactory.setPageHeight(Float.toString(pageHeight + 1) + "in"); //$NON-NLS-1$
-
-  }
+  
 
   @Override
   protected void canceling() {
@@ -246,7 +214,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 
   /**
    * one of the two constants {@link AbstractExportPage#A4_PORTRAIT} or
-   * {@link AbstractExportPage#A4_LANDSCAPE} defined in AbstractExportPage
+   * {@link AbstractExportPage#A4_LANDSCAPE} defined in AbstractExportPage.
    * 
    * @param pageFormat
    *          the pageFormat to set
@@ -256,6 +224,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
   }
 
   /**
+   * Sets the PDF Title, to the given value.
    * @param pdfTitle
    *          the pdfTitle to set
    */

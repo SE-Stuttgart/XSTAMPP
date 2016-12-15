@@ -18,7 +18,7 @@ import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
 
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
-import xstampp.astpa.util.DirectEditor;
+import xstampp.util.DirectEditor;
 
 /**
  * 

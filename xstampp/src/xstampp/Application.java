@@ -75,15 +75,17 @@ public class Application implements IApplication {
           return IApplication.EXIT_OK;
         }
       } else {
-        ChooseWorkLocation.initializeWS();
+        ChooseWorkLocation.initializeWs();
       }
 
       if (ChooseWorkLocation.getLastUsedWorkspace() != null) {
-        instanceLoc.set(new URL(Messages.File, null, ChooseWorkLocation.getLastUsedWorkspace()), false);
+        instanceLoc.set(new URL(Messages.File,
+                                null,
+                                ChooseWorkLocation.getLastUsedWorkspace()), false);
       }
 
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (Exception exept){
+      exept.printStackTrace();
       logger.info(Messages.TheWorkspaceCannotBeChangedWhen + Messages.UsuallyTheIDEStarts);
     }
 

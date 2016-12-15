@@ -52,7 +52,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.astpa.util.DirectEditor;
+import xstampp.util.DirectEditor;
 
 /**
  * The CSAbstractEditPart is a child from AbstractGraphicalEditPart.

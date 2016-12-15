@@ -275,8 +275,6 @@ public class ProjectManager implements IPropertyChangeListener {
    */
   public boolean saveDataModelAs(final UUID projectId) {
 
-    IDataModel tmpController = this.projectDataToUUID.get(projectId);
-    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
     List<String> extensions = new ArrayList<>();
     IConfigurationElement extElement = getConfigurationFor(projectId);
     String[] filterNames = new String[] {};
@@ -287,10 +285,13 @@ public class ProjectManager implements IPropertyChangeListener {
     for (String ext : extElement.getAttribute("extension").split(";")) {//$NON-NLS-1$ //$NON-NLS-2$
       extensions.add("*." + ext); //$NON-NLS-1$
     }
+    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
     fileDialog.setFilterExtensions(extensions.toArray(new String[] {}));
     if (extensions.size() == filterNames.length) {
       fileDialog.setFilterNames(filterNames);
     }
+
+    IDataModel tmpController = this.projectDataToUUID.get(projectId);
     fileDialog.setFileName(tmpController.getProjectName());
     String fileName = fileDialog.open();
     if (fileName == null) {
@@ -335,8 +336,9 @@ public class ProjectManager implements IPropertyChangeListener {
 
     tmpController.prepareForSave();
 
-    final Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId), ProjectManager.getLOGGER(),
-        isUIcall);
+    final Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId),
+                                          ProjectManager.getLOGGER(),
+                                          isUIcall);
     if (save == null) {
       return false;
     }

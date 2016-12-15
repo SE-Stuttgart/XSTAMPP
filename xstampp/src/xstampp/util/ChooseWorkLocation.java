@@ -281,12 +281,12 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 
   /**
    * method to reset the 'remember workspace' preferences after initializing a
-   * workspace
+   * workspace.
    * 
    * @author Lukas Balzer
    *
    */
-  public static void initializeWS() {
+  public static void initializeWs() {
     if (ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(INIT_WORKSPACE, false)) {
       ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(INIT_WORKSPACE, false);
       ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(IPreferenceConstants.WS_REMEMBER, false);
@@ -296,7 +296,7 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 
   /**
    * if true the workspace has to be initialized, for that purpose it is
-   * neccesary to restart the Platform
+   * neccesary to restart the Platform.
    * 
    * @author Lukas Balzer
    *
