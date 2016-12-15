@@ -23,11 +23,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.model.AbstractLtlProvider;
+import xstampp.model.IValueCombie;
 
 /**
  * Class representing the control action objects
@@ -389,11 +390,11 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		return false;
 	}
 	
-	public List<AbstractLTLProvider> getAllRefinedRules(){
+	public List<AbstractLtlProvider> getAllRefinedRules(){
 		if(rules == null){
 			return new ArrayList<>();
 		}
-		ArrayList<AbstractLTLProvider> tmp = new ArrayList<>();
+		ArrayList<AbstractLtlProvider> tmp = new ArrayList<>();
 		for (RefinedSafetyRule refinedSafetyRule : rules) {
 			tmp.add(refinedSafetyRule);
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -51,7 +51,6 @@ import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
-import xstampp.astpa.model.controlaction.IValueCombie;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
@@ -74,6 +73,8 @@ import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.astpa.model.interfaces.IHAZXModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.model.interfaces.ILinkingViewDataModel;
 import xstampp.astpa.model.interfaces.INavigationViewDataModel;
@@ -84,13 +85,15 @@ import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.model.projectdata.ProjectDataController;
 import xstampp.astpa.model.sds.DesignRequirement;
+import xstampp.astpa.model.sds.ISafetyConstraint;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.model.AbstractLtlProvider;
 import xstampp.model.ISafetyDataModel;
+import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -109,7 +112,7 @@ public class DataModelController extends AbstractDataModel implements
 		IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel,
 		ISystemGoalViewDataModel, IControlActionViewDataModel,
 		IControlStructureEditorDataModel, IUnsafeControlActionDataModel,
-		ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel {
+		ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel,IExtendedDataModel {
 
 
 	private static final Logger LOGGER = ProjectManager.getLOGGER();
@@ -163,6 +166,7 @@ public class DataModelController extends AbstractDataModel implements
 		this.controlActionController = new ControlActionController();
 		this.causalFactorController = new CausalFactorController();
 		getIgnoreLTLValue();
+		refreshLock = false;
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		if (bundle != null) {
 			Dictionary<?, ?> dictionary = bundle.getHeaders();
@@ -1331,6 +1335,7 @@ public class DataModelController extends AbstractDataModel implements
 		return false;
 	}
 
+	
 	@Override
 	public List<ISafetyConstraint> getCorrespondingSafetyConstraints() {
 		return this.controlActionController.getCorrespondingSafetyConstraints();
@@ -1841,37 +1846,21 @@ public class DataModelController extends AbstractDataModel implements
 		return this.ignoreLtlValue;
 	}
 	
-	public List<AbstractLTLProvider> getAllRefinedRules(){
-		
-		return this.controlActionController.getAllRefinedRules();
+	public List<AbstractLtlProvider> getAllRefinedRules(boolean onlyFormal){
+		return this.controlActionController.getAllRefinedRules(onlyFormal);
 	}
 	
-	public AbstractLTLProvider getRefinedRule(UUID id){
+	public AbstractLtlProvider getRefinedRule(UUID id){
 	
-		for(AbstractLTLProvider rule : this.controlActionController.getAllRefinedRules()){
-			if(rule.getLtlProperty().equals(id)){
+		for(AbstractLtlProvider rule : this.controlActionController.getAllRefinedRules(false)){
+			if(rule.getRuleId().equals(id)){
 				return rule;
 			}
 		}
 		return null;
 	}
 
-	/**
-	 * 
-	 * @param ucaLinks
-	 * @param combies
-	 * @param ltlExp
-	 * @param rule
-	 * @param ruca
-	 * @param constraint
-	 * @param nr
-	 * @param caID
-	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
-	 * 				Defined in IValueCombie
-	 * 
-	 * @see IValueCombie
-	 * @return the id of rule which has been added if 
-	 */
+	@Override
 	public UUID addRefinedRule(List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
 		UUID newRuleId = this.controlActionController.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID,type, combies);
 		if(newRuleId != null){
@@ -1880,11 +1869,24 @@ public class DataModelController extends AbstractDataModel implements
 		return newRuleId;
 	}
 	
+	@Override
+	 public UUID addNonFormalRule(UUID ucaLinkID, String criticalCombinations, String ltlProperty, String refinedRule,
+	      String refinedUCA, String constraint, String type){
+    UUID newRuleId = this.controlActionController.addNonFormalRule(ucaLinkID, criticalCombinations, ltlProperty, refinedRule, refinedUCA, constraint, type);
+    if(newRuleId != null){
+      setUnsavedAndChanged(ObserverValue.Extended_DATA);
+    }
+    return newRuleId;
+  }
+	/**
+	 * a value that is given with null/-1 is not updated 
+	 */
+	@Override
 	public UUID updateRefinedRule(UUID ruleID,List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
 		boolean changed=false;
 		boolean updated = false;
 		UUID resultID = ruleID;
-		for(AbstractLTLProvider provider: this.controlActionController.getAllRefinedRules()){
+		for(AbstractLtlProvider provider: this.controlActionController.getAllRefinedRules(true)){
 			if(provider.getRuleId().equals(ruleID)){
 				changed = changed ||((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
 				changed = changed ||((RefinedSafetyRule) provider).setRefinedSafetyConstraint(constraint);
@@ -1920,15 +1922,15 @@ public class DataModelController extends AbstractDataModel implements
 	 */
 	public boolean removeRefinedSafetyRule(boolean removeAll, UUID ruleId){
 		if(this.controlActionController.removeSafetyRule(removeAll, ruleId)){
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public List<AbstractLTLProvider> getLTLPropertys(){
-		return getAllRefinedRules();
+	public List<AbstractLtlProvider> getLTLPropertys(){
+		return getAllRefinedRules(true);
 	}
 
 	@Override

@@ -5,31 +5,39 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
-import xstampp.astpa.model.controlaction.IValueCombie;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.model.AbstractLtlProvider;
+import xstampp.model.IValueCombie;
 @XmlRootElement(name = "rule")
 @XmlAccessorType(XmlAccessType.FIELD)
 
-public class RefinedSafetyRule extends AbstractLTLProvider{
+public class RefinedSafetyRule extends AbstractLtlProvider{
 
 	
 
 	
 	/**
 	 * 
-	 * @param ucaLinks
-	 * @param caId
-	 * @param ltlExp
-	 * @param rule
-	 * @param ruca
-	 * @param constraint
-	 * @param nr
-	 * @param combies
+   * @param ucaLinks
+   *          {@link AbstractLtlProvider#getUCALinks()}
+   * @param combies
+   *          {@link RefinedSafetyRule#getCriticalCombies()}
+   * @param ltlExp
+   *          {@link AbstractLtlProvider#getLtlProperty()}   
+   * @param rule
+   *          {@link AbstractLtlProvider#getSafetyRule()}
+   * @param ruca
+   *          {@link AbstractLtlProvider#getRefinedUCA()}
+   * @param constraint
+   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
+   * @param nr
+   *          {@link AbstractLtlProvider#getNumber()}
+   * @param caID
+   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
+   * @param type 
+   *          {@link AbstractLtlProvider#getType()}
+   * 
 	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
 	 * 				Defined in IValueCombie
 	 * 
@@ -54,7 +62,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	}
 	
 	public boolean setUCALinks(List<UUID> ids){
-		if(this.relatedUCAs != null && this.relatedUCAs.equals(ids)){
+		if(ids == null 
+        || (this.relatedUCAs != null && this.relatedUCAs.equals(ids))){
 			return false;
 		}
 		this.relatedUCAs = ids;
@@ -72,7 +81,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @return 
 	 */
 	public boolean setSafetyRule(String rule) {
-		if(this.rule != null && this.rule.equals(rule)){
+		if(rule == null 
+        || (this.rule != null && this.rule.equals(rule))){
 			return false;
 		}
 		this.rule = rule;
@@ -87,7 +97,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @return 
 	 */
 	public boolean setRefinedUCA(String refinedUCA) {
-		if(this.rUCA != null && this.rUCA.equals(refinedUCA)){
+		if(refinedUCA == null 
+        || (this.rUCA != null && this.rUCA.equals(refinedUCA))){
 			return false;
 		}
 		this.rUCA = refinedUCA;
@@ -100,7 +111,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @return 
 	 */
 	public boolean setRefinedSafetyConstraint(String refinedSafetyConstraint) {
-		if(this.rSCt != null && this.rSCt.equals(refinedSafetyConstraint)){
+		if(refinedSafetyConstraint == null 
+		    ||(this.rSCt != null && this.rSCt.equals(refinedSafetyConstraint))){
 			return false;
 		}
 		this.rSCt = refinedSafetyConstraint;
@@ -113,7 +125,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @param ltlProperty the ltlProperty to set
 	 */
 	public boolean setLtlProperty(String ltlProperty) {
-		if(this.ltl != null && this.ltl.equals(ltlProperty)){
+		if(ltlProperty == null 
+		    || (this.ltl != null && this.ltl.equals(ltlProperty))){
 			return false;
 		}
 		this.ltl = ltlProperty;
@@ -123,13 +136,13 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	
 	
 	@Override
-	public int compareTo(AbstractLTLProvider sibling) {
+	public int compareTo(AbstractLtlProvider sibling) {
 		int sign =(int) Math.signum(getNumber() - sibling.getNumber());
 		return sign;
 	}
 
 	/**
-	 * @return the criticalCombies
+	 * @return A string that describes the critical combinations of process model values
 	 */
 	public String getCriticalCombies() {
 		return this.combies;
@@ -140,7 +153,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @return 
 	 */
 	public boolean setRelatedControlActionID(UUID controlActionID) {
-		if(this.caID != null && this.caID.equals(controlActionID)){
+		if(controlActionID == null 
+        || (this.caID != null && this.caID.equals(controlActionID))){
 			return false;
 		}
 		this.caID = controlActionID;
@@ -152,7 +166,7 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @return 
 	 */
 	public boolean setNumber(int number) {
-		if(this.number == number){
+		if(number == -1 ||this.number == number){
 			return false;
 		}
 		this.number = number;
@@ -166,7 +180,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @see IValueCombie
 	 */
 	public boolean setType(String type) {
-		if(this.type != null && this.type.equals(type)){
+		if(type == null 
+        || (this.type != null && this.type.equals(type))){
 			return false;
 		}
 		this.type = type;
@@ -177,7 +192,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @param caID the caID to set
 	 */
 	public boolean setCaID(UUID caID) {
-		if(this.caID != null && this.caID.equals(caID)){
+		if(caID == null 
+        || (this.caID != null && this.caID.equals(caID))){
 			return false;
 		}
 		this.caID = caID;
@@ -190,7 +206,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @return 
 	 */
 	public boolean setCriticalCombies(String criticalCombies) {
-		if(this.combies != null && this.combies.equals(criticalCombies)){
+		if(criticalCombies == null 
+        || (this.combies != null && this.combies.equals(criticalCombies))){
 			return false;
 		}
 		this.combies = criticalCombies;
@@ -201,7 +218,8 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	 * @return 
 	 */
 	public boolean setControlAction(String controlAction) {
-		if(this.controlAction != null && this.controlAction.equals(controlAction)){
+		if(controlAction == null 
+        || (this.controlAction != null && this.controlAction.equals(controlAction))){
 			return false;
 		}
 		this.controlAction = controlAction;
@@ -209,11 +227,15 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	}
 
 	/**
+	 * Set the Hazard Links as String in the form <i>H-1,H-2,...</i>
 	 * @param links the links to set
-	 * @return 
+	 * @return whether the links string could be changed,
+	 *         if false than the given string is <code>null</code> or the equal to the
+	 *         current links
 	 */
 	public boolean setLinks(String links) {
-		if(this.links != null && this.links.equals(links)){
+		if(links == null 
+        || (this.links != null && this.links.equals(links))){
 			return false;
 		}
 		this.links = links;

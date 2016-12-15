@@ -15,8 +15,6 @@ package xstampp.astpa.model.hazacc;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.model.ATableModel;
-
 /**
  * Class for accidents
  *

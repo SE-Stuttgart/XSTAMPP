@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.model.AbstractLtlProvider;
 
 public interface IHAZXControlAction extends IControlAction {
 	/**
 	 * @return the componentLink
 	 */
 	public UUID getComponentLink();
-	public List<AbstractLTLProvider> getAllRefinedRules();
+	public List<AbstractLtlProvider> getAllRefinedRules();
 }

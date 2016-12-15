@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -29,14 +29,15 @@ import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.model.AbstractLTLProvider;
+import xstampp.astpa.model.sds.ISafetyConstraint;
+import xstampp.model.AbstractLtlProvider;
+import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 
 /**
@@ -62,6 +63,7 @@ public class ControlActionController {
 	
 	private final Map<UUID, ControlAction> trash;
 
+	private int ruleNr;
 	/**
 	 * Constructor for the controller
 	 * 
@@ -72,6 +74,7 @@ public class ControlActionController {
 		this.trash = new HashMap<>();
 		this.controlActions = new ArrayList<>();
 		this.links = new ArrayList<>();
+	  this.ruleNr = -1;
 	}
 
 	/**
@@ -382,13 +385,8 @@ public class ControlActionController {
 		for (ControlAction controlAction : this.controlActions) {
 			for (IUnsafeControlAction unsafeControlAction : controlAction
 					.getUnsafeControlActions()) {
-				boolean isNotHazardous = this.getLinksOfUCA(unsafeControlAction.getId()).isEmpty();
 				boolean isSearched = unsafeControlAction.getId().equals(ucaID);
-				if(isNotHazardous && isSearched){
-					return -1;
-				}else if(!isNotHazardous){
-					counter++;
-				}
+				counter++;
 				if(isSearched){
 					return counter;
 				}
@@ -515,7 +513,7 @@ public class ControlActionController {
 			}
 
 			
-			for(AbstractLTLProvider rule : controlAction.getAllRefinedRules()){
+			for(AbstractLtlProvider rule : controlAction.getAllRefinedRules()){
 
 				if(rule.getUCALinks() != null){
 					StringBuffer linkString = new StringBuffer(); 
@@ -792,10 +790,18 @@ public class ControlActionController {
 		return action.removeProvidedVariable(providedVariable);
 	}
 	
-	public List<AbstractLTLProvider> getAllRefinedRules(){
-		moveRulesInCA();
-		List<AbstractLTLProvider> list = new ArrayList<>();
-		
+	/**
+	 * 
+	 * @param onlyFormal if the returned list should only include the rules that where created in the Context Table
+	 * 
+	 * @return a list containing all rules or only the rules created formally in the context table
+	 */
+	public List<AbstractLtlProvider> getAllRefinedRules(boolean onlyFormal){
+//		moveRulesInCA();
+		List<AbstractLtlProvider> list = new ArrayList<>();
+		if(!onlyFormal && rules != null){
+		  list.addAll(rules);
+		}
 		for (ControlAction controlAction : controlActions) {
 			if(controlAction.getAllRefinedRules()!=null){
 				list.addAll(controlAction.getAllRefinedRules());
@@ -807,31 +813,80 @@ public class ControlActionController {
 
 
 	/**
-	 * 
-	 * @param ucaLinks
-	 * @param ltlExp
-	 * @param rule
-	 * @param ruca
-	 * @param constraint
-	 * @param nr
-	 * @param caID
-	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
-	 * 				Defined in IValueCombie
-	 * @param combies
+   * adds the refined rule to the set of rules defined in the related control action
+   * 
+   * @param ucaLinks
+   *          {@link AbstractLtlProvider#getUCALinks()}
+   * @param combies
+   *          {@link RefinedSafetyRule#getCriticalCombies()}
+   * @param ltlExp
+   *          {@link AbstractLtlProvider#getLtlProperty()}   
+   * @param rule
+   *          {@link AbstractLtlProvider#getSafetyRule()}
+   * @param ruca
+   *          {@link AbstractLtlProvider#getRefinedUCA()}
+   * @param constraint
+   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
+   * @param nr
+   *          {@link AbstractLtlProvider#getNumber()}
+   * @param caID
+   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
+   * @param type 
+   *          {@link AbstractLtlProvider#getType()}
 	 * 
 	 * @see IValueCombie
-	 * @return
+	 * @return the uuid of the added refined rule, or null if no rule could be added because of a bad value e.g. <code>caID == null</code>
 	 */
 	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type, String combies){
 		for (ControlAction controlAction : controlActions) {
 			if(controlAction.getId().equals(caID)){
-				return controlAction.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID, type, combies);
+				return controlAction.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, getRuleNumber(), caID, type, combies);
 			}
 		}
 		return null;
 	}
 	
+  /**
+   * 
+   * @param ucaLinkID
+   *          {@link AbstractLtlProvider#getUCALinks()}
+   * @param combies
+   *          {@link RefinedSafetyRule#getCriticalCombies()}
+   * @param ltlExp
+   *          {@link AbstractLtlProvider#getLtlProperty()}   
+   * @param rule
+   *          {@link AbstractLtlProvider#getSafetyRule()}
+   * @param ruca
+   *          {@link AbstractLtlProvider#getRefinedUCA()}
+   * @param constraint
+   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
+   * @param nr
+   *          {@link AbstractLtlProvider#getNumber()}
+   * @param type 
+   *          {@link AbstractLtlProvider#getType()}
+   * 
+   * @see IValueCombie
+   * @return the id of rule which has been added if 
+   */
+  public UUID addNonFormalRule(UUID ucaLinkID, String criticalCombinations, String ltlProperty, String refinedRule,
+      String refinedUCA, String constraint, String type){
+      if(rules == null){
+        this.rules= new ArrayList<>();
+      }
+      List<UUID> ucaLinks = new ArrayList<>();
+      ucaLinks.add(ucaLinkID);
+      RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks, null, ltlProperty, refinedRule,
+                                                          refinedUCA, constraint, type, getRuleNumber(), criticalCombinations);
+      
+      if(this.rules.add(safetyRule)){
+        return safetyRule.getRuleId();
+      }
+    
+    return null;
+  }
+
 	/**
+	 * This method removes a safety rule if it is stored as general rule or as rule in control action
 	 * 
 	 * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
 	 * 					when this is true than the ruleId will be ignored
@@ -841,15 +896,28 @@ public class ControlActionController {
 	 * 					id was illegal
 	 */
 	public boolean removeSafetyRule(boolean removeAll, UUID id){
-		moveRulesInCA();
+		if(removeAll){
+		  //if removeAll than the rule index is set to 0 so the next rule is added with the index 0
+		  ruleNr = 0;
+		  this.rules = new ArrayList<>();
+		}else if(rules != null){
+		  // the rule which should be removed is searched for in both the 
+		  // general rules list and in the control actions
+  		for (RefinedSafetyRule refinedSafetyRule : rules) {
+        if(refinedSafetyRule.getRuleId().equals(id)){
+          return rules.remove(refinedSafetyRule);
+        }
+      }
+		}
+		
 		for (ControlAction controlAction : controlActions) {
 			if(controlAction.removeSafetyRule(removeAll,id)){
 				return true;
 			}
 		}
-		
 		return false;
 	}
+	
 	
 	public boolean usesHAZXData(){
 		for(ControlAction action : this.controlActions){
@@ -860,6 +928,14 @@ public class ControlActionController {
 		return false;
 	}
 	
+	private int getRuleNumber() {
+    if(ruleNr == -1){
+      ruleNr = getAllRefinedRules(true).size();
+    }
+    int returnNr = ruleNr;
+    ruleNr++;
+    return returnNr;
+  }
 	public boolean moveEntry(boolean moveUp,UUID id,ObserverValue value){
 		if(value.equals(ObserverValue.CONTROL_ACTION)){
 			return ATableModel.move(moveUp, id, controlActions);

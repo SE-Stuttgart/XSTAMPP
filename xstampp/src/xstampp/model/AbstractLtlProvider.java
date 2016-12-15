@@ -7,9 +7,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "id", "number", "combies", "rule", "rUCA", "rSCt", "ltl", "type", "controlAction", "links",
+@XmlType(propOrder = { "id", "number", "combies",
+                    "rule", "rUCA", "rSCt", "ltl", "type", "controlAction", "links",
     "relatedUCAs", "caID" })
-public abstract class AbstractLTLProvider implements Comparable<AbstractLTLProvider> {
+public abstract class AbstractLtlProvider implements Comparable<AbstractLtlProvider> {
 
   @XmlElement(name = "ruleID")
   protected UUID id;
@@ -49,43 +50,50 @@ public abstract class AbstractLTLProvider implements Comparable<AbstractLTLProvi
   protected UUID caID;
 
   /**
-   * @return the ltlProperty
+   * @return A formula which formulates the critical combination in Linear Temporal Logic 
    */
   public String getLtlProperty() {
     return this.ltl;
   }
 
   /**
-   * @return the refinedUCA
+   * @return A refined UCA entry which describes the interaction between control action and process values
    */
   public String getRefinedUCA() {
     return this.rUCA;
   }
 
   /**
-   * @return the rule
+   * @return A rule to prevent the critical state to happen
    */
   public String getSafetyRule() {
     return this.rule;
   }
-
+  /**
+   * 
+   * @return The number of the referenced rule.
+   */
   public int getNumber() {
     return this.number;
   }
 
   /**
-   * @return the controlActionID
+   * @return A UUID with which a control action is registered in the data model
    */
   public UUID getRelatedControlActionID() {
     return this.caID;
   }
-
+  
+  /**
+   * 
+   * @return A list with UUIDs which must belong to UCA's {@link #getAllUnsafeControlActions()}.
+   */
   public List<UUID> getUCALinks() {
     return this.relatedUCAs;
   }
 
   /**
-   * @return the refinedSafetyConstraint
+   * @return The constraint which should always hold in the system
    */
   public String getRefinedSafetyConstraint() {
     return this.rSCt;
@@ -97,7 +105,11 @@ public abstract class AbstractLTLProvider implements Comparable<AbstractLTLProvi
   public UUID getRuleId() {
     return this.id;
   }
-
+  
+  /**
+   * 
+   * @return the Type of the context the rule should be generated for one of the <code>TYPE</code> constants Defined in IValueCombie
+   */
   public String getType() {
     return this.type;
   }

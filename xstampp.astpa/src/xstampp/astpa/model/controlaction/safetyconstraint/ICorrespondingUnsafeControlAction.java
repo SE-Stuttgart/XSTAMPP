@@ -15,7 +15,7 @@ package xstampp.astpa.model.controlaction.safetyconstraint;
 
 import java.util.UUID;
 
-import xstampp.astpa.model.ISafetyConstraint;
+import xstampp.astpa.model.sds.ISafetyConstraint;
 
 /**
  * Interface for a unsafe control action for the corresponding safety

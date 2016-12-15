@@ -9,6 +9,8 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.model.IValueCombie;
+
 /**
  * This class is used to store a specific amount of process model values
  * which can lead( depending on the hazardous boolean)

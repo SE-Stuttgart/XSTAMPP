@@ -11,28 +11,35 @@
  * 
  *******************************************************************************/
 
-package xstampp.astpa.model.controlaction.safetyconstraint;
+package xstampp.astpa.model.sds;
 
-import xstampp.astpa.model.sds.ASafetyConstraint;
+import java.util.UUID;
+
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * A corresponding safety constraint
+ * Abstract class for safety constraints
  * 
  * @author Fabian Toth
  * 
  */
-public class CorrespondingSafetyConstraint extends ASafetyConstraint {
+@XmlType(propOrder = { "text", "id" })
+public abstract class ASafetyConstraint implements ISafetyConstraint {
+
+	private UUID id;
+	private String text;
 
 	/**
-	 * Constructor of a corresponding safety constraint
+	 * Constructor of a safety constraint
 	 * 
 	 * @param text
 	 *            the text of the new safety constraint
 	 * 
 	 * @author Fabian Toth
 	 */
-	public CorrespondingSafetyConstraint(String text) {
-		super(text);
+	public ASafetyConstraint(String text) {
+		this.id = UUID.randomUUID();
+		this.text = text;
 	}
 
 	/**
@@ -40,8 +47,42 @@ public class CorrespondingSafetyConstraint extends ASafetyConstraint {
 	 * 
 	 * @author Fabian Toth
 	 */
-	public CorrespondingSafetyConstraint() {
+	public ASafetyConstraint() {
 		// empty constructor for JAXB
+	}
+
+	/**
+	 * Setter for the description
+	 * 
+	 * @param text
+	 *            the new text
+	 * 
+	 * @author Fabian Toth
+	 */
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	@Override
+	public String getText() {
+		return this.text;
+	}
+
+	@Override
+	public UUID getId() {
+		return this.id;
+	}
+
+	/**
+	 * Setter for the id
+	 * 
+	 * @param id
+	 *            the new id
+	 * 
+	 * @author Fabian Toth
+	 */
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 }

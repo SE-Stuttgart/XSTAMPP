@@ -13,7 +13,7 @@
 
 package xstampp.astpa.model.causalfactor;
 
-import xstampp.astpa.model.ASafetyConstraint;
+import xstampp.astpa.model.sds.ASafetyConstraint;
 
 /**
  * A corresponding safety constraint
