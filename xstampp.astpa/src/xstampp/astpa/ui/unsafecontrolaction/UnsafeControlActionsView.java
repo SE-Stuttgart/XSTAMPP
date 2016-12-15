@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -21,21 +21,13 @@ import java.util.Observable;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -48,19 +40,19 @@ import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
-import xstampp.astpa.ui.AbstractFilteredEditor;
-import xstampp.astpa.ui.common.grid.GridCellBlank;
-import xstampp.astpa.ui.common.grid.GridCellButton;
-import xstampp.astpa.ui.common.grid.GridCellColored;
-import xstampp.astpa.ui.common.grid.GridCellLinking;
-import xstampp.astpa.ui.common.grid.GridCellText;
-import xstampp.astpa.ui.common.grid.GridCellTextEditor;
-import xstampp.astpa.ui.common.grid.GridRow;
-import xstampp.astpa.ui.common.grid.GridWrapper;
-import xstampp.astpa.ui.common.grid.IGridCell;
+import xstampp.astpa.ui.causalScenarios.ActionMenuListener;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.grid.GridCellBlank;
+import xstampp.ui.common.grid.GridCellButton;
+import xstampp.ui.common.grid.GridCellColored;
+import xstampp.ui.common.grid.GridCellLinking;
+import xstampp.ui.common.grid.GridCellText;
+import xstampp.ui.common.grid.GridCellTextEditor;
+import xstampp.ui.common.grid.GridRow;
+import xstampp.ui.common.grid.GridWrapper;
+import xstampp.ui.editors.AbstractFilteredEditor;
 
 /**
  * View used to handle the unsafe control actions.
@@ -69,7 +61,9 @@ import xstampp.ui.common.ProjectManager;
  */
 public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
-	/**
+	private static final String UCA1 = "UCA1.";
+
+  /**
 	 * ViewPart ID.
 	 */
 	public static final String ID = "astpa.steps.step2_2"; //$NON-NLS-1$
@@ -85,11 +79,8 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 */
 	private static final Logger LOGGER = Logger.getRootLogger();
 	private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
-	private static final String CONFIRMATION_TITLE = Messages.DeleteUnsafeControlAction;
-	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheUCA;
 
 	private int internalUpdate;
-	protected static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 
 	/**
 	 * Interfaces to communicate with the data model.
@@ -100,6 +91,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	private Map<UUID,String> descriptionsToUUIDs = new HashMap<>();
 	protected GridWrapper grid;
 	private boolean lockreload;
+	private DeleteUcaAction deleteAction;
 	
 	public UnsafeControlActionsView() {
 		setUseFilter(true);
@@ -128,41 +120,25 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	protected void updateFilter() {
 		reloadTable();
 	}
-	private class UnsafeControlActionCell extends GridCellTextEditor{
+	
+	private class UnsafeControlActionCell extends GridCellTextEditor {
 
-		private UUID unsafeControlAction;
-		public UnsafeControlActionCell(GridWrapper grid,String initialText,UUID uca) {
-			super(grid, initialText, true);
-			this.unsafeControlAction = uca;
+		public UnsafeControlActionCell(GridWrapper grid,String initialText,UUID uca,boolean showDelete, boolean isReadOnly) {
+			super(grid, initialText, showDelete, isReadOnly,uca);
 		}
 		@Override
 		public void delete() {
-			UnsafeControlActionsView.LOGGER
-					.debug("Delete unsafe control action"); //$NON-NLS-1$
-			
-			if (MessageDialog.openConfirm(
-					UnsafeControlActionsView.this.grid.getGrid()
-							.getShell(),
-					UnsafeControlActionsView.CONFIRMATION_TITLE,
-					UnsafeControlActionsView.CONFIRMATION_DESCRIPTION)) {
-				UnsafeControlActionsView.this.ucaInterface
-						.removeUnsafeControlAction(this.unsafeControlAction);
-			}
-		}
-		
-		@Override
-		public UUID getUUID(){
-			return this.unsafeControlAction;
+			deleteAction.run();
 		}
 		@Override
 		public void updateDataModel(String newValue) {
-			ucaInterface.setUcaDescription(unsafeControlAction, newValue);
-			descriptionsToUUIDs.remove(unsafeControlAction);
+			ucaInterface.setUcaDescription(getUUID(), newValue);
+			descriptionsToUUIDs.remove(getUUID());
 		}
 		
 		@Override
 		public void onTextChange(String newValue) {
-			UnsafeControlActionsView.this.descriptionsToUUIDs.put(this.unsafeControlAction,newValue);
+			UnsafeControlActionsView.this.descriptionsToUUIDs.put(getUUID(),newValue);
 			final String value=newValue;
 			Display.getDefault().asyncExec(new Runnable() {
 				
@@ -192,11 +168,13 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		public void onMouseDown(MouseEvent e,
 				org.eclipse.swt.graphics.Point relativeMouse,
 				Rectangle cellBounds) {
-			UUID newUCA = UnsafeControlActionsView.this.ucaInterface
-					.addUnsafeControlAction(this.parentControlAction.getId(),
-							"", this.ucaType); //$NON-NLS-1$
-			UnsafeControlActionsView.this.grid.activateCell(newUCA);
-			UnsafeControlActionsView.LOGGER.debug(Messages.AddingNewUCA);
+		  if(e.button == 1){
+  			UUID newUCA = UnsafeControlActionsView.this.ucaInterface
+  					.addUnsafeControlAction(this.parentControlAction.getId(),
+  							"", this.ucaType); //$NON-NLS-1$
+  			UnsafeControlActionsView.this.grid.activateCell(newUCA);
+  			UnsafeControlActionsView.LOGGER.debug(Messages.AddingNewUCA);
+		  }
 			
 		}
 	}
@@ -214,87 +192,25 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
 		updateHazards();
 		UnsafeControlActionsView.LOGGER.info("createPartControl()"); //$NON-NLS-1$
-		parent.setLayout(new FormLayout());
-		FormData data = new FormData();
-		data.top = new FormAttachment(0);
-		data.left= new FormAttachment(0);
-		data.right= new FormAttachment(100);
+		parent.setLayout(new GridLayout(1, false));
 		
-		Composite filter= new Composite(parent, SWT.None);
-		filter.setLayoutData(data);
-		super.createPartControl(filter);
-		data = new FormData();
-		data.top = new FormAttachment(filter);
-		data.left= new FormAttachment(0);
-		data.right= new FormAttachment(100);
-		data.bottom = new FormAttachment(100);
+		super.createPartControl(parent);
 		this.grid = new GridWrapper(parent, new String[] {
 				Messages.ControlAction, Messages.NotGiven,
 				Messages.GivenIncorrectly, Messages.WrongTiming,
 				Messages.StoppedTooSoon });
+		this.grid.setSelectRow(false);
 		this.grid.getGrid().setVisible(true);
-		this.grid.getGrid().setLayoutData(data);
-		this.reloadTable();
 
+    this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		this.reloadTable();
+    deleteAction = new DeleteUcaAction(grid, ucaInterface,Messages.UnsafeControlActions,UCA1);
 		MenuManager menuMgr = new MenuManager();
 		Menu menu = menuMgr.createContextMenu(this.grid.getGrid());
-		menuMgr.addMenuListener(new IMenuListener() {
-
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-				if (UnsafeControlActionsView.this.grid.getGrid()
-						.getCellSelectionCount() > 0) {
-
-					Action deleteAccident = new Action(
-							Messages.DeleteUnsafeControlActions) {
-
-						@Override
-						public void run() {
-							UnsafeControlActionsView.this.deleteSelectedUcas();
-						}
-					};
-					manager.add(deleteAccident);
-				}
-			}
-		});
+		menuMgr.addMenuListener(new ActionMenuListener(deleteAction));
 		menuMgr.setRemoveAllWhenShown(true);
 		this.grid.getGrid().setMenu(menu);
 
-		this.grid.getGrid().addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// Intentionally empty
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if ((e.keyCode == SWT.DEL)
-						|| ((e.stateMask == SWT.COMMAND) && (e.keyCode == SWT.BS))) {
-					UnsafeControlActionsView.this.deleteSelectedUcas();
-				}
-			}
-		});
-	}
-
-	private void deleteSelectedUcas() {
-		if (MessageDialog.openConfirm(this.grid.getGrid().getShell(),
-				UnsafeControlActionsView.CONFIRMATION_TITLE,
-				UnsafeControlActionsView.CONFIRMATION_DESCRIPTION)) {
-			List<IGridCell> selected = UnsafeControlActionsView.this.grid
-					.getSelectedCellList();
-
-			for (int i = 0; i < selected.size(); i++) {
-				IGridCell cell = selected.get(i);
-
-				if (cell instanceof UnsafeControlActionCell) {
-					UnsafeControlActionCell editor= ((UnsafeControlActionCell) cell);
-					UUID ucaID=editor.getUUID();
-					UnsafeControlActionsView.this.ucaInterface
-							.removeUnsafeControlAction(ucaID);
-				}
-			}
-		}
 	}
 
 	private int getMaxHeight(IControlAction controlAction) {
@@ -332,7 +248,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			if(isFiltered(cAction.getTitle(), CA_FILTER)){
 				continue;
 			}
-			GridRow controlActionRow = new GridRow(1);
+			GridRow controlActionRow = new GridRow(3);
 			addControlAction = false;
 			
 
@@ -421,10 +337,10 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
 				idRow.addCell(new GridCellBlank());
 			}else{
-				idRow.addCell(new GridCellText("UCA1." + this.ucaInterface.getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
+				idRow.addCell(new GridCellText(UCA1 + this.ucaInterface.getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
 			}
 			UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
-					tooSoonUca.getId());
+					tooSoonUca.getId(),true,false);
 			ucaRow.addCell(editor);
 			linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 					tooSoonUca.getId(), this.ucaContentProvider,
@@ -436,10 +352,10 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		if (ucaList.size() == i) {
 			// add placeholder
 			idRow.addCell(new GridCellBlank());
-			ucaRow.addCell(new GridCellBlank());
-			linkRow.addCell(new AddUcaButton(cAction,
-					message,
-					UnsafeControlActionType.STOPPED_TOO_SOON));
+			ucaRow.addCell(new AddUcaButton(cAction,
+          message,
+          type));
+			linkRow.addCell(new GridCellBlank());
 		} else {
 			// add placeholders
 			idRow.addCell(new GridCellBlank());
@@ -493,11 +409,11 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 				return true;
 			}
 			for(ITableModel model : this.ucaInterface.getLinkedHazardsOfUCA(uca.getId())){
-				if(!isFiltered(model.getNumber())){
+				if(!isFiltered(model.getNumber(),HAZID_FILTER)){
 					return false;
 				}
-				return true;
 			}
+      return true;
 		default:
 			return isFiltered(uca.getDescription(),UCA_FILTER);
 		}
@@ -519,6 +435,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	protected IDataModel getDataModel(){
 		return this.ucaInterface;
 	}
+	
 	private void reloadTable() throws SWTException {
 		if(!this.lockreload){
 			int tmp= this.grid.getGrid().getVerticalBar().getSelection();

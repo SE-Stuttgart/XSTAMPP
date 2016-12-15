@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -259,6 +259,26 @@ public final class Messages extends NLS {
   public static String DeleteCausalFactor;
   @SuppressWarnings("javadoc")
   public static String DeleteControlActions;
+  /**
+   * A string that asks the user to confirm the deletion of one or more
+   * entries inserted as 
+   * <br/><b><i>%s</i></b>: (e.g. a 'control action', 'design requirement')
+   * <p/>
+   * <code>
+   * Do you really want to delete the <i>Control Action</i>:<br>
+   * <span style="margin-left:50px">CA 1
+   * </ul></code>
+   */
+  public static String DeleteQuestionMask;
+  
+  /**
+   * A string that asks the user to confirm the deletion of one or more
+   * entries inserted as 
+   * <br/><b><i>%s</i></b>: (e.g. a 'control action', 'design requirement')
+   * <p/>
+   * <code>Delete <i>Control Action</i></code>
+   */
+  public static String DeleteMask;
   @SuppressWarnings("javadoc")
   public static String DoYouWishToDeleteTheControlAction;
   @SuppressWarnings("javadoc")

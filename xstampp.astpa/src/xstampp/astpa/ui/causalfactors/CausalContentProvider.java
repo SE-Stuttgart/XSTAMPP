@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.ui.common.grid.ITableContentProvider;
+import xstampp.ui.common.grid.ITableContentProvider;
 
 /**
  * 

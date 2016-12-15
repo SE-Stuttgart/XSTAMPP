@@ -106,6 +106,12 @@
                   id="astpa.navigation.step3_2"
                   name="Causal Factors Table">
             </step>
+            <step
+                  default_editor="true"
+                  editorId="xstampp.astpa.ui.causalScenarios"
+                  id="xstampp.astpa.ui.causalScenarios"
+                  name="Causal Scenarios">
+            </step>
          </category>
       </process>
    </extension>
@@ -540,6 +546,12 @@
             default="false"
             id="stpa.results.editor.ltl"
             name="%editor.name.STPAResults">
+      </editor>
+      <editor
+            class="xstampp.astpa.ui.causalScenarios.CausalScenariosView"
+            default="false"
+            id="xstampp.astpa.ui.causalScenarios"
+            name="Causal Scenarios">
       </editor>
    </extension>
    <extension

@@ -41,25 +41,25 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
-import xstampp.astpa.model.ISafetyConstraint;
 import xstampp.astpa.model.causalfactor.CausalFactor;
 import xstampp.astpa.model.causalfactor.ICausalComponent;
 import xstampp.astpa.model.causalfactor.ICausalFactor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.ui.AbstractFilteredEditor;
-import xstampp.astpa.ui.common.grid.AutoCompleteField;
-import xstampp.astpa.ui.common.grid.CellButton;
-import xstampp.astpa.ui.common.grid.GridCellButton;
-import xstampp.astpa.ui.common.grid.GridCellColored;
-import xstampp.astpa.ui.common.grid.GridCellLinking;
-import xstampp.astpa.ui.common.grid.GridCellText;
-import xstampp.astpa.ui.common.grid.GridCellTextEditor;
-import xstampp.astpa.ui.common.grid.GridRow;
-import xstampp.astpa.ui.common.grid.GridWrapper;
+import xstampp.astpa.model.sds.ISafetyConstraint;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.grid.AutoCompleteField;
+import xstampp.ui.common.grid.CellButton;
+import xstampp.ui.common.grid.GridCellButton;
+import xstampp.ui.common.grid.GridCellColored;
+import xstampp.ui.common.grid.GridCellLinking;
+import xstampp.ui.common.grid.GridCellText;
+import xstampp.ui.common.grid.GridCellTextEditor;
+import xstampp.ui.common.grid.GridRow;
+import xstampp.ui.common.grid.GridWrapper;
+import xstampp.ui.editors.AbstractFilteredEditor;
 
 /**
  * The view to add causal factors to control structure components, edit them and
@@ -76,6 +76,8 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheCF;
 	private static final String CAUSALFACTORS= "Text filter for Causal Factors";
 	private Map<UUID,CausalFactor> factorsToUUIDs;
+	private DeleteCFAction deleteAction;
+	
 	private class SafetyConstraintEditorCell extends GridCellTextEditor {
 
 		private UUID safetyConstraintId;
@@ -83,9 +85,8 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		
 		public SafetyConstraintEditorCell(GridWrapper gridWrapper,
 				String initialText, ICausalFactor factor) {
-			super(gridWrapper, initialText,true);
+			super(gridWrapper, initialText,true, false,factor.getSafetyConstraint().getId());
 			this.factor = factor;
-			this.safetyConstraintId = factor.getSafetyConstraint().getId();
 		}
 
 		@Override
@@ -98,11 +99,6 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		@Override
 		public void delete() {
 			dataInterface.setCausalSafetyConstraintText(safetyConstraintId, "");
-			
-		}
-		@Override
-		public UUID getUUID() {
-			return this.safetyConstraintId;
 		}
 
 		@Override
@@ -113,14 +109,9 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 
 	private class NoteCell extends GridCellTextEditor {
 
-		private UUID factorId;
-		private ICausalFactor factor;
-
 		public NoteCell(GridWrapper gridWrapper, String initialText,
 				ICausalFactor factor) {
-			super(gridWrapper, initialText,false);
-			this.factorId = factor.getId();
-			this.factor = factor;
+			super(gridWrapper, initialText,false, false,factor.getId());
 		}
 
 		@Override
@@ -130,57 +121,26 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 
 		@Override
 		public void updateDataModel(String newValue) {
-			dataInterface.setNoteText(factorId, newValue);
-		}
-
-		@Override
-		public void onTextChange(String newValue) {
-			((CausalFactor)factor).setNote(newValue);
-		}
-		@Override
-		public UUID getUUID() {
-			return this.factorId;
+			dataInterface.setNoteText(getUUID(), newValue);
 		}
 	}
 
 	private class CausalFactorCell extends GridCellTextEditor {
 
-		private UUID factorID;
-		private ICausalFactor factor;
 
 		public CausalFactorCell(GridWrapper gridWrapper, String initialText,
 				ICausalFactor factor) {
-			super(gridWrapper, initialText,true);
-			this.factorID = factor.getId();
-			this.factor = factor;
-		}
-
-		@Override
-		public UUID getUUID() {
-			return this.factorID;
+			super(gridWrapper, initialText,true, false,factor.getId());
 		}
 
 		@Override
 		public void delete() {
-			CausalFactorsView.LOGGER.debug(Messages.DeleteCausalFactor);
-
-			if (MessageDialog.openConfirm(CausalFactorsView.this.grid
-					.getGrid().getShell(),
-					CausalFactorsView.CONFIRMATION_TITLE,
-					CausalFactorsView.CONFIRMATION_DESCRIPTION)) {
-				CausalFactorsView.this.dataInterface
-						.removeCausalFactor(this.factorID);
-			}
+			deleteAction.run();
 		}
 
 		@Override
 		public void updateDataModel(String newValue) {
-			dataInterface.setCausalFactorText(factorID,newValue);
-		}
-		
-		@Override
-		public void onTextChange(String newValue) {
-			((CausalFactor)factor).setText(newValue);
+			dataInterface.setCausalFactorText(getUUID(),newValue);
 		}
 	}
 
@@ -319,7 +279,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 				Messages.CausalFactors, Messages.HazardLinks,
 				Messages.SafetyConstraint, Messages.NotesSlashRationale });
 		this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+		this.deleteAction = new DeleteCFAction(grid, dataInterface, Messages.CausalFactors, null);
 		this.reloadTable();
 	}
 	@Override
