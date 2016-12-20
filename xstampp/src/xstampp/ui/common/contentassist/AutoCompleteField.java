@@ -11,7 +11,10 @@
  * 
  *******************************************************************************/
 
-package xstampp.ui.common.grid;
+package xstampp.ui.common.contentassist;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
@@ -31,6 +34,7 @@ public class AutoCompleteField {
 
   private ContentProposalProvider contentProposalProvider;
   private LinkingCommandAdapter contentProposalAdapter;
+  private List<IContentProposalListener> listeners;
   private static LinkingShell shell = new LinkingShell();
 
   /**
@@ -55,7 +59,9 @@ public class AutoCompleteField {
 
     this.contentProposalAdapter = new LinkingCommandAdapter(control, controlContentAdapter,
         this.contentProposalProvider, null, null, false);
-    this.contentProposalAdapter.addContentProposalListener(new IContentProposalListener() {
+    this.listeners = new ArrayList<>();
+    
+    setProposalListener(new IContentProposalListener() {
 
       @Override
       public void proposalAccepted(IContentProposal proposal) {
@@ -64,7 +70,7 @@ public class AutoCompleteField {
       }
     });
     shell.setNextProposal(control, literals, labels, descriptions);
-
+  
   }
 
   /**
@@ -108,9 +114,9 @@ public class AutoCompleteField {
    * @param relativeMouse
    *          the position of the mouse relative to the active cell
    * @param cellPosition
-   *          the position of the cell relativ to the parent grid
+   *          the position of the cell relative to the parent grid
    * @param topOffset
-   *          an offset which cann be set to move the dialog relative to the
+   *          an offset which can be set to move the dialog relative to the
    *          mouse
    */
   public void setPopupPosition(Point relativeMouse, Rectangle cellPosition, int topOffset) {
@@ -152,7 +158,6 @@ public class AutoCompleteField {
   public void openShell() {
     shell.createControl();
   }
-
   /**
    * Closes the proposal popup immediately
    * 
@@ -161,9 +166,14 @@ public class AutoCompleteField {
    */
   public void closePopup() {
     this.contentProposalAdapter.closeProposalPopup();
+    this.contentProposalAdapter.getControl().dispose();
+    for (IContentProposalListener proposalListener : listeners) {
+      this.contentProposalAdapter.removeContentProposalListener(proposalListener);
+    }
   }
 
   public void setProposalListener(IContentProposalListener listener) {
+    listeners.add(listener);
     shell.setProposalListener(listener);
     getContentProposalAdapter().addContentProposalListener(listener);
   }

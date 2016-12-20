@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package xstampp.ui.common.grid;
+package xstampp.ui.common.contentassist;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
@@ -50,36 +50,36 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
   public LinkingCommandAdapter(Control control, IControlContentAdapter controlContentAdapter,
       IContentProposalProvider proposalProvider, String commandId, char[] autoActivationCharacters,
       boolean installDecoration) {
-    super(control, controlContentAdapter, proposalProvider, commandId, autoActivationCharacters, installDecoration);
-
+    super(control, controlContentAdapter, proposalProvider,
+        commandId, autoActivationCharacters, installDecoration);
+    
     this.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_INSERT);
     this.setFilterStyle(ContentProposalAdapter.FILTER_NONE);
     this.setAutoActivationCharacters(null);
     this.setAutoActivationDelay(0);
-    this.setPropagateKeys(false);
-
+    this.setPropagateKeys(true);
+    
   }
 
   @Override
   public void closeProposalPopup() {
     super.closeProposalPopup();
-
+    setEnabled(false);
   }
 
   @Override
   public void openProposalPopup() {
     super.openProposalPopup();
-    super.getControl().addFocusListener(new FocusListener() {
+    getControl().addFocusListener(new FocusListener() {
 
       @Override
       public void focusLost(FocusEvent e) {
-        // do nothing
+        getControl().dispose();
       }
 
       @Override
       public void focusGained(FocusEvent e) {
-        LinkingCommandAdapter.this.setProposalPopupFocus();
-
+        getControl().setFocus();
       }
     });
   }

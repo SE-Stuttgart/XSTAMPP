@@ -14,23 +14,16 @@
 package xstampp.ui.common.grid;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.jface.fieldassist.IContentProposalListener2;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.nebula.widgets.grid.GridEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
@@ -42,6 +35,8 @@ import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
+import xstampp.ui.common.contentassist.AutoCompleteField;
+import xstampp.ui.common.contentassist.ITableContentProvider;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
 /**
@@ -66,14 +61,9 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
   private final String linkEmptyText = Messages.NotHazardous;
   private final UUID assignedId;
   private final T publicInterface;
-  private transient Text linkEditor;
-  private transient AutoCompleteField linkField;
   private final transient GridWrapper grid;
-  private transient String lastText = ""; //$NON-NLS-1$
   private CellButtonContainer buttonContainer;
 
-  private boolean hasTextFocus = false;
-  private boolean isPopupOpen = false;
 
   private int lines = 1;
   private int lastLines = 1;
@@ -82,72 +72,13 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 
     @Override
     public void proposalAccepted(IContentProposal proposal) {
-      GridCellLinking.this.lastText = proposal.getContent();
       GridCellLinking.this.grid.resizeRows();
-      GridCellLinking.this.link();
-    }
-  }
-
-  private final class LinkEditorKeyListener implements KeyListener {
-
-    @Override
-    public void keyReleased(final KeyEvent keyEvent) {
-      // intentionally empty
-    }
-
-    @Override
-    public void keyPressed(final KeyEvent keyEvent) {
-      if (!GridCellLinking.this.linkField.getContentProposalAdapter().isProposalPopupOpen()) {
-        if (keyEvent.keyCode == SWT.CR) {
-          // link immediately if the return button is hit
-          GridCellLinking.this.lastText = GridCellLinking.this.linkEditor.getText();
-          GridCellLinking.this.linkEditor.dispose();
-          GridCellLinking.this.grid.resizeRows();
-          GridCellLinking.this.link();
-          GridCellLinking.this.linkEditor.traverse(SWT.TRAVERSE_TAB_NEXT);
-        }
+      String text = proposal.getContent();
+      ITableModel item = GridCellLinking.this.toLinkable(text);
+      if (item != null) {
+        GridCellLinking.this.publicInterface.addLink(assignedId, item.getId());
       }
     }
-  }
-
-  private final class LinkEditorFocusListener implements FocusListener {
-
-    @Override
-    public void focusGained(FocusEvent e) {
-      GridCellLinking.this.hasTextFocus = true;
-
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-      GridCellLinking.this.hasTextFocus = false;
-      // if the popup is closed and the text editor loses focus, the input
-      // is cancelled
-      if (!GridCellLinking.this.isPopupOpen) {
-        GridCellLinking.this.linkEditor.dispose();
-      }
-
-    }
-  }
-
-  private final class PopupListener implements IContentProposalListener2 {
-
-    @Override
-    public void proposalPopupOpened(ContentProposalAdapter adapter) {
-      GridCellLinking.this.isPopupOpen = true;
-
-    }
-
-    @Override
-    public void proposalPopupClosed(ContentProposalAdapter adapter) {
-      GridCellLinking.this.isPopupOpen = false;
-      // if the text field has no focus and the popup is closed, the input
-      // is cancelled
-      if (!GridCellLinking.this.hasTextFocus) {
-        GridCellLinking.this.linkEditor.dispose();
-      }
-    }
-
   }
 
   /**
@@ -199,6 +130,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
     this.buttonContainer = new CellButtonContainer();
   }
 
+  
   private ITableModel toLinkable(final String linkableString) {
     final List<ITableModel> items = this.publicInterface.getAllItems();
     for (final ITableModel model : items) {
@@ -208,33 +140,6 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
       }
     }
     return null;
-
-  }
-
-  private void link() {
-    final String text = this.lastText;
-    final ITableModel item = GridCellLinking.this.toLinkable(text);
-    if (item != null) {
-      GridCellLinking.this.publicInterface.addLink(this.assignedId, item.getId());
-    }
-    final List<ITableModel> items = GridCellLinking.this.publicInterface.getAllItems();
-    final List<ITableModel> linkedItems = GridCellLinking.this.publicInterface.getLinkedItems(this.assignedId);
-
-    items.removeAll(linkedItems);
-
-    final LinkedList<String> proposalList = new LinkedList<String>();
-    final LinkedList<String> labelList = new LinkedList<String>();
-
-    for (final ITableModel model : items) {
-      proposalList.add("H-" + model.getNumber()); //$NON-NLS-1$
-      labelList.add(model.getTitle());
-    }
-
-    final String[] proposals = proposalList.toArray(new String[proposalList.size()]);
-    final String[] labels = labelList.toArray(new String[labelList.size()]);
-
-    GridCellLinking.this.linkField.setProposals(proposals);
-    GridCellLinking.this.linkField.setLabels(labels);
 
   }
 
@@ -250,7 +155,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 
     gc.setBackground(this.getBackgroundColor(renderer, gc));
 
-    final List<ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
+    List<ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
     Collections.sort(linkedItems);
 
     if (linkedItems.isEmpty()) {
@@ -261,12 +166,12 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
       int xOff = 0;
       int yOff = 0;
       this.lines = 1;
-      final boolean hovered = this.grid.getHoveredCell() == GridCellLinking.this;
+      boolean hovered = this.grid.getHoveredCell() == GridCellLinking.this;
       for (final ITableModel model : linkedItems) {
 
-        final String linkText = "[" + this.prefix + model.getNumber() //$NON-NLS-1$
+        String linkText = "[" + this.prefix + model.getNumber() //$NON-NLS-1$
             + "]"; //$NON-NLS-1$
-        final int textWidth = gc.getFontMetrics().getAverageCharWidth() * linkText.length();
+        int textWidth = gc.getFontMetrics().getAverageCharWidth() * linkText.length();
 
         if (xOff >= (renderWidth - 40 - textWidth)) {
           this.lines++;
@@ -307,14 +212,16 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
   }
 
   @Override
-  public void onMouseDown(final MouseEvent event, final Point relativeMouse, final Rectangle cellBounds) {
+  public void onMouseDown(final MouseEvent event,
+                          final Point relativeMouse,
+                          final Rectangle cellBounds) {
     GridCellLinking.LOGGER.debug("Link clicked"); //$NON-NLS-1$
     if (this.buttonContainer.onMouseDown(relativeMouse, cellBounds)) {
       // don't link if a delete button is hit.
       return;
     }
-
-    final List<ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
+  
+    List<ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
 
     /*
      * Prevent opening linking popup while another cell is focused and a delete
@@ -324,84 +231,65 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
     if (this.buttonContainer.isEmpty() && !linkedItems.isEmpty()) {
       return;
     }
+   
+    final List<ITableModel> items = this.publicInterface.getAllItems();
+    // remove all already linked items
+    items.removeAll(linkedItems);
 
-    if ((this.linkEditor != null) && !this.linkEditor.isDisposed()) {
-      this.linkEditor.dispose();
+    // Long descriptive string for using in the suggestion box
+    final String[] options = new String[items.size()];
+    // Short descriptive string for displaying in the
+    // suggestions box
+    final String[] labels = new String[items.size()];
+    // Long descripton
+    final String[] descriptions = new String[items.size()];
+    
+    for (int i = 0; i < items.size(); i++) {
+      final String itemNumber = this.prefix + items.get(i).getNumber();
+      final String itemTitle = items.get(i).getTitle();
+
+      options[i] = itemTitle;
+      labels[i] = itemNumber;
+      descriptions[i] = items.get(i).getDescription();
     }
 
-    this.linkEditor = new Text(this.grid.getGrid(), SWT.PUSH);
+  
+    //start creating the grid editor linkEditor
 
-    this.linkEditor.setText(""); //$NON-NLS-1$
-    this.linkEditor.setEditable(true);
-    this.linkEditor.setVisible(true);
+    final Text linkEditor = new Text(this.grid.getGrid(), SWT.PUSH);
 
-    this.linkEditor.addFocusListener(new LinkEditorFocusListener());
+    linkEditor.setText(""); //$NON-NLS-1$
+    linkEditor.setEditable(true);
+    linkEditor.setVisible(true);
 
-    this.linkEditor.addKeyListener(new LinkEditorKeyListener());
-
-    final Point mousePoint = new Point(event.x, event.y);
-    final GridEditor editor = new GridEditor(this.grid.getGrid());
-    editor.setEditor(this.linkEditor);
+    // Listener for Proposal Selection to instantly link if proposal is
+    // selected
+    linkEditor.setText(""); //$NON-NLS-1$
+    linkEditor.setMessage(Messages.StartTyping);
+    
+    Point mousePoint = new Point(event.x, event.y);
+    GridEditor editor = new GridEditor(this.grid.getGrid());
+    editor.setEditor(linkEditor);
     editor.setItem(this.grid.getGrid().getItem(mousePoint));
     editor.setColumn(this.grid.getGrid().getCell(mousePoint).x);
 
     editor.grabHorizontal = true;
     editor.grabVertical = true;
 
-    this.linkEditor.setFocus();
-    // Long descriptive string for using in the suggestion box
-    final LinkedList<String> itemDescriptions = new LinkedList<String>();
+    linkEditor.setFocus();
+    
+    AutoCompleteField linkField = new AutoCompleteField(linkEditor,
+                        new TextContentAdapter(), options, labels, descriptions);
 
-    // Short descriptive string for displaying in the
-    // suggestions box
-    final LinkedList<String> itemShortStrings = new LinkedList<String>();
-
-    // Long descripton
-    final LinkedList<String> itemLongStrings = new LinkedList<String>();
-
-    final List<ITableModel> items = this.publicInterface.getAllItems();
-    // remove all already linked items
-    items.removeAll(linkedItems);
-
-    for (int i = 0; i < items.size(); i++) {
-      final String itemNumber = this.prefix + items.get(i).getNumber();
-      final String itemTitle = items.get(i).getTitle();
-
-      itemDescriptions.add(itemTitle);
-      itemShortStrings.add(itemNumber);
-      itemLongStrings.add(items.get(i).getDescription());
-    }
-
-    final String options[] = itemShortStrings.toArray(new String[itemShortStrings.size()]);
-
-    final String labels[] = itemDescriptions.toArray(new String[itemDescriptions.size()]);
-
-    final String descriptions[] = itemLongStrings.toArray(new String[itemLongStrings.size()]);
-
-    this.linkField = new AutoCompleteField(this.linkEditor, new TextContentAdapter(), options, labels, descriptions);
-
-    // Listener for Proposal Selection to instantly link if proposal is
-    // selected
-    this.linkEditor.setText(""); //$NON-NLS-1$
-    this.linkEditor.setMessage(Messages.StartTyping);
-
-    this.linkField.getContentProposalAdapter().addContentProposalListener(new PopupListener());
-    this.linkField.setPopupPosition(relativeMouse, cellBounds, cellBounds.height);
+    linkField.setPopupPosition(relativeMouse, cellBounds, cellBounds.height);
 
     if (this.grid.getGrid().getDisplay() != null) {
-      this.linkField.setProposalListener(new PropopsalListener());
-      this.linkField.openPopup();
+      linkField.setProposalListener(new PropopsalListener());
+      linkField.openPopup();
     } else {
       MessageDialog.openError(null, "Widget is disposed",
           "for some reason the Platform can't find a suficient display!");
     }
-    // final ToolTip tip = new ToolTip(this.grid.getGrid().getShell(),
-    // SWT.ICON_INFORMATION);
-    // tip.setMessage(Messages.TypeHere);
-    // tip.setLocation(mousePoint.x-
-    // tip.getMessage().length(),mousePoint.y);
-    // tip.setAutoHide(true);
-    // tip.setVisible(true);
   }
 
   @Override
@@ -411,10 +299,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 
   @Override
   public void cleanUp() {
-    GridCellLinking.LOGGER.info("Clean Up!"); //$NON-NLS-1$
-    if ((this.linkEditor != null) && !this.linkEditor.isDisposed()) {
-      this.linkEditor.dispose();
-    }
+    
   }
 
   @Override

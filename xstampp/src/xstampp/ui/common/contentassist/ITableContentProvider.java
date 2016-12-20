@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package xstampp.ui.common.grid;
+package xstampp.ui.common.contentassist;
 
 import java.util.List;
 import java.util.UUID;
