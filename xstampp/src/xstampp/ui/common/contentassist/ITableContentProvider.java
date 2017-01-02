@@ -27,7 +27,7 @@ import xstampp.astpa.haz.ITableModel;
  * @author Benedikt Markt
  * 
  */
-public interface ITableContentProvider {
+public interface ITableContentProvider<T extends ITableModel> {
 
   /**
    * Returns all items.
@@ -36,7 +36,7 @@ public interface ITableContentProvider {
    * 
    * @return all items
    */
-  List<ITableModel> getAllItems();
+  List<T> getAllItems();
 
   /**
    * Returns all linked objects of an item.
@@ -47,7 +47,7 @@ public interface ITableContentProvider {
    *          the id of the item
    * @return all linked objects
    */
-  List<ITableModel> getLinkedItems(UUID itemId);
+  List<T> getLinkedItems(UUID itemId);
 
   /**
    * Associates item2 with item1.
@@ -70,4 +70,10 @@ public interface ITableContentProvider {
    *          the item to unlink
    */
   void removeLink(UUID item, UUID removeItem);
+  
+  
+  /**
+   * @return a literal which is written in front of the linked entrys id number
+   */
+  String getPrefix();
 }

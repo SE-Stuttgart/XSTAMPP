@@ -3,13 +3,26 @@ package astpa.test.model.causalfactor;
 import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
-import xstampp.astpa.model.causalfactor.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
+import xstampp.model.AbstractLtlProviderData;
+import xstampp.model.IEntryFilter;
+import xstampp.model.IValueCombie;
 
 
 
@@ -23,73 +36,37 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
  * 
  */
 public class CausalFactorControllerTest {
-	
-	/**
-	 * Test that adds, removes and changes causal factors
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 */
-	@Test
-	public void testCausalFactorController() {
-		DataModelController dataModel = new DataModelController();
-		
-		// Try to do operations before the root of the control structure has
-		// been set
-		Assert.assertFalse(dataModel.setCausalFactorText(UUID.randomUUID(), ""));
-		Assert.assertFalse(dataModel.setNoteText(UUID.randomUUID(), ""));
-		Assert.assertFalse(dataModel.setCausalSafetyConstraintText(UUID.randomUUID(), ""));
-		
-		// Set the root for the control structure
-		UUID rootComp = dataModel.setRoot(new Rectangle(0, 0, 0, 0), "");
-		
-		// Try to add a causal Factor to a component that does not exist and not
-		// a single component exists
-		Assert.assertNull(dataModel.addCausalFactor(UUID.randomUUID(), ""));
-		
-		UUID comp1 = dataModel.addComponent(rootComp, new Rectangle(0, 0, 0, 0), "", ComponentType.CONTROLLER, -1);
-		
-		// try to add a causal factor to a component that does not exist
-		Assert.assertNull(dataModel.addCausalFactor(UUID.randomUUID(), ""));
-		
-		// Add causal factors to the component
-		UUID cfId1 = dataModel.addCausalFactor(comp1, "New Causal Factor");
-		Assert.assertNotNull(cfId1);
-		UUID cfId2 = dataModel.addCausalFactor(comp1, "New Causal Factor");
-		Assert.assertNotNull(cfId2);
-		
-		// Set a new Text
-		Assert.assertTrue(dataModel.setCausalFactorText(cfId1, "Changed Text"));
-		
-		// Set a new Text for a causal factor that does not exist
-		Assert.assertFalse(dataModel.setCausalFactorText(UUID.randomUUID(), "Changed Text"));
-		
-		// Set the text of the Causal Safety Constraint
-		for (ICausalComponent component : dataModel.getCausalComponents()) {
-			for (ICausalFactor causalFactor : component.getCausalFactors()) {
-				if (causalFactor.getId().equals(cfId1)) {
-					Assert.assertTrue(dataModel.setCausalSafetyConstraintText(causalFactor.getSafetyConstraint()
-						.getId(), "Changed Text"));
-				}
-			}
-		}
-		
-		// Set the text of a causal safety constraint that does not exist
-		Assert.assertFalse(dataModel.setCausalSafetyConstraintText(UUID.randomUUID(), "Changed Text"));
-		
-		// Set the note of the Causal Factor
-		Assert.assertTrue(dataModel.setNoteText(cfId1, "New Note"));
-		
-		// Set the note of a causal factor that does not exist
-		Assert.assertFalse(dataModel.setNoteText(UUID.randomUUID(), "Changed Note"));
-		
-		// Remove the causal factors
-		Assert.assertTrue(dataModel.removeCausalFactor(cfId2));
-		Assert.assertTrue(dataModel.removeCausalFactor(cfId1));
-		
-		// Try to remove it again
-		Assert.assertFalse(dataModel.removeCausalFactor(cfId1));
-	}
+  ICausalFactorDataModel dataModel;
+  private UUID compId1;
+  private UUID rootCompId;
+  private UUID hazId1;
+  private UUID hazId2;
+  private UUID hazId3;
+  private UUID scenarioId1;
+  private UUID ucaId1;
+  @Before
+  public void setUp() throws Exception {
+    DataModelController dataModel = new DataModelController();
+
+    // Set the root for the control structure
+    rootCompId = dataModel.setRoot(new Rectangle(0, 0, 0, 0), "");
+
+    compId1 = dataModel.addComponent(rootCompId, new Rectangle(0, 0, 0, 0), "", ComponentType.CONTROLLER, -1);
+    hazId1 = dataModel.addHazard("Title 1", "Description 1");
+    hazId2 = dataModel.addHazard("Title 2", "Description 2");
+    hazId3 = dataModel.addHazard("", "");
+    ucaId1 =((DataModelController)dataModel).addUnsafeControlAction(UUID.randomUUID(), "", UnsafeControlActionType.GIVEN_INCORRECTLY);
+    AbstractLtlProviderData data = new AbstractLtlProviderData();
+    data.addRelatedUcas(ucaId1);
+    scenarioId1 = dataModel.addRuleEntry(RuleType.SCENARIO, new AbstractLtlProviderData()
+                                      , null, IValueCombie.TYPE_ANYTIME);
+    this.dataModel = dataModel;
+  }
+
+  @After
+  public void tearDown() throws Exception {
+  }
+
 	
 	/**
 	 * Test for the linking mechanism of the causal factor controller
@@ -99,46 +76,47 @@ public class CausalFactorControllerTest {
 	 */
 	@Test
 	public void testLinking() {
-		DataModelController dataModel = new DataModelController();
 		
 		// Try to create a link before the root of the control structure has
 		// been set
-		UUID hazId1 = dataModel.addHazard("Title 1", "Description 1");
-		Assert.assertNotNull(hazId1);
-		Assert.assertFalse(dataModel.addCausalFactorHazardLink(UUID.randomUUID(), hazId1));
-		
-		// Create a causal factor and some hazards
-		UUID rootComp = dataModel.setRoot(new Rectangle(0, 0, 0, 0), "");
-		UUID comp1 = dataModel.addComponent(rootComp, new Rectangle(0, 0, 0, 0), "", ComponentType.CONTROLLER, -1);
-		UUID cfId1 = dataModel.addCausalFactor(comp1, "New Causal Factor");
-		Assert.assertNotNull(cfId1);
-		UUID cfId2 = dataModel.addCausalFactor(comp1, "New Causal Factor");
-		Assert.assertNotNull(cfId2);
-		UUID hazId2 = dataModel.addHazard("Title 2", "Description 2");
-		Assert.assertNotNull(hazId2);
-		
-		// add links
-		Assert.assertTrue(dataModel.addCausalFactorHazardLink(cfId1, hazId1));
-		Assert.assertTrue(dataModel.addCausalFactorHazardLink(cfId1, hazId2));
-		Assert.assertTrue(dataModel.addCausalFactorHazardLink(cfId2, hazId1));
-		Assert.assertEquals(2, dataModel.getLinkedHazardsOfCf(cfId1).size());
-		
-		// try to get the links of a causal factor that does not exist
-		Assert.assertEquals(0, dataModel.getLinkedHazardsOfCf(UUID.randomUUID()).size());
-		
-		// try to remove a link that does not exist
-		Assert.assertFalse(dataModel.removeCausalFactorHazardLink(UUID.randomUUID(), UUID.randomUUID()));
-		
-		// remove a link
-		Assert.assertTrue(dataModel.removeCausalFactorHazardLink(cfId1, hazId2));
-		Assert.assertEquals(1, dataModel.getLinkedHazardsOfCf(cfId1).size());
-		
-		// remove the causal factors
-		Assert.assertTrue(dataModel.removeCausalFactor(cfId1));
-		Assert.assertEquals(0, dataModel.getLinkedHazardsOfCf(UUID.randomUUID()).size());
-		Assert.assertTrue(dataModel.removeCausalFactor(cfId2));
+	  UUID cf1Id = dataModel.addCausalFactor(compId1);
+		Assert.assertNotNull(cf1Id);
+		UUID entry1Id = dataModel.addCausalHazardEntry(compId1, cf1Id);
+		CausalFactorEntryData data = new CausalFactorEntryData(entry1Id);
+    data.addHazardId(hazId1);
+    data.addHazardId(UUID.randomUUID());
+		Assert.assertTrue(dataModel.changeCausalEntry(compId1, cf1Id, data));
+
+		ICausalComponent comp =dataModel.getCausalComponent(compId1);
+    for(ICausalFactor factor: comp.getCausalFactors()){
+      if(factor.getId().equals(cf1Id)){
+        for(ICausalFactorEntry entry : factor.getAllEntries()){
+          Assert.assertEquals(1, dataModel.getHazards(entry.getHazardIds()).size());
+          ITableModel model = dataModel.getHazards(entry.getHazardIds()).get(0);
+          Assert.assertEquals(entry1Id, entry.getId());
+          Assert.assertEquals(hazId1, model.getId());
+        }
+      }
+    }
+    
 	}
 	
+	
+	@Test
+	public void testUCALinking(){
+
+    UUID cf1Id = dataModel.addCausalFactor(compId1);
+    UUID ucaEntryId = dataModel.addCausalUCAEntry(compId1, cf1Id, ucaId1);
+    Assert.assertNotNull(ucaEntryId);
+    ICausalComponent causalComp = dataModel.getCausalComponent(compId1);
+    for(ICausalFactor factor: causalComp.getCausalFactors()){
+      Assert.assertEquals(cf1Id, factor.getId());
+      ICausalFactorEntry entry = factor.getAllEntries().get(0);
+      Assert.assertEquals(ucaEntryId, entry.getId());
+      Assert.assertEquals(ucaId1, entry.getUcaLink());
+      Assert.assertNull(entry.getHazardIds());
+    }
+	}
 	/**
 	 * Tests the validation of the CausalFactorController
 	 * 
@@ -147,26 +125,19 @@ public class CausalFactorControllerTest {
 	 */
 	@Test
 	public void testNotValid() {
-		DataModelController dataModel = new DataModelController();
-		dataModel.setRoot(new Rectangle(), "");
 		
 		// CausalFactors
-		Assert.assertNull(dataModel.addCausalFactor(null, null));
-		Assert.assertNull(dataModel.addCausalFactor(UUID.randomUUID(), null));
-		Assert.assertFalse(dataModel.setCausalFactorText(null, null));
-		Assert.assertFalse(dataModel.setCausalFactorText(UUID.randomUUID(), null));
-		Assert.assertFalse(dataModel.addCausalFactorHazardLink(null, null));
-		Assert.assertFalse(dataModel.addCausalFactorHazardLink(UUID.randomUUID(), null));
-		Assert.assertFalse(dataModel.addCausalFactorHazardLink(UUID.randomUUID(), UUID.randomUUID()));
-		UUID id = dataModel.addHazard("", "");
-		Assert.assertFalse(dataModel.addCausalFactorHazardLink(UUID.randomUUID(), id));
-		Assert.assertNull(dataModel.getLinkedHazardsOfCf(null));
-		Assert.assertFalse(dataModel.removeCausalFactorHazardLink(null, null));
-		Assert.assertFalse(dataModel.removeCausalFactorHazardLink(UUID.randomUUID(), null));
-		Assert.assertFalse(dataModel.removeCausalFactor(null));
-		Assert.assertFalse(dataModel.setCausalSafetyConstraintText(null, null));
-		Assert.assertFalse(dataModel.setCausalSafetyConstraintText(UUID.randomUUID(), null));
-		Assert.assertFalse(dataModel.setNoteText(null, null));
-		Assert.assertFalse(dataModel.setNoteText(UUID.randomUUID(), null));
+		Assert.assertNull(dataModel.addCausalFactor((IRectangleComponent)null));
+		Assert.assertNull(dataModel.addCausalFactor((UUID)null));
+    Assert.assertFalse(dataModel.setCausalFactorText(null, null, null));
+    Assert.assertFalse(dataModel.setCausalFactorText(UUID.randomUUID(), UUID.randomUUID(), ""));
+    Assert.assertFalse(dataModel.changeCausalEntry(hazId1, compId1, null));
+    
+    UUID factorId = dataModel.addCausalFactor(compId1);
+    UUID entryId = dataModel.addCausalHazardEntry(compId1, factorId);
+    Assert.assertNotNull(entryId);
+    Assert.assertFalse(dataModel.changeCausalEntry(compId1, factorId, new CausalFactorEntryData(entryId)));
+		
+		
 	}
 }

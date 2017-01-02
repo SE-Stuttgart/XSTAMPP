@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Menu;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.ui.causalScenarios.ActionMenuListener;
 import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
@@ -54,8 +55,10 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
         org.eclipse.swt.graphics.Point relativeMouse,
         Rectangle cellBounds) {
       if(e.button == 1){
+        AbstractLtlProviderData data = new AbstractLtlProviderData();
+        
         UUID newUCA = dataModel
-            .addNonFormalRule(parentId, new String(), new String(), new String(), new String(), new String(), IValueCombie.TYPE_ANYTIME);
+            .addRuleEntry(IExtendedDataModel.RuleType.CUSTOM_LTL,data,null, IValueCombie.TYPE_ANYTIME);
         grid.activateCell(newUCA); 
       }
       
@@ -76,9 +79,11 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
   
       @Override
       public void updateDataModel(String newValue) {
+        AbstractLtlProviderData data = new AbstractLtlProviderData();
+        data.setLtl(newValue);
         ((IExtendedDataModel) ProjectManager.getContainerInstance()
             .getDataModel(getProjectID()))
-            .updateRefinedRule(getUUID(), null, null, null, newValue, null, null, -1, null, null);
+            .updateRefinedRule(getUUID(),data,null);
       }
   }
   
@@ -145,7 +150,7 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
   private void reloadTable() {
     if(this.grid != null){
       this.grid.clearRows();
-      List<AbstractLtlProvider> rulesList = dataModel.getAllRefinedRules(false);
+      List<AbstractLtlProvider> rulesList = dataModel.getAllRefinedRules(true,false,true);
       for (AbstractLtlProvider rule  : rulesList) {
         if(!isFiltered(rule.getNumber(),categoryLTL)){
           GridRow ruleRow = new GridRow(1);
@@ -156,7 +161,9 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
           ruleRow.addCell(new ScenarioEditor(this.grid,rule.getLtlProperty(),false,true, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
-              dataModel.updateRefinedRule(getUUID(), null, null, newValue, null, null, null, -1, null, null);
+              AbstractLtlProviderData data = new AbstractLtlProviderData();
+              data.setLtl(newValue);
+              dataModel.updateRefinedRule(getUUID(),data, null);
             }
           });
           grid.addRow(ruleRow);

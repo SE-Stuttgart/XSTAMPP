@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 
 /**
@@ -117,25 +118,18 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		calcLTL();
 		calcRUCA();
 		calcRule();
+		AbstractLtlProviderData data = new AbstractLtlProviderData();
+		data.setRefinedUca(getRefinedUCA());
+		data.setRelatedUcas(getUCALinkIDs());
+		data.setRefinedConstraint(constraint);
+		data.setCombies(getCriticalCombinations("==", ",", false, false, false));
+		data.setLtl(getLTLProperty());
+		data.setRule(getRefinedRule());
 		if(this.getDataRef() != null){
-			setDataRef(model.updateRefinedRule(getDataRef(), 
-									getUCALinkIDs(), 
-									getCriticalCombinations("==", ",", false, false, false),
-									getLTLProperty(), 
-									getRefinedRule(),
-									getRefinedUCA(), 
-									constraint,
-									getNumber(), 
-									variable.getLinkedControlActionID(), 
-									getType()));
+			model.updateRefinedRule(getDataRef(), data, variable.getLinkedControlActionID());
 		}else{
-			setDataRef(model.addRefinedRule(getUCALinkIDs(),
-											getCriticalCombinations("==", ",", false, false, false),
-											getLTLProperty(), 
-											getRefinedRule(), 
-											getRefinedUCA(), constraint, getNumber(),
-											variable.getLinkedControlActionID(),
-											type));
+			setDataRef(model.addRuleEntry(IExtendedDataModel.RuleType.REFINED_RULE,data,	variable.getLinkedControlActionID(),
+											             type));
 		}
 		
 	}

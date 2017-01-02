@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -101,6 +101,16 @@ public interface IHazardViewDataModel extends IDataModel,ICommonTables {
 	 */
 	ITableModel getHazard(UUID hazardId);
 
+	/**
+	 * getter for a sorted list containing all hazards 
+	 * for the given list of ids
+	 * 
+	 * @param ids an a array of ids of hazard entries in the dataModel
+	 * @return a sorted list containing with hazard models or or an empty list
+	 *         if ids is an empty array
+	 *         or no hazards could be found
+	 */
+	List<ITableModel> getHazards(List<UUID> ids);
 	/**
 	 * Get all accidents linked to a certain hazard.
 	 * 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+* Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -15,7 +15,8 @@ package xstampp.astpa.model.controlaction.safetyconstraint;
 
 import java.util.UUID;
 
-import xstampp.astpa.model.sds.ISafetyConstraint;
+import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 
 /**
  * Interface for a unsafe control action for the corresponding safety
@@ -24,7 +25,7 @@ import xstampp.astpa.model.sds.ISafetyConstraint;
  * @author Fabian Toth
  * 
  */
-public interface ICorrespondingUnsafeControlAction extends xstampp.astpa.haz.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction {
+public interface ICorrespondingUnsafeControlAction extends xstampp.astpa.haz.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction, ITableModel {
 
 	/**
 	 * @return the description
@@ -49,4 +50,9 @@ public interface ICorrespondingUnsafeControlAction extends xstampp.astpa.haz.con
 	 */
 	@Override
 	ISafetyConstraint getCorrespondingSafetyConstraint();
+	
+	/**
+   * @return the links
+   */
+  public String getLinks();
 }

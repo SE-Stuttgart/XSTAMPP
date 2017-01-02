@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
-import xstampp.astpa.model.causalfactor.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.controlstructure.components.Component;
@@ -514,34 +514,6 @@ public class ControlStructureController {
 	}
 
 	/**
-	 * Get all causal components
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @return all causal components
-	 */
-	public List<ICausalComponent> getCausalComponents() {
-		List<ICausalComponent> result = new ArrayList<>();
-		if (this.root == null) {
-			return result;
-		}
-
-		for (Component component : this.root.getInternalChildren()) {
-			switch(component.getComponentType()){
-			case ACTUATOR:
-			case CONTROLLED_PROCESS:
-			case CONTROLLER:
-			case SENSOR:
-				result.add(component);
-				//$FALL-THROUGH$
-			default:
-				break;
-			}
-		}
-		return result;
-	}
-
-	/**
 	 * Gets all components of an internal type. Do not use outside the data
 	 * model.
 	 * 
@@ -554,27 +526,6 @@ public class ControlStructureController {
 			return new ArrayList<Component>();
 		}
 		return this.root.getInternalChildren();
-	}
-
-	/**
-	 * Removes a causal factor
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param causalFactorId
-	 *            the id of the causal factor to remove
-	 * @return true, if the causal factor has been removed
-	 */
-	public boolean removeCausalFactor(UUID causalFactorId) {
-		for (ICausalComponent comp : this.getCausalComponents()) {
-			for (ICausalFactor causalFactor : comp.getCausalFactors()) {
-				if (causalFactor.getId().equals(causalFactorId)) {
-					return this.getInternalComponent(comp.getId())
-							.getInternalCausalFactors().remove(causalFactor);
-				}
-			}
-		}
-		return false;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -119,7 +119,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 				SafetyConstraintView.this.getDataInterface().addSafetyConstraint(
 						"", Messages.DescriptionOfThisSafetyConstr); //$NON-NLS-1$
 				int newID = SafetyConstraintView.this.getDataInterface()
-						.getAllSafetyConstraints().size() - 1;
+						.getAllCausalSafetyConstraints().size() - 1;
 				SafetyConstraintView.this.updateTable();
 				SafetyConstraintView.this.refreshView();
 				SafetyConstraintView.this.getTableViewer().setSelection(
@@ -323,9 +323,9 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 			for (Iterator<SafetyConstraint> i = selection.iterator(); i
 					.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.getDataInterface().getSafetyConstraint(id)
+				String title = this.getDataInterface().getCausalSafetyConstraint(id)
 						.getTitle();
-				int num = this.getDataInterface().getSafetyConstraint(id)
+				int num = this.getDataInterface().getCausalSafetyConstraint(id)
 						.getNumber();
 				String safetyConstraint = newline + num + ": " + title; //$NON-NLS-1$
 				safetyConstraints = safetyConstraints + safetyConstraint;
@@ -468,7 +468,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 	@Override
 	public void updateTable() {
 		SafetyConstraintView.this.getTableViewer().setInput(
-				this.getDataInterface().getAllSafetyConstraints());
+				this.getDataInterface().getAllCausalSafetyConstraints());
 	}
 
 	@Override
@@ -501,7 +501,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.getDataInterface().getAllSafetyConstraints()){
+		for(ITableModel model: this.getDataInterface().getAllCausalSafetyConstraints()){
 			this.getDataInterface().removeSafetyConstraint(model.getId());
 		}
 	}

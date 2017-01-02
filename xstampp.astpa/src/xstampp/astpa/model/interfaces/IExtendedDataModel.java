@@ -19,35 +19,29 @@ import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
-import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 
 public interface IExtendedDataModel {
   
+  public static enum RuleType{
+    REFINED_RULE,
+    SCENARIO,
+    CUSTOM_LTL
+  }
   /**
-   * 
-   * @param ucaLinks
-   *          {@link AbstractLtlProvider#getUCALinks()}
-   * @param combies
-   *          {@link RefinedSafetyRule#getCriticalCombies()}
-   * @param ltlExp
-   *          {@link AbstractLtlProvider#getLtlProperty()}   
-   * @param rule
-   *          {@link AbstractLtlProvider#getSafetyRule()}
-   * @param ruca
-   *          {@link AbstractLtlProvider#getRefinedUCA()}
-   * @param constraint
-   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
-   * @param nr
-   *          {@link AbstractLtlProvider#getNumber()}
+   * @param ruleType
+   *        
+   * @param data
+   *          {@link AbstractLtlProviderData}
    * @param caID
    *          {@link AbstractLtlProvider#getRelatedControlActionID()}
    * @param type 
@@ -56,31 +50,17 @@ public interface IExtendedDataModel {
    * @see IValueCombie
    * @return the id of rule which has been added if 
    */
-  UUID addRefinedRule(List<UUID> ucaLinkIDs, String criticalCombinations, String ltlProperty, String refinedRule,
-      String refinedUCA, String constraint, int number, UUID linkedControlActionID, String type);
-
+  public UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type);
+  
   /**
    * 
+   * @param data
+   *          {@link AbstractLtlProviderData}
    * @param ruleId
-   *          {@link AbstractLtlProvider#getSafetyRule()}
-   * @param ucaLinkIDs
-   *          {@link AbstractLtlProvider#getUCALinks()}
-   * @param criticalCombinations
-   *          {@link RefinedSafetyRule#getCriticalCombies()}
-   * @param ltlProperty
-   *          {@link AbstractLtlProvider#getLtlProperty()}   
-   * @param refinedRule
-   *          {@link AbstractLtlProvider#getSafetyRule()}
-   * @param refinedUCA
-   *          {@link AbstractLtlProvider#getRefinedUCA()}
-   * @param constraint
-   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
-   * @param number
-   *          {@link AbstractLtlProvider#getNumber()}
+   *          {@link AbstractLtlProvider#getRuleId()}
+   *
    * @param linkedControlActionID
    *          {@link AbstractLtlProvider#getRelatedControlActionID()}
-   * @param type
-   *          {@link AbstractLtlProvider#getType()}
    * @return
    *        The UUID of the Refined rule which was updated in the data model or null if no rule could be found
    *         
@@ -88,36 +68,8 @@ public interface IExtendedDataModel {
    * @see IControlAction
    * @see IValueCombie
    */
-  UUID updateRefinedRule(UUID ruleId, List<UUID> ucaLinkIDs, String criticalCombinations, String ltlProperty,
-      String refinedRule, String refinedUCA, String constraint, int number, UUID linkedControlActionID, String type);
+  public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,UUID linkedControlActionID);
   
-  /**
-   * 
-   * @param ucaLinkID
-   *          {@link AbstractLtlProvider#getUCALinks()}
-   * @param combies
-   *          {@link RefinedSafetyRule#getCriticalCombies()}
-   * @param ltlExp
-   *          {@link AbstractLtlProvider#getLtlProperty()}   
-   * @param rule
-   *          {@link AbstractLtlProvider#getSafetyRule()}
-   * @param ruca
-   *          {@link AbstractLtlProvider#getRefinedUCA()}
-   * @param constraint
-   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
-   * @param nr
-   *          {@link AbstractLtlProvider#getNumber()}
-   * @param caID
-   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
-   * @param type 
-   *          {@link AbstractLtlProvider#getType()}
-   * 
-   * @see IValueCombie
-   * @return the id of rule which has been added if 
-   */
-  UUID addNonFormalRule(UUID ucaLinkID, String criticalCombinations, String ltlProperty, String refinedRule,
-      String refinedUCA, String constraint, String type);
-
   /**
    * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
    *          when this is true than the ruleId will be ignored
@@ -126,9 +78,21 @@ public interface IExtendedDataModel {
    * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
    *          id was illegal
    */
-  boolean removeRefinedSafetyRule(boolean removeAll, UUID ruleId);
+  boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId);
 
-  List<AbstractLtlProvider> getAllRefinedRules(boolean onlyFormal);
+  /**
+   * 
+   * @param includeRules
+   *          whether or not the list with the generated refined rules from the extended stpa should be included
+   * @param includeScenarios
+   *          whether or not the list with the custom defined Causal Scenarios should be included
+   * @param includeLTL
+   *          whether or not the list with the custom defined LTL Functions should be included
+   * @return a list containing the rules stored in the chosen lists of the extendedDataModel
+   */
+  public List<AbstractLtlProvider> getAllRefinedRules(boolean includeRules,
+      boolean includeScenarios,
+      boolean includeLTL);
 
   List<AbstractLtlProvider> getLTLPropertys();
 

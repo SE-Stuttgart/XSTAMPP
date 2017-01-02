@@ -11,6 +11,5 @@ Require-Bundle: xstampp.astpa,
 Eclipse-RegisterBuddy: org.apache.log4j
 Import-Package: org.eclipse.draw2d.geometry,
  xstampp.astpa.model,
- xstampp.astpa.model.causalfactor,
  xstampp.astpa.model.controlaction,
  xstampp.astpa.model.controlstructure.components

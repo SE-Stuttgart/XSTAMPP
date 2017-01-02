@@ -147,7 +147,7 @@ public class ProjectManager implements IPropertyChangeListener {
       ProjectManager.getContainerInstance().projectDataToUUID.put(projectId, this.controller);
       IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
           .findView(ProjectExplorer.ID);
-
+      this.controller.prepareForSave();
       ProjectManager.getContainerInstance().extensionsToUUID.put(projectId, saveFile.getName().split("\\.")[1]);//$NON-NLS-1$
       ProjectManager.getContainerInstance().projectSaveFilesToUUID.put(projectId, saveFile);
       if (!saveFile.exists()) {

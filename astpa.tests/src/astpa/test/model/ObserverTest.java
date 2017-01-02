@@ -87,7 +87,7 @@ public class ObserverTest implements Observer {
 				ComponentType.ACTUATOR, -1);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
-		UUID causalFactor = this.dataModel.addCausalFactor(component, "");
+		UUID causalFactor = this.dataModel.addCausalFactor(null);
 		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
 		this.dataModel.setCausalFactorText(causalFactor, "");
 		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
@@ -343,8 +343,8 @@ public class ObserverTest implements Observer {
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
 		UUID safetyConstraint = this.dataModel.addSafetyConstraint("", "");
 		this.addToNominal(ObserverValue.SAFETY_CONSTRAINT);
-		this.dataModel.getAllSafetyConstraints();
-		this.dataModel.getSafetyConstraint(safetyConstraint);
+		this.dataModel.getAllCausalSafetyConstraints();
+		this.dataModel.getCausalSafetyConstraint(safetyConstraint);
 		this.dataModel.setSafetyConstraintTitle(safetyConstraint, "");
 		this.dataModel.setSafetyConstraintDescription(safetyConstraint, "desc");
 		this.addToNominal(ObserverValue.SAFETY_CONSTRAINT);

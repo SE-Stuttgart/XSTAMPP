@@ -15,6 +15,8 @@ package xstampp.astpa.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +28,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import messages.Messages;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
@@ -38,6 +38,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.causalfactor.CausalFactorHazardLink;
@@ -46,15 +47,14 @@ import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.hazacc.Link;
-import xstampp.astpa.model.causalfactor.CausalFactor;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
-import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
@@ -64,6 +64,7 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.export.ExportInformation;
+import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.Hazard;
@@ -85,13 +86,15 @@ import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.model.projectdata.ProjectDataController;
 import xstampp.astpa.model.sds.DesignRequirement;
-import xstampp.astpa.model.sds.ISafetyConstraint;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
 import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLtlProviderData;
+import xstampp.model.IEntryFilter;
 import xstampp.model.ISafetyDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
@@ -146,7 +149,8 @@ public class DataModelController extends AbstractDataModel implements
 	@XmlElement(name = "causalfactor")
 	private CausalFactorController causalFactorController;
 
-	
+  @XmlElement(name = "extendedData")
+	private ExtendedDataController extendedDataController;
 
 	
 	private String projectExtension;
@@ -165,6 +169,7 @@ public class DataModelController extends AbstractDataModel implements
 		this.controlStructureController = new ControlStructureController();
 		this.controlActionController = new ControlActionController();
 		this.causalFactorController = new CausalFactorController();
+		this.extendedDataController = new ExtendedDataController();
 		getIgnoreLTLValue();
 		refreshLock = false;
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
@@ -233,9 +238,14 @@ public class DataModelController extends AbstractDataModel implements
 
 		this.exportInformation = null;
 		this.hazAccController.prepareForExport();
-		this.controlActionController.prepareForExport(this.hazAccController,this.controlStructureController,ignoreLtlValue.getText());
+		this.controlActionController.prepareForExport(this.hazAccController,
+		                                              this.controlStructureController,
+		                                              ignoreLtlValue.getText(),
+		                                              this.extendedDataController);
 		this.causalFactorController.prepareForExport(this.hazAccController,
-				this.controlStructureController.getInternalComponents());
+                                          			 getRoot().getChildren(),
+                                          			 getAllRefinedRules(true, true, true),
+                                          			 getAllUnsafeControlActions());
 		this.projectDataManager.prepareForExport();
 		this.exportInformation = new ExportInformation();
 		ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");
@@ -245,10 +255,11 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public void prepareForSave() {
 		this.hazAccController.prepareForSave();
-		this.controlActionController.prepareForSave();
-		this.causalFactorController
-				.prepareForSave(this.controlStructureController
-						.getInternalComponents());
+		this.controlActionController.prepareForSave(this.extendedDataController);
+		this.causalFactorController.prepareForSave(this.hazAccController,
+                                               getRoot().getChildren(),
+                                               getAllRefinedRules(true, true, true),
+                                               getAllUnsafeControlActions());
 		this.projectDataManager.prepareForSave();
 		this.exportInformation = null;
 		ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
@@ -413,6 +424,18 @@ public class DataModelController extends AbstractDataModel implements
 	}
 
 	@Override
+	public List<ITableModel> getHazards(List<UUID> ids){
+	  List<ITableModel> hazards = new ArrayList<>();
+	  for (int i = 0; i < ids.size(); i++) {
+      ITableModel hazard = getHazard(ids.get(i));
+      if(hazard != null){
+        hazards.add(hazard);
+      }
+    }
+	  Collections.sort(hazards);
+	  return hazards;
+	}
+	@Override 
 	public List<ITableModel> getLinkedAccidents(UUID hazardId) {
 		if (hazardId == null) {
 			return null;
@@ -429,7 +452,6 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-		this.causalFactorController.removeAllLinks(hazardId);
 		this.controlActionController.removeAllLinks(hazardId);
 		if(this.hazAccController.removeHazard(hazardId)){
 			this.setUnsavedAndChanged(ObserverValue.HAZARD);
@@ -1217,19 +1239,24 @@ public class DataModelController extends AbstractDataModel implements
 	}
 
 	@Override
-	public List<ICausalComponent> getCausalComponents() {
-		return this.controlStructureController.getCausalComponents();
+	public List<ICausalComponent> getCausalComponents(IEntryFilter<IRectangleComponent> filter) {
+	  List<ICausalComponent> list = new ArrayList<>();
+	  for (IRectangleComponent component : getRoot().getChildren()) {
+      ICausalComponent causalComp = causalFactorController.getCausalComponent(component);
+      if(causalComp != null && (filter ==null|| filter.check(component))){
+        list.add(causalComp);
+      }
+    }
+		return list;
 	}
 
 	@Override
-	public UUID addCausalFactor(UUID causalComponentId, String causalFactorText) {
-		if ((causalComponentId == null) || (causalFactorText == null)) {
+	public UUID addCausalFactor(IRectangleComponent csComp) {
+		if (csComp == null) {
 			return null;
 		}
 
-		UUID id = this.causalFactorController.addCausalFactor(
-				this.controlStructureController.getInternalComponents(),
-				causalComponentId, causalFactorText);
+		UUID id = this.causalFactorController.addCausalFactor(csComp);
 		if(id != null){
 			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 		}
@@ -1237,7 +1264,12 @@ public class DataModelController extends AbstractDataModel implements
 	}
 
 	@Override
-	public boolean setCausalFactorText(UUID causalFactorId,
+	public UUID addCausalFactor(UUID id) {
+	  IRectangleComponent component = getComponent(id);
+	  return addCausalFactor(component);
+	}
+	@Override
+	public boolean setCausalFactorText( UUID componentId,UUID causalFactorId,
 			String causalFactorText) {
 		if ((causalFactorId == null) || (causalFactorText == null)) {
 			return false;
@@ -1248,134 +1280,7 @@ public class DataModelController extends AbstractDataModel implements
 			return false;
 		}
 		if(this.causalFactorController.setCausalFactorText(
-				components, causalFactorId, causalFactorText)){
-			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean addCausalFactorHazardLink(UUID causalFactorId, UUID hazardId) {
-		if ((causalFactorId == null) || (hazardId == null)) {
-			return false;
-		}
-		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
-			return false;
-		}
-		List<Component> components = this.controlStructureController
-				.getInternalComponents();
-		if (components == null) {
-			return false;
-		}
-
-		boolean found = false;
-		for (Component component : components) {
-			for (CausalFactor causalFactor : component
-					.getInternalCausalFactors()) {
-				if (causalFactor.getId().equals(causalFactorId)) {
-					found = true;
-				}
-			}
-		}
-		if (!found) {
-			return false;
-		}
-
-		if(this.causalFactorController.addCausalFactorHazardLink(
-				causalFactorId, hazardId)){
-			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public List<ITableModel> getLinkedHazardsOfCf(UUID causalFactorId) {
-		if (causalFactorId == null) {
-			return null;
-		}
-
-		List<UUID> hazardIds = this.causalFactorController
-				.getLinkedHazardsOfCf(causalFactorId);
-		List<ITableModel> linkedHazards = new ArrayList<>();
-		for (UUID id : hazardIds) {
-			linkedHazards.add(this.hazAccController.getHazard(id));
-		}
-
-		return linkedHazards;
-	}
-
-	@Override
-	public boolean removeCausalFactorHazardLink(UUID causalFactorId,
-			UUID hazardId) {
-		if ((causalFactorId == null) || (hazardId == null)) {
-			return false;
-		}
-
-		if(this.causalFactorController
-				.removeCausalFactorHazardLink(causalFactorId, hazardId)){
-			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean removeCausalFactor(UUID causalFactorId) {
-		if (causalFactorId == null) {
-			return false;
-		}
-		if(this.controlStructureController
-				.removeCausalFactor(causalFactorId)){
-			this.causalFactorController.removeAllLinks(causalFactorId);
-			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-			return true;
-		}
-		return false;
-	}
-
-	
-	@Override
-	public List<ISafetyConstraint> getCorrespondingSafetyConstraints() {
-		return this.controlActionController.getCorrespondingSafetyConstraints();
-	}
-
-	@Override
-	public boolean setCausalSafetyConstraintText(UUID causalSafetyCosntraintId,
-			String causalSafetyConstraintText) {
-		if ((causalSafetyCosntraintId == null)
-				|| (causalSafetyConstraintText == null)) {
-			return false;
-		}
-		List<Component> components = this.controlStructureController
-				.getInternalComponents();
-		if (components == null) {
-			return false;
-		}
-
-		if(this.causalFactorController
-				.setCausalSafetyConstraintText(components,
-						causalSafetyCosntraintId, causalSafetyConstraintText)){
-			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean setNoteText(UUID causalFactorId, String noteText) {
-		if ((causalFactorId == null) || (noteText == null)) {
-			return false;
-		}
-		List<Component> components = this.controlStructureController
-				.getInternalComponents();
-		if (components == null) {
-			return false;
-		}
-
-		if(this.causalFactorController.setCausalFactorNoteText(
-				components, causalFactorId, noteText)){
+				componentId, causalFactorId, causalFactorText)){
 			this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
 			return true;
 		}
@@ -1545,13 +1450,7 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public List<UCAHazLink> getAllUCALinks() {
 		return this.controlActionController.getAllUCALinks();
-	}
-
-	@Override
-	public List<CausalFactorHazardLink> getCausalFactorHazLinks() {
-		return this.causalFactorController.getCausalFactorHazLinks();
-	}
-	
+	}	
 	
 	@Override
 	public String getAstpaVersion() {
@@ -1846,8 +1745,10 @@ public class DataModelController extends AbstractDataModel implements
 		return this.ignoreLtlValue;
 	}
 	
-	public List<AbstractLtlProvider> getAllRefinedRules(boolean onlyFormal){
-		return this.controlActionController.getAllRefinedRules(onlyFormal);
+	public List<AbstractLtlProvider> getAllRefinedRules(boolean includeRules,
+      boolean includeScenarios,
+      boolean includeLTL){
+		return this.extendedDataController.getAllRefinedRules(includeRules, includeScenarios, includeLTL);
 	}
 	
 	public AbstractLtlProvider getRefinedRule(UUID id){
@@ -1861,53 +1762,24 @@ public class DataModelController extends AbstractDataModel implements
 	}
 
 	@Override
-	public UUID addRefinedRule(List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
-		UUID newRuleId = this.controlActionController.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, nr, caID,type, combies);
+	public UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type){
+		UUID newRuleId = this.extendedDataController.addRuleEntry(ruleType, data, caID, type);
 		if(newRuleId != null){
 			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		}
 		return newRuleId;
 	}
 	
-	@Override
-	 public UUID addNonFormalRule(UUID ucaLinkID, String criticalCombinations, String ltlProperty, String refinedRule,
-	      String refinedUCA, String constraint, String type){
-    UUID newRuleId = this.controlActionController.addNonFormalRule(ucaLinkID, criticalCombinations, ltlProperty, refinedRule, refinedUCA, constraint, type);
-    if(newRuleId != null){
-      setUnsavedAndChanged(ObserverValue.Extended_DATA);
-    }
-    return newRuleId;
-  }
 	/**
 	 * a value that is given with null/-1 is not updated 
 	 */
 	@Override
-	public UUID updateRefinedRule(UUID ruleID,List<UUID> ucaLinks,String combies,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type){
-		boolean changed=false;
-		boolean updated = false;
-		UUID resultID = ruleID;
-		for(AbstractLtlProvider provider: this.controlActionController.getAllRefinedRules(true)){
-			if(provider.getRuleId().equals(ruleID)){
-				changed = changed ||((RefinedSafetyRule) provider).setLtlProperty(ltlExp);
-				changed = changed ||((RefinedSafetyRule) provider).setRefinedSafetyConstraint(constraint);
-				changed = changed ||((RefinedSafetyRule) provider).setRefinedUCA(ruca);
-				changed = changed ||((RefinedSafetyRule) provider).setSafetyRule(rule);
-				changed = changed ||((RefinedSafetyRule) provider).setUCALinks(ucaLinks);
-				changed = changed ||((RefinedSafetyRule) provider).setNumber(nr);
-				changed = changed ||((RefinedSafetyRule) provider).setCaID(caID);
-				changed = changed ||((RefinedSafetyRule) provider).setType(type);
-				changed = changed ||((RefinedSafetyRule) provider).setCriticalCombies(combies);
-				updated = true;
-				resultID = ruleID;
-			}
-		}
-		if(!updated){
-			resultID = addRefinedRule(ucaLinks, combies, ltlExp, rule, ruca, constraint, nr, caID, type);
-		}
-		if(changed){
+	public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,UUID linkedControlActionID){
+		if(this.extendedDataController.updateRefinedRule(ruleId, data, linkedControlActionID)){
 			setUnsavedAndChanged(ObserverValue.Extended_DATA);
+			return true;
 		}
-		return resultID;
+		return false;
 			
 	}
 	
@@ -1920,17 +1792,25 @@ public class DataModelController extends AbstractDataModel implements
 	 * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
 	 * 					id was illegal
 	 */
-	public boolean removeRefinedSafetyRule(boolean removeAll, UUID ruleId){
-		if(this.controlActionController.removeSafetyRule(removeAll, ruleId)){
-			setUnsavedAndChanged(ObserverValue.Extended_DATA);
-			return true;
+	public boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId){
+	  boolean result = false;
+		switch(type){
+		case REFINED_RULE:
+		  result = this.extendedDataController.removeSafetyRule(removeAll, ruleId);
+  	  break;
+    case CUSTOM_LTL:
+      result = this.extendedDataController.removeLTL(removeAll, ruleId);
+      break;
+    case SCENARIO:
+      result = this.extendedDataController.removeScenario(removeAll, ruleId);
+      break;
 		}
-		return false;
+		return result;
 	}
 	
 	@Override
 	public List<AbstractLtlProvider> getLTLPropertys(){
-		return getAllRefinedRules(true);
+		return getAllRefinedRules(true,false,false);
 	}
 
 	@Override
@@ -1957,5 +1837,60 @@ public class DataModelController extends AbstractDataModel implements
 		}
 		return resultMap;
 	}
+
+  @Override
+  public UUID addCausalUCAEntry(UUID component,UUID causalFactorId,UUID ucaId){
+    return this.causalFactorController.addCausalUCAEntry(component,causalFactorId, ucaId);
+  }
+
+  @Override
+  public UUID addCausalHazardEntry(UUID component, UUID causalFactor) {
+    return causalFactorController.addCausalHazardEntry(component, causalFactor);
+  }
+
+  @Override
+  public boolean changeCausalEntry(UUID component, UUID causalFactor, CausalFactorEntryData entryData) {
+    return causalFactorController.changeCausalEntry(component, causalFactor, entryData);
+  }
+
+  @Override
+  public boolean removeCausalFactor(UUID component, UUID causalFactor) {
+    return causalFactorController.removeCausalFactor(component, causalFactor);
+  }
+
+  @Override
+  public boolean removeCausalEntry(UUID component, UUID causalFactor, UUID entryId) {
+    return causalFactorController.removeCausalEntry(component, causalFactor, entryId);
+  }
+
+  @Override
+  public List<CausalFactorHazardLink> getCausalFactorHazLinks() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public ICausalComponent getCausalComponent(IRectangleComponent csComp) {
+    return causalFactorController.getCausalComponent(csComp);
+  }
+
+  @Override
+  public ICausalComponent getCausalComponent(UUID compId1) {
+    return getCausalComponent(getComponent(compId1));
+  }
+  @Override
+  public List<ISafetyConstraint> getAllCausalSafetyConstraints() {
+    return this.causalFactorController.getAllCausalSafetyConstraints();
+  }
+
+  @Override
+  public ISafetyConstraint getCausalSafetyConstraint(UUID id) {
+    return causalFactorController.getCausalSafetyConstraint(id);
+  }
+
+  @Override
+  public List<ICausalComponent> getCausalComponents() {
+    return getCausalComponents(null);
+  }
 
 }

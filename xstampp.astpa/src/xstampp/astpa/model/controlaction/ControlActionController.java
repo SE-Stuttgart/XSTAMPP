@@ -30,12 +30,13 @@ import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
-import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
+import xstampp.astpa.model.extendedData.ExtendedDataController;
+import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.astpa.model.sds.ISafetyConstraint;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
@@ -381,14 +382,17 @@ public class ControlActionController {
 	 * @return the current id
 	 */
 	public int getUCANumber(UUID ucaID){
+	  
 		int counter = 0;
 		for (ControlAction controlAction : this.controlActions) {
-			for (IUnsafeControlAction unsafeControlAction : controlAction
-					.getUnsafeControlActions()) {
+			for (ITableModel unsafeControlAction : controlAction
+					.getInternalUnsafeControlActions()) {
 				boolean isSearched = unsafeControlAction.getId().equals(ucaID);
 				counter++;
-				if(isSearched){
+				if(isSearched && unsafeControlAction.getNumber() < 0){
 					return counter;
+				}else if(isSearched){
+				  return unsafeControlAction.getNumber();
 				}
 			}
 		}
@@ -479,12 +483,16 @@ public class ControlActionController {
 	 * 
 	 * @param hazAccController
 	 *            the hazAccController to get the Accidents as objects
+	 * @param extendedData 
 	 * 
 	 */
-	public void prepareForExport(HazAccController hazAccController,ControlStructureController csController,String defaultLabel) {
+	public void prepareForExport(HazAccController hazAccController,
+	                             ControlStructureController csController,
+	                             String defaultLabel,
+	                             ExtendedDataController extendedData){
 		moveRulesInCA();
 		for (ControlAction controlAction : this.controlActions) {
-			controlAction.prepareForExport(csController,defaultLabel);
+			controlAction.prepareForExport(extendedData, csController,defaultLabel);
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				List<ITableModel> linkedHazards = new ArrayList<>();
@@ -545,12 +553,13 @@ public class ControlActionController {
 	 * Prepares the control actions for save
 	 * 
 	 * @author Fabian Toth
+	 * @param extendedData 
 	 * 
 	 */
-	public void prepareForSave() {
+	public void prepareForSave(ExtendedDataController extendedData) {
 		moveRulesInCA();
 		for (ControlAction controlAction : this.controlActions) {
-			controlAction.prepareForSave();
+			controlAction.prepareForSave(extendedData);
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 
@@ -837,53 +846,14 @@ public class ControlActionController {
 	 * @see IValueCombie
 	 * @return the uuid of the added refined rule, or null if no rule could be added because of a bad value e.g. <code>caID == null</code>
 	 */
-	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type, String combies){
+	public boolean addRefinedRuleLink(UUID ruleID, UUID caID){
 		for (ControlAction controlAction : controlActions) {
 			if(controlAction.getId().equals(caID)){
-				return controlAction.addRefinedRule(ucaLinks, ltlExp, rule, ruca, constraint, getRuleNumber(), caID, type, combies);
+				return controlAction.addRefinedRuleLink(ruleID);
 			}
 		}
-		return null;
+		return false;
 	}
-	
-  /**
-   * 
-   * @param ucaLinkID
-   *          {@link AbstractLtlProvider#getUCALinks()}
-   * @param combies
-   *          {@link RefinedSafetyRule#getCriticalCombies()}
-   * @param ltlExp
-   *          {@link AbstractLtlProvider#getLtlProperty()}   
-   * @param rule
-   *          {@link AbstractLtlProvider#getSafetyRule()}
-   * @param ruca
-   *          {@link AbstractLtlProvider#getRefinedUCA()}
-   * @param constraint
-   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
-   * @param nr
-   *          {@link AbstractLtlProvider#getNumber()}
-   * @param type 
-   *          {@link AbstractLtlProvider#getType()}
-   * 
-   * @see IValueCombie
-   * @return the id of rule which has been added if 
-   */
-  public UUID addNonFormalRule(UUID ucaLinkID, String criticalCombinations, String ltlProperty, String refinedRule,
-      String refinedUCA, String constraint, String type){
-      if(rules == null){
-        this.rules= new ArrayList<>();
-      }
-      List<UUID> ucaLinks = new ArrayList<>();
-      ucaLinks.add(ucaLinkID);
-      RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks, null, ltlProperty, refinedRule,
-                                                          refinedUCA, constraint, type, getRuleNumber(), criticalCombinations);
-      
-      if(this.rules.add(safetyRule)){
-        return safetyRule.getRuleId();
-      }
-    
-    return null;
-  }
 
 	/**
 	 * This method removes a safety rule if it is stored as general rule or as rule in control action

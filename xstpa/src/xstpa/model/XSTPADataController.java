@@ -13,7 +13,7 @@ import java.util.UUID;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
@@ -377,7 +377,7 @@ public class XSTPADataController extends Observable implements Observer{
 		List<AbstractLtlProvider> list = new ArrayList<>(model.getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
 			if(!currentRSR.contains(list.get(i).getRuleId())){
-				model.removeRefinedSafetyRule(false, list.get(i).getRuleId());
+				model.removeRefinedSafetyRule(IExtendedDataModel.RuleType.REFINED_RULE,false, list.get(i).getRuleId());
 			}
 		}
 		total =model.getLTLPropertys().size()-1;

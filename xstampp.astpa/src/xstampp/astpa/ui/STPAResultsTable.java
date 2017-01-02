@@ -1,10 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+ * Institute of Software Technology, Software Engineering Group
+ * University of Stuttgart, Germany
+ *  
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package xstampp.astpa.ui;
 
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -26,7 +35,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.sds.ISafetyConstraint;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -133,7 +142,7 @@ public class STPAResultsTable extends StandartEditorPart{
 				content.put("SC1."+dataModel.getUCANumber(uca.getId()), constraint.getText());
 			}
 		}
-		for(AbstractLtlProvider rule: dataModel.getAllRefinedRules(true)){
+		for(AbstractLtlProvider rule: dataModel.getAllRefinedRules(true,true,false)){
 			content.put("SC2."+rule.getNumber(), rule.getRefinedSafetyConstraint());
 		}
 		scViewer.setInput(content.entrySet());

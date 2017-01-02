@@ -61,8 +61,7 @@ import xstampp.ui.editors.AbstractFilteredEditor;
  */
 public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
-	private static final String UCA1 = "UCA1.";
-
+  public static final String UCA1 = "UCA1.";
   /**
 	 * ViewPart ID.
 	 */
@@ -204,7 +203,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
     this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		this.reloadTable();
-    deleteAction = new DeleteUcaAction(grid, ucaInterface,Messages.UnsafeControlActions,UCA1);
+    deleteAction = new DeleteUcaAction(grid, ucaInterface,Messages.UnsafeControlActions,ucaContentProvider.getPrefix());
 		MenuManager menuMgr = new MenuManager();
 		Menu menu = menuMgr.createContextMenu(this.grid.getGrid());
 		menuMgr.addMenuListener(new ActionMenuListener(deleteAction));

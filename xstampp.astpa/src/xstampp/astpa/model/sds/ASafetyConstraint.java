@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -16,6 +16,8 @@ package xstampp.astpa.model.sds;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlType;
+
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 
 /**
  * Abstract class for safety constraints
@@ -59,8 +61,12 @@ public abstract class ASafetyConstraint implements ISafetyConstraint {
 	 * 
 	 * @author Fabian Toth
 	 */
-	public void setText(String text) {
-		this.text = text;
+	public boolean setText(String text) {
+	  if(!this.text.equals(text)){
+	    this.text = text;
+	    return true;
+	  }
+	  return false;
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -23,7 +23,7 @@ import xstampp.astpa.haz.causalfactor.ICausalFactorHazardLink;
  * @author Fabian
  * 
  */
-public class CausalFactorHazardLink implements ICausalFactorHazardLink {
+public class CausalFactorHazardLink extends AbstractLinkModel implements ICausalFactorHazardLink {
 
 	private UUID causalFactorId;
 	private UUID hazardId;
@@ -79,58 +79,14 @@ public class CausalFactorHazardLink implements ICausalFactorHazardLink {
 		this.hazardId = hazardId;
 	}
 
-	/**
-	 * Checks if the given id is in this link
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param id
-	 *            the id to check
-	 * @return id the given id is in this link
-	 */
-	public boolean containsId(UUID id) {
-		return this.causalFactorId.equals(id) || this.hazardId.equals(id);
-	}
-
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result)
-				+ ((this.causalFactorId == null) ? 0 : this.causalFactorId
-						.hashCode());
-		result = (prime * result)
-				+ ((this.hazardId == null) ? 0 : this.hazardId.hashCode());
-		return result;
+  protected UUID getKeyId(){
+	  return getCausalFactorId();
 	}
-
+	
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		CausalFactorHazardLink other = (CausalFactorHazardLink) obj;
-		if (this.causalFactorId == null) {
-			if (other.causalFactorId != null) {
-				return false;
-			}
-		} else if (!this.causalFactorId.equals(other.causalFactorId)) {
-			return false;
-		}
-		if (this.hazardId == null) {
-			if (other.hazardId != null) {
-				return false;
-			}
-		} else if (!this.hazardId.equals(other.hazardId)) {
-			return false;
-		}
-		return true;
+  protected UUID getValueId(){
+	  return getHazardId();
 	}
 
 }

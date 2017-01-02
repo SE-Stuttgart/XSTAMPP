@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+ * Institute of Software Technology, Software Engineering Group
+ * University of Stuttgart, Germany
+ *  
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package xstampp.astpa.util.jobs;
 
 import java.awt.Desktop;
@@ -20,8 +30,8 @@ import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
-import xstampp.astpa.model.causalfactor.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.model.IDataModel;
 import xstampp.util.BufferedCSVWriter;
@@ -88,7 +98,7 @@ public class StpaCSVExport extends Job {
 						Messages.Hazards);
 			}
 			if ((type & ICSVExportConstants.SAFETY_CONSTRAINT) != 0) {
-				this.exportAsCSV(this.model.getAllSafetyConstraints(),"SR0.",
+				this.exportAsCSV(this.model.getAllCausalSafetyConstraints(),"SR0.",
 						csvWriter, Messages.SafetyConstraints);
 			}
 			if ((type & ICSVExportConstants.SYSTEM_GOAL) != 0) {

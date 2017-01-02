@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
@@ -34,6 +35,7 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 
 	private String description;
 	private UUID id;
+	private int number;
 	private UnsafeControlActionType type;
 	private CorrespondingSafetyConstraint correspondingSafetyConstraint;
 	private String links;
@@ -62,6 +64,7 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	 * @author Fabian Toth
 	 */
 	public UnsafeControlAction() {
+	  number = -1;
 		// empty constructor for JAXB
 	}
 
@@ -122,9 +125,7 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 		this.correspondingSafetyConstraint = correspondingSafetyConstraint;
 	}
 
-	/**
-	 * @return the links
-	 */
+	@Override
 	public String getLinks() {
 		return this.links;
 	}
@@ -136,5 +137,29 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	public void setLinks(String links) {
 		this.links = links;
 	}
+
+	public void setNumber(int number) {
+    this.number = number;
+  }
+	
+  @Override
+  public int compareTo(ITableModel o) {
+    if(o.getNumber() < this.getNumber()){
+      return -1;
+    }else if(o.getNumber() > this.getNumber()){
+      return 1;
+    }
+    return 0;
+  }
+
+  @Override
+  public int getNumber() {
+    return number;
+  }
+
+  @Override
+  public String getTitle() {
+    return "";
+  }
 
 }

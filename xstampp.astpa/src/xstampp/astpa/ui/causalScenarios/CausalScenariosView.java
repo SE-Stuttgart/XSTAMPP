@@ -29,7 +29,9 @@ import org.eclipse.swt.widgets.Menu;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
 import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
@@ -67,15 +69,17 @@ public class CausalScenariosView extends AbstractFilteredEditor {
         org.eclipse.swt.graphics.Point relativeMouse,
         Rectangle cellBounds) {
       if(e.button == 1){
+        AbstractLtlProviderData data = new AbstractLtlProviderData();
+        data.addRelatedUcas(parentId);
         UUID newUCA = dataInterface
-            .addNonFormalRule(parentId, new String(), new String(), new String(), new String(), new String(), IValueCombie.TYPE_ANYTIME);
+            .addRuleEntry(RuleType.SCENARIO,data , null, IValueCombie.TYPE_ANYTIME);
         grid.activateCell(newUCA); 
       }
       
     }
   }
 	
-  private class ScenarioEditor extends GridCellTextEditor{
+  private abstract class ScenarioEditor extends GridCellTextEditor{
     
     public ScenarioEditor(GridWrapper grid, String initialText, Boolean showDelete, Boolean readOnly, UUID ruleId) {
       super(grid, initialText, showDelete, readOnly,ruleId);
@@ -84,11 +88,6 @@ public class CausalScenariosView extends AbstractFilteredEditor {
     @Override
     public void delete() {
       deleteAction.run();
-    }
-
-    @Override
-    public void updateDataModel(String newValue) {
-      dataInterface.updateRefinedRule(getUUID(), null, null, null, newValue, null, null, -1, null, null);
     }
     
   }
@@ -118,24 +117,35 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 	private void reloadTable() {
 	  if(this.grid != null){
       this.grid.clearRows();
-      List<AbstractLtlProvider> rulesList = dataInterface.getAllRefinedRules(false);
+      List<AbstractLtlProvider> rulesList = dataInterface.getAllRefinedRules(true,true,false);
       for (AbstractLtlProvider rule  : rulesList) {
         if(!isFiltered(rule.getUCALinks(),UCA)){
           GridRow ruleRow = new GridRow(1);
           
-          IGridCell cell =new ScenarioEditor(this.grid,PREFIX+rule.getNumber(),true,true, rule.getRuleId());
+          IGridCell cell =new ScenarioEditor(this.grid,PREFIX+rule.getNumber(),true,true, rule.getRuleId()){
+            @Override
+            public void updateDataModel(String newValue) {
+              AbstractLtlProviderData data = new AbstractLtlProviderData();
+              data.setRule(newValue);
+              dataInterface.updateRefinedRule(getUUID(),data, null);
+            }
+          };
           ruleRow.addCell(cell);
   
           ruleRow.addCell(new ScenarioEditor(this.grid,rule.getSafetyRule(),false,false, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
-              dataInterface.updateRefinedRule(getUUID(), null, null, null, newValue, null, null, -1, null, null);
+              AbstractLtlProviderData data = new AbstractLtlProviderData();
+              data.setRule(newValue);
+              dataInterface.updateRefinedRule(getUUID(),data, null);
             }
           });
           ruleRow.addCell(new ScenarioEditor(this.grid,rule.getRefinedSafetyConstraint(),false,false, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
-              dataInterface.updateRefinedRule(getUUID(), null, null, newValue, null, null, null, -1, null, null);
+              AbstractLtlProviderData data = new AbstractLtlProviderData();
+              data.setRefinedConstraint(newValue);
+              dataInterface.updateRefinedRule(getUUID(),data, null);
             }
           });
           grid.addRow(ruleRow);

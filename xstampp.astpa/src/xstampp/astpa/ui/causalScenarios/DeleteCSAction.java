@@ -36,6 +36,6 @@ public class DeleteCSAction extends DeleteGridEntryAction<IExtendedDataModel>{
   
   @Override
   protected void removeEntry(UUID id) {
-    getDataModel().removeRefinedSafetyRule(false, id);
+    getDataModel().removeRefinedSafetyRule(IExtendedDataModel.RuleType.SCENARIO, false, id);
   }
 }

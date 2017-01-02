@@ -46,7 +46,7 @@ import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
  * @param <T>
  *          The content provider class for the table
  */
-public class GridCellLinking<T extends ITableContentProvider> extends AbstractGridCell {
+public class GridCellLinking<T extends ITableContentProvider<?>> extends AbstractGridCell {
 
   /**
    * The log4j logger.
@@ -57,7 +57,6 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
   private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0, 0, 0);
   private static final Color HAZARD_LINK_COLOR = new Color(Display.getCurrent(), 230, 20, 5);
 
-  private final String prefix;
   private final String linkEmptyText = Messages.NotHazardous;
   private final UUID assignedId;
   private final T publicInterface;
@@ -74,9 +73,9 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
     public void proposalAccepted(IContentProposal proposal) {
       GridCellLinking.this.grid.resizeRows();
       String text = proposal.getContent();
-      ITableModel item = GridCellLinking.this.toLinkable(text);
-      if (item != null) {
-        GridCellLinking.this.publicInterface.addLink(assignedId, item.getId());
+      UUID linkId = GridCellLinking.this.toLinkable(text);
+      if (linkId != null) {
+        GridCellLinking.this.publicInterface.addLink(assignedId, linkId);
       }
     }
   }
@@ -91,9 +90,11 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
   private class DeleteLinkButton extends CellButton {
 
     private ITableModel tableModel;
-    private ITableContentProvider provider;
+    private ITableContentProvider<? extends ITableModel> provider;
 
-    public DeleteLinkButton(Rectangle rect, Image image, ITableModel tableModel, ITableContentProvider provider) {
+    public DeleteLinkButton(Rectangle rect, Image image,
+                          ITableModel tableModel,
+                          ITableContentProvider<? extends ITableModel> provider) {
       super(rect, image);
       this.tableModel = tableModel;
       this.provider = provider;
@@ -107,7 +108,8 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
   }
 
   /**
-   * 
+   * constructs a generic gridCell that is capable of containing 
+   * several editable ITableModel links.
    * @author Benedikt Markt
    * 
    * @param assignedId
@@ -119,24 +121,31 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
    * @param prefix
    *          the prefix for item indices, like 'H-' for hazards
    */
-  public GridCellLinking(final UUID assignedId, final T publicInterface, final GridWrapper grid, final String prefix) {
+  public GridCellLinking(final UUID assignedId,
+                         final T publicInterface,
+                         final GridWrapper grid,
+                         final String prefix) {
     super();
 
     this.assignedId = assignedId;
     this.publicInterface = publicInterface;
-    this.prefix = prefix;
     this.grid = grid;
 
     this.buttonContainer = new CellButtonContainer();
   }
 
-  
-  private ITableModel toLinkable(final String linkableString) {
-    final List<ITableModel> items = this.publicInterface.getAllItems();
-    for (final ITableModel model : items) {
-      final String tmp = this.prefix + model.getNumber();
+  /**
+   * Returns the UUID of an object of the generic type given by the interface implementation
+   * 
+   * @param linkableString a string which must be mappable to a link object
+   * @return the UUID of an object of the generic type given by the interface implementation 
+   */
+  private UUID toLinkable(final String linkableString) {
+    final List<? extends ITableModel> items = this.publicInterface.getAllItems();
+    for (ITableModel model : items) {
+      String tmp = this.publicInterface.getPrefix() + model.getNumber();
       if (linkableString.equals(tmp)) {
-        return model;
+        return model.getId();
       }
     }
     return null;
@@ -155,7 +164,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
 
     gc.setBackground(this.getBackgroundColor(renderer, gc));
 
-    List<ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
+    List<? extends ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
     Collections.sort(linkedItems);
 
     if (linkedItems.isEmpty()) {
@@ -169,7 +178,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
       boolean hovered = this.grid.getHoveredCell() == GridCellLinking.this;
       for (final ITableModel model : linkedItems) {
 
-        String linkText = "[" + this.prefix + model.getNumber() //$NON-NLS-1$
+        String linkText = "[" + this.publicInterface.getPrefix() + model.getNumber() //$NON-NLS-1$
             + "]"; //$NON-NLS-1$
         int textWidth = gc.getFontMetrics().getAverageCharWidth() * linkText.length();
 
@@ -221,7 +230,7 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
       return;
     }
   
-    List<ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
+    List<? extends ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
 
     /*
      * Prevent opening linking popup while another cell is focused and a delete
@@ -232,21 +241,21 @@ public class GridCellLinking<T extends ITableContentProvider> extends AbstractGr
       return;
     }
    
-    final List<ITableModel> items = this.publicInterface.getAllItems();
+    List<? extends ITableModel> items = this.publicInterface.getAllItems();
     // remove all already linked items
     items.removeAll(linkedItems);
 
     // Long descriptive string for using in the suggestion box
-    final String[] options = new String[items.size()];
+    String[] options = new String[items.size()];
     // Short descriptive string for displaying in the
     // suggestions box
-    final String[] labels = new String[items.size()];
+    String[] labels = new String[items.size()];
     // Long descripton
-    final String[] descriptions = new String[items.size()];
+    String[] descriptions = new String[items.size()];
     
     for (int i = 0; i < items.size(); i++) {
-      final String itemNumber = this.prefix + items.get(i).getNumber();
-      final String itemTitle = items.get(i).getTitle();
+      String itemNumber = this.publicInterface.getPrefix() + items.get(i).getNumber();
+      String itemTitle = items.get(i).getTitle();
 
       options[i] = itemTitle;
       labels[i] = itemNumber;

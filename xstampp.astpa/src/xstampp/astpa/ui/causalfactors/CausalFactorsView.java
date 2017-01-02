@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -21,10 +21,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.apache.log4j.Logger;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
@@ -41,16 +38,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
+import messages.Messages;
 import xstampp.astpa.model.causalfactor.CausalFactor;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
-import xstampp.astpa.model.causalfactor.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.model.sds.ISafetyConstraint;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.common.grid.AutoCompleteField;
+import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.grid.CellButton;
 import xstampp.ui.common.grid.GridCellButton;
 import xstampp.ui.common.grid.GridCellColored;
@@ -72,12 +70,28 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 	private static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 	private static final Point ADD_BUTTON_COORDINATE = new Point(40, 1);
 	private int internalUpdates;
-	private static final String CONFIRMATION_TITLE = Messages.DeleteCausalFactor;
-	private static final String CONFIRMATION_DESCRIPTION = Messages.WantToDeleteTheCF;
 	private static final String CAUSALFACTORS= "Text filter for Causal Factors";
 	private Map<UUID,CausalFactor> factorsToUUIDs;
 	private DeleteCFAction deleteAction;
-	
+	 /**
+   * ViewPart ID.
+   */
+  public static final String ID = "astpa.steps.step3_2";
+
+  private ICausalFactorDataModel dataInterface = null;
+
+  /**
+   * The log4j logger.
+   */
+  private static final Logger LOGGER = Logger.getRootLogger();
+
+
+  private GridWrapper grid;
+
+  private CausalContentProvider causalContentProvider;
+  private boolean lockreload;
+
+  
 	private class SafetyConstraintEditorCell extends GridCellTextEditor {
 
 		private UUID safetyConstraintId;
@@ -221,24 +235,6 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		}
 	}
 
-	/**
-	 * ViewPart ID.
-	 */
-	public static final String ID = "astpa.steps.step3_2";
-
-	private ICausalFactorDataModel dataInterface = null;
-
-	/**
-	 * The log4j logger.
-	 */
-	private static final Logger LOGGER = Logger.getRootLogger();
-
-	private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
-
-	private GridWrapper grid;
-
-	private CausalContentProvider causalContentProvider;
-	private boolean lockreload;
 
 	/**
 	 * Ctor.
@@ -276,7 +272,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		parent.setLayout(new GridLayout(1, false));
 		super.createPartControl(parent);
 		this.grid = new GridWrapper(parent, new String[] { Messages.Component,
-				Messages.CausalFactors, Messages.HazardLinks,
+				Messages.CausalFactors,"UCA Links", Messages.HazardLinks,
 				Messages.SafetyConstraint, Messages.NotesSlashRationale });
 		this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		this.deleteAction = new DeleteCFAction(grid, dataInterface, Messages.CausalFactors, null);
@@ -333,7 +329,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 			CausalFactorsView.LOGGER.info(Messages.AddingNewCausalFactor);
 			e.data = "hallo";
 			UUID factorId = CausalFactorsView.this.dataInterface
-					.addCausalFactor(this.component.getId(), ""); //$NON-NLS-1$
+					.addCausalFactor(null); //$NON-NLS-1$
 			CausalFactorsView.this.dataInterface.setNoteText(factorId,
 					Messages.Note);
 			CausalFactorsView.this.grid.activateCell(factorId);
@@ -392,7 +388,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 				CausalFactorsView.LOGGER.info("Adding new GridCellLinking"); //$NON-NLS-1$
 				childRow.addCell(new GridCellLinking<CausalContentProvider>(
 						factor.getId(), this.causalContentProvider, this.grid,
-						CausalFactorsView.HAZARD_ID_PREFIX));
+						causalContentProvider.getPrefix()));
 
 				if (factor.getSafetyConstraint().getText().equals("")) { //$NON-NLS-1$
 					GridCellText constraintsCell = new GridCellText(""); //$NON-NLS-1$

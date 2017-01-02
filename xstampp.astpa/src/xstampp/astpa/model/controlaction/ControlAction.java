@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -24,8 +24,9 @@ import javax.xml.bind.annotation.XmlType;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
-import xstampp.astpa.model.controlaction.rules.RefinedSafetyRule;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
+import xstampp.astpa.model.extendedData.ExtendedDataController;
+import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.IValueCombie;
@@ -44,7 +45,8 @@ import xstampp.model.IValueCombie;
 					   "valuesWhenProvided", 
 					   "notProvidedVariableNames",
 					   "providedVariableNames",
-					   "rules",
+             "rules",
+             "ruleIds",
 					   "componentLink"})
 public class ControlAction extends ATableModel implements IHAZXControlAction {
 
@@ -91,8 +93,12 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	
 
 	@XmlElementWrapper(name = "rules")
-	@XmlElement(name = "rule")
-	private List<RefinedSafetyRule> rules;
+  @XmlElement(name = "rule")
+  private List<RefinedSafetyRule> rules;
+	
+	@XmlElementWrapper(name = "ruleIds")
+  @XmlElement(name = "ruleId")
+  private List<UUID> ruleIds;
 	/**
 	 * @param componentLink the componentLink to set
 	 * @return 
@@ -404,31 +410,18 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 
 	/**
 	 * 
-	 * @param ucaLinks
-	 * @param ltlExp
-	 * @param rule
-	 * @param ruca
-	 * @param constraint
-	 * @param nr
-	 * @param caID
-	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
-	 * 				Defined in IValueCombie
-	 * @param combies
+	 * @param ruleId
 	 * 
-	 * @see IValueCombie
 	 * @return
 	 */
-	public UUID addRefinedRule(List<UUID> ucaLinks,String ltlExp,String rule,String ruca,String constraint,int nr,UUID caID, String type, String combies){
-		if(ucaLinks != null && ltlExp != null && rule != null && constraint != null){
-			if(rules == null){
-				this.rules= new ArrayList<>();
+	public boolean addRefinedRuleLink(UUID ruleId){
+		if(ruleId != null){
+			if(ruleIds == null){
+				this.ruleIds= new ArrayList<>();
 			}
-			RefinedSafetyRule safetyRule = new RefinedSafetyRule(ucaLinks,caID, ltlExp, rule, ruca, constraint,type, nr, combies);
-			if(this.rules.add(safetyRule)){
-				return safetyRule.getRuleId();
-			}
+      return ruleIds.add(ruleId);
 		}
-		return null;
+		return false;
 	}
 	
 	/**
@@ -442,17 +435,12 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 */
 	public boolean removeSafetyRule(boolean removeAll, UUID id){
 		if(removeAll){
-			this.rules.clear();
+      this.rules.clear();
+      this.ruleIds.clear();
 			return true;
 		}
-		if(id != null && rules != null){
-			for (int i = 0; i < rules.size(); i++) {
-				if(rules.get(i).getRuleId().equals(id)){
-					RefinedSafetyRule rule = rules.get(i);
-					rules.remove(i);
-					return !rules.contains(rule);
-				}
-			}
+		if(id != null && ruleIds != null){
+			return ruleIds.remove(id);
 		}
 		return false;
 	}
@@ -461,14 +449,22 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	/**
 	 * Prepares the control actions for the export
 	 * 
-	 * @author Fabian Toth
+	 * @author Fabian Toth, Lukas Balzer
 	 * 
 	 * @param hazAccController
 	 *            the hazAccController to get the Accidents as objects
 	 * 
 	 */
-	public void prepareForExport(ControlStructureController csController,String defaultLabel) {
+	public void prepareForExport(ExtendedDataController extendedData,
+	                             ControlStructureController csController,
+	                             String defaultLabel) {
 
+	  rules = new ArrayList<>();
+	  for(AbstractLtlProvider refinedRule : extendedData.getAllRefinedRules(true,false,false)){
+	    if(refinedRule.getRelatedControlActionID().equals(getId())){
+	      rules.add((RefinedSafetyRule) refinedRule);
+	    }
+	  }
 		List<UUID> trash = new ArrayList<>();
 		if(notProvidedVariables != null){
 			notProvidedVariableNames = new ArrayList<>();
@@ -538,10 +534,10 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	/**
 	 * Prepares the control actions for save
 	 * 
-	 * @author Fabian Toth
+	 * @author Fabian Toth, Lukas Balzer
 	 * 
 	 */
-	public void prepareForSave() {
+	public void prepareForSave(ExtendedDataController extendedData) {
 		notProvidedVariableNames = null;
 		providedVariableNames = null;
 		
@@ -555,10 +551,29 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 				combie.setValueNames(null);
 			}
 		}
-		if(rules != null){
-			for(RefinedSafetyRule rule : rules){
-				rule.setLinks(null);
-			}
+		
+		//prepare the rules list for save by moving all rules to the 
+		//ExtendedDataModel and storing a list of uuids
+		if(ruleIds == null){
+		  ruleIds = new ArrayList<>();
+		}else{
+		  for(AbstractLtlProvider refinedRule : extendedData.getAllRefinedRules(true, false, false)){
+        if(ruleIds.contains(refinedRule.getRuleId())){
+          rules.add((RefinedSafetyRule) refinedRule);
+        }
+      }
+	    ruleIds.clear();
+		}
+		if(rules == null){
+		  rules = new ArrayList<>();
+		}else{
+		  for(AbstractLtlProvider refinedRule : rules){
+		    ruleIds.add(refinedRule.getRuleId());
+		    ((RefinedSafetyRule)refinedRule).setLinks(null);
+		    extendedData.addRefinedRule(refinedRule);
+	    }
+		  
+		  rules.clear();
 		}
 	}
 

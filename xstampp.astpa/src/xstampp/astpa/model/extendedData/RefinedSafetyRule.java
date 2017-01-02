@@ -1,4 +1,14 @@
-package xstampp.astpa.model.controlaction.rules;
+/*******************************************************************************
+ * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+ * Institute of Software Technology, Software Engineering Group
+ * University of Stuttgart, Germany
+ *  
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+package xstampp.astpa.model.extendedData;
 
 import java.util.List;
 import java.util.UUID;
@@ -8,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 @XmlRootElement(name = "rule")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,15 +54,15 @@ public class RefinedSafetyRule extends AbstractLtlProvider{
 	 * 
 	 * @see IValueCombie
 	 */
-	public RefinedSafetyRule(List<UUID> ucaLinks,UUID caId,String ltlExp,String rule,String ruca,String constraint,String type, int nr, String combies) {
+	public RefinedSafetyRule(AbstractLtlProviderData data, UUID caId,String type, int nr) {
 		id = UUID.randomUUID();
 		this.number = nr;
-		this.combies = combies;
-		this.rule = rule;
-		this.rSCt = constraint;
-		this.rUCA = ruca;
-		this.ltl = ltlExp;
-		this.relatedUCAs = ucaLinks;
+		this.combies = data.getCombies();
+		this.rule = data.getSafetyRule();
+		this.rSCt = data.getRefinedSafetyConstraint();
+		this.rUCA = data.getRefinedUca();
+		this.ltl = data.getLtlProperty();
+		this.relatedUCAs = data.getUcaLinks();
 		this.caID = caId;
 		this.type = type;
 		
@@ -61,7 +72,8 @@ public class RefinedSafetyRule extends AbstractLtlProvider{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public boolean setUCALinks(List<UUID> ids){
+
+  public boolean setUCALinks(List<UUID> ids){
 		if(ids == null 
         || (this.relatedUCAs != null && this.relatedUCAs.equals(ids))){
 			return false;

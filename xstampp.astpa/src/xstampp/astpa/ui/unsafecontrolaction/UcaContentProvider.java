@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -18,15 +18,15 @@ import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
-import xstampp.ui.common.grid.ITableContentProvider;
+import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**
  * 
  * @author Benedikt Markt
  * 
  */
-public class UcaContentProvider implements ITableContentProvider {
-
+public class UcaContentProvider implements ITableContentProvider<ITableModel> {
+  private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
 	private final transient IUnsafeControlActionDataModel ucaInterface;
 
 	/**
@@ -60,4 +60,9 @@ public class UcaContentProvider implements ITableContentProvider {
 	public void removeLink(final UUID item, final UUID removeItem) {
 		this.ucaInterface.removeUCAHazardLink(item, removeItem);
 	}
+
+  @Override
+  public String getPrefix() {
+    return HAZARD_ID_PREFIX;
+  }
 }

@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstpa.Messages;
@@ -213,7 +214,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		    	    	}
 			    	    dataController.storeBooleans(caEntry, ObserverValue.CONTROL_ACTION);
 		    	    }
-					dataController.getModel().removeRefinedSafetyRule(true, null);
+					dataController.getModel().removeRefinedSafetyRule(IExtendedDataModel.RuleType.REFINED_RULE,true, null);
 					refreshTable();
 	    		}
 	    	}
@@ -245,7 +246,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		}
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
 				 entry.getCombination().getLinkedControlActionID()), ObserverValue.CONTROL_ACTION);
-		dataController.getModel().removeRefinedSafetyRule(false, entry.getDataRef());
+		dataController.getModel().removeRefinedSafetyRule(IExtendedDataModel.RuleType.REFINED_RULE,false, entry.getDataRef());
 		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
 				 entry.getCombination().getLinkedControlActionID()), null);
 	}

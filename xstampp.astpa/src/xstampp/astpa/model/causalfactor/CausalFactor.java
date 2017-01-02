@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2015 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -13,7 +13,20 @@
 
 package xstampp.astpa.model.causalfactor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
+import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
+import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntryContainer;
+import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorUCAEntry;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
+import xstampp.model.AbstractLtlProvider;
 
 /**
  * A causal factor
@@ -28,7 +41,7 @@ public class CausalFactor implements ICausalFactor {
 	private CausalSafetyConstraint safetyConstraint;
 	private String note;
 	private String links;
-
+  private List<CausalFactorEntry> entries;
 	/**
 	 * Constructor of a causal factor
 	 * 
@@ -39,9 +52,6 @@ public class CausalFactor implements ICausalFactor {
 	 */
 	public CausalFactor(String text) {
 		this.id = UUID.randomUUID();
-		this.text = text;
-		this.safetyConstraint = new CausalSafetyConstraint(""); //$NON-NLS-1$
-		this.note = ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -80,7 +90,7 @@ public class CausalFactor implements ICausalFactor {
 	}
 
 	@Override
-	public CausalSafetyConstraint getSafetyConstraint() {
+	public ISafetyConstraint getSafetyConstraint() {
 		return this.safetyConstraint;
 	}
 
@@ -119,5 +129,81 @@ public class CausalFactor implements ICausalFactor {
 	public void setLinks(String links) {
 		this.links = links;
 	}
+  
+	public UUID addUCAEntry(UUID ucaId){
+    if(this.entries == null){
+      this.entries = new ArrayList<>();
+    }
+    CausalFactorUCAEntry entry = new CausalFactorUCAEntry(ucaId);
+    this.entries.add(entry);
+    return entry.getId();
+  }
+	public UUID addHazardEntry(){
+	  CausalFactorEntry entry = int_addHazardEntry();
+	  if(entry == null){
+	    return null;
+	  }
+    return entry.getId();
+  }
+	
+	private CausalFactorEntry int_addHazardEntry(){
+    if(this.entries == null){
+      this.entries = new ArrayList<>();
+    }
+    CausalFactorEntry entry;
+    entry = new CausalFactorEntry();
+    this.entries.add(entry);
+    return entry;
+  }
+	
+	public boolean removeEntry(UUID entryId){
+	  for (int i= 0;entries != null && i < entries.size(); i++) {
+      if(entries.get(i).getId().equals(entryId)){
+        return entries.remove(i) != null;
+      }
+    }
+	  return false;
+	}
+	
+	public ICausalFactorEntry getEntry(UUID entryId){
+	  for (int i= 0;entries != null && i < entries.size(); i++) {
+      if(entries.get(i).getId().equals(entryId)){
+        return entries.get(i);
+      }
+    }
+    return null;
+	}
 
+  @Override
+  public List<ICausalFactorEntry> getAllEntries() {
+    List<ICausalFactorEntry> result = new ArrayList<>();
+    for (int i= 0;entries != null && i < entries.size(); i++) {
+      result.add(new CausalFactorEntryContainer(entries.get(i)));      
+    }
+    return result;
+  }
+  
+  public void prepareForExport(HazAccController hazAccController,
+      List<AbstractLtlProvider> allRefinedRules,
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      List<CausalSafetyConstraint> constraints){
+    for (CausalFactorEntry entry : entries) {
+      entry.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions, constraints);
+    }
+  }
+
+  public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap, HazAccController hazAccController, List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, List<CausalSafetyConstraint> constraints) {
+    if(hazardLinksMap.containsKey(getId())){
+      CausalFactorEntry entry = int_addHazardEntry();
+      if(entry != null){
+        entry.setSafetyConstraint(getSafetyConstraint().getId());
+        constraints.add((CausalSafetyConstraint) getSafetyConstraint());
+        entry.setHazardIds(hazardLinksMap.get(getId()));
+        entry.setNote(getNote());
+      }
+    }
+    for (CausalFactorEntry entry : entries) {
+      entry.prepareForSave(hazAccController,allUnsafeControlActions);
+    }
+  }
 }

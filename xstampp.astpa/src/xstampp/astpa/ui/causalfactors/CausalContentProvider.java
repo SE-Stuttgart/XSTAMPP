@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -18,15 +18,16 @@ import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.ui.common.grid.ITableContentProvider;
+import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**
  * 
- * @author Benedikt Markt
+ * @author Benedikt Markt, Lukas Balzer
  * 
  */
-public class CausalContentProvider implements ITableContentProvider {
+public class CausalContentProvider implements ITableContentProvider<ITableModel> {
 
+  private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
 	private final transient ICausalFactorDataModel caInterface;
 
 	/**
@@ -62,5 +63,10 @@ public class CausalContentProvider implements ITableContentProvider {
 		this.caInterface.removeCausalFactorHazardLink(item, removeItem);
 
 	}
+
+  @Override
+  public String getPrefix() {
+    return HAZARD_ID_PREFIX;
+  }
 
 }

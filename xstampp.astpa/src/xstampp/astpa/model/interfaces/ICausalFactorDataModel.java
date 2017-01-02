@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -17,9 +17,11 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.model.causalfactor.ICausalComponent;
-import xstampp.astpa.model.sds.ISafetyConstraint;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.model.IDataModel;
+import xstampp.model.IEntryFilter;
 
 /**
  * Interface to the Data Model for the Causal Factors View
@@ -27,143 +29,42 @@ import xstampp.model.IDataModel;
  * @author Fabian Toth, Benedikt Markt
  * 
  */
-public interface ICausalFactorDataModel extends IDataModel {
+public interface ICausalFactorDataModel extends IDataModel,ICausalFactorController {
 
 	/**
-	 * Get all causal components
+	 * Get all causal components {@link ICausalComponent}
 	 * 
+	 * @param a filter object which can also be null
+	 *         if given as not null all entries in the returned list
+	 *         are checked true
 	 * @author Fabian Toth
 	 * 
-	 * @return all causal components
+	 * @return all causal components as causalFactor containers
 	 */
-	List<ICausalComponent> getCausalComponents();
+	List<ICausalComponent> getCausalComponents(IEntryFilter<IRectangleComponent> filter);
 
 	/**
-	 * Adds a causal factor to the causal component with the given id. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
 	 * 
-	 * @author Fabian Toth this
-	 * @param causalComponentId
-	 *            the id of the causal component
-	 * @param causalFactorText
-	 *            the text of the causal factor
-	 * 
-	 * @return the id of the new causal factor. null if the action fails
+	 * @param compId1 The id of a control structure component stored in the dataModel
+	 * @return a causal component {@link ICausalComponent} for the control structure component
+	 *         or null if the type of the component can not be causal
 	 */
-	UUID addCausalFactor(UUID causalComponentId, String causalFactorText);
+	ICausalComponent getCausalComponent(UUID compId1);
+	
+  /**
+   * Adds a causal factor to the causal component with the given id. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
+   * 
+   * @author Fabian Toth, Lukas Balzer
+   * @param id the id of the component for which a new factor should be added
+   * @return the id of the new causal factor. null if the action fails
+   */
+  UUID addCausalFactor(UUID id);
 
-	/**
-	 * Sets the text of the causal factor with the given id. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param causalFactorId
-	 *            the id of the causal factor to change
-	 * @param causalFactorText
-	 *            the text of the causal factor to change
-	 * @return true if the text has been set
-	 */
-	boolean setCausalFactorText(UUID causalFactorId, String causalFactorText);
+  /**
+   * {@link IHazardViewDataModel#getHazards(UUID[])}
+   */
+  List<ITableModel> getHazards(List<UUID> list);
 
-	/**
-	 * Add a link between a causal factor and a hazard. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param causalFactorId
-	 *            the id of the causal factor
-	 * @param hazardId
-	 *            the id of the hazard
-	 * @return true if the link has been added
-	 */
-	boolean addCausalFactorHazardLink(UUID causalFactorId, UUID hazardId);
-
-	/**
-	 * Removes a link between a causal factor and a hazard. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
-	 * 
-	 * @param causalFactorId
-	 *            the id of the causal factor
-	 * @param hazardId
-	 *            the id of the hazard
-	 * 
-	 * @return true if the link has been removed
-	 * 
-	 * @author Fabian Toth
-	 */
-	boolean removeCausalFactorHazardLink(UUID causalFactorId, UUID hazardId);
-
-	/**
-	 * Get all hazards.
-	 * 
-	 * @author Benedikt Markt
-	 * 
-	 * @return the list containing all hazards
-	 */
-
-	List<ITableModel> getAllHazards();
-
-	/**
-	 * Returns a list of Hazards linked to the given Casual Factor
-	 * 
-	 * @author Benedikt Markt
-	 * 
-	 * @param causalFactorId
-	 *            Id of the Causal Factor
-	 * @return a list of Hazards that are currently linked to the Causal Factor
-	 */
-	List<ITableModel> getLinkedHazardsOfCf(UUID causalFactorId);
-
-	/**
-	 * Sets the text of the causal safety constraint with the given id. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param causalSafetyCosntraintId
-	 *            the id of the causal safety constraint
-	 * @param causalSafetyConstraintText
-	 *            the new text for the causal safety constraint
-	 * @return true if the text has been set
-	 */
-	boolean setCausalSafetyConstraintText(UUID causalSafetyCosntraintId,
-			String causalSafetyConstraintText);
-
-	/**
-	 * Sets the text of the note. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param causalFactorId
-	 *            the id of the causal factor
-	 * @param noteText
-	 *            the new text of the note
-	 * @return true if the text has been set
-	 */
-	boolean setNoteText(UUID causalFactorId, String noteText);
-
-	/**
-	 * Removes a causal factor. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param causalFactorId
-	 *            the id of the causal factor to remove
-	 * @return true, if the causal factor has been removed
-	 */
-	boolean removeCausalFactor(UUID causalFactorId);
-
-	/**
-	 * Gets the list of all corresponding safety constraints
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @return the list of all corresponding safety constraints
-	 */
-	List<ISafetyConstraint> getCorrespondingSafetyConstraints();
 
 }
