@@ -13,9 +13,7 @@ public class CausalFactorUCAEntryData extends CausalFactorEntryData{
   private List<UUID> scenarioLinks;
   private boolean scenariosChanged;
   
-  /**
-   * @return the scenarioLinks
-   */
+  @Override
   public List<UUID> getScenarioLinks() {
     return scenarioLinks;
   }
@@ -26,6 +24,7 @@ public class CausalFactorUCAEntryData extends CausalFactorEntryData{
     this.scenarioLinks = scenarioLinks;
     this.scenariosChanged = true;
   }
+  @Override
   public boolean scenariosChanged() {
     return scenariosChanged;
   }

@@ -147,6 +147,7 @@ Export-Package: xstampp.astpa;uses:="org.osgi.framework,org.eclipse.jface.resour
    org.eclipse.draw2d.geometry",
  xstampp.astpa.model.controlstructure.interfaces;uses:="xstampp.astpa.haz.controlstructure.interfaces,xstampp.astpa.model.controlstructure.components",
  xstampp.astpa.model.export,
+ xstampp.astpa.model.extendedData.interfaces,
  xstampp.astpa.model.hazacc;uses:="xstampp.model,xstampp.astpa.haz",
  xstampp.astpa.model.interfaces;
   uses:="xstampp.model,

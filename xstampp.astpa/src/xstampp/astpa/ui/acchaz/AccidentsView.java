@@ -51,6 +51,8 @@ import org.eclipse.swt.widgets.Text;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
+import xstampp.astpa.ui.ATableFilter;
+import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;

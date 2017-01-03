@@ -14,6 +14,7 @@ public abstract class AbstractDataModel extends Observable implements IDataModel
   private boolean unsavedChanges;
 
   public AbstractDataModel() {
+    
     // Enable the save entries in the menu
     ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI.getWorkbench()
         .getService(ISourceProviderService.class);

@@ -48,8 +48,8 @@ import org.eclipse.swt.widgets.Text;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.sds.SystemGoal;
-import xstampp.astpa.ui.acchaz.ATableFilter;
-import xstampp.astpa.ui.acchaz.CommonTableView;
+import xstampp.astpa.ui.ATableFilter;
+import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 

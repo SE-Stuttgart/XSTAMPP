@@ -12,7 +12,6 @@
 package xstampp.astpa.model.interfaces;
 
 import java.util.List;
-import java.util.Observer;
 import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
@@ -20,79 +19,32 @@ import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
+import xstampp.model.IDataModel;
+import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
-import xstampp.model.ObserverValue;
 
-public interface IExtendedDataModel {
+public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
   
+  /**
+   * an enum that defines three rule types that can be stored deperately in the dataModelController
+   * 
+   * @author Lukas Balzer
+   *
+   */
   public static enum RuleType{
     REFINED_RULE,
     SCENARIO,
     CUSTOM_LTL
   }
-  /**
-   * @param ruleType
-   *        
-   * @param data
-   *          {@link AbstractLtlProviderData}
-   * @param caID
-   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
-   * @param type 
-   *          {@link AbstractLtlProvider#getType()}
-   * 
-   * @see IValueCombie
-   * @return the id of rule which has been added if 
-   */
-  public UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type);
-  
-  /**
-   * 
-   * @param data
-   *          {@link AbstractLtlProviderData}
-   * @param ruleId
-   *          {@link AbstractLtlProvider#getRuleId()}
-   *
-   * @param linkedControlActionID
-   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
-   * @return
-   *        The UUID of the Refined rule which was updated in the data model or null if no rule could be found
-   *         
-   * @see IUnsafeControlAction
-   * @see IControlAction
-   * @see IValueCombie
-   */
-  public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,UUID linkedControlActionID);
-  
-  /**
-   * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
-   *          when this is true than the ruleId will be ignored
-   * @param ruleId an id of a RefinedSafetyRule object stored in a controlAction 
-   * 
-   * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
-   *          id was illegal
-   */
-  boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId);
-
-  /**
-   * 
-   * @param includeRules
-   *          whether or not the list with the generated refined rules from the extended stpa should be included
-   * @param includeScenarios
-   *          whether or not the list with the custom defined Causal Scenarios should be included
-   * @param includeLTL
-   *          whether or not the list with the custom defined LTL Functions should be included
-   * @return a list containing the rules stored in the chosen lists of the extendedDataModel
-   */
-  public List<AbstractLtlProvider> getAllRefinedRules(boolean includeRules,
-      boolean includeScenarios,
-      boolean includeLTL);
 
   List<AbstractLtlProvider> getLTLPropertys();
 
@@ -100,7 +52,15 @@ public interface IExtendedDataModel {
   IRectangleComponent getComponent(UUID key);
 
   void setCSComponentComment(UUID id, String value);
-
+  
+  /**
+   *  this function returns or creates (if null is stored)
+   *  a value component which can be referenced as null ignore component by
+   *  ACTS, so that in XSTPA a value can be set to '(don't care)' to
+   *  ignore its value in the LTL Formula
+   *    
+   * @return a value Component with the label '(don't care)'
+   */
   IRectangleComponent getIgnoreLTLValue();
 
   List<ICausalComponent> getCausalComponents();
@@ -109,17 +69,57 @@ public interface IExtendedDataModel {
 
   boolean setControlActionDescription(UUID id, String value);
 
-
+  /**
+   * {@link ControlAction#addProvidedVariable(UUID)}
+   * @param caID the control action id which is used to look up the action
+   * 
+   * @param providedVariable the providedVariable to add
+   */
   void addCAProvidedVariable(UUID id, UUID id2);
-
+  
+  /**
+   * 
+   * {@link ControlAction#getProvidedVariables()}
+   * 
+   * @param caID the control action id which is used to look up the action
+   * @param notProvidedVariable the notProvidedVariables to set
+   */
   void addCANotProvidedVariable(UUID id, UUID id2);
 
-  boolean removeCAProvidedVariable(UUID id, UUID id2);
-
+  /**
+   * 
+   * remove the uuid of a process variable component from the list
+   * of variables depending on this control action when provided
+   * 
+   * @param caID the control action id which is used to look up the action
+   * @param providedVariable the providedVariable to remove
+   * @return return whether the remove was successful or not, also returns false
+   *      if the list is null or the uuid is not contained in the list 
+   */
+  boolean removeCAProvidedVariable(UUID caID, UUID providedVariable);
+  
+  /**
+   * 
+   * remove the uuid of a process variable component from the list
+   * of variables depending on this control action when not provided
+   * 
+   * @param caID the control action id which is used to look up the action
+   * @param notProvidedVariable the notProvidedVariables to remove
+   * @return return whether the remove was successful or not, also returns false
+   *      if the list is null or the uuid is not contained in the list 
+   */
   boolean removeCANotProvidedVariable(UUID id, UUID id2);
-
+  
+  /**
+   * @param caID the control action id which is used to look up the action
+   * @param valuesWhenProvided the valuesWhenProvided to set
+   */
   void setValuesWhenCAProvided(UUID id, List<ProvidedValuesCombi> valuesIfProvided);
 
+  /**
+   * @param caID the control action id which is used to look up the action
+   * @param valuesWhenNotProvided the valuesWhenNotProvided to set
+   */
   void setValuesWhenCANotProvided(UUID id, List<NotProvidedValuesCombi> valuesIfProvided);
 
   List<IValueCombie> getIvaluesWhenCAProvided(UUID id);
@@ -133,24 +133,32 @@ public interface IExtendedDataModel {
   List<ITableModel> getLinkedHazardsOfUCA(UUID ucaID);
   List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions();
 
+  /**
+   * {@link IUnsafeControlActionDataModel#getAllControlActionsU()}
+   */
   List<IHAZXControlAction> getAllControlActionsU();
   
+  /**
+   * {@link IControlActionViewDataModel#getAllControlActions()}
+   */
   List<IControlAction> getAllControlActions();
   
+  /**
+   * {@link IHazardViewDataModel#getAllHazards()}
+   */
   ITableModel getHazard(UUID hazardId);
-
+  
+  /**
+   * return whether the control action for the given id is safetycritical or not
+   *
+   * @author Lukas Balzer
+   *
+   * @param caID must be an id of a control action
+   * @return whether the ca is safety critical or not 
+   */
   boolean isCASafetyCritical(UUID id);
 
-  void lockUpdate();
-
-  void releaseLockAndUpdate(ObserverValue[] observerValues);
-
-  void deleteObserver(Observer observer);
-
-
-  void addObserver(Observer observer);
-
-
+  
   AbstractLtlProvider getRefinedRule(UUID randomUUID);
 
 }

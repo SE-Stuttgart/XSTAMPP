@@ -11,7 +11,7 @@
  * 
  *******************************************************************************/
 
-package xstampp.astpa.ui.acchaz;
+package xstampp.astpa.ui;
 
 import messages.Messages;
 

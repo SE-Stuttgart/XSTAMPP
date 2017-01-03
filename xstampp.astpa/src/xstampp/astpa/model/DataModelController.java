@@ -15,7 +15,6 @@ package xstampp.astpa.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -46,6 +45,7 @@ import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.haz.hazacc.Link;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
@@ -1217,6 +1217,10 @@ public class DataModelController extends AbstractDataModel implements
 		return this.controlActionController.getAllUnsafeControlActions();
 	}
 
+	@Override
+	public List<ICorrespondingUnsafeControlAction> getUCAList(IEntryFilter<IUnsafeControlAction> filter) {
+	  return controlActionController.getUCAList(filter);
+	}
 	
 	@Override
 	public int getUCANumber(UUID ucaID){
@@ -1287,7 +1291,11 @@ public class DataModelController extends AbstractDataModel implements
 		return false;
 	}
 
-
+  @Override
+  public List<ISafetyConstraint> getCorrespondingSafetyConstraints() {
+    return this.controlActionController.getCorrespondingSafetyConstraints();
+  }
+  
 	public ExportInformation getExportInfo(){
 		return this.exportInformation;
 	}
@@ -1405,14 +1413,7 @@ public class DataModelController extends AbstractDataModel implements
 		return this.controlStructureController.isSafetyCritical(componentId);
 	}
 	
-	/**
-	 * return whether the control action for the given id is safetycritical or not
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param caID must be an id of a control action
-	 * @return whether the ca is safety critical or not 
-	 */
+	@Override
 	public boolean isCASafetyCritical(UUID caID){
 		return this.controlActionController.isSafetyCritical(caID);
 	}
@@ -1516,10 +1517,7 @@ public class DataModelController extends AbstractDataModel implements
 		return this.controlActionController.getValuesWhenNotProvided(caID);
 	}
 
-	/**
-	 * @param caID the control action id which is used to look up the action
-	 * @param valuesWhenNotProvided the valuesWhenNotProvided to set
-	 */
+	@Override
 	public void setValuesWhenCANotProvided(UUID caID, List<NotProvidedValuesCombi> valuesWhenNotProvided) {
 		this.controlActionController.setValuesWhenNotProvided(caID, valuesWhenNotProvided);
 		setUnsavedAndChanged(ObserverValue.Extended_DATA);
@@ -1575,10 +1573,8 @@ public class DataModelController extends AbstractDataModel implements
 	public List<ProvidedValuesCombi> getValuesWhenCAProvided(UUID caID) {
 		return this.controlActionController.getValuesWhenProvided(caID);
 	}
-	/**
-	 * @param caID the control action id which is used to look up the action
-	 * @param valuesWhenProvided the valuesWhenProvided to set
-	 */
+	
+	@Override
 	public void setValuesWhenCAProvided(UUID caID, List<ProvidedValuesCombi> valuesWhenProvided) {
 		this.controlActionController.setValuesWhenProvided(caID, valuesWhenProvided);
 		setUnsavedAndChanged(ObserverValue.Extended_DATA);
@@ -1595,7 +1591,7 @@ public class DataModelController extends AbstractDataModel implements
 	 */
 	public boolean addValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
 		if(this.controlActionController.addValueWhenProvided(caID,valueWhenProvided)){
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 			return true;
 		}
 		return false;
@@ -1611,7 +1607,7 @@ public class DataModelController extends AbstractDataModel implements
 	 */
 	public boolean removeValueWhenProvided(UUID caID, UUID combieId) {
 		if(this.controlActionController.removeValueWhenProvided(caID,combieId)){
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 			return true;
 		}
 		return false;
@@ -1632,18 +1628,12 @@ public class DataModelController extends AbstractDataModel implements
 	}
 
 
-	/**
-	 * 
-	 * {@link ControlAction#getProvidedVariables()}
-	 * 
-	 * @param caID the control action id which is used to look up the action
-	 * @param notProvidedVariable the notProvidedVariables to set
-	 */
+	@Override
 	public void addCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
 
 		if(this.controlStructureController.getComponent(notProvidedVariable) != null){
 			this.controlActionController.addNotProvidedVariable(caID, notProvidedVariable);
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		}else{
 				LOGGER.debug("given provided id is not related to a valid component");
 		}
@@ -1666,17 +1656,12 @@ public class DataModelController extends AbstractDataModel implements
 	}
 
 
-	/**
-	 * {@link ControlAction#addProvidedVariable(UUID)}
-	 * @param caID the control action id which is used to look up the action
-	 * 
-	 * @param providedVariable the providedVariable to add
-	 */
+	@Override
 	public void addCAProvidedVariable(UUID caID, UUID providedVariable) {
 
 		if(this.controlStructureController.getComponent(providedVariable) != null){
 			this.controlActionController.addProvidedVariable(caID,providedVariable);
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		}else{
 			LOGGER.debug("given provided id is not related to a valid component");
 		}
@@ -1687,41 +1672,24 @@ public class DataModelController extends AbstractDataModel implements
 		this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
 	}
 	
-	/**
-	 * 
-	 * remove the uuid of a process variable component from the list
-	 * of variables depending on this control action when not provided
-	 * 
-	 * @param caID the control action id which is used to look up the action
-	 * @param notProvidedVariable the notProvidedVariables to remove
-	 * @return return whether the remove was successful or not, also returns false
-	 * 			if the list is null or the uuid is not contained in the list 
-	 */
+	@Override
 	public boolean removeCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
 		if(this.controlActionController.removeNotProvidedVariable(caID, notProvidedVariable)){
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 			return true;
 		}
 		return false;
 	}
 	
-	/**
-	 * 
-	 * remove the uuid of a process variable component from the list
-	 * of variables depending on this control action when provided
-	 * 
-	 * @param caID the control action id which is used to look up the action
-	 * @param providedVariable the providedVariable to remove
-	 * @return return whether the remove was successful or not, also returns false
-	 * 			if the list is null or the uuid is not contained in the list 
-	 */
+	@Override
 	public boolean removeCAProvidedVariable(UUID caID, UUID providedVariable) {
 		if(this.controlActionController.removeProvidedVariable(caID, providedVariable)){
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 			return true;
 		}
 		return false;
 	}
+	
 	public boolean usesHAZXData(){
 		if(this.controlActionController.usesHAZXData()) return true;
 		if(this.controlStructureController.usesHAZXData()) return true;
@@ -1730,14 +1698,7 @@ public class DataModelController extends AbstractDataModel implements
 		return false;
 	}
 	
-	/**
-	 *  this function returns or creates (if null is stored)
-	 *  a value component which can be referenced as null ignore component by
-	 *  ACTS, so that in XSTPA a value can be set to '(don't care)' to
-	 *  ignore its value in the LTL Formula
-	 *    
-	 * @return a value Component with the label '(don't care)'
-	 */
+	@Override
 	public IRectangleComponent getIgnoreLTLValue(){
 		if(this.ignoreLtlValue == null){
 			this.ignoreLtlValue = new Component("(don't care)", new Rectangle(), ComponentType.PROCESS_VALUE);
@@ -1761,6 +1722,10 @@ public class DataModelController extends AbstractDataModel implements
 		return null;
 	}
 
+  /**
+   * Triggers an update to {@link ObserverValue#Extended_DATA} if a 
+   * new rule was created
+   */
 	@Override
 	public UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type){
 		UUID newRuleId = this.extendedDataController.addRuleEntry(ruleType, data, caID, type);
@@ -1775,37 +1740,21 @@ public class DataModelController extends AbstractDataModel implements
 	 */
 	@Override
 	public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,UUID linkedControlActionID){
-		if(this.extendedDataController.updateRefinedRule(ruleId, data, linkedControlActionID)){
+	  boolean result = this.extendedDataController.updateRefinedRule(ruleId, data, linkedControlActionID);
+	  if(result){
 			setUnsavedAndChanged(ObserverValue.Extended_DATA);
-			return true;
 		}
-		return false;
+		return result;
 			
 	}
 	
-	/**
-	 * 
-	 * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
-	 * 					when this is true than the ruleId will be ignored
-	 * @param ruleId an id of a RefinedSafetyRule object stored in a controlAction 
-	 * 
-	 * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
-	 * 					id was illegal
-	 */
+	@Override
 	public boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId){
-	  boolean result = false;
-		switch(type){
-		case REFINED_RULE:
-		  result = this.extendedDataController.removeSafetyRule(removeAll, ruleId);
-  	  break;
-    case CUSTOM_LTL:
-      result = this.extendedDataController.removeLTL(removeAll, ruleId);
-      break;
-    case SCENARIO:
-      result = this.extendedDataController.removeScenario(removeAll, ruleId);
-      break;
+    boolean result = this.extendedDataController.removeRefinedSafetyRule(type,removeAll, ruleId);
+	  if(result){
+		  setUnsavedAndChanged(ObserverValue.Extended_DATA);
 		}
-		return result;
+    return result;
 	}
 	
 	@Override
@@ -1891,6 +1840,11 @@ public class DataModelController extends AbstractDataModel implements
   @Override
   public List<ICausalComponent> getCausalComponents() {
     return getCausalComponents(null);
+  }
+
+  @Override
+  public List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter) {
+    return extendedDataController.getAllRefinedRules(filter);
   }
 
 }

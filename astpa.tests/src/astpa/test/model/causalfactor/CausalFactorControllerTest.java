@@ -117,6 +117,8 @@ public class CausalFactorControllerTest {
       Assert.assertNull(entry.getHazardIds());
     }
 	}
+	
+	
 	/**
 	 * Tests the validation of the CausalFactorController
 	 * 

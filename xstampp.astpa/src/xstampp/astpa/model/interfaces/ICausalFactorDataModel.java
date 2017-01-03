@@ -17,9 +17,14 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
+import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IEntryFilter;
 
@@ -60,11 +65,33 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
    * @return the id of the new causal factor. null if the action fails
    */
   UUID addCausalFactor(UUID id);
+  
+  /**
+  * Gets the list of all corresponding safety constraints
+  * 
+  * @author Fabian Toth
+  * 
+  * @return the list of all corresponding safety constraints
+  */
+  List<ISafetyConstraint> getCorrespondingSafetyConstraints();
 
   /**
    * {@link IHazardViewDataModel#getHazards(UUID[])}
    */
   List<ITableModel> getHazards(List<UUID> list);
 
-
+  /**
+   * {@link IExtendedDataModel#getAllRefinedRules(IEntryFilter)}
+   */
+  List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter);
+  
+  /**
+   * {@link IExtendedDataModel#addRuleEntry(IExtendedDataModel.RuleType, AbstractLtlProviderData, UUID, String)}
+   */
+  UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type);
+  
+  /**
+   * {@link IUnsafeControlActionDataModel#getUCAList(IEntryFilter)} 
+   */
+  List<ICorrespondingUnsafeControlAction> getUCAList(IEntryFilter<IUnsafeControlAction> filter);
 }

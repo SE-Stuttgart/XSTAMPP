@@ -83,47 +83,47 @@ public class SDSControllerTest {
 		ISafetyConstraintViewDataModel dataModel = new DataModelController();
 		
 		// fill the dataModel with safety constraints
-		Assert.assertTrue(dataModel.getAllCausalSafetyConstraints().size() == 0);
+		Assert.assertTrue(dataModel.getAllSafetyConstraints().size() == 0);
 		UUID id1 = dataModel.addSafetyConstraint("Safety constraint 1", "Test safety constraint 1");
 		UUID id2 = dataModel.addSafetyConstraint("Safety constraint 2", "Test safety constraint 2");
 		UUID id3 = dataModel.addSafetyConstraint("Safety constraint 3", "Test safety constraint 3");
 		UUID id4 = dataModel.addSafetyConstraint("Safety constraint 4", "Test safety constraint 4");
 		UUID id5 = dataModel.addSafetyConstraint("Safety constraint 5", "Test safety constraint 5");
-		Assert.assertTrue(dataModel.getAllCausalSafetyConstraints().size() == 5);
+		Assert.assertTrue(dataModel.getAllSafetyConstraints().size() == 5);
 		
 		// delete safety constraint 5
 		dataModel.removeSafetyConstraint(id5);
-		Assert.assertTrue(dataModel.getAllCausalSafetyConstraints().size() == 4);
-		Assert.assertNull(dataModel.getCausalSafetyConstraint(id5));
+		Assert.assertTrue(dataModel.getAllSafetyConstraints().size() == 4);
+		Assert.assertNull(dataModel.getSafetyConstraint(id5));
 		
 		// check what happens when the safety constraint will be deleted again
 		dataModel.removeSafetyConstraint(id5);
-		Assert.assertTrue(dataModel.getAllCausalSafetyConstraints().size() == 4);
+		Assert.assertTrue(dataModel.getAllSafetyConstraints().size() == 4);
 		
 		// get safety constraint 1 and check the values
-		ITableModel safetyConstraint = dataModel.getCausalSafetyConstraint(id1);
+		ITableModel safetyConstraint = dataModel.getSafetyConstraint(id1);
 		Assert.assertEquals("Safety constraint 1", safetyConstraint.getTitle());
 		Assert.assertEquals("Test safety constraint 1", safetyConstraint.getDescription());
 		Assert.assertEquals(id1, safetyConstraint.getId());
 		
 		// change a safety constraint
 		dataModel.setSafetyConstraintTitle(id4, "newTitle");
-		Assert.assertEquals("newTitle", dataModel.getCausalSafetyConstraint(id4).getTitle());
+		Assert.assertEquals("newTitle", dataModel.getSafetyConstraint(id4).getTitle());
 		dataModel.setSafetyConstraintDescription(id4, "newDescription");
-		Assert.assertEquals("newDescription", dataModel.getCausalSafetyConstraint(id4).getDescription());
+		Assert.assertEquals("newDescription", dataModel.getSafetyConstraint(id4).getDescription());
 		
 		// check if the number is right when the first item is deleted
 		dataModel.removeSafetyConstraint(id1);
-		Assert.assertTrue(dataModel.getAllCausalSafetyConstraints().size() == 3);
-		Assert.assertEquals(3, dataModel.getCausalSafetyConstraint(id4).getNumber());
-		Assert.assertEquals(2, dataModel.getCausalSafetyConstraint(id3).getNumber());
-		Assert.assertEquals(1, dataModel.getCausalSafetyConstraint(id2).getNumber());
+		Assert.assertTrue(dataModel.getAllSafetyConstraints().size() == 3);
+		Assert.assertEquals(3, dataModel.getSafetyConstraint(id4).getNumber());
+		Assert.assertEquals(2, dataModel.getSafetyConstraint(id3).getNumber());
+		Assert.assertEquals(1, dataModel.getSafetyConstraint(id2).getNumber());
 		
 		// delete all safety constraints
 		dataModel.removeSafetyConstraint(id4);
 		dataModel.removeSafetyConstraint(id3);
 		dataModel.removeSafetyConstraint(id2);
-		Assert.assertTrue(dataModel.getAllCausalSafetyConstraints().size() == 0);
+		Assert.assertTrue(dataModel.getAllSafetyConstraints().size() == 0);
 	}
 	
 	/**

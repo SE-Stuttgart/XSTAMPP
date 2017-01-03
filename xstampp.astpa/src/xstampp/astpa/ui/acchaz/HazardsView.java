@@ -52,6 +52,8 @@ import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
+import xstampp.astpa.ui.ATableFilter;
+import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;

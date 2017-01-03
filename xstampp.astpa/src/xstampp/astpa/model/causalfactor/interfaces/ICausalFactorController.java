@@ -13,9 +13,7 @@ package xstampp.astpa.model.causalfactor.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 
 public interface ICausalFactorController {
@@ -62,13 +60,22 @@ public interface ICausalFactorController {
   ICausalComponent getCausalComponent(IRectangleComponent csComp);
   
   /**
-   * 
-   * @param component
-   * @param causalFactor
-   * @param entryData
-   * @return
+   * changes a causal entry in the dataModel<br>
+   * @param componentId the UUID of a control structure component stored in the data model
+   * @param causalFactorId the UUID of a causal factor 
+   * @param entryData the change data for the causal entry one of {@link CausalFactorUCAEntryData} or {@link CausalFactorEntryData}
+   * @return <b>true if</b><ul>
+   *              <li>both id's are valid and there where changes stored in the entryData
+   *         </ul>
+   *         <b>false if</b><ul>
+   *              <li>one of the parameters is null
+   *              <li>one of the parameters is not valid
+   *              <li>the entry data does not contain any changes
+   *         
    */
-  boolean changeCausalEntry(UUID component,UUID causalFactor,CausalFactorEntryData entryData);
+  boolean changeCausalEntry(UUID componentId,UUID causalFactorId,CausalFactorEntryData entryData);
+  
+  
   boolean removeCausalFactor(UUID component,UUID causalFactor);
   boolean removeCausalEntry(UUID component,UUID causalFactor ,UUID entryId);
 

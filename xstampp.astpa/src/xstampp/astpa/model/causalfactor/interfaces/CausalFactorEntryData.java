@@ -107,6 +107,13 @@ public class CausalFactorEntryData {
   public boolean hazardsChanged() {
     return hazardsChanged;
   }
-
+  
+  public List<UUID> getScenarioLinks() {
+    return null;
+  }
+  
+  public boolean scenariosChanged() {
+    return false;
+  }
  
 }

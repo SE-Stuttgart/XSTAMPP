@@ -18,9 +18,11 @@ import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.model.IDataModel;
+import xstampp.model.IEntryFilter;
 
 /**
  * Interface to the Data Model for the Control Actions Table
@@ -38,11 +40,26 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	 * @return the list of Control Actions
 	 */
 	List<IHAZXControlAction> getAllControlActionsU();
+	
+	/**
+   * creates a new list with all entries according to the given
+   * {@link IEntryFilter} or with all uca's defined if the filter is given as <b>null</b> <p>
+   * Note that modifications of the returned list will not affect the 
+   * list stored in the dataModel  
+   *    
+   * @param filter an implementation of {@link IEntryFilter} which checks {@link IUnsafeControlAction}'s or 
+   *              <b>null</b> if there shouldn't be a check
+   * @return a new list with all suiting uca entries, or an empty list if either all entries have been filtered or there are 
+   *        no etries
+   *        
+   * @author Lukas Balzer       
+   */
+  List<ICorrespondingUnsafeControlAction> getUCAList(IEntryFilter<IUnsafeControlAction> filter);
 
 	/**
 	 * Get the control action by its id
 	 * 
-	 * @author Benedikt Markt
+	 * @author Benedikt Markt, Lukas Balzer
 	 * @param controlActionId
 	 *            id of the control action
 	 * 

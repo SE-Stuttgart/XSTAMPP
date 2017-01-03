@@ -38,6 +38,7 @@ import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
+import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 
@@ -355,26 +356,46 @@ public class ControlActionController {
 	}
 
 	/**
-	 * Gets all corresponding safety constraints
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @return the list of all corresponding safety constraints
-	 */
-	public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
-		List<ICorrespondingUnsafeControlAction> result = new ArrayList<>();
-		for (ControlAction controlAction : this.controlActions) {
-			for (IUnsafeControlAction unsafeControlAction : controlAction
-					.getUnsafeControlActions()) {
-				//an unsafe controlaction is only to be conssidered if it leads to a hazard
-				if (!this.getLinksOfUCA(unsafeControlAction.getId()).isEmpty()) {
-					result.add((ICorrespondingUnsafeControlAction) unsafeControlAction);
-				}
-			}
-		}
-		return result;
-	}
+   * gets all uca entries that are marked as hazardous means that they are linked to at least one hazard
+   * 
+   * @author Fabian Toth, Lukas Balzer
+   * 
+   * @return the list of all ucas with at leatst one hazard link
+   */
+  public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
+    
+    return getUCAList(new IEntryFilter<IUnsafeControlAction>() {
+      
+      @Override
+      public boolean check(IUnsafeControlAction model) {
+        return !getLinksOfUCA(model.getId()).isEmpty();
+      }
+    });
+  }
 	
+  /**
+   * creates a new list with all entries according to the given
+   * {@link IEntryFilter} or with all uca's defined if the filter is given as <b>null</b> <p>
+   * Note that modifications of the returned list will not affect the 
+   * list stored in the dataModel      
+   * @param filter an implementation of {@link IEntryFilter} which checks {@link IUnsafeControlAction}'s or 
+   *              <b>null</b> if there shouldn't be a check
+   * @return a new list with all suiting uca entries, or an empty list if either all entries have been filtered or there are 
+   *        no etries
+   */
+  public List<ICorrespondingUnsafeControlAction> getUCAList(IEntryFilter<IUnsafeControlAction> filter) {
+    List<ICorrespondingUnsafeControlAction> result = new ArrayList<>();
+    for (ControlAction controlAction : this.controlActions) {
+      for (IUnsafeControlAction unsafeControlAction : controlAction
+          .getUnsafeControlActions()) {
+        //an unsafe controlaction is only to be conssidered if it leads to a hazard
+        if (filter == null || filter.check(unsafeControlAction)) {
+          result.add((ICorrespondingUnsafeControlAction) unsafeControlAction);
+        }
+      }
+    }
+    return result;
+  }
 	/**
 	 * returns the current id number of the UnsafeControlAction with the given ucaID
 	 *  

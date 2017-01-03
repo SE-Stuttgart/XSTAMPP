@@ -98,7 +98,7 @@ public class StpaCSVExport extends Job {
 						Messages.Hazards);
 			}
 			if ((type & ICSVExportConstants.SAFETY_CONSTRAINT) != 0) {
-				this.exportAsCSV(this.model.getAllCausalSafetyConstraints(),"SR0.",
+				this.exportAsCSV(this.model.getAllSafetyConstraints(),"SR0.",
 						csvWriter, Messages.SafetyConstraints);
 			}
 			if ((type & ICSVExportConstants.SYSTEM_GOAL) != 0) {

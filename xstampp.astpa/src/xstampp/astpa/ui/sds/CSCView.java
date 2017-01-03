@@ -19,7 +19,7 @@ import java.util.Observable;
 import messages.Messages;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
-import xstampp.astpa.ui.acchaz.ATableFilter;
+import xstampp.astpa.ui.ATableFilter;
 import xstampp.model.ObserverValue;
 
 /**

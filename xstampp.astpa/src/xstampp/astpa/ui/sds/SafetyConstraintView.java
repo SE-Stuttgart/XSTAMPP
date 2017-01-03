@@ -49,8 +49,8 @@ import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
 import xstampp.astpa.model.sds.SafetyConstraint;
-import xstampp.astpa.ui.acchaz.ATableFilter;
-import xstampp.astpa.ui.acchaz.CommonTableView;
+import xstampp.astpa.ui.ATableFilter;
+import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -119,7 +119,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 				SafetyConstraintView.this.getDataInterface().addSafetyConstraint(
 						"", Messages.DescriptionOfThisSafetyConstr); //$NON-NLS-1$
 				int newID = SafetyConstraintView.this.getDataInterface()
-						.getAllCausalSafetyConstraints().size() - 1;
+						.getAllSafetyConstraints().size() - 1;
 				SafetyConstraintView.this.updateTable();
 				SafetyConstraintView.this.refreshView();
 				SafetyConstraintView.this.getTableViewer().setSelection(
@@ -323,9 +323,9 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 			for (Iterator<SafetyConstraint> i = selection.iterator(); i
 					.hasNext();) {
 				UUID id = i.next().getId();
-				String title = this.getDataInterface().getCausalSafetyConstraint(id)
+				String title = this.getDataInterface().getSafetyConstraint(id)
 						.getTitle();
-				int num = this.getDataInterface().getCausalSafetyConstraint(id)
+				int num = this.getDataInterface().getSafetyConstraint(id)
 						.getNumber();
 				String safetyConstraint = newline + num + ": " + title; //$NON-NLS-1$
 				safetyConstraints = safetyConstraints + safetyConstraint;
@@ -468,7 +468,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 	@Override
 	public void updateTable() {
 		SafetyConstraintView.this.getTableViewer().setInput(
-				this.getDataInterface().getAllCausalSafetyConstraints());
+				this.getDataInterface().getAllSafetyConstraints());
 	}
 
 	@Override
@@ -501,7 +501,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
 	@Override
 	protected void deleteAllItems() {
-		for(ITableModel model: this.getDataInterface().getAllCausalSafetyConstraints()){
+		for(ITableModel model: this.getDataInterface().getAllSafetyConstraints()){
 			this.getDataInterface().removeSafetyConstraint(model.getId());
 		}
 	}

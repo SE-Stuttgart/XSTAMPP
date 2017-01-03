@@ -11,20 +11,22 @@
 package xstampp.astpa.model.extendedData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
+import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 
-public class ExtendedDataController {
+public class ExtendedDataController implements IExtendedDataController {
     @XmlElementWrapper(name = "rules")
     @XmlElement(name = "rule")
     private List<AbstractLtlProvider> rules;
@@ -47,12 +49,25 @@ public class ExtendedDataController {
       customLTLs = new ArrayList<>();
       ruleIndex = 0;
     }
-
+    
+    private boolean validateType(String type){
+        switch(type){
+          case IValueCombie.TYPE_ANYTIME:
+          case IValueCombie.TYPE_NOT_PROVIDED:
+          case IValueCombie.TYPE_TOO_EARLY:
+          case IValueCombie.TYPE_TOO_LATE:
+            return true;
+          default: 
+            return false;
+        }
+      
+    }
     private UUID addRuleEntry(List<AbstractLtlProvider> list,AbstractLtlProviderData data,UUID linkedControlActionID, String type){
-      if(data != null){
+      if(data != null && linkedControlActionID != null && validateType(type)){
         if(list == null){
           list= new ArrayList<>();
         }
+        
         RefinedSafetyRule safetyRule = new RefinedSafetyRule(data,linkedControlActionID,type, ruleIndex);
         ruleIndex++;
         if(list.add(safetyRule)){
@@ -63,33 +78,24 @@ public class ExtendedDataController {
     }
 
     
-    /**
-     * @param ruleType
-     *        
-     * @param data
-     *          {@link AbstractLtlProviderData}
-     * @param caID
-     *          {@link AbstractLtlProvider#getRelatedControlActionID()}
-     * @param type 
-     *          {@link AbstractLtlProvider#getType()}
-     * 
-     * @see IValueCombie
-     * @return the id of rule which has been added if 
+    /* (non-Javadoc)
+     * @see xstampp.astpa.model.extendedData.IExtendedDataController#addRuleEntry(xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType, xstampp.model.AbstractLtlProviderData, java.util.UUID, java.lang.String)
      */
+    @Override
     public UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type){
-      switch(ruleType){
-      case CUSTOM_LTL:
-        return addRuleEntry(customLTLs, data, caID, type);
-      case REFINED_RULE:
-        return addRuleEntry(rules, data, caID, type);
-      case SCENARIO:
-        return addRuleEntry(scenarios, data, caID, type);
-      default:
-        return null;
-      
+      if(ruleType != null){
+        switch(ruleType){
+        case CUSTOM_LTL:
+          return addRuleEntry(customLTLs, data, caID, type);
+        case REFINED_RULE:
+          return addRuleEntry(rules, data, caID, type);
+        case SCENARIO:
+          return addRuleEntry(scenarios, data, caID, type);
+        }
       }
-      
+      return null;
     }
+
     /**
      * 
      * @param rule
@@ -110,22 +116,10 @@ public class ExtendedDataController {
       return false;
     }
     
-    /**
-     * 
-     * @param data
-     *          {@link AbstractLtlProviderData}
-     * @param ruleId
-     *          {@link AbstractLtlProvider#getRuleId()}
-     *
-     * @param linkedControlActionID
-     *          {@link AbstractLtlProvider#getRelatedControlActionID()}
-     * @return
-     *        The UUID of the Refined rule which was updated in the data model or null if no rule could be found
-     *         
-     * @see IUnsafeControlAction
-     * @see IControlAction
-     * @see IValueCombie
+    /* (non-Javadoc)
+     * @see xstampp.astpa.model.extendedData.IExtendedDataController#updateRefinedRule(java.util.UUID, xstampp.model.AbstractLtlProviderData, java.util.UUID)
      */
+    @Override
     public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,UUID linkedControlActionID){
       for(AbstractLtlProvider provider: getAllRefinedRules(true,true,true)){
         if(provider.getRuleId().equals(ruleId)){
@@ -147,6 +141,10 @@ public class ExtendedDataController {
       return changed;
      
     }
+    /* (non-Javadoc)
+     * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(boolean, boolean, boolean)
+     */
+    @Override
     public List<AbstractLtlProvider> getAllRefinedRules(boolean includeRules,
                                                         boolean includeScenarios,
                                                         boolean includeLTL){
@@ -170,6 +168,20 @@ public class ExtendedDataController {
       return tmp;
     }
     
+    /* (non-Javadoc)
+     * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(xstampp.model.IEntryFilter)
+     */
+    @Override
+    public List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter){
+      List<AbstractLtlProvider> result = new ArrayList<>();
+      for(AbstractLtlProvider data : getAllRefinedRules(true, true, true)){
+        if(filter.check(data)){
+          result.add(data);
+        }
+      }
+      Collections.sort(result);
+      return result;
+    }
     
     private boolean removeEntry(List<AbstractLtlProvider> list, boolean removeAll, UUID id){
       if(removeAll){
@@ -187,44 +199,20 @@ public class ExtendedDataController {
       return false;
     }
     
-    /**
-     * This method removes a safety rule if it is stored as general rule or as rule in control action
-     * 
-     * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
-     *          when this is true than the ruleId will be ignored
-     * @param id an id of a RefinedSafetyRule object
-     * 
-     * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
-     *          id was illegal
-     */
-    public boolean removeSafetyRule(boolean removeAll, UUID id){
-      return removeEntry(rules, removeAll, id);
-    }
-    /**
-     * This method removes a scenario 
-     * 
-     * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
-     *          when this is true than the id will be ignored
-     * @param id an id of a RefinedSafetyRule object
-     * 
-     * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
-     *          id was illegal
-     */
-    public boolean removeScenario(boolean removeAll, UUID id){
-      return removeEntry(scenarios, removeAll, id);
-    }
-    
-    /**
-     * This method removes a custom ltl expresion
-     * 
-     * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
-     *          when this is true than the ruleId will be ignored
-     * @param id an id of a RefinedSafetyRule object
-     * 
-     * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
-     *          id was illegal
-     */
-    public boolean removeLTL(boolean removeAll, UUID id){
-      return removeEntry(customLTLs, removeAll, id);
+    @Override
+    public boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId){
+      boolean result = false;
+      switch(type){
+      case REFINED_RULE:
+        result = removeEntry(rules, removeAll, ruleId);
+        break;
+      case CUSTOM_LTL:
+        result = removeEntry(customLTLs, removeAll, ruleId);
+        break;
+      case SCENARIO:
+        result = removeEntry(scenarios, removeAll, ruleId);
+        break;
+      }
+      return result;
     }
 }

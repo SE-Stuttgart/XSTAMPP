@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
@@ -87,28 +88,14 @@ public class ObserverTest implements Observer {
 				ComponentType.ACTUATOR, -1);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
-		UUID causalFactor = this.dataModel.addCausalFactor(null);
+		UUID causalFactor = this.dataModel.addCausalFactor(component);
 		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
-		this.dataModel.setCausalFactorText(causalFactor, "");
+		this.dataModel.setCausalFactorText(component,causalFactor, "");
 		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
 		UUID hazard = this.dataModel.addHazard("", "");
 		this.addToNominal(ObserverValue.HAZARD);
-		this.dataModel.addCausalFactorHazardLink(causalFactor, hazard);
-		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
-		this.dataModel.removeCausalFactorHazardLink(causalFactor, hazard);
-		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
-		this.dataModel.setCausalSafetyConstraintText(this.dataModel.getCausalComponents().get(0).getCausalFactors()
-			.get(0).getSafetyConstraint().getId(), "");
-		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
-		this.dataModel.setNoteText(causalFactor, "");
-		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
-		this.dataModel.getCausalComponents();
-		this.dataModel.getAllHazards();
-		this.dataModel.getLinkedHazardsOfCf(causalFactor);
-		this.dataModel.getCorrespondingSafetyConstraints();
-		this.dataModel.removeCausalFactor(causalFactor);
-		this.addToNominal(ObserverValue.CAUSAL_FACTOR);
-		Assert.assertEquals(this.nominal, this.actual);
+		
+
 		
 		Assert.assertTrue(this.dataModel.hasUnsavedChanges());
 		this.dataModel.setStored();
