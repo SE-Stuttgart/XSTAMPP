@@ -85,6 +85,18 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
             .getDataModel(getProjectID()))
             .updateRefinedRule(getUUID(),data,null);
       }
+
+      @Override
+      protected void editorOpening() {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      protected void editorClosing() {
+        // TODO Auto-generated method stub
+        
+      }
   }
   
   public LTLPropertiesTable() {

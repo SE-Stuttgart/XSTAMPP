@@ -23,6 +23,7 @@ import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * A custom autocomplete textfield adapter
@@ -57,18 +58,18 @@ public class AutoCompleteField {
     this.contentProposalProvider = new ContentProposalProvider(literals.clone(), labels, descriptions);
     this.contentProposalProvider.setFiltering(true);
 
-    this.contentProposalAdapter = new LinkingCommandAdapter(control, controlContentAdapter,
-        this.contentProposalProvider, null, null, false);
+//    this.contentProposalAdapter = new LinkingCommandAdapter(control, controlContentAdapter,
+//        this.contentProposalProvider, null, null, false);
     this.listeners = new ArrayList<>();
-    
-    setProposalListener(new IContentProposalListener() {
-
-      @Override
-      public void proposalAccepted(IContentProposal proposal) {
-        AutoCompleteField.this.closePopup();
-
-      }
-    });
+//    
+//    setProposalListener(new IContentProposalListener() {
+//
+//      @Override
+//      public void proposalAccepted(IContentProposal proposal) {
+//        AutoCompleteField.this.closePopup();
+//
+//      }
+//    });
     shell.setNextProposal(control, literals, labels, descriptions);
   
   }
@@ -119,16 +120,11 @@ public class AutoCompleteField {
    *          an offset which can be set to move the dialog relative to the
    *          mouse
    */
-  public void setPopupPosition(Point relativeMouse, Rectangle cellPosition, int topOffset) {
-    Point mouseLoc = new Point(0, 0);
-    // translate the mouseLocation manually by subtract the the locations
-    // and the Constant for the menubar
-    mouseLoc.x = relativeMouse.x + cellPosition.x;
-    mouseLoc.y = (relativeMouse.y + cellPosition.y) - topOffset;
-    if (this.contentProposalAdapter != null && !this.contentProposalAdapter.getControl().isDisposed()) {
-      this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
-    }
-    shell.setMousePosition(mouseLoc);
+  public void setPopupPosition(Point relativeMouse) {
+//    if (this.contentProposalAdapter != null && !this.contentProposalAdapter.getControl().isDisposed()) {
+//      this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
+//    }
+    shell.setMousePosition(relativeMouse);
   }
 
   /**
@@ -148,11 +144,11 @@ public class AutoCompleteField {
    * 
    */
   public void openPopup() {
-    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+//    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
       shell.createControl();
-    } else {
-      this.contentProposalAdapter.openProposalPopup();
-    }
+//    } else {
+//      this.contentProposalAdapter.openProposalPopup();
+//    }
   }
 
   public void openShell() {
@@ -165,16 +161,16 @@ public class AutoCompleteField {
    * 
    */
   public void closePopup() {
-    this.contentProposalAdapter.closeProposalPopup();
-    this.contentProposalAdapter.getControl().dispose();
-    for (IContentProposalListener proposalListener : listeners) {
-      this.contentProposalAdapter.removeContentProposalListener(proposalListener);
-    }
+//    this.contentProposalAdapter.closeProposalPopup();
+//    this.contentProposalAdapter.getControl().dispose();
+//    for (IContentProposalListener proposalListener : listeners) {
+//      this.contentProposalAdapter.removeContentProposalListener(proposalListener);
+//    }
   }
 
   public void setProposalListener(IContentProposalListener listener) {
     listeners.add(listener);
     shell.setProposalListener(listener);
-    getContentProposalAdapter().addContentProposalListener(listener);
+//    getContentProposalAdapter().addContentProposalListener(listener);
   }
 }

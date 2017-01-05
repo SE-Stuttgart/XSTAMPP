@@ -9,6 +9,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.nebula.widgets.grid.Grid;
+import org.eclipse.nebula.widgets.grid.GridEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -83,9 +84,10 @@ public class CellButtonAddUCAEntry extends GridCellButton implements IContentPro
       ucaMap.put(labels[index], uca.getId());
       index++;
     }
-
-	  AutoCompleteField diag = new AutoCompleteField(new Text(grid, SWT.None), new TextContentAdapter(), literals, labels, descriptions);
-	  diag.setPopupPosition(relativeMouse, cellBounds, 0);
+    
+  
+	  AutoCompleteField diag = new AutoCompleteField(null, new TextContentAdapter(), literals, labels, descriptions);
+	  diag.setPopupPosition(grid.toDisplay(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
 	  diag.setProposalListener(new IContentProposalListener() {
       
       @Override

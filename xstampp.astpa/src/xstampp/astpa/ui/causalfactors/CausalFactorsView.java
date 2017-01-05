@@ -235,7 +235,9 @@ public class CausalFactorsView extends AbstractFilteredEditor{
            * or linkable
            */
           if(entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink())){
-            entryRow.addCell(new GridCellText(ucaMap.get(entry.getUcaLink()).getDescription()));
+            String ucaDescription = ucaMap.get(entry.getUcaLink()).getDescription();
+            entryRow.addCell(new CellEditorCausalEntry(grid, dataInterface, ucaDescription,
+                                              component.getId(), factor.getId(), entry.getId()));
             List<UUID> hazIds = dataInterface.getLinksOfUCA(entry.getUcaLink());
             String linkingString = new String();
             for(ITableModel hazard : dataInterface.getHazards(hazIds)){
@@ -247,7 +249,8 @@ public class CausalFactorsView extends AbstractFilteredEditor{
                 this.grid));
             
           }else{
-            entryRow.addCell(new GridCellText());
+            entryRow.addCell(new CellEditorCausalEntry(grid, dataInterface, new String(),
+                                              component.getId(), factor.getId(), entry.getId()));
             entryRow.addCell(new GridCellLinking<ContentProviderHazards>(
     						factor.getId(), new ContentProviderHazards(dataInterface, component.getId(), factor.getId(), entry),
     						this.grid));

@@ -201,11 +201,12 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
           GridCellTextEditor.this.currentText = ((Text) e.widget).getText();
           GridCellTextEditor.this.editField = ((Text) e.widget).getBounds();
           GridCellTextEditor.this.grid.resizeRows();
-          editorClosing();
           updateDataModel(((Text) e.widget).getText());
           updateDataModel(GridCellTextEditor.this.currentText);
           
         }
+
+        editorClosing();
       }
     });
     this.editor.addModifyListener(new ModifyListener() {

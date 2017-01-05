@@ -81,6 +81,9 @@ public class CausalFactorUCAEntry extends CausalFactorEntry implements ICausalFa
     if(entryData.noteChanged()){
       result |= setNote(entryData.getNote());
     }
+    if(entryData.constraintChanged()){
+      result |= setConstraintText(entryData.getSafetyConstraint());
+    }
     if(entryData instanceof CausalFactorUCAEntryData){
       if(((CausalFactorUCAEntryData) entryData).scenariosChanged()){
         result |= setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());

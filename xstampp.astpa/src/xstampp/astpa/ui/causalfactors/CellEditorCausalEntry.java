@@ -7,18 +7,20 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridWrapper;
 
-public class CellEditorUCAEntry extends GridCellTextEditor {
+public class CellEditorCausalEntry extends GridCellTextEditor {
 
   private UUID componentId;
   private UUID factorId;
   private ICausalFactorDataModel dataInterface;
+  private UUID entryId;
   
-  public CellEditorUCAEntry(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
-      String initialText, UUID componentId,UUID factorId) {
-    super(gridWrapper, initialText,true, false,factorId);
+  public CellEditorCausalEntry(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
+      String initialText, UUID componentId,UUID factorId,UUID entryId) {
+    super(gridWrapper, initialText,true, true,factorId);
     this.dataInterface = dataInterface;
     this.componentId = componentId;
     this.factorId = factorId;
+    this.entryId = entryId;
   }
 
   @Override
@@ -37,7 +39,7 @@ public class CellEditorUCAEntry extends GridCellTextEditor {
   }
   @Override
   public void delete() {
-    dataInterface.removeCausalFactor(componentId, factorId);
+    dataInterface.removeCausalEntry(componentId, factorId, entryId);
   }
   
 }

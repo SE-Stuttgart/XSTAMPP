@@ -57,14 +57,13 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
     this.setFilterStyle(ContentProposalAdapter.FILTER_NONE);
     this.setAutoActivationCharacters(null);
     this.setAutoActivationDelay(0);
-    this.setPropagateKeys(true);
-    
+    this.setPropagateKeys(false);
   }
 
   @Override
   public void closeProposalPopup() {
     super.closeProposalPopup();
-    setEnabled(false);
+    getControl().dispose();
   }
 
   @Override
@@ -74,7 +73,10 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 
       @Override
       public void focusLost(FocusEvent e) {
-        getControl().dispose();
+        
+        if ( !hasProposalPopupFocus() ) {
+          getControl().dispose();
+        }
       }
 
       @Override

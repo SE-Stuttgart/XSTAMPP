@@ -23,7 +23,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
-import org.eclipse.nebula.widgets.grid.GridEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
@@ -32,7 +31,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
@@ -261,36 +259,12 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
       labels[i] = itemNumber;
       descriptions[i] = items.get(i).getDescription();
     }
-
-  
-    //start creating the grid editor linkEditor
-
-    final Text linkEditor = new Text(this.grid.getGrid(), SWT.PUSH);
-
-    linkEditor.setText(""); //$NON-NLS-1$
-    linkEditor.setEditable(true);
-    linkEditor.setVisible(true);
-
-    // Listener for Proposal Selection to instantly link if proposal is
-    // selected
-    linkEditor.setText(""); //$NON-NLS-1$
-    linkEditor.setMessage(Messages.StartTyping);
     
-    Point mousePoint = new Point(event.x, event.y);
-    GridEditor editor = new GridEditor(this.grid.getGrid());
-    editor.setEditor(linkEditor);
-    editor.setItem(this.grid.getGrid().getItem(mousePoint));
-    editor.setColumn(this.grid.getGrid().getCell(mousePoint).x);
-
-    editor.grabHorizontal = true;
-    editor.grabVertical = true;
-
-    linkEditor.setFocus();
-    
-    AutoCompleteField linkField = new AutoCompleteField(linkEditor,
+    AutoCompleteField linkField = new AutoCompleteField(null,
                         new TextContentAdapter(), options, labels, descriptions);
 
-    linkField.setPopupPosition(relativeMouse, cellBounds, cellBounds.height);
+    linkField.setPopupPosition(grid.getGrid().toDisplay(relativeMouse.x + cellBounds.x,
+                                                    relativeMouse.y + cellBounds.y));
 
     if (this.grid.getGrid().getDisplay() != null) {
       linkField.setProposalListener(new PropopsalListener());

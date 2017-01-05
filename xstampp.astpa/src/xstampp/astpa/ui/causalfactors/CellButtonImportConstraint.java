@@ -44,7 +44,7 @@ public class CellButtonImportConstraint extends CellButton {
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     List<ISafetyConstraint> safetyConstraints = dataModel.getCorrespondingSafetyConstraints();
-    Text selectedString = new Text(grid, SWT.PUSH);
+    
     if (safetyConstraints.size() <= 0) {
       return;
     }
@@ -61,7 +61,7 @@ public class CellButtonImportConstraint extends CellButton {
       }
     }
 
-    AutoCompleteField scLinking = new AutoCompleteField(selectedString,
+    AutoCompleteField scLinking = new AutoCompleteField(null,
         new TextContentAdapter(), literals, labels,description);
     scLinking.setProposalListener(
         new IContentProposalListener() {
@@ -73,8 +73,8 @@ public class CellButtonImportConstraint extends CellButton {
             dataModel.changeCausalEntry(componentId, factorId, entryData);
           }
         });
-
-    scLinking.setPopupPosition(relativeMouse, cellBounds, 0);
+    
+    scLinking.setPopupPosition(grid.toDisplay(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
     scLinking.openPopup();
 
   }
