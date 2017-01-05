@@ -16,9 +16,11 @@ package xstampp.astpa.ui.causalfactors;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
+import xstampp.model.IEntryFilter;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**
@@ -44,23 +46,30 @@ public class CausalContentUCAProvider implements ITableContentProvider<ICorrespo
 
 	@Override
 	public List<ICorrespondingUnsafeControlAction> getAllItems() {
-		return this.caInterface.getAllUnsafeControlActions();
+		return this.caInterface.getUCAList(new IEntryFilter<IUnsafeControlAction>() {
+      
+      @Override
+      public boolean check(IUnsafeControlAction model) {
+        
+        return !caInterface.getLinksOfUCA(model.getId()).isEmpty();
+      }
+    });
 	}
 
 	@Override
 	public List<ICorrespondingUnsafeControlAction> getLinkedItems(final UUID itemId) {
-		return this.caInterface.getLinkedUCAsOfCf(itemId);
+		return null;
 	}
 
 	@Override
 	public void addLink(final UUID item1, final UUID item2) {
-		this.caInterface.addCausalFactorUCAEntry(item1, item2);
+		this.caInterface.addCausalUCAEntry(null, item1, item2);
 
 	}
 
 	@Override
 	public void removeLink(final UUID item, final UUID removeItem) {
-		this.caInterface.removeCausalFactorUCALink(item, removeItem);
+		this.caInterface.removeCausalEntry(null, item, removeItem);
 
 	}
 

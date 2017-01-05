@@ -11,10 +11,6 @@ public class CausalFactorEntryContainer implements ICausalFactorEntry {
   public CausalFactorEntryContainer(ICausalFactorEntry entry) {
     this.entry = entry;
   }
-  @Override
-  public UUID getSafetyConstraintId() {
-    return entry.getSafetyConstraintId();
-  }
 
   @Override
   public List<UUID> getHazardIds() {
@@ -39,6 +35,10 @@ public class CausalFactorEntryContainer implements ICausalFactorEntry {
   @Override
   public List<UUID> getScenarioLinks() {
     return entry.getScenarioLinks();
+  }
+  @Override
+  public String getConstraintText() {
+    return entry.getConstraintText();
   }
 
 }

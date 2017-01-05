@@ -7,10 +7,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
+import xstampp.astpa.haz.ITableModel;
+
 @XmlType(propOrder = { "id", "number", "combies",
                     "rule", "rUCA", "rSCt", "ltl", "type", "controlAction", "links",
     "relatedUCAs", "caID" })
-public abstract class AbstractLtlProvider implements Comparable<AbstractLtlProvider> {
+public abstract class AbstractLtlProvider implements ITableModel {
 
   @XmlElement(name = "ruleID")
   protected UUID id;

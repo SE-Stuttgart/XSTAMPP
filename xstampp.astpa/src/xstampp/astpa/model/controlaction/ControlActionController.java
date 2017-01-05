@@ -36,6 +36,9 @@ import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
+import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.IEntryFilter;
@@ -271,11 +274,11 @@ public class ControlActionController {
 	 * 
 	 * @author Fabian Toth
 	 */
-	public List<IUCAHazLink> getLinksOfUCA(UUID unsafeControlActionId) {
-		List<IUCAHazLink> result = new ArrayList<>();
+	public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
+		List<UUID> result = new ArrayList<>();
 		for (UCAHazLink link : this.links) {
 			if (link.containsId(unsafeControlActionId)) {
-				result.add(link);
+				result.add(link.getHazardId());
 			}
 		}
 		return result;
@@ -357,7 +360,7 @@ public class ControlActionController {
 
 	/**
    * gets all uca entries that are marked as hazardous means that they are linked to at least one hazard
-   * 
+   * and calls {@link ICorrespondingSafetyConstraintDataModel#getAllUnsafeControlActions()}
    * @author Fabian Toth, Lukas Balzer
    * 
    * @return the list of all ucas with at leatst one hazard link
@@ -517,10 +520,9 @@ public class ControlActionController {
 			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				List<ITableModel> linkedHazards = new ArrayList<>();
-				for (IUCAHazLink link : this.getLinksOfUCA(unsafeControlAction
+				for (UUID link : this.getLinksOfUCA(unsafeControlAction
 						.getId())) {
-					linkedHazards.add(hazAccController.getHazard(link
-							.getHazardId()));
+					linkedHazards.add(hazAccController.getHazard(link));
 				}
 				Collections.sort(linkedHazards);
 				StringBuffer linkString = new StringBuffer(); 
@@ -548,9 +550,8 @@ public class ControlActionController {
 					StringBuffer linkString = new StringBuffer(); 
 					for(UUID id:rule.getUCALinks()){
 						List<ITableModel> linkedHazards = new ArrayList<>();
-						for (IUCAHazLink link : this.getLinksOfUCA(id)) {
-							linkedHazards.add(hazAccController.getHazard(link
-									.getHazardId()));
+						for (UUID link : this.getLinksOfUCA(id)) {
+							linkedHazards.add(hazAccController.getHazard(link));
 						}
 						Collections.sort(linkedHazards);
 						if (linkedHazards.size() == 0) {
@@ -621,9 +622,13 @@ public class ControlActionController {
 	 * @param caID the control action id which is used to look up the action
 	 * @param isSafetyCritical the isSafetyCritical to set
 	 */
-	public void setSafetyCritical(UUID caID, boolean isSafetyCritical) {
+	public boolean setSafetyCritical(UUID caID, boolean isSafetyCritical) {
+	  
 		ControlAction action = getInternalControlAction(caID);
-		action.setSafetyCritical(isSafetyCritical);
+		if(action == null){
+		  return false;
+		}
+		return action.setSafetyCritical(isSafetyCritical);
 	}
 
 

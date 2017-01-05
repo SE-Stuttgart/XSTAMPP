@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
+import xstampp.ui.common.grid.GridCellLinking;
 
 
 /**
@@ -24,8 +25,8 @@ import xstampp.astpa.haz.ITableModel;
  * Interface for connecting various resources to an table with multiple subitems
  * like the UCA table.
  * 
- * @author Benedikt Markt
- * 
+ * @author Benedikt Markt, Lukas Balzer
+ * @see GridCellLinking
  */
 public interface ITableContentProvider<T extends ITableModel> {
 
@@ -55,9 +56,9 @@ public interface ITableContentProvider<T extends ITableModel> {
    * @author Benedikt Markt
    * 
    * @param item1
-   *          the first item
+   *          the parent item
    * @param item2
-   *          the second item
+   *          the second item is the ITableModel which is chosen to be linked to the parent
    */
   void addLink(UUID item1, UUID item2);
 
@@ -65,9 +66,9 @@ public interface ITableContentProvider<T extends ITableModel> {
    * Removes a link from an item
    * 
    * @param item
-   *          the item to remove the link from
+   *          the item to remove the link from, the parent of the entry
    * @param removeItem
-   *          the item to unlink
+   *          the item to unlink, this is the id of the ITableModel entry
    */
   void removeLink(UUID item, UUID removeItem);
   
@@ -76,4 +77,6 @@ public interface ITableContentProvider<T extends ITableModel> {
    * @return a literal which is written in front of the linked entrys id number
    */
   String getPrefix();
+  
+  
 }

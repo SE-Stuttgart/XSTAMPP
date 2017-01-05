@@ -52,6 +52,7 @@ public class CausalFactor implements ICausalFactor {
 	 */
 	public CausalFactor(String text) {
 		this.id = UUID.randomUUID();
+		this.text = text;
 	}
 
 	/**
@@ -185,19 +186,20 @@ public class CausalFactor implements ICausalFactor {
   
   public void prepareForExport(HazAccController hazAccController,
       List<AbstractLtlProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
-      List<CausalSafetyConstraint> constraints){
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions){
     for (CausalFactorEntry entry : entries) {
-      entry.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions, constraints);
+      entry.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
     }
   }
 
-  public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap, HazAccController hazAccController, List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, List<CausalSafetyConstraint> constraints) {
+  public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
+                             HazAccController hazAccController,
+                             List<AbstractLtlProvider> allRefinedRules,
+                             List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     if(hazardLinksMap.containsKey(getId())){
       CausalFactorEntry entry = int_addHazardEntry();
       if(entry != null){
-        entry.setSafetyConstraint(getSafetyConstraint().getId());
-        constraints.add((CausalSafetyConstraint) getSafetyConstraint());
+        entry.setConstraintText(getSafetyConstraint().getText());
         entry.setHazardIds(hazardLinksMap.get(getId()));
         entry.setNote(getNote());
       }
@@ -205,5 +207,16 @@ public class CausalFactor implements ICausalFactor {
     for (CausalFactorEntry entry : entries) {
       entry.prepareForSave(hazAccController,allUnsafeControlActions);
     }
+  }
+  public List<UUID> getLinkedUCAList(){
+    List<UUID> list = new ArrayList<>();
+    if(entries != null){
+      for(CausalFactorEntry entry : entries){
+        if(entry.getUcaLink() != null){
+          list.add(entry.getUcaLink());
+        }
+      }
+    }
+    return list;
   }
 }

@@ -155,6 +155,17 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	 * @return true if the link has been removed
 	 */
 	boolean removeUCAHazardLink(UUID unsafeControlActionId, UUID hazardId);
+	
+	/**
+   * Gets the links of the unsafe control action
+   * 
+   * @param unsafeControlActionId
+   *            the id of the unsafe control action
+   * @return the links of the unsafe control action
+   * 
+   * @author Fabian Toth
+   */
+  List<UUID> getLinksOfUCA(UUID unsafeControlActionId);
 
 	/**
 	 * Get all hazards.

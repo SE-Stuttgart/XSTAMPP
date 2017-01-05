@@ -397,8 +397,9 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 *            the id of the component
 	 * @param isSafetyCritical the isSafetyCritical to set
 	 * @author Lukas Balzer
+	 * @return TODO
 	 */
-	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical);
+	public boolean setSafetyCritical(UUID componentId, boolean isSafetyCritical);
 	
 	/**
 	 * @author Lukas Balzer

@@ -20,17 +20,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
 
 @XmlRootElement(name="causalComponent")
 public class CausalCSComponent implements ICausalComponent{
   private String text;
+  private UUID id;
   private List<CausalFactor> factors;
+  
   
   
   @Override
@@ -42,10 +42,21 @@ public class CausalCSComponent implements ICausalComponent{
     this.text = text;
   }
   
+  public void setId(UUID id){
+    this.id = id;
+  }
   @Override
   public UUID getId() {
     // TODO Auto-generated method stub
-    return null;
+    return id;
+  }
+  
+  public List<UUID> getLinkedUCAList(){
+    List<UUID> list = new ArrayList<>();
+    for(CausalFactor factor : factors){
+      list.addAll(factor.getLinkedUCAList());
+    }
+    return list;
   }
   /**
    * @param factors the factors to set
@@ -70,9 +81,11 @@ public class CausalCSComponent implements ICausalComponent{
     return false;
   }
   public CausalFactor getCausalFactor(UUID factorId){
-    for (CausalFactor factor : factors) {
-      if(factor.getId().equals(factorId)){
-        return factor;
+    if(factors != null){
+      for (CausalFactor factor : factors) {
+        if(factor.getId().equals(factorId)){
+          return factor;
+        }
       }
     }
     return null;
@@ -81,8 +94,10 @@ public class CausalCSComponent implements ICausalComponent{
   @Override
   public List<ICausalFactor> getCausalFactors() {
     List<ICausalFactor> factors = new ArrayList<>();
-    for (CausalFactor causalFactor : this.factors) {
-      factors.add(causalFactor);
+    if(this.factors != null){
+      for (CausalFactor causalFactor : this.factors) {
+        factors.add(causalFactor);
+      }
     }
     return factors;
   }
@@ -95,18 +110,22 @@ public class CausalCSComponent implements ICausalComponent{
   public void prepareForExport(HazAccController hazAccController,
                                IRectangleComponent child, 
                                List<AbstractLtlProvider> allRefinedRules,
-                               List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
-                               List<CausalSafetyConstraint> constraints) {
+                               List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     this.text = child.getText();
     for (CausalFactor causalFactor : factors) {
-      causalFactor.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions,constraints);
+      causalFactor.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
     }
   }
 
-  public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap, HazAccController hazAccController, IRectangleComponent child, List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, List<CausalSafetyConstraint> constraints) {
+  public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
+                             HazAccController hazAccController,
+                             IRectangleComponent child,
+                             List<AbstractLtlProvider> allRefinedRules,
+                             List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     this.text = null;
+    this.id = null;
     for (CausalFactor causalFactor : factors) {
-      causalFactor.prepareForSave(hazardLinksMap,hazAccController, allRefinedRules, allUnsafeControlActions,constraints);
+      causalFactor.prepareForSave(hazardLinksMap,hazAccController, allRefinedRules,allUnsafeControlActions);
     }
   }
  

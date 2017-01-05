@@ -51,7 +51,6 @@ public class CausalFactorController implements ICausalFactorController {
   @XmlElement(name = "causalComponent")
   private Map<UUID,CausalCSComponent> causalComponents;
 
-  private List<CausalSafetyConstraint> constraints;
 	/**
 	 * Constructor of the causal factor controller
 	 * 
@@ -79,6 +78,14 @@ public class CausalFactorController implements ICausalFactorController {
 		
 	}
 	
+	@Override
+	public List<UUID> getLinkedUCAList(){
+	  List<UUID> list = new ArrayList<>();
+	  for(CausalCSComponent comp: causalComponents.values()){
+	    list.addAll(comp.getLinkedUCAList());
+	  }
+	  return list;
+	}
 	@Override
   public boolean setCausalFactorText(UUID componentId,UUID causalFactorId, String causalFactorText) {
 	  CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
@@ -112,32 +119,25 @@ public class CausalFactorController implements ICausalFactorController {
     CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
     
     if(factor != null){
-      boolean result = false;
       CausalFactorEntry entry = (CausalFactorEntry) factor.getEntry(entryData.getId());
-      result |= entry.changeCausalEntry(entryData);
-      
-      //get/create the constraint registered for the entry and set its text
-      CausalSafetyConstraint constraint = (CausalSafetyConstraint) factor.getSafetyConstraint();
-      if(entryData.constraintChanged())
-      {
-        if(constraint == null){
-          constraint = new CausalSafetyConstraint(entryData.getSafetyConstraint());
-          this.constraints.add(constraint);
-          result |= entry.setSafetyConstraint(constraint.getId());
-        }else{
-          result |= constraint.setText(entryData.getSafetyConstraint());
-        }
+      if(entry != null){
+        return entry.changeCausalEntry(entryData);
       }
-      
-      return result;
     }
     return false;
   }
 
   @Override
   public boolean removeCausalFactor(UUID component, UUID causalFactor) {
+    if(component == null){
+      for(CausalCSComponent comp: causalComponents.values()){
+        if(comp.removeCausalFactor(causalFactor)){
+          return true;
+        }
+      }
+    }
     if(causalComponents != null && causalComponents.containsKey(component)){
-      this.causalComponents.get(component).removeCausalFactor(causalFactor);
+      return this.causalComponents.get(component).removeCausalFactor(causalFactor);
     }
     return false;
   }
@@ -162,26 +162,11 @@ public class CausalFactorController implements ICausalFactorController {
         component = new CausalCSComponent();
       }
       component.setText(csComp.getText());
+      component.setId(csComp.getId());
     }
     return component;
   }
-
-  @Override
-  public ISafetyConstraint getCausalSafetyConstraint(UUID id){
-    for (CausalSafetyConstraint constraint : constraints) {
-      if(constraint.getId().equals(id)){
-        return constraint;
-      }
-    }
-    return null;
-  }
   
-  @Override
-  public List<ISafetyConstraint> getAllCausalSafetyConstraints(){
-    List<ISafetyConstraint> constraints = new ArrayList<>();
-      constraints.addAll(this.constraints);
-    return constraints;
-  }
   private CausalFactor internal_getCausalFactor(UUID componentId,UUID causalFactorId){
     if(this.causalComponents.containsKey(componentId)){
       return causalComponents.get(componentId).getCausalFactor(causalFactorId);
@@ -206,7 +191,7 @@ public class CausalFactorController implements ICausalFactorController {
       List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     for (IRectangleComponent child : children) {
       if(this.causalComponents.containsKey(child.getId())){
-        this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions, constraints);
+        this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
       }
     }      
     
@@ -231,7 +216,7 @@ public class CausalFactorController implements ICausalFactorController {
       if(this.causalComponents.containsKey(child.getId())){
         
         removeList.remove(child.getId());
-        this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap,hazAccController, child,allRefinedRules, allUnsafeControlActions, constraints);
+        this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap,hazAccController, child,allRefinedRules, allUnsafeControlActions);
       }
     }
     for(UUID id: removeList){

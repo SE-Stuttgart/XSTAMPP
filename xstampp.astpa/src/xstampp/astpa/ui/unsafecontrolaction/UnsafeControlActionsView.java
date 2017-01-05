@@ -77,7 +77,6 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 * The log4j logger.
 	 */
 	private static final Logger LOGGER = Logger.getRootLogger();
-	private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
 
 	private int internalUpdate;
 
@@ -273,7 +272,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			List<IUnsafeControlAction> allTooSoon = cAction
 					.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
 			
-			for (int i = 0; i <= this.getMaxHeight(cAction); i++) {
+ 			for (int i = 0; i <= this.getMaxHeight(cAction); i++) {
 				
 				GridRow idRow = new GridRow(3);
 				GridRow ucaRow = new GridRow(3);
@@ -343,8 +342,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			ucaRow.addCell(editor);
 			linkRow.addCell(new GridCellLinking<UcaContentProvider>(
 					tooSoonUca.getId(), this.ucaContentProvider,
-					this.grid,
-					UnsafeControlActionsView.HAZARD_ID_PREFIX));
+					this.grid));
 			return true;
 		}
 
@@ -355,6 +353,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
           message,
           type));
 			linkRow.addCell(new GridCellBlank());
+			return true;
 		} else {
 			// add placeholders
 			idRow.addCell(new GridCellBlank());

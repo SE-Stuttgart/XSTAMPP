@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -413,9 +412,14 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 
 	/**
 	 * @param isSafetyCritical the isSafetyCritical to set
+	 * @return 
 	 */
-	public void setSafetyCritical(boolean isSafetyCritical) {
-		this.isSafetyCritical = isSafetyCritical;
+	public boolean setSafetyCritical(boolean isSafetyCritical) {
+	  if(this.isSafetyCritical != isSafetyCritical){
+	    this.isSafetyCritical = isSafetyCritical;
+	    return true;
+	  }
+	  return false;
 	}
 
 	

@@ -26,7 +26,6 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
 
   private String hazardLinks;
   private String constraintText;
-  private UUID constraintId;
   private List<UUID> hazardIds;
   private String note;
   private UUID id;
@@ -52,25 +51,17 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
     this.hazardLinks = hazardLinks;
   }
 
-  /**
-   * @return the correspondingSafetyConstraint
-   */
-  public UUID getSafetyConstraintId() {
-    return constraintId;
-  }
-
-  public boolean setSafetyConstraint(UUID uuid) {
-    if(!uuid.equals(constraintId)){
-      constraintId = uuid;
-      return true;
-    }return false;
-  }
+ 
   public String getConstraintText() {
     return constraintText;
   }
 
-  public void setConstraintText(String constraintText) {
-    this.constraintText = constraintText;
+  public boolean setConstraintText(String constraintText) {
+    if(this.constraintText == null || !this.constraintText.equals(constraintText)){
+      this.constraintText = constraintText;
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -92,6 +83,9 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
    * @return the note
    */
   public String getNote() {
+    if(note== null){
+      return new String();
+    }
     return note;
   }
 
@@ -117,6 +111,9 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
       result |= setHazardIds(entryData.getHazardIds());
     }
     
+    if(entryData.constraintChanged()){
+      result |= setConstraintText(entryData.getSafetyConstraint());
+    }
     return result;
   }
 
@@ -134,16 +131,8 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
   
   public void prepareForExport(HazAccController hazAccController,
       List<AbstractLtlProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
-      List<CausalSafetyConstraint> constraints){
-    //fetch the constraint Text form the constraint list of the causalFactorcontroller
-    for (CausalSafetyConstraint constraint : constraints) {
-      if(constraint.getId().equals(constraintId)){
-        setConstraintText(constraint.getText());
-        break;
-      }
-    }
-    
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions){
+
     //create the hazard Link String by adding a label for each hazard
     hazardLinks = new String();
     for (ITableModel hazard : hazAccController.getAllHazards()) {

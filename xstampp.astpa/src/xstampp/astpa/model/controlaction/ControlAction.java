@@ -222,9 +222,14 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 
 	/**
 	 * @param isSafetyCritical the isSafetyCritical to set
+	 * @return 
 	 */
-	public void setSafetyCritical(boolean isSafetyCritical) {
-		this.isSafetyCritical = isSafetyCritical;
+	public boolean setSafetyCritical(boolean isSafetyCritical) {
+	  if(this.isSafetyCritical != isSafetyCritical){
+	    this.isSafetyCritical = isSafetyCritical;
+	    return true;
+	  }
+	  return false;
 	}
 
 

@@ -13,6 +13,7 @@
 
 package xstampp.ui.common.grid;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -62,7 +63,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   private final T publicInterface;
   private final transient GridWrapper grid;
   private CellButtonContainer buttonContainer;
-
+  private List<CellButton> buttons;
 
   private int lines = 1;
   private int lastLines = 1;
@@ -118,13 +119,10 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
    *          the content provider
    * @param grid
    *          the grid the cell is in
-   * @param prefix
-   *          the prefix for item indices, like 'H-' for hazards
    */
   public GridCellLinking(final UUID assignedId,
                          final T publicInterface,
-                         final GridWrapper grid,
-                         final String prefix) {
+                         final GridWrapper grid) {
     super();
 
     this.assignedId = assignedId;
@@ -171,7 +169,9 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
       gc.drawString(this.linkEmptyText, renderX + 2, renderY);
     } else {
       this.buttonContainer.clearButtons();
-
+      for(CellButton button: buttons){
+        this.buttonContainer.addCellButton(button);
+      }
       int xOff = 0;
       int yOff = 0;
       this.lines = 1;
@@ -313,7 +313,10 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
 
   @Override
   public void addCellButton(CellButton button) {
-    // intentionally empty
+    if(buttons == null){
+      buttons = new ArrayList<>();
+    }
+    this.buttons.add(button);
   }
 
   @Override

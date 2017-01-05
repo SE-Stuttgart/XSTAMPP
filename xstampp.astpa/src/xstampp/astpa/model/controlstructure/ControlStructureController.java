@@ -607,11 +607,11 @@ public class ControlStructureController {
 	 *            the id of the component
 	 * @param isSafetyCritical the isSafetyCritical to set
 	 */
-	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
+	public boolean setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
 		Component comp = getInternalComponent(componentId);
 		if(comp != null){
-			comp.setSafetyCritical(isSafetyCritical);
-		}
+			return comp.setSafetyCritical(isSafetyCritical);
+		}return false;
 	}
 	
 	/**

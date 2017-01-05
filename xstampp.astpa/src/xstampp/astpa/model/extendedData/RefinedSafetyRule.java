@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
@@ -148,7 +149,7 @@ public class RefinedSafetyRule extends AbstractLtlProvider{
 	
 	
 	@Override
-	public int compareTo(AbstractLtlProvider sibling) {
+	public int compareTo(ITableModel sibling) {
 		int sign =(int) Math.signum(getNumber() - sibling.getNumber());
 		return sign;
 	}
@@ -253,4 +254,20 @@ public class RefinedSafetyRule extends AbstractLtlProvider{
 		this.links = links;
 		return true;
 	}
+
+  @Override
+  public String getDescription() {
+    return rule;
+  }
+
+  @Override
+  public UUID getId() {
+    return id;
+  }
+
+  @Override
+  public String getTitle() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

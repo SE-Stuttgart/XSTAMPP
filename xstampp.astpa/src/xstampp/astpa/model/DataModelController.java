@@ -155,6 +155,7 @@ public class DataModelController extends AbstractDataModel implements
 	
 	private String projectExtension;
 	private boolean refreshLock;
+	
 	/**
 	 * Constructor of the DataModel Controller
 	 * 
@@ -182,7 +183,27 @@ public class DataModelController extends AbstractDataModel implements
 		}
 	
 	}
+  @Override
+  public Job doSave(final File file, Logger log, boolean isUIcall) {
+    String sLossOfData =  String.format("%s contains data that can only be stored in an extended STPA File (.hazx)\n"
+                      + "Do you want to change the file extension to store the extended data?/n"
+                      + "NOTE: the file is not longer compatible with older versions of XSTAMPP or A-STPA",
+                      file.getName());
+    if(usesHAZXData() && file.getName().endsWith("haz")&&
+      MessageDialog.openQuestion(Display.getDefault().getActiveShell(), "Unexpected data",sLossOfData)){
+      UUID id = ProjectManager.getContainerInstance().getProjectID(this);
+      ProjectManager.getContainerInstance().changeProjectExtension(id, "hazx");
+      return null;
+    }
+    SaveJob job= new SaveJob(file,this);
+    return job;
+  }
 
+  @Override
+  public void initializeProject() {
+    this.controlStructureController.initializeCSS();
+  }
+  
 	@Override
 	public void updateValue(ObserverValue value) {
 		this.setChanged();
@@ -221,6 +242,7 @@ public class DataModelController extends AbstractDataModel implements
 		}
 		return result;
 	}
+	
 	@Override
 	public void releaseLockAndUpdate(ObserverValue[] values){
 		this.refreshLock = false;
@@ -426,7 +448,7 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public List<ITableModel> getHazards(List<UUID> ids){
 	  List<ITableModel> hazards = new ArrayList<>();
-	  for (int i = 0; i < ids.size(); i++) {
+	  for (int i = 0;ids != null && i < ids.size(); i++) {
       ITableModel hazard = getHazard(ids.get(i));
       if(hazard != null){
         hazards.add(hazard);
@@ -1154,11 +1176,11 @@ public class DataModelController extends AbstractDataModel implements
 			return null;
 		}
 
-		List<IUCAHazLink> links = this.controlActionController
+		List<UUID> links = this.controlActionController
 				.getLinksOfUCA(unsafeControlActionId);
 		List<ITableModel> result = new ArrayList<>();
-		for (IUCAHazLink link : links) {
-			result.add(this.getHazard(link.getHazardId()));
+		for (UUID link : links) {
+			result.add(this.getHazard(link));
 		}
 		return result;
 	}
@@ -1270,7 +1292,8 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public UUID addCausalFactor(UUID id) {
 	  IRectangleComponent component = getComponent(id);
-	  return addCausalFactor(component);
+	  UUID newFactorId = addCausalFactor(component);
+    return newFactorId;
 	}
 	@Override
 	public boolean setCausalFactorText( UUID componentId,UUID causalFactorId,
@@ -1374,39 +1397,6 @@ public class DataModelController extends AbstractDataModel implements
 			Rectangle layout, String text, ComponentType type, Integer index) {
 		return addComponent(parentId, layout, text, type, index);
 	}
-	
-	
-
-	@Override
-	public Job doSave(final File file, Logger log, boolean isUIcall) {
-		String sLossOfData =  String.format("%s contains data that can only be stored in an extended STPA File (.hazx)\n"
-											+ "Do you want to change the file extension to store the extended data?/n"
-											+ "NOTE: the file is not longer compatible with older versions of XSTAMPP or A-STPA",
-											file.getName());
-		if(usesHAZXData() && file.getName().endsWith("haz")&&
-			MessageDialog.openQuestion(Display.getDefault().getActiveShell(), "Unexpected data",sLossOfData)){
-			UUID id = ProjectManager.getContainerInstance().getProjectID(this);
-			ProjectManager.getContainerInstance().changeProjectExtension(id, "hazx");
-			return null;
-		}
-		SaveJob job= new SaveJob(file,this);
-//		//the compabillity mode is only needed in haz files, since the hazx format could never be stored the other way
-//		if(isUIcall && file.getName().endsWith("haz")){ //$NON-NLS-1$
-//			Runnable question = new SaveRunnable(job);
-//			
-//			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay().syncExec(question);
-//			while(!job.isReady()){
-//				//wait till the user desided whether or not to store on compatibility  mode
-//			}
-//			
-//		}
-		return job;
-	}
-
-	@Override
-	public void initializeProject() {
-		this.controlStructureController.initializeCSS();
-	}
 
 	@Override
 	public boolean isCSComponentSafetyCritical(UUID componentId){
@@ -1492,8 +1482,12 @@ public class DataModelController extends AbstractDataModel implements
 	 * @param caID the control action id which is used to look up the action
 	 * @param isSafetyCritical the isSafetyCritical to set
 	 */
-	public void setCASafetyCritical(UUID caID, boolean isSafetyCritical) {
-		this.controlActionController.setSafetyCritical(caID, isSafetyCritical);
+	public boolean setCASafetyCritical(UUID caID, boolean isSafetyCritical) {
+		if(this.controlActionController.setSafetyCritical(caID, isSafetyCritical)){
+		  setUnsavedAndChanged(ObserverValue.Extended_DATA);
+		  return true;
+		}
+		return false;
 	}
 
 
@@ -1532,7 +1526,7 @@ public class DataModelController extends AbstractDataModel implements
 	 */
 	public boolean addValuesWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
 		if(this.controlActionController.addValueWhenNotProvided(caID, valueWhenNotProvided)){
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 			return true;
 		}
 		return false;
@@ -1548,7 +1542,7 @@ public class DataModelController extends AbstractDataModel implements
 	 */
 	public boolean removeValueWhenNotProvided(UUID caID, UUID combieId) {
 		if(this.controlActionController.removeValueWhenNotProvided(caID, combieId)){
-			setUnsavedAndChanged();
+			setUnsavedAndChanged(ObserverValue.Extended_DATA);
 			return true;
 		}
 		return false;
@@ -1668,8 +1662,12 @@ public class DataModelController extends AbstractDataModel implements
 	}
 
 	@Override
-	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
-		this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
+	public boolean setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
+		boolean result = this.controlStructureController.setSafetyCritical(componentId, isSafetyCritical);
+    if(result){
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+    }
+    return result;
 	}
 	
 	@Override
@@ -1714,7 +1712,7 @@ public class DataModelController extends AbstractDataModel implements
 	
 	public AbstractLtlProvider getRefinedRule(UUID id){
 	
-		for(AbstractLtlProvider rule : this.controlActionController.getAllRefinedRules(false)){
+		for(AbstractLtlProvider rule : this.extendedDataController.getAllRefinedRules(true, true, true)){
 			if(rule.getRuleId().equals(id)){
 				return rule;
 			}
@@ -1789,27 +1787,47 @@ public class DataModelController extends AbstractDataModel implements
 
   @Override
   public UUID addCausalUCAEntry(UUID component,UUID causalFactorId,UUID ucaId){
-    return this.causalFactorController.addCausalUCAEntry(component,causalFactorId, ucaId);
+    UUID result = this.causalFactorController.addCausalUCAEntry(component,causalFactorId, ucaId);
+    if(result != null){
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+    }
+    return result;
   }
 
   @Override
   public UUID addCausalHazardEntry(UUID component, UUID causalFactor) {
-    return causalFactorController.addCausalHazardEntry(component, causalFactor);
+    UUID newFactorId = causalFactorController.addCausalHazardEntry(component, causalFactor);
+    if(newFactorId != null){
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+    }
+    return newFactorId;
   }
 
   @Override
   public boolean changeCausalEntry(UUID component, UUID causalFactor, CausalFactorEntryData entryData) {
-    return causalFactorController.changeCausalEntry(component, causalFactor, entryData);
+    boolean result = causalFactorController.changeCausalEntry(component, causalFactor, entryData);
+    if(result){
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+    }
+    return result;
   }
 
   @Override
   public boolean removeCausalFactor(UUID component, UUID causalFactor) {
-    return causalFactorController.removeCausalFactor(component, causalFactor);
+    boolean result = causalFactorController.removeCausalFactor(component, causalFactor);
+    if(result){
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+    }
+    return result;
   }
 
   @Override
   public boolean removeCausalEntry(UUID component, UUID causalFactor, UUID entryId) {
-    return causalFactorController.removeCausalEntry(component, causalFactor, entryId);
+    boolean result = causalFactorController.removeCausalEntry(component, causalFactor, entryId);
+    if(result){
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+    }
+    return result;
   }
 
   @Override
@@ -1827,15 +1845,6 @@ public class DataModelController extends AbstractDataModel implements
   public ICausalComponent getCausalComponent(UUID compId1) {
     return getCausalComponent(getComponent(compId1));
   }
-  @Override
-  public List<ISafetyConstraint> getAllCausalSafetyConstraints() {
-    return this.causalFactorController.getAllCausalSafetyConstraints();
-  }
-
-  @Override
-  public ISafetyConstraint getCausalSafetyConstraint(UUID id) {
-    return causalFactorController.getCausalSafetyConstraint(id);
-  }
 
   @Override
   public List<ICausalComponent> getCausalComponents() {
@@ -1845,6 +1854,16 @@ public class DataModelController extends AbstractDataModel implements
   @Override
   public List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter) {
     return extendedDataController.getAllRefinedRules(filter);
+  }
+
+  @Override
+  public List<UUID> getLinkedUCAList() {
+    return causalFactorController.getLinkedUCAList();
+  }
+
+  @Override
+  public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
+    return this.controlActionController.getLinksOfUCA(unsafeControlActionId);
   }
 
 }

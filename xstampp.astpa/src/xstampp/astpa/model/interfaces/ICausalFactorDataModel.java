@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
@@ -47,7 +48,15 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
 	 * @return all causal components as causalFactor containers
 	 */
 	List<ICausalComponent> getCausalComponents(IEntryFilter<IRectangleComponent> filter);
-
+	
+	/**
+	 * {@link IExtendedDataModel#getRefinedRule(UUID)}
+	 */
+	AbstractLtlProvider getRefinedRule(UUID randomUUID);
+	/**
+	 * @return a list of {@link xstampp.astpa.model.controlaction.UCAHazLink} 
+	 */
+	List<UCAHazLink> getAllUCALinks();
 	/**
 	 * 
 	 * @param compId1 The id of a control structure component stored in the dataModel
@@ -79,6 +88,11 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
    * {@link IHazardViewDataModel#getHazards(UUID[])}
    */
   List<ITableModel> getHazards(List<UUID> list);
+  
+  /**
+   * {@link IHazardViewDataModel#getAllHazards()}
+   */
+  List<ITableModel> getAllHazards();
 
   /**
    * {@link IExtendedDataModel#getAllRefinedRules(IEntryFilter)}
@@ -94,4 +108,9 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
    * {@link IUnsafeControlActionDataModel#getUCAList(IEntryFilter)} 
    */
   List<ICorrespondingUnsafeControlAction> getUCAList(IEntryFilter<IUnsafeControlAction> filter);
+  
+  /**
+   *  {@link IUnsafeControlActionDataModel#getLinksOfUCA(UUID)}
+   */
+  List<UUID> getLinksOfUCA(UUID unsafeControlActionId);
 }

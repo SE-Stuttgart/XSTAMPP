@@ -5,10 +5,7 @@ import java.util.UUID;
 
 public interface ICausalFactorEntry {
   
-  /**
-   * @return the correspondingSafetyConstraint
-   */
-  public UUID getSafetyConstraintId();
+ 
   
   /**
    * @return the hazardIds
@@ -19,6 +16,8 @@ public interface ICausalFactorEntry {
    * @return the note
    */
   public String getNote();
+  
+  String getConstraintText();
   
   public UUID getId();
   

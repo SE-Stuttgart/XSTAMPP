@@ -13,6 +13,7 @@ package xstampp.astpa.model.causalfactor.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorUCAEntry;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 
@@ -75,23 +76,25 @@ public interface ICausalFactorController {
    */
   boolean changeCausalEntry(UUID componentId,UUID causalFactorId,CausalFactorEntryData entryData);
   
-  
-  boolean removeCausalFactor(UUID component,UUID causalFactor);
+  /**
+   * removes a causal factor from the list of causal factors of the causal component
+   * registered for the given componentId
+   * if componentId is null than the method searches for the causal factor in all registered components
+   * 
+   * @param componentId a UUID for which a component should be registered, or null if the id is not known or 
+   * @param causalFactorId the id of the causal factor which should be removed, when this is null or not valid the method 
+   *        returns false
+   * @return 
+   */
+  boolean removeCausalFactor(UUID componentId,UUID causalFactorId);
   boolean removeCausalEntry(UUID component,UUID causalFactor ,UUID entryId);
 
   /**
-   * @return a list containing all registered Safety Constraints in the controller
-   *          returns an empty list if no constraints are available,<p>
-   *          note that changes to the returned list do not change the list stored in the controller
+   * getter for a list containing all unsafe control Actions that are currently
+   * existing as {@link CausalFactorUCAEntry}
+   * @return a list of all uca ids of all {@link CausalFactorUCAEntry}
    */
-  List<ISafetyConstraint> getAllCausalSafetyConstraints();
-
-  /**
-   * 
-   * @param id the uuid with of a safety constraint stored in its causal factor entry
-   * @return the safety constraint as ISafetyConstraint, to receive constraint information<p>
-   *         e.g.: <code>getSafetyConstraint({@link ICausalFactorEntry#getSafetyConstraintId})</code>
-   */
-  ISafetyConstraint getCausalSafetyConstraint(UUID id);
+  List<UUID> getLinkedUCAList();
+  
 
 }

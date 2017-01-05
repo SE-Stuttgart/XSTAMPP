@@ -91,14 +91,7 @@ public class CausalFactorUCAEntry extends CausalFactorEntry implements ICausalFa
   
   @Override
   public void prepareForExport(HazAccController hazAccController, List<AbstractLtlProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, List<CausalSafetyConstraint> constraints) {
-     //fetch the constraint Text form the constraint list of the causalFactorcontroller
-    for (CausalSafetyConstraint constraint : constraints) {
-      if(constraint.getId().equals(getSafetyConstraintId())){
-        setConstraintText(constraint.getText());
-        break;
-      }
-    }
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     
     for (ICorrespondingUnsafeControlAction uca : allUnsafeControlActions) {
       if(uca.getId().equals(ucaLink)){

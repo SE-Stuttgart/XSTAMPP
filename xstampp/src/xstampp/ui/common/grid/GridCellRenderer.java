@@ -52,7 +52,7 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
   private int insideMargin = 3;
 
   int treeIndent = 20;
-
+  private static Color foreground = new Color(Display.getCurrent(), 255, 255, 255);
   /**
    * Ctor.
    * 
@@ -77,7 +77,7 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
       if (cell != null) {
         cell.paint(this, gc, item);
         Color fColor = gc.getForeground();
-        gc.setForeground(new Color(Display.getCurrent(), 255, 255, 255));
+        gc.setForeground(foreground);
         gc.drawRectangle(this.getBounds().x, this.getBounds().y, this.getBounds().width, this.getBounds().height);
         // restore old foreground color
         gc.setForeground(fColor);
@@ -102,17 +102,6 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
 
       x += image.getBounds().width + insideMargin;
     }
-
-    // MOPR-DND
-    // MOPR: replaced this code (to get correct preferred height for cells in
-    // word-wrap columns)
-    //
-    // x += gc.stringExtent(item.getText(column)).x + rightMargin;
-    //
-    // y = Math.max(y,topMargin + gc.getFontMetrics().getHeight() +
-    // bottomMargin);
-    //
-    // with this code:
 
     int textHeight = 0;
     if (!isWordWrap()) {
@@ -165,6 +154,12 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
     return this.gridWrapper;
   }
 
+ 
+  @Override
+  public void setBounds(Rectangle bounds) {
+    // TODO Auto-generated method stub
+    super.setBounds(bounds);
+  }
   /**
    * Returns the drawable area of a cell
    * 

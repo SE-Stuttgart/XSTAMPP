@@ -202,7 +202,7 @@ public abstract class AbstractGridCell implements IGridCell {
    * @return the height of the written text sequence
    */
   protected final int wrapText(Rectangle bounds, GC gc, String text, int left_space, int right_space) {
-    if (text.isEmpty()) {
+    if (text.isEmpty() || bounds.width < 0) {
       return 0;
     }
     FontMetrics metrics = gc.getFontMetrics();
@@ -317,6 +317,9 @@ public abstract class AbstractGridCell implements IGridCell {
     
     double nextEndRes;
     double recursionEnd = endRes * end;
+    if(width < 0){
+      return 0;
+    }
     //if 
     if (gc.stringExtent(line.substring(start, (int) (recursionEnd))).x <= width && ch > 0.1) {
       nextEndRes = Math.min(1, endRes + ch * 0.5);

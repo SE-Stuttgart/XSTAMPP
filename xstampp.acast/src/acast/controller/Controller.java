@@ -834,8 +834,8 @@ public class Controller extends AbstractDataModel implements IDataModel,
 	}
 
 	@Override
-	public void setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
-		this.controlStructureController.setSafetyCritical(componentId,
+	public boolean setSafetyCritical(UUID componentId, boolean isSafetyCritical) {
+		return this.controlStructureController.setSafetyCritical(componentId,
 				isSafetyCritical);
 
 	}

@@ -65,7 +65,7 @@ public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
 
   List<ICausalComponent> getCausalComponents();
   
-  void setCASafetyCritical(UUID id, boolean safetyCritical);
+  boolean setCASafetyCritical(UUID id, boolean safetyCritical);
 
   boolean setControlActionDescription(UUID id, String value);
 
@@ -131,6 +131,10 @@ public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
   List<UCAHazLink> getAllUCALinks();
 
   List<ITableModel> getLinkedHazardsOfUCA(UUID ucaID);
+  
+  /**
+   *  {@link ICorrespondingSafetyConstraintDataModel#getAllUnsafeControlActions()}
+   */
   List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions();
 
   /**
