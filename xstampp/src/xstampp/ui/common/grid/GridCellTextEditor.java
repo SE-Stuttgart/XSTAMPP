@@ -192,7 +192,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     this.editor.getControl().setBackground(this.bgColor);
     this.editor.setTextFont(Display.getDefault().getSystemFont());
     this.editor.setValue(this.currentText);
-
+    editorOpening();
     this.editor.addDisposeListener(new DisposeListener() {
 
       @Override
@@ -201,8 +201,10 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
           GridCellTextEditor.this.currentText = ((Text) e.widget).getText();
           GridCellTextEditor.this.editField = ((Text) e.widget).getBounds();
           GridCellTextEditor.this.grid.resizeRows();
+          editorClosing();
           updateDataModel(((Text) e.widget).getText());
           updateDataModel(GridCellTextEditor.this.currentText);
+          
         }
       }
     });
@@ -227,6 +229,20 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     });
   }
 
+  /**
+   * This method does nothing by default it is called
+   * when the editor is activated and can be used to execute actions 
+   * to prepare the dataModel
+   */
+  protected abstract void editorOpening();
+
+  /**
+   * This method does nothing by default it is called
+   * when the editor is disposed and can be used to execute actions 
+   * to prepare the dataModel
+   */
+  protected abstract void editorClosing();
+  
   @Override
   public void cleanUp() {
     if (this.editor != null && !this.editor.getControl().isDisposed()) {

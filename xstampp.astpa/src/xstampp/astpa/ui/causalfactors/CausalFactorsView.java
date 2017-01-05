@@ -217,7 +217,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 					continue;
 				}
 				GridRow childRow = new GridRow(1);
-				childRow.addCell(new CausalFactorEditorCell(this.grid, dataInterface, factor
+				childRow.addCell(new CellEditorCausalFactor(this.grid, dataInterface, factor
 						.getText(), component.getId(),factor.getId()));
 				
 		   //A new row is added to the factorRow for adding additional entries
@@ -242,14 +242,14 @@ public class CausalFactorsView extends AbstractFilteredEditor{
               linkingString += "H-" +hazard.getNumber() + ",";
             }
             entryRow.addCell(new GridCellText(linkingString.substring(0, linkingString.length()-2)));
-            entryRow.addCell(new GridCellLinking<ScenarioLinkProvider>(
-                factor.getId(), new ScenarioLinkProvider(dataInterface, component.getId(), factor.getId(), entry),
+            entryRow.addCell(new GridCellLinking<ContentProviderScenarios>(
+                factor.getId(), new ContentProviderScenarios(dataInterface, component.getId(), factor.getId(), entry),
                 this.grid));
             
           }else{
             entryRow.addCell(new GridCellText());
-            entryRow.addCell(new GridCellLinking<CausalContentProvider>(
-    						factor.getId(), new CausalContentProvider(dataInterface, component.getId(), factor.getId(), entry),
+            entryRow.addCell(new GridCellLinking<ContentProviderHazards>(
+    						factor.getId(), new ContentProviderHazards(dataInterface, component.getId(), factor.getId(), entry),
     						this.grid));
 
             entryRow.addCell(new GridCellText());
@@ -264,18 +264,18 @@ public class CausalFactorsView extends AbstractFilteredEditor{
   				if (entry.getConstraintText() == null) {
   					GridCellText constraintsCell = new GridCellText(new String());
   					constraintsCell.addCellButton(new NewConstraintButton(component.getId(), factor.getId(),entry.getId()));
-  					constraintsCell.addCellButton(new ImportConstraintButton(grid.getGrid(),entry,component.getId(), factor.getId(),dataInterface));
+  					constraintsCell.addCellButton(new CellButtonImportConstraint(grid.getGrid(),entry,component.getId(), factor.getId(),dataInterface));
   					entryRow.addCell(constraintsCell);
   				} else {
-  				  entryRow.addCell(new SafetyConstraintEditorCell(grid, dataInterface, component.getId(), factor.getId(),entry));
+  				  entryRow.addCell(new CellEditorSafetyConstraint(grid, dataInterface, component.getId(), factor.getId(),entry));
   				}
   
-  				entryRow.addCell(new NoteEditorCell(this.grid,dataInterface,component.getId(), factor.getId(),entry));
+  				entryRow.addCell(new CellEditorFactorNote(this.grid,dataInterface,component.getId(), factor.getId(),entry));
           childRow.addChildRow(entryRow);
         }
         //A new row is added to the factorRow for adding additional entries
         GridRow addEntriesRow = new GridRow(1);
-        addEntriesRow.addCell(new AddUCAEntryButton(component, factor.getId(), dataInterface,grid.getGrid()));
+        addEntriesRow.addCell(new CellButtonAddUCAEntry(component, factor.getId(), dataInterface,grid.getGrid()));
         for(int i=1; i<5;i++){
           addEntriesRow.addCell(new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
         }
@@ -285,7 +285,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
       
 			
 			GridRow buttonRow = new GridRow(1);
-			buttonRow.addCell(new AddCausalFactorButton(component,dataInterface));
+			buttonRow.addCell(new CellButtonAddCausalFactor(component,dataInterface));
 
 			csRow.addChildRow(buttonRow);
 		}

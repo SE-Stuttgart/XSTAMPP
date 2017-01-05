@@ -16,7 +16,6 @@ package xstampp.astpa.ui.unsafecontrolaction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -29,9 +28,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IWorkbenchPart;
 
 import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
@@ -78,7 +75,6 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 */
 	private static final Logger LOGGER = Logger.getRootLogger();
 
-	private int internalUpdate;
 
 	/**
 	 * Interfaces to communicate with the data model.
@@ -86,7 +82,6 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	private UcaContentProvider ucaContentProvider = null;
 
 	private IUnsafeControlActionDataModel ucaInterface;
-	private Map<UUID,String> descriptionsToUUIDs = new HashMap<>();
 	protected GridWrapper grid;
 	private boolean lockreload;
 	private DeleteUcaAction deleteAction;
@@ -131,22 +126,19 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		@Override
 		public void updateDataModel(String newValue) {
 			ucaInterface.setUcaDescription(getUUID(), newValue);
-			descriptionsToUUIDs.remove(getUUID());
 		}
 		
-		@Override
-		public void onTextChange(String newValue) {
-			UnsafeControlActionsView.this.descriptionsToUUIDs.put(getUUID(),newValue);
-			final String value=newValue;
-			Display.getDefault().asyncExec(new Runnable() {
-				
-				@Override
-				public void run() {
-					internalUpdate++;
-					updateDataModel(value);
-				}
-			});
-		}
+
+
+	  @Override
+	  protected void editorOpening() {
+	    ucaInterface.lockUpdate();
+	  }
+	  
+	  @Override
+	  protected void editorClosing() {
+	    ucaInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.UNSAFE_CONTROL_ACTION});
+	  }
 	}
 
 	private class AddUcaButton extends GridCellButton {
@@ -184,7 +176,6 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		internalUpdate = 0;
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 
@@ -438,12 +429,6 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		if(!this.lockreload){
 			int tmp= this.grid.getGrid().getVerticalBar().getSelection();
 			this.lockreload = true;
-			if(this.descriptionsToUUIDs.size() > 0){
-				for(UUID ucaID: this.descriptionsToUUIDs.keySet()){
-					this.ucaInterface.setUcaDescription(ucaID, this.descriptionsToUUIDs.get(ucaID));
-				}
-				this.descriptionsToUUIDs= new HashMap<>();
-			}
 			this.grid.clearRows();
 			this.fillTable(this.ucaInterface.getAllControlActionsU());
 			this.grid.reloadTable();
@@ -478,46 +463,18 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		case HAZARD:
 			updateHazards();
 		case CONTROL_ACTION:
-			if(internalUpdate!=0){
-				internalUpdate--;
-			}else{
 				try{
 					this.reloadTable();
 				}catch(SWTException e){
 					dataModelController.deleteObserver(this);
 				}
-			}
 			break;
 
 		default:
 			break;
 		}
 	}
-
-	@Override
-	public void partBroughtToTop(IWorkbenchPart arg0) {
-		
-		if(!this.lockreload && this.descriptionsToUUIDs.size() > 0){
-			this.lockreload = true;
-			for(UUID ucaID: this.descriptionsToUUIDs.keySet()){
-				this.ucaInterface.setUcaDescription(ucaID, this.descriptionsToUUIDs.get(ucaID));
-			}
-			this.descriptionsToUUIDs= new HashMap<>();
-			this.lockreload = false;
-		}
-		super.partBroughtToTop(arg0);
-	}
 	
-	@Override
-	public void partDeactivated(IWorkbenchPart arg0) {
-		if(arg0 == this){
-			for(Entry<UUID,String> ucaID: this.descriptionsToUUIDs.entrySet()){
-				this.ucaInterface.setUcaDescription(ucaID.getKey(), ucaID.getValue());
-			}
-			this.descriptionsToUUIDs.clear();
-		}
-		super.partDeactivated(arg0);
-	}
 	@Override
 	public void dispose() {
 		this.ucaInterface.deleteObserver(this);

@@ -89,6 +89,15 @@ public class CausalScenariosView extends AbstractFilteredEditor {
     public void delete() {
       deleteAction.run();
     }
+    @Override
+    protected void editorOpening() {
+      dataInterface.lockUpdate();
+    }
+    
+    @Override
+    protected void editorClosing() {
+      dataInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
+    }
     
   }
   
