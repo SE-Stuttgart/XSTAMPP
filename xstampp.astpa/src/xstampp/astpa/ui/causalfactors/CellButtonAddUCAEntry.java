@@ -32,7 +32,7 @@ import xstampp.ui.common.grid.GridCellButton;
  * @author Patrick Wickenhaeuser
  * 
  */
-public class AddUCAEntryButton extends GridCellButton implements IContentProposalListener {
+public class CellButtonAddUCAEntry extends GridCellButton implements IContentProposalListener {
 
   private static String HAZARD_ENTRY = "hazard based entry"; //$NON-NLS-1$
 	private ICausalComponent component;
@@ -48,7 +48,7 @@ public class AddUCAEntryButton extends GridCellButton implements IContentProposa
 	 * @param component
 	 *            the component the add buttons adds causal factors to.
 	 */
-	public AddUCAEntryButton(ICausalComponent component,UUID factorId, ICausalFactorDataModel dataInterface,Grid grid) {
+	public CellButtonAddUCAEntry(ICausalComponent component,UUID factorId, ICausalFactorDataModel dataInterface,Grid grid) {
 		super("Add Causal Entry");
 
 		this.component = component;

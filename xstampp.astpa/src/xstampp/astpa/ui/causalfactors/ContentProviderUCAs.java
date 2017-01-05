@@ -28,7 +28,7 @@ import xstampp.ui.common.contentassist.ITableContentProvider;
  * @author  Lukas Balzer
  * 
  */
-public class CausalContentUCAProvider implements ITableContentProvider<ICorrespondingUnsafeControlAction> {
+public class ContentProviderUCAs implements ITableContentProvider<ICorrespondingUnsafeControlAction> {
 
 	private final transient ICausalFactorDataModel caInterface;
 
@@ -40,7 +40,7 @@ public class CausalContentUCAProvider implements ITableContentProvider<ICorrespo
 	 *            The data model interface
 	 * 
 	 */
-	public CausalContentUCAProvider(final ICausalFactorDataModel caInterface) {
+	public ContentProviderUCAs(final ICausalFactorDataModel caInterface) {
 		this.caInterface = caInterface;
 	}
 

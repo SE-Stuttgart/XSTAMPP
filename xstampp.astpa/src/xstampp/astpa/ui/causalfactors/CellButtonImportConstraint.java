@@ -20,7 +20,7 @@ import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.grid.CellButton;
 import xstampp.ui.common.grid.GridWrapper;
 
-public class ImportConstraintButton extends CellButton {
+public class CellButtonImportConstraint extends CellButton {
 
   private ICausalFactorEntry entry = null;
   private UUID componentId;
@@ -28,7 +28,7 @@ public class ImportConstraintButton extends CellButton {
   private Grid grid;
   private ICausalFactorDataModel dataModel;
 
-  public ImportConstraintButton(Grid grid, ICausalFactorEntry entry,UUID componentId,UUID factorId,ICausalFactorDataModel dataInterface) {
+  public CellButtonImportConstraint(Grid grid, ICausalFactorEntry entry,UUID componentId,UUID factorId,ICausalFactorDataModel dataInterface) {
     super(new Rectangle(40, 1,
         GridWrapper.getLinkButton16().getBounds().width,
         GridWrapper.getLinkButton16().getBounds().height),

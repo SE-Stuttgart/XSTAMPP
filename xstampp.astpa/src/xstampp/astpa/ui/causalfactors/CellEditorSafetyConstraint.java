@@ -5,19 +5,20 @@ import java.util.UUID;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridWrapper;
 
-public class NoteEditorCell extends GridCellTextEditor {
+public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   private UUID componentId;
   private UUID factorId;
   private UUID entryId;
   private ICausalFactorDataModel dataInterface;
   
-  public NoteEditorCell(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
-                      UUID componentId,UUID factorId,ICausalFactorEntry entry) {
-    super(gridWrapper, entry.getNote(),false, false,factorId);
+  public CellEditorSafetyConstraint(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
+                                    UUID componentId,UUID factorId,ICausalFactorEntry entry) {
+    super(gridWrapper, entry.getConstraintText(),true, false,factorId);
     this.dataInterface = dataInterface;
     this.componentId = componentId;
     this.factorId = factorId;
@@ -27,7 +28,7 @@ public class NoteEditorCell extends GridCellTextEditor {
   @Override
   public void updateDataModel(String newText) {
     CausalFactorEntryData data = new CausalFactorEntryData(entryId);
-    data.setNote(newText);
+    data.setConstraint(newText);
     dataInterface.changeCausalEntry(componentId, factorId, data);
     
   }
@@ -35,12 +36,17 @@ public class NoteEditorCell extends GridCellTextEditor {
   @Override
   public void delete() {
     CausalFactorEntryData data = new CausalFactorEntryData(entryId);
-    data.setNote(null);
+    data.setConstraint(null);
     dataInterface.changeCausalEntry(componentId, factorId, data);
   }
 
   @Override
-  public void onTextChange(String newValue) {
-    updateDataModel(newValue);
+  protected void editorOpening() {
+    dataInterface.lockUpdate();
+  }
+  
+  @Override
+  protected void editorClosing() {
+    dataInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.CAUSAL_FACTOR});
   }
 }

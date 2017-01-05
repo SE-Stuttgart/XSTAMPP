@@ -13,17 +13,13 @@
 
 package xstampp.astpa.ui.causalfactors;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.model.AbstractLtlProvider;
-import xstampp.model.IEntryFilter;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**
@@ -31,14 +27,13 @@ import xstampp.ui.common.contentassist.ITableContentProvider;
  * @author Benedikt Markt, Lukas Balzer
  * 
  */
-public class ScenarioLinkProvider implements ITableContentProvider<AbstractLtlProvider> {
+public class ContentProviderHazards implements ITableContentProvider<ITableModel> {
 
-  private static final String HAZARD_ID_PREFIX = "SC-"; //$NON-NLS-1$
+  private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
 	private final transient ICausalFactorDataModel caInterface;
   private ICausalFactorEntry entry;
   private UUID componentId;
   private UUID factorId;
-  private UUID ucaId;
 
 	/**
 	 * 
@@ -48,55 +43,47 @@ public class ScenarioLinkProvider implements ITableContentProvider<AbstractLtlPr
 	 *            The data model interface
 	 * 
 	 */
-	public ScenarioLinkProvider(final ICausalFactorDataModel caInterface,UUID componentId,UUID factorId, ICausalFactorEntry entry) {
+	public ContentProviderHazards(final ICausalFactorDataModel caInterface,UUID componentId,UUID factorId, ICausalFactorEntry entry) {
 		this.caInterface = caInterface;
     this.componentId = componentId;
     this.factorId = factorId;
     this.entry = entry;
-    this.ucaId = entry.getUcaLink();
 	}
 
 	@Override
-	public List<AbstractLtlProvider> getAllItems() {
-		return this.caInterface.getAllRefinedRules(new IEntryFilter<AbstractLtlProvider>() {
-      
-      @Override
-      public boolean check(AbstractLtlProvider model) {
-        return model.getUCALinks().contains(ucaId);
-      }
-    });
+	public List<ITableModel> getAllItems() {
+		return this.caInterface.getAllHazards();
 	}
 
 	@Override
-	public List<AbstractLtlProvider> getLinkedItems(final UUID itemId) {
-	  List<AbstractLtlProvider> linkedScenarios = new ArrayList<>();
-	  for(UUID scenarios : entry.getScenarioLinks()){
-	    linkedScenarios.add(caInterface.getRefinedRule(scenarios));
-	  }
-		return linkedScenarios;
+	public List<ITableModel> getLinkedItems(final UUID itemId) {
+		return this.caInterface.getHazards(entry.getHazardIds());
 	}
 
 	@Override
 	public void addLink(final UUID item1, final UUID item2) {
-	  CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-	  List<UUID> ids = new ArrayList<>(entry.getScenarioLinks());
-	  ids.add(item2);
-	  data.setScenarioLinks(ids);
+	  CausalFactorEntryData data = new CausalFactorEntryData(entry.getId());
+	  for(UUID id : entry.getHazardIds()){
+	    data.addHazardId(id);
+	  }
+	  data.addHazardId(item2);
 		this.caInterface.changeCausalEntry(componentId,factorId, data);
 	}
 
 	@Override
 	public void removeLink(final UUID item, final UUID removeItem) {
-	  CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-    List<UUID> ids = new ArrayList<>(entry.getScenarioLinks());
-    ids.remove(removeItem);
-    data.setScenarioLinks(ids);
+	  CausalFactorEntryData data = new CausalFactorEntryData(entry.getId());
+    for(UUID id : entry.getHazardIds()){
+      if(!id.equals(removeItem)){
+        data.addHazardId(id);
+      }
+    }
     this.caInterface.changeCausalEntry(componentId,factorId, data);
 	}
 
   @Override
   public String getPrefix() {
-    return "SC-";
+    return HAZARD_ID_PREFIX;
   }
 
 }
