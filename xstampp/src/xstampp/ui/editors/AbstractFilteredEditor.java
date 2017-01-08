@@ -273,7 +273,8 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
           //if checkMatch is given as true whether the testString does not contain the filterText
           //surrounding the regular Exp. by ".*" ... ".*" means that anything
           //can stand before or after the checked substring
-          return !testString.matches(".*" + filteText.toLowerCase() + ".*");
+          System.out.println(testString.contains(filteText));
+          return !testString.contains(filteText);
         }
         if(testString.startsWith(filteText)){
           return false;

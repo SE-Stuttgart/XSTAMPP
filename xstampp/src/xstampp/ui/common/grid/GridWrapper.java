@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -26,6 +26,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -477,6 +479,14 @@ public class GridWrapper {
     this.cellRenderer = new GridCellRenderer(this);
 
     this.setColumnLabels(columnLabels);
+    this.actualGrid.addDisposeListener(new DisposeListener() {
+      
+      @Override
+      public void widgetDisposed(DisposeEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+    });
     this.actualGrid.addControlListener(new ControlListener() {
 
       @Override
@@ -610,7 +620,9 @@ public class GridWrapper {
     }
 
     this.resizeColumns();
+    if(actualGrid.getItemCount() > 0 ) {
       this.actualGrid.showItem(getGrid().getItem(actualGrid.getItemCount()-1));
+    }
     
   }
 

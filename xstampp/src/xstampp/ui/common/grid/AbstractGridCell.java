@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -34,16 +34,12 @@ public abstract class AbstractGridCell implements IGridCell {
    */
   public static final int DEFAULT_CELL_HEIGHT = 20;
 
-  private static final int PARENT_RED = 215;
-  private static final int PARENT_GREEN = 240;
-  private static final int PARENT_BLUE = 255;
+  public static final Color HOVER_COLOR = new Color(null, 205,245, 205);
+  public static final Color PARENT_COLOR = new Color(null, 215,240, 255);
 
-  private static final int HOVER_RED = 205;
-  private static final int HOVER_GREEN = 245;
-  private static final int HOVER_BLUE = 205;
+  private static final Color MOD_2_1_GRAY = new Color(null,230, 230,230);
 
-  private static final int MOD_2_0_GRAY = 245;
-  private static final int MOD_2_1_GRAY = 230;
+  private static final Color MOD_2_0_GRAY = new Color(null, 245,245,245);
 
   private GridRow row = null;
 
@@ -89,16 +85,14 @@ public abstract class AbstractGridCell implements IGridCell {
 
     if (renderer.getGridWrapper().isCellSelected(this) && this.showSelection) {
       // selected color constant
-      return new Color(gc.getDevice(), AbstractGridCell.HOVER_RED, AbstractGridCell.HOVER_GREEN,
-          AbstractGridCell.HOVER_BLUE);
+      return HOVER_COLOR;
     }
 
     GridRow parentRow = this.row.getParentRow();
     boolean hasChildren = this.row.getChildren() != null && !this.row.getChildren().isEmpty();
     if (parentRow == null && hasChildren) {
       // parent color
-      return new Color(gc.getDevice(), AbstractGridCell.PARENT_RED, AbstractGridCell.PARENT_GREEN,
-          AbstractGridCell.PARENT_BLUE);
+      return PARENT_COLOR;
     }
 
     // alternating color
@@ -108,12 +102,10 @@ public abstract class AbstractGridCell implements IGridCell {
     
 
     if ((index % 2) == 0) {
-      return new Color(gc.getDevice(), AbstractGridCell.MOD_2_0_GRAY, AbstractGridCell.MOD_2_0_GRAY,
-          AbstractGridCell.MOD_2_0_GRAY);
+      return MOD_2_0_GRAY;
     }
     // every second row
-    return new Color(gc.getDevice(), AbstractGridCell.MOD_2_1_GRAY, AbstractGridCell.MOD_2_1_GRAY,
-        AbstractGridCell.MOD_2_1_GRAY);
+    return MOD_2_1_GRAY;
   }
 
   @Override

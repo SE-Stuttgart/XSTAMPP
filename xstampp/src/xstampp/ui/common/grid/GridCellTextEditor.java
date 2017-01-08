@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -19,14 +19,17 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
@@ -62,17 +65,20 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
   private class TextLocator implements CellEditorLocator {
 
+    private Rectangle bounds;
+    public TextLocator(Rectangle bounds) {
+      this.bounds = bounds;
+    }
     @Override
     public void relocate(CellEditor celleditor) {
       getPreferredHeight();
-      Rectangle rect = GridCellTextEditor.this.editField;
       Text text = (Text) celleditor.getControl();
 
       // if the size is determined to be larger than the text lines itself
       // this the original size, will be displayed as long as it not
       // overwritten by text
-      int editorHeight = Math.max(rect.height, text.getLineHeight() * text.getLineCount());
-      text.setBounds(rect.x, rect.y, rect.width, editorHeight);
+      int editorHeight = Math.max(bounds.height, text.getLineHeight() * text.getLineCount());
+      text.setBounds(bounds.x, bounds.y, bounds.width, editorHeight);
     }
 
   }
@@ -95,13 +101,14 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
                             Boolean showDelete,
                             Boolean readOnly,
                             UUID entryId) {
+    
     this.showDelete = showDelete;
     this.isReadOnly = readOnly;
     this.entryId = entryId;
     this.deleteSpace = new Rectangle(0, 0, 0, 0);
     this.grid = grid;
 
-    if (initialText.trim().isEmpty()) {
+    if (initialText == null || initialText.trim().isEmpty()) {
       this.currentText = new String();
     } else {
       this.currentText = initialText;
@@ -112,7 +119,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
       @Override
       public void mouseScrolled(MouseEvent e) {
-        if (GridCellTextEditor.this.editor != null && !GridCellTextEditor.this.editor.getControl().isDisposed()) {
+        if (GridCellTextEditor.this.editor != null 
+            && !GridCellTextEditor.this.editor.getControl().isDisposed()) {
           GridCellTextEditor.this.editor.getControl().dispose();
         }
       }
@@ -131,23 +139,24 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     int buttonCollum = 0;
     // calculate the avaiable space and performe a wrap
     if (this.showDelete) {
-      this.deleteSpace = new Rectangle(bounds.x + bounds.width - 16, bounds.y + bounds.height / 2 - 8, 16, 16);
+      this.deleteSpace = new Rectangle(bounds.x + bounds.width - 16,
+                                bounds.y + bounds.height / 2 - 8, 16, 16);
       buttonCollum = this.deleteSpace.width;
       gc.drawImage(GridWrapper.getDeleteButton16(), this.deleteSpace.x, this.deleteSpace.y);
     }
-    int line_height;
-    if (this.currentText.trim().isEmpty()) {
-      line_height = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum);
+    int lineHeight;
+    if (this.currentText.trim().isEmpty() && !isReadOnly) {
+      lineHeight = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum);
     } else {
-      line_height = wrapText(bounds, gc, this.currentText, 2, buttonCollum);
+      lineHeight = wrapText(bounds, gc, this.currentText, 2, buttonCollum);
     }
     
-    if(isReadOnly){
-      line_height = Math.max(line_height, AbstractGridCell.DEFAULT_CELL_HEIGHT);
+    if ( isReadOnly ) {
+      lineHeight = Math.max(lineHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
     }
-    item.setHeight(line_height);
-    this.editField = new Rectangle(bounds.x, bounds.y, bounds.width - buttonCollum, line_height);
-    if (bounds.height + 2 < this.editField.height || bounds.height-2 > this.editField.height) {
+    item.setHeight(lineHeight);
+    this.editField = new Rectangle(bounds.x, bounds.y, bounds.width - buttonCollum, lineHeight);
+    if (bounds.height + 2 < this.editField.height || bounds.height - 2 > this.editField.height) {
       this.grid.resizeRows();
     }
     // restore bg color
@@ -157,17 +166,64 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   }
 
   @Override
-  public void onMouseDown(MouseEvent e, org.eclipse.swt.graphics.Point relativeMouse, Rectangle cellBounds) {
-    if (this.showDelete && GridCellTextEditor.this.deleteSpace.contains(e.x, e.y) && e.button == 1) {
+  public void onMouseDown(MouseEvent error, Point relativeMouse, Rectangle cellBounds) {
+    if (this.showDelete 
+        && GridCellTextEditor.this.deleteSpace.contains(error.x, error.y) && error.button == 1) {
       delete();
-    } else if(!isReadOnly){
-      this.activate();
+    } else if ( !isReadOnly ) {
+      editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP |SWT.SHADOW_OUT);
+      editor.activate(new TextLocator(cellBounds));
+      editor.setTextColor(ColorConstants.black);
+      editor.getControl().setBackground(HOVER_COLOR);
+      editor.setTextFont(Display.getDefault().getSystemFont());
+      editor.setValue(this.currentText);
+      grid.getGrid().addMouseWheelListener(new MouseWheelListener() {
+        
+        @Override
+        public void mouseScrolled(MouseEvent error) {
+          editor.deactivate();
+        }
+      });
+      editor.getControl().addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusLost(FocusEvent error) {
+          editor.deactivate();
+          editorClosing();
+        }
+        
+        @Override
+        public void focusGained(FocusEvent error) {
+          editorOpening();
+        }
+      });
+      editor.addModifyListener(new ModifyListener() {
+
+        @Override
+        public void modifyText(ModifyEvent error) {
+          if (error.getSource() instanceof Text 
+              && !currentText.equals(((Text) error.widget).getText())) {
+            GridCellTextEditor.this.currentText = ((Text) error.widget).getText();
+            getPreferredHeight();
+            Rectangle rect = GridCellTextEditor.this.editField;
+            Text text = (Text) error.getSource();
+            updateDataModel(currentText);
+            onTextChange(GridCellTextEditor.this.currentText);
+            // if the size is determined to be larger than the text lines itself
+            // this the original size, will be displayed as long as it not
+            // overwritten by text
+            int editorHeight = text.getLineHeight() * text.getLineCount();
+            text.setBounds(rect.x, rect.y, rect.width, editorHeight);
+            grid.getGrid().redraw();
+          }
+        }
+      });
     }
   }
 
+  
   @Override
   public int getPreferredHeight() {
-    if(isReadOnly){
+    if ( isReadOnly ) {
       this.editField.height = Math.max(DEFAULT_CELL_HEIGHT , this.editField.height);
     }
     return this.editField.height;
@@ -185,65 +241,27 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
   @Override
   public void activate() {
-    this.editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP);
-    this.grid.setEditClient(this);
-    this.editor.activate(new TextLocator());
-    this.editor.setTextColor(ColorConstants.black);
-    this.editor.getControl().setBackground(this.bgColor);
-    this.editor.setTextFont(Display.getDefault().getSystemFont());
-    this.editor.setValue(this.currentText);
-    editorOpening();
-    this.editor.addDisposeListener(new DisposeListener() {
-
-      @Override
-      public void widgetDisposed(DisposeEvent e) {
-        if (!currentText.equals(((Text) e.widget).getText())) {
-          GridCellTextEditor.this.currentText = ((Text) e.widget).getText();
-          GridCellTextEditor.this.editField = ((Text) e.widget).getBounds();
-          GridCellTextEditor.this.grid.resizeRows();
-          updateDataModel(((Text) e.widget).getText());
-          updateDataModel(GridCellTextEditor.this.currentText);
-          
-        }
-
-        editorClosing();
-      }
-    });
-    this.editor.addModifyListener(new ModifyListener() {
-
-      @Override
-      public void modifyText(ModifyEvent e) {
-        if (e.getSource() instanceof Text && !currentText.equals(((Text) e.widget).getText())) {
-          GridCellTextEditor.this.currentText = ((Text) e.widget).getText();
-          getPreferredHeight();
-          Rectangle rect = GridCellTextEditor.this.editField;
-          Text text = (Text) e.getSource();
-
-          onTextChange(GridCellTextEditor.this.currentText);
-          // if the size is determined to be larger than the text lines itself
-          // this the original size, will be displayed as long as it not
-          // overwritten by text
-          int editorHeight = Math.max(rect.height, text.getLineHeight() * text.getLineCount());
-          text.setBounds(rect.x, rect.y, rect.width, editorHeight);
-        }
-      }
-    });
   }
 
   /**
    * This method does nothing by default it is called
    * when the editor is activated and can be used to execute actions 
-   * to prepare the dataModel
+   * to prepare the dataModel.
    */
   protected abstract void editorOpening();
 
   /**
    * This method does nothing by default it is called
    * when the editor is disposed and can be used to execute actions 
-   * to prepare the dataModel
+   * to prepare the dataModel.
    */
   protected abstract void editorClosing();
   
+  @Override
+  public void onFocusLost() {
+    // TODO Auto-generated method stub
+    super.onFocusLost();
+  }
   @Override
   public void cleanUp() {
     if (this.editor != null && !this.editor.getControl().isDisposed()) {
@@ -256,10 +274,12 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   public UUID getUUID() {
     return entryId;
   }
+  
   public void onTextChange(String newValue) {
     // do nothing by default
   }
 
+  
   @Override
   public void addCellButton(CellButton button) {
     // the delete Button is aded manually to allow a better handling of the
@@ -273,28 +293,18 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   }
 
   /**
-   * 
-   * @param e
-   */
-  @Override
-  public void onMouseUp(MouseEvent e) {
-
-    super.onMouseUp(e);
-  }
-
-  /**
-   * The abstract methode which is linked with the delete button note that if
-   * showDelete is set to false, this function is never called
+   * The abstract method which is linked with the delete button note that if
+   * showDelete is set to false, this function is never called.
    *
-   * @author Lukas
+   * @author Lukas Balzer
    *
    */
   public abstract void delete();
 
   /**
-   * This methode is called when ever a change is made to the displayed data
+   * This method is called when ever a change is made to the displayed data.
    * 
-   * @author Lukas
+   * @author Lukas Balzer
    *
    * @param newValue
    *          the changed text

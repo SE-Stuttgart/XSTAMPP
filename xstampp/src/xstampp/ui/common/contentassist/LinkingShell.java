@@ -26,23 +26,16 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
 public class LinkingShell {
 
-  private Control control;
-  private String[] literals;
-  private String[] labels;
-  private String[] descriptions;
+  private LinkProposal[] proposals;
   private IContentProposalListener listener;
   private Point mouseLoc;
   private Shell shell;
@@ -51,67 +44,74 @@ public class LinkingShell {
     this.mouseLoc = new Point(0, 0);
   }
 
-  public void setNextProposal(Control control, String[] literals, String[] labels, String[] descriptions) {
-    this.control = control;
-    this.literals = literals;
-    this.labels = labels;
-    this.descriptions = descriptions;
+  /**
+   * 
+   * @param proposalIds the UUID's of the proposal entries if available 
+   *                      this can be used to identify an entry
+   * @param literals the literals e.g. the ids of the proposed entries
+   * @param labels the titles or short descriptions of the proposals
+   * @param descriptions the descriptions, e.g. the case description
+   */
+  public void setNextProposal(LinkProposal[] proposals) {
+    this.proposals = proposals;
   }
 
   public void setMousePosition(Point mouseLoc) {
     this.mouseLoc = mouseLoc;
   }
 
+  /**
+   * this method constructs the linking shell if there are proposals available and promts an
+   * error when there are no proposals available.
+   * It also adds a listener that closes the shell if it's not longer the active window.
+   * It closes any existing linking shells constructed with this instance.
+   */
   public void createControl() {
     if (this.shell != null && !this.shell.isDisposed()) {
       this.shell.close();
     }
 
-    if (this.labels.length == 0) {
-      MessageDialog.openError(null, "No entrys available", "There are no entrys available for linking!");
+    if (this.proposals.length == 0) {
+      MessageDialog.openError(null,
+                  "No entrys available", "There are no entrys available for linking!");
       return;
     }
-    this.shell = new Shell(SWT.NO_TRIM | SWT.CLOSE | SWT.MIN);
+    this.shell = new Shell( SWT.NONE );
+    
     this.shell.setLayout(new FillLayout());
+    this.shell.setSize(200, 300);
+    this.shell.setLocation(this.mouseLoc.x, this.mouseLoc.y);
+    final Shell descShell = new Shell(SWT.NO_TRIM | SWT.CLOSE | SWT.MIN);
+    descShell.setLayout(new FillLayout());
+    descShell.setSize(200, 300);
+    descShell.setLocation(this.mouseLoc.x + 210, this.mouseLoc.y);
     this.shell.addShellListener(new ShellAdapter() {
       @Override
-      public void shellDeactivated(ShellEvent e) {
-        LinkingShell.this.shell.close();
+      public void shellDeactivated(ShellEvent error) {
+        if ( !descShell.isFocusControl() ) {
+          LinkingShell.this.shell.close();
+          descShell.close();
+        }
       }
 
     });
-
-    Composite parent = new Composite(this.shell, SWT.BORDER);
-    parent.setLayout(new FormLayout());
-    this.shell.setLocation(this.mouseLoc.x, this.mouseLoc.y);
-    FormData data = new FormData();
-    data.left = new FormAttachment(null, 5);
-    data.bottom = new FormAttachment(95);
-    data.top = new FormAttachment(5);
-    final List proposalList = new List(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.WRAP);
-    String[] entrys = new String[this.labels.length];
-    for (int i = 0; i < this.labels.length; i++) {
-      entrys[i] = this.literals[i] + " - " + this.labels[i];
+    
+   
+    final List proposalList = new List(shell, SWT.SINGLE | SWT.H_SCROLL |SWT.V_SCROLL | SWT.WRAP |SWT.BORDER_SOLID);
+    String[] entrys = new String[this.proposals.length];
+    for (int i = 0; i < this.proposals.length; i++) {
+      entrys[i] = this.proposals[i].getLabel();
     }
     proposalList.setItems(entrys);
-
-    proposalList.setLayoutData(data);
-    final Label description = new Label(parent, SWT.WRAP);
-    data = new FormData(300, 300);
-    data.left = new FormAttachment(proposalList, 5);
-    data.bottom = new FormAttachment(95);
-    data.top = new FormAttachment(5);
-    data.right = new FormAttachment(95);
-    description.setLayoutData(data);
-    this.shell.setSize(parent.computeSize(-1, 300));
-
+    final Label description = new Label(descShell, SWT.WRAP | SWT.SHADOW_OUT);
+    description.setBackground(new Color(null, 231, 240, 228));
     proposalList.addSelectionListener(new SelectionAdapter() {
 
       @Override
       public void widgetSelected(SelectionEvent e) {
         if (proposalList.getSelectionIndex() >= 0
-            && proposalList.getSelectionIndex() < LinkingShell.this.descriptions.length) {
-          description.setText(LinkingShell.this.descriptions[proposalList.getSelectionIndex()]);
+            && proposalList.getSelectionIndex() < LinkingShell.this.proposals.length) {
+          description.setText(LinkingShell.this.proposals[proposalList.getSelectionIndex()].getDescription());
         }
       }
     });
@@ -120,8 +120,8 @@ public class LinkingShell {
       @Override
       public void mouseHover(MouseEvent e) {
         if (proposalList.getSelectionIndex() >= 0
-            && proposalList.getSelectionIndex() < LinkingShell.this.descriptions.length) {
-          proposalList.setToolTipText(LinkingShell.this.labels[proposalList.getSelectionIndex()]);
+            && proposalList.getSelectionIndex() < LinkingShell.this.proposals.length) {
+          proposalList.setToolTipText(LinkingShell.this.proposals[proposalList.getSelectionIndex()].getLabel());
         }
       }
     });
@@ -130,32 +130,13 @@ public class LinkingShell {
 
       @Override
       public void mouseDoubleClick(MouseEvent e) {
+        System.out.println(proposalList.getSelectionIndex());
         if (proposalList.getSelectionIndex() >= 0
-            && proposalList.getSelectionIndex() < LinkingShell.this.descriptions.length) {
-          IContentProposal prop = new IContentProposal() {
-
-            @Override
-            public String getLabel() {
-              return getContent() + " - " + LinkingShell.this.labels[proposalList.getSelectionIndex()];
-            }
-
-            @Override
-            public String getDescription() {
-              return LinkingShell.this.descriptions[proposalList.getSelectionIndex()];
-            }
-
-            @Override
-            public int getCursorPosition() {
-              return 0;
-            }
-
-            @Override
-            public String getContent() {
-              return LinkingShell.this.literals[proposalList.getSelectionIndex()];
-            }
-          };
-          notifyListener(prop);
+            && proposalList.getSelectionIndex() < LinkingShell.this.proposals.length) {
+          
+          notifyListener(LinkingShell.this.proposals[proposalList.getSelectionIndex()]);
           LinkingShell.this.shell.close();
+          descShell.close();
         }
       }
     });
@@ -169,6 +150,7 @@ public class LinkingShell {
         }
         if (e.keyCode == SWT.ESC) {
           LinkingShell.this.shell.close();
+          descShell.close();
         }
 
       }
@@ -179,6 +161,7 @@ public class LinkingShell {
 
       }
     });
+    descShell.open();
     this.shell.open();
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -38,6 +38,15 @@ public interface ITableContentProvider<T extends ITableModel> {
    * @return all items
    */
   List<T> getAllItems();
+  
+  /**
+   * this getter is used to provide a String
+   * that can be displayed in case that there are
+   * no entries available
+   * 
+   * @return a message to inform that there are no entries available
+   */
+  String getEmptyMessage();
 
   /**
    * Returns all linked objects of an item.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
@@ -36,6 +35,7 @@ import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.ITableContentProvider;
+import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
 /**
@@ -56,7 +56,6 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0, 0, 0);
   private static final Color HAZARD_LINK_COLOR = new Color(Display.getCurrent(), 230, 20, 5);
 
-  private final String linkEmptyText = Messages.NotHazardous;
   private final UUID assignedId;
   private final T publicInterface;
   private final transient GridWrapper grid;
@@ -70,9 +69,8 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
 
     @Override
     public void proposalAccepted(IContentProposal proposal) {
-      GridCellLinking.this.grid.resizeRows();
       String text = proposal.getContent();
-      UUID linkId = GridCellLinking.this.toLinkable(text);
+      UUID linkId = ((LinkProposal)proposal).getProposalId();
       if (linkId != null) {
         GridCellLinking.this.publicInterface.addLink(assignedId, linkId);
       }
@@ -126,26 +124,8 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     this.assignedId = assignedId;
     this.publicInterface = publicInterface;
     this.grid = grid;
-
+    this.buttons = new ArrayList<>();
     this.buttonContainer = new CellButtonContainer();
-  }
-
-  /**
-   * Returns the UUID of an object of the generic type given by the interface implementation
-   * 
-   * @param linkableString a string which must be mappable to a link object
-   * @return the UUID of an object of the generic type given by the interface implementation 
-   */
-  private UUID toLinkable(final String linkableString) {
-    final List<? extends ITableModel> items = this.publicInterface.getAllItems();
-    for (ITableModel model : items) {
-      String tmp = this.publicInterface.getPrefix() + model.getNumber();
-      if (linkableString.equals(tmp)) {
-        return model.getId();
-      }
-    }
-    return null;
-
   }
 
   @Override
@@ -164,7 +144,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     Collections.sort(linkedItems);
 
     if (linkedItems.isEmpty()) {
-      gc.drawString(this.linkEmptyText, renderX + 2, renderY);
+      gc.drawString(this.publicInterface.getEmptyMessage(), renderX + 2, renderY);
     } else {
       this.buttonContainer.clearButtons();
       for(CellButton button: buttons){
@@ -243,25 +223,18 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     // remove all already linked items
     items.removeAll(linkedItems);
 
-    // Long descriptive string for using in the suggestion box
-    String[] options = new String[items.size()];
-    // Short descriptive string for displaying in the
-    // suggestions box
-    String[] labels = new String[items.size()];
-    // Long descripton
-    String[] descriptions = new String[items.size()];
+    LinkProposal[] proposals = new LinkProposal[items.size()];
     
     for (int i = 0; i < items.size(); i++) {
       String itemNumber = this.publicInterface.getPrefix() + items.get(i).getNumber();
       String itemTitle = items.get(i).getTitle();
-
-      options[i] = itemTitle;
-      labels[i] = itemNumber;
-      descriptions[i] = items.get(i).getDescription();
+      proposals[i] = new LinkProposal();
+      proposals[i].setProposalId(items.get(i).getId());
+      proposals[i].setLabel(itemNumber +" - " + itemTitle);
+      proposals[i].setDescription(items.get(i).getDescription());
     }
     
-    AutoCompleteField linkField = new AutoCompleteField(null,
-                        new TextContentAdapter(), options, labels, descriptions);
+    AutoCompleteField linkField = new AutoCompleteField(proposals);
 
     linkField.setPopupPosition(grid.getGrid().toDisplay(relativeMouse.x + cellBounds.x,
                                                     relativeMouse.y + cellBounds.y));

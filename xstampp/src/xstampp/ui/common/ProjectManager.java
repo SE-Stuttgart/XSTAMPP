@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-# * Copyright (c) 2013 ASTPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+# * Copyright (c) 2013, 2017 ASTPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac Jarkko, Heidenwag, Benedikt Markt, Jaqueline Patzek Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksey Babkovic, Aleksander
  * Zotov).

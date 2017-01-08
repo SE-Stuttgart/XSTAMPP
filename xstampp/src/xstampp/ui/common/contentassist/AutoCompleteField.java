@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -17,13 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * A custom autocomplete textfield adapter
@@ -53,38 +48,12 @@ public class AutoCompleteField {
    * @param descriptions
    *          long descriptions for eacht item
    */
-  public AutoCompleteField(final Control control, final IControlContentAdapter controlContentAdapter,
-      final String[] literals, final String[] labels, final String[] descriptions) {
-    this.contentProposalProvider = new ContentProposalProvider(literals.clone(), labels, descriptions);
-    this.contentProposalProvider.setFiltering(true);
-
-//    this.contentProposalAdapter = new LinkingCommandAdapter(control, controlContentAdapter,
-//        this.contentProposalProvider, null, null, false);
+  public AutoCompleteField(LinkProposal[] proposals) {
     this.listeners = new ArrayList<>();
-//    
-//    setProposalListener(new IContentProposalListener() {
-//
-//      @Override
-//      public void proposalAccepted(IContentProposal proposal) {
-//        AutoCompleteField.this.closePopup();
-//
-//      }
-//    });
-    shell.setNextProposal(control, literals, labels, descriptions);
+    shell.setNextProposal(proposals);
   
   }
-
-  /**
-   * 
-   * @author Benedikt Markt
-   * 
-   * @param proposals
-   *          a list of proposals
-   */
-  public void setProposals(final String[] proposals) {
-    this.contentProposalProvider.setProposals(proposals);
-  }
-
+  
   /**
    * 
    * @author Benedikt Markt
@@ -121,9 +90,6 @@ public class AutoCompleteField {
    *          mouse
    */
   public void setPopupPosition(Point relativeMouse) {
-//    if (this.contentProposalAdapter != null && !this.contentProposalAdapter.getControl().isDisposed()) {
-//      this.getContentProposalAdapter().getControl().setLocation(mouseLoc);
-//    }
     shell.setMousePosition(relativeMouse);
   }
 
