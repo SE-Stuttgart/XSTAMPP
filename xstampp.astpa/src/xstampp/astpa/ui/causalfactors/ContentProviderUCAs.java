@@ -78,4 +78,9 @@ public class ContentProviderUCAs implements ITableContentProvider<ICorresponding
     return UnsafeControlActionsView.UCA1;
   }
 
+  @Override
+  public String getEmptyMessage() {
+    return ""; //$NON-NLS-1$
+  }
+
 }

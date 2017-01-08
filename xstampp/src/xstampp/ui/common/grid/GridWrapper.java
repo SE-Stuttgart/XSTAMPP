@@ -167,7 +167,9 @@ public class GridWrapper {
     @Override
     public void mouseMove(MouseEvent e) {
       IGridCell cell = this.getCellFromMouse(e);
-
+      if(cell != null){
+//        actualGrid.setToolTipText(cell.getToolTip(new Point(e.x, e.y)));
+      }
       this.grid.setHoveredCell(cell);
     }
   }

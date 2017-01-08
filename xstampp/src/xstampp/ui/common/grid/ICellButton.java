@@ -59,4 +59,6 @@ public interface ICellButton {
    * 
    */
   void onButtonDown(Point relativeMouse, Rectangle cellBounds);
+
+  String setToolTip(Point point);
 }

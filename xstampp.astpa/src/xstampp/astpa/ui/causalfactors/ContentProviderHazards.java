@@ -16,6 +16,7 @@ package xstampp.astpa.ui.causalfactors;
 import java.util.List;
 import java.util.UUID;
 
+import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
@@ -63,8 +64,10 @@ public class ContentProviderHazards implements ITableContentProvider<ITableModel
 	@Override
 	public void addLink(final UUID item1, final UUID item2) {
 	  CausalFactorEntryData data = new CausalFactorEntryData(entry.getId());
-	  for(UUID id : entry.getHazardIds()){
-	    data.addHazardId(id);
+	  if(entry.getHazardIds() != null){
+  	  for(UUID id : entry.getHazardIds()){
+  	    data.addHazardId(id);
+  	  }
 	  }
 	  data.addHazardId(item2);
 		this.caInterface.changeCausalEntry(componentId,factorId, data);
@@ -84,6 +87,11 @@ public class ContentProviderHazards implements ITableContentProvider<ITableModel
   @Override
   public String getPrefix() {
     return HAZARD_ID_PREFIX;
+  }
+
+  @Override
+  public String getEmptyMessage() {
+    return Messages.NotHazardous;
   }
 
 }

@@ -29,6 +29,8 @@ import org.eclipse.swt.graphics.Rectangle;
 public class CellButtonContainer {
 
   private List<ICellButton> buttons;
+  private List<ICellButton> buttonColumn;
+  private Rectangle bounds;
 
   /**
    * Ctor.
@@ -38,6 +40,8 @@ public class CellButtonContainer {
    */
   public CellButtonContainer() {
     this.buttons = new ArrayList<ICellButton>();
+    this.buttonColumn = new ArrayList<ICellButton>();
+    this.bounds = new Rectangle(4,4,4,4);
   }
 
   /**
@@ -51,25 +55,50 @@ public class CellButtonContainer {
    *          the GC.
    */
   public void paintButtons(GridCellRenderer renderer, GC gc) {
+    Rectangle cellBounds = renderer.getBounds();
+    if(buttonColumn.size() > 0){
+      int columnTopY = bounds.y;
+      int columnX = cellBounds.width - this.bounds.width;
+      for(ICellButton button : buttonColumn){
+        button.getBounds().x = columnX;
+        button.getBounds().y = columnTopY;
+        columnTopY += button.getBounds().height + bounds.y;
+      }
+    }
     for (int i = 0; i < this.buttons.size(); i++) {
       ICellButton button = this.buttons.get(i);
-
-      button.onPaint(gc, renderer.getBounds());
+      button.onPaint(gc, cellBounds);
     }
   }
 
   /**
-   * Add a button to the cell.
+   * Adds a button to the cell container which is placed in a button column
+   * at the right border of cell.
+   * for that the x and y values are adapted each time the button is drawn
    * 
-   * @author Patrick Wickenhaeuser
+   * @author Patrick Wickenhaeuser, Lukas Balzer
    * 
    * @param button
    *          the new button.
    */
-  public void addCellButton(ICellButton button) {
-    this.buttons.add(button);
+  public void addColumButton(ICellButton button) {
+    buttonColumn.add(button);
+    this.bounds.width = Math.max(this.bounds.width, button.getBounds().width);
+    this.bounds.height += button.getBounds().height + bounds.y;
+    addCellButton(button);
   }
 
+  
+  /**
+   * Adds a normal Cell button which is than printed in the
+   * {@link #paintButtons(GridCellRenderer, GC)} method
+   * 
+   * @param button
+   *          the new button
+   */
+  public void addCellButton(ICellButton button){
+    this.buttons.add(button);
+  }
   /**
    * Checks if any buttons is hit.
    * 
@@ -102,7 +131,9 @@ public class CellButtonContainer {
    * 
    */
   public void clearButtons() {
+    this.bounds = new Rectangle(4,4,4,4);
     this.buttons.clear();
+    this.buttonColumn.clear();
   }
 
   /**
@@ -114,5 +145,14 @@ public class CellButtonContainer {
    */
   public boolean isEmpty() {
     return this.buttons.size() == 0;
+  }
+
+  public String getToolTip(Point point) {
+    if(buttons != null){
+      for (ICellButton button : buttons) {
+        return button.setToolTip(point);
+      }
+    }
+    return null;
   }
 }

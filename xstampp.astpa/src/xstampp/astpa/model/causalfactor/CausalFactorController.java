@@ -32,7 +32,6 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
 
 /**
@@ -59,7 +58,6 @@ public class CausalFactorController implements ICausalFactorController {
 	 */
 	public CausalFactorController() {
 		this.links = new ArrayList<>();
-		this.causalComponents = new HashMap<>();
 	}
 
 	@Override
@@ -81,8 +79,10 @@ public class CausalFactorController implements ICausalFactorController {
 	@Override
 	public List<UUID> getLinkedUCAList(){
 	  List<UUID> list = new ArrayList<>();
-	  for(CausalCSComponent comp: causalComponents.values()){
-	    list.addAll(comp.getLinkedUCAList());
+	  if(causalComponents != null){
+  	  for(CausalCSComponent comp: causalComponents.values()){
+  	    list.addAll(comp.getLinkedUCAList());
+  	  }
 	  }
 	  return list;
 	}
@@ -128,16 +128,18 @@ public class CausalFactorController implements ICausalFactorController {
   }
 
   @Override
-  public boolean removeCausalFactor(UUID component, UUID causalFactor) {
-    if(component == null){
-      for(CausalCSComponent comp: causalComponents.values()){
-        if(comp.removeCausalFactor(causalFactor)){
-          return true;
-        }
+  public boolean removeCausalFactor(UUID componentId, UUID causalFactor) {
+    if(causalComponents != null){
+      if(componentId == null){
+        for(CausalCSComponent comp: causalComponents.values()){
+          if(comp.removeCausalFactor(causalFactor)){
+            return true;
+          }
+        } 
+      }else if(causalComponents.containsKey(componentId)){
+        CausalCSComponent comp = this.causalComponents.get(componentId);
+        return comp.removeCausalFactor(causalFactor);
       }
-    }
-    if(causalComponents != null && causalComponents.containsKey(component)){
-      return this.causalComponents.get(component).removeCausalFactor(causalFactor);
     }
     return false;
   }
@@ -168,7 +170,7 @@ public class CausalFactorController implements ICausalFactorController {
   }
   
   private CausalFactor internal_getCausalFactor(UUID componentId,UUID causalFactorId){
-    if(this.causalComponents.containsKey(componentId)){
+    if(causalComponents != null && this.causalComponents.containsKey(componentId)){
       return causalComponents.get(componentId).getCausalFactor(causalFactorId);
     }
     return null;
@@ -211,16 +213,21 @@ public class CausalFactorController implements ICausalFactorController {
       links.clear();
       links = null;
     }
-    Set<UUID> removeList = this.causalComponents.keySet();
-    for (IRectangleComponent child : children) {
-      if(this.causalComponents.containsKey(child.getId())){
-        
-        removeList.remove(child.getId());
-        this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap,hazAccController, child,allRefinedRules, allUnsafeControlActions);
+    if(causalComponents != null){
+      Set<UUID> removeList = this.causalComponents.keySet();
+      for (IRectangleComponent child : children) {
+        if(this.causalComponents.containsKey(child.getId())){
+          
+          removeList.remove(child.getId());
+          this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap,hazAccController, child,allRefinedRules, allUnsafeControlActions);
+        }
       }
-    }
-    for(UUID id: removeList){
-      this.causalComponents.remove(id);
+      for(UUID id: removeList){
+        this.causalComponents.remove(id);
+      }
+      if(this.causalComponents.isEmpty()){
+        causalComponents = null;
+      }
     }
   }
 	

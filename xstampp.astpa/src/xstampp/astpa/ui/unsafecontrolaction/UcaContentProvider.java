@@ -16,6 +16,7 @@ package xstampp.astpa.ui.unsafecontrolaction;
 import java.util.List;
 import java.util.UUID;
 
+import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.ui.common.contentassist.ITableContentProvider;
@@ -64,5 +65,10 @@ public class UcaContentProvider implements ITableContentProvider<ITableModel> {
   @Override
   public String getPrefix() {
     return HAZARD_ID_PREFIX;
+  }
+
+  @Override
+  public String getEmptyMessage() {
+    return Messages.NotHazardous;
   }
 }

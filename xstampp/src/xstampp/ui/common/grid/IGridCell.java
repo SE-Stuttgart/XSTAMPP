@@ -161,4 +161,6 @@ public interface IGridCell {
    */
   void activate();
 
+  String getToolTip(Point point);
+
 }

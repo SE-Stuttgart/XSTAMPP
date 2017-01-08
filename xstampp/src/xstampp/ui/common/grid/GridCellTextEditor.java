@@ -171,7 +171,10 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
         && GridCellTextEditor.this.deleteSpace.contains(error.x, error.y) && error.button == 1) {
       delete();
     } else if ( !isReadOnly ) {
-      editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP |SWT.SHADOW_OUT);
+      if ( editor == null) {
+        editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP);
+      }
+      
       editor.activate(new TextLocator(cellBounds));
       editor.setTextColor(ColorConstants.black);
       editor.getControl().setBackground(HOVER_COLOR);

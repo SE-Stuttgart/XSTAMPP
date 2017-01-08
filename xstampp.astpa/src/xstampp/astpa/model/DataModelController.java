@@ -216,7 +216,7 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public void lockUpdate(){
 		this.refreshLock = true;
-		DataModelController.LOGGER.debug("setData update lock to prevent system lacks");
+		DataModelController.LOGGER.debug("set data update lock to prevent system lacks");
 	}
 	
 	public boolean moveEntry(boolean moveUp,UUID id,ObserverValue value){
@@ -1228,6 +1228,7 @@ public class DataModelController extends AbstractDataModel implements
 
 		if(this.controlActionController.setUcaDescription(
 				unsafeControlActionId, description)){
+		  System.out.println(description);
 			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 			return true;
 		}

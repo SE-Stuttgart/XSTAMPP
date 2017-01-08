@@ -70,8 +70,10 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 	@Override
 	public List<AbstractLtlProvider> getLinkedItems(final UUID itemId) {
 	  List<AbstractLtlProvider> linkedScenarios = new ArrayList<>();
-	  for(UUID scenarios : entry.getScenarioLinks()){
-	    linkedScenarios.add(caInterface.getRefinedRule(scenarios));
+	  if(entry.getScenarioLinks() != null){
+  	  for(UUID scenarios : entry.getScenarioLinks()){
+  	    linkedScenarios.add(caInterface.getRefinedRule(scenarios));
+  	  }
 	  }
 		return linkedScenarios;
 	}
@@ -79,7 +81,10 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 	@Override
 	public void addLink(final UUID item1, final UUID item2) {
 	  CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-	  List<UUID> ids = new ArrayList<>(entry.getScenarioLinks());
+	  List<UUID> ids = new ArrayList<>();
+	  if(entry.getScenarioLinks() != null){
+	    ids.addAll(entry.getScenarioLinks());
+	  }
 	  ids.add(item2);
 	  data.setScenarioLinks(ids);
 		this.caInterface.changeCausalEntry(componentId,factorId, data);
@@ -97,6 +102,11 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
   @Override
   public String getPrefix() {
     return "SC-";
+  }
+
+  @Override
+  public String getEmptyMessage() {
+    return "";
   }
 
 }

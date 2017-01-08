@@ -17,7 +17,7 @@ import xstampp.ui.common.grid.GridCellButton;
  * @author Patrick Wickenhaeuser
  * 
  */
-public class CellButtonAddCausalFactor extends GridCellButton {
+public class GridCellButtonAddCausalFactor extends GridCellButton {
 
 	private ICausalComponent component;
   private ICausalFactorDataModel dataInterface;
@@ -30,7 +30,7 @@ public class CellButtonAddCausalFactor extends GridCellButton {
 	 * @param component
 	 *            the component the add buttons adds causal factors to.
 	 */
-	public CellButtonAddCausalFactor(ICausalComponent component,ICausalFactorDataModel dataInterface) {
+	public GridCellButtonAddCausalFactor(ICausalComponent component,ICausalFactorDataModel dataInterface) {
 		super(Messages.AddNewCausalFactor);
 
 		this.component = component;

@@ -1,22 +1,21 @@
 package xstampp.astpa.ui.causalfactors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.nebula.widgets.grid.Grid;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.ui.common.contentassist.AutoCompleteField;
+import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.CellButton;
 import xstampp.ui.common.grid.GridWrapper;
 
@@ -29,7 +28,7 @@ public class CellButtonImportConstraint extends CellButton {
   private ICausalFactorDataModel dataModel;
 
   public CellButtonImportConstraint(Grid grid, ICausalFactorEntry entry,UUID componentId,UUID factorId,ICausalFactorDataModel dataInterface) {
-    super(new Rectangle(40, 1,
+    super(new Rectangle(-1, -1,
         GridWrapper.getLinkButton16().getBounds().width,
         GridWrapper.getLinkButton16().getBounds().height),
     GridWrapper.getLinkButton16());
@@ -48,21 +47,19 @@ public class CellButtonImportConstraint extends CellButton {
     if (safetyConstraints.size() <= 0) {
       return;
     }
-    String[] labels = new String[safetyConstraints.size()];
-    String[] description = new String[safetyConstraints.size()];
-    String[] literals = new String[safetyConstraints.size()];
+    List<LinkProposal> proposals = new ArrayList<>();
     String tmp;
     for (int i = 0; i < safetyConstraints.size(); i++) {
       tmp = safetyConstraints.get(i).getText();
-      if (tmp.length() >= 1) {
-        labels[i]=tmp.substring(0, Math.min(tmp.length(), 40))+  "...";
-        description[i]=tmp;
-        literals[i]=new String();
+      if (tmp != null && tmp.length() >= 1) {
+        LinkProposal proposal = new LinkProposal();
+        proposal.setLabel(tmp.substring(0, Math.min(tmp.length(), 40))+  "...");
+        proposal.setDescription(tmp);
+        proposals.add(proposal);
       }
     }
 
-    AutoCompleteField scLinking = new AutoCompleteField(null,
-        new TextContentAdapter(), literals, labels,description);
+    AutoCompleteField scLinking = new AutoCompleteField(proposals.toArray(new LinkProposal[0]));
     scLinking.setProposalListener(
         new IContentProposalListener() {
 

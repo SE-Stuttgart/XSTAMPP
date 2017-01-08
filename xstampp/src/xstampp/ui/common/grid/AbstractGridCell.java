@@ -323,4 +323,12 @@ public abstract class AbstractGridCell implements IGridCell {
     return (int) recursionEnd;
   }
 
+  @Override
+  public String getToolTip(Point point) {
+    if(buttonContainer != null)
+    {
+      return buttonContainer.getToolTip(point);
+    }
+    return null;
+  }
 }

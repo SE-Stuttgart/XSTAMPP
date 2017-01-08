@@ -19,9 +19,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
@@ -31,11 +28,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
-import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
-import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.ITableContentProvider;
-import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
 /**
@@ -55,27 +49,16 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   private static final int DELETE_LINK_BUTTON_SIZE = 16;
   private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0, 0, 0);
   private static final Color HAZARD_LINK_COLOR = new Color(Display.getCurrent(), 230, 20, 5);
-
+  
   private final UUID assignedId;
   private final T publicInterface;
   private final transient GridWrapper grid;
   private CellButtonContainer buttonContainer;
   private List<CellButton> buttons;
 
-  private int lines = 1;
+  private int lines;
   private int lastLines = 1;
 
-  private final class PropopsalListener implements IContentProposalListener {
-
-    @Override
-    public void proposalAccepted(IContentProposal proposal) {
-      String text = proposal.getContent();
-      UUID linkId = ((LinkProposal)proposal).getProposalId();
-      if (linkId != null) {
-        GridCellLinking.this.publicInterface.addLink(assignedId, linkId);
-      }
-    }
-  }
 
   /**
    * Delete button display while hovering over a linking cell, used to remove
@@ -124,7 +107,9 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     this.assignedId = assignedId;
     this.publicInterface = publicInterface;
     this.grid = grid;
+    this.lines = 1;
     this.buttons = new ArrayList<>();
+    buttons.add(new CellButtonLinking<T>(grid, publicInterface, assignedId));
     this.buttonContainer = new CellButtonContainer();
   }
 
@@ -142,17 +127,17 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
 
     List<? extends ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
     Collections.sort(linkedItems);
-
+    this.buttonContainer.clearButtons();
+    for(CellButton button: buttons){
+      this.buttonContainer.addColumButton(button);
+    }
     if (linkedItems.isEmpty()) {
       gc.drawString(this.publicInterface.getEmptyMessage(), renderX + 2, renderY);
     } else {
-      this.buttonContainer.clearButtons();
-      for(CellButton button: buttons){
-        this.buttonContainer.addCellButton(button);
-      }
+     
       int xOff = 0;
       int yOff = 0;
-      this.lines = 1;
+      int tmpLines = 1;
       boolean hovered = this.grid.getHoveredCell() == GridCellLinking.this;
       for (final ITableModel model : linkedItems) {
 
@@ -161,7 +146,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
         int textWidth = gc.getFontMetrics().getAverageCharWidth() * linkText.length();
 
         if (xOff >= (renderWidth - 40 - textWidth)) {
-          this.lines++;
+          tmpLines++;
           xOff = 0;
           yOff += AbstractGridCell.DEFAULT_CELL_HEIGHT;
 
@@ -182,20 +167,15 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
         xOff += GridCellLinking.DELETE_LINK_BUTTON_SIZE;
 
       }
-
-      if (this.lines != this.lastLines) {
-        this.lastLines = this.lines;
-        this.grid.resizeRows();
+      
+      if (this.lines != tmpLines) {
+        this.lines = tmpLines;
+        item.setHeight(lines * AbstractGridCell.DEFAULT_CELL_HEIGHT);
       }
 
-      if (hovered) {
-        this.buttonContainer.paintButtons(renderer, gc);
-      }
     }
-
-    final int height = 18;
+    this.buttonContainer.paintButtons(renderer, gc);
     gc.setAntialias(SWT.ON);
-    gc.drawImage(GridWrapper.getLinkButton16(), (renderX + renderWidth) - height - 4, renderY + 1);
   }
 
   @Override
@@ -207,50 +187,11 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
       // don't link if a delete button is hit.
       return;
     }
-  
-    List<? extends ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
-
-    /*
-     * Prevent opening linking popup while another cell is focused and a delete
-     * button is pressed. While another cell is active the button container is
-     * empty at the time the cell is activated.
-     */
-    if (this.buttonContainer.isEmpty() && !linkedItems.isEmpty()) {
-      return;
-    }
-   
-    List<? extends ITableModel> items = this.publicInterface.getAllItems();
-    // remove all already linked items
-    items.removeAll(linkedItems);
-
-    LinkProposal[] proposals = new LinkProposal[items.size()];
-    
-    for (int i = 0; i < items.size(); i++) {
-      String itemNumber = this.publicInterface.getPrefix() + items.get(i).getNumber();
-      String itemTitle = items.get(i).getTitle();
-      proposals[i] = new LinkProposal();
-      proposals[i].setProposalId(items.get(i).getId());
-      proposals[i].setLabel(itemNumber +" - " + itemTitle);
-      proposals[i].setDescription(items.get(i).getDescription());
-    }
-    
-    AutoCompleteField linkField = new AutoCompleteField(proposals);
-
-    linkField.setPopupPosition(grid.getGrid().toDisplay(relativeMouse.x + cellBounds.x,
-                                                    relativeMouse.y + cellBounds.y));
-
-    if (this.grid.getGrid().getDisplay() != null) {
-      linkField.setProposalListener(new PropopsalListener());
-      linkField.openPopup();
-    } else {
-      MessageDialog.openError(null, "Widget is disposed",
-          "for some reason the Platform can't find a suficient display!");
-    }
   }
 
   @Override
   public int getPreferredHeight() {
-    return this.lines * AbstractGridCell.DEFAULT_CELL_HEIGHT;
+    return lines * AbstractGridCell.DEFAULT_CELL_HEIGHT;
   }
 
   @Override
@@ -260,7 +201,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
 
   @Override
   public void addCellButton(CellButton button) {
-    if(buttons == null){
+    if ( buttons == null ) {
       buttons = new ArrayList<>();
     }
     this.buttons.add(button);

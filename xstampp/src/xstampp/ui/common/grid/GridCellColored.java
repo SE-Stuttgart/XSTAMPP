@@ -111,7 +111,7 @@ public class GridCellColored extends AbstractGridCell {
 
   @Override
   public void addCellButton(CellButton button) {
-    this.getButtonContainer().addCellButton(button);
+    this.getButtonContainer().addColumButton(button);
   }
 
   @Override

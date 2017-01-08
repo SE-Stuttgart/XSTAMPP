@@ -62,4 +62,9 @@ public class CellButton implements ICellButton {
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     Logger.getRootLogger().debug("Button pressed onButtonDown"); //$NON-NLS-1$
   }
+
+  @Override
+  public String setToolTip(Point point) {
+    return null;
+  }
 }

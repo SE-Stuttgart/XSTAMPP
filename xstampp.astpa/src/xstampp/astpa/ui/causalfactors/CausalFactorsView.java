@@ -50,13 +50,14 @@ import xstampp.ui.common.grid.GridCellLinking;
 import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.GridWrapper;
+import xstampp.ui.common.grid.IGridCell;
 import xstampp.ui.editors.AbstractFilteredEditor;
 
 /**
  * The view to add causal factors to control structure components, edit them and
  * add links to the related hazards.
  * 
- * @author Benedikt Markt, Patrick Wickenhaeuser
+ * @author Benedikt Markt, Patrick Wickenhaeuser, Lukas Balzer
  */
 public class CausalFactorsView extends AbstractFilteredEditor{
 
@@ -90,7 +91,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 
 		public NewConstraintButton(UUID componentId, UUID factorId,UUID entryId) {
 			super(new Rectangle(
-          4, 1,
+          -1, -1,
           GridWrapper.getAddButton16().getBounds().width,
           GridWrapper.getAddButton16().getBounds().height),
           GridWrapper.getAddButton16());
@@ -235,7 +236,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
            * or linkable
            */
           if(entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink())){
-            String ucaDescription = ucaMap.get(entry.getUcaLink()).getDescription();
+            String ucaDescription = ucaMap.get(entry.getUcaLink()).getTitle() + "\n"+ucaMap.get(entry.getUcaLink()).getDescription();
             entryRow.addCell(new CellEditorCausalEntry(grid, dataInterface, ucaDescription,
                                               component.getId(), factor.getId(), entry.getId()));
             List<UUID> hazIds = dataInterface.getLinksOfUCA(entry.getUcaLink());
@@ -243,10 +244,13 @@ public class CausalFactorsView extends AbstractFilteredEditor{
             for(ITableModel hazard : dataInterface.getHazards(hazIds)){
               linkingString += "H-" +hazard.getNumber() + ",";
             }
-            entryRow.addCell(new GridCellText(linkingString.substring(0, linkingString.length()-2)));
-            entryRow.addCell(new GridCellLinking<ContentProviderScenarios>(
+            entryRow.addCell(new GridCellText(linkingString.substring(0, linkingString.length()-1)));
+            
+            IGridCell scenarioCell =new GridCellLinking<ContentProviderScenarios>(
                 factor.getId(), new ContentProviderScenarios(dataInterface, component.getId(), factor.getId(), entry),
-                this.grid));
+                this.grid);
+            scenarioCell.addCellButton(new CellButtonAddScenario(entry, component.getId(), factor.getId(), dataInterface));
+            entryRow.addCell(scenarioCell);
             
           }else{
             entryRow.addCell(new CellEditorCausalEntry(grid, dataInterface, new String(),
@@ -255,7 +259,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
     						factor.getId(), new ContentProviderHazards(dataInterface, component.getId(), factor.getId(), entry),
     						this.grid));
 
-            entryRow.addCell(new GridCellText());
+            entryRow.addCell(new GridCellText(""));
           }
           
           
@@ -278,7 +282,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
         }
         //A new row is added to the factorRow for adding additional entries
         GridRow addEntriesRow = new GridRow(1);
-        addEntriesRow.addCell(new CellButtonAddUCAEntry(component, factor.getId(), dataInterface,grid.getGrid()));
+        addEntriesRow.addCell(new GridCellButtonAddUCAEntry(component, factor.getId(), dataInterface,grid.getGrid()));
         for(int i=1; i<5;i++){
           addEntriesRow.addCell(new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
         }
@@ -288,7 +292,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
       
 			
 			GridRow buttonRow = new GridRow(1);
-			buttonRow.addCell(new CellButtonAddCausalFactor(component,dataInterface));
+			buttonRow.addCell(new GridCellButtonAddCausalFactor(component,dataInterface));
 
 			csRow.addChildRow(buttonRow);
 		}
@@ -336,6 +340,9 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 		}else{
 			switch ((ObserverValue) updatedValue) {
 			case CONTROL_STRUCTURE:
+			case UNSAFE_CONTROL_ACTION:
+			case HAZARD:
+			case Extended_DATA:
 			case CAUSAL_FACTOR:
 				Display.getDefault().syncExec(new Runnable() {
 	

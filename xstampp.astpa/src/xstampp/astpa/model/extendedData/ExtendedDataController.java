@@ -44,9 +44,6 @@ public class ExtendedDataController implements IExtendedDataController {
     private int ruleIndex;
     
     public ExtendedDataController() {
-      rules = new ArrayList<>();
-      scenarios= new ArrayList<>();
-      customLTLs = new ArrayList<>();
       ruleIndex = 0;
     }
     
@@ -63,10 +60,7 @@ public class ExtendedDataController implements IExtendedDataController {
       
     }
     private UUID addRuleEntry(List<AbstractLtlProvider> list,AbstractLtlProviderData data,UUID linkedControlActionID, String type){
-      if(data != null && linkedControlActionID != null && validateType(type)){
-        if(list == null){
-          list= new ArrayList<>();
-        }
+      if(list != null && data != null && validateType(type)){
         
         RefinedSafetyRule safetyRule = new RefinedSafetyRule(data,linkedControlActionID,type, ruleIndex);
         ruleIndex++;
@@ -86,10 +80,19 @@ public class ExtendedDataController implements IExtendedDataController {
       if(ruleType != null){
         switch(ruleType){
         case CUSTOM_LTL:
+          if(customLTLs == null){
+            customLTLs = new ArrayList<>();
+          }
           return addRuleEntry(customLTLs, data, caID, type);
         case REFINED_RULE:
+          if(rules == null){
+            rules = new ArrayList<>();
+          }
           return addRuleEntry(rules, data, caID, type);
         case SCENARIO:
+          if(scenarios == null){
+            scenarios = new ArrayList<>();
+          }
           return addRuleEntry(scenarios, data, caID, type);
         }
       }
@@ -150,19 +153,13 @@ public class ExtendedDataController implements IExtendedDataController {
                                                         boolean includeLTL){
 
       List<AbstractLtlProvider> tmp = new ArrayList<>();
-      if(rules == null){
-        rules = new ArrayList<>();
-      }else if(includeRules){
+      if(rules != null && includeRules){
         tmp.addAll(rules);
       }
-      if(scenarios == null){
-        scenarios = new ArrayList<>();
-      }else if(includeScenarios){
+      if(scenarios != null && includeScenarios){
         tmp.addAll(scenarios);
       }
-      if(customLTLs == null){
-        customLTLs = new ArrayList<>();
-      }else if(includeLTL){
+      if(customLTLs != null && includeLTL){
         tmp.addAll(customLTLs);
       }
       return tmp;
@@ -184,19 +181,25 @@ public class ExtendedDataController implements IExtendedDataController {
     }
     
     private boolean removeEntry(List<AbstractLtlProvider> list, boolean removeAll, UUID id){
-      if(removeAll){
-        //if removeAll than the rule index is set to 0 so the next rule is added with the index 0
-        list = new ArrayList<>();
-      }else if(list != null){
-        // the rule which should be removed is searched for in both the 
-        // general rules list and in the control actions
-        for (AbstractLtlProvider refinedSafetyRule : list) {
-          if(refinedSafetyRule.getRuleId().equals(id)){
-            return list.remove(refinedSafetyRule);
+      boolean result = false;
+      if(list != null && removeAll){
+        if(removeAll){
+          //if removeAll than the rule index is set to 0 so the next rule is added with the index 0
+          list.clear();
+        }else{
+          // the rule which should be removed is searched for in both the 
+          // general rules list and in the control actions
+          for (AbstractLtlProvider refinedSafetyRule : list) {
+            if(refinedSafetyRule.getRuleId().equals(id)){
+              result = list.remove(refinedSafetyRule);
+            }
           }
         }
+        if(list.isEmpty()){
+          list = null;
+        }
       }
-      return false;
+      return result;
     }
     
     @Override

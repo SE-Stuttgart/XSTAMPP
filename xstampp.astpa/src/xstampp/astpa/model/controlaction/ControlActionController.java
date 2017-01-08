@@ -406,16 +406,14 @@ public class ControlActionController {
 	 * @return the current id
 	 */
 	public int getUCANumber(UUID ucaID){
-	  
-		int counter = 0;
 		for (ControlAction controlAction : this.controlActions) {
-			for (ITableModel unsafeControlAction : controlAction
+			for (UnsafeControlAction unsafeControlAction : controlAction
 					.getInternalUnsafeControlActions()) {
 				boolean isSearched = unsafeControlAction.getId().equals(ucaID);
-				counter++;
-				if(isSearched && unsafeControlAction.getNumber() < 0){
-					return counter;
-				}else if(isSearched){
+				if(isSearched){
+				  if(unsafeControlAction.getNumber() < 0){
+				    assignUCANumbers();
+				  }
 				  return unsafeControlAction.getNumber();
 				}
 			}
@@ -423,6 +421,17 @@ public class ControlActionController {
 		return -1;
 	}
 	
+	private void assignUCANumbers(){
+	  int counter = 0;
+    for (ControlAction controlAction : this.controlActions) {
+      for (UnsafeControlAction unsafeControlAction : controlAction
+          .getInternalUnsafeControlActions()) {
+        counter++;
+        unsafeControlAction.setNumber(counter);
+        
+      }
+    }
+	}
 	/**
 	 * Sets the corresponding safety constraint of the unsafe control action
 	 * which is identified by the given id
@@ -580,6 +589,7 @@ public class ControlActionController {
 	 */
 	public void prepareForSave(ExtendedDataController extendedData) {
 		moveRulesInCA();
+		assignUCANumbers();
 		for (ControlAction controlAction : this.controlActions) {
 			controlAction.prepareForSave(extendedData);
 			for (UnsafeControlAction unsafeControlAction : controlAction

@@ -159,7 +159,7 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 
   @Override
   public String getTitle() {
-    return "UCA1."+number;
+    return "UCA1."+getNumber();
   }
 
 }

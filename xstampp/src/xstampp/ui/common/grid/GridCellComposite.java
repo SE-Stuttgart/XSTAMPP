@@ -20,6 +20,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -202,6 +203,12 @@ public class GridCellComposite extends Composite implements IGridCell {
   @Override
   public GridRow getGridRow() {
     return this.row;
+  }
+
+  @Override
+  public String getToolTip(Point point) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
