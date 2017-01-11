@@ -155,4 +155,8 @@ public class CellButtonContainer {
     }
     return null;
   }
+  
+  public Rectangle getBounds(){
+    return bounds;
+  }
 }

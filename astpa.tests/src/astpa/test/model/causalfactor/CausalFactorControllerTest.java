@@ -18,7 +18,7 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
@@ -58,7 +58,7 @@ public class CausalFactorControllerTest {
     ucaId1 =((DataModelController)dataModel).addUnsafeControlAction(UUID.randomUUID(), "", UnsafeControlActionType.GIVEN_INCORRECTLY);
     AbstractLtlProviderData data = new AbstractLtlProviderData();
     data.addRelatedUcas(ucaId1);
-    scenarioId1 = dataModel.addRuleEntry(RuleType.SCENARIO, new AbstractLtlProviderData()
+    scenarioId1 = dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, new AbstractLtlProviderData()
                                       , null, IValueCombie.TYPE_ANYTIME);
     this.dataModel = dataModel;
   }

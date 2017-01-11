@@ -105,11 +105,6 @@ public class GridCellColored extends AbstractGridCell {
   }
 
   @Override
-  public int getPreferredHeight() {
-    return AbstractGridCell.DEFAULT_CELL_HEIGHT;
-  }
-
-  @Override
   public void addCellButton(CellButton button) {
     this.getButtonContainer().addColumButton(button);
   }

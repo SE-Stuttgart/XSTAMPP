@@ -223,21 +223,21 @@ public class GridWrapper {
      * @return the cell.
      */
     public IGridCell getCell(int column) {
-      int actualColumn;
+      int actualColumn = column;
       IGridCell cell = null;
       GridRow row = this.getGridRow();
       List<IGridCell> rowCells = row.getCells();
 
-      if (this.getParentGridRow() != null) {
-        // column = this.getColumn()
-        // - item.getParentGridRow().getCells().size();
-
-        // there is only one parent cell on the left of it at this point
-        actualColumn = column - getParentDepth(0);
-        
-      } else {
-        actualColumn = column;
-      }
+//      if (this.getParentGridRow() != null) {
+//        // column = this.getColumn()
+//        // - item.getParentGridRow().getCells().size();
+//
+//        // there is only one parent cell on the left of it at this point
+//        actualColumn = column - getParentDepth(0);
+//        
+//      } else {
+//        actualColumn = column;
+//      }
 
       // check if the cell exists
       if ((actualColumn >= 0) && (rowCells.size() > actualColumn)) {
@@ -258,6 +258,11 @@ public class GridWrapper {
       return this.gridRow;
     }
 
+    @Override
+    public boolean hasChildren() {
+      return !this.gridRow.getChildren().isEmpty();
+    }
+    
     /**
      * Get the parent row.
      * 
@@ -280,7 +285,7 @@ public class GridWrapper {
           super.setHeight(newHeight);
         } else {
           for (IGridCell cell : getGridRow().getCells()) {
-            if (cell.getPreferredHeight() >= newHeight) {
+            if (cell.getPreferredHeight() > newHeight) {
               return;
             }
           }
@@ -605,7 +610,7 @@ public class GridWrapper {
         childColumn.setWordWrap(true);
         childColumn.setHeaderWordWrap(true);
         childColumn.setWidth(GridWrapper.DEFAULT_COLUMN_WIDTH);
-        childColumn.setResizeable(true);
+//        childColumn.setResizeable(true);
         childColumn.setCellRenderer(cellRenderer);
         childColumn.setMinimumWidth(50);
         childColumn.addControlListener(new ColumnResizeAdapter(i));
@@ -640,19 +645,23 @@ public class GridWrapper {
     if ( row.getColumnSpan() != null ) {
       item.setColumnSpan(row.getColumnSpan().x,row.getColumnSpan().y);
     }
-    item.setHeight(row.getPreferredHeight());
     // parentItem.pack();
     if ( parent != null ) {
       item.setParentWrapper(parent);
     }
     int childRowCount = row.getChildren().size();
+
+      item.setHeight(row.getPreferredHeight());
+    
     this.nebulaRows.add(item);
     // add cells for children cells
     for (int childI = 0; childI < row.getChildren().size(); childI++) {
       GridRow childRow = row.getChildren().get(childI);
       childRowCount += addChildRows(item,childRow, childI,firstCellIndex + 1);
     }
-    item.setRowSpan(firstCellIndex, childRowCount);
+    for (int cellIndices : row.getRowSpanningCells()){
+      item.setRowSpan(cellIndices, childRowCount);
+    }
     return childRowCount;
   }
     

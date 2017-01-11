@@ -377,7 +377,7 @@ public class XSTPADataController extends Observable implements Observer{
 		List<AbstractLtlProvider> list = new ArrayList<>(model.getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
 			if(!currentRSR.contains(list.get(i).getRuleId())){
-				model.removeRefinedSafetyRule(IExtendedDataModel.RuleType.REFINED_RULE,false, list.get(i).getRuleId());
+				model.removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,false, list.get(i).getRuleId());
 			}
 		}
 		total =model.getLTLPropertys().size()-1;

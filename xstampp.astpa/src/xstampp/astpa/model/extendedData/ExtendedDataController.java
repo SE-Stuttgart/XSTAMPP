@@ -12,15 +12,19 @@ package xstampp.astpa.model.extendedData;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.eclipse.core.runtime.Assert;
+
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
@@ -30,15 +34,18 @@ public class ExtendedDataController implements IExtendedDataController {
     @XmlElementWrapper(name = "rules")
     @XmlElement(name = "rule")
     private List<AbstractLtlProvider> rules;
-
+    private Map<UUID,AbstractLtlProvider> ruleMap;
+    
     @XmlElementWrapper(name = "scenarios")
     @XmlElement(name = "scenario")
     private List<AbstractLtlProvider> scenarios;
+    private Map<UUID,AbstractLtlProvider> scenarioMap;
     
 
     @XmlElementWrapper(name = "customLTLs")
     @XmlElement(name = "customLTL")
     private List<AbstractLtlProvider> customLTLs;
+    private Map<UUID,AbstractLtlProvider> ltlMap;
     
     
     private int ruleIndex;
@@ -59,44 +66,60 @@ public class ExtendedDataController implements IExtendedDataController {
         }
       
     }
-    private UUID addRuleEntry(List<AbstractLtlProvider> list,AbstractLtlProviderData data,UUID linkedControlActionID, String type){
-      if(list != null && data != null && validateType(type)){
+    private UUID addRuleEntry(Map<UUID,AbstractLtlProvider> entryMap,AbstractLtlProviderData data,UUID linkedControlActionID, String type){
+      if(entryMap != null && data != null && validateType(type)){
         
         RefinedSafetyRule safetyRule = new RefinedSafetyRule(data,linkedControlActionID,type, ruleIndex);
         ruleIndex++;
-        if(list.add(safetyRule)){
-          return safetyRule.getRuleId();
-        }
+        entryMap.put(safetyRule.getId(),safetyRule);
+        return safetyRule.getRuleId();
+        
       }
       return null;
     }
 
+    private Map<UUID,AbstractLtlProvider> getMap(ScenarioType type){
+      Assert.isNotNull(type);
+        switch(type){
+        case CUSTOM_LTL:
+          if(ltlMap == null){
+            ltlMap = new HashMap<>();
+            fillMap(ltlMap, customLTLs);
+          }
+          return ltlMap;
+        case BASIC_SCENARIO:
+          if(ruleMap == null){
+            ruleMap = new HashMap<>();
+            fillMap(ruleMap, rules);
+          }
+          return ruleMap;
+        case CAUSAL_SCENARIO:
+          if(scenarioMap == null){
+            scenarioMap = new HashMap<>();
+            fillMap(scenarioMap, scenarios);
+          }
+          return scenarioMap;
+        default:
+          return null;
+        }
+      
+    }
+    
+    private void fillMap(Map<UUID,AbstractLtlProvider> entryMap,List<AbstractLtlProvider> list){
+      if(list != null){
+        for (AbstractLtlProvider provider : list) {
+          entryMap.put(provider.getId(), provider);
+        }
+      }
+      list = null;
+    }
     
     /* (non-Javadoc)
      * @see xstampp.astpa.model.extendedData.IExtendedDataController#addRuleEntry(xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType, xstampp.model.AbstractLtlProviderData, java.util.UUID, java.lang.String)
      */
     @Override
-    public UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type){
-      if(ruleType != null){
-        switch(ruleType){
-        case CUSTOM_LTL:
-          if(customLTLs == null){
-            customLTLs = new ArrayList<>();
-          }
-          return addRuleEntry(customLTLs, data, caID, type);
-        case REFINED_RULE:
-          if(rules == null){
-            rules = new ArrayList<>();
-          }
-          return addRuleEntry(rules, data, caID, type);
-        case SCENARIO:
-          if(scenarios == null){
-            scenarios = new ArrayList<>();
-          }
-          return addRuleEntry(scenarios, data, caID, type);
-        }
-      }
-      return null;
+    public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType,AbstractLtlProviderData data,UUID caID, String type){
+      return addRuleEntry(getMap(ruleType), data, null, type);
     }
 
     /**
@@ -107,15 +130,10 @@ public class ExtendedDataController implements IExtendedDataController {
      * @return
      */
     public boolean addRefinedRule(AbstractLtlProvider rule){
-      if(rule != null){
-        if(rules == null){
-          this.rules= new ArrayList<>();
-        }
-        if(!this.rules.contains(rule)){
+        if(!getMap(ScenarioType.BASIC_SCENARIO).containsKey(rule.getId())){
           ruleIndex = Math.max(ruleIndex, rule.getNumber());
-          return this.rules.add(rule);
+          return getMap(ScenarioType.BASIC_SCENARIO).put(rule.getId(),rule) != null;
         }
-      }
       return false;
     }
     
@@ -144,6 +162,7 @@ public class ExtendedDataController implements IExtendedDataController {
       return changed;
      
     }
+    
     /* (non-Javadoc)
      * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(boolean, boolean, boolean)
      */
@@ -153,18 +172,48 @@ public class ExtendedDataController implements IExtendedDataController {
                                                         boolean includeLTL){
 
       List<AbstractLtlProvider> tmp = new ArrayList<>();
-      if(rules != null && includeRules){
-        tmp.addAll(rules);
+      if(includeRules){
+        tmp.addAll(getMap(ScenarioType.BASIC_SCENARIO).values());
       }
-      if(scenarios != null && includeScenarios){
-        tmp.addAll(scenarios);
+      if(includeScenarios){
+        tmp.addAll(getMap(ScenarioType.CAUSAL_SCENARIO).values());
       }
-      if(customLTLs != null && includeLTL){
-        tmp.addAll(customLTLs);
+      if(includeLTL){
+        tmp.addAll(getMap(ScenarioType.CUSTOM_LTL).values());
       }
       return tmp;
     }
-    
+
+    /* (non-Javadoc)
+     * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(boolean, boolean, boolean)
+     */
+    @Override
+    public AbstractLtlProvider getRefinedScenario(UUID ruleId) {
+      if(getMap(ScenarioType.BASIC_SCENARIO).containsKey(ruleId)){
+        return getMap(ScenarioType.BASIC_SCENARIO).get(ruleId);
+      }if(getMap(ScenarioType.CAUSAL_SCENARIO).containsKey(ruleId)){
+        return getMap(ScenarioType.CAUSAL_SCENARIO).get(ruleId);
+      }if(getMap(ScenarioType.CUSTOM_LTL).containsKey(ruleId)){
+        return getMap(ScenarioType.CUSTOM_LTL).get(ruleId);
+      }
+      return null;
+    }
+    /**
+     * this calculates the type of rule of the ltl provider stored for that 
+     * id
+     * @param ruleId a valid rule id
+     * @return the {@link ScenarioType} of the rule or null if the id is invalid
+     */
+    public ScenarioType getScenarioType(UUID ruleId){
+      if(getMap(ScenarioType.BASIC_SCENARIO).containsKey(ruleId)){
+        return ScenarioType.BASIC_SCENARIO;
+      }if(getMap(ScenarioType.CAUSAL_SCENARIO).containsKey(ruleId)){
+        return ScenarioType.CAUSAL_SCENARIO;
+      }if(getMap(ScenarioType.CUSTOM_LTL).containsKey(ruleId)){
+        return ScenarioType.CUSTOM_LTL;
+      }
+      return null;
+    }
     /* (non-Javadoc)
      * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(xstampp.model.IEntryFilter)
      */
@@ -180,42 +229,42 @@ public class ExtendedDataController implements IExtendedDataController {
       return result;
     }
     
-    private boolean removeEntry(List<AbstractLtlProvider> list, boolean removeAll, UUID id){
+    private boolean removeEntry(Map<UUID,AbstractLtlProvider> entryMap, boolean removeAll, UUID id){
       boolean result = false;
-      if(list != null && removeAll){
         if(removeAll){
           //if removeAll than the rule index is set to 0 so the next rule is added with the index 0
-          list.clear();
-        }else{
+          entryMap.clear();
+          result = true;
+        }else if(entryMap.containsKey(id)){
           // the rule which should be removed is searched for in both the 
           // general rules list and in the control actions
-          for (AbstractLtlProvider refinedSafetyRule : list) {
-            if(refinedSafetyRule.getRuleId().equals(id)){
-              result = list.remove(refinedSafetyRule);
-            }
-          }
+          result = entryMap.remove(id) != null;
         }
-        if(list.isEmpty()){
-          list = null;
-        }
-      }
       return result;
     }
     
     @Override
-    public boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId){
-      boolean result = false;
-      switch(type){
-      case REFINED_RULE:
-        result = removeEntry(rules, removeAll, ruleId);
-        break;
-      case CUSTOM_LTL:
-        result = removeEntry(customLTLs, removeAll, ruleId);
-        break;
-      case SCENARIO:
-        result = removeEntry(scenarios, removeAll, ruleId);
-        break;
-      }
-      return result;
+    public boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId){
+      return removeEntry(getMap(type), removeAll, ruleId);
     }
+
+    public void prepareForExport() {
+      prepareForSave();
+    }
+
+    public void prepareForSave() {
+      if(ruleMap != null){
+        rules = new ArrayList<>(ruleMap.values());
+        ruleMap = null;
+      }
+      if(scenarioMap != null){
+        scenarios = new ArrayList<>(scenarioMap.values());
+        scenarioMap = null;
+      }
+      if(ltlMap != null){
+        customLTLs = new ArrayList<>(ltlMap.values());
+        ltlMap = null;
+      }
+    }
+    
 }

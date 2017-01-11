@@ -128,7 +128,7 @@ public class RefinedSafetyEntry implements Comparable<RefinedSafetyEntry>{
 		if(this.getDataRef() != null){
 			model.updateRefinedRule(getDataRef(), data, variable.getLinkedControlActionID());
 		}else{
-			setDataRef(model.addRuleEntry(IExtendedDataModel.RuleType.REFINED_RULE,data,	variable.getLinkedControlActionID(),
+			setDataRef(model.addRuleEntry(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,data,	variable.getLinkedControlActionID(),
 											             type));
 		}
 		

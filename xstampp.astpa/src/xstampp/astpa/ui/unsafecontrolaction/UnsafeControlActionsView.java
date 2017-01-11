@@ -74,6 +74,10 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 * The log4j logger.
 	 */
 	private static final Logger LOGGER = Logger.getRootLogger();
+  protected static final String[] columns = new String[] {
+        Messages.ControlAction, Messages.NotGiven,
+        Messages.GivenIncorrectly, Messages.WrongTiming,
+        Messages.StoppedTooSoon };
 
 
 	/**
@@ -116,8 +120,9 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	
 	private class UnsafeControlActionCell extends GridCellTextEditor {
 
-		public UnsafeControlActionCell(GridWrapper grid,String initialText,UUID uca,boolean showDelete, boolean isReadOnly) {
-			super(grid, initialText, showDelete, isReadOnly,uca);
+		public UnsafeControlActionCell(GridWrapper grid,String initialText,UUID uca) {
+			super(grid, initialText,uca);
+			setShowDelete(true);
 		}
 		@Override
 		public void delete() {
@@ -184,10 +189,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		parent.setLayout(new GridLayout(1, false));
 		
 		super.createPartControl(parent);
-		this.grid = new GridWrapper(parent, new String[] {
-				Messages.ControlAction, Messages.NotGiven,
-				Messages.GivenIncorrectly, Messages.WrongTiming,
-				Messages.StoppedTooSoon });
+		this.grid = new GridWrapper(parent, columns);
 		this.grid.setSelectRow(false);
 		this.grid.getGrid().setVisible(true);
 
@@ -237,22 +239,16 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			if(isFiltered(cAction.getTitle(), CA_FILTER)){
 				continue;
 			}
-			GridRow controlActionRow = new GridRow(3);
+			GridRow controlActionRow = new GridRow(columns.length,3);
 			addControlAction = false;
 			
 
-			GridCellText descriptionItem = new GridCellText(cAction.getTitle());
-//			descriptionItem.getTextEditor().setEditable(false);
-			controlActionRow.addCell(descriptionItem);
+			controlActionRow.addCell(0,new GridCellText(cAction.getTitle()));
 
-			controlActionRow.addCell(new GridCellColored(this.grid,
-					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-			controlActionRow.addCell(new GridCellColored(this.grid,
-					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-			controlActionRow.addCell(new GridCellColored(this.grid,
-					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-			controlActionRow.addCell(new GridCellColored(this.grid,
-					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
+			for(int i = 1; i< 5;i++){
+  			controlActionRow.addCell(i,new GridCellColored(this.grid,
+  					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
+			}
 
 			List<IUnsafeControlAction> allNotGiven = cAction
 					.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);
@@ -265,16 +261,16 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			
  			for (int i = 0; i <= this.getMaxHeight(cAction); i++) {
 				
-				GridRow idRow = new GridRow(3);
-				GridRow ucaRow = new GridRow(3);
-				GridRow linkRow = new GridRow(3);
+				GridRow idRow = new GridRow(columns.length,3);
+				GridRow ucaRow = new GridRow(columns.length,3);
+				GridRow linkRow = new GridRow(columns.length,3);
 
 				controlActionRow.addChildRow(idRow);
 				controlActionRow.addChildRow(ucaRow);
 				controlActionRow.addChildRow(linkRow);
 
 				addControlAction |= addUCAEntry(allNotGiven,
-											    i, 
+											    i, 1,
 											    Messages.AddNotGivenUCA,
 											    UnsafeControlActionType.NOT_GIVEN,
 											    idRow,
@@ -282,7 +278,8 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 											    linkRow,
 											    cAction);
 				addControlAction |= addUCAEntry(allIncorrect,
-												i, 
+												  i,
+												  2,
 											    Messages.AddGivenIncorrectlyUCA,
 											    UnsafeControlActionType.GIVEN_INCORRECTLY,
 											    idRow,
@@ -292,6 +289,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 				
 				addControlAction |= addUCAEntry(allWrongTiming,
 											    i, 
+											    3,
 											    Messages.AddWrongTimingUCA,
 											    UnsafeControlActionType.WRONG_TIMING,
 											    idRow,
@@ -300,6 +298,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 											    cAction);
 				addControlAction |= addUCAEntry(allTooSoon,
 											    i, 
+											    4,
 											    Messages.AddStoppedTooSoonUCA,
 											    UnsafeControlActionType.STOPPED_TOO_SOON,
 											    idRow,
@@ -315,6 +314,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
 	private boolean addUCAEntry(List<IUnsafeControlAction> ucaList,
 							 int i,
+							 int columnIndex,
 							 String message,
 							 UnsafeControlActionType type,
 							 GridRow idRow,
@@ -324,14 +324,14 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		if (ucaList.size() > i && !isUCAFiltered(ucaList.get(i))) {
 			IUnsafeControlAction tooSoonUca = ucaList.get(i);
 			if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
-				idRow.addCell(new GridCellBlank());
+				idRow.addCell(columnIndex,new GridCellBlank());
 			}else{
-				idRow.addCell(new GridCellText(UCA1 + this.ucaInterface.getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
+				idRow.addCell(columnIndex,new GridCellText(UCA1 + this.ucaInterface.getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
 			}
 			UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
-					tooSoonUca.getId(),true,false);
-			ucaRow.addCell(editor);
-			linkRow.addCell(new GridCellLinking<UcaContentProvider>(
+					tooSoonUca.getId());
+			ucaRow.addCell(columnIndex,editor);
+			linkRow.addCell(columnIndex,new GridCellLinking<UcaContentProvider>(
 					tooSoonUca.getId(), this.ucaContentProvider,
 					this.grid));
 			return true;
@@ -339,17 +339,17 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
 		if (ucaList.size() == i) {
 			// add placeholder
-			idRow.addCell(new GridCellBlank());
-			ucaRow.addCell(new AddUcaButton(cAction,
+			idRow.addCell(columnIndex,new GridCellBlank());
+			ucaRow.addCell(columnIndex,new AddUcaButton(cAction,
           message,
           type));
-			linkRow.addCell(new GridCellBlank());
+			linkRow.addCell(columnIndex,new GridCellBlank());
 			return true;
 		} else {
 			// add placeholders
-			idRow.addCell(new GridCellBlank());
-			ucaRow.addCell(new GridCellBlank());
-			linkRow.addCell(new GridCellBlank());
+			idRow.addCell(columnIndex,new GridCellBlank());
+			ucaRow.addCell(columnIndex,new GridCellBlank());
+			linkRow.addCell(columnIndex,new GridCellBlank());
 		}
 		return false;
 	}

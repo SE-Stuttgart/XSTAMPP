@@ -58,7 +58,7 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
         AbstractLtlProviderData data = new AbstractLtlProviderData();
         
         UUID newUCA = dataModel
-            .addRuleEntry(IExtendedDataModel.RuleType.CUSTOM_LTL,data,null, IValueCombie.TYPE_ANYTIME);
+            .addRuleEntry(IExtendedDataModel.ScenarioType.CUSTOM_LTL,data,null, IValueCombie.TYPE_ANYTIME);
         grid.activateCell(newUCA); 
       }
       
@@ -165,12 +165,12 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
       List<AbstractLtlProvider> rulesList = dataModel.getAllRefinedRules(true,false,true);
       for (AbstractLtlProvider rule  : rulesList) {
         if(!isFiltered(rule.getNumber(),categoryLTL)){
-          GridRow ruleRow = new GridRow(1);
+          GridRow ruleRow = new GridRow(columns.length);
           
           IGridCell cell =new ScenarioEditor(this.grid,PREFIX+rule.getNumber(),true,true, rule.getRuleId());
-          ruleRow.addCell(cell);
+          ruleRow.addCell(0,cell);
   
-          ruleRow.addCell(new ScenarioEditor(this.grid,rule.getLtlProperty(),false,true, rule.getRuleId()){
+          ruleRow.addCell(1,new ScenarioEditor(this.grid,rule.getLtlProperty(),false,true, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
@@ -184,9 +184,9 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
       GridRow addRow = new GridRow(0);
       addRow.setColumnSpan(0, 3);
       if(getFilterValue() instanceof UUID){
-        addRow.addCell(new AddCSButton((UUID) getFilterValue(), ""));
+        addRow.addCell(0,new AddCSButton((UUID) getFilterValue(), ""));
       }
-      addRow.addCell(new AddCSButton(null, ""));
+      addRow.addCell(0,new AddCSButton(null, ""));
       grid.addRow(addRow);
       this.grid.reloadTable();
     }    

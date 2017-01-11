@@ -15,7 +15,9 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
   
   public CellEditorCausalFactor(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
       String initialText, UUID componentId,UUID factorId) {
-    super(gridWrapper, initialText,true, false,factorId);
+    super(gridWrapper, initialText,factorId);
+    setReadOnly(false);
+    setShowDelete(true);
     this.dataInterface = dataInterface;
     this.componentId = componentId;
     this.factorId = factorId;

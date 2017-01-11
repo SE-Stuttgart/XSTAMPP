@@ -6,7 +6,7 @@ import java.util.UUID;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
@@ -33,7 +33,7 @@ public interface IExtendedDataController {
    *          <li> {@link IValueCombie#TYPE_TOO_EARLY}
    *          <li> {@link IValueCombie#TYPE_TOO_LATE}
    */
-  UUID addRuleEntry(IExtendedDataModel.RuleType ruleType, AbstractLtlProviderData data, UUID caID, String type);
+  UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data, UUID caID, String type);
 
 
   /**
@@ -66,6 +66,17 @@ public interface IExtendedDataController {
    * @return whether the delete was successful or not, also returns false if the rule could not be found or the 
    *          id was illegal
    */
-  boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId);
+  boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId);
+  
+
+  AbstractLtlProvider getRefinedScenario(UUID randomUUID);
+  
+  /**
+   * this calculates the type of rule of the ltl provider stored for that 
+   * id
+   * @param ruleId a valid rule id
+   * @return the {@link ScenarioType} of the rule or null if the id is invalid
+   */
+  ScenarioType getScenarioType(UUID ruleId);
 
 }

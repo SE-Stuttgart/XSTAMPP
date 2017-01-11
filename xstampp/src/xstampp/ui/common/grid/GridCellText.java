@@ -31,9 +31,6 @@ public class GridCellText extends AbstractGridCell {
 
   private String text;
 
-  private int textHeight;
-
-  private int cellHeight;
 
   private UUID uuid;
 
@@ -74,16 +71,15 @@ public class GridCellText extends AbstractGridCell {
 
     gc.setBackground(this.getBackgroundColor(renderer, gc));
 
-    Color fgColor = gc.getForeground();
+    final Color fgColor = gc.getForeground();
     gc.setForeground(GridCellText.TEXT_COLOR);
 
-    int newHeight = wrapText(renderer.getDrawBounds(), gc, this.text, 2, 0);
-    boolean needRefresh = newHeight > AbstractGridCell.DEFAULT_CELL_HEIGHT && newHeight != this.cellHeight;
+    int newHeight = wrapText(renderer.getDrawBounds(), gc, this.text.trim(), 2, 0);
+    boolean needRefresh = newHeight > AbstractGridCell.DEFAULT_CELL_HEIGHT 
+                        && newHeight != getPreferredHeight();
     item.getGridRow().setDirty(needRefresh);
-    this.textHeight = newHeight;
-
-    cellHeight = Math.max(this.textHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
-    item.setHeight(cellHeight);
+    int cellHeight = Math.max(newHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
+    setPreferredHeight(item,cellHeight);
     // restore bg color
     gc.setBackground(bgColor);
     // restore fg color
@@ -97,12 +93,6 @@ public class GridCellText extends AbstractGridCell {
   @Override
   public void cleanUp() {
     // intentionally empty
-  }
-
-  @Override
-  public int getPreferredHeight() {
-    cellHeight = Math.max(this.textHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
-    return cellHeight;
   }
 
   @Override

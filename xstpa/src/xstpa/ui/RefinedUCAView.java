@@ -93,25 +93,23 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 		  	    
 		  	    int localRows=Math.max(allProvidedRUCA.size(), allWrongTimedRUCA.size());
 				localRows=Math.max(localRows, allNotProvidedRUCA.size());
-		  	    GridRow controlActionRow =new GridRow(1);
-		  	    
+		  	GridRow controlActionRow =new GridRow(columns.length);
+		  	controlActionRow.addCell(0,new GridCellText(ca.getTitle()));
 
-				GridCellText descriptionItem = new GridCellText(ca.getTitle());
-		  	    controlActionRow.addCell(descriptionItem);
-
-				controlActionRow.addCell(new GridCellColored(this.grid,
+				controlActionRow.addCell(1,new GridCellColored(this.grid,
 						UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-				controlActionRow.addCell(new GridCellColored(this.grid,
+				controlActionRow.addCell(2,new GridCellColored(this.grid,
 						UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-				controlActionRow.addCell(new GridCellColored(this.grid,
+				controlActionRow.addCell(3,new GridCellColored(this.grid,
 						UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-				controlActionRow.addCell(new GridCellColored(this.grid,
+				controlActionRow.addCell(4,new GridCellColored(this.grid,
 						UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
 				
 				for (int i = 0; i < localRows; i++) {
-					GridRow idRow = new GridRow(3);
-					GridRow ucaRow = new GridRow(3);
-					GridRow linkRow = new GridRow(3);
+				  
+					GridRow idRow = new GridRow(columns.length,3);
+					GridRow ucaRow = new GridRow(columns.length,3);
+					GridRow linkRow = new GridRow(columns.length,3);
 
 					AbstractLtlProvider notGivenUca = null;
 					AbstractLtlProvider incorrectUca = null;
@@ -122,41 +120,41 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 							&& !isFiltered(allNotProvidedRUCA.get(i).getRefinedUCA(), UCA)) {
 						addRow=true;
 						notGivenUca = allNotProvidedRUCA.get(i);
-						addRUCA(idRow, ucaRow, linkRow,notGivenUca);
+						addRUCA(1,idRow, ucaRow, linkRow,notGivenUca);
 					}else {
 						// add placeholders
-						idRow.addCell(new GridCellBlank());
-						ucaRow.addCell(new GridCellBlank());
-						linkRow.addCell(new GridCellBlank());
+						idRow.addCell(1,new GridCellBlank());
+						ucaRow.addCell(1,new GridCellBlank());
+						linkRow.addCell(1,new GridCellBlank());
 					}
 
 					if (allProvidedRUCA.size() > i
 							&& !isFiltered(allProvidedRUCA.get(i).getRefinedUCA(), UCA)) {
 						addRow=true;
 						incorrectUca = allProvidedRUCA.get(i);
-						addRUCA(idRow, ucaRow, linkRow, incorrectUca);
+						addRUCA(2,idRow, ucaRow, linkRow, incorrectUca);
 					}else {
 						// add placeholders
-						idRow.addCell(new GridCellBlank());
-						ucaRow.addCell(new GridCellBlank());
-						linkRow.addCell(new GridCellBlank());
+						idRow.addCell(2,new GridCellBlank());
+						ucaRow.addCell(2,new GridCellBlank());
+						linkRow.addCell(2,new GridCellBlank());
 					}
 
 					if (allWrongTimedRUCA.size() > i
 							&& !isFiltered(allWrongTimedRUCA.get(i).getRefinedUCA(), UCA)) {
 						addRow=true;
 						timingUca = allWrongTimedRUCA.get(i);
-						addRUCA(idRow, ucaRow, linkRow, timingUca);
+						addRUCA(3,idRow, ucaRow, linkRow, timingUca);
 					}else {
 						// add placeholders
-						idRow.addCell(new GridCellBlank());
-						ucaRow.addCell(new GridCellBlank());
-						linkRow.addCell(new GridCellBlank());
+						idRow.addCell(3,new GridCellBlank());
+						ucaRow.addCell(3,new GridCellBlank());
+						linkRow.addCell(3,new GridCellBlank());
 					}
 					// add placeholders
-					idRow.addCell(new GridCellBlank());
-					ucaRow.addCell(new GridCellBlank());
-					linkRow.addCell(new GridCellBlank());
+					idRow.addCell(4,new GridCellBlank());
+					ucaRow.addCell(4,new GridCellBlank());
+					linkRow.addCell(4,new GridCellBlank());
 					
 					if(addRow){
 						controlActionRow.addChildRow(idRow);
@@ -174,7 +172,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 	  	    
 	}
 
-	private void addRUCA(GridRow idRow,GridRow ucaRow,GridRow linkRow,AbstractLtlProvider provider){
+	private void addRUCA(int index, GridRow idRow,GridRow ucaRow,GridRow linkRow,AbstractLtlProvider provider){
 		String links = "";
 		
 		for (IUCAHazLink ucaLink: dataController.getModel().getAllUCALinks()) {
@@ -187,11 +185,11 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 		}else{
 			links = links.substring(0, links.length()-1);			
 		}
-		idRow.addCell(new GridCellText("RUCA1."+provider.getNumber()));
+		idRow.addCell(index,new GridCellText("RUCA1."+provider.getNumber()));
 		
 		GridCellText editor = new GridCellText(provider.getRefinedUCA());
-		ucaRow.addCell(editor);
-		linkRow.addCell(new GridCellText(links));
+		ucaRow.addCell(index,editor);
+		linkRow.addCell(index,new GridCellText(links));
 	}
 	/**
 	 * @return the dataController

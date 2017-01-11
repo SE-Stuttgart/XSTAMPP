@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 import xstampp.ui.common.grid.CellButton;
@@ -42,7 +42,7 @@ public class CellButtonAddScenario extends CellButton {
       List<UUID> ids = new ArrayList<>();
       ids.add(entry.getUcaLink());
       data.setRelatedUcas(ids);
-      UUID id= dataModel.addRuleEntry(RuleType.SCENARIO, data, null, IValueCombie.TYPE_ANYTIME);
+      UUID id= dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null, IValueCombie.TYPE_ANYTIME);
       if(id != null){
         CausalFactorUCAEntryData entryData = new CausalFactorUCAEntryData(entry.getId());
         List<UUID> scenarioLinks = new ArrayList<>();

@@ -39,11 +39,6 @@ public class GridCellBlank extends AbstractGridCell {
   }
 
   @Override
-  public int getPreferredHeight() {
-    return AbstractGridCell.DEFAULT_CELL_HEIGHT;
-  }
-
-  @Override
   public void addCellButton(CellButton button) {
     this.getButtonContainer().addColumButton(button);
   }
@@ -58,6 +53,10 @@ public class GridCellBlank extends AbstractGridCell {
     return null;
   }
 
+  @Override
+  public int getPreferredHeight() {
+    return 0;
+  }
   @Override
   public void activate() {
     // intentionally empty

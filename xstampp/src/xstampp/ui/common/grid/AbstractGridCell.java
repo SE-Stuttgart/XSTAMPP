@@ -42,7 +42,8 @@ public abstract class AbstractGridCell implements IGridCell {
   private static final Color MOD_2_0_GRAY = new Color(null, 245,245,245);
 
   private GridRow row = null;
-
+  private boolean hasChildren;
+  private int preferredHeight;
   private CellButtonContainer buttonContainer = null;
 
   private boolean showSelection;
@@ -57,6 +58,7 @@ public abstract class AbstractGridCell implements IGridCell {
     this.row = null;
     this.showSelection(true);
     this.buttonContainer = new CellButtonContainer();
+    this.preferredHeight = DEFAULT_CELL_HEIGHT;
   }
 
   /**
@@ -110,10 +112,16 @@ public abstract class AbstractGridCell implements IGridCell {
 
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
-
+    if(item.hasChildren()){
+      hasChildren = true;
+    }
     this.paintFrame(renderer, gc, item);
   }
 
+  public boolean hasChildren(){
+    return hasChildren;
+  }
+  
   @Override
   public GridRow getGridRow() {
     return this.row;
@@ -330,5 +338,25 @@ public abstract class AbstractGridCell implements IGridCell {
       return buttonContainer.getToolTip(point);
     }
     return null;
+  }
+
+  @Override
+  public int getPreferredHeight() {
+    if(hasChildren){
+      return preferredHeight;
+    }
+    int defaultHeight = Math.max(DEFAULT_CELL_HEIGHT, buttonContainer.getBounds().height);
+    return Math.max(preferredHeight, defaultHeight);
+  }
+
+  public void setPreferredHeight(NebulaGridRowWrapper item, int preferredHeight) {
+    int heightDiff = item.getGridRow().getChildren().size() * DEFAULT_CELL_HEIGHT - preferredHeight;
+    if (heightDiff >= 0 ) {
+      this.preferredHeight = 1;
+    }else{
+      this.preferredHeight = -heightDiff;
+    }
+    this.preferredHeight = Math.max(this.preferredHeight, this.buttonContainer.getBounds().height);
+    item.setHeight(this.preferredHeight);
   }
 }

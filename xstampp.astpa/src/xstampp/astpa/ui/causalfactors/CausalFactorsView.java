@@ -41,16 +41,17 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.grid.CellButton;
+import xstampp.ui.common.grid.CellButtonLinking;
 import xstampp.ui.common.grid.GridCellColored;
 import xstampp.ui.common.grid.GridCellLinking;
 import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.GridWrapper;
-import xstampp.ui.common.grid.IGridCell;
 import xstampp.ui.editors.AbstractFilteredEditor;
 
 /**
@@ -66,6 +67,9 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 	private static final String CAUSALFACTORS= "Text filter for Causal Factors";
 	private Map<UUID,CausalFactor> factorsToUUIDs;
 	private DeleteCFAction deleteAction;
+	private static String[] columns = new String[] { Messages.Component,
+      Messages.CausalFactors,"UCA", Messages.HazardLinks,"Scenarios",
+      Messages.SafetyConstraint, Messages.NotesSlashRationale };
 	 /**
    * ViewPart ID.
    */
@@ -144,9 +148,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 				.getDataModel(this.getProjectID()));
 		parent.setLayout(new GridLayout(1, false));
 		super.createPartControl(parent);
-		this.grid = new GridWrapper(parent, new String[] { Messages.Component,
-				Messages.CausalFactors,"UCA", Messages.HazardLinks,"Scenarios",
-				Messages.SafetyConstraint, Messages.NotesSlashRationale });
+		this.grid = new GridWrapper(parent, columns);
 		this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		this.deleteAction = new DeleteCFAction(grid, dataInterface, Messages.CausalFactors, null);
 		this.reloadTable();
@@ -201,12 +203,12 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 			if(isFiltered(component)){
 				continue;
 			}
-			GridRow csRow = new GridRow(1);
+			GridRow csRow = new GridRow(columns.length);
 			GridCellText causalComp = new GridCellText(component.getText());
-			csRow.addCell(causalComp);
-			for(int i=0;i<6; i++){
-			  csRow.addCell(new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
-			}
+			csRow.addCell(0,causalComp);
+//			for(int i=0;i<6; i++){
+//			  csRow.addCell(new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+//			}
 			this.grid.addRow(csRow);
 			Map<UUID,ICorrespondingUnsafeControlAction> ucaMap = new HashMap<>();
       for(ICorrespondingUnsafeControlAction uca : dataInterface.getUCAList(null)){
@@ -217,88 +219,152 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 				if(isFiltered(factor.getText(),CAUSALFACTORS)){
 					continue;
 				}
-				GridRow childRow = new GridRow(1);
-				childRow.addCell(new CellEditorCausalFactor(this.grid, dataInterface, factor
+				GridRow factorRow = new GridRow(7,1,new int[]{1});
+				factorRow.addCell(1,new CellEditorCausalFactor(this.grid, dataInterface, factor
 						.getText(), component.getId(),factor.getId()));
 				
 		   //A new row is added to the factorRow for adding additional entries
-//        for(int i=1; i<5;i++){
-//          childRow.addCell(new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
-//        }
+        for(int i=2; i<columns.length;i++){
+          factorRow.addCell(i,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+        }
 				//the causal factor contains multiple child rows for each causal factor entry
         for(ICausalFactorEntry entry : factor.getAllEntries()){
-  				GridRow entryRow = new GridRow(1);
-          CausalFactorsView.LOGGER.info("Adding new GridCellLinking"); //$NON-NLS-1$
-          
-          /*
-           * Depending on whether the entry is linked to a uca or not
-           * the uca column is filled and the hazards are either based on the uca
-           * or linkable
-           */
-          if(entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink())){
-            String ucaDescription = ucaMap.get(entry.getUcaLink()).getTitle() + "\n"+ucaMap.get(entry.getUcaLink()).getDescription();
-            entryRow.addCell(new CellEditorCausalEntry(grid, dataInterface, ucaDescription,
-                                              component.getId(), factor.getId(), entry.getId()));
-            List<UUID> hazIds = dataInterface.getLinksOfUCA(entry.getUcaLink());
-            String linkingString = new String();
-            for(ITableModel hazard : dataInterface.getHazards(hazIds)){
-              linkingString += "H-" +hazard.getNumber() + ",";
-            }
-            entryRow.addCell(new GridCellText(linkingString.substring(0, linkingString.length()-1)));
-            
-            IGridCell scenarioCell =new GridCellLinking<ContentProviderScenarios>(
-                factor.getId(), new ContentProviderScenarios(dataInterface, component.getId(), factor.getId(), entry),
-                this.grid);
-            scenarioCell.addCellButton(new CellButtonAddScenario(entry, component.getId(), factor.getId(), dataInterface));
-            entryRow.addCell(scenarioCell);
-            
-          }else{
-            entryRow.addCell(new CellEditorCausalEntry(grid, dataInterface, new String(),
-                                              component.getId(), factor.getId(), entry.getId()));
-            entryRow.addCell(new GridCellLinking<ContentProviderHazards>(
-    						factor.getId(), new ContentProviderHazards(dataInterface, component.getId(), factor.getId(), entry),
-    						this.grid));
-
-            entryRow.addCell(new GridCellText(""));
-          }
-          
-          
-          /*
-           * The Safety Constraint is dispayed if available, if the text is
-           * null than a new entry can be added or one of the existing constraints 
-           * can be imported
-           */
-  				if (entry.getConstraintText() == null) {
-  					GridCellText constraintsCell = new GridCellText(new String());
-  					constraintsCell.addCellButton(new NewConstraintButton(component.getId(), factor.getId(),entry.getId()));
-  					constraintsCell.addCellButton(new CellButtonImportConstraint(grid.getGrid(),entry,component.getId(), factor.getId(),dataInterface));
-  					entryRow.addCell(constraintsCell);
-  				} else {
-  				  entryRow.addCell(new CellEditorSafetyConstraint(grid, dataInterface, component.getId(), factor.getId(),entry));
-  				}
-  
-  				entryRow.addCell(new CellEditorFactorNote(this.grid,dataInterface,component.getId(), factor.getId(),entry));
-          childRow.addChildRow(entryRow);
+          addEntryRow(factorRow, entry, factor, component, ucaMap);
         }
         //A new row is added to the factorRow for adding additional entries
-        GridRow addEntriesRow = new GridRow(1);
-        addEntriesRow.addCell(new GridCellButtonAddUCAEntry(component, factor.getId(), dataInterface,grid.getGrid()));
-        for(int i=1; i<5;i++){
-          addEntriesRow.addCell(new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+        GridRow addEntriesRow = new GridRow(columns.length);
+        addEntriesRow.addCell(2,new GridCellButtonAddUCAEntry(component, factor.getId(), dataInterface,grid.getGrid()));
+        for(int i=3; i<columns.length;i++){
+          addEntriesRow.addCell(i,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
         }
-        childRow.addChildRow(addEntriesRow);
-				csRow.addChildRow(childRow);
+        factorRow.addChildRow(addEntriesRow);
+				csRow.addChildRow(factorRow);
 			}
       
 			
-			GridRow buttonRow = new GridRow(1);
-			buttonRow.addCell(new GridCellButtonAddCausalFactor(component,dataInterface));
-
+			GridRow buttonRow = new GridRow(columns.length);
+			buttonRow.addCell(1,new GridCellButtonAddCausalFactor(component,dataInterface));
+			for(int i=2; i <7;i++){
+			  buttonRow.addCell(i,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+      }
 			csRow.addChildRow(buttonRow);
 		}
 	}
 
+	/**
+	 * 
+	 * @param factorRow
+	 * @param entry
+	 * @param factor
+	 * @param component
+	 * @param ucaMap
+	 */
+	private void addEntryRow(GridRow factorRow, ICausalFactorEntry entry,
+	                         ICausalFactor factor,
+	                         ICausalComponent component,
+	                         Map<UUID,ICorrespondingUnsafeControlAction> ucaMap){
+	  GridRow entryRow = new GridRow(columns.length,1,new int[]{2,3,6});
+    
+    /*
+     * Depending on whether the entry is linked to a uca or not
+     * the uca column is filled and the hazards are either based on the uca
+     * or linkable
+     */
+    if(entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink())){
+      addUCAEntry(entryRow, entry, factor, component, ucaMap);
+      
+    }else{
+      addHazardEntry(entryRow, entry, factor, component);
+    }
+    entryRow.addCell(6,new CellEditorFactorNote(this.grid,dataInterface,component.getId(), factor.getId(),entry));
+    factorRow.addChildRow(entryRow);
+	}
 	
+	/**
+	 * adds the:</br><h5>uca row with</h5><ul>
+	 * <li>uca text (read only)
+	 * <li>hazard links (read only)
+	 * <li>a row for each scenario
+	 * </ul>
+	 */
+  private void addUCAEntry(GridRow entryRow, ICausalFactorEntry entry,
+                          ICausalFactor factor,
+                          ICausalComponent component,
+                          Map<UUID,ICorrespondingUnsafeControlAction> ucaMap){
+	  //add the uca id + description in a read only cell with an delete button
+	  String ucaDescription = ucaMap.get(entry.getUcaLink()).getTitle() + "\n"+ucaMap.get(entry.getUcaLink()).getDescription();
+    entryRow.addCell(2,new CellEditorCausalEntry(grid, dataInterface, ucaDescription,
+                                      component.getId(), factor.getId(), entry.getId()));
+    
+    //add the hazard links of the uca, as read only string
+    List<UUID> hazIds = dataInterface.getLinksOfUCA(entry.getUcaLink());
+    String linkingString = new String();
+    for(ITableModel hazard : dataInterface.getHazards(hazIds)){
+      linkingString += "H-" +hazard.getNumber() + ",";
+    }
+    entryRow.addCell(3,new GridCellText(linkingString.substring(0, linkingString.length()-1)));
+
+    //adding two blank cells as placeholder for the scenario rows which have two cells each
+    entryRow.addCell(4,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+    entryRow.addCell(5,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+    
+    if(entry.getScenarioLinks() != null){
+      for(UUID scenarioId : entry.getScenarioLinks()){
+        GridRow scenarioRow = new GridRow(columns.length);
+        ScenarioType type = dataInterface.getScenarioType(scenarioId);
+        if(type != null){
+          scenarioRow.addCell(4,new CellEditorCausalScenario(grid, dataInterface,entry,component,factor, scenarioId, type));
+          scenarioRow.addCell(5,new CellEditorCausalConstraint(grid, dataInterface, scenarioId, type));
+          entryRow.addChildRow(scenarioRow);
+        }
+      }
+    }
+
+    GridRow addScenarioRow = new GridRow(columns.length);
+    GridCellText scenarioCell = new GridCellText(new String());
+    scenarioCell.addCellButton(new CellButtonLinking<ContentProviderScenarios>(grid, 
+              new ContentProviderScenarios(dataInterface, component.getId(), factor.getId(), entry),factor.getId()));
+    scenarioCell.addCellButton(new CellButtonAddScenario(entry, component.getId(), factor.getId(), dataInterface));
+    addScenarioRow.addCell(4,scenarioCell);
+    addScenarioRow.addCell(5,new GridCellText("test"));
+    entryRow.addChildRow(addScenarioRow);
+  }
+	
+  /**
+   * adds the:</br><h5>uca row with</h5><ul>
+   * <li>an empty cell with a delete (read only)
+   * <li>hazard linking cell
+   * <li>an empty scenario cell
+   * <li>a cell for importing or creating a new safety constraint
+   * </ul>
+   */
+  private void addHazardEntry(GridRow entryRow, ICausalFactorEntry entry,
+      ICausalFactor factor,
+      ICausalComponent component){
+
+    entryRow.addCell(2,new CellEditorCausalEntry(grid, dataInterface, new String(),
+        component.getId(), factor.getId(), entry.getId()));
+    entryRow.addCell(3,new GridCellLinking<ContentProviderHazards>(
+        factor.getId(), new ContentProviderHazards(dataInterface, component.getId(), factor.getId(), entry),
+        this.grid));
+
+    entryRow.addCell(4,new GridCellText(""));
+    /*
+     * The Safety Constraint is dispayed if available, if the text is
+     * null than a new entry can be added or one of the existing constraints 
+     * can be imported
+     */
+    if (entry.getConstraintText() == null) {
+      GridCellText constraintsCell = new GridCellText(new String());
+      constraintsCell.addCellButton(new NewConstraintButton(component.getId(), factor.getId(),entry.getId()));
+      constraintsCell.addCellButton(new CellButtonImportConstraint(grid.getGrid(),entry,component.getId(), factor.getId(),dataInterface));
+      entryRow.addCell(5,constraintsCell);
+    } else {
+      entryRow.addCell(5,new CellEditorSafetyConstraint(grid, dataInterface, component.getId(), factor.getId(),entry));
+    }
+  
+  }
+  
 	/**
 	 * Reload the whole table.
 	 * 

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Menu;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.RuleType;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
@@ -48,6 +48,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 	private static final String UCA="unsafe control actions";
 
   private static final String PREFIX = "S1.";
+  private static final String[] columns = new String[] { "ID","Basic Scenario","Safety Constraint" };
   private GridWrapper grid;
   private IExtendedDataModel dataInterface;
   private DeleteCSAction deleteAction;
@@ -72,7 +73,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
         AbstractLtlProviderData data = new AbstractLtlProviderData();
         data.addRelatedUcas(parentId);
         UUID newUCA = dataInterface
-            .addRuleEntry(RuleType.SCENARIO,data , null, IValueCombie.TYPE_ANYTIME);
+            .addRuleEntry(ScenarioType.CAUSAL_SCENARIO,data , null, IValueCombie.TYPE_ANYTIME);
         grid.activateCell(newUCA); 
       }
       
@@ -109,7 +110,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 
     updateFilter(); 
     super.createPartControl(parent);
-    this.grid = new GridWrapper(parent, new String[] { "ID","Basic Scenario","Safety Constraint" });
+    this.grid = new GridWrapper(parent, columns);
     deleteAction = new DeleteCSAction(grid, dataInterface,"Causal Scenarios",PREFIX);
     this.grid.getGrid().setVisible(true);
     this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -129,7 +130,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
       List<AbstractLtlProvider> rulesList = dataInterface.getAllRefinedRules(true,true,false);
       for (AbstractLtlProvider rule  : rulesList) {
         if(!isFiltered(rule.getUCALinks(),UCA)){
-          GridRow ruleRow = new GridRow(1);
+          GridRow ruleRow = new GridRow(columns.length);
           
           IGridCell cell =new ScenarioEditor(this.grid,PREFIX+rule.getNumber(),true,true, rule.getRuleId()){
             @Override
@@ -139,9 +140,9 @@ public class CausalScenariosView extends AbstractFilteredEditor {
               dataInterface.updateRefinedRule(getUUID(),data, null);
             }
           };
-          ruleRow.addCell(cell);
+          ruleRow.addCell(0,cell);
   
-          ruleRow.addCell(new ScenarioEditor(this.grid,rule.getSafetyRule(),false,false, rule.getRuleId()){
+          ruleRow.addCell(1,new ScenarioEditor(this.grid,rule.getSafetyRule(),false,false, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
@@ -149,7 +150,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
               dataInterface.updateRefinedRule(getUUID(),data, null);
             }
           });
-          ruleRow.addCell(new ScenarioEditor(this.grid,rule.getRefinedSafetyConstraint(),false,false, rule.getRuleId()){
+          ruleRow.addCell(2,new ScenarioEditor(this.grid,rule.getRefinedSafetyConstraint(),false,false, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
@@ -163,9 +164,9 @@ public class CausalScenariosView extends AbstractFilteredEditor {
       GridRow addRow = new GridRow(0);
       addRow.setColumnSpan(0, 3);
       if(getFilterValue() instanceof UUID){
-        addRow.addCell(new AddCSButton((UUID) getFilterValue(), ""));
+        addRow.addCell(0,new AddCSButton((UUID) getFilterValue(), ""));
       }
-      addRow.addCell(new AddCSButton(null, ""));
+      addRow.addCell(0,new AddCSButton(null, ""));
       grid.addRow(addRow);
       this.grid.reloadTable();
 	  }    

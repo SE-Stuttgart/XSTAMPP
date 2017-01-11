@@ -57,7 +57,6 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   private List<CellButton> buttons;
 
   private int lines;
-  private int lastLines = 1;
 
 
   /**

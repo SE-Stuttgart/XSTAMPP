@@ -17,7 +17,6 @@ import java.util.UUID;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
@@ -27,9 +26,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.model.AbstractLtlProvider;
-import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
-import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 
 public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
@@ -40,9 +37,9 @@ public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
    * @author Lukas Balzer
    *
    */
-  public static enum RuleType{
-    REFINED_RULE,
-    SCENARIO,
+  public static enum ScenarioType{
+    BASIC_SCENARIO,
+    CAUSAL_SCENARIO,
     CUSTOM_LTL
   }
 
@@ -162,7 +159,5 @@ public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
    */
   boolean isCASafetyCritical(UUID id);
 
-  
-  AbstractLtlProvider getRefinedRule(UUID randomUUID);
 
 }

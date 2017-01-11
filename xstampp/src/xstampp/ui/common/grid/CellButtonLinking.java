@@ -20,7 +20,6 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
 
     @Override
     public void proposalAccepted(IContentProposal proposal) {
-      String text = proposal.getContent();
       UUID linkId = ((LinkProposal)proposal).getProposalId();
       if (linkId != null) {
         publicInterface.addLink(assignedId, linkId);

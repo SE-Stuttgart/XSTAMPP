@@ -18,7 +18,8 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   
   public CellEditorSafetyConstraint(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
                                     UUID componentId,UUID factorId,ICausalFactorEntry entry) {
-    super(gridWrapper, entry.getConstraintText(),true, false,factorId);
+    super(gridWrapper, entry.getConstraintText(),factorId);
+    setShowDelete(true);
     this.dataInterface = dataInterface;
     this.componentId = componentId;
     this.factorId = factorId;

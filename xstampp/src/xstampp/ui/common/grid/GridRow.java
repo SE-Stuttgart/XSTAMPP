@@ -14,6 +14,8 @@
 package xstampp.ui.common.grid;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
@@ -39,23 +41,59 @@ public class GridRow {
   private int rowIndex;
   
   private Point columnSpan;
+  
+  private int[] rowSpanningCells;
+  
   /**
    * Ctor.
    * 
-   * @author Patrick Wickenhaeuser
+   * @author Patrick Wickenhaeuser, Lukas Balzer
    * @param colorDivide
    *          The amount of rows that should be colored in the same color to
    *          mark multiple rows that are related
+   * @param columnCount
+   *          the total amount of columns in the parent gird
+   * @param rowSpanningCells
+   *          the absolute indices of the cells that should span the child rows of this row
    * 
    */
-  public GridRow(int colorDivide) {
+  public GridRow(int columnCount, int colorDivide, int[] rowSpanningCells) {
     setColorDivider(colorDivide);
     this.childrenRows = new ArrayList<GridRow>();
-    this.cells = new ArrayList<IGridCell>();
+    this.cells = new ArrayList<IGridCell>(columnCount);
+    for ( int i = 0; i < columnCount; i++) {
+      IGridCell cell = new GridCellBlank();
+      cell.setGridRow(this);
+      cells.add(cell);
+    }
     this.parentRow = null;
     this.needsRefresh = false;
+    this.rowSpanningCells = rowSpanningCells;
   }
 
+  /**
+   * constructs a row for the grid it is inserted in
+   *  {@link #getRowSpanningCells()} is only column 0.
+   * @param colorDivide
+   *          The amount of rows that should be colored in the same color to
+   *          mark multiple rows that are related
+   * @param columnCount
+   *          the total amount of columns in the parent gird
+   */
+  public GridRow(int columnCount,int colorDivide) {
+    this(columnCount,colorDivide, new int[]{0});
+  }
+  
+  /**
+   * constructs a row that has a color divider {@link #getColorDivider()} of 1
+   * and a {@link #getRowSpanningCells()} is only column 0.
+   * @param columnCount
+   *          the total amount of columns in the parent gird
+   */
+  public GridRow(int columnCount) {
+    this(columnCount,1);
+  }
+  
   public void setDirty(boolean dirty) {
     if (this.parentRow != null) {
       this.parentRow.setDirty(dirty);
@@ -90,6 +128,10 @@ public class GridRow {
    *          the child row.
    */
   public void addChildRow(GridRow row) {
+    
+//    if ( childrenRows.size() > 0 ) {
+//      Assert.isTrue(row.getCells().size() == childrenRows.get(0).getCells().size());
+//    }
     this.childrenRows.add(row);
     row.setColorDivider(colorDivider);
     row.setParentRow(this);
@@ -118,19 +160,10 @@ public class GridRow {
     return this.childrenRows;
   }
 
-  /**
-   * Add a cell to the row.
-   * 
-   * @author Patrick Wickenhaeuser
-   * 
-   * @param gridCell
-   *          the new cell.
-   */
-  public void addCell(IGridCell gridCell) {
-    this.cells.add(gridCell);
-    gridCell.setGridRow(this);
+  public void addCell(int columnIndex, IGridCell cell) {
+    this.cells.set(columnIndex,cell);
+    cell.setGridRow(this);
   }
-
   /**
    * Get the parent row.
    * 
@@ -202,5 +235,27 @@ public class GridRow {
   
   public Point getColumnSpan() {
     return columnSpan;
+  }
+
+  /**
+   * gets all indices relative to the parent grid
+   * of the cells that should span all child rows
+   * of this row.
+   * The default value is one.
+   * 
+   * @return the indices of the cells to span the child rows of the row
+   */
+  public int[] getRowSpanningCells() {
+    return rowSpanningCells;
+  }
+
+  /**
+   * set the row indices which should span the 
+   * child rows if this row has some.
+   * 
+   * @param spanningCells the indices of the cells to span the child rows of the row
+   */
+  public void setRowSpanningCells(int[] spanningCells) {
+    this.rowSpanningCells = spanningCells;
   }
 }

@@ -23,6 +23,7 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
@@ -50,9 +51,14 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
 	List<ICausalComponent> getCausalComponents(IEntryFilter<IRectangleComponent> filter);
 	
 	/**
-	 * {@link IExtendedDataModel#getRefinedRule(UUID)}
+	 * {@link IExtendedDataModel#getRefinedScenario(UUID)}
 	 */
-	AbstractLtlProvider getRefinedRule(UUID randomUUID);
+	AbstractLtlProvider getRefinedScenario(UUID randomUUID);
+	
+  /**
+   * {@link IExtendedDataModel#getScenarioType(UUID)}
+   */
+  ScenarioType getScenarioType(UUID ruleId);
 	/**
 	 * @return a list of {@link xstampp.astpa.model.controlaction.UCAHazLink} 
 	 */
@@ -100,9 +106,19 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
   List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter);
   
   /**
-   * {@link IExtendedDataModel#addRuleEntry(IExtendedDataModel.RuleType, AbstractLtlProviderData, UUID, String)}
+   * {@link IExtendedDataModel#addRuleEntry(IExtendedDataModel.ScenarioType, AbstractLtlProviderData, UUID, String)}
    */
-  UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type);
+  UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType,AbstractLtlProviderData data,UUID caID, String type);
+
+  /**
+   * {@link IExtendedDataModel#updateRefinedRule(UUID, AbstractLtlProviderData, UUID)}
+   */
+  boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data, UUID linkedControlActionID);
+  
+  /**
+   * {@link IExtendedDataModel#updateRefinedRule(UUID, AbstractLtlProviderData, UUID)}
+   */
+  boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId);
   
   /**
    * {@link IUnsafeControlActionDataModel#getUCAList(IEntryFilter)} 

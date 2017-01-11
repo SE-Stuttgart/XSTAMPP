@@ -72,7 +72,7 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 	  List<AbstractLtlProvider> linkedScenarios = new ArrayList<>();
 	  if(entry.getScenarioLinks() != null){
   	  for(UUID scenarios : entry.getScenarioLinks()){
-  	    linkedScenarios.add(caInterface.getRefinedRule(scenarios));
+  	    linkedScenarios.add(caInterface.getRefinedScenario(scenarios));
   	  }
 	  }
 		return linkedScenarios;

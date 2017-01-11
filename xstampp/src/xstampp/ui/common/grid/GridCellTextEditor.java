@@ -60,7 +60,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   private DirectEditor editor;
   private Rectangle deleteSpace;
   private boolean showDelete;
-  private Boolean isReadOnly;
+  private boolean isReadOnly;
   private UUID entryId;
 
   private class TextLocator implements CellEditorLocator {
@@ -82,11 +82,40 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     }
 
   }
-
+  
   /**
-   * Ctor.
+   * creates a Text editor which is <b>editable</b> and <b>doesn't contain a delete button</b>.
+   * When created the editor is empty 
+   * @param grid
+   *          The grid canvas, this is needed to show the direct editor
    * 
-   * @author Patrick Wickenhaeuser
+   * @author Patrick Wickenhaeuser, Lukas Balzer
+   */
+  public GridCellTextEditor(GridWrapper grid){
+    this(grid, new String(), false, false, null);
+  }
+  
+  /**
+   * creates a Text editor which is <b>editable</b> and <b>doesn't contain a delete button</b>.
+   * the editor further contains the initial text and is displayed in the given grid
+   * @param grid
+   *          The grid canvas, this is needed to show the direct editor
+   * @param initialText 
+   *          the intitial text in the editor.
+   * @param entryId
+   *          the id of the entry which is represented and edited in this editor
+   * @author Patrick Wickenhaeuser, Lukas Balzer
+   */
+  public GridCellTextEditor(GridWrapper grid,
+      String initialText,
+      UUID entryId){
+    this(grid, initialText, false, false, entryId);
+  }
+  
+  /**
+   * creates a Text editor which contains the initial text and is displayed in the given grid
+   * 
+   * @author Patrick Wickenhaeuser, Lukas Balzer
    * @param grid
    *          The grid canvas, this is needed to show the direct editor
    * @param initialText
@@ -94,6 +123,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
    * @param showDelete
    *          if the delete button should be drawn in this component
    * @param readOnly whether the editor should be read only
+   * @param entryId
+   *          the id of the entry which is represented and edited in this editor
    * 
    */
   public GridCellTextEditor(GridWrapper grid,
@@ -150,11 +181,10 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     } else {
       lineHeight = wrapText(bounds, gc, this.currentText, 2, buttonCollum);
     }
-    
     if ( isReadOnly ) {
       lineHeight = Math.max(lineHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
     }
-    item.setHeight(lineHeight);
+    setPreferredHeight(item,lineHeight);
     this.editField = new Rectangle(bounds.x, bounds.y, bounds.width - buttonCollum, lineHeight);
     if (bounds.height + 2 < this.editField.height || bounds.height - 2 > this.editField.height) {
       this.grid.resizeRows();
@@ -206,7 +236,6 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
           if (error.getSource() instanceof Text 
               && !currentText.equals(((Text) error.widget).getText())) {
             GridCellTextEditor.this.currentText = ((Text) error.widget).getText();
-            getPreferredHeight();
             Rectangle rect = GridCellTextEditor.this.editField;
             Text text = (Text) error.getSource();
             updateDataModel(currentText);
@@ -223,14 +252,6 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     }
   }
 
-  
-  @Override
-  public int getPreferredHeight() {
-    if ( isReadOnly ) {
-      this.editField.height = Math.max(DEFAULT_CELL_HEIGHT , this.editField.height);
-    }
-    return this.editField.height;
-  }
 
   @Override
   public Color getBackgroundColor(GridCellRenderer renderer, GC gc) {
@@ -313,5 +334,33 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
    *          the changed text
    */
   public abstract void updateDataModel(String newValue);
+
+  /**
+   * @return the showDelete
+   */
+  public boolean isShowDelete() {
+    return showDelete;
+  }
+
+  /**
+   * @param showDelete the showDelete to set
+   */
+  public void setShowDelete(boolean showDelete) {
+    this.showDelete = showDelete;
+  }
+
+  /**
+   * @return the isReadOnly
+   */
+  public boolean isReadOnly() {
+    return isReadOnly;
+  }
+
+  /**
+   * @param isReadOnly the isReadOnly to set
+   */
+  public void setReadOnly(boolean isReadOnly) {
+    this.isReadOnly = isReadOnly;
+  }
 
 }

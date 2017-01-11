@@ -18,7 +18,7 @@ public class CellEditorFactorNote extends GridCellTextEditor {
   
   public CellEditorFactorNote(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
                       UUID componentId,UUID factorId,ICausalFactorEntry entry) {
-    super(gridWrapper, entry.getNote(),false, false,factorId);
+    super(gridWrapper, entry.getNote(),factorId);
     this.dataInterface = dataInterface;
     this.componentId = componentId;
     this.factorId = factorId;

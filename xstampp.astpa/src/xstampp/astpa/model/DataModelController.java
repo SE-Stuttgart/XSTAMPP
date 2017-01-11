@@ -44,7 +44,6 @@ import xstampp.astpa.haz.causalfactor.CausalFactorHazardLink;
 import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.haz.hazacc.Link;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
@@ -259,7 +258,8 @@ public class DataModelController extends AbstractDataModel implements
 	public boolean prepareForExport() {
 
 		this.exportInformation = null;
-		this.hazAccController.prepareForExport();
+    this.hazAccController.prepareForExport();
+    this.extendedDataController.prepareForExport();
 		this.controlActionController.prepareForExport(this.hazAccController,
 		                                              this.controlStructureController,
 		                                              ignoreLtlValue.getText(),
@@ -276,7 +276,8 @@ public class DataModelController extends AbstractDataModel implements
 
 	@Override
 	public void prepareForSave() {
-		this.hazAccController.prepareForSave();
+    this.hazAccController.prepareForSave();
+    this.extendedDataController.prepareForSave();
 		this.controlActionController.prepareForSave(this.extendedDataController);
 		this.causalFactorController.prepareForSave(this.hazAccController,
                                                getRoot().getChildren(),
@@ -1711,14 +1712,8 @@ public class DataModelController extends AbstractDataModel implements
 		return this.extendedDataController.getAllRefinedRules(includeRules, includeScenarios, includeLTL);
 	}
 	
-	public AbstractLtlProvider getRefinedRule(UUID id){
-	
-		for(AbstractLtlProvider rule : this.extendedDataController.getAllRefinedRules(true, true, true)){
-			if(rule.getRuleId().equals(id)){
-				return rule;
-			}
-		}
-		return null;
+	public AbstractLtlProvider getRefinedScenario(UUID id){
+		return this.extendedDataController.getRefinedScenario(id);
 	}
 
   /**
@@ -1726,7 +1721,7 @@ public class DataModelController extends AbstractDataModel implements
    * new rule was created
    */
 	@Override
-	public UUID addRuleEntry(IExtendedDataModel.RuleType ruleType,AbstractLtlProviderData data,UUID caID, String type){
+	public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType,AbstractLtlProviderData data,UUID caID, String type){
 		UUID newRuleId = this.extendedDataController.addRuleEntry(ruleType, data, caID, type);
 		if(newRuleId != null){
 			setUnsavedAndChanged(ObserverValue.Extended_DATA);
@@ -1748,7 +1743,7 @@ public class DataModelController extends AbstractDataModel implements
 	}
 	
 	@Override
-	public boolean removeRefinedSafetyRule(RuleType type, boolean removeAll, UUID ruleId){
+	public boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId){
     boolean result = this.extendedDataController.removeRefinedSafetyRule(type,removeAll, ruleId);
 	  if(result){
 		  setUnsavedAndChanged(ObserverValue.Extended_DATA);
@@ -1865,6 +1860,10 @@ public class DataModelController extends AbstractDataModel implements
   @Override
   public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
     return this.controlActionController.getLinksOfUCA(unsafeControlActionId);
+  }
+  @Override
+  public ScenarioType getScenarioType(UUID ruleId) {
+    return this.extendedDataController.getScenarioType(ruleId);
   }
 
 }
