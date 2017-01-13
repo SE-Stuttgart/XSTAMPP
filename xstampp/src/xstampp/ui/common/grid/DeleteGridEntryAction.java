@@ -83,7 +83,7 @@ public abstract class DeleteGridEntryAction<M> extends Action{
       IGridCell cell = selected.get(i);
 
       if (cell != null && !(cell instanceof GridCellBlank)) {
-        IGridCell editor= ((IGridCell) cell);
+        IGridCell editor = ((IGridCell) cell);
         UUID ucaID=editor.getUUID();
         if(!deleteList.containsKey(ucaID)){
           String idString = getIdString(ucaID);

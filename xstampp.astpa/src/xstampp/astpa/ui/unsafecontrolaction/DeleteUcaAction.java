@@ -26,7 +26,7 @@ public class DeleteUcaAction extends DeleteGridEntryAction<IUnsafeControlActionD
   @Override
   protected String getIdString(UUID id) {
     String idString = null;
-    if(getDataModel().getUCANumber(id) > 0){
+    if(getDataModel().getUCANumber(id) >= 0){
        idString = getPrefix()+getDataModel()
           .getUCANumber(id);
     }

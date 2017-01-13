@@ -27,6 +27,7 @@ import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.IValueCombie;
@@ -172,7 +173,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 * 
 	 * @author Fabian Toth
 	 */
-	public UUID addUnsafeControlAction(String description,
+	public UUID addUnsafeControlAction(int number,String description,
 			UnsafeControlActionType unsafeControlActionType) {
 		UnsafeControlAction unsafeControlAction = new UnsafeControlAction(
 				description, unsafeControlActionType);
@@ -460,7 +461,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	 *            the hazAccController to get the Accidents as objects
 	 * 
 	 */
-	public void prepareForExport(ExtendedDataController extendedData,
+	public void prepareForExport(IExtendedDataController extendedData,
 	                             ControlStructureController csController,
 	                             String defaultLabel) {
 

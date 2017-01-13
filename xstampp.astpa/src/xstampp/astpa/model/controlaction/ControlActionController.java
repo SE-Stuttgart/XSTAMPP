@@ -27,18 +27,16 @@ import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
-import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.IEntryFilter;
@@ -66,6 +64,7 @@ public class ControlActionController {
 	@XmlElement(name = "rule")
 	private List<RefinedSafetyRule> rules;
 	
+	private int ucaCount;
 	private final Map<UUID, ControlAction> trash;
 
 	private int ruleNr;
@@ -80,6 +79,7 @@ public class ControlActionController {
 		this.controlActions = new ArrayList<>();
 		this.links = new ArrayList<>();
 	  this.ruleNr = -1;
+	  this.ucaCount = -1;
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class ControlActionController {
 		if (controlAction == null) {
 			return null;
 		}
-		return controlAction.addUnsafeControlAction(description,
+		return controlAction.addUnsafeControlAction(getNextUCACount(),description,
 				unsafeControlActionType);
 	}
 
@@ -411,7 +411,7 @@ public class ControlActionController {
 					.getInternalUnsafeControlActions()) {
 				boolean isSearched = unsafeControlAction.getId().equals(ucaID);
 				if(isSearched){
-				  if(unsafeControlAction.getNumber() < 0){
+				  if(unsafeControlAction.getNumber() == 0){
 				    assignUCANumbers();
 				  }
 				  return unsafeControlAction.getNumber();
@@ -426,11 +426,22 @@ public class ControlActionController {
     for (ControlAction controlAction : this.controlActions) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
-        counter++;
-        unsafeControlAction.setNumber(counter);
+        if(unsafeControlAction.getNumber() > 0){
+          counter = unsafeControlAction.getNumber() + 1;
+        }else{
+          counter++;
+          unsafeControlAction.setNumber(counter);
+        }
         
       }
     }
+	}
+	
+	private int getNextUCACount(){
+	  if(ucaCount < 0){
+	    ucaCount = getAllUnsafeControlActions().size();
+	  }
+	  return ++ucaCount;
 	}
 	/**
 	 * Sets the corresponding safety constraint of the unsafe control action
@@ -522,7 +533,7 @@ public class ControlActionController {
 	public void prepareForExport(HazAccController hazAccController,
 	                             ControlStructureController csController,
 	                             String defaultLabel,
-	                             ExtendedDataController extendedData){
+	                             IExtendedDataController extendedData){
 		moveRulesInCA();
 		for (ControlAction controlAction : this.controlActions) {
 			controlAction.prepareForExport(extendedData, csController,defaultLabel);

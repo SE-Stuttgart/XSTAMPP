@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * A custom autocomplete textfield adapter
@@ -32,11 +33,12 @@ public class AutoCompleteField {
   private LinkingCommandAdapter contentProposalAdapter;
   private List<IContentProposalListener> listeners;
   private static LinkingShell shell = new LinkingShell();
+  private Control control;
 
   /**
    * 
    * @author Benedikt Markt
-   * 
+   * @param control TODO
    * @param control
    *          The control to apply autocomplete to
    * @param controlContentAdapter
@@ -48,7 +50,8 @@ public class AutoCompleteField {
    * @param descriptions
    *          long descriptions for eacht item
    */
-  public AutoCompleteField(LinkProposal[] proposals) {
+  public AutoCompleteField(LinkProposal[] proposals, Control control) {
+    this.control = control;
     this.listeners = new ArrayList<>();
     shell.setNextProposal(proposals);
   
@@ -111,14 +114,14 @@ public class AutoCompleteField {
    */
   public void openPopup() {
 //    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-      shell.createControl();
+      shell.createControl(control);
 //    } else {
 //      this.contentProposalAdapter.openProposalPopup();
 //    }
   }
 
   public void openShell() {
-    shell.createControl();
+    shell.createControl(control);
   }
   /**
    * Closes the proposal popup immediately

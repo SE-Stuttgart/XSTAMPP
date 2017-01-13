@@ -77,8 +77,8 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
     }
     
   
-	  AutoCompleteField diag = new AutoCompleteField(proposals);
-	  diag.setPopupPosition(grid.toDisplay(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
+	  AutoCompleteField diag = new AutoCompleteField(proposals, grid);
+	  diag.setPopupPosition(new Point(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
 	  diag.setProposalListener(new IContentProposalListener() {
       
       @Override

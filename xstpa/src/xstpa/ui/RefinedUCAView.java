@@ -123,9 +123,9 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 						addRUCA(1,idRow, ucaRow, linkRow,notGivenUca);
 					}else {
 						// add placeholders
-						idRow.addCell(1,new GridCellBlank());
-						ucaRow.addCell(1,new GridCellBlank());
-						linkRow.addCell(1,new GridCellBlank());
+						idRow.addCell(1,new GridCellBlank(true));
+						ucaRow.addCell(1,new GridCellBlank(true));
+						linkRow.addCell(1,new GridCellBlank(true));
 					}
 
 					if (allProvidedRUCA.size() > i
@@ -135,9 +135,9 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 						addRUCA(2,idRow, ucaRow, linkRow, incorrectUca);
 					}else {
 						// add placeholders
-						idRow.addCell(2,new GridCellBlank());
-						ucaRow.addCell(2,new GridCellBlank());
-						linkRow.addCell(2,new GridCellBlank());
+						idRow.addCell(2,new GridCellBlank(true));
+						ucaRow.addCell(2,new GridCellBlank(true));
+						linkRow.addCell(2,new GridCellBlank(true));
 					}
 
 					if (allWrongTimedRUCA.size() > i
@@ -147,14 +147,14 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 						addRUCA(3,idRow, ucaRow, linkRow, timingUca);
 					}else {
 						// add placeholders
-						idRow.addCell(3,new GridCellBlank());
-						ucaRow.addCell(3,new GridCellBlank());
-						linkRow.addCell(3,new GridCellBlank());
+						idRow.addCell(3,new GridCellBlank(true));
+						ucaRow.addCell(3,new GridCellBlank(true));
+						linkRow.addCell(3,new GridCellBlank(true));
 					}
 					// add placeholders
-					idRow.addCell(4,new GridCellBlank());
-					ucaRow.addCell(4,new GridCellBlank());
-					linkRow.addCell(4,new GridCellBlank());
+					idRow.addCell(4,new GridCellBlank(true));
+					ucaRow.addCell(4,new GridCellBlank(true));
+					linkRow.addCell(4,new GridCellBlank(true));
 					
 					if(addRow){
 						controlActionRow.addChildRow(idRow);

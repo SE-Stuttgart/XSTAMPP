@@ -62,7 +62,7 @@ public class GridRow {
     this.childrenRows = new ArrayList<GridRow>();
     this.cells = new ArrayList<IGridCell>(columnCount);
     for ( int i = 0; i < columnCount; i++) {
-      IGridCell cell = new GridCellBlank();
+      IGridCell cell = new GridCellBlank(false);
       cell.setGridRow(this);
       cells.add(cell);
     }
@@ -164,6 +164,7 @@ public class GridRow {
     this.cells.set(columnIndex,cell);
     cell.setGridRow(this);
   }
+  
   /**
    * Get the parent row.
    * 

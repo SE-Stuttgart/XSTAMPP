@@ -249,6 +249,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
           }
         }
       });
+      editor.setFocus();
     }
   }
 

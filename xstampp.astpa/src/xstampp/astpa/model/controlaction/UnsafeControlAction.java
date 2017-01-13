@@ -56,6 +56,7 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 		this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(
 				""); //$NON-NLS-1$
 		this.id = UUID.randomUUID();
+    number = -1;
 	}
 
 	/**
@@ -64,7 +65,6 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	 * @author Fabian Toth
 	 */
 	public UnsafeControlAction() {
-	  number = -1;
 		// empty constructor for JAXB
 	}
 

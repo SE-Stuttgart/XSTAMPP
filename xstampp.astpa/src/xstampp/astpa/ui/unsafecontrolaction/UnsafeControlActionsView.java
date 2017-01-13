@@ -324,7 +324,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		if (ucaList.size() > i && !isUCAFiltered(ucaList.get(i))) {
 			IUnsafeControlAction tooSoonUca = ucaList.get(i);
 			if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
-				idRow.addCell(columnIndex,new GridCellBlank());
+				idRow.addCell(columnIndex,new GridCellBlank(true));
 			}else{
 				idRow.addCell(columnIndex,new GridCellText(UCA1 + this.ucaInterface.getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
 			}
@@ -339,17 +339,17 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
 		if (ucaList.size() == i) {
 			// add placeholder
-			idRow.addCell(columnIndex,new GridCellBlank());
+			idRow.addCell(columnIndex,new GridCellBlank(true));
 			ucaRow.addCell(columnIndex,new AddUcaButton(cAction,
           message,
           type));
-			linkRow.addCell(columnIndex,new GridCellBlank());
+			linkRow.addCell(columnIndex,new GridCellBlank(true));
 			return true;
 		} else {
 			// add placeholders
-			idRow.addCell(columnIndex,new GridCellBlank());
-			ucaRow.addCell(columnIndex,new GridCellBlank());
-			linkRow.addCell(columnIndex,new GridCellBlank());
+			idRow.addCell(columnIndex,new GridCellBlank(true));
+			ucaRow.addCell(columnIndex,new GridCellBlank(true));
+			linkRow.addCell(columnIndex,new GridCellBlank(true));
 		}
 		return false;
 	}

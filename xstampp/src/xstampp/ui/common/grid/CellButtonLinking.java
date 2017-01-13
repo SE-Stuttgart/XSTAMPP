@@ -57,14 +57,14 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
       String itemTitle = items.get(i).getTitle();
       proposals[i] = new LinkProposal();
       proposals[i].setProposalId(items.get(i).getId());
-      proposals[i].setLabel(itemNumber +" - " + itemTitle);
+      proposals[i].setLabel(itemNumber + " - " + itemTitle);
       proposals[i].setDescription(items.get(i).getDescription());
     }
     
-    AutoCompleteField linkField = new AutoCompleteField(proposals);
+    AutoCompleteField linkField = new AutoCompleteField(proposals, grid.getGrid());
 
-    linkField.setPopupPosition(grid.getGrid().toDisplay(relativeMouse.x + cellBounds.x,
-                                                    relativeMouse.y + cellBounds.y));
+    linkField.setPopupPosition(new Point(relativeMouse.x + cellBounds.x,
+                                        relativeMouse.y + cellBounds.y));
 
     if (this.grid.getGrid().getDisplay() != null) {
       linkField.setProposalListener(new PropopsalListener());

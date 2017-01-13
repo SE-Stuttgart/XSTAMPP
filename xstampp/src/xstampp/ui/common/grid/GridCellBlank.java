@@ -16,7 +16,7 @@ package xstampp.ui.common.grid;
 import java.util.UUID;
 
 /**
- * A blank implementation of AbstractGrid Cell just to represent Blank cells,
+ * A blank implementation of AbstractGrid Cell just to represent Blank cells.
  * 
  * 
  * @author Lukas Balzer
@@ -24,13 +24,20 @@ import java.util.UUID;
  */
 public class GridCellBlank extends AbstractGridCell {
 
+  private boolean fixedHeight;
+  
   /**
    * this constructs a blank cell with nothing in it.
-   * 
+   * @param fixedHeight TODO
+   * @param fixedHeight
+   *          whether the height should be set to a fixed value,
+   *          by default {@link AbstractGridCell#DEFAULT_CELL_HEIGHT}
+   *          or should always claim the minimum height 1 as preferred height.
    * @author Lukas Balzer
    * 
    */
-  public GridCellBlank() {
+  public GridCellBlank(boolean fixedHeight) {
+    this.fixedHeight = fixedHeight;
   }
 
   @Override
@@ -55,8 +62,12 @@ public class GridCellBlank extends AbstractGridCell {
 
   @Override
   public int getPreferredHeight() {
-    return 0;
+    if ( fixedHeight ) {
+      return AbstractGridCell.DEFAULT_CELL_HEIGHT;
+    }
+    return 1;
   }
+  
   @Override
   public void activate() {
     // intentionally empty

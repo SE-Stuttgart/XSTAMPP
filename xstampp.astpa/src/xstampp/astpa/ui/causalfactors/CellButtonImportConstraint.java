@@ -59,7 +59,7 @@ public class CellButtonImportConstraint extends CellButton {
       }
     }
 
-    AutoCompleteField scLinking = new AutoCompleteField(proposals.toArray(new LinkProposal[0]));
+    AutoCompleteField scLinking = new AutoCompleteField(proposals.toArray(new LinkProposal[0]), grid);
     scLinking.setProposalListener(
         new IContentProposalListener() {
 
@@ -71,7 +71,7 @@ public class CellButtonImportConstraint extends CellButton {
           }
         });
     
-    scLinking.setPopupPosition(grid.toDisplay(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
+    scLinking.setPopupPosition(new Point(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
     scLinking.openPopup();
 
   }
