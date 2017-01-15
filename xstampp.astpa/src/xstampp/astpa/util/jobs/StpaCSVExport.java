@@ -15,16 +15,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
@@ -32,7 +33,10 @@ import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.model.AbstractLtlProvider;
 import xstampp.model.IDataModel;
 import xstampp.util.BufferedCSVWriter;
 
@@ -196,7 +200,7 @@ public class StpaCSVExport extends Job {
 	
 	private void writeCausalFactorsCSV(BufferedCSVWriter writer, String title)
 			throws IOException {
-
+    IExtendedDataModel model = this.model;
 		// the First two Rows are filled with the view- and the Column-titles
 		writer.newLine();
 		writer.write(title + " - "); ////$NON-NLS-1$
@@ -204,32 +208,59 @@ public class StpaCSVExport extends Job {
 		writer.newLine();
 		writer.writeCell(Messages.Component);
 		writer.writeCell(Messages.CausalFactors);
-		writer.writeCell(Messages.HazardLinks);
+    writer.writeCell(Messages.UnsafeControlActions);
+    writer.writeCell(Messages.HazardLinks);
+    writer.writeCell("Scenario");
 		writer.writeCell(Messages.SafetyConstraints);
 		writer.write(Messages.NotesSlashRationale);
 		writer.newLine();
-		writer.newLine();
+		boolean writeNote = true;
+		
 		for (ICausalComponent action : this.model.getCausalComponents()) {
-			ICausalFactor factor;
-
 			// this loop writes two lines
-			for (int index = 0; index < action.getCausalFactors().size(); index++) {
-				factor = action.getCausalFactors().get(index);
-				if (index == 0) {
+			for (ICausalFactor factor :  action.getCausalFactors()) {
 					writer.writeCell(action.getText());
-				} else {
-					writer.writeCell();
-				}
 
 				// write the Descriptions in one line
 				writer.writeCell(factor.getText());
-				for (ITableModel haz : this.model.getLinkedHazardsOfCf(factor
-						.getId())) {
-					writer.write("[H-" + haz.getNumber() + "]");
+				Map<UUID,String> ucaDescMap = new HashMap<>();
+				for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
+          ucaDescMap.put(uca.getId(), "UCA1."+uca.getNumber()+ uca.getDescription());
+        }
+				for(ICausalFactorEntry entry: factor.getAllEntries()){
+				  if(entry.getUcaLink() != null){
+				    writer.writeCell(ucaDescMap.get(entry.getUcaLink()));
+				    String hazString = new String();
+				    for(ITableModel haz: model.getLinkedHazardsOfUCA(entry.getUcaLink())){
+				      hazString += "H-" + haz.getNumber()+",";
+				    }
+				    writer.writeCell(hazString.substring(0, hazString.length()-1));
+				    for(UUID provider : entry.getScenarioLinks()){
+              writer.writeCell(model.getRefinedScenario(provider).getSafetyRule());
+              writer.writeCell(model.getRefinedScenario(provider).getRefinedSafetyConstraint());
+              if(writeNote){
+                writeNote = false;
+                writer.writeCell(factor.getNote());
+              }
+              writer.newLine();
+				    }
+				  }else{
+				    writer.writeCell();
+				    String hazString = new String();
+            for(UUID hazardId: entry.getHazardIds()){
+              hazString += "H-" + model.getHazard(hazardId).getNumber()+",";
+            }
+            writer.writeCell(hazString.substring(0, hazString.length()-1));
+            writer.writeCell();
+            if(entry.getConstraintText() != null){
+              writer.writeCell(entry.getConstraintText());
+            }
+				  }
+				  
 				}
-				writer.writeCell();
-				writer.writeCell(factor.getSafetyConstraint().getText());
-				writer.writeCell(factor.getNote());
+        if(writeNote){
+          writer.writeCell(factor.getNote());
+        }
 				writer.newLine();
 			}
 		}
