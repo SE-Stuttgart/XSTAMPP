@@ -47,7 +47,7 @@ public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
 
   
   IRectangleComponent getComponent(UUID key);
-
+  IRectangleComponent getRoot();
   void setCSComponentComment(UUID id, String value);
   
   /**

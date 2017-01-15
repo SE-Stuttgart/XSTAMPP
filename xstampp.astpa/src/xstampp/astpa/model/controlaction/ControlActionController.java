@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -64,7 +65,9 @@ public class ControlActionController {
 	@XmlElement(name = "rule")
 	private List<RefinedSafetyRule> rules;
 	
-	private int ucaCount;
+	@XmlAttribute(name="ucaCount")
+	private int nextUcaIndext;
+	
 	private final Map<UUID, ControlAction> trash;
 
 	private int ruleNr;
@@ -79,7 +82,7 @@ public class ControlActionController {
 		this.controlActions = new ArrayList<>();
 		this.links = new ArrayList<>();
 	  this.ruleNr = -1;
-	  this.ucaCount = -1;
+	  this.nextUcaIndext = -1;
 	}
 
 	/**
@@ -438,10 +441,10 @@ public class ControlActionController {
 	}
 	
 	private int getNextUCACount(){
-	  if(ucaCount < 0){
-	    ucaCount = getAllUnsafeControlActions().size();
+	  if(nextUcaIndext < 0){
+	    nextUcaIndext = getAllUnsafeControlActions().size()+1;
 	  }
-	  return ++ucaCount;
+	  return ++nextUcaIndext;
 	}
 	/**
 	 * Sets the corresponding safety constraint of the unsafe control action
@@ -959,4 +962,8 @@ public class ControlActionController {
 		}
 		return true;
 	}
+	
+	public void setNextUcaIndext(int nextUcaIndext) {
+    this.nextUcaIndext = nextUcaIndext;
+  }
 }

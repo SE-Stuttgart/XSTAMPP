@@ -178,7 +178,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		UnsafeControlAction unsafeControlAction = new UnsafeControlAction(
 				description, unsafeControlActionType);
 		this.unsafeControlActions.add(unsafeControlAction);
-		
+		unsafeControlAction.setNumber(number);
 		return unsafeControlAction.getId();
 	}
 

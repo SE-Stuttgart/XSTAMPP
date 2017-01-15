@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -47,11 +48,17 @@ public class ExtendedDataController implements IExtendedDataController {
     private List<AbstractLtlProvider> customLTLs;
     private Map<UUID,AbstractLtlProvider> ltlMap;
     
+    @XmlAttribute(name="nextScenarioIndex")
+    private int nextScenarioIndex;
     
-    private int ruleIndex;
+    private Map<String,UUID> combiesMap;
     
     public ExtendedDataController() {
-      ruleIndex = 0;
+      nextScenarioIndex = 0;
+    }
+    
+    public void setNextScenarioIndex(int nextScenarioIndex) {
+      this.nextScenarioIndex = nextScenarioIndex;
     }
     
     private boolean validateType(String type){
@@ -66,18 +73,15 @@ public class ExtendedDataController implements IExtendedDataController {
         }
       
     }
-    private UUID addRuleEntry(Map<UUID,AbstractLtlProvider> entryMap,AbstractLtlProviderData data,UUID linkedControlActionID, String type){
-      if(entryMap != null && data != null && validateType(type)){
-        
-        RefinedSafetyRule safetyRule = new RefinedSafetyRule(data,linkedControlActionID,type, ruleIndex);
-        ruleIndex++;
-        entryMap.put(safetyRule.getId(),safetyRule);
-        return safetyRule.getRuleId();
-        
-      }
-      return null;
-    }
 
+    private int getNextIndex() {
+      if(nextScenarioIndex == 0){
+        nextScenarioIndex += getMap(ScenarioType.BASIC_SCENARIO).size();
+        nextScenarioIndex += getMap(ScenarioType.CAUSAL_SCENARIO).size();
+        nextScenarioIndex += getMap(ScenarioType.CUSTOM_LTL).size();
+      }
+      return ++nextScenarioIndex;
+    }
     private Map<UUID,AbstractLtlProvider> getMap(ScenarioType type){
       Assert.isNotNull(type);
         switch(type){
@@ -119,9 +123,59 @@ public class ExtendedDataController implements IExtendedDataController {
      */
     @Override
     public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType,AbstractLtlProviderData data,UUID caID, String type){
-      return addRuleEntry(getMap(ruleType), data, null, type);
-    }
 
+      if(data != null && validateType(type)){
+        if(ruleType.equals(ScenarioType.BASIC_SCENARIO)){
+          UUID uuid = getCombie(data);
+          if(uuid != null){
+            updateRefinedRule(uuid, data, caID);
+            return uuid;
+          }
+        }
+        
+        RefinedSafetyRule safetyRule = new RefinedSafetyRule(data,caID,type, getNextIndex());
+        getMap(ruleType).put(safetyRule.getId(),safetyRule);
+        if(data.getCombies() != null){
+          getCombieMap().put(data.getSafetyRule(), safetyRule.getId());
+        }
+        return safetyRule.getRuleId();
+        
+      }
+      return null;
+    }
+    
+    /**
+     * getter for a map containing the id of all basic scenarios id's mapped to their 
+     * safety rules/ constraints
+     * @return a map with scenario ids' mapped to the safety rules of the scenario
+     */
+    private Map<String, UUID> getCombieMap(){
+      if(combiesMap == null){
+        combiesMap = new HashMap<>();
+        for (AbstractLtlProvider scenario : getMap(ScenarioType.BASIC_SCENARIO).values()) {
+          if(((RefinedSafetyRule)scenario).getSafetyRule() != null){
+            combiesMap.put(((RefinedSafetyRule)scenario).getSafetyRule(), scenario.getId());
+          }
+        }
+      }
+      return combiesMap;
+    }
+    
+    /**
+     * searches for a scenario that is mapper for the given data's safety rule
+     * in the combieMap
+     * 
+     * @param data the {@link AbstractLtlProviderData} of the new basic scenario that should be searched for in
+     *            the combieMap
+     * @return an UUID if one was mapped for the given data'S safety rule, or null 
+     */
+    private UUID getCombie(AbstractLtlProviderData data) {
+      if(data != null && data.getSafetyRule() != null){
+        return getCombieMap().get(data.getSafetyRule());
+      }
+      return null;
+    }
+    
     /**
      * 
      * @param rule
@@ -131,7 +185,7 @@ public class ExtendedDataController implements IExtendedDataController {
      */
     public boolean addRefinedRule(AbstractLtlProvider rule){
         if(!getMap(ScenarioType.BASIC_SCENARIO).containsKey(rule.getId())){
-          ruleIndex = Math.max(ruleIndex, rule.getNumber());
+          nextScenarioIndex = Math.max(nextScenarioIndex, rule.getNumber());
           return getMap(ScenarioType.BASIC_SCENARIO).put(rule.getId(),rule) != null;
         }
       return false;
@@ -253,6 +307,7 @@ public class ExtendedDataController implements IExtendedDataController {
     }
 
     public void prepareForSave() {
+      combiesMap = null;
       if(ruleMap != null){
         rules = new ArrayList<>(ruleMap.values());
         ruleMap = null;

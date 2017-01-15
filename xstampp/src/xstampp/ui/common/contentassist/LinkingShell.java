@@ -84,7 +84,7 @@ public class LinkingShell {
                   "No entrys available", "There are no entrys available for linking!");
       return;
     }
-    this.shell = new Shell( SWT.NONE );
+    this.shell = new Shell( SWT.RESIZE );
     
     this.shell.setLayout(new FillLayout());
     this.shell.setSize(labelShellSize);

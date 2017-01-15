@@ -97,7 +97,7 @@ public abstract class DeleteGridEntryAction<M> extends Action{
     }
     if (preformDelete && MessageDialog.openConfirm(getGrid().getGrid().getShell(),
         Messages.RemoveAll,
-        String.format(Messages.DeleteQuestionMask, "Causal Scenarios") + csIDs)) {
+        String.format(Messages.DeleteQuestionMask, entryType) + csIDs)) {
       
       for (Entry<UUID, String> id : deleteList.entrySet()) {
         removeEntry(id.getKey());

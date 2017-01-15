@@ -30,7 +30,7 @@ public class CausalCSComponent implements ICausalComponent{
   private String text;
   private UUID id;
   private List<CausalFactor> factors;
-  
+  private ComponentType type;
   
   
   @Override
@@ -103,10 +103,13 @@ public class CausalCSComponent implements ICausalComponent{
   }
   @Override
   public ComponentType getComponentType() {
-    // TODO Auto-generated method stub
-    return null;
+    return type;
   }
 
+  public void setType(ComponentType type) {
+    this.type = type;
+  }
+  
   public void prepareForExport(HazAccController hazAccController,
                                IRectangleComponent child, 
                                List<AbstractLtlProvider> allRefinedRules,
@@ -124,6 +127,7 @@ public class CausalCSComponent implements ICausalComponent{
                              List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     this.text = null;
     this.id = null;
+    this.type = null;
     for (CausalFactor causalFactor : factors) {
       causalFactor.prepareForSave(hazardLinksMap,hazAccController, allRefinedRules,allUnsafeControlActions);
     }

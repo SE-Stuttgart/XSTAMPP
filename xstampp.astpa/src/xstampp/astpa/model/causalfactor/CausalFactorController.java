@@ -165,6 +165,7 @@ public class CausalFactorController implements ICausalFactorController {
       }
       component.setText(csComp.getText());
       component.setId(csComp.getId());
+      component.setType(csComp.getComponentType());
     }
     return component;
   }
