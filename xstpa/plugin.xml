@@ -109,14 +109,5 @@
             class="xstpa.settings.PreferenceInitializer">
       </initializer>
    </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="xstpa.xstpaPerspective"
-            fixed="true"
-            id="xstpa.perspective"
-            name="%perspective.contextTables">
-      </perspective>
-   </extension>
 
 </plugin>

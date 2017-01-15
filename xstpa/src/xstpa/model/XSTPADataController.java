@@ -145,14 +145,13 @@ public class XSTPADataController extends Observable implements Observer{
 
 		this.valuesList.clear();
 		this.variablesList.clear();
-		List<ICausalComponent> templist = model.getCausalComponents();
-		for (int i = 0, n = templist.size(); i < n; i++) {
+		IRectangleComponent rootComponent = model.getRoot();
+		for (IRectangleComponent child : rootComponent.getChildren()) {
 			
-	    	  Component parentComponent =(Component) templist.get(i);
-		      if (parentComponent.getComponentType().name().equals("CONTROLLER")) {
+		      if (child.getComponentType().name().equals("CONTROLLER")) {
 		    	  
 		    	  // get the process models
-		    	  for (IRectangleComponent tempPM :  parentComponent.getChildren()) {
+		    	  for (IRectangleComponent tempPM :  child.getChildren()) {
 		    		  
 		    		  // get the variables
 		    		  for (IRectangleComponent tempPMV : tempPM.getChildren()) {
@@ -164,14 +163,14 @@ public class XSTPADataController extends Observable implements Observer{
 		    				  
 		    				  ProcessModelValue pmValueObject = new ProcessModelValue();
 		    				  
-		    				  pmValueObject.setController(parentComponent.getText());
 		    				  pmValueObject.setPM(tempPM.getText());
 		    				  pmValueObject.setPMV(tempPMV.getText());
 		    				  pmValueObject.setValueText(tempPMVV.getText());
 		    				  pmValueObject.setId(tempPMVV.getId());
 		    				  pmValueObject.setVariableID(tempPMV.getId());
 		    				  pmValueObject.setComments(tempPMVV.getComment());
-		    				  variable.setControllerID(parentComponent.getId());
+		    				  variable.setControllerID(child.getId());
+		    				  pmValueObject.setController(child.getText());
 		    				  variable.addValue(tempPMVV.getText());
 		    				  variable.addValueId(tempPMVV.getId());
 		    				  addValue(pmValueObject);

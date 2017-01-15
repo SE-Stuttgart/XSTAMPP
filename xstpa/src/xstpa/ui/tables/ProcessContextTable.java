@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -235,7 +237,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	    //START Definition of the available control actions table
 	    //==============================================================================
 	    
-		    controlActionViewer = new TableViewer(contextCompositeLeft, SWT.FULL_SELECTION );
+		  controlActionViewer = new TableViewer(contextCompositeLeft, SWT.FULL_SELECTION );
 			controlActionViewer.setContentProvider(new MainViewContentProvider());
 			controlActionViewer.setLabelProvider(new LabelProvider(){
 				@Override
@@ -259,6 +261,13 @@ public class ProcessContextTable extends AbstractTableComposite {
 			contextTableViewer.setContentProvider(new MainViewContentProvider());
 			contextTableViewer.setLabelProvider(new ContextViewLabelProvider());
 			contextTable = contextTableViewer.getTable();
+			contextTable.addDisposeListener(new DisposeListener() {
+        
+        @Override
+        public void widgetDisposed(DisposeEvent e) {
+          System.out.println();
+        }
+      });
 			contextTable.setHeaderVisible(true);
 		    contextTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		    
@@ -330,16 +339,16 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    
 		    contextTable.addSelectionListener(new SelectionAdapter() {
 				
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					if(contextTableCellX > 0 && contextTableCellX < contextTable.getColumnCount() -1){
-					    contextTable.setMenu(new Menu(contextTable));
-						updateMenu(contextTableCellX -1);
-					}else{
-					    contextTable.setMenu(null);						
-					}
-				}
-			});
+				  @Override
+					public void widgetSelected(SelectionEvent e) {
+  					if(contextTableCellX > 0 && contextTableCellX < contextTable.getColumnCount() -1){
+  					    contextTable.setMenu(new Menu(contextTable));
+  						updateMenu(contextTableCellX -1);
+  					}else{
+  					    contextTable.setMenu(null);						
+  					}
+				  }
+		    });
 		    
 		    // listener for the checkboxes in the context table so they get drawn right
 		    contextTable.addListener(SWT.PaintItem, new Listener() {
@@ -429,14 +438,14 @@ public class ProcessContextTable extends AbstractTableComposite {
 	                event.gc.drawImage(lateImage, tmpX+(tmpWidth/2), tmpY);
 		        }
 		    });
-		//===============================================================================
-		//END
-		//================================================================================
-			
-		//==============================================================================
-		//START creation of the buttons bar
-		//==============================================================================
-			// Add a Composite to edit all Tables
+    		//===============================================================================
+    		//END
+    		//================================================================================
+    			
+    		//==============================================================================
+    		//START creation of the buttons bar
+    		//==============================================================================
+		    // Add a Composite to edit all Tables
 		    Composite editTableComposite = new Composite( contextCompositeOptions, SWT.NONE);
 		    editTableComposite.setLayout( new GridLayout(1, false) );
 
@@ -598,8 +607,6 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    	}
 		    });
 		    
-		    
-		    
 		    /**
 		     * Listener for the add Entry Button in the Context Table
 		     */
@@ -633,7 +640,6 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    		
 		    	}
 		    });
-		    
 		    
 		    /**
 		     * Listener for the Delete Entry Button

@@ -241,7 +241,7 @@ public class View extends ViewPart{
 		    // Add a button to switch tables (Context Table Button)
 		    final Button tableBtn = new Button(xstpaNavigation, SWT.PUSH);
 		    tableBtn.setText(name);
-		    tableBtn.setLayoutData( new GridData(100,30));
+		    tableBtn.setLayoutData( new GridData(120,SWT.DEFAULT));
 		    tableBtn.addSelectionListener(new SelectionAdapter() {
 			      public void widgetSelected(SelectionEvent event) {
 			    	  openTable(table, tableBtn);
