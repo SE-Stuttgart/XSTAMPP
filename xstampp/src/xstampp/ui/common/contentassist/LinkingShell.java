@@ -98,7 +98,7 @@ public class LinkingShell {
       shellLocation.y = mouseLoc.y - labelShellSize.y;
     }
     this.shell.setLocation(shellLocation);
-    final Shell descShell = new Shell(SWT.NO_TRIM | SWT.CLOSE | SWT.MIN);
+    final Shell descShell = new Shell( SWT.RESIZE );
     descShell.setLayout(new FillLayout());
     descShell.setSize(descShellSize);
     //calculate the correct position of the shell, so that it's not displayed beyond the 

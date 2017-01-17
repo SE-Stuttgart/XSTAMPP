@@ -455,7 +455,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	                             String defaultLabel) {
 
 	  rules = new ArrayList<>();
-	  for(AbstractLtlProvider refinedRule : extendedData.getAllRefinedRules(true,false,false)){
+	  for(AbstractLtlProvider refinedRule : extendedData.getAllScenarios(true,false,false)){
 	    if(refinedRule.getRelatedControlActionID().equals(getId())){
 	      rules.add((RefinedSafetyRule) refinedRule);
 	    }
@@ -551,9 +551,9 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		//ExtendedDataModel and storing a list of uuids
 		if(rules != null){
 		  ruleIds = new ArrayList<>();
-		  for(AbstractLtlProvider refinedRule : rules){
+		  for(RefinedSafetyRule refinedRule : rules){
         ruleIds.add(refinedRule.getRuleId());
-        ((RefinedSafetyRule)refinedRule).setLinks(null);
+        refinedRule.setLinks(null);
         extendedData.addRefinedRule(refinedRule);
       }
 		}

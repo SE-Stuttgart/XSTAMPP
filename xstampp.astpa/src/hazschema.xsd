@@ -212,35 +212,37 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
         	<xs:element name="hazardLinks" type="xs:string"
         		maxOccurs="1" minOccurs="0">
         	</xs:element>
-        	<xs:element name="causalEntries" maxOccurs="1"
-        		minOccurs="0">
+        	<xs:element name="causalEntries" maxOccurs="1" minOccurs="0">
         		<xs:complexType>
         			<xs:sequence>
-        				<xs:element name="hazardIds" maxOccurs="1"
-        					minOccurs="0" type="Q1:idList">
-        				</xs:element>
-        				<xs:element name="constraintText"
-        					type="xs:string" maxOccurs="1" minOccurs="0">
-        				</xs:element>
-        				<xs:element name="note" type="xs:string"
-        					maxOccurs="1" minOccurs="0">
-        				</xs:element>
-        				<xs:element name="ucaLink" type="xs:string" maxOccurs="1" minOccurs="0">
-        				</xs:element>
-        				<xs:element name="scenarioLinks" maxOccurs="1" minOccurs="0" type="Q1:idList">
-                        </xs:element>
+        				<xs:element name="causalEntry" maxOccurs="unbounded" minOccurs="0">
+	        				<xs:complexType>
+                                <xs:all>
+			        				<xs:element name="hazardIds" maxOccurs="1" minOccurs="0" type="Q1:idList">
+			
+			        				</xs:element>
+			        				<xs:element name="constraintText" type="xs:string" maxOccurs="1" minOccurs="0">
+			        				</xs:element>
+			        				<xs:element name="note" type="xs:string" maxOccurs="1" minOccurs="0">
+			        				</xs:element>
+			        				<xs:element name="ucaLink" type="xs:string" maxOccurs="1" minOccurs="0">
+			        				</xs:element>
+			        				<xs:element name="scenarioLinks" maxOccurs="1" minOccurs="0" type="Q1:idList">
+			        				</xs:element>
+			        			</xs:all>
+			        			<xs:attribute name="id" type="xs:string"
+			        				use="required">
+			        			</xs:attribute>
+			        		</xs:complexType>
+		        		</xs:element>
         			</xs:sequence>
-        			<xs:attribute name="id" type="xs:string" use="required">
-        			</xs:attribute>
         		</xs:complexType>
-        	</xs:element>
+        	</xs:element>
+
+        	<xs:element name="id" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
         </xs:all>
         
-	<xs:attribute
-		name="factorId"
-		type="xs:string"
-		use="required">
-	</xs:attribute>
+        
 	<xs:attribute
 		name="text"
 		type="xs:string"
@@ -482,7 +484,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
    </xs:complexType>
 <xs:complexType name="idList">
     <xs:sequence>
-      <xs:element type="xs:string" name="id"/>
+      <xs:element type="xs:string" name="id" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   
@@ -632,10 +634,10 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   		<xs:element name="ruleID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
   		<xs:element name="ruleNR" type="xs:int" maxOccurs="1" minOccurs="1"></xs:element>
   		<xs:element name="criticalCombies" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-  		<xs:element name="RefinedSafetyRule" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-  		<xs:element name="refinedUCA" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-  		<xs:element name="refinedSC" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-  		<xs:element name="ltlProp" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+  		<xs:element name="RefinedSafetyRule" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+  		<xs:element name="refinedUCA" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+  		<xs:element name="refinedSC" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+  		<xs:element name="ltlProp" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
   		<xs:element name="type" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
   		<xs:element name="relatedUCAIDs" maxOccurs="1"	minOccurs="0">
   			<xs:complexType>
@@ -646,7 +648,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   				</xs:sequence>
   			</xs:complexType>
   		</xs:element>
-  		<xs:element name="relatedCaID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+  		<xs:element name="relatedCaID" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
   	</xs:all>
   </xs:complexType>
 

@@ -54,7 +54,22 @@ public interface IExtendedDataController {
    */
   boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data, UUID linkedControlActionID);
 
-  List<AbstractLtlProvider> getAllRefinedRules(boolean includeRules, boolean includeScenarios, boolean includeLTL);
+  /**
+   * returns a list which contains all scenario objects of the type 
+   * Basic, causal and/or only ltl depending on the given booleans
+   *  
+   * @param includeBasic
+   *          include all Basic Scenarios, Basic Scenarios are the ones automatically created in the 
+   *          XSTPA plugin which is optional so this maybe results in an empty list
+   * @param includeCausal
+   *          include all scenarios created in the causal factors step
+   * @param includeLTL
+   *          include those scenarios that were created in the ltl table and contain only
+   *          an ltl property
+   * @return a list containing the chosen scenarios or an empty list if all
+   *          values are false or the respective lists are empty
+   */
+  List<AbstractLtlProvider> getAllScenarios(boolean includeBasic, boolean includeCausal, boolean includeLTL);
 
   List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter);
 

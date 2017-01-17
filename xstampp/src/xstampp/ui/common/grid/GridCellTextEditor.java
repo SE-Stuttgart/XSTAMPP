@@ -203,6 +203,45 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     } else if ( !isReadOnly ) {
       if ( editor == null) {
         editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP);
+        grid.getGrid().addMouseWheelListener(new MouseWheelListener() {
+          
+          @Override
+          public void mouseScrolled(MouseEvent error) {
+            editor.deactivate();
+          }
+        });
+        editor.getControl().addFocusListener(new FocusAdapter() {
+          @Override
+          public void focusLost(FocusEvent error) {
+            editor.deactivate();
+            editorClosing();
+          }
+          
+          @Override
+          public void focusGained(FocusEvent error) {
+            editorOpening();
+          }
+        });
+        editor.addModifyListener(new ModifyListener() {
+
+          @Override
+          public void modifyText(ModifyEvent error) {
+            if (error.getSource() instanceof Text 
+                && !currentText.equals(((Text) error.widget).getText())) {
+              GridCellTextEditor.this.currentText = ((Text) error.widget).getText();
+              Rectangle rect = GridCellTextEditor.this.editField;
+              Text text = (Text) error.getSource();
+              updateDataModel(currentText);
+              onTextChange(GridCellTextEditor.this.currentText);
+              // if the size is determined to be larger than the text lines itself
+              // this the original size, will be displayed as long as it not
+              // overwritten by text
+              int editorHeight = text.getLineHeight() * text.getLineCount();
+              text.setBounds(rect.x, rect.y, rect.width, editorHeight);
+              grid.getGrid().redraw();
+            }
+          }
+        });
       }
       
       editor.activate(new TextLocator(cellBounds));
@@ -210,45 +249,6 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
       editor.getControl().setBackground(HOVER_COLOR);
       editor.setTextFont(Display.getDefault().getSystemFont());
       editor.setValue(this.currentText);
-      grid.getGrid().addMouseWheelListener(new MouseWheelListener() {
-        
-        @Override
-        public void mouseScrolled(MouseEvent error) {
-          editor.deactivate();
-        }
-      });
-      editor.getControl().addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusLost(FocusEvent error) {
-          editor.deactivate();
-          editorClosing();
-        }
-        
-        @Override
-        public void focusGained(FocusEvent error) {
-          editorOpening();
-        }
-      });
-      editor.addModifyListener(new ModifyListener() {
-
-        @Override
-        public void modifyText(ModifyEvent error) {
-          if (error.getSource() instanceof Text 
-              && !currentText.equals(((Text) error.widget).getText())) {
-            GridCellTextEditor.this.currentText = ((Text) error.widget).getText();
-            Rectangle rect = GridCellTextEditor.this.editField;
-            Text text = (Text) error.getSource();
-            updateDataModel(currentText);
-            onTextChange(GridCellTextEditor.this.currentText);
-            // if the size is determined to be larger than the text lines itself
-            // this the original size, will be displayed as long as it not
-            // overwritten by text
-            int editorHeight = text.getLineHeight() * text.getLineCount();
-            text.setBounds(rect.x, rect.y, rect.width, editorHeight);
-            grid.getGrid().redraw();
-          }
-        }
-      });
       editor.setFocus();
     }
   }

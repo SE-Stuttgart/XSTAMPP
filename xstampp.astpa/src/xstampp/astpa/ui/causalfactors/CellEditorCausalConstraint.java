@@ -16,7 +16,7 @@ public class CellEditorCausalConstraint extends GridCellTextEditor {
   
   public CellEditorCausalConstraint(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
                       UUID ruleId, ScenarioType type) {
-    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getSafetyRule(),ruleId);
+    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getRefinedSafetyConstraint(),ruleId);
     if(type != ScenarioType.CAUSAL_SCENARIO){
       setReadOnly(true);
     }

@@ -38,22 +38,22 @@ public class ExtendedDataController implements IExtendedDataController {
   
     @XmlElementWrapper(name = "rules")
     @XmlElement(name = "rule")
-    private List<AbstractLtlProvider> rules;
+    private List<RefinedSafetyRule> rules;
     
-    private Map<UUID,AbstractLtlProvider> ruleMap;
+    private Map<UUID,RefinedSafetyRule> ruleMap;
     
     @XmlElementWrapper(name = "scenarios")
     @XmlElement(name = "scenario")
-    private List<AbstractLtlProvider> scenarios;
+    private List<RefinedSafetyRule> scenarios;
     
-    private Map<UUID,AbstractLtlProvider> scenarioMap;
+    private Map<UUID,RefinedSafetyRule> scenarioMap;
     
 
     @XmlElementWrapper(name = "customLTLs")
     @XmlElement(name = "customLTL")
-    private List<AbstractLtlProvider> customLTLs;
+    private List<RefinedSafetyRule> customLTLs;
     
-    private Map<UUID,AbstractLtlProvider> ltlMap;
+    private Map<UUID,RefinedSafetyRule> ltlMap;
     
     @XmlAttribute(name="nextScenarioIndex")
     private int nextScenarioIndex;
@@ -89,7 +89,7 @@ public class ExtendedDataController implements IExtendedDataController {
       }
       return ++nextScenarioIndex;
     }
-    private Map<UUID,AbstractLtlProvider> getMap(ScenarioType type){
+    private Map<UUID,RefinedSafetyRule> getMap(ScenarioType type){
       Assert.isNotNull(type);
         switch(type){
         case CUSTOM_LTL:
@@ -116,9 +116,9 @@ public class ExtendedDataController implements IExtendedDataController {
       
     }
     
-    private void fillMap(Map<UUID,AbstractLtlProvider> entryMap,List<AbstractLtlProvider> list){
+    private void fillMap(Map<UUID,RefinedSafetyRule> entryMap,List<RefinedSafetyRule> list){
       if(list != null){
-        for (AbstractLtlProvider provider : list) {
+        for (RefinedSafetyRule provider : list) {
           entryMap.put(provider.getId(), provider);
         }
       }
@@ -190,7 +190,7 @@ public class ExtendedDataController implements IExtendedDataController {
      * @see IValueCombie
      * @return
      */
-    public boolean addRefinedRule(AbstractLtlProvider rule){
+    public boolean addRefinedRule(RefinedSafetyRule rule){
         if(!getMap(ScenarioType.BASIC_SCENARIO).containsKey(rule.getId())){
           nextScenarioIndex = Math.max(nextScenarioIndex, rule.getNumber());
           return getMap(ScenarioType.BASIC_SCENARIO).put(rule.getId(),rule) != null;
@@ -203,7 +203,7 @@ public class ExtendedDataController implements IExtendedDataController {
      */
     @Override
     public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,UUID linkedControlActionID){
-      for(AbstractLtlProvider provider: getAllRefinedRules(true,true,true)){
+      for(AbstractLtlProvider provider: getAllScenarios(true,true,true)){
         if(provider.getRuleId().equals(ruleId)){
           return updateRefinedRule(provider, data, linkedControlActionID);
         }
@@ -228,7 +228,7 @@ public class ExtendedDataController implements IExtendedDataController {
      * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(boolean, boolean, boolean)
      */
     @Override
-    public List<AbstractLtlProvider> getAllRefinedRules(boolean includeRules,
+    public List<AbstractLtlProvider> getAllScenarios(boolean includeRules,
                                                         boolean includeScenarios,
                                                         boolean includeLTL){
 
@@ -281,7 +281,7 @@ public class ExtendedDataController implements IExtendedDataController {
     @Override
     public List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter){
       List<AbstractLtlProvider> result = new ArrayList<>();
-      for(AbstractLtlProvider data : getAllRefinedRules(true, true, true)){
+      for(AbstractLtlProvider data : getAllScenarios(true, true, true)){
         if(filter.check(data)){
           result.add(data);
         }
@@ -290,7 +290,7 @@ public class ExtendedDataController implements IExtendedDataController {
       return result;
     }
     
-    private boolean removeEntry(Map<UUID,AbstractLtlProvider> entryMap, boolean removeAll, UUID id){
+    private boolean removeEntry(Map<UUID,RefinedSafetyRule> entryMap, boolean removeAll, UUID id){
       boolean result = false;
         if(removeAll){
           //if removeAll than the rule index is set to 0 so the next rule is added with the index 0

@@ -269,7 +269,7 @@ public class DataModelController extends AbstractDataModel implements
 		                                              this.extendedDataController);
 		this.causalFactorController.prepareForExport(this.hazAccController,
                                           			 getRoot().getChildren(),
-                                          			 getAllRefinedRules(true, true, true),
+                                          			 getAllScenarios(true, true, true),
                                           			 getAllUnsafeControlActions());
 		this.projectDataManager.prepareForExport();
 		this.exportInformation = new ExportInformation();
@@ -284,7 +284,7 @@ public class DataModelController extends AbstractDataModel implements
 		this.controlActionController.prepareForSave(this.extendedDataController);
 		this.causalFactorController.prepareForSave(this.hazAccController,
                                                controlStructureController.getInternalComponents(),
-                                               getAllRefinedRules(true, true, true),
+                                               getAllScenarios(true, true, true),
                                                getAllUnsafeControlActions());
 		this.projectDataManager.prepareForSave();
 		this.exportInformation = null;
@@ -1709,10 +1709,11 @@ public class DataModelController extends AbstractDataModel implements
 		return this.ignoreLtlValue;
 	}
 	
-	public List<AbstractLtlProvider> getAllRefinedRules(boolean includeRules,
+	@Override
+	public List<AbstractLtlProvider> getAllScenarios(boolean includeRules,
       boolean includeScenarios,
       boolean includeLTL){
-		return this.extendedDataController.getAllRefinedRules(includeRules, includeScenarios, includeLTL);
+		return this.extendedDataController.getAllScenarios(includeRules, includeScenarios, includeLTL);
 	}
 	
 	public AbstractLtlProvider getRefinedScenario(UUID id){
@@ -1756,7 +1757,7 @@ public class DataModelController extends AbstractDataModel implements
 	
 	@Override
 	public List<AbstractLtlProvider> getLTLPropertys(){
-		return getAllRefinedRules(true,false,false);
+		return getAllScenarios(true,false,false);
 	}
 
 	@Override

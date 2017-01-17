@@ -30,12 +30,11 @@ import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.GridWrapper;
 import xstampp.ui.common.grid.IGridCell;
 import xstampp.ui.editors.AbstractFilteredEditor;
-import xstpa.ui.View;
 
 public class LTLPropertiesTable extends AbstractFilteredEditor{
 
   private static String categoryLTL = "ID";
-  private static String[] columns=new String[]{View.ENTRY_ID,View.LTL_RULES};
+  private static String[] columns=new String[]{"ID","LTL"};
   private static String PREFIX = "SSR1."; //$NON-NLS-1$
   private Action deleteAction;
   private GridWrapper grid;
@@ -162,7 +161,7 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
   private void reloadTable() {
     if(this.grid != null){
       this.grid.clearRows();
-      List<AbstractLtlProvider> rulesList = dataModel.getAllRefinedRules(true,false,true);
+      List<AbstractLtlProvider> rulesList = dataModel.getAllScenarios(true,false,true);
       for (AbstractLtlProvider rule  : rulesList) {
         if(!isFiltered(rule.getNumber(),categoryLTL)){
           GridRow ruleRow = new GridRow(columns.length);

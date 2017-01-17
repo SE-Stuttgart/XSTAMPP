@@ -13,17 +13,14 @@ package xstampp.astpa.model.extendedData;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
-@XmlRootElement(name = "rule")
-@XmlAccessorType(XmlAccessType.NONE)
 
+@XmlRootElement(name = "rule")
 public class RefinedSafetyRule extends AbstractLtlProvider{
 
 	
@@ -267,7 +264,6 @@ public class RefinedSafetyRule extends AbstractLtlProvider{
 
   @Override
   public String getTitle() {
-    // TODO Auto-generated method stub
     return null;
   }
 }

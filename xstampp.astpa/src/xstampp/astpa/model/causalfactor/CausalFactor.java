@@ -43,7 +43,7 @@ import xstampp.model.AbstractLtlProvider;
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactor implements ICausalFactor {
   
-  @XmlAttribute(name="factorId", required=true)
+  @XmlElement(name="id")
 	private UUID id;
   
   @XmlAttribute(name="text", required=false)
@@ -231,7 +231,10 @@ public class CausalFactor implements ICausalFactor {
         entry.setHazardIds(hazardLinksMap.get(getId()));
         entry.setNote(getNote());
       }
+      safetyConstraint = null;
+      note = null;
     }
+    
     if(entries != null){
       for (CausalFactorEntry entry : entries) {
         entry.prepareForSave(hazAccController,allUnsafeControlActions);

@@ -40,8 +40,8 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
   @XmlElement(name="constraintText")
   private String constraintText;
 
-  @XmlElement(name="hazardIds")
-  @XmlElementWrapper(name="id")
+  @XmlElementWrapper(name="hazardIds")
+  @XmlElement(name="id")
   private List<UUID> hazardIds;
 
   @XmlElement(name="note")
@@ -57,8 +57,8 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
   @XmlElement(name="scenarioEntry")
   private List<CausalScenarioEntry> scenarioEntries;
 
-  @XmlElement(name="scenarioLinks")
-  @XmlElementWrapper(name="id")
+  @XmlElementWrapper(name="scenarioLinks")
+  @XmlElement(name="id")
   private List<UUID> scenarioLinks;
   
   public CausalFactorEntry() {
@@ -245,7 +245,7 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
     setUcaLink(null);
     scenarioEntries = null;
     if(hazardIds != null){
-      UUID[] hazIds= (UUID[]) this.hazardIds.toArray();
+      UUID[] hazIds= (UUID[]) this.hazardIds.toArray(new UUID[0]);
       for (int i = 0;i < hazIds.length; i++) {
         if(hazAccController.getHazard(hazIds[i]) == null){
           this.hazardIds.remove(hazIds[i]);

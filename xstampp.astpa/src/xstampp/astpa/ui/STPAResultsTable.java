@@ -142,7 +142,7 @@ public class STPAResultsTable extends StandartEditorPart{
 				content.put("SC1."+dataModel.getUCANumber(uca.getId()), constraint.getText());
 			}
 		}
-		for(AbstractLtlProvider rule: dataModel.getAllRefinedRules(true,true,false)){
+		for(AbstractLtlProvider rule: dataModel.getAllScenarios(true,true,false)){
 			content.put("SC2."+rule.getNumber(), rule.getRefinedSafetyConstraint());
 		}
 		scViewer.setInput(content.entrySet());

@@ -48,14 +48,25 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 	private static final String UCA="unsafe control actions";
 
   private static final String PREFIX = "S1.";
-  private static final String[] columns = new String[] { "ID","Basic Scenario","Safety Constraint" };
+  protected String[] columns = new String[] { "ID","Causal Scenario","Safety Constraint" };
   private GridWrapper grid;
   private IExtendedDataModel dataInterface;
   private DeleteCSAction deleteAction;
+  private final boolean includeBasicScenarios;
+  private final boolean includeCausalScenarios;
+  private boolean readOnly;
   
-	public CausalScenariosView() {
-		setUseFilter(true);
+	public CausalScenariosView(boolean includeBasicScenarios, boolean includeCausalScenarios, boolean readOnly) {
+		this.includeBasicScenarios = includeBasicScenarios;
+		this.includeCausalScenarios = includeCausalScenarios;
+    this.readOnly = readOnly;
+    setUseFilter(true);
 	}
+	
+	public CausalScenariosView() {
+    this(false, true,false);
+  }
+	
 	private class AddCSButton extends GridCellButton {
 
     private UUID parentId;
@@ -83,7 +94,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
   private abstract class ScenarioEditor extends GridCellTextEditor{
     
     public ScenarioEditor(GridWrapper grid, String initialText, Boolean showDelete, Boolean readOnly, UUID ruleId) {
-      super(grid, initialText, showDelete, readOnly,ruleId);
+      super(grid, initialText, !CausalScenariosView.this.readOnly && showDelete, readOnly,ruleId);
     }
     
     @Override
@@ -127,7 +138,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 	private void reloadTable() {
 	  if(this.grid != null){
       this.grid.clearRows();
-      List<AbstractLtlProvider> rulesList = dataInterface.getAllRefinedRules(true,true,false);
+      List<AbstractLtlProvider> rulesList = dataInterface.getAllScenarios(includeBasicScenarios,includeCausalScenarios,false);
       for (AbstractLtlProvider rule  : rulesList) {
         if(!isFiltered(rule.getUCALinks(),UCA)){
           GridRow ruleRow = new GridRow(columns.length);
@@ -142,7 +153,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
           };
           ruleRow.addCell(0,cell);
   
-          ruleRow.addCell(1,new ScenarioEditor(this.grid,rule.getSafetyRule(),false,false, rule.getRuleId()){
+          ruleRow.addCell(1,new ScenarioEditor(this.grid,rule.getSafetyRule(),false,readOnly, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
@@ -150,7 +161,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
               dataInterface.updateRefinedRule(getUUID(),data, null);
             }
           });
-          ruleRow.addCell(2,new ScenarioEditor(this.grid,rule.getRefinedSafetyConstraint(),false,false, rule.getRuleId()){
+          ruleRow.addCell(2,new ScenarioEditor(this.grid,rule.getRefinedSafetyConstraint(),false,readOnly, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
@@ -161,13 +172,15 @@ public class CausalScenariosView extends AbstractFilteredEditor {
           grid.addRow(ruleRow);
         }
       }
-      GridRow addRow = new GridRow(0);
-      addRow.setColumnSpan(0, 3);
-      if(getFilterValue() instanceof UUID){
-        addRow.addCell(0,new AddCSButton((UUID) getFilterValue(), ""));
-      }
-      addRow.addCell(0,new AddCSButton(null, ""));
-      grid.addRow(addRow);
+//      if(!readOnly){
+//        GridRow addRow = new GridRow(columns.length);
+//        addRow.setColumnSpan(0, 3);
+//        if(getFilterValue() instanceof UUID){
+//          addRow.addCell(0,new AddCSButton((UUID) getFilterValue(), ""));
+//        }
+//        addRow.addCell(0,new AddCSButton(null, ""));
+//        grid.addRow(addRow);
+//      }
       this.grid.reloadTable();
 	  }    
   }
@@ -201,10 +214,12 @@ public class CausalScenariosView extends AbstractFilteredEditor {
    */
   @Override
   protected void updateFilter() {
-    int ucaCount = dataInterface.getAllUnsafeControlActions().size();
+    int ucaCount = dataInterface.getAllUnsafeControlActions().size() + 1;
     String[] ucaNames=new String[ucaCount];
     UUID[] filterValues = new UUID[ucaCount];
-    int index = 0;
+    ucaNames[0]= "All";
+    filterValues[0] = null;
+    int index = 1;
     // the loop inserts a string value and an id for every uca to 
     // ensure readability
     for(ICorrespondingUnsafeControlAction uca: dataInterface.getAllUnsafeControlActions()) {
@@ -214,6 +229,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
     }
     addChoices(UCA, ucaNames);
     addChoiceValues(UCA, filterValues);
+    
     reloadTable();
   }
   

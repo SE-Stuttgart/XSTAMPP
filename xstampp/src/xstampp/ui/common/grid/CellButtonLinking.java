@@ -57,7 +57,11 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
       String itemTitle = items.get(i).getTitle();
       proposals[i] = new LinkProposal();
       proposals[i].setProposalId(items.get(i).getId());
-      proposals[i].setLabel(itemNumber + " - " + itemTitle);
+      if(itemTitle == null){
+        proposals[i].setLabel(itemNumber);
+      }else{
+        proposals[i].setLabel(itemNumber + " - " + itemTitle);
+      }
       proposals[i].setDescription(items.get(i).getDescription());
     }
     

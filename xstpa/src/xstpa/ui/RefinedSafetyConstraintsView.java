@@ -28,7 +28,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 		if(getDataInterface() == null){
 			return null;
 		}
-		List<AbstractLtlProvider> allRUCA = ((IExtendedDataModel)getDataInterface()).getAllRefinedRules(true,false,false);
+		List<AbstractLtlProvider> allRUCA = ((IExtendedDataModel)getDataInterface()).getAllScenarios(true,false,false);
   	    Collections.sort(allRUCA);
   	    
   	    return allRUCA;

@@ -61,7 +61,7 @@ public class RefinedUCAView extends UnsafeControlActionsView {
 			ArrayList<AbstractLtlProvider> allNotProvidedRUCA = new ArrayList<>();
 	  	    ArrayList<AbstractLtlProvider> allProvidedRUCA = new ArrayList<>();
 	  	    ArrayList<AbstractLtlProvider> allWrongTimedRUCA = new ArrayList<>();
-	  	    List<AbstractLtlProvider> refinedEntrys = dataController.getModel().getAllRefinedRules(true,false,false);
+	  	    List<AbstractLtlProvider> refinedEntrys = dataController.getModel().getAllScenarios(true,false,false);
 	  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
 	  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
 	  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());

@@ -142,13 +142,15 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 
         @Override
         public void modifyText(ModifyEvent e){
-          if(filterText.getItemCount() <= 0){
-            //if the text of the filterText combo is changed
-            //it is directly assigned as filter
-            filterValue = filterText.getText();
-          }else if(filterText.getSelectionIndex() >= 0){
+
+
+          if ( filterText.getSelectionIndex() >= 0) {
             Object[] values = filterValuesToCategories.get(categoryCombo.getText());
-            filterValue = values[filterText.getSelectionIndex()];
+            if ( values != null) {
+              filterValue = values[filterText.getSelectionIndex()];
+            }
+          } else {
+            filterValue = filterText.getText();
           }
           updateFilter();
         }
@@ -158,6 +160,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
       if (comboChoicesToEntrys != null 
           && comboChoicesToEntrys.get(category) != null) {
         filterText.setItems(comboChoicesToEntrys.get(category));
+        filterText.select(0);
       }
       categoryCombo.select(initialCategory);
       activeCategory = getCategoryArray()[initialCategory];
