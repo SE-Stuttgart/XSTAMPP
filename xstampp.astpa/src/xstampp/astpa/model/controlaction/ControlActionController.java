@@ -617,6 +617,7 @@ public class ControlActionController {
 				unsafeControlAction.setLinks(null);
 			}
 		}
+		
 	}
 	
 	public List<UCAHazLink> getAllUCALinks() {

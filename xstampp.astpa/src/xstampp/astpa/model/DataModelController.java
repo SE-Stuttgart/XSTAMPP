@@ -283,7 +283,7 @@ public class DataModelController extends AbstractDataModel implements
     this.extendedDataController.prepareForSave();
 		this.controlActionController.prepareForSave(this.extendedDataController);
 		this.causalFactorController.prepareForSave(this.hazAccController,
-                                               getRoot().getChildren(),
+                                               controlStructureController.getInternalComponents(),
                                                getAllRefinedRules(true, true, true),
                                                getAllUnsafeControlActions());
 		this.projectDataManager.prepareForSave();

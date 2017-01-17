@@ -30,6 +30,7 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
 import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.HazAccController;
@@ -160,11 +161,14 @@ public class CausalFactorController implements ICausalFactorController {
   public ICausalComponent getCausalComponent(IRectangleComponent csComp) {
     CausalCSComponent component = null;
     if(csComp != null && validateCausalComponent(csComp.getComponentType())){
-      if(causalComponents != null && causalComponents.containsKey(csComp.getId())){
-        component = causalComponents.get(csComp.getId());
-      }else{
-        component = new CausalCSComponent();
+      if(causalComponents == null){
+        causalComponents = new HashMap<>();
       }
+      if(!causalComponents.containsKey(csComp.getId())){
+        causalComponents.put(csComp.getId(), new CausalCSComponent());
+      }
+      
+      component = causalComponents.get(csComp.getId());
       component.setText(csComp.getText());
       component.setId(csComp.getId());
       component.setType(csComp.getComponentType());
@@ -195,17 +199,13 @@ public class CausalFactorController implements ICausalFactorController {
   public void prepareForExport(HazAccController hazAccController, List<IRectangleComponent> children,
       List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
 
-    if(causalComponents != null){
       for (IRectangleComponent child : children) {
-        if(this.causalComponents.containsKey(child.getId())){
-          this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
-        }
-      }   
-    }
-    
+        getCausalComponent(child);
+        this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
+      }
   }
 
-  public void prepareForSave(HazAccController hazAccController, List<IRectangleComponent> children,
+  public void prepareForSave(HazAccController hazAccController, List<Component> list,
       List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     Map<UUID,List<UUID>> hazardLinksMap = new HashMap<>();
     if(links != null){
@@ -219,15 +219,17 @@ public class CausalFactorController implements ICausalFactorController {
       links.clear();
       links = null;
     }
+    ArrayList<UUID> removeList = new ArrayList<>();
     if(causalComponents != null){
-      ArrayList<UUID> removeList = new ArrayList<>(causalComponents.keySet());
-      for (IRectangleComponent child : children) {
-        if(this.causalComponents.containsKey(child.getId())){
-          
-          removeList.remove(child.getId());
-          this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap,hazAccController, child,allRefinedRules, allUnsafeControlActions);
-        }
+      removeList.addAll(causalComponents.keySet());
+    }
+    for (Component child : list) {
+      removeList.remove(child.getId());
+      if(getCausalComponent(child) != null){
+        this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap,hazAccController, child,allRefinedRules, allUnsafeControlActions);
       }
+    }
+    if(causalComponents != null){
       for(UUID id: removeList){
         this.causalComponents.remove(id);
       }

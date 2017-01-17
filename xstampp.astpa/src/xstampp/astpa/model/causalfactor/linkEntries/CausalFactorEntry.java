@@ -41,6 +41,7 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
   private String constraintText;
 
   @XmlElement(name="hazardIds")
+  @XmlElementWrapper(name="id")
   private List<UUID> hazardIds;
 
   @XmlElement(name="note")
@@ -57,6 +58,7 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
   private List<CausalScenarioEntry> scenarioEntries;
 
   @XmlElement(name="scenarioLinks")
+  @XmlElementWrapper(name="id")
   private List<UUID> scenarioLinks;
   
   public CausalFactorEntry() {

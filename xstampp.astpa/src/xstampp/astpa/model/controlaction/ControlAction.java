@@ -81,7 +81,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
   private List<RefinedSafetyRule> rules;
 	
 	@XmlElementWrapper(name = "ruleIds")
-  @XmlElement(name = "ruleId")
+  @XmlElement(name = "id")
   private List<UUID> ruleIds;
 	
 	/**
@@ -549,27 +549,15 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		
 		//prepare the rules list for save by moving all rules to the 
 		//ExtendedDataModel and storing a list of uuids
-		if(ruleIds == null){
+		if(rules != null){
 		  ruleIds = new ArrayList<>();
-		}else{
-		  for(AbstractLtlProvider refinedRule : extendedData.getAllRefinedRules(true, false, false)){
-        if(ruleIds.contains(refinedRule.getRuleId())){
-          rules.add((RefinedSafetyRule) refinedRule);
-        }
-      }
-	    ruleIds.clear();
-		}
-		if(rules == null){
-		  rules = new ArrayList<>();
-		}else{
 		  for(AbstractLtlProvider refinedRule : rules){
-		    ruleIds.add(refinedRule.getRuleId());
-		    ((RefinedSafetyRule)refinedRule).setLinks(null);
-		    extendedData.addRefinedRule(refinedRule);
-	    }
-		  
-		  rules.clear();
+        ruleIds.add(refinedRule.getRuleId());
+        ((RefinedSafetyRule)refinedRule).setLinks(null);
+        extendedData.addRefinedRule(refinedRule);
+      }
 		}
+    rules = null;
 	}
 
 

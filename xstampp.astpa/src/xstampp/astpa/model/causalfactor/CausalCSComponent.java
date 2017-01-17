@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -61,45 +62,48 @@ public class CausalCSComponent implements ICausalComponent{
   }
   @Override
   public UUID getId() {
-    // TODO Auto-generated method stub
     return id;
   }
   
   public List<UUID> getLinkedUCAList(){
     List<UUID> list = new ArrayList<>();
-    for(CausalFactor factor : factors){
+    for(CausalFactor factor : internal_getFactors()){
       list.addAll(factor.getLinkedUCAList());
     }
     return list;
   }
+  
   /**
    * @param factors the factors to set
    */
   public UUID addCausalFactor() {
-    CausalFactor factor = new CausalFactor(new String());
+    CausalFactor factor = new CausalFactor(new String());    
+    return intern_addCausalFactor(factor);
+  }
+  
+  private  UUID intern_addCausalFactor(CausalFactor factor) {
     if(this.factors == null){
       this.factors = new ArrayList<>();
     }
-    this.factors.add(factor);
-    return factor.getId();
+    if(this.factors.add(factor)){
+      return factor.getId();
+    }
+    
+    return null;
   }
   
   public boolean removeCausalFactor(UUID id){
-    if(this.factors != null){
-      for (int i = 0; i < factors.size(); i++) {
-        if(factors.get(i).getId().equals(id)){
-          return factors.remove(i) != null;
-        }
+    for (CausalFactor factor : internal_getFactors()) {
+      if(factor.getId().equals(id)){
+        return factors.remove(factor);
       }
     }
     return false;
   }
   public CausalFactor getCausalFactor(UUID factorId){
-    if(factors != null){
-      for (CausalFactor factor : factors) {
-        if(factor.getId().equals(factorId)){
-          return factor;
-        }
+    for (CausalFactor factor : internal_getFactors()) {
+      if(factor.getId().equals(factorId)){
+        return factor;
       }
     }
     return null;
@@ -108,13 +112,19 @@ public class CausalCSComponent implements ICausalComponent{
   @Override
   public List<ICausalFactor> getCausalFactors() {
     List<ICausalFactor> factors = new ArrayList<>();
-    if(this.factors != null){
-      for (CausalFactor causalFactor : this.factors) {
-        factors.add(causalFactor);
-      }
+    for (CausalFactor causalFactor : internal_getFactors()) {
+      factors.add(causalFactor);
     }
     return factors;
   }
+  
+  private List<CausalFactor>  internal_getFactors(){
+    if(this.factors == null){
+      return new ArrayList<>();
+    }
+    return new ArrayList<>(factors);
+  }
+  
   @Override
   public ComponentType getComponentType() {
     return type;
@@ -123,23 +133,39 @@ public class CausalCSComponent implements ICausalComponent{
   public void setType(ComponentType type) {
     this.type = type;
   }
+
+  public boolean changeCausalEntry(UUID causalFactorId, CausalFactorEntryData entryData) {
+    CausalFactor factor = getCausalFactor(causalFactorId);
+    
+    if(factor != null){
+      return factor.changeCausalEntry(entryData);
+    }
+    return false;
+  }
   
   public void prepareForExport(HazAccController hazAccController,
                                IRectangleComponent child, 
                                List<AbstractLtlProvider> allRefinedRules,
                                List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     this.text = child.getText();
-    for (CausalFactor causalFactor : factors) {
+    for (CausalFactor causalFactor : internal_getFactors()) {
       causalFactor.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
     }
   }
-
+  
   public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
                              HazAccController hazAccController,
-                             IRectangleComponent child,
+                             ICausalComponent child,
                              List<AbstractLtlProvider> allRefinedRules,
                              List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
-    for (CausalFactor causalFactor : factors) {
+    List<ICausalFactor> causalFactors = child.getCausalFactors();
+    if(causalFactors != null){
+      for (ICausalFactor legacyEntry : causalFactors) {
+        intern_addCausalFactor((CausalFactor) legacyEntry);
+        
+      }
+    }
+    for (CausalFactor causalFactor : internal_getFactors()) {
       causalFactor.prepareForSave(hazardLinksMap,hazAccController, allRefinedRules,allUnsafeControlActions);
     }
   }

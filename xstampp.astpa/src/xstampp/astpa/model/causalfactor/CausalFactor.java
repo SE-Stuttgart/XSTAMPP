@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
@@ -203,6 +204,14 @@ public class CausalFactor implements ICausalFactor {
     return result;
   }
   
+  public boolean changeCausalEntry(CausalFactorEntryData entryData){
+    CausalFactorEntry entry = (CausalFactorEntry) getEntry(entryData.getId());
+    if(entry != null){
+      return entry.changeCausalEntry(entryData);
+    }
+    return false;
+  }
+  
   public void prepareForExport(HazAccController hazAccController,
       List<AbstractLtlProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions){
@@ -215,7 +224,7 @@ public class CausalFactor implements ICausalFactor {
                              HazAccController hazAccController,
                              List<AbstractLtlProvider> allRefinedRules,
                              List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
-    if(hazardLinksMap.containsKey(getId())){
+    if(hazardLinksMap.containsKey(getId()) || note != null || safetyConstraint != null){
       CausalFactorEntry entry = int_addHazardEntry();
       if(entry != null){
         entry.setConstraintText(getSafetyConstraint().getText());

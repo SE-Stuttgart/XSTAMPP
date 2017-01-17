@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -346,8 +345,11 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	@Override
 	public List<ICausalFactor> getCausalFactors() {
 		List<ICausalFactor> result = new ArrayList<>();
-		for (CausalFactor causalFactor : this.causalFactors) {
-			result.add(causalFactor);
+		if(this.causalFactors != null){
+  		for (CausalFactor causalFactor : this.causalFactors) {
+  			result.add(causalFactor);
+  		}
+      this.causalFactors = null;
 		}
 		return result;
 	}
