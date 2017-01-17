@@ -18,11 +18,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
 import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntryContainer;
-import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorUCAEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
@@ -34,14 +39,28 @@ import xstampp.model.AbstractLtlProvider;
  * @author Fabian
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactor implements ICausalFactor {
-
+  
+  @XmlAttribute(name="factorId", required=true)
 	private UUID id;
+  
+  @XmlAttribute(name="text", required=false)
 	private String text;
+  
+  @XmlElement(name="safetyConstraint")
 	private CausalSafetyConstraint safetyConstraint;
+
+  @XmlElement(name="note")
 	private String note;
+  
+  @XmlElement(name="hazardLinks")
 	private String links;
+  
+  @XmlElementWrapper(name="causalEntries")
+  @XmlElement(name="causalEntry")
   private List<CausalFactorEntry> entries;
+  
 	/**
 	 * Constructor of a causal factor
 	 * 
@@ -135,7 +154,7 @@ public class CausalFactor implements ICausalFactor {
     if(this.entries == null){
       this.entries = new ArrayList<>();
     }
-    CausalFactorUCAEntry entry = new CausalFactorUCAEntry(ucaId);
+    CausalFactorEntry entry = new CausalFactorEntry(ucaId);
     this.entries.add(entry);
     return entry.getId();
   }
@@ -204,8 +223,10 @@ public class CausalFactor implements ICausalFactor {
         entry.setNote(getNote());
       }
     }
-    for (CausalFactorEntry entry : entries) {
-      entry.prepareForSave(hazAccController,allUnsafeControlActions);
+    if(entries != null){
+      for (CausalFactorEntry entry : entries) {
+        entry.prepareForSave(hazAccController,allUnsafeControlActions);
+      }
     }
   }
   public List<UUID> getLinkedUCAList(){

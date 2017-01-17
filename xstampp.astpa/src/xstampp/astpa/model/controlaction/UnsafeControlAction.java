@@ -15,6 +15,9 @@ package xstampp.astpa.model.controlaction;
 
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.haz.ITableModel;
@@ -30,16 +33,31 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
  * 
  */
 @XmlRootElement(name = "unsafecontrolaction")
+@XmlAccessorType(XmlAccessType.NONE)
 public class UnsafeControlAction implements IUnsafeControlAction,
 		ICorrespondingUnsafeControlAction {
 
+  @XmlElement(name="description")
 	private String description;
+
+  @XmlElement(name="id")
 	private UUID id;
+
+  @XmlElement(name="number")
 	private int number;
+
+  @XmlElement(name="type")
 	private UnsafeControlActionType type;
+
+  @XmlElement(name="correspondingSafetyConstraint")
 	private CorrespondingSafetyConstraint correspondingSafetyConstraint;
+
+  @XmlElement(name="links")
 	private String links;
+
+  @XmlElement(name="identifier")
 	public String identifier;
+	
 	/**
 	 * Constructs a new unsafe control action with the given values
 	 * 

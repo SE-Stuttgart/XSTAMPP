@@ -17,9 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
@@ -35,27 +36,16 @@ import xstampp.model.IValueCombie;
 /**
  * Class representing the control action objects
  * 
- * @author Fabian Toth
+ * @author Fabian Toth, Lukas Balzer
  */
-
-@XmlType(propOrder = { "unsafeControlActions",
-					   "isSafetyCritical",
-					   "notProvidedVariables", 
-					   "providedVariables", 
-					   "valuesWhenNotProvided",
-					   "valuesWhenProvided", 
-					   "notProvidedVariableNames",
-					   "providedVariableNames",
-             "rules",
-             "ruleIds",
-					   "componentLink"})
+@XmlAccessorType(XmlAccessType.NONE)
 public class ControlAction extends ATableModel implements IHAZXControlAction {
 
 	@XmlElementWrapper(name = "unsafecontrolactions")
 	@XmlElement(name = "unsafecontrolaction")
 	private List<UnsafeControlAction> unsafeControlActions;
 	
-	
+	@XmlElement(name="componentLink")
 	private UUID componentLink;
 	
 	@XmlElement(name="isSafetyCritical")
@@ -76,13 +66,6 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	@XmlElementWrapper(name = "PMCombisWhenProvided")
 	@XmlElement(name = "combinationOfPMValues")
     private List<ProvidedValuesCombi> valuesWhenProvided;
-	
-	
-	@XmlElement(name="componentLink")
-	@Override
-	public UUID getComponentLink() {
-		return this.componentLink;
-	}
 
 	@XmlElementWrapper(name = "dependenciesForNotProvided")
 	@XmlElement(name = "variableName")
@@ -100,6 +83,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	@XmlElementWrapper(name = "ruleIds")
   @XmlElement(name = "ruleId")
   private List<UUID> ruleIds;
+	
 	/**
 	 * @param componentLink the componentLink to set
 	 * @return 
@@ -111,6 +95,11 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		}
 		return false;
 	}
+
+  @Override
+  public UUID getComponentLink() {
+    return this.componentLink;
+  }
 
 
 	/**

@@ -22,7 +22,7 @@ import xstampp.model.AbstractLtlProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 @XmlRootElement(name = "rule")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 
 public class RefinedSafetyRule extends AbstractLtlProvider{
 

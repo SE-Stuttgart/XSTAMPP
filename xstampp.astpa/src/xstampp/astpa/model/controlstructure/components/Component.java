@@ -46,19 +46,34 @@ import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
  * 
  */
 @XmlRootElement(name = "component")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "id", "text","isSafetyCritical","comment", "componentType", "controlActionId",
-		"layout", "layoutPM", "relative","children", "causalFactors","unsafeVariables" })
+@XmlAccessorType(XmlAccessType.NONE)
 public class Component implements IRectangleComponent, ICausalComponent,Comparable {
 
+  @XmlElement(name="id")
 	private UUID id;
+
+  @XmlElement(name="controlActionId")
 	private UUID controlActionId;
+
+  @XmlElement(name="text")
 	private String text;
+
+  @XmlElement(name="isSafetyCritical")
 	private boolean isSafetyCritical;
+
+  @XmlElement(name="comment")
 	private String comment;
+
+  @XmlElement(name="layout")
 	private Rectangle layout;
+
+  @XmlElement(name="layoutPM")
 	private Rectangle layoutPM;
+
+  @XmlElement(name="componentType")
 	private ComponentType componentType;
+
+  @XmlElement(name="relative")
 	private UUID relative;
 
 	@XmlElementWrapper(name = "causalFactors")

@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -50,6 +52,7 @@ import xstampp.model.ObserverValue;
  * @author Jaqueline Patzek, Fabian Toth
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class ControlActionController {
 
 	@XmlElementWrapper(name = "controlactions")
@@ -65,8 +68,8 @@ public class ControlActionController {
 	@XmlElement(name = "rule")
 	private List<RefinedSafetyRule> rules;
 	
-	@XmlAttribute(name="ucaCount")
-	private int nextUcaIndext;
+	@XmlAttribute(name="nextUcaIndex")
+	private int nextUcaIndex;
 	
 	private final Map<UUID, ControlAction> trash;
 
@@ -82,7 +85,7 @@ public class ControlActionController {
 		this.controlActions = new ArrayList<>();
 		this.links = new ArrayList<>();
 	  this.ruleNr = -1;
-	  this.nextUcaIndext = -1;
+	  this.nextUcaIndex = -1;
 	}
 
 	/**
@@ -425,15 +428,15 @@ public class ControlActionController {
 	}
 	
 	private void assignUCANumbers(){
-	  int counter = 0;
+	  nextUcaIndex = 0;
     for (ControlAction controlAction : this.controlActions) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         if(unsafeControlAction.getNumber() > 0){
-          counter = unsafeControlAction.getNumber() + 1;
+          nextUcaIndex = unsafeControlAction.getNumber() + 1;
         }else{
-          counter++;
-          unsafeControlAction.setNumber(counter);
+          nextUcaIndex++;
+          unsafeControlAction.setNumber(nextUcaIndex);
         }
         
       }
@@ -441,10 +444,11 @@ public class ControlActionController {
 	}
 	
 	private int getNextUCACount(){
-	  if(nextUcaIndext < 0){
-	    nextUcaIndext = getAllUnsafeControlActions().size()+1;
+	  if(nextUcaIndex < 0){
+	    nextUcaIndex = getAllUnsafeControlActions().size()+1;
 	  }
-	  return ++nextUcaIndext;
+	  System.out.println(nextUcaIndex++);
+	  return nextUcaIndex;
 	}
 	/**
 	 * Sets the corresponding safety constraint of the unsafe control action
@@ -964,6 +968,6 @@ public class ControlActionController {
 	}
 	
 	public void setNextUcaIndext(int nextUcaIndext) {
-    this.nextUcaIndext = nextUcaIndext;
+    this.nextUcaIndex = nextUcaIndext;
   }
 }

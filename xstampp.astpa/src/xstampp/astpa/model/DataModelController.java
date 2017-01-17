@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -107,6 +109,7 @@ import xstampp.ui.common.ProjectManager;
  * 
  */
 @XmlRootElement(namespace = "astpa.model")
+@XmlAccessorType(XmlAccessType.NONE)
 public class DataModelController extends AbstractDataModel implements
 		ISafetyDataModel,IHAZXModel,ILinkingViewDataModel, INavigationViewDataModel,
 		ISystemDescriptionViewDataModel, IAccidentViewDataModel,

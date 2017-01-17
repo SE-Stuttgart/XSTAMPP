@@ -15,6 +15,9 @@ package xstampp.astpa.model.sds;
 
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
@@ -25,10 +28,13 @@ import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
  * @author Fabian Toth
  * 
  */
-@XmlType(propOrder = { "text", "id" })
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class ASafetyConstraint implements ISafetyConstraint {
 
+  @XmlElement(name="id")
 	private UUID id;
+  
+  @XmlElement(name="text")
 	private String text;
 
 	/**

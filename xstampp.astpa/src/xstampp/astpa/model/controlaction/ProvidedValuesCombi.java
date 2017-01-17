@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -32,6 +34,7 @@ import xstampp.model.IValueCombie;
  * @since 2.0
  *
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class ProvidedValuesCombi implements IValueCombie{
 	
 	@XmlElementWrapper(name="processModelValueIDs")

@@ -13,9 +13,7 @@ package xstampp.astpa.model.causalfactor.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorUCAEntry;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 
 public interface ICausalFactorController {
 
@@ -91,8 +89,8 @@ public interface ICausalFactorController {
 
   /**
    * getter for a list containing all unsafe control Actions that are currently
-   * existing as {@link CausalFactorUCAEntry}
-   * @return a list of all uca ids of all {@link CausalFactorUCAEntry}
+   * existing as {@link CausalFactorEntry}
+   * @return a list of all uca ids of all {@link CausalFactorEntry}
    */
   List<UUID> getLinkedUCAList();
   

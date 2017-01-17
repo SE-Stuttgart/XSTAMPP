@@ -93,7 +93,10 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 	@Override
 	public void removeLink(final UUID item, final UUID removeItem) {
 	  CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-    List<UUID> ids = new ArrayList<>(entry.getScenarioLinks());
+	  List<UUID> ids = new ArrayList<>();
+    if(entry.getScenarioLinks() != null){
+      ids.addAll(entry.getScenarioLinks());
+    }
     ids.remove(removeItem);
     data.setScenarioLinks(ids);
     this.caInterface.changeCausalEntry(componentId,factorId, data);

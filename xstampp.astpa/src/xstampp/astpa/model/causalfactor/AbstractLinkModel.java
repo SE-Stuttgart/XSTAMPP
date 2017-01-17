@@ -12,8 +12,6 @@ package xstampp.astpa.model.causalfactor;
 
 import java.util.UUID;
 
-import xstampp.astpa.haz.causalfactor.ICausalFactorHazardLink;
-
 public abstract class AbstractLinkModel {
 
   public AbstractLinkModel() {

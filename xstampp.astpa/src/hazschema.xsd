@@ -4,7 +4,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   <xs:element name="dataModelController">
     <xs:complexType>
       <xs:sequence>
-      	<xs:element name="projectdata">
+      	<xs:element name="projectdata" maxOccurs="1" minOccurs="1">
       		<xs:complexType>
       			<xs:all>
       				<xs:element name="styleRanges" minOccurs="0"
@@ -18,13 +18,15 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       				</xs:element>
       				<xs:element name="projectDescription"
       					type="xs:string" maxOccurs="1" minOccurs="1" />
-      				<xs:element name="projectId" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+      				<xs:element name="projectId" type="xs:string"
+      					maxOccurs="1" minOccurs="0">
+      				</xs:element>
       				<xs:element name="projectName" type="xs:string"
       					maxOccurs="1" minOccurs="1" />
       			</xs:all>
       		</xs:complexType>
       	</xs:element>
-      	<xs:element name="hazacc">
+      	<xs:element name="hazacc" maxOccurs="1" minOccurs="0">
       		<xs:complexType>
       			<xs:sequence>
       				<xs:element name="accidents">
@@ -63,7 +65,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
-      	<xs:element name="sds">
+      	<xs:element name="sds" maxOccurs="1" minOccurs="0">
       		<xs:complexType>
       			<xs:sequence>
       				<xs:element name="safetyConstraints">
@@ -93,7 +95,8 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
-                <xs:element name="controlstructure">
+      	<xs:element name="controlstructure" maxOccurs="1"
+      		minOccurs="0">
       		<xs:complexType>
       			<xs:sequence>
       				<xs:element name="component" minOccurs="0"
@@ -122,8 +125,10 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
-                <xs:element name="ignoreLTLValue" type="Q1:componentType" maxOccurs="1" minOccurs="0"></xs:element>
-                <xs:element name="cac">
+      	<xs:element name="ignoreLTLValue" type="Q1:componentType"
+      		maxOccurs="1" minOccurs="0">
+      	</xs:element>
+      	<xs:element name="cac" maxOccurs="1" minOccurs="0">
       		<xs:complexType>
       			<xs:sequence>
       				<xs:element name="controlactions">
@@ -163,12 +168,13 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       					</xs:complexType>
       				</xs:element>
       			</xs:sequence>
+      			<xs:attribute name="nextUcaIndex" type="xs:int" use="optional"></xs:attribute>
       		</xs:complexType>
       	</xs:element>
-      	<xs:element name="causalfactor">
+      	<xs:element name="causalfactor" maxOccurs="1" minOccurs="0">
       		<xs:complexType>
       			<xs:sequence>
-      				<xs:element name="causalFactorHazardLinks">
+      				<xs:element name="causalFactorHazardLinks" maxOccurs="1" minOccurs="0">
       					<xs:complexType>
       						<xs:sequence>
       							<xs:element
@@ -186,14 +192,86 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
       						</xs:sequence>
       					</xs:complexType>
       				</xs:element>
+      				<xs:element name="causalComponents" maxOccurs="1" minOccurs="0">
+      					<xs:complexType>
+      						<xs:sequence>
+      							<xs:element name="entry" maxOccurs="unbounded" minOccurs="0">
+                                            <xs:complexType>
+                                            	<xs:sequence>
+                                            		<xs:element name="key" type="xs:string" maxOccurs="1" minOccurs="1">
+                                            		</xs:element>
+                                            		<xs:element name="value" maxOccurs="1" minOccurs="1">
+								      					<xs:complexType>
+
+
+								      						<xs:sequence>
+								      							<xs:element name="causalFactors" maxOccurs="1" minOccurs="0">
+                                                                    <xs:complexType>
+                                                                    	<xs:sequence>
+                                                                    		<xs:element
+                                                                    			name="factor"
+                                                                    			type="Q1:causalFactorType" maxOccurs="unbounded" minOccurs="0">
+                                                                    		</xs:element>
+                                                                    	</xs:sequence>
+                                                                    </xs:complexType>
+								      							</xs:element>
+								      						</xs:sequence>
+								      						<xs:attribute
+								      							name="title" type="xs:string" use="optional">
+								      						</xs:attribute>
+								      						<xs:attribute
+								      							name="type" type="xs:string" use="optional">
+								      						</xs:attribute>
+								      					</xs:complexType>
+                                            		</xs:element>
+                                            	</xs:sequence>
+                                            </xs:complexType>
+      							</xs:element>
+      						</xs:sequence>
+      					</xs:complexType></xs:element>
       			</xs:sequence>
       		</xs:complexType>
       	</xs:element>
 
+
+                <xs:element name="extendedData" type="Q1:extendedDataType" maxOccurs="1" minOccurs="0"></xs:element>
       </xs:sequence>
       <xs:attribute name="astpaversion" type="xs:string" use="required"/>
     </xs:complexType>
   </xs:element>
+
+<xs:complexType name="causalFactorType">
+	<xs:sequence>
+		<xs:element
+			name="note"
+			type="xs:string"
+			maxOccurs="1"
+			minOccurs="0">
+		</xs:element>
+		<xs:element
+			name="hazardLinks"
+			type="xs:string"
+			maxOccurs="1"
+			minOccurs="0">
+		</xs:element>
+		<xs:element
+			name="causalEntries"
+			maxOccurs="1"
+			minOccurs="0">
+			<xs:complexType></xs:complexType>
+		</xs:element>
+	</xs:sequence>
+	<xs:attribute
+		name="factorId"
+		type="xs:string"
+		use="required">
+	</xs:attribute>
+	<xs:attribute
+		name="text"
+		type="xs:string"
+		use="optional">
+	</xs:attribute>
+</xs:complexType>
 
   <xs:complexType name="hazaccType">
     <xs:sequence>
@@ -580,4 +658,39 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   		<xs:element name="relatedCaID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
   	</xs:all>
   </xs:complexType>
+
+  <xs:complexType name="extendedDataType">
+  	<xs:sequence>
+  		<xs:element name="rules" maxOccurs="1" minOccurs="0">
+  			<xs:complexType>
+  				<xs:sequence>
+  					<xs:element name="rule" type="Q1:rsrType"
+  						maxOccurs="unbounded" minOccurs="0">
+  					</xs:element>
+  				</xs:sequence>
+  			</xs:complexType>
+  		</xs:element>
+  		<xs:element name="scenarios" maxOccurs="1" minOccurs="0">
+  			<xs:complexType>
+  				<xs:sequence>
+  					<xs:element name="scenario" type="Q1:rsrType"
+  						maxOccurs="unbounded" minOccurs="0">
+  					</xs:element>
+  				</xs:sequence>
+  			</xs:complexType>
+  		</xs:element>
+  		<xs:element name="customLTLs" maxOccurs="1" minOccurs="0">
+  			<xs:complexType>
+  				<xs:sequence>
+  					<xs:element name="customLTL" type="Q1:rsrType"
+  						maxOccurs="unbounded" minOccurs="0">
+  					</xs:element>
+  				</xs:sequence>
+  			</xs:complexType>
+  		</xs:element>
+  	</xs:sequence>
+  	<xs:attribute name="nextScenarioIndex" type="xs:int" use="optional"/>
+  </xs:complexType>
+  
+    <xs:complexType name="ScenarioDataType"></xs:complexType>
 </xs:schema>

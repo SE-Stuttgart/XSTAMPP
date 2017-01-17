@@ -54,6 +54,9 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
     }
     CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
     List<UUID> ids = new ArrayList<>(entry.getScenarioLinks());
+    if(entry.getScenarioLinks() != null){
+      ids.addAll(entry.getScenarioLinks());
+    }
     ids.remove(ruleId);
     data.setScenarioLinks(ids);
     this.dataInterface.changeCausalEntry(componentId,factorId, data);

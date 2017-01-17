@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
@@ -26,10 +31,19 @@ import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.model.AbstractLtlProvider;
 
 @XmlRootElement(name="causalComponent")
+@XmlAccessorType(XmlAccessType.NONE)
 public class CausalCSComponent implements ICausalComponent{
+  
+  @XmlAttribute(name="title")
   private String text;
-  private UUID id;
+  
+  @XmlElementWrapper(name="causalFactors")
+  @XmlElement(name="factor")
   private List<CausalFactor> factors;
+  
+  private UUID id;
+  
+  @XmlAttribute(name="type")
   private ComponentType type;
   
   
@@ -125,9 +139,6 @@ public class CausalCSComponent implements ICausalComponent{
                              IRectangleComponent child,
                              List<AbstractLtlProvider> allRefinedRules,
                              List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
-    this.text = null;
-    this.id = null;
-    this.type = null;
     for (CausalFactor causalFactor : factors) {
       causalFactor.prepareForSave(hazardLinksMap,hazAccController, allRefinedRules,allUnsafeControlActions);
     }

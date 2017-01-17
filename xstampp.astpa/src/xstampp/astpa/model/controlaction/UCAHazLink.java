@@ -15,8 +15,10 @@ package xstampp.astpa.model.controlaction;
 
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
 
@@ -27,10 +29,13 @@ import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
  * 
  */
 @XmlRootElement(name = "link")
-@XmlType(propOrder = { "unsafeControlActionId", "hazardId" })
+@XmlAccessorType(XmlAccessType.NONE)
 public class UCAHazLink implements IUCAHazLink {
 
+  @XmlElement(name="unsafeControlActionId")
 	private UUID unsafeControlActionId;
+  
+  @XmlElement(name="hazardId")
 	private UUID hazardId;
 
 	/**

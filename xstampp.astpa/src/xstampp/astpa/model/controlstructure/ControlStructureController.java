@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
@@ -26,8 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.controlstructure.components.Component;
@@ -42,6 +42,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
  * @author Fabian Toth
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class ControlStructureController {
 
 	@XmlElement(name = "component")

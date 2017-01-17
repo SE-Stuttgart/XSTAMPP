@@ -13,15 +13,15 @@ package xstampp.model;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.haz.ITableModel;
 
-@XmlType(propOrder = { "id", "number", "combies",
-                    "rule", "rUCA", "rSCt", "ltl", "type", "controlAction", "links",
-    "relatedUCAs", "caID" })
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class AbstractLtlProvider implements ITableModel {
 
   @XmlElement(name = "ruleID")

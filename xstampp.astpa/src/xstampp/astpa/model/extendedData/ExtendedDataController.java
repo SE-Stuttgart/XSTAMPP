@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -31,21 +33,26 @@ import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class ExtendedDataController implements IExtendedDataController {
+  
     @XmlElementWrapper(name = "rules")
     @XmlElement(name = "rule")
     private List<AbstractLtlProvider> rules;
+    
     private Map<UUID,AbstractLtlProvider> ruleMap;
     
     @XmlElementWrapper(name = "scenarios")
     @XmlElement(name = "scenario")
     private List<AbstractLtlProvider> scenarios;
+    
     private Map<UUID,AbstractLtlProvider> scenarioMap;
     
 
     @XmlElementWrapper(name = "customLTLs")
     @XmlElement(name = "customLTL")
     private List<AbstractLtlProvider> customLTLs;
+    
     private Map<UUID,AbstractLtlProvider> ltlMap;
     
     @XmlAttribute(name="nextScenarioIndex")

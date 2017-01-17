@@ -17,9 +17,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -40,6 +41,7 @@ import xstampp.model.AbstractLtlProvider;
  * @author Fabian Toth, Benedikt Markt
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactorController implements ICausalFactorController {
 
   @XmlElementWrapper(name = "causalFactorHazardLinks")
@@ -192,11 +194,14 @@ public class CausalFactorController implements ICausalFactorController {
 
   public void prepareForExport(HazAccController hazAccController, List<IRectangleComponent> children,
       List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
-    for (IRectangleComponent child : children) {
-      if(this.causalComponents.containsKey(child.getId())){
-        this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
-      }
-    }      
+
+    if(causalComponents != null){
+      for (IRectangleComponent child : children) {
+        if(this.causalComponents.containsKey(child.getId())){
+          this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
+        }
+      }   
+    }
     
   }
 
@@ -215,7 +220,7 @@ public class CausalFactorController implements ICausalFactorController {
       links = null;
     }
     if(causalComponents != null){
-      Set<UUID> removeList = this.causalComponents.keySet();
+      ArrayList<UUID> removeList = new ArrayList<>(causalComponents.keySet());
       for (IRectangleComponent child : children) {
         if(this.causalComponents.containsKey(child.getId())){
           
