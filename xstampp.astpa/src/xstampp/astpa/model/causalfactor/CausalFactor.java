@@ -46,7 +46,7 @@ public class CausalFactor implements ICausalFactor {
   @XmlElement(name="id")
 	private UUID id;
   
-  @XmlAttribute(name="text", required=false)
+  @XmlElement(name="text")
 	private String text;
   
   @XmlElement(name="safetyConstraint")

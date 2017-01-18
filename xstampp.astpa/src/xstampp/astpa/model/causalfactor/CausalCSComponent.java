@@ -35,7 +35,7 @@ import xstampp.model.AbstractLtlProvider;
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalCSComponent implements ICausalComponent{
   
-  @XmlAttribute(name="title")
+  @XmlElement(name="title")
   private String text;
   
   @XmlElementWrapper(name="causalFactors")
@@ -44,7 +44,7 @@ public class CausalCSComponent implements ICausalComponent{
   
   private UUID id;
   
-  @XmlAttribute(name="type")
+  @XmlElement(name="type")
   private ComponentType type;
   
   
