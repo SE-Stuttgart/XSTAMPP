@@ -108,9 +108,10 @@
             </step>
             <step
                   default_editor="true"
-                  editorId="xstampp.astpa.ui.causalScenarios"
+                  editorId="xstampp.astpa.editor.ltlTable"
+                  icon="icons/ltl.png"
                   id="xstampp.astpa.ui.causalScenarios"
-                  name="Causal Scenarios">
+                  name="LTL Table">
             </step>
          </category>
       </process>
@@ -552,6 +553,12 @@
             default="false"
             id="xstampp.astpa.ui.causalScenarios"
             name="Causal Scenarios">
+      </editor>
+      <editor
+            class="xstampp.astpa.ui.ltl.LTLPropertiesTable"
+            default="false"
+            id="xstampp.astpa.editor.ltlTable"
+            name="LTL Table">
       </editor>
    </extension>
    <extension
