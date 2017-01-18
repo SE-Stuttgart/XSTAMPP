@@ -36,13 +36,6 @@
             parentStep="astpa.navigation.step3_1">
       </stepEditor>
       <stepEditor
-            editorId="xstpa.editor.ltl"
-            icon="icons/ltl.png"
-            id="xstpa.stepEditor.ltl"
-            name="%stepEditor.name.LTLFormulaTable"
-            parentStep="astpa.navigation.step3_1">
-      </stepEditor>
-      <stepEditor
             editorId="xstpa.editor.basicScenarios"
             id="xstpa.stepEditor.basicScenarios"
             name="Basic Scenarios"
@@ -94,13 +87,6 @@
             icon="icons/rsc_logox16.png"
             id="xstpa.editor.refinedSC"
             name="%editor.name.Refined_Safety_Constraints">
-      </editor>
-      <editor
-            class="xstpa.ui.tables.LTLPropertiesTable"
-            default="false"
-            icon="icons/ltl.png"
-            id="xstpa.editor.ltl"
-            name="%editor.name.LTL_Formulas">
       </editor>
       <editor
             class="xstpa.ui.CSContextEditor"

@@ -212,8 +212,8 @@ public class RefinedRulesTable extends AbstractTableComposite {
 		    	    	for(ContextTableCombination variable: caEntry.getContextTableCombinations(false)){
 		    	    		variable.setGlobalHazardous(false);
 		    	    	}
-			    	    dataController.storeBooleans(caEntry, ObserverValue.CONTROL_ACTION);
 		    	    }
+              dataController.storeBooleans(allCAEntrys, ObserverValue.CONTROL_ACTION);
 					dataController.getModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,true, null);
 					refreshTable();
 	    		}
@@ -291,9 +291,7 @@ public class RefinedRulesTable extends AbstractTableComposite {
   	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
   	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
   	    
-	    for (ControlActionEntry caEntry : allCAEntrys) {	
-	    	dataController.storeBooleans(caEntry, ObserverValue.CONTROL_ACTION);	
-	    }
+	    	dataController.storeBooleans(allCAEntrys, ObserverValue.CONTROL_ACTION);	
 	}
 
 }

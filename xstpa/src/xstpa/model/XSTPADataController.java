@@ -55,7 +55,7 @@ public class XSTPADataController extends Observable implements Observer{
 		this.linkedPMV = null;
 		this.dependenciesIFProvided.clear();
 		this.dependenciesNotProvided.clear();
-		if(model != null){
+		if(getModel() != null){
 			this.fetchProcessComponents();
 			this.fetchControlActions();
 		}
@@ -72,7 +72,7 @@ public class XSTPADataController extends Observable implements Observer{
 	public List<ProcessModelValue> getValuesList(boolean includeDontCare) {
 		ArrayList<ProcessModelValue> returnedValues = new ArrayList<>();
 		for (ProcessModelValue value : this.valuesList.values()) {
-			if(includeDontCare || !value.getId().equals(model.getIgnoreLTLValue().getId())){
+			if(includeDontCare || !value.getId().equals(getModel().getIgnoreLTLValue().getId())){
 				returnedValues.add(value);
 			}
 		}
@@ -145,7 +145,7 @@ public class XSTPADataController extends Observable implements Observer{
 
 		this.valuesList.clear();
 		this.variablesList.clear();
-		IRectangleComponent rootComponent = model.getRoot();
+		IRectangleComponent rootComponent = getModel().getRoot();
 		for (IRectangleComponent child : rootComponent.getChildren()) {
 			
 		      if (child.getComponentType().name().equals("CONTROLLER")) {
@@ -186,7 +186,7 @@ public class XSTPADataController extends Observable implements Observer{
 	      }
 		// Add the dontcare obj
 		ProcessModelValue finalObj = new ProcessModelValue();
-		IRectangleComponent dontCare = model.getIgnoreLTLValue();
+		IRectangleComponent dontCare = getModel().getIgnoreLTLValue();
 		finalObj.setValueText(dontCare.getText());
 		finalObj.setId(dontCare.getId());
 		addValue(finalObj);
@@ -203,9 +203,9 @@ public class XSTPADataController extends Observable implements Observer{
 		this.dependenciesIFProvided.clear();
 		this.dependenciesNotProvided.clear();
 		  // get the controlActions
-	      for (IControlAction entry : model.getAllControlActionsU()) {
-	    	  this.dependenciesIFProvided.put(entry.getId(),getEntryFor(entry, model.getIvaluesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
-	    	  this.dependenciesNotProvided.put(entry.getId(),getEntryFor(entry, model.getIValuesWhenCANotProvided(entry.getId()),CONTEXT_NOT_PROVIDED));
+	      for (IControlAction entry : getModel().getAllControlActionsU()) {
+	    	  this.dependenciesIFProvided.put(entry.getId(),getEntryFor(entry, getModel().getIvaluesWhenCAProvided(entry.getId()),CONTEXT_PROVIDED));
+	    	  this.dependenciesNotProvided.put(entry.getId(),getEntryFor(entry, getModel().getIValuesWhenCANotProvided(entry.getId()),CONTEXT_NOT_PROVIDED));
 	      }
 	}
 	
@@ -217,7 +217,7 @@ public class XSTPADataController extends Observable implements Observer{
 		tempCAEntry.setControlAction(entry.getTitle());
 		tempCAEntry.setNumber(entry.getNumber());
 		tempCAEntry.setId(entry.getId());	    	  
-		tempCAEntry.setSafetyCritical(model.isCASafetyCritical(entry.getId()));
+		tempCAEntry.setSafetyCritical(getModel().isCASafetyCritical(entry.getId()));
 		List<UUID> linkedIDs;
   	  	if(context.equals(CONTEXT_PROVIDED)){
   	  		linkedIDs = ((ControlAction)entry).getProvidedVariables();
@@ -313,7 +313,7 @@ public class XSTPADataController extends Observable implements Observer{
 			return combiesToContextID;
 		}
 
-		model.lockUpdate();
+		getModel().lockUpdate();
 
 		int count = 0;
 		boolean consider;
@@ -371,50 +371,64 @@ public class XSTPADataController extends Observable implements Observer{
 				}
 			}
 		}
-		int total =model.getLTLPropertys().size()-1;
+		int total =getModel().getLTLPropertys().size()-1;
 		
-		List<AbstractLtlProvider> list = new ArrayList<>(model.getLTLPropertys());
+		List<AbstractLtlProvider> list = new ArrayList<>(getModel().getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
 			if(!currentRSR.contains(list.get(i).getRuleId())){
-				model.removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,false, list.get(i).getRuleId());
+			  getModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,false, list.get(i).getRuleId());
 			}
 		}
-		total =model.getLTLPropertys().size()-1;
-		model.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
+		total =getModel().getLTLPropertys().size()-1;
+		getModel().releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
 		return combiesToContextID;
 	}
 //=====================================================================
 //START Save function
 //=====================================================================
 
+	 /**
+   * Store the Boolean Data (from the Context Table) in the Datamodel
+   * @param caEntry the ControlActionEntrys or null for the currently linked which should be stored in the data model
+   * @param updateValue TODO
+   */
+  public void storeBooleans(final ControlActionEntry caEntry, final ObserverValue updateValue) {
+    List<ControlActionEntry> entries = null;
+    if(caEntry != null){
+      entries = new ArrayList<>();
+      entries.add(caEntry);
+    }
+    storeBooleans(entries, updateValue);
+      
+  }
 	/**
 	 * Store the Boolean Data (from the Context Table) in the Datamodel
 	 * @param caEntry the ControlActionEntrys or null for the currently linked which should be stored in the data model
 	 * @param updateValue TODO
 	 */
-	public void storeBooleans(final ControlActionEntry caEntry, final ObserverValue updateValue) {
-		Display.getDefault().syncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				ControlActionEntry temp = caEntry;
-				if(temp == null){
-					temp = linkedCAE;
-				}
-				if (dependenciesIFProvided.containsValue(temp)) {
-					syncCombiesWhenProvided(temp);
-				}
-				else {
-			    	syncCombiesWhenNotProvided(temp);
-				}
-				getHazardousCombinations(null);
-				if(updateValue != null){
-					setChanged();
-					notifyObservers(updateValue);
-				}
-			}
-			
-		});
+	public void storeBooleans(List<ControlActionEntry> entries, ObserverValue updateValue) {
+		if(entries == null){
+		  entries = new ArrayList<>();
+		  entries.add(linkedCAE);
+		}
+	  
+		for(ControlActionEntry temp : entries){
+  		if(temp == null){
+  			temp = linkedCAE;
+  		}
+  		if (dependenciesIFProvided.containsValue(temp)) {
+  			syncCombiesWhenProvided(temp);
+  		}
+  		else {
+  	    	syncCombiesWhenNotProvided(temp);
+  		}
+  		getHazardousCombinations(null);
+  		
+		}
+		if(updateValue != null){
+      setChanged();
+      notifyObservers(updateValue);
+    }
 		
 	}
 	
@@ -437,7 +451,7 @@ public class XSTPADataController extends Observable implements Observer{
   			  val.setHazardousToLate(combie.getHLate());
   			  valuesIfProvided.add(val);
   		  }
-  		  model.setValuesWhenCAProvided(caEntry.getId(),valuesIfProvided);
+  		  getModel().setValuesWhenCAProvided(caEntry.getId(),valuesIfProvided);
 	}
 	
 	private void syncCombiesWhenNotProvided(ControlActionEntry caEntry){
@@ -455,7 +469,7 @@ public class XSTPADataController extends Observable implements Observer{
   			  val.setHazardous(combie.getGlobalHazardous());
   			  valuesIfProvided.add(val);
   		  }
-  		  model.setValuesWhenCANotProvided(caEntry.getId(),valuesIfProvided);
+  		  getModel().setValuesWhenCANotProvided(caEntry.getId(),valuesIfProvided);
 		
 	}
 	

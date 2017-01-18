@@ -325,7 +325,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 				                	}
 				                	if(changed){
 				                		contextTableViewer.refresh(false);
-				    	    		  	dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
+				    	    		  	dataController.storeBooleans((List)null, ObserverValue.COMBINATION_STATES);
 						                
 				                	}
 					            }
@@ -630,7 +630,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 							// set the ContextTableCombinations
 							dataController.getLinkedCAE().addContextTableCombination(temp);
 							// refresh the Viewer
-							dataController.storeBooleans(null, ObserverValue.COMBINATION_STATES);
+							dataController.storeBooleans((List)null, ObserverValue.COMBINATION_STATES);
 							contextTableViewer.refresh();
 							
 						}
@@ -649,7 +649,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    		contextRightContent.remove(contextTable.getSelectionIndex());
 		    		contextTable.remove(contextTable.getSelectionIndex());
 
-		    		dataController.storeBooleans(null, null);
+		    		dataController.storeBooleans((List)null, null);
 		    	}
 		    });
 		//===============================================================================
@@ -794,7 +794,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			}
 		}
 		dataController.getLinkedCAE().setContextTableCombinations(entrys);
-		dataController.storeBooleans(null, ObserverValue.CONTROL_ACTION);
+		dataController.storeBooleans((List)null, ObserverValue.CONTROL_ACTION);
 //		refreshTable();
 	}
 	
@@ -935,7 +935,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    		//calculated in the contextRightTable.mouseListener
 	    			ContextTableCombination contextCombie = (ContextTableCombination) contextTable.getSelection()[0].getData();
 	    			contextCombie.addValueMapping(id, ((UUID)((MenuItem)event.getSource()).getData()));
-	    			dataController.storeBooleans(null, ObserverValue.CONTROL_ACTION);
+	    			dataController.storeBooleans((List)null, ObserverValue.CONTROL_ACTION);
 		    	}
 		    });
 		}
