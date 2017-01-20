@@ -172,26 +172,20 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
 								      					<xs:complexType>
 
 
-								      						<xs:sequence>
-								      							<xs:element
-								      								name="causalFactors" maxOccurs="1"
-								      								minOccurs="0">
+                                                            <xs:all>
+								      							<xs:element name="causalFactors" maxOccurs="1" minOccurs="0">
 								      								<xs:complexType>
 								      									<xs:sequence>
-								      										<xs:element
-								      											name="factor" type="Q1:causalFactorType"
-								      											maxOccurs="unbounded" minOccurs="0">
+								      										<xs:element name="factor" type="Q1:causalFactorType" maxOccurs="unbounded" minOccurs="0">
 								      										</xs:element>
 								      									</xs:sequence>
 								      								</xs:complexType>
 								      							</xs:element>
-								      							<xs:element
-								      								name="title" type="xs:string" maxOccurs="1" minOccurs="0">
+								      							<xs:element name="title" type="xs:string" maxOccurs="1" minOccurs="0">
 								      							</xs:element>
-								      							<xs:element
-								      								name="type" type="xs:string" maxOccurs="1" minOccurs="0">
+								      							<xs:element name="type" type="xs:string" maxOccurs="1" minOccurs="0">
 								      							</xs:element>
-								      						</xs:sequence>
+								      						</xs:all>
 								      					</xs:complexType>
                                             		</xs:element>
                                             	</xs:sequence>
@@ -642,15 +636,32 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
 
   <xs:complexType name="rsrType">
   	<xs:all>
-  		<xs:element name="ruleID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-  		<xs:element name="ruleNR" type="xs:int" maxOccurs="1" minOccurs="1"></xs:element>
-  		<xs:element name="criticalCombies" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-  		<xs:element name="RefinedSafetyRule" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-  		<xs:element name="refinedUCA" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-  		<xs:element name="refinedSC" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-  		<xs:element name="ltlProp" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-  		<xs:element name="type" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-  		<xs:element name="relatedUCAIDs" maxOccurs="1"	minOccurs="0">
+  		<xs:element name="ruleID" type="xs:string" maxOccurs="1"
+  			minOccurs="1">
+  		</xs:element>
+  		<xs:element name="ruleNR" type="xs:int" maxOccurs="1"
+  			minOccurs="1">
+  		</xs:element>
+  		<xs:element name="criticalCombies" type="xs:string"
+  			maxOccurs="1" minOccurs="0">
+  		</xs:element>
+  		<xs:element name="RefinedSafetyRule" type="xs:string"
+  			maxOccurs="1" minOccurs="0">
+  		</xs:element>
+  		<xs:element name="refinedUCA" type="xs:string" maxOccurs="1"
+  			minOccurs="0">
+  		</xs:element>
+  		<xs:element name="refinedSC" type="xs:string" maxOccurs="1"
+  			minOccurs="0">
+  		</xs:element>
+  		<xs:element name="ltlProp" type="xs:string" maxOccurs="1"
+  			minOccurs="0">
+  		</xs:element>
+  		<xs:element name="type" type="xs:string" maxOccurs="1"
+  			minOccurs="1">
+  		</xs:element>
+  		<xs:element name="relatedUCAIDs" maxOccurs="1"
+  			minOccurs="0">
   			<xs:complexType>
   				<xs:sequence>
   					<xs:element name="ucaID" type="xs:string"
@@ -659,7 +670,10 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="2.0.
   				</xs:sequence>
   			</xs:complexType>
   		</xs:element>
-  		<xs:element name="relatedCaID" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+  		<xs:element name="relatedCaID" type="xs:string" maxOccurs="1"
+  			minOccurs="0">
+  		</xs:element>
+  		<xs:element name="links" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
   	</xs:all>
   </xs:complexType>
 

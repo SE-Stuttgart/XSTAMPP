@@ -14,8 +14,16 @@ public class CausalScenarioEntry {
   private String constraint;
   
   public CausalScenarioEntry(String description, String constraint) {
-    this.description = description;
-    this.constraint = constraint;
+    if(description == null){
+      this.description = new String();
+    }else{
+      this.description = description;
+    }
+    if(constraint == null){
+      this.constraint = new String();
+    }else{
+      this.constraint = constraint;
+    }
   }
 
   /**

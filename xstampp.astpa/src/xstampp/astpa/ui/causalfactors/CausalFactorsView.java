@@ -68,7 +68,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 	private Map<UUID,CausalFactor> factorsToUUIDs;
 	private DeleteCFAction deleteAction;
 	private static String[] columns = new String[] { Messages.Component,
-      Messages.CausalFactors,"UCA", Messages.HazardLinks,"Scenarios",
+      Messages.CausalFactors,"Unsafe Control Action", Messages.HazardLinks,"Basic Scenarios",
       Messages.SafetyConstraint, Messages.NotesSlashRationale };
 	 /**
    * ViewPart ID.

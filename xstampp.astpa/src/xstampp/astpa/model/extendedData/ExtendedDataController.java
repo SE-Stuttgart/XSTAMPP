@@ -242,6 +242,7 @@ public class ExtendedDataController implements IExtendedDataController {
       if(includeLTL){
         tmp.addAll(getMap(ScenarioType.CUSTOM_LTL).values());
       }
+      Collections.sort(tmp);
       return tmp;
     }
 

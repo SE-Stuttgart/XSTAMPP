@@ -200,8 +200,9 @@ public class CausalFactorController implements ICausalFactorController {
       List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
 
       for (IRectangleComponent child : children) {
-        getCausalComponent(child);
-        this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
+        if(getCausalComponent(child) != null){
+          this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
+        }
       }
   }
 

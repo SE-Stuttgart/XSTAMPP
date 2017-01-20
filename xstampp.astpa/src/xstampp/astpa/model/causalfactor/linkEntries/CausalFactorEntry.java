@@ -185,7 +185,8 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
       result |= setConstraintText(entryData.getSafetyConstraint());
     }
     
-    if(((CausalFactorUCAEntryData) entryData).scenariosChanged()){
+    if(entryData instanceof CausalFactorUCAEntryData && 
+        ((CausalFactorUCAEntryData) entryData).scenariosChanged()){
       result |= setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
     }
     return result;
@@ -207,7 +208,7 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
     if(getUcaLink() != null){
       for (ICorrespondingUnsafeControlAction uca : allUnsafeControlActions) {
         if(uca.getId().equals(getUcaLink())){
-          setUcaDescription(uca.getDescription());
+          setUcaDescription("UCA1." + uca.getNumber() +"\n"+ uca.getDescription());
           setHazardLinks(uca.getLinks());
         }
       }
@@ -233,16 +234,31 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
         }
       }
     }
-    
+    //prevent the string entries to be null to ensure a smooth export
+    if(getConstraintText() == null){
+      setConstraintText("");
+    }
+    if(getHazardLinks() == null){
+      setHazardLinks("");
+    }
+    if(getNote() == null){
+      setNote("");
+    }
+    if(getUcaDescription() == null){
+      setUcaDescription("");
+    }
   }
 
   
   public boolean prepareForSave(HazAccController hazAccController,
                                 List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+    //get rid of redundant entries which should not be stored
     setConstraintText(null);
     setHazardLinks(null);
-    setScenarioLinks(null);
-    setUcaLink(null);
+    setUcaDescription(null);
+    if(getNote().equals("")){
+      setNote(null);
+    }
     scenarioEntries = null;
     if(hazardIds != null){
       UUID[] hazIds= (UUID[]) this.hazardIds.toArray(new UUID[0]);
