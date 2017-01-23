@@ -42,7 +42,7 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
 	 *            the component the add buttons adds causal factors to.
 	 */
 	public GridCellButtonAddUCAEntry(ICausalComponent component,UUID factorId, ICausalFactorDataModel dataInterface,Grid grid) {
-		super("Add Causal Entry");
+		super("Add Unsafe Control Action");
 
 		this.component = component;
     this.factorId = factorId;
@@ -61,12 +61,8 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
         return !linkedIds.contains(model.getId());
       }
     });
-	  LinkProposal[] proposals = new LinkProposal[ucaList.size()+1];
-    int index = 1;
-    proposals[0] = new LinkProposal();
-    proposals[0].setLabel(HAZARD_ENTRY);
-    proposals[0].setDescription(HAZARD_ENTRY);
-    proposals[0].setProposalId(null);
+	  LinkProposal[] proposals = new LinkProposal[ucaList.size()];
+    int index = 0;
     for (ICorrespondingUnsafeControlAction uca : ucaList) {
 
       proposals[index] = new LinkProposal();

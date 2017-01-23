@@ -1,7 +1,6 @@
 package xstampp.astpa.ui.ltl;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
@@ -88,14 +87,12 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
 
       @Override
       protected void editorOpening() {
-        // TODO Auto-generated method stub
-        
+        dataModel.lockUpdate();
       }
 
       @Override
       protected void editorClosing() {
-        // TODO Auto-generated method stub
-        
+        dataModel.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
       }
   }
   

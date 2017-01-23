@@ -13,6 +13,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -71,7 +74,7 @@ public class EditRelatedUcaWizard {
         	}
         	
         }
-        shell.setLayout(new GridLayout(3, false));
+        shell.setLayout(new FormLayout());
         createContents(shell);
 //        shell.pack();
         shell.setSize(width, height);
@@ -84,50 +87,72 @@ public class EditRelatedUcaWizard {
     
 
 	private void createContents(final Composite parent) {
-    	
+    	int margin = 2;
 	    // Add the Label for relationParamListComposite
 	    Label availableLable = new Label(shell, SWT.NONE);
-	    GridData data = new GridData();
-      data.horizontalAlignment = SWT.CENTER;
-      data.horizontalSpan = 2;
+	    FormData data = new FormData();
+      data.top = new FormAttachment(margin);
+      data.left = new FormAttachment(margin);
+      data.height = 30;
       availableLable.setLayoutData(data);
 	    availableLable.setText("All Unsafe Control Actions");
     	
 	    // Add the Label for relationParamListComposite
 	    Label linkedLable = new Label(shell, SWT.NONE);
+      data = new FormData();
+      data.top = new FormAttachment(margin);
+      data.right = new FormAttachment(100-margin);
+      data.height = 30;
+      linkedLable.setLayoutData(data);
 	    linkedLable.setText("Linked Unsafe Control Actions");
 	    
-	    // Add the List for relationParamListComposite
-	    availableList = new org.eclipse.swt.widgets.List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-	    GridData listData = new GridData();
-	    listData.grabExcessHorizontalSpace = true;
-	    listData.grabExcessVerticalSpace = true;
-	    listData.verticalSpan = 2;
-	    availableList.setLayoutData(listData);
-	    
-	    // The Add Button
-      Button addHazard = new Button (shell, SWT.PUSH);
-      GridData buttonData = new GridData(100, 30);
-      buttonData.verticalAlignment = SWT.CENTER;
-      addHazard.setText("Add");
-      addHazard.setLayoutData(buttonData);
+	 // The Ok Button
+      Button okBtn = new Button (shell, SWT.PUSH);
+      okBtn.setText("OK");
+      data = new FormData();
+      data.bottom = new FormAttachment(100 - margin);
+      data.left = new FormAttachment(margin);
+      data.height = 30;
+      data.width = 100;
+      okBtn.setLayoutData(data);
       
-	    // Add the List for relationParamListComposite
-	    linkedList = new org.eclipse.swt.widgets.List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-      linkedList.setLayoutData(listData);
-	    refreshLists();
-	    
+      // The Add Button
+      Button addHazard = new Button (shell, SWT.PUSH);
+      addHazard.setText("Add");
+      data = new FormData();
+      data.top = new FormAttachment(availableLable,margin);
+      data.left = new FormAttachment(50);
+      data.width = 100;
+      addHazard.setLayoutData(data);
+      
       // The remove Button
       Button removeHazard = new Button (shell, SWT.PUSH);
       removeHazard.setText("Remove");
-      buttonData = new GridData(100, 30);
-      buttonData.verticalAlignment = SWT.BEGINNING;
-      removeHazard.setLayoutData(buttonData);
+      data = new FormData();
+      data.top = new FormAttachment(addHazard,margin);
+      data.left = new FormAttachment(50);
+      data.width = 100;
+      removeHazard.setLayoutData(data);
       
-	    // The Ok Button
-	    Button okBtn = new Button (shell, SWT.PUSH);
-	    okBtn.setText("OK");
-	    okBtn.setLayoutData(new GridData(100, 30));
+      int listStyle =SWT.BORDER | SWT.MULTI | SWT.V_SCROLL |SWT.H_SCROLL;
+	    // Add the List for relationParamListComposite
+	    availableList = new org.eclipse.swt.widgets.List(shell, listStyle);
+      data = new FormData();
+      data.top = new FormAttachment(availableLable,margin);
+      data.bottom = new FormAttachment(okBtn,-margin);
+      data.left = new FormAttachment(margin);
+      data.right = new FormAttachment(addHazard, -margin);
+      availableList.setLayoutData(data);
+      
+	    // Add the List for relationParamListComposite
+	    linkedList = new org.eclipse.swt.widgets.List(shell, listStyle);
+      data = new FormData();
+      data.top = new FormAttachment(availableLable,margin);
+      data.bottom = new FormAttachment(okBtn,-margin);
+      data.left = new FormAttachment(removeHazard,margin);
+      data.right = new FormAttachment(100-margin);
+      linkedList.setLayoutData(data);
+	    refreshLists();
 	    
 	    // closes the window
 	    okBtn.addSelectionListener(new SelectionAdapter() {

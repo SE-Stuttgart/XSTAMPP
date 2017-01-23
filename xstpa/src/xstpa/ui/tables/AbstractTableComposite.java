@@ -60,7 +60,7 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 			@Override
 			public void run() {
 				if(isActiv && !refreshTable()){
-					dataController.getModel().deleteObserver(AbstractTableComposite.this);
+					dataController.deleteObserver(AbstractTableComposite.this);
 				}
 			}
 		}.run();
@@ -68,6 +68,13 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 		
 	}
 
+	@Override
+	public void dispose() {
+	  if(dataController != null){
+	    dataController.deleteObserver(this);
+	  }
+	  super.dispose();
+	}
 	public void setController(XSTPADataController controller) {
 		if(dataController != null){
 			dataController.deleteObserver(this);

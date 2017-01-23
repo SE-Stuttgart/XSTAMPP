@@ -278,6 +278,13 @@ public class View extends ViewPart{
 	public void setFocus() {
 	}
 	
+	@Override
+	public void dispose() {
+	  for(AbstractTableComposite table : this.tableList){
+      table.dispose();
+    }
+	  super.dispose();
+	}
 	public void setController(XSTPADataController controller){
 		if(controller != dataController){
 			for(AbstractTableComposite table : this.tableList){

@@ -68,7 +68,7 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 	private Map<UUID,CausalFactor> factorsToUUIDs;
 	private DeleteCFAction deleteAction;
 	private static String[] columns = new String[] { Messages.Component,
-      Messages.CausalFactors,"Unsafe Control Action", Messages.HazardLinks,"Basic Scenarios",
+      Messages.CausalFactors,"Unsafe Control Action", Messages.HazardLinks,"Causal Scenarios",
       Messages.SafetyConstraint, Messages.NotesSlashRationale };
 	 /**
    * ViewPart ID.
@@ -224,9 +224,9 @@ public class CausalFactorsView extends AbstractFilteredEditor{
 						.getText(), component.getId(),factor.getId()));
 				
 		   //A new row is added to the factorRow for adding additional entries
-        for(int i=2; i<columns.length;i++){
-          factorRow.addCell(i,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
-        }
+//        for(int i=2; i<columns.length;i++){
+//          factorRow.addCell(i,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+//        }
 				//the causal factor contains multiple child rows for each causal factor entry
         for(ICausalFactorEntry entry : factor.getAllEntries()){
           addEntryRow(factorRow, entry, factor, component, ucaMap);
@@ -299,15 +299,16 @@ public class CausalFactorsView extends AbstractFilteredEditor{
     //add the hazard links of the uca, as read only string
     List<UUID> hazIds = dataInterface.getLinksOfUCA(entry.getUcaLink());
     String linkingString = new String();
-    for(ITableModel hazard : dataInterface.getHazards(hazIds)){
-      linkingString += "H-" +hazard.getNumber() + ",";
+    List<ITableModel> hazards = dataInterface.getHazards(hazIds);
+    if(!hazards.isEmpty()){
+      for(ITableModel hazard : hazards){
+        linkingString += "H-" +hazard.getNumber() + ",";
+      }
+      linkingString = linkingString.substring(0, linkingString.length()-1);
     }
-    entryRow.addCell(3,new GridCellText(linkingString.substring(0, linkingString.length()-1)));
+    entryRow.addCell(3,new GridCellText(linkingString));
 
-    //adding two blank cells as placeholder for the scenario rows which have two cells each
-    entryRow.addCell(4,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
-    entryRow.addCell(5,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
-    
+   
     if(entry.getScenarioLinks() != null){
       for(UUID scenarioId : entry.getScenarioLinks()){
         GridRow scenarioRow = new GridRow(columns.length);
@@ -319,7 +320,10 @@ public class CausalFactorsView extends AbstractFilteredEditor{
         }
       }
     }
-
+    //adding two blank cells as placeholder for the scenario rows which have two cells each
+    entryRow.addCell(4,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+    entryRow.addCell(5,new GridCellColored(this.grid,CausalFactorsView.PARENT_BACKGROUND_COLOR));
+    
     GridRow addScenarioRow = new GridRow(columns.length);
     GridCellText scenarioCell = new GridCellText(new String());
     scenarioCell.addCellButton(new CellButtonLinking<ContentProviderScenarios>(grid, 

@@ -62,6 +62,9 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
       
       @Override
       public boolean check(AbstractLtlProvider model) {
+        if(model.getUCALinks() == null){
+          return false;
+        }
         return model.getUCALinks().contains(ucaId);
       }
     });

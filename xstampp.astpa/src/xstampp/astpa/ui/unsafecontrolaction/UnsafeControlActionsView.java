@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
+import org.apache.fop.fo.ElementMapping.Maker;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
@@ -245,10 +246,10 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 
 			controlActionRow.addCell(0,new GridCellText(cAction.getTitle()));
 
-			for(int i = 1; i< 5;i++){
-  			controlActionRow.addCell(i,new GridCellColored(this.grid,
-  					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-			}
+//			for(int i = 1; i< 5;i++){
+//  			controlActionRow.addCell(i,new GridCellColored(this.grid,
+//  					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
+//			}
 
 			List<IUnsafeControlAction> allNotGiven = cAction
 					.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);
@@ -259,7 +260,13 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			List<IUnsafeControlAction> allTooSoon = cAction
 					.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
 			
- 			for (int i = 0; i <= this.getMaxHeight(cAction); i++) {
+			int maxHeight = allNotGiven.size();
+
+      maxHeight = Math.max(maxHeight, allIncorrect.size());
+      maxHeight = Math.max(maxHeight, allTooSoon.size());
+      maxHeight = Math.max(maxHeight, allWrongTiming.size());
+      
+ 			for (int i = 0; i <= maxHeight; i++) {
 				
 				GridRow idRow = new GridRow(columns.length,3);
 				GridRow ucaRow = new GridRow(columns.length,3);

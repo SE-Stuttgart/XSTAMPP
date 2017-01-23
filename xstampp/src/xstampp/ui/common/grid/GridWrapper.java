@@ -243,7 +243,6 @@ public class GridWrapper {
       if ((actualColumn >= 0) && (rowCells.size() > actualColumn)) {
         cell = rowCells.get(actualColumn);
       }
-
       return cell;
     }
 

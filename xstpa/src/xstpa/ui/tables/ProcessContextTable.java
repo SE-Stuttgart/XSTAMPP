@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -249,6 +247,14 @@ public class ProcessContextTable extends AbstractTableComposite {
 			controlActionTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			 // add columns for context tables
 		    new TableColumn(controlActionTable, SWT.LEFT).setText(View.LIST_of_CA);
+		    
+		    /**
+	       * Listener for the context table (middle)
+	       *  gets the selected item and creates new columns for the right table
+	       */
+	        controlActionTable.addSelectionListener(refreshListener);
+	        // Listener for the TabFolder in ContextRightComposite
+	        contextContentFolder.addSelectionListener(refreshListener);
 		//===============================================================================
 		//END
 		//================================================================================
@@ -261,97 +267,84 @@ public class ProcessContextTable extends AbstractTableComposite {
 			contextTableViewer.setContentProvider(new MainViewContentProvider());
 			contextTableViewer.setLabelProvider(new ContextViewLabelProvider());
 			contextTable = contextTableViewer.getTable();
-			contextTable.addDisposeListener(new DisposeListener() {
-        
-        @Override
-        public void widgetDisposed(DisposeEvent e) {
-          System.out.println();
-        }
-      });
 			contextTable.setHeaderVisible(true);
-		    contextTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		  contextTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		    
-	        /**
-			 * Listener for the context table (middle)
-			 * 	gets the selected item and creates new columns for the right table
-			 */
-		    controlActionTable.addSelectionListener(refreshListener);
-		    // Listener for the TabFolder in ContextRightComposite
-		    contextContentFolder.addSelectionListener(refreshListener);
+	    
 		    
-		    // This Part is responsible for setting the Booleans in the Table, also managing the conflicts
-		    contextTable.addListener(SWT.MouseDown, new Listener() {
+      // This Part is responsible for setting the Booleans in the Table, also managing the conflicts
+	    contextTable.addListener(SWT.MouseDown, new Listener() {
 
 
-				public void handleEvent(Event event) {
-					Point pt = new Point(event.x, event.y);
-					if(contextTable.getSelection() == null ||contextTable.getSelectionCount() == 0){
-						return;
-					}
-					TableItem item = contextTable.getSelection()[0];
-					//this for loop iterates over all visible table items
-					if(item != null) {
+			public void handleEvent(Event event) {
+				Point pt = new Point(event.x, event.y);
+				if(contextTable.getSelection() == null ||contextTable.getSelectionCount() == 0){
+					return;
+				}
+				TableItem item = contextTable.getSelection()[0];
+				//this for loop iterates over all visible table items
+				if(item != null) {
 
-			            for (int i = 0; i < contextTable.getColumnCount(); i++) {
-			            	//for each column we check whether the mouse is inside the related tableitem
-				            Rectangle rect = item.getBounds(i);
-			            	contextTableCellY = contextTable.getSelectionIndex();
-			            	boolean doesContain = rect.contains(pt);
-				            if(doesContain){
-					            contextTableCellX = i;
-				            
-					            if (contextTableCellX == contextTable.getColumnCount()-1) {
-	
-				                	boolean changed = false;
-				                	if (dataController.isControlActionProvided()) {
-					                	int tempWidth = rect.width / 3;
-					                	boolean checkboxAnytimeClicked =(rect.x < pt.x)&(pt.x < rect.x+tempWidth);
-					                	boolean checkboxtooEarlyClicked =(rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth));
-							            boolean checkboxtooLateClicked =(rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width);
-					                	changed = checkboxAnytimeClicked || checkboxtooEarlyClicked || checkboxtooLateClicked;
-					                	if (checkboxAnytimeClicked) {
-					                		contextRightContent.get(contextTableCellY).
-					                							setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
-					                	}else if (checkboxtooEarlyClicked) {
-					                		contextRightContent.get(contextTableCellY).
-					                							setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
-					                	}else if (checkboxtooLateClicked) {
-					                		contextRightContent.get(contextTableCellY).
-					                							setHLate(!contextRightContent.get(contextTableCellY).getHLate());
-					                	}
-				                	}else  if (!dataController.isControlActionProvided()) {
-				                		contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
-				                		changed = true;
-				                	}
-				                	if(changed){
-				                		contextTableViewer.refresh(false);
-				    	    		  	dataController.storeBooleans((List)null, ObserverValue.COMBINATION_STATES);
-						                
-				                	}
-					            }
-			                	return;
-				            }
-			            }
+		            for (int i = 0; i < contextTable.getColumnCount(); i++) {
+		            	//for each column we check whether the mouse is inside the related tableitem
+			            Rectangle rect = item.getBounds(i);
+		            	contextTableCellY = contextTable.getSelectionIndex();
+		            	boolean doesContain = rect.contains(pt);
+			            if(doesContain){
+				            contextTableCellX = i;
 			            
+				            if (contextTableCellX == contextTable.getColumnCount()-1) {
+
+			                	boolean changed = false;
+			                	if (dataController.isControlActionProvided()) {
+				                	int tempWidth = rect.width / 3;
+				                	boolean checkboxAnytimeClicked =(rect.x < pt.x)&(pt.x < rect.x+tempWidth);
+				                	boolean checkboxtooEarlyClicked =(rect.x+tempWidth < pt.x)&(pt.x < rect.x+(2*tempWidth));
+						            boolean checkboxtooLateClicked =(rect.x+(2*tempWidth) < pt.x)&(pt.x < rect.x + rect.width);
+				                	changed = checkboxAnytimeClicked || checkboxtooEarlyClicked || checkboxtooLateClicked;
+				                	if (checkboxAnytimeClicked) {
+				                		contextRightContent.get(contextTableCellY).
+				                							setHAnytime(!contextRightContent.get(contextTableCellY).getHAnytime());
+				                	}else if (checkboxtooEarlyClicked) {
+				                		contextRightContent.get(contextTableCellY).
+				                							setHEarly(!contextRightContent.get(contextTableCellY).getHEarly());
+				                	}else if (checkboxtooLateClicked) {
+				                		contextRightContent.get(contextTableCellY).
+				                							setHLate(!contextRightContent.get(contextTableCellY).getHLate());
+				                	}
+			                	}else  if (!dataController.isControlActionProvided()) {
+			                		contextRightContent.get(contextTableCellY).setHazardous(!contextRightContent.get(contextTableCellY).getGlobalHazardous());
+			                		changed = true;
+			                	}
+			                	if(changed){
+			                		contextTableViewer.refresh(false);
+			    	    		  	dataController.storeBooleans((List)null, ObserverValue.COMBINATION_STATES);
+					                
+			                	}
+				            }
+		                	return;
+			            }
+		            }
+		            
+				}
+	        }
+	    });
+		    
+	    contextTable.addSelectionListener(new SelectionAdapter() {
+			
+			  @Override
+				public void widgetSelected(SelectionEvent e) {
+					if(contextTableCellX > 0 && contextTableCellX < contextTable.getColumnCount() -1){
+					    contextTable.setMenu(new Menu(contextTable));
+						updateMenu(contextTableCellX -1);
+					}else{
+					    contextTable.setMenu(null);						
 					}
-		        }
-		    });
-		    
-		    contextTable.addSelectionListener(new SelectionAdapter() {
-				
-				  @Override
-					public void widgetSelected(SelectionEvent e) {
-  					if(contextTableCellX > 0 && contextTableCellX < contextTable.getColumnCount() -1){
-  					    contextTable.setMenu(new Menu(contextTable));
-  						updateMenu(contextTableCellX -1);
-  					}else{
-  					    contextTable.setMenu(null);						
-  					}
-				  }
-		    });
-		    
-		    // listener for the checkboxes in the context table so they get drawn right
-		    contextTable.addListener(SWT.PaintItem, new Listener() {
+			  }
+	    });
+	    
+	    // listener for the checkboxes in the context table so they get drawn right
+	    contextTable.addListener(SWT.PaintItem, new Listener() {
 
 		        @Override
 		        public void handleEvent(Event event) {
@@ -438,13 +431,13 @@ public class ProcessContextTable extends AbstractTableComposite {
 	                event.gc.drawImage(lateImage, tmpX+(tmpWidth/2), tmpY);
 		        }
 		    });
-    		//===============================================================================
-    		//END
-    		//================================================================================
+		//===============================================================================
+		//END
+		//================================================================================
     			
-    		//==============================================================================
-    		//START creation of the buttons bar
-    		//==============================================================================
+		//==============================================================================
+		//START creation of the buttons bar
+		//==============================================================================
 		    // Add a Composite to edit all Tables
 		    Composite editTableComposite = new Composite( contextCompositeOptions, SWT.NONE);
 		    editTableComposite.setLayout( new GridLayout(1, false) );
@@ -503,24 +496,13 @@ public class ProcessContextTable extends AbstractTableComposite {
 			    		  MessageDialog.openInformation(null, Messages.NoLinkedVariables, Messages.NoLinkedVariablesMsg);
 			    	  }
 			    	  else{
-			    	  
-				    	  //open the settings window
+			    	    //open the settings window
 				    	  EditWindow settingsWindow = new EditWindow(dataController.getLinkedCAE());
-				    	 
-				    	  if(settingsWindow.open()){
-//				    			createTableColumns();
-//				    			ACTSController.writeFile(false,
-//	    											 	 dataController.isControlActionProvided(),
-//	    											 	dataController.getLinkedCAE().getLinkedItems());
-//				    			storeEntrys(ACTSController.open(false,
-//				    								contextTable.getColumnCount(),
-//				    								contextContentFolder.getSelectionIndex() == 0,
-//				    								dataController.getLinkedCAE()), false);
-				    	  }
+				    	  settingsWindow.open();
 			    	  }
 			    	  
 			      }  
-			});
+			   });
 		    
 		    /**
 			 * Listener for the checkConflicts button
@@ -528,11 +510,9 @@ public class ProcessContextTable extends AbstractTableComposite {
 			 */
 		    checkConflictsBtn.addSelectionListener(new SelectionAdapter() {
 			      public void widgetSelected(SelectionEvent event) {
-			    	
 			    	 setConflictLabel();
-			    	  
 			      }  
-			});
+			  });
 		    /**
 		     * Listener for the generate Entry Button for Refined Safety
 		     */
@@ -704,39 +684,39 @@ public class ProcessContextTable extends AbstractTableComposite {
 		for (TableColumn column : contextTable.getColumns()) {
 			column.dispose();
 		}
-  		if(dataController.getLinkedCAE() == null){
-  			return;
-  		}
-  		if (!dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
-  			new TableColumn(contextTable, SWT.NONE).setText(View.ENTRY_ID);
-  			// creates new TableColumns dynamically so that the context table has the right size (and labels)
-  			for (int i=0;i<dataController.getLinkedCAE().getLinkedItems().size();i++) {
-  				UUID id = dataController.getLinkedCAE().getLinkedItems().get(i).getId();
-  				new TableColumn(contextTable, SWT.NONE).setText(dataController.getModel().getComponent(id).getText());
-  			}
-	  	
-  			if (dataController.isControlActionProvided()) {
-  				new TableColumn(contextTable, SWT.NONE).setImage(View.HEADER);
-  			}else{
-  				new TableColumn(contextTable, SWT.NONE).setText(View.IS_HAZARDOUS);
-  			}
-  			
-  			// Create the cell editors
-  		  	CellEditor[] contextEditors = new CellEditor[contextTable.getColumnCount()];
-  		  	
-  		  	for (int i = 1; i<contextTable.getColumnCount()-1;i++) {
-  		  		// creates the cell editors
-  		  		if ((i != 0) &(i!=contextTable.getColumnCount()-1)) {
-  		  			contextEditors[i] = new TextCellEditor(contextTable);
-  		  		}
-  		  	}
-  		  	View.contextProps = new String[contextTable.getColumnCount()];
-  			for (int i=0; i<View.contextProps.length;i++) {
-  				View.contextProps[i] = contextTable.getColumn(i).getText();
-  			}
-  			contextTableViewer.setColumnProperties(View.contextProps);
-  			contextTableViewer.setCellEditors(contextEditors);
-  		}
+		if(dataController.getLinkedCAE() == null){
+			return;
+		}
+		if (!dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
+			new TableColumn(contextTable, SWT.NONE).setText(View.ENTRY_ID);
+			// creates new TableColumns dynamically so that the context table has the right size (and labels)
+			for (int i=0;i<dataController.getLinkedCAE().getLinkedItems().size();i++) {
+				UUID id = dataController.getLinkedCAE().getLinkedItems().get(i).getId();
+				new TableColumn(contextTable, SWT.NONE).setText(dataController.getModel().getComponent(id).getText());
+			}
+  	
+			if (dataController.isControlActionProvided()) {
+				new TableColumn(contextTable, SWT.NONE).setImage(View.HEADER);
+			}else{
+				new TableColumn(contextTable, SWT.NONE).setText(View.IS_HAZARDOUS);
+			}
+			
+			// Create the cell editors
+		  	CellEditor[] contextEditors = new CellEditor[contextTable.getColumnCount()];
+		  	
+		  	for (int i = 1; i<contextTable.getColumnCount()-1;i++) {
+		  		// creates the cell editors
+		  		if ((i != 0) &(i!=contextTable.getColumnCount()-1)) {
+		  			contextEditors[i] = new TextCellEditor(contextTable);
+		  		}
+		  	}
+		  	View.contextProps = new String[contextTable.getColumnCount()];
+			for (int i=0; i<View.contextProps.length;i++) {
+				View.contextProps[i] = contextTable.getColumn(i).getText();
+			}
+			contextTableViewer.setColumnProperties(View.contextProps);
+			contextTableViewer.setCellEditors(contextEditors);
+		}
 
 	  	
 	  	
