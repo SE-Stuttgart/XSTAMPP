@@ -36,7 +36,7 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IDataModel;
 import xstampp.util.BufferedCSVWriter;
 
@@ -247,9 +247,11 @@ public class StpaCSVExport extends Job {
 				  }else{
 				    writer.writeCell();
 				    String hazString = new String();
-            for(UUID hazardId: entry.getHazardIds()){
-              hazString += "H-" + model.getHazard(hazardId).getNumber()+",";
-            }
+				    if(entry.getHazardIds() != null){
+              for(UUID hazardId: entry.getHazardIds()){
+                hazString += "H-" + model.getHazard(hazardId).getNumber()+",";
+              }
+				    }
             writer.writeCell(hazString.substring(0, hazString.length()-1));
             writer.writeCell();
             if(entry.getConstraintText() != null){

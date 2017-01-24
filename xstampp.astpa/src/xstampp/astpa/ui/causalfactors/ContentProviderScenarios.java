@@ -22,7 +22,7 @@ import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 
@@ -31,7 +31,7 @@ import xstampp.ui.common.contentassist.ITableContentProvider;
  * @author Benedikt Markt, Lukas Balzer
  * 
  */
-public class ContentProviderScenarios implements ITableContentProvider<AbstractLtlProvider> {
+public class ContentProviderScenarios implements ITableContentProvider<AbstractLTLProvider> {
 
   private static final String HAZARD_ID_PREFIX = "SC-"; //$NON-NLS-1$
 	private final transient ICausalFactorDataModel caInterface;
@@ -57,11 +57,11 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 	}
 
 	@Override
-	public List<AbstractLtlProvider> getAllItems() {
-		return this.caInterface.getAllRefinedRules(new IEntryFilter<AbstractLtlProvider>() {
+	public List<AbstractLTLProvider> getAllItems() {
+		return this.caInterface.getAllRefinedRules(new IEntryFilter<AbstractLTLProvider>() {
       
       @Override
-      public boolean check(AbstractLtlProvider model) {
+      public boolean check(AbstractLTLProvider model) {
         if(model.getUCALinks() == null){
           return false;
         }
@@ -71,8 +71,8 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 	}
 
 	@Override
-	public List<AbstractLtlProvider> getLinkedItems(final UUID itemId) {
-	  List<AbstractLtlProvider> linkedScenarios = new ArrayList<>();
+	public List<AbstractLTLProvider> getLinkedItems(final UUID itemId) {
+	  List<AbstractLTLProvider> linkedScenarios = new ArrayList<>();
 	  if(entry.getScenarioLinks() != null){
   	  for(UUID scenarios : entry.getScenarioLinks()){
   	    linkedScenarios.add(caInterface.getRefinedScenario(scenarios));

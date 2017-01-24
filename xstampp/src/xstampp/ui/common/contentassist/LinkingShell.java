@@ -158,7 +158,6 @@ public class LinkingShell {
 
       @Override
       public void mouseDoubleClick(MouseEvent e) {
-        System.out.println(proposalList.getSelectionIndex());
         if (proposalList.getSelectionIndex() >= 0
             && proposalList.getSelectionIndex() < LinkingShell.this.proposals.length) {
           

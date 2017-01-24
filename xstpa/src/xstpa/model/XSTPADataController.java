@@ -20,7 +20,7 @@ import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 
@@ -373,7 +373,7 @@ public class XSTPADataController extends Observable implements Observer{
 		}
 		int total =getModel().getLTLPropertys().size()-1;
 		
-		List<AbstractLtlProvider> list = new ArrayList<>(getModel().getLTLPropertys());
+		List<AbstractLTLProvider> list = new ArrayList<>(getModel().getLTLPropertys());
 		for (int i = total; i >= 0; i--) {
 			if(!currentRSR.contains(list.get(i).getRuleId())){
 			  getModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,false, list.get(i).getRuleId());

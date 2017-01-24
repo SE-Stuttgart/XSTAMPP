@@ -26,7 +26,7 @@ import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactorEntry  implements ICausalFactorEntry{
@@ -201,7 +201,7 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
    * @param allUnsafeControlActions
    */
   public void prepareForExport(HazAccController hazAccController,
-      List<AbstractLtlProvider> allRefinedRules,
+      List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions){
 
     //if there is a link to a uca then sync the respective description and hazard links
@@ -227,7 +227,7 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
      
     scenarioEntries = new ArrayList<>();
     if(getScenarioLinks() != null){
-      for (AbstractLtlProvider ltlProvider : allRefinedRules) {
+      for (AbstractLTLProvider ltlProvider : allRefinedRules) {
         if(getScenarioLinks().contains(ltlProvider.getRuleId())){
           scenarioEntries.add(new CausalScenarioEntry(ltlProvider.getSafetyRule(),
                                                       ltlProvider.getRefinedSafetyConstraint()));

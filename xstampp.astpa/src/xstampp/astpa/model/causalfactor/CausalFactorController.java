@@ -34,7 +34,7 @@ import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 
 /**
  * Manager class for the causal factors
@@ -197,7 +197,7 @@ public class CausalFactorController implements ICausalFactorController {
   }
 
   public void prepareForExport(HazAccController hazAccController, List<IRectangleComponent> children,
-      List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<AbstractLTLProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
 
       for (IRectangleComponent child : children) {
         if(getCausalComponent(child) != null){
@@ -207,7 +207,7 @@ public class CausalFactorController implements ICausalFactorController {
   }
 
   public void prepareForSave(HazAccController hazAccController, List<Component> list,
-      List<AbstractLtlProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<AbstractLTLProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     Map<UUID,List<UUID>> hazardLinksMap = new HashMap<>();
     if(links != null){
       for(CausalFactorHazardLink link : links){

@@ -30,7 +30,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
@@ -138,8 +138,8 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 	private void reloadTable() {
 	  if(this.grid != null){
       this.grid.clearRows();
-      List<AbstractLtlProvider> rulesList = dataInterface.getAllScenarios(includeBasicScenarios,includeCausalScenarios,false);
-      for (AbstractLtlProvider rule  : rulesList) {
+      List<AbstractLTLProvider> rulesList = dataInterface.getAllScenarios(includeBasicScenarios,includeCausalScenarios,false);
+      for (AbstractLTLProvider rule  : rulesList) {
         if(!isFiltered(rule.getUCALinks(),UCA)){
           GridRow ruleRow = new GridRow(columns.length);
           

@@ -62,6 +62,7 @@ public class GridWrapper {
       actualGrid.getColumn(colIndex);
     }
   }
+  
   private class GridFocusListener implements FocusListener {
 
     private GridWrapper grid;
@@ -185,7 +186,11 @@ public class GridWrapper {
     private GridRow gridRow;
     private GridRow parentRow;
     private NebulaGridRowWrapper parent;
-
+    
+    @Override
+    public boolean isVisible() {
+      return super.isVisible();
+    }
     /**
      * Ctor.
      * 
@@ -626,8 +631,9 @@ public class GridWrapper {
     }
 
     this.resizeColumns();
-    if(actualGrid.getItemCount() > 0 ) {
-      this.actualGrid.showItem(getGrid().getItem(actualGrid.getItemCount()-1));
+    if ( actualGrid.getItemCount() > 0 ) {
+//      this.actualGrid.select(29);
+      this.actualGrid.showSelection();
     }
     
   }

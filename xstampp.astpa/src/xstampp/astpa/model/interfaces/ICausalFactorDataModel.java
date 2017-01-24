@@ -25,7 +25,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IEntryFilter;
@@ -53,7 +53,7 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
 	/**
 	 * {@link IExtendedDataModel#getRefinedScenario(UUID)}
 	 */
-	AbstractLtlProvider getRefinedScenario(UUID randomUUID);
+	AbstractLTLProvider getRefinedScenario(UUID randomUUID);
 	
   /**
    * {@link IExtendedDataModel#getScenarioType(UUID)}
@@ -103,7 +103,7 @@ public interface ICausalFactorDataModel extends IDataModel,ICausalFactorControll
   /**
    * {@link IExtendedDataModel#getAllRefinedRules(IEntryFilter)}
    */
-  List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter);
+  List<AbstractLTLProvider> getAllRefinedRules(IEntryFilter<AbstractLTLProvider> filter);
   
   /**
    * {@link IExtendedDataModel#addRuleEntry(IExtendedDataModel.ScenarioType, AbstractLtlProviderData, UUID, String)}

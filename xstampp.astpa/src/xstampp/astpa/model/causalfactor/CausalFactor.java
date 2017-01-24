@@ -32,7 +32,7 @@ import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntryContainer;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 
 /**
  * A causal factor
@@ -213,7 +213,7 @@ public class CausalFactor implements ICausalFactor {
   }
   
   public void prepareForExport(HazAccController hazAccController,
-      List<AbstractLtlProvider> allRefinedRules,
+      List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions){
     for (CausalFactorEntry entry : entries) {
       entry.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
@@ -222,7 +222,7 @@ public class CausalFactor implements ICausalFactor {
 
   public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
                              HazAccController hazAccController,
-                             List<AbstractLtlProvider> allRefinedRules,
+                             List<AbstractLTLProvider> allRefinedRules,
                              List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     if(hazardLinksMap.containsKey(getId()) || note != null || safetyConstraint != null){
       CausalFactorEntry entry = int_addHazardEntry();

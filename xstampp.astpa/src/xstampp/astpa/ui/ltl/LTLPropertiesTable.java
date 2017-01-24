@@ -6,39 +6,28 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.astpa.ui.causalScenarios.ActionMenuListener;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.astpa.ui.CommonGridView;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
-import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridCellButton;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.GridWrapper;
 import xstampp.ui.common.grid.IGridCell;
-import xstampp.ui.editors.AbstractFilteredEditor;
 
-public class LTLPropertiesTable extends AbstractFilteredEditor{
+public class LTLPropertiesTable extends CommonGridView<IExtendedDataModel>{
 
   private static String categoryLTL = "ID";
   private static String[] columns=new String[]{"ID","LTL"};
   private static String PREFIX = "SSR1."; //$NON-NLS-1$
-  private Action deleteAction;
-  private GridWrapper grid;
-  private IExtendedDataModel dataModel;
   
   private class AddCSButton extends GridCellButton {
 
@@ -55,13 +44,18 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
         Rectangle cellBounds) {
       if(e.button == 1){
         AbstractLtlProviderData data = new AbstractLtlProviderData();
-        
-        UUID newUCA = dataModel
+        UUID newUCA = getDataModel()
             .addRuleEntry(IExtendedDataModel.ScenarioType.CUSTOM_LTL,data,null, IValueCombie.TYPE_ANYTIME);
-        grid.activateCell(newUCA); 
+//        getGridWrapper().activateCell(newUCA); 
+        getGridWrapper().activateCell(newUCA);
       }
       
     }
+  }
+
+  @Override
+  protected void updateFilter() {
+    reloadTable();
   }
   
   private class ScenarioEditor extends GridCellTextEditor{
@@ -73,26 +67,28 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
       
       @Override
       public void delete() {
-        deleteAction.run();
+        deleteEntry();
       }
   
       @Override
       public void updateDataModel(String newValue) {
         AbstractLtlProviderData data = new AbstractLtlProviderData();
         data.setLtl(newValue);
-        ((IExtendedDataModel) ProjectManager.getContainerInstance()
-            .getDataModel(getProjectID()))
-            .updateRefinedRule(getUUID(),data,null);
+        getDataModel().updateRefinedRule(getUUID(),data,null);
       }
-
+      
+      @Override
+      public void activate() {
+        
+      }
       @Override
       protected void editorOpening() {
-        dataModel.lockUpdate();
+        getDataModel().lockUpdate();
       }
 
       @Override
       protected void editorClosing() {
-        dataModel.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
+        getDataModel().releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
       }
   }
   
@@ -117,10 +113,6 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
 	}
 
 	@Override
-	public void dispose() {
-		ProjectManager.getContainerInstance().getDataModel(getProjectID()).deleteObserver(LTLPropertiesTable.this);
-	}
-	@Override
 	public void update(final Observable IExtendedDataModel, Object updatedValue) {
 		final ObserverValue value= (ObserverValue) updatedValue; 
 		switch(value){
@@ -130,44 +122,28 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
 			break;
 		}
 	}
-	
 	@Override
   public void createPartControl(Composite parent) {
-    this.setDataModelInterface(ProjectManager.getContainerInstance()
-        .getDataModel(this.getProjectID()));
-    parent.setLayout(new GridLayout(1, false));
-
+    super.createPartControl(parent,columns);
+    getGridWrapper().setColumnratios(new float[]{0.1f,0.9f});
     updateFilter(); 
-    super.createPartControl(parent);
-    this.grid = new GridWrapper(parent, columns);
-    deleteAction = new DeleteLTLaction(grid, dataModel,"LTL",PREFIX);
-    this.grid.getGrid().setVisible(true);
-    this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    this.grid.setColumnratios(new float[]{0.1f,0.9f});
-    MenuManager menuMgr = new MenuManager();
-    Menu menu = menuMgr.createContextMenu(this.grid.getGrid());
-    menuMgr.addMenuListener(new ActionMenuListener(deleteAction));
-    menuMgr.setRemoveAllWhenShown(true);
-
-    this.grid.getGrid().setMenu(menu);
-    this.reloadTable(); 
   }
 
-  private void setDataModelInterface(IDataModel dataModel) {
-    this.dataModel = (IExtendedDataModel) dataModel;    
-    dataModel.addObserver(this);
+  @Override
+  public DeleteGridEntryAction<IExtendedDataModel> getDeleteAction() {
+    return new DeleteLTLaction(getGridWrapper(), getDataModel(),"LTL",PREFIX);
   }
 
-  private void reloadTable() {
-    if(this.grid != null){
-      this.grid.clearRows();
-      List<AbstractLtlProvider> rulesList = dataModel.getAllScenarios(true,false,false);
-      List<AbstractLtlProvider> scenarioList = dataModel.getAllScenarios(false, false, true);
+  protected void fillTable() {
+    if(this.getGridWrapper() != null){
+      this.getGridWrapper().clearRows();
+      List<AbstractLTLProvider> rulesList = getDataModel().getAllScenarios(true,false,false);
+      List<AbstractLTLProvider> scenarioList = getDataModel().getAllScenarios(false, false, true);
       int causalIndex = 0;
       int basicIndex = 0;
       int loopSize = rulesList.size() + scenarioList.size();
       for (int i = 0; i < loopSize;i++) {
-        AbstractLtlProvider rule = null;
+        AbstractLTLProvider rule = null;
         boolean showDelete = false;
         if(basicIndex < rulesList.size()){
           rule = rulesList.get(basicIndex);
@@ -182,18 +158,18 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
         }
         if(rule != null && !isFiltered(rule.getNumber(),categoryLTL)){
           GridRow ruleRow = new GridRow(columns.length);
-          IGridCell cell =new ScenarioEditor(this.grid,PREFIX+rule.getNumber(),showDelete,true, rule.getRuleId());
+          IGridCell cell =new ScenarioEditor(this.getGridWrapper(),PREFIX+rule.getNumber(),showDelete,true, rule.getRuleId());
           ruleRow.addCell(0,cell);
   
-          ruleRow.addCell(1,new ScenarioEditor(this.grid,rule.getLtlProperty(),false,!showDelete, rule.getRuleId()){
+          ruleRow.addCell(1,new ScenarioEditor(this.getGridWrapper(),rule.getLtlProperty(),false,!showDelete, rule.getRuleId()){
             @Override
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
               data.setLtl(newValue);
-              dataModel.updateRefinedRule(getUUID(),data, null);
+              getDataModel().updateRefinedRule(getUUID(),data, null);
             }
           });
-          grid.addRow(ruleRow);
+          getGridWrapper().addRow(ruleRow);
         }
       }
       GridRow addRow = new GridRow(columns.length);
@@ -202,8 +178,8 @@ public class LTLPropertiesTable extends AbstractFilteredEditor{
         addRow.addCell(0,new AddCSButton((UUID) getFilterValue(), ""));
       }
       addRow.addCell(0,new AddCSButton(null, ""));
-      grid.addRow(addRow);
-      this.grid.reloadTable();
+      getGridWrapper().addRow(addRow);
+      this.getGridWrapper().reloadTable();
     }    
   }
 }

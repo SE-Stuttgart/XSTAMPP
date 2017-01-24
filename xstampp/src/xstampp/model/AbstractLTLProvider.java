@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 import xstampp.astpa.haz.ITableModel;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class AbstractLtlProvider implements ITableModel {
+public abstract class AbstractLTLProvider implements ITableModel {
 
   @XmlElement(name = "ruleID")
   protected UUID id;

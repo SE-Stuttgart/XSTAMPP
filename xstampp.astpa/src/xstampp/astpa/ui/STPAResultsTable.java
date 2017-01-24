@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
@@ -142,7 +142,7 @@ public class STPAResultsTable extends StandartEditorPart{
 				content.put("SC1."+dataModel.getUCANumber(uca.getId()), constraint.getText());
 			}
 		}
-		for(AbstractLtlProvider rule: dataModel.getAllScenarios(true,true,false)){
+		for(AbstractLTLProvider rule: dataModel.getAllScenarios(true,true,false)){
 			content.put("SC2."+rule.getNumber(), rule.getRefinedSafetyConstraint());
 		}
 		scViewer.setInput(content.entrySet());

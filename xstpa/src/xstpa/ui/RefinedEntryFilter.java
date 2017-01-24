@@ -5,7 +5,7 @@ import messages.Messages;
 import org.eclipse.jface.viewers.Viewer;
 
 import xstampp.astpa.ui.sds.ModeFilter;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 
 public class RefinedEntryFilter extends ModeFilter{
 	private static final String[] FILTERS = new String[]{Messages.All, "Refined Unsafe Control Actions", "Refined Safety Constraints"};  	
@@ -18,8 +18,8 @@ public class RefinedEntryFilter extends ModeFilter{
 		if ((this.searchString == null) || (this.searchString.equals(".*.*"))) {
 			return true;
 		}
-		if(element instanceof AbstractLtlProvider){
-			AbstractLtlProvider entry = (AbstractLtlProvider) element;
+		if(element instanceof AbstractLTLProvider){
+			AbstractLTLProvider entry = (AbstractLTLProvider) element;
 			if(String.valueOf(entry.getNumber()).matches(searchString)){
 				return true;
 			}

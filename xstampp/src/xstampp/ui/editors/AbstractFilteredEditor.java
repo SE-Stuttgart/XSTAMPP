@@ -262,6 +262,9 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
           return false;
         }
       }
+      if(candidate == null){
+        return true;
+      }
       if (filterValue.getClass().equals(String.class) 
           && filterValue.equals(new String())) {
         return false;
@@ -276,7 +279,6 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
           //if checkMatch is given as true whether the testString does not contain the filterText
           //surrounding the regular Exp. by ".*" ... ".*" means that anything
           //can stand before or after the checked substring
-          System.out.println(testString.contains(filteText));
           return !testString.contains(filteText);
         }
         if(testString.startsWith(filteText)){

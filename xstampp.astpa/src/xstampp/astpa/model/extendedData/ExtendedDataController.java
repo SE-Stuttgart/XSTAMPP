@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.Assert;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
@@ -159,7 +159,7 @@ public class ExtendedDataController implements IExtendedDataController {
     private Map<String, UUID> getCombieMap(){
       if(combiesMap == null){
         combiesMap = new HashMap<>();
-        for (AbstractLtlProvider scenario : getMap(ScenarioType.BASIC_SCENARIO).values()) {
+        for (AbstractLTLProvider scenario : getMap(ScenarioType.BASIC_SCENARIO).values()) {
           if(((RefinedSafetyRule)scenario).getSafetyRule() != null){
             combiesMap.put(((RefinedSafetyRule)scenario).getSafetyRule(), scenario.getId());
           }
@@ -203,7 +203,7 @@ public class ExtendedDataController implements IExtendedDataController {
      */
     @Override
     public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,UUID linkedControlActionID){
-      for(AbstractLtlProvider provider: getAllScenarios(true,true,true)){
+      for(AbstractLTLProvider provider: getAllScenarios(true,true,true)){
         if(provider.getRuleId().equals(ruleId)){
           return updateRefinedRule(provider, data, linkedControlActionID);
         }
@@ -211,7 +211,7 @@ public class ExtendedDataController implements IExtendedDataController {
       return false;
     }
     
-    private boolean updateRefinedRule(AbstractLtlProvider provider, AbstractLtlProviderData data,UUID linkedControlActionID){
+    private boolean updateRefinedRule(AbstractLTLProvider provider, AbstractLtlProviderData data,UUID linkedControlActionID){
       boolean changed=false;
       changed = changed ||((RefinedSafetyRule) provider).setLtlProperty(data.getLtlProperty());
       changed = changed ||((RefinedSafetyRule) provider).setRefinedSafetyConstraint(data.getRefinedSafetyConstraint());
@@ -228,11 +228,11 @@ public class ExtendedDataController implements IExtendedDataController {
      * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(boolean, boolean, boolean)
      */
     @Override
-    public List<AbstractLtlProvider> getAllScenarios(boolean includeRules,
+    public List<AbstractLTLProvider> getAllScenarios(boolean includeRules,
                                                         boolean includeScenarios,
                                                         boolean includeLTL){
 
-      List<AbstractLtlProvider> tmp = new ArrayList<>();
+      List<AbstractLTLProvider> tmp = new ArrayList<>();
       if(includeRules){
         tmp.addAll(getMap(ScenarioType.BASIC_SCENARIO).values());
       }
@@ -250,7 +250,7 @@ public class ExtendedDataController implements IExtendedDataController {
      * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(boolean, boolean, boolean)
      */
     @Override
-    public AbstractLtlProvider getRefinedScenario(UUID ruleId) {
+    public AbstractLTLProvider getRefinedScenario(UUID ruleId) {
       if(getMap(ScenarioType.BASIC_SCENARIO).containsKey(ruleId)){
         return getMap(ScenarioType.BASIC_SCENARIO).get(ruleId);
       }if(getMap(ScenarioType.CAUSAL_SCENARIO).containsKey(ruleId)){
@@ -280,9 +280,9 @@ public class ExtendedDataController implements IExtendedDataController {
      * @see xstampp.astpa.model.extendedData.IExtendedDataController#getAllRefinedRules(xstampp.model.IEntryFilter)
      */
     @Override
-    public List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter){
-      List<AbstractLtlProvider> result = new ArrayList<>();
-      for(AbstractLtlProvider data : getAllScenarios(true, true, true)){
+    public List<AbstractLTLProvider> getAllRefinedRules(IEntryFilter<AbstractLTLProvider> filter){
+      List<AbstractLTLProvider> result = new ArrayList<>();
+      for(AbstractLTLProvider data : getAllScenarios(true, true, true)){
         if(filter.check(data)){
           result.add(data);
         }

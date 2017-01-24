@@ -112,7 +112,12 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
   }
 
   @Override
+  public boolean isDynamic() {
+    return true;
+  }
+  @Override
   protected Control createControl(Composite arg0) {
+    arg0.getParent().setRedraw(true);
 
     ToolBarManager manager = new ToolBarManager(SWT.HORIZONTAL);
     addStyleItems(manager);
@@ -128,6 +133,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addSelectionListener(this);
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
 
+    arg0.getParent().setRedraw(true);
     return toolBar;
   }
 

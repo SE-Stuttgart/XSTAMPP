@@ -19,12 +19,23 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.DragDetectEvent;
+import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.GestureEvent;
+import org.eclipse.swt.events.GestureListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -32,6 +43,8 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
@@ -201,8 +214,15 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
         && GridCellTextEditor.this.deleteSpace.contains(error.x, error.y) && error.button == 1) {
       delete();
     } else if ( !isReadOnly ) {
-      if ( editor == null) {
+      if ( editor == null || editor.getControl().isDisposed()) {
         editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP);
+        grid.getGrid().getVerticalBar().addListener(SWT.Selection, new Listener() {
+          
+          @Override
+          public void handleEvent(Event event) {
+            editor.deactivate();
+          }
+        });
         grid.getGrid().addMouseWheelListener(new MouseWheelListener() {
           
           @Override

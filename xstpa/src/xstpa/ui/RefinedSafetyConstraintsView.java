@@ -7,14 +7,11 @@ import java.util.Observable;
 import messages.Messages;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.ui.sds.AbstractFilteredTableView;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
-import xstpa.model.XSTPADataController;
 
 public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 
-	XSTPADataController dataController;
-	
 	public RefinedSafetyConstraintsView() {
 		super(new RefinedEntryFilter(), new String[]{ Messages.ID,
 													  "Refined Unsafe Control Actions", 
@@ -28,7 +25,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 		if(getDataInterface() == null){
 			return null;
 		}
-		List<AbstractLtlProvider> allRUCA = ((IExtendedDataModel)getDataInterface()).getAllScenarios(true,false,false);
+		List<AbstractLTLProvider> allRUCA = ((IExtendedDataModel)getDataInterface()).getAllScenarios(true,false,false);
   	    Collections.sort(allRUCA);
   	    
   	    return allRUCA;
@@ -38,26 +35,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 	public String getTitle() {
 		return "Refined Safety Constraints";
 	}
-	
-	/**
-	 * @return the dataController
-	 */
-	public XSTPADataController getDataController() {
-		return this.dataController;
-	}
 
-	/**
-	 * @param dataController the dataController to set
-	 */
-	public void setDataController(XSTPADataController dataController) {
-		if(this.dataController != dataController){
-			this.dataController = dataController;
-			
-			this.update(dataController, ObserverValue.CONTROL_ACTION);
-			this.dataController.addObserver(this);
-		}
-	}
-	
 	@Override
 	public void update(Observable IExtendedDataModel, Object updatedValue) {
 		ObserverValue type = (ObserverValue) updatedValue;
@@ -77,7 +55,7 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "RSR1."+((AbstractLtlProvider)element).getNumber();
+					return "RSR1."+((AbstractLTLProvider)element).getNumber();
 				}
 			};
 		case 1:
@@ -85,21 +63,21 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 				
 				@Override
 				public String getText(Object element) {
-					return ((AbstractLtlProvider)element).getRefinedUCA();
+					return ((AbstractLTLProvider)element).getRefinedUCA();
 				}
 			};
 		case 2:
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return "SC2."+((AbstractLtlProvider)element).getNumber();
+					return "SC2."+((AbstractLTLProvider)element).getNumber();
 				}
 			};
 		case 3:
 			return new CSCLabelProvider(){
 				@Override
 				public String getText(Object element) {
-					return ((AbstractLtlProvider)element).getRefinedSafetyConstraint();
+					return ((AbstractLTLProvider)element).getRefinedSafetyConstraint();
 				}
 			};
 			

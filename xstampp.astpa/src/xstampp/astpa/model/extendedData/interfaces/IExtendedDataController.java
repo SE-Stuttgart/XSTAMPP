@@ -7,7 +7,7 @@ import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
@@ -21,9 +21,9 @@ public interface IExtendedDataController {
    * @param data
    *          {@link AbstractLtlProviderData}
    * @param caID
-   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
+   *          {@link AbstractLTLProvider#getRelatedControlActionID()}
    * @param type 
-   *          {@link AbstractLtlProvider#getType()}
+   *          {@link AbstractLTLProvider#getType()}
    * 
    * @see IValueCombie
    * @return the id of rule which has been added, or null if any of the parameters is given as null or 
@@ -41,10 +41,10 @@ public interface IExtendedDataController {
    * @param data
    *          {@link AbstractLtlProviderData}
    * @param ruleId
-   *          {@link AbstractLtlProvider#getRuleId()}
+   *          {@link AbstractLTLProvider#getRuleId()}
    *
    * @param linkedControlActionID
-   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
+   *          {@link AbstractLTLProvider#getRelatedControlActionID()}
    * @return
    *        The UUID of the Refined rule which was updated in the data model or null if no rule could be found
    *         
@@ -69,9 +69,9 @@ public interface IExtendedDataController {
    * @return a list containing the chosen scenarios or an empty list if all
    *          values are false or the respective lists are empty
    */
-  List<AbstractLtlProvider> getAllScenarios(boolean includeBasic, boolean includeCausal, boolean includeLTL);
+  List<AbstractLTLProvider> getAllScenarios(boolean includeBasic, boolean includeCausal, boolean includeLTL);
 
-  List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter);
+  List<AbstractLTLProvider> getAllRefinedRules(IEntryFilter<AbstractLTLProvider> filter);
 
   /**
    * @param removeAll whether all currently stored RefinedSafetyRule objects should be deleted<br>
@@ -84,7 +84,7 @@ public interface IExtendedDataController {
   boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId);
   
 
-  AbstractLtlProvider getRefinedScenario(UUID randomUUID);
+  AbstractLTLProvider getRefinedScenario(UUID randomUUID);
   
   /**
    * this calculates the type of rule of the ltl provider stored for that 

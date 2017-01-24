@@ -19,17 +19,10 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
-import org.apache.fop.fo.ElementMapping.Maker;
-import org.apache.log4j.Logger;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 
 import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
@@ -38,26 +31,25 @@ import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
-import xstampp.astpa.ui.causalScenarios.ActionMenuListener;
+import xstampp.astpa.ui.CommonGridView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridCellBlank;
 import xstampp.ui.common.grid.GridCellButton;
-import xstampp.ui.common.grid.GridCellColored;
 import xstampp.ui.common.grid.GridCellLinking;
 import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.GridWrapper;
-import xstampp.ui.editors.AbstractFilteredEditor;
 
 /**
  * View used to handle the unsafe control actions.
  * 
  * @author Benedikt Markt, Patrick Wickenhaeuser, Lukas Balzer
  */
-public class UnsafeControlActionsView extends AbstractFilteredEditor{
+public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActionDataModel>{
 
   public static final String UCA1 = "UCA1.";
   /**
@@ -71,14 +63,11 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	private static final String HAZ_FILTER="Hazards"; //$NON-NLS-1$
 	private static final String NOHAZ_FILTER="not hazardous"; //$NON-NLS-1$
 	private static final String HAZID_FILTER="Hazard ID"; //$NON-NLS-1$
-	/**
-	 * The log4j logger.
-	 */
-	private static final Logger LOGGER = Logger.getRootLogger();
-  protected static final String[] columns = new String[] {
-        Messages.ControlAction, Messages.NotGiven,
-        Messages.GivenIncorrectly, Messages.WrongTiming,
-        Messages.StoppedTooSoon };
+
+  private static final String[] columns = new String[] {
+    Messages.ControlAction, Messages.NotGiven,
+    Messages.GivenIncorrectly, Messages.WrongTiming,
+    Messages.StoppedTooSoon };
 
 
 	/**
@@ -86,11 +75,6 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 */
 	private UcaContentProvider ucaContentProvider = null;
 
-	private IUnsafeControlActionDataModel ucaInterface;
-	protected GridWrapper grid;
-	private boolean lockreload;
-	private DeleteUcaAction deleteAction;
-	
 	public UnsafeControlActionsView() {
 		setUseFilter(true);
 	}
@@ -127,23 +111,23 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 		}
 		@Override
 		public void delete() {
-			deleteAction.run();
+		  deleteEntry();
 		}
 		@Override
 		public void updateDataModel(String newValue) {
-			ucaInterface.setUcaDescription(getUUID(), newValue);
+			getDataModel().setUcaDescription(getUUID(), newValue);
 		}
 		
 
 
 	  @Override
 	  protected void editorOpening() {
-	    ucaInterface.lockUpdate();
+	    getDataModel().lockUpdate();
 	  }
 	  
 	  @Override
 	  protected void editorClosing() {
-	    ucaInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.UNSAFE_CONTROL_ACTION});
+	    getDataModel().releaseLockAndUpdate(new ObserverValue[]{ObserverValue.UNSAFE_CONTROL_ACTION});
 	  }
 	}
 
@@ -165,11 +149,11 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 				org.eclipse.swt.graphics.Point relativeMouse,
 				Rectangle cellBounds) {
 		  if(e.button == 1){
-  			UUID newUCA = UnsafeControlActionsView.this.ucaInterface
+  			UUID newUCA = UnsafeControlActionsView.this.getDataModel()
   					.addUnsafeControlAction(this.parentControlAction.getId(),
   							"", this.ucaType); //$NON-NLS-1$
-  			UnsafeControlActionsView.this.grid.activateCell(newUCA);
-  			UnsafeControlActionsView.LOGGER.debug(Messages.AddingNewUCA);
+  			getGridWrapper().activateCell(newUCA);
+        ProjectManager.getLOGGER().debug(Messages.AddingNewUCA);
 		  }
 			
 		}
@@ -182,54 +166,23 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ProjectManager.getContainerInstance()
-				.getDataModel(this.getProjectID()));
-
-		updateHazards();
-		UnsafeControlActionsView.LOGGER.info("createPartControl()"); //$NON-NLS-1$
-		parent.setLayout(new GridLayout(1, false));
-		
-		super.createPartControl(parent);
-		this.grid = new GridWrapper(parent, columns);
-		this.grid.setSelectRow(false);
-		this.grid.getGrid().setVisible(true);
-
-    this.grid.getGrid().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		this.reloadTable();
-    deleteAction = new DeleteUcaAction(grid, ucaInterface,Messages.UnsafeControlActions,UCA1);
-		MenuManager menuMgr = new MenuManager();
-		Menu menu = menuMgr.createContextMenu(this.grid.getGrid());
-		menuMgr.addMenuListener(new ActionMenuListener(deleteAction));
-		menuMgr.setRemoveAllWhenShown(true);
-		this.grid.getGrid().setMenu(menu);
-
+		super.createPartControl(parent,columns);
+    updateHazards();
 	}
-
-	private int getMaxHeight(IControlAction controlAction) {
-		int maxHeight = controlAction.getUnsafeControlActions(
-				UnsafeControlActionType.NOT_GIVEN).size();
-
-		if (controlAction.getUnsafeControlActions(
-				UnsafeControlActionType.GIVEN_INCORRECTLY).size() > maxHeight) {
-			maxHeight = controlAction.getUnsafeControlActions(
-					UnsafeControlActionType.GIVEN_INCORRECTLY).size();
-		}
-		if (controlAction.getUnsafeControlActions(
-				UnsafeControlActionType.WRONG_TIMING).size() > maxHeight) {
-			maxHeight = controlAction.getUnsafeControlActions(
-					UnsafeControlActionType.WRONG_TIMING).size();
-		}
-		if (controlAction.getUnsafeControlActions(
-				UnsafeControlActionType.STOPPED_TOO_SOON).size() > maxHeight) {
-			maxHeight = controlAction.getUnsafeControlActions(
-					UnsafeControlActionType.STOPPED_TOO_SOON).size();
-		}
-
-		return maxHeight;
+	
+	@Override
+	public void setDataModelInterface(IDataModel dataInterface) {
+	  super.setDataModelInterface(dataInterface);
+    this.ucaContentProvider = new UcaContentProvider(getDataModel());
 	}
-
-	protected void fillTable(List<IHAZXControlAction> list) throws SWTException{
-		
+	@Override
+	public DeleteGridEntryAction<IUnsafeControlActionDataModel> getDeleteAction() {
+	  return new DeleteUcaAction(getGridWrapper(), getDataModel(),Messages.UnsafeControlActions,UCA1);
+	}
+	
+	@Override
+	protected void fillTable() throws SWTException{
+	  List<IHAZXControlAction> list = getDataModel().getAllControlActionsU();
 		if (list.isEmpty()) {
 			return;
 		}
@@ -245,12 +198,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			
 
 			controlActionRow.addCell(0,new GridCellText(cAction.getTitle()));
-
-//			for(int i = 1; i< 5;i++){
-//  			controlActionRow.addCell(i,new GridCellColored(this.grid,
-//  					UnsafeControlActionsView.PARENT_BACKGROUND_COLOR));
-//			}
-
+			
 			List<IUnsafeControlAction> allNotGiven = cAction
 					.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);
 			List<IUnsafeControlAction> allIncorrect = cAction
@@ -259,24 +207,19 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 					.getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING);
 			List<IUnsafeControlAction> allTooSoon = cAction
 					.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON);
-			
 			int maxHeight = allNotGiven.size();
 
       maxHeight = Math.max(maxHeight, allIncorrect.size());
       maxHeight = Math.max(maxHeight, allTooSoon.size());
       maxHeight = Math.max(maxHeight, allWrongTiming.size());
-      
+      boolean addUCA = false;
  			for (int i = 0; i <= maxHeight; i++) {
-				
+ 			  addUCA = false;
 				GridRow idRow = new GridRow(columns.length,3);
 				GridRow ucaRow = new GridRow(columns.length,3);
 				GridRow linkRow = new GridRow(columns.length,3);
 
-				controlActionRow.addChildRow(idRow);
-				controlActionRow.addChildRow(ucaRow);
-				controlActionRow.addChildRow(linkRow);
-
-				addControlAction |= addUCAEntry(allNotGiven,
+				addUCA |= addUCAEntry(allNotGiven,
 											    i, 1,
 											    Messages.AddNotGivenUCA,
 											    UnsafeControlActionType.NOT_GIVEN,
@@ -284,7 +227,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 											    ucaRow,
 											    linkRow,
 											    cAction);
-				addControlAction |= addUCAEntry(allIncorrect,
+				addUCA |= addUCAEntry(allIncorrect,
 												  i,
 												  2,
 											    Messages.AddGivenIncorrectlyUCA,
@@ -294,7 +237,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 											    linkRow,
 											    cAction);
 				
-				addControlAction |= addUCAEntry(allWrongTiming,
+				addUCA |= addUCAEntry(allWrongTiming,
 											    i, 
 											    3,
 											    Messages.AddWrongTimingUCA,
@@ -303,7 +246,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 											    ucaRow,
 											    linkRow,
 											    cAction);
-				addControlAction |= addUCAEntry(allTooSoon,
+				addUCA |= addUCAEntry(allTooSoon,
 											    i, 
 											    4,
 											    Messages.AddStoppedTooSoonUCA,
@@ -312,9 +255,19 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 											    ucaRow,
 											    linkRow,
 											    cAction);
+
+        addControlAction |=addUCA;
+				if(addUCA){
+	        controlActionRow.addChildRow(idRow);
+	        controlActionRow.addChildRow(ucaRow);
+	        controlActionRow.addChildRow(linkRow);
+	        addControlAction |=addUCA;
+				}else{
+				  break;
+				}
 			}
 			if(addControlAction){
-				this.grid.addRow(controlActionRow);			
+				getGridWrapper().addRow(controlActionRow);			
 			}
 		}
 	}
@@ -328,23 +281,27 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 							 GridRow ucaRow,
 							 GridRow linkRow,
 							 IControlAction cAction){
-		if (ucaList.size() > i && !isUCAFiltered(ucaList.get(i))) {
+	  while(ucaList.size() > i && isUCAFiltered(ucaList.get(i))){
+	    ucaList.remove(i);
+	  }
+		if (ucaList.size() > i) {
 			IUnsafeControlAction tooSoonUca = ucaList.get(i);
 			if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
 				idRow.addCell(columnIndex,new GridCellBlank(true));
 			}else{
-				idRow.addCell(columnIndex,new GridCellText(UCA1 + this.ucaInterface.getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
+				idRow.addCell(columnIndex,new GridCellText(UCA1 + this.getDataModel().getUCANumber(tooSoonUca.getId()))); //$NON-NLS-1$
 			}
-			UnsafeControlActionCell editor = new UnsafeControlActionCell(this.grid,tooSoonUca.getDescription(),
+			UnsafeControlActionCell editor = new UnsafeControlActionCell(getGridWrapper(),tooSoonUca.getDescription(),
 					tooSoonUca.getId());
 			ucaRow.addCell(columnIndex,editor);
 			linkRow.addCell(columnIndex,new GridCellLinking<UcaContentProvider>(
 					tooSoonUca.getId(), this.ucaContentProvider,
-					this.grid));
+					getGridWrapper()));
 			return true;
 		}
 
-		if (ucaList.size() == i) {
+		if (ucaList.size() == i && getFilterValue() != null 
+		    && (!(getFilterValue() instanceof String) || getFilterValue().equals("")) ) {
 			// add placeholder
 			idRow.addCell(columnIndex,new GridCellBlank(true));
 			ucaRow.addCell(columnIndex,new AddUcaButton(cAction,
@@ -364,7 +321,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	
 	@Override
 	public String getId() {
-		UnsafeControlActionsView.LOGGER.info("getID()"); //$NON-NLS-1$
+	  ProjectManager.getLOGGER().info("getID()"); //$NON-NLS-1$
 		return UnsafeControlActionsView.ID;
 	}
 
@@ -375,7 +332,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	}
 	
 	/**
-	 * !isFiltered(this.ucaInterface.getUCANumber(allWrongTiming.get(i).getId()),UCAID)
+	 * !isFiltered(this.getDataModel().getUCANumber(allWrongTiming.get(i).getId()),UCAID)
 						&& !isFiltered(allWrongTiming.get(i).getDescription(),UCA)
 	 * @param uca
 	 * @return true if the uca is filtered out and should not be used
@@ -383,28 +340,28 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	private boolean isUCAFiltered(IUnsafeControlAction uca){
 		switch (getActiveCategory()) {
 		case UCAID_FILTER:
-			return isFiltered(this.ucaInterface.getUCANumber(uca.getId()),UCAID_FILTER);
+			return isFiltered(this.getDataModel().getUCANumber(uca.getId()),UCAID_FILTER);
 		case UCA_FILTER:
 			return isFiltered(uca.getDescription(),UCA_FILTER);
 		case HAZ_FILTER:
-			if(this.ucaInterface.getLinkedHazardsOfUCA(uca.getId()).size() == 0){
+			if(this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0){
 				return true;
 			}
-			for(ITableModel model : this.ucaInterface.getLinkedHazardsOfUCA(uca.getId())){
+			for(ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())){
 				if(!isFiltered(model.getTitle(), HAZ_FILTER) ||  !isFiltered(model.getDescription(), HAZ_FILTER)){
 					return false;
 				}
 				return true;
 			}
 		case NOHAZ_FILTER:
-			if(this.ucaInterface.getLinkedHazardsOfUCA(uca.getId()).size() != 0){
+			if(this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() != 0){
 				return true;
 			}
 		case HAZID_FILTER:
-			if(this.ucaInterface.getLinkedHazardsOfUCA(uca.getId()).size() == 0){
+			if(this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0){
 				return true;
 			}
-			for(ITableModel model : this.ucaInterface.getLinkedHazardsOfUCA(uca.getId())){
+			for(ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())){
 				if(!isFiltered(model.getNumber(),HAZID_FILTER)){
 					return false;
 				}
@@ -414,43 +371,14 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 			return isFiltered(uca.getDescription(),UCA_FILTER);
 		}
 	}
-	/**
-	 * sets the data model object for this editor
-	 *
-	 * @author Lukas
-	 *
-	 * @param controlActionsInterface the data model object
-	 */
-	public void setDataModelInterface(IDataModel controlActionsInterface) {
-		this.ucaInterface = (IUnsafeControlActionDataModel) controlActionsInterface;
-		this.ucaInterface.addObserver(this);
-		this.ucaContentProvider = new UcaContentProvider(
-				(IUnsafeControlActionDataModel) controlActionsInterface);
-	}
-
-	protected IDataModel getDataModel(){
-		return this.ucaInterface;
-	}
-	
-	private void reloadTable() throws SWTException {
-		if(!this.lockreload){
-			int tmp= this.grid.getGrid().getVerticalBar().getSelection();
-			this.lockreload = true;
-			this.grid.clearRows();
-			this.fillTable(this.ucaInterface.getAllControlActionsU());
-			this.grid.reloadTable();
-			this.lockreload = false;
-			this.grid.getGrid().setTopIndex(tmp);
-		}
-	}
 
 	private void updateHazards(){
-		String[] choices= new String[ucaInterface.getAllHazards().size()];
-		String[] choiceIDs= new String[ucaInterface.getAllHazards().size()];
-		String[] choiceValues= new String[ucaInterface.getAllHazards().size()];
+		String[] choices= new String[getDataModel().getAllHazards().size()];
+		String[] choiceIDs= new String[getDataModel().getAllHazards().size()];
+		String[] choiceValues= new String[getDataModel().getAllHazards().size()];
 		int index = 0;
 	
-		for (ITableModel model : ucaInterface.getAllHazards()) {
+		for (ITableModel model : getDataModel().getAllHazards()) {
 			choices[index] = "H-" + model.getNumber() + ": "+ model.getTitle(); //$NON-NLS-1$ //$NON-NLS-2$
 			choiceIDs[index] = "" + model.getNumber(); //$NON-NLS-1$
 			choiceValues[index++] = model.getTitle();
@@ -484,7 +412,7 @@ public class UnsafeControlActionsView extends AbstractFilteredEditor{
 	
 	@Override
 	public void dispose() {
-		this.ucaInterface.deleteObserver(this);
+		this.getDataModel().deleteObserver(this);
 		super.dispose();
 	}
 

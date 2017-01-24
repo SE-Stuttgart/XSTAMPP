@@ -30,7 +30,7 @@ import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.ATableModel;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IValueCombie;
 
 /**
@@ -391,11 +391,11 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		return false;
 	}
 	
-	public List<AbstractLtlProvider> getAllRefinedRules(){
+	public List<AbstractLTLProvider> getAllRefinedRules(){
 		if(rules == null){
 			return new ArrayList<>();
 		}
-		ArrayList<AbstractLtlProvider> tmp = new ArrayList<>();
+		ArrayList<AbstractLTLProvider> tmp = new ArrayList<>();
 		for (RefinedSafetyRule refinedSafetyRule : rules) {
 			tmp.add(refinedSafetyRule);
 		}
@@ -455,7 +455,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 	                             String defaultLabel) {
 
 	  rules = new ArrayList<>();
-	  for(AbstractLtlProvider refinedRule : extendedData.getAllScenarios(true,false,false)){
+	  for(AbstractLTLProvider refinedRule : extendedData.getAllScenarios(true,false,false)){
 	    if(refinedRule.getRelatedControlActionID().equals(getId())){
 	      rules.add((RefinedSafetyRule) refinedRule);
 	    }

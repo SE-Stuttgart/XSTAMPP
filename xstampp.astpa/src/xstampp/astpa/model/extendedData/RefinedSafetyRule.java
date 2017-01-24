@@ -16,12 +16,12 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.haz.ITableModel;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 
 @XmlRootElement(name = "rule")
-public class RefinedSafetyRule extends AbstractLtlProvider{
+public class RefinedSafetyRule extends AbstractLTLProvider{
 
 	
 
@@ -29,23 +29,23 @@ public class RefinedSafetyRule extends AbstractLtlProvider{
 	/**
 	 * 
    * @param ucaLinks
-   *          {@link AbstractLtlProvider#getUCALinks()}
+   *          {@link AbstractLTLProvider#getUCALinks()}
    * @param combies
    *          {@link RefinedSafetyRule#getCriticalCombies()}
    * @param ltlExp
-   *          {@link AbstractLtlProvider#getLtlProperty()}   
+   *          {@link AbstractLTLProvider#getLtlProperty()}   
    * @param rule
-   *          {@link AbstractLtlProvider#getSafetyRule()}
+   *          {@link AbstractLTLProvider#getSafetyRule()}
    * @param ruca
-   *          {@link AbstractLtlProvider#getRefinedUCA()}
+   *          {@link AbstractLTLProvider#getRefinedUCA()}
    * @param constraint
-   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
+   *          {@link AbstractLTLProvider#getRefinedSafetyConstraint()}
    * @param nr
-   *          {@link AbstractLtlProvider#getNumber()}
+   *          {@link AbstractLTLProvider#getNumber()}
    * @param caID
-   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
+   *          {@link AbstractLTLProvider#getRelatedControlActionID()}
    * @param type 
-   *          {@link AbstractLtlProvider#getType()}
+   *          {@link AbstractLTLProvider#getType()}
    * 
 	 * @param type the Type of the context the rule should be generated for one of the <code>TYPE</code> constants
 	 * 				Defined in IValueCombie

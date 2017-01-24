@@ -95,9 +95,7 @@ public class STPALoadJob extends AbstractLoadJob {
       line = line.replace("\0\0\0\0", "\0"); //$NON-NLS-1$ //$NON-NLS-2$
 			line = line.replace("\0\0",">"); //$NON-NLS-1$ //$NON-NLS-2$
 			line = line.replace("\0","<"); //$NON-NLS-1$ //$NON-NLS-2$
-//			System.out.println(line);
 			Reader stream= new StringReader(line); 
-//			System.out.println(line);
 			Source xmlFile = new StreamSource(stream,getFile().toURI().toString());
 			
 			SchemaFactory schemaFactory = SchemaFactory

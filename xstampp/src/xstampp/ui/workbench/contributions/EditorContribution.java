@@ -66,6 +66,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution
 
   @Override
   protected Control createControl(Composite parent) {
+    parent.getParent().setRedraw(true);
     this.isDecorated = false;
     if (System.getProperty("os.name").toLowerCase().contains("linux")) {
       return new ToolBar(parent, SWT.NONE);
@@ -207,6 +208,8 @@ public class EditorContribution extends WorkbenchWindowControlContribution
     } catch (NullPointerException e) {
       // if there is a nullpointer one one cant do anything
     }
+
+    parent.getParent().setRedraw(true);
     return manager.createControl(parent);
   }
 
@@ -220,6 +223,11 @@ public class EditorContribution extends WorkbenchWindowControlContribution
     this.zoomLabel.getComboControl().setText(this.zoomSlider.getSliderControl().getSelection() + "%"); //$NON-NLS-1$
   }
 
+  
+  @Override
+  public boolean isDynamic() {
+    return true;
+  }
   /**
    * enables all widgets contained in the main composite of this class
    *

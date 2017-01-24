@@ -41,7 +41,7 @@ import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
@@ -447,8 +447,7 @@ public class ControlActionController {
 	  if(nextUcaIndex < 0){
 	    nextUcaIndex = getAllUnsafeControlActions().size()+1;
 	  }
-	  System.out.println(nextUcaIndex++);
-	  return nextUcaIndex;
+	  return nextUcaIndex++;
 	}
 	/**
 	 * Sets the corresponding safety constraint of the unsafe control action
@@ -571,7 +570,7 @@ public class ControlActionController {
 			}
 
 			
-			for(AbstractLtlProvider rule : controlAction.getAllRefinedRules()){
+			for(AbstractLTLProvider rule : controlAction.getAllRefinedRules()){
 
 				if(rule.getUCALinks() != null){
 					StringBuffer linkString = new StringBuffer(); 
@@ -860,9 +859,9 @@ public class ControlActionController {
 	 * 
 	 * @return a list containing all rules or only the rules created formally in the context table
 	 */
-	public List<AbstractLtlProvider> getAllRefinedRules(boolean onlyFormal){
+	public List<AbstractLTLProvider> getAllRefinedRules(boolean onlyFormal){
 //		moveRulesInCA();
-		List<AbstractLtlProvider> list = new ArrayList<>();
+		List<AbstractLTLProvider> list = new ArrayList<>();
 		if(!onlyFormal && rules != null){
 		  list.addAll(rules);
 		}
@@ -880,23 +879,23 @@ public class ControlActionController {
    * adds the refined rule to the set of rules defined in the related control action
    * 
    * @param ucaLinks
-   *          {@link AbstractLtlProvider#getUCALinks()}
+   *          {@link AbstractLTLProvider#getUCALinks()}
    * @param combies
    *          {@link RefinedSafetyRule#getCriticalCombies()}
    * @param ltlExp
-   *          {@link AbstractLtlProvider#getLtlProperty()}   
+   *          {@link AbstractLTLProvider#getLtlProperty()}   
    * @param rule
-   *          {@link AbstractLtlProvider#getSafetyRule()}
+   *          {@link AbstractLTLProvider#getSafetyRule()}
    * @param ruca
-   *          {@link AbstractLtlProvider#getRefinedUCA()}
+   *          {@link AbstractLTLProvider#getRefinedUCA()}
    * @param constraint
-   *          {@link AbstractLtlProvider#getRefinedSafetyConstraint()}
+   *          {@link AbstractLTLProvider#getRefinedSafetyConstraint()}
    * @param nr
-   *          {@link AbstractLtlProvider#getNumber()}
+   *          {@link AbstractLTLProvider#getNumber()}
    * @param caID
-   *          {@link AbstractLtlProvider#getRelatedControlActionID()}
+   *          {@link AbstractLTLProvider#getRelatedControlActionID()}
    * @param type 
-   *          {@link AbstractLtlProvider#getType()}
+   *          {@link AbstractLTLProvider#getType()}
 	 * 
 	 * @see IValueCombie
 	 * @return the uuid of the added refined rule, or null if no rule could be added because of a bad value e.g. <code>caID == null</code>

@@ -435,11 +435,9 @@
             locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
          <toolbar
                id="xstampp.toolbar.contribution.text">
-            <separator
-                  name="xstampp.separator1">
-            </separator>
             <control
-                  class="xstampp.ui.workbench.contributions.TextToolbarContribution">
+                  class="xstampp.ui.workbench.contributions.TextToolbarContribution"
+                  id="textContribution">
                <visibleWhen
                      checkEnabled="false">
                   <with
@@ -454,19 +452,8 @@
          <toolbar
                id="xstampp.toolbar.contribution.zoombar">
             <control
-                  class="xstampp.ui.workbench.contributions.SeperatorContribution">
-               <visibleWhen
-                     checkEnabled="false">
-                  <with
-                        variable="activeEditor">
-                     <instanceof
-                           value="xstampp.ui.workbench.contributions.IZoomContributor">
-                     </instanceof>
-                  </with>
-               </visibleWhen>
-            </control>
-            <control
-                  class="xstampp.ui.workbench.contributions.EditorContribution">
+                  class="xstampp.ui.workbench.contributions.EditorContribution"
+                  id="zoom.control">
                <visibleWhen
                      checkEnabled="false">
                   <with

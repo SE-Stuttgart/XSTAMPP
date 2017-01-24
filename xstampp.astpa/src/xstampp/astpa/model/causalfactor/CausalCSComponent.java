@@ -29,7 +29,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 
 @XmlRootElement(name="causalComponent")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -145,7 +145,7 @@ public class CausalCSComponent implements ICausalComponent{
   
   public void prepareForExport(HazAccController hazAccController,
                                IRectangleComponent child, 
-                               List<AbstractLtlProvider> allRefinedRules,
+                               List<AbstractLTLProvider> allRefinedRules,
                                List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     this.text = child.getText();
     for (CausalFactor causalFactor : internal_getFactors()) {
@@ -156,7 +156,7 @@ public class CausalCSComponent implements ICausalComponent{
   public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
                              HazAccController hazAccController,
                              ICausalComponent child,
-                             List<AbstractLtlProvider> allRefinedRules,
+                             List<AbstractLTLProvider> allRefinedRules,
                              List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     List<ICausalFactor> causalFactors = child.getCausalFactors();
     if(causalFactors != null){

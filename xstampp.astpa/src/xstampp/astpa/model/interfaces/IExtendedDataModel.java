@@ -25,7 +25,7 @@ import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
 
@@ -43,7 +43,7 @@ public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
     CUSTOM_LTL
   }
 
-  List<AbstractLtlProvider> getLTLPropertys();
+  List<AbstractLTLProvider> getLTLPropertys();
 
   
   IRectangleComponent getComponent(UUID key);

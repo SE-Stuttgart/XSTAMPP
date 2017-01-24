@@ -93,7 +93,7 @@ import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
 import xstampp.model.ISafetyDataModel;
@@ -1233,7 +1233,6 @@ public class DataModelController extends AbstractDataModel implements
 
 		if(this.controlActionController.setUcaDescription(
 				unsafeControlActionId, description)){
-		  System.out.println(description);
 			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 			return true;
 		}
@@ -1711,13 +1710,13 @@ public class DataModelController extends AbstractDataModel implements
 	}
 	
 	@Override
-	public List<AbstractLtlProvider> getAllScenarios(boolean includeRules,
+	public List<AbstractLTLProvider> getAllScenarios(boolean includeRules,
       boolean includeScenarios,
       boolean includeLTL){
 		return this.extendedDataController.getAllScenarios(includeRules, includeScenarios, includeLTL);
 	}
 	
-	public AbstractLtlProvider getRefinedScenario(UUID id){
+	public AbstractLTLProvider getRefinedScenario(UUID id){
 		return this.extendedDataController.getRefinedScenario(id);
 	}
 
@@ -1757,7 +1756,7 @@ public class DataModelController extends AbstractDataModel implements
 	}
 	
 	@Override
-	public List<AbstractLtlProvider> getLTLPropertys(){
+	public List<AbstractLTLProvider> getLTLPropertys(){
 		return getAllScenarios(true,false,false);
 	}
 
@@ -1853,7 +1852,7 @@ public class DataModelController extends AbstractDataModel implements
   }
 
   @Override
-  public List<AbstractLtlProvider> getAllRefinedRules(IEntryFilter<AbstractLtlProvider> filter) {
+  public List<AbstractLTLProvider> getAllRefinedRules(IEntryFilter<AbstractLTLProvider> filter) {
     return extendedDataController.getAllRefinedRules(filter);
   }
 

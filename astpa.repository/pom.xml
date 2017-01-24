@@ -21,6 +21,9 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<includeAllDependencies>true</includeAllDependencies>
+				    <profileProperties>
+				      <macosx-bundled>true</macosx-bundled>
+				    </profileProperties>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -33,6 +36,14 @@
 						<linux>tar.gz</linux>
 						<macosx>tar.gz</macosx>
 					</formats>
+					<products>
+				    <product>
+				      <id>xstampp_product</id>
+				      <rootFolders>
+				        <macosx>XSTAMPP.app</macosx>
+				      </rootFolders>
+				    </product>
+				  </products>
 				</configuration>
 				<executions>
 					<execution>

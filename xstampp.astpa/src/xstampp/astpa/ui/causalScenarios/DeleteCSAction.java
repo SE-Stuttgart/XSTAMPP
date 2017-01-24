@@ -14,7 +14,7 @@ package xstampp.astpa.ui.causalScenarios;
 import java.util.UUID;
 
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.model.AbstractLtlProvider;
+import xstampp.model.AbstractLTLProvider;
 import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridWrapper;
 
@@ -27,7 +27,7 @@ public class DeleteCSAction extends DeleteGridEntryAction<IExtendedDataModel>{
   @Override
   protected String getIdString(UUID id) {
     String idString = null;
-    AbstractLtlProvider refinedRule = getDataModel().getRefinedScenario(id);
+    AbstractLTLProvider refinedRule = getDataModel().getRefinedScenario(id);
     if(refinedRule != null){
       idString = getPrefix()+refinedRule.getNumber();
     }

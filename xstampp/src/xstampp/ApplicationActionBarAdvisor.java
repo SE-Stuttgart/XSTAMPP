@@ -24,6 +24,8 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
+import xstampp.ui.workbench.contributions.EditorContribution;
+
 /**
  * Configures the action bar.
  * 
