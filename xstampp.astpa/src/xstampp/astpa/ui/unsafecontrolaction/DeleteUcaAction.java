@@ -1,5 +1,5 @@
 /*************************************************************************
- * Copyright (c) 2014-2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+ * Copyright (c) 2014-2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
  * 
