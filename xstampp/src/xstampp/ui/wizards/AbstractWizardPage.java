@@ -14,10 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -25,15 +22,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -42,8 +37,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
 import xstampp.Activator;
-import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 
 /**
@@ -63,12 +58,13 @@ public abstract class AbstractWizardPage extends WizardPage {
   protected static final int DEMOCANVAS_HEIGHT = 80;
   protected static final int COMPONENT_OFFSET = 10;
   private static final String IMAGE_PATH = "/icons/buttons/export"; //$NON-NLS-1$
-  protected static final int LABEL_COLUMN = 5;
-  protected static final int LABEL_WIDTH = 107;
+  protected static final FormAttachment LABEL_FORM_OFFSET = new FormAttachment(0);
+  protected static final int LABEL_WIDTH = 140;
   protected static final int LABEL_HEIGHT = 25;
-  protected static final int TEXT_COLUMN = AbstractWizardPage.LABEL_COLUMN + AbstractWizardPage.LABEL_WIDTH + 1;
+  protected static final int TEXT_COLUMN =AbstractWizardPage.LABEL_WIDTH + 1;
   protected static final int BUTTON_COLUMN = 430;
   private int fontState = 0;
+
   protected final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
   /**
@@ -506,19 +502,36 @@ public abstract class AbstractWizardPage extends WizardPage {
      */
     public PathComposite(Composite parent, String name) {
       super(parent, SWT.NONE);
-      this.setLayout(null);
+      this.setLayout(new FormLayout());
       this.labelExport = new Label(this, SWT.NONE);
       this.labelExport.setText(name);
-      this.labelExport.setBounds(AbstractWizardPage.LABEL_COLUMN, 0, AbstractWizardPage.LABEL_WIDTH, 15);
-
+      FormData data = new FormData();
+      data.top = new FormAttachment(null);
+      data.height = SWT.DEFAULT;
+      data.width = LABEL_WIDTH;
+      data.left = LABEL_FORM_OFFSET;
+      labelExport.setLayoutData(data);
+      
       this.path = new Text(this, SWT.BORDER | SWT.SINGLE);
-      this.path.setBounds(AbstractWizardPage.TEXT_COLUMN, 0, 297, 21);
+      FormData pathForm = new FormData();
+      pathForm.top = new FormAttachment(null);
+      pathForm.height = SWT.DEFAULT;
+      pathForm.left = new FormAttachment(labelExport,COMPONENT_OFFSET);
+      pathForm.right = new FormAttachment(80);
+      this.path.setLayoutData(pathForm);
+      
+      this.pathButton = new Button(this, SWT.NONE);
+      data = new FormData();
+      data.top = new FormAttachment(null);
+      data.width = 55;
+      data.left = new FormAttachment(path,COMPONENT_OFFSET);
+      this.pathButton.setLayoutData(data);
+      this.pathButton.setText("..."); //$NON-NLS-1$
+      
+      
       this.path.setText(""); //$NON-NLS-1$
       this.path.setEditable(false);
 
-      this.pathButton = new Button(this, SWT.NONE);
-      this.pathButton.setBounds(AbstractWizardPage.BUTTON_COLUMN, 0, 42, 25);
-      this.pathButton.setText("..."); //$NON-NLS-1$
 
     }
 
@@ -663,14 +676,48 @@ public abstract class AbstractWizardPage extends WizardPage {
      */
     public ColorChooser(Composite parent, int style, String text, final String constant) {
       super(parent, style);
+
+      this.setLayout(new FormLayout());
       Label labelBackgroundColor = new Label(this, SWT.NONE);
       labelBackgroundColor.setText(text);
-      labelBackgroundColor.setBounds(AbstractWizardPage.LABEL_COLUMN, 0, AbstractWizardPage.LABEL_WIDTH, 15);
+      FormData data = new FormData();
+      data.top = new FormAttachment(null);
+      data.height = SWT.DEFAULT;
+      data.width = LABEL_WIDTH;
+      data.left = LABEL_FORM_OFFSET;
+      labelBackgroundColor.setLayoutData(data);
+      
+
+      this.colorIcon = new Label(this, SWT.NONE);
+      data = new FormData();
+      data.top = new FormAttachment(null);
+      data.height = SWT.DEFAULT;
+      data.width = SWT.DEFAULT;
+      data.left = new FormAttachment(labelBackgroundColor);
+      colorIcon.setLayoutData(data);
+      AbstractWizardPage.this.setLabelIcon(this.colorIcon,
+          PreferenceConverter.getColor(AbstractWizardPage.this.store, constant), 1);
 
       // create the Text which says what color is selected at the moment
       this.colorText = new Text(this, SWT.BORDER);
-      this.colorText.setBounds(AbstractWizardPage.TEXT_COLUMN + 30, 0, 268, 21);
+      data = new FormData();
+      data.top = new FormAttachment(null);
+      data.height = SWT.DEFAULT;
+      data.left = new FormAttachment(colorIcon,COMPONENT_OFFSET);
+      data.right = new FormAttachment(80);
+      colorText.setLayoutData(data);
       this.colorText.setEditable(false);
+      
+      this.colorButton = new Button(this, SWT.NONE);
+      this.colorButton.setText("..."); //$NON-NLS-1$
+      data = new FormData();
+      data.top = new FormAttachment(null);
+      data.height = SWT.DEFAULT;
+      data.width = 55;
+      data.left = new FormAttachment(colorText,COMPONENT_OFFSET);
+      colorButton.setLayoutData(data);
+      
+      
       String companyBackgroundColor = PreferenceConverter.getColor(AbstractWizardPage.this.store, constant).toString();
 
       if (companyBackgroundColor != null) {
@@ -680,14 +727,6 @@ public abstract class AbstractWizardPage extends WizardPage {
         this.colorText.setText(""); //$NON-NLS-1$
       }
 
-      this.colorIcon = new Label(this, SWT.NONE);
-      this.colorIcon.setBounds(AbstractWizardPage.TEXT_COLUMN, 0, 23, 23);
-      AbstractWizardPage.this.setLabelIcon(this.colorIcon,
-          PreferenceConverter.getColor(AbstractWizardPage.this.store, constant), 1);
-
-      this.colorButton = new Button(this, SWT.NONE);
-      this.colorButton.setText("..."); //$NON-NLS-1$
-      this.colorButton.setBounds(AbstractWizardPage.BUTTON_COLUMN, 0, 42, 25);
       this.colorButton.addSelectionListener(new SelectionListener() {
 
         @Override

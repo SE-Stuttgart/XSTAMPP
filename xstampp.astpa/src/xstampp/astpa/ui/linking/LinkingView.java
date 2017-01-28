@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -50,8 +48,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ILinkingViewDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -493,7 +493,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
 					return "error: element == null"; //$NON-NLS-1$
 				}
 
-				return Integer.toString(((ITableModel) element).getNumber());
+				return ((ATableModel) element).getIdString();
 			}
 		};
 

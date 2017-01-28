@@ -218,7 +218,7 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
       for (ITableModel hazard : hazAccController.getAllHazards()) {
         if(this.hazardIds.contains(hazard.getId())){
           if(!hazardLinks.isEmpty()){
-            hazardLinks += ",";//$NON-NLS-1$
+            hazardLinks += ", ";//$NON-NLS-1$
           }
           hazardLinks += "H-" + hazard.getNumber();//$NON-NLS-1$
         }

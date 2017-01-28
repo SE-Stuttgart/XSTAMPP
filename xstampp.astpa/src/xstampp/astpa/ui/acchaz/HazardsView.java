@@ -50,6 +50,7 @@ import org.eclipse.swt.widgets.Text;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.ui.ATableFilter;
@@ -207,7 +208,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof Hazard) {
-					return Integer.toString(((Hazard) element).getNumber());
+					return ((Hazard) element).getIdString();
 				}
 				return null;
 			}
@@ -242,7 +243,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 						.getLinkedAccidents(((Hazard) element).getId());
 				if (!(links == null)) {
 					for (int i = 0; i < links.size(); i++) {
-						linkString += links.get(i).getNumber();
+						linkString += ((Accident)links.get(i)).getIdString();
 						if (i < (links.size() - 1)) {
 							linkString += ", "; //$NON-NLS-1$
 						}

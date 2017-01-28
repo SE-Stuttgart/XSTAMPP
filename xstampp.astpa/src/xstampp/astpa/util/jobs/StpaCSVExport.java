@@ -251,6 +251,9 @@ public class StpaCSVExport extends Job {
               for(UUID hazardId: entry.getHazardIds()){
                 hazString += "H-" + model.getHazard(hazardId).getNumber()+",";
               }
+              if(hazString.length() >0){
+                hazString = hazString.substring(0, hazString.length()-1);
+              }
 				    }
             writer.writeCell(hazString.substring(0, hazString.length()-1));
             writer.writeCell();

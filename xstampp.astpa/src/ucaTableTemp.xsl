@@ -132,13 +132,13 @@
       <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
-			<fo:table-column column-number="1" column-width="5%"
+			<fo:table-column column-number="1" column-width="7%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="30%"
 				border-style="none" />
 			<fo:table-column column-number="3" column-width="50%"
 				border-style="none" />
-			<fo:table-column column-number="4" column-width="15%"
+			<fo:table-column column-number="4" column-width="13%"
 				border-style="none" />
 			<fo:table-header border="none" background-color="#1A277A"
 				color="#FFFFFF" padding="3px">
@@ -147,7 +147,7 @@
            <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">No.</fo:block>
+						<fo:block font-weight="bold">ID</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Title</fo:block>
@@ -173,7 +173,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block >
-										<xsl:value-of select="number" />
+										A-<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -228,13 +228,13 @@
       <xsl:param name="omitHeader" select="false"/> 
 	<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
-		<fo:table-column column-number="1" column-width="5%"
+		<fo:table-column column-number="1" column-width="7%"
 			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
 			border-style="none" />
 		<fo:table-column column-number="3" column-width="50%"
 			border-style="none" />
-		<fo:table-column column-number="4" column-width="15%"
+		<fo:table-column column-number="4" column-width="13%"
 			border-style="none" />
 		
 		<fo:table-header border="none" background-color="#1A277A"
@@ -245,7 +245,7 @@
 				<xsl:call-template name="fontTheme"/>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">No.</fo:block>
+						<fo:block font-weight="bold">ID</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Title</fo:block>
@@ -273,7 +273,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block>
-										<xsl:value-of select="number" />
+										H-<xsl:value-of select="number" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -328,11 +328,11 @@
       <xsl:param name="omitHeader" select="false"/> 
 	<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
-		<fo:table-column column-number="1" column-width="5%"
+		<fo:table-column column-number="1" column-width="7%"
 			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
 			border-style="none" />
-		<fo:table-column column-number="3" column-width="65%"
+		<fo:table-column column-number="3" column-width="63%"
 			border-style="none" />
 		
 		<fo:table-header border="none" background-color="#1A277A"
@@ -414,11 +414,11 @@
       <xsl:param name="omitHeader" select="false"/> 
 	<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
-		<fo:table-column column-number="1" column-width="5%"
+		<fo:table-column column-number="1" column-width="7%"
 			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
 			border-style="none" />
-		<fo:table-column column-number="3" column-width="65%"
+		<fo:table-column column-number="3" column-width="63%"
 			border-style="none" />
 		
 		<fo:table-header border="none" background-color="#1A277A"
@@ -897,23 +897,26 @@
 				<!-- Checks if there are some components for the CausalFactors-Table -->
 					<xsl:when test="causalfactor/causalComponents">
 						<xsl:for-each select="causalfactor/causalComponents/entry/value">
-							
-							<fo:table-row border-bottom="2pt solid black"
-								border-top="2pt solid black">
-								<fo:table-cell padding="4px" background-color="#FFFFFF"
-									color="#000000" border-right="2pt solid black">
-									<fo:block  font-weight="bold">
-										<xsl:value-of select="title" />
-									</fo:block>
-								</fo:table-cell>
-								<fo:table-cell>
-								
-									<!-- ***** CausalFactors with its relatives ***** -->
-									<fo:block >
-									<xsl:call-template name="causalFactorSubTable"/> 
-									</fo:block>
-								</fo:table-cell>
-							</fo:table-row>
+							<xsl:choose>
+								<xsl:when test="causalFactors">
+									<fo:table-row border-bottom="2pt solid black"
+										border-top="2pt solid black">
+										<fo:table-cell padding="4px" background-color="#FFFFFF"
+											color="#000000" border-right="2pt solid black">
+											<fo:block  font-weight="bold">
+												<xsl:value-of select="title" />
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell>
+										
+											<!-- ***** CausalFactors with its relatives ***** -->
+											<fo:block >
+											<xsl:call-template name="causalFactorSubTable"/> 
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</xsl:when>
+							</xsl:choose>
 						</xsl:for-each>
 					</xsl:when>
 					<!-- If there are no CausalFactor-Components defined the first row -->
@@ -939,20 +942,20 @@
 	<xsl:template name="causalFactorSubTable">
 		<fo:table>
 			<fo:table-column column-number="1" column-width="15%"
-				border-style="none" />
+				border-style="solid" />
 			<fo:table-column column-number="2" column-width="85%"
-				border-style="none" />
+				border-style="solid" />
 			<fo:table-body>
 			<xsl:choose>
 				<xsl:when test="causalFactors">
 					<xsl:for-each select="causalFactors/factor">
-						<fo:table-row>
+						<fo:table-row border-bottom="2pt solid black">
 							<fo:table-cell>
 								<fo:block >
 									<xsl:value-of select="text" />
 								</fo:block>
 							</fo:table-cell>	
-							<fo:table-cell>
+							<fo:table-cell padding="0px">
 								<fo:block >
 									<xsl:call-template name="causalFactorRelatives"/>
 								</fo:block>
@@ -982,11 +985,11 @@
 	<xsl:template name="causalFactorRelatives">
     <fo:table>
 			<fo:table-column column-number="1" column-width="20%"
-				border-style="none" />
+				border-right="1px solid grey"/>
 			<fo:table-column column-number="2" column-width="20%"
-				border-style="none" />
+				border-right="1px solid grey" />
 			<fo:table-column column-number="3" column-width="40%"
-				border-style="none" />
+				border-right="1px solid grey"/>
 			<fo:table-column column-number="4" column-width="20%"
 				border-style="none" />
 			<fo:table-body>
@@ -1079,13 +1082,13 @@
 				<xsl:choose>
 					<xsl:when test="scenarioEntries/scenarioEntry">
 						<xsl:for-each select="scenarioEntries/scenarioEntry">
-							<fo:table-row>
-								<fo:table-cell>
+							<fo:table-row border-bottom="1px solid black">
+								<fo:table-cell  padding="3px">
 									<fo:block >
 										<xsl:value-of select="description" />
 									</fo:block>
 								</fo:table-cell>	
-								<fo:table-cell>
+								<fo:table-cell padding="3px">
 									<fo:block >
 										<xsl:value-of select="constraint"/>
 									</fo:block>

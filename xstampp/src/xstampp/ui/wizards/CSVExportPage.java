@@ -130,6 +130,8 @@ public class CSVExportPage extends AbstractExportPage {
 
     data = new FormData();
     data.top = new FormAttachment(seperatorGroup, AbstractWizardPage.COMPONENT_OFFSET);
+    data.right = new FormAttachment(100);
+    data.left = new FormAttachment(0);
     this.pathChooser.setLayoutData(data);
 
     // Required to avoid an error in the system

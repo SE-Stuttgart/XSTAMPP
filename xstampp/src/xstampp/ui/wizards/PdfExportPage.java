@@ -128,16 +128,26 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       Composite labelComposite = new Composite(this.container, SWT.NONE);
       data = new FormData();
       data.top = new FormAttachment(topElement, AbstractWizardPage.COMPONENT_OFFSET);
-      data.height = ENTRY_HEIGTH;
+      data.height = SWT.DEFAULT;
+      data.right = new FormAttachment(100);
+      data.left = new FormAttachment(0);
       labelComposite.setLayoutData(data);
-      labelComposite.setLayout(null);
+      labelComposite.setLayout(new FormLayout());
       Label labelCompany = new Label(labelComposite, SWT.SHADOW_IN);
-      labelCompany.setBounds(AbstractWizardPage.LABEL_COLUMN, 0, 55, 15);
+      data = new FormData();
+      data.top = new FormAttachment(null);
+      data.width = LABEL_WIDTH;
+      data.left = LABEL_FORM_OFFSET;
+      labelCompany.setLayoutData(data);
       labelCompany.setText(Messages.Company);
 
       this.textCompany = new Text(labelComposite, SWT.BORDER | SWT.SINGLE);
-      this.textCompany.setBounds(AbstractWizardPage.TEXT_COLUMN, 0, 345, 21);
-
+      data = new FormData();
+      data.top = new FormAttachment(null);
+      data.height = SWT.DEFAULT;
+      data.left = new FormAttachment(labelCompany,COMPONENT_OFFSET);
+      data.right = new FormAttachment(80);
+      textCompany.setLayoutData(data);
       String companyName = this.store.getString(IPreferenceConstants.COMPANY_NAME);
       this.textCompany.addModifyListener(new ModifyListener() {
 
@@ -170,7 +180,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       }
       data = new FormData();
       data.top = new FormAttachment(labelComposite, AbstractWizardPage.COMPONENT_OFFSET);
-      data.height = ENTRY_HEIGTH;
+      data.height = SWT.DEFAULT;
+      data.right = new FormAttachment(100);
+      data.left = new FormAttachment(0);
       this.logoComposite.setLayoutData(data);
       this.logoComposite.setVisible(true);
       topElement = this.logoComposite;
@@ -182,7 +194,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
     data = new FormData();
     data.top = new FormAttachment(topElement, AbstractWizardPage.COMPONENT_OFFSET);
     topElement = this.bgChooser;
-    data.height = ENTRY_HEIGTH;
+    data.height = SWT.DEFAULT;
+    data.right = new FormAttachment(100);
+    data.left = new FormAttachment(0);
     this.bgChooser.setLayoutData(data);
     this.bgChooser.setVisible(true);
     this.bgChooser.addColorChangeListener(this);
@@ -194,7 +208,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
     data = new FormData();
     data.top = new FormAttachment(this.bgChooser, AbstractWizardPage.COMPONENT_OFFSET);
     topElement = this.fontChooser;
-    data.height = ENTRY_HEIGTH;
+    data.height = SWT.DEFAULT;
+    data.right = new FormAttachment(100);
+    data.left = new FormAttachment(0);
     this.fontChooser.setLayoutData(data);
     this.fontChooser.setVisible(true);
     this.fontChooser.addColorChangeListener(this);
@@ -206,7 +222,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
     data = new FormData();
     data.top = new FormAttachment(topElement, AbstractWizardPage.COMPONENT_OFFSET);
     topElement = this.pathChooser;
-    data.height = ENTRY_HEIGTH;
+    data.height = SWT.DEFAULT;
+    data.right = new FormAttachment(100);
+    data.left = new FormAttachment(0);
     this.pathChooser.setLayoutData(data);
     this.pathChooser.setVisible(true);
 
@@ -217,12 +235,22 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       data = new FormData();
       data.top = new FormAttachment(topElement, AbstractWizardPage.COMPONENT_OFFSET);
       decoSwitchComposite.setLayoutData(data);
-      decoSwitchComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
-      Label decoLabel = new Label(decoSwitchComposite, SWT.NONE);
+      decoSwitchComposite.setLayout(new FormLayout());
+      Label decoLabel = new Label(decoSwitchComposite, SWT.WRAP);
       decoLabel.setText(Messages.ControlStructureDeco);
       decoLabel.setToolTipText(Messages.CSDecoToolTip);
-      decoLabel.setLayoutData(new RowData(160, AbstractWizardPage.LABEL_HEIGHT));
+      FormData decoData = new FormData();
+      decoData.left = LABEL_FORM_OFFSET;
+      decoData.top = new FormAttachment(0);
+      decoData.width = LABEL_WIDTH;
+      decoLabel.setLayoutData(decoData);
       this.decoSwitch = new Button(decoSwitchComposite, SWT.CHECK);
+      decoData = new FormData();
+      decoData.left = new FormAttachment(decoLabel,COMPONENT_OFFSET);
+      decoData.top = new FormAttachment(0);
+      
+      decoSwitch.setLayoutData(decoData);
+      
       topElement = decoSwitchComposite;
     }
 

@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlType;
 
-import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * Abstract class for everything that can be shown in a table
@@ -85,10 +85,10 @@ public abstract class ATableModel implements ITableModel {
 					moveIndex = i-1;
 				}
 				upModel = ((T)list.get(moveIndex));
-				if(upModel instanceof ATableModel && downModel instanceof ATableModel){
-					((ATableModel) downModel).setNumber(moveIndex + 1);
-					((ATableModel) upModel).setNumber(moveIndex + 2);
-				}
+//				if(upModel instanceof ATableModel && downModel instanceof ATableModel){
+//					((ATableModel) downModel).setNumber(moveIndex + 1);
+//					((ATableModel) upModel).setNumber(moveIndex + 2);
+//				}
 				list.remove(downModel);
 				list.add(moveIndex, downModel);
 				return true;
@@ -167,6 +167,10 @@ public abstract class ATableModel implements ITableModel {
 		return this.number;
 	}
 
+	@Override
+	public String getIdString(){
+	  return Integer.toString(this.number);
+	}
 	/**
 	 * Setter for the number
 	 * 
@@ -205,7 +209,7 @@ public abstract class ATableModel implements ITableModel {
 	}
 
 	@Override
-	public int compareTo(ITableModel o) {
+	public int compareTo(xstampp.astpa.haz.ITableModel o) {
 		return this.getNumber() - o.getNumber();
 	}
 

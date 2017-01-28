@@ -300,8 +300,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 			return true;
 		}
 
-		if (ucaList.size() == i && getFilterValue() != null 
-		    && (!(getFilterValue() instanceof String) || getFilterValue().equals("")) ) {
+		if (ucaList.size() == i) {
 			// add placeholder
 			idRow.addCell(columnIndex,new GridCellBlank(true));
 			ucaRow.addCell(columnIndex,new AddUcaButton(cAction,

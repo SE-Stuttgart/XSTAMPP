@@ -58,17 +58,17 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
     this.oldLineNumber = this.text.getCaretLineNumber();
     this.text.setFocus();
     this.text.setToolTipText("press 'Esc' to close the editor");
-//    this.text.addKeyListener(new KeyAdapter() {
-//      @Override
-//      public void keyReleased(KeyEvent e) {
-//        if (e.keyCode == SWT.CONTROL) {
-//          DirectEditor.this.text.selectAll();
-//        }else if(e.character == SWT.ESC){
-//          DirectEditor.this.deactivate();
-//        }
-//        super.keyReleased(e);
-//      }
-//    });
+    this.text.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyReleased(KeyEvent e) {
+        if (e.keyCode == SWT.CONTROL) {
+          DirectEditor.this.text.selectAll();
+        }else if(e.character == SWT.ESC){
+          DirectEditor.this.deactivate();
+        }
+        super.keyReleased(e);
+      }
+    });
   }
 
   /**

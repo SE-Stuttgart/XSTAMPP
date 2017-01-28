@@ -28,6 +28,6 @@ public class SystemGoalsImgWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopCorrespondingSafetyConstraints.xsl", false, ""); ////$NON-NLS-1$
+				"/fopSystemGoals.xsl", false, ""); ////$NON-NLS-1$
 	}
 }

@@ -49,4 +49,8 @@ public class Accident extends ATableModel {
 		// empty constructor for JAXB
 	}
 
+	@Override
+	public String getIdString() {
+	  return "A-" +this.getNumber();
+	}
 }

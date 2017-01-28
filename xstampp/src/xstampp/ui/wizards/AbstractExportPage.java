@@ -36,6 +36,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -65,7 +66,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
 
   protected class DemoCanvas extends Canvas implements PaintListener {
     private String title;
-
+    public static final int labelFormOffset = 15;
     private Font normalFont = new Font(null, "normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
     private Font headerFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
     private Font titleFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
@@ -244,18 +245,27 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
   public Composite addProjectChooser(Composite parent, FormAttachment attachment) {
     FormData data = new FormData();
     data.top = attachment;
-    data.left = new FormAttachment(0, AbstractWizardPage.LABEL_COLUMN);
+    data.left = new FormAttachment(0);
+    data.right = new FormAttachment(100);
     final Composite projectChooser = new Composite(parent, SWT.NONE);
     projectChooser.setToolTipText(Messages.ChooseProjectForExport);
     projectChooser.setLayoutData(data);
-    projectChooser.setLayout(new GridLayout(3, false));
+    projectChooser.setLayout(new FormLayout());
 
     Label chooseLabel = new Label(projectChooser, SWT.None);
-    chooseLabel.setLayoutData(new GridData(AbstractWizardPage.LABEL_WIDTH, SWT.DEFAULT));
+    data = new FormData();
+    data.top = new FormAttachment(null);
+    data.left = new FormAttachment(0);
+    data.width = LABEL_WIDTH;
+    chooseLabel.setLayoutData(data);
     chooseLabel.setText(Messages.Project);
 
     this.chooseList = new Combo(projectChooser, SWT.DROP_DOWN);
-    this.chooseList.setLayoutData(new GridData(300, SWT.DEFAULT));
+    data = new FormData();
+    data.top = new FormAttachment(null);
+    data.left = new FormAttachment(chooseLabel,COMPONENT_OFFSET);
+    data.right = new FormAttachment(80);
+    this.chooseList.setLayoutData(data);
 
     this.chooseList.addSelectionListener(new SelectionAdapter() {
 

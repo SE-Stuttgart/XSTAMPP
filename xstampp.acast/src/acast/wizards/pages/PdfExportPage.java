@@ -88,7 +88,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		labelComposite.setLayoutData(data);
 		labelComposite.setLayout(null);
 		Label labelCompany = new Label(labelComposite, SWT.SHADOW_IN);
-		labelCompany.setBounds(AbstractWizardPage.LABEL_COLUMN, 0, 55, 15);
+		labelCompany.setBounds(0, 0, 55, 15);
 		labelCompany.setText(Messages.Company);
 
 		this.textCompany = new Text(labelComposite, SWT.BORDER | SWT.SINGLE);
