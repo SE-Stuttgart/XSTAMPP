@@ -46,6 +46,6 @@ public class UCATableExportWizard extends AbstractExportWizard {
 	public boolean performFinish() {
 
 		return this.performXSLExport(
-				"/fopuca.xsl", false, ""); //$NON-NLS-1$
+				"/fopuca.xsl", false, "", false); //$NON-NLS-1$
 	}
 }

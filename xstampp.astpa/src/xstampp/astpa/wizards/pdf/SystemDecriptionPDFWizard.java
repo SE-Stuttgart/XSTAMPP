@@ -37,6 +37,6 @@ public class SystemDecriptionPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(
-				"/fopSystemDescription.xsl", false, Messages.SystemDescription); //$NON-NLS-1$
+				"/fopSystemDescription.xsl", false, Messages.SystemDescription, false); //$NON-NLS-1$
 	}
 }

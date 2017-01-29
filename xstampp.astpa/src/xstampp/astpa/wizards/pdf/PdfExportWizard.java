@@ -80,7 +80,7 @@ public class PdfExportWizard extends AbstractExportWizard {
 		}else{
 			return this
 					.performXSLExport(
-							"/fopxsl.xsl", this.page.getDecoChoice(), Messages.STPAPDFReport); //$NON-NLS-1$
+							"/fopxsl.xsl", this.page.getDecoChoice(), Messages.STPAPDFReport, true); //$NON-NLS-1$
 		}
 	}
 

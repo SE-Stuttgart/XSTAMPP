@@ -28,6 +28,6 @@ public class RefinedSCPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport("/fopRefinedConstraints.xsl", false,//$NON-NLS-1$
-									Messages.RefinedSafetyConstraintsTable); 
+									Messages.RefinedSafetyConstraintsTable, false); 
 	}
 }

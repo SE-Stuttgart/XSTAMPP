@@ -28,6 +28,6 @@ public class XLTLIMGWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport("/fopLTLPropertys.xsl", false,//$NON-NLS-1$
-						Messages.LTLFormulasTable); 
+						Messages.LTLFormulasTable, false); 
 	}
 }

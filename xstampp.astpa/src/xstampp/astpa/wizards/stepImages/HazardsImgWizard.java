@@ -28,6 +28,6 @@ public class HazardsImgWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopHazards.xsl", false, ""); ////$NON-NLS-1$
+				"/fopHazards.xsl", false, "", false); ////$NON-NLS-1$
 	}
 }

@@ -109,11 +109,11 @@ public abstract class AbstractExportWizard extends Wizard implements
 
 	protected boolean performXSLExport(String fopName, String jobMessage,
 	boolean forceCSDeco) {
-		return performXSLExport(fopName, forceCSDeco, "");
+		return performXSLExport(fopName, forceCSDeco, "", true);
 	}
-
+  
 	protected boolean performXSLExport(String fopName, boolean forceCSDeco,
-			String pdfTitle) {
+			String pdfTitle, boolean buildCSImage) {
 		String jobMessage = String.format(Messages.Exporting_Format, pdfTitle);
 		String filePath = this.getExportPage().getExportPath();
 		if ((filePath != null) && !filePath.isEmpty()) {
@@ -151,7 +151,9 @@ public abstract class AbstractExportWizard extends Wizard implements
 				exportJob.setPageFormat(getExportPage().getPageFormat());
 			}
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
-			exportJob.setCSDirty();
+			if(buildCSImage){
+			  exportJob.setCSDirty();
+			}
 			exportJob.setExportAddition(exportAddition);
 			ProjectManager.getContainerInstance().getDataModel(this.getExportPage().getProjectID())
                                            .prepareForExport();

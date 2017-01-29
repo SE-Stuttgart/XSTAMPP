@@ -199,7 +199,7 @@ public class ExportJob extends JAXBExportJob{
 	public void done(IJobChangeEvent event) {
 		if(this.csPath != null && this.csPath.exists()){
 			this.csPath.delete();
-		}if(this.csPmPath != null && this.csPath.exists()){
+		}if(this.csPmPath != null && this.csPmPath.exists()){
 			this.csPmPath.delete();
 		}
 		super.done(event);

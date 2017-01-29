@@ -31,7 +31,7 @@ public class XContextTableIMGWizard extends AbstractExportWizard {
 	public boolean performFinish() {
 		setExportAddition(calculateContextSize());
 		return this.performXSLExport(				
-				"/fopContextTable.xsl",  false, Messages.ContextTables); ////$NON-NLS-1$ //$NON-NLS-3$
+				"/fopContextTable.xsl",  false, Messages.ContextTables, false); ////$NON-NLS-1$ //$NON-NLS-3$
 	}
 	
 	private String calculateContextSize(){

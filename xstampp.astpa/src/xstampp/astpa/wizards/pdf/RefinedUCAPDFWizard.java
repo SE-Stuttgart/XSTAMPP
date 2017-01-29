@@ -28,7 +28,7 @@ public class RefinedUCAPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopRefinedUnsafeControlActions.xsl", false,Messages.RefinedUnsafeControlActions); ////$NON-NLS-1$
+				"/fopRefinedUnsafeControlActions.xsl", false,Messages.RefinedUnsafeControlActions, false); ////$NON-NLS-1$
 	}
 }
 

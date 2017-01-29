@@ -28,6 +28,6 @@ public class CSCPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopCorrespondingSafetyConstraints.xsl", false, Messages.CorrespondingSafetyConstraints); ////$NON-NLS-1$
+				"/fopCorrespondingSafetyConstraints.xsl", false, Messages.CorrespondingSafetyConstraints, false); ////$NON-NLS-1$
 	}
 }

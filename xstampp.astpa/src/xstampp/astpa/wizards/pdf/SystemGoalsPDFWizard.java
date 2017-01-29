@@ -28,6 +28,6 @@ public class SystemGoalsPDFWizard extends AbstractExportWizard {
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopSystemGoals.xsl", false, Messages.SystemGoals); ////$NON-NLS-1$
+				"/fopSystemGoals.xsl", false, Messages.SystemGoals, false); ////$NON-NLS-1$
 	}
 }

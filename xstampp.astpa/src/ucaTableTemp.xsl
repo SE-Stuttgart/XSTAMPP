@@ -984,12 +984,9 @@
 	<!-- Every Causal Factor and its relative can be found in this sub-table -->
 	<xsl:template name="causalFactorRelatives">
     <fo:table>
-			<fo:table-column column-number="1" column-width="20%"
-				border-right="1px solid grey"/>
-			<fo:table-column column-number="2" column-width="20%"
-				border-right="1px solid grey" />
-			<fo:table-column column-number="3" column-width="40%"
-				border-right="1px solid grey"/>
+			<fo:table-column column-number="1" column-width="20%"/>
+			<fo:table-column column-number="2" column-width="20%"/>
+			<fo:table-column column-number="3" column-width="40%"/>
 			<fo:table-column column-number="4" column-width="20%"
 				border-style="none" />
 			<fo:table-body>
@@ -1012,7 +1009,7 @@
 							</fo:table-cell>
 							
 							<!-- Hazard Links -->
-							<fo:table-cell padding="3px">
+							<fo:table-cell padding="4px">
 								<fo:block>
 								<xsl:value-of select="hazardLinks"/>
 								</fo:block>
