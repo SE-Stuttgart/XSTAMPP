@@ -12,6 +12,8 @@ package xstampp.astpa.ui.causalfactors;
 
 import java.util.UUID;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
@@ -49,7 +51,10 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
   }
   @Override
   public void delete() {
-    dataInterface.removeCausalFactor(componentId, factorId);
+    if(MessageDialog.openConfirm(null, "Delete Causal Factor?", "Do you really want to delete this Causal Factor\n"
+        + "and all its child entries?")){
+      dataInterface.removeCausalFactor(componentId, factorId);
+    }
   }
   
 }

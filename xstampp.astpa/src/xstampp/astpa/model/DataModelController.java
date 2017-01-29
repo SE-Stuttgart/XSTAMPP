@@ -1874,8 +1874,8 @@ public class DataModelController extends AbstractDataModel implements
   }
 
   @Override
-  public List<UUID> getLinkedUCAList() {
-    return causalFactorController.getLinkedUCAList();
+  public List<UUID> getLinkedUCAList(UUID factorId) {
+    return causalFactorController.getLinkedUCAList(factorId);
   }
 
   @Override

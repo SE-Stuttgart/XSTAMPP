@@ -90,9 +90,10 @@ public interface ICausalFactorController {
   /**
    * getter for a list containing all unsafe control Actions that are currently
    * existing as {@link CausalFactorEntry}
+   * @param factorId TODO
    * @return a list of all uca ids of all {@link CausalFactorEntry}
    */
-  List<UUID> getLinkedUCAList();
+  List<UUID> getLinkedUCAList(UUID factorId);
   
 
 }

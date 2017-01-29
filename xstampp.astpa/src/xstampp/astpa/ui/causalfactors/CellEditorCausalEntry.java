@@ -12,6 +12,8 @@ package xstampp.astpa.ui.causalfactors;
 
 import java.util.UUID;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
@@ -51,7 +53,11 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
   }
   @Override
   public void delete() {
-    dataInterface.removeCausalEntry(componentId, factorId, entryId);
+    if(MessageDialog.openConfirm(null, "Delete Unsafe Control Action entry?", "Do you really want to delete this Unsafe Control Action entry?\n"
+        + "Note that this will delete the UCA entry and all stored scenarios.\n"
+        + "\nThe Unsafe Control Action itself however will not be deleted")){
+      dataInterface.removeCausalEntry(componentId, factorId, entryId);
+    }
   }
   
 }

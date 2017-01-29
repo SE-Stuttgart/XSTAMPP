@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
@@ -59,17 +61,20 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
   
   @Override
   public void delete() {
-    if(type == ScenarioType.CAUSAL_SCENARIO){
-      dataInterface.removeRefinedSafetyRule(type , false, ruleId);
+    if(MessageDialog.openConfirm(null, "Delete Causal Scenario?", "Do you really want to delete this Scenario?\n"
+        + "Note that all references will be deleted as well")){
+      if(type == ScenarioType.CAUSAL_SCENARIO){
+        dataInterface.removeRefinedSafetyRule(type , false, ruleId);
+      }
+      CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
+      List<UUID> ids = new ArrayList<>();
+      if(entry.getScenarioLinks() != null){
+        ids.addAll(entry.getScenarioLinks());
+      }
+      ids.remove(ruleId);
+      data.setScenarioLinks(ids);
+      this.dataInterface.changeCausalEntry(componentId,factorId, data);
     }
-    CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-    List<UUID> ids = new ArrayList<>();
-    if(entry.getScenarioLinks() != null){
-      ids.addAll(entry.getScenarioLinks());
-    }
-    ids.remove(ruleId);
-    data.setScenarioLinks(ids);
-    this.dataInterface.changeCausalEntry(componentId,factorId, data);
   }
 
   @Override

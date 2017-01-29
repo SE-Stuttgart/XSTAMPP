@@ -256,15 +256,19 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
               // if the size is determined to be larger than the text lines itself
               // this the original size, will be displayed as long as it not
               // overwritten by text
-              int editorHeight = text.getLineHeight() * text.getLineCount();
-              text.setBounds(rect.x, rect.y, rect.width, editorHeight);
+              if(text.isDisposed()){
+                editor.deactivate();
+              }else{
+                int editorHeight = text.getLineHeight() * text.getLineCount();
+                text.setBounds(rect.x, rect.y, rect.width, editorHeight);
+              }
               grid.getGrid().redraw();
             }
           }
         });
       }
       
-      editor.activate(new TextLocator(cellBounds));
+      editor.activate(new TextLocator(editField));
       editor.setTextColor(ColorConstants.black);
       editor.getControl().setBackground(HOVER_COLOR);
       editor.setTextFont(Display.getDefault().getSystemFont());

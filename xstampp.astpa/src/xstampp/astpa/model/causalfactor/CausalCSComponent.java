@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -65,9 +64,10 @@ public class CausalCSComponent implements ICausalComponent{
     return id;
   }
   
-  public List<UUID> getLinkedUCAList(){
+  public List<UUID> getLinkedUCAList(UUID factorId){
     List<UUID> list = new ArrayList<>();
     for(CausalFactor factor : internal_getFactors()){
+      if(factor.getId().equals(factorId))
       list.addAll(factor.getLinkedUCAList());
     }
     return list;

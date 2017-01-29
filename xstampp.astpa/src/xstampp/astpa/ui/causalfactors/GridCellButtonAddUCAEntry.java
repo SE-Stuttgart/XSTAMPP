@@ -63,7 +63,7 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
 	@Override
 	public void onMouseDown(MouseEvent e,Point relativeMouse,
 			Rectangle cellBounds) {
-	  final List<UUID> linkedIds = dataInterface.getLinkedUCAList();
+	  final List<UUID> linkedIds = dataInterface.getLinkedUCAList(factorId);
 	  List<ICorrespondingUnsafeControlAction> ucaList = dataInterface.getUCAList(new IEntryFilter<IUnsafeControlAction>() {
       
       @Override

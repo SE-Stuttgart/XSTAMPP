@@ -80,11 +80,11 @@ public class CausalFactorController implements ICausalFactorController {
 	}
 	
 	@Override
-	public List<UUID> getLinkedUCAList(){
+	public List<UUID> getLinkedUCAList(UUID factorId){
 	  List<UUID> list = new ArrayList<>();
 	  if(causalComponents != null){
   	  for(CausalCSComponent comp: causalComponents.values()){
-  	    list.addAll(comp.getLinkedUCAList());
+  	    list.addAll(comp.getLinkedUCAList(factorId));
   	  }
 	  }
 	  return list;
