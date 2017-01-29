@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
+import xstampp.astpa.ui.CommonTableView;
 import xstampp.preferences.IControlStructureConstants;
 
 
@@ -77,7 +78,8 @@ public class StpaPreferenceInitializor extends AbstractPreferenceInitializer {
 				   ColorConstants.green.getRGB());
 		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS, true);
 		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER, true);
-		this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER, true);
+    this.store.setDefault(IControlStructureConstants.CONTROLSTRUCTURE_SHOW_LISTOFCA_BORDER, true);
+    this.store.setDefault(CommonTableView.COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN, false);
 
 	}
 	

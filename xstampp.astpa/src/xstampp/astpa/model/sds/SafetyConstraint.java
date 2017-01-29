@@ -48,4 +48,9 @@ public class SafetyConstraint extends ATableModel {
 	public SafetyConstraint() {
 		// empty constructor for JAXB
 	}
+	
+	@Override
+	public String getIdString() {
+	  return "SC0." + getNumber();
+	}
 }

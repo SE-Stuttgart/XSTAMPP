@@ -61,7 +61,7 @@ public abstract class ATableModel implements ITableModel {
 	 * @author Fabian Toth
 	 */
 	public ATableModel() {
-		// empty constructor for JAXB
+		this.number = -1;
 	}
 	public static <T> boolean move(boolean up,UUID id, List<T> list){
 		for (int i = 0; i < list.size(); i++) {
@@ -181,7 +181,7 @@ public abstract class ATableModel implements ITableModel {
 	 * @return 
 	 */
 	public boolean setNumber(int number) {
-		if(this.number !=number){
+		if(this.number  < 0){
 			this.number = number;
 			return true;
 		}

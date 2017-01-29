@@ -10,11 +10,15 @@
  *******************************************************************************/
 package xstampp.astpa.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
+import xstampp.astpa.ui.CommonTableView;
+import xstampp.preferences.IPreferenceConstants;
 
 /**
 *
@@ -25,7 +29,9 @@ import xstampp.astpa.Activator;
 public class StpaPreferencePage  extends FieldEditorPreferencePage
 implements IWorkbenchPreferencePage {
 
-	public StpaPreferencePage() {
+	private BooleanFieldEditor showNrColinTables;
+
+  public StpaPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 	}
 
@@ -39,8 +45,26 @@ implements IWorkbenchPreferencePage {
 
 	@Override
 	protected void createFieldEditors() {
-		// TODO Auto-generated method stub
-		
+	  showNrColinTables = new BooleanFieldEditor(CommonTableView.COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN,
+        "Show the row numbers in the Hazard, Accident, System Goals, Design Requirements and safety Constraints Views",
+        this.getFieldEditorParent());
+    addField(showNrColinTables);
 	}
 
+	@Override
+  protected void checkState() {
+    super.checkState();
+  }
+
+  @Override
+  protected void performDefaults() {
+    this.showNrColinTables.loadDefault();
+
+  }
+
+  @Override
+  public boolean performOk() {
+    this.showNrColinTables.store();
+    return super.performOk();
+  }
 }

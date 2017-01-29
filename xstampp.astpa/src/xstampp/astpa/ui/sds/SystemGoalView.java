@@ -13,18 +13,13 @@
 
 package xstampp.astpa.ui.sds;
 
-import java.util.Iterator;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -45,7 +40,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.haz.ITableModel;
+import messages.Messages;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.ui.ATableFilter;
@@ -205,28 +201,6 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
 		SystemGoalView.this.getTableViewer().addSelectionChangedListener(
 				new SGSelectionChangedListener());
 
-		this.getIdColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof SystemGoal) {
-					return Integer.toString(((SystemGoal) element).getNumber());
-				}
-				return null;
-			}
-		});
-
-		this.getTitleColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof SystemGoal) {
-					return ((SystemGoal) element).getTitle();
-				}
-				return null;
-			}
-		});
-
 		final EditingSupport titleEditingSupport = new SGEditingSupport(
 				SystemGoalView.this.getTableViewer());
 		this.getTitleColumn().setEditingSupport(titleEditingSupport);
@@ -285,83 +259,10 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
 
 	}
 
-	/**
-	 * deleting all selected system goals
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
 	@Override
-	public void deleteItems() {
-		final int maxNumOfDisplayedEntries = 10;
-		IStructuredSelection selection = (IStructuredSelection) SystemGoalView.this
-				.getTableViewer().getSelection();
-		if (selection.size() == 1) {
-			// if only one system goal is selected
-			SystemGoal deletedSystemGoal = (SystemGoal) selection
-					.getFirstElement();
-			String deletedSystemGoalId = Integer.toString(deletedSystemGoal
-					.getNumber());
-			String deletedSystemGoalTitle = deletedSystemGoal.getTitle();
-			String confirmation = Messages.DoYouWishToDeleteTheSystemGoal
-					+ deletedSystemGoalId + ": " //$NON-NLS-1$
-					+ deletedSystemGoalTitle + "?"; //$NON-NLS-1$
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			this.delOne(b, deletedSystemGoal.getId());
-		} else if ((selection.size() > 1)
-				&& (selection.size() <= maxNumOfDisplayedEntries)) {
-			// if a few system goals are selected
-			String systemGoals = ""; //$NON-NLS-1$
-			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
-			for (Iterator<SystemGoal> i = selection.iterator(); i.hasNext();) {
-				UUID id = i.next().getId();
-				String title = this.getDataInterface().getSystemGoal(id).getTitle();
-				int num = this.getDataInterface().getSystemGoal(id).getNumber();
-				String systemGoal = newline + num + ": " + title; //$NON-NLS-1$
-				systemGoals = systemGoals + systemGoal;
-			}
-			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingSystemGoals
-					+ systemGoals;
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				SystemGoalView.this.displayedSystemGoal = null;
-				for (Iterator<SystemGoal> i = selection.iterator(); i.hasNext();) {
-					this.getDataInterface().removeSystemGoal(i.next().getId());
-				}
-				SystemGoalView.this.updateTable();
-				this.refreshView();
-			}
-		} else if (selection.size() > maxNumOfDisplayedEntries) {
-			// if many system goals are selected
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm,
-					Messages.ConfirmTheDeletionOfAllSelectedSystemGoals);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				SystemGoalView.this.displayedSystemGoal = null;
-				for (Iterator<SystemGoal> i = selection.iterator(); i.hasNext();) {
-					this.getDataInterface().removeSystemGoal(i.next().getId());
-				}
-				SystemGoalView.this.updateTable();
-				this.refreshView();
-			}
-		} else {
-			MessageDialog.openInformation(this.getTableContainer().getShell(),
-					Messages.Information, Messages.NoSystemGoalSelected);
-		}
-	}
-
-	private void delOne(boolean b, UUID id) {
-		if (b) {
-			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-			SystemGoalView.this.displayedSystemGoal = null;
-			this.getDataInterface().removeSystemGoal(id);
-			SystemGoalView.this.updateTable();
-			this.refreshView();
-		}
+	protected void deleteEntry(ATableModel model) {
+    SystemGoalView.this.displayedSystemGoal = null;
+    this.getDataInterface().removeSystemGoal(model.getId());
 	}
 
 	private class SGEditingSupport extends EditingSupport {
@@ -483,13 +384,6 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
 	public void dispose() {
 		this.getDataInterface().deleteObserver(this);
 		super.dispose();
-	}
-
-	@Override
-	protected void deleteAllItems() {
-		for(ITableModel model: this.getDataInterface().getAllSystemGoals()){
-			this.getDataInterface().removeSystemGoal(model.getId());
-		}
 	}
 
 	@Override

@@ -561,7 +561,7 @@ public class ControlActionController {
 					id = Integer.toString(getUCANumber(unsafeControlAction.getId()));
 					for (int i = 0;i < linkedHazards.size(); i++) {
 						if (i != 0) {
-							linkString.append(","); //$NON-NLS-1$
+							linkString.append(", "); //$NON-NLS-1$
 						}
 						linkString.append("H-" + linkedHazards.get(i).getNumber());
 					}

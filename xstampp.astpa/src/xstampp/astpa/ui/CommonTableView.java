@@ -13,22 +13,21 @@
 
 package xstampp.astpa.ui;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -51,11 +50,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -69,9 +71,11 @@ import xstampp.ui.editors.interfaces.IEditorBase;
  * @version 2.0.2
  * 
  */
-public abstract class CommonTableView<T> extends StandartEditorPart {
+public abstract class CommonTableView<T extends IDataModel> extends StandartEditorPart {
 
-	private static String id;
+	public static final String COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN = "commonTableView.showNumberColumn";
+
+  private static String id;
 
 	private TableViewer tableViewer;
 
@@ -456,10 +460,7 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 
 				@Override
 				public void handleEvent(Event event) {
-					if(MessageDialog.openConfirm(getEditorSite().getShell(),
-							"Delete All Entrys?", "Do you really want to delete all Entrys?")){
 						CommonTableView.this.deleteAllItems();
-					}
 				}
 			});
 			deleteAllButton.setImage(DELETE_ALL);
@@ -550,19 +551,47 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 
 		// the table viewer
 		this.setTableViewer(new TableViewer(tableComposite, SWT.BORDER
-				| SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI));
+				| SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI |SWT.WRAP));
 		this.getTableViewer().setContentProvider(new ArrayContentProvider());
 		this.getTableViewer().getTable().setLinesVisible(true);
 		this.getTableViewer().getTable().setHeaderVisible(true);
-
-		// the columns of the table
-		this.idColumn = new TableViewerColumn(this.getTableViewer(), SWT.NONE);
+	  if(Activator.getDefault().getPreferenceStore().getBoolean(COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN)){
+  		final TableViewerColumn nrColumn = new TableViewerColumn(getTableViewer(), SWT.None);
+      nrColumn.getColumn().setText("Nr."); 
+      this.tableColumnLayout.setColumnData(nrColumn.getColumn(),
+          new ColumnWeightData(0, 10, true));
+      nrColumn.getColumn().pack();
+  		// the columns of the table
+      nrColumn.setLabelProvider(new ColumnLabelProvider(){
+        @Override
+        public String getText(Object element) {
+          Object input = getTableViewer().getInput();
+          String content = new String();
+          if(input instanceof List<?>){
+            content = Integer.toString(((List<?>) input).indexOf(element) +1);
+          }
+          return content;
+        }
+      });
+      nrColumn.getColumn().setResizable(true);
+	  }
+	  this.idColumn = new TableViewerColumn(this.getTableViewer(), SWT.NONE);
 		this.idColumn.getColumn().setText(Messages.ID);
 		final int idWeight = 5;
 		final int idMinWidth = 39;
 		this.tableColumnLayout.setColumnData(this.idColumn.getColumn(),
-				new ColumnWeightData(idWeight, idMinWidth, false));
+				new ColumnWeightData(idWeight, idMinWidth, true));
+    this.idColumn.setLabelProvider(new ColumnLabelProvider() {
 
+      @Override
+      public String getText(Object element) {
+        if (element instanceof ATableModel) {
+          return ((ATableModel) element).getIdString();
+        }
+        return null;
+      }
+    });
+    
 		this.titleColumn = new TableViewerColumn(this.getTableViewer(),
 				SWT.NONE);
 		this.titleColumn.getColumn().setText(Messages.Title);
@@ -570,7 +599,17 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 		final int titleMinWidth = 50;
 		this.tableColumnLayout.setColumnData(this.titleColumn.getColumn(),
 				new ColumnWeightData(titleWeight, titleMinWidth, false));
+		titleColumn.getColumn().setResizable(false);
+    this.titleColumn.setLabelProvider(new ColumnLabelProvider() {
 
+      @Override
+      public String getText(Object element) {
+        if (element instanceof ATableModel) {
+          return ((ATableModel) element).getTitle();
+        }
+        return null;
+      }
+    });
 		// detecting a double click
 		ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
 				this.getTableViewer()) {
@@ -623,8 +662,17 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 		Control[] controls = { leftHeadComposite, this.buttonComposite,
 				tableComposite };
 		this.tableContainer.setTabList(controls);
+		refreshView();
 	}
 
+	protected void resizeColumns(){
+	  for (int i = 0; i < getTableViewer().getTable().getColumns().length; i++) {
+      TableColumn tableColumn = getTableViewer().getTable().getColumns()[i];
+      if(tableColumn.getResizable()){
+        tableColumn.pack();
+      }
+    }
+	}
 	private void updateButtons(){
 		if(tableViewer.getTable().getSelectionCount() == 1 && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel){
 			ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
@@ -636,7 +684,11 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 			moveDown.setEnabled(false);
 		}
 	}
-	protected abstract void deleteAllItems();
+
+	protected void deleteAllItems() {
+    getTableViewer().getTable().setSelection(0, getTableViewer().getTable().getItemCount());
+    deleteItems();
+  }
 
 	protected abstract void moveEntry(UUID id,boolean moveUp);
 	/**
@@ -647,6 +699,7 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 		this.getTableViewer().refresh(true, true);
 		updateButtons();
 		this.updateTable();
+		resizeColumns();
 	}
 
 	@Override
@@ -695,8 +748,46 @@ public abstract class CommonTableView<T> extends StandartEditorPart {
 	 * @author Jarkko Heidenwag
 	 * 
 	 */
-	public abstract void deleteItems();
+	public final void deleteItems(){
+    final int maxNumOfDisplayedEntries = 10;
+    IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
+    if(selection.size() > 0 && selection.getFirstElement() instanceof ATableModel){
+      Object[] models =  selection.toArray();
+      int shownIds = Math.min(models.length, maxNumOfDisplayedEntries);
+      String modelIds=new String();
+      if(models.length == 1){
+        modelIds += "Do you really want to delete the following entry?\n";
+      }else if(models.length == getTableViewer().getTable().getItemCount()){
+        modelIds += "Do you really want to delete all list entries?\n";
+      }else{
+        modelIds += "Do you really want to delete all of the following entries?\n";
+      }
+      modelIds += "\n";
+      for(int i = 0; i < shownIds;i++){
+        ATableModel model = ((ATableModel)models[i]);
+        modelIds += model.getIdString()+" - "+model.getTitle().trim()+"\n";
+      }
+      if(models.length > maxNumOfDisplayedEntries){
+        modelIds += "..." + (models.length - maxNumOfDisplayedEntries) + " more";
+      }
+      if (MessageDialog.openQuestion(this.getTableContainer()
+          .getShell(), Messages.Confirm, modelIds)) {
+        getDataInterface().lockUpdate();
+        for (Object model : models) {
+          deleteEntry(((ATableModel)model));
+        }
+        this.getDescriptionWidget().setText(""); //$NON-NLS-1$
+        getDataInterface().releaseLockAndUpdate(new ObserverValue[0]);
+        updateTable();
+        this.refreshView();
+      }
+    }else {
+      MessageDialog.openInformation(this.getTableContainer().getShell(),
+          Messages.Information, Messages.NoAccidentSelected);
+    }
+  }
 
+	protected abstract void deleteEntry(ATableModel model);
 	/**
 	 * @author Jarkko Heidenwag
 	 * 

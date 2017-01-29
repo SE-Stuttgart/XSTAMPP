@@ -13,18 +13,13 @@
 
 package xstampp.astpa.ui.sds;
 
-import java.util.Iterator;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -45,13 +40,12 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
-import xstampp.astpa.haz.ITableModel;
+import messages.Messages;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
 import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -210,29 +204,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 		DesignRequirementView.this.getTableViewer()
 				.addSelectionChangedListener(new DRSelectionChangedListener());
 
-		this.getIdColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof DesignRequirement) {
-					return Integer.toString(((DesignRequirement) element)
-							.getNumber());
-				}
-				return null;
-			}
-		});
-
-		this.getTitleColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof DesignRequirement) {
-					return ((DesignRequirement) element).getTitle();
-				}
-				return null;
-			}
-		});
-
 		final EditingSupport titleEditingSupport = new DREditingSupport(
 				DesignRequirementView.this.getTableViewer());
 		this.getTitleColumn().setEditingSupport(titleEditingSupport);
@@ -290,95 +261,12 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
 	}
 
-	/**
-	 * deleting all selected design requirements
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
 	@Override
-	public void deleteItems() {
-		final int maxNumOfDisplayedEntries = 10;
-		IStructuredSelection selection = (IStructuredSelection) DesignRequirementView.this
-				.getTableViewer().getSelection();
-		if (selection.size() == 1) {
-			// if only one design requirement is selected
-			DesignRequirement deletedDesignRequirement = (DesignRequirement) selection
-					.getFirstElement();
-			String deletedDesignRequirementId = Integer
-					.toString(deletedDesignRequirement.getNumber());
-			String deletedDesignRequirementTitle = deletedDesignRequirement
-					.getTitle();
-			String confirmation = Messages.DoYouWishToDeleteTheDesignRequirement
-					+ deletedDesignRequirementId + ": " //$NON-NLS-1$
-					+ deletedDesignRequirementTitle + "?"; //$NON-NLS-1$
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			this.delOne(b, deletedDesignRequirement.getId());
-		} else if ((selection.size() > 1)
-				&& (selection.size() <= maxNumOfDisplayedEntries)) {
-			// if a few design requirements are selected
-			String designRequirements = ""; //$NON-NLS-1$
-			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
-			for (Iterator<DesignRequirement> i = selection.iterator(); i
-					.hasNext();) {
-				UUID id = i.next().getId();
-				String title = this.getDataInterface().getDesignRequirement(id)
-						.getTitle();
-				int num = this.getDataInterface().getDesignRequirement(id)
-						.getNumber();
-				String designRequirement = newline + num + ": " + title; //$NON-NLS-1$
-				designRequirements = designRequirements + designRequirement;
-			}
-			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingDesignRequirements
-					+ designRequirements;
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				DesignRequirementView.this.displayedDesignRequirement = null;
-				for (Iterator<DesignRequirement> i = selection.iterator(); i
-						.hasNext();) {
-					this.getDataInterface()
-							.removeDesignRequirement(i.next().getId());
-				}
-				DesignRequirementView.this.updateTable();
-				this.refreshView();
-			}
-		} else if (selection.size() > maxNumOfDisplayedEntries) {
-			// if many design requirements are selected
-			boolean b = MessageDialog
-					.openQuestion(
-							this.getTableContainer().getShell(),
-							Messages.Confirm,
-							Messages.ConfirmTheDeletionOfAllSelectedDesignRequirements);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				DesignRequirementView.this.displayedDesignRequirement = null;
-				for (Iterator<DesignRequirement> i = selection.iterator(); i
-						.hasNext();) {
-					this.getDataInterface()
-							.removeDesignRequirement(i.next().getId());
-				}
-				DesignRequirementView.this.updateTable();
-				this.refreshView();
-			}
-		} else {
-			MessageDialog.openInformation(this.getTableContainer().getShell(),
-					Messages.Information, Messages.NoDesignRequirementSelected);
-		}
+	protected void deleteEntry(ATableModel model) {
+    this.displayedDesignRequirement = null;
+    this.getDataInterface().removeDesignRequirement(model.getId());
 	}
-
-	private void delOne(boolean b, UUID id) {
-		if (b) {
-			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-			this.displayedDesignRequirement = null;
-			this.getDataInterface().removeDesignRequirement(id);
-			DesignRequirementView.this.updateTable();
-			this.refreshView();
-		}
-	}
-
+	
 	private class DREditingSupport extends EditingSupport {
 
 		/**
@@ -498,13 +386,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 	public void dispose() {
 		this.getDataInterface().deleteObserver(this);
 		super.dispose();
-	}
-
-	@Override
-	protected void deleteAllItems() {
-		for(ITableModel model: this.getDataInterface().getAllDesignRequirements()){
-			this.getDataInterface().removeDesignRequirement(model.getId());
-		}
 	}
 
 	@Override

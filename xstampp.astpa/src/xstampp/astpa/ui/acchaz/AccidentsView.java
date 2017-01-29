@@ -13,17 +13,13 @@
 
 package xstampp.astpa.ui.acchaz;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -48,13 +44,14 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
+import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -207,28 +204,6 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 		AccidentsView.this.getTableViewer().addSelectionChangedListener(
 				new AccSelectionChangedListener());
 
-		this.getIdColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof Accident) {
-					return ((Accident) element).getIdString();
-				}
-				return null;
-			}
-		});
-
-		this.getTitleColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof Accident) {
-					return ((Accident) element).getTitle();
-				}
-				return null;
-			}
-		});
-
 		final EditingSupport titleEditingSupport = new AccEditingSupport(
 				AccidentsView.this.getTableViewer());
 		this.getTitleColumn().setEditingSupport(titleEditingSupport);
@@ -314,84 +289,12 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 
 	}
 
-	/**
-	 * deleting all selected accidents
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
+
 	@Override
-	public void deleteItems() {
-		final int maxNumOfDisplayedEntries = 10;
-		IStructuredSelection selection = (IStructuredSelection) AccidentsView.this
-				.getTableViewer().getSelection();
-		if (selection.size() == 1) {
-			// if only one accident is selected
-			Accident deletedAccident = (Accident) selection.getFirstElement();
-			String deletedAccidentId = Integer.toString(deletedAccident
-					.getNumber());
-			String deletedAccidentTitle = deletedAccident.getTitle();
-			String confirmation = Messages.DoYouWishToDeleteTheAccident
-					+ deletedAccidentId + ": " //$NON-NLS-1$
-					+ deletedAccidentTitle + "?"; //$NON-NLS-1$
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			this.delOne(b, deletedAccident.getId());
-		} else if ((selection.size() > 1)
-				&& (selection.size() <= maxNumOfDisplayedEntries)) {
-			// if a few accidents are selected
-			String accidents = ""; //$NON-NLS-1$
-			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
-			for (Iterator<Accident> i = selection.iterator(); i.hasNext();) {
-				UUID id = i.next().getId();
-				String title = this.getDataInterface().getAccident(id).getTitle();
-				int num = this.getDataInterface().getAccident(id).getNumber();
-				String accident = newline + num + ": " + title; //$NON-NLS-1$
-				accidents = accidents + accident;
-			}
-			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingAccidents
-					+ accidents;
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				AccidentsView.this.displayedAccident = null;
-				for (Iterator<Accident> i = selection.iterator(); i.hasNext();) {
-					this.getDataInterface().removeAccident(i.next().getId());
-				}
-				AccidentsView.this.updateTable();
-				this.refreshView();
-			}
-		} else if (selection.size() > maxNumOfDisplayedEntries) {
-			// if many accidents are selected
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm,
-					Messages.ConfirmTheDeletionOfAllSelectedAccidents);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				AccidentsView.this.displayedAccident = null;
-				for (Iterator<Accident> i = selection.iterator(); i.hasNext();) {
-					this.getDataInterface().removeAccident(i.next().getId());
-				}
-				AccidentsView.this.updateTable();
-				this.refreshView();
-			}
-		} else {
-			MessageDialog.openInformation(this.getTableContainer().getShell(),
-					Messages.Information, Messages.NoAccidentSelected);
-		}
+	protected void deleteEntry(ATableModel model) {
+    AccidentsView.this.displayedAccident = null;
+    this.getDataInterface().removeAccident(model.getId());
 	}
-
-	private void delOne(boolean shouldDelete, UUID id) {
-		if (shouldDelete) {
-			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-			AccidentsView.this.displayedAccident = null;
-			this.getDataInterface().removeAccident(id);
-			AccidentsView.this.updateTable();
-			this.refreshView();
-		}
-	}
-
 	private class AccEditingSupport extends EditingSupport {
 
 		/**
@@ -512,13 +415,6 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 	public void dispose() {
 		this.getDataInterface().deleteObserver(this);
 		super.dispose();
-	}
-
-	@Override
-	protected void deleteAllItems() {
-		for(ITableModel model: this.getDataInterface().getAllAccidents()){
-			delOne(true, model.getId());
-		}
 	}
 
 	@Override

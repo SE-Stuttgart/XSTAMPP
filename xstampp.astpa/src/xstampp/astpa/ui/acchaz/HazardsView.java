@@ -13,17 +13,13 @@
 
 package xstampp.astpa.ui.acchaz;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -48,14 +44,14 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
+import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -113,13 +109,10 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 				}
 				HazardsView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				HazardsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
-				HazardsView.this.refreshView();
+//				HazardsView.this.refreshView();
 				HazardsView.this.getDataInterface().addHazard(
 						Messages.DoubleClickToEditTitle, Messages.DescriptionOfThisHazard);
-				int newID = HazardsView.this.getDataInterface().getAllHazards()
-						.size() - 1;
-				HazardsView.this.updateTable();
-				HazardsView.this.refreshView();
+				int newID = getTableViewer().getTable().getItemCount()-1;
 				HazardsView.this.getTableViewer().setSelection(
 						new StructuredSelection(HazardsView.this
 								.getTableViewer().getElementAt(newID)), true);
@@ -203,29 +196,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 		HazardsView.this.getTableViewer().addSelectionChangedListener(
 				new HazSelectionChangedListener());
 
-		this.getIdColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof Hazard) {
-					return ((Hazard) element).getIdString();
-				}
-				return null;
-			}
-		});
-
-		this.getTitleColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof Hazard) {
-					return ((Hazard) element).getTitle();
-				}
-				return null;
-			}
-		});
-
-		final EditingSupport titleEditingSupport = new HazEditingSupport(
+		EditingSupport titleEditingSupport = new HazEditingSupport(
 				HazardsView.this.getTableViewer());
 		this.getTitleColumn().setEditingSupport(titleEditingSupport);
 
@@ -310,84 +281,12 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
 	}
 
-	/**
-	 * deleting all selected hazards
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
 	@Override
-	public void deleteItems() {
-		final int maxNumOfDisplayedEntries = 10;
-		IStructuredSelection selection = (IStructuredSelection) HazardsView.this
-				.getTableViewer().getSelection();
-		if (selection.size() == 1) {
-			// if only one hazard is selected
-			Hazard deletedHazard = (Hazard) selection.getFirstElement();
-			String deletedHazardId = Integer
-					.toString(deletedHazard.getNumber());
-			String deletedHazardTitle = deletedHazard.getTitle();
-			String confirmation = Messages.DoYouWishToDeleteTheHazard
-					+ deletedHazardId + ": " //$NON-NLS-1$
-					+ deletedHazardTitle + "?"; //$NON-NLS-1$
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			this.delOne(b, deletedHazard.getId());
-		} else if ((selection.size() > 1)
-				&& (selection.size() <= maxNumOfDisplayedEntries)) {
-			// if a few hazards are selected
-			String hazards = ""; //$NON-NLS-1$
-			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
-			for (Iterator<Hazard> i = selection.iterator(); i.hasNext();) {
-				UUID id = i.next().getId();
-				String title = this.getDataInterface().getHazard(id).getTitle();
-				int num = this.getDataInterface().getHazard(id).getNumber();
-				String hazard = newline + num + ": " + title; //$NON-NLS-1$
-				hazards = hazards + hazard;
-			}
-			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingHazards
-					+ hazards;
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				HazardsView.this.displayedHazard = null;
-				for (Iterator<Hazard> i = selection.iterator(); i.hasNext();) {
-					this.getDataInterface().removeHazard(i.next().getId());
-				}
-				HazardsView.this.updateTable();
-				this.refreshView();
-			}
-		} else if (selection.size() > maxNumOfDisplayedEntries) {
-			// if many hazards are selected
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm,
-					Messages.ConfirmTheDeletionOfAllSelectedHazards);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				HazardsView.this.displayedHazard = null;
-				for (Iterator<Hazard> i = selection.iterator(); i.hasNext();) {
-					this.getDataInterface().removeHazard(i.next().getId());
-				}
-				HazardsView.this.updateTable();
-				this.refreshView();
-			}
-		} else {
-			MessageDialog.openInformation(this.getTableContainer().getShell(),
-					Messages.Information, Messages.NoHazardSelected);
-		}
+	protected void deleteEntry(ATableModel model) {
+    HazardsView.this.displayedHazard = null;
+    this.getDataInterface().removeHazard(model.getId());
 	}
-
-	private void delOne(boolean b, UUID id) {
-		if (b) {
-			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-			HazardsView.this.displayedHazard = null;
-			this.getDataInterface().removeHazard(id);
-			HazardsView.this.updateTable();
-			this.refreshView();
-		}
-	}
-
+	
 	private class HazEditingSupport extends EditingSupport {
 
 		/**
@@ -508,13 +407,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 	public void dispose() {
 		this.getDataInterface().deleteObserver(this);
 		super.dispose();
-	}
-
-	@Override
-	protected void deleteAllItems() {
-		for(ITableModel model: this.getDataInterface().getAllHazards()){
-			this.getDataInterface().removeHazard(model.getId());
-		}
 	}
 
 	@Override

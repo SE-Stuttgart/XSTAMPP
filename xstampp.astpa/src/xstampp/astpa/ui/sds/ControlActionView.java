@@ -13,17 +13,13 @@
 
 package xstampp.astpa.ui.sds;
 
-import java.util.Iterator;
 import java.util.Observable;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -48,16 +44,15 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.Activator;
-import xstampp.astpa.haz.ITableModel;
+import messages.Messages;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -215,29 +210,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 		ControlActionView.this.getTableViewer().addSelectionChangedListener(
 				new CASelectionChangedListener());
 
-		this.getIdColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof ControlAction) {
-					return Integer.toString(((ControlAction) element)
-							.getNumber());
-				}
-				return null;
-			}
-		});
-
-		this.getTitleColumn().setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof ControlAction) {
-					return ((ControlAction) element).getTitle();
-				}
-				return null;
-			}
-		});
-
 		final EditingSupport titleEditingSupport = new CAEditingSupport(
 				ControlActionView.this.getTableViewer());
 		this.getTitleColumn().setEditingSupport(titleEditingSupport);
@@ -354,91 +326,12 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 		this.updateTable();
 	}
 
-	/**
-	 * deleting all selected control actions
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
 	@Override
-	public void deleteItems() {
-		final int maxNumOfDisplayedEntries = 10;
-		IStructuredSelection selection = (IStructuredSelection) ControlActionView.this
-				.getTableViewer().getSelection();
-		if (selection.size() == 1) {
-			// if only one control action is selected
-			ControlAction deletedControlAction = (ControlAction) selection
-					.getFirstElement();
-			String deletedControlActionId = Integer
-					.toString(deletedControlAction.getNumber());
-			String deletedControlActionTitle = deletedControlAction.getTitle();
-			String confirmation = Messages.DoYouWishToDeleteTheControlAction
-					+ deletedControlActionId + ": " //$NON-NLS-1$
-					+ deletedControlActionTitle + "?"; //$NON-NLS-1$
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			this.delOne(b, deletedControlAction.getId());
-			deletedControlAction = null;
-		} else if ((selection.size() > 1)
-				&& (selection.size() <= maxNumOfDisplayedEntries)) {
-			// if a few control actions are selected
-			String controlActions = ""; //$NON-NLS-1$
-			String newline = System.getProperty("line.separator"); //$NON-NLS-1$
-			for (Iterator<ControlAction> i = selection.iterator(); i.hasNext();) {
-				UUID id = i.next().getId();
-				String title = this.getDataInterface().getControlAction(id)
-						.getTitle();
-				int num = this.getDataInterface().getControlAction(id).getNumber();
-				String controlAction = newline + num + ": " + title; //$NON-NLS-1$
-				controlActions = controlActions + controlAction;
-			}
-			String confirmation = Messages.ConfirmTheDeletionOfTheFollowingControlActions
-					+ controlActions;
-			boolean b = MessageDialog.openQuestion(this.getTableContainer()
-					.getShell(), Messages.Confirm, confirmation);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				ControlActionView.this.displayedControlAction = null;
-				for (Iterator<ControlAction> i = selection.iterator(); i
-						.hasNext();) {
-					this.getDataInterface().removeControlAction(i.next().getId());
-				}
-				ControlActionView.this.updateTable();
-				this.refreshView();
-			}
-		} else if (selection.size() > maxNumOfDisplayedEntries) {
-			// if many control actions are selected
-			boolean b = MessageDialog
-					.openQuestion(
-							this.getTableContainer().getShell(),
-							Messages.Confirm,
-							Messages.ConfirmTheDeletionOfAllSelectedControlActions);
-			if (b) {
-				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				ControlActionView.this.displayedControlAction = null;
-				for (Iterator<ControlAction> i = selection.iterator(); i
-						.hasNext();) {
-					this.getDataInterface().removeControlAction(i.next().getId());
-				}
-				ControlActionView.this.updateTable();
-				this.refreshView();
-			}
-		} else {
-			MessageDialog.openInformation(this.getTableContainer().getShell(),
-					Messages.Information, Messages.NoControlActionSelected);
-		}
+	protected void deleteEntry(ATableModel model) {
+    ControlActionView.this.displayedControlAction = null;
+    this.getDataInterface().removeControlAction(model.getId());
 	}
-
-	private void delOne(boolean b, UUID id) {
-		if (b) {
-			this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-			ControlActionView.this.displayedControlAction = null;
-			this.getDataInterface().removeControlAction(id);
-			ControlActionView.this.updateTable();
-			this.refreshView();
-		}
-	}
-
+	
 	private class CAEditingSupport extends EditingSupport {
 
 		/**
@@ -538,7 +431,7 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 		ObserverValue type = (ObserverValue) updatedValue;
 		switch (type) {
 		case CONTROL_ACTION:
-			this.updateTable();
+			this.refreshView();
 			break;
 		default:
 			break;
@@ -570,13 +463,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 	public void dispose() {
 		this.getDataInterface().deleteObserver(this);
 		super.dispose();
-	}
-
-	@Override
-	protected void deleteAllItems() {
-		for(ITableModel model: this.getDataInterface().getAllControlActions()){
-			this.getDataInterface().removeControlAction(model.getId());
-		}
 	}
 
 	@Override

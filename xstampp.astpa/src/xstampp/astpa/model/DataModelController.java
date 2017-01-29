@@ -157,7 +157,7 @@ public class DataModelController extends AbstractDataModel implements
 	
 	private String projectExtension;
 	private boolean refreshLock;
-	
+	private List<ObserverValue> blockedUpdates;
 	/**
 	 * Constructor of the DataModel Controller
 	 * 
@@ -212,6 +212,13 @@ public class DataModelController extends AbstractDataModel implements
 		if(!refreshLock){
 			DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
 			super.updateValue(value);
+		}else if(!value.equals(ObserverValue.UNSAVED_CHANGES)){
+		  if(blockedUpdates == null){
+		    blockedUpdates = new ArrayList<>();
+	      blockedUpdates.add(value);
+		  }else if(!blockedUpdates.contains(value)){
+		    blockedUpdates.add(value);
+		  }
 		}
 	}
 
@@ -248,13 +255,23 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public void releaseLockAndUpdate(ObserverValue[] values){
 		this.refreshLock = false;
+		if(blockedUpdates == null){
+		  blockedUpdates = new ArrayList<>();
+		}
+		if(values != null){
+		  for(int i = 0; i < values.length; i++){
+		    if(!blockedUpdates.contains(values[i])){
+		      blockedUpdates.add(values[i]);
+		    }
+		  }
+		}
 		DataModelController.LOGGER.debug("released update lock");
 		if(hasChanged()){
-			for (int i = 0; i < values.length; i++) {
-				setUnsavedAndChanged(values[i]);
+			for (int i = 0; i < blockedUpdates.size(); i++) {
+				setUnsavedAndChanged(blockedUpdates.get(i));
 			}
 		}
-		
+		blockedUpdates.clear();
 	}
 
 	@Override
