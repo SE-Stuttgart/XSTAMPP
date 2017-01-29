@@ -467,7 +467,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 			new Label(buttonComposite, SWT.NONE);
 		// the Button for deleting all items
 			moveUp = new Button(this.buttonComposite, SWT.PUSH);
-			moveUp.setToolTipText("Decreases the index of the selected entry");
+			moveUp.setToolTipText("Decreases the index of the selected entry\n(Does not change the ID)");
 			moveUp.setLayoutData(gridData);
 
 			moveUp.addListener(SWT.Selection,  new Listener() {
@@ -484,7 +484,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 		// the Button for deleting all items
 			moveDown = new Button(this.buttonComposite, SWT.PUSH);
 			moveDown.setLayoutData(gridData);
-			moveDown.setToolTipText("Increases the index of the selected entry");
+			moveDown.setToolTipText("Increases the index of the selected entry\n(Does not change the ID)");
 
 			moveDown.addListener(SWT.Selection,  new Listener() {
 
