@@ -46,7 +46,7 @@ public class RenameCommand extends AbstractHandler {
       InputDialog renameDiag = new InputDialog(Display.getCurrent().getActiveShell(), Messages.RenameCommand_RenameProject,
           Messages.RenameCommand_NewProjectName, currentString, new ProjectNameValidator(projectId));
       if (renameDiag.open() == Window.OK
-          && ProjectManager.getContainerInstance().renameProject(projectId, renameDiag.getValue())) {
+          && !ProjectManager.getContainerInstance().renameProject(projectId, renameDiag.getValue())) {
         MessageDialog.openError(null, Messages.Error, Messages.RenameCommand_CannotRenameProject);
       }
     }

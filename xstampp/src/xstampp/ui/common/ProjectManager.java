@@ -89,10 +89,8 @@ public class ProjectManager implements IPropertyChangeListener {
 
   private static final String OVERWRITE_MESSAGE = Messages.DoYouReallyWantToOverwriteTheContentAt;
 
-  private Map<UUID, IDataModel> projectDataToUUID;
-  private Map<UUID, Object> projectAdditionsToUUID;
-  private Map<UUID, File> projectSaveFilesToUUID;
-  private Map<UUID, String> extensionsToUUID;
+  private Map<UUID, ProjectFileContainer> projectContainerToUuid;
+  private Map<UUID, Object> projectAdditionsToUuid;
   private Map<String, String> extensionsToModelClass;
   private Map<String, IConfigurationElement> elementsToExtensions;
   private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
@@ -144,12 +142,10 @@ public class ProjectManager implements IPropertyChangeListener {
     @Override
     public void run() {
       UUID projectId = UUID.randomUUID();
-      ProjectManager.getContainerInstance().projectDataToUUID.put(projectId, this.controller);
+      projectContainerToUuid.put(projectId, new ProjectFileContainer(controller, this.saveFile.getPath()));
       IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
           .findView(ProjectExplorer.ID);
       this.controller.prepareForSave();
-      ProjectManager.getContainerInstance().extensionsToUUID.put(projectId, saveFile.getName().split("\\.")[1]);//$NON-NLS-1$
-      ProjectManager.getContainerInstance().projectSaveFilesToUUID.put(projectId, saveFile);
       if (!saveFile.exists()) {
         ProjectManager.getContainerInstance().saveDataModel(projectId, false, false);
       }
@@ -172,9 +168,7 @@ public class ProjectManager implements IPropertyChangeListener {
    * @author Patrick Wickenhaeuser
    */
   public ProjectManager() {
-    this.extensionsToUUID = new HashMap<>();
-    this.projectDataToUUID = new HashMap<>();
-    this.projectSaveFilesToUUID = new HashMap<>();
+    this.projectContainerToUuid = new HashMap<>();
     this.extensionsToModelClass = new HashMap<>();
     this.store.addPropertyChangeListener(this);
   }
@@ -222,16 +216,15 @@ public class ProjectManager implements IPropertyChangeListener {
    */
   public boolean renameProject(UUID projectId, String projectName) {
 
-    File projectFile = this.projectSaveFilesToUUID.get(projectId);
-    String ext = this.extensionsToUUID.get(projectId);
+    File projectFile = this.projectContainerToUuid.get(projectId).getProjectFile();
+    String ext = this.projectContainerToUuid.get(projectId).getExtension();
     Path newPath = projectFile.toPath().getParent();
     File newNameFile = new File(newPath.toFile(), projectName + "." + ext); //$NON-NLS-1$
 
     if (projectFile.renameTo(newNameFile) || !projectFile.exists()) {
-
-      this.projectSaveFilesToUUID.remove(projectId);
-      this.projectSaveFilesToUUID.put(projectId, newNameFile);
-      return this.projectDataToUUID.get(projectId).setProjectName(projectName);
+      this.projectContainerToUuid.get(projectId).setProjectName(projectName);
+      updateProjectTree();
+      return true;
     }
     return false;
   }
@@ -247,8 +240,7 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return
    */
   public boolean changeProjectExtension(UUID projectId, String ext) {
-    this.extensionsToUUID.remove(projectId);
-    this.extensionsToUUID.put(projectId, ext);
+    this.projectContainerToUuid.get(projectId).setExtension(ext);
     renameProject(projectId, getTitle(projectId));
     saveDataModel(projectId, false, false);
     IViewPart explorer = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
@@ -291,7 +283,7 @@ public class ProjectManager implements IPropertyChangeListener {
       fileDialog.setFilterNames(filterNames);
     }
 
-    IDataModel tmpController = this.projectDataToUUID.get(projectId);
+    IDataModel tmpController = this.projectContainerToUuid.get(projectId).getController();
     fileDialog.setFileName(tmpController.getProjectName());
     String fileName = fileDialog.open();
     if (fileName == null) {
@@ -305,10 +297,8 @@ public class ProjectManager implements IPropertyChangeListener {
         return false;
       }
     }
-    this.projectSaveFilesToUUID.remove(projectId);
-    this.projectSaveFilesToUUID.put(projectId, file);
-    this.extensionsToUUID.remove(projectId);
-    this.extensionsToUUID.put(projectId, fileName.split("\\.")[1]); //$NON-NLS-1$
+    this.projectContainerToUuid.get(projectId).setProjectName(file.getName().split("\\.")[0]);
+    this.projectContainerToUuid.get(projectId).setExtension(file.getName().split("\\.")[1]); //$NON-NLS-1$
     updateProjectTree();
     return this.saveDataModel(projectId, false, false);
 
@@ -329,14 +319,14 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return whether the operation was successful or not
    */
   public boolean saveDataModel(UUID projectId, boolean isUIcall, boolean saveAs) {
-    if (this.projectSaveFilesToUUID.get(projectId) == null || saveAs) {
+    if (this.projectContainerToUuid.get(projectId) == null || saveAs) {
       return this.saveDataModelAs(projectId);
     }
-    final IDataModel tmpController = this.projectDataToUUID.get(projectId);
+    final IDataModel tmpController = this.projectContainerToUuid.get(projectId).getController();
 
     tmpController.prepareForSave();
-
-    final Job save = tmpController.doSave(this.projectSaveFilesToUUID.get(projectId),
+    
+    final Job save = tmpController.doSave(projectContainerToUuid.get(projectId).getProjectFile(),
                                           ProjectManager.getLOGGER(),
                                           isUIcall);
     if (save == null) {
@@ -377,7 +367,7 @@ public class ProjectManager implements IPropertyChangeListener {
   }
 
   private void synchronizeProjectName(UUID projectID) {
-    File saveFile = this.projectSaveFilesToUUID.get(projectID);
+    File saveFile = projectContainerToUuid.get(projectID).getProjectFile();
     renameProject(projectID, saveFile.getName().split("\\.")[0]); //$NON-NLS-1$
   }
 
@@ -401,8 +391,9 @@ public class ProjectManager implements IPropertyChangeListener {
     fileDialog.setFilterExtensions(extensions.toArray(new String[] {}));
 
     String file = fileDialog.open();
-    if (this.projectSaveFilesToUUID.containsValue(new File(file))) {
-      MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages.ProjectManager_ProjectIsAlreadyOpen,
+    if (this.projectContainerToUuid.containsValue(new File(file))) {
+      MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+          Messages.ProjectManager_ProjectIsAlreadyOpen,
           Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
       return null;
     }
@@ -414,15 +405,15 @@ public class ProjectManager implements IPropertyChangeListener {
       File outer = new File(file);
       File copy = new File(Platform.getInstanceLocation().getURL().getPath(), outer.getName());
       if (copy.isFile()) {
-        // if the imported file allready exists and the user wants to overwrite
+        // if the imported file already exists and the user wants to overwrite
         // it with the new one,
         // the current project is searched and removed
-        if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages.FileExists,
+        if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+            Messages.FileExists,
             String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, outer.getName()))) {
 
-          Set<UUID> idSet = this.projectSaveFilesToUUID.keySet();
-          for (UUID id : idSet) {
-            if (this.projectSaveFilesToUUID.get(id).equals(copy) && !removeProjectData(id)) {
+          for (Entry<UUID, ProjectFileContainer> containerEntry : projectContainerToUuid.entrySet()) {
+            if (containerEntry.getValue().getProjectFile().equals(copy) && !removeProjectData(containerEntry.getKey())) {
               MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
               return null;
             }
@@ -496,7 +487,7 @@ public class ProjectManager implements IPropertyChangeListener {
    *          the id of the project for which the request is given
    */
   public boolean getUnsavedChanges(UUID projectId) {
-    return this.projectDataToUUID.get(projectId).hasUnsavedChanges();
+    return this.projectContainerToUuid.get(projectId).getController().hasUnsavedChanges();
   }
 
   /**
@@ -508,7 +499,7 @@ public class ProjectManager implements IPropertyChangeListener {
    */
   public boolean getUnsavedChanges() {
     for (UUID id : this.getProjectKeys()) {
-      if (this.projectDataToUUID.get(id).hasUnsavedChanges()) {
+      if (this.projectContainerToUuid.get(id).getController().hasUnsavedChanges()) {
         return true;
       }
     }
@@ -525,7 +516,7 @@ public class ProjectManager implements IPropertyChangeListener {
    */
   public void callObserverValue(ObserverValue value) {
     for (UUID id : this.getProjectKeys()) {
-      this.projectDataToUUID.get(id).updateValue(value);
+      this.projectContainerToUuid.get(id).getController().updateValue(value);
     }
   }
 
@@ -548,8 +539,8 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return the DataModel as IDataModel for the given project id
    */
   public IDataModel getDataModel(UUID projectId) {
-    if (this.projectDataToUUID.containsKey(projectId)) {
-      return this.projectDataToUUID.get(projectId);
+    if (this.projectContainerToUuid.containsKey(projectId)) {
+      return this.projectContainerToUuid.get(projectId).getController();
     }
     return null;
   }
@@ -563,9 +554,9 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return the id or null
    */
   public UUID getProjectID(Observable controller) {
-    if (this.projectDataToUUID.containsValue(controller)) {
-      for (UUID id : this.projectDataToUUID.keySet()) {
-        if (this.projectDataToUUID.get(id) == controller) {
+    if (this.projectContainerToUuid.containsValue(controller)) {
+      for (UUID id : this.projectContainerToUuid.keySet()) {
+        if (this.projectContainerToUuid.get(id).getController().equals(controller)) {
           return id;
         }
       }
@@ -592,8 +583,8 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return the title of the project
    */
   public String getTitle(UUID projectId) {
-    if (this.projectDataToUUID.containsKey(projectId)) {
-      return this.projectDataToUUID.get(projectId).getProjectName();
+    if (this.projectContainerToUuid.containsKey(projectId)) {
+      return this.projectContainerToUuid.get(projectId).getProjectName();
     }
     return Messages.NewProject;
   }
@@ -613,8 +604,7 @@ public class ProjectManager implements IPropertyChangeListener {
    */
   public UUID addProjectData(IDataModel controller, String path) {
     UUID id = UUID.randomUUID();
-    this.projectSaveFilesToUUID.put(id, new File(path));
-    this.projectDataToUUID.put(id, controller);
+    this.projectContainerToUuid.put(id, new ProjectFileContainer(controller, path));
     updateProjectTree();
     return id;
 
@@ -638,14 +628,13 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return whether the removal was succesful or not
    */
   public boolean removeProjectData(UUID projectId) {
-
-    File projectFile = this.projectSaveFilesToUUID.get(projectId);
-    if (!projectFile.exists() || projectFile.delete()) {
-      this.projectDataToUUID.remove(projectId).updateValue(ObserverValue.DELETE);
-      this.projectSaveFilesToUUID.remove(projectId);
-      return !this.projectDataToUUID.containsKey(projectId);
+    if(projectContainerToUuid.containsKey(projectId)){
+      File projectFile = this.projectContainerToUuid.get(projectId).getProjectFile();
+      if (!projectFile.exists() || projectFile.delete()) {
+        this.projectContainerToUuid.remove(projectId).getController().updateValue(ObserverValue.DELETE);
+        return !this.projectContainerToUuid.containsKey(projectId);
+      }
     }
-
     return false;
   }
 
@@ -656,7 +645,7 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return a Set with all UUID's of the currently loaded projects
    */
   public ArrayList<UUID> getProjectKeys() {
-    Set<UUID> keys = this.projectDataToUUID.keySet();
+    Set<UUID> keys = this.projectContainerToUuid.keySet();
     ArrayList<UUID> tmp = new ArrayList<>(keys);
     Collections.sort(tmp, new Comparator<UUID>() {
 
@@ -689,14 +678,10 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return the extension which is registered for the project
    */
   public String getProjectExtension(UUID id) {
-    File saveFile = this.projectSaveFilesToUUID.get(id);
-
-    String ext = saveFile.getName();
-    String[] tmp = ext.split("\\."); //$NON-NLS-1$
-    if (tmp.length > 0) {
-      ext = tmp[1];
+    if(this.projectContainerToUuid.containsKey(id)){
+      return this.projectContainerToUuid.get(id).getExtension();
     }
-    return ext;
+    return new String();
   }
 
   /**
@@ -707,8 +692,8 @@ public class ProjectManager implements IPropertyChangeListener {
    */
   public Map<UUID, String> getProjects() {
     Map<UUID, String> map = new HashMap<>();
-    for (UUID id : this.projectDataToUUID.keySet()) {
-      map.put(id, this.projectDataToUUID.get(id).getProjectName());
+    for (UUID id : this.projectContainerToUuid.keySet()) {
+      map.put(id, this.projectContainerToUuid.get(id).getProjectName());
     }
     return map;
   }
@@ -777,7 +762,7 @@ public class ProjectManager implements IPropertyChangeListener {
    *         extension Point
    */
   public IConfigurationElement getConfigurationFor(UUID projectID) {
-    String name = this.projectDataToUUID.get(projectID).getClass().getName();
+    String name = this.projectContainerToUuid.get(projectID).getClass().getName();
     String ext = this.extensionsToModelClass.get(name);
     return this.elementsToExtensions.get(getProjectExtension(projectID));
   }
@@ -806,10 +791,10 @@ public class ProjectManager implements IPropertyChangeListener {
    * @author Lukas Balzer
    */
   public Object getProjectAdditionsFromUUID(UUID id) {
-    if (this.projectAdditionsToUUID == null) {
+    if (this.projectAdditionsToUuid == null) {
       return null;
     }
-    return this.projectAdditionsToUUID.get(id);
+    return this.projectAdditionsToUuid.get(id);
   }
 
   /**
@@ -822,10 +807,10 @@ public class ProjectManager implements IPropertyChangeListener {
    * @author Lukas Balzer
    */
   public void addProjectAdditionForUUID(UUID id, Object addition) {
-    if (this.projectAdditionsToUUID == null) {
-      this.projectAdditionsToUUID = new HashMap<>();
+    if (this.projectAdditionsToUuid == null) {
+      this.projectAdditionsToUuid = new HashMap<>();
     }
-    this.projectAdditionsToUUID.put(id, addition);
+    this.projectAdditionsToUuid.put(id, addition);
   }
 
   public void addSaveStateListener(IPropertyChangeListener listener) {
