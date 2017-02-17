@@ -70,11 +70,11 @@ public class ControlActionController {
 	private List<RefinedSafetyRule> rules;
 	
 	@XmlAttribute(name="nextUcaIndex")
-	private int nextUcaIndex;
+	private Integer nextUcaIndex;
 	
 	private final Map<UUID, ControlAction> trash;
 
-	private int ruleNr;
+	private Integer ruleNr;
 	/**
 	 * Constructor for the controller
 	 * 
@@ -86,7 +86,7 @@ public class ControlActionController {
 		this.controlActions = new ArrayList<>();
 		this.links = new ArrayList<>();
 	  this.ruleNr = -1;
-	  this.nextUcaIndex = -1;
+	  this.nextUcaIndex = null;
 	}
 
 	/**
@@ -429,10 +429,12 @@ public class ControlActionController {
 	}
 	
 	private void assignUCANumbers(){
-	  nextUcaIndex = 0;
     for (ControlAction controlAction : this.controlActions) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
+        if(nextUcaIndex == null){
+          nextUcaIndex = 0;
+        }
         if(unsafeControlAction.getNumber() > 0){
           nextUcaIndex = unsafeControlAction.getNumber() + 1;
         }else{
@@ -445,6 +447,9 @@ public class ControlActionController {
 	}
 	
 	private int getNextUCACount(){
+	  if(nextUcaIndex == null){
+	    nextUcaIndex = 0;
+	  }
 	  if(nextUcaIndex < 0){
 	    nextUcaIndex = getAllUnsafeControlActions().size()+1;
 	  }
@@ -605,7 +610,7 @@ public class ControlActionController {
 	 * @param extendedData 
 	 * 
 	 */
-	public void prepareForSave(ExtendedDataController extendedData) {
+  public void prepareForSave(ExtendedDataController extendedData) {
 		moveRulesInCA();
 		assignUCANumbers();
 		for (ControlAction controlAction : this.controlActions) {

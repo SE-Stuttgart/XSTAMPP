@@ -549,7 +549,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
 		
 		//prepare the rules list for save by moving all rules to the 
 		//ExtendedDataModel and storing a list of uuids
-		if(rules != null){
+		if(rules != null && extendedData != null){
 		  ruleIds = new ArrayList<>();
 		  for(RefinedSafetyRule refinedRule : rules){
         ruleIds.add(refinedRule.getRuleId());
