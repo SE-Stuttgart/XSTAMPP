@@ -169,6 +169,12 @@ public class CSRectangleContainer extends Figure implements IControlStructureFig
 	}
 
 	@Override
+	public boolean useOffset() {
+	  // TODO Auto-generated method stub
+	  return false;
+	}
+	
+	@Override
 	public void setDeco(boolean deco) {
 		// TODO Auto-generated method stub
 		

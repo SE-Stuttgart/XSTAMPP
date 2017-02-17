@@ -137,6 +137,13 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public boolean useOffset() {
+	  // TODO Auto-generated method stub
+	  return false;
+	}
+	
 	@Override
 	public void setDeco(boolean deco) {
 		// TODO Auto-generated method stub

@@ -127,6 +127,8 @@ public interface IControlStructureFigure extends IFigure {
 	 * 
 	 */
 	void enableOffset();
+	
+	boolean useOffset();
 
 	/**
 	 * enables/disables the decoration of this figure,</br>

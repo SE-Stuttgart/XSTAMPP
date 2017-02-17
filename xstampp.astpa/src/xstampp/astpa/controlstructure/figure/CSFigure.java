@@ -184,6 +184,14 @@ public abstract class CSFigure extends Figure implements
 		}
 	}
 
+	@Override
+	public boolean containsPoint(int x, int y) {
+	  Rectangle bounds = getBounds().getCopy();
+	  if(useOffset()){
+	    return bounds.expand(RootFigure.COMP_OFFSET, RootFigure.COMP_OFFSET).contains(x, y);
+	  }
+	  return super.containsPoint(x, y);
+	}
 	 @Override
 	public void refresh() {
 	 	if(isDirty){
@@ -334,6 +342,11 @@ public abstract class CSFigure extends Figure implements
 		((IControlStructureFigure) this.getParent()).enableOffset();
 	}
 
+	@Override
+  public boolean useOffset() {
+    return ((IControlStructureFigure) this.getParent()).useOffset();
+  }
+	
 	protected void setDecoration(boolean withDeco) {
 		this.withIcon = withDeco;
 		if (withDeco) {

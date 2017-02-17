@@ -51,7 +51,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	private boolean useOffset = false;
 	private static final int ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH = 10;
 	private static final int NONACTIVE_ANCHOR_HIGHLIGHTER_WIDTH = 6;
-	private static final int COMP_OFFSET = 20;
+	public static final int COMP_OFFSET = 20;
 
 	private List<IFigure> componentList = new ArrayList<>();
 	private boolean generalEnable = false;
@@ -199,7 +199,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
 	@Override
 	public IFigure findFigureAt(int x, int y, TreeSearch search) {
-		if (!this.useOffset) {
+		if (true) {
 			return super.findFigureAt(x, y, search);
 		}
 		int tmpX;
@@ -317,4 +317,10 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	public void setDirty() {
 		//root component is always refreshed
 	}
+
+
+  @Override
+  public boolean useOffset() {
+    return useOffset;
+  }
 }
