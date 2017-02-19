@@ -300,7 +300,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 			ref = reqTemp.getLocation();
 		}
 
-		((CSFigure) this.getFigure()).getConnectionAnchor(ref);
+//		((CSFigure) this.getFigure()).getConnectionAnchor(ref);
 		return ((CSFigure) this.getFigure()).getConnectionAnchor(ref);
 	}
 

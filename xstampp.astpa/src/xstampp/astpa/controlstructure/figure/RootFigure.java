@@ -94,7 +94,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
 		this.translateToRelative(ref);
 		int width = RootFigure.ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
-		int offset = (width / 2);
+		int offset = (width / 2)-1;
 		if (this.highlighter == null) {
 			this.highlighter = new Figure();
 			this.highlighter.setBorder(new LineBorder(ColorConstants.blue, 3));
@@ -106,6 +106,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		this.translateFromParent(rec);
 		this.highlighter.setBounds(rec);
 		this.highlighter.setVisible(true);
+		System.out.println("visible: " +rec);
 	}
 
 	/**

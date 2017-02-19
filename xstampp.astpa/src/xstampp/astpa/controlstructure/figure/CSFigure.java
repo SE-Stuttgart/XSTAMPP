@@ -188,7 +188,7 @@ public abstract class CSFigure extends Figure implements
 	public boolean containsPoint(int x, int y) {
 	  Rectangle bounds = getBounds().getCopy();
 	  if(useOffset()){
-	    return bounds.expand(RootFigure.COMP_OFFSET, RootFigure.COMP_OFFSET).contains(x, y);
+	    return bounds.expand(2 * RootFigure.COMP_OFFSET, 2 *RootFigure.COMP_OFFSET).contains(x, y);
 	  }
 	  return super.containsPoint(x, y);
 	}
@@ -232,7 +232,7 @@ public abstract class CSFigure extends Figure implements
 	public ConnectionAnchor getConnectionAnchor(Point ref) {
 
 		CSAnchor temp = new CSAnchor(this, ref,this.store);
-
+    System.out.println(temp.getAnchorPosition());
 		return temp;
 	}
 
