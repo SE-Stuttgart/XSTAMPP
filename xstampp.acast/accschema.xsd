@@ -66,7 +66,7 @@
 				</xs:element>
 				<xs:element name="cac">
 					<xs:complexType>
-						<xs:sequence>
+						<xs:all>
 							<xs:element name="controlactions">
 								<xs:complexType>
 									<xs:sequence>
@@ -90,7 +90,8 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-						</xs:sequence>
+						</xs:all>
+      					<xs:attribute name="nextUcaIndex" type="xs:int" use="optional"></xs:attribute>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="sds">
