@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:fo="http://www.w3.org/1999/XSL/Format"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<!-- author: Jaqueline Patzek, Patrick Wickenhäuser,Lukas Balzer -->
+	<!-- author: Jaqueline Patzek, Patrick WickenhÃ¤user,Lukas Balzer -->
 	<!-- StuPro 2013 / 2014 -->
 	
 	<!-- Note: This xsl gathers all the informations from the .haz-file -->

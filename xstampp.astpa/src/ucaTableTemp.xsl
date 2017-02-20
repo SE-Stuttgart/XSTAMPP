@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE stylesheet>
 <xsl:stylesheet version="1.0" xmlns:fo="http://www.w3.org/1999/XSL/Format"

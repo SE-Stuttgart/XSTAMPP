@@ -260,7 +260,7 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="componentType">
-		<xs:sequence>
+		<xs:all>
 			<xs:element type="xs:string" name="id" />
 			<xs:element type="xs:string" name="text" />
 			<xs:element type="xs:string" name="isSafetyCritical"
@@ -316,7 +316,7 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-		</xs:sequence>
+		</xs:all>
 	</xs:complexType>
 
 	<xs:complexType name="layoutType">
