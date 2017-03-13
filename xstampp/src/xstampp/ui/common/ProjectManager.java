@@ -545,6 +545,10 @@ public class ProjectManager implements IPropertyChangeListener {
     return null;
   }
 
+  public boolean canWriteOnProject(UUID projectId){
+    return this.projectContainerToUuid.get(projectId).getProjectFile().canWrite();
+  }
+  
   /**
    * 
    * @author Lukas Balzer

@@ -230,67 +230,76 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
    * @author Lukas Balzer
    * 
    */
-  private void buildTree(final UUID projectID, String pluginID) {
-    IConfigurationElement projectExt = ProjectManager.getContainerInstance().getConfigurationFor(projectID);
-    /**
-     * The selection id identifies each step in the current runtime
-     */
-    String selectionId = projectID.toString();
-    String projectName = projectExt.getAttribute("name") + PATH_SEPERATOR //$NON-NLS-1$
-        + ProjectManager.getContainerInstance().getTitle(projectID);
+  private void buildTree(final UUID projectId, String pluginId) {
+    
     final TreeItem projectItem = new TreeItem(this.tree, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-    FontData fData = PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
-    if (fData != null) {
-      defaultFont = new Font(null, fData);
+    FontData fontData = PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
+    if (fontData != null) {
+      defaultFont = new Font(null, fontData);
     } else {
       defaultFont = new Font(null, projectItem.getFont().getFontData());
     }
     gc.setFont(defaultFont);
     this.tree.setFont(defaultFont);
     projectItem.setFont(defaultFont);
-    IProjectSelection selector = new ProjectSelector(projectItem, projectID, null);
+    IProjectSelection selector = new ProjectSelector(projectItem, projectId, null);
+    
+    /**
+     * The selection id identifies each step in the current runtime.
+     */
+    String selectionId = projectId.toString();
     this.addOrReplaceItem(selectionId, selector, projectItem);
     projectItem.addListener(SWT.MouseDown, this.listener);
+    IConfigurationElement projectExt = ProjectManager.getContainerInstance()
+        .getConfigurationFor(projectId);
     projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
-    projectItem.setText(ProjectManager.getContainerInstance().getTitle(projectID) + " [" //$NON-NLS-1$
-        + ProjectManager.getContainerInstance().getProjectExtension(projectID) + "]"); //$NON-NLS-1$
-    ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginID, projectExt.getAttribute("icon")); //$NON-NLS-1$
+    projectItem.setText(
+        ProjectManager.getContainerInstance().getTitle(projectId)
+        + " [" //$NON-NLS-1$
+        + ProjectManager.getContainerInstance().getProjectExtension(projectId)
+        + "]"); //$NON-NLS-1$
+    ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginId,
+                                            projectExt.getAttribute("icon")); //$NON-NLS-1$
     projectItem.setImage(imgDesc.createImage());
+    String projectName = projectExt.getAttribute("name") + PATH_SEPERATOR //$NON-NLS-1$
+        + ProjectManager.getContainerInstance().getTitle(projectId);
+    if (!ProjectManager.getContainerInstance().canWriteOnProject(projectId)){
+      projectName += "[Read Only]";
+    }
     selector.setPathHistory(projectName);
-    this.treeItemsToProjectIDs.put(projectID, projectItem);
+    this.treeItemsToProjectIDs.put(projectId, projectItem);
     // this two for-loops construct the process tree which consists out of
     // steps grouped by categorys, each step or category is represented by a
     // treeItem
     // which is accosiated with a Step/CategorySelector which handles the
     // linking to the step editor
     for (IConfigurationElement categoryExt : projectExt.getChildren()) {
-      addTreeItem(categoryExt, selector, projectName, projectID, pluginID);
+      addTreeItem(categoryExt, selector, projectName, projectId, pluginId);
     }
   }
 
-  private void addTreeItem(IConfigurationElement element, IProjectSelection parent, String pathName, UUID projectID,
-      String pluginID) {
-    String name = element.getName();
-    String selectionId = element.getAttribute("id") + projectID.toString(); //$NON-NLS-1$
+  private void addTreeItem(IConfigurationElement element,
+                           IProjectSelection parent,
+                           String pathName,
+                           UUID projectId,
+                           String pluginId) {
+    String selectionId = element.getAttribute("id") + projectId.toString(); //$NON-NLS-1$
     String navigationPath = pathName + PATH_SEPERATOR + element.getAttribute("name"); //$NON-NLS-1$
     final TreeItem subItem = new TreeItem(parent.getItem(), SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
     subItem.addListener(SWT.Selection, expandListener);
     subItem.setFont(defaultFont);
-    subItem.addListener(SWT.Expand, new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        // TODO Auto-generated method stub
-
-      }
-    });
+    
     subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
     subItem.addListener(SWT.SELECTED, this.listener);
-    this.addImage(subItem, element.getAttribute("icon"), element.getNamespaceIdentifier());//$NON-NLS-1$
+
+    String name = element.getName();
+    this.addImage(subItem,
+                  element.getAttribute("icon"),
+                  element.getNamespaceIdentifier());//$NON-NLS-1$
     IProjectSelection selector;
 
     if (name.equals("step") || name.equals("stepEditor")) { //$NON-NLS-1$ //$NON-NLS-2$
-      selector = new StepSelector(subItem, parent, projectID, element.getAttribute("editorId"), //$NON-NLS-1$
+      selector = new StepSelector(subItem, parent, projectId, element.getAttribute("editorId"), //$NON-NLS-1$
           element.getAttribute("name")); //$NON-NLS-1$
       // register all additional stepEditors defined as
       // xstampp.extension.stepEditor extension in any of the plugins
@@ -316,7 +325,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       }
       if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
         for (IConfigurationElement subEditorConf : this.stepEditorsToStepId.get(element.getAttribute("id"))) { //$NON-NLS-1$
-          addTreeItem(subEditorConf, selector, navigationPath, projectID, pluginID);
+          addTreeItem(subEditorConf, selector, navigationPath, projectId, pluginId);
         }
       }
 
@@ -325,11 +334,11 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       this.addOrReplaceItem(selectionId, selector, subItem);
 
     } else {
-      selector = new CategorySelector(subItem, projectID, parent);
+      selector = new CategorySelector(subItem, projectId, parent);
       selector.setPathHistory(navigationPath);
       this.addOrReplaceItem(selectionId, selector, subItem);
       for (IConfigurationElement childExt : element.getChildren()) {
-        addTreeItem(childExt, selector, navigationPath, projectID, pluginID);
+        addTreeItem(childExt, selector, navigationPath, projectId, pluginId);
       }
 
     }
