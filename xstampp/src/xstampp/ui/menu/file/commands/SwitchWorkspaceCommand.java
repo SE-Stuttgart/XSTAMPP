@@ -18,6 +18,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.common.ProjectManager;
 import xstampp.util.ChooseWorkLocation;
 
 /**
@@ -31,9 +32,12 @@ public class SwitchWorkspaceCommand extends AbstractHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
-    Preferences.userNodeForPackage(ChooseWorkLocation.class).putBoolean(IPreferenceConstants.WS_REMEMBER, false);
-    PlatformUI.getWorkbench().restart();
-    return null;
+    if (ProjectManager.getContainerInstance().checkCloseApplication()) {
+      Preferences.userNodeForPackage(ChooseWorkLocation.class).putBoolean(IPreferenceConstants.WS_REMEMBER, false);
+      PlatformUI.getWorkbench().restart();
+      return true;
+    }
+    return false;
   }
 
 }

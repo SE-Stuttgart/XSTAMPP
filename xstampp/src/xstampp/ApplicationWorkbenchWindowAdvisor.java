@@ -114,33 +114,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     }
     page.resetPerspective();
     // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
-    if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
-      MessageDialog.openError(null,
-                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
-                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
-                       + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
-      return false;
-    }
-    if (ProjectManager.getContainerInstance().getUnsavedChanges()) {
-      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(),
-                                               Messages.PlatformName, null,
-          Messages.ThereAreUnsafedChangesDoYouWantToStoreThem, MessageDialog.CONFIRM,
-          new String[] { Messages.Store, Messages.Discard, Messages.Abort }, 0);
-      int resultNum = dialog.open();
-      switch (resultNum) {
-        case -1:
-          return false;
-        case 0:
-          return ProjectManager.getContainerInstance().saveAllDataModels();
-        case 1:
-          return true;
-        case 2:
-          return false;
-        default:
-          break;
-      }
-    }
 
-    return true;
+    return ProjectManager.getContainerInstance().checkCloseApplication();
   }
 }

@@ -500,12 +500,49 @@ public class ProjectManager implements IPropertyChangeListener {
   public boolean getUnsavedChanges() {
     for (UUID id : this.getProjectKeys()) {
       if (this.projectContainerToUuid.get(id).getController().hasUnsavedChanges()) {
+        
         return true;
       }
     }
     return false;
   }
 
+  /**
+   * checks and asks the user wether the application can be closed if there
+   * are unsafed changes of unfinished jobs.
+   * 
+   * @return if the application can be safely closed
+   */
+  public boolean checkCloseApplication() {
+    if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
+      MessageDialog.openError(null,
+                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
+                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
+                       + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
+      return false;
+    }
+    if (ProjectManager.getContainerInstance().getUnsavedChanges()) {
+      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(),
+                                               Messages.PlatformName, null,
+          Messages.ThereAreUnsafedChangesDoYouWantToStoreThem, MessageDialog.CONFIRM,
+          new String[] { Messages.Store, Messages.Discard, Messages.Abort }, 0);
+      int resultNum = dialog.open();
+      switch (resultNum) {
+        case -1:
+          return false;
+        case 0:
+          return ProjectManager.getContainerInstance().saveAllDataModels();
+        case 1:
+          return true;
+        case 2:
+          return false;
+        default:
+          break;
+      }
+    }
+    return true;
+  }
+  
   /**
    * Calls the observer of the data model with the given value
    * 
@@ -558,13 +595,11 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return the id or null
    */
   public UUID getProjectID(Observable controller) {
-    if (this.projectContainerToUuid.containsValue(controller)) {
       for (UUID id : this.projectContainerToUuid.keySet()) {
         if (this.projectContainerToUuid.get(id).getController().equals(controller)) {
           return id;
         }
       }
-    }
     return null;
   }
 
