@@ -112,25 +112,19 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 	 */
 	public void setNewSourceNode(IAnchorFigure target, IAnchorFigure source) {
 
-		// first all values are copied from the old Model
-		UUID id = this.oldSourceAnchorModel.getOwnerId();
-		int x = this.oldSourceAnchorModel.getxOrientation();
-		int y = this.oldSourceAnchorModel.getyOrientation();
-		boolean flys = this.oldSourceAnchorModel.isFlying();
-
-		// a flying Anchor can not be transformed into a fixed one
-		if ((source instanceof CSFlyAnchor) && flys) {
-			((CSFlyAnchor) source).setRelation((CSAnchor) target);
-			x = source.getAnchorFactor().x;
-			y = source.getAnchorFactor().y;
-		} else if ((target instanceof CSAnchor) && !flys) {
-			id = ((IControlStructureFigure) source.getOwner()).getId();
-			x = source.getAnchorFactor().x;
-			y = source.getAnchorFactor().y;
-		}
-
-		this.newSourceAnchorModel = new Anchor(flys, x, y, id);
-		this.newTargetAnchorModel = null;
+	  UUID id = ((IControlStructureFigure)source.getOwner()).getId();
+    int x = source.getAnchorFactor().x;;
+    int y = source.getAnchorFactor().y;
+    boolean flys = source instanceof CSFlyAnchor;
+    
+    // a flying Anchor has a relation to its source
+    if (flys) {
+      ((CSFlyAnchor) source).setRelation((CSAnchor) target);
+      x = ((CSFlyAnchor) source).getAnchorPosition().x;
+      y = ((CSFlyAnchor) source).getAnchorPosition().y;
+    }
+    this.newSourceAnchorModel = new Anchor(flys, x, y, id);
+    this.newTargetAnchorModel = null;
 	}
 
 	/**
@@ -146,22 +140,16 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 	 */
 	public void setNewTargetNode(IAnchorFigure target, IAnchorFigure source) {
 
-		// first all values are copied from the old Model
-		UUID id = this.oldTargetAnchorModel.getOwnerId();
-		int x = this.oldTargetAnchorModel.getxOrientation();
-		int y = this.oldTargetAnchorModel.getyOrientation();
-		boolean flys = this.oldTargetAnchorModel.isFlying();
-
-		// a flying Anchor can not be transformed into a fixed one,
-		// to assure that the flys is checked
-		if ((target instanceof CSFlyAnchor) && flys) {
+		UUID id = ((IControlStructureFigure)target.getOwner()).getId();
+		int x = target.getAnchorFactor().x;;
+		int y = target.getAnchorFactor().y;
+		boolean flys = target instanceof CSFlyAnchor;
+		
+    // a flying Anchor has a relation to its source
+		if (flys) {
 			((CSFlyAnchor) target).setRelation((CSAnchor) source);
-			x = target.getAnchorFactor().x;
-			y = target.getAnchorFactor().y;
-		} else if ((target instanceof CSAnchor) && !flys) {
-			id = ((IControlStructureFigure) target.getOwner()).getId();
-			x = target.getAnchorFactor().x;
-			y = target.getAnchorFactor().y;
+			x = ((CSFlyAnchor) target).getAnchorPosition().x;
+	    y = ((CSFlyAnchor) target).getAnchorPosition().y;
 		}
 		this.newSourceAnchorModel = null;
 		this.newTargetAnchorModel = new Anchor(flys, x, y, id);

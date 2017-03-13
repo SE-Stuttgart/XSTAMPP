@@ -225,7 +225,7 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 
 	@Override
 	public void updateAnchor(IAnchor model, Object owner) {
-		((CSFigure) this.getOwner()).removeHighlighter();
+	((CSFigure) this.getOwner()).removeHighlighter();
 		this.anchorFactor.x = model.getxOrientation();
 		this.anchorFactor.y = model.getyOrientation();
 		if(owner instanceof CSAbstractEditPart && ((CSAbstractEditPart) owner).getFigure() != getOwner()){

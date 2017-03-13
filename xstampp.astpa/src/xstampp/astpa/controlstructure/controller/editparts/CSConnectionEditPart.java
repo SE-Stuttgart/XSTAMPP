@@ -31,6 +31,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionDeleteEditPolicy;
+import xstampp.astpa.controlstructure.figure.CSAnchor;
+import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
@@ -157,10 +159,18 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	protected ConnectionAnchor getTargetConnectionAnchor() {
 		IAnchor target = this.dataModel.getConnection(this.ownID)
 				.getTargetAnchor();
+		boolean isCurrentlyFlying = this.targetAnchor instanceof CSFlyAnchor;
 		IComponent targetOwner = this.dataModel.getComponent(target.getOwnerId());
-		Object o = getViewer().getEditPartRegistry().get(targetOwner);
-		
-		this.targetAnchor.updateAnchor(target,o);
+		IControlStructureEditPart owner = (IControlStructureEditPart) getViewer().getEditPartRegistry().get(targetOwner);
+		//if the status of the anchor changes  from/to flying than the 
+		//figure has to be reinitialized
+		if ( isCurrentlyFlying && !target.isFlying()){
+      this.targetAnchor = new CSAnchor(owner.getFigure(), target);
+    }else if ( !isCurrentlyFlying && target.isFlying()){
+      this.targetAnchor = new CSFlyAnchor(owner.getFigure(),this.sourceAnchor, target);
+    }else{
+      this.targetAnchor.updateAnchor(target,owner);
+    }
 		this.getFigure().revalidate();
 		return this.targetAnchor;
 	}
@@ -169,10 +179,18 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	protected ConnectionAnchor getSourceConnectionAnchor() {
 		IAnchor source = this.dataModel.getConnection(this.ownID)
 				.getSourceAnchor();
-
-		IComponent sourceOwner = this.dataModel.getComponent(source.getOwnerId());
-		Object o = getViewer().getEditPartRegistry().get(sourceOwner);
-		this.sourceAnchor.updateAnchor(source,o);
+		boolean isCurrentlyFlying = this.sourceAnchor instanceof CSFlyAnchor;
+    IComponent sourceOwner = this.dataModel.getComponent(source.getOwnerId());
+    IControlStructureEditPart owner = (IControlStructureEditPart) getViewer().getEditPartRegistry().get(sourceOwner);
+    //if the status of the anchor changes  from/to flying than the 
+    //figure has to be reinitialized
+    if ( isCurrentlyFlying && !source.isFlying()){
+      this.sourceAnchor = new CSAnchor(owner.getFigure(), source);
+    }else if ( !isCurrentlyFlying && source.isFlying()){
+      this.sourceAnchor = new CSFlyAnchor(owner.getFigure(),this.targetAnchor, source);
+    }else{
+      this.sourceAnchor.updateAnchor(source,owner);
+    }
 		this.getFigure().revalidate();
 		return this.sourceAnchor;
 	}

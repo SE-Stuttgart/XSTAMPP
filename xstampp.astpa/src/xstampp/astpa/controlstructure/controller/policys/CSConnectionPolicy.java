@@ -13,6 +13,7 @@
 
 package xstampp.astpa.controlstructure.controller.policys;
 
+import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.commands.Command;
@@ -107,6 +108,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,
 				this.dataModel, this.stepID);
 
+    ((AbstractConnectionAnchor)sourceAnchor).setOwner(getHost().getFigure());
 		cmd.setNewSourceNode((IAnchorFigure) targetAnchor,
 				(IAnchorFigure) sourceAnchor);
 
@@ -122,7 +124,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 				.getConnectionEditPart()).getSourceAnchor();
 		ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost())
 				.getTargetConnectionAnchor(request);
-
+		((AbstractConnectionAnchor)targetAnchor).setOwner(getHost().getFigure());
 		ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,
 				this.dataModel, this.stepID);
 
