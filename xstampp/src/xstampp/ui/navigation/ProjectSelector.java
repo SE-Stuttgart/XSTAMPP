@@ -12,10 +12,13 @@ package xstampp.ui.navigation;
 
 import java.util.UUID;
 
+import org.apache.regexp.recompile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.TreeItem;
+
+import xstampp.ui.common.ProjectManager;
 
 /**
  * A subclass of {@link AbstractSelector} for a project selction
@@ -27,7 +30,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class ProjectSelector extends AbstractSelector {
   private IContributionItem openEntry;
   private IAction customAction;
-
+  private boolean isUnsaved,isReadOnly;
   /**
    *
    * @author Lukas Balzer
@@ -39,6 +42,9 @@ public class ProjectSelector extends AbstractSelector {
    */
   public ProjectSelector(TreeItem item, UUID projectId, IProjectSelection parent) {
     super(item, projectId, parent);
+    this.isUnsaved = false;
+    this.isReadOnly = false;
+    refreshPath();
 
   }
 
@@ -57,4 +63,33 @@ public class ProjectSelector extends AbstractSelector {
     }
   }
 
+  @Override
+  public void setUnsaved(boolean unsaved) {
+    if ( unsaved != isUnsaved) {
+      this.isUnsaved = unsaved;
+      refreshPath();
+    }
+  }
+  
+  public void setReadOnly(boolean isReadOnly) {
+    if (this.isReadOnly != isReadOnly) {
+      this.isReadOnly = isReadOnly;
+      refreshPath();
+    }
+  }
+  
+  private void refreshPath() {
+    String text = ProjectManager.getContainerInstance().getTitle(getProjectId());
+    if ( isUnsaved ) {
+      text = "*" + text;
+    }
+    
+    if( isReadOnly ) {
+      text += "[READ ONLY]"; 
+    }
+    getItem().setText(text + "["+ProjectManager.getContainerInstance().getProjectExtension(getProjectId()) + "]");
+    setPathHistory(text);
+  }
+  
 }
+

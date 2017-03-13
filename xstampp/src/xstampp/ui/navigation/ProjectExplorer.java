@@ -60,6 +60,7 @@ import org.eclipse.ui.services.ISourceProviderService;
 
 import messages.Messages;
 import xstampp.Activator;
+import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
@@ -242,7 +243,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
     gc.setFont(defaultFont);
     this.tree.setFont(defaultFont);
     projectItem.setFont(defaultFont);
-    IProjectSelection selector = new ProjectSelector(projectItem, projectId, null);
+    ProjectSelector selector = new ProjectSelector(projectItem, projectId, new HeadSelector());
     
     /**
      * The selection id identifies each step in the current runtime.
@@ -253,20 +254,11 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
     IConfigurationElement projectExt = ProjectManager.getContainerInstance()
         .getConfigurationFor(projectId);
     projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
-    projectItem.setText(
-        ProjectManager.getContainerInstance().getTitle(projectId)
-        + " [" //$NON-NLS-1$
-        + ProjectManager.getContainerInstance().getProjectExtension(projectId)
-        + "]"); //$NON-NLS-1$
+    selector.setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(projectId));
     ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginId,
                                             projectExt.getAttribute("icon")); //$NON-NLS-1$
     projectItem.setImage(imgDesc.createImage());
-    String projectName = projectExt.getAttribute("name") + PATH_SEPERATOR //$NON-NLS-1$
-        + ProjectManager.getContainerInstance().getTitle(projectId);
-    if (!ProjectManager.getContainerInstance().canWriteOnProject(projectId)){
-      projectName += "[Read Only]";
-    }
-    selector.setPathHistory(projectName);
+    
     this.treeItemsToProjectIDs.put(projectId, projectItem);
     // this two for-loops construct the process tree which consists out of
     // steps grouped by categorys, each step or category is represented by a
@@ -274,17 +266,16 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
     // which is accosiated with a Step/CategorySelector which handles the
     // linking to the step editor
     for (IConfigurationElement categoryExt : projectExt.getChildren()) {
-      addTreeItem(categoryExt, selector, projectName, projectId, pluginId);
+      addTreeItem(categoryExt, selector, projectId, pluginId);
     }
   }
 
   private void addTreeItem(IConfigurationElement element,
                            IProjectSelection parent,
-                           String pathName,
                            UUID projectId,
                            String pluginId) {
     String selectionId = element.getAttribute("id") + projectId.toString(); //$NON-NLS-1$
-    String navigationPath = pathName + PATH_SEPERATOR + element.getAttribute("name"); //$NON-NLS-1$
+    String navigationPath = PATH_SEPERATOR + element.getAttribute("name"); //$NON-NLS-1$
     final TreeItem subItem = new TreeItem(parent.getItem(), SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
     subItem.addListener(SWT.Selection, expandListener);
     subItem.setFont(defaultFont);
@@ -325,7 +316,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       }
       if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
         for (IConfigurationElement subEditorConf : this.stepEditorsToStepId.get(element.getAttribute("id"))) { //$NON-NLS-1$
-          addTreeItem(subEditorConf, selector, navigationPath, projectId, pluginId);
+          addTreeItem(subEditorConf, selector, projectId, pluginId);
         }
       }
 
@@ -338,7 +329,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       selector.setPathHistory(navigationPath);
       this.addOrReplaceItem(selectionId, selector, subItem);
       for (IConfigurationElement childExt : element.getChildren()) {
-        addTreeItem(childExt, selector, navigationPath, projectId, pluginId);
+        addTreeItem(childExt, selector, projectId, pluginId);
       }
 
     }
@@ -488,20 +479,36 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
   public void update(Observable dataModelController, Object updatedValue) {
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-    case DELETE:
-    case PROJECT_NAME: {
-      this.updateProjects();
-      break;
-    }
-    case CLEAN_UP: {
-      for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
-        ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
+      case DELETE:
+      case PROJECT_NAME: {
+        this.updateProjects();
+        break;
       }
+      case CLEAN_UP: {
+        for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
+          ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
+        }
+        break;
+      }
+      case SAVE: {
+        IProjectSelection selection = this.selectorsToSelectionId
+            .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+        ((ProjectSelector)selection).setUnsaved(false);
+        
+        break;
+      }
+      case UNSAVED_CHANGES: {
+        IProjectSelection selection = this.selectorsToSelectionId
+            .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+        ((ProjectSelector)selection).setUnsaved(true);
+        ((ProjectSelector)selection).setReadOnly(!ProjectManager.getContainerInstance()
+            .canWriteOnProject(ProjectManager.getContainerInstance().
+                getProjectID(dataModelController)));
+        break;
+      }
+      default:
+        break;
     }
-    default:
-      break;
-    }
-
   }
 
   /**

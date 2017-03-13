@@ -298,7 +298,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 					this.dataInterface.addStyleRange((StyleRange) styleRange);
 				}
 			}
-			dataInterface.setUnsavedAndChanged();
+//			dataInterface.setUnsavedAndChanged();
 //		}
 		String projectDesc= descriptionText.getText();
 		if(projectDesc.contains(System.lineSeparator())){

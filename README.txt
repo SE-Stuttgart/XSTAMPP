@@ -1,6 +1,6 @@
 *****How To Build***********
 
-1. The build requires Maven (>=3.3)
+1. The build requires Maven (>=3.3) and java (>1.7)
 2. go to the xstampp.parent directory in the root path of the xstampp project (where this file is located)
 3. open a command in the xstampp.parent dir and execute 
 	3.1 'mvn clean verify' to build xstampp with xstpa and cast already included

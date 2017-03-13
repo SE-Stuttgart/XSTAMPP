@@ -307,7 +307,7 @@ public class DataModelController extends AbstractDataModel implements
 		this.projectDataManager.prepareForSave();
 		this.exportInformation = null;
 		ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
-		
+		updateValue(ObserverValue.SAVE);
 	}
 
 	@XmlTransient

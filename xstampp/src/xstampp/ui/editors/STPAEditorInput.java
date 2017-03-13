@@ -195,34 +195,7 @@ public class STPAEditorInput implements IEditorInput {
 
       }
     }
-    // if(perspectiveChange){
-    // return;
-    // }
-    // if(!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId().equals(this.perspective)){
-    // IPerspectiveDescriptor descriptor=
-    // PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(this.perspective);
-    // PlatformUI.getWorkbench().getPerspectiveRegistry().revertPerspective(descriptor);
-    // if (descriptor != null && !perspectiveChange) {
-    // perspectiveChange = true;
-    // PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-    // .getActivePage().setPerspective(descriptor);
-    // perspectiveChange = false;
-    // }
-    // }
-    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
-        .setText(Messages.PlatformName + " -" + this.pathHistory); //$NON-NLS-1$
-    // for(String viewId: this.additionalViews){
-    // try {
-    //
-    // if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId)
-    // != null){
-    // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
-    // }
-    // } catch (PartInitException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // }
+    
     this.lock = false;
     if (!this.store.getBoolean(IPreferenceConstants.USE_NAVIGATION_COLORS)) {
       return;

@@ -40,7 +40,8 @@ public abstract class AbstractSelector implements IProjectSelection {
   private String pathHistory;
   private ArrayList<IProjectSelection> children;
   private IProjectSelection parent;
-
+  private boolean active;
+  
   /**
    * constructs a new Selector for the given treeItem and project
    * 
@@ -118,15 +119,23 @@ public abstract class AbstractSelector implements IProjectSelection {
   @Override
   public void activate() {
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
-        .setText(Messages.PlatformName + " -" + this.pathHistory); //$NON-NLS-1$
-
+        .setText(getPathHistory()); //$NON-NLS-1$
   }
 
+  public void setUnsaved(boolean unsaved){
+    
+  }
+  
   @Override
   public void setPathHistory(String pathHistory) {
     this.pathHistory = pathHistory;
   }
 
+  public String getPathHistory() {
+    return parent.getPathHistory() + pathHistory;
+  }
+  
+  
   @Override
   public TreeItem getItem() {
     return this.treeItem;

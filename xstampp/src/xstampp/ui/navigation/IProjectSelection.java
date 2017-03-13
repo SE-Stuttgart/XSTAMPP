@@ -105,6 +105,8 @@ public interface IProjectSelection extends ISelection {
   public void addChild(IProjectSelection child);
 
   public void setSelectionListener(Listener selectionListener);
-
+  
+  public String getPathHistory();
+  
   IDataModel getProjectData();
 }
