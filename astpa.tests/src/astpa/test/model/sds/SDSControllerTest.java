@@ -203,7 +203,6 @@ public class SDSControllerTest {
 		Assert.assertFalse(dataModel.setDesignRequirementTitle(UUID.randomUUID(), ""));
 		
 		// Safety Constraints
-		Assert.assertNull(dataModel.getCausalSafetyConstraint(null));
 		Assert.assertNull(dataModel.addSafetyConstraint("", null));
 		Assert.assertNull(dataModel.addSafetyConstraint(null, ""));
 		Assert.assertFalse(dataModel.removeSafetyConstraint(null));

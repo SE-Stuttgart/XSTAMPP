@@ -330,8 +330,6 @@ public class ObserverTest implements Observer {
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
 		UUID safetyConstraint = this.dataModel.addSafetyConstraint("", "");
 		this.addToNominal(ObserverValue.SAFETY_CONSTRAINT);
-		this.dataModel.getAllCausalSafetyConstraints();
-		this.dataModel.getCausalSafetyConstraint(safetyConstraint);
 		this.dataModel.setSafetyConstraintTitle(safetyConstraint, "");
 		this.dataModel.setSafetyConstraintDescription(safetyConstraint, "desc");
 		this.addToNominal(ObserverValue.SAFETY_CONSTRAINT);

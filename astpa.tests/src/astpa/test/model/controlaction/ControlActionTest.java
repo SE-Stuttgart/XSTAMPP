@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.ControlAction;
 
 /**
@@ -24,6 +25,8 @@ public class ControlActionTest {
 	 */
 	@Test
 	public void controlActionTest() {
+	  DataModelController controller = new DataModelController();
+	  
 		// check parameterized constructor
 		ControlAction controlAction = new ControlAction("Test", "Test description", 1);
 		Assert.assertEquals("Test", controlAction.getTitle());
@@ -31,12 +34,12 @@ public class ControlActionTest {
 		Assert.assertEquals(1, controlAction.getNumber());
 		
 		// add a unsafe control action
-		UUID uca1 = controlAction.addUnsafeControlAction("Test NotGiven", UnsafeControlActionType.NOT_GIVEN);
+		UUID uca1 = controlAction.addUnsafeControlAction(0,"Test NotGiven", UnsafeControlActionType.NOT_GIVEN);
 		UUID uca2 =
-			controlAction.addUnsafeControlAction("Test GivenIncorrectly", UnsafeControlActionType.GIVEN_INCORRECTLY);
+			controlAction.addUnsafeControlAction(1,"Test GivenIncorrectly", UnsafeControlActionType.GIVEN_INCORRECTLY);
 		UUID uca3 =
-			controlAction.addUnsafeControlAction("Test StoppedTooSoon", UnsafeControlActionType.STOPPED_TOO_SOON);
-		UUID uca4 = controlAction.addUnsafeControlAction("Test WrongTiming", UnsafeControlActionType.WRONG_TIMING);
+			controlAction.addUnsafeControlAction(2,"Test StoppedTooSoon", UnsafeControlActionType.STOPPED_TOO_SOON);
+		UUID uca4 = controlAction.addUnsafeControlAction(3,"Test WrongTiming", UnsafeControlActionType.WRONG_TIMING);
 		Assert.assertEquals(4, controlAction.getUnsafeControlActions().size());
 		Assert.assertEquals(1, controlAction.getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY).size());
 		Assert.assertEquals(1, controlAction.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN).size());

@@ -42,10 +42,10 @@ public class ExtendedDataModelTest {
     Assert.assertNotNull(rule1Id1);
     UUID ltl1Id = dataModel.addRuleEntry(ScenarioType.CUSTOM_LTL, new AbstractLtlProviderData(),controlAction , IValueCombie.TYPE_ANYTIME);
     Assert.assertNotNull(ltl1Id);
-    Assert.assertEquals(1, dataModel.getAllRefinedRules(true, false, false).size());
-    Assert.assertEquals(1, dataModel.getAllRefinedRules(false, true, false).size());
-    Assert.assertEquals(1, dataModel.getAllRefinedRules(false, false, true).size());
-    Assert.assertEquals(3, dataModel.getAllRefinedRules(true, true, true).size());
+    Assert.assertEquals(1, dataModel.getAllScenarios(true, false, false).size());
+    Assert.assertEquals(1, dataModel.getAllScenarios(false, true, false).size());
+    Assert.assertEquals(1, dataModel.getAllScenarios(false, false, true).size());
+    Assert.assertEquals(3, dataModel.getAllScenarios(true, true, true).size());
     
   }
 
