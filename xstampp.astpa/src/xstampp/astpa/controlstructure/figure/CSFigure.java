@@ -232,7 +232,6 @@ public abstract class CSFigure extends Figure implements
 	public ConnectionAnchor getConnectionAnchor(Point ref) {
 
 		CSAnchor temp = new CSAnchor(this, ref,this.store);
-    System.out.println(temp.getAnchorPosition());
 		return temp;
 	}
 

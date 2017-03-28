@@ -106,7 +106,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		this.translateFromParent(rec);
 		this.highlighter.setBounds(rec);
 		this.highlighter.setVisible(true);
-		System.out.println("visible: " +rec);
 	}
 
 	/**
@@ -177,6 +176,9 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
 	}
 
+	public void setConstraint(Rectangle r) {
+	  setBounds(getBounds().union(r));
+	}
 	@Override
 	public void removeHighlighter() {
 		if (this.highlighter != null) {

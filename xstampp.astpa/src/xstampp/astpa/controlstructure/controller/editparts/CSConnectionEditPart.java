@@ -93,8 +93,8 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	
 	@Override
 	protected IFigure createFigure() {
-
 		ConnectionFigure connection = new ConnectionFigure(getId());
+	  setFigure(connection);
 		connection.setPreferenceStore(this.store);
 		connection.addMouseMotionListener(this);
 		connection.setLayoutManager(new XYLayout());
@@ -120,12 +120,10 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 	
 	@Override
 	public void refresh() {
-		
+		this.getConnectionFigure().setFixed(true);
 		super.refresh();
 		this.refreshChildren();
 		this.getViewer().getControl().redraw();
-		
-		
 		for (Object child : this.getChildren()) {
 			((IControlStructureEditPart) child).refresh();
 		}

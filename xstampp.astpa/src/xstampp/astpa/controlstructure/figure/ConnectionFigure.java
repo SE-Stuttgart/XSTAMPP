@@ -32,15 +32,26 @@ import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
 public class ConnectionFigure extends PolylineConnection implements IControlStructureFigure{
 
-	private int[] arrowHead;
+	private static final int[] arrowHead = new int[]{0,0,-10,4,- 10,-4};
 	private PolylineConnection feedback;
 	private UUID currentFeedbackId;
 	private UUID id;
 	private IPreferenceStore store;
+  private IAnchorFigure targetAnchor;
+  private IAnchorFigure sourceAnchor;
+	float alpha;
+  private Rectangle rect;
+	private Point oldPoint;
+  private boolean fixed;
+	
 	public ConnectionFigure(UUID id) {
 		super();
 		this.id = id;
 	}
+	
+	public void setFixed(boolean fixed){
+      this.fixed = fixed;
+  }
 	
 	@Override
 	protected boolean useLocalCoordinates() {
@@ -50,44 +61,39 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	private static final int ARROW_HEIGHT=6; 
 	@Override
 	public void paintFigure(Graphics graphics) {
-		super.paintFigure(graphics);
-//		updateFeedback();
-		Point p1 = getPoints().getPoint(getPoints().size() -1);
-		Point p2 = getPoints().getPoint(getPoints().size() - 2);
-		Point p3 = new Point();
-		Point p4 = new Point();
-		graphics.setForegroundColor(ColorConstants.black);
-		graphics.setBackgroundColor(ColorConstants.black);
-		if(p2.y != p1.y){
-			int y_of = (p2.y -p1.y)/Math.abs(p2.y-p1.y);
-			p4.x = p1.x - ARROW_WIDTH;
-			p4.y = p1.y + y_of *ARROW_HEIGHT;
-
-			p3.x = p1.x + ARROW_WIDTH;
-			p3.y = p1.y + y_of *ARROW_HEIGHT;
-		}else if(p2.x != p1.x){
-			int x_of = (p2.x -p1.x)/Math.abs(p2.x-p1.x);
-			p4.x = p1.x + x_of * ARROW_HEIGHT;
-			p4.y = p1.y -ARROW_WIDTH;
-
-			p3.x = p1.x + x_of * ARROW_HEIGHT;
-			p3.y = p1.y + ARROW_WIDTH;
-		}else{
-			p4.x = p1.x +3;
-			p4.y = p1.y -3;
-
-			p3.x = p1.x + 3;
-			p3.y = p1.y + 3;
-		}
-		Rectangle rect= new Rectangle(p3, p4);
-		graphics.setClip(rect.getUnion(p1));
-		if(arrowHead != null){
-			graphics.setBackgroundColor(xstampp.util.ColorManager.COLOR_WHITE);
-			graphics.fillPolygon(arrowHead);
-			graphics.setBackgroundColor(xstampp.util.ColorManager.COLOR_BLACK);
-		}
-		arrowHead = new int[]{p1.x,p1.y,p3.x,p3.y,p4.x,p4.y};
-		graphics.fillPolygon(arrowHead);
+    super.paintFigure(graphics);
+    if(fixed){
+      graphics.pushState();
+  		Point p1 = getPoints().getPoint(getPoints().size() -1);
+  		Point p2 = getPoints().getPoint(getPoints().size() - 2);
+      int x = p1.x - p2.x;
+      int y = p1.y - p2.y;
+      Point _point = new Point(p1);
+  		alpha = 0;
+      if(x < 0){
+  			alpha = 180;
+  			_point.translate(-1, 0);
+  		}else if(y < 0){
+        alpha = 270;
+        _point.translate(0, -1);
+  		}else if(y > 0){
+        alpha = 90;
+        _point.translate(0, 1);
+  		} else {
+        _point.translate(1, 0);
+  		}
+  		rect= new Rectangle(p1.getTranslated(-10, -10), p1.getTranslated(10, 10));
+  		graphics.setClip(rect);
+  		graphics.setBackgroundColor(xstampp.util.ColorManager.COLOR_BLACK);
+      graphics.translate(_point.x, _point.y);
+  		graphics.rotate(alpha);
+  		graphics.fillPolygon(arrowHead);
+      graphics.rotate(-alpha);
+      graphics.translate(-_point.x, -_point.y);
+      this.oldPoint = _point;
+      graphics.restoreState();
+    }
+    
 	}
 	@Override
 	protected void paintChildren(Graphics graphics) {
@@ -168,6 +174,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		setForegroundColor(ColorConstants.black);
 		
 	}
+	
 	@Override
 	protected boolean childrenContainsPoint(int x, int y) {
 		Point p= new Point(x, y);
@@ -306,6 +313,16 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	@Override
 	public void setDirty() {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	@Override
+	public PointList getPoints() {
+	  PointList list = super.getPoints();
+	  for(int i = list.size()-1;i>=1; i--){
+	    if(list.getPoint(i).equals(list.getPoint(i - 1))){
+	      list.removePoint(i);
+	    }
+	  }
+	  return list;
 	}
 }

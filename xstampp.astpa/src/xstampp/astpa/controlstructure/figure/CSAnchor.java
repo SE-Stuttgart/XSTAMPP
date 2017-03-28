@@ -36,6 +36,7 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	private static final int MAX_PERCENT = 100;
 	private Point lastRef;
 	private Rectangle refLayout;
+	private IFigure connection;
 
 
 	/**
@@ -178,8 +179,6 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 //		boolean  underBisect_Inv = inv_ascned <= ratio;
 		boolean  underBisect = TEST_calculateLowerBisection(ref.preciseX(), ref.preciseY());
     boolean  underBisect_Inv = TEST_calculateInverseBisetion(ref.preciseX(), ref.preciseY());
-    System.out.println("-----------");
-    System.out.print("Point: " +ref + " in B: " +underBisect+ " int A: "+underBisect_Inv);
 		if(underBisect && underBisect_Inv){
 			this.anchorFactor.x = (int) (ref.x / getOwner().getBounds().preciseWidth() * MAX_PERCENT);
 			this.anchorFactor.y = MAX_PERCENT;
@@ -199,7 +198,6 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 		this.anchorFactor.x = Math.min(100, this.anchorFactor.x);
 		this.anchorFactor.y = Math.max(0, this.anchorFactor.y);
 		this.anchorFactor.y = Math.min(100, this.anchorFactor.y);
-		System.out.println(anchorFactor);
 	}
 
 	/**
@@ -230,6 +228,8 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 		this.anchorFactor.y = model.getyOrientation();
 		if(owner instanceof CSAbstractEditPart && ((CSAbstractEditPart) owner).getFigure() != getOwner()){
 			this.setOwner(((CSAbstractEditPart) owner).getFigure());
+		}
+		if(getConnection() != null) {
 		}
 	}
 
@@ -401,5 +401,19 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	public void setPreferenceStore(IPreferenceStore store) {
 		this.store = store;
 	}
+
+  /**
+   * @return the connection
+   */
+  public IFigure getConnection() {
+    return connection;
+  }
+
+  /**
+   * @param connection the connection to set
+   */
+  public void setConnection(IFigure connection) {
+    this.connection = connection;
+  }
 
 }

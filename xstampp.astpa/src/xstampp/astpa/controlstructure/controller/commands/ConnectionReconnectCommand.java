@@ -79,7 +79,7 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 			return false;
 		} else if (this.newSourceAnchorModel.equals(this.oldTargetAnchorModel)) {
 			return false;
-		} else if (this.oldTargetAnchorModel.isFlying()) {
+		} else if (this.oldTargetAnchorModel.isFlying() && this.newSourceAnchorModel.isFlying()) {
 			return false;
 		}
 		return true;
@@ -90,7 +90,7 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 			return false;
 		} else if (this.oldSourceAnchorModel.equals(this.newTargetAnchorModel)) {
 			return false;
-		} else if (this.oldSourceAnchorModel.isFlying()) {
+		} else if (this.oldSourceAnchorModel.isFlying() && this.newTargetAnchorModel.isFlying()) {
 			return false;
 		}
 		return true;
@@ -113,12 +113,11 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 	public void setNewSourceNode(IAnchorFigure target, IAnchorFigure source) {
 
 	  UUID id = ((IControlStructureFigure)source.getOwner()).getId();
-    int x = source.getAnchorFactor().x;;
+    int x = source.getAnchorFactor().x;
     int y = source.getAnchorFactor().y;
     boolean flys = source instanceof CSFlyAnchor;
-    
     // a flying Anchor has a relation to its source
-    if (flys) {
+    if (flys && target instanceof CSAnchor) {
       ((CSFlyAnchor) source).setRelation((CSAnchor) target);
       x = ((CSFlyAnchor) source).getAnchorPosition().x;
       y = ((CSFlyAnchor) source).getAnchorPosition().y;
@@ -146,7 +145,7 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 		boolean flys = target instanceof CSFlyAnchor;
 		
     // a flying Anchor has a relation to its source
-		if (flys) {
+		if (flys && source instanceof CSAnchor) {
 			((CSFlyAnchor) target).setRelation((CSAnchor) source);
 			x = ((CSFlyAnchor) target).getAnchorPosition().x;
 	    y = ((CSFlyAnchor) target).getAnchorPosition().y;

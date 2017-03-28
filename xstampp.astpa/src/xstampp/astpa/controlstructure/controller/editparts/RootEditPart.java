@@ -96,7 +96,6 @@ public class RootEditPart extends CSAbstractEditPart {
 			((CSAbstractEditPart) child).refreshVisuals();
 		}
 		this.refreshConnections();
-		
 	}
 	
 

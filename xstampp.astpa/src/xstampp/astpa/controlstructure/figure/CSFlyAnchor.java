@@ -87,6 +87,9 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
 	public void updateAnchor(IAnchor model,Object owner) {
 		this.offset.setWidth(model.getxOrientation());
 		this.offset.setHeight(model.getyOrientation());
+		if(this.getOwner() != null) {
+  		this.getOwner().repaint();
+		}
 	}
 
 	@Override

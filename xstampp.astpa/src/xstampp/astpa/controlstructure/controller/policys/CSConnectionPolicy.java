@@ -100,7 +100,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		((IControlStructureFigure) this.getHostFigure()).enableOffset();
 		CSConnection conn = (CSConnection) request.getConnectionEditPart()
 				.getModel();
-
+		((CSConnectionEditPart)request.getConnectionEditPart()).getConnectionFigure().setFixed(false);
 		ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost())
 				.getSourceConnectionAnchor(request);
 		ConnectionAnchor targetAnchor = ((CSConnectionEditPart) request
@@ -120,6 +120,7 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		((IControlStructureFigure) this.getHostFigure()).enableOffset();
 		CSConnection conn = (CSConnection) request.getConnectionEditPart()
 				.getModel();
+    ((CSConnectionEditPart)request.getConnectionEditPart()).getConnectionFigure().setFixed(false);
 		ConnectionAnchor sourceAnchor = ((CSConnectionEditPart) request
 				.getConnectionEditPart()).getSourceAnchor();
 		ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost())
