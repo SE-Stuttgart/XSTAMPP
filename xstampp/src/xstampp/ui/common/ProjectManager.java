@@ -322,13 +322,16 @@ public class ProjectManager implements IPropertyChangeListener {
     if (this.projectContainerToUuid.get(projectId) == null || saveAs) {
       return this.saveDataModelAs(projectId);
     }
+    final ProjectFileContainer projectFileContainer = this.projectContainerToUuid.get(projectId);
+    if (projectFileContainer.isLock()) {
+      return false;
+    }
     final IDataModel tmpController = this.projectContainerToUuid.get(projectId).getController();
 
     tmpController.prepareForSave();
-    
+
     final Job save = tmpController.doSave(projectContainerToUuid.get(projectId).getProjectFile(),
-                                          ProjectManager.getLOGGER(),
-                                          isUIcall);
+        ProjectManager.getLOGGER(), isUIcall);
     if (save == null) {
       return false;
     }
@@ -337,6 +340,7 @@ public class ProjectManager implements IPropertyChangeListener {
 
       @Override
       public void done(IJobChangeEvent event) {
+        projectFileContainer.setLock(false);
         if (event.getResult().isOK()) {
           try {
             tmpController.setStored();
@@ -348,6 +352,7 @@ public class ProjectManager implements IPropertyChangeListener {
 
       }
     });
+    projectFileContainer.setLock(true);
     save.schedule();
     return true;
   }
@@ -393,8 +398,7 @@ public class ProjectManager implements IPropertyChangeListener {
     String file = fileDialog.open();
     if (this.projectContainerToUuid.containsValue(new File(file))) {
       MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-          Messages.ProjectManager_ProjectIsAlreadyOpen,
-          Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
+          Messages.ProjectManager_ProjectIsAlreadyOpen, Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
       return null;
     }
     // if the file is not null but also not located in the workspace the project
@@ -408,12 +412,12 @@ public class ProjectManager implements IPropertyChangeListener {
         // if the imported file already exists and the user wants to overwrite
         // it with the new one,
         // the current project is searched and removed
-        if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-            Messages.FileExists,
+        if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages.FileExists,
             String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, outer.getName()))) {
 
           for (Entry<UUID, ProjectFileContainer> containerEntry : projectContainerToUuid.entrySet()) {
-            if (containerEntry.getValue().getProjectFile().equals(copy) && !removeProjectData(containerEntry.getKey())) {
+            if (containerEntry.getValue().getProjectFile().equals(copy)
+                && !removeProjectData(containerEntry.getKey())) {
               MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
               return null;
             }
@@ -500,7 +504,7 @@ public class ProjectManager implements IPropertyChangeListener {
   public boolean getUnsavedChanges() {
     for (UUID id : this.getProjectKeys()) {
       if (this.projectContainerToUuid.get(id).getController().hasUnsavedChanges()) {
-        
+
         return true;
       }
     }
@@ -508,41 +512,39 @@ public class ProjectManager implements IPropertyChangeListener {
   }
 
   /**
-   * checks and asks the user wether the application can be closed if there
-   * are unsafed changes of unfinished jobs.
+   * checks and asks the user wether the application can be closed if there are
+   * unsafed changes of unfinished jobs.
    * 
    * @return if the application can be safely closed
    */
   public boolean checkCloseApplication() {
     if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
-      MessageDialog.openError(null,
-                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
-                      Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
-                       + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
+      MessageDialog.openError(null, Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
+          Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
+              + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
       return false;
     }
     if (ProjectManager.getContainerInstance().getUnsavedChanges()) {
-      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(),
-                                               Messages.PlatformName, null,
+      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.PlatformName, null,
           Messages.ThereAreUnsafedChangesDoYouWantToStoreThem, MessageDialog.CONFIRM,
           new String[] { Messages.Store, Messages.Discard, Messages.Abort }, 0);
       int resultNum = dialog.open();
       switch (resultNum) {
-        case -1:
-          return false;
-        case 0:
-          return ProjectManager.getContainerInstance().saveAllDataModels();
-        case 1:
-          return true;
-        case 2:
-          return false;
-        default:
-          break;
+      case -1:
+        return false;
+      case 0:
+        return ProjectManager.getContainerInstance().saveAllDataModels();
+      case 1:
+        return true;
+      case 2:
+        return false;
+      default:
+        break;
       }
     }
     return true;
   }
-  
+
   /**
    * Calls the observer of the data model with the given value
    * 
@@ -582,10 +584,10 @@ public class ProjectManager implements IPropertyChangeListener {
     return null;
   }
 
-  public boolean canWriteOnProject(UUID projectId){
+  public boolean canWriteOnProject(UUID projectId) {
     return this.projectContainerToUuid.get(projectId).getProjectFile().canWrite();
   }
-  
+
   /**
    * 
    * @author Lukas Balzer
@@ -595,11 +597,11 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return the id or null
    */
   public UUID getProjectID(Observable controller) {
-      for (UUID id : this.projectContainerToUuid.keySet()) {
-        if (this.projectContainerToUuid.get(id).getController().equals(controller)) {
-          return id;
-        }
+    for (UUID id : this.projectContainerToUuid.keySet()) {
+      if (this.projectContainerToUuid.get(id).getController().equals(controller)) {
+        return id;
       }
+    }
     return null;
   }
 
@@ -667,7 +669,7 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return whether the removal was succesful or not
    */
   public boolean removeProjectData(UUID projectId) {
-    if(projectContainerToUuid.containsKey(projectId)){
+    if (projectContainerToUuid.containsKey(projectId)) {
       File projectFile = this.projectContainerToUuid.get(projectId).getProjectFile();
       if (!projectFile.exists() || projectFile.delete()) {
         this.projectContainerToUuid.remove(projectId).getController().updateValue(ObserverValue.DELETE);
@@ -717,7 +719,7 @@ public class ProjectManager implements IPropertyChangeListener {
    * @return the extension which is registered for the project
    */
   public String getProjectExtension(UUID id) {
-    if(this.projectContainerToUuid.containsKey(id)){
+    if (this.projectContainerToUuid.containsKey(id)) {
       return this.projectContainerToUuid.get(id).getExtension();
     }
     return new String();

@@ -16,6 +16,7 @@ import org.apache.regexp.recompile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
 import xstampp.ui.common.ProjectManager;
@@ -87,8 +88,16 @@ public class ProjectSelector extends AbstractSelector {
     if( isReadOnly ) {
       text += "[READ ONLY]"; 
     }
-    getItem().setText(text + "["+ProjectManager.getContainerInstance().getProjectExtension(getProjectId()) + "]");
-    setPathHistory(text);
+    final String newHeader = text;
+    Display.getDefault().asyncExec(new Runnable() {
+      
+      @Override
+      public void run() {
+
+        getItem().setText(newHeader + "["+ProjectManager.getContainerInstance().getProjectExtension(getProjectId()) + "]"); 
+        setPathHistory(newHeader);       
+      }
+    });
   }
   
 }

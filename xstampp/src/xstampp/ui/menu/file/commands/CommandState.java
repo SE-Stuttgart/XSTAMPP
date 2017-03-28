@@ -136,6 +136,7 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
     IDataModel dataModel = (IDataModel) arg0;
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
+    case SAVE:
     case UNSAVED_CHANGES:
       setStatusLine();
       if (dataModel.hasUnsavedChanges()) {

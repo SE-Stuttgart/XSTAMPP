@@ -33,6 +33,7 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
   private String projectName;
   private String extension;
   private String folderPath;
+  private boolean lock;
 
   /**
    * constructs an instance of {@link ProjectFileContainer} which contains the
@@ -56,6 +57,7 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
     Assert.isTrue(dotSeperatedPath.length == 2);
     this.extension = dotSeperatedPath[1];
     this.projectName = dotSeperatedPath[0];
+    this.lock = false;
   }
 
   /**
@@ -124,6 +126,20 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
       return nameSortPref * getProjectName().compareTo(other.getProjectName());
     }
     return extCompare;
+  }
+
+  /**
+   * @return the lock
+   */
+  public boolean isLock() {
+    return lock && !this.getController().hasUnsavedChanges();
+  }
+
+  /**
+   * @param lock the lock to set
+   */
+  public void setLock(boolean lock) {
+    this.lock = lock;
   }
 
 }

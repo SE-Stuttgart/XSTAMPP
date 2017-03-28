@@ -46,8 +46,7 @@ public abstract class AbstractDataModel extends Observable implements IDataModel
   @Override
   public void setStored() {
     this.unsavedChanges = false;
-    this.setChanged();
-    this.notifyObservers(ObserverValue.UNSAVED_CHANGES);
+    updateValue(ObserverValue.SAVE);
   }
 
   protected void setUnsavedAndChanged(ObserverValue value) {

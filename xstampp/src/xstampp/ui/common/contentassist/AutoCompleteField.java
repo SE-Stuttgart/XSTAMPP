@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * A custom autocomplete textfield adapter
+ * A custom autocomplete textfield adapter.
  * 
  * @author Benedikt Markt
  * 
@@ -39,16 +39,6 @@ public class AutoCompleteField {
    * 
    * @author Benedikt Markt
    * @param control TODO
-   * @param control
-   *          The control to apply autocomplete to
-   * @param controlContentAdapter
-   *          IContentAdapter
-   * @param literals
-   *          the strings to link
-   * @param labels
-   *          short descriptive strings for each item
-   * @param descriptions
-   *          long descriptions for eacht item
    */
   public AutoCompleteField(LinkProposal[] proposals, Control control) {
     this.control = control;
@@ -80,17 +70,12 @@ public class AutoCompleteField {
 
   /**
    * This function calculates a position by merging two Point and sets it as the
-   * popups Position
+   * popups Position.
    * 
    * @author Lukas Balzer
    * 
    * @param relativeMouse
    *          the position of the mouse relative to the active cell
-   * @param cellPosition
-   *          the position of the cell relative to the parent grid
-   * @param topOffset
-   *          an offset which can be set to move the dialog relative to the
-   *          mouse
    */
   public void setPopupPosition(Point relativeMouse) {
     shell.setMousePosition(relativeMouse);
@@ -107,39 +92,37 @@ public class AutoCompleteField {
   }
 
   /**
-   * Opens the proposal popup immediately
+   * Opens the proposal popup immediately.
    * 
    * @author Benedikt Markt
    * 
    */
   public void openPopup() {
-//    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-      shell.createControl(control);
-//    } else {
-//      this.contentProposalAdapter.openProposalPopup();
-//    }
+    shell.createControl(control);
   }
 
   public void openShell() {
     shell.createControl(control);
   }
+  
   /**
-   * Closes the proposal popup immediately
+   * Closes the proposal popup immediately.
    * 
    * @author Benedikt Markt
    * 
    */
   public void closePopup() {
-//    this.contentProposalAdapter.closeProposalPopup();
-//    this.contentProposalAdapter.getControl().dispose();
-//    for (IContentProposalListener proposalListener : listeners) {
-//      this.contentProposalAdapter.removeContentProposalListener(proposalListener);
-//    }
+    // close completely handled by the popup itself
   }
 
+  /**
+   * sets the listener of the content assist popup.
+   * 
+   * @param listener a proposal listener that is called in
+   *        the case that a proposal is accepted.
+   */
   public void setProposalListener(IContentProposalListener listener) {
     listeners.add(listener);
     shell.setProposalListener(listener);
-//    getContentProposalAdapter().addContentProposalListener(listener);
   }
 }

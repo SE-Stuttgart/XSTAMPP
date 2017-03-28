@@ -45,20 +45,13 @@ public class LinkingShell {
   private Point labelShellSize;
   private Point descShellSize;
   private int shellsOffset = 10;
+  
   public LinkingShell() {
     this.mouseLoc = new Point(0, 0);
     descShellSize = new Point(300, 300);
     labelShellSize = new Point(200, 300);
   }
 
-  /**
-   * 
-   * @param proposalIds the UUID's of the proposal entries if available 
-   *                      this can be used to identify an entry
-   * @param literals the literals e.g. the ids of the proposed entries
-   * @param labels the titles or short descriptions of the proposals
-   * @param descriptions the descriptions, e.g. the case description
-   */
   public void setNextProposal(LinkProposal[] proposals) {
     this.proposals = proposals;
   }
