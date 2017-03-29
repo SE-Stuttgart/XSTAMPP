@@ -229,7 +229,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 	                         ICausalFactor factor,
 	                         ICausalComponent component,
 	                         Map<UUID,ICorrespondingUnsafeControlAction> ucaMap){
-	  GridRow entryRow = new GridRow(columns.length,1,new int[]{2,3,6});
+	  GridRow entryRow;
     
     /*
      * Depending on whether the entry is linked to a uca or not
@@ -237,10 +237,10 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
      * or linkable
      */
     if(entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink())){
-      addUCAEntry(entryRow, entry, factor, component, ucaMap);
+      entryRow = addUCAEntry(entry, factor, component, ucaMap);
       
     }else{
-      addHazardEntry(entryRow, entry, factor, component);
+      entryRow = addHazardEntry(entry, factor, component);
     }
     entryRow.addCell(6,new CellEditorFactorNote(getGridWrapper(),getDataModel(),component.getId(), factor.getId(),entry));
     factorRow.addChildRow(entryRow);
@@ -253,11 +253,12 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 	 * <li>a row for each scenario
 	 * </ul>
 	 */
-  private void addUCAEntry(GridRow entryRow, ICausalFactorEntry entry,
+  private GridRow addUCAEntry(ICausalFactorEntry entry,
                           ICausalFactor factor,
                           ICausalComponent component,
                           Map<UUID,ICorrespondingUnsafeControlAction> ucaMap){
-	  //add the uca id + description in a read only cell with an delete button
+    GridRow entryRow = new GridRow(columns.length,1,new int[]{2,3,6});
+    //add the uca id + description in a read only cell with an delete button
 	  String ucaDescription = ucaMap.get(entry.getUcaLink()).getTitle() + "\n"+ucaMap.get(entry.getUcaLink()).getDescription();
     entryRow.addCell(2,new CellEditorCausalEntry(getGridWrapper(), getDataModel(), ucaDescription,
                                       component.getId(), factor.getId(), entry.getId()));
@@ -274,32 +275,57 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
     }
     entryRow.addCell(3,new GridCellText(linkingString));
 
-   
+    //adding two blank cells as placeholder for the scenario rows which have two cells each
+    entryRow.addCell(4,new GridCellColored(getGridWrapper(),CausalFactorsView.PARENT_BACKGROUND_COLOR));
+    /*
+     * The Safety Constraint is dispayed if available, if the text is
+     * null than a new entry can be added or one of the existing constraints 
+     * can be imported
+     */
+    if (entry.getConstraintText() == null) {
+      GridCellText constraintsCell = new GridCellText(new String());
+      constraintsCell.addCellButton(new NewConstraintButton(component.getId(), factor.getId(),entry.getId()));
+      constraintsCell.addCellButton(new CellButtonImportConstraint(getGrid(),entry,component.getId(), factor.getId(),getDataModel()));
+      entryRow.addCell(5,constraintsCell);
+    } else {
+      entryRow.addCell(5,new CellEditorSafetyConstraint(getGridWrapper(), getDataModel(), component.getId(), factor.getId(),entry));
+    }
+    
+    //Creating a child row for displaying and editing of the causal scenarios
+    entryRow.addChildRow(createScenarioRow(entry, factor, component));
+    
+    return entryRow;
+  }
+	
+  private GridRow createScenarioRow(ICausalFactorEntry entry,
+      ICausalFactor factor,
+      ICausalComponent component){
+    GridRow scenarioRow = new GridRow(columns.length);
+    
     if(entry.getScenarioLinks() != null){
       for(UUID scenarioId : entry.getScenarioLinks()){
-        GridRow scenarioRow = new GridRow(columns.length);
         ScenarioType type = getDataModel().getScenarioType(scenarioId);
         if(type != null){
-          scenarioRow.addCell(4,new CellEditorCausalScenario(getGridWrapper(), getDataModel(),entry,component,factor, scenarioId, type));
-          scenarioRow.addCell(5,new CellEditorCausalConstraint(getGridWrapper(), getDataModel(), scenarioId, type));
-          entryRow.addChildRow(scenarioRow);
+          scenarioRow.addCell(4,new CellEditorCausalScenario(getGridWrapper(),
+                              getDataModel(),
+                              entry,component,factor, scenarioId, type));
+          scenarioRow.addCell(5,new CellEditorCausalConstraint(getGridWrapper(),
+                              getDataModel(), scenarioId, type));
         }
       }
     }
-    //adding two blank cells as placeholder for the scenario rows which have two cells each
-    entryRow.addCell(4,new GridCellColored(getGridWrapper(),CausalFactorsView.PARENT_BACKGROUND_COLOR));
-    entryRow.addCell(5,new GridCellColored(getGridWrapper(),CausalFactorsView.PARENT_BACKGROUND_COLOR));
     
-    GridRow addScenarioRow = new GridRow(columns.length);
     GridCellText scenarioCell = new GridCellText(new String());
     scenarioCell.addCellButton(new CellButtonLinking<ContentProviderScenarios>(getGridWrapper(), 
-              new ContentProviderScenarios(getDataModel(), component.getId(), factor.getId(), entry),factor.getId()));
+              new ContentProviderScenarios(getDataModel(),
+                  component.getId(), factor.getId(), entry),factor.getId()));
     scenarioCell.addCellButton(new CellButtonAddScenario(entry, component.getId(), factor.getId(), getDataModel()));
-    addScenarioRow.addCell(4,scenarioCell);
-    addScenarioRow.addCell(5,new GridCellText("test"));
-    entryRow.addChildRow(addScenarioRow);
+    scenarioRow.addCell(4,scenarioCell);
+    scenarioRow.addCell(5,new GridCellText(""));
+    
+    return scenarioRow;
   }
-	
+  
   /**
    * adds the:</br><h5>uca row with</h5><ul>
    * <li>an empty cell with a delete (read only)
@@ -308,9 +334,10 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
    * <li>a cell for importing or creating a new safety constraint
    * </ul>
    */
-  private void addHazardEntry(GridRow entryRow, ICausalFactorEntry entry,
+  private GridRow addHazardEntry(ICausalFactorEntry entry,
       ICausalFactor factor,
       ICausalComponent component){
+    GridRow entryRow = new GridRow(columns.length,1,new int[]{2,3,6});
 
     entryRow.addCell(2,new CellEditorCausalEntry(getGridWrapper(), getDataModel(), new String(),
         component.getId(), factor.getId(), entry.getId()));
@@ -332,7 +359,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
     } else {
       entryRow.addCell(5,new CellEditorSafetyConstraint(getGridWrapper(), getDataModel(), component.getId(), factor.getId(),entry));
     }
-  
+    return entryRow;
   }
 
 	@Override

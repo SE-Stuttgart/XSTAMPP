@@ -54,9 +54,6 @@ public class CellButtonImportConstraint extends CellButton {
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     List<ISafetyConstraint> safetyConstraints = dataModel.getCorrespondingSafetyConstraints();
     
-    if (safetyConstraints.size() <= 0) {
-      return;
-    }
     List<LinkProposal> proposals = new ArrayList<>();
     String tmp;
     for (int i = 0; i < safetyConstraints.size(); i++) {

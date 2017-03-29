@@ -991,7 +991,7 @@ public class SystemDescriptionView extends StandartEditorPart implements ITextEd
 	
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
-		propertyChange(null);
+//		propertyChange(null);
 		super.partActivated(arg0);
 	}
 
