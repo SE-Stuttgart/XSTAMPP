@@ -69,8 +69,8 @@ public class STPALoadJob extends AbstractLoadJob {
 	protected IStatus run(IProgressMonitor monitor) {
 		setName("Loading " +getFile().getName() + "...");
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
-		FileInputStream reader;
-		try {
+		try(StringWriter writer = new StringWriter();
+	      FileInputStream inputStream = new FileInputStream(getFile());) {
 			// validate the file
 			URL schemaFile;
 			if(this.getFile().getName().endsWith("haz")){
@@ -78,8 +78,7 @@ public class STPALoadJob extends AbstractLoadJob {
 			}else{
 				schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
 			}
-			StringWriter writer = new StringWriter();
-      IOUtils.copy(new FileInputStream(getFile()), writer, "UTF-8");
+      IOUtils.copy(inputStream, writer, "UTF-8");
       String line = writer.toString();
      //gt and lt are replaced by null chars for the time of unescaping
       line = line.replace("\0", "\0\0\0\0"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -97,7 +96,6 @@ public class STPALoadJob extends AbstractLoadJob {
 			line = line.replace("\0","<"); //$NON-NLS-1$ //$NON-NLS-2$
 			Reader stream= new StringReader(line); 
 			Source xmlFile = new StreamSource(stream,getFile().toURI().toString());
-			
 			SchemaFactory schemaFactory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(schemaFile);

@@ -98,7 +98,6 @@ public class ProjectSelector extends AbstractSelector {
           getItem().setText(newHeader + "["+ProjectManager.getContainerInstance().getProjectExtension(getProjectId()) + "]"); 
           setPathHistory(newHeader);
         }catch(SWTException exc) {
-          ProjectManager.getLOGGER().error("Project tree might be outdated!");
         }
       }
     });
