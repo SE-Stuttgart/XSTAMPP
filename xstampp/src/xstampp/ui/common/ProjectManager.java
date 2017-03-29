@@ -371,9 +371,10 @@ public class ProjectManager implements IPropertyChangeListener {
     return temp;
   }
 
-  private void synchronizeProjectName(UUID projectID) {
-    File saveFile = projectContainerToUuid.get(projectID).getProjectFile();
-    renameProject(projectID, saveFile.getName().split("\\.")[0]); //$NON-NLS-1$
+  private void synchronizeProjectName(UUID projectId) {
+    File saveFile = projectContainerToUuid.get(projectId).getProjectFile();
+
+    this.projectContainerToUuid.get(projectId).setProjectName(saveFile.getName().split("\\.")[0]);
   }
 
   /**
@@ -585,7 +586,11 @@ public class ProjectManager implements IPropertyChangeListener {
   }
 
   public boolean canWriteOnProject(UUID projectId) {
-    return this.projectContainerToUuid.get(projectId).getProjectFile().canWrite();
+    File projFile = this.projectContainerToUuid.get(projectId).getProjectFile();
+    if(!projFile.exists()) {
+      return true;
+    }
+    return projFile.canWrite();
   }
 
   /**

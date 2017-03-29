@@ -16,6 +16,7 @@ import org.apache.regexp.recompile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -92,10 +93,13 @@ public class ProjectSelector extends AbstractSelector {
     Display.getDefault().asyncExec(new Runnable() {
       
       @Override
-      public void run() {
-
-        getItem().setText(newHeader + "["+ProjectManager.getContainerInstance().getProjectExtension(getProjectId()) + "]"); 
-        setPathHistory(newHeader);       
+      public void run() {     
+        try {
+          getItem().setText(newHeader + "["+ProjectManager.getContainerInstance().getProjectExtension(getProjectId()) + "]"); 
+          setPathHistory(newHeader);
+        }catch(SWTException exc) {
+          ProjectManager.getLOGGER().error("Project tree might be outdated!");
+        }
       }
     });
   }

@@ -64,7 +64,7 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
    * @return the projectName
    */
   public String getProjectName() {
-    return projectName;
+    return this.controller.getProjectName();
   }
 
   /**
@@ -72,7 +72,7 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
    *          the projectName to set
    */
   public void setProjectName(String projectName) {
-    this.projectName = projectName;
+    this.controller.setProjectName(projectName);
   }
 
   /**
