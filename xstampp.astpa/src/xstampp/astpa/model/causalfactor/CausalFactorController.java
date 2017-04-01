@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -53,6 +54,8 @@ public class CausalFactorController implements ICausalFactorController {
   @XmlElement(name = "causalComponent")
   private Map<UUID,CausalCSComponent> causalComponents;
 
+  @XmlAttribute(name = "useScenarios")
+  private boolean useScenarios;
 	/**
 	 * Constructor of the causal factor controller
 	 * 
@@ -61,6 +64,7 @@ public class CausalFactorController implements ICausalFactorController {
 	 */
 	public CausalFactorController() {
 		this.links = new ArrayList<>();
+		this.setUseScenarios(true);
 	}
 
 	@Override
@@ -239,5 +243,16 @@ public class CausalFactorController implements ICausalFactorController {
       }
     }
   }
+
+  @Override
+  public boolean isUseScenarios() {
+    return useScenarios;
+  }
+
+  @Override
+  public void setUseScenarios(boolean useScenarios) {
+    this.useScenarios = useScenarios;
+  }
 	
+  
 }

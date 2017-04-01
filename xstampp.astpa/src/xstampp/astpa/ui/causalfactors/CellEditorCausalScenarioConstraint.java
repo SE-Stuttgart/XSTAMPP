@@ -19,12 +19,12 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridWrapper;
 
-public class CellEditorCausalConstraint extends GridCellTextEditor {
+public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
 
   private UUID ruleId;
   private ICausalFactorDataModel dataInterface;
   
-  public CellEditorCausalConstraint(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
+  public CellEditorCausalScenarioConstraint(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
                       UUID ruleId, ScenarioType type) {
     super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getRefinedSafetyConstraint(),ruleId);
     if(type != ScenarioType.CAUSAL_SCENARIO){

@@ -63,7 +63,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	public void paintFigure(Graphics graphics) {
     super.paintFigure(graphics);
     if(fixed){
-      graphics.pushState();
+//      graphics.pushState();
   		Point p1 = getPoints().getPoint(getPoints().size() -1);
   		Point p2 = getPoints().getPoint(getPoints().size() - 2);
       int x = p1.x - p2.x;
@@ -91,7 +91,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
       graphics.rotate(-alpha);
       graphics.translate(-_point.x, -_point.y);
       this.oldPoint = _point;
-      graphics.restoreState();
+//      graphics.restoreState();
     }
     
 	}

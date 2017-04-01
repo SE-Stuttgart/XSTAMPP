@@ -71,9 +71,11 @@ import xstampp.util.STPAPluginUtils;
  * @author Lukas Balzer
  * 
  */
-public class ProjectManager implements IPropertyChangeListener {
+public class ProjectManager extends Observable implements IPropertyChangeListener {
 
   private final static String OUTPUT = "Output"; //$NON-NLS-1$
+  private final static String PROJECT_TREE = "PROJECT_TREE"; //$NON-NLS-1$
+  
   /**
    * The log4j logger
    */
@@ -195,6 +197,8 @@ public class ProjectManager implements IPropertyChangeListener {
       UUID projectId = this.addProjectData(newController, path);
 
       this.saveDataModel(projectId, false, false);
+      this.setChanged();
+      this.notifyObservers();
       return projectId;
     } catch (InstantiationException | IllegalAccessException e) {
       e.printStackTrace();

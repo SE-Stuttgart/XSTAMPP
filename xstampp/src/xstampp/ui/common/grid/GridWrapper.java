@@ -50,22 +50,23 @@ import xstampp.Activator;
  */
 public class GridWrapper {
 
-  private class ColumnResizeAdapter extends ControlAdapter{
+  private class ColumnResizeAdapter extends ControlAdapter {
     private int colIndex;
 
     public ColumnResizeAdapter(int colIndex) {
       this.colIndex = colIndex;
     }
-    
+
     @Override
     public void controlResized(ControlEvent e) {
       actualGrid.getColumn(colIndex);
     }
   }
-  
+
   private class GridFocusListener implements FocusListener {
 
     private GridWrapper grid;
+
     public GridFocusListener(GridWrapper grid) {
       this.grid = grid;
     }
@@ -168,8 +169,8 @@ public class GridWrapper {
     @Override
     public void mouseMove(MouseEvent e) {
       IGridCell cell = this.getCellFromMouse(e);
-      if(cell != null){
-//        actualGrid.setToolTipText(cell.getToolTip(new Point(e.x, e.y)));
+      if (cell != null) {
+        // actualGrid.setToolTipText(cell.getToolTip(new Point(e.x, e.y)));
       }
       this.grid.setHoveredCell(cell);
     }
@@ -186,11 +187,12 @@ public class GridWrapper {
     private GridRow gridRow;
     private GridRow parentRow;
     private NebulaGridRowWrapper parent;
-    
+
     @Override
     public boolean isVisible() {
       return super.isVisible();
     }
+
     /**
      * Ctor.
      * 
@@ -211,9 +213,10 @@ public class GridWrapper {
       this.gridRow = row;
       this.parentRow = parentRow;
     }
+
     protected int getParentDepth(int depth) {
-      if(getParentGridRow() != null){
-        return getParentWrapper().getParentDepth(depth+1);
+      if (getParentGridRow() != null) {
+        return getParentWrapper().getParentDepth(depth + 1);
       }
       return depth;
     }
@@ -233,16 +236,16 @@ public class GridWrapper {
       GridRow row = this.getGridRow();
       List<IGridCell> rowCells = row.getCells();
 
-//      if (this.getParentGridRow() != null) {
-//        // column = this.getColumn()
-//        // - item.getParentGridRow().getCells().size();
-//
-//        // there is only one parent cell on the left of it at this point
-//        actualColumn = column - getParentDepth(0);
-//        
-//      } else {
-//        actualColumn = column;
-//      }
+      // if (this.getParentGridRow() != null) {
+      // // column = this.getColumn()
+      // // - item.getParentGridRow().getCells().size();
+      //
+      // // there is only one parent cell on the left of it at this point
+      // actualColumn = column - getParentDepth(0);
+      //
+      // } else {
+      // actualColumn = column;
+      // }
 
       // check if the cell exists
       if ((actualColumn >= 0) && (rowCells.size() > actualColumn)) {
@@ -266,7 +269,7 @@ public class GridWrapper {
     public boolean hasChildren() {
       return !this.gridRow.getChildren().isEmpty();
     }
-    
+
     /**
      * Get the parent row.
      * 
@@ -339,6 +342,7 @@ public class GridWrapper {
   private static Image editLinkImage24;
 
   private float[] columnratios;
+
   /**
    * Get the image for the add button.
    * 
@@ -476,8 +480,6 @@ public class GridWrapper {
     this.rows = new ArrayList<GridRow>();
     this.nebulaRows = new ArrayList<NebulaGridRowWrapper>();
     this.hoveredCell = null;
-    this.columnratios = new float[columnLabels.length];
-    Arrays.fill(columnratios, 1.0f / columnLabels.length);
     this.actualGrid = new Grid(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.VIRTUAL);
     this.actualGrid.setHeaderVisible(true);
     this.actualGrid.getHeaderHeight();
@@ -491,11 +493,11 @@ public class GridWrapper {
 
     this.setColumnLabels(columnLabels);
     this.actualGrid.addDisposeListener(new DisposeListener() {
-      
+
       @Override
       public void widgetDisposed(DisposeEvent e) {
         // TODO Auto-generated method stub
-        
+
       }
     });
     this.actualGrid.addControlListener(new ControlListener() {
@@ -597,79 +599,47 @@ public class GridWrapper {
     this.nebulaRows.clear();
     int maxCellCount = this.columnLabels.length;
     for (int i = 0; i < this.rows.size(); i++) {
-      addChildRows(null, this.rows.get(i), i,0);
+      addChildRows(null, this.rows.get(i), i, 0);
     }
-
-    if (this.actualGrid.getColumnCount() > maxCellCount) {
-      // too many columns -> remove
-      for (int i = this.actualGrid.getColumnCount() - 1; i >= maxCellCount; i--) {
-        this.actualGrid.getColumn(i).dispose();
-      }
-    } else if (this.actualGrid.getColumnCount() < maxCellCount) {
-      // not enough colums -> add the missing ones
-      int currentColumns = this.actualGrid.getColumnCount();
-      for (int i = 0; i < (maxCellCount - currentColumns); i++) {
-        GridColumn childColumn = new GridColumn(this.actualGrid, SWT.NONE);
-        childColumn.setText(Messages.GridWrapper_Column);
-        childColumn.setWordWrap(true);
-        childColumn.setHeaderWordWrap(true);
-        childColumn.setWidth(GridWrapper.DEFAULT_COLUMN_WIDTH);
-//        childColumn.setResizeable(true);
-        childColumn.setCellRenderer(cellRenderer);
-        childColumn.setMinimumWidth(50);
-        childColumn.addControlListener(new ColumnResizeAdapter(i));
-      }
-    }
-
-    // update the labels
-    if (GridWrapper.this.columnLabels != null) {
-      for (int i = 0; i < Math.min(GridWrapper.this.columnLabels.length,
-          GridWrapper.this.actualGrid.getColumnCount()); i++) {
-        GridWrapper.this.actualGrid.getColumn(i).setText(GridWrapper.this.columnLabels[i]);
-
-      }
-    }
-
     this.resizeColumns();
-    if ( actualGrid.getItemCount() > 0 ) {
-//      this.actualGrid.select(29);
+    if (actualGrid.getItemCount() > 0) {
+      // this.actualGrid.select(29);
       this.actualGrid.showSelection();
     }
-    
+
   }
 
-  private int addChildRows(NebulaGridRowWrapper parent,
-                                GridRow row,int parentIndex,int firstCellIndex){
+  private int addChildRows(NebulaGridRowWrapper parent, GridRow row, int parentIndex, int firstCellIndex) {
     row.setRowIndex(parentIndex++);
     GridRow parentrow = null;
-    if(parent != null){
+    if (parent != null) {
       parentrow = parent.getGridRow();
     }
     NebulaGridRowWrapper item = new NebulaGridRowWrapper(this.getGrid(), SWT.NONE, row, parentrow);
 
-    if ( row.getColumnSpan() != null ) {
-      item.setColumnSpan(row.getColumnSpan().x,row.getColumnSpan().y);
+    if (row.getColumnSpan() != null) {
+      item.setColumnSpan(row.getColumnSpan().x, row.getColumnSpan().y);
     }
     // parentItem.pack();
-    if ( parent != null ) {
+    if (parent != null) {
       item.setParentWrapper(parent);
     }
     int childRowCount = row.getChildren().size();
 
-      item.setHeight(row.getPreferredHeight());
-    
+    item.setHeight(row.getPreferredHeight());
+
     this.nebulaRows.add(item);
     // add cells for children cells
     for (int childI = 0; childI < row.getChildren().size(); childI++) {
       GridRow childRow = row.getChildren().get(childI);
-      childRowCount += addChildRows(item,childRow, childI,firstCellIndex + 1);
+      childRowCount += addChildRows(item, childRow, childI, firstCellIndex + 1);
     }
-    for (int cellIndices : row.getRowSpanningCells()){
+    for (int cellIndices : row.getRowSpanningCells()) {
       item.setRowSpan(cellIndices, childRowCount);
     }
     return childRowCount;
   }
-    
+
   public IGridCell getEditClient() {
     return this.editClient;
   }
@@ -835,7 +805,7 @@ public class GridWrapper {
         if ((selectedCell != null) && selectedCell.equals(cell)) {
           return true;
         }
-        if((selectedCell != null) && this.selectRow && selectedCell.getGridRow().equals(cell.getGridRow())){
+        if ((selectedCell != null) && this.selectRow && selectedCell.getGridRow().equals(cell.getGridRow())) {
           return true;
         }
       }
@@ -858,27 +828,46 @@ public class GridWrapper {
   public void setColumnratios(float[] columnratios) {
     this.columnratios = columnratios;
   }
+
   private void resizeColumns() {
-    int colNr = Math.max(0, GridWrapper.this.actualGrid.getColumnCount());
-    
+    int colNr = Math.max(0, columnratios.length);
+
     ScrollBar verticalBar = this.actualGrid.getVerticalBar();
     int firstColumnWidth = this.actualGrid.getSize().x;
 
     for (int i = 0; i < colNr; i++) {
       GridColumn column = GridWrapper.this.actualGrid.getColumn(i);
-      if (i == 1&&verticalBar != null && verticalBar.isVisible()) {
+      if (i == 1 && verticalBar != null && verticalBar.isVisible()) {
         column.setWidth((int) (firstColumnWidth * columnratios[i] - verticalBar.getSize().x));
       } else {
         column.setWidth((int) (firstColumnWidth * columnratios[i]));
       }
     }
     this.resizeRows();
+  }
+
+  private void refreshColumns() {
+    for (GridColumn col : this.actualGrid.getColumns()) {
+      col.dispose();
+    }
+    for (int i = 0; i < this.columnLabels.length; i++) {
+      GridColumn childColumn = new GridColumn(this.actualGrid, SWT.NONE);
+      childColumn.setText(this.columnLabels[i]);
+      childColumn.setWordWrap(true);
+      childColumn.setHeaderWordWrap(true);
+      childColumn.setWidth(GridWrapper.DEFAULT_COLUMN_WIDTH);
+      // childColumn.setResizeable(true);
+      childColumn.setCellRenderer(cellRenderer);
+      childColumn.setMinimumWidth(50);
+      childColumn.addControlListener(new ColumnResizeAdapter(i));
+    }
+    resizeColumns();
     this.actualGrid.recalculateHeader();
+    resizeRows();
   }
 
   public void resizeRow(int rowIndex) {
     if (!this.nebulaRows.get(rowIndex).isDisposed()) {
-
       this.nebulaRows.get(rowIndex).setHeight(this.nebulaRows.get(rowIndex).getGridRow().getPreferredHeight());
     }
   }
@@ -900,13 +889,22 @@ public class GridWrapper {
 
   /**
    * 
-   * @author Patrick Wickenhaeuser
+   * @author Patrick Wickenhaeuser, Lukas Balzer
    * 
    * @param columnLabels
    *          the new labels.
    */
-  public final void setColumnLabels(String[] columnLabels) {
-    this.columnLabels = columnLabels.clone();
+  public void setColumnLabels(String[] columnLabels) {
+    if (this.columnLabels == null || !columnLabels.equals(this.columnLabels)) {
+      this.columnLabels = columnLabels.clone();
+      this.columnratios = new float[columnLabels.length];
+      Arrays.fill(columnratios, 1.0f / columnLabels.length);
+      refreshColumns();
+    }
+  }
+
+  public String[] getColumnLabels() {
+    return this.columnLabels;
   }
 
   public void setEditClient(IGridCell editClient) {
@@ -936,7 +934,7 @@ public class GridWrapper {
   public void setHoveredCell(IGridCell cell) {
     this.hoveredCell = cell;
   }
-  
+
   public void setSelectRow(boolean selectRow) {
     this.selectRow = selectRow;
   }

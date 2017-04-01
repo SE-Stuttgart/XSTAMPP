@@ -1885,5 +1885,17 @@ public class DataModelController extends AbstractDataModel implements
   public ScenarioType getScenarioType(UUID ruleId) {
     return this.extendedDataController.getScenarioType(ruleId);
   }
+  @Override
+  public boolean isUseScenarios() {
+    return this.causalFactorController.isUseScenarios();
+  }
 
+  @Override
+  public void setUseScenarios(boolean useScenarios) {
+    if(isUseScenarios() != useScenarios) {
+      this.causalFactorController.setUseScenarios(useScenarios);
+      this.updateValue(ObserverValue.CAUSAL_FACTOR);
+    }
+    
+  }
 }

@@ -95,5 +95,14 @@ public interface ICausalFactorController {
    */
   List<UUID> getLinkedUCAList(UUID factorId);
   
+  /**
+   * @return the useScenarios
+   */
+  public boolean isUseScenarios();
+
+  /**
+   * @param useScenarios the useScenarios to set
+   */
+  public void setUseScenarios(boolean useScenarios);
 
 }

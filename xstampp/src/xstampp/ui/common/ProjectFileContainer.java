@@ -30,7 +30,6 @@ import xstampp.preferences.IPreferenceConstants;
 public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
 
   private IDataModel controller;
-  private String projectName;
   private String extension;
   private String folderPath;
   private boolean lock;
@@ -56,7 +55,7 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
     String[] dotSeperatedPath = projectFile.getName().split("\\.");
     Assert.isTrue(dotSeperatedPath.length == 2);
     this.extension = dotSeperatedPath[1];
-    this.projectName = dotSeperatedPath[0];
+    this.controller.setProjectName(dotSeperatedPath[0]);
     this.lock = false;
   }
 
@@ -94,7 +93,7 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
    * @return the path of the file on the file system
    */
   public String getPath() {
-    return folderPath + File.separator + projectName + "." + extension; //$NON-NLS-1$
+    return folderPath + File.separator + getProjectName() + "." + extension; //$NON-NLS-1$
   }
 
   public File getProjectFile(){
