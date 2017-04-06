@@ -105,12 +105,13 @@ public abstract class ATableModel implements ITableModel {
 	 * @author Fabian Toth
 	 * @return TODO
 	 */
-	public boolean setDescription(String description) {
+	public String setDescription(String description) {
 		if(this.description == null || !this.description.equals(description)){
+		  String result = this.description;
 			this.description = description;
-			return true;
+			return result;
 		}
-		return false;
+		return null;
 	}
 
 	@Override
@@ -127,12 +128,13 @@ public abstract class ATableModel implements ITableModel {
 	 * @author Fabian Toth
 	 * @return TODO
 	 */
-	public boolean setTitle(String title) {
+	public String setTitle(String title) {
 		if(this.title == null || !this.title.equals(title)){
+      String result = this.title;
 			this.title = title;
-			return true;
+			return result;
 		}
-		return false;
+		return null;
 	}
 
 	@Override

@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.apache.bcel.generic.LUSHR;
+
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
@@ -171,25 +173,29 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
     return ucaLink;
   }
   
-  public boolean changeCausalEntry(CausalFactorEntryData entryData) {
-    boolean result = false;
+  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData) {
+    CausalFactorUCAEntryData resultData = new CausalFactorUCAEntryData(id);
     if(entryData.noteChanged()){
-      result |= setNote(entryData.getNote());
+      resultData.setNote(note);
+      setNote(entryData.getNote());
     }
    
     if(entryData.hazardsChanged()){
-      result |= setHazardIds(entryData.getHazardIds());
+      resultData.setHazardIds(hazardIds);
+      setHazardIds(entryData.getHazardIds());
     }
     
     if(entryData.constraintChanged()){
-      result |= setConstraintText(entryData.getSafetyConstraint());
+      resultData.setConstraint(constraintText);
+      setConstraintText(entryData.getSafetyConstraint());
     }
     
     if(entryData instanceof CausalFactorUCAEntryData && 
         ((CausalFactorUCAEntryData) entryData).scenariosChanged()){
-      result |= setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
+      resultData.setScenarioLinks(scenarioLinks);
+      setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
     }
-    return result;
+    return resultData;
   }
   
   /**
@@ -253,11 +259,12 @@ public class CausalFactorEntry  implements ICausalFactorEntry{
   public boolean prepareForSave(HazAccController hazAccController,
                                 List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     //get rid of redundant entries which should not be stored
-    setConstraintText(null);
     setHazardLinks(null);
     setUcaDescription(null);
     if(getNote().equals("")){
       setNote(null);
+    }if(getConstraintText() != null && getConstraintText().equals("")){
+      setConstraintText(null);
     }
     scenarioEntries = null;
     if(hazardIds != null){

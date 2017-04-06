@@ -122,7 +122,7 @@ public class CausalFactorController implements ICausalFactorController {
   }
 
   @Override
-  public boolean changeCausalEntry(UUID componentId, UUID causalFactorId, CausalFactorEntryData entryData) {
+  public CausalFactorEntryData changeCausalEntry(UUID componentId, UUID causalFactorId, CausalFactorEntryData entryData) {
     CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
     
     if(factor != null){
@@ -131,7 +131,7 @@ public class CausalFactorController implements ICausalFactorController {
         return entry.changeCausalEntry(entryData);
       }
     }
-    return false;
+    return null;
   }
 
   @Override

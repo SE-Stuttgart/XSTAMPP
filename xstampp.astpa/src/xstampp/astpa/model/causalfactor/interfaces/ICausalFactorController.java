@@ -72,7 +72,7 @@ public interface ICausalFactorController {
    *              <li>the entry data does not contain any changes
    *         
    */
-  boolean changeCausalEntry(UUID componentId,UUID causalFactorId,CausalFactorEntryData entryData);
+  CausalFactorEntryData changeCausalEntry(UUID componentId,UUID causalFactorId,CausalFactorEntryData entryData);
   
   /**
    * removes a causal factor from the list of causal factors of the causal component

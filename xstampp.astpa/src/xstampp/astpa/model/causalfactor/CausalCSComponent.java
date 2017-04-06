@@ -138,7 +138,7 @@ public class CausalCSComponent implements ICausalComponent{
     CausalFactor factor = getCausalFactor(causalFactorId);
     
     if(factor != null){
-      return factor.changeCausalEntry(entryData);
+      return factor.changeCausalEntry(entryData) != null;
     }
     return false;
   }

@@ -66,7 +66,8 @@ Export-Package: com.sun.xml.bind.marshaller,
  xstampp.ui.welcome,
  xstampp.ui.wizards,
  xstampp.ui.workbench.contributions,
- xstampp.util
+ xstampp.util,
+ xstampp.util.service
 Bundle-ClassPath: .,
  lib/log4j-1.2.9.jar,
  lib/avalon-framework-4.2.0.jar,

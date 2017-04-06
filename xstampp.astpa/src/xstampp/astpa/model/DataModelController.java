@@ -37,6 +37,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISourceProvider;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.framework.Bundle;
 
 import messages.Messages;
@@ -66,6 +69,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.export.ExportInformation;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
+import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.Hazard;
@@ -91,6 +95,14 @@ import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
+import xstampp.astpa.model.service.CausalDataUndoCallback;
+import xstampp.astpa.model.service.UndoAccidentChangeCallback;
+import xstampp.astpa.model.service.UndoControlActionChangeCallback;
+import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
+import xstampp.astpa.model.service.UndoGoalChangeCallback;
+import xstampp.astpa.model.service.UndoHazardChangeCallback;
+import xstampp.astpa.model.service.UndoSafetyConstraintChangeCallback;
+import xstampp.astpa.model.service.UndoUCAChangesCallback;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
 import xstampp.model.AbstractLTLProvider;
@@ -100,6 +112,8 @@ import xstampp.model.ISafetyDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.IUndoCallback;
+import xstampp.util.service.UndoRedoService;
 
 /**
  * Data Model controller class
@@ -154,7 +168,6 @@ public class DataModelController extends AbstractDataModel implements
   @XmlElement(name = "extendedData")
 	private ExtendedDataController extendedDataController;
 
-	
 	private String projectExtension;
 	private boolean refreshLock;
 	private List<ObserverValue> blockedUpdates;
@@ -183,7 +196,7 @@ public class DataModelController extends AbstractDataModel implements
 			this.astpaVersion = versionWithQualifier.substring(0,
 					versionWithQualifier.lastIndexOf('.'));
 		}
-	
+   
 	}
   @Override
   public Job doSave(final File file, Logger log, boolean isUIcall) {
@@ -425,11 +438,15 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		if(((Accident) this.hazAccController.getAccident(accidentId))
-				.setDescription(description)){
-			this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
-			return true;
-		}
+
+    String oldDescription = ((ATableModel) this.hazAccController.getAccident(accidentId)).setDescription(description);
+    if(oldDescription != null){
+      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accidentId);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+      return true;
+    }
 		return false;
 	}
 
@@ -441,11 +458,15 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
 			return false;
 		}
-		if(((Accident) this.hazAccController.getAccident(accidentId))
-				.setTitle(title)){
-			this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
-			return true;
-		}
+
+    String oldTitle = ((ATableModel) this.hazAccController.getAccident(accidentId)).setTitle(title);
+    if(oldTitle != null){
+      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accidentId);
+      changeCallback.setTitleChange(oldTitle, title);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+      return true;
+    }
 		return false;
 	}
 
@@ -524,8 +545,11 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-
-		if(((Hazard) this.hazAccController.getHazard(hazardId)).setTitle(title)){
+    String oldTitle = ((Hazard) this.hazAccController.getHazard(hazardId)).setTitle(title);
+		if(oldTitle != null){
+		  UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazardId);
+		  changeCallback.setTitleChange(oldTitle, title);
+		  pushToUndo(changeCallback);
 			this.setUnsavedAndChanged(ObserverValue.HAZARD);
 			return true;
 		}
@@ -540,12 +564,14 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
 			return false;
 		}
-
-		if(((Hazard) this.hazAccController.getHazard(hazardId))
-				.setDescription(description)){
-			this.setUnsavedAndChanged(ObserverValue.HAZARD);
-			return true;
-		}
+		String oldDescription = ((Hazard) this.hazAccController.getHazard(hazardId)).setDescription(description);
+    if(oldDescription != null){
+      UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazardId);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.HAZARD);
+      return true;
+    }
 		return false;
 	}
 
@@ -624,11 +650,14 @@ public class DataModelController extends AbstractDataModel implements
 			return false;
 		}
 
-		if(((DesignRequirement) this.sdsController.getDesignRequirement(designRequirementId))
-				.setTitle(title)){
-			this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-			return true;
-		}
+		String oldTitle = ((ATableModel) this.sdsController.getDesignRequirement(designRequirementId)).setTitle(title);
+    if(oldTitle != null){
+      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this, designRequirementId);
+      changeCallback.setTitleChange(oldTitle, title);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
+      return true;
+    }
 		return false;
 	}
 
@@ -642,12 +671,14 @@ public class DataModelController extends AbstractDataModel implements
 			return false;
 		}
 
-		if(((DesignRequirement) this.sdsController
-				.getDesignRequirement(designRequirementId))
-				.setDescription(description)){
-			this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-			return true;
-		}
+    String oldDescription = ((ATableModel) this.sdsController.getDesignRequirement(designRequirementId)).setDescription(description);
+    if(oldDescription != null){
+      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this, designRequirementId);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
+      return true;
+    }
 		return false;
 	}
 
@@ -708,12 +739,14 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
 			return false;
 		}
-
-		if(((SafetyConstraint) this.sdsController
-				.getSafetyConstraint(safetyConstraintId)).setTitle(title)){
-			this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-			return true;
-		}
+    String oldTitle = ((Hazard) this.sdsController.getSafetyConstraint(safetyConstraintId)).setTitle(title);
+    if(oldTitle != null){
+      UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(this, safetyConstraintId);
+      changeCallback.setTitleChange(oldTitle, title);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+      return true;
+    }
 		return false;
 	}
 
@@ -727,12 +760,14 @@ public class DataModelController extends AbstractDataModel implements
 			return false;
 		}
 
-		if(((SafetyConstraint) this.sdsController
-				.getSafetyConstraint(safetyConstraintId))
-				.setDescription(description)){
-			this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-			return true;
-		}
+    String oldDescription = ((Hazard) this.sdsController.getSafetyConstraint(safetyConstraintId)).setDescription(description);
+    if(oldDescription != null){
+      UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(this, safetyConstraintId);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+      return true;
+    }
 		return false;
 	}
 
@@ -790,12 +825,14 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
 			return false;
 		}
-
-		if(((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
-				.setTitle(title)){
-			this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
-			return true;
-		}
+    String oldTitle = ((Hazard) this.sdsController.getSystemGoal(systemGoalId)).setTitle(title);
+    if(oldTitle != null){
+      UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoalId);
+      changeCallback.setTitleChange(oldTitle, title);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+      return true;
+    }
 		return false;
 	}
 
@@ -809,11 +846,14 @@ public class DataModelController extends AbstractDataModel implements
 			return false;
 		}
 
-		if(((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
-				.setDescription(description)){
-			this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
-			return true;
-		}
+    String oldDescription = ((Hazard) this.sdsController.getSystemGoal(systemGoalId)).setDescription(description);
+    if(oldDescription != null){
+      UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(this, systemGoalId);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+      return true;
+    }
 		return false;
 	}
 
@@ -884,12 +924,15 @@ public class DataModelController extends AbstractDataModel implements
 			return false;
 		}
 		boolean result = false;
-		
-		if(((ControlAction) this.controlActionController
-			.getControlAction(controlActionId)).setTitle(title)){
-			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
-			result = true;
-		}
+
+    String oldTitle = ((Hazard) controlActionController.getControlAction(controlActionId)).setTitle(title);
+    if(oldTitle != null){
+      UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, controlActionId);
+      changeCallback.setTitleChange(oldTitle, title);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+      return true;
+    }
 		if(changeComponentText(((ControlAction) this.controlActionController
 				.getControlAction(controlActionId)).getComponentLink(), title)){
 			this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
@@ -907,12 +950,14 @@ public class DataModelController extends AbstractDataModel implements
 		if (!(this.controlActionController.getControlAction(controlActionId) instanceof ControlAction)) {
 			return false;
 		}
-
-		if(((ControlAction) this.controlActionController
-				.getControlAction(controlActionId)).setDescription(description)){
-			this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
-			return true;
-		}
+    String oldDescription = ((Hazard) this.controlActionController.getControlAction(controlActionId)).setDescription(description);
+    if(oldDescription != null){
+      UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this, controlActionId);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      pushToUndo(changeCallback);
+      this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+      return true;
+    }
 		return false;
 	}
 
@@ -1246,9 +1291,10 @@ public class DataModelController extends AbstractDataModel implements
 		if ((unsafeControlActionId == null) || (description == null)) {
 			return false;
 		}
-
-		if(this.controlActionController.setUcaDescription(
-				unsafeControlActionId, description)){
+    String oldDescription = this.controlActionController.setUcaDescription(
+        unsafeControlActionId, description);
+		if(oldDescription != null){
+		  pushToUndo(new UndoUCAChangesCallback(this, unsafeControlActionId));
 			this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
 			return true;
 		}
@@ -1820,12 +1866,13 @@ public class DataModelController extends AbstractDataModel implements
   }
 
   @Override
-  public boolean changeCausalEntry(UUID component, UUID causalFactor, CausalFactorEntryData entryData) {
-    boolean result = causalFactorController.changeCausalEntry(component, causalFactor, entryData);
-    if(result){
+  public CausalFactorEntryData changeCausalEntry(UUID component, UUID causalFactor, CausalFactorEntryData entryData) {
+    CausalFactorEntryData result = causalFactorController.changeCausalEntry(component, causalFactor, entryData);
+    if(result != null){
+      pushToUndo(new CausalDataUndoCallback(this, component, causalFactor, result, entryData));
       this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
     }
-    return result;
+    return null;
   }
 
   @Override
@@ -1894,8 +1941,14 @@ public class DataModelController extends AbstractDataModel implements
   public void setUseScenarios(boolean useScenarios) {
     if(isUseScenarios() != useScenarios) {
       this.causalFactorController.setUseScenarios(useScenarios);
-      this.updateValue(ObserverValue.CAUSAL_FACTOR);
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
     }
     
+  }
+  
+  private void pushToUndo(IUndoCallback callback) {
+    ISourceProviderService service =(ISourceProviderService) PlatformUI.getWorkbench().getService(ISourceProviderService.class);
+    UndoRedoService provider = (UndoRedoService) service.getSourceProvider(UndoRedoService.CAN_REDO);
+    provider.push(callback);
   }
 }

@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+    Institute of Software Technology, Software Engineering Group
+    University of Stuttgart, Germany
+     
+    All rights reserved. This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License v1.0 which
+    accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+ -->
+
 <plugin>
 
    <extension
@@ -478,6 +489,19 @@
                   style="push">
             </command>
          </toolbar>
+         <toolbar
+               id="xstampp.toolbar.undoRedo">
+            <command
+                  commandId="xstampp.command.undo"
+                  icon="icons/eclipse/undo_edit.gif"
+                  style="push">
+            </command>
+            <command
+                  commandId="xstampp.command.redo"
+                  icon="icons/eclipse/redo_edit.gif"
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -498,6 +522,17 @@
          </variable>
          <variable
                name="xstampp.ui.menu.file.commands.saveAllState"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
+      <sourceProvider
+            provider="xstampp.util.service.UndoRedoService">
+         <variable
+               name="xstampp.util.service.canUndo"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="xstampp.util.service.canRedo"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
@@ -549,6 +584,30 @@
                <instanceof
                      value="xstampp.ui.navigation.IProjectSelection">
                </instanceof>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="xstampp.util.commands.UndoHandler"
+            commandId="xstampp.command.undo">
+         <enabledWhen>
+            <with
+                  variable="xstampp.util.service.canUndo">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="xstampp.util.commands.RedoHandler"
+            commandId="xstampp.command.redo">
+         <enabledWhen>
+            <with
+                  variable="xstampp.util.service.canRedo">
+               <equals
+                     value="true">
+               </equals>
             </with>
          </enabledWhen>
       </handler>ler>
@@ -758,6 +817,14 @@
                name="path"
                optional="false">
          </commandParameter>
+      </command>
+      <command
+            id="xstampp.command.undo"
+            name="Undo">
+      </command>
+      <command
+            id="xstampp.command.redo"
+            name="Redo">
       </command>
    </extension>
    

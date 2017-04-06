@@ -77,6 +77,7 @@ public class ControlActionController {
 	
 	private final Map<UUID, ControlAction> trash;
 
+	
 	private Integer ruleNr;
 	/**
 	 * Constructor for the controller
@@ -356,15 +357,14 @@ public class ControlActionController {
 	 * @author Patrick Wickenhaeuser, Fabian Toth
 	 * @return true, if the description has been set
 	 */
-	public boolean setUcaDescription(UUID unsafeControlActionId,
+	public String setUcaDescription(UUID unsafeControlActionId,
 			String description) {
 		UnsafeControlAction unsafeControlAction = this
 				.getInternalUnsafeControlAction(unsafeControlActionId);
-		if (unsafeControlAction == null) {
-			return false;
+		if (unsafeControlAction != null) {
+			return unsafeControlAction.setDescription(description);
 		}
-		unsafeControlAction.setDescription(description);
-		return true;
+		return null;
 	}
 
 	/**
@@ -406,6 +406,7 @@ public class ControlActionController {
         }
       }
     }
+    Collections.sort(result);
     return result;
   }
 	/**
@@ -431,28 +432,18 @@ public class ControlActionController {
 	}
 	
 	private void assignUCANumbers(){
+	  nextUcaIndex = 1;
     for (ControlAction controlAction : this.controlActions) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
-        if(nextUcaIndex == null){
-          nextUcaIndex = 0;
-        }
-        if(unsafeControlAction.getNumber() > 0){
-          nextUcaIndex = unsafeControlAction.getNumber() + 1;
-        }else{
-          nextUcaIndex++;
-          unsafeControlAction.setNumber(nextUcaIndex);
-        }
-        
+        unsafeControlAction.setNumber(nextUcaIndex);
+        nextUcaIndex++;
       }
     }
 	}
 	
 	private int getNextUCACount(){
 	  if(nextUcaIndex == null){
-	    nextUcaIndex = 0;
-	  }
-	  if(nextUcaIndex < 0){
 	    nextUcaIndex = getAllUnsafeControlActions().size()+1;
 	  }
 	  return nextUcaIndex++;
@@ -614,7 +605,6 @@ public class ControlActionController {
 	 */
   public void prepareForSave(ExtendedDataController extendedData) {
 		moveRulesInCA();
-		assignUCANumbers();
 		for (ControlAction controlAction : this.controlActions) {
 			controlAction.prepareForSave(extendedData);
 			for (UnsafeControlAction unsafeControlAction : controlAction
@@ -977,5 +967,13 @@ public class ControlActionController {
 	
 	public void setNextUcaIndext(int nextUcaIndext) {
     this.nextUcaIndex = nextUcaIndext;
+  }
+
+
+  private int getCANumber() {
+    if (this.nextCAIndex == null) {
+      this.nextCAIndex = this.controlActions.size() + 1;
+    }
+    return this.nextCAIndex++;
   }
 }

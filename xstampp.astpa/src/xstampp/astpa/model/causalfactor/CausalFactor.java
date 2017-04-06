@@ -204,12 +204,12 @@ public class CausalFactor implements ICausalFactor {
     return result;
   }
   
-  public boolean changeCausalEntry(CausalFactorEntryData entryData){
+  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData){
     CausalFactorEntry entry = (CausalFactorEntry) getEntry(entryData.getId());
     if(entry != null){
       return entry.changeCausalEntry(entryData);
     }
-    return false;
+    return null;
   }
   
   public void prepareForExport(HazAccController hazAccController,

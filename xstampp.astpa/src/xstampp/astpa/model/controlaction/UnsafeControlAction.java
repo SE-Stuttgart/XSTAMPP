@@ -95,8 +95,10 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	 * @param description
 	 *            the description to set
 	 */
-	public void setDescription(String description) {
+	public String setDescription(String description) {
+	  String result = this.description;
 		this.description = description;
+		return description;
 	}
 
 	@Override
