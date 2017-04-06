@@ -119,19 +119,12 @@ public abstract class CSFigure extends Figure implements
 	public void paintChildren(Graphics graphics) {
 		if ((this.image != null) && this.withIcon) {
 			double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
-			Rectangle rect = (Rectangle) this.getLayoutManager().getConstraint(
-					this.textLabel);
+			Rectangle rect = this.textLabel.getBounds();
 			this.setConstraint(this.textLabel, new Rectangle((int) newPos,
 					rect.y, rect.width, rect.height));
-			double scale = graphics.getAbsoluteScale();
-			double zoom = graphics.getAbsoluteScale();
-//			if(scale > 1){
-				graphics.scale(0.25);
-				graphics.drawImage(this.image, 1, 1);
-				graphics.scale(4);
-//			}else{
-//				graphics.drawImage(this.image, 1, 1);
-//			}
+			graphics.scale(0.25);
+			graphics.drawImage(this.image, 1, 1);
+			graphics.scale(4);
 		}
 		
 		super.paintChildren(graphics);
@@ -202,8 +195,7 @@ public abstract class CSFigure extends Figure implements
 				// given width
 				this.textLabel.setSize(
 						this.getBounds().width - this.leftMargin-4,-1);
-				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
-						1, this.getBounds().width - this.leftMargin-4, 15));
+				this.setConstraint(this.textLabel, this.textLabel.getBounds());
 			} else {
 
 				this.getTextField().setSize(new Dimension(rect.width - this.leftMargin-4, rect.height));

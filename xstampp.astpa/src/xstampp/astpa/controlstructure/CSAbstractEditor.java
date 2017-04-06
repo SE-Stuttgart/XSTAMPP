@@ -138,6 +138,7 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.ui.workbench.contributions.IZoomContributor;
+import xstampp.util.ColorManager;
 import xstampp.util.STPAPluginUtils;
 
 /**
@@ -499,9 +500,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		
 		data = new FormData();
 		data.height = CSAbstractEditor.TOOL_HEIGHT;
+		data.width = 200;
 		data.left = new FormAttachment(preferenceButton, 30);
-		this.positionLabel= new Label(this.toolBar, SWT.NONE);
-		this.positionLabel.setText(" --- x --- "); //$NON-NLS-1$
+		this.positionLabel= new Label(this.toolBar, SWT.CENTER);
+		this.positionLabel.setText(" ----- x ----- "); //$NON-NLS-1$
 		this.positionLabel.setLayoutData(data);
 		
 		if (getModelInterface().getFileExtension().equals("acc")) { //$NON-NLS-1$

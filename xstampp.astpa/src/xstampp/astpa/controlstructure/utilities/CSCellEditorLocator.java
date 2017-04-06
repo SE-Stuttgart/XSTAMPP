@@ -17,6 +17,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -68,7 +69,7 @@ public class CSCellEditorLocator implements CellEditorLocator {
 		 * name is stored. The variable
 		 */
 		Text text = (Text) celleditor.getControl();
-
+		text.setSize(text.computeSize(rect.width + CSCellEditorLocator.WIDTH_OFFSET, SWT.DEFAULT));
 		// if the size is determined to be larger than the text lines itself
 		// this the original size, will be displayed as long as it not
 		// overwritten by text

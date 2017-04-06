@@ -61,7 +61,6 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 		LineBorder border= new LineBorder(1){
 			@Override
 			public void paint(IFigure figure1, Graphics graphics, Insets insets) {
-				// TODO Auto-generated method stub
 				if(getStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
 					super.paint(figure1, graphics, insets);
 				}

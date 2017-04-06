@@ -34,6 +34,7 @@ public class ProcessValueFigure extends CSFigure {
 	private static final int PROCESS_MODEL_COLUMN = 10;
 	private static final int ROW_OFFSET = 4;
 	private final int topOffset;
+	private boolean autoPositioning;
 
 	/**
 	 * @author Lukas Balzer
@@ -44,39 +45,35 @@ public class ProcessValueFigure extends CSFigure {
 	 */
 	public ProcessValueFigure(UUID id, int top) {
 		super(id, false);
-
+    this.setAutoPositioning(true);
 		this.setOpaque(false);
 		this.topOffset = top;
 	}
 
 	@Override
 	public void refresh() {
-//	 	if(isDirty){
-//	 		isDirty= false;
-//	 	}else{
-//	 		return;
-//	 	}
-//	 	layout();
-		rect.setX(ProcessValueFigure.PROCESS_MODEL_COLUMN);
+	  
 		this.getTextField().setLocation(new Point(0,0));
 		this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width,-1));
 		this.getTextField().revalidate();
 		this.setConstraint(this.getTextField(),this.getTextField().getBounds());
 		rect.setSize(this.getTextField().getSize());
 		// the component is drawn right below its previous child
-		
-		int previousIndex = this.getParent().getChildren().indexOf(this) - 1;
-		if (previousIndex < 0) {
-			rect.setY(((IControlStructureFigure) this.getParent())
-					.getTextField().getBounds().height + this.topOffset);
-		} else {
-			IFigure previousChild = (IFigure) this.getParent().getChildren()
-					.get(previousIndex);
-			rect.setY(previousChild.getBounds().y
-					+ previousChild.getBounds().height
-					+ ProcessValueFigure.ROW_OFFSET);
-			
-		}
+    if(this.isAutoPositioning()) {
+      rect.setX(ProcessValueFigure.PROCESS_MODEL_COLUMN);
+  		int previousIndex = this.getParent().getChildren().indexOf(this) - 1;
+  		if (previousIndex < 0) {
+  			rect.setY(((IControlStructureFigure) this.getParent())
+  					.getTextField().getBounds().height + this.topOffset);
+  		} else {
+  			IFigure previousChild = (IFigure) this.getParent().getChildren()
+  					.get(previousIndex);
+  			rect.setY(previousChild.getBounds().y
+  					+ previousChild.getBounds().height
+  					+ ProcessValueFigure.ROW_OFFSET);
+  			
+  		}
+    }
 
 		this.getParent().setConstraint(this, rect);
 		setBounds(rect);
@@ -87,4 +84,18 @@ public class ProcessValueFigure extends CSFigure {
 	public void setDeco(boolean deco) {
 		// there's no decoration on process components
 	}
+
+  /**
+   * @return the autoPositioning
+   */
+  public boolean isAutoPositioning() {
+    return autoPositioning;
+  }
+
+  /**
+   * @param autoPositioning the autoPositioning to set
+   */
+  public void setAutoPositioning(boolean autoPositioning) {
+    this.autoPositioning = autoPositioning;
+  }
 }
