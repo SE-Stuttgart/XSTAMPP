@@ -68,7 +68,7 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
       
       @Override
       public boolean check(IUnsafeControlAction model) {
-        return !linkedIds.contains(model.getId());
+        return !linkedIds.contains(model.getId()) && !dataInterface.getLinksOfUCA(model.getId()).isEmpty();
       }
     });
 	  LinkProposal[] proposals = new LinkProposal[ucaList.size()];

@@ -92,6 +92,15 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent,_withoutColumns);
+    List<ICorrespondingUnsafeControlAction> ucaList = this.getDataModel().getUCAList(null);
+    String[] names = new String[ucaList.size()];
+    UUID[] values = new UUID[ucaList.size()];
+    for (int i= 0; i< ucaList.size(); i++) {
+      names[i] = ucaList.get(i).getTitle();
+      values[i] = ucaList.get(i).getId();
+    }
+    addChoices("UCA", names);
+    addChoiceValues("UCA", values);
 	}
 	
 	@Override
@@ -108,6 +117,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 		categories.put(ComponentType.CONTROLLED_PROCESS.name(), true);
 		categories.put(ComponentType.SENSOR.name(), true);
 		categories.put(CAUSALFACTORS, false);
+		categories.put("UCA", false);
 		return categories;
 	}
 	
@@ -117,7 +127,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 				ComponentType.CONTROLLER.name(),
 				ComponentType.CONTROLLED_PROCESS.name(),
 				ComponentType.SENSOR.name(),
-				CAUSALFACTORS};
+				CAUSALFACTORS,"UCA"};
 	}
 	
 	private boolean isFiltered(ICausalComponent component) {
@@ -180,8 +190,12 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
     
     //the causal factor contains multiple child rows for each causal factor entry
     for(ICausalFactorEntry entry : factor.getAllEntries()){
-      factorRow.addChildRow(createEntryRow(entry, factor, component, ucaMap,cellNumber));
+      GridRow entryRow = createEntryRow(entry, factor, component, ucaMap,cellNumber);
+      if (entryRow != null){
+        factorRow.addChildRow(entryRow);
+      }
     }
+    
     //A new row is added to the factorRow for adding additional entries
     GridRow addEntriesRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
     addEntriesRow.addCell(++cellNumber,new GridCellButtonAddUCAEntry(component, factor.getId(), getDataModel(),getGrid()));
@@ -203,19 +217,18 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 	                         ICausalFactor factor,
 	                         ICausalComponent component,
 	                         Map<UUID,ICorrespondingUnsafeControlAction> ucaMap, int cellNumber){
-	  GridRow entryRow;
+	  GridRow entryRow = null;
     /*
      * Depending on whether the entry is linked to a uca or not
      * the uca column is filled and the hazards are either based on the uca
      * or linkable
      */
-    if(entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink())){
+    if(entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink()) && !isFiltered(entry.getUcaLink(), "UCA")){
       entryRow = createUCAEntry(entry, factor, component, ucaMap,cellNumber);
       
-    }else{
+    }else if(entry.getUcaLink() == null){
       entryRow = createHazardEntry(entry, factor, component,cellNumber);
     }
-    entryRow.addCell(++cellNumber,new CellEditorFactorNote(getGridWrapper(),getDataModel(),component.getId(), factor.getId(),entry));
     return entryRow;
 	}
 	
@@ -349,6 +362,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
     } else {
       entryRow.addCell(++cellNumber,new CellEditorSafetyConstraint(getGridWrapper(), getDataModel(), component.getId(), factor.getId(),entry));
     }
+    entryRow.addCell(++cellNumber,new CellEditorFactorNote(getGridWrapper(),getDataModel(),component.getId(), factor.getId(),entry));
     return entryRow;
   }
 
@@ -358,8 +372,18 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
     if(controller.getProjectName().equals(getDataModel().getProjectName())){
 	   	super.update(dataModelController, updatedValue);
 			switch ((ObserverValue) updatedValue) {
+      case UNSAFE_CONTROL_ACTION: {
+        List<ICorrespondingUnsafeControlAction> ucaList = this.getDataModel().getUCAList(null);
+        String[] names = new String[ucaList.size()];
+        UUID[] values = new UUID[ucaList.size()];
+        for (int i= 0; i< ucaList.size(); i++) {
+          names[i] = ucaList.get(i).getTitle();
+          values[i] = ucaList.get(i).getId();
+        }
+        addChoices("UCA", names);
+        addChoiceValues("UCA", values);
+      }
 			case CONTROL_STRUCTURE:
-			case UNSAFE_CONTROL_ACTION:
 			case HAZARD:
 			case Extended_DATA:
 			case CAUSAL_FACTOR:
