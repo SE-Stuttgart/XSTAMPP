@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -20,12 +20,15 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -42,6 +45,7 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
 
   private int oldLineNumber = 0;
   private List<Integer> lineFeeds = new ArrayList<Integer>();
+  private Button ok;
 
   /**
    * 
@@ -63,12 +67,15 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
       public void keyReleased(KeyEvent e) {
         if (e.keyCode == SWT.CONTROL) {
           DirectEditor.this.text.selectAll();
-        }else if(e.character == SWT.ESC){
+        } else if (e.character == SWT.ESC) {
           DirectEditor.this.deactivate();
         }
         super.keyReleased(e);
       }
     });
+//    ok = new Button(composite, SWT.PUSH);
+//    ok.setText("Ok");
+//    deactivate();
   }
 
   /**
@@ -80,7 +87,7 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
    *          the parent is a CanvasFigure by default
    */
   public DirectEditor(Composite composite) {
-    super(composite, SWT.WRAP);
+    super(composite, SWT.WRAP | SWT.APPLICATION_MODAL);
     this.oldLineNumber = this.text.getCaretLineNumber();
     this.text.setFocus();
 
@@ -98,6 +105,14 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
     this.text.setForeground(foregroundColor);
   }
 
+  @Override
+  public void deactivate() {
+    super.deactivate();
+    if (ok != null) {
+      ok.setVisible(false);
+    }
+  }
+
   /**
    * 
    * @author Lukas
@@ -110,8 +125,8 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
     org.eclipse.swt.graphics.Rectangle textRect = this.text.getBounds();
     rect.setX(textRect.x);
     rect.setY(textRect.y);
-    rect.setWidth(textRect.width);
-    rect.setHeight(textRect.height);
+    rect.setWidth(textRect.width+30);
+    rect.setHeight(textRect.height+30);
 
     return rect;
   }
@@ -186,7 +201,12 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
 
     locator.relocate(this);
     doSetFocus();
+    if(ok != null){
+      ok.setBounds(text.getBounds().x, text.getBounds().y + text.getBounds().height, 30,30);
+      ok.setVisible(true);
+    }
     getControl().setVisible(true);
+
     super.activate();
   }
 
