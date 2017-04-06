@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
 
+import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
+
 /**
  * A row in the GridWrapper.
  * 
@@ -34,6 +36,7 @@ public class GridRow {
 
   private GridRow parentRow = null;
 
+  private NebulaGridRowWrapper nebulaRow;
   private int colorDivider;
 
   private boolean needsRefresh;
@@ -258,5 +261,19 @@ public class GridRow {
    */
   public void setRowSpanningCells(int[] spanningCells) {
     this.rowSpanningCells = spanningCells;
+  }
+
+  /**
+   * @return the nebulaRow
+   */
+  public NebulaGridRowWrapper getNebulaRow() {
+    return nebulaRow;
+  }
+
+  /**
+   * @param nebulaRow the nebulaRow to set
+   */
+  public void setNebulaRow(NebulaGridRowWrapper nebulaRow) {
+    this.nebulaRow = nebulaRow;
   }
 }

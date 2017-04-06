@@ -211,6 +211,7 @@ public class GridWrapper {
       super(parent, style);
       this.parent = null;
       this.gridRow = row;
+      this.gridRow.setNebulaRow(this);
       this.parentRow = parentRow;
     }
 
@@ -236,18 +237,6 @@ public class GridWrapper {
       GridRow row = this.getGridRow();
       List<IGridCell> rowCells = row.getCells();
 
-      // if (this.getParentGridRow() != null) {
-      // // column = this.getColumn()
-      // // - item.getParentGridRow().getCells().size();
-      //
-      // // there is only one parent cell on the left of it at this point
-      // actualColumn = column - getParentDepth(0);
-      //
-      // } else {
-      // actualColumn = column;
-      // }
-
-      // check if the cell exists
       if ((actualColumn >= 0) && (rowCells.size() > actualColumn)) {
         cell = rowCells.get(actualColumn);
       }
@@ -466,6 +455,8 @@ public class GridWrapper {
 
   private boolean selectRow = true;
 
+  private Integer selectionIndex;
+
   /**
    * Ctor.
    * 
@@ -585,6 +576,9 @@ public class GridWrapper {
    * 
    */
   public void clearTable() {
+    try {
+      this.selectionIndex = this.nebulaRows.indexOf(getFocusedCell().getGridRow().getNebulaRow());
+    } catch(NullPointerException exc) {}
     this.actualGrid.disposeAllItems();
     this.actualGrid.clearItems();
   }
@@ -601,15 +595,21 @@ public class GridWrapper {
     for (int i = 0; i < this.rows.size(); i++) {
       addChildRows(null, this.rows.get(i), i, 0);
     }
-    this.resizeColumns();
     if (actualGrid.getItemCount() > 0) {
-      // this.actualGrid.select(29);
+      if(selectionIndex != null) {
+        this.actualGrid.select(this.selectionIndex);
+        System.out.println("getSelectionIndex " + actualGrid.getSelectionIndex() + " " + actualGrid.getItemCount());
+      }
       this.actualGrid.showSelection();
+    this.resizeColumns();
     }
 
   }
 
-  private int addChildRows(NebulaGridRowWrapper parent, GridRow row, int parentIndex, int firstCellIndex) {
+  private int addChildRows(NebulaGridRowWrapper parent,
+                          GridRow row,
+                          int parentIndex,
+                          int startIndex) {
     row.setRowIndex(parentIndex++);
     GridRow parentrow = null;
     if (parent != null) {
@@ -632,7 +632,7 @@ public class GridWrapper {
     // add cells for children cells
     for (int childI = 0; childI < row.getChildren().size(); childI++) {
       GridRow childRow = row.getChildren().get(childI);
-      childRowCount += addChildRows(item, childRow, childI, firstCellIndex + 1);
+      childRowCount += addChildRows(item, childRow, childI, startIndex + 1);
     }
     for (int cellIndices : row.getRowSpanningCells()) {
       item.setRowSpan(cellIndices, childRowCount);
@@ -831,7 +831,6 @@ public class GridWrapper {
 
   private void resizeColumns() {
     int colNr = Math.max(0, columnratios.length);
-
     ScrollBar verticalBar = this.actualGrid.getVerticalBar();
     int firstColumnWidth = this.actualGrid.getSize().x;
 
@@ -844,6 +843,7 @@ public class GridWrapper {
       }
     }
     this.resizeRows();
+    this.actualGrid.recalculateHeader();
   }
 
   private void refreshColumns() {
@@ -862,8 +862,6 @@ public class GridWrapper {
       childColumn.addControlListener(new ColumnResizeAdapter(i));
     }
     resizeColumns();
-    this.actualGrid.recalculateHeader();
-    resizeRows();
   }
 
   public void resizeRow(int rowIndex) {
