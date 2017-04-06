@@ -68,9 +68,12 @@ public class ControlActionController {
 	@XmlElementWrapper(name = "rules")
 	@XmlElement(name = "rule")
 	private List<RefinedSafetyRule> rules;
-	
-	@XmlAttribute(name="nextUcaIndex")
-	private Integer nextUcaIndex;
+
+  @XmlAttribute(name="nextUcaIndex")
+  private Integer nextUcaIndex;
+
+  @XmlAttribute(name="nextCAIndex")
+  private Integer nextCAIndex;
 	
 	private final Map<UUID, ControlAction> trash;
 
@@ -101,8 +104,7 @@ public class ControlActionController {
 	 * @author Fabian Toth
 	 */
 	public UUID addControlAction(String title, String description) {
-		ControlAction controlAction = new ControlAction(title, description,
-				this.controlActions.size() + 1);
+		ControlAction controlAction = new ControlAction(title, description, getCANumber());
 		this.controlActions.add(controlAction);
 		return controlAction.getId();
 	}

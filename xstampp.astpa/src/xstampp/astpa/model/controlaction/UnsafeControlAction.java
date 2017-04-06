@@ -74,7 +74,7 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 		this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(
 				""); //$NON-NLS-1$
 		this.id = UUID.randomUUID();
-    number = -1;
+		this.number = 0;
 	}
 
 	/**
@@ -162,12 +162,16 @@ public class UnsafeControlAction implements IUnsafeControlAction,
 	
   @Override
   public int compareTo(ITableModel o) {
-    if(o.getNumber() < this.getNumber()){
-      return -1;
-    }else if(o.getNumber() > this.getNumber()){
-      return 1;
+    try {
+      if(o.getNumber() < this.getNumber()){
+        return 1;
+      }else if(o.getNumber() > this.getNumber()){
+        return -1;
+      }
+      return 0;
+    }catch (NullPointerException exc) {
+      return 0;
     }
-    return 0;
   }
 
   @Override
