@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
@@ -33,13 +34,13 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ScrollBar;
-
-import messages.Messages;
 import xstampp.Activator;
 
 /**
@@ -331,6 +332,7 @@ public class GridWrapper {
   private static Image editLinkImage24;
 
   private float[] columnratios;
+  public Integer persistedScrollIndex;
 
   /**
    * Get the image for the add button.
@@ -455,8 +457,6 @@ public class GridWrapper {
 
   private boolean selectRow = true;
 
-  private Integer selectionIndex;
-
   /**
    * Ctor.
    * 
@@ -481,7 +481,18 @@ public class GridWrapper {
     this.actualGrid.addMouseMoveListener(new GridMouseMoveListener(this));
     this.actualGrid.addFocusListener(new GridFocusListener(this));
     this.cellRenderer = new GridCellRenderer(this);
+    this.actualGrid.addPaintListener(new PaintListener() {
 
+      @Override
+      public void paintControl(PaintEvent paintEvent) {
+        int maximum = actualGrid.getVerticalBar().getMaximum();
+        if (persistedScrollIndex != null && persistedScrollIndex < maximum) {
+          actualGrid.getVerticalBar().setSelection(Math.min(persistedScrollIndex + 1,maximum));
+          actualGrid.redraw();
+          persistedScrollIndex = null;
+        }
+      }
+    });
     this.setColumnLabels(columnLabels);
     this.actualGrid.addDisposeListener(new DisposeListener() {
 
@@ -576,9 +587,6 @@ public class GridWrapper {
    * 
    */
   public void clearTable() {
-    try {
-      this.selectionIndex = this.nebulaRows.indexOf(getFocusedCell().getGridRow().getNebulaRow());
-    } catch(NullPointerException exc) {}
     this.actualGrid.disposeAllItems();
     this.actualGrid.clearItems();
   }
@@ -586,31 +594,18 @@ public class GridWrapper {
   /**
    * Fills the table using the current rows.
    * 
-   * @author Patrick Wickenhaeuser
+   * @author Patrick Wickenhaeuser, Lukas Balzer
    * 
    */
   public void fillTable() {
     this.nebulaRows.clear();
-    int maxCellCount = this.columnLabels.length;
     for (int i = 0; i < this.rows.size(); i++) {
       addChildRows(null, this.rows.get(i), i, 0);
     }
-    if (actualGrid.getItemCount() > 0) {
-      if(selectionIndex != null) {
-        this.actualGrid.select(this.selectionIndex);
-        System.out.println("getSelectionIndex " + actualGrid.getSelectionIndex() + " " + actualGrid.getItemCount());
-      }
-      this.actualGrid.showSelection();
-    this.resizeColumns();
-    }
-
   }
 
-  private int addChildRows(NebulaGridRowWrapper parent,
-                          GridRow row,
-                          int parentIndex,
-                          int startIndex) {
-    row.setRowIndex(parentIndex++);
+  private int addChildRows(NebulaGridRowWrapper parent, GridRow row, int rowIndex, int startIndex) {
+    row.setRowIndex(rowIndex++);
     GridRow parentrow = null;
     if (parent != null) {
       parentrow = parent.getGridRow();
@@ -723,7 +718,6 @@ public class GridWrapper {
   }
 
   /**
-   * 
    * Get a list of the rows.
    * 
    * @author Patrick Wickenhaeuser
@@ -801,11 +795,11 @@ public class GridWrapper {
 
       for (Point selection : selections) {
         IGridCell selectedCell = this.getGridCellFromCellCoordinate(selection);
-
-        if ((selectedCell != null) && selectedCell.equals(cell)) {
+        boolean isCellNull = selectedCell != null;
+        if (isCellNull && selectedCell.equals(cell)) {
           return true;
         }
-        if ((selectedCell != null) && this.selectRow && selectedCell.getGridRow().equals(cell.getGridRow())) {
+        if (isCellNull && this.selectRow && selectedCell.getGridRow().equals(cell.getGridRow())) {
           return true;
         }
       }
@@ -817,7 +811,7 @@ public class GridWrapper {
   /**
    * Clears and fills the whole table.
    * 
-   * @author Benedikt Markt, Patrick Wickenhaeuser
+   * @author Benedikt Markt, Patrick Wickenhaeuser, Lukas Balzer
    * 
    */
   public void reloadTable() {

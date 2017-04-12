@@ -268,9 +268,7 @@ public class DataModelController extends AbstractDataModel implements
 	@Override
 	public void releaseLockAndUpdate(ObserverValue[] values){
 		this.refreshLock = false;
-		if(blockedUpdates == null){
 		  blockedUpdates = new ArrayList<>();
-		}
 		if(values != null){
 		  for(int i = 0; i < values.length; i++){
 		    if(!blockedUpdates.contains(values[i])){
@@ -925,7 +923,7 @@ public class DataModelController extends AbstractDataModel implements
 		}
 		boolean result = false;
 
-    String oldTitle = ((Hazard) controlActionController.getControlAction(controlActionId)).setTitle(title);
+    String oldTitle = ((ControlAction) controlActionController.getControlAction(controlActionId)).setTitle(title);
     if(oldTitle != null){
       UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, controlActionId);
       changeCallback.setTitleChange(oldTitle, title);
