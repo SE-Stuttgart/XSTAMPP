@@ -127,7 +127,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 	  
 	  @Override
 	  protected void editorClosing() {
-	    getDataModel().releaseLockAndUpdate(new ObserverValue[]{ObserverValue.UNSAFE_CONTROL_ACTION});
+	    getDataModel().releaseLockAndUpdate(new ObserverValue[]{});
 	  }
 	}
 
