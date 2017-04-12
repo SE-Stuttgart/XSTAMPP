@@ -200,7 +200,8 @@ public class StpaCSVExport extends Job {
 	
 	private void writeCausalFactorsCSV(BufferedCSVWriter writer, String title)
 			throws IOException {
-    IExtendedDataModel model = this.model;
+    DataModelController model = this.model;
+    
 		// the First two Rows are filled with the view- and the Column-titles
 		writer.newLine();
 		writer.write(title + " - "); ////$NON-NLS-1$
@@ -214,59 +215,56 @@ public class StpaCSVExport extends Job {
 		writer.writeCell(Messages.SafetyConstraints);
 		writer.write(Messages.NotesSlashRationale);
 		writer.newLine();
-		boolean writeNote = true;
 		
-		for (ICausalComponent action : this.model.getCausalComponents()) {
+		for (ICausalComponent component : this.model.getCausalComponents()) {
 			// this loop writes two lines
-			for (ICausalFactor factor :  action.getCausalFactors()) {
-					writer.writeCell(action.getText());
-
-				// write the Descriptions in one line
-				writer.writeCell(factor.getText());
+			for (ICausalFactor factor :  component.getCausalFactors()) {
 				Map<UUID,String> ucaDescMap = new HashMap<>();
 				for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
-          ucaDescMap.put(uca.getId(), "UCA1."+uca.getNumber()+ uca.getDescription());
+          ucaDescMap.put(uca.getId(), "UCA1."+uca.getNumber()+ ": " + uca.getDescription());
         }
 				for(ICausalFactorEntry entry: factor.getAllEntries()){
+	        String ucaCell= ""; //$NON-NLS-1$
+	        String hazCell= ""; //$NON-NLS-1$
+	        String scenarioCell = ""; //$NON-NLS-1$
+	        String safetyCell= ""; //$NON-NLS-1$
+	        
 				  if(entry.getUcaLink() != null){
-				    writer.writeCell(ucaDescMap.get(entry.getUcaLink()));
-				    String hazString = new String();
+				    ucaCell = ucaDescMap.get(entry.getUcaLink());
 				    for(ITableModel haz: model.getLinkedHazardsOfUCA(entry.getUcaLink())){
-				      hazString += "H-" + haz.getNumber()+",";
-				    }
-				    writer.writeCell(hazString.substring(0, hazString.length()-1));
-				    for(UUID provider : entry.getScenarioLinks()){
-              writer.writeCell(model.getRefinedScenario(provider).getSafetyRule());
-              writer.writeCell(model.getRefinedScenario(provider).getRefinedSafetyConstraint());
-              if(writeNote){
-                writeNote = false;
-                writer.writeCell(factor.getNote());
-              }
-              writer.newLine();
-				    }
+	            hazCell += "H-" + haz.getNumber()+",";
+	          }
 				  }else{
-				    writer.writeCell();
 				    String hazString = new String();
 				    if(entry.getHazardIds() != null){
               for(UUID hazardId: entry.getHazardIds()){
                 hazString += "H-" + model.getHazard(hazardId).getNumber()+",";
               }
-              if(hazString.length() >0){
-                hazString = hazString.substring(0, hazString.length()-1);
-              }
 				    }
-            writer.writeCell(hazString.substring(0, hazString.length()-1));
-            writer.writeCell();
-            if(entry.getConstraintText() != null){
-              writer.writeCell(entry.getConstraintText());
-            }
 				  }
+				  hazCell = hazCell.substring(0, hazCell.length()-1);
 				  
-				}
-        if(writeNote){
+          writer.writeCell(component.getText());
+          writer.writeCell(factor.getText());
+          writer.writeCell(ucaCell);
+          writer.writeCell(hazCell);
+          writer.writeCell();
+          writer.writeCell(entry.getConstraintText());
           writer.writeCell(factor.getNote());
-        }
-				writer.newLine();
+          writer.newLine();
+          
+          for(UUID provider : entry.getScenarioLinks()){
+
+            writer.writeCell(component.getText());
+            writer.writeCell(factor.getText());
+            writer.writeCell(ucaCell);
+            writer.writeCell(hazCell);
+            writer.writeCell(model.getRefinedScenario(provider).getSafetyRule());
+            writer.writeCell(model.getRefinedScenario(provider).getRefinedSafetyConstraint());
+            writer.writeCell(factor.getNote());
+            writer.newLine();
+          }
+				}
 			}
 		}
 	}
