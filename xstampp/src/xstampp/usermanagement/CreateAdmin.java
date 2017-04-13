@@ -1,0 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+ * Institute of Software Technology, Software Engineering Group
+ * University of Stuttgart, Germany
+ *  
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
+package xstampp.usermanagement;
+
+import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.roles.Admin;
+
+/**
+ * 
+ * @author Lukas Balzer - initial implementation
+ *
+ */
+public class CreateAdmin extends LoginShell {
+
+  public CreateAdmin(UserSystem userSystem) {
+    super(userSystem, false);
+    setTitle("Create Admin");
+    setAcceptLabel("Create");
+  }
+
+
+  @Override
+  protected boolean doAccept() {
+    for (IUser user : getUserSystem().getRegistry()) {
+      if (user.getUsername().equals(getUsername())) {
+        invalidate("Username already exists!");
+        return false;
+      }
+    }
+    setSelectedUser(new Admin(getUsername(), getPassword()));
+    return true;
+  }
+
+}

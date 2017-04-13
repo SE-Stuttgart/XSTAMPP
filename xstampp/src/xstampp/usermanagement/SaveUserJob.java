@@ -26,12 +26,16 @@ import messages.Messages;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
 
+/**
+ * @author Lukas Balzer - initial implementation
+ *
+ */
 public class SaveUserJob extends XstamppJob {
 
   private File file;
-  private UserData database;
+  private UserSystem database;
 
-  public SaveUserJob(UserData database, String name) {
+  public SaveUserJob(UserSystem database, String name) {
     super("save user data...");
     this.database = database;
     String wsUrl = Platform.getInstanceLocation().getURL().getPath();
@@ -45,7 +49,7 @@ public class SaveUserJob extends XstamppJob {
     try {
 
       file.createNewFile();
-      context = JAXBContext.newInstance(UserData.class);
+      context = JAXBContext.newInstance(UserSystem.class);
       Marshaller marshaller = context.createMarshaller();
 
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

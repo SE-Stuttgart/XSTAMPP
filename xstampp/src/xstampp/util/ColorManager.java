@@ -28,7 +28,7 @@ public class ColorManager {
 
   private static Map<String, Color> fColorTable = new HashMap<>(10);
 
-  public static Color getColor(String titel) {
+  public static Color color(String titel) {
     Color color = fColorTable.get(titel);
     if (color == null) {
       return COLOR_BLACK;
