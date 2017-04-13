@@ -190,7 +190,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     super(pageName);
     this.projects = new HashMap<>();
     this.pluginID = pluginID;
-    this.pageFormat = A4_PORTRAIT;
+    this.pageFormat = A4_LANDSCAPE;
     this.needProjectID = true;
     contentSize = 10;
     headSize = 12;
@@ -404,9 +404,9 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
             pageFormat = format;
           }
         });
-      }
-      if (chFormat != null) {
-        chFormat.setSelection(true);
+        if(format.equals(pageFormat)) {
+          chFormat.setSelection(true);
+        }
       }
       return formatGroup;
     }

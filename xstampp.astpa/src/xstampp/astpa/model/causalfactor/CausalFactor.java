@@ -215,8 +215,8 @@ public class CausalFactor implements ICausalFactor {
   public void prepareForExport(HazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions){
-    for (CausalFactorEntry entry : entries) {
-      entry.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
+    for (int i= 0;entries != null && i < entries.size(); i++) {
+      entries.get(i).prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
     }
   }
 

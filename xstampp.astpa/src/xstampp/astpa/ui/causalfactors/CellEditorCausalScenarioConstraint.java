@@ -54,6 +54,6 @@ public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
   
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.CAUSAL_FACTOR,ObserverValue.Extended_DATA});
+    dataInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
   }
 }

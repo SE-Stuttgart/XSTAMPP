@@ -269,19 +269,35 @@ public class ControlActionEntry implements Comparable<ControlActionEntry>{
 	}
 	
 	public void addContextTableCombination(ContextTableCombination entry) {
-		if(this.contextTableCombinations == null){
-			this.contextTableCombinations = new ArrayList<>();
-		}
-		contextTableCombinations.add(entry);
-		if(entry.getSizeOfValues() == linkedCompIds.size() 
-				&& linkedCompIds.containsAll(entry.getValueIDTOVariableIdMap().keySet())
-				&& !entry.isArchived()){
-			if(this.currentCombinations == null){
-				this.currentCombinations = new ArrayList<ContextTableCombination>();
-			}
-			this.currentCombinations.add(entry);
-		}
-	}
+    if(this.contextTableCombinations == null){
+      this.contextTableCombinations = new ArrayList<>();
+    }
+    contextTableCombinations.add(entry);
+    if(entry.getSizeOfValues() == linkedCompIds.size() 
+        && linkedCompIds.containsAll(entry.getValueIDTOVariableIdMap().keySet())
+        && !entry.isArchived()){
+      if(this.currentCombinations == null){
+        this.currentCombinations = new ArrayList<ContextTableCombination>();
+      }
+      this.currentCombinations.add(entry);
+    }
+  }
+	
+	public boolean removeContextTableCombination(ContextTableCombination entry) {
+    if(this.contextTableCombinations != null){
+      contextTableCombinations.remove(entry);
+    }
+    if(entry.getSizeOfValues() == linkedCompIds.size() 
+        && linkedCompIds.containsAll(entry.getValueIDTOVariableIdMap().keySet())
+        && !entry.isArchived()){
+      if(this.currentCombinations != null){
+        return currentCombinations.remove(entry);
+      }
+    }
+    return false;
+    
+  }
+	
 	public UUID getId() {
 		return id;
 	}

@@ -264,7 +264,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 
     cellNumber = createConstraints(entryRow, ++cellNumber, entry, component, factor);
     
-    entryRow.addCell(++cellNumber, new CellEditorFactorNote(getGridWrapper(), getDataModel(), getProjectID(), factor.getId(), entry));
+    entryRow.addCell(++cellNumber, new CellEditorFactorNote(getGridWrapper(), getDataModel(), component.getId(), factor.getId(), entry));
     return entryRow;
   }
 	

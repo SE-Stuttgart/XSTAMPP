@@ -58,6 +58,6 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.CAUSAL_FACTOR});
+    dataInterface.releaseLockAndUpdate(new ObserverValue[]{});
   }
 }

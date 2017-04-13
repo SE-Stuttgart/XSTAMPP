@@ -227,25 +227,27 @@
 						<fo:block>
 						<xsl:if test="exportinformation/csImagePath">
 							<xsl:choose>
-							<xsl:when test="exportinformation/csImageWidth &gt;= 600 or exportinformation/csImageHeight &gt;= 701">
-								<fo:external-graphic inline-progression-dimension.maximum="90%" 
+							<xsl:when test="$page.layout = 'A4'">
+									<fo:external-graphic inline-progression-dimension.maximum="100%" 
+									height="29.7cm" width="16cm"
                      				content-height="scale-down-to-fit" 
                     				content-width="scale-down-to-fit">
-                    				<xsl:attribute name="src">
-									<!-- Path of the Control Structure via haz-file -->
-									<xsl:value-of select="exportinformation/csImagePath" />
-								</xsl:attribute>
-								</fo:external-graphic>
-							</xsl:when>
-							<xsl:otherwise>
-								<fo:external-graphic inline-progression-dimension.maximum="90%" 
-                     				content-height="75%" 
-                    				content-width="75%">
-                    					<xsl:attribute name="src">
+	                    				<xsl:attribute name="src">
 										<!-- Path of the Control Structure via haz-file -->
 										<xsl:value-of select="exportinformation/csImagePath" />
-								</xsl:attribute>
-								</fo:external-graphic>
+										</xsl:attribute>
+									</fo:external-graphic>
+							</xsl:when>
+							<xsl:otherwise>
+									<fo:external-graphic inline-progression-dimension.maximum="100%" 
+									height="16cm" width="29.7cm"
+                     				content-height="scale-down-to-fit" 
+                    				content-width="scale-down-to-fit">
+	                    				<xsl:attribute name="src">
+										<!-- Path of the Control Structure via haz-file -->
+										<xsl:value-of select="exportinformation/csImagePath" />
+										</xsl:attribute>
+									</fo:external-graphic>
 							</xsl:otherwise>
 							</xsl:choose>
 						</xsl:if>	
@@ -289,35 +291,31 @@
 							Control Structure Diagram
 							with Process Model
 						</fo:block>
-						<fo:block >
 						
-						
-						<xsl:if test="exportinformation/cspmImagePath">
 							<xsl:choose>
-							<xsl:when test="exportinformation/csPmImageWidth &gt;= 600 or exportinformation/csPmImageHeight &gt;= 701">
-								<fo:external-graphic inline-progression-dimension.maximum="90%" 
+							<xsl:when test="$page.layout = 'A4'">
+									<fo:external-graphic inline-progression-dimension.maximum="100%" 
+									height="29.7cm" width="16cm"
                      				content-height="scale-down-to-fit" 
                     				content-width="scale-down-to-fit">
-                    				<xsl:attribute name="src">
-									<!-- Path of the Control Structure with Process-Model via haz-file -->
-									<xsl:value-of select="exportinformation/cspmImagePath" />
-								</xsl:attribute>
-								</fo:external-graphic>
+	                    				<xsl:attribute name="src">
+										<!-- Path of the Control Structure via haz-file -->
+										<xsl:value-of select="exportinformation/cspmImagePath" />
+										</xsl:attribute>
+									</fo:external-graphic>
 							</xsl:when>
 							<xsl:otherwise>
-								<fo:external-graphic inline-progression-dimension.maximum="90%" 
-                     				content-height="75%" 
-                    				content-width="75%">
-                    					<xsl:attribute name="src">
-										<!-- Path of the Control Structure with Process-Model via haz-file -->
+									<fo:external-graphic inline-progression-dimension.maximum="100%" 
+									height="16cm" width="29.7cm"
+                     				content-height="scale-down-to-fit" 
+                    				content-width="scale-down-to-fit">
+	                    				<xsl:attribute name="src">
+										<!-- Path of the Control Structure via haz-file -->
 										<xsl:value-of select="exportinformation/cspmImagePath" />
-								</xsl:attribute>
-								</fo:external-graphic>
+										</xsl:attribute>
+									</fo:external-graphic>
 							</xsl:otherwise>
 							</xsl:choose>
-								
-						</xsl:if>
-						</fo:block>
 					</fo:block>
 
 					<!-- *************** Causal Factors Table *************** -->

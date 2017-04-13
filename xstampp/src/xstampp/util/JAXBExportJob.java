@@ -202,6 +202,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
         }
       }
     } catch (SAXException | IOException | TransformerException e) {
+      setError(e);
       ProjectManager.getLOGGER().error(e.getMessage());
       return Status.CANCEL_STATUS;
     }

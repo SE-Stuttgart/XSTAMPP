@@ -41,9 +41,9 @@ import xstpa.model.XSTPADataController;
 import xstpa.ui.tables.AbstractTableComposite;
 import xstpa.ui.tables.CADependenciesTable;
 import xstpa.ui.tables.ControlActionTable;
-import xstpa.ui.tables.ProcessContextTable;
 import xstpa.ui.tables.ProcessValuesTable;
 import xstpa.ui.tables.RefinedRulesTable;
+import xstpa.ui.tables.contexttables.ProcessContextTable;
 
 public class View extends ViewPart{
 	public static final String ID = "xstpa.view.contextTables";

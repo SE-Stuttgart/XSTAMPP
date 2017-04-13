@@ -29,7 +29,7 @@ public abstract class AbstractTableComposite extends Composite implements Observ
 	private boolean isActiv;
 	
 
-	AbstractTableComposite(Composite parent) {
+	public AbstractTableComposite(Composite parent) {
 		super(parent,SWT.BORDER);
 	}
 	

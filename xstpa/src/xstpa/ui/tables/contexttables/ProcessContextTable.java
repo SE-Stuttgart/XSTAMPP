@@ -8,7 +8,7 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package xstpa.ui.tables;
+package xstpa.ui.tables.contexttables;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,6 +47,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -72,6 +73,7 @@ import xstpa.settings.PreferencePageSettings;
 import xstpa.ui.View;
 import xstpa.ui.dialogs.AddEntryShell;
 import xstpa.ui.dialogs.EditWindow;
+import xstpa.ui.tables.AbstractTableComposite;
 import xstpa.ui.tables.utils.ContextCheckJob;
 import xstpa.ui.tables.utils.MainViewContentProvider;
 
@@ -144,6 +146,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	private TabFolder contextContentFolder;
 	protected List<ContextTableCombination> contextRightContent;
 	private Label errorLabel;
+	private ContextTableCombination selectedCombie;
 	
 	public ProcessContextTable(Composite parent) {
 		super(parent);
@@ -345,8 +348,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			  @Override
 				public void widgetSelected(SelectionEvent e) {
 					if(contextTableCellX > 0 && contextTableCellX < contextTable.getColumnCount() -1){
-					    contextTable.setMenu(new Menu(contextTable));
-						updateMenu(contextTableCellX -1);
+				     contextTable.setMenu(getValueMenu(contextTableCellX -1, contextTable));
 					}else{
 					    contextTable.setMenu(null);						
 					}
@@ -475,9 +477,10 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    addEntry.pack();
 		    
 		    // Add a button to delete table entrys to contextRightTable
-		    Button deleteEntry = new Button(editTableComposite, SWT.PUSH);
+		    final Button deleteEntry = new Button(editTableComposite, SWT.PUSH);
 		    deleteEntry.setToolTipText(Messages.DeletesRow);
 		    deleteEntry.setImage(View.DELETE);
+		    deleteEntry.setEnabled(false);
 		    deleteEntry.pack();
 		    
 		    // Add a button to change to the settings for ACTS
@@ -493,6 +496,17 @@ public class ProcessContextTable extends AbstractTableComposite {
 		    checkConflictsBtn.setImage(View.CHECK_CONFLICTS);
 		    checkConflictsBtn.pack();
 		    
+		    contextTable.addSelectionListener(new SelectionAdapter() {
+	        @Override
+	        public void widgetSelected(SelectionEvent e) {
+	          try {
+	            selectedCombie = (ContextTableCombination) ((TableItem)e.item).getData();
+	            deleteEntry.setEnabled(true);
+	          } catch (Exception exc) {
+	            selectedCombie = null;
+	          }
+	        }
+	      });
 		    /**
 			 * Listener for the settings button
 			 * 	opens the settings window
@@ -579,7 +593,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 											@Override
 											public void run() {
 												// creates the correct number of rows for the context table
-										    	  createTableColumns();
+										    	  createTableColumns(contextTable);
 								    			  storeEntrys(job.getEntryList(), code == 0);
 											}
 						    			  });
@@ -616,13 +630,10 @@ public class ProcessContextTable extends AbstractTableComposite {
 							ContextTableCombination temp = (ContextTableCombination) event.data;
 				    		temp.setLinkedControlActionName(dataController.getLinkedCAE().getControlAction(),
 				    				dataController.getLinkedCAE().getId());
-							contextRightContent.add(temp);
-							// set the ContextTableCombinations
 							dataController.getLinkedCAE().addContextTableCombination(temp);
 							// refresh the Viewer
-							dataController.storeBooleans((List)null, ObserverValue.COMBINATION_STATES);
-							contextTableViewer.refresh();
-							
+							dataController.storeBooleans((ControlActionEntry)null, ObserverValue.COMBINATION_STATES);
+							deleteEntry.setEnabled(false);
 						}
 					});
 		    		Point location = Display.getDefault().getCursorLocation();
@@ -636,10 +647,12 @@ public class ProcessContextTable extends AbstractTableComposite {
 		     */
 		    deleteEntry.addSelectionListener(new SelectionAdapter() {
 		    	public void widgetSelected(SelectionEvent event) {
-		    		contextRightContent.remove(contextTable.getSelectionIndex());
-		    		contextTable.remove(contextTable.getSelectionIndex());
-
-		    		dataController.storeBooleans((List)null, null);
+            if(selectedCombie != null) {
+              dataController.getLinkedCAE().removeContextTableCombination(selectedCombie);
+              dataController.storeBooleans((ControlActionEntry)null, ObserverValue.COMBINATION_STATES);
+              selectedCombie = null;
+              ((Control) event.getSource()).setEnabled(false);
+            }
 		    	}
 		    });
 		//===============================================================================
@@ -690,39 +703,39 @@ public class ProcessContextTable extends AbstractTableComposite {
 	/**
 	 * Create the correct columns in the context table
 	 */
-	public void createTableColumns() {
-		for (TableColumn column : contextTable.getColumns()) {
+	public void createTableColumns(Table table) {
+		for (TableColumn column : table.getColumns()) {
 			column.dispose();
 		}
 		if(dataController.getLinkedCAE() == null){
 			return;
 		}
 		if (!dataController.getLinkedCAE().getLinkedItems().isEmpty()) {
-			new TableColumn(contextTable, SWT.NONE).setText(View.ENTRY_ID);
+			new TableColumn(table, SWT.NONE).setText(View.ENTRY_ID);
 			// creates new TableColumns dynamically so that the context table has the right size (and labels)
 			for (int i=0;i<dataController.getLinkedCAE().getLinkedItems().size();i++) {
 				UUID id = dataController.getLinkedCAE().getLinkedItems().get(i).getId();
-				new TableColumn(contextTable, SWT.NONE).setText(dataController.getModel().getComponent(id).getText());
+				new TableColumn(table, SWT.NONE).setText(dataController.getModel().getComponent(id).getText());
 			}
   	
 			if (dataController.isControlActionProvided()) {
-				new TableColumn(contextTable, SWT.NONE).setImage(View.HEADER);
+				new TableColumn(table, SWT.NONE).setImage(View.HEADER);
 			}else{
-				new TableColumn(contextTable, SWT.NONE).setText(View.IS_HAZARDOUS);
+				new TableColumn(table, SWT.NONE).setText(View.IS_HAZARDOUS);
 			}
 			
 			// Create the cell editors
-		  	CellEditor[] contextEditors = new CellEditor[contextTable.getColumnCount()];
+		  	CellEditor[] contextEditors = new CellEditor[table.getColumnCount()];
 		  	
-		  	for (int i = 1; i<contextTable.getColumnCount()-1;i++) {
+		  	for (int i = 1; i<table.getColumnCount()-1;i++) {
 		  		// creates the cell editors
-		  		if ((i != 0) &(i!=contextTable.getColumnCount()-1)) {
-		  			contextEditors[i] = new TextCellEditor(contextTable);
+		  		if ((i != 0) &(i!=table.getColumnCount()-1)) {
+		  			contextEditors[i] = new TextCellEditor(table);
 		  		}
 		  	}
-		  	View.contextProps = new String[contextTable.getColumnCount()];
+		  	View.contextProps = new String[table.getColumnCount()];
 			for (int i=0; i<View.contextProps.length;i++) {
-				View.contextProps[i] = contextTable.getColumn(i).getText();
+				View.contextProps[i] = table.getColumn(i).getText();
 			}
 			contextTableViewer.setColumnProperties(View.contextProps);
 			contextTableViewer.setCellEditors(contextEditors);
@@ -738,7 +751,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	 * 
 	 * @param filter a string describing the property
 	 */
-	public void showContent(String filter, List<ContextTableCombination> input) {
+	public void showContent(String filter, List<ContextTableCombination> input, Table table) {
 		ArrayList<ContextTableCombination> content = new ArrayList<>();
 		// checks which option is selected and shows the right content
   	  if (filter.equals(FILTER_SHOW_ALL)) {
@@ -769,8 +782,8 @@ public class ProcessContextTable extends AbstractTableComposite {
   		  contextTableViewer.setInput(content);
   	  }
   	  // packs the columns
-  	  for (int j = 0, n = contextTable.getColumnCount(); j < n; j++) {
-  		  contextTable.getColumn(j).pack();	    		  		  
+  	  for (int j = 0, n = table.getColumnCount(); j < n; j++) {
+  	    table.getColumn(j).pack();	    		  		  
   	  }
     }
 	
@@ -784,7 +797,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 			}
 		}
 		dataController.getLinkedCAE().setContextTableCombinations(entrys);
-		dataController.storeBooleans((List)null, ObserverValue.CONTROL_ACTION);
+		dataController.storeBooleans((ControlActionEntry)null, ObserverValue.CONTROL_ACTION);
 //		refreshTable();
 	}
 	
@@ -841,18 +854,19 @@ public class ProcessContextTable extends AbstractTableComposite {
 			@Override
 			public void run() {
 				
-				createTableColumns();
+				createTableColumns(contextTable);
 				if(contextRightContent == null || contextRightContent.isEmpty()){
 					contextTableViewer.setInput(null);
 		    		writeStatus(Messages.NOTestsetsAvailable);
 				}else{
 					writeStatus(null); //$NON-NLS-1$
-					showContent(filterCombo.getText(), contextRightContent);
+					showContent(filterCombo.getText(), contextRightContent, contextTable);
 				}
 			}
 		});
 		return true;
 	}
+	
 	private void setConflictLabel() {
 		final ContextCheckJob checkJob =new ContextCheckJob("Check Value Combinations",dataController);
 		
@@ -887,6 +901,10 @@ public class ProcessContextTable extends AbstractTableComposite {
 		ObserverValue type = (ObserverValue) updatedValue;
 		
 		switch (type) {
+		case COMBINATION_STATES: {
+		  updateContextTable();
+		  break;
+		}
 		case CONTROL_ACTION:
 		case Extended_DATA:
 		case CONTROL_STRUCTURE: {
@@ -904,30 +922,30 @@ public class ProcessContextTable extends AbstractTableComposite {
 		
 	}
 	
-	private void updateMenu(final int index){
-		for(MenuItem item : contextTable.getMenu().getItems()){
-			item.dispose();
-		}
-		MenuItem dontcareItem = new MenuItem(contextTable.getMenu(), SWT.PUSH);
+	private Menu getValueMenu(final int index, Control parent){
+	  Menu menu = new Menu(parent);
+		
+		MenuItem dontcareItem = new MenuItem(menu, SWT.PUSH);
 		dontcareItem.setText(dataController.getModel().getIgnoreLTLValue().getText()); //$NON-NLS-1$
 		dontcareItem.setData(dataController.getModel().getIgnoreLTLValue().getId());
 	    
 		final UUID id = dataController.getLinkedCAE().getLinkedItem(index).getId();
 		for(IRectangleComponent comp : dataController.getModel().getComponent(id).getChildren()){
-			MenuItem newItem = new MenuItem(contextTable.getMenu(), SWT.PUSH);
+			MenuItem newItem = new MenuItem(menu, SWT.PUSH);
 			newItem.setText(comp.getText()); //$NON-NLS-1$
 			newItem.setData(comp.getId());
 		}
-		for(MenuItem item : contextTable.getMenu().getItems()){
+		for(MenuItem item : menu.getItems()){
 			item.addSelectionListener(new SelectionAdapter() {
 		    	public void widgetSelected(SelectionEvent event) {
 		    		//this listener uses the information contextTableCellX which provides the current table item index
 		    		//calculated in the contextRightTable.mouseListener
 	    			ContextTableCombination contextCombie = (ContextTableCombination) contextTable.getSelection()[0].getData();
 	    			contextCombie.addValueMapping(id, ((UUID)((MenuItem)event.getSource()).getData()));
-	    			dataController.storeBooleans((List)null, ObserverValue.CONTROL_ACTION);
+	    			dataController.storeBooleans((ControlActionEntry)null, ObserverValue.CONTROL_ACTION);
 		    	}
 		    });
 		}
+    return menu;
 	}
 }

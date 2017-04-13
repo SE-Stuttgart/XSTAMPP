@@ -776,6 +776,10 @@
 	
 	<!-- ################### Causal Factors Table ################### -->
 	<xsl:template name="causalFactorsTable">
+	
+      <xsl:param name="useScenarios" >
+				<xsl:value-of select="causalfactor/@useScenarios"/>
+				</xsl:param>
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
@@ -815,16 +819,22 @@
 										<fo:table-cell>
 											<fo:block font-weight="bold">
 												<fo:table border="none" space-after="30pt">
-													<fo:table-column column-number="1" column-width="20%"
-														border-style="none" />
-													<fo:table-column column-number="2" column-width="20%"
-														border-style="none" />
-													<fo:table-column column-number="3" column-width="20%"
-														border-style="none" />
-													<fo:table-column column-number="4" column-width="20%"
-														border-style="none" />
-													<fo:table-column column-number="5" column-width="20%"
-														border-style="none" />
+													<xsl:choose>
+													<xsl:when test="$useScenarios = 'true'">
+														<fo:table-column column-number="1" column-width="20%"/>
+														<fo:table-column column-number="2" column-width="20%"/>
+														<fo:table-column column-number="3" column-width="20%"/>
+														<fo:table-column column-number="4" column-width="20%"/>
+														<fo:table-column column-number="5" column-width="20%" border-style="none" />
+													</xsl:when>
+													<xsl:otherwise>
+														<fo:table-column column-number="1" column-width="25%"/>
+														<fo:table-column column-number="2" column-width="25%"/>
+														<fo:table-column column-number="3" column-width="25%"/>
+														<fo:table-column column-number="4" column-width="25%"
+															border-style="none" />
+													</xsl:otherwise>
+													</xsl:choose>
 						
 													<fo:table-header border="none" background-color="#1A277A"
 														color="#FFFFFF">
@@ -838,9 +848,13 @@
 															<fo:table-cell>
 																<fo:block font-weight="bold">Hazard Links</fo:block>
 															</fo:table-cell>
-															<fo:table-cell>
-																<fo:block font-weight="bold">Scenario</fo:block>
-															</fo:table-cell>
+															<xsl:choose>
+																<xsl:when test="$useScenarios = 'true'">
+																	<fo:table-cell>
+																		<fo:block font-weight="bold">Scenario</fo:block>
+																	</fo:table-cell>
+																</xsl:when>
+															</xsl:choose>
 															<fo:table-cell>
 																<fo:block font-weight="bold">Safety Constraint</fo:block>
 															</fo:table-cell>
@@ -852,9 +866,13 @@
 													<fo:table-body>
 														<!-- Empty Table-Body -->
 														<fo:table-row>
-															<fo:table-cell>
-																<fo:block/>
-															</fo:table-cell>
+															<xsl:choose>
+																<xsl:when test="$useScenarios = 'true'">
+																	<fo:table-cell>
+																		<fo:block/>
+																	</fo:table-cell>
+																</xsl:when>
+															</xsl:choose>
 															<fo:table-cell>
 																<fo:block/>
 															</fo:table-cell>
@@ -911,7 +929,9 @@
 										
 											<!-- ***** CausalFactors with its relatives ***** -->
 											<fo:block >
-											<xsl:call-template name="causalFactorSubTable"/> 
+											<xsl:call-template name="causalFactorSubTable"> 
+				                            	<xsl:with-param name="useScenarios" select="$useScenarios" />
+				                           	</xsl:call-template>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
@@ -940,6 +960,7 @@
 	
 	
 	<xsl:template name="causalFactorSubTable">
+      <xsl:param name="useScenarios" select="false"/> 
 		<fo:table>
 			<fo:table-column column-number="1" column-width="15%"
 				border-style="solid" />
@@ -947,7 +968,7 @@
 				border-style="solid" />
 			<fo:table-body>
 			<xsl:choose>
-				<xsl:when test="causalFactors">
+				<xsl:when test="causalFactors/factor">
 					<xsl:for-each select="causalFactors/factor">
 						<fo:table-row border-bottom="2pt solid black">
 							<fo:table-cell>
@@ -957,7 +978,9 @@
 							</fo:table-cell>	
 							<fo:table-cell padding="0px">
 								<fo:block >
-									<xsl:call-template name="causalFactorRelatives"/>
+									<xsl:call-template name="causalFactorRelatives">
+				                            	<xsl:with-param name="useScenarios" select="$useScenarios" />
+				                           	</xsl:call-template>
 								</fo:block>
 							</fo:table-cell>				
 						</fo:table-row>
@@ -983,17 +1006,29 @@
 	<!-- ################### Causal Factors-Sub-Table ################### -->
 	<!-- Every Causal Factor and its relative can be found in this sub-table -->
 	<xsl:template name="causalFactorRelatives">
+      <xsl:param name="useScenarios" select="false"/> 
     <fo:table>
+		<xsl:choose>
+		<xsl:when test="$useScenarios = 'true'">
 			<fo:table-column column-number="1" column-width="20%"/>
 			<fo:table-column column-number="2" column-width="20%"/>
 			<fo:table-column column-number="3" column-width="40%"/>
 			<fo:table-column column-number="4" column-width="20%"
 				border-style="none" />
+		</xsl:when>
+		<xsl:otherwise>
+			<fo:table-column column-number="1" column-width="25%"/>
+			<fo:table-column column-number="2" column-width="25%"/>
+			<fo:table-column column-number="3" column-width="25%"/>
+			<fo:table-column column-number="4" column-width="25%"
+				border-style="none" />
+		</xsl:otherwise>
+		</xsl:choose>
 			<fo:table-body>
 				<xsl:choose>
 					<!-- Checks if there are some CausalFactors defined -->
 					<!-- for a component. -->
-					<xsl:when test="causalEntries">
+					<xsl:when test="causalEntries/causalEntry">
 					<xsl:for-each select="causalEntries/causalEntry">
 						<fo:table-row>
 							<!-- Sets the row-colour -->
@@ -1017,7 +1052,18 @@
 							
 							<!-- Safety Constraint -->
 							<fo:table-cell padding="3px">
-								<xsl:call-template name="causalFactorScenarioTable"/>
+							<xsl:choose>
+								<xsl:when test="$useScenarios = 'true'">
+									<xsl:call-template name="causalFactorScenarioTable">
+	                            		<xsl:with-param name="useScenarios" select="$useScenarios" />
+		                           	</xsl:call-template>
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:block>
+									<xsl:value-of select="constraintText"/>
+									</fo:block>
+								</xsl:otherwise>
+							</xsl:choose>
 							</fo:table-cell>
 							
 							<!-- Notes or Rationale -->
@@ -1069,6 +1115,7 @@
 	</xsl:template>
 	
 	<xsl:template name="causalFactorScenarioTable">
+      <xsl:param name="useScenarios" select="false"/> 
 		<fo:table>
 			
 			<fo:table-column column-number="1" column-width="50%"

@@ -493,7 +493,9 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       case SAVE: {
         IProjectSelection selection = this.selectorsToSelectionId
             .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-        ((ProjectSelector)selection).setUnsaved(false);
+        if(selection != null) {
+          ((ProjectSelector)selection).setUnsaved(false);
+        }
         
         break;
       }

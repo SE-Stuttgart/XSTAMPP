@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import xstampp.astpa.model.DataModelController;
+import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.ColorManager;
 
@@ -44,11 +45,13 @@ public class ProjectsPreferences extends PreferencePage implements IWorkbenchPre
     TabFolder folder = new TabFolder(control, SWT.None);
     folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
     for (UUID projectId : ProjectManager.getContainerInstance().getProjectKeys()) {
-      TabItem item = new TabItem(folder, SWT.NONE);
-      item.setText(ProjectManager.getContainerInstance().getTitle(projectId));
       ProjectSpecifics specific = new ProjectSpecifics(projectId);
-      item.setControl(specific.getControl(folder));
-      this.specificsList.add(specific);
+      if(specific.controller != null) {
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(ProjectManager.getContainerInstance().getTitle(projectId));
+        item.setControl(specific.getControl(folder));
+        this.specificsList.add(specific);
+      }
     }
 
     note = new Label(control, SWT.None);
@@ -91,10 +94,14 @@ public class ProjectsPreferences extends PreferencePage implements IWorkbenchPre
     private BooleanSetting useScenariosSetting;
 
     public ProjectSpecifics(UUID projectId) {
-      this.controller = (DataModelController) ProjectManager.getContainerInstance().getDataModel(projectId);
+      IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(projectId);
+      if(dataModel instanceof DataModelController) {
+        this.controller = (DataModelController) dataModel;
+      }
     }
 
     public Control getControl(Composite parent) {
+      
       Composite container = new Composite(parent, SWT.None);
       container.setLayout(new GridLayout(2, false));
       container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
