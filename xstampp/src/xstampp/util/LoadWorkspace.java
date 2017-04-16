@@ -41,10 +41,12 @@ public class LoadWorkspace extends Job {
     IConfigurationElement[] elements = Platform.getExtensionRegistry()
         .getConfigurationElementsFor("xstampp.extension.steppedProcess");
     for (IConfigurationElement extElement : elements) {
-      String[] ext = extElement.getAttribute("extension").split(";"); //$NON-NLS-1$
-      String modelClass = extElement.getAttribute("DataModelClass");
-      for (int i = 0; i < ext.length; i++) {
-        ProjectManager.getContainerInstance().registerExtension(modelClass, ext[i], extElement);
+      if(extElement.getName().contains("process")) {
+        String[] ext = extElement.getAttribute("extension").split(";"); //$NON-NLS-1$
+        String modelClass = extElement.getAttribute("DataModelClass");
+        for (int i = 0; i < ext.length; i++) {
+          ProjectManager.getContainerInstance().registerExtension(modelClass, ext[i], extElement);
+        }
       }
     }
 

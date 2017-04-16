@@ -13,11 +13,24 @@ package xstampp.usermanagement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
+import xstampp.usermanagement.io.SaveUserJob;
 import xstampp.usermanagement.roles.Admin;
+import xstampp.usermanagement.roles.User;
+import xstampp.usermanagement.ui.CreateUserShell;
+import xstampp.usermanagement.ui.LoginShell;
 
 /**
  * An admin which can access and manipulate all files.
@@ -25,69 +38,135 @@ import xstampp.usermanagement.roles.Admin;
  * @author Lukas Balzer - initial implementation
  *
  */
-public class UserSystem implements IUserSystem {
+@XmlRootElement(name = "userSystem", namespace = "userSystem")
+@XmlAccessorType(XmlAccessType.NONE)
+public class UserSystem extends Observable implements IUserSystem {
+
+  @XmlAttribute(name = "systemId", required = true)
   private UUID systemId;
-  private List<IUser> registry;
+
+  @XmlElementWrapper(name = "userRegistry")
+  @XmlElement(name = "user")
+  private List<User> userRegistry;
+
+  @XmlElementWrapper(name = "adminRegistry")
+  @XmlElement(name = "admin")
+  private List<Admin> adminRegistry;
+
   private IUser currentUser;
+  private String projectName;
 
-  private UserSystem() {
-    this.registry = new ArrayList<>();
+  public UserSystem() {
+    this.userRegistry = new ArrayList<>();
+    this.adminRegistry = new ArrayList<>();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.usermanagement.IUserSystem#getUserSystem()
-   */
+  public UserSystem(Admin admin, String projectName) {
+    this();
+    adminRegistry.add(admin);
+    this.projectName = projectName;
+    this.systemId = UUID.randomUUID();
+    this.currentUser = admin;
+    save();
+  }
+
   @Override
-  public IUserSystem getUserSystem() {
-    CreateAdmin create = new CreateAdmin(null);
-    create.setTitle("Create initial User");
-    IUser admin = create.open();
-    UserSystem system = null;
-    if (admin != null) {
-      system = new UserSystem();
-      system.systemId = UUID.randomUUID();
-      system.registry.add(admin);
-    }
-    return system;
+  public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
+    return this.getCurrentUser().checkAccess(entryId, accessLevel);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.usermanagement.IUserSystem#createUser()
-   */
+  @Override
+  public boolean checkAccess(AccessRights accessRight) {
+    if (this.getCurrentUser() != null) {
+      return getCurrentUser().checkAccess(accessRight);
+    }
+    return false;
+  }
+
+  @Override
+  public List<IUser> getRegistry() {
+    List<IUser> registry = new ArrayList<>();
+    registry.addAll(userRegistry);
+    registry.addAll(adminRegistry);
+    return registry;
+  }
+
+  @Override
+  public UUID getSystemId() {
+    return systemId;
+  }
+
+  public IUser getCurrentUser() {
+    if (this.currentUser == null) {
+      this.currentUser = new LoginShell(this, true).pullUser();
+    }
+    return currentUser;
+  }
+
+  @Override
+  public boolean grantAccessTo(IUser user, AccessRights right) {
+    if (getCurrentUser() instanceof Admin) {
+      if (user instanceof User) {
+        ((User) user).giveAccessLevel(right);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean canCreateUser() {
+    return checkAccess(AccessRights.CREATE);
+  }
+
   @Override
   public boolean createUser() {
     boolean result = false;
-    if (currentUser instanceof Admin) {
-      CreateUser create = new CreateUser(this);
-      IUser user = create.open();
-      if (user != null) {
-        result = this.registry.add(user);
+    if (getCurrentUser() instanceof Admin) {
+      CreateUserShell create = new CreateUserShell(this);
+      User user = (User) create.pullUser();
+      if (user != null && this.userRegistry.add(user)) {
+        result = true;
+        save();
       }
     }
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.usermanagement.IUserSystem#canAccess(java.util.UUID)
-   */
   @Override
-  public boolean canAccess(UUID entryId) {
-    return new LoginShell(this, true).open().checkAccess(entryId);
-  }
-  
-  public List<IUser> getRegistry() {
-    return registry;
+  public boolean canDeleteUser(UUID userId) {
+    return checkAccess(AccessRights.CREATE) && !this.currentUser.getUserId().equals(userId);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.usermanagement.IUserSystem#canAccess(java.util.UUID)
-   */
   @Override
-  public UUID getSystemId() {
-    return systemId;
+  public boolean deleteUser(UUID userId) {
+    if (!this.currentUser.getUserId().equals(userId)) {
+      for (int i = 0; i < userRegistry.size(); i++) {
+        User user = this.userRegistry.get(i);
+        if (user.getUserId().equals(userId) && this.userRegistry.remove(user)) {
+          save();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private void save() {
+    SaveUserJob saveJob = new SaveUserJob(this, projectName);
+    saveJob.schedule();
+    setChanged();
+    notifyObservers();
+  }
+
+  @Override
+  public UUID getCurrentUserId() {
+    if(currentUser == null) {
+      return null;
+    }
+    return currentUser.getUserId();
   }
   
-  public IUser getCurrentUser() {
-    return currentUser;
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
   }
 }

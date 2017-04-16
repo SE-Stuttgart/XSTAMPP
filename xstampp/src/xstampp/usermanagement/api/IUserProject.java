@@ -11,6 +11,7 @@
 
 package xstampp.usermanagement.api;
 
+import xstampp.model.IDataModel;
 import xstampp.usermanagement.UserSystem;
 
 /**
@@ -19,8 +20,16 @@ import xstampp.usermanagement.UserSystem;
  * @author Lukas Balzer - initial implementation and API
  *
  */
-public interface IUserProject {
+public interface IUserProject extends IDataModel {
 
-  
-  UserSystem getUserSystem();
+  /**
+   * This getter should never return null but instead implementing systems
+   * should initialize the user system as an {@link EmptyUserSystem}.
+   * 
+   * @return the currently used user system which can not be null but only one
+   *         of {@link EmptyUserSystem} or {@link UserSystem}
+   */
+  IUserSystem getUserSystem();
+
+  IUserSystem createUserSystem();
 }

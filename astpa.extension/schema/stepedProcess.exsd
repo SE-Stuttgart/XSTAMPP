@@ -20,6 +20,7 @@ Each step can be categoriesed and muliple editors where the Step can be progress
       <complexType>
          <choice>
             <element ref="process"/>
+            <element ref="SettingsPage" minOccurs="0" maxOccurs="unbounded"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -238,6 +239,28 @@ The Load job is resposible for creating a IDataModel which contains the project 
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="SettingsPage">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":xstampp.ui.common.projectSettings.ISettingsPage"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

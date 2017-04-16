@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolderRenderer;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -17,8 +19,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -42,18 +42,27 @@ public class ProjectsPreferences extends PreferencePage implements IWorkbenchPre
     this.specificsList = new ArrayList<>();
     Composite control = new Composite(parent, SWT.None);
     control.setLayout(new GridLayout());
-    TabFolder folder = new TabFolder(control, SWT.None);
+    control.setSize(400,400);
+    CTabFolder folder =  new CTabFolder(control, SWT.MULTI | SWT.BORDER);
+    folder.setSize(400,300);
+    folder.setSimple(false);
+    folder.setUnselectedImageVisible(false);
+    folder.setUnselectedCloseVisible(false);
     folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
     for (UUID projectId : ProjectManager.getContainerInstance().getProjectKeys()) {
       ProjectSpecifics specific = new ProjectSpecifics(projectId);
       if(specific.controller != null) {
-        TabItem item = new TabItem(folder, SWT.NONE);
+        CTabItem item = new CTabItem(folder, SWT.CLOSE);
         item.setText(ProjectManager.getContainerInstance().getTitle(projectId));
         item.setControl(specific.getControl(folder));
         this.specificsList.add(specific);
+
+        folder.setInsertMark(item, true);
       }
     }
-
+    if(folder.getItemCount() > 0) {
+      folder.setSelection(0);
+    }
     note = new Label(control, SWT.None);
     note.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
     note.setText("changes of these settings are only persisted after the project has been saved in the main view!");
@@ -64,6 +73,7 @@ public class ProjectsPreferences extends PreferencePage implements IWorkbenchPre
     note.setFont(noteFont);
     note.setForeground(ColorManager.COLOR_RED);
     this.note.setVisible(false);
+    control.pack();
     return control;
   }
 
@@ -109,6 +119,7 @@ public class ProjectsPreferences extends PreferencePage implements IWorkbenchPre
       String description = "Use &Scenarios to refine the causal factors in the project,\n this adds a column 'Causal Scenarios' in the "
           + "Causal Factors Table that allows to define safety constraints per causal scenario";
       this.useScenariosSetting = new BooleanSetting(container, title, description, this.controller.isUseScenarios());
+      container.setSize(400,400);
       return container;
     }
 

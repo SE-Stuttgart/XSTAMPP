@@ -9,35 +9,32 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package xstampp.usermanagement;
+package xstampp.usermanagement.ui;
 
 import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.roles.User;
 
 /**
  * 
  * @author Lukas Balzer - initial implementation
  *
  */
-public class CreateUser extends LoginShell {
+public abstract class ModalShell extends xstampp.ui.common.ModalShell {
 
-  public CreateUser(UserSystem userSystem) {
-    super(userSystem, false);
-    setTitle("Create User");
-    setAcceptLabel("Create");
+  private IUser selectedUser;
+
+  public ModalShell(String name, String acceptLabel) {
+    super(name, acceptLabel);
+    this.selectedUser = null;
   }
 
-
-  @Override
-  protected boolean doAccept() {
-    for (IUser user : getUserSystem().getRegistry()) {
-      if (user.getUsername().equals(getUsername())) {
-        invalidate("Username already exists!");
-        return false;
-      }
+  public IUser pullUser() {
+    if (this.selectedUser == null) {
+      open();
     }
-    setSelectedUser(new User(getUsername(), getPassword()));
-    return true;
+    return this.selectedUser;
   }
 
+  public void setSelectedUser(IUser selectedUser) {
+    this.selectedUser = selectedUser;
+  }
 }

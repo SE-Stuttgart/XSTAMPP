@@ -14,19 +14,6 @@
 
 package xstampp.ui.common;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Observable;
-import java.util.Set;
-import java.util.UUID;
-
 import messages.Messages;
 
 import org.apache.log4j.Logger;
@@ -51,33 +38,43 @@ import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserProject;
 import xstampp.util.AbstractLoadJob;
 import xstampp.util.STPAPluginUtils;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- * The view container contains the navigation view and the view area.
+ * The view container contains the navigation view and the view area. The
+ * navigation view is by default invisible and has to be set visible by using
+ * setShowNavigationView(true).
  * 
- * The navigation view is by default invisible and has to be set visible by
- * using setShowNavigationView(true).
  * 
- * 
- * @author Patrick Wickenhaeuser, Fabian Toth, Sebastian Sieber
- * 
- */
-/**
- * 
+ * @author Patrick Wickenhaeuser
+ * @author Fabian Toth
+ * @author Sebastian Sieber
  * @author Lukas Balzer
  * 
  */
 public class ProjectManager extends Observable implements IPropertyChangeListener {
 
-  private final static String OUTPUT = "Output"; //$NON-NLS-1$
-  private final static String PROJECT_TREE = "PROJECT_TREE"; //$NON-NLS-1$
-  
+  private static final String OUTPUT = "Output"; //$NON-NLS-1$
+
   /**
-   * The log4j logger
+   * The log4j logger.
    */
   private static final Logger LOGGER = Logger.getRootLogger();
   private static ProjectManager containerInstance;
@@ -100,7 +97,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   /**
    * when the plugin dependent load job is done, this change adapter promts out
    * all error messages returned by the job in case of failure or calls
-   * {@link LoadRunnable} in case of success
+   * {@link LoadRunnable} in case of success.
    *
    * @author Lukas Balzer
    *
@@ -120,7 +117,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
             for (String error : job.getErrors()) {
               msg.append("\n" + error); //$NON-NLS-1$
             }
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages.Information, msg.toString());
+            MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+                Messages.Information, msg.toString());
           }
         });
       }
@@ -144,13 +142,14 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     @Override
     public void run() {
       UUID projectId = UUID.randomUUID();
-      projectContainerToUuid.put(projectId, new ProjectFileContainer(controller, this.saveFile.getPath()));
-      IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-          .findView(ProjectExplorer.ID);
+      projectContainerToUuid.put(projectId,
+          new ProjectFileContainer(controller, this.saveFile.getPath()));
       this.controller.prepareForSave();
       if (!saveFile.exists()) {
         ProjectManager.getContainerInstance().saveDataModel(projectId, false, false);
       }
+      IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .findView(ProjectExplorer.ID);
       ProjectManager.getContainerInstance().synchronizeProjectName(projectId);
       if (navi != null) {
         ((ProjectExplorer) navi).updateProjects();
@@ -281,7 +280,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     for (String ext : extElement.getAttribute("extension").split(";")) {//$NON-NLS-1$ //$NON-NLS-2$
       extensions.add("*." + ext); //$NON-NLS-1$
     }
-    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
+    FileDialog fileDialog = new FileDialog(
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
     fileDialog.setFilterExtensions(extensions.toArray(new String[] {}));
     if (extensions.size() == filterNames.length) {
       fileDialog.setFilterNames(filterNames);
@@ -295,8 +295,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     }
     File file = new File(fileName);
     if (file.exists()) {
-      boolean result = MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), Messages.ConfirmSaveAs,
-          String.format(ProjectManager.OVERWRITE_MESSAGE, file.getName()));
+      boolean result = MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+          Messages.ConfirmSaveAs, String.format(ProjectManager.OVERWRITE_MESSAGE, file.getName()));
       if (!result) {
         return false;
       }
@@ -392,7 +392,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * @return whether the operation was successful or not
    */
   public Job importDataModel() {
-    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+        SWT.OPEN);
     ArrayList<String> extensions = new ArrayList<>();
     for (String ext : this.elementsToExtensions.keySet()) {
       extensions.add("*." + ext); //$NON-NLS-1$
@@ -403,7 +404,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     String file = fileDialog.open();
     if (this.projectContainerToUuid.containsValue(new File(file))) {
       MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-          Messages.ProjectManager_ProjectIsAlreadyOpen, Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
+          Messages.ProjectManager_ProjectIsAlreadyOpen,
+          Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
       return null;
     }
     // if the file is not null but also not located in the workspace the project
@@ -417,10 +419,12 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
         // if the imported file already exists and the user wants to overwrite
         // it with the new one,
         // the current project is searched and removed
-        if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages.FileExists,
+        if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+            Messages.FileExists,
             String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, outer.getName()))) {
 
-          for (Entry<UUID, ProjectFileContainer> containerEntry : projectContainerToUuid.entrySet()) {
+          for (Entry<UUID, ProjectFileContainer> containerEntry : projectContainerToUuid
+              .entrySet()) {
             if (containerEntry.getValue().getProjectFile().equals(copy)
                 && !removeProjectData(containerEntry.getKey())) {
               MessageDialog.openError(null, Messages.Error, Messages.CantOverride);
@@ -524,15 +528,17 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    */
   public boolean checkCloseApplication() {
     if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
-      MessageDialog.openError(null, Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
+      MessageDialog.openError(null,
+          Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
           Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
               + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
       return false;
     }
     if (ProjectManager.getContainerInstance().getUnsavedChanges()) {
-      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.PlatformName, null,
-          Messages.ThereAreUnsafedChangesDoYouWantToStoreThem, MessageDialog.CONFIRM,
-          new String[] { Messages.Store, Messages.Discard, Messages.Abort }, 0);
+      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(),
+          Messages.PlatformName, null, Messages.ThereAreUnsafedChangesDoYouWantToStoreThem,
+          MessageDialog.CONFIRM, new String[] { Messages.Store, Messages.Discard, Messages.Abort },
+          0);
       int resultNum = dialog.open();
       switch (resultNum) {
       case -1:
@@ -591,7 +597,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
 
   public boolean canWriteOnProject(UUID projectId) {
     File projFile = this.projectContainerToUuid.get(projectId).getProjectFile();
-    if(!projFile.exists()) {
+    if (!projFile.exists()) {
       return true;
     }
     return projFile.canWrite();
@@ -616,8 +622,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
 
   public File getOutputDir(UUID projectId) {
     String projectName = getTitle(projectId);
-    File outputDir = new File(
-        Platform.getInstanceLocation().getURL().getPath().toString() + OUTPUT + File.separator + projectName);
+    File outputDir = new File(Platform.getInstanceLocation().getURL().getPath().toString() + OUTPUT
+        + File.separator + projectName);
     if (!outputDir.exists()) {
       outputDir.mkdirs();
     }
@@ -661,7 +667,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   private void updateProjectTree() {
-    IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("astpa.explorer"); //$NON-NLS-1$
+    IViewPart navi = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .findView("astpa.explorer"); //$NON-NLS-1$
     if (navi != null) {
       ((ProjectExplorer) navi).updateProjects();
     }
@@ -681,7 +688,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     if (projectContainerToUuid.containsKey(projectId)) {
       File projectFile = this.projectContainerToUuid.get(projectId).getProjectFile();
       if (!projectFile.exists() || projectFile.delete()) {
-        this.projectContainerToUuid.remove(projectId).getController().updateValue(ObserverValue.DELETE);
+        this.projectContainerToUuid.remove(projectId).getController()
+            .updateValue(ObserverValue.DELETE);
         return !this.projectContainerToUuid.containsKey(projectId);
       }
     }
@@ -806,15 +814,13 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * 
    * @author Lukas Balzer
    *
-   * @param projectID
+   * @param projectId
    *          the id of the requested project
    * @return the configuration element as defined in the steppedProcess
    *         extension Point
    */
-  public IConfigurationElement getConfigurationFor(UUID projectID) {
-    String name = this.projectContainerToUuid.get(projectID).getClass().getName();
-    String ext = this.extensionsToModelClass.get(name);
-    return this.elementsToExtensions.get(getProjectExtension(projectID));
+  public IConfigurationElement getConfigurationFor(UUID projectId) {
+    return this.elementsToExtensions.get(getProjectExtension(projectId));
   }
 
   /**
@@ -861,6 +867,14 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
       this.projectAdditionsToUuid = new HashMap<>();
     }
     this.projectAdditionsToUuid.put(id, addition);
+  }
+
+  public boolean canAccess(UUID id) {
+    IDataModel dataModel = getDataModel(id);
+    if (dataModel instanceof IUserProject) {
+      return ((IUserProject) dataModel).getUserSystem().checkAccess(AccessRights.ACCESS);
+    }
+    return true;
   }
 
   public void addSaveStateListener(IPropertyChangeListener listener) {

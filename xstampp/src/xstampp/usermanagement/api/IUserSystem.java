@@ -12,6 +12,7 @@
 
 package xstampp.usermanagement.api;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -22,12 +23,44 @@ import java.util.UUID;
  */
 public interface IUserSystem {
 
-  IUserSystem getUserSystem();
-
   boolean createUser();
+
+  boolean canCreateUser();
+
+  boolean deleteUser(UUID userId);
+
+  boolean canDeleteUser(UUID userId);
+
+  boolean grantAccessTo(IUser user, AccessRights right);
 
   public UUID getSystemId();
 
-  boolean canAccess(UUID entryId);
+  public UUID getCurrentUserId();
+
+  List<IUser> getRegistry();
+
+  /**
+   * checks whether the user is allowed to access the given resource
+   * 
+   * @param entryId
+   *          the id of the entry that shall be manipulated
+   * @param accessRight
+   *          The level the Access takes place e.g. {@link AccessRights#CREATE},
+   *          {@link AccessRights#WRITE}
+   *
+   * @return if the user is allowed to access.
+   */
+  public boolean checkAccess(UUID entryId, AccessRights accessRight);
+
+  /**
+   * checks whether the user is allowed to access the given access level
+   *
+   * @param accessRight
+   *          The level the Access takes place e.g. {@link AccessRights#CREATE},
+   *          {@link AccessRights#WRITE}
+   *
+   * @return if the user is allowed to access.
+   */
+  public boolean checkAccess(AccessRights accessRight);
 
 }

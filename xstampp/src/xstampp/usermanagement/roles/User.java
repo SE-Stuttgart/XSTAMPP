@@ -15,36 +15,73 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import xstampp.usermanagement.api.AccessRights;
+
 /**
  * A normal user which can be given certain responsibilities to access files.
+ * 
  * @author Lukas Balzer - initial implementation
  *
  */
+@XmlRootElement(name = "user")
+@XmlAccessorType(XmlAccessType.NONE)
 public class User extends AbstractUser {
+
+  @XmlElementWrapper(name = "responsibilities")
+  @XmlElement(name = "responsibility")
   private List<UUID> responsibilities;
 
+  @XmlAttribute(name = "accessLevel")
+  private List<AccessRights> accessLevel;
+
   public User() {
-    this("",""); //$NON-NLS-1$ //$NON-NLS-2$
+    this("", "", AccessRights.READ_ONLY); //$NON-NLS-1$ //$NON-NLS-2$
+    this.accessLevel = new ArrayList<>();
   }
-  
-  public User(String username, String password) {
+
+  public User(String username, String password, AccessRights accessRights) {
+    this(username, password, new AccessRights[] { accessRights });
+  }
+
+  public User(String username, String password, AccessRights[] accessRights) {
     super(username, password);
     this.responsibilities = new ArrayList<>();
+    this.accessLevel = new ArrayList<>();
+    this.accessLevel.add(AccessRights.ACCESS);
+    for (AccessRights accessRight : accessRights) {
+      this.accessLevel.add(accessRight);
+    }
   }
-  
-  /* (non-Javadoc)
-   * @see xstampp.usermanagement.roles.IUser#getUserId()
-   */
+
   @Override
-  public boolean checkAccess(UUID entryId) {
-    return responsibilities.contains(entryId);
+  public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
+    if (checkAccess(accessLevel)) {
+      return responsibilities.contains(entryId);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean checkAccess(AccessRights accessRight) {
+    return this.accessLevel.contains(accessLevel);
   }
 
   /**
-   * @param responsibility the responsibilities to set.
+   * @param responsibility
+   *          the responsibilities to set.
    */
   public void addResponsibility(UUID responsibility) {
     this.responsibilities.add(responsibility);
   }
 
+  public void giveAccessLevel(AccessRights accessLevel) {
+    this.accessLevel.add(accessLevel);
+  }
 }

@@ -115,6 +115,10 @@
             </step>
          </category>
       </process>
+      <SettingsPage
+            class="xstampp.astpa.preferences.ProjectSpecifics"
+            name="General">
+      </SettingsPage>
    </extension>
    <extension
          name="%extension.name.pdfExport"

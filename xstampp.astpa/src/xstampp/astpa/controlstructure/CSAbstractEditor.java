@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -115,6 +113,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
+import messages.Messages;
 import xstampp.astpa.controlstructure.controller.commands.CopyComponentCommand;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
@@ -138,7 +137,6 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.ui.workbench.contributions.IZoomContributor;
-import xstampp.util.ColorManager;
 import xstampp.util.STPAPluginUtils;
 
 /**

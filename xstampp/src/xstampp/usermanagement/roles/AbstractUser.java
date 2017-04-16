@@ -11,9 +11,12 @@
 
 package xstampp.usermanagement.roles;
 
+import xstampp.usermanagement.api.IUser;
+
 import java.util.UUID;
 
-import xstampp.usermanagement.api.IUser;
+import javax.xml.bind.annotation.XmlAttribute;
+
 
 /**
  * An abstract class which defines the basis af all users in thre system.
@@ -22,25 +25,33 @@ import xstampp.usermanagement.api.IUser;
  *
  */
 public abstract class AbstractUser implements IUser {
+
+  @XmlAttribute(name = "userId", required = true)
   private UUID userId;
+
+  @XmlAttribute(name = "username", required = true)
   private String username;
+
+  @XmlAttribute(name = "password", required = true)
   private String password;
 
   /**
-   * Creates a user with a username and a password
-   * and an id which can and should not be changed later.
+   * Creates a user with a username and a password and an id which can and
+   * should not be changed later.
    */
   public AbstractUser(String username, String password) {
     this.username = username;
     this.password = password;
     this.userId = UUID.randomUUID();
   }
-  
+
   public AbstractUser() {
-    this("",""); //$NON-NLS-1$ //$NON-NLS-2$
+    this("", ""); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.usermanagement.roles.IUser#getUserId()
    */
   @Override
@@ -48,7 +59,9 @@ public abstract class AbstractUser implements IUser {
     return userId;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.usermanagement.roles.IUser#getUsername()
    */
   @Override
@@ -56,7 +69,9 @@ public abstract class AbstractUser implements IUser {
     return username;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.usermanagement.roles.IUser#getPassword()
    */
   @Override
@@ -64,8 +79,11 @@ public abstract class AbstractUser implements IUser {
     return password;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.usermanagement.roles.IUser#setUsername(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.usermanagement.roles.IUser#setUsername(java.lang.String,
+   * java.lang.String)
    */
   @Override
   public boolean setUsername(String password, String username) {
@@ -76,8 +94,11 @@ public abstract class AbstractUser implements IUser {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.usermanagement.roles.IUser#setPassword(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.usermanagement.roles.IUser#setPassword(java.lang.String,
+   * java.lang.String)
    */
   @Override
   public boolean setPassword(String oldPassword, String newPassword) {

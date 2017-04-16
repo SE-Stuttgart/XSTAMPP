@@ -8,11 +8,18 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package xstampp.usermanagement;
+
+package xstampp.usermanagement.io;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Observable;
+
+import messages.Messages;
+
+import xstampp.ui.common.ProjectManager;
+import xstampp.usermanagement.UserSystem;
+import xstampp.util.XstamppJob;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -21,10 +28,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-
-import messages.Messages;
-import xstampp.ui.common.ProjectManager;
-import xstampp.util.XstamppJob;
 
 /**
  * @author Lukas Balzer - initial implementation
@@ -59,7 +62,6 @@ public class SaveUserJob extends XstamppJob {
       marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 
       FileOutputStream writer = new FileOutputStream(file);
-
       marshaller.marshal(database, writer);
       writer.close();
     } catch (Exception e) {

@@ -47,4 +47,4 @@
  * @author Lukas Balzer
  *
  */
-package xstampp.usermanagement;
+package xstampp.astpa.usermanagement;

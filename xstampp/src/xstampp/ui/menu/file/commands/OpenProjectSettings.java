@@ -17,33 +17,32 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.projectSettings.ProjectSettingsShell;
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
 import xstampp.ui.navigation.StepSelector;
 
 /**
  *
  * @author Lukas Balzer
- * @since 1.0
  */
-public class OpenStepEditor extends AbstractHandler {
+public class OpenProjectSettings extends AbstractHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
 
     Object currentSelection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
         .getSelection(ProjectExplorer.ID); // $NON-NLS-1$
-    String openWithEditor = event.getParameter("xstampp.command.steps.open"); //$NON-NLS-1$
+
     // if the currentSelection is a stepSelector than it is transfered in a
     // proper object
-    if (currentSelection instanceof StepSelector) {
-      StepSelector selector = ((StepSelector) currentSelection);
-      if (ProjectManager.getContainerInstance().canAccess(selector.getProjectId())) {
-        if (openWithEditor != null) {
-          selector.openEditor(openWithEditor);
-        } else {
-          selector.openDefaultEditor();
-        }
-      }
+    if (!(currentSelection instanceof IProjectSelection)) {
+      return null;
+    }
+    IProjectSelection selector = ((IProjectSelection) currentSelection);
+    if (ProjectManager.getContainerInstance().canAccess(selector.getProjectId())) {
+      ProjectSettingsShell shell = new ProjectSettingsShell(selector.getProjectId());
+      shell.open();
     }
     return null;
   }

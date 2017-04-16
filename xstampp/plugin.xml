@@ -194,6 +194,16 @@
             </command>
          </menu>
          <menu
+               id="projectMenu"
+               label="%menu.name.project"
+               tooltip="%menu.name.project.tooltip">
+            <command
+                  commandId="xstampp.command.openProjectSettings"
+                  style="push"
+                  tooltip="%command.tooltip.openProjectSettings">
+            </command>
+         </menu>
+         <menu
                label="%menu.name.window">
             <command
                   commandId="org.eclipse.ui.window.switchToEditor"
@@ -610,6 +620,18 @@
                </equals>
             </with>
          </enabledWhen>
+      </handler>
+      <handler
+            class="xstampp.ui.menu.file.commands.OpenProjectSettings"
+            commandId="xstampp.command.openProjectSettings">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <instanceof
+                     value="xstampp.ui.navigation.IProjectSelection">
+               </instanceof>
+            </with>
+         </enabledWhen>
       </handler>ler>
    </extension>
    <extension
@@ -825,6 +847,10 @@
       <command
             id="xstampp.command.redo"
             name="Redo">
+      </command>
+      <command
+            id="xstampp.command.openProjectSettings"
+            name="%command.name.openProjectSettings">
       </command>
    </extension>
    

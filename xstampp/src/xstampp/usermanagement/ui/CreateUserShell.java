@@ -9,41 +9,36 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package xstampp.usermanagement.roles;
-
-import java.util.UUID;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+package xstampp.usermanagement.ui;
 
 import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
+import xstampp.usermanagement.roles.User;
 
 /**
- * An admin which can access and manipulate all files.
  * 
  * @author Lukas Balzer - initial implementation
  *
  */
-@XmlRootElement(name = "admin")
-@XmlAccessorType(XmlAccessType.NONE)
-public class Admin extends AbstractUser {
+public class CreateUserShell extends LoginShell {
 
-  public Admin() {
-    this("",""); //$NON-NLS-1$ //$NON-NLS-2$
-  }
-  
-  public Admin(String username, String password) {
-    super(username, password);
-  }
-  
-  @Override
-  public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
-    return true;
+  public CreateUserShell(IUserSystem userSystem) {
+    super(userSystem, false);
+    setTitle("Create User");
+    setAcceptLabel("Create");
   }
 
+
   @Override
-  public boolean checkAccess(AccessRights accessRight) {
+  protected boolean doAccept() {
+    for (IUser user : getUserSystem().getRegistry()) {
+      if (user.getUsername().equals(getUsername())) {
+        invalidate("Username already exists!");
+        return false;
+      }
+    }
+    setSelectedUser(new User(getUsername(), getPassword(),AccessRights.WRITE));
     return true;
   }
 

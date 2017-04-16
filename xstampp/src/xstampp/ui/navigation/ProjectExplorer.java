@@ -8,16 +8,10 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.ui.navigation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-import java.util.UUID;
+import messages.Messages;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -58,15 +52,22 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import messages.Messages;
 import xstampp.Activator;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.util.STPAPluginUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * This class uses the extension point astpa.extensions.steppedEditor to create
@@ -76,10 +77,11 @@ import xstampp.util.STPAPluginUtils;
  * @author Lukas Balzer
  * @since version 2.0.0
  */
-public final class ProjectExplorer extends ViewPart implements IMenuListener, Observer, ISelectionProvider {
+public final class ProjectExplorer extends ViewPart
+    implements IMenuListener, Observer, ISelectionProvider {
 
   /**
-   * The ID of this view
+   * The ID of this view.
    */
   public static final String ID = "astpa.explorer"; //$NON-NLS-1$
   private static final String MENU_ID = "openWith.menu"; //$NON-NLS-1$
@@ -138,8 +140,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       @Override
       public void handleEvent(Event event) {
         for (ISelectionChangedListener listenerObj : ProjectExplorer.this.selectionListener) {
-          listenerObj
-              .selectionChanged(new SelectionChangedEvent(ProjectExplorer.this, ProjectExplorer.this.getSelection()));
+          listenerObj.selectionChanged(
+              new SelectionChangedEvent(ProjectExplorer.this, ProjectExplorer.this.getSelection()));
         }
         if (event != null && (event.detail == SWT.CR || event.detail == SWT.MouseDoubleClick)) {
           STPAPluginUtils.executeCommand("astpa.command.openStep"); //$NON-NLS-1$
@@ -166,9 +168,10 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
     this.updateProjects();
 
     // Enable the save entries in the menu
-    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI.getWorkbench()
-        .getService(ISourceProviderService.class);
-    CommandState saveStateService = (CommandState) sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
+    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+        .getWorkbench().getService(ISourceProviderService.class);
+    CommandState saveStateService = (CommandState) sourceProviderService
+        .getSourceProvider(CommandState.SAVE_STATE);
     addSelectionChangedListener(saveStateService);
   }
 
@@ -184,7 +187,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
 
       @Override
       public void focusLost(FocusEvent e) {
-        IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+        IContextService contextService = (IContextService) getSite()
+            .getService(IContextService.class);
         if (this.activation != null) {
           contextService.deactivateContext(this.activation);
         }
@@ -192,7 +196,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
 
       @Override
       public void focusGained(FocusEvent e) {
-        IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+        IContextService contextService = (IContextService) getSite()
+            .getService(IContextService.class);
         this.activation = contextService.activateContext("xstampp.navigation.context"); //$NON-NLS-1$
       }
     });
@@ -232,7 +237,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
    * 
    */
   private void buildTree(final UUID projectId, String pluginId) {
-    
+
     final TreeItem projectItem = new TreeItem(this.tree, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
     FontData fontData = PreferenceConverter.getFontData(store, IPreferenceConstants.DEFAULT_FONT);
     if (fontData != null) {
@@ -244,7 +249,7 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
     this.tree.setFont(defaultFont);
     projectItem.setFont(defaultFont);
     ProjectSelector selector = new ProjectSelector(projectItem, projectId, new HeadSelector());
-    
+
     /**
      * The selection id identifies each step in the current runtime.
      */
@@ -256,9 +261,9 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
     projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
     selector.setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(projectId));
     ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginId,
-                                            projectExt.getAttribute("icon")); //$NON-NLS-1$
+        projectExt.getAttribute("icon")); //$NON-NLS-1$
     projectItem.setImage(imgDesc.createImage());
-    
+
     this.treeItemsToProjectIDs.put(projectId, projectItem);
     // this two for-loops construct the process tree which consists out of
     // steps grouped by categorys, each step or category is represented by a
@@ -270,23 +275,19 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
     }
   }
 
-  private void addTreeItem(IConfigurationElement element,
-                           IProjectSelection parent,
-                           UUID projectId,
-                           String pluginId) {
+  private void addTreeItem(IConfigurationElement element, IProjectSelection parent, UUID projectId,
+      String pluginId) {
     String selectionId = element.getAttribute("id") + projectId.toString(); //$NON-NLS-1$
     String navigationPath = PATH_SEPERATOR + element.getAttribute("name"); //$NON-NLS-1$
     final TreeItem subItem = new TreeItem(parent.getItem(), SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
     subItem.addListener(SWT.Selection, expandListener);
     subItem.setFont(defaultFont);
-    
+
     subItem.setText(element.getAttribute("name"));//$NON-NLS-1$
     subItem.addListener(SWT.SELECTED, this.listener);
 
     String name = element.getName();
-    this.addImage(subItem,
-                  element.getAttribute("icon"),
-                  element.getNamespaceIdentifier());//$NON-NLS-1$
+    this.addImage(subItem, element.getAttribute("icon"), element.getNamespaceIdentifier());// $NON-NLS-1$
     IProjectSelection selector;
 
     if (name.equals("step") || name.equals("stepEditor")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -296,16 +297,19 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       // xstampp.extension.stepEditor extension in any of the plugins
       if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
         for (IConfigurationElement e : this.stepEditorsToStepId.get(element.getAttribute("id"))) { //$NON-NLS-1$
-          ((StepSelector) selector).addStepEditor(e.getAttribute("editorId"), e.getAttribute("name")); //$NON-NLS-1$ //$NON-NLS-2$
+          ((StepSelector) selector).addStepEditor(e.getAttribute("editorId"), //$NON-NLS-1$
+              e.getAttribute("name")); //$NON-NLS-1$
         }
       }
       if (this.stepPerspectivesToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
         TreeItem perspectiveItem;
-        for (IConfigurationElement perspConf : this.stepPerspectivesToStepId.get(element.getAttribute("id"))) { //$NON-NLS-1$
+        for (IConfigurationElement perspConf : this.stepPerspectivesToStepId
+            .get(element.getAttribute("id"))) { //$NON-NLS-1$
 
           String viewID = perspConf.getChildren("view")[0].getAttribute("id"); //$NON-NLS-1$ //$NON-NLS-2$
 
-          Image img = PlatformUI.getWorkbench().getViewRegistry().find(viewID).getImageDescriptor().createImage();
+          Image img = PlatformUI.getWorkbench().getViewRegistry().find(viewID).getImageDescriptor()
+              .createImage();
           perspectiveItem = new TreeItem(subItem, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
           perspectiveItem.setFont(defaultFont);
           this.perspectiveElementsToTreeItems.put(perspectiveItem, perspConf);
@@ -315,7 +319,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
         }
       }
       if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
-        for (IConfigurationElement subEditorConf : this.stepEditorsToStepId.get(element.getAttribute("id"))) { //$NON-NLS-1$
+        for (IConfigurationElement subEditorConf : this.stepEditorsToStepId
+            .get(element.getAttribute("id"))) { //$NON-NLS-1$
           addTreeItem(subEditorConf, selector, projectId, pluginId);
         }
       }
@@ -375,7 +380,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
   private void addImage(TreeItem item, String path, String pluginId) {
     ImageDescriptor imgDesc;
     if ((path == null) || path.equals("")) { //$NON-NLS-1$
-      item.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
+      item.setImage(
+          PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
     } else {
       imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginId, path);
       item.setImage(imgDesc.createImage());
@@ -470,8 +476,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       manager.add(this.openWithMenu);
     }
     for (ISelectionChangedListener listenerObj : ProjectExplorer.this.selectionListener) {
-      listenerObj
-          .selectionChanged(new SelectionChangedEvent(ProjectExplorer.this, ProjectExplorer.this.getSelection()));
+      listenerObj.selectionChanged(
+          new SelectionChangedEvent(ProjectExplorer.this, ProjectExplorer.this.getSelection()));
     }
   }
 
@@ -479,37 +485,37 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
   public void update(Observable dataModelController, Object updatedValue) {
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-      case DELETE:
-      case PROJECT_NAME: {
-        this.updateProjects();
-        break;
+    case DELETE:
+    case PROJECT_NAME: {
+      this.updateProjects();
+      break;
+    }
+    case CLEAN_UP: {
+      for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
+        ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
       }
-      case CLEAN_UP: {
-        for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
-          ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
-        }
-        break;
+      break;
+    }
+    case SAVE: {
+      IProjectSelection selection = this.selectorsToSelectionId
+          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+      if (selection != null) {
+        ((ProjectSelector) selection).setUnsaved(false);
       }
-      case SAVE: {
-        IProjectSelection selection = this.selectorsToSelectionId
-            .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-        if(selection != null) {
-          ((ProjectSelector)selection).setUnsaved(false);
-        }
-        
-        break;
-      }
-      case UNSAVED_CHANGES: {
-        IProjectSelection selection = this.selectorsToSelectionId
-            .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-        ((ProjectSelector)selection).setUnsaved(true);
-        ((ProjectSelector)selection).setReadOnly(!ProjectManager.getContainerInstance()
-            .canWriteOnProject(ProjectManager.getContainerInstance().
-                getProjectID(dataModelController)));
-        break;
-      }
-      default:
-        break;
+
+      break;
+    }
+    case UNSAVED_CHANGES: {
+      IProjectSelection selection = this.selectorsToSelectionId
+          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+      ((ProjectSelector) selection).setUnsaved(true);
+      ((ProjectSelector) selection)
+          .setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(
+              ProjectManager.getContainerInstance().getProjectID(dataModelController)));
+      break;
+    }
+    default:
+      break;
     }
   }
 
@@ -572,7 +578,8 @@ public final class ProjectExplorer extends ViewPart implements IMenuListener, Ob
       IProjectSelection selector = this.selectorsToSelectionId.get(stepId);
       selector.activate();
       if (this.perspectiveElementsToTreeItems.containsKey(item)) {
-        ((StepSelector) selector).setOpenWithPerspective(this.perspectiveElementsToTreeItems.get(item));
+        ((StepSelector) selector)
+            .setOpenWithPerspective(this.perspectiveElementsToTreeItems.get(item));
       } else if (selector instanceof StepSelector) {
         ((StepSelector) selector).setOpenWithPerspective("xstampp.defaultPerspective");//$NON-NLS-1$
       }

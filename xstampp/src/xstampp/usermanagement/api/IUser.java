@@ -12,6 +12,7 @@
 package xstampp.usermanagement.api;
 
 import java.util.UUID;
+
 /**
  * The API to access a user entry on the platform.
  * 
@@ -20,10 +21,6 @@ import java.util.UUID;
  */
 public interface IUser {
 
-  public static final long CREATE = 1 << 0;
-  public static final long WRITE = 1 << 10;
-  public static final long READ_ONLY = 0;
-  
   UUID getUserId();
 
   String getUsername();
@@ -58,9 +55,27 @@ public interface IUser {
   boolean setPassword(String oldPassword, String newPassword);
 
   /**
-   *checks whether the user is allowed to access the given resource
-   *@return if the user is allowed to access.
+   * checks whether the user is allowed to access the given resource
+   * 
+   * @param entryId
+   *          the id of the entry that shall be manipulated
+   * @param accessLevel
+   *          The level the Access takes place e.g. {@link AccessRights#CREATE},
+   *          {@link AccessRights#WRITE}
+   *
+   * @return if the user is allowed to access.
    */
-  public boolean checkAccess(UUID entryId);
+  public boolean checkAccess(UUID entryId, AccessRights accessLevel);
+
+  /**
+   * checks whether the user is allowed to access the given access level
+   *
+   * @param accessRight
+   *          The level the Access takes place e.g. {@link AccessRights#CREATE},
+   *          {@link AccessRights#WRITE}
+   *
+   * @return if the user is allowed to access.
+   */
+  public boolean checkAccess(AccessRights accessRight);
 
 }

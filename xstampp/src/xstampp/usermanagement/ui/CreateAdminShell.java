@@ -9,9 +9,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package xstampp.usermanagement;
+package xstampp.usermanagement.ui;
 
 import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.Admin;
 
 /**
@@ -19,9 +20,9 @@ import xstampp.usermanagement.roles.Admin;
  * @author Lukas Balzer - initial implementation
  *
  */
-public class CreateAdmin extends LoginShell {
+public class CreateAdminShell extends LoginShell {
 
-  public CreateAdmin(UserSystem userSystem) {
+  public CreateAdminShell(IUserSystem userSystem) {
     super(userSystem, false);
     setTitle("Create Admin");
     setAcceptLabel("Create");

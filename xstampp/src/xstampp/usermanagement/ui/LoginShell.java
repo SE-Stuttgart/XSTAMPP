@@ -9,7 +9,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package xstampp.usermanagement;
+package xstampp.usermanagement.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -19,48 +19,50 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import xstampp.usermanagement.UserSystem;
 import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
 
 /**
  * 
  * @author Lukas Balzer - initial implementation
  *
  */
-public class LoginShell extends ModelShell {
-  private final UserSystem userSystem;
+public class LoginShell extends ModalShell {
+  private final IUserSystem userSystem;
   private boolean hidePassword;
   private String password;
   private String username;
 
-  public LoginShell(UserSystem userSystem, boolean hidePassword) {
-    super("Login","Login");
+  public LoginShell(IUserSystem userSystem, boolean hidePassword) {
+    super("Login", "Login");
+    setSize(300, 200);
     this.userSystem = userSystem;
     this.hidePassword = hidePassword;
-    setSelectedUser(userSystem.getCurrentUser());
   }
 
   @Override
   protected void createCenter(Shell shell) {
-    GridData labelData = new GridData(SWT.LEFT, SWT.BOTTOM, true, true, 2, 1);
+    GridData labelData = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 2, 1);
 
     Label nameLabel = new Label(shell, SWT.None);
     nameLabel.setText("Username");
     nameLabel.setLayoutData(labelData);
 
-    Text nameText = new Text(shell, SWT.PASSWORD);
+    Text nameText = new Text(shell, SWT.None);
     nameText.addModifyListener(new ModifyListener() {
       @Override
       public void modifyText(ModifyEvent e) {
-        username = (String) e.data;
-        setUnchecked();
+        username = ((Text) e.getSource()).getText();
+        canAccept();
       }
     });
-    GridData textData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+    GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
     nameText.setLayoutData(textData);
 
     int passwordStyle = SWT.None;
     if (hidePassword) {
-      passwordStyle =SWT.PASSWORD;
+      passwordStyle = SWT.PASSWORD;
     }
     Label passwordLabel = new Label(shell, passwordStyle);
     passwordLabel.setText("Password");
@@ -70,8 +72,8 @@ public class LoginShell extends ModelShell {
     passwordText.addModifyListener(new ModifyListener() {
       @Override
       public void modifyText(ModifyEvent e) {
-        password = (String) e.data;
-        setUnchecked();
+        password = ((Text) e.getSource()).getText();
+        canAccept();
       }
     });
     passwordText.setLayoutData(textData);
@@ -85,24 +87,27 @@ public class LoginShell extends ModelShell {
           setSelectedUser(user);
           return true;
         } else {
-          invalidate("Password or username invalid!");
+          break;
         }
       }
     }
+    invalidate("Input invalid!");
     return false;
   }
 
   @Override
-  protected void validate() {
-    if(!password.isEmpty() && !username.isEmpty()) {
-      validate();
+  protected boolean validate() {
+    try {
+      return !password.isEmpty() && !username.isEmpty();
+    } catch (NullPointerException exc) {
+      return false;
     }
   }
-  
+
   public String getPassword() {
     return password;
   }
-  
+
   public String getUsername() {
     return username;
   }
@@ -110,7 +115,7 @@ public class LoginShell extends ModelShell {
   /**
    * @return the userSystem
    */
-  public UserSystem getUserSystem() {
+  public IUserSystem getUserSystem() {
     return userSystem;
   }
 }
