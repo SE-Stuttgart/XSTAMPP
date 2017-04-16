@@ -16,12 +16,16 @@ import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.Admin;
 
 /**
- * 
+ * A {@link LoginShell} that creates an administrator.
  * @author Lukas Balzer - initial implementation
  *
  */
-public class CreateAdminShell extends LoginShell {
+public class CreateAdminShell extends AbstractUserShell {
 
+  /**
+   * Creates an instance with a title and an custom accept label.
+   * @param userSystem the user system for which the administrator is created.
+   */
   public CreateAdminShell(IUserSystem userSystem) {
     super(userSystem, false);
     setTitle("Create Admin");

@@ -1,35 +1,34 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
 package xstampp.usermanagement.io;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Observable;
-
-import messages.Messages;
-
-import xstampp.ui.common.ProjectManager;
-import xstampp.usermanagement.UserSystem;
-import xstampp.util.XstamppJob;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 
+import xstampp.ui.common.ProjectManager;
+import xstampp.usermanagement.UserSystem;
+import xstampp.usermanagement.api.IUserSystem;
+import xstampp.util.XstamppJob;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Observable;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
 /**
+ * This Job uses Jaxb to store the User database.
+ * 
  * @author Lukas Balzer - initial implementation
  *
  */
@@ -38,6 +37,11 @@ public class SaveUserJob extends XstamppJob {
   private File file;
   private UserSystem database;
 
+  /**
+   * Constructs the job.
+   * @param database the {@link IUserSystem} which is stored
+   * @param name the name of the project for which this user database is used
+   */
   public SaveUserJob(UserSystem database, String name) {
     super("save user data...");
     this.database = database;
@@ -47,7 +51,7 @@ public class SaveUserJob extends XstamppJob {
 
   @Override
   protected IStatus run(IProgressMonitor monitor) {
-    monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
+    monitor.beginTask("save user data...", IProgressMonitor.UNKNOWN);
     JAXBContext context;
     try {
 
@@ -64,10 +68,10 @@ public class SaveUserJob extends XstamppJob {
       FileOutputStream writer = new FileOutputStream(file);
       marshaller.marshal(database, writer);
       writer.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-      setError(e);
-      ProjectManager.getLOGGER().error(e.getMessage(), e);
+    } catch (Exception exc) {
+      exc.printStackTrace();
+      setError(exc);
+      ProjectManager.getLOGGER().error(exc.getMessage(), exc);
       return Status.CANCEL_STATUS;
     }
 

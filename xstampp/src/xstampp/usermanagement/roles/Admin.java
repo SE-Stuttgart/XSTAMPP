@@ -11,13 +11,13 @@
 
 package xstampp.usermanagement.roles;
 
+import xstampp.usermanagement.api.AccessRights;
+
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import xstampp.usermanagement.api.AccessRights;
 
 /**
  * An admin which can access and manipulate all files.

@@ -1,11 +1,11 @@
 package xstampp.usermanagement;
 
-import java.util.List;
-import java.util.UUID;
-
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
+
+import java.util.List;
+import java.util.UUID;
 
 public class RestrictedUserSystem implements IUserSystem {
 

@@ -1101,12 +1101,6 @@
             id="xstampp.astpa.preferencePage"
             name="%preferencePage.name.a_stpa">
       </page>
-      <page
-            category="xstampp.astpa.preferencePage"
-            class="xstampp.astpa.preferences.ProjectsPreferences"
-            id="xstampp.astpa.projects"
-            name="Project Settings">
-      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

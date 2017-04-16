@@ -589,7 +589,7 @@ public class DataModelController extends AbstractDataModel
   @Override
   public IUserSystem createUserSystem() {
     if (getUserSystem() instanceof EmptyUserSystem) {
-      this.userSystem = UserManagement.getUserSystem(getProjectName());
+      this.userSystem = UserManagement.createUserSystem(getProjectName());
       this.userSystemId = userSystem.getSystemId();
       setUnsavedAndChanged();
     }

@@ -1,6 +1,4 @@
-package xstampp.ui.common.projectSettings;
-
-import java.util.UUID;
+package xstampp.ui.common.projectsettings;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -13,27 +11,52 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.ui.common.ModalShell;
 import xstampp.ui.common.ProjectManager;
+import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.ui.UserManagementPage;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * The project settings shell is a {@link ModalShell} which displays all available settings in the
+ * project. All The settings can be displayed on multiple pages that can be registered in every
+ * <code>xstampp.extension.steppedProcess</code> as SettingsPage implementing the
+ * {@link ISettingsPage} interface.
+ * 
+ * <p>Additionally the settings page contains the user management for a {@link IUserProject}
+ * 
+ * @author Lukas Balzer
+ *
+ */
 public class ProjectSettingsShell extends ModalShell {
 
   private UUID projectId;
+  private List<ISettingsPage> pages;
 
-  public ProjectSettingsShell(String name, String acceptLabel, UUID model) {
-    super(name, acceptLabel);
-    this.projectId = model;
-    setSize(400, 400);
-  }
-
-  public ProjectSettingsShell(UUID model) {
-    super("Project Settings");
-    this.projectId = model;
+  /**
+   * Creates a {@link ModalShell} with a pre defined title:<br> <code>Project Settings for [project
+   * title]</code>.
+   * 
+   * @param projectId
+   *          the unique identifier of the project with which it is registered in the
+   *          {@link ProjectManager}
+   */
+  public ProjectSettingsShell(UUID projectId) {
+    super("Project Settings for " + ProjectManager.getContainerInstance().getTitle(projectId));
+    this.projectId = projectId;
+    this.pages = new ArrayList<>();
     setSize(600, 400);
   }
 
   @Override
   protected boolean validate() {
-    return false;
+    for (ISettingsPage page : pages) {
+      if ( !page.validate()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
@@ -61,15 +84,19 @@ public class ProjectSettingsShell extends ModalShell {
           CTabItem item = new CTabItem(folder, SWT.None);
           item.setText(element.getAttribute("name"));
           item.setControl(page.createControl(folder, this, projectId));
+          this.pages.add(page);
         } catch (CoreException exc) {
           exc.printStackTrace();
         }
       }
     }
-    ISettingsPage page = new UserManagementPage();
-    CTabItem item = new CTabItem(folder, SWT.None);
-    item.setText("Users");
-    item.setControl(page.createControl(folder, this, projectId));
+    if (ProjectManager.getContainerInstance().getDataModel(projectId) instanceof IUserProject) {
+      ISettingsPage page = new UserManagementPage();
+      this.pages.add(page);
+      CTabItem item = new CTabItem(folder, SWT.None);
+      item.setText("Users");
+      item.setControl(page.createControl(folder, this, projectId));
+    }
 
   }
 

@@ -1,4 +1,4 @@
-package xstampp.ui.common.projectSettings;
+package xstampp.ui.common.projectsettings;
 
 import java.util.UUID;
 

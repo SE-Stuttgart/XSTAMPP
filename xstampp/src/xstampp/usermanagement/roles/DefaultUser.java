@@ -1,11 +1,11 @@
 package xstampp.usermanagement.roles;
 
-import java.util.UUID;
-
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 
-public class DefaultUser implements IUser{
+import java.util.UUID;
+
+public class DefaultUser implements IUser {
 
   @Override
   public UUID getUserId() {

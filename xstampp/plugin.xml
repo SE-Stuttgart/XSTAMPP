@@ -418,6 +418,20 @@
                   value="output">
             </parameter>
          </command>
+         <command
+               commandId="xstampp.command.openProjectSettings"
+               style="push"
+               tooltip="%command.tooltip.openProjectSettings">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <instanceof
+                        value="xstampp.ui.navigation.ProjectSelector">
+                  </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"

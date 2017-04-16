@@ -5,7 +5,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
-import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.RestrictedUserSystem;
 import xstampp.usermanagement.UserSystem;
 import xstampp.usermanagement.roles.Admin;
@@ -27,8 +26,17 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 public class UserManagement {
-
-  public static IUserSystem getUserSystem(String projectName) {
+  /**
+   * Opens up a shell to create a new administrator for a new user system which initiates with the
+   * administrator as initial user and which is stored in a file called
+   * 
+   * <p><code>[projectName].user</code>.
+   * 
+   * @param projectName
+   *          the name of the project for which the user database should be created.
+   * @return The new {@link IUserSystem} with one user
+   */
+  public static IUserSystem createUserSystem(String projectName) {
     CreateAdminShell create = new CreateAdminShell(new EmptyUserSystem());
     IUser admin = create.pullUser();
     IUserSystem system = new EmptyUserSystem();
@@ -38,6 +46,19 @@ public class UserManagement {
     return system;
   }
 
+  /**
+   * This method tries to load a user database in <code>[project.projectName].user</code>. If the
+   * database file cannot be found automatically a {@link FileDialog} is opened to search manually
+   * for the file.
+   * 
+   * @param project
+   *          the project which is using the user system which should be loaded.
+   * @param systemId
+   *          the id of the system which should be loaded.
+   * @return either the {@link IUserSystem} which was found on the file system and has the same
+   *         systemId as the given one or a {@link RestrictedUserSystem} which prevents any access
+   *         to the project by the unauthorized user.
+   */
   public static IUserSystem loadSystem(final IUserProject project, UUID systemId) {
     String wsUrl = Platform.getInstanceLocation().getURL().getPath();
 
@@ -61,7 +82,8 @@ public class UserManagement {
 
       Validator validator = schema.newValidator();
       validator.validate(xmlFile);
-      System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+      System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", //$NON-NLS-1$
+          "true"); //$NON-NLS-1$
       JAXBContext context = JAXBContext.newInstance(UserSystem.class);
 
       Unmarshaller um = context.createUnmarshaller();
@@ -73,10 +95,10 @@ public class UserManagement {
     } catch (Exception exc) {
       exc.printStackTrace();
     }
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "User database error!",
-          "The User database for the project " + project.getProjectName() + " could not"
-              + "be read its either broken or corrupt\n please conntact the system administrator!");
-    
+    MessageDialog.openError(Display.getDefault().getActiveShell(), "User database error!",
+        "The User database for the project " + project.getProjectName() + " could not"
+            + "be read its either broken or corrupt\n please conntact the system administrator!");
+
     return new RestrictedUserSystem();
   }
 

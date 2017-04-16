@@ -17,7 +17,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.common.projectSettings.ProjectSettingsShell;
+import xstampp.ui.common.projectsettings.ProjectSettingsShell;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
 import xstampp.ui.navigation.StepSelector;

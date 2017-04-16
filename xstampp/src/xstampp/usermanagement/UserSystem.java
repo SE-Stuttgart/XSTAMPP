@@ -1,15 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
 package xstampp.usermanagement;
+
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
+import xstampp.usermanagement.io.SaveUserJob;
+import xstampp.usermanagement.roles.Admin;
+import xstampp.usermanagement.roles.User;
+import xstampp.usermanagement.ui.CreateUserShell;
+import xstampp.usermanagement.ui.LoginShell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +29,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import xstampp.usermanagement.api.AccessRights;
-import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.api.IUserSystem;
-import xstampp.usermanagement.io.SaveUserJob;
-import xstampp.usermanagement.roles.Admin;
-import xstampp.usermanagement.roles.User;
-import xstampp.usermanagement.ui.CreateUserShell;
-import xstampp.usermanagement.ui.LoginShell;
 
 /**
  * An admin which can access and manipulate all files.
@@ -61,6 +59,14 @@ public class UserSystem extends Observable implements IUserSystem {
     this.adminRegistry = new ArrayList<>();
   }
 
+  /**
+   * Constructs a new UserSystem.
+   * 
+   * @param admin
+   *          the initial user which has to be an administrator
+   * @param projectName
+   *          the name of the project which is than used as name to create the database dile
+   */
   public UserSystem(Admin admin, String projectName) {
     this();
     adminRegistry.add(admin);
@@ -96,7 +102,7 @@ public class UserSystem extends Observable implements IUserSystem {
     return systemId;
   }
 
-  public IUser getCurrentUser() {
+  private IUser getCurrentUser() {
     if (this.currentUser == null) {
       this.currentUser = new LoginShell(this, true).pullUser();
     }
@@ -160,12 +166,12 @@ public class UserSystem extends Observable implements IUserSystem {
 
   @Override
   public UUID getCurrentUserId() {
-    if(currentUser == null) {
+    if (currentUser == null) {
       return null;
     }
     return currentUser.getUserId();
   }
-  
+
   public void setProjectName(String projectName) {
     this.projectName = projectName;
   }

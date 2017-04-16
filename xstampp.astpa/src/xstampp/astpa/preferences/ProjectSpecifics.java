@@ -17,7 +17,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ModalShell;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.common.projectSettings.ISettingsPage;
+import xstampp.ui.common.projectsettings.ISettingsPage;
 
 public class ProjectSpecifics implements ISettingsPage{
 
