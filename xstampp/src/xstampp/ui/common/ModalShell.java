@@ -127,6 +127,7 @@ public abstract class ModalShell {
     });
     okButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false));
     okButton.setEnabled(false);
+    canAccept();
     shell.open();
     while (!shell.isDisposed()) {
       if (!Display.getDefault().readAndDispatch()) {
@@ -172,7 +173,7 @@ public abstract class ModalShell {
    * this method should be called whenever a change is made. It calls {@link #validate()} and sets
    * the ok/accept button (in-)active accordingly
    */
-  protected final void canAccept() {
+  public final void canAccept() {
     try {
       this.okButton.setEnabled(validate());
       setUnchecked();

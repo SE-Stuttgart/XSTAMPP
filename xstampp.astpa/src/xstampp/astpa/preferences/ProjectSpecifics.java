@@ -1,16 +1,14 @@
 package xstampp.astpa.preferences;
 
-import java.util.UUID;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 import xstampp.astpa.model.DataModelController;
@@ -19,13 +17,14 @@ import xstampp.ui.common.ModalShell;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 
+import java.util.UUID;
+
 public class ProjectSpecifics implements ISettingsPage{
 
     private DataModelController controller;
     private BooleanSetting useScenariosSetting;
 
-    public ProjectSpecifics(){
-    }
+    public ProjectSpecifics(){}
     
     public ProjectSpecifics(UUID projectId) {
       IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(projectId);
@@ -33,22 +32,9 @@ public class ProjectSpecifics implements ISettingsPage{
         this.controller = (DataModelController) dataModel;
       }
     }
-    
-    public Control getControl(Composite parent) {
-      
-      Composite container = new Composite(parent, SWT.None);
-      container.setLayout(new GridLayout(2, false));
-      container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
-      String title = "Use Causal Scenarios";
-      String description = "Use &Scenarios to refine the causal factors in the project,\n this adds a column 'Causal Scenarios' in the "
-          + "Causal Factors Table that allows to define safety constraints per causal scenario";
-      this.useScenariosSetting = new BooleanSetting(container, title, description, this.controller.isUseScenarios());
-      container.setSize(400,400);
-      return container;
-    }
 
     @Override
-    public Composite createControl(CTabFolder control, ModalShell parent, UUID modelId) {
+    public Composite createControl(CTabFolder control, final ModalShell parent, UUID modelId) {
       IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(modelId);
       if(dataModel instanceof DataModelController) {
         this.controller = (DataModelController) dataModel;
@@ -61,13 +47,18 @@ public class ProjectSpecifics implements ISettingsPage{
       String description = "Use &Scenarios to refine the causal factors in the project,\n this adds a column 'Causal Scenarios' in the "
           + "Causal Factors Table that allows to define safety constraints per causal scenario";
       this.useScenariosSetting = new BooleanSetting(container, title, description, this.controller.isUseScenarios());
+      this.useScenariosSetting.setSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+          parent.canAccept();
+        }
+      });
       container.setSize(400,400);
       return container;
     }
 
     @Override
     public boolean validate() {
-      // TODO Auto-generated method stub
       return true;
     }
 
@@ -79,6 +70,7 @@ public class ProjectSpecifics implements ISettingsPage{
 
   private class BooleanSetting {
     private boolean selected;
+    private SelectionListener listener;
 
     public BooleanSetting(Composite parent, String title, String description, boolean initial) {
 
@@ -95,10 +87,15 @@ public class ProjectSpecifics implements ISettingsPage{
         @Override
         public void widgetSelected(SelectionEvent e) {
           selected = ((Button) e.getSource()).getSelection();
-         
+          listener.widgetSelected(e);
         }
       });
       boolSetting.setSelection(initial);
+    }
+    
+    private void setSelectionListener(SelectionListener listener) {
+      this.listener = listener;
+      
     }
 
   }

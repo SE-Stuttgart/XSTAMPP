@@ -159,14 +159,12 @@ public class UserManagementPage implements ISettingsPage {
 
   @Override
   public boolean validate() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
   public boolean doAccept() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   private void refreshUsers() {

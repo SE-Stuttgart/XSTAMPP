@@ -61,8 +61,11 @@ public class ProjectSettingsShell extends ModalShell {
 
   @Override
   protected boolean doAccept() {
-    // TODO Auto-generated method stub
-    return true;
+    boolean result = true;
+    for (ISettingsPage page : pages) {
+      result = !page.doAccept();
+    }
+    return result;
   }
 
   @Override
