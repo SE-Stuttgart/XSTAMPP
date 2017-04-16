@@ -59,7 +59,7 @@ public class SaveUserJob extends XstamppJob {
       context = JAXBContext.newInstance(UserSystem.class);
       Marshaller marshaller = context.createMarshaller();
 
-      marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
       // set the Jaxb encoding format to set a more powerful encoding mechanism
       // than the
       // Standard UTF-8

@@ -11,6 +11,8 @@
 
 package xstampp.usermanagement.roles;
 
+import org.apache.commons.lang3.SerializationUtils;
+
 import xstampp.usermanagement.api.IUser;
 
 import java.util.UUID;
@@ -30,80 +32,53 @@ public abstract class AbstractUser implements IUser {
   private UUID userId;
 
   @XmlAttribute(name = "username", required = true)
-  private String username;
+  private byte[] username;
 
   @XmlAttribute(name = "password", required = true)
-  private String password;
+  private byte[] password;
 
   /**
    * Creates a user with a username and a password and an id which can and
    * should not be changed later.
    */
   public AbstractUser(String username, String password) {
-    this.username = username;
-    this.password = password;
+    this.username = SerializationUtils.serialize(username);
+    this.password = SerializationUtils.serialize(password);
     this.userId = UUID.randomUUID();
   }
 
   public AbstractUser() {
     this("", ""); //$NON-NLS-1$ //$NON-NLS-2$
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see xstampp.usermanagement.roles.IUser#getUserId()
-   */
+  
   @Override
   public UUID getUserId() {
     return userId;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see xstampp.usermanagement.roles.IUser#getUsername()
-   */
   @Override
   public String getUsername() {
-    return username;
+    return SerializationUtils.deserialize(username).toString();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see xstampp.usermanagement.roles.IUser#getPassword()
-   */
   @Override
   public String getPassword() {
-    return password;
+    return SerializationUtils.deserialize(password).toString();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see xstampp.usermanagement.roles.IUser#setUsername(java.lang.String,
-   * java.lang.String)
-   */
   @Override
   public boolean setUsername(String password, String username) {
     if (password.equals(this.password)) {
-      this.username = username;
+      this.username = SerializationUtils.serialize(username);
       return true;
     }
     return false;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see xstampp.usermanagement.roles.IUser#setPassword(java.lang.String,
-   * java.lang.String)
-   */
   @Override
   public boolean setPassword(String oldPassword, String newPassword) {
-    if (oldPassword.equals(this.password)) {
-      this.password = newPassword;
+    if (getPassword().equals(oldPassword)) {
+      this.password = SerializationUtils.serialize(newPassword);
       return true;
     }
     return false;

@@ -63,7 +63,7 @@ public class ProjectSettingsShell extends ModalShell {
   protected boolean doAccept() {
     boolean result = true;
     for (ISettingsPage page : pages) {
-      result = !page.doAccept();
+      result &= page.doAccept();
     }
     return result;
   }
