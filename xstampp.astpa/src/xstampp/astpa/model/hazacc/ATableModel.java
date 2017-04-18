@@ -16,6 +16,9 @@ package xstampp.astpa.model.hazacc;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -28,12 +31,22 @@ import xstampp.astpa.model.interfaces.ITableModel;
  * 
  */
 @XmlType(propOrder = { "number", "title", "description", "links", "id" })
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class ATableModel implements ITableModel {
 
+  @XmlElement
 	private UUID id;
+  
+  @XmlElement
 	private String title;
+
+  @XmlElement
 	private String description;
+
+  @XmlElement
 	private int number;
+
+  @XmlElement
 	private String links;
 
 	/**

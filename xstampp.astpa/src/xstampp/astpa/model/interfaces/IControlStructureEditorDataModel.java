@@ -13,22 +13,20 @@
 
 package xstampp.astpa.model.interfaces;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.model.IDataModel;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class provides methods for the DataModel access of the CSDiagramm

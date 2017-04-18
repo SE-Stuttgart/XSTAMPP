@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -111,6 +109,7 @@ import xstampp.model.ISafetyDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.EmptyUserSystem;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
@@ -138,7 +137,7 @@ public class DataModelController extends AbstractDataModel
   private static final Logger LOGGER = ProjectManager.getLOGGER();
   private static final String HAZ = "haz";
   private static final String HAZX = "hazx";
-  
+
   @XmlAttribute(name = "astpaversion")
   private String astpaVersion;
 
@@ -380,8 +379,7 @@ public class DataModelController extends AbstractDataModel
   }
 
   /**
-   * Triggers an update to {@link ObserverValue#Extended_DATA} if a new rule was
-   * created
+   * Triggers an update to {@link ObserverValue#Extended_DATA} if a new rule was created
    */
   @Override
   public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
@@ -469,16 +467,15 @@ public class DataModelController extends AbstractDataModel
   }
 
   /**
-   * adds the given values combination to the list of value combinations in
-   * which the system gets into a hazardous state if the control action is not
-   * provided
+   * adds the given values combination to the list of value combinations in which the system gets
+   * into a hazardous state if the control action is not provided
    * 
    * @param caID
    *          the uuid object of the control action
    * @param valueWhenNotProvided
    *          the values combination
-   * @return whether or not the operation was successful, null if the given uuid
-   *         is no legal controlAction id
+   * @return whether or not the operation was successful, null if the given uuid is no legal
+   *         controlAction id
    */
   public boolean addValuesWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
     if (this.controlActionController.addValueWhenNotProvided(caID, valueWhenNotProvided)) {
@@ -489,16 +486,15 @@ public class DataModelController extends AbstractDataModel
   }
 
   /**
-   * adds the given values combination to the list of value combinations in
-   * which the system gets into a hazardous state if the control action is
-   * provided
+   * adds the given values combination to the list of value combinations in which the system gets
+   * into a hazardous state if the control action is provided
    * 
    * @param caID
    *          the uuid object of the control action
    * @param valueWhenNotProvided
    *          the values combination
-   * @return whether or not the operation was successful, null if the given uuid
-   *         is no legal controlAction id
+   * @return whether or not the operation was successful, null if the given uuid is no legal
+   *         controlAction id
    */
   public boolean addValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
     if (this.controlActionController.addValueWhenProvided(caID, valueWhenProvided)) {
@@ -1468,16 +1464,15 @@ public class DataModelController extends AbstractDataModel
   }
 
   /**
-   * removes the given value combinations from the list of value combinations in
-   * which the system gets into a hazardous state if the control action is not
-   * provided
+   * removes the given value combinations from the list of value combinations in which the system
+   * gets into a hazardous state if the control action is not provided
    * 
    * @param caID
    *          the uuid object of the control action
    * @param combieId
    *          the uuid of the value combination
-   * @return whether or not the operation was successful, null if the given uuid
-   *         is no legal controlAction id
+   * @return whether or not the operation was successful, null if the given uuid is no legal
+   *         controlAction id
    */
   public boolean removeValueWhenNotProvided(UUID caID, UUID combieId) {
     if (this.controlActionController.removeValueWhenNotProvided(caID, combieId)) {
@@ -1488,16 +1483,15 @@ public class DataModelController extends AbstractDataModel
   }
 
   /**
-   * removes the given value combinations from the list of value combinations in
-   * which the system gets into a hazardous state if the control action is
-   * provided
+   * removes the given value combinations from the list of value combinations in which the system
+   * gets into a hazardous state if the control action is provided
    * 
    * @param caID
    *          the uuid object of the control action
    * @param combieId
    *          the values combination id
-   * @return whether or not the operation was successful, null if the given uuid
-   *         is no legal controlAction id
+   * @return whether or not the operation was successful, null if the given uuid is no legal
+   *         controlAction id
    */
   public boolean removeValueWhenProvided(UUID caID, UUID combieId) {
     if (this.controlActionController.removeValueWhenProvided(caID, combieId)) {
@@ -1761,6 +1755,21 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
+  public int getHazardSeverity(UUID hazardId) {
+    return this.hazAccController.getHazardSeverity(hazardId);
+  }
+
+  @Override
+  public boolean setHazardSeverity(UUID hazardId, int severity) {
+    int hazardSeverity = this.hazAccController.setHazardSeverity(hazardId, severity);
+    if (hazardSeverity != severity) {
+      setUnsavedAndChanged(ObserverValue.HAZARD);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
   public boolean setProjectDescription(String projectDescription) {
     if (projectDescription == null) {
       return false;
@@ -2002,6 +2011,21 @@ public class DataModelController extends AbstractDataModel
 
     if (this.ignoreLtlValue != null)
       return true;
+    return false;
+  }
+
+  @Override
+  public boolean isUseSeverity() {
+    return this.hazAccController.isUseSeverity();
+  }
+
+  @Override
+  public boolean setUseSeverity(boolean useSeverity) {
+    if (this.getUserSystem().checkAccess(AccessRights.ADMIN)
+        && this.hazAccController.setUseSeverity(useSeverity)) {
+      setUnsavedAndChanged(ObserverValue.HAZARD);
+      return true;
+    }
     return false;
   }
 }

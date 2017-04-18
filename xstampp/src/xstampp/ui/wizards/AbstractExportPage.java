@@ -1,28 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package xstampp.ui.wizards;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 
 import messages.Messages;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
@@ -52,9 +41,16 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.common.LabelWithAssist;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.util.JAXBExportJob;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 /**
  * a class to prevent code cloning in the export Pages
@@ -135,7 +131,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
       e.gc.fillRectangle(0, top_offset / 2, 400, text_offset);
 
       setSize(400, text_offset);
-      this.fontColor = new Color(null, PreferenceConverter.getColor(store, IPreferenceConstants.COMPANY_FONT_COLOR));
+      this.fontColor = new Color(null,
+          PreferenceConverter.getColor(store, IPreferenceConstants.COMPANY_FONT_COLOR));
       this.bgColor = new Color(null,
           PreferenceConverter.getColor(store, IPreferenceConstants.COMPANY_BACKGROUND_COLOR));
       e.gc.setForeground(this.fontColor);
@@ -143,7 +140,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
       e.gc.setBackground(this.bgColor);
       e.gc.drawString(title, DemoCanvas.PREVIEW_XPOS, top_offset, false);
       e.gc.setFont(DemoCanvas.this.normalFont);
-      e.gc.drawString(Messages.AbstractExportPage_SampleText, DemoCanvas.PREVIEW_XPOS + 6, title_offset, true);
+      e.gc.drawString(Messages.AbstractExportPage_SampleText, DemoCanvas.PREVIEW_XPOS + 6,
+          title_offset, true);
       e.gc.setForeground(ColorConstants.black);
       e.gc.setFont(DemoCanvas.this.titleFont);
       e.gc.drawText(Messages.Preview, DemoCanvas.string_xPos, DemoCanvas.string_yPos, true);
@@ -153,14 +151,14 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
   public static final String EXPORT_DATA = Messages.AbstractExportPage_ExportTheData;
 
   /**
-   * a constant which is used by a {@link JAXBExportJob} sets it as a parameter
-   * in the creation of the pdf to print in landscape mode
+   * a constant which is used by a {@link JAXBExportJob} sets it as a parameter in the creation of
+   * the pdf to print in landscape mode
    */
   public static final String A4_LANDSCAPE = "A4Landscape"; //$NON-NLS-1$
 
   /**
-   * a constant which is used by a {@link JAXBExportJob} sets it as a parameter
-   * in the creation of the pdf to print in portrait mode
+   * a constant which is used by a {@link JAXBExportJob} sets it as a parameter in the creation of
+   * the pdf to print in portrait mode
    */
   public static final String A4_PORTRAIT = "A4"; //$NON-NLS-1$
   public static final String NON = Messages.AbstractExportPage_4;
@@ -211,7 +209,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
 
   @Override
   protected String openExportDialog(String[] filters, String[] names) {
-    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.SAVE);
+    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+        SWT.SAVE);
     fileDialog.setFilterExtensions(filters);
     fileDialog.setFilterNames(names);
     if (this.nameSuggestion != null) {
@@ -230,9 +229,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
   }
 
   /**
-   * adds a drop down list to the wizard page where the user can choose between
-   * all open projects <br>
-   * <i>the parent must have a FormLayout</i>
+   * adds a drop down list to the wizard page where the user can choose between all open projects
+   * <br> <i>the parent must have a FormLayout</i>
    * 
    * @author Lukas Balzer
    * @param parent
@@ -263,7 +261,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     this.chooseList = new Combo(projectChooser, SWT.DROP_DOWN);
     data = new FormData();
     data.top = new FormAttachment(null);
-    data.left = new FormAttachment(chooseLabel,COMPONENT_OFFSET);
+    data.left = new FormAttachment(chooseLabel, COMPONENT_OFFSET);
     data.right = new FormAttachment(80);
     this.chooseList.setLayoutData(data);
 
@@ -278,18 +276,20 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
 
       }
     });
-    for (Entry<UUID, String> entry : ProjectManager.getContainerInstance().getProjects().entrySet()) {
+    for (Entry<UUID, String> entry : ProjectManager.getContainerInstance().getProjects()
+        .entrySet()) {
       if (canExport(entry.getKey())) {
         this.projects.put(entry.getValue(), entry.getKey());
         this.chooseList.add(entry.getValue());
       }
     }
-    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("astpa.explorer") != null) { //$NON-NLS-1$
+    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .findView("astpa.explorer") != null) { //$NON-NLS-1$
       ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
           .findView("astpa.explorer").getSite().getSelectionProvider().getSelection(); //$NON-NLS-1$
 
-      if (selection instanceof IProjectSelection
-          && this.projects.containsKey(((IProjectSelection) selection).getProjectData().getProjectName())) {
+      if (selection instanceof IProjectSelection && this.projects
+          .containsKey(((IProjectSelection) selection).getProjectData().getProjectName())) {
         this.setProjectID(((IProjectSelection) selection).getProjectId());
         this.chooseList.setText(((IProjectSelection) selection).getProjectData().getProjectName());
       }
@@ -299,31 +299,24 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
   }
 
   protected void addLabelWithAssist(Composite parent, Object layoutData, String title, String tip) {
-    Label text = new Label(parent, SWT.NONE);
-    text.setText(title);
-    FieldDecorationRegistry decRegistry = FieldDecorationRegistry.getDefault();
-
-    FieldDecoration infoField = decRegistry.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
-
-    ControlDecoration decoration = new ControlDecoration(text, SWT.TOP | SWT.RIGHT);
-    decoration.setImage(infoField.getImage());
-
-    decoration.setDescriptionText(tip);
+    Composite text = new LabelWithAssist(parent, SWT.None, title, tip);
     text.setLayoutData(layoutData);
   }
 
-  protected Label addFormatWidget(Composite composite, Object layoutData, String title, final boolean chooseFormat) {
+  protected Label addFormatWidget(Composite composite, Object layoutData, String title,
+      final boolean chooseFormat) {
     Composite widget = new Composite(composite, SWT.NONE);
     widget.setLayoutData(layoutData);
     widget.setLayout(new GridLayout(2, false));
     final Label chooser = new Label(widget, SWT.None);
     chooser.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
     if (chooseFormat) {
-      chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); //$NON-NLS-1$
+      chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); // $NON-NLS-1$
       chooser.setData(EXPORT_DATA, A4_PORTRAIT);
       chooser.setToolTipText(Messages.AbstractExportPage_ExportInA4PortraitFormat);
     } else {
-      chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+      chooser.setImage(
+          PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
       chooser.setData(EXPORT_DATA, EXPORT);
       chooser.setToolTipText(Messages.AbstractExportPage_includeInExport);
     }
@@ -331,19 +324,23 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
       @Override
       public void mouseUp(MouseEvent e) {
         if (chooser.getData(EXPORT_DATA).equals(A4_PORTRAIT)) {
-          chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage()); //$NON-NLS-1$
+          chooser
+              .setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage()); //$NON-NLS-1$
           chooser.setData(EXPORT_DATA, A4_LANDSCAPE);
           chooser.setToolTipText(Messages.AbstractExportPage_ExportInA4LandscapeFormat);
         } else if (chooser.getData(EXPORT_DATA).equals(A4_LANDSCAPE)) {
-          chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+          chooser.setImage(
+              PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
           chooser.setData(EXPORT_DATA, NON);
           chooser.setToolTipText(Messages.AbstractExportPage_excludeInExport);
         } else if (chooser.getData(EXPORT_DATA).equals(NON) && !chooseFormat) {
-          chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+          chooser.setImage(
+              PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
           chooser.setData(EXPORT_DATA, EXPORT);
           chooser.setToolTipText(Messages.AbstractExportPage_includeInExport);
         } else if (chooser.getData(EXPORT_DATA).equals(EXPORT)) {
-          chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+          chooser.setImage(
+              PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
           chooser.setData(EXPORT_DATA, NON);
           chooser.setToolTipText(Messages.AbstractExportPage_excludeInExport);
         } else {
@@ -376,13 +373,16 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
         @Override
         public void mouseUp(MouseEvent e) {
           if (pageFormat.equals(A4_PORTRAIT)) {
-            chooser.setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage()); //$NON-NLS-1$
+            chooser
+                .setImage(Activator.getImageDescriptor("/icons/exportLandscape.png").createImage()); //$NON-NLS-1$
             pageFormat = A4_LANDSCAPE;
           } else if (pageFormat.equals(A4_LANDSCAPE)) {
-            chooser.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+            chooser.setImage(PlatformUI.getWorkbench().getSharedImages()
+                .getImage(ISharedImages.IMG_ELCL_REMOVE));
             pageFormat = ""; //$NON-NLS-1$
           } else {
-            chooser.setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); //$NON-NLS-1$
+            chooser
+                .setImage(Activator.getImageDescriptor("/icons/exportPortrait.png").createImage()); //$NON-NLS-1$
             pageFormat = A4_PORTRAIT;
           }
         }
@@ -404,7 +404,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
             pageFormat = format;
           }
         });
-        if(format.equals(pageFormat)) {
+        if (format.equals(pageFormat)) {
           chFormat.setSelection(true);
         }
       }
@@ -444,7 +444,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     }
     File fileTmp = new File(this.getExportPath());
     if (fileTmp.exists()) {
-      this.setMessage(String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, getExportPath()),
+      this.setMessage(
+          String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, getExportPath()),
           IMessageProvider.WARNING);
     }
     return true;
@@ -472,7 +473,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
   }
 
   public boolean canExport(UUID id) {
-    return ProjectManager.getContainerInstance().getDataModel(id).getPluginID().equals(this.pluginID);
+    return ProjectManager.getContainerInstance().getDataModel(id).getPluginID()
+        .equals(this.pluginID);
   }
   // public void setProjectChoice(UUID projectId){
   // if(this.projects.containsKey(projectId)){

@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -32,6 +34,7 @@ import xstampp.model.ObserverValue;
  * @author Fabian Toth
  *
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class HazAccController {
 
   @XmlElementWrapper(name = "accidents")
@@ -51,6 +54,9 @@ public class HazAccController {
 
   @XmlAttribute(name = "nextHazardNumber")
   private Integer hazardIndex;
+  
+  @XmlAttribute(name = "useSeverity")
+  private boolean useSeverity;
 
   /**
    * Constructor for the controller
@@ -62,6 +68,7 @@ public class HazAccController {
     this.accidents = new ArrayList<>();
     this.hazards = new ArrayList<>();
     this.links = new ArrayList<>();
+    this.useSeverity = false;
   }
 
   /**
@@ -278,8 +285,8 @@ public class HazAccController {
    *
    * @author Fabian Toth
    */
-  public ITableModel getHazard(UUID hazardId) {
-    for (ITableModel hazard : this.hazards) {
+  public Hazard getHazard(UUID hazardId) {
+    for (Hazard hazard : this.hazards) {
       if (hazard.getId().equals(hazardId)) {
         return hazard;
       }
@@ -367,5 +374,45 @@ public class HazAccController {
       this.hazardIndex = this.hazards.size() + 1;
     }
     return this.hazardIndex++;
+  }
+  
+  /**
+   * @return the severity
+   */
+  public int getHazardSeverity(UUID hazardId) {
+    Hazard hazard = getHazard(hazardId);
+    if(hazard != null) {
+      return getHazard(hazardId).getSeverity();
+    }
+    return 0;
+  }
+
+  /**
+   * @param severity the severity to set
+   */
+  public int setHazardSeverity(UUID hazardId, int severity) {
+    Hazard hazard = getHazard(hazardId);
+    if(hazard != null) {
+      return getHazard(hazardId).setSeverity(severity);
+    }
+    return 0;
+  }
+
+  /**
+   * @return the useSeverity
+   */
+  public boolean isUseSeverity() {
+    return useSeverity;
+  }
+
+  /**
+   * @param useSeverity the useSeverity to set
+   */
+  public boolean setUseSeverity(boolean useSeverity) {
+    if(useSeverity != this.useSeverity) {
+      this.useSeverity = useSeverity;
+      return true;
+    }
+    return false;
   }
 }

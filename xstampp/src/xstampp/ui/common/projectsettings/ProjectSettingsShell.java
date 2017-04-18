@@ -43,7 +43,7 @@ public class ProjectSettingsShell extends ModalShell {
    *          {@link ProjectManager}
    */
   public ProjectSettingsShell(UUID projectId) {
-    super("Project Settings for " + ProjectManager.getContainerInstance().getTitle(projectId));
+    super("Project Settings for " + ProjectManager.getContainerInstance().getTitle(projectId),true);
     this.projectId = projectId;
     this.pages = new ArrayList<>();
     setSize(600, 400);
