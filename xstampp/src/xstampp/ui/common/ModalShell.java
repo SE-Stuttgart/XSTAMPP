@@ -240,7 +240,7 @@ public abstract class ModalShell {
     try {
       boolean valid = validate();
       this.okButton.setEnabled(valid);
-      if (this.applyButton != null) {
+      if (this.useApply) {
         this.applyButton.setEnabled(valid);
       }
       setUnchecked();
