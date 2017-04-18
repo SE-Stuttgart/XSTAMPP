@@ -26,8 +26,11 @@ import xstampp.util.ColorManager;
 /**
  * defines an Application modal shell which should be used for all dialogs in XSTAMPP.
  * 
- * <p>Example implementation: <pre><code> public class ExampleShell extends ModalShell { private
- * String content;
+ * <p>Example implementation:
+ * 
+ * <pre>
+ * <code> public class ExampleShell extends ModalShell {
+ * private String content;
  *
  * public ExampleShell() { super("Example", "Example"); setSize(300, 200); }
  *
@@ -42,7 +45,8 @@ import xstampp.util.ColorManager;
  * 
  * //@Override protected boolean doAccept() { return writeContent(); } //@Override protected boolean
  * validate() { try { return !content.isEmpty(); } catch (NullPointerException exc) { invalidate(
- * "Input invalid!"); return false; } } </code></pre>
+ * "Input invalid!"); return false; } } </code>
+ * </pre>
  * 
  * @author Lukas Balzer - initial implementation
  *
@@ -54,6 +58,23 @@ public abstract class ModalShell {
   private String acceptLabel;
   private Label invalidLabel;
   private Button okButton;
+  private Button applyButton;
+  private boolean useApply;
+
+  /**
+   * Constructs a ModalShell with he given title and a <code>Cancel</code> Button that closes the
+   * shell without calling {@link #doAccept()} and a <code>Ok</code> Button that calls
+   * {@link #doAccept()} and closes the application depending on the returned boolean.
+   * 
+   * @param useApply
+   *          whether or not the apply button should be used
+   */
+  public ModalShell(String title, String acceptLabel, boolean useApply) {
+    this.title = title;
+    this.acceptLabel = acceptLabel;
+    this.useApply = useApply;
+
+  }
 
   /**
    * Constructs a ModalShell with he given title and a <code>Cancel</code> Button that closes the
@@ -66,8 +87,8 @@ public abstract class ModalShell {
    *          the label of the Button that accepts the entry
    */
   public ModalShell(String title, String acceptLabel) {
-    this.title = title;
-    this.acceptLabel = acceptLabel;
+    this(title, acceptLabel, false);
+
   }
 
   /**
@@ -78,6 +99,16 @@ public abstract class ModalShell {
    */
   public ModalShell(String title) {
     this(title, "Ok");
+  }
+
+  /**
+   * calls {@link #ModalShell(String,String,boolean)} with <code>Ok</code> as second argument.
+   * 
+   * @param useApply
+   *          whether or not the apply button should be used
+   */
+  public ModalShell(String title, boolean useApply) {
+    this(title, "Ok", useApply);
   }
 
   /**
@@ -99,12 +130,29 @@ public abstract class ModalShell {
     createCenter(shell);
     Composite footer = new Composite(shell, SWT.None);
     footer.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 2, 1));
+
     footer.setLayout(new GridLayout(3, false));
     this.invalidLabel = new Label(footer, SWT.WRAP);
     invalidLabel.setForeground(ColorManager.COLOR_RED);
     invalidLabel.setText("invalid content!");
     invalidLabel.setVisible(false);
-    invalidLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    invalidLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+    if (useApply) {
+
+      footer.setLayout(new GridLayout(4, false));
+      applyButton = new Button(footer, SWT.PUSH);
+      applyButton.setText("Apply");
+      applyButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent ev) {
+          doAccept();
+        }
+      });
+      applyButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false));
+      applyButton.setEnabled(false);
+    }
+
     Button cancelButton = new Button(footer, SWT.PUSH);
     cancelButton.setText("Cancel");
     cancelButton.addSelectionListener(new SelectionAdapter() {
@@ -144,9 +192,24 @@ public abstract class ModalShell {
    * @param error
    *          a text informing the user why the content is not valid
    */
-  protected void invalidate(String error) {
+  public void invalidate(String error) {
     if (!invalidLabel.isDisposed()) {
       this.invalidLabel.setText(error);
+      this.invalidLabel.setVisible(true);
+    }
+  }
+
+  /**
+   * This method sets the content to be valid and informs the user by displaying a text label in the
+   * footer of the dialog. This text is hidden again when {@link #canAccept()} is called
+   * 
+   * @param message
+   *          a text informing the user of certain actions or things that have been updated
+   */
+  public void setMessage(String message) {
+    if (!invalidLabel.isDisposed()) {
+      this.invalidLabel.setForeground(ColorManager.COLOR_GREEN);
+      this.invalidLabel.setText(message);
       this.invalidLabel.setVisible(true);
     }
   }
@@ -173,12 +236,18 @@ public abstract class ModalShell {
    * this method should be called whenever a change is made. It calls {@link #validate()} and sets
    * the ok/accept button (in-)active accordingly
    */
-  public final void canAccept() {
+  public final boolean canAccept() {
     try {
-      this.okButton.setEnabled(validate());
+      boolean valid = validate();
+      this.okButton.setEnabled(valid);
+      if (this.applyButton != null) {
+        this.applyButton.setEnabled(valid);
+      }
       setUnchecked();
+      return valid;
     } catch (Exception exc) {
       exc.printStackTrace();
+      return false;
     }
   }
 

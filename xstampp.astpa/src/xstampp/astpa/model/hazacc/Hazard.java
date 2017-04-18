@@ -13,6 +13,9 @@
 
 package xstampp.astpa.model.hazacc;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,6 +26,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "hazard")
 public class Hazard extends ATableModel {
+  
+  @XmlAttribute
+  private int severity;
 
 	/**
 	 * Constructor of a hazard
@@ -38,6 +44,7 @@ public class Hazard extends ATableModel {
 	 */
 	public Hazard(String title, String description, int number) {
 		super(title, description, number);
+		setSeverity(0);
 	}
 
 	/**
@@ -52,5 +59,21 @@ public class Hazard extends ATableModel {
   @Override
   public String getIdString() {
     return "H-" +this.getNumber();
+  }
+
+  /**
+   * @return the severity
+   */
+  public int getSeverity() {
+    return severity;
+  }
+
+  /**
+   * @param severity the severity to set
+   */
+  public int setSeverity(int severity) {
+    int oldValue = this.severity;
+    this.severity = severity;
+    return oldValue;
   }
 }

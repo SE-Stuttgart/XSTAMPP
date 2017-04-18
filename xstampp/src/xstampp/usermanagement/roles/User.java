@@ -80,7 +80,7 @@ public class User extends AbstractUser {
 
   @Override
   public boolean checkAccess(AccessRights accessRight) {
-    return this.accessLevel.contains(accessLevel);
+    return this.accessLevel.contains(accessRight);
   }
 
   /**

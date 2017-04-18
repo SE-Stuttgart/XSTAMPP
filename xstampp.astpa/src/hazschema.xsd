@@ -44,7 +44,18 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="hazard"
-											type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+											minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension
+														base="Q1:hazaccType">
+														<xs:attribute
+															name="severity" type="xs:string" use="optional">
+														</xs:attribute>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -71,6 +82,8 @@
 						</xs:attribute>
 						<xs:attribute name="nextHazardNumber"
 							type="xs:int" use="optional">
+						</xs:attribute>
+						<xs:attribute name="useSeverity" type="xs:boolean" use="optional">
 						</xs:attribute>
 					</xs:complexType>
 				</xs:element>
@@ -257,8 +270,7 @@
 								</xs:complexType>
 							</xs:element>
 						</xs:all>
-						<xs:attribute name="useScenarios"
-							type="xs:boolean" use="optional">
+						<xs:attribute name="useScenarios" type="xs:boolean" use="optional">
 						</xs:attribute>
 					</xs:complexType>
 				</xs:element>

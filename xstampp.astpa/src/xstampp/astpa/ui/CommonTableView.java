@@ -699,7 +699,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 		this.getTableViewer().refresh(true, true);
 		updateButtons();
 		this.updateTable();
-		resizeColumns();
+//		resizeColumns();
 	}
 
 	@Override

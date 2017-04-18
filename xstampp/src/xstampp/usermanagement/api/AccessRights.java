@@ -38,10 +38,16 @@ public enum AccessRights {
    * in general all write access is denied.
    */
   READ_ONLY,
-  
+
   /**
    * The basic right to access a project, a user that does not hold this is not able to see
    * or manipulate any data in the project.
    */
-  ACCESS
+  ACCESS,
+
+  /**
+   * An enum constant that should be used to ask for admin rights,
+   * meaning rights to manipulate settings or important entries in the project.
+   */
+  ADMIN
 }
