@@ -32,9 +32,7 @@
 		<module>../xstampp</module>
 		<module>../xstampp.astpa</module>
 		<module>../xstampp.acast</module>
-		<module>../xstpa</module>
 		<module>../astpa.feature</module>
-		<module>../xstpa.feature</module>
 		<module>../xstampp.acast.feature</module>
 	</modules>
 
