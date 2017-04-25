@@ -13,10 +13,6 @@
 
 package xstampp.astpa.controlstructure.figure;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
@@ -28,12 +24,13 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.preferences.IControlStructureConstants;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 
@@ -56,7 +53,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 	private List<IFigure> componentList = new ArrayList<>();
 	private boolean generalEnable = false;
 	private boolean hasDeco;
-	private boolean paintLock;
 
 	/**
 	 * Constructs the RootFigure which is used as the basis of the
@@ -72,7 +68,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		this.useLocalCoordinates();
 		this.hasDeco = true;
 		this.addMouseMotionListener(this);
-		this.paintLock= false;
 	}
 
 	
@@ -91,12 +86,17 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
 	@Override
 	public void addHighlighter(Point ref) {
-
+		
 		this.translateToRelative(ref);
 		int width = RootFigure.ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
 		int offset = (width / 2)-1;
 		if (this.highlighter == null) {
-			this.highlighter = new Figure();
+			this.highlighter = new Figure() {
+				@Override
+				public boolean containsPoint(int x, int y) {
+					return false;
+				}
+			};
 			this.highlighter.setBorder(new LineBorder(ColorConstants.blue, 3));
 			this.highlighter.setOpaque(false);
 			this.add(this.highlighter);
@@ -125,7 +125,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		List<Point> childrenAnchorsPoints = new ArrayList<>();
 		Rectangle childLayout;
 		Figure anchorHighlighter = null;
-		List<?> childFigures = new ArrayList<>(getChildren());
+		List<Figure> childFigures = new ArrayList<>(getChildren());
 		for (Object child : childFigures) {
 			if (child instanceof CSFigure && ((CSFigure)child).isCanConnect()) {
 				childLayout = new Rectangle(((CSFigure)child).getBounds());
@@ -205,15 +205,13 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 		if (true) {
 			return super.findFigureAt(x, y, search);
 		}
-		int tmpX;
-		int tmpY;
 		int[] xNet = new int[]{0,-1,1,-1,1};
 		int[] yNet = new int[]{0,-1,-1,1,1};
 		IFigure tmpDescendant;
 		for (int i = 0; i < xNet.length; i++) {
 			for (int delta = 0; delta < ((2 * RootFigure.COMP_OFFSET) + 1); delta++) {
-				tmpX = x + xNet[i]*delta;
-				tmpY = y + yNet[i]*delta;
+				int tmpX = x + xNet[i]*delta;
+				int tmpY = y + yNet[i]*delta;
 				tmpDescendant = super.findFigureAt(tmpX,
 						tmpY, search);
 				if (tmpDescendant instanceof CSFigure && ((CSFigure) tmpDescendant).isCanConnect()) {
@@ -232,13 +230,9 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
 	@Override
 	public void paintChildren(Graphics graphics) {
-//		if(!paintLock){
 			super.paintChildren(graphics);
-//		}
 	}
-	public void setPaintLock(boolean lock) {
-		this.paintLock = lock;
-	}
+
 	@Override
 	public void setLayout(Rectangle rect) {
 		this.setBounds(rect);
@@ -324,6 +318,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
   @Override
   public boolean useOffset() {
-    return useOffset;
-  }
+		return useOffset;
+	}
 }

@@ -38,7 +38,6 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	private Rectangle refLayout;
 	private IFigure connection;
 
-
 	/**
 	 * the xOrientations array which stores the locations on the x-axis as
 	 * values between 0 and 1 where the user should be able to create a CSAnchor
@@ -72,125 +71,115 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	 *            The Figure this AnchorPoint lies on
 	 * @param ref
 	 *            the reference Point in absolute coordinates on the Editor
-	 * @param store2 
+	 * @param store2
 	 */
 	public CSAnchor(IFigure owner, Point ref, IPreferenceStore store2) {
 		this(owner);
 		setPreferenceStore(store2);
 		this.lastRef = ref.getCopy();
-		if(this.store.getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
+		if (this.store.getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)) {
 			this.calulateAnchorFac(this.lastRef);
-		}else{
+		} else {
 			this.setAnchorFactor(this.calcAnchorNr());
 		}
-		
+
 		this.calcReferencePoint();
 		((CSFigure) this.getOwner()).addHighlighter(this.referencePoint);
 	}
 
-  /***
-   * expects the coordinates of the point in question relative to its the owner
-   * of this anchor object
-   * 
-   * @param x
-   * @param y
-   * @return whether or not the point is under the bisection which divides the 
-   *         lower left corners' angle
-   */
-  private boolean TEST_calculateLowerBisection(double x, double y){
-    y = this.getOwner().getBounds().preciseHeight() - y;
-    double ratio = this.getOwner().getBounds().preciseHeight() / this.getOwner().getBounds().preciseWidth();
-    boolean underBisection;
-    if(x > 0){
-      //the pointRatio is the aspectRatio of the rectangle between lower-left edge of the owner and point   
-      double pointRatio = y/Math.max(Double.MIN_NORMAL,x);
-      //if x is greater than zero and the pointRatio is smaller than the ratio than the point is under the angle bisecting line
-      underBisection = pointRatio <= ratio;
-    }else if(x < 0){
-      //the pointRatio is the aspectRatio of the rectangle between lower-left edge of the owner and point   
-      double pointRatio = -y/Math.max(Double.MIN_NORMAL,-x);
-      //if x is greater than zero and the pointRatio is smaller than the ratio than the point is under the angle bisecting line
-      underBisection = pointRatio >= ratio;
-    }else{
-      underBisection = y <= 0;
-    }
-    return underBisection;
-  }
-  
-  /***
-   * expects the coordinates of the point in question relative to its the owner
-   * of this anchor object
-   * 
-   * @param x
-   * @param y
-   * @return whether or not the point is under the bisection which divides the 
-   *         upper left corners' angle 
-   */
-  private boolean TEST_calculateInverseBisetion(double x, double y){
-    y = this.getOwner().getBounds().preciseHeight() - y;
-    x = this.getOwner().getBounds().preciseWidth() - x;
-    double ratio = this.getOwner().getBounds().preciseHeight() / this.getOwner().getBounds().preciseWidth();
-    boolean underBisection;
-    if(x > 0){
-      //the pointRatio is the aspectRatio of the rectangle between lower-left edge of the owner and point   
-      double pointRatio = y/Math.max(Double.MIN_NORMAL,x);
-      //if x is greater than zero and the pointRatio is smaller than the ratio than the point is under the angle bisecting line
-      underBisection = pointRatio <= ratio;
-    }else if(x < 0){
-      //the pointRatio is the aspectRatio of the rectangle between lower-left edge of the owner and point   
-      double pointRatio = -y/Math.max(Double.MIN_NORMAL,-x);
-      //if x is greater than zero and the pointRatio is smaller than the ratio than the point is under the angle bisecting line
-      underBisection = pointRatio >= ratio;
-    }else{
-      underBisection = y <= 0;
-    }
-    return underBisection;
-  }
-  
+	/***
+	 * expects the coordinates of the point in question relative to its the
+	 * owner of this anchor object
+	 * 
+	 * @param x
+	 * @param y
+	 * @return whether or not the point is under the bisection which divides the
+	 *         lower left corners' angle
+	 */
+	private boolean TEST_calculateLowerBisection(double x, double y) {
+		y = this.getOwner().getBounds().preciseHeight() - y;
+		double ratio = this.getOwner().getBounds().preciseHeight() / this.getOwner().getBounds().preciseWidth();
+		boolean underBisection;
+		if (x > 0) {
+			// the pointRatio is the aspectRatio of the rectangle between
+			// lower-left edge of the owner and point
+			double pointRatio = y / Math.max(Double.MIN_NORMAL, x);
+			// if x is greater than zero and the pointRatio is smaller than the
+			// ratio than the point is under the angle bisecting line
+			underBisection = pointRatio <= ratio;
+		} else if (x < 0) {
+			// the pointRatio is the aspectRatio of the rectangle between
+			// lower-left edge of the owner and point
+			double pointRatio = -y / Math.max(Double.MIN_NORMAL, -x);
+			// if x is greater than zero and the pointRatio is smaller than the
+			// ratio than the point is under the angle bisecting line
+			underBisection = pointRatio >= ratio;
+		} else {
+			underBisection = y <= 0;
+		}
+		return underBisection;
+	}
+
+	/***
+	 * expects the coordinates of the point in question relative to its the
+	 * owner of this anchor object
+	 * 
+	 * @param x
+	 * @param y
+	 * @return whether or not the point is under the bisection which divides the
+	 *         upper left corners' angle
+	 */
+	private boolean TEST_calculateInverseBisetion(double x, double y) {
+		y = this.getOwner().getBounds().preciseHeight() - y;
+		x = this.getOwner().getBounds().preciseWidth() - x;
+		double ratio = this.getOwner().getBounds().preciseHeight() / this.getOwner().getBounds().preciseWidth();
+		boolean underBisection;
+		if (x > 0) {
+			// the pointRatio is the aspectRatio of the rectangle between
+			// lower-left edge of the owner and point
+			double pointRatio = y / Math.max(Double.MIN_NORMAL, x);
+			// if x is greater than zero and the pointRatio is smaller than the
+			// ratio than the point is under the angle bisecting line
+			underBisection = pointRatio <= ratio;
+		} else if (x < 0) {
+			// the pointRatio is the aspectRatio of the rectangle between
+			// lower-left edge of the owner and point
+			double pointRatio = -y / Math.max(Double.MIN_NORMAL, -x);
+			// if x is greater than zero and the pointRatio is smaller than the
+			// ratio than the point is under the angle bisecting line
+			underBisection = pointRatio >= ratio;
+		} else {
+			underBisection = y <= 0;
+		}
+		return underBisection;
+	}
+
 	/**
-	 * calculates the relative position of a point 
-	 * on the parent component
+	 * calculates the relative position of a point on the parent component
 	 *
 	 * @author Lukas Balzer
 	 *
 	 * @param ref
-	 * 			the point for which the relative position 
-	 * 			is requested
+	 *            the point for which the relative position is requested
 	 */
 	private void calulateAnchorFac(Point ref) {
 		this.getOwner().translateToRelative(ref);
-		//translate the point reference so that it points to owner relative
-		//by defining the left top edge as zero
+		// translate the point reference so that it points to owner relative
+		// by defining the left top edge as zero
 		ref.performTranslate(-this.getOwner().getBounds().x, -this.getOwner().getBounds().y);
-//		
-//		double ratio = this.getOwner().getBounds().preciseHeight() / this.getOwner().getBounds().preciseWidth();
-//
-//    //the y value of a rectangle between the lower left corner of the owner component and the point
-//		double preciseYUP = this.getOwner().getBounds().preciseHeight() - ref.preciseY();
-//		//ascend is the ratio between the difference of the point.y and the height and the point.x
-//		double pointX = Math.max(Double.MIN_NORMAL, ref.preciseX());
-//		
-//		double ascend = preciseYUP / pointX;
-//		double inv_ascned =Math.abs(preciseYUP) / pointX;
-//		
-//		//as long as the aspectRatio of the rectangle between the lower left corner of the owner component and the point
-//		//is smaller or equal the aspectRatio of the component it is under the angle bisecting line of the component 
-//		boolean  underBisect = ascend <= ratio;
-//		boolean  underBisect_Inv = inv_ascned <= ratio;
-		boolean  underBisect = TEST_calculateLowerBisection(ref.preciseX(), ref.preciseY());
-    boolean  underBisect_Inv = TEST_calculateInverseBisetion(ref.preciseX(), ref.preciseY());
-		if(underBisect && underBisect_Inv){
+		
+		boolean underBisect = TEST_calculateLowerBisection(ref.preciseX(), ref.preciseY());
+		boolean underBisect_Inv = TEST_calculateInverseBisetion(ref.preciseX(), ref.preciseY());
+		if (underBisect && underBisect_Inv) {
 			this.anchorFactor.x = (int) (ref.x / getOwner().getBounds().preciseWidth() * MAX_PERCENT);
 			this.anchorFactor.y = MAX_PERCENT;
-		}
-		else if(!underBisect && underBisect_Inv){
+		} else if (!underBisect && underBisect_Inv) {
 			this.anchorFactor.x = 0;
 			this.anchorFactor.y = (int) (ref.y / getOwner().getBounds().preciseHeight() * MAX_PERCENT);
-		}
-		else if(underBisect && !underBisect_Inv){
+		} else if (underBisect && !underBisect_Inv) {
 			this.anchorFactor.x = MAX_PERCENT;
 			this.anchorFactor.y = (int) (ref.y / getOwner().getBounds().preciseHeight() * MAX_PERCENT);
-		}else if(!underBisect && !underBisect_Inv){
+		} else if (!underBisect && !underBisect_Inv) {
 			this.anchorFactor.x = (int) (ref.x / getOwner().getBounds().preciseWidth() * MAX_PERCENT);
 			this.anchorFactor.y = 0;
 		}
@@ -223,13 +212,13 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 
 	@Override
 	public void updateAnchor(IAnchor model, Object owner) {
-	((CSFigure) this.getOwner()).removeHighlighter();
+		((CSFigure) this.getOwner()).removeHighlighter();
 		this.anchorFactor.x = model.getxOrientation();
 		this.anchorFactor.y = model.getyOrientation();
-		if(owner instanceof CSAbstractEditPart && ((CSAbstractEditPart) owner).getFigure() != getOwner()){
+		if (owner instanceof CSAbstractEditPart && ((CSAbstractEditPart) owner).getFigure() != getOwner()) {
 			this.setOwner(((CSAbstractEditPart) owner).getFigure());
 		}
-		if(getConnection() != null) {
+		if (getConnection() != null) {
 		}
 	}
 
@@ -245,8 +234,10 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 
 		if (this.anchorFactor.x != -1) {
 
-			this.referencePoint.y = (int) (this.refLayout.y + ((this.refLayout.height * (float) this.anchorFactor.y) / CSAnchor.MAX_PERCENT));
-			this.referencePoint.x = (int) (this.refLayout.x + ((this.refLayout.width * (float) this.anchorFactor.x) / CSAnchor.MAX_PERCENT));
+			this.referencePoint.y = (int) (this.refLayout.y
+					+ ((this.refLayout.height * (float) this.anchorFactor.y) / CSAnchor.MAX_PERCENT));
+			this.referencePoint.x = (int) (this.refLayout.x
+					+ ((this.refLayout.width * (float) this.anchorFactor.x) / CSAnchor.MAX_PERCENT));
 		}
 		this.referencePoint.x = Math.max(0, this.referencePoint.x);
 		this.referencePoint.y = Math.max(0, this.referencePoint.y);
@@ -402,18 +393,19 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 		this.store = store;
 	}
 
-  /**
-   * @return the connection
-   */
-  public IFigure getConnection() {
-    return connection;
-  }
+	/**
+	 * @return the connection
+	 */
+	public IFigure getConnection() {
+		return connection;
+	}
 
-  /**
-   * @param connection the connection to set
-   */
-  public void setConnection(IFigure connection) {
-    this.connection = connection;
-  }
+	/**
+	 * @param connection
+	 *            the connection to set
+	 */
+	public void setConnection(IFigure connection) {
+		this.connection = connection;
+	}
 
 }

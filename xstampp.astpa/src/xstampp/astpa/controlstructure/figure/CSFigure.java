@@ -42,11 +42,10 @@ import xstampp.astpa.controlstructure.utilities.CSTextLabel;
  * @author Lukas Balzer
  * 
  */
-public abstract class CSFigure extends Figure implements
-		IControlStructureFigure {
+public abstract class CSFigure extends Figure implements IControlStructureFigure {
 
 	private final CSTextLabel textLabel;
-	protected boolean isDirty=true;
+	protected boolean isDirty = true;
 	private final Image image;
 	private boolean canConnect = false;
 	private final UUID componentID;
@@ -82,7 +81,8 @@ public abstract class CSFigure extends Figure implements
 	 * 
 	 * 
 	 * @author Lukas Balzer
-	 * @param isDashed TODO
+	 * @param isDashed
+	 *            TODO
 	 * 
 	 */
 	protected CSFigure(UUID id, Boolean isDashed) {
@@ -95,21 +95,22 @@ public abstract class CSFigure extends Figure implements
 	 * 
 	 * 
 	 * @author Lukas Balzer
-	 * @param isDashed TODO
+	 * @param isDashed
+	 *            TODO
 	 * 
 	 */
 	protected CSFigure(UUID id, Image img, boolean isDashed) {
 		this.componentID = id;
 		this.setLayoutManager(new XYLayout());
 		this.image = img;
-		if(isDashed){
-			this.border =new LineBorder(STANDARD_BORDER_COLOR, 1,SWT.BORDER_DASH);
-		}else{
-			this.border =new LineBorder(STANDARD_BORDER_COLOR, 1);
+		if (isDashed) {
+			this.border = new LineBorder(STANDARD_BORDER_COLOR, 1, SWT.BORDER_DASH);
+		} else {
+			this.border = new LineBorder(STANDARD_BORDER_COLOR, 1);
 		}
 		this.textLabel = new CSTextLabel(this);
 		this.add(this.textLabel);
-		isDirty=true;
+		isDirty = true;
 		this.setConstraint(this.textLabel, new Rectangle(1, 1, -1, -1));
 		this.setOpaque(true);
 		this.setBackgroundColor(ColorConstants.white);
@@ -120,19 +121,18 @@ public abstract class CSFigure extends Figure implements
 		if ((this.image != null) && this.withIcon) {
 			double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
 			Rectangle rect = this.textLabel.getBounds();
-			this.setConstraint(this.textLabel, new Rectangle((int) newPos,
-					rect.y, rect.width, rect.height));
+			this.setConstraint(this.textLabel, new Rectangle((int) newPos, rect.y, rect.width, rect.height));
 			graphics.scale(0.25);
 			graphics.drawImage(this.image, 1, 1);
 			graphics.scale(4);
 		}
-		
+
 		super.paintChildren(graphics);
 	}
 
 	@Override
 	public void setText(String text) {
-		if(this.text == null || !text.equals(this.text)){
+		if (this.text == null || !text.equals(this.text)) {
 			this.text = text;
 			this.textLabel.setText(text);
 			setDirty();
@@ -166,12 +166,10 @@ public abstract class CSFigure extends Figure implements
 		}
 		super.setBorder(this.border);
 	}
-	
-
 
 	@Override
 	public void setLayout(Rectangle rect) {
-		if(this.rect == null || !this.rect.equals(rect)){
+		if (this.rect == null || !this.rect.equals(rect)) {
 			setDirty();
 			this.rect = rect;
 		}
@@ -179,39 +177,42 @@ public abstract class CSFigure extends Figure implements
 
 	@Override
 	public boolean containsPoint(int x, int y) {
-	  Rectangle bounds = getBounds().getCopy();
-	  if(useOffset()){
-	    return bounds.expand(2 * RootFigure.COMP_OFFSET, 2 *RootFigure.COMP_OFFSET).contains(x, y);
-	  }
-	  return super.containsPoint(x, y);
+		Rectangle bounds = getBounds().getCopy().expand(2 * RootFigure.COMP_OFFSET, 2 * RootFigure.COMP_OFFSET);
+		if (useOffset()) {
+			boolean contains = bounds.contains(x, y);
+			return contains;
+		}
+		return super.containsPoint(x, y);
 	}
-	 @Override
+
+	@Override
 	public void refresh() {
-	 	if(isDirty){
-	 		isDirty= false;
+		if (isDirty) {
+			isDirty = false;
 			setBounds(rect);
-	 		if (this.getChildren().size() > 1) {
-				// the height of the rectangle is set to the ideal height for the
+			if (this.getChildren().size() > 1) {
+				// the height of the rectangle is set to the ideal height for
+				// the
 				// given width
-				this.textLabel.setSize(
-						this.getBounds().width - this.leftMargin-4,-1);
+				this.textLabel.setSize(this.getBounds().width - this.leftMargin - 4, -1);
 				this.setConstraint(this.textLabel, this.textLabel.getBounds());
 			} else {
 
-				this.getTextField().setSize(new Dimension(rect.width - this.leftMargin-4, rect.height));
-				this.setConstraint(this.textLabel, new Rectangle(this.leftMargin,
-						1, rect.width - this.leftMargin-4, rect.height));
+				this.getTextField().setSize(new Dimension(rect.width - this.leftMargin - 4, rect.height));
+				this.setConstraint(this.textLabel,
+						new Rectangle(this.leftMargin, 1, rect.width - this.leftMargin - 4, rect.height));
 			}
 			this.textLabel.setText(text);
 			this.textLabel.repaint();
 			this.getParent().setConstraint(this, rect);
 			for (Object child : getChildren()) {
-				if(child instanceof IControlStructureFigure){
+				if (child instanceof IControlStructureFigure) {
 					((IControlStructureFigure) child).refresh();
 				}
 			}
-	 	}
+		}
 	}
+
 	/**
 	 * 
 	 * 
@@ -223,7 +224,7 @@ public abstract class CSFigure extends Figure implements
 	 */
 	public ConnectionAnchor getConnectionAnchor(Point ref) {
 
-		CSAnchor temp = new CSAnchor(this, ref,this.store);
+		CSAnchor temp = new CSAnchor(this, ref, this.store);
 		return temp;
 	}
 
@@ -334,10 +335,10 @@ public abstract class CSFigure extends Figure implements
 	}
 
 	@Override
-  public boolean useOffset() {
-    return ((IControlStructureFigure) this.getParent()).useOffset();
-  }
-	
+	public boolean useOffset() {
+		return ((IControlStructureFigure) this.getParent()).useOffset();
+	}
+
 	protected void setDecoration(boolean withDeco) {
 		this.withIcon = withDeco;
 		if (withDeco) {
@@ -351,25 +352,25 @@ public abstract class CSFigure extends Figure implements
 	public boolean hasDeco() {
 		return this.withIcon;
 	}
-	
+
 	@Override
 	public void showFeedback() {
 		// no feedback by default
 	}
-	
+
 	@Override
 	public void disableFeedback() {
 		// no feedback by default
-		
+
 	}
-	
+
 	@Override
 	public void setPreferenceStore(IPreferenceStore store) {
 		getTextField().setPreferenceStore(store);
 		this.store = store;
 	}
-	
-	protected IPreferenceStore getPreferenceStore(){
+
+	protected IPreferenceStore getPreferenceStore() {
 		return this.store;
 	}
 
@@ -381,19 +382,23 @@ public abstract class CSFigure extends Figure implements
 	}
 
 	/**
-	 * Setter that decides whether or not a component is taken into account 
-	 * by the {@link RootFigure#findFigureAt(int, int, org.eclipse.draw2d.TreeSearch)} method.
-	 * This also enables/disables the connection grid in the connection mode
-	 * @param canConnect the canConnect to set
+	 * Setter that decides whether or not a component is taken into account by
+	 * the
+	 * {@link RootFigure#findFigureAt(int, int, org.eclipse.draw2d.TreeSearch)}
+	 * method. This also enables/disables the connection grid in the connection
+	 * mode
+	 * 
+	 * @param canConnect
+	 *            the canConnect to set
 	 */
 	public void setCanConnect(boolean canConnect) {
 		this.canConnect = canConnect;
 	}
-	
+
 	@Override
 	public void setDirty() {
 		isDirty = true;
-		if(getParent() instanceof IControlStructureFigure){
+		if (getParent() instanceof IControlStructureFigure) {
 			((IControlStructureFigure) getParent()).setDirty();
 		}
 	}

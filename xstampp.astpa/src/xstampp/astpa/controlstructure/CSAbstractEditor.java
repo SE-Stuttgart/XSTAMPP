@@ -1059,9 +1059,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 					public void run() {
 						CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
 						if (root != null) {
-							((RootFigure)root.getFigure()).setPaintLock(true);
 							root.refresh();
-							((RootFigure)root.getFigure()).setPaintLock(false);
 						}
 					}
 				});

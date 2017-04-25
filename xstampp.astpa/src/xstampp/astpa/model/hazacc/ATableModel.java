@@ -34,19 +34,19 @@ import xstampp.astpa.model.interfaces.ITableModel;
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class ATableModel implements ITableModel {
 
-  @XmlElement
+	@XmlElement
 	private UUID id;
-  
-  @XmlElement
+
+	@XmlElement
 	private String title;
 
-  @XmlElement
+	@XmlElement
 	private String description;
 
-  @XmlElement
+	@XmlElement
 	private int number;
 
-  @XmlElement
+	@XmlElement
 	private String links;
 
 	/**
@@ -76,32 +76,30 @@ public abstract class ATableModel implements ITableModel {
 	public ATableModel() {
 		this.number = -1;
 	}
-	public static <T> boolean move(boolean up,UUID id, List<T> list){
+
+	public static <T> boolean move(boolean up, UUID id, List<T> list) {
 		for (int i = 0; i < list.size(); i++) {
-			if(((ITableModel)list.get(i)).getId().equals(id)){
+			if (((ITableModel) list.get(i)).getId().equals(id)) {
 				T downModel = null;
-				T upModel = null;
 				int moveIndex = i;
-				/* if up is true than the ITable model with the given id should move up
-				 * if this is possible(if there is a model right to it in the list) than 
-				 * the model which is right to it is moved down else the model itself is moved down
+				/*
+				 * if up is true than the ITable model with the given id should
+				 * move up if this is possible(if there is a model right to it
+				 * in the list) than the model which is right to it is moved
+				 * down else the model itself is moved down
 				 */
-				if(up && i + 1 > list.size()){
+				if (up && i + 1 >= list.size()) {
 					return false;
-				}else if(up){
-					downModel = ((T)list.get(i+1));
+				} else if (up) {
+					downModel = ((T) list.get(i + 1));
 					moveIndex = i;
-				}else if(i == 0){
+				} else if (i == 0) {
 					return false;
-				}else{
-					downModel = ((T)list.get(i));
-					moveIndex = i-1;
+				} else {
+					downModel = ((T) list.get(i));
+					moveIndex = i - 1;
 				}
-				upModel = ((T)list.get(moveIndex));
-//				if(upModel instanceof ATableModel && downModel instanceof ATableModel){
-//					((ATableModel) downModel).setNumber(moveIndex + 1);
-//					((ATableModel) upModel).setNumber(moveIndex + 2);
-//				}
+				
 				list.remove(downModel);
 				list.add(moveIndex, downModel);
 				return true;
@@ -109,6 +107,7 @@ public abstract class ATableModel implements ITableModel {
 		}
 		return false;
 	}
+
 	/**
 	 * Setter for the description
 	 * 
@@ -119,8 +118,8 @@ public abstract class ATableModel implements ITableModel {
 	 * @return TODO
 	 */
 	public String setDescription(String description) {
-		if(this.description == null || !this.description.equals(description)){
-		  String result = this.description;
+		if (this.description == null || !this.description.equals(description)) {
+			String result = this.description;
 			this.description = description;
 			return result;
 		}
@@ -142,8 +141,8 @@ public abstract class ATableModel implements ITableModel {
 	 * @return TODO
 	 */
 	public String setTitle(String title) {
-		if(this.title == null || !this.title.equals(title)){
-      String result = this.title;
+		if (this.title == null || !this.title.equals(title)) {
+			String result = this.title;
 			this.title = title;
 			return result;
 		}
@@ -170,7 +169,7 @@ public abstract class ATableModel implements ITableModel {
 	 * @return TODO
 	 */
 	public boolean setId(UUID id) {
-		if(this.id == null || !this.id.equals(id)){
+		if (this.id == null || !this.id.equals(id)) {
 			this.id = id;
 			return true;
 		}
@@ -183,9 +182,10 @@ public abstract class ATableModel implements ITableModel {
 	}
 
 	@Override
-	public String getIdString(){
-	  return Integer.toString(this.number);
+	public String getIdString() {
+		return Integer.toString(this.number);
 	}
+
 	/**
 	 * Setter for the number
 	 * 
@@ -193,10 +193,10 @@ public abstract class ATableModel implements ITableModel {
 	 *            the new number
 	 * 
 	 * @author Fabian Toth
-	 * @return 
+	 * @return
 	 */
 	public boolean setNumber(int number) {
-		if(this.number  < 0){
+		if (this.number < 0) {
 			this.number = number;
 			return true;
 		}
@@ -213,10 +213,10 @@ public abstract class ATableModel implements ITableModel {
 	/**
 	 * @param links
 	 *            the links to set
-	 * @return 
+	 * @return
 	 */
 	public boolean setLinks(String links) {
-		if(this.links == null ||!this.links.equals(links)){
+		if (this.links == null || !this.links.equals(links)) {
 			this.links = links;
 			return true;
 		}

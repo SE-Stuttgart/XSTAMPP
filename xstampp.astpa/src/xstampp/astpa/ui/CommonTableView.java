@@ -13,9 +13,7 @@
 
 package xstampp.astpa.ui;
 
-import java.util.List;
-import java.util.Observable;
-import java.util.UUID;
+import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -26,9 +24,7 @@ import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -54,7 +50,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
-import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.ATableModel;
@@ -63,6 +58,10 @@ import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.interfaces.IEditorBase;
+
+import java.util.List;
+import java.util.Observable;
+import java.util.UUID;
 
 /**
  * @author Jarkko Heidenwag
@@ -75,7 +74,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
 	public static final String COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN = "commonTableView.showNumberColumn";
 
-  private static String id;
+	private static String id;
 
 	private TableViewer tableViewer;
 
@@ -96,21 +95,15 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 	private Button moveUp;
 
 	private Button moveDown;
-	private static final Image DELETE =	Activator.getImageDescriptor(
-					"/icons/buttons/commontables/remove.png") //$NON-NLS-1$
-					.createImage();
-	private static final Image DELETE_ALL =
-			Activator.getImageDescriptor(
-					"/icons/buttons/commontables/removeAll.png") //$NON-NLS-1$
-					.createImage();
-	private static final Image ADD = Activator.getImageDescriptor(
-					"/icons/buttons/commontables/add.png") //$NON-NLS-1$
-					.createImage();
-	private static final Image MOVE_UP =	Activator.getImageDescriptor(
-					"/icons/buttons/commontables/up.png") //$NON-NLS-1$
-					.createImage();
-	private static final Image MOVE_DOWN =Activator.getImageDescriptor(
-			"/icons/buttons/commontables/down.png") //$NON-NLS-1$
+	private static final Image DELETE = Activator.getImageDescriptor("/icons/buttons/commontables/remove.png") //$NON-NLS-1$
+			.createImage();
+	private static final Image DELETE_ALL = Activator.getImageDescriptor("/icons/buttons/commontables/removeAll.png") //$NON-NLS-1$
+			.createImage();
+	private static final Image ADD = Activator.getImageDescriptor("/icons/buttons/commontables/add.png") //$NON-NLS-1$
+			.createImage();
+	private static final Image MOVE_UP = Activator.getImageDescriptor("/icons/buttons/commontables/up.png") //$NON-NLS-1$
+			.createImage();
+	private static final Image MOVE_DOWN = Activator.getImageDescriptor("/icons/buttons/commontables/down.png") //$NON-NLS-1$
 			.createImage();
 
 	/**
@@ -302,6 +295,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 	public void setAddNewItemButton(Button addNewItemButton) {
 		this.addNewItemButton = addNewItemButton;
 	}
+
 	/**
 	 * 
 	 * @author Jarkko Heidenwag
@@ -373,176 +367,155 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 	 *            Type of item, e.g. "Accidents"
 	 */
 	public void createCommonTableView(Composite parent, String tableHeader) {
-		
 
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
 
 		// composite for the table and the "New item" button
 		this.tableContainer = new Composite(sashForm, SWT.NONE);
-		this.tableContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true));
+		this.tableContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		this.tableContainer.setLayout(new GridLayout(1, true));
 
-		Composite leftHeadComposite = new Composite(this.tableContainer,
-				SWT.NONE);
-		leftHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
-				false));
+		Composite leftHeadComposite = new Composite(this.tableContainer, SWT.NONE);
+		leftHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 		final int leftHeadColumns = 5;
 		leftHeadComposite.setLayout(new GridLayout(leftHeadColumns, true));
 		this.itemsLabel = new Label(leftHeadComposite, SWT.LEAD);
 		this.itemsLabel.setFont(new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IEditorBase.STORE,
-						IPreferenceConstants.DEFAULT_FONT)));
+				PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
 		this.itemsLabel.setText(tableHeader);
-		this.itemsLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false, 2, 1));
+		this.itemsLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
 		this.filterLabel = new Label(leftHeadComposite, SWT.TRAIL);
 		this.filterLabel.setFont(new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IEditorBase.STORE,
-						IPreferenceConstants.DEFAULT_FONT)));
-		this.filterLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false));
+				PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
+		this.filterLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		this.filterLabel.setText(Messages.Filter);
-		this.filterTextField = new Text(leftHeadComposite, SWT.SINGLE
-				| SWT.BORDER);
-		this.filterTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false, 2, 1));
+		this.filterTextField = new Text(leftHeadComposite, SWT.SINGLE | SWT.BORDER);
+		this.filterTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
 		// composite for the description and its label
 		final Composite textContainer = new Composite(sashForm, SWT.NONE);
-		textContainer
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		textContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		textContainer.setLayout(new GridLayout(1, false));
 
 		// the composite for the table viewer
 		Composite tableComposite = new Composite(this.tableContainer, SWT.NONE);
-		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
+		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		this.tableColumnLayout = new TableColumnLayout();
 		tableComposite.setLayout(this.tableColumnLayout);
 
 		// the add and delete buttons are arranged in a composite with a 2x1
 		// GridLayout
 		this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
-		this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false));
+		this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		this.buttonComposite.setLayout(new GridLayout(6, true));
 		GridData gridData = new GridData(SWT.NONE, SWT.NONE, false, false);
 		final int buttonSize = 46;
 		gridData.widthHint = buttonSize;
 		gridData.heightHint = buttonSize;
-		
-		
+
 		// the Button for adding new items
-			this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);
-			this.addNewItemButton.setLayoutData(gridData);
-			this.addNewItemButton.setImage(ADD);
-		
+		this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);
+		this.addNewItemButton.setLayoutData(gridData);
+		this.addNewItemButton.setImage(ADD);
+
 		// the Button for deleting selected items
-			Button deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
-			deleteItemsButton.setLayoutData(gridData);
-			deleteItemsButton.setImage(DELETE);
-	
-			deleteItemsButton.addListener(SWT.Selection, new Listener() {
-	
-				@Override
-				public void handleEvent(Event event) {
-					CommonTableView.this.deleteItems();
-				}
-			});
+		Button deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
+		deleteItemsButton.setLayoutData(gridData);
+		deleteItemsButton.setImage(DELETE);
+
+		deleteItemsButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				CommonTableView.this.deleteItems();
+			}
+		});
 
 		// the Button for deleting all items
-			Button deleteAllButton = new Button(this.buttonComposite, SWT.PUSH);
-			deleteAllButton.setLayoutData(gridData);
+		Button deleteAllButton = new Button(this.buttonComposite, SWT.PUSH);
+		deleteAllButton.setLayoutData(gridData);
 
-			deleteAllButton.addListener(SWT.Selection,  new Listener() {
+		deleteAllButton.addListener(SWT.Selection, new Listener() {
 
-				@Override
-				public void handleEvent(Event event) {
-						CommonTableView.this.deleteAllItems();
-				}
-			});
-			deleteAllButton.setImage(DELETE_ALL);
-			new Label(buttonComposite, SWT.NONE);
+			@Override
+			public void handleEvent(Event event) {
+				CommonTableView.this.deleteAllItems();
+			}
+		});
+		deleteAllButton.setImage(DELETE_ALL);
+		new Label(buttonComposite, SWT.NONE);
 		// the Button for deleting all items
-			moveUp = new Button(this.buttonComposite, SWT.PUSH);
-			moveUp.setToolTipText("Decreases the index of the selected entry\n(Does not change the ID)");
-			moveUp.setLayoutData(gridData);
+		moveUp = new Button(this.buttonComposite, SWT.PUSH);
+		moveUp.setToolTipText("Decreases the index of the selected entry\n(Does not change the ID)");
+		moveUp.setLayoutData(gridData);
 
-			moveUp.addListener(SWT.Selection,  new Listener() {
+		moveUp.addListener(SWT.Selection, new Listener() {
 
-				@Override
-				public void handleEvent(Event event) {
-					if(tableViewer.getTable().getSelectionCount() == 1 && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel){
-						ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
-						moveEntry(model.getId(), true);
-					}
+			@Override
+			public void handleEvent(Event event) {
+				if (tableViewer.getTable().getSelectionCount() == 1
+						&& tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel) {
+					ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
+					moveEntry(model.getId(), true);
 				}
-			});
-			moveUp.setImage(MOVE_UP);
+			}
+		});
+		moveUp.setImage(MOVE_UP);
 		// the Button for deleting all items
-			moveDown = new Button(this.buttonComposite, SWT.PUSH);
-			moveDown.setLayoutData(gridData);
-			moveDown.setToolTipText("Increases the index of the selected entry\n(Does not change the ID)");
+		moveDown = new Button(this.buttonComposite, SWT.PUSH);
+		moveDown.setLayoutData(gridData);
+		moveDown.setToolTipText("Increases the index of the selected entry\n(Does not change the ID)");
 
-			moveDown.addListener(SWT.Selection,  new Listener() {
+		moveDown.addListener(SWT.Selection, new Listener() {
 
-				@Override
-				public void handleEvent(Event event) {
-					if(tableViewer.getTable().getSelectionCount() == 1 && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel){
-						ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
-						moveEntry(model.getId(), false);
-					}
+			@Override
+			public void handleEvent(Event event) {
+				if (tableViewer.getTable().getSelectionCount() == 1
+						&& tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel) {
+					ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
+					moveEntry(model.getId(), false);
 				}
-			});
-			moveDown.setImage(MOVE_DOWN);
+			}
+		});
+		moveDown.setImage(MOVE_DOWN);
 
-			moveUp.setEnabled(false);
-			moveDown.setEnabled(false);
 		Composite rightHeadComposite = new Composite(textContainer, SWT.NONE);
-		rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
-				false));
+		rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 		rightHeadComposite.setLayout(new GridLayout(2, true));
 
 		this.descriptionLabel = new Label(rightHeadComposite, SWT.LEAD);
 		this.descriptionLabel.setFont(new Font(Display.getCurrent(),
-				PreferenceConverter.getFontData(IEditorBase.STORE,
-						IPreferenceConstants.DEFAULT_FONT)));
+				PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
 		this.descriptionLabel.setText(Messages.DescriptionNotes);
 
-		Text invisibleTextField = new Text(rightHeadComposite, SWT.SINGLE
-				| SWT.BORDER);
-		invisibleTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false));
+		Text invisibleTextField = new Text(rightHeadComposite, SWT.SINGLE | SWT.BORDER);
+		invisibleTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		invisibleTextField.setVisible(false);
 
 		// the textfield for the description of the selected item
-		this.descriptionWidget = new Text(textContainer, SWT.MULTI | SWT.BORDER
-				| SWT.V_SCROLL | SWT.WRAP);
+		this.descriptionWidget = new Text(textContainer, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
 
 		this.descriptionWidget.setEnabled(false);
-		this.descriptionWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true));
+		this.descriptionWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// KeyListener for ctrl + a (SelectAll) in the description
 		this.descriptionWidget.addKeyListener(new KeyAdapter() {
 
 			@Override
 			public void keyReleased(final KeyEvent e) {
-				if (((e.stateMask == SWT.CTRL) || (e.stateMask == SWT.COMMAND))
-						&& (e.keyCode == 'a')) {
+				if (((e.stateMask == SWT.CTRL) || (e.stateMask == SWT.COMMAND)) && (e.keyCode == 'a')) {
 					CommonTableView.this.getDescriptionWidget().selectAll();
 				}
-				switch(e.keyCode){
-				case SWT.ARROW_LEFT:{
-					((Text)e.getSource()).setSelection(((Text)e.getSource()).getSelection().x -1, 
-							((Text)e.getSource()).getSelection().x-1);
+				switch (e.keyCode) {
+				case SWT.ARROW_LEFT: {
+					((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x - 1,
+							((Text) e.getSource()).getSelection().x - 1);
 					break;
 				}
-				case SWT.ARROW_RIGHT:{
-					((Text)e.getSource()).setSelection(((Text)e.getSource()).getSelection().x +1,
-							((Text)e.getSource()).getSelection().x+1);
+				case SWT.ARROW_RIGHT: {
+					((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x + 1,
+							((Text) e.getSource()).getSelection().x + 1);
 				}
 				}
 			}
@@ -550,76 +523,74 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 		});
 
 		// the table viewer
-		this.setTableViewer(new TableViewer(tableComposite, SWT.BORDER
-				| SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI |SWT.WRAP));
+		this.setTableViewer(
+				new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP));
 		this.getTableViewer().setContentProvider(new ArrayContentProvider());
 		this.getTableViewer().getTable().setLinesVisible(true);
 		this.getTableViewer().getTable().setHeaderVisible(true);
-	  if(Activator.getDefault().getPreferenceStore().getBoolean(COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN)){
-  		final TableViewerColumn nrColumn = new TableViewerColumn(getTableViewer(), SWT.None);
-      nrColumn.getColumn().setText("Nr."); 
-      this.tableColumnLayout.setColumnData(nrColumn.getColumn(),
-          new ColumnWeightData(0, 10, true));
-      nrColumn.getColumn().pack();
-  		// the columns of the table
-      nrColumn.setLabelProvider(new ColumnLabelProvider(){
-        @Override
-        public String getText(Object element) {
-          Object input = getTableViewer().getInput();
-          String content = new String();
-          if(input instanceof List<?>){
-            content = Integer.toString(((List<?>) input).indexOf(element) +1);
-          }
-          return content;
-        }
-      });
-      nrColumn.getColumn().setResizable(true);
-	  }
-	  this.idColumn = new TableViewerColumn(this.getTableViewer(), SWT.NONE);
+		if (Activator.getDefault().getPreferenceStore().getBoolean(COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN)) {
+			final TableViewerColumn nrColumn = new TableViewerColumn(getTableViewer(), SWT.None);
+			nrColumn.getColumn().setText("Nr.");
+			this.tableColumnLayout.setColumnData(nrColumn.getColumn(), new ColumnWeightData(0, 10, true));
+			nrColumn.getColumn().pack();
+			// the columns of the table
+			nrColumn.setLabelProvider(new ColumnLabelProvider() {
+				@Override
+				public String getText(Object element) {
+					Object input = getTableViewer().getInput();
+					String content = new String();
+					if (input instanceof List<?>) {
+						content = Integer.toString(((List<?>) input).indexOf(element) + 1);
+					}
+					return content;
+				}
+			});
+			nrColumn.getColumn().setResizable(true);
+		}
+		this.idColumn = new TableViewerColumn(this.getTableViewer(), SWT.NONE);
 		this.idColumn.getColumn().setText(Messages.ID);
 		final int idWeight = 5;
 		final int idMinWidth = 39;
 		this.tableColumnLayout.setColumnData(this.idColumn.getColumn(),
 				new ColumnWeightData(idWeight, idMinWidth, true));
-    this.idColumn.setLabelProvider(new ColumnLabelProvider() {
+		this.idColumn.setLabelProvider(new ColumnLabelProvider() {
 
-      @Override
-      public String getText(Object element) {
-        if (element instanceof ATableModel) {
-          return ((ATableModel) element).getIdString();
-        }
-        return null;
-      }
-    });
-    
-		this.titleColumn = new TableViewerColumn(this.getTableViewer(),
-				SWT.NONE);
+			@Override
+			public String getText(Object element) {
+				if (element instanceof ATableModel) {
+					return ((ATableModel) element).getIdString();
+				}
+				return null;
+			}
+		});
+
+		this.titleColumn = new TableViewerColumn(this.getTableViewer(), SWT.NONE);
 		this.titleColumn.getColumn().setText(Messages.Title);
 		final int titleWeight = 50;
 		final int titleMinWidth = 50;
 		this.tableColumnLayout.setColumnData(this.titleColumn.getColumn(),
 				new ColumnWeightData(titleWeight, titleMinWidth, false));
 		titleColumn.getColumn().setResizable(false);
-    this.titleColumn.setLabelProvider(new ColumnLabelProvider() {
+		this.titleColumn.setLabelProvider(new ColumnLabelProvider() {
 
-      @Override
-      public String getText(Object element) {
-        if (element instanceof ATableModel) {
-          return ((ATableModel) element).getTitle();
-        }
-        return null;
-      }
-    });
+			@Override
+			public String getText(Object element) {
+				if (element instanceof ATableModel) {
+					return ((ATableModel) element).getTitle();
+				}
+				return null;
+			}
+		});
 		// detecting a double click
 		ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
 				this.getTableViewer()) {
 
 			@Override
-			protected boolean isEditorActivationEvent(
-					ColumnViewerEditorActivationEvent event) {
+			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
 				final int leftClick = 1;
 				// Enable editor only with mouse double click
-				if (((event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION) && (((MouseEvent) event.sourceEvent).button == leftClick))
+				if (((event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION)
+						&& (((MouseEvent) event.sourceEvent).button == leftClick))
 						|| (event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC)) {
 					return true;
 				}
@@ -627,20 +598,16 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 			}
 		};
 
-		TableViewerEditor.create(this.getTableViewer(), null,
-				activationSupport, ColumnViewerEditor.DEFAULT);
+		TableViewerEditor.create(this.getTableViewer(), null, activationSupport, ColumnViewerEditor.DEFAULT);
 		// ctrl + a selects all items with this KeyListener
 		this.getTableViewer().getTable().addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (((e.stateMask == SWT.CTRL) || (e.stateMask == SWT.COMMAND))
-						&& (e.keyCode == 'a')
-						&& (CommonTableView.this.getTableViewer().getTable()
-								.getItemCount() > 0)) {
+				if (((e.stateMask == SWT.CTRL) || (e.stateMask == SWT.COMMAND)) && (e.keyCode == 'a')
+						&& (CommonTableView.this.getTableViewer().getTable().getItemCount() > 0)) {
 					CommonTableView.this.tableViewer.setSelection(
-							new StructuredSelection(CommonTableView.this
-									.getTableViewer().getElementAt(0)), true);
+							new StructuredSelection(CommonTableView.this.getTableViewer().getElementAt(0)), true);
 					CommonTableView.this.tableViewer.getTable().selectAll();
 				}
 			}
@@ -650,63 +617,42 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 				// nothing happens
 			}
 		});
-		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateButtons();
-			}
-		});
 		// tab order: if tableComposite is active and tab is pressed,
 		// you will leave the tableContainer and enter the description
-		Control[] controls = { leftHeadComposite, this.buttonComposite,
-				tableComposite };
+		Control[] controls = { leftHeadComposite, this.buttonComposite, tableComposite };
 		this.tableContainer.setTabList(controls);
 		refreshView();
 	}
 
-	protected void resizeColumns(){
-	  for (int i = 0; i < getTableViewer().getTable().getColumns().length; i++) {
-      TableColumn tableColumn = getTableViewer().getTable().getColumns()[i];
-      if(tableColumn.getResizable()){
-        tableColumn.pack();
-      }
-    }
-	}
-	private void updateButtons(){
-		if(tableViewer.getTable().getSelectionCount() == 1 && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel){
-			ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
-			moveUp.setEnabled(model.getNumber() < ((List<?>)tableViewer.getInput()).size());
-			moveDown.setEnabled(model.getNumber() >1);
-			
-		}else{
-			moveUp.setEnabled(false);
-			moveDown.setEnabled(false);
+	protected void resizeColumns() {
+		for (int i = 0; i < getTableViewer().getTable().getColumns().length; i++) {
+			TableColumn tableColumn = getTableViewer().getTable().getColumns()[i];
+			if (tableColumn.getResizable()) {
+				tableColumn.pack();
+			}
 		}
 	}
 
 	protected void deleteAllItems() {
-    getTableViewer().getTable().setSelection(0, getTableViewer().getTable().getItemCount());
-    deleteItems();
-  }
+		getTableViewer().getTable().setSelection(0, getTableViewer().getTable().getItemCount());
+		deleteItems();
+	}
 
-	protected abstract void moveEntry(UUID id,boolean moveUp);
+	protected abstract void moveEntry(UUID id, boolean moveUp);
+
 	/**
 	 * @author Jarkko Heidenwag
 	 * 
 	 */
 	public void refreshView() {
 		this.getTableViewer().refresh(true, true);
-		updateButtons();
 		this.updateTable();
-//		resizeColumns();
 	}
 
 	@Override
 	public String getId() {
 		return CommonTableView.id;
 	}
-
 
 	@Override
 	public String getTitle() {
@@ -748,46 +694,46 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 	 * @author Jarkko Heidenwag
 	 * 
 	 */
-	public final void deleteItems(){
-    final int maxNumOfDisplayedEntries = 10;
-    IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
-    if(selection.size() > 0 && selection.getFirstElement() instanceof ATableModel){
-      Object[] models =  selection.toArray();
-      int shownIds = Math.min(models.length, maxNumOfDisplayedEntries);
-      String modelIds=new String();
-      if(models.length == 1){
-        modelIds += "Do you really want to delete the following entry?\n";
-      }else if(models.length == getTableViewer().getTable().getItemCount()){
-        modelIds += "Do you really want to delete all list entries?\n";
-      }else{
-        modelIds += "Do you really want to delete all of the following entries?\n";
-      }
-      modelIds += "\n";
-      for(int i = 0; i < shownIds;i++){
-        ATableModel model = ((ATableModel)models[i]);
-        modelIds += model.getIdString()+" - "+model.getTitle().trim()+"\n";
-      }
-      if(models.length > maxNumOfDisplayedEntries){
-        modelIds += "..." + (models.length - maxNumOfDisplayedEntries) + " more";
-      }
-      if (MessageDialog.openQuestion(this.getTableContainer()
-          .getShell(), Messages.Confirm, modelIds)) {
-        getDataInterface().lockUpdate();
-        for (Object model : models) {
-          deleteEntry(((ATableModel)model));
-        }
-        this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-        getDataInterface().releaseLockAndUpdate(new ObserverValue[0]);
-        updateTable();
-        this.refreshView();
-      }
-    }else {
-      MessageDialog.openInformation(this.getTableContainer().getShell(),
-          Messages.Information, Messages.NoAccidentSelected);
-    }
-  }
+	public final void deleteItems() {
+		final int maxNumOfDisplayedEntries = 10;
+		IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
+		if (selection.size() > 0 && selection.getFirstElement() instanceof ATableModel) {
+			Object[] models = selection.toArray();
+			int shownIds = Math.min(models.length, maxNumOfDisplayedEntries);
+			String modelIds = new String();
+			if (models.length == 1) {
+				modelIds += "Do you really want to delete the following entry?\n";
+			} else if (models.length == getTableViewer().getTable().getItemCount()) {
+				modelIds += "Do you really want to delete all list entries?\n";
+			} else {
+				modelIds += "Do you really want to delete all of the following entries?\n";
+			}
+			modelIds += "\n";
+			for (int i = 0; i < shownIds; i++) {
+				ATableModel model = ((ATableModel) models[i]);
+				modelIds += model.getIdString() + " - " + model.getTitle().trim() + "\n";
+			}
+			if (models.length > maxNumOfDisplayedEntries) {
+				modelIds += "..." + (models.length - maxNumOfDisplayedEntries) + " more";
+			}
+			if (MessageDialog.openQuestion(this.getTableContainer().getShell(), Messages.Confirm, modelIds)) {
+				getDataInterface().lockUpdate();
+				for (Object model : models) {
+					deleteEntry(((ATableModel) model));
+				}
+				this.getDescriptionWidget().setText(""); //$NON-NLS-1$
+				getDataInterface().releaseLockAndUpdate(new ObserverValue[0]);
+				updateTable();
+				this.refreshView();
+			}
+		} else {
+			MessageDialog.openInformation(this.getTableContainer().getShell(), Messages.Information,
+					Messages.NoAccidentSelected);
+		}
+	}
 
 	protected abstract void deleteEntry(ATableModel model);
+
 	/**
 	 * @author Jarkko Heidenwag
 	 * 
@@ -795,37 +741,28 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 	public abstract void updateTable();
 
 	@SuppressWarnings("unchecked")
-	public void setDataModelInterface(IDataModel dataInterface){
+	public void setDataModelInterface(IDataModel dataInterface) {
 		this.dataInterface = (T) dataInterface;
 		dataInterface.addObserver(this);
-		
+
 	}
 
-	public T getDataInterface(){
-		
+	public T getDataInterface() {
+
 		return dataInterface;
 	}
+
 	@Override
 	public void partActivated(IWorkbenchPart arg0) {
-		if(arg0 == this){
-			CommonTableView.this.itemsLabel.setFont(new Font(
-					Display.getCurrent(),
-					PreferenceConverter.getFontData(
-							IEditorBase.STORE,
-							IPreferenceConstants.DEFAULT_FONT)));
-			CommonTableView.this.filterLabel.setFont(new Font(
-					Display.getCurrent(),
-					PreferenceConverter.getFontData(
-							IEditorBase.STORE,
-							IPreferenceConstants.DEFAULT_FONT)));
-			CommonTableView.this.descriptionLabel.setFont(new Font(
-					Display.getCurrent(),
-					PreferenceConverter.getFontData(
-							IEditorBase.STORE,
-							IPreferenceConstants.DEFAULT_FONT)));
+		if (arg0 == this) {
+			CommonTableView.this.itemsLabel.setFont(new Font(Display.getCurrent(),
+					PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
+			CommonTableView.this.filterLabel.setFont(new Font(Display.getCurrent(),
+					PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
+			CommonTableView.this.descriptionLabel.setFont(new Font(Display.getCurrent(),
+					PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
 		}
 		super.partActivated(arg0);
 	}
-
 
 }
