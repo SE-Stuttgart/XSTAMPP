@@ -131,7 +131,7 @@ public class StpaCSVExport extends Job {
 			if (this.enablePreview && tableCSV.exists() && Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().open(tableCSV);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return Status.CANCEL_STATUS;
 		}
 
