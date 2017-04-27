@@ -30,6 +30,7 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
@@ -232,13 +233,14 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	 * @author Benedikt Markt
 	 */
 	@Override
-	public Object getAdapter(Class key) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
 		if (key == SnapToHelper.class) {
 
 			List<SnapToHelper> helpers = new ArrayList<SnapToHelper>();
 			helpers.add(new SnapToGeometry(this));
 
 			helpers.add(new SnapToGrid(this));
+			helpers.add(new SnapToGuides(this));
 
 			if (helpers.size() == 0) {
 				return null;

@@ -13,14 +13,6 @@
 
 package xstampp.astpa.controlstructure.controller.factorys;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import messages.Messages;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
@@ -50,6 +42,12 @@ import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.preferences.IControlStructureConstants;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 // import astpa.rcp.controlstucture.model.ComponentModel;
 
@@ -233,8 +231,8 @@ public class CSEditPartFactory implements EditPartFactory {
 		part.setModel(model);
 		part.setSource(source);
 		part.setTarget(target);
-		source.addSourceConnection(part);
-		target.addTargetConnection(part);
+//		source.addSourceConnection(part);
+//		target.addTargetConnection(part);
 		return part;
 	}
 

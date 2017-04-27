@@ -58,13 +58,13 @@ public class ComponentRenameCommand extends ControlStructureAbstractCommand {
 	public void execute() {
 		this.getDataModel().changeComponentText(this.model.getId(),
 				this.newName);
-
-		if (!this.model.getLayout(this.getStepID().equals(CSEditor.ID))
-				.contains(this.newLayout)) {
-			this.getDataModel().changeComponentLayout(this.model.getId(),
-					this.newLayout, this.getStepID().equals(CSEditor.ID));
-
-		}
+//
+//		if (!this.model.getLayout(this.getStepID().equals(CSEditor.ID))
+//				.contains(this.newLayout)) {
+//			this.getDataModel().changeComponentLayout(this.model.getId(),
+//					this.newLayout, this.getStepID().equals(CSEditor.ID));
+//
+//		}
 
 	}
 

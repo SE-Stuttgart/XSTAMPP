@@ -88,6 +88,7 @@ public class RootEditPart extends CSAbstractEditPart {
 
 	@Override
 	public void refresh() {
+		this.refreshConnections();
 		this.refreshChildren();
 		for (Object child : this.getChildren()) {
 			((CSAbstractEditPart) child).refreshModel();
