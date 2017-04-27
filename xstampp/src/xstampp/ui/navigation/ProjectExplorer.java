@@ -1,15 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
 package xstampp.ui.navigation;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 
 import messages.Messages;
 
@@ -53,6 +60,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.Activator;
+import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
@@ -60,19 +68,9 @@ import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.util.STPAPluginUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-import java.util.UUID;
-
 /**
- * This class uses the extension point astpa.extensions.steppedEditor to create
- * the navigation depending on the files in the workspace and on the definitions
- * given for the extension
+ * This class uses the extension point astpa.extensions.steppedEditor to create the navigation
+ * depending on the files in the workspace and on the definitions given for the extension
  * 
  * @author Lukas Balzer
  * @since version 2.0.0
@@ -293,14 +291,7 @@ public final class ProjectExplorer extends ViewPart
     if (name.equals("step") || name.equals("stepEditor")) { //$NON-NLS-1$ //$NON-NLS-2$
       selector = new StepSelector(subItem, parent, projectId, element.getAttribute("editorId"), //$NON-NLS-1$
           element.getAttribute("name")); //$NON-NLS-1$
-      // register all additional stepEditors defined as
-      // xstampp.extension.stepEditor extension in any of the plugins
-      if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
-        for (IConfigurationElement e : this.stepEditorsToStepId.get(element.getAttribute("id"))) { //$NON-NLS-1$
-          ((StepSelector) selector).addStepEditor(e.getAttribute("editorId"), //$NON-NLS-1$
-              e.getAttribute("name")); //$NON-NLS-1$
-        }
-      }
+
       if (this.stepPerspectivesToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
         TreeItem perspectiveItem;
         for (IConfigurationElement perspConf : this.stepPerspectivesToStepId
@@ -308,20 +299,15 @@ public final class ProjectExplorer extends ViewPart
 
           String viewID = perspConf.getChildren("view")[0].getAttribute("id"); //$NON-NLS-1$ //$NON-NLS-2$
 
-          Image img = PlatformUI.getWorkbench().getViewRegistry().find(viewID).getImageDescriptor()
-              .createImage();
           perspectiveItem = new TreeItem(subItem, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
           perspectiveItem.setFont(defaultFont);
           this.perspectiveElementsToTreeItems.put(perspectiveItem, perspConf);
           perspectiveItem.setText(perspConf.getAttribute("name")); //$NON-NLS-1$
           this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
+
+          Image img = PlatformUI.getWorkbench().getViewRegistry().find(viewID).getImageDescriptor()
+              .createImage();
           perspectiveItem.setImage(img);
-        }
-      }
-      if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
-        for (IConfigurationElement subEditorConf : this.stepEditorsToStepId
-            .get(element.getAttribute("id"))) { //$NON-NLS-1$
-          addTreeItem(subEditorConf, selector, projectId, pluginId);
         }
       }
 
@@ -338,24 +324,21 @@ public final class ProjectExplorer extends ViewPart
       }
 
     }
+    if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
+      for (IConfigurationElement subEditorConf : this.stepEditorsToStepId
+          .get(element.getAttribute("id"))) { //$NON-NLS-1$
+        addTreeItem(subEditorConf, selector, projectId, pluginId);
+      }
+    }
     selector.setSelectionListener(listener);
     parent.addChild(selector);
   }
 
   /**
-   * This method deals with the two maps which are used to define a
-   * selection,</br>
-   * <table border="1">
-   * <tr>
-   * <th>treeItemToStepId -</th>
-   * <th>every treeitem gets an id for the project,step or category</th>
-   * </tr>
-   * <tr>
-   * <th>selectionIdToSelector -</th>
-   * <th>every selectionId is than mapped to a Selector item which defines the
-   * selection</th>
-   * </tr>
-   * </table>
+   * This method deals with the two maps which are used to define a selection,</br> <table
+   * border="1"> <tr> <th>treeItemToStepId -</th> <th>every treeitem gets an id for the project,step
+   * or category</th> </tr> <tr> <th>selectionIdToSelector -</th> <th>every selectionId is than
+   * mapped to a Selector item which defines the selection</th> </tr> </table>
    * 
    *
    * @author Lukas Balzer
@@ -395,23 +378,23 @@ public final class ProjectExplorer extends ViewPart
    * 
    */
   public void updateProjects() {
-    for (TreeItem item : this.tree.getItems()) {
-      item.dispose();
-    }
-    this.tree.clearAll(true);
-    this.treeViewer.refresh();
-    Set<UUID> oldProjects = this.treeItemsToProjectIDs.keySet();
-    this.treeItemsToProjectIDs = new HashMap<>();
+    // for (TreeItem item : this.tree.getItems()) {
+    // item.dispose();
+    // }
+    // this.tree.clearAll(true);
+    // this.treeViewer.refresh();
+    Map<UUID, TreeItem> oldProjects = this.treeItemsToProjectIDs;
     for (UUID id : ProjectManager.getContainerInstance().getProjectKeys()) {
 
       this.updateProject(id);
       oldProjects.remove(id);
     }
-    for (UUID unusedId : oldProjects) {
+    for (Entry<UUID, TreeItem> unusedId : oldProjects.entrySet()) {
       for (String idEntry : this.selectorsToSelectionId.keySet()) {
-        if (idEntry.contains(unusedId.toString())) {
+        if (idEntry.contains(unusedId.getKey().toString())) {
           this.selectorsToSelectionId.get(idEntry).cleanUp();
         }
+        unusedId.getValue().dispose();
       }
     }
 
@@ -422,8 +405,8 @@ public final class ProjectExplorer extends ViewPart
    * @author Lukas Balzer
    *
    * @param expand
-   *          true if the tree should expand it's children false if he should
-   *          either collapse or do nothing
+   *          true if the tree should expand it's children false if he should either collapse or do
+   *          nothing
    * 
    */
   public void expandTree(boolean expand) {
@@ -440,19 +423,14 @@ public final class ProjectExplorer extends ViewPart
    *          the id of the project
    */
   public void updateProject(UUID projectID) {
-    if (projectID == null) {
-      updateProjects();
+    if (this.treeItemsToProjectIDs.containsKey(projectID)) {
+      TreeItem item = this.treeItemsToProjectIDs.get(projectID);
+      IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(projectID);
+      item.setText(dataModel.getProjectName());
     } else if (ProjectManager.getContainerInstance().getProjectKeys().contains(projectID)) {
       ProjectManager.getContainerInstance().getDataModel(projectID).addObserver(this);
       String plugin = ProjectManager.getContainerInstance().getDataModel(projectID).getPluginID();
       this.buildTree(projectID, plugin);
-    } else if (this.treeItemsToProjectIDs.containsKey(projectID)) {
-      this.treeItemsToProjectIDs.get(projectID).dispose();
-      for (String idEntry : this.selectorsToSelectionId.keySet()) {
-        if (idEntry.contains(projectID.toString())) {
-          this.selectorsToSelectionId.get(idEntry).cleanUp();
-        }
-      }
     }
 
   }
@@ -485,44 +463,44 @@ public final class ProjectExplorer extends ViewPart
   public void update(Observable dataModelController, Object updatedValue) {
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-    case DELETE:
-    case PROJECT_NAME: {
-      this.updateProjects();
-      break;
-    }
-    case CLEAN_UP: {
-      for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
-        ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
+      case DELETE:
+      case PROJECT_NAME: {
+        this.updateProjects();
+        break;
       }
-      break;
-    }
-    case SAVE: {
-      IProjectSelection selection = this.selectorsToSelectionId
-          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-      if (selection != null) {
-        ((ProjectSelector) selection).setUnsaved(false);
+      case CLEAN_UP: {
+        for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
+          ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
+        }
+        break;
       }
+      case SAVE: {
+        IProjectSelection selection = this.selectorsToSelectionId.get(
+            ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+        if (selection != null) {
+          ((ProjectSelector) selection).setUnsaved(false);
+        }
 
-      break;
-    }
-    case UNSAVED_CHANGES: {
-      IProjectSelection selection = this.selectorsToSelectionId
-          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-      ((ProjectSelector) selection).setUnsaved(true);
-      ((ProjectSelector) selection)
-          .setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(
-              ProjectManager.getContainerInstance().getProjectID(dataModelController)));
-      break;
-    }
-    default:
-      break;
+        break;
+      }
+      case UNSAVED_CHANGES: {
+        IProjectSelection selection = this.selectorsToSelectionId.get(
+            ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+        ((ProjectSelector) selection).setUnsaved(true);
+        ((ProjectSelector) selection)
+            .setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(
+                ProjectManager.getContainerInstance().getProjectID(dataModelController)));
+        break;
+      }
+      default:
+        break;
     }
   }
 
   /**
    * searches the registered plugins for any extensions of the type
-   * <code>"astpa.extension.steppedProcess"</code> and for each maps the
-   * declared file extension to the IConfigurationElement
+   * <code>"astpa.extension.steppedProcess"</code> and for each maps the declared file extension to
+   * the IConfigurationElement
    * 
    * @see IConfigurationElement
    *
@@ -539,7 +517,8 @@ public final class ProjectExplorer extends ViewPart
       String stepId = element.getAttribute("parentStep"); //$NON-NLS-1$
       // the if structure handles both the stepEditor (if cases 1 &2)
       // and the stepPerspective extension (if-cases 3 & 4)
-      // inside the stepEditors point, doing that all extensions are mapped
+      // inside the stepEditors point, doing that all extensions are
+      // mapped
       // seperately to the stepIds
       if (confName.equals("stepEditor")) { //$NON-NLS-1$
         if (this.stepEditorsToStepId.containsKey(stepId)) {

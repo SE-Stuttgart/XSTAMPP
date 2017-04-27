@@ -41,6 +41,12 @@
             name="Basic Scenarios"
             parentStep="astpa.navigation.step3_1">
       </stepEditor>
+      <stepEditor
+            editorId="xstpa.editor.ltl"
+            id="xstpa.stepEditor.ltl"
+            name="LTL Tables"
+            parentStep="astpa.category3">
+      </stepEditor>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -99,6 +105,12 @@
             default="false"
             id="xstpa.editor.basicScenarios"
             name="Basic Scenarios">
+      </editor>
+      <editor
+            class="xstpa.ui.ltl.LTLPropertiesTable"
+            default="false"
+            id="xstpa.editor.ltl"
+            name="LTL Table">
       </editor>
    </extension>
    <extension

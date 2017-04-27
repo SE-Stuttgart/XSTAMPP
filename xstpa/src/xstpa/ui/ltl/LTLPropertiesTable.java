@@ -8,7 +8,7 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package xstampp.astpa.ui.ltl;
+package xstpa.ui.ltl;
 
 import java.util.HashMap;
 import java.util.List;
