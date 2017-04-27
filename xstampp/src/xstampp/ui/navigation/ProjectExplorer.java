@@ -269,12 +269,12 @@ public final class ProjectExplorer extends ViewPart
     // which is accosiated with a Step/CategorySelector which handles the
     // linking to the step editor
     for (IConfigurationElement categoryExt : projectExt.getChildren()) {
-      addTreeItem(categoryExt, selector, projectId, pluginId);
+      addTreeItem(categoryExt, selector, projectId);
     }
   }
 
-  private void addTreeItem(IConfigurationElement element, IProjectSelection parent, UUID projectId,
-      String pluginId) {
+  private void addTreeItem(IConfigurationElement element, IProjectSelection parent,
+      UUID projectId) {
     String selectionId = element.getAttribute("id") + projectId.toString(); //$NON-NLS-1$
     String navigationPath = PATH_SEPERATOR + element.getAttribute("name"); //$NON-NLS-1$
     final TreeItem subItem = new TreeItem(parent.getItem(), SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
@@ -311,25 +311,26 @@ public final class ProjectExplorer extends ViewPart
         }
       }
 
-      selector.setPathHistory(navigationPath);
       this.contextMenu.addMenuListener((IMenuListener) selector);
       this.addOrReplaceItem(selectionId, selector, subItem);
 
-    } else {
+    } else if (name.equals("category")) {
       selector = new CategorySelector(subItem, projectId, parent);
-      selector.setPathHistory(navigationPath);
       this.addOrReplaceItem(selectionId, selector, subItem);
       for (IConfigurationElement childExt : element.getChildren()) {
-        addTreeItem(childExt, selector, projectId, pluginId);
+        addTreeItem(childExt, selector, projectId);
       }
-
+    } else {
+      
     }
+
     if (this.stepEditorsToStepId.containsKey(element.getAttribute("id"))) { //$NON-NLS-1$
       for (IConfigurationElement subEditorConf : this.stepEditorsToStepId
           .get(element.getAttribute("id"))) { //$NON-NLS-1$
-        addTreeItem(subEditorConf, selector, projectId, pluginId);
+        addTreeItem(subEditorConf, selector, projectId);
       }
     }
+    selector.setPathHistory(navigationPath);
     selector.setSelectionListener(listener);
     parent.addChild(selector);
   }
