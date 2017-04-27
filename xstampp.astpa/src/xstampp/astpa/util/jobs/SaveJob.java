@@ -10,20 +10,6 @@
  *******************************************************************************/
 package xstampp.astpa.util.jobs;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.Observable;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-
 import messages.Messages;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -37,8 +23,20 @@ import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Observable;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
-import com.sun.xml.bind.marshaller.DataWriter;
 
 /**
  * a runtime job which is stores a DataModel in a given File
@@ -51,7 +49,6 @@ public class SaveJob extends XstamppJob {
 
 	final File file;
 	final IDataModel controller;
-	private boolean compatibilityMode;
 	private boolean ready = false;
 
 	/**
@@ -67,7 +64,6 @@ public class SaveJob extends XstamppJob {
 	 */
 	public SaveJob(File file, IDataModel controller) {
 		super(Messages.saveHaz);
-		this.compatibilityMode = false;
 		this.file = file;
 		this.controller = controller;
 		
@@ -83,14 +79,22 @@ public class SaveJob extends XstamppJob {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask(Messages.savingHaz, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
-		File backupDir = new File(file.getParentFile()+File.separator+".metadata"+File.separator+".backup");
-		if(!backupDir.isDirectory()){
-			backupDir.mkdirs();
-		}
-		File tmpFile = new File(backupDir,"."+file.getName());
+		
+      File tmpFile = new File(file.getParentFile(),"$"+file.getName()+".tmp");
 		try {
-
-				tmpFile.createNewFile();
+        //create a backup file, that is just a copy of the existing file
+		    //if one exists
+		    if(file.exists()) {
+		      File backupDir = new File(file.getParentFile()+File.separator+".metadata"+File.separator+".backup");
+  		    if(!backupDir.isDirectory()){
+  		      backupDir.mkdirs();
+  		    }
+		      File backupFile = new File(backupDir,file.getName());
+          backupFile.createNewFile();
+          copy(file, backupFile);
+		    }
+        
+        tmpFile.createNewFile();
 				Object haz;
 				//if the user wants to use the old haz format, than a new controller is created 
 				//containing the old data model
@@ -108,42 +112,33 @@ public class SaveJob extends XstamppJob {
 				// Standard UTF-8
 				m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 				
-				FileOutputStream  writer = new FileOutputStream(file);
+				FileOutputStream  writer = new FileOutputStream(tmpFile);
 				
 				m.marshal(haz,writer);
-//				if(this.compatibilityMode){
-//					m.marshal(haz,writer);
-//				}
-//				else{
-//					PrintWriter printWriter = new PrintWriter(writer);
-//					DataWriter dataWriter = new DataWriter(printWriter, "Unicode", new MyEscapeHandler());
-//					m.marshal(haz,dataWriter);
-//					printWriter.close();
-//					
-//				}
 				writer.close();
-//				copy(tmpFile, file);
+				copy(tmpFile, file);
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 			setError(e);
 			ProjectManager.getLOGGER().error(e.getMessage(), e);
 			return Status.CANCEL_STATUS;
+		}finally {
+		  tmpFile.delete();
 		}
 		
 		return Status.OK_STATUS;
 	}
 
 	public void setCompabillityMode(boolean compatibilityMode) {
-		this.compatibilityMode = compatibilityMode;
 		this.ready=true;
 	}
 	public boolean isReady() {
 		return this.ready;
 	}
 	private void copy(File fromFile, File toFile) throws IOException{
-		try{
-			BufferedWriter writer = new BufferedWriter(new FileWriter(toFile));
-			BufferedReader reader = new BufferedReader(new FileReader(fromFile));
+		try( BufferedWriter writer = new BufferedWriter(new FileWriter(toFile));
+	      BufferedReader reader = new BufferedReader(new FileReader(fromFile));){
 			String line = reader.readLine();
 			while(line != null){
 				writer.write(line);
