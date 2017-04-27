@@ -1,13 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.ui.navigation;
 
 import java.util.UUID;
@@ -20,8 +19,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import xstampp.model.IDataModel;
 
 /**
- * Describes a project item selection in a tree and provides an interface for
- * the interaction with it
+ * Describes a project item selection in a tree and provides an interface for the interaction with
+ * it
  * 
  * @author Lukas Balzer
  * @since 1.0
@@ -29,8 +28,7 @@ import xstampp.model.IDataModel;
 public interface IProjectSelection extends ISelection {
   /**
    * @param id
-   *          the id of the Contribution Group the IContributionItems-/IActions
-   *          are appended to
+   *          the id of the Contribution Group the IContributionItems-/IActions are appended to
    * @param manager
    *          the MenuManager of the contextMenu
    */
@@ -105,8 +103,8 @@ public interface IProjectSelection extends ISelection {
   public void addChild(IProjectSelection child);
 
   public void setSelectionListener(Listener selectionListener);
-  
+
   public String getPathHistory();
-  
+
   IDataModel getProjectData();
 }
