@@ -1583,7 +1583,7 @@ public class DataModelController extends AbstractDataModel
         .getControlAction(controlActionId) instanceof ControlAction)) {
       return false;
     }
-    String oldDescription = ((Hazard) this.controlActionController
+    String oldDescription = ((ControlAction) this.controlActionController
         .getControlAction(controlActionId)).setDescription(description);
     if (oldDescription != null) {
       UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
@@ -1837,7 +1837,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    String oldDescription = ((Hazard) this.sdsController.getSafetyConstraint(safetyConstraintId))
+    String oldDescription = ((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId))
         .setDescription(description);
     if (oldDescription != null) {
       UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
@@ -1858,7 +1858,7 @@ public class DataModelController extends AbstractDataModel
     if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
       return false;
     }
-    String oldTitle = ((Hazard) this.sdsController.getSafetyConstraint(safetyConstraintId))
+    String oldTitle = ((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId))
         .setTitle(title);
     if (oldTitle != null) {
       UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
@@ -1890,7 +1890,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    String oldDescription = ((Hazard) this.sdsController.getSystemGoal(systemGoalId))
+    String oldDescription = ((SystemGoal) this.sdsController.getSystemGoal(systemGoalId))
         .setDescription(description);
     if (oldDescription != null) {
       UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
@@ -1911,7 +1911,7 @@ public class DataModelController extends AbstractDataModel
     if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
       return false;
     }
-    String oldTitle = ((Hazard) this.sdsController.getSystemGoal(systemGoalId)).setTitle(title);
+    String oldTitle = ((SystemGoal) this.sdsController.getSystemGoal(systemGoalId)).setTitle(title);
     if (oldTitle != null) {
       UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoalId);
       changeCallback.setTitleChange(oldTitle, title);
