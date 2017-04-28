@@ -14,6 +14,8 @@ import java.util.UUID;
 
 import org.eclipse.swt.widgets.TreeItem;
 
+import xstampp.ui.navigation.api.IProjectSelection;
+
 /**
  * @see AbstractSelector
  * @author Lukas Balzer

@@ -24,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * A Selector is connected to a treeItem and manages the interaction between the

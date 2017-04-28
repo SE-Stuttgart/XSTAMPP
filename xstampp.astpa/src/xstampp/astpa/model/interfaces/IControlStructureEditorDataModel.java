@@ -452,4 +452,11 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 	 * @return TODO
 	 */
 	public boolean linkControlAction(UUID caId,UUID componentId);
+
+	/**
+	 * 
+	 * @param object a uuid which for which a root component should be registered in the data model
+	 * @return the root or null
+	 */
+  IRectangleComponent getRoot(Object object);
 }

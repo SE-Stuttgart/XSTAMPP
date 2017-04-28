@@ -9,13 +9,17 @@
 
 package xstampp.ui.navigation;
 
-import java.util.UUID;
-
-import org.apache.fop.render.awt.viewer.Command;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
+
+import xstampp.ui.navigation.api.IProjectSelection;
+
+import java.util.UUID;
 
 /**
  * An Abstract selector for a dynamic list of editors.
@@ -33,7 +37,9 @@ public class DynamicStepSelector extends AbstractSelector implements IMenuListen
 
   @Override
   public void menuAboutToShow(IMenuManager manager) {
-    Command command = new Command(commandId, 0);
+    manager.add(new CommandContributionItem(
+        new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+            "", commandId, SWT.PUSH)));
   }
 
   

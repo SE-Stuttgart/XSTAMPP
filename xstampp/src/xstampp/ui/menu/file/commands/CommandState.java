@@ -40,7 +40,7 @@ import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.navigation.IProjectSelection;
+import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * Class that stores whether the save menu should be enabled or not

@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.navigation.AbstractSelector;
-import xstampp.ui.navigation.IProjectSelection;
+import xstampp.ui.navigation.api.IProjectSelection;
 import xstampp.util.STPAPluginUtils;
 
 public class OpenPathHandler extends AbstractHandler {

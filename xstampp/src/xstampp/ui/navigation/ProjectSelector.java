@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * A subclass of {@link AbstractSelector} for a project selction

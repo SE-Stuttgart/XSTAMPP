@@ -1000,6 +1000,12 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
+  public IRectangleComponent getRoot(Object object) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  @Override
   public ITableModel getSafetyConstraint(UUID safetyConstraintId) {
     if (safetyConstraintId == null) {
       return null;

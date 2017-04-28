@@ -116,6 +116,12 @@ public class Controller extends AbstractDataModel implements IDataModel,
 
 	}
 
+  @Override
+  public IRectangleComponent getRoot(Object object) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
 	@Override
 	public Job doSave(File file, Logger log, boolean isUIcall) {
 		SaveJob job = new SaveJob(file, this);

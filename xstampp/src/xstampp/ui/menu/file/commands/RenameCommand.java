@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.navigation.IProjectSelection;
+import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * opens a rename dialoge and calls the function

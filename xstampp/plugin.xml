@@ -359,7 +359,7 @@
                <with
                      variable="selection">
                   <instanceof
-                        value="xstampp.ui.navigation.IProjectSelection">
+                        value="xstampp.ui.navigation.api.IProjectSelection">
                   </instanceof>
                </with>
             </visibleWhen>
@@ -600,7 +600,7 @@
             <with
                   variable="selection">
                <instanceof
-                     value="xstampp.ui.navigation.IProjectSelection">
+                     value="xstampp.ui.navigation.api.IProjectSelection">
                </instanceof>
             </with>
          </enabledWhen>
@@ -636,7 +636,7 @@
             <with
                   variable="selection">
                <instanceof
-                     value="xstampp.ui.navigation.IProjectSelection">
+                     value="xstampp.ui.navigation.api.IProjectSelection">
                </instanceof>
             </with>
          </enabledWhen>

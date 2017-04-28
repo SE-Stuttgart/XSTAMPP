@@ -134,6 +134,7 @@ import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IControlStructureConstants;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.ui.workbench.contributions.IZoomContributor;
@@ -323,7 +324,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	private IRectangleComponent createRoot() {
 		IRectangleComponent root = this.getModelInterface().getRoot();
-
+		if(((STPAEditorInput)getEditorInput()).getProperties().containsKey("ROOT")) {
+		  root = this.getModelInterface().getRoot(((STPAEditorInput)getEditorInput()).getProperties().get("ROOT"));
+		}
 		if (root == null) {
 			this.getModelInterface().setRoot(new Rectangle(), new String());
 			root = this.getModelInterface().getRoot();

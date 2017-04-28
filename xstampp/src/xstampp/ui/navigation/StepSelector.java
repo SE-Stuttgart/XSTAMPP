@@ -1,11 +1,9 @@
 /*************************************************************************
- * Copyright (c) 2014-2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
+ * Copyright (c) 2014-2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  **************************************************************************/
 
@@ -28,6 +26,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.editors.STPAEditorInput;
+import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * a Selection class which is used to carry information about the project step
@@ -42,10 +41,11 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
   private boolean showOpenWith;
   private String openWithPerspective;
   private ArrayList<String> additionalViews;
+  private Map<String, Object> properties;
 
   /**
-   * constructs a step selector which manages the selection and interaction with
-   * a step item in the project tree
+   * constructs a step selector which manages the selection and interaction with a step item in the
+   * project tree
    * 
    * @author Lukas Balzer
    *
@@ -58,7 +58,8 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
    * @param editorName
    *          the name of the editor which shall be dispayed in the workbench
    */
-  public StepSelector(TreeItem item, IProjectSelection parent, UUID projectId, String editorId, String editorName) {
+  public StepSelector(TreeItem item, IProjectSelection parent, UUID projectId, String editorId,
+      String editorName) {
     super(item, projectId, parent);
     this.editorId = editorId;
     this.inputs = new HashMap<>();
@@ -77,14 +78,12 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
   }
 
   /**
-   * adds a editor which is registered for the step, the first editor which is
-   * added is the default
+   * adds a editor which is registered for the step, the first editor which is added is the default
    * 
    * @author Lukas Balzer
    * 
    * @param id
-   *          the id with which a EditorPart must be registered in the
-   *          <code>plugin.xml</code>
+   *          the id with which a EditorPart must be registered in the <code>plugin.xml</code>
    * @param editorName
    *          TODO
    */
@@ -111,6 +110,7 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
    */
   public void openEditor(String id) {
     STPAEditorInput input = this.inputs.get(id);
+    input.setProperties(getProperties());
     if (input != null) {
       input.addViews(this.additionalViews);
       if (id.equals("acast.steps.step2_1")) { //$NON-NLS-1$
@@ -160,7 +160,8 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
   @Override
   public void cleanUp() {
     for (STPAEditorInput input : this.inputs.values()) {
-      IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditor(input);
+      IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .findEditor(input);
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(part, false);
     }
   }
@@ -222,7 +223,22 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
 
   public void addViews() throws PartInitException {
     for (int i = 0; this.additionalViews != null && i < this.additionalViews.size(); i++) {
-      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(this.additionalViews.get(i));
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .showView(this.additionalViews.get(i));
     }
+  }
+
+  /**
+   * @return the properties
+   */
+  public Map<String, Object> getProperties() {
+    return properties;
+  }
+
+  /**
+   * @param properties the properties to set
+   */
+  public void setProperties(Map<String, Object> properties) {
+    this.properties = properties;
   }
 }

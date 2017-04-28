@@ -10,13 +10,6 @@
  *******************************************************************************/
 package xstampp.ui.editors;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import messages.Messages;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -38,8 +31,13 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.StepSelector;
 import xstampp.util.STPAPluginUtils;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 /**
- * The Standard Editor input for this Platform,
+ * The Standard Editor input for this Platform.
  *
  * @author Lukas Balzer
  * @since version 2.0.0
@@ -58,9 +56,10 @@ public class STPAEditorInput implements IEditorInput {
   private boolean isActive;
   private boolean lock = false;
   private static boolean perspectiveChange = false;
+  private Map<String, Object> properties;
 
   /**
-   * The Default editorInput
+   * The Default editorInput.
    *
    * @author Lukas Balzer
    *
@@ -267,6 +266,22 @@ public class STPAEditorInput implements IEditorInput {
   public IAction getActivationAction() {
     return new ActivationAction();
   }
+
+  
+  /**
+   * @return the properties
+   */
+  public Map<String, Object> getProperties() {
+    return properties;
+  }
+
+  /**
+   * @param properties the properties to set
+   */
+  public void setProperties(Map<String, Object> properties) {
+    this.properties = properties;
+  }
+
 
   private class ActivationAction extends Action {
     public ActivationAction() {
