@@ -52,8 +52,9 @@ Each step can be categoriesed and muliple editors where the Step can be progress
    <element name="category">
       <complexType>
          <choice>
-            <element ref="category" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="category" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="step" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="editor_List" minOccurs="0" maxOccurs="unbounded"/>
          </choice>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -261,6 +262,79 @@ The Load job is resposible for creating a IDataModel which contains the project 
                <documentation>
                   
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="editor_List">
+      <annotation>
+         <documentation>
+            A Step can that contain multiple editors 
+e.g. if the children are  created dynamically
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="editorId" use="required">
+            <annotation>
+               <documentation>
+                  each step is handled by a step editor this editor should not be related to any file Extension but should retrieve its information from a IDataModel, if this is the only registered editor it is set as default
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.editors/editor/@id"/>
+               </appinfo>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="StandartEditorPart">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="provider" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A java class implementing the IDynamicStepsProvider interface
+this should return an appropriate mapping for the given project
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":xstampp.ui.navigation.IDynamicStepsProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="command" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The command used in the context menu of the tree item to
+add a new editor
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.commands/command/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

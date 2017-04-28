@@ -82,9 +82,6 @@
                <documentation>
                   the step for which the editor defined in the equally named attribute is registered as an additional editor that can be opened in the step contextmenu under &quot;Open with..&quot;
                </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier" basedOn="xstampp.extension.steppedProcess/process/category/step/@id"/>
-               </appinfo>
             </annotation>
          </attribute>
          <attribute name="icon" type="string">

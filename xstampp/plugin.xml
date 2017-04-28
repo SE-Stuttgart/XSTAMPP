@@ -261,11 +261,6 @@
                   tooltip="%command.tooltip.showAbout">
             </command>
             <command
-                  commandId="astpa.update"
-                  label="%command.name.searchForUpdate"
-                  style="push">
-            </command>
-            <command
                   commandId="org.eclipse.ui.help.helpContents"
                   label="%command.name.helpContents"
                   style="push">
@@ -285,10 +280,12 @@
             </separator>
             <command
                   commandId="org.eclipse.equinox.p2.ui.sdk.install"
+                  label="%command.name.installNewSoftware"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.equinox.p2.ui.sdk.update"
+                  label="%command.name.searchForUpdate"
                   style="push">
             </command>
             <command
@@ -506,7 +503,8 @@
                   commandId="xstampp.command.run"
                   icon="icons/buttons/export/run.png"
                   id="xstampp.toolbar.run.menu"
-                  style="push">
+                  style="push"
+                  tooltip="%command.tooltip.exportAll">
             </command>
          </toolbar>
          <toolbar
@@ -832,7 +830,7 @@
       </command>
       <command
             id="xstampp.command.run"
-            name="%command.name.run">
+            name="%command.name.exportAll">
       </command>
       <command
             defaultHandler="xstampp.ui.menu.file.commands.SelectAllHandler"
