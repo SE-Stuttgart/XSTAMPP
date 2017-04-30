@@ -1,13 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.util.commands;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -19,7 +18,7 @@ import org.eclipse.ui.services.ISourceProviderService;
 import xstampp.util.service.UndoRedoService;
 
 /**
- * Handler which calls the Redo stack of the application
+ * Handler which calls the Redo stack of the application.
  * 
  * @author Lukas Balzer
  * 
@@ -28,8 +27,10 @@ public class RedoHandler extends AbstractHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
-    ISourceProviderService service =(ISourceProviderService) PlatformUI.getWorkbench().getService(ISourceProviderService.class);
-    UndoRedoService provider = (UndoRedoService) service.getSourceProvider(UndoRedoService.CAN_REDO);
+    ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
+        .getService(ISourceProviderService.class);
+    UndoRedoService provider = (UndoRedoService) service
+        .getSourceProvider(UndoRedoService.CAN_REDO);
     provider.redo();
     return null;
   }

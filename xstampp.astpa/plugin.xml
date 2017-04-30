@@ -66,6 +66,13 @@
                   id="astpa.navigation.step1_8"
                   name="Control Structure">
             </step>
+            <editor_List
+                  command="xstampp.astpa.newControlStructure.command"
+                  editorId="astpa.steps.step1_8"
+                  id="xstampp.astpa.controlStructure_List"
+                  name="Control Structures"
+                  provider="xstampp.astpa.controlstructure.ControlStructureProvider">
+            </editor_List>
          </category>
          <category
                icon="icons/branding/step2ControlActions.png"
@@ -614,6 +621,16 @@
             defaultHandler="xstampp.astpa.controlstructure.controller.commands.CopyComponentsHandler"
             id="xstampp.astpa.command.cs.copy"
             name="%command.name.Paste">
+      </command>
+      <command
+            defaultHandler="xstampp.astpa.util.commands.NewControlStructureHandler"
+            id="xstampp.astpa.newControlStructure.command"
+            name="New Control Structure">
+         <commandParameter
+               id="xstampp.dynamicStep.commandParameter.projectId"
+               name="name"
+               optional="false">
+         </commandParameter>
       </command>
    </extension>
    <extension

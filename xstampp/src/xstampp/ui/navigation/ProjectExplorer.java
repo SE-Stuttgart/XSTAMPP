@@ -104,6 +104,7 @@ public final class ProjectExplorer extends ViewPart
   private Font defaultFont;
   private Listener expandListener;
   private GC gc;
+  private List<DynamicStepSelector> dynamicSelectors;
 
   @Override
   public void createPartControl(Composite parent) {
@@ -111,6 +112,7 @@ public final class ProjectExplorer extends ViewPart
     this.selectionIdsToTreeItems = new HashMap<>();
     this.selectorsToSelectionId = new HashMap<>();
     this.selectionListener = new ArrayList<>();
+    this.dynamicSelectors = new ArrayList<>();
     this.treeItemsToProjectIDs = new HashMap<>();
     this.perspectiveElementsToTreeItems = new HashMap<>();
     this.expandListener = new Listener() {
@@ -233,6 +235,7 @@ public final class ProjectExplorer extends ViewPart
 
   /**
    * .
+   * 
    * @author Lukas Balzer
    * 
    */
@@ -314,11 +317,9 @@ public final class ProjectExplorer extends ViewPart
       }
 
       this.contextMenu.addMenuListener((IMenuListener) selector);
-      this.addOrReplaceItem(selectionId, selector, subItem);
 
     } else if (name.equals("category")) {
       selector = new CategorySelector(subItem, descriptor.projectId, descriptor.parent);
-      this.addOrReplaceItem(selectionId, selector, subItem);
       for (IConfigurationElement childExt : descriptor.children) {
         addTreeItem(new TreeItemDescription(childExt, selector, descriptor.projectId));
       }
@@ -327,19 +328,19 @@ public final class ProjectExplorer extends ViewPart
         String commandId = descriptor.command;
         selector = new DynamicStepSelector(subItem, descriptor.projectId, descriptor.parent,
             commandId);
+        this.contextMenu.addMenuListener((IMenuListener) selector);
         IDynamicStepsProvider provider = (IDynamicStepsProvider) descriptor.element
             .createExecutableExtension("provider");
-        for (String title : provider.getStepMap(descriptor.projectId).keySet()) {
-          TreeItemDescription subDesc = new TreeItemDescription(selector, descriptor.projectId);
-          subDesc.properties = provider.getStepMap(descriptor.projectId).get(title);
-          selector = new StepSelector(subItem, selector, descriptor.projectId, descriptor.editorId,
-              title); // $NON-NLS-1$
-        }
+        ((DynamicStepSelector) selector).setProvider(provider);
+        ((DynamicStepSelector) selector).setSelectionId(descriptor.id);
+        dynamicSelectors.add(((DynamicStepSelector) selector));
+        createDynamicStep(((DynamicStepSelector) selector));
       } catch (CoreException exc) {
         exc.printStackTrace();
       }
     }
     if (selector != null) {
+      this.addOrReplaceItem(selectionId, selector, subItem);
       if (this.stepEditorsToStepId.containsKey(descriptor.id)) { // $NON-NLS-1$
         for (IConfigurationElement subEditorConf : this.stepEditorsToStepId.get(descriptor.id)) {
           addTreeItem(new TreeItemDescription(subEditorConf, selector, descriptor.projectId));
@@ -390,6 +391,26 @@ public final class ProjectExplorer extends ViewPart
     }
   }
 
+  private void updateDynamicSteps() {
+    for (DynamicStepSelector dynamicStepSelector : dynamicSelectors) {
+      createDynamicStep(dynamicStepSelector);
+    }
+  }
+
+  private void createDynamicStep(DynamicStepSelector selector) {
+    int i = 0;
+    selector.getItem().clearAll(true);
+    for (IDynamicStepsProvider.DynamicDescriptor title : selector.getProvider()
+        .getStepMap(selector.getProjectId())) {
+      TreeItemDescription subDesc = new TreeItemDescription(selector, selector.getProjectId());
+      subDesc.properties = title.getProperties();
+      subDesc.name = title.getName();
+      subDesc.editorId = selector.getEditorId();
+      subDesc.id = selector.getSelectionId() + "" + i;
+      addTreeItem(subDesc);
+    }
+  }
+
   /**
    * looks up all registered projects in viewController and refreshes the tree.
    * 
@@ -397,12 +418,7 @@ public final class ProjectExplorer extends ViewPart
    * 
    */
   public void updateProjects() {
-    // for (TreeItem item : this.tree.getItems()) {
-    // item.dispose();
-    // }
-    // this.tree.clearAll(true);
-    // this.treeViewer.refresh();
-    Map<UUID, TreeItem> oldProjects = this.treeItemsToProjectIDs;
+    Map<UUID, TreeItem> oldProjects = new HashMap<>(treeItemsToProjectIDs);
     for (UUID id : ProjectManager.getContainerInstance().getProjectKeys()) {
 
       this.updateProject(id);
@@ -448,6 +464,7 @@ public final class ProjectExplorer extends ViewPart
       TreeItem item = this.treeItemsToProjectIDs.get(projectId);
       IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(projectId);
       item.setText(dataModel.getProjectName());
+      updateDynamicSteps();
     } else if (ProjectManager.getContainerInstance().getProjectKeys().contains(projectId)) {
       ProjectManager.getContainerInstance().getDataModel(projectId).addObserver(this);
       String plugin = ProjectManager.getContainerInstance().getDataModel(projectId).getPluginID();
@@ -474,6 +491,9 @@ public final class ProjectExplorer extends ViewPart
       }
       manager.add(this.openWithMenu);
     }
+    if (getSelection() instanceof DynamicStepSelector) {
+      ((DynamicStepSelector) getSelection()).addMenu(manager);
+    }
     for (ISelectionChangedListener listenerObj : ProjectExplorer.this.selectionListener) {
       listenerObj.selectionChanged(
           new SelectionChangedEvent(ProjectExplorer.this, ProjectExplorer.this.getSelection()));
@@ -484,37 +504,38 @@ public final class ProjectExplorer extends ViewPart
   public void update(Observable dataModelController, Object updatedValue) {
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-    case DELETE:
-    case PROJECT_NAME: {
-      this.updateProjects();
-      break;
-    }
-    case CLEAN_UP: {
-      for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
-        ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
+      case DELETE:
+      case PROJECT_TREE:
+      case PROJECT_NAME: {
+        this.updateProjects();
+        break;
       }
-      break;
-    }
-    case SAVE: {
-      IProjectSelection selection = this.selectorsToSelectionId
-          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-      if (selection != null) {
-        ((ProjectSelector) selection).setUnsaved(false);
+      case CLEAN_UP: {
+        for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
+          ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
+        }
+        break;
       }
+      case SAVE: {
+        IProjectSelection selection = this.selectorsToSelectionId.get(
+            ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+        if (selection != null) {
+          ((ProjectSelector) selection).setUnsaved(false);
+        }
 
-      break;
-    }
-    case UNSAVED_CHANGES: {
-      IProjectSelection selection = this.selectorsToSelectionId
-          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-      ((ProjectSelector) selection).setUnsaved(true);
-      ((ProjectSelector) selection)
-          .setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(
-              ProjectManager.getContainerInstance().getProjectID(dataModelController)));
-      break;
-    }
-    default:
-      break;
+        break;
+      }
+      case UNSAVED_CHANGES: {
+        IProjectSelection selection = this.selectorsToSelectionId.get(
+            ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+        ((ProjectSelector) selection).setUnsaved(true);
+        ((ProjectSelector) selection)
+            .setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(
+                ProjectManager.getContainerInstance().getProjectID(dataModelController)));
+        break;
+      }
+      default:
+        break;
     }
   }
 

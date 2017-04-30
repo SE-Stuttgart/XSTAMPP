@@ -9,6 +9,7 @@
 
 package xstampp.ui.navigation.api;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +25,25 @@ public interface IDynamicStepsProvider {
    * available in the step list with a name and a Identifier.
    * The UUID is given to the openStepCommand as argument.
    * @param projectId The id of the project for that the list should be
-   * @return a Map containing the step property map mapped to the unique title of the step
+   * @return a List containing the step property map mapped to the unique title of the step
    */
-  Map<String, Map<String, Object>> getStepMap(UUID projectId);
+  List<DynamicDescriptor> getStepMap(UUID projectId);
+  
+  class DynamicDescriptor {
+    String name;
+    Map<String, Object> properties;
+    
+    public DynamicDescriptor(String name, Map<String, Object> properties) {
+      this.name = name;
+      this.properties = properties;
+    }
+    
+    public Map<String, Object> getProperties() {
+      return properties;
+    }
+    
+    public String getName() {
+      return name;
+    }
+  }
 }

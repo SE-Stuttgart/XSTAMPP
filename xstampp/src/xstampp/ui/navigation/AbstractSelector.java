@@ -1,23 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.ui.navigation;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
@@ -27,8 +23,8 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
- * A Selector is connected to a treeItem and manages the interaction between the
- * platform and the ProjectTree
+ * A Selector is connected to a treeItem and manages the interaction between the platform and the
+ * ProjectTree.
  * 
  * @author Lukas Balzer
  *
@@ -41,10 +37,10 @@ public abstract class AbstractSelector implements IProjectSelection {
   private String pathHistory;
   private ArrayList<IProjectSelection> children;
   private IProjectSelection parent;
-  private boolean active;
-  
+  private String selectionId;
+
   /**
-   * constructs a new Selector for the given treeItem and project
+   * constructs a new Selector for the given treeItem and project.
    * 
    * @author Lukas Balzer
    *
@@ -119,14 +115,13 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   @Override
   public void activate() {
-    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
-        .setText(getPathHistory()); //$NON-NLS-1$
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(getPathHistory()); // $NON-NLS-1$
   }
 
-  public void setUnsaved(boolean unsaved){
-    
+  public void setUnsaved(boolean unsaved) {
+
   }
-  
+
   @Override
   public void setPathHistory(String pathHistory) {
     this.pathHistory = pathHistory;
@@ -135,15 +130,15 @@ public abstract class AbstractSelector implements IProjectSelection {
   public String getPathHistory() {
     return parent.getPathHistory() + pathHistory;
   }
-  
-  
+
   @Override
   public TreeItem getItem() {
     return this.treeItem;
   }
 
   public String getProjectOutput() {
-    return "Output" + File.separator + ProjectManager.getContainerInstance().getTitle(getProjectId()) + File.separator; //$NON-NLS-1$
+    return "Output" + File.separator //$NON-NLS-1$
+        + ProjectManager.getContainerInstance().getTitle(getProjectId()) + File.separator;
   }
 
   @Override
@@ -153,6 +148,7 @@ public abstract class AbstractSelector implements IProjectSelection {
   }
 
   /**
+   * .
    * @return the children
    */
   public ArrayList<IProjectSelection> getChildren() {
@@ -160,7 +156,8 @@ public abstract class AbstractSelector implements IProjectSelection {
   }
 
   /**
-   * @param children
+   * .
+   * @param child
    *          the children to set
    */
   public void addChild(IProjectSelection child) {
@@ -179,6 +176,14 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   public void setSelectionListener(Listener selectionListener) {
     this.selectionListener = selectionListener;
+  }
+
+  public String getSelectionId() {
+    return selectionId;
+  }
+
+  public void setSelectionId(String selectionId) {
+    this.selectionId = selectionId;
   }
 
 }

@@ -1,11 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package xstampp.ui.editors;
@@ -76,6 +74,7 @@ public class STPAEditorInput implements IEditorInput {
     this.projectId = projectId;
     this.stepEditorId = editorId;
     this.id = UUID.randomUUID();
+    this.properties = new HashMap<>();
     this.stepName = ""; //$NON-NLS-1$
 
   }
@@ -164,9 +163,8 @@ public class STPAEditorInput implements IEditorInput {
   }
 
   /**
-   * called when the editor handeled by this input is opened updates the
-   * workbench and optionally highlightes the related step in the project
-   * Explorer
+   * called when the editor handeled by this input is opened updates the workbench and optionally
+   * highlightes the related step in the project Explorer
    *
    * @author Lukas Balzer
    *
@@ -180,12 +178,14 @@ public class STPAEditorInput implements IEditorInput {
     for (int i = 0; this.additionalViews != null && i < this.additionalViews.size(); i++) {
       IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
           .findView(this.additionalViews.get(i));
-      if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(part)) {
+      if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .isPartVisible(part)) {
         try {
           if (this.additionalViews.get(i).equals("A-CAST.view1")) { //$NON-NLS-1$
 
           } else {
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(this.additionalViews.get(i));
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .showView(this.additionalViews.get(i));
           }
         } catch (PartInitException e) {
           // TODO Auto-generated catch block
@@ -194,7 +194,7 @@ public class STPAEditorInput implements IEditorInput {
 
       }
     }
-    
+
     this.lock = false;
     if (!this.store.getBoolean(IPreferenceConstants.USE_NAVIGATION_COLORS)) {
       return;
@@ -212,8 +212,7 @@ public class STPAEditorInput implements IEditorInput {
   }
 
   /**
-   * if the step is deactivated this method notifys the platform to reset the
-   * path highlighting
+   * if the step is deactivated this method notifys the platform to reset the path highlighting
    *
    * @author Lukas Balzer
    *
@@ -267,7 +266,6 @@ public class STPAEditorInput implements IEditorInput {
     return new ActivationAction();
   }
 
-  
   /**
    * @return the properties
    */
@@ -276,12 +274,14 @@ public class STPAEditorInput implements IEditorInput {
   }
 
   /**
-   * @param properties the properties to set
+   * @param properties
+   *          the properties to set
    */
   public void setProperties(Map<String, Object> properties) {
-    this.properties = properties;
+    if (properties != null) {
+      this.properties = properties;
+    }
   }
-
 
   private class ActivationAction extends Action {
     public ActivationAction() {

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -1000,12 +1000,6 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public IRectangleComponent getRoot(Object object) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-  
-  @Override
   public ITableModel getSafetyConstraint(UUID safetyConstraintId) {
     if (safetyConstraintId == null) {
       return null;
@@ -1061,7 +1055,6 @@ public class DataModelController extends AbstractDataModel
       try {
         this.userSystem = UserManagement.loadSystem(this, userSystemId);
       } catch (Exception e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
@@ -1149,20 +1142,20 @@ public class DataModelController extends AbstractDataModel
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
     boolean result = false;
     switch (value) {
-    case HAZARD:
-    case ACCIDENT:
-      result = hazAccController.moveEntry(moveUp, id, value);
-      break;
-    case DESIGN_REQUIREMENT:
-    case SAFETY_CONSTRAINT:
-    case SYSTEM_GOAL:
-      result = sdsController.moveEntry(moveUp, id, value);
-      break;
-    case CONTROL_ACTION:
-      result = controlActionController.moveEntry(moveUp, id, value);
-      break;
-    default:
-      break;
+      case HAZARD:
+      case ACCIDENT:
+        result = hazAccController.moveEntry(moveUp, id, value);
+        break;
+      case DESIGN_REQUIREMENT:
+      case SAFETY_CONSTRAINT:
+      case SYSTEM_GOAL:
+        result = sdsController.moveEntry(moveUp, id, value);
+        break;
+      case CONTROL_ACTION:
+        result = controlActionController.moveEntry(moveUp, id, value);
+        break;
+      default:
+        break;
     }
     if (result) {
       setUnsavedAndChanged(value);
@@ -1829,9 +1822,19 @@ public class DataModelController extends AbstractDataModel
 
     UUID result = this.controlStructureController.setRoot(layout, text);
     if (result != null) {
-      this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+      this.setUnsavedAndChanged(ObserverValue.PROJECT_TREE);
     }
     return result;
+  }
+
+  @Override
+  public List<IRectangleComponent> getRoots() {
+    return this.controlStructureController.getRoots();
+  }
+
+  @Override
+  public void setActiveRoot(UUID rootId) {
+    this.controlStructureController.setActiveRoot(rootId);
   }
 
   @Override
@@ -1843,8 +1846,8 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    String oldDescription = ((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId))
-        .setDescription(description);
+    String oldDescription = ((SafetyConstraint) this.sdsController
+        .getSafetyConstraint(safetyConstraintId)).setDescription(description);
     if (oldDescription != null) {
       UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
           this, safetyConstraintId);
@@ -1864,8 +1867,8 @@ public class DataModelController extends AbstractDataModel
     if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
       return false;
     }
-    String oldTitle = ((SafetyConstraint) this.sdsController.getSafetyConstraint(safetyConstraintId))
-        .setTitle(title);
+    String oldTitle = ((SafetyConstraint) this.sdsController
+        .getSafetyConstraint(safetyConstraintId)).setTitle(title);
     if (oldTitle != null) {
       UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
           this, safetyConstraintId);

@@ -10,6 +10,8 @@
 package xstampp.ui.common;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -20,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import xstampp.util.ColorManager;
 
@@ -73,6 +76,7 @@ public abstract class ModalShell {
     this.title = title;
     this.acceptLabel = acceptLabel;
     this.useApply = useApply;
+    setSize(300, 200);
 
   }
 
@@ -126,7 +130,6 @@ public abstract class ModalShell {
     }
 
     shell.setText(title);
-
     createCenter(shell);
     Composite footer = new Composite(shell, SWT.None);
     footer.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 2, 1));
@@ -270,11 +273,45 @@ public abstract class ModalShell {
    */
   protected abstract boolean doAccept();
 
+  /**
+   * Is called during the shell set up and also gets the main shell as parent
+   * with a <b>two column gridLayout</b>.
+   * 
+   * <p><i>Note: The Layout of the given shell should not be changed by implementations</i>
+   * @param parent the parent shell which is displayed to the user
+   */
   protected abstract void createCenter(Shell parent);
 
   private final void setUnchecked() {
     if (!invalidLabel.isDisposed()) {
       this.invalidLabel.setVisible(false);
+    }
+  }
+  
+  protected final class TextInput {
+    private String text = "";
+    
+    public TextInput(Shell shell, int style, String label) {
+      GridData labelData = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 2, 1);
+  
+      Label nameLabel = new Label(shell, SWT.None);
+      nameLabel.setText(label);
+      nameLabel.setLayoutData(labelData);
+  
+      Text nameText = new Text(shell, SWT.None);
+      nameText.addModifyListener(new ModifyListener() {
+        @Override
+        public void modifyText(ModifyEvent ev) {
+          text = ((Text) ev.getSource()).getText();
+          canAccept();
+        }
+      });
+      GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+      nameText.setLayoutData(textData);
+    }
+    
+    public String getText() {
+      return text;
     }
   }
 }

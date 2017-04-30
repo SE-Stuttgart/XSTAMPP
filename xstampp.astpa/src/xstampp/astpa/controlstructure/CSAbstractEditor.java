@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
+import messages.Messages;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -113,7 +115,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import messages.Messages;
 import xstampp.astpa.controlstructure.controller.commands.CopyComponentCommand;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
@@ -121,7 +122,6 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.controlstructure.figure.RootFigure;
 import xstampp.astpa.controlstructure.utilities.CSContextMenuProvider;
 import xstampp.astpa.controlstructure.utilities.CSPalettePage;
 import xstampp.astpa.controlstructure.utilities.CSPalettePreferences;
@@ -323,9 +323,15 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * @return the root component
 	 */
 	private IRectangleComponent createRoot() {
-		IRectangleComponent root = this.getModelInterface().getRoot();
+		IRectangleComponent root = null;
 		if(((STPAEditorInput)getEditorInput()).getProperties().containsKey("ROOT")) {
-		  root = this.getModelInterface().getRoot(((STPAEditorInput)getEditorInput()).getProperties().get("ROOT"));
+		  for(IRectangleComponent availableRoot: this.getModelInterface().getRoots()) {
+		    if(availableRoot.getId().equals(((STPAEditorInput)getEditorInput()).getProperties().get("ROOT"))) {
+		      root = availableRoot;
+		    }
+		  }
+		} else {
+		  root = this.getModelInterface().getRoot();
 		}
 		if (root == null) {
 			this.getModelInterface().setRoot(new Rectangle(), new String());
