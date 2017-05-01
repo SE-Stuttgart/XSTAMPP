@@ -8,13 +8,10 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.ui.navigation;
 
-import java.util.UUID;
-
 import org.eclipse.swt.widgets.TreeItem;
-
-import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * @see AbstractSelector
@@ -24,17 +21,15 @@ import xstampp.ui.navigation.api.IProjectSelection;
 public class CategorySelector extends AbstractSelector {
 
   /**
-   * constructs a selector for a category item in the project tree
+   * constructs a selector for a category item in the project tree.
    * 
    * @author Lukas Balzer
    *
    * @param item
    *          {@link AbstractSelector#getItem()}
-   * @param projectId
-   *          {@link AbstractSelector#getProjectId()}
    */
-  public CategorySelector(TreeItem item, UUID projectId, IProjectSelection parent) {
-    super(item, projectId, parent);
+  public CategorySelector(TreeItem item, TreeItemDescription descriptor) {
+    super(item,descriptor);
   }
 
 }

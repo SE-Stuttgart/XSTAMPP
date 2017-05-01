@@ -11,13 +11,9 @@ package xstampp.ui.navigation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
@@ -25,7 +21,6 @@ import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 
 import xstampp.ui.navigation.api.IDynamicStepsProvider;
-import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * An Abstract selector for a dynamic list of editors.
@@ -37,17 +32,24 @@ public class DynamicStepSelector extends AbstractSelector implements IMenuListen
   private String commandId;
   private IDynamicStepsProvider provider;
   private String editorId;
+  private String pluginId;
+  private String icon;
 
-  public DynamicStepSelector(TreeItem item, UUID projectId, IProjectSelection parent,
-      String commandId) {
-    super(item, projectId, parent);
-    this.commandId = commandId;
+  public DynamicStepSelector(TreeItem item, TreeItemDescription descriptor,
+      IDynamicStepsProvider provider) {
+    super(item, descriptor);
+    this.commandId = descriptor.getCommand();
+    this.pluginId = descriptor.getNamespaceIdentifier();
+    setProvider(provider);
+    setEditorId(descriptor.getEditorId());
+    setIcon(descriptor.getIcon());
+    setSelectionId(descriptor.getId());
   }
 
   @Override
   public void menuAboutToShow(IMenuManager manager) {
   }
-  
+
   public void addMenu(IMenuManager manager) {
     CommandContributionItemParameter parameter = new CommandContributionItemParameter(
         PlatformUI.getWorkbench().getActiveWorkbenchWindow(), "", commandId, SWT.PUSH);
@@ -73,5 +75,27 @@ public class DynamicStepSelector extends AbstractSelector implements IMenuListen
 
   public void setEditorId(String editorId) {
     this.editorId = editorId;
+  }
+
+  public void setIcon(String icon) {
+    this.icon = icon;
+  }
+
+  public String getIcon() {
+    return icon;
+  }
+
+  /**
+   * @return the commandId
+   */
+  public String getCommandId() {
+    return commandId;
+  }
+
+  /**
+   * @return the pluginId
+   */
+  public String getPluginId() {
+    return pluginId;
   }
 }

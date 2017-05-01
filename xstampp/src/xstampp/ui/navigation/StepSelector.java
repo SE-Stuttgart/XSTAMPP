@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.action.IMenuListener;
@@ -26,7 +25,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.editors.STPAEditorInput;
-import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * a Selection class which is used to carry information about the project step
@@ -51,22 +49,14 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
    *
    * @param item
    *          {@link AbstractSelector#getItem()}
-   * @param projectId
-   *          {@link AbstractSelector#getProjectId()}
-   * @param editorId
-   *          the editor id as defined in the plugin.xml
-   * @param editorName
-   *          the name of the editor which shall be dispayed in the workbench
    */
-  public StepSelector(TreeItem item, IProjectSelection parent, UUID projectId, String editorId,
-      String editorName) {
-    super(item, projectId, parent);
-    this.editorId = editorId;
+  public StepSelector(TreeItem item, TreeItemDescription descriptor) {
+    super(item,descriptor);
+    this.editorId = descriptor.getEditorId();
     this.inputs = new HashMap<>();
-    STPAEditorInput input = new STPAEditorInput(projectId, editorId, item);
-    input.setStepName(editorName);
-    this.inputs.put(editorId, input);
+    addStepEditor(editorId, descriptor.getName());
     this.showOpenWith = false;
+    setProperties(descriptor.getProperties());
   }
 
   @Override
@@ -90,6 +80,7 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
   public void addStepEditor(String id, String editorName) {
     STPAEditorInput input = new STPAEditorInput(getProjectId(), id, getItem());
     input.setStepName(editorName);
+    input.setStepId(getSelectionId());
     this.inputs.put(id, input);
   }
 

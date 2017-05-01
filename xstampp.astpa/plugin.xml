@@ -60,15 +60,10 @@
                   id="astpa.navigation.step1_7"
                   name="Design Requirements">
             </step>
-            <step
-                  editorId="astpa.steps.step1_8"
-                  icon="icons/buttons/navigation/STEP1_8(16).png"
-                  id="astpa.navigation.step1_8"
-                  name="Control Structure">
-            </step>
             <editor_List
                   command="xstampp.astpa.newControlStructure.command"
                   editorId="astpa.steps.step1_8"
+                  icon="icons/buttons/navigation/STEP1_8(16).png"
                   id="xstampp.astpa.controlStructure_List"
                   name="Control Structures"
                   provider="xstampp.astpa.controlstructure.ControlStructureProvider">
@@ -1236,6 +1231,13 @@
             id="xstpa.wizard.img.ltl"
             name="%exportWizard.name.LTLFormulasTableIMG">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="xstampp.astpa.newControlStructure.command"
+            icon="icons/buttons/plus.png">
+      </image>
    </extension>
 
 </plugin>

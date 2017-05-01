@@ -46,16 +46,13 @@ public abstract class AbstractSelector implements IProjectSelection {
    *
    * @param item
    *          {@link #getItem()}
-   * @param projectId
-   *          {@link #getProjectId()}
-   * @param parent
-   *          TODO
    */
-  public AbstractSelector(TreeItem item, UUID projectId, IProjectSelection parent) {
+  public AbstractSelector(TreeItem item, TreeItemDescription descriptor) {
     this.treeItem = item;
-    this.projectId = projectId;
+    this.projectId = descriptor.getProjectId();
     this.children = new ArrayList<>();
-    this.parent = parent;
+    this.parent = descriptor.getParent();
+    this.selectionId = descriptor.getId();
   }
 
   @Override
@@ -115,7 +112,7 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   @Override
   public void activate() {
-    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(getPathHistory()); // $NON-NLS-1$
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(getPathHistory());
   }
 
   public void setUnsaved(boolean unsaved) {

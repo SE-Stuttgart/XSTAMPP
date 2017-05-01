@@ -46,14 +46,12 @@ public class STPAEditorInput implements IEditorInput {
   private UUID projectId;
   private String stepEditorId;
   private UUID id;
+  private String stepId;
   private String stepName;
-  private String pathHistory;
   private TreeItem stepItem;
   private List<String> additionalViews;
-  private String perspective;
   private boolean isActive;
   private boolean lock = false;
-  private static boolean perspectiveChange = false;
   private Map<String, Object> properties;
 
   /**
@@ -133,8 +131,7 @@ public class STPAEditorInput implements IEditorInput {
     boolean equality = false;
 
     if (arg0 instanceof STPAEditorInput) {
-      equality = this.projectId.equals(((STPAEditorInput) arg0).projectId);
-      return equality && this.stepEditorId.equals(((STPAEditorInput) arg0).stepEditorId);
+      return getStepId().equals(((STPAEditorInput) arg0).getStepId());
     }
     return super.equals(arg0);
   }
@@ -159,7 +156,6 @@ public class STPAEditorInput implements IEditorInput {
    *          the pathHistory to set
    */
   public void setPathHistory(String pathHistory) {
-    this.pathHistory = pathHistory;
   }
 
   /**
@@ -221,18 +217,6 @@ public class STPAEditorInput implements IEditorInput {
     if (!this.lock && isActive) {
 
       this.lock = true;
-      // for (int i = 0; this.additionalViews != null && i <
-      // this.additionalViews.size(); i++) {
-      // IViewPart part =
-      // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-      // .findView(this.additionalViews.get(i));
-      // if (part != null
-      // &&
-      // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(part))
-      // {
-      // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(part);
-      // }
-      // }
       this.stepItem.setBackground(null);
 
       this.stepItem.getParentItem().setBackground(null);
@@ -255,7 +239,6 @@ public class STPAEditorInput implements IEditorInput {
   }
 
   public void setPerspective(String id) {
-    this.perspective = id;
   }
 
   public void addViews(List<String> view) {
@@ -281,6 +264,14 @@ public class STPAEditorInput implements IEditorInput {
     if (properties != null) {
       this.properties = properties;
     }
+  }
+
+  public String getStepId() {
+    return stepId;
+  }
+
+  public void setStepId(String stepId) {
+    this.stepId = stepId;
   }
 
   private class ActivationAction extends Action {

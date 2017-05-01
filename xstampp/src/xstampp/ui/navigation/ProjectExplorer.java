@@ -211,6 +211,9 @@ public final class ProjectExplorer extends ViewPart
 
       @Override
       public void handleEvent(Event event) {
+        if (tree.getSelectionCount() > 0) {
+          tree.getSelection()[0].setExpanded(!tree.getSelection()[0].getExpanded());
+        }
         STPAPluginUtils.executeCommand("astpa.command.openStep"); //$NON-NLS-1$
       }
     });
@@ -251,7 +254,8 @@ public final class ProjectExplorer extends ViewPart
     gc.setFont(defaultFont);
     this.tree.setFont(defaultFont);
     projectItem.setFont(defaultFont);
-    ProjectSelector selector = new ProjectSelector(projectItem, projectId, new HeadSelector());
+    ProjectSelector selector = new ProjectSelector(projectItem,
+        new TreeItemDescription(new HeadSelector(), projectId));
 
     /**
      * The selection id identifies each step in the current runtime.
@@ -259,6 +263,13 @@ public final class ProjectExplorer extends ViewPart
     String selectionId = projectId.toString();
     this.addOrReplaceItem(selectionId, selector, projectItem);
     projectItem.addListener(SWT.MouseDown, this.listener);
+    projectItem.addListener(SWT.MouseDoubleClick, new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        projectItem.setExpanded(!projectItem.getExpanded());
+      }
+    });
     IConfigurationElement projectExt = ProjectManager.getContainerInstance()
         .getConfigurationFor(projectId);
     projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
@@ -279,28 +290,32 @@ public final class ProjectExplorer extends ViewPart
   }
 
   private void addTreeItem(TreeItemDescription descriptor) {
-    String selectionId = descriptor.id + descriptor.projectId.toString();
-    String navigationPath = PATH_SEPERATOR + descriptor.name;
-    final TreeItem subItem = new TreeItem(descriptor.parent.getItem(),
+    String selectionId = descriptor.getId() + descriptor.getProjectId().toString();
+    String navigationPath = PATH_SEPERATOR + descriptor.getName();
+    final TreeItem subItem = new TreeItem(descriptor.getParent().getItem(),
         SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
     subItem.addListener(SWT.Selection, expandListener);
     subItem.setFont(defaultFont);
 
-    subItem.setText(descriptor.name);// $NON-NLS-1$
+    subItem.setText(descriptor.getName());// $NON-NLS-1$
     subItem.addListener(SWT.SELECTED, this.listener);
+    subItem.addListener(SWT.MouseDoubleClick, new Listener() {
 
-    String name = descriptor.elementName;
-    this.addImage(subItem, descriptor.icon, descriptor.namespaceIdentifier);// $NON-NLS-1$
+      @Override
+      public void handleEvent(Event event) {
+        subItem.setExpanded(!subItem.getExpanded());
+      }
+    });
+    String name = descriptor.getElementName();
+    this.addImage(subItem, descriptor.getIcon(), descriptor.getNamespaceIdentifier());// $NON-NLS-1$
     IProjectSelection selector = null;
 
     if (name.equals("step") || name.equals("stepEditor")) { //$NON-NLS-1$ //$NON-NLS-2$
-      selector = new StepSelector(subItem, descriptor.parent, descriptor.projectId,
-          descriptor.editorId, // $NON-NLS-1$
-          descriptor.name); // $NON-NLS-1$
-      ((StepSelector) selector).setProperties(descriptor.properties);
-      if (this.stepPerspectivesToStepId.containsKey(descriptor.id)) { // $NON-NLS-1$
+      selector = new StepSelector(subItem, descriptor);
+      if (this.stepPerspectivesToStepId.containsKey(descriptor.getId())) {
         TreeItem perspectiveItem;
-        for (IConfigurationElement perspConf : this.stepPerspectivesToStepId.get(descriptor.id)) {
+        for (IConfigurationElement perspConf : this.stepPerspectivesToStepId
+            .get(descriptor.getId())) {
 
           perspectiveItem = new TreeItem(subItem, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
           perspectiveItem.setFont(defaultFont);
@@ -319,20 +334,17 @@ public final class ProjectExplorer extends ViewPart
       this.contextMenu.addMenuListener((IMenuListener) selector);
 
     } else if (name.equals("category")) {
-      selector = new CategorySelector(subItem, descriptor.projectId, descriptor.parent);
-      for (IConfigurationElement childExt : descriptor.children) {
-        addTreeItem(new TreeItemDescription(childExt, selector, descriptor.projectId));
+      selector = new CategorySelector(subItem, descriptor);
+
+      for (IConfigurationElement childExt : descriptor.getChildren()) {
+        addTreeItem(new TreeItemDescription(childExt, selector, descriptor.getProjectId()));
       }
     } else if (name.equals("editor_List")) {
       try {
-        String commandId = descriptor.command;
-        selector = new DynamicStepSelector(subItem, descriptor.projectId, descriptor.parent,
-            commandId);
-        this.contextMenu.addMenuListener((IMenuListener) selector);
-        IDynamicStepsProvider provider = (IDynamicStepsProvider) descriptor.element
+        IDynamicStepsProvider provider = (IDynamicStepsProvider) descriptor.getElement()
             .createExecutableExtension("provider");
-        ((DynamicStepSelector) selector).setProvider(provider);
-        ((DynamicStepSelector) selector).setSelectionId(descriptor.id);
+        selector = new DynamicStepSelector(subItem, descriptor, provider);
+        this.contextMenu.addMenuListener((IMenuListener) selector);
         dynamicSelectors.add(((DynamicStepSelector) selector));
         createDynamicStep(((DynamicStepSelector) selector));
       } catch (CoreException exc) {
@@ -341,14 +353,15 @@ public final class ProjectExplorer extends ViewPart
     }
     if (selector != null) {
       this.addOrReplaceItem(selectionId, selector, subItem);
-      if (this.stepEditorsToStepId.containsKey(descriptor.id)) { // $NON-NLS-1$
-        for (IConfigurationElement subEditorConf : this.stepEditorsToStepId.get(descriptor.id)) {
-          addTreeItem(new TreeItemDescription(subEditorConf, selector, descriptor.projectId));
+      if (this.stepEditorsToStepId.containsKey(descriptor.getId())) { // $NON-NLS-1$
+        for (IConfigurationElement subEditorConf : this.stepEditorsToStepId
+            .get(descriptor.getId())) {
+          addTreeItem(new TreeItemDescription(subEditorConf, selector, descriptor.getProjectId()));
         }
       }
       selector.setPathHistory(navigationPath);
       selector.setSelectionListener(listener);
-      descriptor.parent.addChild(selector);
+      descriptor.getParent().addChild(selector);
     }
   }
 
@@ -400,13 +413,18 @@ public final class ProjectExplorer extends ViewPart
   private void createDynamicStep(DynamicStepSelector selector) {
     int i = 0;
     selector.getItem().clearAll(true);
+    for (TreeItem item : selector.getItem().getItems()) {
+      item.dispose();
+    }
     for (IDynamicStepsProvider.DynamicDescriptor title : selector.getProvider()
         .getStepMap(selector.getProjectId())) {
       TreeItemDescription subDesc = new TreeItemDescription(selector, selector.getProjectId());
-      subDesc.properties = title.getProperties();
-      subDesc.name = title.getName();
-      subDesc.editorId = selector.getEditorId();
-      subDesc.id = selector.getSelectionId() + "" + i;
+      subDesc.setProperties(title.getProperties());
+      subDesc.setName(title.getName());
+      subDesc.setEditorId(selector.getEditorId());
+      subDesc.setNamespaceIdentifier(selector.getPluginId());
+      subDesc.setId(selector.getSelectionId() + "" + i++);
+      subDesc.setIcon(selector.getIcon());
       addTreeItem(subDesc);
     }
   }
@@ -623,41 +641,4 @@ public final class ProjectExplorer extends ViewPart
 
   }
 
-  private class TreeItemDescription {
-    String id;
-    String name;
-    String elementName;
-    IProjectSelection parent;
-    UUID projectId;
-    String command;
-    private String namespaceIdentifier;
-    private String icon;
-    private String editorId;
-    private IConfigurationElement[] children;
-    private Map<String, Object> properties;
-    private IConfigurationElement element;
-
-    public TreeItemDescription(IConfigurationElement element, IProjectSelection parent,
-        UUID projectId) {
-      this(parent, projectId);
-      this.element = element;
-      this.command = element.getAttribute("command");
-      this.id = element.getAttribute("id");
-      this.name = element.getAttribute("name");
-      this.elementName = element.getName();
-      icon = element.getAttribute("icon");
-      namespaceIdentifier = element.getNamespaceIdentifier();
-      editorId = element.getAttribute("editorId");
-      children = element.getChildren();
-
-    }
-
-    public TreeItemDescription(IProjectSelection parent, UUID projectId) {
-      this.parent = parent;
-      this.projectId = projectId;
-      this.elementName = "step";
-      this.children = new IConfigurationElement[0];
-    }
-
-  }
 }
