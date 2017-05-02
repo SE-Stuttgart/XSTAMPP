@@ -43,9 +43,9 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 	 * @param stepId
 	 *            TODO
 	 */
-	public ConnectionDeleteCommand(IControlStructureEditorDataModel model,
-			String stepId) {
-		super(model, stepId);
+	public ConnectionDeleteCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 		this.memberIDs = new ArrayList<>();
 	}
 
@@ -76,6 +76,7 @@ public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 
 	@Override
 	public void execute() {
+    super.execute();
 		this.getDataModel().removeConnection(this.connectionId);
 		for(UUID memberId:this.memberIDs){
 			this.getDataModel().setRelativeOfComponent(memberId, null);

@@ -13,6 +13,8 @@
 
 package xstampp.astpa.controlstructure.controller.commands;
 
+import java.util.UUID;
+
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
@@ -48,24 +50,17 @@ public class ComponentRenameCommand extends ControlStructureAbstractCommand {
 	 * @param model
 	 *            The DataModel which contains all model classes
 	 */
-	public ComponentRenameCommand(String name,
-			IControlStructureEditorDataModel model, String stepID) {
-		super(model, stepID);
+	public ComponentRenameCommand(String name,UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 		this.oldName = name;
 	}
 
 	@Override
 	public void execute() {
+    super.execute();
 		this.getDataModel().changeComponentText(this.model.getId(),
 				this.newName);
-//
-//		if (!this.model.getLayout(this.getStepID().equals(CSEditor.ID))
-//				.contains(this.newLayout)) {
-//			this.getDataModel().changeComponentLayout(this.model.getId(),
-//					this.newLayout, this.getStepID().equals(CSEditor.ID));
-//
-//		}
-
 	}
 
 	@Override

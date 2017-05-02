@@ -992,14 +992,6 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public IRectangleComponent getRoot() {
-    if (this.controlStructureController.getRoot() == null) {
-      this.controlStructureController.setRoot(new Rectangle(), new String());
-    }
-    return this.controlStructureController.getRoot();
-  }
-
-  @Override
   public ITableModel getSafetyConstraint(UUID safetyConstraintId) {
     if (safetyConstraintId == null) {
       return null;
@@ -1825,6 +1817,14 @@ public class DataModelController extends AbstractDataModel
       this.setUnsavedAndChanged(ObserverValue.PROJECT_TREE);
     }
     return result;
+  }
+
+  @Override
+  public IRectangleComponent getRoot() {
+    if (this.controlStructureController.getRoot() == null) {
+      this.controlStructureController.setRoot(new Rectangle(), new String());
+    }
+    return this.controlStructureController.getRoot();
   }
 
   @Override

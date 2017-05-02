@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.UUID;
 
 import messages.Messages;
 
@@ -129,6 +130,7 @@ import xstampp.astpa.controlstructure.utilities.CSTemplateTransferDropTargetList
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.util.commands.RenameRootComponentHandler;
 import xstampp.astpa.util.jobs.CSExportJob;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -324,9 +326,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	private IRectangleComponent createRoot() {
 		IRectangleComponent root = null;
-		if(((STPAEditorInput)getEditorInput()).getProperties().containsKey("ROOT")) {
+		if(((STPAEditorInput)getEditorInput()).getProperties().containsKey(RenameRootComponentHandler.ROOT_ID)) { 
 		  for(IRectangleComponent availableRoot: this.getModelInterface().getRoots()) {
-		    if(availableRoot.getId().equals(((STPAEditorInput)getEditorInput()).getProperties().get("ROOT"))) {
+		    if(availableRoot.getId().toString().equals(((STPAEditorInput)getEditorInput()).getProperties().get(RenameRootComponentHandler.ROOT_ID))) {
 		      root = availableRoot;
 		    }
 		  }
@@ -1348,7 +1350,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 	
 	public boolean copy(){
-		this.copySelectionCommand = new CopyComponentCommand(getModelInterface(),getId());
+	  UUID id = ((IRectangleComponent)getGraphicalViewer().getContents().getModel()).getId();
+		this.copySelectionCommand = new CopyComponentCommand(id,getModelInterface(),getId());
 		IControlStructureEditPart parentPart = null;
 		for(Object obj:getGraphicalViewer().getSelectedEditParts()){
 			EditPart newParentPart = ((GraphicalEditPart)obj).getParent();

@@ -63,6 +63,8 @@ public abstract class ModalShell {
   private Button okButton;
   private Button applyButton;
   private boolean useApply;
+  private boolean isAccepted;
+  private Object returnValue;
 
   /**
    * Constructs a ModalShell with he given title and a <code>Cancel</code> Button that closes the
@@ -77,6 +79,7 @@ public abstract class ModalShell {
     this.acceptLabel = acceptLabel;
     this.useApply = useApply;
     setSize(300, 200);
+    this.isAccepted = false;
 
   }
 
@@ -172,6 +175,7 @@ public abstract class ModalShell {
       @Override
       public void widgetSelected(SelectionEvent ev) {
         if (doAccept()) {
+          isAccepted = true;
           shell.close();
         }
       }
@@ -274,11 +278,13 @@ public abstract class ModalShell {
   protected abstract boolean doAccept();
 
   /**
-   * Is called during the shell set up and also gets the main shell as parent
-   * with a <b>two column gridLayout</b>.
+   * Is called during the shell set up and also gets the main shell as parent with a <b>two column
+   * gridLayout</b>.
    * 
    * <p><i>Note: The Layout of the given shell should not be changed by implementations</i>
-   * @param parent the parent shell which is displayed to the user
+   * 
+   * @param parent
+   *          the parent shell which is displayed to the user
    */
   protected abstract void createCenter(Shell parent);
 
@@ -287,17 +293,29 @@ public abstract class ModalShell {
       this.invalidLabel.setVisible(false);
     }
   }
-  
+
+  public boolean isAccepted() {
+    return isAccepted;
+  }
+
+  public Object getReturnValue() {
+    return returnValue;
+  }
+
+  protected void setReturnValue(Object returnValue) {
+    this.returnValue = returnValue;
+  }
+
   protected final class TextInput {
     private String text = "";
-    
+
     public TextInput(Shell shell, int style, String label) {
       GridData labelData = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 2, 1);
-  
+
       Label nameLabel = new Label(shell, SWT.None);
       nameLabel.setText(label);
       nameLabel.setLayoutData(labelData);
-  
+
       Text nameText = new Text(shell, SWT.None);
       nameText.addModifyListener(new ModifyListener() {
         @Override
@@ -309,7 +327,7 @@ public abstract class ModalShell {
       GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
       nameText.setLayoutData(textData);
     }
-    
+
     public String getText() {
       return text;
     }

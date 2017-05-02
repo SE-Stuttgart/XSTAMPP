@@ -115,12 +115,6 @@ public class Controller extends AbstractDataModel implements IDataModel,
 		}
 
 	}
-
-  @Override
-  public IRectangleComponent getRoot(Object object) {
-    // TODO Auto-generated method stub
-    return null;
-  }
   
 	@Override
 	public Job doSave(File file, Logger log, boolean isUIcall) {
@@ -1180,6 +1174,18 @@ public class Controller extends AbstractDataModel implements IDataModel,
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+  @Override
+  public void setActiveRoot(UUID rootId) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public List<IRectangleComponent> getRoots() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 	
 

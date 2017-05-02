@@ -15,6 +15,7 @@ package xstampp.astpa.controlstructure.controller.policys;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
@@ -69,6 +70,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	private Border tmpBorder;
 	private ConnectionFigure relative;
 	private List<IFigure> feedback = new ArrayList<>();
+  private UUID rootId;
 	/**
 	 * the offset of the process variables and values
 	 * 
@@ -105,14 +107,22 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 
 	}
 
+	public UUID getRootId() {
+	  if(rootId == null) {
+	    rootId =((IRectangleComponent)getHost().getViewer().getContents().getModel()).getId();
+	  }
+    return rootId;
+  }
+	
 	@Override
 	protected Command createChangeConstraintCommand(EditPart child,
 			Object constraint) {
+
 		ComponentChangeLayoutCommand command = new ComponentChangeLayoutCommand(
-				this.dataModel, this.stepID);
+		    getRootId(), this.dataModel, this.stepID);
 		
 		IFigure childFigure = ((IControlStructureEditPart) child).getFigure();
-		
+		getHost().getRoot();
 		command.setModel(child.getModel());
 		command.setConstraint((Rectangle) constraint);
 		return command;
@@ -122,7 +132,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 	protected Command getCreateCommand(CreateRequest request) {
 		if ((request.getType() == RequestConstants.REQ_CREATE)) {
 			ComponentCreateCommand command = new ComponentCreateCommand(
-					this.dataModel, this.stepID);
+					getRootId(), this.dataModel, this.stepID);
 			command.setFeedbackLayer(this.getFeedbackLayer());
 			// the root Edit Part is the EditPart on which this policy is
 			// installed
@@ -311,7 +321,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 					addFeedback(conn);		
 					this.feedback.add(conn);
 				}
-				return new SwapRelativeCommand(this.dataModel,this.stepID,
+				return new SwapRelativeCommand(getRootId(), this.dataModel,this.stepID,
 											(IRelativePart) part, (IMemberEditPart) connectable);
 			}
 			for(IFigure figure:this.feedback){

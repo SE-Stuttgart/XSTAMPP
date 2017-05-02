@@ -58,9 +58,9 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	 *            the stepEditor ID
 	 * 
 	 */
-	public ComponentCreateCommand(IControlStructureEditorDataModel model,
-			String stepID) {
-		super(model, stepID);
+	public ComponentCreateCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 		this.constraintModel = new Component();
 		this.parentLayout = new Rectangle();
 		this.oldParentLayout =  new Rectangle();
@@ -167,6 +167,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 	 */
 	@Override
 	public void execute() {
+    super.execute();
 		this.deleteFeedback();
 		
 		this.componentId = this.getDataModel().addComponent(

@@ -19,7 +19,9 @@ import org.eclipse.swt.widgets.TreeItem;
 import xstampp.ui.common.ProjectManager;
 
 /**
- * A subclass of {@link AbstractSelector} for a project selction.
+ * A subclass of {@link AbstractSelector} for a project selection.
+ * a selector for a project item that can contain a project tree but can not be used to open an
+ * editor
  * 
  * @author Lukas Balzer
  * @see AbstractSelector
@@ -32,14 +34,15 @@ public class ProjectSelector extends AbstractSelector {
   private boolean isReadOnly;
 
   /**
-   *
+   * Constructs a new selector for the given parent item using the provided descriptor.
+   * 
    * @author Lukas Balzer
    *
    * @param item
    *          {@link AbstractSelector#getItem()}
    */
   public ProjectSelector(TreeItem item, TreeItemDescription descriptor) {
-    super(item,descriptor);
+    super(item, descriptor);
     this.isUnsaved = false;
     this.isReadOnly = false;
     refreshPath();
@@ -69,6 +72,13 @@ public class ProjectSelector extends AbstractSelector {
     }
   }
 
+  /**
+   * This method sets the read only flag of this selector and calls a refresh of the project tree
+   * item.
+   * 
+   * @param isReadOnly
+   *          whether the is read only and can therefore not be stored
+   */
   public void setReadOnly(boolean isReadOnly) {
     if (this.isReadOnly != isReadOnly) {
       this.isReadOnly = isReadOnly;
@@ -95,6 +105,7 @@ public class ProjectSelector extends AbstractSelector {
               + ProjectManager.getContainerInstance().getProjectExtension(getProjectId()) + "]");
           setPathHistory(newHeader);
         } catch (SWTException exc) {
+          //
         }
       }
     });

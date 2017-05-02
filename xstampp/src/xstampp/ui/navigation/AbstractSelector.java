@@ -31,6 +31,8 @@ import xstampp.ui.navigation.api.IProjectSelection;
  */
 public abstract class AbstractSelector implements IProjectSelection {
 
+  private static final String PATH_SEPERATOR = "->"; //$NON-NLS-1$
+  protected static IProjectSelection activeSelection = new HeadSelector();
   private TreeItem treeItem;
   private Listener selectionListener;
   private UUID projectId;
@@ -113,6 +115,7 @@ public abstract class AbstractSelector implements IProjectSelection {
   @Override
   public void activate() {
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(getPathHistory());
+    activeSelection = this;
   }
 
   public void setUnsaved(boolean unsaved) {
@@ -121,7 +124,9 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   @Override
   public void setPathHistory(String pathHistory) {
-    this.pathHistory = pathHistory;
+    this.pathHistory = getPathHistory() + PATH_SEPERATOR + pathHistory;
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
+        .setText(activeSelection.getPathHistory());
   }
 
   public String getPathHistory() {
@@ -146,6 +151,7 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   /**
    * .
+   * 
    * @return the children
    */
   public ArrayList<IProjectSelection> getChildren() {
@@ -154,6 +160,7 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   /**
    * .
+   * 
    * @param child
    *          the children to set
    */
@@ -164,9 +171,6 @@ public abstract class AbstractSelector implements IProjectSelection {
     this.children.add(child);
   }
 
-  /**
-   * @return the parent
-   */
   public IProjectSelection getParent() {
     return this.parent;
   }

@@ -67,6 +67,9 @@
                   id="xstampp.astpa.controlStructure_List"
                   name="Control Structures"
                   provider="xstampp.astpa.controlstructure.ControlStructureProvider">
+               <commandAddition
+                     commandId="xstampp.astpa.command.cs.rename">
+               </commandAddition>
             </editor_List>
          </category>
          <category
@@ -624,6 +627,21 @@
          <commandParameter
                id="xstampp.dynamicStep.commandParameter.projectId"
                name="name"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="xstampp.astpa.util.commands.RenameRootComponentHandler"
+            id="xstampp.astpa.command.cs.rename"
+            name="Rename">
+         <commandParameter
+               id="xstampp.dynamicStep.commandParameter.projectId"
+               name="name"
+               optional="false">
+         </commandParameter>
+         <commandParameter
+               id="xstampp.astpa.cs.rootId"
+               name="rootId"
                optional="false">
          </commandParameter>
       </command>

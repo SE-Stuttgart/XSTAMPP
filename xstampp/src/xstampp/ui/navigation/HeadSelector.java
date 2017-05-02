@@ -8,15 +8,17 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.ui.navigation;
 
 import java.util.UUID;
+
+import messages.Messages;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
-import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.ui.navigation.api.IProjectSelection;
 

@@ -16,6 +16,7 @@ package xstampp.astpa.controlstructure.controller.commands;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.commands.Command;
@@ -35,6 +36,7 @@ public abstract class ControlStructureAbstractCommand extends Command {
 	private final IControlStructureEditorDataModel dataModel;
 	private IFigure feedbackLayer;
 	private final String stepID;
+  private UUID rootId;
 
 	protected static final List<ComponentType> COMPONENTS_STEP1 = new ArrayList<ComponentType>() {
 		private static final long serialVersionUID = 1L;
@@ -83,9 +85,10 @@ public abstract class ControlStructureAbstractCommand extends Command {
 	 * @param stepID
 	 *            the stepEditor ID
 	 */
-	public ControlStructureAbstractCommand(
+	public ControlStructureAbstractCommand(UUID rootId,
 			IControlStructureEditorDataModel model, String stepID) {
 		super();
+    this.setRootId(rootId);
 		this.dataModel = model;
 		this.stepID = stepID;
 	}
@@ -119,4 +122,17 @@ public abstract class ControlStructureAbstractCommand extends Command {
 	protected String getStepID() {
 		return this.stepID;
 	}
+
+  public UUID getRootId() {
+    return rootId;
+  }
+
+  public void setRootId(UUID rootId) {
+    this.rootId = rootId;
+  }
+  
+  @Override
+  public void execute() {
+    getDataModel().setActiveRoot(getRootId());
+  }
 }

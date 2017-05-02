@@ -55,9 +55,9 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 	 *            the step Editors id
 	 * 
 	 */
-	public ConnectionCreateCommand(IControlStructureEditorDataModel model,
-			String stepID) {
-		super(model, stepID);
+	public ConnectionCreateCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 	}
 
 	/**
@@ -206,6 +206,7 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
 
 	@Override
 	public void execute() {
+    super.execute();
 		this.connectionId = this.getDataModel().addConnection(
 				this.sourceAnchorModel, this.targetAnchorModel,
 				this.connectionType);

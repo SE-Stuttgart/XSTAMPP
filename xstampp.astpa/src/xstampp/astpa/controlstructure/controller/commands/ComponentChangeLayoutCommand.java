@@ -13,6 +13,8 @@
 
 package xstampp.astpa.controlstructure.controller.commands;
 
+import java.util.UUID;
+
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -45,14 +47,15 @@ ControlStructureAbstractCommand {
 	 * @param stepID
 	 *            the stepEditor ID
 	 */
-	public ComponentChangeLayoutCommand(IControlStructureEditorDataModel model,
-			String stepID) {
-		super(model, stepID);
+  public ComponentChangeLayoutCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 		setMinConstraint(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE);
 	}
 
 	@Override
 	public void execute() {
+	  super.execute();
 		this.getDataModel().changeComponentLayout(this.model.getId(),
 				this.layout, this.getStepID().equals(CSEditor.ID));
 

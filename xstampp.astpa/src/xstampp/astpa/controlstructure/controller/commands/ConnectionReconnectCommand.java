@@ -51,9 +51,9 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 	 * @param stepID
 	 *            the stepEditor ID
 	 */
-	public ConnectionReconnectCommand(CSConnection conn,
-			IControlStructureEditorDataModel model, String stepID) {
-		super(model, stepID);
+	public ConnectionReconnectCommand(CSConnection conn,UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}
@@ -156,6 +156,7 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
 
 	@Override
 	public void execute() {
+    super.execute();
 		if (this.newSourceAnchorModel != null) {
 			this.getDataModel().changeConnectionSource(this.connId,
 					this.newSourceAnchorModel);

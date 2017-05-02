@@ -15,7 +15,7 @@ import xstampp.ui.navigation.api.IProjectSelection;
  *
  */
 public class TreeItemDescription {
-  
+
   private String id;
   private String name;
   private String elementName;
@@ -26,16 +26,17 @@ public class TreeItemDescription {
   private String icon;
   private String editorId;
   private IConfigurationElement[] children;
-  private Map<String, Object> properties;
+  private Map<String, String> properties;
   private IConfigurationElement element;
+  private String[] commandAdditions;
 
   /**
-   * Constructs a new instance and fills all the fields with its counterparts 
-   * in the given element.
+   * Constructs a new instance and fills all the fields with its counterparts in the given element.
    * calls {@link TreeItemDescription#TreeItemDescription(IProjectSelection, UUID)}.
    * 
-   * @param element the {@link IConfigurationElement} defined in the steppedProcess extension
-   *              of the plugin
+   * @param element
+   *          the {@link IConfigurationElement} defined in the steppedProcess extension of the
+   *          plugin
    */
   public TreeItemDescription(IConfigurationElement element, IProjectSelection parent,
       UUID projectId) {
@@ -53,157 +54,107 @@ public class TreeItemDescription {
   }
 
   /**
-   * Constructs an instance that defines only the parent selector and projectId,
-   * the elementName is set to <code>step</code> and the children's list is initialized as an empty array.
-   * @param parent the selector for the parent TreeItem
-   * @param projectId the id of the project the selector should be defined for
+   * Constructs an instance that defines only the parent selector and projectId, the elementName is
+   * set to <code>step</code> and the children's list is initialized as an empty array.
+   * 
+   * @param parent
+   *          the selector for the parent TreeItem
+   * @param projectId
+   *          the id of the project the selector should be defined for
    */
   public TreeItemDescription(IProjectSelection parent, UUID projectId) {
     this.parent = parent;
     this.projectId = projectId;
     this.elementName = "step";
     this.children = new IConfigurationElement[0];
+    this.commandAdditions = new String[0];
   }
 
-  /**
-   * @return the id
-   */
   public String getId() {
     return id;
   }
 
-  /**
-   * @param id the id to set
-   */
   public void setId(String id) {
     this.id = id;
   }
 
-  /**
-   * @return the name
-   */
   public String getName() {
     return name;
   }
 
-  /**
-   * @param name the name to set
-   */
   public void setName(String name) {
     this.name = name;
   }
 
-  /**
-   * @return the elementName
-   */
   public String getElementName() {
     return elementName;
   }
 
-  /**
-   * @param elementName the elementName to set
-   */
   public void setElementName(String elementName) {
     this.elementName = elementName;
   }
 
-  /**
-   * @return the command
-   */
   public String getCommand() {
     return command;
   }
 
-  /**
-   * @param command the command to set
-   */
   public void setCommand(String command) {
     this.command = command;
   }
 
-  /**
-   * @return the namespaceIdentifier
-   */
   public String getNamespaceIdentifier() {
     return namespaceIdentifier;
   }
 
-  /**
-   * @param namespaceIdentifier the namespaceIdentifier to set
-   */
   public void setNamespaceIdentifier(String namespaceIdentifier) {
     this.namespaceIdentifier = namespaceIdentifier;
   }
 
-  /**
-   * @return the icon
-   */
   public String getIcon() {
     return icon;
   }
 
-  /**
-   * @param icon the icon to set
-   */
   public void setIcon(String icon) {
     this.icon = icon;
   }
 
-  /**
-   * @return the editorId
-   */
   public String getEditorId() {
     return editorId;
   }
 
-  /**
-   * @param editorId the editorId to set
-   */
   public void setEditorId(String editorId) {
     this.editorId = editorId;
   }
 
-  /**
-   * @return the properties
-   */
-  public Map<String, Object> getProperties() {
+  public Map<String, String> getProperties() {
     return properties;
   }
 
-  /**
-   * @param properties
-   *          the properties to set
-   */
-  public void setProperties(Map<String, Object> properties) {
+  public void setProperties(Map<String, String> properties) {
     this.properties = properties;
   }
 
-  /**
-   * @return the parent
-   */
   public IProjectSelection getParent() {
     return parent;
   }
 
-  /**
-   * @return the projectId
-   */
   public UUID getProjectId() {
     return projectId;
   }
 
-  /**
-   * @return the children
-   */
   public IConfigurationElement[] getChildren() {
     return children;
   }
 
-  /**
-   * @return the element
-   */
   public IConfigurationElement getElement() {
     return element;
   }
 
+  public void setCommandAdditions(String[] arrayList) {
+    this.commandAdditions = arrayList;
+  }
+
+  public String[] getCommandAdditions() {
+    return commandAdditions;
+  }
 }

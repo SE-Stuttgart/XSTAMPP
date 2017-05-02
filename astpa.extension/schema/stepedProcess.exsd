@@ -20,7 +20,7 @@ Each step can be categoriesed and muliple editors where the Step can be progress
       <complexType>
          <choice>
             <element ref="process"/>
-            <element ref="SettingsPage" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="SettingsPage" minOccurs="0" maxOccurs="10"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -97,6 +97,9 @@ Each step can be categoriesed and muliple editors where the Step can be progress
          </documentation>
       </annotation>
       <complexType>
+         <sequence minOccurs="0" maxOccurs="1">
+            <element ref="commandAddition" minOccurs="0" maxOccurs="5"/>
+         </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
@@ -149,7 +152,7 @@ Each step can be categoriesed and muliple editors where the Step can be progress
 
    <element name="process">
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
+         <choice>
             <element ref="category" minOccurs="1" maxOccurs="unbounded"/>
             <element ref="step" minOccurs="0" maxOccurs="unbounded"/>
          </choice>
@@ -275,6 +278,9 @@ e.g. if the children are  created dynamically
          </documentation>
       </annotation>
       <complexType>
+         <sequence minOccurs="0" maxOccurs="1">
+            <element ref="commandAddition" minOccurs="0" maxOccurs="5"/>
+         </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
@@ -331,6 +337,26 @@ this should return an appropriate mapping for the given project
                <documentation>
                   The command used in the context menu of the tree item to
 add a new editor
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.commands/command/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="commandAddition">
+      <annotation>
+         <documentation>
+            A command that will be available in the context menu of the step in the xstampp project explorer
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="commandId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.ui.commands/command/@id"/>

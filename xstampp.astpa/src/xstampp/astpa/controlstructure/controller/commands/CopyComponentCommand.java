@@ -68,9 +68,9 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 		}
 		
 	}
-	public CopyComponentCommand(IControlStructureEditorDataModel model,
-			String stepID) {
-		super(model, stepID);
+	public CopyComponentCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 		this.copyList = new ArrayList<>();
 		this.connectionCopyList =  new ArrayList<>(); 
 		this.undoList = new ArrayList<>(); 
@@ -120,6 +120,7 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 	@Override
 	public void execute() {
 
+    super.execute();
 		this.undoList = new ArrayList<>();
 		
 		for(IRectangleComponent comp : this.copyList){

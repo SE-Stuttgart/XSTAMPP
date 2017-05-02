@@ -27,7 +27,7 @@ import xstampp.ui.navigation.api.IDynamicStepsProvider;
  * 
  * @author Lukas Balzer
  */
-public class DynamicStepSelector extends AbstractSelector implements IMenuListener {
+public class DynamicStepSelector extends AbstractSelectorWithAdditions implements IMenuListener {
 
   private String commandId;
   private IDynamicStepsProvider provider;
@@ -35,6 +35,16 @@ public class DynamicStepSelector extends AbstractSelector implements IMenuListen
   private String pluginId;
   private String icon;
 
+  /**
+   * This constructs a dynamic step selector that fetches all necessary entries from the descriptor.
+   * 
+   * @param item
+   *          the associated tree item
+   * @param descriptor
+   *          the {@link TreeItemDescription} object of this selection
+   * @param provider
+   *          the {@link IDynamicStepsProvider}
+   */
   public DynamicStepSelector(TreeItem item, TreeItemDescription descriptor,
       IDynamicStepsProvider provider) {
     super(item, descriptor);
@@ -44,12 +54,21 @@ public class DynamicStepSelector extends AbstractSelector implements IMenuListen
     setEditorId(descriptor.getEditorId());
     setIcon(descriptor.getIcon());
     setSelectionId(descriptor.getId());
+    setCommandAdditions(descriptor.getCommandAdditions());
   }
 
   @Override
   public void menuAboutToShow(IMenuManager manager) {
   }
 
+  /**
+   * Adds the command to the context menu that was defined in the
+   * <code>xstampp.extension/steppedProcess/editor_List</code> extension.
+   * 
+   * @param manager
+   *          the menu manager of the context table. The Menu manager must regularly remove this
+   *          since this method adds a new contribution.
+   */
   public void addMenu(IMenuManager manager) {
     CommandContributionItemParameter parameter = new CommandContributionItemParameter(
         PlatformUI.getWorkbench().getActiveWorkbenchWindow(), "", commandId, SWT.PUSH);
@@ -85,17 +104,12 @@ public class DynamicStepSelector extends AbstractSelector implements IMenuListen
     return icon;
   }
 
-  /**
-   * @return the commandId
-   */
   public String getCommandId() {
     return commandId;
   }
 
-  /**
-   * @return the pluginId
-   */
   public String getPluginId() {
     return pluginId;
   }
+
 }

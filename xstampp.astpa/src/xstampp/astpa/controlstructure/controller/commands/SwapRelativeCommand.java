@@ -10,6 +10,8 @@
  *******************************************************************************/
 package xstampp.astpa.controlstructure.controller.commands;
 
+import java.util.UUID;
+
 import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
@@ -34,9 +36,10 @@ public class SwapRelativeCommand extends ControlStructureAbstractCommand {
 	 * @param relative
 	 * @param connectable
 	 */
-	public SwapRelativeCommand(IControlStructureEditorDataModel model,String stepID,
+	public SwapRelativeCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID,
 							IRelativePart relative,IMemberEditPart connectable) {
-		super(model, stepID);
+		super(rootId, model, stepID);
 		this.relative = (IComponent) relative.getModel();
 		this.member = (IComponent) connectable.getModel();
 	}
@@ -49,6 +52,7 @@ public class SwapRelativeCommand extends ControlStructureAbstractCommand {
 	
 	@Override
 	public void execute() {
+    super.execute();
 		this.getDataModel().setRelativeOfComponent(this.member.getId(), this.relative.getId());
 		for(IComponent child: this.member.getChildren()){
 			this.getDataModel().setRelativeOfComponent(child.getId(), this.relative.getId());

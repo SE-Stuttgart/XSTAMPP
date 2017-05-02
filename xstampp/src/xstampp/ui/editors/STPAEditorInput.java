@@ -48,11 +48,11 @@ public class STPAEditorInput implements IEditorInput {
   private UUID id;
   private String stepId;
   private String stepName;
-  private TreeItem stepItem;
+  private StepSelector stepItem;
   private List<String> additionalViews;
   private boolean isActive;
   private boolean lock = false;
-  private Map<String, Object> properties;
+  private Map<String, String> properties;
 
   /**
    * The Default editorInput.
@@ -67,7 +67,7 @@ public class STPAEditorInput implements IEditorInput {
    * @param refItem
    *          {@link StepSelector}
    */
-  public STPAEditorInput(UUID projectId, String editorId, TreeItem refItem) {
+  public STPAEditorInput(UUID projectId, String editorId, StepSelector refItem) {
     this.stepItem = refItem;
     this.projectId = projectId;
     this.stepEditorId = editorId;
@@ -160,12 +160,13 @@ public class STPAEditorInput implements IEditorInput {
 
   /**
    * called when the editor handeled by this input is opened updates the workbench and optionally
-   * highlightes the related step in the project Explorer
+   * highlightes the related step in the project Explorer.
    *
    * @author Lukas Balzer
    *
    */
   public void activate() {
+    this.stepItem.activate();
     if (this.isActive || this.lock) {
       return;
     }
@@ -197,13 +198,13 @@ public class STPAEditorInput implements IEditorInput {
     }
     Color navigationColor = new Color(Display.getCurrent(),
         PreferenceConverter.getColor(this.store, IPreferenceConstants.NAVIGATION_ITEM_SELECTED));
-    this.stepItem.setBackground(navigationColor);
-    if (!this.stepItem.getParentItem().getExpanded()) {
+    this.stepItem.getItem().setBackground(navigationColor);
+    if (!this.stepItem.getItem().getParentItem().getExpanded()) {
 
-      this.stepItem.getParentItem().setBackground(ColorConstants.lightGray);
+      this.stepItem.getItem().getParentItem().setBackground(ColorConstants.lightGray);
     }
-    if (!this.stepItem.getParentItem().getParentItem().getExpanded()) {
-      this.stepItem.getParentItem().getParentItem().setBackground(ColorConstants.lightGray);
+    if (!this.stepItem.getItem().getParentItem().getParentItem().getExpanded()) {
+      this.stepItem.getItem().getParentItem().getParentItem().setBackground(ColorConstants.lightGray);
     }
   }
 
@@ -217,10 +218,10 @@ public class STPAEditorInput implements IEditorInput {
     if (!this.lock && isActive) {
 
       this.lock = true;
-      this.stepItem.setBackground(null);
+      this.stepItem.getItem().setBackground(null);
 
-      this.stepItem.getParentItem().setBackground(null);
-      this.stepItem.getParentItem().getParentItem().setBackground(null);
+      this.stepItem.getItem().getParentItem().setBackground(null);
+      this.stepItem.getItem().getParentItem().getParentItem().setBackground(null);
       this.isActive = false;
       this.lock = false;
     }
@@ -234,7 +235,7 @@ public class STPAEditorInput implements IEditorInput {
    *          the related step item
    */
   public void setStepItem(TreeItem item) {
-    this.stepItem = item;
+    this.stepItem.changeItem(item);
 
   }
 
@@ -252,7 +253,7 @@ public class STPAEditorInput implements IEditorInput {
   /**
    * @return the properties
    */
-  public Map<String, Object> getProperties() {
+  public Map<String, String> getProperties() {
     return properties;
   }
 
@@ -260,7 +261,7 @@ public class STPAEditorInput implements IEditorInput {
    * @param properties
    *          the properties to set
    */
-  public void setProperties(Map<String, Object> properties) {
+  public void setProperties(Map<String, String> properties) {
     if (properties != null) {
       this.properties = properties;
     }

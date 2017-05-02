@@ -13,6 +13,8 @@
 
 package xstampp.astpa.controlstructure.controller.policys;
 
+import java.util.UUID;
+
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
@@ -20,6 +22,7 @@ import org.eclipse.gef.requests.GroupRequest;
 import xstampp.astpa.controlstructure.controller.commands.ConnectionDeleteCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -53,8 +56,9 @@ public class CSConnectionDeleteEditPolicy extends ConnectionEditPolicy
 
 	@Override
 	protected Command getDeleteCommand(GroupRequest arg0) {
+	  UUID rootId =((IRectangleComponent)getHost().getViewer().getContents().getModel()).getId();
 		ConnectionDeleteCommand command = new ConnectionDeleteCommand(
-				this.dataModel, this.stepId);
+		    rootId,this.dataModel, this.stepId);
 		command.setLink((IRelativePart)this.getHost());
 		return command;
 	}

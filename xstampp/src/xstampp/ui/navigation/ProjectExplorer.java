@@ -23,7 +23,6 @@ import messages.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -61,7 +60,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.Activator;
-import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
@@ -87,7 +85,6 @@ public final class ProjectExplorer extends ViewPart
   public static final String ID = "astpa.explorer"; //$NON-NLS-1$
   private static final String MENU_ID = "openWith.menu"; //$NON-NLS-1$
   private static final String EXTENSION = "extension"; //$NON-NLS-1$
-  private static final String PATH_SEPERATOR = "->"; //$NON-NLS-1$
   private static final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
   private Map<UUID, TreeItem> treeItemsToProjectIDs;
   private Map<TreeItem, String> selectionIdsToTreeItems;
@@ -262,14 +259,6 @@ public final class ProjectExplorer extends ViewPart
      */
     String selectionId = projectId.toString();
     this.addOrReplaceItem(selectionId, selector, projectItem);
-    projectItem.addListener(SWT.MouseDown, this.listener);
-    projectItem.addListener(SWT.MouseDoubleClick, new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        projectItem.setExpanded(!projectItem.getExpanded());
-      }
-    });
     IConfigurationElement projectExt = ProjectManager.getContainerInstance()
         .getConfigurationFor(projectId);
     projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
@@ -291,7 +280,6 @@ public final class ProjectExplorer extends ViewPart
 
   private void addTreeItem(TreeItemDescription descriptor) {
     String selectionId = descriptor.getId() + descriptor.getProjectId().toString();
-    String navigationPath = PATH_SEPERATOR + descriptor.getName();
     final TreeItem subItem = new TreeItem(descriptor.getParent().getItem(),
         SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
     subItem.addListener(SWT.Selection, expandListener);
@@ -299,17 +287,16 @@ public final class ProjectExplorer extends ViewPart
 
     subItem.setText(descriptor.getName());// $NON-NLS-1$
     subItem.addListener(SWT.SELECTED, this.listener);
-    subItem.addListener(SWT.MouseDoubleClick, new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        subItem.setExpanded(!subItem.getExpanded());
-      }
-    });
     String name = descriptor.getElementName();
     this.addImage(subItem, descriptor.getIcon(), descriptor.getNamespaceIdentifier());// $NON-NLS-1$
     IProjectSelection selector = null;
-
+    for (IConfigurationElement el : descriptor.getChildren()) {
+      List<String> arrayList = new ArrayList<>();
+      if (el.getName().equals("commandAddition")) {
+        arrayList.add(el.getAttribute("commandId"));
+      }
+      descriptor.setCommandAdditions(arrayList.toArray(new String[0]));
+    }
     if (name.equals("step") || name.equals("stepEditor")) { //$NON-NLS-1$ //$NON-NLS-2$
       selector = new StepSelector(subItem, descriptor);
       if (this.stepPerspectivesToStepId.containsKey(descriptor.getId())) {
@@ -344,6 +331,7 @@ public final class ProjectExplorer extends ViewPart
         IDynamicStepsProvider provider = (IDynamicStepsProvider) descriptor.getElement()
             .createExecutableExtension("provider");
         selector = new DynamicStepSelector(subItem, descriptor, provider);
+
         this.contextMenu.addMenuListener((IMenuListener) selector);
         dynamicSelectors.add(((DynamicStepSelector) selector));
         createDynamicStep(((DynamicStepSelector) selector));
@@ -359,7 +347,7 @@ public final class ProjectExplorer extends ViewPart
           addTreeItem(new TreeItemDescription(subEditorConf, selector, descriptor.getProjectId()));
         }
       }
-      selector.setPathHistory(navigationPath);
+      selector.setPathHistory(descriptor.getName());
       selector.setSelectionListener(listener);
       descriptor.getParent().addChild(selector);
     }
@@ -414,13 +402,14 @@ public final class ProjectExplorer extends ViewPart
     int i = 0;
     selector.getItem().clearAll(true);
     for (TreeItem item : selector.getItem().getItems()) {
-      item.dispose();
+      remove(item);
     }
-    for (IDynamicStepsProvider.DynamicDescriptor title : selector.getProvider()
+    for (IDynamicStepsProvider.DynamicDescriptor descriptor : selector.getProvider()
         .getStepMap(selector.getProjectId())) {
       TreeItemDescription subDesc = new TreeItemDescription(selector, selector.getProjectId());
-      subDesc.setProperties(title.getProperties());
-      subDesc.setName(title.getName());
+      subDesc.setProperties(descriptor.getProperties());
+      subDesc.setName(descriptor.getName());
+      subDesc.setCommandAdditions(selector.getCommandAdditions());
       subDesc.setEditorId(selector.getEditorId());
       subDesc.setNamespaceIdentifier(selector.getPluginId());
       subDesc.setId(selector.getSelectionId() + "" + i++);
@@ -447,10 +436,20 @@ public final class ProjectExplorer extends ViewPart
         if (idEntry.contains(unusedId.getKey().toString())) {
           this.selectorsToSelectionId.get(idEntry).cleanUp();
         }
-        unusedId.getValue().dispose();
+        remove(unusedId.getValue());
       }
     }
 
+  }
+
+  private void remove(TreeItem item) {
+    for (TreeItem child : item.getItems()) {
+      remove(child);
+    }
+    String selectionId = this.selectionIdsToTreeItems.get(item);
+    this.selectorsToSelectionId.remove(selectionId);
+    this.selectionIdsToTreeItems.remove(item);
+    item.dispose();
   }
 
   /**
@@ -479,9 +478,6 @@ public final class ProjectExplorer extends ViewPart
    */
   public void updateProject(UUID projectId) {
     if (this.treeItemsToProjectIDs.containsKey(projectId)) {
-      TreeItem item = this.treeItemsToProjectIDs.get(projectId);
-      IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(projectId);
-      item.setText(dataModel.getProjectName());
       updateDynamicSteps();
     } else if (ProjectManager.getContainerInstance().getProjectKeys().contains(projectId)) {
       ProjectManager.getContainerInstance().getDataModel(projectId).addObserver(this);
@@ -501,8 +497,10 @@ public final class ProjectExplorer extends ViewPart
   @Override
   public void menuAboutToShow(IMenuManager manager) {
     this.setFocus();
-    IContributionItem item = manager.find(MENU_ID);
-    if (item == null && this.getSelection() instanceof StepSelector) {
+    if (this.getSelection() instanceof AbstractSelectorWithAdditions) {
+      ((AbstractSelectorWithAdditions) getSelection()).addCommandAdditions(manager);
+    }
+    if (this.getSelection() instanceof StepSelector) {
       this.openWithMenu.removeAll();
       for (STPAEditorInput input : ((StepSelector) this.getSelection()).getInputs()) {
         this.openWithMenu.add(input.getActivationAction());

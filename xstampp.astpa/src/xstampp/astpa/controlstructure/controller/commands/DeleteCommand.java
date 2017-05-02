@@ -13,6 +13,8 @@
 
 package xstampp.astpa.controlstructure.controller.commands;
 
+import java.util.UUID;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 
 import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
@@ -39,13 +41,15 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 	 * @param stepID
 	 *            the id which tells the command in which step he is
 	 */
-	public DeleteCommand(IControlStructureEditorDataModel model, String stepID) {
-		super(model, stepID);
+	public DeleteCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super(rootId,model,stepID);
 	}
 
 	@Override
 	public void execute() {
 
+    super.execute();
 		boolean isDeleteAllowed = ControlStructureAbstractCommand.COMPONENTS_MAP
 				.get(this.getStepID()).contains(this.model.getComponentType());
 		

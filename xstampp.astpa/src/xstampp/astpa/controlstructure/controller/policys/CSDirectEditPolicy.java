@@ -13,6 +13,8 @@
 
 package xstampp.astpa.controlstructure.controller.policys;
 
+import java.util.UUID;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
@@ -43,6 +45,7 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 	private String value = null;
 	private IControlStructureEditorDataModel dataModel;
 	private final String stepID;
+  private UUID rootId;
 
 	/**
 	 * 
@@ -57,9 +60,15 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 			String stepId) {
 		super();
 		this.stepID = stepId;
-
 		this.dataModel = model;
 	}
+
+  public UUID getRootId() {
+    if(rootId == null) {
+      rootId =((IRectangleComponent)getHost().getViewer().getContents().getModel()).getId();
+    }
+    return rootId;
+  }
 
 	/**
 	 * getDirectEditCommand() defines the command which changes the model
@@ -75,7 +84,7 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
 				.getProperty(IControlStructureEditor.STEP_EDITOR);
 
 		ComponentRenameCommand command = new ComponentRenameCommand(
-				this.oldName, this.dataModel, stepID);
+				this.oldName, getRootId(), this.dataModel, stepID);
 		this.oldName = null;
 		// The method getHost() calls the componentModel which makes the
 		// requests

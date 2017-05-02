@@ -27,23 +27,22 @@ import org.eclipse.ui.PlatformUI;
 import xstampp.ui.editors.STPAEditorInput;
 
 /**
- * a Selection class which is used to carry information about the project step
+ * a Selection class which is used to carry information about the project step.
  * 
  * @author Lukas Balzer
  * 
  */
-public class StepSelector extends AbstractSelector implements IMenuListener {
+public class StepSelector extends AbstractSelectorWithAdditions implements IMenuListener {
 
   private String editorId;
   private Map<String, STPAEditorInput> inputs;
-  private boolean showOpenWith;
   private String openWithPerspective;
   private ArrayList<String> additionalViews;
-  private Map<String, Object> properties;
+  private Map<String, String> properties;
 
   /**
    * constructs a step selector which manages the selection and interaction with a step item in the
-   * project tree
+   * project tree.
    * 
    * @author Lukas Balzer
    *
@@ -51,19 +50,17 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
    *          {@link AbstractSelector#getItem()}
    */
   public StepSelector(TreeItem item, TreeItemDescription descriptor) {
-    super(item,descriptor);
+    super(item, descriptor);
     this.editorId = descriptor.getEditorId();
     this.inputs = new HashMap<>();
     addStepEditor(editorId, descriptor.getName());
-    this.showOpenWith = false;
+    setCommandAdditions(descriptor.getCommandAdditions());
+    setCommandParameters(descriptor.getProperties());
     setProperties(descriptor.getProperties());
   }
 
   @Override
   public void changeItem(TreeItem item) {
-    for (STPAEditorInput input : this.inputs.values()) {
-      input.setStepItem(item);
-    }
     super.changeItem(item);
   }
 
@@ -78,7 +75,7 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
    *          TODO
    */
   public void addStepEditor(String id, String editorName) {
-    STPAEditorInput input = new STPAEditorInput(getProjectId(), id, getItem());
+    STPAEditorInput input = new STPAEditorInput(getProjectId(), id, this);
     input.setStepName(editorName);
     input.setStepId(getSelectionId());
     this.inputs.put(id, input);
@@ -219,17 +216,11 @@ public class StepSelector extends AbstractSelector implements IMenuListener {
     }
   }
 
-  /**
-   * @return the properties
-   */
-  public Map<String, Object> getProperties() {
+  public Map<String, String> getProperties() {
     return properties;
   }
 
-  /**
-   * @param properties the properties to set
-   */
-  public void setProperties(Map<String, Object> properties) {
+  public void setProperties(Map<String, String> properties) {
     this.properties = properties;
   }
 }

@@ -13,7 +13,8 @@
 
 package xstampp.astpa.controlstructure.controller.policys;
 
-import org.eclipse.gef.Request;
+import java.util.UUID;
+
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
@@ -31,6 +32,7 @@ public class CSDeletePolicy extends ComponentEditPolicy {
 
 	private IControlStructureEditorDataModel dataModel;
 	private final String stepID;
+  private UUID rootId;
 
 	/**
 	 * 
@@ -47,14 +49,16 @@ public class CSDeletePolicy extends ComponentEditPolicy {
 		this.dataModel = model;
 	}
 
-	@Override
-	public Command getCommand(Request request) {
-		// TODO Auto-generated method stub
-		return super.getCommand(request);
-	}
+  public UUID getRootId() {
+    if(rootId == null) {
+      rootId =((IRectangleComponent)getHost().getViewer().getContents().getModel()).getId();
+    }
+    return rootId;
+  }
+
 	@Override
 	protected Command createDeleteCommand(GroupRequest deleteRequest) {
-		DeleteCommand command = new DeleteCommand(this.dataModel, this.stepID);
+		DeleteCommand command = new DeleteCommand(getRootId(), this.dataModel, this.stepID);
 		command.setModel((IRectangleComponent) this.getHost().getModel());
 
 		command.setParentModel(this.getHost().getParent().getModel());

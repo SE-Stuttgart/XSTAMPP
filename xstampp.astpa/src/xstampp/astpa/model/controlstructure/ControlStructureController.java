@@ -304,7 +304,7 @@ public class ControlStructureController {
    * @author Fabian Toth
    */
   public IRectangleComponent getRoot() {
-    return this._getActiveRoot();
+    return this.internalRoot(0);
   }
 
   public List<IRectangleComponent> getRoots() {
@@ -727,11 +727,18 @@ public class ControlStructureController {
 
   private Component _getActiveRoot() {
     if (activeRoot == null) {
-      this.activeRoot = this._internalGetRoots().get(0);
+      this.activeRoot = this.internalRoot(0);
     }
     return activeRoot;
   }
 
+  private Component internalRoot(int i) {
+    try {
+      return _internalGetRoots().get(i);
+    } catch (IndexOutOfBoundsException exc) {
+      return new Component();
+    }
+  }
   private List<Component> _internalGetRoots() {
     if (this.root != null) {
       this.rootComponents.add(this.root);

@@ -31,14 +31,14 @@ public interface IDynamicStepsProvider {
   
   class DynamicDescriptor {
     String name;
-    Map<String, Object> properties;
+    Map<String, String> properties;
     
-    public DynamicDescriptor(String name, Map<String, Object> properties) {
+    public DynamicDescriptor(String name, Map<String, String> properties) {
       this.name = name;
       this.properties = properties;
     }
     
-    public Map<String, Object> getProperties() {
+    public Map<String, String> getProperties() {
       return properties;
     }
     
