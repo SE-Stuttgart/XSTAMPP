@@ -39,7 +39,7 @@ public class AbstractSelectorWithAdditions extends AbstractSelector implements I
   public AbstractSelectorWithAdditions(TreeItem item, TreeItemDescription descriptor) {
     super(item, descriptor);
     this.commandsString = "";
-    this.commandParameters = new HashMap<>();
+    setCommandAdditions(descriptor.getCommandAdditions());
     ICommandService service = (ICommandService) PlatformUI.getWorkbench()
         .getService(ICommandService.class);
     service.addExecutionListener(this);
@@ -84,6 +84,14 @@ public class AbstractSelectorWithAdditions extends AbstractSelector implements I
     for (String commandId : this.commandAdditions) {
       commandsString += commandId;
     }
+  }
+
+  @Override
+  public void cleanUp() {
+    ICommandService service = (ICommandService) PlatformUI.getWorkbench()
+        .getService(ICommandService.class);
+    service.removeExecutionListener(this);
+    super.cleanUp();
   }
 
   public Map<String, String> getCommandParameters() {

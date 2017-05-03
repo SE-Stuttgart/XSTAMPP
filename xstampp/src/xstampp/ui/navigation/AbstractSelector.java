@@ -37,6 +37,7 @@ public abstract class AbstractSelector implements IProjectSelection {
   private Listener selectionListener;
   private UUID projectId;
   private String pathHistory;
+  private String name;
   private ArrayList<IProjectSelection> children;
   private IProjectSelection parent;
   private String selectionId;
@@ -71,7 +72,9 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   @Override
   public void cleanUp() {
-    // by default the clean up is done by java
+    if (activeSelection == this) {
+      activeSelection = null;
+    }
   }
 
   @Override
@@ -124,13 +127,13 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   @Override
   public void setPathHistory(String pathHistory) {
-    this.pathHistory = getPathHistory() + PATH_SEPERATOR + pathHistory;
+    this.pathHistory = pathHistory;
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
         .setText(activeSelection.getPathHistory());
   }
 
   public String getPathHistory() {
-    return parent.getPathHistory() + pathHistory;
+    return parent.getPathHistory() + PATH_SEPERATOR + pathHistory;
   }
 
   @Override

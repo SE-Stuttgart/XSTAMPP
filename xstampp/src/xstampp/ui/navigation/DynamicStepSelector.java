@@ -54,7 +54,6 @@ public class DynamicStepSelector extends AbstractSelectorWithAdditions implement
     setEditorId(descriptor.getEditorId());
     setIcon(descriptor.getIcon());
     setSelectionId(descriptor.getId());
-    setCommandAdditions(descriptor.getCommandAdditions());
   }
 
   @Override
@@ -110,6 +109,11 @@ public class DynamicStepSelector extends AbstractSelectorWithAdditions implement
 
   public String getPluginId() {
     return pluginId;
+  }
+
+  @Override
+  public void postExecuteSuccess(String commandId, Object returnValue) {
+    // method overloaded to prevent reacting to child commands
   }
 
 }

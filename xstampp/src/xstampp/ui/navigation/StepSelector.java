@@ -120,9 +120,9 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
 
   @Override
   public void setPathHistory(String pathHistory) {
-    for (STPAEditorInput input : this.inputs.values()) {
-      input.setPathHistory(pathHistory);
-    }
+//    for (STPAEditorInput input : this.inputs.values()) {
+//      input.setPathHistory(pathHistory);
+//    }
     super.setPathHistory(pathHistory);
   }
 

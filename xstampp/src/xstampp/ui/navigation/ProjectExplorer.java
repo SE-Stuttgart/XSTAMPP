@@ -447,7 +447,7 @@ public final class ProjectExplorer extends ViewPart
       remove(child);
     }
     String selectionId = this.selectionIdsToTreeItems.get(item);
-    this.selectorsToSelectionId.remove(selectionId);
+    this.selectorsToSelectionId.remove(selectionId).cleanUp();
     this.selectionIdsToTreeItems.remove(item);
     item.dispose();
   }
