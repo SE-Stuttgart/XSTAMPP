@@ -24,8 +24,6 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 
-import xstampp.ui.common.ProjectManager;
-
 /**
  * An Abstract selector for a defining a selector that provides additional commands used in a
  * context menu o toolbar.
@@ -73,6 +71,13 @@ public class AbstractSelectorWithAdditions extends AbstractSelector implements I
     return commandAdditions;
   }
 
+  /**
+   * sets the list of additional commands that will be available in the context menu of the
+   * associated tree item.
+   * 
+   * @param commandAdditions
+   *          a String list of command ids, which must also be registered in the plugin as commands.
+   */
   public void setCommandAdditions(String[] commandAdditions) {
     this.commandAdditions = commandAdditions;
     this.commandsString = "";

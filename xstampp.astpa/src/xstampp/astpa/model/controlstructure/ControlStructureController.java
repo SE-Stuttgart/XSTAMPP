@@ -245,12 +245,15 @@ public class ControlStructureController {
           this._getActiveRoot().getChildren().indexOf(component));
       if (this._getActiveRoot().removeChild(componentId)) {
         changed = true;
-        return true;
+      } else if(_getActiveRoot().getId().equals(componentId) &&
+          rootComponents.remove(activeRoot)) {
+        changed = true;
       }
     }
-    return false;
+    return changed;
   }
 
+  
   /**
    * This methode recovers a Component which was deleted before, from the componentTrash
    * 
