@@ -179,7 +179,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
-            class="acast.ui.accidentDescription.TableView"
+            class="acast.ui.accidentDescription.responsibilities.TableView"
             icon="icons/buttons/navigation/Verification_of_delivery_list_clipboard_symbol_16.png"
             id="A-CAST.view1"
             name="Roles and Responsibilities"
@@ -487,24 +487,6 @@
                id="xstampp.acast.cseditor.toolconstant"
                value="DASHEDBOX">
          </parameter>
-      </key>
-      <key
-            commandId="xstampp.astpa.command.cs.copy"
-            contextId="acastContextID"
-            schemeId="bindingscheme"
-            sequence="M1+C">
-      </key>
-      <key
-            commandId="xstampp.astpa.command.cs.paste"
-            contextId="acastContextID"
-            schemeId="bindingscheme"
-            sequence="M1+A">
-      </key>
-      <key
-            commandId="xstampp.ui.commands.selectAll"
-            contextId="acastContextID"
-            schemeId="bindingscheme"
-            sequence="M1+A">
       </key>
    </extension>
    <extension

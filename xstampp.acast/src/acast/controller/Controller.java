@@ -941,7 +941,7 @@ public class Controller extends AbstractDataModel implements IDataModel,
 			String newDescription, String name) {
 		this.respController.changeResponsibility(ident, oldId, newId,
 				newDescription, name);
-
+		ProjectManager.getLOGGER().debug("Changed responsibility");
 	}
 
 	@Override
