@@ -1,5 +1,7 @@
 package xstampp.usermanagement.ui;
 
+import java.util.UUID;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -23,13 +25,12 @@ import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.UserSystem;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.Admin;
-
-import java.util.UUID;
 
 public class UserManagementPage implements ISettingsPage {
 
@@ -57,12 +58,11 @@ public class UserManagementPage implements ISettingsPage {
       noUserComp.setLayoutData(data);
 
       Label noUserInfo = new Label(noUserComp, SWT.WRAP);
-      noUserInfo.setText("This project doesn't have" + "a user management at the moment,\n"
-          + "Do you want to create one and sign in as administrator?");
+      noUserInfo.setText(Messages.UserManagementPage_0);
       noUserInfo.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 
       Button generateUserSystemButton = new Button(noUserComp, SWT.PUSH);
-      generateUserSystemButton.setText("Create user database");
+      generateUserSystemButton.setText(Messages.UserManagementPage_3);
       generateUserSystemButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
       // The normal composite that is visible to the user is Created here
@@ -75,8 +75,8 @@ public class UserManagementPage implements ISettingsPage {
       refreshUsers();
 
       final Button addButton = new Button(hasUserComp, SWT.PUSH);
-      addButton.setImage(
-          Activator.getImageDescriptor("/icons/buttons/commontables/add.png").createImage());
+      String imagePath = "/icons/buttons/commontables/add.png"; //$NON-NLS-1$
+      addButton.setImage(Activator.getImageDescriptor(imagePath).createImage());
       addButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
       addButton.addSelectionListener(new SelectionAdapter() {
         @Override
@@ -88,18 +88,16 @@ public class UserManagementPage implements ISettingsPage {
       addButton.setEnabled(userSystem.canCreateUser());
 
       final Button deleteButton = new Button(hasUserComp, SWT.PUSH);
-      deleteButton.setImage(
-          Activator.getImageDescriptor("/icons/buttons/commontables/remove.png").createImage());
+      String deleteImgPath = "/icons/buttons/commontables/remove.png"; //$NON-NLS-1$
+      deleteButton.setImage(Activator.getImageDescriptor(deleteImgPath).createImage());
       deleteButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
       deleteButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
           if (currentSelection != null
-              && MessageDialog
-                  .openConfirm(Display.getDefault().getActiveShell(),
-                      "Delete " + currentSelection.getUsername(),
-                      "Do you really want to delete the User entry "
-                          + currentSelection.getUsername() + "?")
+              && MessageDialog.openConfirm(Display.getDefault().getActiveShell(),
+                  Messages.UserManagementPage_5 + currentSelection.getUsername(),
+                  String.format(Messages.UserManagementPage_6,currentSelection.getUsername()))
               && userSystem.deleteUser(currentSelection.getUserId())) {
             deleteButton.setEnabled(false);
             currentSelection = null;
@@ -124,10 +122,10 @@ public class UserManagementPage implements ISettingsPage {
           for (IUser user : userSystem.getRegistry()) {
             String entry = user.getUsername();
             if (user.getUserId().equals(userSystem.getCurrentUserId())) {
-              entry += " [current]";
+              entry += " [current]"; //$NON-NLS-1$
             }
             if (user instanceof Admin) {
-              entry += " [admin]";
+              entry += " [admin]"; //$NON-NLS-1$
             }
             userList.add(entry);
           }

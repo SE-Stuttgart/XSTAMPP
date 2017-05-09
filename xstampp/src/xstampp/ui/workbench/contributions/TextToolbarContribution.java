@@ -1,13 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.ui.workbench.contributions;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -47,6 +47,7 @@ import xstampp.util.STPAPluginUtils;
  * This toolbar can be activated/used by implementing the ITextEditor Interface
  * 
  * @author Lukas Balzer
+ * @author Sebastian Sieber
  *
  * @since version 2.0
  */
@@ -67,7 +68,8 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
   private static final String[] FONT_SIZES = new String[] { "6", "8", "9", "10", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       "11", "12", "14", "24", "36", "48" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
-  public static final FontData SYSTEM_FONT_DATA = Display.getDefault().getSystemFont().getFontData()[0];
+  public static final FontData SYSTEM_FONT_DATA = Display.getDefault().getSystemFont()
+      .getFontData()[0];
   public static final Font SYSTEM_FONT = Display.getDefault().getSystemFont();
   private ComboContribiution fontCombo;
   private ComboContribiution fontSizeCombo;
@@ -115,6 +117,7 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
   public boolean isDynamic() {
     return true;
   }
+
   @Override
   protected Control createControl(Composite arg0) {
     arg0.getParent().setRedraw(true);
@@ -141,19 +144,23 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
     this.foregroundColor = new RGB(_0, _0, _0);
     this.backgroundColor = new RGB(_255, _255, _255);
 
-    this.fontCombo = new ComboContribiution("xstampp.text.styleCombo", SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL) {
+    this.fontCombo = new ComboContribiution("xstampp.text.styleCombo",
+        SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL) {
       @Override
       protected Control createControl(Composite parent) {
         Control control = super.createControl(parent);
         getComboControl().setItems(getFontNames().toArray(new String[0]));
-        getComboControl().setText(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
+        getComboControl().setText(
+            PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
         getComboControl().addSelectionListener(new SelectionAdapter() {
 
           @Override
           public void widgetSelected(SelectionEvent e) {
             Map<String, String> params = new HashMap<>();
-            params.put(FONT_NAME_PARAMETER, TextToolbarContribution.this.fontCombo.getComboControl().getText());
-            if (params.get(FONT_NAME_PARAMETER) == null || !getFontNames().contains(params.get(FONT_NAME_PARAMETER))) {
+            params.put(FONT_NAME_PARAMETER,
+                TextToolbarContribution.this.fontCombo.getComboControl().getText());
+            if (params.get(FONT_NAME_PARAMETER) == null
+                || !getFontNames().contains(params.get(FONT_NAME_PARAMETER))) {
               params.put(FONT_NAME_PARAMETER, getFontNames().get(0));
             }
             STPAPluginUtils.executeParaCommand(CHANGE_FONT_COMMAND, params);
@@ -164,19 +171,21 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
       }
     };
 
-    this.fontSizeCombo = new ComboContribiution("xstampp.text.sizeCombo", SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL) {
+    this.fontSizeCombo = new ComboContribiution("xstampp.text.sizeCombo",
+        SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL) {
       @Override
       protected Control createControl(Composite parent) {
         Control control = super.createControl(parent);
         getComboControl().setItems(FONT_SIZES);
-        getComboControl().setText(
-            String.valueOf(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
+        getComboControl().setText(String.valueOf(
+            PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
         getComboControl().addSelectionListener(new SelectionAdapter() {
 
           @Override
           public void widgetSelected(SelectionEvent e) {
             Map<String, String> params = new HashMap<>();
-            params.put(FONT_SIZE_PARAMETER, TextToolbarContribution.this.fontSizeCombo.getComboControl().getText());
+            params.put(FONT_SIZE_PARAMETER,
+                TextToolbarContribution.this.fontSizeCombo.getComboControl().getText());
             if (params.get(FONT_SIZE_PARAMETER).equals("")) {
               params.put(FONT_SIZE_PARAMETER, FONT_SIZES[0]);
             }
@@ -205,58 +214,37 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
   private void addStyleItems(ToolBarManager manager) {
 
     // Bold item
-    this.boldControl = new ButtonContribution("boldControl", SWT.TOGGLE) {
-      @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor(getImagePath() + "/bold.ico").createImage()); //$NON-NLS-1$
-        getButtonControl().setToolTipText(Messages.Bold);
-        getButtonControl().addSelectionListener(new StyleSelectionListener(ITextEditor.BOLD));
-        return control;
-      }
-    };
+    this.boldControl = new ButtonContribution("boldControl", SWT.TOGGLE);
+    boldControl.setImage(Activator.getImageDescriptor(getImagePath() + "/bold.ico").createImage()); //$NON-NLS-1$
+    boldControl.setToolTipText(Messages.Bold);
+    boldControl.addSelectionListener(new StyleSelectionListener(ITextEditor.BOLD));
     manager.add(boldControl);
 
     // Italic item
-    this.italicControl = new ButtonContribution("italicControl", SWT.TOGGLE) {
-      @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor(getImagePath() + "/italic.ico").createImage()); //$NON-NLS-1$
+    this.italicControl = new ButtonContribution("italicControl", SWT.TOGGLE);
+    this.italicControl
+        .setImage(Activator.getImageDescriptor(getImagePath() + "/italic.ico").createImage()); //$NON-NLS-1$
 
-        getButtonControl().setToolTipText(Messages.Italic);
-        getButtonControl().addSelectionListener(new StyleSelectionListener(ITextEditor.ITALIC));
-        return control;
-      }
-    };
+    this.italicControl.setToolTipText(Messages.Italic);
+    this.italicControl.addSelectionListener(new StyleSelectionListener(ITextEditor.ITALIC));
     this.italicControl.setEnabled(true);
-    manager.add(italicControl);
+    manager.add(this.italicControl);
 
     // Underline item
-    this.underlineControl = new ButtonContribution("underlineControl", SWT.TOGGLE) {
-      @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor(getImagePath() + "/underline.ico").createImage()); //$NON-NLS-1$
+    this.underlineControl = new ButtonContribution("underlineControl", SWT.TOGGLE);
+    Image image = Activator.getImage(getImagePath() + "/underline.ico");
+    this.underlineControl.setImage(image); // $NON-NLS-1$
 
-        getButtonControl().setToolTipText(Messages.Underline);
-        getButtonControl().addSelectionListener(new StyleSelectionListener(ITextEditor.UNDERLINE));
-        return control;
-      }
-    };
+    this.underlineControl.setToolTipText(Messages.Underline);
+    this.underlineControl.addSelectionListener(new StyleSelectionListener(ITextEditor.UNDERLINE));
     manager.add(underlineControl);
     // Strike out item
-    this.strikeoutControl = new ButtonContribution("strikeoutControl", SWT.TOGGLE) {
-      @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor(getImagePath() + "/strikeout.ico").createImage()); //$NON-NLS-1$
+    this.strikeoutControl = new ButtonContribution("strikeoutControl", SWT.TOGGLE);
+    image = Activator.getImage(getImagePath() + "/strikeout.ico");
+    this.strikeoutControl.setImage(image); // $NON-NLS-1$
 
-        getButtonControl().setToolTipText(Messages.Strikeout);
-        getButtonControl().addSelectionListener(new StyleSelectionListener(ITextEditor.STRIKEOUT));
-        return control;
-      }
-    };
+    this.strikeoutControl.setToolTipText(Messages.Strikeout);
+    this.strikeoutControl.addSelectionListener(new StyleSelectionListener(ITextEditor.STRIKEOUT));
     manager.add(strikeoutControl);
   }
 
@@ -271,160 +259,131 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
    *          Composite
    */
   private void addColorItems(ToolBarManager manager) {
-    this.foregroundControl = new ButtonContribution("foregroundControl") {
+    this.foregroundControl = new ButtonContribution("foregroundControl");
+
+    this.foregroundControl.setImage(Activator
+        .getImageDescriptor(getImagePath() + "/colors/foreground/textBlack.ico").createImage()); //$NON-NLS-1$
+
+    this.foregroundControl.setToolTipText(Messages.TextForeground);
+    this.foregroundControl.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl()
-            .setImage(Activator.getImageDescriptor(getImagePath() + "/colors/foreground/textBlack.ico").createImage()); //$NON-NLS-1$
+      public void widgetSelected(SelectionEvent event) {
+        Map<String, String> values = new HashMap<>();
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.FOREGROUND);
 
-        getButtonControl().setToolTipText(Messages.TextForeground);
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_RED,
+            String.valueOf(TextToolbarContribution.this.foregroundColor.red));
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_GREEN,
+            String.valueOf(TextToolbarContribution.this.foregroundColor.green));
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_BLUE,
+            String.valueOf(TextToolbarContribution.this.foregroundColor.blue));
 
-          @Override
-          public void widgetSelected(SelectionEvent event) {
-            Map<String, String> values = new HashMap<>();
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.FOREGROUND);
-
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_RED,
-                String.valueOf(TextToolbarContribution.this.foregroundColor.red));
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_GREEN,
-                String.valueOf(TextToolbarContribution.this.foregroundColor.green));
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_BLUE,
-                String.valueOf(TextToolbarContribution.this.foregroundColor.blue));
-
-            Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
-            if (obj instanceof RGB) {
-              TextToolbarContribution.this.foregroundColor = (RGB) obj;
-              setToolItemIcon(TextToolbarContribution.this.foregroundControl, (RGB) obj, ITextEditor.FOREGROUND);
-            }
-          }
-        });
-        return control;
+        Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
+        if (obj instanceof RGB) {
+          TextToolbarContribution.this.foregroundColor = (RGB) obj;
+          setToolItemIcon(TextToolbarContribution.this.foregroundControl, (RGB) obj,
+              ITextEditor.FOREGROUND);
+        }
       }
-    };
-    ButtonContribution forgroundChooser = new ButtonContribution("forgroundChooser", SWT.ARROW | SWT.DOWN, 15) {
+    });
+    ButtonContribution forgroundChooser = new ButtonContribution("forgroundChooser",
+        SWT.ARROW | SWT.DOWN, 15);
+    forgroundChooser.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent event) {
+        Map<String, String> values = new HashMap<>();
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.FOREGROUND);
 
-          @Override
-          public void widgetSelected(SelectionEvent event) {
-            Map<String, String> values = new HashMap<>();
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.FOREGROUND);
-
-            Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
-            if (obj instanceof RGB) {
-              TextToolbarContribution.this.foregroundColor = (RGB) obj;
-              setToolItemIcon(TextToolbarContribution.this.foregroundControl, (RGB) obj, ITextEditor.FOREGROUND);
-            }
-          }
-        });
-        return control;
+        Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
+        if (obj instanceof RGB) {
+          TextToolbarContribution.this.foregroundColor = (RGB) obj;
+          setToolItemIcon(TextToolbarContribution.this.foregroundControl, (RGB) obj,
+              ITextEditor.FOREGROUND);
+        }
       }
-    };
+    });
     manager.add(foregroundControl);
     manager.add(forgroundChooser);
 
-    this.backgroundControl = new ButtonContribution("backgroundControl") {
+    this.backgroundControl = new ButtonContribution("backgroundControl");
+    this.backgroundControl.setImage(Activator
+        .getImageDescriptor(getImagePath() + "/colors/background/textWhite.ico").createImage()); //$NON-NLS-1$
+
+    this.backgroundControl.setToolTipText(Messages.TextBackground);
+    this.backgroundControl.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl()
-            .setImage(Activator.getImageDescriptor(getImagePath() + "/colors/background/textWhite.ico").createImage()); //$NON-NLS-1$
-
-        getButtonControl().setToolTipText(Messages.TextBackground);
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
-
-          @Override
-          public void widgetSelected(SelectionEvent event) {
-            Map<String, String> values = new HashMap<>();
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.BACKGROUND);
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_RED,
-                String.valueOf(TextToolbarContribution.this.backgroundColor.red));
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_GREEN,
-                String.valueOf(TextToolbarContribution.this.backgroundColor.green));
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_BLUE,
-                String.valueOf(TextToolbarContribution.this.backgroundColor.blue));
-            Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
-            if (obj instanceof RGB) {
-              TextToolbarContribution.this.backgroundColor = (RGB) obj;
-              setToolItemIcon(TextToolbarContribution.this.backgroundControl, (RGB) obj, ITextEditor.BACKGROUND);
-            }
-          }
-        });
-        return control;
+      public void widgetSelected(SelectionEvent event) {
+        Map<String, String> values = new HashMap<>();
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.BACKGROUND);
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_RED,
+            String.valueOf(TextToolbarContribution.this.backgroundColor.red));
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_GREEN,
+            String.valueOf(TextToolbarContribution.this.backgroundColor.green));
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_BLUE,
+            String.valueOf(TextToolbarContribution.this.backgroundColor.blue));
+        Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
+        if (obj instanceof RGB) {
+          TextToolbarContribution.this.backgroundColor = (RGB) obj;
+          setToolItemIcon(TextToolbarContribution.this.backgroundControl, (RGB) obj,
+              ITextEditor.BACKGROUND);
+        }
       }
-    };
+    });
 
-    ButtonContribution backgroundChooser = new ButtonContribution("backgroundControl", SWT.ARROW | SWT.DOWN, 15) {
+    ButtonContribution backgroundChooser = new ButtonContribution("backgroundControl",
+        SWT.ARROW | SWT.DOWN, 15);
+    backgroundChooser.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
-
-          @Override
-          public void widgetSelected(SelectionEvent event) {
-            Map<String, String> values = new HashMap<>();
-            values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.BACKGROUND);
-            Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
-            if (obj instanceof RGB) {
-              TextToolbarContribution.this.backgroundColor = (RGB) obj;
-              setToolItemIcon(TextToolbarContribution.this.backgroundControl, (RGB) obj, ITextEditor.BACKGROUND);
-            }
-          }
-        });
-        return control;
+      public void widgetSelected(SelectionEvent event) {
+        Map<String, String> values = new HashMap<>();
+        values.put(XSTAMPP_COMMAND_PARAMETER_COLOR_TYPE, ITextEditor.BACKGROUND);
+        Object obj = STPAPluginUtils.executeParaCommand(XSTAMPP_COMMAND_CHOOSECOLOR, values);
+        if (obj instanceof RGB) {
+          TextToolbarContribution.this.backgroundColor = (RGB) obj;
+          setToolItemIcon(TextToolbarContribution.this.backgroundControl, (RGB) obj,
+              ITextEditor.BACKGROUND);
+        }
       }
-    };
+    });
     manager.add(backgroundControl);
     manager.add(backgroundChooser);
   }
 
   private void addBaseControls(ToolBarManager manager) {
-    this.baselineUpControl = new ButtonContribution("baselineUpControl") {
+    this.baselineUpControl = new ButtonContribution("baselineUpControl");
+    this.baselineUpControl.setImage(Activator.getImageDescriptor(
+
+        getImagePath() + "/font_big.ico").createImage()); //$NON-NLS-1$
+
+    this.baselineUpControl.setToolTipText("Increase font size"); //$NON-NLS-1$
+    this.baselineUpControl.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor(
-
-            getImagePath() + "/font_big.ico").createImage()); //$NON-NLS-1$
-
-        getButtonControl().setToolTipText("Increase font size"); //$NON-NLS-1$
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
-
-          @Override
-          public void widgetSelected(SelectionEvent e) {
-            Map<String, String> values = new HashMap<>();
-            values.put("xstampp.commandParameter.baseline", ITextEditor.INCREASE); //$NON-NLS-1$
-            STPAPluginUtils.executeParaCommand("xstampp.command.baseline", values); //$NON-NLS-1$
-          }
-        });
-        return control;
+      public void widgetSelected(SelectionEvent e) {
+        Map<String, String> values = new HashMap<>();
+        values.put("xstampp.commandParameter.baseline", ITextEditor.INCREASE); //$NON-NLS-1$
+        STPAPluginUtils.executeParaCommand("xstampp.command.baseline", values); //$NON-NLS-1$
       }
-    };
+    });
 
-    this.baselineDownControl = new ButtonContribution("baselineDownControl") {
+    this.baselineDownControl = new ButtonContribution("baselineDownControl");
+    baselineDownControl.setImage(Activator.getImageDescriptor(
+
+        getImagePath() + "/font_sml.ico").createImage()); //$NON-NLS-1$
+    baselineDownControl.setToolTipText(Messages.DecreaseFontSize);
+    baselineDownControl.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor(
-
-            getImagePath() + "/font_sml.ico").createImage()); //$NON-NLS-1$
-        getButtonControl().setToolTipText(Messages.DecreaseFontSize);
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
-
-          @Override
-          public void widgetSelected(SelectionEvent e) {
-            Map<String, String> values = new HashMap<>();
-            values.put("xstampp.commandParameter.baseline", ITextEditor.DECREASE); //$NON-NLS-1$
-            STPAPluginUtils.executeParaCommand("xstampp.command.baseline", values); //$NON-NLS-1$
-          }
-        });
-        return control;
+      public void widgetSelected(SelectionEvent e) {
+        Map<String, String> values = new HashMap<>();
+        values.put("xstampp.commandParameter.baseline", ITextEditor.DECREASE); //$NON-NLS-1$
+        STPAPluginUtils.executeParaCommand("xstampp.command.baseline", values); //$NON-NLS-1$
       }
-    };
+    });
     manager.add(baselineUpControl);
     manager.add(baselineDownControl);
   }
@@ -437,24 +396,19 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
    *          ToolBar
    */
   private void addListItems(ToolBarManager manager) {
-    this.bulletListControl = new ButtonContribution("bulletListControl") {
-      @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor(getImagePath() + "/para_bul.ico").createImage()); //$NON-NLS-1$
-        getButtonControl().setToolTipText(Messages.BulletList);
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
+    this.bulletListControl = new ButtonContribution("bulletListControl");
+    this.bulletListControl
+        .setImage(Activator.getImageDescriptor(getImagePath() + "/para_bul.ico").createImage()); //$NON-NLS-1$
+    this.bulletListControl.setToolTipText(Messages.BulletList);
+    this.bulletListControl.addSelectionListener(new SelectionAdapter() {
 
-          @Override
-          public void widgetSelected(SelectionEvent event) {
-            Map<String, String> values = new HashMap<>();
-            values.put("xstampp.commandParameter.bulletlist", ITextEditor.DOT_LIST); //$NON-NLS-1$
-            STPAPluginUtils.executeParaCommand("xstampp.command.addbulletlist", values); //$NON-NLS-1$
-          }
-        });
-        return control;
+      @Override
+      public void widgetSelected(SelectionEvent event) {
+        Map<String, String> values = new HashMap<>();
+        values.put("xstampp.commandParameter.bulletlist", ITextEditor.DOT_LIST); //$NON-NLS-1$
+        STPAPluginUtils.executeParaCommand("xstampp.command.addbulletlist", values); //$NON-NLS-1$
       }
-    };
+    });
   }
 
   /**
@@ -477,8 +431,8 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
     ArrayList<RGB> blueShades = new ArrayList<>();
     ArrayList<RGB> grayShades = new ArrayList<>();
 
-    this.initShadeLists(redShades, blackShades, yellowShades, greenShades, purpleShades, whiteShades, blueShades,
-        grayShades);
+    this.initShadeLists(redShades, blackShades, yellowShades, greenShades, purpleShades,
+        whiteShades, blueShades, grayShades);
 
     if (state == ITextEditor.FOREGROUND) {
       imagePath = "/colors/foreground"; //$NON-NLS-1$
@@ -487,38 +441,28 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
     }
 
     // set icon
+    String string = null;
     if (redShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textRed.ico").createImage()); //$NON-NLS-1$
+      string = ((getImagePath() + imagePath + "/textRed.ico")); //$NON-NLS-1$
     } else if (blackShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textBlack.ico") //$NON-NLS-1$
-              .createImage());
+      string = ((getImagePath() + imagePath + "/textBlack.ico")); //$NON-NLS-1$
+      colorControl.setImage(Activator.getImage(string));
     } else if (yellowShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textYellow.ico") //$NON-NLS-1$
-              .createImage());
+      string = ((getImagePath() + imagePath + "/textYellow.ico")); //$NON-NLS-1$
+      colorControl.setImage(Activator.getImage(string));
     } else if (greenShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textGreen.ico") //$NON-NLS-1$
-              .createImage());
+      string = ((getImagePath() + imagePath + "/textGreen.ico")); //$NON-NLS-1$
+      colorControl.setImage(Activator.getImage(string));
     } else if (purpleShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textPurple.ico") //$NON-NLS-1$
-              .createImage());
+      string = ((getImagePath() + imagePath + "/textPurple.ico")); //$NON-NLS-1$
     } else if (whiteShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textWhite.ico") //$NON-NLS-1$
-              .createImage());
+      string = ((getImagePath() + imagePath + "/textWhite.ico")); //$NON-NLS-1$
     } else if (blueShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textBlue.ico") //$NON-NLS-1$
-              .createImage());
+      string = ((getImagePath() + imagePath + "/textBlue.ico")); //$NON-NLS-1$
     } else if (grayShades.contains(rgb)) {
-      colorControl.getButtonControl()
-          .setImage(Activator.getImageDescriptor(getImagePath() + imagePath + "/textGrey.ico") //$NON-NLS-1$
-              .createImage());
+      string = ((getImagePath() + imagePath + "/textGrey.ico")); //$NON-NLS-1$
     }
+    colorControl.setImage(Activator.getImage(string));
 
   }
 
@@ -527,26 +471,10 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
    * 
    * @author Sebastian Sieber
    * 
-   * @param redShades
-   *          ArrayList<RGB>
-   * @param blackShades
-   *          ArrayList<RGB>
-   * @param yellowShades
-   *          ArrayList<RGB>
-   * @param greenShades
-   *          ArrayList<RGB>
-   * @param purpleShades
-   *          ArrayList<RGB>
-   * @param whiteShades
-   *          ArrayList<RGB>
-   * @param blueShades
-   *          ArrayList<RGB>
-   * @param grayShades
-   *          ArrayList<RGB>
    */
-  private void initShadeLists(ArrayList<RGB> redShades, ArrayList<RGB> blackShades, ArrayList<RGB> yellowShades,
-      ArrayList<RGB> greenShades, ArrayList<RGB> purpleShades, ArrayList<RGB> whiteShades, ArrayList<RGB> blueShades,
-      ArrayList<RGB> grayShades) {
+  private void initShadeLists(ArrayList<RGB> redShades, ArrayList<RGB> blackShades,
+      ArrayList<RGB> yellowShades, ArrayList<RGB> greenShades, ArrayList<RGB> purpleShades,
+      ArrayList<RGB> whiteShades, ArrayList<RGB> blueShades, ArrayList<RGB> grayShades) {
 
     // initialize
     if (redShades.size() == 0) {
@@ -625,32 +553,32 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
     if (selection instanceof StyledTextSelection) {
       StyledTextSelection styleSelection = (StyledTextSelection) selection;
-      this.boldControl.getButtonControl().setSelection((styleSelection.getFontStyle() & SWT.BOLD) != 0);
-      this.italicControl.getButtonControl().setSelection((styleSelection.getFontStyle() & SWT.ITALIC) != 0);
+      this.boldControl.setSelection((styleSelection.getFontStyle() & SWT.BOLD) != 0);
+      this.italicControl.setSelection((styleSelection.getFontStyle() & SWT.ITALIC) != 0);
 
-      this.underlineControl.getButtonControl().setSelection(styleSelection.isUnderline());
-      this.strikeoutControl.getButtonControl().setSelection(styleSelection.isStrikeout());
+      this.underlineControl.setSelection(styleSelection.isUnderline());
+      this.strikeoutControl.setSelection(styleSelection.isStrikeout());
 
       this.fontSizeCombo.getComboControl().setText(styleSelection.getFontSize() + "");
       if (styleSelection.getFontSize() < 0) {
-        this.fontSizeCombo.getComboControl().setText(
-            String.valueOf(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
+        this.fontSizeCombo.getComboControl().setText(String.valueOf(
+            PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
       }
       this.fontCombo.getComboControl().setText(styleSelection.getFontName());
       if (this.fontCombo.getComboControl().getText().equals("")) {
-        this.fontCombo.getComboControl()
-            .setText(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
+        this.fontCombo.getComboControl().setText(
+            PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
       }
     } else {
-      this.boldControl.getButtonControl().setSelection(false);
-      this.italicControl.getButtonControl().setSelection(false);
+      this.boldControl.setSelection(false);
+      this.italicControl.setSelection(false);
 
-      this.underlineControl.getButtonControl().setSelection(false);
-      this.strikeoutControl.getButtonControl().setSelection(false);
-      this.fontSizeCombo.getComboControl()
-          .setText(String.valueOf(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
-      this.fontCombo.getComboControl()
-          .setText(PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
+      this.underlineControl.setSelection(false);
+      this.strikeoutControl.setSelection(false);
+      this.fontSizeCombo.getComboControl().setText(String.valueOf(
+          PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getHeight()));
+      this.fontCombo.getComboControl().setText(
+          PlatformUI.getWorkbench().getDisplay().getSystemFont().getFontData()[0].getName());
     }
 
   }
@@ -689,27 +617,27 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
 
   @Override
   public boolean getBoldControl() {
-    return this.boldControl.getButtonControl().getSelection();
+    return this.boldControl.getSelection();
   }
 
   @Override
   public boolean getItalicControl() {
-    return this.italicControl.getButtonControl().getSelection();
+    return this.italicControl.getSelection();
   }
 
   @Override
   public boolean getStrikeoutControl() {
-    return this.strikeoutControl.getButtonControl().getSelection();
+    return this.strikeoutControl.getSelection();
   }
 
   @Override
   public boolean getUnderlineControl() {
-    return this.underlineControl.getButtonControl().getSelection();
+    return this.underlineControl.getSelection();
   }
 
   @Override
   public boolean getBulletListControl() {
-    return this.bulletListControl.getButtonControl().getSelection();
+    return this.bulletListControl.getSelection();
   }
 
   @Override
@@ -732,7 +660,8 @@ public class TextToolbarContribution extends WorkbenchWindowControlContribution
   @Override
   public void dispose() {
     try {
-      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removeSelectionListener(this);
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .removeSelectionListener(this);
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
     } catch (NullPointerException e) {
       // if there is a nullpointer one can't delete anything

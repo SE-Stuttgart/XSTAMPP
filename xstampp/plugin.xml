@@ -383,6 +383,15 @@
                style="push">
          </command>
          <command
+               commandId="xstampp.command.openPath"
+               label="%command.name.openOutput"
+               style="push">
+            <parameter
+                  name="xstampp.commandParameter.openFolder"
+                  value="output">
+            </parameter>
+         </command>
+         <command
                commandId="astpa.commands.expandAll"
                icon="icons/eclipse/collapseall2.gif"
                label="%command.name.collapseall"
@@ -400,15 +409,6 @@
             <parameter
                   name="xstampp.expand"
                   value="True">
-            </parameter>
-         </command>
-         <command
-               commandId="xstampp.command.openPath"
-               label="%command.name.openOutput"
-               style="push">
-            <parameter
-                  name="xstampp.commandParameter.openFolder"
-                  value="output">
             </parameter>
          </command>
          <command
@@ -433,7 +433,8 @@
                commandId="astpa.commands.expandAll"
                icon="icons/eclipse/collapseall2.gif"
                label="%command.name.collapseall"
-               style="push">
+               style="push"
+               tooltip="%command.name.collapseall">
             <parameter
                   name="xstampp.expand"
                   value="FALSE">
@@ -443,7 +444,8 @@
                commandId="astpa.commands.expandAll"
                icon="icons/eclipse/expandall.gif"
                label="%command.name.expandall"
-               style="push">
+               style="push"
+               tooltip="%command.name.expandall">
             <parameter
                   name="xstampp.expand"
                   value="TRUE">
@@ -524,6 +526,17 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:xstampp.ui.menu.command.switchWS">
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="xstampp.toolbar.user">
+            <control
+                  class="xstampp.usermanagement.ui.contribution.UserContribution"
+                  id="xstampp.user.toolbar">
+            </control>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension

@@ -1,11 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package xstampp.ui.workbench.contributions;
@@ -27,7 +25,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Slider;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -36,11 +33,10 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 import xstampp.Activator;
 
 /**
- * This toolbar Contribution provides tools for a graphical editor Editors can
- * interact with this contribution by implementing IZoomContributior
+ * This toolbar Contribution provides tools for a graphical editor Editors can interact with this
+ * contribution by implementing IZoomContributior
  * <p/>
- * The provided decoration switch can be used by using
- * {@link IZoomContributor#IS_DECORATED}
+ * The provided decoration switch can be used by using {@link IZoomContributor#IS_DECORATED}
  * 
  * @author Lukas Balzer
  * @since 2.0.0
@@ -49,8 +45,9 @@ public class EditorContribution extends WorkbenchWindowControlContribution
     implements ZoomListener, PropertyChangeListener, IPartListener {
 
   private static final int STANDART_ZOOM = 100;
-  private final static String[] ZOOM_LEVEL = new String[] { "25", "50", "75", "100", "150", "200", "250" };
-  private final static Point ZOOM_SLIDER_RANGE = new Point(10, 300);
+  private static final String[] ZOOM_LEVEL = new String[] { "25", "50", "75", "100", "150", "200",
+      "250" };
+  private static final Point ZOOM_SLIDER_RANGE = new Point(10, 300);
   private ComboContribiution zoomLabel;
   private ZoomManager zoomManager;
   private SliderContribution zoomSlider;
@@ -60,7 +57,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution
   private IZoomContributor contributor;
   /**
    * the value of isDecorated is used to store the content of the
-   * {@link IZoomContributor#IS_DECORATED} property
+   * {@link IZoomContributor#IS_DECORATED} property.
    */
   private boolean isDecorated;
 
@@ -68,31 +65,20 @@ public class EditorContribution extends WorkbenchWindowControlContribution
   protected Control createControl(Composite parent) {
     parent.getParent().setRedraw(true);
     this.isDecorated = false;
-    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-      return new ToolBar(parent, SWT.NONE);
-    }
-    ToolBarManager manager = new ToolBarManager(SWT.HORIZONTAL | SWT.FLAT);
     this.contributor = new EmptyZoomContributor();
 
-    this.decoButton = new ButtonContribution("decoButton", SWT.TOGGLE) {
-      @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setToolTipText(Messages.DecorationToolTip);
-        getButtonControl().setImage(Activator.getImageDescriptor("icons/buttons/DecoButton.png").createImage()); //$NON-NLS-1$
-        getButtonControl().addMouseListener(new MouseAdapter() {
+    this.decoButton = new ButtonContribution("decoButton", SWT.TOGGLE);
+    decoButton.setToolTipText(Messages.DecorationToolTip);
+    decoButton.setImage(Activator.getImage("icons/buttons/DecoButton.png")); //$NON-NLS-1$
+    decoButton.addSelectionListener(new SelectionAdapter() {
 
-          @Override
-          public void mouseUp(MouseEvent arg0) {
-            EditorContribution.this.contributor.fireToolPropertyChange(IZoomContributor.IS_DECORATED,
-                !EditorContribution.this.isDecorated);
-            setDecoSelection((boolean) contributor.getProperty(IZoomContributor.IS_DECORATED));
-          }
-        });
-        return control;
+      @Override
+      public void widgetSelected(SelectionEvent arg0) {
+        EditorContribution.this.contributor.fireToolPropertyChange(
+            IZoomContributor.IS_DECORATED, !EditorContribution.this.isDecorated);
+        setDecoSelection((boolean) contributor.getProperty(IZoomContributor.IS_DECORATED));
       }
-    };
-    manager.add(decoButton);
+    });
     // adding a zoomslider to the toolbar
 
     final SelectionAdapter adapter = new SelectionAdapter() {
@@ -126,35 +112,27 @@ public class EditorContribution extends WorkbenchWindowControlContribution
         return control;
       }
     };
-    manager.add(zoomSlider);
 
-    this.zoomOutButton = new ButtonContribution("zoomOutButton", SWT.PUSH) {
+    this.zoomOutButton = new ButtonContribution("zoomOutButton", SWT.PUSH);
+    this.zoomOutButton.setImage(Activator.getImage("/icons/buttons/minus.png")); //$NON-NLS-1$
+    this.zoomOutButton.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor("/icons/buttons/minus.png").createImage()); //$NON-NLS-1$
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
-
-          @Override
-          public void widgetSelected(SelectionEvent arg0) {
-            int zoom = EditorContribution.this.zoomSlider.getSliderControl().getSelection()
-                - EditorContribution.this.zoomSlider.getSliderControl().getIncrement();
-            EditorContribution.this.zoomSlider.getSliderControl().setSelection(zoom);
-            EditorContribution.this.updateLabel();
-            if (EditorContribution.this.zoomManager != null) {
-              EditorContribution.this.zoomManager.setZoom(((double) zoom) / 100);
-            }
-          }
-        });
-        return control;
+      public void widgetSelected(SelectionEvent arg0) {
+        int zoom = EditorContribution.this.zoomSlider.getSliderControl().getSelection()
+            - EditorContribution.this.zoomSlider.getSliderControl().getIncrement();
+        EditorContribution.this.zoomSlider.getSliderControl().setSelection(zoom);
+        EditorContribution.this.updateLabel();
+        if (EditorContribution.this.zoomManager != null) {
+          EditorContribution.this.zoomManager.setZoom(((double) zoom) / 100);
+        }
       }
-    };
-    manager.add(zoomOutButton);
+    });
 
     this.zoomLabel = new ComboContribiution("zoomCombo", SWT.DROP_DOWN | SWT.NONE, 100) {
       @Override
       protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
+        super.createControl(parent);
 
         getComboControl().setItems(ZOOM_LEVEL);
         EditorContribution.this.updateLabel();
@@ -162,7 +140,8 @@ public class EditorContribution extends WorkbenchWindowControlContribution
 
           @Override
           public void widgetSelected(SelectionEvent arg0) {
-            String selection = EditorContribution.this.zoomLabel.getComboControl().getText().replace('%', ' ');
+            String selection = EditorContribution.this.zoomLabel.getComboControl().getText()
+                .replace('%', ' ');
             try {
               int zoom = Integer.parseInt(selection.trim());
               EditorContribution.this.zoomSlider.getSliderControl().setSelection(zoom);
@@ -175,33 +154,25 @@ public class EditorContribution extends WorkbenchWindowControlContribution
 
           }
         });
-        return control;
+        return getComboControl();
       }
     };
-    manager.add(zoomLabel);
 
-    this.zoomInButton = new ButtonContribution("zoomInButton", SWT.PUSH) {
+    this.zoomInButton = new ButtonContribution("zoomInButton", SWT.PUSH);
+    this.zoomInButton.setImage(Activator.getImage("/icons/buttons/plus.png")); //$NON-NLS-1$
+    this.zoomInButton.addSelectionListener(new SelectionAdapter() {
+
       @Override
-      protected Control createControl(Composite parent) {
-        Control control = super.createControl(parent);
-        getButtonControl().setImage(Activator.getImageDescriptor("/icons/buttons/plus.png").createImage()); //$NON-NLS-1$
-        getButtonControl().addSelectionListener(new SelectionAdapter() {
-
-          @Override
-          public void widgetSelected(SelectionEvent arg0) {
-            int zoom = EditorContribution.this.zoomSlider.getSliderControl().getSelection()
-                + EditorContribution.this.zoomSlider.getSliderControl().getIncrement();
-            EditorContribution.this.zoomSlider.getSliderControl().setSelection(zoom);
-            EditorContribution.this.updateLabel();
-            if (EditorContribution.this.zoomManager != null) {
-              EditorContribution.this.zoomManager.setZoom(((double) zoom) / 100);
-            }
-          }
-        });
-        return control;
+      public void widgetSelected(SelectionEvent arg0) {
+        int zoom = EditorContribution.this.zoomSlider.getSliderControl().getSelection()
+            + EditorContribution.this.zoomSlider.getSliderControl().getIncrement();
+        EditorContribution.this.zoomSlider.getSliderControl().setSelection(zoom);
+        EditorContribution.this.updateLabel();
+        if (EditorContribution.this.zoomManager != null) {
+          EditorContribution.this.zoomManager.setZoom(((double) zoom) / 100);
+        }
       }
-    };
-    manager.add(zoomInButton);
+    });
 
     try {
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
@@ -210,6 +181,12 @@ public class EditorContribution extends WorkbenchWindowControlContribution
     }
 
     parent.getParent().setRedraw(true);
+    ToolBarManager manager = new ToolBarManager(SWT.HORIZONTAL | SWT.FLAT);
+    manager.add(decoButton);
+    manager.add(zoomSlider);
+    manager.add(zoomOutButton);
+    manager.add(zoomInButton);
+    manager.add(zoomLabel);
     return manager.createControl(parent);
   }
 
@@ -220,14 +197,15 @@ public class EditorContribution extends WorkbenchWindowControlContribution
   }
 
   private void updateLabel() {
-    this.zoomLabel.getComboControl().setText(this.zoomSlider.getSliderControl().getSelection() + "%"); //$NON-NLS-1$
+    this.zoomLabel.getComboControl()
+        .setText(this.zoomSlider.getSliderControl().getSelection() + "%"); //$NON-NLS-1$
   }
 
-  
   @Override
   public boolean isDynamic() {
     return true;
   }
+
   /**
    * enables all widgets contained in the main composite of this class
    *
@@ -252,11 +230,11 @@ public class EditorContribution extends WorkbenchWindowControlContribution
   private void setDecoSelection(boolean enabled) {
     this.isDecorated = enabled;
     if (enabled) {
-      this.decoButton.getButtonControl()
-          .setImage(Activator.getImageDescriptor("icons/buttons/DecoButton_Selected.png").createImage()); //$NON-NLS-1$
+      this.decoButton
+          .setImage(Activator.getImage("icons/buttons/DecoButton_Selected.png")); //$NON-NLS-1$
     } else {
-      this.decoButton.getButtonControl()
-          .setImage(Activator.getImageDescriptor("icons/buttons/DecoButton.png").createImage()); //$NON-NLS-1$
+      this.decoButton
+          .setImage(Activator.getImage("icons/buttons/DecoButton.png")); //$NON-NLS-1$
     }
   }
 
@@ -275,7 +253,8 @@ public class EditorContribution extends WorkbenchWindowControlContribution
       this.zoomManager = this.contributor.getZoomManager();
 
       this.zoomManager.addZoomListener(EditorContribution.this);
-      this.zoomSlider.getSliderControl().setSelection((int) (EditorContribution.this.zoomManager.getZoom() * 100));
+      this.zoomSlider.getSliderControl()
+          .setSelection((int) (EditorContribution.this.zoomManager.getZoom() * 100));
       this.zoomSlider.getSliderControl().notifyListeners(SWT.Selection, null);
     } else {
 

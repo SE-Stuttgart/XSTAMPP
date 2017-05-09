@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -20,6 +18,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -40,7 +39,7 @@ public class Activator extends AbstractUIPlugin {
    * The shared instance
    */
   private static Activator plugin;
-
+  private static Map<String, Image> imagesToPaths;
   private static BundleContext context;
 
   /**
@@ -52,22 +51,21 @@ public class Activator extends AbstractUIPlugin {
   /*
    * (non-Javadoc)
    * 
-   * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
-   * BundleContext )
+   * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext )
    */
   @Override
   public void start(BundleContext newContext) throws Exception {
     super.start(newContext);
     Activator.context = newContext;
     Activator.plugin = this;
+    this.imagesToPaths = new HashMap<>();
 
   }
 
   /*
    * (non-Javadoc)
    * 
-   * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
-   * BundleContext )
+   * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext )
    */
   @Override
   public void stop(BundleContext newContext) throws Exception {
@@ -85,8 +83,7 @@ public class Activator extends AbstractUIPlugin {
   }
 
   /**
-   * Returns an image descriptor for the image file at the given plug-in
-   * relative path
+   * Returns an image descriptor for the image file at the given plug-in relative path
    * 
    * @param path
    *          the path
@@ -94,6 +91,14 @@ public class Activator extends AbstractUIPlugin {
    */
   public static ImageDescriptor getImageDescriptor(String path) {
     return AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
+  }
+
+  public static Image getImage(String path) {
+    if (!imagesToPaths.containsKey(path)) {
+      Image createImage = getImageDescriptor(path).createImage();
+      imagesToPaths.put(path, createImage);
+    }
+    return imagesToPaths.get(path);
   }
 
   /**
@@ -107,8 +112,8 @@ public class Activator extends AbstractUIPlugin {
 
   /**
    * searches the registered plugins for any extensions of the type
-   * <code>"astpa.extension.steppedProcess"</code> and for each maps the
-   * declared file extension to the IConfigurationElement
+   * <code>"astpa.extension.steppedProcess"</code> and for each maps the declared file extension to
+   * the IConfigurationElement
    * 
    * @see IConfigurationElement
    *
@@ -134,7 +139,8 @@ public class Activator extends AbstractUIPlugin {
         }
 
         String[] fileSegments = f.getName().split("\\."); //$NON-NLS-1$
-        if ((fileSegments.length > 1) && ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
+        if ((fileSegments.length > 1)
+            && ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
           Map<String, String> values = new HashMap<>();
           values.put("loadRecentProject", f.getAbsolutePath()); //$NON-NLS-1$
           STPAPluginUtils.executeParaCommand("xstampp.command.load", values);//$NON-NLS-1$
