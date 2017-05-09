@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-import xstampp.ui.common.ModalShell;
+import xstampp.ui.common.shell.ModalShell;
 
 public class RenameControlStructureShell extends ModalShell {
 

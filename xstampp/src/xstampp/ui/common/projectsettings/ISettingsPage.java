@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 
-import xstampp.ui.common.ModalShell;
+import xstampp.ui.common.shell.ModalShell;
 
 public interface ISettingsPage{
   Composite createControl(CTabFolder control, ModalShell parent, UUID modelId);

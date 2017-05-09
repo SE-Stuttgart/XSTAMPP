@@ -9,7 +9,7 @@
 
 package xstampp.usermanagement.ui;
 
-import xstampp.ui.common.ModalShell;
+import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
 
@@ -29,7 +29,7 @@ public class LoginShell extends AbstractUserShell {
    * @param hidePassword whether of not the password input should hide or show characters 
    */
   public LoginShell(IUserSystem userSystem, boolean hidePassword) {
-    super(userSystem, false);
+    super(userSystem, true);
     setTitle("Login");
     setAcceptLabel("Login");
   }

@@ -41,8 +41,8 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
-import xstampp.ui.common.LabelWithAssist;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.contentassist.LabelWithAssist;
 import xstampp.ui.navigation.api.IProjectSelection;
 import xstampp.util.JAXBExportJob;
 

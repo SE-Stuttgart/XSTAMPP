@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package xstampp.ui.common;
+package xstampp.ui.common.shell;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;

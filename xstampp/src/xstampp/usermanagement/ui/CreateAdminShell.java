@@ -27,7 +27,7 @@ public class CreateAdminShell extends AbstractUserShell {
    * @param userSystem the user system for which the administrator is created.
    */
   public CreateAdminShell(IUserSystem userSystem) {
-    super(userSystem, false);
+    super(userSystem, true);
     setTitle("Create Admin");
     setAcceptLabel("Create");
   }

@@ -11,10 +11,10 @@ import org.eclipse.swt.widgets.Composite;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
-import xstampp.ui.common.LabelWithAssist;
-import xstampp.ui.common.ModalShell;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.contentassist.LabelWithAssist;
 import xstampp.ui.common.projectsettings.ISettingsPage;
+import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.AccessRights;
 
 import java.util.UUID;

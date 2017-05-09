@@ -1,4 +1,4 @@
-package xstampp.ui.common;
+package xstampp.ui.common.contentassist;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;

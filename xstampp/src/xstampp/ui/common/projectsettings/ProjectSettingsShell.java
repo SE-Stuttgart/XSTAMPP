@@ -9,8 +9,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Shell;
 
-import xstampp.ui.common.ModalShell;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.ui.UserManagementPage;
 

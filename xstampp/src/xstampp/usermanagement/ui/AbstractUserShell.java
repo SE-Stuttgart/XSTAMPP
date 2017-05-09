@@ -12,7 +12,7 @@ package xstampp.usermanagement.ui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
-import xstampp.ui.common.ModalShell;
+import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
 
