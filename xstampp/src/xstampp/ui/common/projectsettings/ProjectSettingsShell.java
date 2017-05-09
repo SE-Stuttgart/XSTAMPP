@@ -1,5 +1,9 @@
 package xstampp.ui.common.projectsettings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -13,10 +17,6 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.ui.UserManagementPage;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * The project settings shell is a {@link ModalShell} which displays all available settings in the
@@ -43,7 +43,8 @@ public class ProjectSettingsShell extends ModalShell {
    *          {@link ProjectManager}
    */
   public ProjectSettingsShell(UUID projectId) {
-    super("Project Settings for " + ProjectManager.getContainerInstance().getTitle(projectId),true);
+    super("Project Settings for " + ProjectManager.getContainerInstance().getTitle(projectId),
+        APPLYABLE);
     this.projectId = projectId;
     this.pages = new ArrayList<>();
     setSize(600, 400);
@@ -52,7 +53,7 @@ public class ProjectSettingsShell extends ModalShell {
   @Override
   protected boolean validate() {
     for (ISettingsPage page : pages) {
-      if ( !page.validate()) {
+      if (!page.validate()) {
         return false;
       }
     }

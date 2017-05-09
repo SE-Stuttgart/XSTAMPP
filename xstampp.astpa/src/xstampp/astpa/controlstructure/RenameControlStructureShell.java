@@ -16,9 +16,10 @@ public class RenameControlStructureShell extends ModalShell {
   private UUID rootId;
 
   public RenameControlStructureShell(IControlStructureEditorDataModel dataModel, UUID rootId) {
-    super("Rename Control Structure");
+    super("Rename Control Structure",PACKED);
     this.dataModel = dataModel;
     this.rootId = rootId;
+    this.dataModel.setActiveRoot(rootId);
   }
 
   @Override
@@ -43,7 +44,8 @@ public class RenameControlStructureShell extends ModalShell {
 
   @Override
   protected void createCenter(Shell parent) {
-    this.nameInput = new TextInput(parent, SWT.None, "Name");
+    String text = dataModel.getComponent(rootId).getText();
+    this.nameInput = new TextInput(parent, SWT.None, "Name:",text);
 
   }
 

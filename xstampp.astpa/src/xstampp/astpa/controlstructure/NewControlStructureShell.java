@@ -4,6 +4,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
+import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.shell.ModalShell;
@@ -14,7 +15,7 @@ public class NewControlStructureShell extends ModalShell {
   private IControlStructureEditorDataModel dataModel;
 
   public NewControlStructureShell(IControlStructureEditorDataModel dataModel) {
-    super("New Control Structure");
+    super(Messages.ControlStructure_New,PACKED);
     this.dataModel = dataModel;
   }
 
@@ -27,7 +28,7 @@ public class NewControlStructureShell extends ModalShell {
   protected boolean doAccept() {
     for (IRectangleComponent comp: dataModel.getRoots()) {
       if(comp.getText().equals(nameInput.getText())) {
-        invalidate("The name for the control structure must be unique!");
+        invalidate(Messages.ControlStructure_NameMustBeUnique);
         return false;
       }
     }
@@ -37,7 +38,7 @@ public class NewControlStructureShell extends ModalShell {
 
   @Override
   protected void createCenter(Shell parent) {
-    this.nameInput = new TextInput(parent, SWT.None, "Name");
+    this.nameInput = new TextInput(parent, SWT.None, messages.Messages.NameInputLabel);
 
   }
 

@@ -78,6 +78,7 @@ public class ControlStructureController {
   public ControlStructureController() {
     this.connections = new ArrayList<>();
     this.rootComponents = new ArrayList<>();
+    this.rootComponents.add(new Component("level 0", new Rectangle(), ComponentType.ROOT));
     this.componentIndexTrash = new HashMap<>();
     this.componentTrash = new HashMap<>();
     this.connectionTrash = new HashMap<>();

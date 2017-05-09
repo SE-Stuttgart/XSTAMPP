@@ -402,7 +402,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     fileDialog.setFilterExtensions(extensions.toArray(new String[] {}));
 
     String file = fileDialog.open();
-    if (this.projectContainerToUuid.containsValue(new File(file))) {
+    if (file != null && this.projectContainerToUuid.containsValue(new File(file))) {
       MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
           Messages.ProjectManager_ProjectIsAlreadyOpen,
           Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);

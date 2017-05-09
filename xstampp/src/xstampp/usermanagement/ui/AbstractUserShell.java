@@ -39,7 +39,7 @@ public abstract class AbstractUserShell extends ModalShell {
    *          whether of not the password input should hide or show characters
    */
   public AbstractUserShell(IUserSystem userSystem, boolean hidePassword) {
-    super("User");
+    super("User",PACKED);
     this.selectedUser = null;
     this.userSystem = userSystem;
     this.hidePassword = hidePassword;

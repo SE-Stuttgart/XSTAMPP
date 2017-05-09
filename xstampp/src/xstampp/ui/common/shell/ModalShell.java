@@ -32,23 +32,44 @@ import xstampp.util.ColorManager;
  * <p>Example implementation:
  * 
  * <pre>
- * <code> public class ExampleShell extends ModalShell {
+ * public class ExampleShell extends ModalShell {
  * private String content;
  *
- * public ExampleShell() { super("Example", "Example"); setSize(300, 200); }
+ *  public ExampleShell() {
+ *    super("Example", "Example"); setSize(300, 200); 
+ *  }
  *
- * //@Override protected void createCenter(Shell shell) { Label exampleLabel = new Label(shell,
- * SWT.None); exampleLabel.setText("Example"); exampleLabel.setLayoutData(new GridData(SWT.FILL,
- * SWT.CENTER, true, false, 2, 1));
+ *  &#64;Override
+ *  protected void createCenter(Shell shell) {
+ *    Label exampleLabel = new Label(shell, SWT.None);
+ *    exampleLabel.setText("Example");
+ *    exampleLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+ *    Text exampleText = new Text(shell, SWT.None);
+ *    exampleText.addModifyListener(new ModifyListener() { //
+ *      &#64;Override 
+ *      public void modifyText(ModifyEvent e) { 
+ *        content = ((Text) e.getSource()).getText();
+ *        canAccept(); 
+ *      } 
+ *    }); 
+ *    GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+ *    nameText.setLayoutData(textData); 
+ *  }
  * 
- * Text exampleText = new Text(shell, SWT.None); exampleText.addModifyListener(new ModifyListener()
- * { //@Override public void modifyText(ModifyEvent e) { content = ((Text) e.getSource()).getText();
- * canAccept(); } }); GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
- * nameText.setLayoutData(textData); }
- * 
- * //@Override protected boolean doAccept() { return writeContent(); } //@Override protected boolean
- * validate() { try { return !content.isEmpty(); } catch (NullPointerException exc) { invalidate(
- * "Input invalid!"); return false; } } </code>
+ *  &#64;Override 
+ *  protected boolean doAccept() {
+ *    return writeContent(); 
+ *  } 
+ *  
+ *  &#64;Override 
+ *  protected boolean validate() {
+ *    try { 
+ *      return !content.isEmpty(); 
+ *      } catch (NullPointerException exc) {
+ *        invalidate("Input invalid!");
+ *        return false; 
+ *        } 
+ *      }
  * </pre>
  * 
  * @author Lukas Balzer - initial implementation
@@ -56,28 +77,40 @@ import xstampp.util.ColorManager;
  */
 public abstract class ModalShell {
 
+  /**
+   * When this style constant is added to the style of this shell an 'Apply' button is added to this
+   * shell which calls {@link #doAccept()}.
+   */
+  public static final int APPLYABLE = 1 << 2;
+  /**
+   * When this style constant is added to the style of this shell the content of it is packed to its
+   * minimum size after creation.
+   */
+  public static final int PACKED = 1 << 3;
   private String title;
   private Point size;
   private String acceptLabel;
   private Label invalidLabel;
   private Button okButton;
   private Button applyButton;
-  private boolean useApply;
   private boolean isAccepted;
   private Object returnValue;
+  private int style;
 
   /**
    * Constructs a ModalShell with he given title and a <code>Cancel</code> Button that closes the
    * shell without calling {@link #doAccept()} and a <code>Ok</code> Button that calls
    * {@link #doAccept()} and closes the application depending on the returned boolean.
+   * @param style
+   *          One of the integer constants defined in this class <ul> <li> {@link #APPLYABLE} <li>
+   *          {@link #PACKED} </ul>
    * 
-   * @param useApply
-   *          whether or not the apply button should be used
+   * 
    */
-  public ModalShell(String title, String acceptLabel, boolean useApply) {
+  public ModalShell(String title, String acceptLabel, int style) {
     this.title = title;
     this.acceptLabel = acceptLabel;
-    this.useApply = useApply;
+    this.style = style;
     setSize(300, 200);
     this.isAccepted = false;
 
@@ -94,7 +127,7 @@ public abstract class ModalShell {
    *          the label of the Button that accepts the entry
    */
   public ModalShell(String title, String acceptLabel) {
-    this(title, acceptLabel, false);
+    this(title, acceptLabel, 0);
 
   }
 
@@ -109,13 +142,11 @@ public abstract class ModalShell {
   }
 
   /**
-   * calls {@link #ModalShell(String,String,boolean)} with <code>Ok</code> as second argument.
-   * 
-   * @param useApply
-   *          whether or not the apply button should be used
+   * calls {@link #ModalShell(String,integer)} with <code>Ok</code> as second
+   * argument.
    */
-  public ModalShell(String title, boolean useApply) {
-    this(title, "Ok", useApply);
+  public ModalShell(String title, int style) {
+    this(title, "Ok", style);
   }
 
   /**
@@ -131,7 +162,7 @@ public abstract class ModalShell {
     if (this.size != null) {
       shell.setSize(this.size);
     }
-
+    shell.setMinimumSize(300, 100);
     shell.setText(title);
     createCenter(shell);
     Composite footer = new Composite(shell, SWT.None);
@@ -144,7 +175,11 @@ public abstract class ModalShell {
     invalidLabel.setVisible(false);
     invalidLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-    if (useApply) {
+
+    GridData gridData = new GridData(SWT.RIGHT, SWT.BOTTOM, false, false);
+    gridData.widthHint = SWT.DEFAULT;
+    gridData.heightHint = SWT.DEFAULT;
+    if ((this.style & APPLYABLE) != 0) {
 
       footer.setLayout(new GridLayout(4, false));
       applyButton = new Button(footer, SWT.PUSH);
@@ -155,19 +190,9 @@ public abstract class ModalShell {
           doAccept();
         }
       });
-      applyButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false));
+      applyButton.setLayoutData(gridData);
       applyButton.setEnabled(false);
     }
-
-    Button cancelButton = new Button(footer, SWT.PUSH);
-    cancelButton.setText("Cancel");
-    cancelButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent ev) {
-        shell.close();
-      }
-    });
-    cancelButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false));
 
     okButton = new Button(footer, SWT.PUSH);
     okButton.setText(acceptLabel);
@@ -180,9 +205,22 @@ public abstract class ModalShell {
         }
       }
     });
-    okButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false));
+    okButton.setLayoutData(gridData);
     okButton.setEnabled(false);
+
+    Button cancelButton = new Button(footer, SWT.PUSH);
+    cancelButton.setText("Cancel");
+    cancelButton.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent ev) {
+        shell.close();
+      }
+    });
+    cancelButton.setLayoutData(gridData);
     canAccept();
+    if ((this.style & PACKED) != 0) {
+      shell.pack();
+    }
     shell.open();
     while (!shell.isDisposed()) {
       if (!Display.getDefault().readAndDispatch()) {
@@ -247,7 +285,7 @@ public abstract class ModalShell {
     try {
       boolean valid = validate();
       this.okButton.setEnabled(valid);
-      if (this.useApply) {
+      if ((this.style & APPLYABLE) != 0) {
         this.applyButton.setEnabled(valid);
       }
       setUnchecked();
@@ -309,14 +347,15 @@ public abstract class ModalShell {
   protected final class TextInput {
     private String text = "";
 
-    public TextInput(Shell shell, int style, String label) {
+    public TextInput(Shell shell, int style, String label, String initialValue) {
       GridData labelData = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 2, 1);
 
       Label nameLabel = new Label(shell, SWT.None);
       nameLabel.setText(label);
       nameLabel.setLayoutData(labelData);
 
-      Text nameText = new Text(shell, SWT.None);
+      Text nameText = new Text(shell, style);
+      nameText.setText(initialValue);
       nameText.addModifyListener(new ModifyListener() {
         @Override
         public void modifyText(ModifyEvent ev) {
@@ -326,6 +365,10 @@ public abstract class ModalShell {
       });
       GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
       nameText.setLayoutData(textData);
+    }
+
+    public TextInput(Shell shell, int style, String label) {
+      this(shell, style, label, ""); //$NON-NLS-1$
     }
 
     public String getText() {
