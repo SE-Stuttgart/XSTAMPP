@@ -18,7 +18,9 @@ import org.eclipse.core.commands.IExecutionListener;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -36,13 +38,19 @@ public class AbstractSelectorWithAdditions extends AbstractSelector implements I
   private Map<String, String> commandParameters;
   private String commandsString;
 
-  public AbstractSelectorWithAdditions(TreeItem item, TreeItemDescription descriptor) {
-    super(item, descriptor);
+  /**
+   * Constructs a new Selector Object by calling
+   * {@link AbstractSelector#AbstractSelector(TreeItem, TreeItemDescription, IWorkbenchPartSite)}.
+   * The constructed selector contains an empty (not <i>null</i>) parameter map. and the command
+   * additions defined in the descriptor. Furthermore an execution listener is registered listening
+   * to the addition command's execution.
+   */
+  public AbstractSelectorWithAdditions(TreeItem item, TreeItemDescription descriptor,
+      IWorkbenchPartSite site) {
+    super(item, descriptor, site);
     this.commandsString = "";
+    this.commandParameters = new HashMap<>();
     setCommandAdditions(descriptor.getCommandAdditions());
-    ICommandService service = (ICommandService) PlatformUI.getWorkbench()
-        .getService(ICommandService.class);
-    service.addExecutionListener(this);
   }
 
   /**
@@ -60,9 +68,11 @@ public class AbstractSelectorWithAdditions extends AbstractSelector implements I
       params.put("xstampp.dynamicStep.commandParameter.projectId", getProjectId().toString());
       params.putAll(commandParameters);
       parameter.parameters = params;
-
       CommandContributionItem contributionItem = new CommandContributionItem(parameter);
 
+      ICommandService service = (ICommandService) PlatformUI.getWorkbench()
+          .getService(ICommandService.class);
+      service.getCommand(commandId).addExecutionListener(this);
       manager.add(contributionItem);
     }
   }
@@ -116,10 +126,18 @@ public class AbstractSelectorWithAdditions extends AbstractSelector implements I
 
   @Override
   public void postExecuteSuccess(String commandId, Object returnValue) {
+    ICommandService service = (ICommandService) PlatformUI.getWorkbench()
+        .getService(ICommandService.class);
+    service.getCommand(commandId).removeExecutionListener(this);
     if (this.commandsString.contains(commandId)) {
       if (returnValue instanceof String) {
-        getItem().setText((String) returnValue);
-        setPathHistory((String) returnValue);
+        System.out.println("exe");
+        try {
+          getItem().setText((String) returnValue);
+          setPathHistory((String) returnValue);
+        } catch (SWTException exc) {
+          System.out.println("disposed");
+        }
       }
     }
   }

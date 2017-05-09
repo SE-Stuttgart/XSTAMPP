@@ -12,6 +12,7 @@
 package xstampp.ui.navigation;
 
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * @see AbstractSelector
@@ -28,8 +29,8 @@ public class CategorySelector extends AbstractSelector {
    * @param item
    *          {@link AbstractSelector#getItem()}
    */
-  public CategorySelector(TreeItem item, TreeItemDescription descriptor) {
-    super(item,descriptor);
+  public CategorySelector(TreeItem item, TreeItemDescription descriptor, IWorkbenchPartSite site) {
+    super(item,descriptor, site);
   }
 
 }

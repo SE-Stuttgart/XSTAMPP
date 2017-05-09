@@ -15,6 +15,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 import xstampp.ui.common.ProjectManager;
 
@@ -41,8 +42,8 @@ public class ProjectSelector extends AbstractSelector {
    * @param item
    *          {@link AbstractSelector#getItem()}
    */
-  public ProjectSelector(TreeItem item, TreeItemDescription descriptor) {
-    super(item, descriptor);
+  public ProjectSelector(TreeItem item, TreeItemDescription descriptor, IWorkbenchPartSite site) {
+    super(item, descriptor, site);
     this.isUnsaved = false;
     this.isReadOnly = false;
     refreshPath();

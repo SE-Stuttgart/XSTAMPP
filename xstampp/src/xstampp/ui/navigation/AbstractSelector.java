@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.model.IDataModel;
@@ -41,6 +42,7 @@ public abstract class AbstractSelector implements IProjectSelection {
   private ArrayList<IProjectSelection> children;
   private IProjectSelection parent;
   private String selectionId;
+  private IWorkbenchPartSite site;
 
   /**
    * constructs a new Selector for the given treeItem and project.
@@ -49,9 +51,11 @@ public abstract class AbstractSelector implements IProjectSelection {
    *
    * @param item
    *          {@link #getItem()}
+   * @param site TODO
    */
-  public AbstractSelector(TreeItem item, TreeItemDescription descriptor) {
+  public AbstractSelector(TreeItem item, TreeItemDescription descriptor, IWorkbenchPartSite site) {
     this.treeItem = item;
+    this.site = site;
     this.projectId = descriptor.getProjectId();
     this.children = new ArrayList<>();
     this.parent = descriptor.getParent();
@@ -118,6 +122,7 @@ public abstract class AbstractSelector implements IProjectSelection {
   @Override
   public void activate() {
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(getPathHistory());
+    this.site.getSelectionProvider().setSelection(this);
     activeSelection = this;
   }
 

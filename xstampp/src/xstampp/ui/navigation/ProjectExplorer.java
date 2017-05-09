@@ -10,6 +10,7 @@
 package xstampp.ui.navigation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -43,7 +45,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -87,8 +88,7 @@ public final class ProjectExplorer extends ViewPart
   private static final String EXTENSION = "extension"; //$NON-NLS-1$
   private static final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
   private Map<UUID, TreeItem> treeItemsToProjectIDs;
-  private Map<TreeItem, String> selectionIdsToTreeItems;
-  private Map<TreeItem, IConfigurationElement> perspectiveElementsToTreeItems;
+  private Map<TreeItem, IProjectSelection> selectorsToTreeItems;
   private Map<String, IProjectSelection> selectorsToSelectionId;
   private Map<String, List<IConfigurationElement>> stepEditorsToStepId;
   private Map<String, List<IConfigurationElement>> stepPerspectivesToStepId;
@@ -102,16 +102,16 @@ public final class ProjectExplorer extends ViewPart
   private Listener expandListener;
   private GC gc;
   private List<DynamicStepSelector> dynamicSelectors;
+  private ISelection activeSelection;
 
   @Override
   public void createPartControl(Composite parent) {
     parent.setBackground(null);
-    this.selectionIdsToTreeItems = new HashMap<>();
+    this.selectorsToTreeItems = new HashMap<>();
     this.selectorsToSelectionId = new HashMap<>();
     this.selectionListener = new ArrayList<>();
     this.dynamicSelectors = new ArrayList<>();
     this.treeItemsToProjectIDs = new HashMap<>();
-    this.perspectiveElementsToTreeItems = new HashMap<>();
     this.expandListener = new Listener() {
 
       @Override
@@ -219,6 +219,9 @@ public final class ProjectExplorer extends ViewPart
 
       @Override
       public void widgetSelected(SelectionEvent event) {
+        if (selectorsToTreeItems.containsKey(event.item)) {
+          selectorsToTreeItems.get(event.item).activate();
+        }
         ProjectExplorer.this.listener.handleEvent(null);
         ProjectExplorer.this.getSite().setSelectionProvider(ProjectExplorer.this);
 
@@ -252,7 +255,7 @@ public final class ProjectExplorer extends ViewPart
     this.tree.setFont(defaultFont);
     projectItem.setFont(defaultFont);
     ProjectSelector selector = new ProjectSelector(projectItem,
-        new TreeItemDescription(new HeadSelector(), projectId));
+        new TreeItemDescription(new HeadSelector(), projectId), getSite());
 
     /**
      * The selection id identifies each step in the current runtime.
@@ -287,42 +290,22 @@ public final class ProjectExplorer extends ViewPart
 
     subItem.setText(descriptor.getName());// $NON-NLS-1$
     subItem.addListener(SWT.SELECTED, this.listener);
-    String name = descriptor.getElementName();
     this.addImage(subItem, descriptor.getIcon(), descriptor.getNamespaceIdentifier());// $NON-NLS-1$
     IProjectSelection selector = null;
+    List<String> arrayList = new ArrayList<>();
+    Collections.addAll(arrayList, descriptor.getCommandAdditions());
     for (IConfigurationElement el : descriptor.getChildren()) {
-      List<String> arrayList = new ArrayList<>();
       if (el.getName().equals("commandAddition")) {
         arrayList.add(el.getAttribute("commandId"));
       }
-      descriptor.setCommandAdditions(arrayList.toArray(new String[0]));
     }
+    descriptor.setCommandAdditions(arrayList.toArray(new String[0]));
+    String name = descriptor.getElementName();
     if (name.equals("step") || name.equals("stepEditor")) { //$NON-NLS-1$ //$NON-NLS-2$
-      selector = new StepSelector(subItem, descriptor);
-      if (this.stepPerspectivesToStepId.containsKey(descriptor.getId())) {
-        TreeItem perspectiveItem;
-        for (IConfigurationElement perspConf : this.stepPerspectivesToStepId
-            .get(descriptor.getId())) {
-
-          perspectiveItem = new TreeItem(subItem, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-          perspectiveItem.setFont(defaultFont);
-          this.perspectiveElementsToTreeItems.put(perspectiveItem, perspConf);
-          perspectiveItem.setText(perspConf.getAttribute("name")); //$NON-NLS-1$
-          this.selectionIdsToTreeItems.put(perspectiveItem, selectionId);
-          IConfigurationElement element = perspConf.getChildren("view")[0]; //$NON-NLS-1$
-          String viewId = element.getAttribute("id"); //$NON-NLS-1$
-
-          Image img = PlatformUI.getWorkbench().getViewRegistry().find(viewId).getImageDescriptor()
-              .createImage();
-          perspectiveItem.setImage(img);
-        }
-      }
-
+      selector = new StepSelector(subItem, descriptor, getSite());
       this.contextMenu.addMenuListener((IMenuListener) selector);
-
     } else if (name.equals("category")) {
-      selector = new CategorySelector(subItem, descriptor);
-
+      selector = new CategorySelector(subItem, descriptor, getSite());
       for (IConfigurationElement childExt : descriptor.getChildren()) {
         addTreeItem(new TreeItemDescription(childExt, selector, descriptor.getProjectId()));
       }
@@ -330,7 +313,7 @@ public final class ProjectExplorer extends ViewPart
       try {
         IDynamicStepsProvider provider = (IDynamicStepsProvider) descriptor.getElement()
             .createExecutableExtension("provider");
-        selector = new DynamicStepSelector(subItem, descriptor, provider);
+        selector = new DynamicStepSelector(subItem, descriptor, provider, getSite());
 
         this.contextMenu.addMenuListener((IMenuListener) selector);
         dynamicSelectors.add(((DynamicStepSelector) selector));
@@ -371,12 +354,12 @@ public final class ProjectExplorer extends ViewPart
    */
   private void addOrReplaceItem(String selectionId, IProjectSelection selector, TreeItem item) {
     if (this.selectorsToSelectionId.containsKey(selectionId)) {
-      this.selectionIdsToTreeItems.remove(this.selectorsToSelectionId.get(selectionId).getItem());
-      this.selectionIdsToTreeItems.put(item, selectionId);
+      this.selectorsToTreeItems.remove(this.selectorsToSelectionId.get(selectionId).getItem());
+      this.selectorsToTreeItems.put(item, selector);
       this.selectorsToSelectionId.get(selectionId).changeItem(item);
 
     } else {
-      this.selectionIdsToTreeItems.put(item, selectionId);
+      this.selectorsToTreeItems.put(item, selector);
       this.selectorsToSelectionId.put(selectionId, selector);
     }
   }
@@ -427,29 +410,31 @@ public final class ProjectExplorer extends ViewPart
   public void updateProjects() {
     Map<UUID, TreeItem> oldProjects = new HashMap<>(treeItemsToProjectIDs);
     for (UUID id : ProjectManager.getContainerInstance().getProjectKeys()) {
-
       this.updateProject(id);
       oldProjects.remove(id);
     }
-    for (Entry<UUID, TreeItem> unusedId : oldProjects.entrySet()) {
-      for (String idEntry : this.selectorsToSelectionId.keySet()) {
-        if (idEntry.contains(unusedId.getKey().toString())) {
-          this.selectorsToSelectionId.get(idEntry).cleanUp();
-        }
-        remove(unusedId.getValue());
-      }
+    for (Entry<UUID, TreeItem> unusedItem : oldProjects.entrySet()) {
+      this.treeItemsToProjectIDs.remove(unusedItem.getKey());
+      remove(unusedItem.getValue());
     }
 
   }
 
   private void remove(TreeItem item) {
-    for (TreeItem child : item.getItems()) {
-      remove(child);
+
+    IProjectSelection remove = this.selectorsToTreeItems.remove(item);
+    if (remove != null) {
+      remove.cleanUp();
     }
-    String selectionId = this.selectionIdsToTreeItems.get(item);
-    this.selectorsToSelectionId.remove(selectionId).cleanUp();
-    this.selectionIdsToTreeItems.remove(item);
-    item.dispose();
+    if (!item.isDisposed()) {
+      for (TreeItem childItem : item.getItems()) {
+        remove(childItem);
+      }
+      for (TreeItem child : item.getItems()) {
+        remove(child);
+      }
+      item.dispose();
+    }
   }
 
   /**
@@ -500,20 +485,17 @@ public final class ProjectExplorer extends ViewPart
     if (this.getSelection() instanceof AbstractSelectorWithAdditions) {
       ((AbstractSelectorWithAdditions) getSelection()).addCommandAdditions(manager);
     }
-    if (this.getSelection() instanceof StepSelector) {
+    if (this.getSelection() instanceof StepSelector
+        && ((StepSelector) this.getSelection()).getInputs().size() > 1) {
       this.openWithMenu.removeAll();
       for (STPAEditorInput input : ((StepSelector) this.getSelection()).getInputs()) {
         this.openWithMenu.add(input.getActivationAction());
       }
+
       manager.add(this.openWithMenu);
     }
-    if (getSelection() instanceof DynamicStepSelector) {
-      ((DynamicStepSelector) getSelection()).addMenu(manager);
-    }
-    for (ISelectionChangedListener listenerObj : ProjectExplorer.this.selectionListener) {
-      listenerObj.selectionChanged(
-          new SelectionChangedEvent(ProjectExplorer.this, ProjectExplorer.this.getSelection()));
-    }
+    manager.add(new Separator());
+
   }
 
   @Override
@@ -608,19 +590,8 @@ public final class ProjectExplorer extends ViewPart
 
   @Override
   public ISelection getSelection() {
-    if (!this.tree.isDisposed() && (this.tree.getSelectionCount() > 0)
-        && this.selectionIdsToTreeItems.containsKey(this.tree.getSelection()[0])) {
-      TreeItem item = this.tree.getSelection()[0];
-      String stepId = this.selectionIdsToTreeItems.get(this.tree.getSelection()[0]);
-      IProjectSelection selector = this.selectorsToSelectionId.get(stepId);
-      selector.activate();
-      if (this.perspectiveElementsToTreeItems.containsKey(item)) {
-        ((StepSelector) selector)
-            .setOpenWithPerspective(this.perspectiveElementsToTreeItems.get(item));
-      } else if (selector instanceof StepSelector) {
-        ((StepSelector) selector).setOpenWithPerspective("xstampp.defaultPerspective");//$NON-NLS-1$
-      }
-      return this.selectorsToSelectionId.get(stepId);
+    if (this.activeSelection != null) {
+      return this.activeSelection;
     }
     return new TreeSelection();
   }
@@ -635,8 +606,14 @@ public final class ProjectExplorer extends ViewPart
 
   @Override
   public void setSelection(ISelection selection) {
-    // the selection can not be changed from outside
-
+    this.activeSelection = selection;
+    for (ISelectionChangedListener listenerObj : ProjectExplorer.this.selectionListener) {
+      listenerObj.selectionChanged(
+          new SelectionChangedEvent(ProjectExplorer.this, ProjectExplorer.this.activeSelection));
+    }
   }
 
+  public IProjectSelection getActiveSelection() {
+    return AbstractSelector.activeSelection;
+  }
 }

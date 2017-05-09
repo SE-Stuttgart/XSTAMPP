@@ -16,6 +16,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -46,8 +47,8 @@ public class DynamicStepSelector extends AbstractSelectorWithAdditions implement
    *          the {@link IDynamicStepsProvider}
    */
   public DynamicStepSelector(TreeItem item, TreeItemDescription descriptor,
-      IDynamicStepsProvider provider) {
-    super(item, descriptor);
+      IDynamicStepsProvider provider, IWorkbenchPartSite site) {
+    super(item, descriptor,site);
     this.commandId = descriptor.getCommand();
     this.pluginId = descriptor.getNamespaceIdentifier();
     setProvider(provider);
@@ -68,7 +69,8 @@ public class DynamicStepSelector extends AbstractSelectorWithAdditions implement
    *          the menu manager of the context table. The Menu manager must regularly remove this
    *          since this method adds a new contribution.
    */
-  public void addMenu(IMenuManager manager) {
+  @Override
+  public void addCommandAdditions(IMenuManager manager) {
     CommandContributionItemParameter parameter = new CommandContributionItemParameter(
         PlatformUI.getWorkbench().getActiveWorkbenchWindow(), "", commandId, SWT.PUSH);
     Map<String, String> params = new HashMap<>();
@@ -78,7 +80,7 @@ public class DynamicStepSelector extends AbstractSelectorWithAdditions implement
 
     manager.add(contributionItem);
   }
-
+  
   public IDynamicStepsProvider getProvider() {
     return provider;
   }

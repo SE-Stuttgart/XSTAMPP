@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -49,8 +50,8 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
    * @param item
    *          {@link AbstractSelector#getItem()}
    */
-  public StepSelector(TreeItem item, TreeItemDescription descriptor) {
-    super(item, descriptor);
+  public StepSelector(TreeItem item, TreeItemDescription descriptor, IWorkbenchPartSite site) {
+    super(item, descriptor,site);
     this.editorId = descriptor.getEditorId();
     this.inputs = new HashMap<>();
     addStepEditor(editorId, descriptor.getName());
