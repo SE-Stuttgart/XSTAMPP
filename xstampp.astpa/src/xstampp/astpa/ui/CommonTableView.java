@@ -106,6 +106,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 	private static final Image MOVE_DOWN = Activator.getImageDescriptor("/icons/buttons/commontables/down.png") //$NON-NLS-1$
 			.createImage();
 
+  private String tableHeader;
+
 	/**
 	 * 
 	 * @author Jarkko Heidenwag
@@ -368,7 +370,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 	 */
 	public void createCommonTableView(Composite parent, String tableHeader) {
 
-		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
+		this.tableHeader = tableHeader;
+    SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
 
 		// composite for the table and the "New item" button
 		this.tableContainer = new Composite(sashForm, SWT.NONE);

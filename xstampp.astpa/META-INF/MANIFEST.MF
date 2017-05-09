@@ -154,6 +154,7 @@ Export-Package: xstampp.astpa;uses:="org.osgi.framework,org.eclipse.jface.resour
  xstampp.astpa.model.sds;uses:="xstampp.model,xstampp.astpa.model.hazacc,xstampp.astpa.haz",
  xstampp.astpa.model.sds.interfaces,
  xstampp.astpa.ui;uses:="org.eclipse.swt.widgets,xstampp.ui.editors",
+ xstampp.astpa.ui.acchaz,
  xstampp.astpa.ui.causalScenarios;
   uses:="xstampp.model,
    xstampp.ui.common.grid,
@@ -161,6 +162,8 @@ Export-Package: xstampp.astpa;uses:="org.osgi.framework,org.eclipse.jface.resour
    org.eclipse.swt.widgets,
    xstampp.ui.editors,
    xstampp.astpa.model.interfaces",
+ xstampp.astpa.ui.causalfactors,
+ xstampp.astpa.ui.linking,
  xstampp.astpa.ui.sds;
   uses:="xstampp.model,
    org.eclipse.swt.graphics,
