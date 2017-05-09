@@ -1,0 +1,12 @@
+\section{How to build XSTAMPP}
+
+\begin{enumerate} 
+\item The build requires Maven (>=3.3) and java (>1.7) either from $https://maven.apache.org/$ or from the IDE
+\item go to the xstampp.parent directory in the root path of the xstampp project (where this file is located)
+\item open a command in the xstampp.parent dir and execute 
+	\begin{enumerate} 
+	\item 'mvn clean verify' to build xstampp with xstpa and cast already included
+	\item 'mvn clean install' as 3.1 but also installs xstampp on $[user]/.m2$ for usage as local dependency of other builds
+	\end{enumerate} 
+\item the build artifacts are located in the astpa.repository/target	
+\end{enumerate} 

@@ -1,0 +1,31 @@
+\section{Run XSTAMPP in Eclipse}
+you need:
+\begin{itemize}
+\item Eclipse for RCP and RAP Developers (Plug-in Developement)\footnote{http://eclipse.org/downloads} ($> Lunar$)
+\item at least JavaSE 1.7
+\item to install gef $( help\rightarrow install new software\rightarrow http://download.eclipse.org/tools/gef/updates/releases/)$
+\item to install nebula grid from eclipse.org\footnote{http://download.eclipse.org/technology/nebula/snapshot/}
+\item to install maven\footnote{https://maven.apache.org/download.cgi}
+\item import/clone xstampp projects using the included git
+	\begin{enumerate}
+	\item Open the $Import$ Dialog selecting $File\rightarrow Import$
+	\item in the Import menu click $Git\rightarrow Projects from Git$ and follow the steps of the import wizard
+	\end{enumerate}
+\item to resolve upcoming error messages refer to Known Issues Section \ref{chap:issues}
+\end{itemize}
+	- 
+\subsection{Create a new plugin:}
+\begin{itemize}
+\item create a new plugin by clicking $New\rightarrow Others..\rightarrow Plug-in Developement\rightarrow Plug-in Project$
+\item add dependencies xstampp and xstampp.extension
+\item add the extension xstampp.extension.steppedProcess to your plugin
+\item create a class implemnting IDataModel
+\item create stepEditors which must extend StandartEditorPart and implement IViewBase
+\item xstampp loads the files which are selected in the load Dialog or already located in the workspace 
+	  by directly calling a load command registered as command in the steppedProcess extensionPoint herefore it needs:
+	\begin{itemize}
+	\item a load job which extends AbstractLoadJob
+	\item a load Handler extending AbstractHandler which is registered as default handler for the load command 
+	\item let your handler.execute() return a new instance of your load job
+	\end{itemize}
+\end{itemize}

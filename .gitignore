@@ -6,3 +6,10 @@ bin/
 *.classpath
 astpa/ExportTest/foppdf.pdf
 *.exe
+*.synctex.gz
+*.aux
+*.toc
+*.out
+misc/docu/Readme.pdf
+misc/docu/*.log
+misc/docu/content/*.log
