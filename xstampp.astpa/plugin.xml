@@ -623,7 +623,7 @@
       <command
             defaultHandler="xstampp.astpa.util.commands.NewControlStructureHandler"
             id="xstampp.astpa.newControlStructure.command"
-            name="New Control Structure">
+            name="%command.name">
          <commandParameter
                id="xstampp.dynamicStep.commandParameter.projectId"
                name="name"
@@ -633,7 +633,7 @@
       <command
             defaultHandler="xstampp.astpa.util.commands.RenameRootComponentHandler"
             id="xstampp.astpa.command.cs.rename"
-            name="Rename">
+            name="%command.cs.rename.name.0">
          <commandParameter
                id="xstampp.dynamicStep.commandParameter.projectId"
                name="name"
@@ -886,7 +886,7 @@
          <command
                commandId="xstampp.astpa.controlstructure.preferenceToggle"
                label="%command.label.ProcessVariables_EnableBorder"
-               tooltip="The Snap-To mode is currently active for the connection tool, push for changing to manual ">
+               tooltip="%command.cs.snapToConnection.tooltip">
             <visibleWhen
                   checkEnabled="false">
                <with
@@ -921,7 +921,7 @@
          </command>
          <command
                commandId="xstampp.command.openWizard"
-               label="Export Image"
+               label="%command.imageExport.label"
                style="push">
             <parameter
                   name="xstampp.commandParameter.openwizard"

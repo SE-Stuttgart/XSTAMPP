@@ -443,6 +443,8 @@ public final class Messages extends NLS {
   public static String ManipulationObjects;
   // *-------N-------------------------------------------------------------------*
   @SuppressWarnings("javadoc")
+  public static String NameInputLabel;
+  @SuppressWarnings("javadoc")
   public static String NoUpdatesForTheCurrentInstallationHaveBeenFound;
   @SuppressWarnings("javadoc")
   public static String NoUpdate;

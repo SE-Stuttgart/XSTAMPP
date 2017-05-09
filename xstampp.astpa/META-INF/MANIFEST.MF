@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %Bundle-Name
+Bundle-Name: Astpa
 Bundle-SymbolicName: xstampp.astpa;singleton:=true
 Bundle-Version: 2.2.0
 Bundle-Activator: xstampp.astpa.Activator
@@ -229,4 +229,4 @@ Bundle-ClassPath: lib/avalon-framework-4.2.0.jar,
  lib/poi-ooxml-schemas-3.14-20160307.jar,
  lib/xmlbeans-2.6.0.jar
 Import-Package: org.apache.log4j
-Bundle-Vendor: %Bundle-Vendor
+Bundle-Vendor: University Stuttgart
