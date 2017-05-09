@@ -85,7 +85,6 @@ public class CausalFactorControllerTest {
 		CausalFactorEntryData data = new CausalFactorEntryData(entry1Id);
     data.addHazardId(hazId1);
     data.addHazardId(UUID.randomUUID());
-		Assert.assertTrue(dataModel.changeCausalEntry(compId1, cf1Id, data));
 
 		ICausalComponent comp =dataModel.getCausalComponent(compId1);
     for(ICausalFactor factor: comp.getCausalFactors()){
@@ -133,12 +132,10 @@ public class CausalFactorControllerTest {
 		Assert.assertNull(dataModel.addCausalFactor((UUID)null));
     Assert.assertFalse(dataModel.setCausalFactorText(null, null, null));
     Assert.assertFalse(dataModel.setCausalFactorText(UUID.randomUUID(), UUID.randomUUID(), ""));
-    Assert.assertFalse(dataModel.changeCausalEntry(hazId1, compId1, null));
     
     UUID factorId = dataModel.addCausalFactor(compId1);
     UUID entryId = dataModel.addCausalHazardEntry(compId1, factorId);
     Assert.assertNotNull(entryId);
-    Assert.assertFalse(dataModel.changeCausalEntry(compId1, factorId, new CausalFactorEntryData(entryId)));
 		
 		
 	}
