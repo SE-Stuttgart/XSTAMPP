@@ -994,6 +994,10 @@
          commandId="xstampp.command.openWizard"
          icon="icons/eclipse/export_wiz.gif">
    </image>
+   <image
+         commandId="astpa.commands.rename"
+         icon="icons/eclipse/rename.png">
+   </image>
 </extension>
 <extension
       point="org.eclipse.help.toc">

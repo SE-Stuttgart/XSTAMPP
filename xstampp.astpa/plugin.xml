@@ -65,10 +65,14 @@
                   editorId="astpa.steps.step1_8"
                   icon="icons/buttons/navigation/STEP1_8(16).png"
                   id="xstampp.astpa.controlStructure_List"
-                  name="Control Structures"
+                  name="Control Structure Diagrams"
                   provider="xstampp.astpa.controlstructure.ControlStructureProvider">
                <commandAddition
-                     commandId="xstampp.astpa.command.cs.rename">
+                     commandId="xstampp.astpa.command.cs.rename"
+                     name="Rename">
+               </commandAddition>
+               <commandAddition
+                     commandId="xstampp.astpa.command.cs.deleteRoot">
                </commandAddition>
             </editor_List>
          </category>
@@ -634,6 +638,21 @@
             defaultHandler="xstampp.astpa.util.commands.RenameRootComponentHandler"
             id="xstampp.astpa.command.cs.rename"
             name="%command.cs.rename.name.0">
+         <commandParameter
+               id="xstampp.dynamicStep.commandParameter.projectId"
+               name="name"
+               optional="false">
+         </commandParameter>
+         <commandParameter
+               id="xstampp.astpa.cs.rootId"
+               name="rootId"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="xstampp.astpa.util.commands.DeleteRootComponentHandler"
+            id="xstampp.astpa.command.cs.deleteRoot"
+            name="Delete Control Structure Diagram">
          <commandParameter
                id="xstampp.dynamicStep.commandParameter.projectId"
                name="name"
@@ -1255,6 +1274,14 @@
       <image
             commandId="xstampp.astpa.newControlStructure.command"
             icon="icons/buttons/plus.png">
+      </image>
+      <image
+            commandId="xstampp.astpa.command.cs.rename"
+            icon="icons/eclipse/rename.png">
+      </image>
+      <image
+            commandId="xstampp.astpa.command.cs.deleteRoot"
+            icon="icons/eclipse/delete_obj.gif">
       </image>
    </extension>
 
