@@ -1,7 +1,5 @@
 package xstampp.usermanagement.ui;
 
-import java.util.UUID;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -27,10 +25,13 @@ import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.UserSystem;
+import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.Admin;
+
+import java.util.UUID;
 
 public class UserManagementPage implements ISettingsPage {
 
@@ -71,7 +72,7 @@ public class UserManagementPage implements ISettingsPage {
       hasUserComp.setLayoutData(data);
 
       final List userList = new List(hasUserComp, SWT.None);
-      userList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
+      userList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
       refreshUsers();
 
       final Button addButton = new Button(hasUserComp, SWT.PUSH);
@@ -97,7 +98,7 @@ public class UserManagementPage implements ISettingsPage {
           if (currentSelection != null
               && MessageDialog.openConfirm(Display.getDefault().getActiveShell(),
                   Messages.UserManagementPage_5 + currentSelection.getUsername(),
-                  String.format(Messages.UserManagementPage_6,currentSelection.getUsername()))
+                  String.format(Messages.UserManagementPage_6, currentSelection.getUsername()))
               && userSystem.deleteUser(currentSelection.getUserId())) {
             deleteButton.setEnabled(false);
             currentSelection = null;
@@ -107,11 +108,26 @@ public class UserManagementPage implements ISettingsPage {
       });
       deleteButton.setEnabled(false);
 
+      final Button editButton = new Button(hasUserComp, SWT.PUSH);
+      String editImgPath = "/icons/buttons/edit.png"; //$NON-NLS-1$
+      editButton.setImage(Activator.getImageDescriptor(editImgPath).createImage());
+      editButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
+      editButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent ev) {
+          if (userSystem instanceof UserSystem) {
+            ((UserSystem) userSystem).editUser(currentSelection);
+          }
+        }
+      });
+      editButton.setEnabled(false);
+
       userList.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent event) {
           currentSelection = userSystem.getRegistry().get(userList.getSelectionIndex());
           deleteButton.setEnabled(userSystem.canDeleteUser(currentSelection.getUserId()));
+          editButton.setEnabled(userSystem.checkAccess(AccessRights.ADMIN));
         }
       });
       userList.addListener(1, new Listener() {
@@ -166,6 +182,11 @@ public class UserManagementPage implements ISettingsPage {
   }
 
   private void refreshUsers() {
+  }
+
+  @Override
+  public boolean isVisible(UUID projectId) {
+    return true;
   }
 
 }

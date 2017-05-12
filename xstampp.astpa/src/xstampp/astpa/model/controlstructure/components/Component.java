@@ -13,6 +13,17 @@
 
 package xstampp.astpa.model.controlstructure.components;
 
+import org.eclipse.draw2d.geometry.Rectangle;
+
+import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.model.causalfactor.CausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.controlstructure.ControlStructureController;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.IEntryWithNameId;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,16 +36,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.draw2d.geometry.Rectangle;
-
-import xstampp.astpa.controlstructure.CSEditor;
-import xstampp.astpa.controlstructure.CSEditorWithPM;
-import xstampp.astpa.model.causalfactor.CausalFactor;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.controlstructure.ControlStructureController;
-import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-
 /**
  * 
  * CSModel is an abstract class which contains all elementary fields and
@@ -46,7 +47,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
  */
 @XmlRootElement(name = "component")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Component implements IRectangleComponent, ICausalComponent,Comparable {
+public class Component implements IRectangleComponent, ICausalComponent,Comparable, IEntryWithNameId {
 
   @XmlElement(name="id")
 	private UUID id;

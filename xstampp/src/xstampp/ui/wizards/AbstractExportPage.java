@@ -43,7 +43,7 @@ import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.contentassist.LabelWithAssist;
-import xstampp.ui.navigation.api.IProjectSelection;
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.util.JAXBExportJob;
 
 import java.io.File;

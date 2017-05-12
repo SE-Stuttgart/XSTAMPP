@@ -47,4 +47,10 @@ public class Admin extends AbstractUser {
     return true;
   }
 
+  @Override
+  public void addResponsibility(UUID responsibility) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

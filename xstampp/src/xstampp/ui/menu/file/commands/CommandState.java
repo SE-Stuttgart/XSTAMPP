@@ -1,25 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
 
 package xstampp.ui.menu.file.commands;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.UUID;
 
 import messages.Messages;
 
@@ -40,7 +30,15 @@ import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.navigation.api.IProjectSelection;
+import xstampp.ui.navigation.IProjectSelection;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 
 /**
  * Class that stores whether the save menu should be enabled or not
@@ -48,7 +46,8 @@ import xstampp.ui.navigation.api.IProjectSelection;
  * @author Fabian Toth
  * 
  */
-public class CommandState extends AbstractSourceProvider implements ISelectionChangedListener, Observer {
+public class CommandState extends AbstractSourceProvider
+    implements ISelectionChangedListener, Observer {
 
   /**
    * The id of the state
@@ -98,9 +97,11 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
   @Override
   public Map<String, String> getCurrentState() {
     Map<String, String> map = new HashMap<>();
-    if ((PlatformUI.getWorkbench() == null) || (PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null)
+    if ((PlatformUI.getWorkbench() == null)
+        || (PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null)
         || (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() == null)
-        || (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor() == null)) {
+        || (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+            .getActiveEditor() == null)) {
       map.put(SAVE_ALL_STATE, S_DISABLED);
       map.put(SAVE_STATE, S_DISABLED);
       map.put(TEXT_STATE, S_DISABLED);
@@ -178,7 +179,8 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
       @Override
       public void run() {
         try {
-          IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
+          IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+              .getActivePart();
 
           IStatusLineManager manager = null;
           if (part instanceof IViewPart) {
@@ -188,7 +190,8 @@ public class CommandState extends AbstractSourceProvider implements ISelectionCh
           }
           if (!saveList.isEmpty() && manager != null) {
 
-            Image image = Activator.getImageDescriptor("/icons/statusline/warning.png").createImage(); //$NON-NLS-1$
+            Image image = Activator.getImageDescriptor("/icons/statusline/warning.png") //$NON-NLS-1$
+                .createImage();
             manager.setMessage(image, Messages.ThereAreUnsafedChanges);
           } else if (manager != null) {
             manager.setMessage(null);

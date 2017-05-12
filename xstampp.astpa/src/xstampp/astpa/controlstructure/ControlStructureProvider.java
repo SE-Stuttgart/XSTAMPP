@@ -11,7 +11,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.astpa.util.commands.RenameRootComponentHandler;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.navigation.api.IDynamicStepsProvider;
+import xstampp.ui.navigation.IDynamicStepsProvider;
 
 public class ControlStructureProvider implements IDynamicStepsProvider {
 

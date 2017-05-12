@@ -29,6 +29,7 @@ public abstract class AbstractUserShell extends ModalShell {
   private TextInput passwordInput;
   private TextInput usernameInput;
   private IUser selectedUser;
+  private int userLabelStyle;
 
   /**
    * Constructs a {@link ModalShell} with <code>User</code> as title .
@@ -39,7 +40,8 @@ public abstract class AbstractUserShell extends ModalShell {
    *          whether of not the password input should hide or show characters
    */
   public AbstractUserShell(IUserSystem userSystem, boolean hidePassword) {
-    super("User",PACKED);
+    super("User", PACKED);
+    setUserLabelStyle(SWT.None);
     this.selectedUser = null;
     this.userSystem = userSystem;
     this.hidePassword = hidePassword;
@@ -47,7 +49,12 @@ public abstract class AbstractUserShell extends ModalShell {
 
   @Override
   protected void createCenter(Shell shell) {
-    this.usernameInput = new TextInput(shell, SWT.None, "Username");
+    if (selectedUser != null) {
+      this.usernameInput = new TextInput(shell, getUserLabelStyle(), "Username",
+          selectedUser.getUsername());
+    } else {
+      this.usernameInput = new TextInput(shell, getUserLabelStyle(), "Username");
+    }
 
     int passwordStyle = SWT.None;
     if (hidePassword) {
@@ -98,5 +105,20 @@ public abstract class AbstractUserShell extends ModalShell {
    */
   public IUserSystem getUserSystem() {
     return userSystem;
+  }
+
+  /**
+   * @return the userLabelStyle
+   */
+  public int getUserLabelStyle() {
+    return userLabelStyle;
+  }
+
+  /**
+   * @param userLabelStyle
+   *          the userLabelStyle to set
+   */
+  public void setUserLabelStyle(int userLabelStyle) {
+    this.userLabelStyle = userLabelStyle;
   }
 }

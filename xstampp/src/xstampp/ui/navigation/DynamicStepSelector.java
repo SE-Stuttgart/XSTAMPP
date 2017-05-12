@@ -21,8 +21,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 
-import xstampp.ui.navigation.api.IDynamicStepsProvider;
-
 /**
  * An Abstract selector for a dynamic list of editors.
  * 

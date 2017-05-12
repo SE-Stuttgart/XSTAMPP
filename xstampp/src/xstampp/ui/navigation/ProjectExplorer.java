@@ -66,8 +66,6 @@ import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.menu.file.commands.CommandState;
-import xstampp.ui.navigation.api.IDynamicStepsProvider;
-import xstampp.ui.navigation.api.IProjectSelection;
 import xstampp.util.STPAPluginUtils;
 
 /**

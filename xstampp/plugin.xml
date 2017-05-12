@@ -359,7 +359,7 @@
                <with
                      variable="selection">
                   <instanceof
-                        value="xstampp.ui.navigation.api.IProjectSelection">
+                        value="xstampp.ui.navigation.IProjectSelection">
                   </instanceof>
                </with>
             </visibleWhen>
@@ -529,7 +529,7 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+            locationURI="toolbar:org.eclipse.ui.trim.command2">
          <toolbar
                id="xstampp.toolbar.user">
             <control
@@ -613,7 +613,7 @@
             <with
                   variable="selection">
                <instanceof
-                     value="xstampp.ui.navigation.api.IProjectSelection">
+                     value="xstampp.ui.navigation.IProjectSelection">
                </instanceof>
             </with>
          </enabledWhen>
@@ -649,7 +649,7 @@
             <with
                   variable="selection">
                <instanceof
-                     value="xstampp.ui.navigation.api.IProjectSelection">
+                     value="xstampp.ui.navigation.IProjectSelection">
                </instanceof>
             </with>
          </enabledWhen>

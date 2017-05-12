@@ -13,17 +13,6 @@
 
 package xstampp.astpa.model.causalfactor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
@@ -31,8 +20,19 @@ import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
 import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntryContainer;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLTLProvider;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  * A causal factor
@@ -41,7 +41,7 @@ import xstampp.model.AbstractLTLProvider;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class CausalFactor implements ICausalFactor {
+public class CausalFactor implements ICausalFactor, IEntryWithNameId {
   
   @XmlElement(name="id")
 	private UUID id;

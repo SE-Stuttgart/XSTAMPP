@@ -21,7 +21,7 @@ import xstampp.usermanagement.UserSystem;
  *
  */
 public interface IUserProject extends IDataModel {
-
+  
   /**
    * This getter should never return null but instead implementing systems
    * should initialize the user system as an {@link EmptyUserSystem}.

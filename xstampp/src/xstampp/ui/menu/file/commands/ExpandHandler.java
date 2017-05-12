@@ -17,8 +17,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
-import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * 

@@ -13,14 +13,14 @@
 
 package xstampp.astpa.model.sds;
 
+import xstampp.astpa.model.interfaces.IEntryWithNameId;
+import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
+
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 
 /**
  * Abstract class for safety constraints
@@ -29,7 +29,7 @@ import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class ASafetyConstraint implements ISafetyConstraint {
+public abstract class ASafetyConstraint implements ISafetyConstraint, IEntryWithNameId {
 
   @XmlElement(name="id")
 	private UUID id;

@@ -24,8 +24,8 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
-import xstampp.ui.navigation.api.IProjectSelection;
 import xstampp.util.STPAPluginUtils;
 
 /**

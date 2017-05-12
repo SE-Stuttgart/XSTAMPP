@@ -13,13 +13,18 @@ import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.io.SaveUserJob;
+import xstampp.usermanagement.roles.AbstractUser;
 import xstampp.usermanagement.roles.Admin;
 import xstampp.usermanagement.roles.User;
+import xstampp.usermanagement.ui.ChangeUserShell;
 import xstampp.usermanagement.ui.CreateUserShell;
 import xstampp.usermanagement.ui.LoginShell;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -77,6 +82,27 @@ public class UserSystem extends Observable implements IUserSystem {
   }
 
   @Override
+  public boolean assignResponsibility(IUser user, UUID responsibility) {
+    Map<UUID, IUser> responsibilityMap = new HashMap<>();
+    responsibilityMap.put(responsibility, user);
+    return assignResponsibility(responsibilityMap);
+  }
+
+  @Override
+  public boolean assignResponsibility(Map<UUID, IUser> responsibilityMap) {
+    if (checkAccess(AccessRights.ADMIN)) {
+      for (Entry<UUID, IUser> entry : responsibilityMap.entrySet()) {
+        if (entry.getValue() instanceof AbstractUser) {
+          ((AbstractUser) entry.getValue()).addResponsibility(entry.getKey());
+        }
+      }
+      save();
+      return true;
+    }
+    return false;
+  }
+
+  @Override
   public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
     return this.getCurrentUser().checkAccess(entryId, accessLevel);
   }
@@ -102,9 +128,12 @@ public class UserSystem extends Observable implements IUserSystem {
     return systemId;
   }
 
-  private IUser getCurrentUser() {
+  @Override
+  public IUser getCurrentUser() {
     if (this.currentUser == null) {
       this.currentUser = new LoginShell(this, true).pullUser();
+      setChanged();
+      notifyObservers(NOTIFY_LOGIN);
     }
     return currentUser;
   }
@@ -155,6 +184,11 @@ public class UserSystem extends Observable implements IUserSystem {
       }
     }
     return false;
+  }
+
+  public void editUser(IUser user) {
+    new ChangeUserShell(this, user).open();
+    save();
   }
 
   private void save() {

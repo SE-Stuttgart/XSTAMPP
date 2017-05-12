@@ -85,10 +85,12 @@ public class ProjectSettingsShell extends ModalShell {
       if (element.getName().equals("SettingsPage")) {
         try {
           ISettingsPage page = (ISettingsPage) element.createExecutableExtension("class");
-          CTabItem item = new CTabItem(folder, SWT.None);
-          item.setText(element.getAttribute("name"));
-          item.setControl(page.createControl(folder, this, projectId));
-          this.pages.add(page);
+          if (page.isVisible(projectId)) {
+            CTabItem item = new CTabItem(folder, SWT.None);
+            item.setText(element.getAttribute("name"));
+            item.setControl(page.createControl(folder, this, projectId));
+            this.pages.add(page);
+          }
         } catch (CoreException exc) {
           exc.printStackTrace();
         }

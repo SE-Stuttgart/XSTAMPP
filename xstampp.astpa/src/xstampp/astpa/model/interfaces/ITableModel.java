@@ -15,7 +15,7 @@ package xstampp.astpa.model.interfaces;
  * @author Lukas Balzer
  *
  */
-public interface ITableModel extends xstampp.astpa.haz.ITableModel{
+public interface ITableModel extends xstampp.astpa.haz.ITableModel, IEntryWithNameId{
   /**
    * getter for the ID uniquely representing the entry e.g.: <i>H-1</i>
    * @return the id as a string that is the number and an optional literal

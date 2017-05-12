@@ -869,6 +869,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     this.projectAdditionsToUuid.put(id, addition);
   }
 
+  
   public boolean canAccess(UUID id) {
     IDataModel dataModel = getDataModel(id);
     if (dataModel instanceof IUserProject) {

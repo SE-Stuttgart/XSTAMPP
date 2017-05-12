@@ -23,9 +23,7 @@ import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -66,9 +64,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
    * 
    */
   public static final String ID = "astpa.steps.step1_3"; //$NON-NLS-1$
-
-  // the hazard currently displayed in the text widget
-  private Hazard displayedHazard;
 
   /**
    * Create contents of the view part.
@@ -144,7 +139,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
         Text text = (Text) e.widget;
         String description = text.getText();
         if (description.compareTo(Messages.DescriptionOfThisHazard) == 0) {
-          UUID id = HazardsView.this.displayedHazard.getId();
+          UUID id = getCurrentSelection();
           HazardsView.this.getDataInterface().setHazardDescription(id, ""); //$NON-NLS-1$
           text.setText(""); //$NON-NLS-1$
         }
@@ -162,18 +157,12 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
       @Override
       public void modifyText(ModifyEvent e) {
-        if (HazardsView.this.displayedHazard != null) {
-          Text text = (Text) e.widget;
-          String description = text.getText();
-          UUID id = HazardsView.this.displayedHazard.getId();
-          HazardsView.this.getDataInterface().setHazardDescription(id, description);
-        }
+        Text text = (Text) e.widget;
+        String description = text.getText();
+        UUID id = getCurrentSelection();
+        HazardsView.this.getDataInterface().setHazardDescription(id, description);
       }
     });
-
-    // Listener for showing the description of the selected hazard
-    HazardsView.this.getTableViewer()
-        .addSelectionChangedListener(new HazSelectionChangedListener());
 
     EditingSupport titleEditingSupport = new HazEditingSupport(HazardsView.this.getTableViewer());
     this.getTitleColumn().setEditingSupport(titleEditingSupport);
@@ -305,11 +294,11 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
   @Override
   protected void deleteEntry(ATableModel model) {
-    HazardsView.this.displayedHazard = null;
+    resetCurrentSelection();
     this.getDataInterface().removeHazard(model.getId());
   }
 
-  private class HazEditingSupport extends EditingSupport {
+  private class HazEditingSupport extends AbstractEditingSupport {
 
     /**
      * 
@@ -320,11 +309,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
      */
     public HazEditingSupport(ColumnViewer viewer) {
       super(viewer);
-    }
-
-    @Override
-    protected boolean canEdit(Object element) {
-      return true;
     }
 
     @Override
@@ -356,33 +340,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
         }
       }
       HazardsView.this.refreshView();
-    }
-  }
-
-  private class HazSelectionChangedListener implements ISelectionChangedListener {
-
-    @Override
-    public void selectionChanged(SelectionChangedEvent event) {
-      // if the selection is empty clear the label
-      if (event.getSelection().isEmpty()) {
-        HazardsView.this.displayedHazard = null;
-        HazardsView.this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-        HazardsView.this.getDescriptionWidget().setEnabled(false);
-        return;
-      }
-      if (event.getSelection() instanceof IStructuredSelection) {
-        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-        if (selection.getFirstElement() instanceof Hazard) {
-          if (HazardsView.this.displayedHazard == null) {
-            HazardsView.this.getDescriptionWidget().setEnabled(true);
-          } else {
-            HazardsView.this.displayedHazard = null;
-          }
-          HazardsView.this.getDescriptionWidget()
-              .setText(((Hazard) selection.getFirstElement()).getDescription());
-          HazardsView.this.displayedHazard = (Hazard) selection.getFirstElement();
-        }
-      }
     }
   }
 

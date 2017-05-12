@@ -22,7 +22,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.shell.ModalShell;
-import xstampp.ui.navigation.api.IProjectSelection;
+import xstampp.ui.navigation.IProjectSelection;
 
 /**
  * opens a rename dialoge and calls the function {@link ProjectManager#renameProject(UUID, String)}

@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
 import xstampp.model.IDataModel;
-import xstampp.ui.navigation.api.IProjectSelection;
 
 public class HeadSelector implements IProjectSelection {
 

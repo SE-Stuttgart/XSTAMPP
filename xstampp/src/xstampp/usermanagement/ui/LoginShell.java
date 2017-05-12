@@ -38,7 +38,7 @@ public class LoginShell extends AbstractUserShell {
   protected boolean doAccept() {
     for (IUser user : getUserSystem().getRegistry()) {
       if (user.getUsername().equals(getUsername())) {
-        if (user.getPassword().equals(getPassword())) {
+        if (user.verifyPassword(getPassword())) {
           setSelectedUser(user);
           return true;
         } else {

@@ -113,4 +113,9 @@ public class ProjectSpecifics implements ISettingsPage {
     }
 
   }
+
+  @Override
+  public boolean isVisible(UUID projectId) {
+    return true;
+  }
 }

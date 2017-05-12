@@ -61,10 +61,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 	 */
 	public static final String ID = "astpa.steps.step1_7"; //$NON-NLS-1$
 
-	// the design requirement currently displayed in the text widget
-	private DesignRequirement displayedDesignRequirement;
-
-
 	/**
 	 * @author Jarkko Heidenwag
 	 * 
@@ -168,10 +164,8 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 				Text text = (Text) e.widget;
 				String description = text.getText();
 				if (description.compareTo(Messages.DescriptionOfThisDesignReq) == 0) {
-					UUID id = DesignRequirementView.this.displayedDesignRequirement
-							.getId();
 					DesignRequirementView.this.getDataInterface()
-							.setDesignRequirementDescription(id, ""); //$NON-NLS-1$
+							.setDesignRequirementDescription(getCurrentSelection(), ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
 			}
@@ -188,21 +182,12 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				if (DesignRequirementView.this.displayedDesignRequirement != null) {
 					Text text = (Text) e.widget;
 					String description = text.getText();
-					UUID id = DesignRequirementView.this.displayedDesignRequirement
-							.getId();
 					DesignRequirementView.this.getDataInterface()
-							.setDesignRequirementDescription(id, description);
-				}
+							.setDesignRequirementDescription(getCurrentSelection(), description);
 			}
 		});
-
-		// Listener for showing the description of the selected design
-		// requirement
-		DesignRequirementView.this.getTableViewer()
-				.addSelectionChangedListener(new DRSelectionChangedListener());
 
 		final EditingSupport titleEditingSupport = new DREditingSupport(
 				DesignRequirementView.this.getTableViewer());
@@ -263,7 +248,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
 	@Override
 	protected void deleteEntry(ATableModel model) {
-    this.displayedDesignRequirement = null;
+    resetCurrentSelection();
     this.getDataInterface().removeDesignRequirement(model.getId());
 	}
 	
@@ -315,39 +300,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 				}
 			}
 			DesignRequirementView.this.refreshView();
-		}
-	}
-
-	private class DRSelectionChangedListener implements
-			ISelectionChangedListener {
-
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			// if the selection is empty clear the label
-			if (event.getSelection().isEmpty()) {
-				DesignRequirementView.this.displayedDesignRequirement = null;
-				DesignRequirementView.this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				DesignRequirementView.this.getDescriptionWidget().setEnabled(
-						false);
-				return;
-			}
-			if (event.getSelection() instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
-				if (selection.getFirstElement() instanceof DesignRequirement) {
-					if (DesignRequirementView.this.displayedDesignRequirement == null) {
-						DesignRequirementView.this.getDescriptionWidget()
-								.setEnabled(true);
-					} else {
-						DesignRequirementView.this.displayedDesignRequirement = null;
-					}
-					DesignRequirementView.this.getDescriptionWidget().setText(
-							((DesignRequirement) selection.getFirstElement())
-									.getDescription());
-					DesignRequirementView.this.displayedDesignRequirement = (DesignRequirement) selection
-							.getFirstElement();
-				}
-			}
 		}
 	}
 

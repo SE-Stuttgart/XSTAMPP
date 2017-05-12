@@ -74,7 +74,8 @@ public class UserManagement {
         file = new File(filePath);
       }
       URL schemaFile;
-      schemaFile = UserManagement.class.getResource("/userSystem.xsd"); //$NON-NLS-1$
+      String string = "/xstampp/usermanagement/io/userSystem.xsd"; //$NON-NLS-1$
+      schemaFile = UserManagement.class.getResource(string); 
 
       Source xmlFile = new StreamSource(file.toURI().toString());
       SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -96,8 +97,8 @@ public class UserManagement {
       exc.printStackTrace();
     }
     MessageDialog.openError(Display.getDefault().getActiveShell(), "User database error!",
-        "The User database for the project " + project.getProjectName() + " could not"
-            + "be read its either broken or corrupt\n please conntact the system administrator!");
+        "The User database for the project " + project.getProjectName() + " could not "
+            + "be read its either broken or corrupt\nplease conntact the system administrator!");
 
     return new RestrictedUserSystem();
   }

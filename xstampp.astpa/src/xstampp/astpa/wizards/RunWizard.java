@@ -28,8 +28,8 @@ import org.eclipse.ui.PlatformUI;
 import xstampp.astpa.Activator;
 import xstampp.astpa.util.jobs.Run;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
-import xstampp.ui.navigation.api.IProjectSelection;
 import xstampp.ui.wizards.PdfExportPage;
 
 public class RunWizard extends AbstractExportWizard {

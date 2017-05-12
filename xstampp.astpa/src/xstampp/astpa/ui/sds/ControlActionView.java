@@ -68,10 +68,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 	 */
 	public static final String ID = "astpa.steps.step2_1"; //$NON-NLS-1$
 
-	// the control action currently displayed in the text widget
-	private ControlAction displayedControlAction;
-
-
 	/**
 	 * @author Jarkko Heidenwag
 	 * 
@@ -175,10 +171,8 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 				String description = text.getText();
 				if (description
 						.compareTo(Messages.DescriptionOfThisControlAction) == 0) {
-					UUID id = ControlActionView.this.displayedControlAction
-							.getId();
 					ControlActionView.this.getDataInterface()
-							.setControlActionDescription(id, ""); //$NON-NLS-1$
+							.setControlActionDescription(getCurrentSelection(), ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
 			}
@@ -195,20 +189,12 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				if (ControlActionView.this.displayedControlAction != null) {
 					Text text = (Text) e.widget;
 					String description = text.getText();
-					UUID id = ControlActionView.this.displayedControlAction
-							.getId();
 					ControlActionView.this.getDataInterface()
-							.setControlActionDescription(id, description);
-				}
+							.setControlActionDescription(getCurrentSelection(), description);
 			}
 		});
-
-		// Listener for showing the description of the selected control action
-		ControlActionView.this.getTableViewer().addSelectionChangedListener(
-				new CASelectionChangedListener());
 
 		final EditingSupport titleEditingSupport = new CAEditingSupport(
 				ControlActionView.this.getTableViewer());
@@ -328,7 +314,7 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
 	@Override
 	protected void deleteEntry(ATableModel model) {
-    ControlActionView.this.displayedControlAction = null;
+    resetCurrentSelection();
     this.getDataInterface().removeControlAction(model.getId());
 	}
 	
@@ -380,38 +366,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 				}
 			}
 			ControlActionView.this.refreshView();
-		}
-	}
-
-	private class CASelectionChangedListener implements
-			ISelectionChangedListener {
-
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			// if the selection is empty clear the label
-			if (event.getSelection().isEmpty()) {
-				ControlActionView.this.displayedControlAction = null;
-				ControlActionView.this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				ControlActionView.this.getDescriptionWidget().setEnabled(false);
-				return;
-			}
-			if (event.getSelection() instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
-				if (selection.getFirstElement() instanceof ControlAction) {
-					if (ControlActionView.this.displayedControlAction == null) {
-						ControlActionView.this.getDescriptionWidget()
-								.setEnabled(true);
-					} else {
-						ControlActionView.this.displayedControlAction = null;
-					}
-					ControlActionView.this.getDescriptionWidget().setText(
-							((ControlAction) selection.getFirstElement())
-									.getDescription());
-					ControlActionView.this.displayedControlAction = (ControlAction) selection
-							.getFirstElement();
-				}
-			}
 		}
 	}
 

@@ -13,7 +13,7 @@
 
 package xstampp.astpa.ui.sds;
 
-import java.util.UUID;
+import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -22,9 +22,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -40,7 +38,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import messages.Messages;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
 import xstampp.astpa.model.sds.SafetyConstraint;
@@ -48,6 +45,8 @@ import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+
+import java.util.UUID;
 
 /**
  * @author Jarkko Heidenwag
@@ -60,9 +59,6 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 	 * 
 	 */
 	public static final String ID = "astpa.steps.step1_5"; //$NON-NLS-1$
-
-	// the safety constraint currently displayed in the text widget
-	private SafetyConstraint displayedSafetyConstraint;
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -168,10 +164,8 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 				String description = text.getText();
 				if (description
 						.compareTo(Messages.DescriptionOfThisSafetyConstr) == 0) {
-					UUID id = SafetyConstraintView.this.displayedSafetyConstraint
-							.getId();
 					SafetyConstraintView.this.getDataInterface()
-							.setSafetyConstraintDescription(id, ""); //$NON-NLS-1$
+							.setSafetyConstraintDescription(getCurrentSelection(), ""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
 				}
 			}
@@ -188,21 +182,12 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				if (SafetyConstraintView.this.displayedSafetyConstraint != null) {
 					Text text = (Text) e.widget;
 					String description = text.getText();
-					UUID id = SafetyConstraintView.this.displayedSafetyConstraint
-							.getId();
 					SafetyConstraintView.this.getDataInterface()
-							.setSafetyConstraintDescription(id, description);
-				}
+							.setSafetyConstraintDescription(getCurrentSelection(), description);
 			}
 		});
-
-		// Listener for showing the description of the selected safety
-		// constraint
-		SafetyConstraintView.this.getTableViewer().addSelectionChangedListener(
-				new SCSelectionChangedListener());
 	
 		final EditingSupport titleEditingSupport = new SCEditingSupport(
 				SafetyConstraintView.this.getTableViewer());
@@ -263,7 +248,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
 	@Override
 	protected void deleteEntry(ATableModel model) {
-    SafetyConstraintView.this.displayedSafetyConstraint = null;
+    resetCurrentSelection();
     this.getDataInterface().removeSafetyConstraint(model.getId());
 	}
 	private class SCEditingSupport extends EditingSupport {
@@ -314,39 +299,6 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 				}
 			}
 			SafetyConstraintView.this.refreshView();
-		}
-	}
-
-	private class SCSelectionChangedListener implements
-			ISelectionChangedListener {
-
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			// if the selection is empty clear the label
-			if (event.getSelection().isEmpty()) {
-				SafetyConstraintView.this.displayedSafetyConstraint = null;
-				SafetyConstraintView.this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				SafetyConstraintView.this.getDescriptionWidget().setEnabled(
-						false);
-				return;
-			}
-			if (event.getSelection() instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
-				if (selection.getFirstElement() instanceof SafetyConstraint) {
-					if (SafetyConstraintView.this.displayedSafetyConstraint == null) {
-						SafetyConstraintView.this.getDescriptionWidget()
-								.setEnabled(true);
-					} else {
-						SafetyConstraintView.this.displayedSafetyConstraint = null;
-					}
-					SafetyConstraintView.this.getDescriptionWidget().setText(
-							((SafetyConstraint) selection.getFirstElement())
-									.getDescription());
-					SafetyConstraintView.this.displayedSafetyConstraint = (SafetyConstraint) selection
-							.getFirstElement();
-				}
-			}
 		}
 	}
 

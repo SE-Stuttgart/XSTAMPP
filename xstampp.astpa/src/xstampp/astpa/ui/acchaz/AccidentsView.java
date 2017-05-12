@@ -13,8 +13,7 @@
 
 package xstampp.astpa.ui.acchaz;
 
-import java.util.List;
-import java.util.UUID;
+import messages.Messages;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -24,10 +23,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -44,7 +40,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
@@ -54,6 +49,9 @@ import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Jarkko Heidenwag
@@ -67,8 +65,6 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 	 */
 	public static final String ID = "astpa.steps.step1_2"; //$NON-NLS-1$
 
-	// the accident currently displayed in the text widget
-	private Accident displayedAccident;
 
 
 	/**
@@ -76,7 +72,7 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 	 * 
 	 */
 	public AccidentsView() {
-
+    super(true);
 	}
 
 	/**
@@ -172,7 +168,7 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 				Text text = (Text) e.widget;
 				String description = text.getText();
 				if (description.compareTo(Messages.DescriptionOfThisAccident) == 0) {
-					UUID id = AccidentsView.this.displayedAccident.getId();
+					UUID id = getCurrentSelection();
 					AccidentsView.this.getDataInterface().setAccidentDescription(id,
 							""); //$NON-NLS-1$
 					text.setText(""); //$NON-NLS-1$
@@ -190,23 +186,17 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				if (AccidentsView.this.displayedAccident != null) {
-					Text text = (Text) e.widget;
-					String description = text.getText();
-					UUID id = AccidentsView.this.displayedAccident.getId();
-					AccidentsView.this.getDataInterface().setAccidentDescription(id,
-							description);
-				}
+				Text text = (Text) e.widget;
+				String description = text.getText();
+				UUID id = getCurrentSelection();
+				AccidentsView.this.getDataInterface().setAccidentDescription(id,
+						description);
 			}
 		});
 
-		// Listener for showing the description of the selected accident
-		AccidentsView.this.getTableViewer().addSelectionChangedListener(
-				new AccSelectionChangedListener());
-
-		final EditingSupport titleEditingSupport = new AccEditingSupport(
+		final AbstractEditingSupport titleEditingSupport = new AccEditingSupport(
 				AccidentsView.this.getTableViewer());
-		this.getTitleColumn().setEditingSupport(titleEditingSupport);
+		this.addTitleEditor(titleEditingSupport);
 
 		TableViewerColumn linksColumn;
 		linksColumn = new TableViewerColumn(
@@ -292,10 +282,10 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 
 	@Override
 	protected void deleteEntry(ATableModel model) {
-    AccidentsView.this.displayedAccident = null;
+	  resetCurrentSelection();
     this.getDataInterface().removeAccident(model.getId());
 	}
-	private class AccEditingSupport extends EditingSupport {
+	private class AccEditingSupport extends AbstractEditingSupport {
 
 		/**
 		 * EditingSupport for the title column
@@ -308,12 +298,7 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 		public AccEditingSupport(ColumnViewer viewer) {
 			super(viewer);
 		}
-
-		@Override
-		protected boolean canEdit(Object element) {
-			return true;
-		}
-
+		
 		@Override
 		protected CellEditor getCellEditor(Object element) {
 			return new TextCellEditor(AccidentsView.this.getTableViewer()
@@ -343,38 +328,6 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 				}
 			}
 			AccidentsView.this.refreshView();
-		}
-	}
-
-	private class AccSelectionChangedListener implements
-			ISelectionChangedListener {
-
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			// if the selection is empty clear the label
-			if (event.getSelection().isEmpty()) {
-				AccidentsView.this.displayedAccident = null;
-				AccidentsView.this.getDescriptionWidget().setText(""); //$NON-NLS-1$
-				AccidentsView.this.getDescriptionWidget().setEnabled(false);
-				return;
-			}
-			if (event.getSelection() instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
-				if (selection.getFirstElement() instanceof Accident) {
-					if (AccidentsView.this.displayedAccident == null) {
-						AccidentsView.this.getDescriptionWidget().setEnabled(
-								true);
-					} else {
-						AccidentsView.this.displayedAccident = null;
-					}
-					AccidentsView.this.getDescriptionWidget().setText(
-							((Accident) selection.getFirstElement())
-									.getDescription());
-					AccidentsView.this.displayedAccident = (Accident) selection
-							.getFirstElement();
-				}
-			}
 		}
 	}
 

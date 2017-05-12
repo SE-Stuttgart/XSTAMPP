@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -205,7 +205,8 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public UUID addAccident(String title, String description) {
-    if ((title == null) || (description == null)) {
+    if (!getUserSystem().checkAccess(AccessRights.CREATE)
+        || ((title == null) || (description == null))) {
       return null;
     }
 
@@ -267,6 +268,10 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public UUID addCausalUCAEntry(UUID component, UUID causalFactorId, UUID ucaId) {
+    if (!getUserSystem().checkAccess(controlActionController.getControlActionFor(ucaId).getId(),
+        AccessRights.ACCESS)) {
+      return null;
+    }
     UUID result = this.causalFactorController.addCausalUCAEntry(component, causalFactorId, ucaId);
     if (result != null) {
       this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
@@ -348,7 +353,8 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public UUID addHazard(String title, String description) {
-    if ((title == null) || (description == null)) {
+    if (!getUserSystem().checkAccess(AccessRights.CREATE) && (title == null)
+        || (description == null)) {
       return null;
     }
 
@@ -1134,20 +1140,20 @@ public class DataModelController extends AbstractDataModel
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
     boolean result = false;
     switch (value) {
-      case HAZARD:
-      case ACCIDENT:
-        result = hazAccController.moveEntry(moveUp, id, value);
-        break;
-      case DESIGN_REQUIREMENT:
-      case SAFETY_CONSTRAINT:
-      case SYSTEM_GOAL:
-        result = sdsController.moveEntry(moveUp, id, value);
-        break;
-      case CONTROL_ACTION:
-        result = controlActionController.moveEntry(moveUp, id, value);
-        break;
-      default:
-        break;
+    case HAZARD:
+    case ACCIDENT:
+      result = hazAccController.moveEntry(moveUp, id, value);
+      break;
+    case DESIGN_REQUIREMENT:
+    case SAFETY_CONSTRAINT:
+    case SYSTEM_GOAL:
+      result = sdsController.moveEntry(moveUp, id, value);
+      break;
+    case CONTROL_ACTION:
+      result = controlActionController.moveEntry(moveUp, id, value);
+      break;
+    default:
+      break;
     }
     if (result) {
       setUnsavedAndChanged(value);
@@ -1245,7 +1251,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean removeAccident(UUID accidentId) {
-    if (accidentId == null) {
+    if (getUserSystem().checkAccess(accidentId, AccessRights.CREATE) && accidentId == null) {
       return false;
     }
     if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
@@ -1368,7 +1374,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean removeHazard(UUID hazardId) {
-    if (hazardId == null) {
+    if (getUserSystem().checkAccess(hazardId, AccessRights.CREATE) && hazardId == null) {
       return false;
     }
     if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
@@ -1494,6 +1500,9 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean setAccidentDescription(UUID accidentId, String description) {
+    if (!getUserSystem().checkAccess(accidentId, AccessRights.WRITE)) {
+      return false;
+    }
     if ((accidentId == null) || (description == null)) {
       return false;
     }
@@ -1515,6 +1524,9 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean setAccidentTitle(UUID accidentId, String title) {
+    if (!getUserSystem().checkAccess(accidentId, AccessRights.WRITE)) {
+      return false;
+    }
     if ((accidentId == null) || (title == null)) {
       return false;
     }

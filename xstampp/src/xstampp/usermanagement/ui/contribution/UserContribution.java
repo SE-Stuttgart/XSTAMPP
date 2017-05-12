@@ -9,11 +9,12 @@
 
 package xstampp.usermanagement.ui.contribution;
 
-import java.util.UUID;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -29,41 +30,41 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.navigation.api.IProjectSelection;
-import xstampp.usermanagement.api.EmptyUserSystem;
+import xstampp.ui.navigation.IProjectSelection;
+import xstampp.usermanagement.Messages;
+import xstampp.usermanagement.UserSystem;
+import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
+import xstampp.util.ColorManager;
+
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 
 /**
  * A toolbar {@link WorkbenchWindowControlContribution} which displays depending on the selected
- * {@link IProjectSelection} in the workbench one of three contents.
- * <ol>
- * <li><i>Login Button</i> - to log into an {@link IUserProject} that contains a user system
- * <li><i>Login Label</i> - shows the current login of the selected {@link IUserProject}'s user
- * system
- * <li><i>'Create User' Button</i> - to create a new user system in the selected
- * {@link IUserProject}
- * </ol>
+ * {@link IProjectSelection} in the workbench one of three contents. <ol> <li><i>Login Button</i> -
+ * to log into an {@link IUserProject} that contains a user system <li><i>Login Label</i> - shows
+ * the current login of the selected {@link IUserProject}'s user system <li><i>'Create User'
+ * Button</i> - to create a new user system in the selected {@link IUserProject} </ol>
  * 
  * @author Lukas Balzer - initial implementation
  *
  */
 public class UserContribution extends WorkbenchWindowControlContribution
-    implements ISelectionListener {
+    implements ISelectionListener, Observer {
 
+  private static final String ADMIN_COLOR = "Admin_Color";
+  private static final String USER_COLOR = "User_Color";
   private UUID projectId;
-  private IUserProject dataModel;
   private Listener listener;
-  private boolean labelVisible;
-  private boolean loginVisible;
-  private boolean loginEnabled;
-  private String accountName;
+  private IUserProject userProject;
 
   public UserContribution() {
-    this.labelVisible = false;
-    this.loginVisible = true;
-    this.loginEnabled = true;
+    ColorManager.registerColor(USER_COLOR, new RGB(116, 214, 137));
+    ColorManager.registerColor(ADMIN_COLOR, new RGB(122, 195, 251));
   }
 
   @Override
@@ -79,28 +80,30 @@ public class UserContribution extends WorkbenchWindowControlContribution
     getWorkbenchWindow().getSelectionService().addSelectionListener(this);
     final Button loginContribution = new Button(control, SWT.PUSH);
     loginContribution.setLayoutData(data);
-    loginContribution.setText("Login");
-    loginContribution.setVisible(loginVisible);
-    loginContribution.setEnabled(loginEnabled);
+    loginContribution.setText(Messages.UserContribution_LoginLabel);
+    loginContribution.setVisible(false);
     loginContribution.setImage(Activator.getImage("/icons/usermanagement/users.png")); //$NON-NLS-1$
+    loginContribution.addSelectionListener(new SelectionAdapter() {
+
+      @Override
+      public void widgetSelected(SelectionEvent event) {
+        userProject.getUserSystem().getCurrentUser();
+      }
+    });
 
     final CLabel label = new CLabel(control, SWT.NONE);
     label.setLayoutData(data);
-    label.setVisible(labelVisible);
+    label.setVisible(false);
     label.setImage(Activator.getImage("/icons/usermanagement/users.png")); //$NON-NLS-1$
     listener = new Listener() {
 
       @Override
       public void handleEvent(Event event) {
-        loginContribution.setVisible(loginVisible);
-        if (accountName != null) {
-          label.setVisible(true);
-          label.setText(accountName);
-          loginContribution.setVisible(false);
-        } else {
-          label.setVisible(false);
-          loginContribution.setVisible(true);
-        }
+        loginContribution.setVisible(((LoginEvent) event).loginVisible);
+        label.setVisible(((LoginEvent) event).labelVisible);
+        label.setText(((LoginEvent) event).accountName);
+        label.setToolTipText(((LoginEvent) event).toolTip);
+        label.setBackground(ColorManager.color(((LoginEvent) event).userColorConstant));
       }
     };
     parent.getParent().setRedraw(true);
@@ -125,28 +128,55 @@ public class UserContribution extends WorkbenchWindowControlContribution
   }
 
   private void refresh(IDataModel model) {
+    LoginEvent event = new LoginEvent();
     if (model instanceof IUserProject) {
-      this.dataModel = (IUserProject) model;
-      IUserSystem userSystem = dataModel.getUserSystem();
+
+      userProject = (IUserProject) model;
+      IUserSystem userSystem = userProject.getUserSystem();
       UUID userId = userSystem.getCurrentUserId();
-      accountName = null;
-      if (userId != null) {
-        for (IUser user : userSystem.getRegistry()) {
-          if (user.getUserId().equals(userId)) {
-            accountName = user.getUsername();
-            break;
-          }
-        }
-      } else if (userSystem instanceof EmptyUserSystem) {
-        loginVisible = true;
-      } else {
-        loginVisible = true;
+      if (userSystem instanceof UserSystem) {
+        event.loginVisible = true;
+        ((UserSystem) userSystem).addObserver(this);
       }
-      this.loginEnabled = true;
-    } else {
-      this.loginEnabled = false;
+      if (userId != null) {
+        IUser user = userSystem.getCurrentUser();
+        event.accountName = user.getUsername();
+        if (user.checkAccess(AccessRights.ADMIN)) {
+          event.userColorConstant = ADMIN_COLOR;
+          event.toolTip = Messages.UserContribution_LoggedAsAdministrator;
+        } else if (user.checkAccess(AccessRights.READ_ONLY)) {
+          event.toolTip = Messages.UserContribution_ReadOnlyAccsessToolTip;
+        } else {
+          event.toolTip = Messages.UserContribution_LoggedAsUser;
+        }
+        event.labelVisible = true;
+        event.loginVisible = false;
+      }
     }
-    listener.handleEvent(null);
+    listener.handleEvent(event);
+  }
+
+  class LoginEvent extends Event {
+    private boolean labelVisible;
+    private boolean loginVisible;
+    private String accountName;
+    private String toolTip;
+    private String userColorConstant;
+
+    private LoginEvent() {
+      this.labelVisible = false;
+      this.loginVisible = false;
+      accountName = ""; //$NON-NLS-1$
+      toolTip = ""; //$NON-NLS-1$
+      userColorConstant = USER_COLOR;
+    }
+  }
+
+  @Override
+  public void update(Observable arg0, Object arg1) {
+    if (arg1 != null && arg1.equals(IUserSystem.NOTIFY_LOGIN)) {
+      refresh(userProject);
+    }
   }
 
 }

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -21,6 +19,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
@@ -32,200 +31,204 @@ import xstampp.astpa.model.interfaces.ITableModel;
  */
 @XmlType(propOrder = { "number", "title", "description", "links", "id" })
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class ATableModel implements ITableModel {
+public abstract class ATableModel implements ITableModel, IEntryWithNameId {
 
-	@XmlElement
-	private UUID id;
+  @XmlElement
+  private UUID id;
 
-	@XmlElement
-	private String title;
+  @XmlElement
+  private String title;
 
-	@XmlElement
-	private String description;
+  @XmlElement
+  private String description;
 
-	@XmlElement
-	private int number;
+  @XmlElement
+  private int number;
 
-	@XmlElement
-	private String links;
+  @XmlElement
+  private String links;
 
-	/**
-	 * constructor of a table model
-	 * 
-	 * @param title
-	 *            the title of the new element
-	 * @param description
-	 *            the description of the new element
-	 * @param number
-	 *            the number of the new element
-	 * 
-	 * @author Fabian Toth
-	 */
-	public ATableModel(String title, String description, int number) {
-		this.id = UUID.randomUUID();
-		this.title = title;
-		this.description = description;
-		this.number = number;
-	}
+  /**
+   * constructor of a table model
+   * 
+   * @param title
+   *          the title of the new element
+   * @param description
+   *          the description of the new element
+   * @param number
+   *          the number of the new element
+   * 
+   * @author Fabian Toth
+   */
+  public ATableModel(String title, String description, int number) {
+    this.id = UUID.randomUUID();
+    this.title = title;
+    this.description = description;
+    this.number = number;
+  }
 
-	/**
-	 * Empty constructor used for JAXB. Do not use it!
-	 * 
-	 * @author Fabian Toth
-	 */
-	public ATableModel() {
-		this.number = -1;
-	}
+  /**
+   * Empty constructor used for JAXB. Do not use it!
+   * 
+   * @author Fabian Toth
+   */
+  public ATableModel() {
+    this.number = -1;
+  }
 
-	public static <T> boolean move(boolean up, UUID id, List<T> list) {
-		for (int i = 0; i < list.size(); i++) {
-			if (((ITableModel) list.get(i)).getId().equals(id)) {
-				T downModel = null;
-				int moveIndex = i;
-				/*
-				 * if up is true than the ITable model with the given id should
-				 * move up if this is possible(if there is a model right to it
-				 * in the list) than the model which is right to it is moved
-				 * down else the model itself is moved down
-				 */
-				if (up && i + 1 >= list.size()) {
-					return false;
-				} else if (up) {
-					downModel = ((T) list.get(i + 1));
-					moveIndex = i;
-				} else if (i == 0) {
-					return false;
-				} else {
-					downModel = ((T) list.get(i));
-					moveIndex = i - 1;
-				}
-				
-				list.remove(downModel);
-				list.add(moveIndex, downModel);
-				return true;
-			}
-		}
-		return false;
-	}
+  public static <T> boolean move(boolean up, UUID id, List<T> list) {
+    for (int i = 0; i < list.size(); i++) {
+      if (((ITableModel) list.get(i)).getId().equals(id)) {
+        T downModel = null;
+        int moveIndex = i;
+        /*
+         * if up is true than the ITable model with the given id should move up if this is
+         * possible(if there is a model right to it in the list) than the model which is right to it
+         * is moved down else the model itself is moved down
+         */
+        if (up && i + 1 >= list.size()) {
+          return false;
+        } else if (up) {
+          downModel = ((T) list.get(i + 1));
+          moveIndex = i;
+        } else if (i == 0) {
+          return false;
+        } else {
+          downModel = ((T) list.get(i));
+          moveIndex = i - 1;
+        }
 
-	/**
-	 * Setter for the description
-	 * 
-	 * @param description
-	 *            the new description
-	 * 
-	 * @author Fabian Toth
-	 * @return TODO
-	 */
-	public String setDescription(String description) {
-		if (this.description == null || !this.description.equals(description)) {
-			String result = this.description;
-			this.description = description;
-			return result;
-		}
-		return null;
-	}
+        list.remove(downModel);
+        list.add(moveIndex, downModel);
+        return true;
+      }
+    }
+    return false;
+  }
 
-	@Override
-	public String getDescription() {
-		return this.description;
-	}
+  /**
+   * Setter for the description
+   * 
+   * @param description
+   *          the new description
+   * 
+   * @author Fabian Toth
+   * @return TODO
+   */
+  public String setDescription(String description) {
+    if (this.description == null || !this.description.equals(description)) {
+      String result = this.description;
+      this.description = description;
+      return result;
+    }
+    return null;
+  }
 
-	/**
-	 * Setter for the title
-	 * 
-	 * @param title
-	 *            the new title
-	 * 
-	 * @author Fabian Toth
-	 * @return TODO
-	 */
-	public String setTitle(String title) {
-		if (this.title == null || !this.title.equals(title)) {
-			String result = this.title;
-			this.title = title;
-			return result;
-		}
-		return null;
-	}
+  @Override
+  public String getDescription() {
+    return this.description;
+  }
 
-	@Override
-	public String getTitle() {
-		return this.title;
-	}
+  /**
+   * Setter for the title
+   * 
+   * @param title
+   *          the new title
+   * 
+   * @author Fabian Toth
+   * @return TODO
+   */
+  public String setTitle(String title) {
+    if (this.title == null || !this.title.equals(title)) {
+      String result = this.title;
+      this.title = title;
+      return result;
+    }
+    return null;
+  }
 
-	@Override
-	public UUID getId() {
-		return this.id;
-	}
+  @Override
+  public String getTitle() {
+    return this.title;
+  }
 
-	/**
-	 * Setter for the id
-	 * 
-	 * @param id
-	 *            the new id
-	 * 
-	 * @author Fabian Toth
-	 * @return TODO
-	 */
-	public boolean setId(UUID id) {
-		if (this.id == null || !this.id.equals(id)) {
-			this.id = id;
-			return true;
-		}
-		return false;
-	}
+  @Override
+  public String getText() {
+    return this.title;
+  }
 
-	@Override
-	public int getNumber() {
-		return this.number;
-	}
+  @Override
+  public UUID getId() {
+    return this.id;
+  }
 
-	@Override
-	public String getIdString() {
-		return Integer.toString(this.number);
-	}
+  /**
+   * Setter for the id
+   * 
+   * @param id
+   *          the new id
+   * 
+   * @author Fabian Toth
+   * @return TODO
+   */
+  public boolean setId(UUID id) {
+    if (this.id == null || !this.id.equals(id)) {
+      this.id = id;
+      return true;
+    }
+    return false;
+  }
 
-	/**
-	 * Setter for the number
-	 * 
-	 * @param number
-	 *            the new number
-	 * 
-	 * @author Fabian Toth
-	 * @return
-	 */
-	public boolean setNumber(int number) {
-		if (this.number < 0) {
-			this.number = number;
-			return true;
-		}
-		return false;
-	}
+  @Override
+  public int getNumber() {
+    return this.number;
+  }
 
-	/**
-	 * @return the links
-	 */
-	public String getLinks() {
-		return this.links;
-	}
+  @Override
+  public String getIdString() {
+    return Integer.toString(this.number);
+  }
 
-	/**
-	 * @param links
-	 *            the links to set
-	 * @return
-	 */
-	public boolean setLinks(String links) {
-		if (this.links == null || !this.links.equals(links)) {
-			this.links = links;
-			return true;
-		}
-		return false;
-	}
+  /**
+   * Setter for the number
+   * 
+   * @param number
+   *          the new number
+   * 
+   * @author Fabian Toth
+   * @return
+   */
+  public boolean setNumber(int number) {
+    if (this.number < 0) {
+      this.number = number;
+      return true;
+    }
+    return false;
+  }
 
-	@Override
-	public int compareTo(xstampp.astpa.haz.ITableModel o) {
-		return this.getNumber() - o.getNumber();
-	}
+  /**
+   * @return the links
+   */
+  public String getLinks() {
+    return this.links;
+  }
+
+  /**
+   * @param links
+   *          the links to set
+   * @return
+   */
+  public boolean setLinks(String links) {
+    if (this.links == null || !this.links.equals(links)) {
+      this.links = links;
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int compareTo(xstampp.astpa.haz.ITableModel o) {
+    return this.getNumber() - o.getNumber();
+  }
 
 }

@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import xstampp.ui.navigation.api.IProjectSelection;
-
 /**
  * An object containing all the necessary information to create a sub selector in the project
  * explorer.

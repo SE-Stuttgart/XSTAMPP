@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectSelector;
-import xstampp.ui.navigation.api.IProjectSelection;
 
 /**
  * This handler manages the deletfor all projects and plugins on that platform

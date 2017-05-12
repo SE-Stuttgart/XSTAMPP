@@ -32,10 +32,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class User extends AbstractUser {
 
-  @XmlElementWrapper(name = "responsibilities")
-  @XmlElement(name = "responsibility")
-  private List<UUID> responsibilities;
-
   @XmlAttribute(name = "accessLevel")
   private List<AccessRights> accessLevel;
 
@@ -62,7 +58,6 @@ public class User extends AbstractUser {
    */
   public User(String username, String password, AccessRights[] accessRights) {
     super(username, password);
-    this.responsibilities = new ArrayList<>();
     this.accessLevel = new ArrayList<>();
     this.accessLevel.add(AccessRights.ACCESS);
     for (AccessRights accessRight : accessRights) {
@@ -73,7 +68,7 @@ public class User extends AbstractUser {
   @Override
   public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
     if (checkAccess(accessLevel)) {
-      return responsibilities.contains(entryId);
+      return getResponsibilities().contains(entryId);
     }
     return false;
   }
@@ -81,14 +76,6 @@ public class User extends AbstractUser {
   @Override
   public boolean checkAccess(AccessRights accessRight) {
     return this.accessLevel.contains(accessRight);
-  }
-
-  /**
-   * @param responsibility
-   *          the responsibilities to set.
-   */
-  public void addResponsibility(UUID responsibility) {
-    this.responsibilities.add(responsibility);
   }
 
   public void giveAccessLevel(AccessRights accessLevel) {

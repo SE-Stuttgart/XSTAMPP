@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package xstampp.ui.navigation.api;
+package xstampp.ui.navigation;
 
 import java.util.UUID;
 

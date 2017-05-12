@@ -2,6 +2,7 @@ package xstampp.usermanagement.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -67,6 +68,24 @@ public class EmptyUserSystem implements IUserSystem {
   public UUID getCurrentUserId() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public IUser getCurrentUser() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean assignResponsibility(IUser user, UUID responsibility) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean assignResponsibility(Map<UUID, IUser> responsibilityMap) {
+    // TODO Auto-generated method stub
+    return false;
   }
 
 }

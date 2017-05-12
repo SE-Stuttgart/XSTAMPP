@@ -18,11 +18,6 @@ public class DefaultUser implements IUser {
   }
 
   @Override
-  public String getPassword() {
-    return "";
-  }
-
-  @Override
   public boolean setUsername(String password, String username) {
     return false;
   }
@@ -39,6 +34,17 @@ public class DefaultUser implements IUser {
 
   @Override
   public boolean checkAccess(AccessRights accessRight) {
+    return false;
+  }
+
+  @Override
+  public boolean verifyPassword(String password) {
+    return true;
+  }
+
+  @Override
+  public boolean isResponibleFor(UUID responsibility) {
+    //the default user has no responsibilities
     return false;
   }
 

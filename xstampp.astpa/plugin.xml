@@ -121,6 +121,10 @@
             class="xstampp.astpa.preferences.ProjectSpecifics"
             name="General">
       </SettingsPage>
+      <SettingsPage
+            class="xstampp.astpa.usermanagement.settings.ResponsibilitySettings"
+            name="Responibilities">
+      </SettingsPage>
    </extension>
    <extension
          name="%extension.name.pdfExport"
@@ -338,7 +342,7 @@
       </wizard>
    </extension>
    <extension
-         name="imageExports"
+         name="%extension.name"
          point="org.eclipse.ui.exportWizards">
       <category
             id="astpa.stepImages"
@@ -558,13 +562,13 @@
             class="xstampp.astpa.ui.causalScenarios.CausalScenariosView"
             default="false"
             id="xstampp.astpa.ui.causalScenarios"
-            name="Causal Scenarios">
+            name="%editor.name">
       </editor>
       <editor
             class="xstampp.astpa.ui.ltl.LTLPropertiesTable"
             default="false"
             id="xstampp.astpa.editor.ltlTable"
-            name="LTL Table">
+            name="%editor.name.0">
       </editor>
    </extension>
    <extension
@@ -575,12 +579,12 @@
             name="%command.name.newProject">
          <commandParameter
                id="astpa.new.path"
-               name="name"
+               name="%commandParameter.name"
                optional="true">
          </commandParameter>
          <commandParameter
                id="astpa.new.name"
-               name="name"
+               name="%commandParameter.name.0"
                optional="true">
          </commandParameter>
       </command>
@@ -595,7 +599,7 @@
             name="%command.name.switchTool">
          <commandParameter
                id="xstampp.astpa.cseditor.toolconstant"
-               name="name"
+               name="%commandParameter.name.1"
                optional="true">
          </commandParameter>
       </command>
@@ -605,7 +609,7 @@
             name="%command.name.preferenceToggle">
          <commandParameter
                id="xstampp.astpa.command.preference"
-               name="preference name"
+               name="%commandParameter.name.2"
                optional="false">
          </commandParameter>
       </command>
@@ -630,7 +634,7 @@
             name="%command.name">
          <commandParameter
                id="xstampp.dynamicStep.commandParameter.projectId"
-               name="name"
+               name="%commandParameter.name.3"
                optional="false">
          </commandParameter>
       </command>
@@ -640,27 +644,27 @@
             name="%command.cs.rename.name.0">
          <commandParameter
                id="xstampp.dynamicStep.commandParameter.projectId"
-               name="name"
+               name="%commandParameter.name.4"
                optional="false">
          </commandParameter>
          <commandParameter
                id="xstampp.astpa.cs.rootId"
-               name="rootId"
+               name="%commandParameter.name.5"
                optional="false">
          </commandParameter>
       </command>
       <command
             defaultHandler="xstampp.astpa.util.commands.DeleteRootComponentHandler"
             id="xstampp.astpa.command.cs.deleteRoot"
-            name="Delete Control Structure Diagram">
+            name="%command.name.0">
          <commandParameter
                id="xstampp.dynamicStep.commandParameter.projectId"
-               name="name"
+               name="%commandParameter.name.6"
                optional="false">
          </commandParameter>
          <commandParameter
                id="xstampp.astpa.cs.rootId"
-               name="rootId"
+               name="%commandParameter.name.7"
                optional="false">
          </commandParameter>
       </command>
@@ -1118,7 +1122,7 @@
          point="org.eclipse.ui.contexts">
       <context
             id="xstampp.astpa.csContext"
-            name="Control Structure context">
+            name="%context.name">
       </context>
    </extension>
    <extension
