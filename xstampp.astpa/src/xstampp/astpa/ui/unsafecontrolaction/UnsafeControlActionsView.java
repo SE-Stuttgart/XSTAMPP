@@ -19,12 +19,13 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
+import messages.Messages;
+
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
-import messages.Messages;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
@@ -43,6 +44,8 @@ import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.GridWrapper;
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserProject;
 
 /**
  * View used to handle the unsafe control actions.
@@ -281,9 +284,10 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 							 GridRow ucaRow,
 							 GridRow linkRow,
 							 IControlAction cAction){
-	  while(ucaList.size() > i && isUCAFiltered(ucaList.get(i))){
+	  while(ucaList.size() > i && isUCAFiltered(ucaList.get(i)) ){
 	    ucaList.remove(i);
 	  }
+	  
 		if (ucaList.size() > i) {
 			IUnsafeControlAction tooSoonUca = ucaList.get(i);
 			if(this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()){
@@ -300,7 +304,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 			return true;
 		}
 
-		if (ucaList.size() == i) {
+		if (ucaList.size() == i &&checkAccess(cAction.getId(), AccessRights.WRITE)) {
 			// add placeholder
 			idRow.addCell(columnIndex,new GridCellBlank(true));
 			ucaRow.addCell(columnIndex,new AddUcaButton(cAction,
@@ -317,6 +321,12 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 		return false;
 	}
 	
+	private boolean checkAccess(UUID caId, AccessRights accessRight) {
+	  if(getDataModel() instanceof IUserProject) {
+	    return ((IUserProject) getDataModel()).getUserSystem().checkAccess(caId, accessRight);
+	  }
+	  return true;
+	}
 	
 	@Override
 	public String getId() {

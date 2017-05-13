@@ -4,6 +4,10 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
   private static final String BUNDLE_NAME = "xstampp.usermanagement.messages"; //$NON-NLS-1$
+  public static String AbstractUserShell_Create;
+  public static String CreateUserShell_CreateReadOnlyUser;
+  public static String CreateUserShell_CreateUser;
+  public static String CreateUserShell_UsernameExists;
   public static String UserContribution_LoggedAsAdministrator;
   public static String UserContribution_LoggedAsUser;
   public static String UserContribution_LoginLabel;

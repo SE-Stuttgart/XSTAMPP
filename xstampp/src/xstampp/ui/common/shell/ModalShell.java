@@ -29,11 +29,11 @@ import xstampp.util.ColorManager;
 /**
  * defines an Application modal shell which should be used for all dialogs in XSTAMPP.
  * 
- * <p>Example implementation:
+ * <br>
+ * Example implementation:
  * 
  * <pre>
  * public class ExampleShell extends ModalShell {
- * private String content;
  *
  *  public ExampleShell() {
  *    super("Example", "Example"); setSize(300, 200); 
@@ -41,19 +41,7 @@ import xstampp.util.ColorManager;
  *
  *  &#64;Override
  *  protected void createCenter(Shell shell) {
- *    Label exampleLabel = new Label(shell, SWT.None);
- *    exampleLabel.setText("Example");
- *    exampleLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
- *    Text exampleText = new Text(shell, SWT.None);
- *    exampleText.addModifyListener(new ModifyListener() { //
- *      &#64;Override 
- *      public void modifyText(ModifyEvent e) { 
- *        content = ((Text) e.getSource()).getText();
- *        canAccept(); 
- *      } 
- *    }); 
- *    GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
- *    nameText.setLayoutData(textData); 
+ *    TextInput exampleInput = new TextInput(shell, SWT.None, "Example");
  *  }
  * 
  *  &#64;Override 
@@ -64,7 +52,7 @@ import xstampp.util.ColorManager;
  *  &#64;Override 
  *  protected boolean validate() {
  *    try { 
- *      return !content.isEmpty(); 
+ *      return !exampleInput.getText().isEmpty(); 
  *      } catch (NullPointerException exc) {
  *        invalidate("Input invalid!");
  *        return false; 
@@ -101,9 +89,13 @@ public abstract class ModalShell {
    * Constructs a ModalShell with he given title and a <code>Cancel</code> Button that closes the
    * shell without calling {@link #doAccept()} and a <code>Ok</code> Button that calls
    * {@link #doAccept()} and closes the application depending on the returned boolean.
+   * 
    * @param style
-   *          One of the integer constants defined in this class <ul> <li> {@link #APPLYABLE} <li>
-   *          {@link #PACKED} </ul>
+   *          One of the integer constants defined in this class
+   *          <ul>
+   *          <li>{@link #APPLYABLE}
+   *          <li>{@link #PACKED}
+   *          </ul>
    * 
    * 
    */
@@ -142,8 +134,7 @@ public abstract class ModalShell {
   }
 
   /**
-   * calls {@link #ModalShell(String,integer)} with <code>Ok</code> as second
-   * argument.
+   * calls {@link #ModalShell(String,integer)} with <code>Ok</code> as second argument.
    */
   public ModalShell(String title, int style) {
     this(title, "Ok", style);
@@ -174,7 +165,6 @@ public abstract class ModalShell {
     invalidLabel.setText("invalid content!");
     invalidLabel.setVisible(false);
     invalidLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
 
     GridData gridData = new GridData(SWT.RIGHT, SWT.BOTTOM, false, false);
     gridData.widthHint = SWT.DEFAULT;
@@ -308,7 +298,8 @@ public abstract class ModalShell {
    * This method is called whenever the ok/accept button is pressed. Depending on the return value
    * the modal shell is closed.
    * 
-   * <p>if the content can not be accepted and the method returns false, the
+   * <br>
+   * if the content can not be accepted and the method returns false, the
    * {@link ModalShell#invalidate(String)} method can be called informing the user about details
    * 
    * @return if the input should be accepted or not
@@ -319,7 +310,8 @@ public abstract class ModalShell {
    * Is called during the shell set up and also gets the main shell as parent with a <b>two column
    * gridLayout</b>.
    * 
-   * <p><i>Note: The Layout of the given shell should not be changed by implementations</i>
+   * <br>
+   * <i>Note: The Layout of the given shell should not be changed by implementations</i>
    * 
    * @param parent
    *          the parent shell which is displayed to the user
@@ -349,7 +341,7 @@ public abstract class ModalShell {
 
     public TextInput(Shell shell, int style, String label, String initialValue) {
       GridData labelData = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 2, 1);
-
+      this.text = initialValue;
       Label nameLabel = new Label(shell, SWT.None);
       nameLabel.setText(label);
       nameLabel.setLayoutData(labelData);
@@ -373,6 +365,30 @@ public abstract class ModalShell {
 
     public String getText() {
       return text;
+    }
+  }
+
+  protected final class BooleanInput {
+    private boolean selected;
+
+    public BooleanInput(Shell shell, int style, String label, boolean initialValue) {
+      Button nameLabel = new Button(shell, style);
+      nameLabel.setText(label);
+      nameLabel.setSelection(initialValue);
+      selected = initialValue;
+      nameLabel.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 2, 1));
+
+      nameLabel.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent ev) {
+          selected = ((Button) ev.getSource()).getSelection();
+          canAccept();
+        }
+      });
+    }
+
+    public boolean getSelection() {
+      return selected;
     }
   }
 }

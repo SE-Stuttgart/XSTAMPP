@@ -592,8 +592,10 @@ public class DataModelController extends AbstractDataModel
   public IUserSystem createUserSystem() {
     if (getUserSystem() instanceof EmptyUserSystem) {
       this.userSystem = UserManagement.createUserSystem(getProjectName());
-      this.userSystemId = userSystem.getSystemId();
-      setUnsavedAndChanged();
+      if (!(this.userSystem instanceof EmptyUserSystem)) {
+        this.userSystemId = userSystem.getSystemId();
+        setUnsavedAndChanged(ObserverValue.UserSystem);
+      }
     }
     return getUserSystem();
   }

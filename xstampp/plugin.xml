@@ -535,6 +535,15 @@
             <control
                   class="xstampp.usermanagement.ui.contribution.UserContribution"
                   id="xstampp.user.toolbar">
+                  <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeWorkbenchWindow.activePerspective">
+                     <equals
+                           value="xstampp.defaultPerspective">
+                     </equals>
+                  </with>
+               </visibleWhen>
             </control>
          </toolbar>
       </menuContribution>

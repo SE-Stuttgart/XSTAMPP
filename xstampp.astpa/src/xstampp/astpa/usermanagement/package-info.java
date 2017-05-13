@@ -12,33 +12,33 @@
 /**
  *  ADMIN: <ul>
  *  <li>legt project an 
- *  <li>erstellt user eintrÃ¤ge (name/passwort) mit standart rechten - ErklÃ¤rung: Einlegen User und User Rechten 
- *  <li>darf EintrÃ¤ge(Accidents& Hazards, usw.) erstellen/bearbeiten 
+ *  <li>erstellt user einträge (name/passwort) mit standart rechten - Erklärung: Einlegen User und User Rechten 
+ *  <li>darf Einträge(Accidents& Hazards, usw.) erstellen/bearbeiten 
  *  <li>darf Process Model anlegen und modifizieren
  *  <li>darf Safety Constraints anlegen 
  *  <li>darf/muss Control Structure erstellen, kann Modifikation sperren 
  *  <li>darf/muss ControlActions erstellen 
- *  <li>darf UnsafeControlActions fÃ¼r ControlActions erstellen/bearbeiten 
- *  <li>darf Hazard Links (verlinken) hinzufÃ¼gen/entfernen
+ *  <li>darf UnsafeControlActions für ControlActions erstellen/bearbeiten 
+ *  <li>darf Hazard Links (verlinken) hinzufügen/entfernen
  *  <li>darf Corresponding Safety Constraints schreiben
  *  <li>darf CausalFactors anlegen
  *  </ul>
  *  USER:
  *  <ul> 
- *  <li>darf EintrÃ¤ge bearbeiten (je nach vom admin gegebenen rechten*)
+ *  <li>darf Einträge bearbeiten (je nach vom admin gegebenen rechten*)
  *  <li>darf Safety Constraints anlegen/bearbeiten
  *  <li>darf Control Structure einsehen und editieren
- *  <li>darf ControlActions bearbeiten *Â²
- *  <li>darf UnsafeControlActions fÃ¼r ControlActions erstellen/bearbeiten *Â²
- *  <li>darf Hazard Links hinzufÃ¼gen/entfernen
- *  <li>darf Corresponding Safety Constraints schreiben *Â³
- *  <li>darf CausalFactors fÃ¼r UnsafeControlActions erstellen und bearbeiten *Â³
+ *  <li>darf ControlActions bearbeiten *²
+ *  <li>darf UnsafeControlActions für ControlActions erstellen/bearbeiten *²
+ *  <li>darf Hazard Links hinzufügen/entfernen
+ *  <li>darf Corresponding Safety Constraints schreiben *³
+ *  <li>darf CausalFactors für UnsafeControlActions erstellen und bearbeiten *³
  *  </ul>
  *  
  *  <i>
- *  * eintrÃ¤ge kÃ¶nnen fÃ¼r alle/bestimmte user gesperrt werden<br>
- *  *Â² nur fÃ¼r ControlActions die fÃ¼r ihn vom admin freigegeben wurden  <br>
- *  *Â³ nur fÃ¼r zugriffsberechtigte UnsafeControlActions <p> 
+ *  * einträge können für alle/bestimmte user gesperrt werden<br>
+ *  *² nur für ControlActions die für ihn vom admin freigegeben wurden  <br>
+ *  *³ nur für zugriffsberechtigte UnsafeControlActions <p> 
  *  </i>
  *  nur ein Admin Mode, aber es kann mehrere Admins geben 
  *  -> es kann immer nur eine Person zu einem Zeitpunkt als Admin zugreifen<br>

@@ -1,5 +1,9 @@
 package xstampp.astpa.usermanagement.settings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.swt.SWT;
@@ -15,11 +19,6 @@ import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.EmptyUserSystem;
 import xstampp.usermanagement.api.IUserProject;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-
 /**
  * 
  * @author Lukas Balzer
@@ -27,10 +26,12 @@ import java.util.UUID;
  */
 public class ResponsibilitySettings implements ISettingsPage {
 
-  private Map<ISettingsPage,String> pages;
+  private List<ISettingsPage> pages;
+  private List<String> pageTitles;
   public ResponsibilitySettings() {
     super();
-    this.pages = new HashMap<>();
+    this.pages = new ArrayList<>();
+    this.pageTitles = new ArrayList<>();
   }
 
   @Override
@@ -41,7 +42,7 @@ public class ResponsibilitySettings implements ISettingsPage {
   @Override
   public boolean doAccept() {
     boolean result = true;
-    for (ISettingsPage page : pages.keySet()) {
+    for (ISettingsPage page : pages) {
       result &= page.doAccept();
     }
     return result;
@@ -56,13 +57,18 @@ public class ResponsibilitySettings implements ISettingsPage {
     folder.setMinimizeVisible(false);
     folder.setMaximizeVisible(false);
     folder.setUnselectedCloseVisible(false);
-    pages.put(new AccidentResponsibilityPage(), Messages.Accidents);
-    pages.put(new SCResponsibilityPage(), Messages.SafetyConstraints);
-    pages.put(new ControlActionsResponsibilityPage(), Messages.ControlActions);
-    for (Entry<ISettingsPage, String> page : this.pages.entrySet()) {
+    pages.add(new AccidentResponsibilityPage());
+    pageTitles.add(Messages.Accidents);
+    pages.add(new HazardsResponsibilityPage());
+    pageTitles.add(Messages.Hazards);
+    pages.add(new SCResponsibilityPage());
+    pageTitles.add(Messages.SafetyConstraints);
+    pages.add(new ControlActionsResponsibilityPage());
+    pageTitles.add(Messages.ControlActions);
+    for (int i= 0; i < this.pages.size(); i++) {
       CTabItem item = new CTabItem(folder, SWT.None);
-      item.setText(page.getValue());
-      item.setControl(page.getKey().createControl(folder, parent, modelId));
+      item.setText(pageTitles.get(i));
+      item.setControl(pages.get(i).createControl(folder, parent, modelId));
     }
     folder.setSelection(0);
     return folder;

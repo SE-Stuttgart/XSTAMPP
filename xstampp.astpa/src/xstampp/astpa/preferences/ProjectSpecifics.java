@@ -84,6 +84,7 @@ public class ProjectSpecifics implements ISettingsPage {
       Composite comp = new Composite(parent, SWT.None);
       comp.setLayout(new GridLayout());
       boolSetting.setSelection(initial);
+      this.selected = initial;
       boolSetting.setEnabled(controller.getUserSystem().checkAccess(AccessRights.ADMIN));
       
       new LabelWithAssist(comp, SWT.None, title, description);

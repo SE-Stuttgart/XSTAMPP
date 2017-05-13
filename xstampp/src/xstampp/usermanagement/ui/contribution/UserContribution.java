@@ -9,8 +9,13 @@
 
 package xstampp.usermanagement.ui.contribution;
 
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,6 +34,7 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 import xstampp.Activator;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.usermanagement.Messages;
@@ -39,16 +45,16 @@ import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.util.ColorManager;
 
-import java.util.Observable;
-import java.util.Observer;
-import java.util.UUID;
-
 /**
  * A toolbar {@link WorkbenchWindowControlContribution} which displays depending on the selected
- * {@link IProjectSelection} in the workbench one of three contents. <ol> <li><i>Login Button</i> -
- * to log into an {@link IUserProject} that contains a user system <li><i>Login Label</i> - shows
- * the current login of the selected {@link IUserProject}'s user system <li><i>'Create User'
- * Button</i> - to create a new user system in the selected {@link IUserProject} </ol>
+ * {@link IProjectSelection} in the workbench one of three contents.
+ * <ol>
+ * <li><i>Login Button</i> - to log into an {@link IUserProject} that contains a user system
+ * <li><i>Login Label</i> - shows the current login of the selected {@link IUserProject}'s user
+ * system
+ * <li><i>'Create User' Button</i> - to create a new user system in the selected
+ * {@link IUserProject}
+ * </ol>
  * 
  * @author Lukas Balzer - initial implementation
  *
@@ -58,13 +64,16 @@ public class UserContribution extends WorkbenchWindowControlContribution
 
   private static final String ADMIN_COLOR = "Admin_Color";
   private static final String USER_COLOR = "User_Color";
+  private static final String READONLY_COLOR = "ReadOnly_Color";
   private UUID projectId;
   private Listener listener;
   private IUserProject userProject;
+  private UserSystem userSystem;
 
   public UserContribution() {
     ColorManager.registerColor(USER_COLOR, new RGB(116, 214, 137));
     ColorManager.registerColor(ADMIN_COLOR, new RGB(122, 195, 251));
+    ColorManager.registerColor(READONLY_COLOR, new RGB(181, 205, 180));
   }
 
   @Override
@@ -78,6 +87,7 @@ public class UserContribution extends WorkbenchWindowControlContribution
     data.height = 20;
 
     getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+
     final Button loginContribution = new Button(control, SWT.PUSH);
     loginContribution.setLayoutData(data);
     loginContribution.setText(Messages.UserContribution_LoginLabel);
@@ -99,14 +109,20 @@ public class UserContribution extends WorkbenchWindowControlContribution
 
       @Override
       public void handleEvent(Event event) {
-        loginContribution.setVisible(((LoginEvent) event).loginVisible);
-        label.setVisible(((LoginEvent) event).labelVisible);
-        label.setText(((LoginEvent) event).accountName);
-        label.setToolTipText(((LoginEvent) event).toolTip);
-        label.setBackground(ColorManager.color(((LoginEvent) event).userColorConstant));
+        try {
+          loginContribution.setVisible(((LoginEvent) event).loginVisible);
+          label.setVisible(((LoginEvent) event).labelVisible);
+          label.setText(((LoginEvent) event).accountName);
+          label.setToolTipText(((LoginEvent) event).toolTip);
+          label.setBackground(ColorManager.color(((LoginEvent) event).userColorConstant));
+        } catch (SWTException exc) {
+        }
       }
     };
     parent.getParent().setRedraw(true);
+
+    ISelection selection = getWorkbenchWindow().getSelectionService().getSelection();
+    selectionChanged(null, selection);
     return control;
   }
 
@@ -130,13 +146,20 @@ public class UserContribution extends WorkbenchWindowControlContribution
   private void refresh(IDataModel model) {
     LoginEvent event = new LoginEvent();
     if (model instanceof IUserProject) {
-
+      if (userProject != null) {
+        userProject.deleteObserver(this);
+      }
       userProject = (IUserProject) model;
+      userProject.addObserver(this);
       IUserSystem userSystem = userProject.getUserSystem();
       UUID userId = userSystem.getCurrentUserId();
       if (userSystem instanceof UserSystem) {
         event.loginVisible = true;
-        ((UserSystem) userSystem).addObserver(this);
+        if (this.userSystem != null) {
+          this.userSystem.deleteObserver(this);
+        }
+        this.userSystem = ((UserSystem) userSystem);
+        this.userSystem.addObserver(this);
       }
       if (userId != null) {
         IUser user = userSystem.getCurrentUser();
@@ -144,16 +167,29 @@ public class UserContribution extends WorkbenchWindowControlContribution
         if (user.checkAccess(AccessRights.ADMIN)) {
           event.userColorConstant = ADMIN_COLOR;
           event.toolTip = Messages.UserContribution_LoggedAsAdministrator;
-        } else if (user.checkAccess(AccessRights.READ_ONLY)) {
-          event.toolTip = Messages.UserContribution_ReadOnlyAccsessToolTip;
-        } else {
+        } else if (user.checkAccess(AccessRights.WRITE)) {
           event.toolTip = Messages.UserContribution_LoggedAsUser;
+        } else {
+          event.toolTip = Messages.UserContribution_ReadOnlyAccsessToolTip;
+          event.userColorConstant = READONLY_COLOR;
         }
         event.labelVisible = true;
         event.loginVisible = false;
       }
     }
     listener.handleEvent(event);
+  }
+
+  @Override
+  public void dispose() {
+    if (this.userSystem != null) {
+      this.userSystem.deleteObserver(this);
+    }
+    if (userProject != null) {
+      userProject.deleteObserver(this);
+    }
+    super.dispose();
+
   }
 
   class LoginEvent extends Event {
@@ -174,7 +210,8 @@ public class UserContribution extends WorkbenchWindowControlContribution
 
   @Override
   public void update(Observable arg0, Object arg1) {
-    if (arg1 != null && arg1.equals(IUserSystem.NOTIFY_LOGIN)) {
+    if (arg1 != null && (arg1.equals(IUserSystem.NOTIFY_LOGIN)
+        || arg1.equals(ObserverValue.UserSystem))) {
       refresh(userProject);
     }
   }

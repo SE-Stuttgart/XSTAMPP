@@ -9,8 +9,6 @@
 
 package xstampp.usermanagement.roles;
 
-import xstampp.usermanagement.api.AccessRights;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,9 +16,9 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import xstampp.usermanagement.api.AccessRights;
 
 /**
  * A normal user which can be given certain responsibilities to access files.
@@ -59,7 +57,6 @@ public class User extends AbstractUser {
   public User(String username, String password, AccessRights[] accessRights) {
     super(username, password);
     this.accessLevel = new ArrayList<>();
-    this.accessLevel.add(AccessRights.ACCESS);
     for (AccessRights accessRight : accessRights) {
       this.accessLevel.add(accessRight);
     }
