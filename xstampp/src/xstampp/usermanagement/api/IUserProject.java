@@ -32,4 +32,6 @@ public interface IUserProject extends IDataModel {
   IUserSystem getUserSystem();
 
   IUserSystem createUserSystem();
+  
+  IUserSystem loadUserSystem();
 }

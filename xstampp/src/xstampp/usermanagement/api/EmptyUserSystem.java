@@ -88,4 +88,16 @@ public class EmptyUserSystem implements IUserSystem {
     return false;
   }
 
+  @Override
+  public boolean createAdmin() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String getSystemName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

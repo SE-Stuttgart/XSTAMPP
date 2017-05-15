@@ -1,4 +1,6 @@
-package xstampp.usermanagement.ui;
+package xstampp.usermanagement.ui.settings;
+
+import java.util.UUID;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -31,10 +33,8 @@ import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.Admin;
 
-import java.util.UUID;
-
 public class UserManagementPage implements ISettingsPage {
-
+  private static final int REFRESH_USERS = 1;
   private IUserSystem userSystem;
   private IUser currentSelection;
 
@@ -66,32 +66,63 @@ public class UserManagementPage implements ISettingsPage {
       generateUserSystemButton.setText(Messages.UserManagementPage_3);
       generateUserSystemButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
+      Button loadExistingSystemBtn = new Button(noUserComp, SWT.PUSH);
+      loadExistingSystemBtn.setText("Use existing Userdata");
+      loadExistingSystemBtn.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+
       // The normal composite that is visible to the user is Created here
       final Composite hasUserComp = new Composite(userPage, SWT.None);
       hasUserComp.setLayout(new GridLayout(2, false));
       hasUserComp.setLayoutData(data);
 
       final List userList = new List(hasUserComp, SWT.None);
-      userList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
+      userList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
       refreshUsers();
 
       final Button addButton = new Button(hasUserComp, SWT.PUSH);
-      String imagePath = "/icons/buttons/commontables/add.png"; //$NON-NLS-1$
+      String imagePath = "/icons/usermanagement/addUser.png"; //$NON-NLS-1$
+      addButton.setToolTipText(Messages.CreateUserShell_CreateUser);
       addButton.setImage(Activator.getImageDescriptor(imagePath).createImage());
       addButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
-      addButton.addSelectionListener(new SelectionAdapter() {
-        @Override
-        public void widgetSelected(SelectionEvent ev) {
-          userSystem.createUser();
-          userList.notifyListeners(1, null);
-        }
-      });
-      addButton.setEnabled(userSystem.canCreateUser());
+      addButton.setVisible(userSystem.canCreateUser());
+
+      final Button addAdminButton = new Button(hasUserComp, SWT.PUSH);
+      imagePath = "/icons/usermanagement/addAdmin.png"; //$NON-NLS-1$
+      addAdminButton.setToolTipText(Messages.CreateAdminShell_CreateAdmin);
+      addAdminButton.setImage(Activator.getImageDescriptor(imagePath).createImage());
+      addAdminButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
+      addAdminButton.setVisible(userSystem.checkAccess(AccessRights.ADMIN));
 
       final Button deleteButton = new Button(hasUserComp, SWT.PUSH);
       String deleteImgPath = "/icons/buttons/commontables/remove.png"; //$NON-NLS-1$
       deleteButton.setImage(Activator.getImageDescriptor(deleteImgPath).createImage());
       deleteButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
+      deleteButton.setVisible(userSystem.canCreateUser());
+      deleteButton.setEnabled(false);
+
+      final Button editButton = new Button(hasUserComp, SWT.PUSH);
+      String editImgPath = "/icons/buttons/edit.png"; //$NON-NLS-1$
+      editButton.setImage(Activator.getImageDescriptor(editImgPath).createImage());
+      editButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
+      editButton.setVisible(userSystem.canCreateUser());
+      editButton.setEnabled(false);
+
+      addButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent ev) {
+          userSystem.createUser();
+          userList.notifyListeners(REFRESH_USERS, null);
+        }
+      });
+      
+      addAdminButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent ev) {
+          userSystem.createAdmin();
+          userList.notifyListeners(REFRESH_USERS, null);
+        }
+      });
+      
       deleteButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
@@ -102,16 +133,11 @@ public class UserManagementPage implements ISettingsPage {
               && userSystem.deleteUser(currentSelection.getUserId())) {
             deleteButton.setEnabled(false);
             currentSelection = null;
-            userList.notifyListeners(1, null);
+            userList.notifyListeners(REFRESH_USERS, null);
           }
         }
       });
-      deleteButton.setEnabled(false);
-
-      final Button editButton = new Button(hasUserComp, SWT.PUSH);
-      String editImgPath = "/icons/buttons/edit.png"; //$NON-NLS-1$
-      editButton.setImage(Activator.getImageDescriptor(editImgPath).createImage());
-      editButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
+      
       editButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
@@ -120,8 +146,7 @@ public class UserManagementPage implements ISettingsPage {
           }
         }
       });
-      editButton.setEnabled(false);
-
+      
       userList.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent event) {
@@ -130,7 +155,8 @@ public class UserManagementPage implements ISettingsPage {
           editButton.setEnabled(userSystem.checkAccess(AccessRights.ADMIN));
         }
       });
-      userList.addListener(1, new Listener() {
+      
+      userList.addListener(REFRESH_USERS, new Listener() {
 
         @Override
         public void handleEvent(Event event) {
@@ -144,25 +170,36 @@ public class UserManagementPage implements ISettingsPage {
               entry += " [admin]"; //$NON-NLS-1$
             }
             userList.add(entry);
+
+          }
+          if (userSystem instanceof UserSystem) {
+            noUserComp.setVisible(false);
+            hasUserComp.setVisible(true);
+            editButton.setVisible(userSystem.canCreateUser());
+            addButton.setVisible(userSystem.canCreateUser());
+            deleteButton.setVisible(userSystem.canCreateUser());
+            addAdminButton.setVisible(userSystem.checkAccess(AccessRights.ADMIN));
           }
         }
       });
-
-      userList.notifyListeners(1, null);
 
       generateUserSystemButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
           userSystem = ((IUserProject) dataModel).createUserSystem();
-          if (userSystem instanceof UserSystem) {
-            addButton.setEnabled(userSystem.canCreateUser());
-            userList.notifyListeners(1, null);
-            noUserComp.setVisible(false);
-            hasUserComp.setVisible(true);
-          }
-
+          userList.notifyListeners(REFRESH_USERS, null);
         }
       });
+
+      loadExistingSystemBtn.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent ev) {
+          userSystem = ((IUserProject) dataModel).loadUserSystem();
+          userList.notifyListeners(REFRESH_USERS, null);
+        }
+      });
+
+      userList.notifyListeners(REFRESH_USERS, null);
 
       boolean hasUsers = userSystem instanceof UserSystem;
       noUserComp.setVisible(!hasUsers);

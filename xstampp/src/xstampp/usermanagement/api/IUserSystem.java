@@ -24,8 +24,11 @@ public interface IUserSystem {
 
   public static final int NOTIFY_LOGIN = 1 << 2;
   public static final int NOTIFY_LOGOUT = 1 << 3;
+  public static final int NOTIFY_USER = 1 << 4;
 
   boolean createUser();
+
+  boolean createAdmin();
 
   boolean canCreateUser();
 
@@ -40,6 +43,8 @@ public interface IUserSystem {
   public UUID getCurrentUserId();
 
   public IUser getCurrentUser();
+
+  public String getSystemName();
 
   public boolean assignResponsibility(IUser user, UUID responsibility);
 

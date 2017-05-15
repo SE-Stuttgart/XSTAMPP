@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -237,7 +237,7 @@ public class ControlActionController {
     }
     UUID ucaId = controlAction.addUnsafeControlAction(getNextUCACount(), description,
         unsafeControlActionType);
-    if(ucaId != null) {
+    if (ucaId != null) {
       getControlActionMap().put(ucaId, controlAction);
     }
     return ucaId;
@@ -257,7 +257,7 @@ public class ControlActionController {
       for (IUnsafeControlAction uca : controlAction.getUnsafeControlActions()) {
         if (uca.getId().equals(unsafeControlActionId)) {
           this.removeAllLinks(unsafeControlActionId);
-          if(controlAction.removeUnsafeControlAction(unsafeControlActionId)){
+          if (controlAction.removeUnsafeControlAction(unsafeControlActionId)) {
             getControlActionMap().remove(unsafeControlActionId);
             return true;
           }
@@ -313,7 +313,7 @@ public class ControlActionController {
   }
 
   /**
-   * Removes the link between an accident and a hazard
+   * Removes the link between a unsafe control action and a hazard
    * 
    * @param unsafeControlActionId
    *          the unsafe control action of which a link will be deleted.
@@ -388,8 +388,9 @@ public class ControlActionController {
 
   /**
    * creates a new list with all entries according to the given {@link IEntryFilter} or with all
-   * uca's defined if the filter is given as <b>null</b> <p> Note that modifications of the returned
-   * list will not affect the list stored in the dataModel
+   * uca's defined if the filter is given as <b>null</b>
+   * <p>
+   * Note that modifications of the returned list will not affect the list stored in the dataModel
    * 
    * @param filter
    *          an implementation of {@link IEntryFilter} which checks {@link IUnsafeControlAction}'s
@@ -942,8 +943,8 @@ public class ControlActionController {
    * This method removes a safety rule if it is stored as general rule or as rule in control action
    * 
    * @param removeAll
-   *          whether all currently stored RefinedSafetyRule objects should be deleted<br> when this
-   *          is true than the ruleId will be ignored
+   *          whether all currently stored RefinedSafetyRule objects should be deleted<br>
+   *          when this is true than the ruleId will be ignored
    * @param ruleId
    *          an id of a RefinedSafetyRule object stored in a controlAction
    * 

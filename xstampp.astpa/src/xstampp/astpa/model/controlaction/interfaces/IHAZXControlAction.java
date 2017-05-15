@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.model.AbstractLTLProvider;
 
 public interface IHAZXControlAction extends IControlAction {
@@ -22,4 +23,5 @@ public interface IHAZXControlAction extends IControlAction {
 	 */
 	public UUID getComponentLink();
 	public List<AbstractLTLProvider> getAllRefinedRules();
+  public IUnsafeControlAction getUnsafeControlAction(UUID ucaId);
 }

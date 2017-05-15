@@ -42,16 +42,9 @@ public class NewProject extends AbstractHandler {
 		}
 
 		if(ProjectManager.getContainerInstance().startUp(DataModelController.class,
-				nameParam, pathParam) == null){
+				nameParam, pathParam, null) == null){
 			ProjectManager.getLOGGER().debug("failed to start up new Project");
 		}
-
-		// Enable the save entries in the menu
-		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
-				.getWorkbench().getService(ISourceProviderService.class);
-		CommandState saveStateService = (CommandState) sourceProviderService
-				.getSourceProvider(CommandState.SAVE_STATE);
-//		saveStateService.setEnabled();
 
 		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
 				.getPerspectiveRegistry()

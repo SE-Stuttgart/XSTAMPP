@@ -74,13 +74,29 @@ public interface IUser {
    * @return if the user is allowed to access.
    */
   public boolean checkAccess(AccessRights accessRight);
-  
+
   /**
-   * Checks whether or not this user is responsible for the entry listed in the
-   * project by  the given id. 
-   * @param responsibility a UUID for an entry in the project
+   * Checks whether or not this user is responsible for the entry listed in the project by the given
+   * id.
+   * 
+   * @param responsibility
+   *          a UUID for an entry in the project
    * @return whether the referenced entry is registered as responsibility of this user
    */
   boolean isResponibleFor(UUID responsibility);
+
+  /**
+   * 
+   * @return an id for a project stored in the current workspace.
+   */
+  UUID getWorkingProjectId();
+
+  /**
+   * Adds a id for a project this user is related to e.g. a working copy that is assigned to this
+   * user.
+   * 
+   * @param workingProjectId an id for a project stored in the current workspace.
+   */
+  void setWorkingProjectId(UUID workingProjectId);
 
 }

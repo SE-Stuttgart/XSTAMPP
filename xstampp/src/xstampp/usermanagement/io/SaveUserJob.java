@@ -46,7 +46,7 @@ public class SaveUserJob extends XstamppJob {
     super("save user data...");
     this.database = database;
     String wsUrl = Platform.getInstanceLocation().getURL().getPath();
-    this.file = new File(wsUrl, name + ".user");
+    this.file = new File(wsUrl, name);
   }
 
   @Override

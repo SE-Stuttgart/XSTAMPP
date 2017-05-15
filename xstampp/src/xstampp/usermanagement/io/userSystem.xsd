@@ -62,6 +62,7 @@
     	<xs:attribute name="userId" type="xs:string"  use="required"></xs:attribute>
     	<xs:attribute name="username" type="xs:string"  use="required"></xs:attribute>
     	<xs:attribute name="password" type="xs:string"  use="required"></xs:attribute>
-  		<xs:attribute name="accessLevel" type="xs:string" use="optional"></xs:attribute>
+        <xs:attribute name="accessLevel" type="xs:string" use="optional"></xs:attribute>
+        <xs:attribute name="workingProjectId" type="xs:string" use="optional"></xs:attribute>
     </xs:complexType>
 </xs:schema>

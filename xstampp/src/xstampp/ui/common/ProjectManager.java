@@ -1,18 +1,29 @@
 /*******************************************************************************
-
-# * Copyright (c) 2013, 2017 ASTPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac Jarkko, Heidenwag, Benedikt Markt, Jaqueline Patzek Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksey Babkovic, Aleksander
- * Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * # * Copyright (c) 2013, 2017 ASTPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac Jarkko,
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksey Babkovic, Aleksander Zotov).
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
 
 package xstampp.ui.common;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Set;
+import java.util.UUID;
 
 import messages.Messages;
 
@@ -44,23 +55,9 @@ import xstampp.usermanagement.api.IUserProject;
 import xstampp.util.AbstractLoadJob;
 import xstampp.util.STPAPluginUtils;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Observable;
-import java.util.Set;
-import java.util.UUID;
-
 /**
- * The view container contains the navigation view and the view area. The
- * navigation view is by default invisible and has to be set visible by using
- * setShowNavigationView(true).
+ * The view container contains the navigation view and the view area. The navigation view is by
+ * default invisible and has to be set visible by using setShowNavigationView(true).
  * 
  * 
  * @author Patrick Wickenhaeuser
@@ -95,9 +92,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
   /**
-   * when the plugin dependent load job is done, this change adapter promts out
-   * all error messages returned by the job in case of failure or calls
-   * {@link LoadRunnable} in case of success.
+   * when the plugin dependent load job is done, this change adapter promts out all error messages
+   * returned by the job in case of failure or calls {@link LoadRunnable} in case of success.
    *
    * @author Lukas Balzer
    *
@@ -141,7 +137,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
 
     @Override
     public void run() {
-      UUID projectId = UUID.randomUUID();
+      UUID projectId = this.controller.getProjectId();
       projectContainerToUuid.put(projectId,
           new ProjectFileContainer(controller, this.saveFile.getPath()));
       this.controller.prepareForSave();
@@ -158,13 +154,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * defines if this is the first start up
-   */
-  // private boolean firstStartUp;
-
-  /**
-   * Initializes the container in which the views are stored. Sets the active
-   * view to null.
+   * Initializes the container in which the views are stored. Sets the active view to null.
    * 
    * @author Patrick Wickenhaeuser
    */
@@ -175,7 +165,20 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * creates a new project in the given location
+   * calls {@link #startUp(Class, String, String, UUID)} with the originalId given as <b>null</b>.
+   */
+  public UUID startUp(Class<?> controller, String projectName, String path) {
+    return startUp(controller, projectName, path, null);
+  }
+
+  public UUID startUp(Class<?> controller, String projectName, UUID originalId) {
+    String extension = "." + getProjectExtension(originalId);
+    File pathFile = new File(Platform.getInstanceLocation().getURL().getPath(), projectName + extension);
+    return startUp(controller, projectName, pathFile.getAbsolutePath(), originalId);
+  }
+
+  /**
+   * creates a new project in the given location.
    * 
    * @author Lukas Balzer
    * @param controller
@@ -184,14 +187,21 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    *          he name of the new project
    * @param path
    *          the path where the new project is stored
+   * @param originalId
+   *          The id of a project that should serve as model for the new project
    * @return The UUID of the new project
    */
-  public UUID startUp(Class<?> controller, String projectName, String path) {
+  public UUID startUp(Class<?> controller, String projectName, String path, UUID originalId) {
     IDataModel newController;
     try {
       newController = (IDataModel) controller.newInstance();
       newController.setProjectName(projectName);
-      newController.initializeProject();
+      if (this.projectContainerToUuid.containsKey(originalId)) {
+        IDataModel originalModel = this.projectContainerToUuid.get(originalId).getController();
+        newController.initializeProject(originalModel);
+      } else {
+        newController.initializeProject();
+      }
       newController.updateValue(ObserverValue.PROJECT_NAME);
       UUID projectId = this.addProjectData(newController, path);
 
@@ -206,8 +216,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * renames the store file to the given name, if a such a file doesn't already
-   * exist
+   * renames the store file to the given name, if a such a file doesn't already exist.
    * 
    * @author Lukas Balzer
    * 
@@ -238,9 +247,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * @param projectId
    *          the uuid stored for this project
    * @param ext
-   *          the new extension literal without the dot e.g.: <code>exe</code>
-   *          or <code>haz</code>
-   * @return
+   *          the new extension literal without the dot e.g.: <code>exe</code> or <code>haz</code>
+   * @return if the project extension could be stored
    */
   public boolean changeProjectExtension(UUID projectId, String ext) {
     this.projectContainerToUuid.get(projectId).setExtension(ext);
@@ -256,11 +264,11 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * opens a filedialog in which the user can than choose a file on his system
-   * where he wants to store the dataModel into if the operation is successful
-   * means that the user has not canceled the dialog and has chosen a legal file
-   * {@link ProjectManager#saveDataModel(UUID, boolean, boolean)} is called with
-   * false in bath boolean arguments
+   * opens a filedialog in which the user can than choose a file on his system where he wants to
+   * store the dataModel into if the operation is successful means that the user has not canceled
+   * the dialog and has chosen a legal file
+   * {@link ProjectManager#saveDataModel(UUID, boolean, boolean)} is called with false in bath
+   * boolean arguments.
    * 
    * @author Fabian Toth,Lukas Balzer
    * @param projectId
@@ -273,11 +281,14 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     List<String> extensions = new ArrayList<>();
     IConfigurationElement extElement = getConfigurationFor(projectId);
     String[] filterNames = new String[] {};
-    if (extElement.getAttribute("extensionDescriptions") != null) { //$NON-NLS-1$
-      filterNames = extElement.getAttribute("extensionDescriptions").split(";");//$NON-NLS-1$ //$NON-NLS-2$
+
+    String description = "extensionDescriptions"; //$NON-NLS-1$
+    if (extElement.getAttribute(description) != null) {
+      filterNames = extElement.getAttribute(description).split(";");//$NON-NLS-1$
     }
 
-    for (String ext : extElement.getAttribute("extension").split(";")) {//$NON-NLS-1$ //$NON-NLS-2$
+    String extension = "extension";//$NON-NLS-1$
+    for (String ext : extElement.getAttribute(extension).split(";")) { //$NON-NLS-1$
       extensions.add("*." + ext); //$NON-NLS-1$
     }
     FileDialog fileDialog = new FileDialog(
@@ -301,23 +312,23 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
         return false;
       }
     }
-    this.projectContainerToUuid.get(projectId).setProjectName(file.getName().split("\\.")[0]);
-    this.projectContainerToUuid.get(projectId).setExtension(file.getName().split("\\.")[1]); //$NON-NLS-1$
+    String[] split = file.getName().split("\\."); //$NON-NLS-1$
+    this.projectContainerToUuid.get(projectId).setProjectName(split[0]);
+    this.projectContainerToUuid.get(projectId).setExtension(split[1]);
     updateProjectTree();
     return this.saveDataModel(projectId, false, false);
 
   }
 
   /**
-   * Saves the data model to the file in the list projectSaveFilesToUUID. If
-   * this is null saveDataModelAs() is called
+   * Saves the data model to the file in the list projectSaveFilesToUUID. If this is null
+   * saveDataModelAs() is called
    * 
    * @author Fabian Toth,Lukas Balzer
    * @param projectId
    *          the id of the project
    * @param isUIcall
-   *          informs the runtime if the call is initiated by the user or the
-   *          system
+   *          informs the runtime if the call is initiated by the user or the system
    * @param saveAs
    *          TODO
    * @return whether the operation was successful or not
@@ -362,6 +373,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
+   * calls {@link #saveDataModel(UUID, boolean, boolean)} for all projects giving it the projectId
+   * of each and preventing a save as call by setting the <i>saveAs</i> argument to false.
    * 
    * @author Lukas Balzer
    * 
@@ -382,8 +395,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * promts a choose Dialog to the user and calls
-   * {@link #loadDataModelFile(String, String)} as needed
+   * promts a choose Dialog to the user and calls {@link #loadDataModelFile(String, String)} as
+   * needed.
    * 
    * @author Fabian Toth
    * @author Jarkko Heidenwag
@@ -447,17 +460,15 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * recives the accurate load job by calling the load command given by the
-   * IConfigurationElement mapped to the given file extension of the storeFile.
-   * Loads the data model from the loadFile by executing the loadJob with the
-   * LoadJobChangeAdapter
+   * recives the accurate load job by calling the load command given by the IConfigurationElement
+   * mapped to the given file extension of the storeFile. Loads the data model from the loadFile by
+   * executing the loadJob with the LoadJobChangeAdapter
    * 
    * @author Lukas Balzer
    * @param loadFile
    *          the file which contains the dataModel
    * @param saveFile
-   *          the file the project shuold be saved in, normally the same as
-   *          loadFile
+   *          the file the project shuold be saved in, normally the same as loadFile
    * 
    * 
    * @return whether the operation was successful or not
@@ -469,8 +480,10 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     for (Entry<String, IConfigurationElement> extElement : this.elementsToExtensions.entrySet()) {
 
       if (loadFile.endsWith(extElement.getKey())) {
-        pluginName = extElement.getValue().getAttribute("id"); //$NON-NLS-1$
-        jobObject = STPAPluginUtils.executeCommand(extElement.getValue().getAttribute("command")); //$NON-NLS-1$
+        String id = "id"; //$NON-NLS-1$
+        pluginName = extElement.getValue().getAttribute(id);
+        String command = "command"; //$NON-NLS-1$
+        jobObject = STPAPluginUtils.executeCommand(extElement.getValue().getAttribute(command));
         break;
       }
     }
@@ -491,20 +504,21 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * Checks if there are unsaved changes or not
+   * Checks if there are unsaved changes or not.
    * 
-   * @return whether there are unsaved changes or not
-   * 
-   * @author Fabian Toth,Lukas Balzer
    * @param projectId
    *          the id of the project for which the request is given
+   * @return whether there are unsaved changes or not
+   * 
+   * @author Fabian Toth
+   * @author Lukas Balzer
    */
   public boolean getUnsavedChanges(UUID projectId) {
     return this.projectContainerToUuid.get(projectId).getController().hasUnsavedChanges();
   }
 
   /**
-   * Checks if there are unsaved changes or not
+   * Checks if there are unsaved changes or not.
    * 
    * @return whether there are unsaved changes or not
    * 
@@ -521,8 +535,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * checks and asks the user wether the application can be closed if there are
-   * unsafed changes of unfinished jobs.
+   * checks and asks the user wether the application can be closed if there are unsafed changes of
+   * unfinished jobs.
    * 
    * @return if the application can be safely closed
    */
@@ -541,23 +555,23 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
           0);
       int resultNum = dialog.open();
       switch (resultNum) {
-      case -1:
-        return false;
-      case 0:
-        return ProjectManager.getContainerInstance().saveAllDataModels();
-      case 1:
-        return true;
-      case 2:
-        return false;
-      default:
-        break;
+        case -1:
+          return false;
+        case 0:
+          return ProjectManager.getContainerInstance().saveAllDataModels();
+        case 1:
+          return true;
+        case 2:
+          return false;
+        default:
+          break;
       }
     }
     return true;
   }
 
   /**
-   * Calls the observer of the data model with the given value
+   * Calls the observer of the data model with the given value.
    * 
    * @author Fabian Toth
    * 
@@ -571,6 +585,9 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
+   * returns the instance of the container used in the current runtime. If this method is called
+   * initially the container instance is created in that call.
+   * 
    * @return the containerInstance
    */
   public static ProjectManager getContainerInstance() {
@@ -581,7 +598,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   *
+   * Returns the {@link IDataModel} stored for the given UUID.
+   * 
    * @author Lukas Balzer
    *
    * @param projectId
@@ -595,15 +613,31 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     return null;
   }
 
+  /**
+   * This method looks up the project file on the system and checks whether the it's marked as write
+   * protected or not.
+   * 
+   * @param projectId
+   *          The id of the project which's file resource should be checked.
+   * @return whether or not the current process can write to the project file, returns <b>false</b>
+   *         if the given project id is not mapped to a project
+   */
   public boolean canWriteOnProject(UUID projectId) {
-    File projFile = this.projectContainerToUuid.get(projectId).getProjectFile();
-    if (!projFile.exists()) {
-      return true;
+    boolean canWrite = false;
+    if (this.projectContainerToUuid.containsKey(projectId)) {
+      File projFile = this.projectContainerToUuid.get(projectId).getProjectFile();
+      if (!projFile.exists()) {
+        canWrite = true;
+      } else {
+        canWrite = projFile.canWrite();
+      }
     }
-    return projFile.canWrite();
+    return canWrite;
   }
 
   /**
+   * The inverse method for {@link #getDataModel(UUID)} checks whether the given controller is
+   * registered as project in the current instance and if returns the project id for it.
    * 
    * @author Lukas Balzer
    * 
@@ -646,20 +680,19 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * generates a random uuid for the project and the registered extension and
-   * data model to it
+   * generates a random uuid for the project and the registered extension and data model to it
    * 
    * @author Lukas Balzer
    *
    * @param controller
    *          the data model as IDataModel which contains the projects data
    * @param path
-   *          the path to the save file which should be used,\n the type of the
-   *          project is determined using the extension of this file
+   *          the path to the save file which should be used,\n the type of the project is
+   *          determined using the extension of this file
    * @return generates a random uuid and stores/returns it as the projectId
    */
   public UUID addProjectData(IDataModel controller, String path) {
-    UUID id = UUID.randomUUID();
+    UUID id = controller.getProjectId();
     this.projectContainerToUuid.put(id, new ProjectFileContainer(controller, path));
     updateProjectTree();
     return id;
@@ -680,8 +713,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * @author Lukas Balzer
    * 
    * @param projectId
-   *          the id of the project which shoul be removed from the Map of
-   *          projects
+   *          the id of the project which shoul be removed from the Map of projects
    * @return whether the removal was succesful or not
    */
   public boolean removeProjectData(UUID projectId) {
@@ -809,15 +841,14 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   }
 
   /**
-   * looks up the <code> IConfigurationElement </code> which is registered for
-   * the extension, of the projects save file
+   * looks up the <code> IConfigurationElement </code> which is registered for the extension, of the
+   * projects save file
    * 
    * @author Lukas Balzer
    *
    * @param projectId
    *          the id of the requested project
-   * @return the configuration element as defined in the steppedProcess
-   *         extension Point
+   * @return the configuration element as defined in the steppedProcess extension Point
    */
   public IConfigurationElement getConfigurationFor(UUID projectId) {
     return this.elementsToExtensions.get(getProjectExtension(projectId));
@@ -842,8 +873,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * 
    * @param id
    *          should be a valid project id
-   * @return null if there is no addition stored for the project, or the stored
-   *         value as an Object, the class handling must be preformed by callers
+   * @return null if there is no addition stored for the project, or the stored value as an Object,
+   *         the class handling must be preformed by callers
    * @author Lukas Balzer
    */
   public Object getProjectAdditionsFromUUID(UUID id) {
@@ -858,8 +889,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * @param id
    *          a uuid
    * @param addition
-   *          a class which should be stored for this runtime in addition to the
-   *          project dataModel
+   *          a class which should be stored for this runtime in addition to the project dataModel
    * @author Lukas Balzer
    */
   public void addProjectAdditionForUUID(UUID id, Object addition) {
@@ -869,7 +899,18 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     this.projectAdditionsToUuid.put(id, addition);
   }
 
-  
+  /**
+   * This method checks the access rights to the given project.<br>
+   * If the project associated with the given id is not a {@link IUserProject} than this method
+   * simply returns <b>true</b>.<br>
+   * If the project has a UserSystem but no user is logged in this method opens a login dialog.
+   * 
+   * @param id
+   *          The id of a project in the current runtime
+   * @return if the project associated with the given id is a {@link IUserProject} this method
+   *         checks the access rights of the current user.<br>
+   *         <b>true</b> if the project is no {@link IUserProject}
+   */
   public boolean canAccess(UUID id) {
     IDataModel dataModel = getDataModel(id);
     if (dataModel instanceof IUserProject) {

@@ -26,7 +26,7 @@ public class NewProject extends AbstractHandler{
 		}
 		
 		ProjectManager.getContainerInstance().startUp(Controller.class,
-				nameParam, pathParam);
+				nameParam, pathParam, null);
 
 		// Enable the save entries in the menu
 		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI

@@ -94,6 +94,9 @@ public class Controller extends AbstractDataModel implements IDataModel,
 	@XmlElement(name = "crc")
 	private ResponsibilityController respController;
 
+	@XmlAttribute(name="projectId")
+  private UUID projectId;
+
 
 	public Controller() {
 		super();
@@ -1183,6 +1186,26 @@ public class Controller extends AbstractDataModel implements IDataModel,
 
   @Override
   public List<IRectangleComponent> getRoots() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public UUID getProjectId() {
+    if (this.projectId == null) {
+      this.projectId = UUID.randomUUID();
+    }
+    return this.projectId;
+  }
+
+  @Override
+  public void initializeProject(IDataModel original) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public <T> T getAdapter(Class<T> clazz) {
     // TODO Auto-generated method stub
     return null;
   }

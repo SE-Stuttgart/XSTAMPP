@@ -41,7 +41,7 @@ public class TreeItemDescription {
     this(parent, projectId);
     this.element = element;
     this.command = element.getAttribute("command");
-    this.id = element.getAttribute("id");
+    this.id = element.getAttribute("id") + projectId.toString();
     this.name = element.getAttribute("name");
     this.elementName = element.getName();
     icon = element.getAttribute("icon");

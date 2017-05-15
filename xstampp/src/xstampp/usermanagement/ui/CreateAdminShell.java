@@ -11,6 +11,7 @@
 
 package xstampp.usermanagement.ui;
 
+import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.Admin;
@@ -28,8 +29,8 @@ public class CreateAdminShell extends AbstractUserShell {
    */
   public CreateAdminShell(IUserSystem userSystem) {
     super(userSystem, true);
-    setTitle("Create Admin");
-    setAcceptLabel("Create");
+    setTitle(Messages.CreateAdminShell_CreateAdmin);
+    setAcceptLabel(Messages.AbstractUserShell_Create);
   }
 
 
@@ -37,7 +38,7 @@ public class CreateAdminShell extends AbstractUserShell {
   protected boolean doAccept() {
     for (IUser user : getUserSystem().getRegistry()) {
       if (user.getUsername().equals(getUsername())) {
-        invalidate("Username already exists!");
+        invalidate(Messages.CreateUserShell_UsernameExists);
         return false;
       }
     }

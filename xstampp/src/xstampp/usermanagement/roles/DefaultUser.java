@@ -48,4 +48,16 @@ public class DefaultUser implements IUser {
     return false;
   }
 
+  @Override
+  public UUID getWorkingProjectId() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void setWorkingProjectId(UUID workingProjectId) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

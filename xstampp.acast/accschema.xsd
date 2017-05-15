@@ -252,6 +252,7 @@
 				</xs:element>
 			</xs:all>
 			<xs:attribute name="acastversion" type="xs:string" use="optional" />
+            <xs:attribute name="projectId" type="xs:string" use="optional" />
 		</xs:complexType>
 	</xs:element>
 

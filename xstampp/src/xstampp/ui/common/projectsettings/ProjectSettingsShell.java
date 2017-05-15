@@ -15,8 +15,10 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.api.IUserProject;
-import xstampp.usermanagement.ui.UserManagementPage;
+import xstampp.usermanagement.ui.settings.CollaborationSettings;
+import xstampp.usermanagement.ui.settings.UserManagementPage;
 
 /**
  * The project settings shell is a {@link ModalShell} which displays all available settings in the
@@ -24,7 +26,8 @@ import xstampp.usermanagement.ui.UserManagementPage;
  * <code>xstampp.extension.steppedProcess</code> as SettingsPage implementing the
  * {@link ISettingsPage} interface.
  * 
- * <p>Additionally the settings page contains the user management for a {@link IUserProject}
+ * <p>
+ * Additionally the settings page contains the user management for a {@link IUserProject}
  * 
  * @author Lukas Balzer
  *
@@ -35,7 +38,8 @@ public class ProjectSettingsShell extends ModalShell {
   private List<ISettingsPage> pages;
 
   /**
-   * Creates a {@link ModalShell} with a pre defined title:<br> <code>Project Settings for [project
+   * Creates a {@link ModalShell} with a pre defined title:<br>
+   * <code>Project Settings for [project
    * title]</code>.
    * 
    * @param projectId
@@ -43,8 +47,8 @@ public class ProjectSettingsShell extends ModalShell {
    *          {@link ProjectManager}
    */
   public ProjectSettingsShell(UUID projectId) {
-    super("Project Settings for " + ProjectManager.getContainerInstance().getTitle(projectId),
-        APPLYABLE);
+    super(Messages.ProjectSettingsShell_Title
+        + ProjectManager.getContainerInstance().getTitle(projectId), APPLYABLE);
     this.projectId = projectId;
     this.pages = new ArrayList<>();
     setSize(600, 400);
@@ -72,7 +76,7 @@ public class ProjectSettingsShell extends ModalShell {
   @Override
   protected void createCenter(Shell parent) {
 
-    final CTabFolder folder = new CTabFolder(parent, SWT.BORDER);
+    final CTabFolder folder = new CTabFolder(parent, SWT.BORDER | SWT.V_SCROLL);
     folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
     folder.setSimple(false);
     folder.setMinimizeVisible(false);
@@ -82,12 +86,12 @@ public class ProjectSettingsShell extends ModalShell {
     IExtension configurationElement = ProjectManager.getContainerInstance()
         .getConfigurationFor(projectId).getDeclaringExtension();
     for (IConfigurationElement element : configurationElement.getConfigurationElements()) {
-      if (element.getName().equals("SettingsPage")) {
+      if (element.getName().equals("SettingsPage")) { //$NON-NLS-1$
         try {
-          ISettingsPage page = (ISettingsPage) element.createExecutableExtension("class");
+          ISettingsPage page = (ISettingsPage) element.createExecutableExtension("class"); //$NON-NLS-1$
           if (page.isVisible(projectId)) {
             CTabItem item = new CTabItem(folder, SWT.None);
-            item.setText(element.getAttribute("name"));
+            item.setText(element.getAttribute("name")); //$NON-NLS-1$
             item.setControl(page.createControl(folder, this, projectId));
             this.pages.add(page);
           }
@@ -100,8 +104,16 @@ public class ProjectSettingsShell extends ModalShell {
       ISettingsPage page = new UserManagementPage();
       this.pages.add(page);
       CTabItem item = new CTabItem(folder, SWT.None);
-      item.setText("Users");
+      item.setText(Messages.ProjectSettingsShell_UserManagementTitle);
       item.setControl(page.createControl(folder, this, projectId));
+
+      page = new CollaborationSettings();
+      if (page.isVisible(projectId)) {
+        this.pages.add(page);
+        item = new CTabItem(folder, SWT.None);
+        item.setText(Messages.ProjectSettingsShell_Collaboration);
+        item.setControl(page.createControl(folder, this, projectId));
+      }
     }
 
   }

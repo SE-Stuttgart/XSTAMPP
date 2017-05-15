@@ -183,4 +183,6 @@ public interface IUnsafeControlActionDataModel extends IDataModel {
 	 * @return the current id
 	 */
 	int getUCANumber(UUID ucaID);
+
+  boolean removeAllUCAHazardLinks(UUID unsafeControlActionId);
 }

@@ -1,14 +1,16 @@
 package xstampp.usermanagement.ui.contribution;
 
+import java.io.File;
+import java.util.Observer;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.jobs.Job;
 
+import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
-
-import java.io.File;
-import java.util.Observer;
 
 public class EmptyProject implements IUserProject {
 
@@ -85,6 +87,12 @@ public class EmptyProject implements IUserProject {
   }
 
   @Override
+  public void initializeProject(IDataModel original) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
   public String getFileExtension() {
     // TODO Auto-generated method stub
     return null;
@@ -122,6 +130,24 @@ public class EmptyProject implements IUserProject {
 
   @Override
   public IUserSystem createUserSystem() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public UUID getProjectId() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public IUserSystem loadUserSystem() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public <T> T getAdapter(Class<T> clazz) {
     // TODO Auto-generated method stub
     return null;
   }

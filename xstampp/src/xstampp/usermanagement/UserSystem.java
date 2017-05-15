@@ -9,17 +9,6 @@
 
 package xstampp.usermanagement;
 
-import xstampp.usermanagement.api.AccessRights;
-import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.api.IUserSystem;
-import xstampp.usermanagement.io.SaveUserJob;
-import xstampp.usermanagement.roles.AbstractUser;
-import xstampp.usermanagement.roles.Admin;
-import xstampp.usermanagement.roles.User;
-import xstampp.usermanagement.ui.ChangeUserShell;
-import xstampp.usermanagement.ui.CreateUserShell;
-import xstampp.usermanagement.ui.LoginShell;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +23,18 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
+import xstampp.usermanagement.io.SaveUserJob;
+import xstampp.usermanagement.roles.AbstractUser;
+import xstampp.usermanagement.roles.Admin;
+import xstampp.usermanagement.roles.User;
+import xstampp.usermanagement.ui.ChangeUserShell;
+import xstampp.usermanagement.ui.CreateAdminShell;
+import xstampp.usermanagement.ui.CreateUserShell;
+import xstampp.usermanagement.ui.LoginShell;
 
 /**
  * An admin which can access and manipulate all files.
@@ -57,7 +58,7 @@ public class UserSystem extends Observable implements IUserSystem {
   private List<Admin> adminRegistry;
 
   private IUser currentUser;
-  private String projectName;
+  private String systemName;
 
   public UserSystem() {
     this.userRegistry = new ArrayList<>();
@@ -75,7 +76,7 @@ public class UserSystem extends Observable implements IUserSystem {
   public UserSystem(Admin admin, String projectName) {
     this();
     adminRegistry.add(admin);
-    this.projectName = projectName;
+    this.systemName = projectName;
     this.systemId = UUID.randomUUID();
     this.currentUser = admin;
     save();
@@ -162,6 +163,23 @@ public class UserSystem extends Observable implements IUserSystem {
       if (user != null && this.userRegistry.add(user)) {
         result = true;
         save();
+        setChanged();
+        notifyObservers(NOTIFY_USER);
+      }
+    }
+    return result;
+  }
+
+  public boolean createAdmin() {
+    boolean result = false;
+    if (getCurrentUser() instanceof Admin) {
+      CreateAdminShell create = new CreateAdminShell(this);
+      Admin user = (Admin) create.pullUser();
+      if (user != null && this.adminRegistry.add(user)) {
+        result = true;
+        save();
+        setChanged();
+        notifyObservers(NOTIFY_USER);
       }
     }
     return result;
@@ -179,6 +197,8 @@ public class UserSystem extends Observable implements IUserSystem {
         User user = this.userRegistry.get(i);
         if (user.getUserId().equals(userId) && this.userRegistry.remove(user)) {
           save();
+          setChanged();
+          notifyObservers(NOTIFY_USER);
           return true;
         }
       }
@@ -192,7 +212,7 @@ public class UserSystem extends Observable implements IUserSystem {
   }
 
   private void save() {
-    SaveUserJob saveJob = new SaveUserJob(this, projectName);
+    SaveUserJob saveJob = new SaveUserJob(this, systemName);
     saveJob.schedule();
     setChanged();
     notifyObservers();
@@ -206,7 +226,12 @@ public class UserSystem extends Observable implements IUserSystem {
     return currentUser.getUserId();
   }
 
-  public void setProjectName(String projectName) {
-    this.projectName = projectName;
+  public void setSystemName(String projectName) {
+    this.systemName = projectName;
+  }
+  
+  @Override
+  public String getSystemName() {
+    return systemName;
   }
 }

@@ -1,12 +1,12 @@
 package xstampp.usermanagement;
 
-import xstampp.usermanagement.api.AccessRights;
-import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.api.IUserSystem;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
 
 public class RestrictedUserSystem implements IUserSystem {
 
@@ -86,6 +86,18 @@ public class RestrictedUserSystem implements IUserSystem {
   public boolean assignResponsibility(Map<UUID, IUser> responsibilityMap) {
     // TODO Auto-generated method stub
     return false;
+  }
+
+  @Override
+  public boolean createAdmin() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String getSystemName() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

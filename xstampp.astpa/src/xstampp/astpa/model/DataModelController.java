@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -100,10 +100,12 @@ import xstampp.astpa.model.service.UndoGoalChangeCallback;
 import xstampp.astpa.model.service.UndoHazardChangeCallback;
 import xstampp.astpa.model.service.UndoSafetyConstraintChangeCallback;
 import xstampp.astpa.model.service.UndoUCAChangesCallback;
+import xstampp.astpa.usermanagement.AstpaCollaborationSystem;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
+import xstampp.model.IDataModel;
 import xstampp.model.IEntryFilter;
 import xstampp.model.ISafetyDataModel;
 import xstampp.model.IValueCombie;
@@ -111,6 +113,7 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.EmptyUserSystem;
+import xstampp.usermanagement.api.ICollaborationSystem;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.api.UserManagement;
@@ -143,6 +146,12 @@ public class DataModelController extends AbstractDataModel
 
   @XmlAttribute(name = "userSystemId")
   private UUID userSystemId;
+
+  @XmlAttribute(name = "userSystemName")
+  private String userSystemName;
+
+  @XmlAttribute(name = "projectId")
+  private UUID projectId;
 
   @XmlElement(name = "exportinformation")
   private ExportInformation exportInformation;
@@ -201,6 +210,14 @@ public class DataModelController extends AbstractDataModel
       this.astpaVersion = versionWithQualifier.substring(0, versionWithQualifier.lastIndexOf('.'));
     }
 
+  }
+
+  @Override
+  public UUID getProjectId() {
+    if (this.projectId == null) {
+      this.projectId = UUID.randomUUID();
+    }
+    return this.projectId;
   }
 
   @Override
@@ -589,18 +606,6 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public IUserSystem createUserSystem() {
-    if (getUserSystem() instanceof EmptyUserSystem) {
-      this.userSystem = UserManagement.createUserSystem(getProjectName());
-      if (!(this.userSystem instanceof EmptyUserSystem)) {
-        this.userSystemId = userSystem.getSystemId();
-        setUnsavedAndChanged(ObserverValue.UserSystem);
-      }
-    }
-    return getUserSystem();
-  }
-
-  @Override
   public boolean deleteLink(UUID accidentId, UUID hazardId) {
     if ((accidentId == null) || (hazardId == null)) {
       return false;
@@ -984,7 +989,6 @@ public class DataModelController extends AbstractDataModel
     return this.projectDataManager.getProjectDescription();
   }
 
-  @XmlTransient
   @Override
   public String getProjectName() {
     return this.projectDataManager.getProjectName();
@@ -1050,10 +1054,37 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
+  public IUserSystem createUserSystem() {
+    if (getUserSystem() instanceof EmptyUserSystem) {
+      this.userSystem = UserManagement.getInstance().createUserSystem(getProjectName());
+      this.userSystemName = getProjectName();
+      if (!(this.userSystem instanceof EmptyUserSystem)) {
+        this.userSystemId = userSystem.getSystemId();
+        setUnsavedAndChanged(ObserverValue.UserSystem);
+      }
+    }
+    return getUserSystem();
+  }
+
+  @Override
+  public IUserSystem loadUserSystem() {
+    if (getUserSystem() instanceof EmptyUserSystem) {
+      this.userSystem = UserManagement.getInstance().loadExistingSystem();
+      if (!(this.userSystem instanceof EmptyUserSystem)) {
+        this.userSystemName = getProjectName();
+        this.userSystemId = userSystem.getSystemId();
+        setUnsavedAndChanged(ObserverValue.UserSystem);
+      }
+    }
+    return getUserSystem();
+  }
+
+  @Override
   public IUserSystem getUserSystem() {
     if (userSystem instanceof EmptyUserSystem && userSystemId != null) {
       try {
-        this.userSystem = UserManagement.loadSystem(this, userSystemId);
+        this.userSystem = UserManagement.getInstance().loadSystem(userSystemName, userSystemId);
+        this.userSystemName = userSystem.getSystemName();
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -1110,6 +1141,23 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
+  public void initializeProject(IDataModel original) {
+    initializeProject();
+    if (original instanceof DataModelController) {
+      this.userSystem = ((DataModelController) original).userSystem;
+      this.userSystemId = ((DataModelController) original).userSystemId;
+      this.userSystemName = ((DataModelController) original).userSystemName;
+      this.causalFactorController = ((DataModelController) original).causalFactorController;
+      this.controlActionController = ((DataModelController) original).controlActionController;
+      this.controlStructureController = ((DataModelController) original).controlStructureController;
+      this.hazAccController = ((DataModelController) original).hazAccController;
+      this.sdsController = ((DataModelController) original).sdsController;
+      this.extendedDataController = ((DataModelController) original).extendedDataController;
+    }
+
+  }
+
+  @Override
   public boolean isCASafetyCritical(UUID caID) {
     return this.controlActionController.isSafetyCritical(caID);
   }
@@ -1142,20 +1190,20 @@ public class DataModelController extends AbstractDataModel
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
     boolean result = false;
     switch (value) {
-    case HAZARD:
-    case ACCIDENT:
-      result = hazAccController.moveEntry(moveUp, id, value);
-      break;
-    case DESIGN_REQUIREMENT:
-    case SAFETY_CONSTRAINT:
-    case SYSTEM_GOAL:
-      result = sdsController.moveEntry(moveUp, id, value);
-      break;
-    case CONTROL_ACTION:
-      result = controlActionController.moveEntry(moveUp, id, value);
-      break;
-    default:
-      break;
+      case HAZARD:
+      case ACCIDENT:
+        result = hazAccController.moveEntry(moveUp, id, value);
+        break;
+      case DESIGN_REQUIREMENT:
+      case SAFETY_CONSTRAINT:
+      case SYSTEM_GOAL:
+        result = sdsController.moveEntry(moveUp, id, value);
+        break;
+      case CONTROL_ACTION:
+        result = controlActionController.moveEntry(moveUp, id, value);
+        break;
+      default:
+        break;
     }
     if (result) {
       setUnsavedAndChanged(value);
@@ -1441,6 +1489,21 @@ public class DataModelController extends AbstractDataModel
       return true;
     }
     return false;
+  }
+
+  @Override
+  public boolean removeAllUCAHazardLinks(UUID unsafeControlActionId) {
+    boolean result = true;
+    if (unsafeControlActionId == null) {
+      return false;
+    }
+    for (ITableModel tableModel : getAllHazards()) {
+      result &= this.controlActionController.removeUCAHazardLink(unsafeControlActionId, tableModel.getId());
+    }
+    if (result) {
+      this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+    }
+    return result;
   }
 
   @Override
@@ -2050,5 +2113,13 @@ public class DataModelController extends AbstractDataModel
       return true;
     }
     return false;
+  }
+
+  @Override
+  public <T> T getAdapter(Class<T> clazz) {
+    if(clazz == ICollaborationSystem.class) {
+      return (T) new AstpaCollaborationSystem(this);
+    }
+    return null;
   }
 }

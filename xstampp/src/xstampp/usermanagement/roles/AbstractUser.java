@@ -9,17 +9,19 @@
 
 package xstampp.usermanagement.roles;
 
-import org.apache.commons.lang3.SerializationUtils;
-
-import xstampp.usermanagement.api.IUser;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+
+import org.apache.commons.lang3.SerializationUtils;
+
+import xstampp.usermanagement.api.IUser;
 
 /**
  * An abstract class which defines the basis af all users in thre system.
@@ -27,6 +29,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
  * @author Lukas Balzer - initial implementation
  *
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class AbstractUser implements IUser {
 
   @XmlAttribute(name = "userId", required = true)
@@ -37,6 +40,9 @@ public abstract class AbstractUser implements IUser {
 
   @XmlAttribute(name = "password", required = true)
   private byte[] password;
+
+  @XmlAttribute(name = "workingProjectId", required = false)
+  private UUID workingProjectId;
 
   @XmlElementWrapper(name = "responsibilities")
   @XmlElement(name = "responsibility")
@@ -106,7 +112,7 @@ public abstract class AbstractUser implements IUser {
   public void addResponsibility(UUID responsibility) {
     this.responsibilities.add(responsibility);
   }
-  
+
   public List<UUID> getResponsibilities() {
     return responsibilities;
   }
@@ -114,5 +120,15 @@ public abstract class AbstractUser implements IUser {
   @Override
   public boolean isResponibleFor(UUID responsibility) {
     return getResponsibilities().contains(responsibility);
+  }
+
+  @Override
+  public UUID getWorkingProjectId() {
+    return workingProjectId;
+  }
+
+  @Override
+  public void setWorkingProjectId(UUID workingProjectId) {
+    this.workingProjectId = workingProjectId;
   }
 }
