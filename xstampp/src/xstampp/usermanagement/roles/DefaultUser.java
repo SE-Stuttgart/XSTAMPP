@@ -1,9 +1,11 @@
 package xstampp.usermanagement.roles;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
-
-import java.util.UUID;
 
 public class DefaultUser implements IUser {
 
@@ -19,11 +21,6 @@ public class DefaultUser implements IUser {
 
   @Override
   public boolean setUsername(String password, String username) {
-    return false;
-  }
-
-  @Override
-  public boolean setPassword(String oldPassword, String newPassword) {
     return false;
   }
 
@@ -44,20 +41,18 @@ public class DefaultUser implements IUser {
 
   @Override
   public boolean isResponibleFor(UUID responsibility) {
-    //the default user has no responsibilities
     return false;
   }
 
   @Override
   public UUID getWorkingProjectId() {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public void setWorkingProjectId(UUID workingProjectId) {
+  public List<UUID> getResponsibilities() {
     // TODO Auto-generated method stub
-    
+    return new ArrayList<>();
   }
 
 }

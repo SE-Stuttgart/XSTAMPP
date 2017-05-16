@@ -91,7 +91,6 @@ public abstract class AbstractUser implements IUser {
     return false;
   }
 
-  @Override
   public boolean setPassword(String oldPassword, String newPassword) {
     if (getPassword().equals(oldPassword)) {
       setPassword(newPassword);
@@ -113,6 +112,11 @@ public abstract class AbstractUser implements IUser {
     this.responsibilities.add(responsibility);
   }
 
+  public void setResponsibilities(List<UUID> responsibilities) {
+    this.responsibilities = responsibilities;
+  }
+  
+  @Override
   public List<UUID> getResponsibilities() {
     return responsibilities;
   }
@@ -127,8 +131,18 @@ public abstract class AbstractUser implements IUser {
     return workingProjectId;
   }
 
-  @Override
-  public void setWorkingProjectId(UUID workingProjectId) {
-    this.workingProjectId = workingProjectId;
+  /**
+   * Adds a id for a project this user is related to e.g. a working copy that is assigned to this
+   * user.
+   * 
+   * @param workingProjectId
+   *          an id for a project stored in the current workspace.
+   */
+  public boolean setWorkingProjectId(UUID workingProjectId) {
+    if (this.workingProjectId != workingProjectId) {
+      this.workingProjectId = workingProjectId;
+      return true;
+    }
+    return false;
   }
 }

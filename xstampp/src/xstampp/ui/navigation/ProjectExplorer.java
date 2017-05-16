@@ -335,10 +335,18 @@ public final class ProjectExplorer extends ViewPart
   }
 
   /**
-   * This method deals with the two maps which are used to define a selection,<br> <table
-   * border="1"> <tr> <th>treeItemToStepId -</th> <th>every treeitem gets an id for the project,step
-   * or category</th> </tr> <tr> <th>selectionIdToSelector -</th> <th>every selectionId is than
-   * mapped to a Selector item which defines the selection</th> </tr> </table>.
+   * This method deals with the two maps which are used to define a selection,<br>
+   * <table border="1">
+   * <tr>
+   * <th>treeItemToStepId -</th>
+   * <th>every treeitem gets an id for the project,step or category</th>
+   * </tr>
+   * <tr>
+   * <th>selectionIdToSelector -</th>
+   * <th>every selectionId is than mapped to a Selector item which defines the selection</th>
+   * </tr>
+   * </table>
+   * .
    * 
    *
    * @author Lukas Balzer
@@ -374,28 +382,35 @@ public final class ProjectExplorer extends ViewPart
   }
 
   private void updateDynamicSteps() {
-    for (DynamicStepSelector dynamicStepSelector : dynamicSelectors) {
-      createDynamicStep(dynamicStepSelector);
+    for (int i = dynamicSelectors.size() - 1; i >= 0; i--) {
+      if (!createDynamicStep(dynamicSelectors.get(i))) {
+        dynamicSelectors.remove(i);
+      }
     }
   }
 
-  private void createDynamicStep(DynamicStepSelector selector) {
+  private boolean createDynamicStep(DynamicStepSelector selector) {
     int i = 0;
-    selector.getItem().clearAll(true);
-    for (TreeItem item : selector.getItem().getItems()) {
-      remove(item);
-    }
-    for (IDynamicStepsProvider.DynamicDescriptor descriptor : selector.getProvider()
-        .getStepMap(selector.getProjectId())) {
-      TreeItemDescription subDesc = new TreeItemDescription(selector, selector.getProjectId());
-      subDesc.setProperties(descriptor.getProperties());
-      subDesc.setName(descriptor.getName());
-      subDesc.setCommandAdditions(selector.getCommandAdditions());
-      subDesc.setEditorId(selector.getEditorId());
-      subDesc.setNamespaceIdentifier(selector.getPluginId());
-      subDesc.setId(selector.getSelectionId() + "" + i++);
-      subDesc.setIcon(selector.getIcon());
-      addTreeItem(subDesc);
+    try {
+      selector.getItem().clearAll(true);
+      for (TreeItem item : selector.getItem().getItems()) {
+        remove(item);
+      }
+      for (IDynamicStepsProvider.DynamicDescriptor descriptor : selector.getProvider()
+          .getStepMap(selector.getProjectId())) {
+        TreeItemDescription subDesc = new TreeItemDescription(selector, selector.getProjectId());
+        subDesc.setProperties(descriptor.getProperties());
+        subDesc.setName(descriptor.getName());
+        subDesc.setCommandAdditions(selector.getCommandAdditions());
+        subDesc.setEditorId(selector.getEditorId());
+        subDesc.setNamespaceIdentifier(selector.getPluginId());
+        subDesc.setId(selector.getSelectionId() + "" + i++);
+        subDesc.setIcon(selector.getIcon());
+        addTreeItem(subDesc);
+      }
+      return true;
+    } catch (Exception exc) {
+      return false;
     }
   }
 

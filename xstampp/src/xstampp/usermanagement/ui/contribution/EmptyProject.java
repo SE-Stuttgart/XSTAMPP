@@ -152,4 +152,16 @@ public class EmptyProject implements IUserProject {
     return null;
   }
 
+  @Override
+  public UUID getExclusiveUserId() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void setExclusiveUserId(UUID userId) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

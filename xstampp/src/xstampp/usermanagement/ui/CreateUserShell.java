@@ -13,9 +13,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 import xstampp.usermanagement.Messages;
+import xstampp.usermanagement.UserSystem;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.User;
 
 /**
@@ -35,7 +35,7 @@ public class CreateUserShell extends AbstractUserShell {
    * @param userSystem
    *          the user system in which the user should be created
    */
-  public CreateUserShell(IUserSystem userSystem) {
+  public CreateUserShell(UserSystem userSystem) {
     super(userSystem, false);
     setTitle(Messages.CreateUserShell_CreateUser);
     setAcceptLabel(Messages.AbstractUserShell_Create);

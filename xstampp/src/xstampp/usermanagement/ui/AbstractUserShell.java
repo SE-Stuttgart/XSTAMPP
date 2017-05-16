@@ -13,8 +13,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.usermanagement.UserSystem;
 import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.api.IUserSystem;
 
 /**
  * A {@link ModalShell} which has a content consisting of two entry fileds for username and
@@ -24,7 +24,7 @@ import xstampp.usermanagement.api.IUserSystem;
  *
  */
 public abstract class AbstractUserShell extends ModalShell {
-  private final IUserSystem userSystem;
+  private final UserSystem userSystem;
   private boolean hidePassword;
   private TextInput passwordInput;
   private TextInput usernameInput;
@@ -39,7 +39,7 @@ public abstract class AbstractUserShell extends ModalShell {
    * @param hidePassword
    *          whether of not the password input should hide or show characters
    */
-  public AbstractUserShell(IUserSystem userSystem, boolean hidePassword) {
+  public AbstractUserShell(UserSystem userSystem, boolean hidePassword) {
     super("User", PACKED);
     setUserLabelStyle(SWT.None);
     this.selectedUser = null;
@@ -103,21 +103,14 @@ public abstract class AbstractUserShell extends ModalShell {
    * 
    * @return the userSystem
    */
-  public IUserSystem getUserSystem() {
+  public UserSystem getUserSystem() {
     return userSystem;
   }
 
-  /**
-   * @return the userLabelStyle
-   */
   public int getUserLabelStyle() {
     return userLabelStyle;
   }
 
-  /**
-   * @param userLabelStyle
-   *          the userLabelStyle to set
-   */
   public void setUserLabelStyle(int userLabelStyle) {
     this.userLabelStyle = userLabelStyle;
   }

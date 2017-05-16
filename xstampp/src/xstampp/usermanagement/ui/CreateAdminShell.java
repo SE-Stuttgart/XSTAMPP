@@ -12,8 +12,8 @@
 package xstampp.usermanagement.ui;
 
 import xstampp.usermanagement.Messages;
+import xstampp.usermanagement.UserSystem;
 import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.Admin;
 
 /**
@@ -27,7 +27,7 @@ public class CreateAdminShell extends AbstractUserShell {
    * Creates an instance with a title and an custom accept label.
    * @param userSystem the user system for which the administrator is created.
    */
-  public CreateAdminShell(IUserSystem userSystem) {
+  public CreateAdminShell(UserSystem userSystem) {
     super(userSystem, true);
     setTitle(Messages.CreateAdminShell_CreateAdmin);
     setAcceptLabel(Messages.AbstractUserShell_Create);

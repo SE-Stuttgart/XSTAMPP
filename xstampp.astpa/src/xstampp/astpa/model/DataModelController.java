@@ -150,6 +150,9 @@ public class DataModelController extends AbstractDataModel
   @XmlAttribute(name = "userSystemName")
   private String userSystemName;
 
+  @XmlAttribute(name = "exclusiveUserId")
+  private UUID exclusiveUserId;
+
   @XmlAttribute(name = "projectId")
   private UUID projectId;
 
@@ -1085,11 +1088,22 @@ public class DataModelController extends AbstractDataModel
       try {
         this.userSystem = UserManagement.getInstance().loadSystem(userSystemName, userSystemId);
         this.userSystemName = userSystem.getSystemName();
+
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
     return this.userSystem;
+  }
+
+  @Override
+  public UUID getExclusiveUserId() {
+    return exclusiveUserId;
+  }
+
+  @Override
+  public void setExclusiveUserId(UUID userId) {
+    this.exclusiveUserId = userId;
   }
 
   @Override
@@ -1498,7 +1512,8 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
     for (ITableModel tableModel : getAllHazards()) {
-      result &= this.controlActionController.removeUCAHazardLink(unsafeControlActionId, tableModel.getId());
+      result &= this.controlActionController.removeUCAHazardLink(unsafeControlActionId,
+          tableModel.getId());
     }
     if (result) {
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
@@ -2115,9 +2130,10 @@ public class DataModelController extends AbstractDataModel
     return false;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> T getAdapter(Class<T> clazz) {
-    if(clazz == ICollaborationSystem.class) {
+    if (clazz == ICollaborationSystem.class) {
       return (T) new AstpaCollaborationSystem(this);
     }
     return null;

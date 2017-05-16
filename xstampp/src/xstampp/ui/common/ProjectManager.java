@@ -173,7 +173,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
 
   public UUID startUp(Class<?> controller, String projectName, UUID originalId) {
     String extension = "." + getProjectExtension(originalId);
-    File pathFile = new File(Platform.getInstanceLocation().getURL().getPath(), projectName + extension);
+    File pathFile = new File(Platform.getInstanceLocation().getURL().getPath(),
+        projectName + extension);
     return startUp(controller, projectName, pathFile.getAbsolutePath(), originalId);
   }
 

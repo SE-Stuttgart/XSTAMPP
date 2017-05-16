@@ -1,5 +1,8 @@
 package xstampp.astpa.usermanagement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -18,38 +21,43 @@ public class SyncShell extends ModalShell {
 
   private Listener listener;
   private AstpaCollaborationSystem system;
-  private IUser user;
-  private int percent;
+  private List<IUser> users;
 
-  public SyncShell(IUser user,AstpaCollaborationSystem system) {
+  public SyncShell(IUser user, AstpaCollaborationSystem system) {
+    this(new ArrayList<IUser>(), system);
+    this.users.add(user);
+  }
+
+  public SyncShell(List<IUser> users, AstpaCollaborationSystem system) {
     super("Get changes", PACKED);
-    this.user = user;
     setAcceptLabel("Sync");
+    this.users = users;
     this.system = system;
   }
 
   @Override
   protected boolean validate() {
-    // TODO Auto-generated method stub
     return true;
   }
 
   @Override
   protected boolean doAccept() {
-    setReturnValue(system.syncDataWithUser(user, listener));
+    boolean value = true;
+    for (IUser user : users) {
+      value &= system.syncDataWithUser(user, listener);
+    }
+    setReturnValue(value);
     return true;
   }
 
   @Override
   protected void createCenter(Shell parent) {
-    percent = 0;
     final Canvas bar = new Canvas(parent, SWT.None);
     bar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     listener = new Listener() {
-      
+
       @Override
       public void handleEvent(Event event) {
-        percent = (int) event.data;
         bar.redraw();
       }
     };
@@ -57,13 +65,19 @@ public class SyncShell extends ModalShell {
 
       @Override
       public void paintControl(PaintEvent e) {
+        int percent;
+        try {
+          percent = (int) e.data;
+        } catch(Exception exc){
+          percent = 0;
+        }
         Rectangle bounds = bar.getBounds();
         e.gc.setBackground(ColorManager.COLOR_WHITE);
         e.gc.fillRectangle(bounds.x, bounds.y, bounds.width, bounds.height);
         e.gc.setBackground(ColorManager.COLOR_GREEN);
-        e.gc.fillRectangle(bounds.x, bounds.y, bounds.width * e.count/100, bounds.height);
+        e.gc.fillRectangle(bounds.x, bounds.y, bounds.width * percent, bounds.height);
       }
-      
+
     });
   }
 

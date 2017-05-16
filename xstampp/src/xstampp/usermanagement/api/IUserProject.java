@@ -11,6 +11,8 @@
 
 package xstampp.usermanagement.api;
 
+import java.util.UUID;
+
 import xstampp.model.IDataModel;
 import xstampp.usermanagement.UserSystem;
 
@@ -34,4 +36,8 @@ public interface IUserProject extends IDataModel {
   IUserSystem createUserSystem();
   
   IUserSystem loadUserSystem();
+
+  UUID getExclusiveUserId();
+
+  void setExclusiveUserId(UUID userId);
 }

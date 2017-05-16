@@ -67,10 +67,11 @@ public class CollaborationSettings implements ISettingsPage, Observer {
         for (Composite comp : listEntries) {
           comp.dispose();
         }
+        UserSystem userSystem = (UserSystem) getDataModel().getUserSystem();
         boolean evenRow = true;
-        for (IUser user : getDataModel().getUserSystem().getRegistry()) {
+        for (IUser user : userSystem.getRegistry()) {
           if (user.checkAccess(AccessRights.ACCESS)) {
-            Composite composite = new Composite(tableComposite, SWT.None);
+            final Composite composite = new Composite(tableComposite, SWT.None);
             composite.setLayout(new GridLayout(2, false));
             composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
             int bgConstant = SWT.COLOR_WHITE;
@@ -87,8 +88,9 @@ public class CollaborationSettings implements ISettingsPage, Observer {
             IDataModel model = ProjectManager.getContainerInstance()
                 .getDataModel(user.getWorkingProjectId());
             if (model == null) {
-              user.setWorkingProjectId(null);
+              userSystem.assignWorkProject(user.getUserId(), null);
             }
+
             if (user.getWorkingProjectId() == null) {
               // if the user has no current working project a working copy of the current project
               // can be
@@ -105,16 +107,25 @@ public class CollaborationSettings implements ISettingsPage, Observer {
                     projectName += "_" + user.getUsername(); //$NON-NLS-1$
                     UUID uuid = ProjectManager.getContainerInstance().startUp(model.getClass(),
                         projectName, originalId);
-                    user.setWorkingProjectId(uuid);
-                    createBtn.setText(Messages.CollaborationSettings_PullChanges);
+
+                    userSystem.assignWorkProject(user.getUserId(), uuid);
                     IDataModel newModel = ProjectManager.getContainerInstance()
                         .getDataModel(user.getWorkingProjectId());
-                    createBtn.setText(newModel.getProjectName());
-                    
+                    ((IUserProject) newModel).setExclusiveUserId(user.getUserId());
+                    createBtn.setText(String.format(Messages.CollaborationSettings_PullChanges,
+                        newModel.getProjectName()));
+                    composite.layout();
                     createBtn.addSelectionListener(new SelectionAdapter() {
+                      boolean initialCall = true;
+
                       @Override
                       public void widgetSelected(SelectionEvent e) {
-                        system.syncDataWithUser(user);
+                        if (initialCall) {
+                          // This listener is called directly after it is added so
+                          initialCall = false;
+                        } else {
+                          system.syncDataWithUser(user);
+                        }
                       }
                     });
                   }
@@ -156,9 +167,10 @@ public class CollaborationSettings implements ISettingsPage, Observer {
   public boolean isVisible(UUID projectId) {
     IDataModel model = ProjectManager.getContainerInstance().getDataModel(projectId);
     boolean isVisible = model instanceof IUserProject;
-    isVisible = isVisible && ((IUserProject) model).getUserSystem().checkAccess(AccessRights.ADMIN);
+    isVisible &= (((IUserProject) model).getUserSystem() instanceof UserSystem);
+    isVisible &= ((IUserProject) model).getUserSystem().checkAccess(AccessRights.ADMIN);
     system = model.getAdapter(ICollaborationSystem.class);
-    isVisible = isVisible && system != null;
+    isVisible &= system != null;
     return isVisible;
   }
 

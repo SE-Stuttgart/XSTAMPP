@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.XMLConstants;
@@ -29,12 +27,6 @@ import xstampp.usermanagement.ui.CreateAdminShell;
 
 public class UserManagement {
   private static UserManagement instance;
-
-  private Map<UUID, IUserSystem> loadedSystems;
-
-  private UserManagement() {
-    this.loadedSystems = new HashMap<>();
-  }
 
   /**
    * The get instance method of the singleton pattern. On the initial call this method also creates
@@ -61,12 +53,11 @@ public class UserManagement {
    * @return The new {@link IUserSystem} with one user
    */
   public IUserSystem createUserSystem(String projectName) {
-    CreateAdminShell create = new CreateAdminShell(new EmptyUserSystem());
+    CreateAdminShell create = new CreateAdminShell(new UserSystem());
     IUser admin = create.pullUser();
     IUserSystem system = new EmptyUserSystem();
     if (admin != null && admin instanceof Admin) {
       system = new UserSystem((Admin) admin, projectName);
-      loadedSystems.put(system.getSystemId(), system);
     }
     return system;
   }
@@ -86,51 +77,47 @@ public class UserManagement {
    */
   public IUserSystem loadSystem(String systemName, UUID systemId) {
     IUserSystem system = new RestrictedUserSystem();
-    if (this.loadedSystems.containsKey(systemId)) {
-      system = this.loadedSystems.get(systemId);
-    } else {
-      String wsUrl = Platform.getInstanceLocation().getURL().getPath();
-      String fileName = systemName;
-      File file = new File(wsUrl, fileName);
-      try (StringWriter writer = new StringWriter();
-          FileInputStream inputStream = new FileInputStream(file);) {
-        // validate the file
-        if (file == null || !file.exists()) {
-          FileDialog diag = new FileDialog(Display.getDefault().getActiveShell());
-          diag.setFilterPath(wsUrl);
-          diag.setText("Please select the User Database or conntact the System administrator");
-          diag.setFilterExtensions(new String[] { "*.user" });
-          String filePath = diag.open();
-          file = new File(filePath);
-        }
-        URL schemaFile;
-        String string = "/xstampp/usermanagement/io/userSystem.xsd"; //$NON-NLS-1$
-        schemaFile = UserManagement.class.getResource(string);
-
-        Source xmlFile = new StreamSource(file.toURI().toString());
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory.newSchema(schemaFile);
-
-        Validator validator = schema.newValidator();
-        validator.validate(xmlFile);
-        System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", //$NON-NLS-1$
-            "true"); //$NON-NLS-1$
-        JAXBContext context = JAXBContext.newInstance(UserSystem.class);
-
-        Unmarshaller um = context.createUnmarshaller();
-        system = ((UserSystem) um.unmarshal(xmlFile));
-        ((UserSystem) system).setSystemName(file.getName());
-        if (system.getSystemId().equals(systemId)) {
-          loadedSystems.put(system.getSystemId(), system);
-          return system;
-        }
-      } catch (Exception exc) {
-        exc.printStackTrace();
+    String wsUrl = Platform.getInstanceLocation().getURL().getPath();
+    String fileName = systemName;
+    File file = new File(wsUrl, fileName);
+    try (StringWriter writer = new StringWriter();
+        FileInputStream inputStream = new FileInputStream(file);) {
+      // validate the file
+      if (file == null || !file.exists()) {
+        FileDialog diag = new FileDialog(Display.getDefault().getActiveShell());
+        diag.setFilterPath(wsUrl);
+        diag.setText("Please select the User Database or conntact the System administrator");
+        diag.setFilterExtensions(new String[] { "*.user" });
+        String filePath = diag.open();
+        file = new File(filePath);
       }
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "User database error!",
-          "The User database for the project " + systemName + " could not "
-              + "be read its either broken or corrupt\nplease conntact the system administrator!");
+      URL schemaFile;
+      String string = "/xstampp/usermanagement/io/userSystem.xsd"; //$NON-NLS-1$
+      schemaFile = UserManagement.class.getResource(string);
+
+      Source xmlFile = new StreamSource(file.toURI().toString());
+      SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      Schema schema = schemaFactory.newSchema(schemaFile);
+
+      Validator validator = schema.newValidator();
+      validator.validate(xmlFile);
+      System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", //$NON-NLS-1$
+          "true"); //$NON-NLS-1$
+      JAXBContext context = JAXBContext.newInstance(UserSystem.class);
+
+      Unmarshaller um = context.createUnmarshaller();
+      system = ((UserSystem) um.unmarshal(xmlFile));
+      ((UserSystem) system).setSystemName(file.getName());
+      if (system.getSystemId().equals(systemId)) {
+        return system;
+      }
+    } catch (Exception exc) {
+      exc.printStackTrace();
     }
+    MessageDialog.openError(Display.getDefault().getActiveShell(), "User database error!",
+        "The User database for the project " + systemName + " could not "
+            + "be read its either broken or corrupt\nplease conntact the system administrator!");
+    
     return system;
   }
 
@@ -170,7 +157,6 @@ public class UserManagement {
       Unmarshaller um = context.createUnmarshaller();
       UserSystem system = ((UserSystem) um.unmarshal(xmlFile));
       system.setSystemName(file.getName());
-      loadedSystems.put(system.getSystemId(), system);
       return system;
     } catch (Exception exc) {
       exc.printStackTrace();

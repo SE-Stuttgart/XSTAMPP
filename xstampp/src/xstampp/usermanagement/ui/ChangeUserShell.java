@@ -11,9 +11,9 @@ package xstampp.usermanagement.ui;
 
 import org.eclipse.swt.SWT;
 
+import xstampp.usermanagement.UserSystem;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
-import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.roles.AbstractUser;
 
 /**
@@ -33,7 +33,7 @@ public class ChangeUserShell extends AbstractUserShell {
    * @param userSystem
    *          the user system in which the user should be created
    */
-  public ChangeUserShell(IUserSystem userSystem, IUser user) {
+  public ChangeUserShell(UserSystem userSystem, IUser user) {
     super(userSystem, true);
     this.user = user;
     setTitle("Change User");
@@ -54,7 +54,7 @@ public class ChangeUserShell extends AbstractUserShell {
   protected boolean doAccept() {
     if (getUserSystem().getCurrentUserId().equals(user.getUserId())
         || getUserSystem().checkAccess(AccessRights.ADMIN) && user instanceof AbstractUser) {
-      ((AbstractUser) user).setPassword(getPassword());
+      getUserSystem().setPassword(user.getUserId(),getPassword());
     }
     return true;
   }

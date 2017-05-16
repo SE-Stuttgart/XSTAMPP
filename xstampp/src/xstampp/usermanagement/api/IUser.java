@@ -9,6 +9,7 @@
 
 package xstampp.usermanagement.api;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,20 +35,6 @@ public interface IUser {
    * @return whether the username could be changed
    */
   boolean setUsername(String password, String username);
-
-  /**
-   * This method changes the existing password of the user if given the correct current password.
-   * The password is not verified against any measure but just set when the oldPassword given is
-   * correct.
-   * 
-   * @param oldPassword
-   *          the password that is currently set and which has to be correctly given to change the
-   *          password
-   * @param newPassword
-   *          the new password which should be set for this user
-   * @return whether the password could be changed
-   */
-  boolean setPassword(String oldPassword, String newPassword);
 
   boolean verifyPassword(String password);
 
@@ -85,18 +72,12 @@ public interface IUser {
    */
   boolean isResponibleFor(UUID responsibility);
 
+  List<UUID> getResponsibilities();
+
   /**
    * 
    * @return an id for a project stored in the current workspace.
    */
   UUID getWorkingProjectId();
-
-  /**
-   * Adds a id for a project this user is related to e.g. a working copy that is assigned to this
-   * user.
-   * 
-   * @param workingProjectId an id for a project stored in the current workspace.
-   */
-  void setWorkingProjectId(UUID workingProjectId);
 
 }

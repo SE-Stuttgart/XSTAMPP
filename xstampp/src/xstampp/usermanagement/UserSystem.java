@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
@@ -59,6 +60,7 @@ public class UserSystem extends Observable implements IUserSystem {
 
   private IUser currentUser;
   private String systemName;
+  private UUID exclusiveUser;
 
   public UserSystem() {
     this.userRegistry = new ArrayList<>();
@@ -192,7 +194,7 @@ public class UserSystem extends Observable implements IUserSystem {
 
   @Override
   public boolean deleteUser(UUID userId) {
-    if (!this.currentUser.getUserId().equals(userId)) {
+    if (canDeleteUser(userId)) {
       for (int i = 0; i < userRegistry.size(); i++) {
         User user = this.userRegistry.get(i);
         if (user.getUserId().equals(userId) && this.userRegistry.remove(user)) {
@@ -211,11 +213,37 @@ public class UserSystem extends Observable implements IUserSystem {
     save();
   }
 
+  /**
+   * This method changes the existing password of the user if given the correct current password.
+   * The password is not verified against any measure but just set when the oldPassword given is
+   * correct.
+   * 
+   * @param oldPassword
+   *          the password that is currently set and which has to be correctly given to change the
+   *          password
+   * @param newPassword
+   *          the new password which should be set for this user
+   * @return whether the password could be changed
+   */
+  public boolean setPassword(UUID userId, String newPassword) {
+    if (currentUser.checkAccess(AccessRights.ADMIN)) {
+      for (User user : userRegistry) {
+        if (user.getUserId().equals(userId)) {
+          user.setPassword(newPassword);
+          save();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   private void save() {
     SaveUserJob saveJob = new SaveUserJob(this, systemName);
     saveJob.schedule();
     setChanged();
     notifyObservers();
+    ProjectManager.getLOGGER().debug("User System has been updated");
   }
 
   @Override
@@ -229,9 +257,33 @@ public class UserSystem extends Observable implements IUserSystem {
   public void setSystemName(String projectName) {
     this.systemName = projectName;
   }
-  
+
   @Override
   public String getSystemName() {
     return systemName;
+  }
+
+  public boolean assignWorkProject(UUID userId, UUID projectId) {
+    if (currentUser.checkAccess(AccessRights.ADMIN)) {
+      for (User user : userRegistry) {
+        if (user.getUserId().equals(userId) && user.setWorkingProjectId(projectId)) {
+          save();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * This returns either <b>null</b> or an id if this user systems' instance can only used by one
+   * specific user.
+   */
+  public UUID getExclusiveUser() {
+    return exclusiveUser;
+  }
+
+  public void setExclusiveUser(UUID exclusiveUser) {
+    this.exclusiveUser = exclusiveUser;
   }
 }

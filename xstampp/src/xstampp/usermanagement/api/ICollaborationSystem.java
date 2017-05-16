@@ -1,6 +1,6 @@
 package xstampp.usermanagement.api;
 
-import org.eclipse.swt.events.PaintListener;
+import java.util.List;
 
 /**
  * 
@@ -22,4 +22,6 @@ public interface ICollaborationSystem {
    *         current project data were successfully merged
    */
   boolean syncDataWithUser(IUser user);
+
+  boolean syncDataWithUser(List<IUser> users);
 }

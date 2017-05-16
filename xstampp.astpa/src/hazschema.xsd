@@ -293,6 +293,7 @@
             <xs:attribute name="userSystemId" type="xs:string" use="optional" />
             <xs:attribute name="userSystemName" type="xs:string" use="optional" />
             <xs:attribute name="projectId" type="xs:string" use="optional" />
+            <xs:attribute name="exclusiveUserId" type="xs:string" use="optional" />
 		</xs:complexType>
 	</xs:element>
 
