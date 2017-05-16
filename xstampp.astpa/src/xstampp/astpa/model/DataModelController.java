@@ -1060,8 +1060,8 @@ public class DataModelController extends AbstractDataModel
   public IUserSystem createUserSystem() {
     if (getUserSystem() instanceof EmptyUserSystem) {
       this.userSystem = UserManagement.getInstance().createUserSystem(getProjectName());
-      this.userSystemName = getProjectName();
       if (!(this.userSystem instanceof EmptyUserSystem)) {
+        this.userSystemName = userSystem.getSystemName();
         this.userSystemId = userSystem.getSystemId();
         setUnsavedAndChanged(ObserverValue.UserSystem);
       }
@@ -1086,9 +1086,8 @@ public class DataModelController extends AbstractDataModel
   public IUserSystem getUserSystem() {
     if (userSystem instanceof EmptyUserSystem && userSystemId != null) {
       try {
-        this.userSystem = UserManagement.getInstance().loadSystem(userSystemName, userSystemId);
+        this.userSystem = UserManagement.getInstance().loadSystem(userSystemName, userSystemId, exclusiveUserId);
         this.userSystemName = userSystem.getSystemName();
-
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -1158,7 +1157,6 @@ public class DataModelController extends AbstractDataModel
   public void initializeProject(IDataModel original) {
     initializeProject();
     if (original instanceof DataModelController) {
-      this.userSystem = ((DataModelController) original).userSystem;
       this.userSystemId = ((DataModelController) original).userSystemId;
       this.userSystemName = ((DataModelController) original).userSystemName;
       this.causalFactorController = ((DataModelController) original).causalFactorController;
@@ -1586,12 +1584,13 @@ public class DataModelController extends AbstractDataModel
     if ((accidentId == null) || (description == null)) {
       return false;
     }
-    if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
+    
+    ITableModel accident = this.hazAccController.getAccident(accidentId);
+    if (!(accident instanceof Accident)) {
       return false;
     }
 
-    String oldDescription = ((ATableModel) this.hazAccController.getAccident(accidentId))
-        .setDescription(description);
+    String oldDescription = ((ATableModel) accident).setDescription(description);
     if (oldDescription != null) {
       UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accidentId);
       changeCallback.setDescriptionChange(oldDescription, description);

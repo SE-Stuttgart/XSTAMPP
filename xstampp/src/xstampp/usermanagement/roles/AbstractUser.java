@@ -16,8 +16,6 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -43,9 +41,7 @@ public abstract class AbstractUser implements IUser {
 
   @XmlAttribute(name = "workingProjectId", required = false)
   private UUID workingProjectId;
-
-  @XmlElementWrapper(name = "responsibilities")
-  @XmlElement(name = "responsibility")
+  
   private List<UUID> responsibilities;
 
   /**
@@ -119,11 +115,6 @@ public abstract class AbstractUser implements IUser {
   @Override
   public List<UUID> getResponsibilities() {
     return responsibilities;
-  }
-
-  @Override
-  public boolean isResponibleFor(UUID responsibility) {
-    return getResponsibilities().contains(responsibility);
   }
 
   @Override

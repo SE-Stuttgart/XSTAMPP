@@ -83,7 +83,7 @@ public class RestrictedUserSystem implements IUserSystem {
   }
 
   @Override
-  public boolean assignResponsibility(Map<UUID, IUser> responsibilityMap) {
+  public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -98,6 +98,24 @@ public class RestrictedUserSystem implements IUserSystem {
   public String getSystemName() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public List<UUID> getResponsibilities(UUID userId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean isResponsible(UUID userId, UUID entryId) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isResponsible(UUID entryId) {
+    // TODO Auto-generated method stub
+    return false;
   }
 
 }

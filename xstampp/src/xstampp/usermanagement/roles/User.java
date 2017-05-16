@@ -63,14 +63,6 @@ public class User extends AbstractUser {
   }
 
   @Override
-  public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
-    if (checkAccess(accessLevel)) {
-      return getResponsibilities().contains(entryId);
-    }
-    return false;
-  }
-
-  @Override
   public boolean checkAccess(AccessRights accessRight) {
     return this.accessLevel.contains(accessRight);
   }

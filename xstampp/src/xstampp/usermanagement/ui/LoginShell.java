@@ -54,6 +54,7 @@ public class LoginShell extends AbstractUserShell {
       if (user.getUsername().equals(getUsername())) {
         if (user.verifyPassword(getPassword())) {
           setSelectedUser(user);
+          setReturnValue(user);
           return true;
         } else {
           break;

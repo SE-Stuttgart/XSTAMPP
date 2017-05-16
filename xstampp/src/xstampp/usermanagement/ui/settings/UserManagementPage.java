@@ -114,7 +114,7 @@ public class UserManagementPage implements ISettingsPage {
           userList.notifyListeners(REFRESH_USERS, null);
         }
       });
-      
+
       addAdminButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
@@ -122,7 +122,7 @@ public class UserManagementPage implements ISettingsPage {
           userList.notifyListeners(REFRESH_USERS, null);
         }
       });
-      
+
       deleteButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
@@ -137,7 +137,7 @@ public class UserManagementPage implements ISettingsPage {
           }
         }
       });
-      
+
       editButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
@@ -146,7 +146,7 @@ public class UserManagementPage implements ISettingsPage {
           }
         }
       });
-      
+
       userList.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent event) {
@@ -155,7 +155,7 @@ public class UserManagementPage implements ISettingsPage {
           editButton.setEnabled(userSystem.checkAccess(AccessRights.ADMIN));
         }
       });
-      
+
       userList.addListener(REFRESH_USERS, new Listener() {
 
         @Override
@@ -166,8 +166,10 @@ public class UserManagementPage implements ISettingsPage {
             if (user.getUserId().equals(userSystem.getCurrentUserId())) {
               entry += " [current]"; //$NON-NLS-1$
             }
-            if (user instanceof Admin) {
+            if (user.checkAccess(AccessRights.ADMIN)) {
               entry += " [admin]"; //$NON-NLS-1$
+            } else if (user.checkAccess(AccessRights.READ_ONLY)) {
+              entry += " [read only]"; //$NON-NLS-1$
             }
             userList.add(entry);
 

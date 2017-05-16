@@ -20,13 +20,19 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
-import xstampp.usermanagement.RestrictedUserSystem;
 import xstampp.usermanagement.UserSystem;
+import xstampp.usermanagement.io.RefreshRunner;
+import xstampp.usermanagement.io.UserSystemLoader;
 import xstampp.usermanagement.roles.Admin;
 import xstampp.usermanagement.ui.CreateAdminShell;
 
 public class UserManagement {
   private static UserManagement instance;
+  private UserSystemLoader loader;
+
+  private UserManagement() {
+    loader = new UserSystemLoader();
+  }
 
   /**
    * The get instance method of the singleton pattern. On the initial call this method also creates
@@ -72,52 +78,55 @@ public class UserManagement {
    * @param systemId
    *          the id of the system which should be loaded.
    * @return either the {@link IUserSystem} which was found on the file system and has the same
-   *         systemId as the given one or a restricted instance which prevents any access
-   *         to the project by the unauthorized user.
+   *         systemId as the given one or a restricted instance which prevents any access to the
+   *         project by the unauthorized user.
    */
   public IUserSystem loadSystem(String systemName, UUID systemId) {
-    IUserSystem system = new RestrictedUserSystem();
+    return loadSystem(systemName, systemId, null);
+  }
+
+  /**
+   * This method tries to load a user database in <code>[project.projectName].user</code>. If the
+   * database file cannot be found automatically a {@link FileDialog} is opened to search manually
+   * for the file.
+   * 
+   * @param systemName
+   *          the project which is using the user system which should be loaded.
+   * @param systemId
+   *          the id of the system which should be loaded.
+   * @param exclusiveUser
+   *          TODO
+   * @return either the {@link IUserSystem} which was found on the file system and has the same
+   *         systemId as the given one or a restricted instance which prevents any access to the
+   *         project by the unauthorized user.
+   */
+  public IUserSystem loadSystem(String systemName, UUID systemId, UUID exclusiveUser) {
     String wsUrl = Platform.getInstanceLocation().getURL().getPath();
     String fileName = systemName;
     File file = new File(wsUrl, fileName);
-    try (StringWriter writer = new StringWriter();
-        FileInputStream inputStream = new FileInputStream(file);) {
-      // validate the file
-      if (file == null || !file.exists()) {
-        FileDialog diag = new FileDialog(Display.getDefault().getActiveShell());
-        diag.setFilterPath(wsUrl);
-        diag.setText("Please select the User Database or conntact the System administrator");
-        diag.setFilterExtensions(new String[] { "*.user" });
-        String filePath = diag.open();
+    // validate the file
+    if (file == null || !file.exists()) {
+      FileDialog diag = new FileDialog(Display.getDefault().getActiveShell());
+      diag.setFilterPath(wsUrl);
+      diag.setText("Please select the User Database or conntact the System administrator");
+      diag.setFilterExtensions(new String[] { "*.user" });
+      String filePath = diag.open();
+      if (filePath != null) {
         file = new File(filePath);
       }
-      URL schemaFile;
-      String string = "/xstampp/usermanagement/io/userSystem.xsd"; //$NON-NLS-1$
-      schemaFile = UserManagement.class.getResource(string);
-
-      Source xmlFile = new StreamSource(file.toURI().toString());
-      SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      Schema schema = schemaFactory.newSchema(schemaFile);
-
-      Validator validator = schema.newValidator();
-      validator.validate(xmlFile);
-      System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", //$NON-NLS-1$
-          "true"); //$NON-NLS-1$
-      JAXBContext context = JAXBContext.newInstance(UserSystem.class);
-
-      Unmarshaller um = context.createUnmarshaller();
-      system = ((UserSystem) um.unmarshal(xmlFile));
+    }
+    IUserSystem system = loader.loadSystem(file);
+    if (system.getSystemId().equals(systemId) && system instanceof UserSystem) {
       ((UserSystem) system).setSystemName(file.getName());
-      if (system.getSystemId().equals(systemId)) {
-        return system;
-      }
-    } catch (Exception exc) {
-      exc.printStackTrace();
+      ((UserSystem) system).setExclusiveUser(exclusiveUser);
+      RefreshRunner runner = new RefreshRunner(file, ((UserSystem) system));
+      runner.start();
+      return system;
     }
     MessageDialog.openError(Display.getDefault().getActiveShell(), "User database error!",
         "The User database for the project " + systemName + " could not "
             + "be read its either broken or corrupt\nplease conntact the system administrator!");
-    
+
     return system;
   }
 
@@ -129,42 +138,26 @@ public class UserManagement {
    *         contain a valid system.
    */
   public IUserSystem loadExistingSystem() {
-    try {
-      // validate the file
-      FileDialog diag = new FileDialog(Display.getDefault().getActiveShell());
+    // validate the file
+    FileDialog diag = new FileDialog(Display.getDefault().getActiveShell());
 
-      String wsUrl = Platform.getInstanceLocation().getURL().getFile();
-      diag.setFilterNames(null);
-      diag.setFilterPath(wsUrl);
-      diag.setText("Please select the User Database which should be used by the project");
-      diag.setFilterExtensions(new String[] { "*.user" });
-      String filePath = diag.open();
+    String wsUrl = Platform.getInstanceLocation().getURL().getFile();
+    diag.setFilterNames(null);
+    diag.setFilterPath(wsUrl);
+    diag.setText("Please select the User Database which should be used by the project");
+    diag.setFilterExtensions(new String[] { "*.user" });
+    String filePath = diag.open();
+    if (filePath != null) {
       File file = new File(filePath);
-      URL schemaFile;
-      String string = "/xstampp/usermanagement/io/userSystem.xsd"; //$NON-NLS-1$
-      schemaFile = UserManagement.class.getResource(string);
-
-      Source xmlFile = new StreamSource(file.toURI().toString());
-      SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      Schema schema = schemaFactory.newSchema(schemaFile);
-
-      Validator validator = schema.newValidator();
-      validator.validate(xmlFile);
-      System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", //$NON-NLS-1$
-          "true"); //$NON-NLS-1$
-      JAXBContext context = JAXBContext.newInstance(UserSystem.class);
-
-      Unmarshaller um = context.createUnmarshaller();
-      UserSystem system = ((UserSystem) um.unmarshal(xmlFile));
-      system.setSystemName(file.getName());
-      return system;
-    } catch (Exception exc) {
-      exc.printStackTrace();
+      IUserSystem system = loader.loadSystem(file);
+      if (system instanceof UserSystem) {
+        ((UserSystem) system).setSystemName(file.getName());
+        return system;
+      }
       MessageDialog.openError(Display.getDefault().getActiveShell(), "User database error!",
           "The User database could not "
               + "be read its either broken or corrupt or incompatible with the system!");
     }
-
     return new EmptyUserSystem();
   }
 

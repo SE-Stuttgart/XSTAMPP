@@ -25,11 +25,6 @@ public class DefaultUser implements IUser {
   }
 
   @Override
-  public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
-    return false;
-  }
-
-  @Override
   public boolean checkAccess(AccessRights accessRight) {
     return false;
   }
@@ -37,11 +32,6 @@ public class DefaultUser implements IUser {
   @Override
   public boolean verifyPassword(String password) {
     return true;
-  }
-
-  @Override
-  public boolean isResponibleFor(UUID responsibility) {
-    return false;
   }
 
   @Override

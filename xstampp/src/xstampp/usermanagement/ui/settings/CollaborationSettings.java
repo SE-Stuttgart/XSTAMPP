@@ -70,7 +70,7 @@ public class CollaborationSettings implements ISettingsPage, Observer {
         UserSystem userSystem = (UserSystem) getDataModel().getUserSystem();
         boolean evenRow = true;
         for (IUser user : userSystem.getRegistry()) {
-          if (user.checkAccess(AccessRights.ACCESS)) {
+          if (user.checkAccess(AccessRights.ACCESS) && !user.checkAccess(AccessRights.ADMIN)) {
             final Composite composite = new Composite(tableComposite, SWT.None);
             composite.setLayout(new GridLayout(2, false));
             composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -132,7 +132,8 @@ public class CollaborationSettings implements ISettingsPage, Observer {
                 }
               });
             } else {
-              createBtn.setText(model.getProjectName());
+              createBtn.setText(String.format(Messages.CollaborationSettings_PullChanges,
+                  model.getProjectName()));
               createBtn.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {

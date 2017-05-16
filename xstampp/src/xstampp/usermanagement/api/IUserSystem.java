@@ -48,7 +48,7 @@ public interface IUserSystem {
 
   public boolean assignResponsibility(IUser user, UUID responsibility);
 
-  public boolean assignResponsibility(Map<UUID, IUser> responsibilityMap);
+  public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap);
 
   List<IUser> getRegistry();
 
@@ -75,5 +75,11 @@ public interface IUserSystem {
    * @return if the user is allowed to access.
    */
   public boolean checkAccess(AccessRights accessRight);
+
+  List<UUID> getResponsibilities(UUID userId);
+
+  boolean isResponsible(UUID userId, UUID entryId);
+
+  boolean isResponsible(UUID entryId);
 
 }

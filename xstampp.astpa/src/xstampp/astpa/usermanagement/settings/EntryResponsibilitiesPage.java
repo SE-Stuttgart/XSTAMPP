@@ -76,7 +76,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
       entryList = getEntryList(modelId);
     } else {
       for (T entry : getEntryList(modelId)) {
-        if(getDataModel().getUserSystem().getCurrentUser().isResponibleFor(entry.getId())) {
+        if(getDataModel().getUserSystem().isResponsible(entry.getId())) {
           entryList.add(entry);
         }
       }

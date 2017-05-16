@@ -27,6 +27,7 @@ public class ResponsibilityEditingSupport extends EditingSupport {
   private Map<UUID, IUser> userToResponibilitiesMap;
   private List<String> userList;
   private IUserSystem userSystem;
+  private List<Integer> registryIndexList;
 
   /**
    * 
@@ -41,8 +42,12 @@ public class ResponsibilityEditingSupport extends EditingSupport {
     userSystem = project.getUserSystem();
     List<IUser> registry = userSystem.getRegistry();
     this.userList = new ArrayList<>();
+    this.registryIndexList = new ArrayList<>();
     for (int i = 0; i < registry.size(); i++) {
-      this.userList.add(registry.get(i).getUsername());
+      if (registry.get(i).checkAccess(AccessRights.ACCESS)) {
+        this.userList.add(registry.get(i).getUsername());
+        this.registryIndexList.add(i);
+      }
     }
 
   }
@@ -68,7 +73,7 @@ public class ResponsibilityEditingSupport extends EditingSupport {
       return userToResponibilitiesMap.get(((ATableModel) element).getId()).getUsername();
     } else {
       for (IUser user : this.userSystem.getRegistry()) {
-        if (user.isResponibleFor(((ATableModel) element).getId())) {
+        if (this.userSystem.isResponsible(user.getUserId(), ((ATableModel) element).getId())) {
           userToResponibilitiesMap.put(((ATableModel) element).getId(), user);
           return user.getUsername();
         }
@@ -80,15 +85,16 @@ public class ResponsibilityEditingSupport extends EditingSupport {
   @Override
   protected void setValue(Object element, Object value) {
     try {
-      IUser user = userSystem.getRegistry().get((int) value);
+      Integer registryIndex = this.registryIndexList.get((int) value);
+      IUser user = userSystem.getRegistry().get(registryIndex);
       userToResponibilitiesMap.put(((IEntryWithNameId) element).getId(), user);
       getViewer().refresh(true);
     } catch (Exception exc) {
-      //ignore the call in case of an illegal argument 
+      // ignore the call in case of an illegal argument
     }
   }
 
   public void save() {
-    userSystem.assignResponsibility(userToResponibilitiesMap);
+    userSystem.assignResponsibilities(userToResponibilitiesMap);
   }
 }

@@ -58,13 +58,22 @@ public class UserSystem extends Observable implements IUserSystem {
   @XmlElement(name = "admin")
   private List<Admin> adminRegistry;
 
+  @XmlElementWrapper(name = "responsibilities")
+  @XmlElement(name = "responsibility")
+  private ResponsibilityController responsibilities;
+
   private IUser currentUser;
   private String systemName;
   private UUID exclusiveUser;
 
+  /**
+   * This constructs an empty user system and initializes the user registry and responsibilities
+   * map.
+   */
   public UserSystem() {
     this.userRegistry = new ArrayList<>();
     this.adminRegistry = new ArrayList<>();
+    this.responsibilities = new ResponsibilityController();
   }
 
   /**
@@ -78,36 +87,67 @@ public class UserSystem extends Observable implements IUserSystem {
   public UserSystem(Admin admin, String projectName) {
     this();
     adminRegistry.add(admin);
-    this.systemName = projectName;
+    this.systemName = projectName + ".user";
     this.systemId = UUID.randomUUID();
     this.currentUser = admin;
     save();
+
   }
 
   @Override
   public boolean assignResponsibility(IUser user, UUID responsibility) {
     Map<UUID, IUser> responsibilityMap = new HashMap<>();
     responsibilityMap.put(responsibility, user);
-    return assignResponsibility(responsibilityMap);
+    return assignResponsibilities(responsibilityMap);
   }
 
   @Override
-  public boolean assignResponsibility(Map<UUID, IUser> responsibilityMap) {
+  public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap) {
+    boolean changed = false;
     if (checkAccess(AccessRights.ADMIN)) {
       for (Entry<UUID, IUser> entry : responsibilityMap.entrySet()) {
+        UUID entryId = entry.getKey();
+        UUID userId = entry.getValue().getUserId();
         if (entry.getValue() instanceof AbstractUser) {
-          ((AbstractUser) entry.getValue()).addResponsibility(entry.getKey());
+          changed = this.responsibilities.add(userId, entryId);
         }
       }
-      save();
-      return true;
+      if (changed) {
+        save();
+      }
     }
-    return false;
+    return changed;
+  }
+
+  @Override
+  public List<UUID> getResponsibilities(UUID userId) {
+    List<UUID> returnList = new ArrayList<>();
+    for (Responsibility entry : responsibilities) {
+      if (entry.getUserId().equals(userId)) {
+        returnList.add(entry.getEntryId());
+      }
+    }
+    return returnList;
+  }
+
+  @Override
+  public boolean isResponsible(UUID userId, UUID entryId) {
+    return this.responsibilities.contains(new Responsibility(userId, entryId));
+  }
+
+  @Override
+  public boolean isResponsible(UUID entryId) {
+    return isResponsible(currentUser.getUserId(), entryId);
   }
 
   @Override
   public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
-    return this.getCurrentUser().checkAccess(entryId, accessLevel);
+    boolean returnBool = true;
+    if (!(currentUser instanceof Admin)) {
+      returnBool = isResponsible(entryId);
+      returnBool &= this.getCurrentUser().checkAccess(accessLevel);
+    }
+    return returnBool;
   }
 
   @Override
@@ -134,7 +174,9 @@ public class UserSystem extends Observable implements IUserSystem {
   @Override
   public IUser getCurrentUser() {
     if (this.currentUser == null) {
-      this.currentUser = new LoginShell(this, true).pullUser();
+      LoginShell shell = new LoginShell(this, true);
+      shell.open();
+      this.currentUser = (IUser) shell.getReturnValue();
       setChanged();
       notifyObservers(NOTIFY_LOGIN);
     }
@@ -210,7 +252,6 @@ public class UserSystem extends Observable implements IUserSystem {
 
   public void editUser(IUser user) {
     new ChangeUserShell(this, user).open();
-    save();
   }
 
   /**
@@ -218,9 +259,6 @@ public class UserSystem extends Observable implements IUserSystem {
    * The password is not verified against any measure but just set when the oldPassword given is
    * correct.
    * 
-   * @param oldPassword
-   *          the password that is currently set and which has to be correctly given to change the
-   *          password
    * @param newPassword
    *          the new password which should be set for this user
    * @return whether the password could be changed
@@ -285,5 +323,9 @@ public class UserSystem extends Observable implements IUserSystem {
 
   public void setExclusiveUser(UUID exclusiveUser) {
     this.exclusiveUser = exclusiveUser;
+  }
+
+  public void refresh(UserSystem update) {
+    responsibilities = update.responsibilities;
   }
 }

@@ -40,6 +40,19 @@
     					</xs:sequence>
     				</xs:complexType>
     			</xs:element>
+	            <xs:element
+	                name="responsibilities" maxOccurs="1" minOccurs="0">
+	                <xs:complexType>
+	                    <xs:sequence>
+	                        <xs:element name="responsibility" maxOccurs="unbounded" minOccurs="0">
+	                        <xs:complexType>
+						        <xs:attribute name="userId" type="xs:string"  use="required"></xs:attribute>
+						        <xs:attribute name="entryId" type="xs:string"  use="required"></xs:attribute>
+		                    </xs:complexType>
+	                        </xs:element>
+	                    </xs:sequence>
+	                </xs:complexType>
+	            </xs:element>
     		</xs:all>
     		<xs:attribute name="systemId" type="xs:string"></xs:attribute>
     	</xs:complexType>
@@ -47,18 +60,6 @@
 
 
     <xs:complexType name="AbstractUser">
-		<xs:all>
-			<xs:element
-				name="responsibilities" maxOccurs="1" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element
-							name="responsibility" type="xs:string" maxOccurs="unbounded" minOccurs="0">
-						</xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-		</xs:all>
     	<xs:attribute name="userId" type="xs:string"  use="required"></xs:attribute>
     	<xs:attribute name="username" type="xs:string"  use="required"></xs:attribute>
     	<xs:attribute name="password" type="xs:string"  use="required"></xs:attribute>

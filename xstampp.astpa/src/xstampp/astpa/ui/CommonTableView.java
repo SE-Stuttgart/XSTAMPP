@@ -176,9 +176,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       if (event.getSelection() instanceof IStructuredSelection) {
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         if (selection.getFirstElement() instanceof ATableModel) {
+          selectedEntry = ((ATableModel) selection.getFirstElement()).getId();
           getDescriptionWidget()
               .setText(((ATableModel) selection.getFirstElement()).getDescription());
-          selectedEntry = ((ATableModel) selection.getFirstElement()).getId();
           getDescriptionWidget().setEnabled(canEdit(selectedEntry));
 
         }
