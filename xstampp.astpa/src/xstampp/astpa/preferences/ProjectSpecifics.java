@@ -1,5 +1,7 @@
 package xstampp.astpa.preferences;
 
+import java.util.UUID;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -9,6 +11,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
@@ -16,8 +19,6 @@ import xstampp.ui.common.contentassist.LabelWithAssist;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.AccessRights;
-
-import java.util.UUID;
 
 public class ProjectSpecifics implements ISettingsPage {
 
@@ -47,17 +48,16 @@ public class ProjectSpecifics implements ISettingsPage {
     Composite container = new Composite(control, SWT.None);
     container.setLayout(new GridLayout(2, false));
     container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
-    String title = "Use Causal Scenarios";
-    String description = "Use &Scenarios to refine the causal factors in the project,\n this adds a column 'Causal Scenarios' in the "
-        + "Causal Factors Table that allows to define safety constraints per causal scenario";
+    String title = Messages.ProjectSpecifics_UseCausalScenarios;
+    String description = Messages.ProjectSpecifics_UseCausalScenariosTip;
     this.useScenariosSetting = new BooleanSetting(container, title, description,
         this.controller.isUseScenarios());
 
-    title = "Use Severity Analysis for Hazards";
-    description = "Use &Severity &Analysis to define the Severity of Hazards";
+    title = Messages.ProjectSpecifics_UseSeverity;
+    description = Messages.ProjectSpecifics_UseSeverityTip;
     this.useHazardSeverity = new BooleanSetting(container, title, description,
         this.controller.isUseSeverity());
-    this.useHazardSeverity.setMessage("The Hazard View must be reopened");
+    this.useHazardSeverity.setMessage(Messages.ProjectSpecifics_ReopenHazardView);
     container.setSize(400, 400);
     return container;
   }
@@ -118,5 +118,20 @@ public class ProjectSpecifics implements ISettingsPage {
   @Override
   public boolean isVisible(UUID projectId) {
     return true;
+  }
+
+  @Override
+  public String getName() {
+    return Messages.ProjectSpecifics_GeneralSettings;
+  }
+
+  @Override
+  public void setName(String name) {
+    //The name cannot be changed
+  }
+
+  @Override
+  public String getId() {
+    return "xstampp.astpa.settings.general"; //$NON-NLS-1$
   }
 }

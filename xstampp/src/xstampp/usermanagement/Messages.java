@@ -18,6 +18,7 @@ public class Messages extends NLS {
   public static String UserContribution_LoggedAsAdministrator;
   public static String UserContribution_LoggedAsUser;
   public static String UserContribution_LoginLabel;
+  public static String UserContribution_OpenUserSettingsTip;
   public static String UserContribution_ReadOnlyAccsessToolTip;
   public static String UserManagementPage_0;
   public static String UserManagementPage_3;

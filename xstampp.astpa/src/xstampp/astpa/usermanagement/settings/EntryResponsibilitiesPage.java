@@ -27,7 +27,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
 
   private IUserProject dataModel;
   private ResponsibilityEditingSupport editingSupport;
-
+  private String name;
   
   @Override
   public Composite createControl(CTabFolder control, ModalShell parent, UUID modelId) {
@@ -134,4 +134,18 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
   }
 
   protected abstract List<T> getEntryList(UUID modelId);
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+
+  @Override
+  public String getId() {
+    return "";
+  }
 }

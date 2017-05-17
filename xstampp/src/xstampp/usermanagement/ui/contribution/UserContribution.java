@@ -9,14 +9,14 @@
 
 package xstampp.usermanagement.ui.contribution;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.RGB;
@@ -44,6 +44,7 @@ import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.util.ColorManager;
+import xstampp.util.STPAPluginUtils;
 
 /**
  * A toolbar {@link WorkbenchWindowControlContribution} which displays depending on the selected
@@ -62,9 +63,12 @@ import xstampp.util.ColorManager;
 public class UserContribution extends WorkbenchWindowControlContribution
     implements ISelectionListener, Observer {
 
-  private static final String ADMIN_COLOR = "Admin_Color";
-  private static final String USER_COLOR = "User_Color";
-  private static final String READONLY_COLOR = "ReadOnly_Color";
+  private static final String ADMIN_COLOR = "Admin_Color"; //$NON-NLS-1$
+  private static final String USER_COLOR = "User_Color"; //$NON-NLS-1$
+  private static final String READONLY_COLOR = "ReadOnly_Color"; //$NON-NLS-1$
+  private static final String _COMMAND = "xstampp.command.openProjectSettings"; //$NON-NLS-1$
+  private static final String _PARAM = "xstampp.commandParameter.project.settings"; //$NON-NLS-1$
+  private static final String _PAGE = "xstampp.settings.users"; //$NON-NLS-1$
   private UUID projectId;
   private Listener listener;
   private IUserProject userProject;
@@ -78,7 +82,7 @@ public class UserContribution extends WorkbenchWindowControlContribution
 
   @Override
   protected Control createControl(Composite parent) {
-    Composite control = new Composite(parent, SWT.NONE);
+    final Composite control = new Composite(parent, SWT.NONE);
     control.setLayout(new FormLayout());
     FormData data = new FormData();
     data.left = new FormAttachment(0);
@@ -87,6 +91,22 @@ public class UserContribution extends WorkbenchWindowControlContribution
     data.height = 20;
 
     getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+
+    final Button newBtn = new Button(control, SWT.PUSH);
+    newBtn.setLayoutData(data);
+    newBtn.setToolTipText(Messages.UserContribution_OpenUserSettingsTip);
+    newBtn.setVisible(false);
+    newBtn.setEnabled(false);
+    newBtn.setImage(Activator.getImage("/icons/usermanagement/users.png")); //$NON-NLS-1$
+    newBtn.addSelectionListener(new SelectionAdapter() {
+
+      @Override
+      public void widgetSelected(SelectionEvent event) {
+        Map<String, String> values = new HashMap<>();
+        values.put(_PARAM, _PAGE);
+        STPAPluginUtils.executeParaCommand(_COMMAND, values);
+      }
+    });
 
     final Button loginContribution = new Button(control, SWT.PUSH);
     loginContribution.setLayoutData(data);
@@ -101,21 +121,34 @@ public class UserContribution extends WorkbenchWindowControlContribution
       }
     });
 
-    final CLabel label = new CLabel(control, SWT.NONE);
+    final Button label = new Button(control, SWT.NONE);
     label.setLayoutData(data);
     label.setVisible(false);
     label.setImage(Activator.getImage("/icons/usermanagement/users.png")); //$NON-NLS-1$
+    label.addSelectionListener(new SelectionAdapter() {
+
+      @Override
+      public void widgetSelected(SelectionEvent event) {
+        Map<String, String> values = new HashMap<>();
+        values.put(_PARAM, _PAGE);
+        STPAPluginUtils.executeParaCommand(_COMMAND, values);
+      }
+    });
     listener = new Listener() {
 
       @Override
       public void handleEvent(Event event) {
         try {
-          loginContribution.setVisible(((LoginEvent) event).loginVisible);
-          label.setVisible(((LoginEvent) event).labelVisible);
-          label.setText(((LoginEvent) event).accountName);
-          label.setToolTipText(((LoginEvent) event).toolTip);
-          label.setBackground(ColorManager.color(((LoginEvent) event).userColorConstant));
-        } catch (SWTException exc) {
+          LoginEvent loginEvent = (LoginEvent) event;
+          label.setToolTipText(loginEvent.toolTip);
+          newBtn.setEnabled(!loginEvent.isDiasbled);
+          newBtn.setVisible(!(loginEvent.loginVisible || loginEvent.labelVisible));
+          loginContribution.setVisible(loginEvent.loginVisible);
+          label.setVisible(loginEvent.labelVisible);
+          label.setText(loginEvent.accountName);
+          label.setBackground(ColorManager.color(loginEvent.userColorConstant));
+        } catch (Exception exc) {
+          // just skip the event in case of an exception
         }
       }
     };
@@ -146,6 +179,7 @@ public class UserContribution extends WorkbenchWindowControlContribution
   private void refresh(IDataModel model) {
     LoginEvent event = new LoginEvent();
     if (model instanceof IUserProject) {
+      event.isDiasbled = false;
       if (userProject != null) {
         userProject.deleteObserver(this);
       }
@@ -173,6 +207,8 @@ public class UserContribution extends WorkbenchWindowControlContribution
           event.toolTip = Messages.UserContribution_ReadOnlyAccsessToolTip;
           event.userColorConstant = READONLY_COLOR;
         }
+
+        event.toolTip += "\n\n" + Messages.UserContribution_OpenUserSettingsTip;
         event.labelVisible = true;
         event.loginVisible = false;
       }
@@ -198,8 +234,10 @@ public class UserContribution extends WorkbenchWindowControlContribution
     private String accountName;
     private String toolTip;
     private String userColorConstant;
+    private boolean isDiasbled;
 
     private LoginEvent() {
+      this.isDiasbled = true;
       this.labelVisible = false;
       this.loginVisible = false;
       accountName = ""; //$NON-NLS-1$
@@ -210,8 +248,8 @@ public class UserContribution extends WorkbenchWindowControlContribution
 
   @Override
   public void update(Observable arg0, Object arg1) {
-    if (arg1 != null && (arg1.equals(IUserSystem.NOTIFY_LOGIN)
-        || arg1.equals(ObserverValue.UserSystem))) {
+    if (arg1 != null
+        && (arg1.equals(IUserSystem.NOTIFY_LOGIN) || arg1.equals(ObserverValue.UserSystem))) {
       refresh(userProject);
     }
   }

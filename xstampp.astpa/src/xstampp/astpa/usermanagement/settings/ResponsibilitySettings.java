@@ -28,6 +28,8 @@ public class ResponsibilitySettings implements ISettingsPage {
 
   private List<ISettingsPage> pages;
   private List<String> pageTitles;
+  private String name;
+  
   public ResponsibilitySettings() {
     super();
     this.pages = new ArrayList<>();
@@ -79,6 +81,21 @@ public class ResponsibilitySettings implements ISettingsPage {
     IDataModel model = ProjectManager.getContainerInstance().getDataModel(projectId);
     return model instanceof IUserProject
         && !(((IUserProject) model).getUserSystem()instanceof EmptyUserSystem);
+  }
+
+  @Override
+  public String getName() {
+    return xstampp.astpa.usermanagement.Messages.ResponsibilitySettings_0;
+  }
+
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String getId() {
+    return "xstampp.astpa.settings.responsibilities";
   }
 
 }

@@ -130,7 +130,7 @@ public final class STPAPluginUtils {
       return handlerService.executeCommand(paraCommand, null);
 
     } catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
-      Logger.getRootLogger().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+      Logger.getRootLogger().error("Command " + commandId + " does not exist", e); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     return true;

@@ -119,10 +119,12 @@
       </process>
       <SettingsPage
             class="xstampp.astpa.preferences.ProjectSpecifics"
+            id="xstampp.astpa.settings.general"
             name="General">
       </SettingsPage>
       <SettingsPage
             class="xstampp.astpa.usermanagement.settings.ResponsibilitySettings"
+            id="xstampp.astpa.settings.responsibilities"
             name="Responibilities">
       </SettingsPage>
    </extension>

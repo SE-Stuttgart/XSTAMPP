@@ -37,6 +37,7 @@ public class UserManagementPage implements ISettingsPage {
   private static final int REFRESH_USERS = 1;
   private IUserSystem userSystem;
   private IUser currentSelection;
+  private String name;
 
   @Override
   public Composite createControl(CTabFolder control, ModalShell parent, UUID modelId) {
@@ -190,6 +191,7 @@ public class UserManagementPage implements ISettingsPage {
         public void widgetSelected(SelectionEvent ev) {
           userSystem = ((IUserProject) dataModel).createUserSystem();
           userList.notifyListeners(REFRESH_USERS, null);
+          parent.refresh();
         }
       });
 
@@ -226,6 +228,21 @@ public class UserManagementPage implements ISettingsPage {
   @Override
   public boolean isVisible(UUID projectId) {
     return true;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String getId() {
+    return "xstampp.settings.users";
   }
 
 }

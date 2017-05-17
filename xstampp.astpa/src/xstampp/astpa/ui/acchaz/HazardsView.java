@@ -247,7 +247,8 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
     if (this.getDataInterface().isUseSeverity()) {
       TableViewerColumn severityColumn = new TableViewerColumn(HazardsView.this.getTableViewer(),
           SWT.NONE);
-      severityColumn.getColumn().setText("severity");
+      severityColumn.getColumn().setToolTipText(xstampp.astpa.messages.Messages.ProjectSpecifics_UseSeverityTip);
+      severityColumn.getColumn().setText("Severity*");
       severityColumn.setLabelProvider(new ColumnLabelProvider() {
 
         @Override

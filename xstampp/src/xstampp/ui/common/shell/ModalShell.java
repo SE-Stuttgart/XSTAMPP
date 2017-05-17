@@ -336,6 +336,14 @@ public abstract class ModalShell {
     this.returnValue = returnValue;
   }
 
+  /**
+   * The default implementation does nothing. This method is supposed to contain code that is called
+   * when the content of this shell needs to be refreshed.
+   */
+  public void refresh() {
+    // does nothing by default
+  }
+
   protected final class TextInput {
     private String text = "";
 

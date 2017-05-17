@@ -535,7 +535,7 @@
             <control
                   class="xstampp.usermanagement.ui.contribution.UserContribution"
                   id="xstampp.user.toolbar">
-                  <visibleWhen
+               <visibleWhen
                      checkEnabled="false">
                   <with
                         variable="activeWorkbenchWindow.activePerspective">
@@ -881,6 +881,11 @@
       <command
             id="xstampp.command.openProjectSettings"
             name="%command.name.openProjectSettings">
+         <commandParameter
+               id="xstampp.commandParameter.project.settings"
+               name="project.settings"
+               optional="true">
+         </commandParameter>
       </command>
    </extension>
    
@@ -1053,6 +1058,25 @@
          commandId="xstampp.command.openWizard"
          icon="icons/eclipse/run_exc.gif">
    </image>
+</extension>
+<extension
+      point="org.eclipse.ui.activities">
+   <activity
+         id="activity.eclipseUpdateManager"
+         name="Eclipse Update Manager">
+   </activity>
+   <activityPatternBinding
+         activityId="activity.eclipseUpdateManager"
+         pattern="org\.eclipse\.ui\.editors/org\.eclipse\.ui\.edit\.text\.gotoLastEditPosition">
+   </activityPatternBinding>
+   <activityPatternBinding
+         activityId="activity.eclipseUpdateManager"
+         pattern="org\.eclipse\.ui\.editors/org\.eclipse\.ui\.edit\.text\.gotoNextAnnotation">
+   </activityPatternBinding>
+   <activityPatternBinding
+         activityId="activity.eclipseUpdateManager"
+         pattern="org\.eclipse\.ui\.editors/org\.eclipse\.ui\.edit\.text\.gotoPreviousAnnotation">
+   </activityPatternBinding>
 </extension>
 
 

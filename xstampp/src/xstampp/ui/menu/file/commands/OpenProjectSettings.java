@@ -30,7 +30,7 @@ public class OpenProjectSettings extends AbstractHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
-
+    String page = event.getParameter("xstampp.commandParameter.project.settings");
     Object currentSelection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
         .getSelection(ProjectExplorer.ID); // $NON-NLS-1$
 
@@ -41,7 +41,7 @@ public class OpenProjectSettings extends AbstractHandler {
     }
     IProjectSelection selector = ((IProjectSelection) currentSelection);
     if (ProjectManager.getContainerInstance().canAccess(selector.getProjectId())) {
-      ProjectSettingsShell shell = new ProjectSettingsShell(selector.getProjectId());
+      ProjectSettingsShell shell = new ProjectSettingsShell(selector.getProjectId(), page);
       shell.open();
     }
     return null;

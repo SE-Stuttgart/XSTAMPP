@@ -8,6 +8,12 @@ public class Messages extends NLS {
   public static String ControlStructure_New;
   public static String DeleteControlStructureQuestion;
   public static String DeleteControlStructureTitle;
+  public static String ProjectSpecifics_GeneralSettings;
+  public static String ProjectSpecifics_ReopenHazardView;
+  public static String ProjectSpecifics_UseCausalScenarios;
+  public static String ProjectSpecifics_UseCausalScenariosTip;
+  public static String ProjectSpecifics_UseSeverity;
+  public static String ProjectSpecifics_UseSeverityTip;
   static {
     // initialize resource bundle
     NLS.initializeMessages(BUNDLE_NAME, Messages.class);

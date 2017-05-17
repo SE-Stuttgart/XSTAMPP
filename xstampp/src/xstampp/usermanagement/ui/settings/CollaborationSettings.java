@@ -38,9 +38,10 @@ public class CollaborationSettings implements ISettingsPage, Observer {
   private IUserProject dataModel;
   private Listener listener;
   ICollaborationSystem system;
+  private String name;
 
   @Override
-  public Composite createControl(final CTabFolder control, ModalShell parent, UUID modelId) {
+  public Composite createControl(final CTabFolder control, final ModalShell parent, UUID modelId) {
     if (!setDataModel(ProjectManager.getContainerInstance().getDataModel(modelId))) {
       return new Composite(control, SWT.None);
     }
@@ -210,4 +211,17 @@ public class CollaborationSettings implements ISettingsPage, Observer {
     }
   }
 
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String getId() {
+    return "xstampp.settings.collaboration";
+  }
 }
