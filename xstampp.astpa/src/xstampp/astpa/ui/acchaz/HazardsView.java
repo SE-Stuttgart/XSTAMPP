@@ -65,6 +65,9 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
    */
   public static final String ID = "astpa.steps.step1_3"; //$NON-NLS-1$
 
+  public HazardsView() {
+    super(true);
+  }
   /**
    * Create contents of the view part.
    * 

@@ -11,6 +11,10 @@
 
 package xstampp.astpa.ui;
 
+import java.util.List;
+import java.util.Observable;
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -63,10 +67,6 @@ import xstampp.ui.editors.interfaces.IEditorBase;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUserProject;
 
-import java.util.List;
-import java.util.Observable;
-import java.util.UUID;
-
 /**
  * @author Jarkko Heidenwag
  * @author Lukas Balzer
@@ -97,10 +97,6 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private Text filterTextField;
   private T dataInterface;
   private boolean hasRestrictedAccess;
-
-  private Button moveUp;
-
-  private Button moveDown;
   private static final Image DELETE = Activator
       .getImageDescriptor("/icons/buttons/commontables/remove.png") //$NON-NLS-1$
       .createImage();
@@ -455,82 +451,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.tableColumnLayout = new TableColumnLayout();
     tableComposite.setLayout(this.tableColumnLayout);
 
-    // the add and delete buttons are arranged in a composite with a 2x1
-    // GridLayout
-    this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
-    this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-    this.buttonComposite.setLayout(new GridLayout(6, true));
-    GridData gridData = new GridData(SWT.NONE, SWT.NONE, false, false);
-    final int buttonSize = 46;
-    gridData.widthHint = buttonSize;
-    gridData.heightHint = buttonSize;
-
-    // the Button for adding new items
-    this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);
-    this.addNewItemButton.setLayoutData(gridData);
-    this.addNewItemButton.setImage(ADD);
-
-    // the Button for deleting selected items
-    Button deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
-    deleteItemsButton.setLayoutData(gridData);
-    deleteItemsButton.setImage(DELETE);
-
-    deleteItemsButton.addListener(SWT.Selection, new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        CommonTableView.this.deleteItems();
-      }
-    });
-
-    // the Button for deleting all items
-    Button deleteAllButton = new Button(this.buttonComposite, SWT.PUSH);
-    deleteAllButton.setLayoutData(gridData);
-
-    deleteAllButton.addListener(SWT.Selection, new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        CommonTableView.this.deleteAllItems();
-      }
-    });
-    deleteAllButton.setImage(DELETE_ALL);
-    new Label(buttonComposite, SWT.NONE);
-    // the Button for deleting all items
-    moveUp = new Button(this.buttonComposite, SWT.PUSH);
-    moveUp.setToolTipText("Decreases the index of the selected entry\n(Does not change the ID)");
-    moveUp.setLayoutData(gridData);
-
-    moveUp.addListener(SWT.Selection, new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        if (tableViewer.getTable().getSelectionCount() == 1
-            && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel) {
-          ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
-          moveEntry(model.getId(), true);
-        }
-      }
-    });
-    moveUp.setImage(MOVE_UP);
-    // the Button for deleting all items
-    moveDown = new Button(this.buttonComposite, SWT.PUSH);
-    moveDown.setLayoutData(gridData);
-    moveDown.setToolTipText("Increases the index of the selected entry\n(Does not change the ID)");
-
-    moveDown.addListener(SWT.Selection, new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        if (tableViewer.getTable().getSelectionCount() == 1
-            && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel) {
-          ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
-          moveEntry(model.getId(), false);
-        }
-      }
-    });
-    moveDown.setImage(MOVE_DOWN);
-
+    createButtonBar();
+    
     Composite rightHeadComposite = new Composite(textContainer, SWT.NONE);
     rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
     rightHeadComposite.setLayout(new GridLayout(2, true));
@@ -677,6 +599,96 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     Control[] controls = { leftHeadComposite, this.buttonComposite, tableComposite };
     this.tableContainer.setTabList(controls);
     refreshView();
+  }
+
+  private void createButtonBar() {
+    // the add and delete buttons are arranged in a composite with a 2x1
+    // GridLayout
+    this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
+    this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    this.buttonComposite.setLayout(new GridLayout(6, true));
+    GridData gridData = new GridData(SWT.NONE, SWT.NONE, false, false);
+    final int buttonSize = 46;
+    gridData.widthHint = buttonSize;
+    gridData.heightHint = buttonSize;
+
+    // the Button for adding new items
+    this.addNewItemButton = new Button(this.buttonComposite, SWT.PUSH);
+    this.addNewItemButton.setLayoutData(gridData);
+    this.addNewItemButton.setImage(ADD);
+    // the Button for deleting selected items
+    Button deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
+    deleteItemsButton.setLayoutData(gridData);
+    deleteItemsButton.setImage(DELETE);
+
+    deleteItemsButton.addListener(SWT.Selection, new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        CommonTableView.this.deleteItems();
+      }
+    });
+
+    // the Button for deleting all items
+    Button deleteAllButton = new Button(this.buttonComposite, SWT.PUSH);
+    deleteAllButton.setLayoutData(gridData);
+
+    deleteAllButton.addListener(SWT.Selection, new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        CommonTableView.this.deleteAllItems();
+      }
+    });
+    deleteAllButton.setImage(DELETE_ALL);
+    new Label(buttonComposite, SWT.NONE);
+    // the Button for deleting all items
+    Button moveUp = new Button(this.buttonComposite, SWT.PUSH);
+    moveUp.setToolTipText("Decreases the index of the selected entry\n(Does not change the ID)");
+    moveUp.setLayoutData(gridData);
+
+    moveUp.addListener(SWT.Selection, new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        if (tableViewer.getTable().getSelectionCount() == 1
+            && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel) {
+          ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
+          moveEntry(model.getId(), true);
+        }
+      }
+    });
+    moveUp.setImage(MOVE_UP);
+    // the Button for deleting all items
+    Button moveDown = new Button(this.buttonComposite, SWT.PUSH);
+    moveDown.setLayoutData(gridData);
+    moveDown.setToolTipText("Increases the index of the selected entry\n(Does not change the ID)");
+
+    moveDown.addListener(SWT.Selection, new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        if (tableViewer.getTable().getSelectionCount() == 1
+            && tableViewer.getTable().getSelection()[0].getData() instanceof ITableModel) {
+          ITableModel model = (ITableModel) tableViewer.getTable().getSelection()[0].getData();
+          moveEntry(model.getId(), false);
+        }
+      }
+    });
+    moveDown.setImage(MOVE_DOWN);
+
+
+    if (hasRestrictedAccess && getDataInterface() instanceof IUserProject &&
+        !((IUserProject) getDataInterface()).getUserSystem().checkAccess(AccessRights.ADMIN)) {
+      this.addNewItemButton.setEnabled(false);
+      deleteItemsButton.setEnabled(false);
+    }
+    if (getDataInterface() instanceof IUserProject &&
+          !((IUserProject) getDataInterface()).getUserSystem().checkAccess(AccessRights.ADMIN)) {
+      moveDown.setEnabled(false);
+      moveUp.setEnabled(false);
+      deleteAllButton.setEnabled(false);
+    }
   }
 
   protected void addTitleEditor(AbstractEditingSupport support) {
