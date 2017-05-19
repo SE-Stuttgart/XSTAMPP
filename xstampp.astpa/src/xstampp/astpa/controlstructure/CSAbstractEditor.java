@@ -339,6 +339,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 			this.getModelInterface().setRoot(new Rectangle(), new String());
 			root = this.getModelInterface().getRoot();
 		}
+    getModelInterface().setActiveRoot(root.getId());
 		return root;
 	}
 

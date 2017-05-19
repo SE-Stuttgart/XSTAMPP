@@ -409,6 +409,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
         SWT.OPEN);
     ArrayList<String> extensions = new ArrayList<>();
+    extensions.add("*.*"); //$NON-NLS-1$
     for (String ext : this.elementsToExtensions.keySet()) {
       extensions.add("*." + ext); //$NON-NLS-1$
     }
@@ -828,7 +829,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     this.extensionsToModelClass.put(modelClass, ext);
     LOGGER.debug("registered extension: " + ext); //$NON-NLS-1$
   }
-
+  
   /**
    *
    * @author Lukas Balzer

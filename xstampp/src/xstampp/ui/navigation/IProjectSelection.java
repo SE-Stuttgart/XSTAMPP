@@ -76,6 +76,10 @@ public interface IProjectSelection extends ISelection {
    *
    */
   void activate();
+  
+  public void deaktivate();
+  
+  public void closeEditors();
 
   /**
    * Setter for the path history which is shown in the shell title

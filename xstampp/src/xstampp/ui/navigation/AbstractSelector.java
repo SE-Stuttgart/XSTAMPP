@@ -50,7 +50,8 @@ public abstract class AbstractSelector implements IProjectSelection {
    *
    * @param item
    *          {@link #getItem()}
-   * @param site TODO
+   * @param site
+   *          TODO
    */
   public AbstractSelector(TreeItem item, TreeItemDescription descriptor, IWorkbenchPartSite site) {
     this.treeItem = item;
@@ -120,11 +121,23 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   @Override
   public void activate() {
+    ProjectManager.getLOGGER().debug("activate editor");
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(getPathHistory());
     this.site.getSelectionProvider().setSelection(this);
     activeSelection = this;
   }
 
+  public void deaktivate() {
+    parent.deaktivate();
+  }
+  
+  @Override
+  public void closeEditors() {
+    for (IProjectSelection child : children) {
+      child.closeEditors();
+    }
+  }
+  
   public void setUnsaved(boolean unsaved) {
 
   }

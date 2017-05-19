@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -49,7 +47,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   private static final int DELETE_LINK_BUTTON_SIZE = 16;
   private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0, 0, 0);
   private static final Color HAZARD_LINK_COLOR = new Color(Display.getCurrent(), 230, 20, 5);
-  
+
   private final UUID assignedId;
   private final T publicInterface;
   private final transient GridWrapper grid;
@@ -58,10 +56,10 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
 
   private int lines;
 
+  private boolean canEdit;
 
   /**
-   * Delete button display while hovering over a linking cell, used to remove
-   * links using the mouse.
+   * Delete button display while hovering over a linking cell, used to remove links using the mouse.
    * 
    * @author Patrick Wickenhaeuser, Benedikt Markt
    * 
@@ -71,9 +69,8 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     private ITableModel tableModel;
     private ITableContentProvider<? extends ITableModel> provider;
 
-    public DeleteLinkButton(Rectangle rect, Image image,
-                          ITableModel tableModel,
-                          ITableContentProvider<? extends ITableModel> provider) {
+    public DeleteLinkButton(Rectangle rect, Image image, ITableModel tableModel,
+        ITableContentProvider<? extends ITableModel> provider) {
       super(rect, image);
       this.tableModel = tableModel;
       this.provider = provider;
@@ -87,8 +84,8 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   }
 
   /**
-   * constructs a generic gridCell that is capable of containing 
-   * several editable ITableModel links.
+   * constructs a generic gridCell that is capable of containing several editable ITableModel links.
+   * 
    * @author Benedikt Markt
    * 
    * @param assignedId
@@ -98,17 +95,37 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
    * @param grid
    *          the grid the cell is in
    */
-  public GridCellLinking(final UUID assignedId,
-                         final T publicInterface,
-                         final GridWrapper grid) {
+  public GridCellLinking(final UUID assignedId, final T publicInterface, final GridWrapper grid) {
+    this(assignedId, publicInterface, grid, true);
+  }
+
+  /**
+   * constructs a generic gridCell that is capable of containing several editable ITableModel links.
+   * 
+   * @author Benedikt Markt
+   * 
+   * @param assignedId
+   *          the id of the assigned item
+   * @param publicInterface
+   *          the content provider
+   * @param grid
+   *          the grid the cell is in
+   * @param canEdit
+   *          TODO
+   */
+  public GridCellLinking(final UUID assignedId, final T publicInterface, final GridWrapper grid,
+      boolean canEdit) {
     super();
 
     this.assignedId = assignedId;
     this.publicInterface = publicInterface;
     this.grid = grid;
+    this.canEdit = canEdit;
     this.lines = 1;
     this.buttons = new ArrayList<>();
-    buttons.add(new CellButtonLinking<T>(grid, publicInterface, assignedId));
+    if (canEdit) {
+      buttons.add(new CellButtonLinking<T>(grid, publicInterface, assignedId));
+    }
     this.buttonContainer = new CellButtonContainer();
   }
 
@@ -127,13 +144,13 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     List<? extends ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
     Collections.sort(linkedItems);
     this.buttonContainer.clearButtons();
-    for(CellButton button: buttons){
+    for (CellButton button : buttons) {
       this.buttonContainer.addColumButton(button);
     }
     if (linkedItems.isEmpty()) {
       gc.drawString(this.publicInterface.getEmptyMessage(), renderX + 2, renderY);
     } else {
-     
+
       int xOff = 0;
       int yOff = 0;
       int tmpLines = 1;
@@ -157,7 +174,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
         gc.setForeground(foreground);
 
         xOff += textWidth;
-        if (hovered) {
+        if (hovered && canEdit) {
           this.buttonContainer.addCellButton(new DeleteLinkButton(
               new Rectangle(xOff + 4, yOff + 2, GridCellLinking.DELETE_LINK_BUTTON_SIZE,
                   GridCellLinking.DELETE_LINK_BUTTON_SIZE),
@@ -166,7 +183,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
         xOff += GridCellLinking.DELETE_LINK_BUTTON_SIZE;
 
       }
-      
+
       if (this.lines != tmpLines) {
         this.lines = tmpLines;
         item.setHeight(lines * AbstractGridCell.DEFAULT_CELL_HEIGHT);
@@ -178,9 +195,8 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   }
 
   @Override
-  public void onMouseDown(final MouseEvent event,
-                          final Point relativeMouse,
-                          final Rectangle cellBounds) {
+  public void onMouseDown(final MouseEvent event, final Point relativeMouse,
+      final Rectangle cellBounds) {
     GridCellLinking.LOGGER.debug("Link clicked"); //$NON-NLS-1$
     if (this.buttonContainer.onMouseDown(relativeMouse, cellBounds)) {
       // don't link if a delete button is hit.
@@ -195,12 +211,12 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
 
   @Override
   public void cleanUp() {
-    
+
   }
 
   @Override
   public void addCellButton(CellButton button) {
-    if ( buttons == null ) {
+    if (buttons == null) {
       buttons = new ArrayList<>();
     }
     this.buttons.add(button);

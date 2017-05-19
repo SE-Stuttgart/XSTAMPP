@@ -87,6 +87,10 @@ public class Component implements IRectangleComponent, ICausalComponent,Comparab
 	@XmlElementWrapper(name = "unsafeVariables")
 	@XmlElement(name = "unsafeVariable")
 	private List<UUID> unsafeVariables;
+
+  @XmlElementWrapper(name = "connections")
+  @XmlElement(name = "connection")
+  private List<CSConnection> connections;
 	
 	
 	

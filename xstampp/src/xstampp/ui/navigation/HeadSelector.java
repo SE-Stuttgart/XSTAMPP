@@ -100,4 +100,15 @@ public class HeadSelector implements IProjectSelection {
     return null;
   }
 
+  @Override
+  public void deaktivate() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void closeEditors() {
+    // TODO Auto-generated method stub
+    
+  }
 }

@@ -425,6 +425,11 @@
                </with>
             </visibleWhen>
          </command>
+         <command
+               commandId="xstampp.command.project.closeProjectEditors"
+               label="Close all Editors"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -662,6 +667,18 @@
                </instanceof>
             </with>
          </enabledWhen>
+      </handler>
+      <handler
+            class="xstampp.ui.menu.file.commands.CloseProjectEditors"
+            commandId="xstampp.command.project.closeProjectEditors">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <instanceof
+                     value="xstampp.ui.navigation.IProjectSelection">
+               </instanceof>
+            </with>
+         </enabledWhen>
       </handler>ler>
    </extension>
    <extension
@@ -886,6 +903,10 @@
                name="project.settings"
                optional="true">
          </commandParameter>
+      </command>
+      <command
+            id="xstampp.command.project.closeProjectEditors"
+            name="Close project editors">
       </command>
    </extension>
    

@@ -51,7 +51,7 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
    *          {@link AbstractSelector#getItem()}
    */
   public StepSelector(TreeItem item, TreeItemDescription descriptor, IWorkbenchPartSite site) {
-    super(item, descriptor,site);
+    super(item, descriptor, site);
     this.editorId = descriptor.getEditorId();
     this.inputs = new HashMap<>();
     addStepEditor(editorId, descriptor.getName());
@@ -121,9 +121,9 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
 
   @Override
   public void setPathHistory(String pathHistory) {
-//    for (STPAEditorInput input : this.inputs.values()) {
-//      input.setPathHistory(pathHistory);
-//    }
+    // for (STPAEditorInput input : this.inputs.values()) {
+    // input.setPathHistory(pathHistory);
+    // }
     super.setPathHistory(pathHistory);
   }
 
@@ -223,5 +223,10 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
 
   public void setProperties(Map<String, String> properties) {
     this.properties = properties;
+  }
+
+  @Override
+  public void closeEditors() {
+    cleanUp();
   }
 }

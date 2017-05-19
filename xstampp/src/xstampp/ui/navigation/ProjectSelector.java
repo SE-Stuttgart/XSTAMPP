@@ -112,4 +112,8 @@ public class ProjectSelector extends AbstractSelector {
     });
   }
 
+  @Override
+  public void deaktivate() {
+    closeEditors();
+  }
 }

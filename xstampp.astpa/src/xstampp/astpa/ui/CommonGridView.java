@@ -10,6 +10,8 @@
  *******************************************************************************/
 package xstampp.astpa.ui;
 
+import java.util.UUID;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.grid.Grid;
@@ -25,6 +27,8 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridWrapper;
 import xstampp.ui.editors.AbstractFilteredEditor;
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserProject;
 
 public abstract class CommonGridView<T extends IDataModel> extends AbstractFilteredEditor {
 
@@ -133,5 +137,18 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
     getDataModel().deleteObserver(this);
     super.dispose();
   }
-  
+
+  protected boolean checkAccess(UUID caId, AccessRights accessRight) {
+    if (getDataModel() instanceof IUserProject) {
+      return ((IUserProject) getDataModel()).getUserSystem().checkAccess(caId, accessRight);
+    }
+    return true;
+  }
+
+  protected boolean checkAccess(AccessRights accessRight) {
+    if (getDataModel() instanceof IUserProject) {
+      return ((IUserProject) getDataModel()).getUserSystem().checkAccess(accessRight);
+    }
+    return true;
+  }
 }

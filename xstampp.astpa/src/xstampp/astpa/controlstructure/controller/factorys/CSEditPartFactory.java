@@ -187,7 +187,7 @@ public class CSEditPartFactory implements EditPartFactory {
 		IAnchor sourceModel = model.getSourceAnchor();
 		IAnchor targetModel = model.getTargetAnchor();
 		
-		if(target == null && source == null){
+		if(target == null || source == null){
 			return null;
 		}
 		

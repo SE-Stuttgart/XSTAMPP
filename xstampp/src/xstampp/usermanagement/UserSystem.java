@@ -137,13 +137,16 @@ public class UserSystem extends Observable implements IUserSystem {
 
   @Override
   public boolean isResponsible(UUID entryId) {
-    return isResponsible(currentUser.getUserId(), entryId);
+    if (getCurrentUser() != null) {
+      return isResponsible(currentUser.getUserId(), entryId);
+    }
+    return false;
   }
 
   @Override
   public boolean checkAccess(UUID entryId, AccessRights accessLevel) {
     boolean returnBool = true;
-    if (!(currentUser instanceof Admin)) {
+    if (!(getCurrentUser() instanceof Admin)) {
       returnBool = isResponsible(entryId);
       returnBool &= this.getCurrentUser().checkAccess(accessLevel);
     }
@@ -177,8 +180,10 @@ public class UserSystem extends Observable implements IUserSystem {
       LoginShell shell = new LoginShell(this, true);
       shell.open();
       this.currentUser = (IUser) shell.getReturnValue();
-      setChanged();
-      notifyObservers(NOTIFY_LOGIN);
+      if (this.currentUser != null) {
+        setChanged();
+        notifyObservers(NOTIFY_LOGIN);
+      }
     }
     return currentUser;
   }
@@ -248,6 +253,12 @@ public class UserSystem extends Observable implements IUserSystem {
       }
     }
     return false;
+  }
+
+  public void logout() {
+    this.currentUser = null;
+    setChanged();
+    notifyObservers(NOTIFY_LOGOUT);
   }
 
   public void editUser(IUser user) {

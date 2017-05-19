@@ -62,7 +62,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 	@Override
 	public void paintFigure(Graphics graphics) {
     super.paintFigure(graphics);
-    if(fixed){
+    if(fixed && getPoints().size() >= 2){
 //      graphics.pushState();
   		Point p1 = getPoints().getPoint(getPoints().size() -1);
   		Point p2 = getPoints().getPoint(getPoints().size() - 2);

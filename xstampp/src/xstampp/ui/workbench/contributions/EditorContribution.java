@@ -6,6 +6,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 package xstampp.ui.workbench.contributions;
 
 import java.beans.PropertyChangeEvent;
@@ -18,8 +19,6 @@ import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -74,8 +73,8 @@ public class EditorContribution extends WorkbenchWindowControlContribution
 
       @Override
       public void widgetSelected(SelectionEvent arg0) {
-        EditorContribution.this.contributor.fireToolPropertyChange(
-            IZoomContributor.IS_DECORATED, !EditorContribution.this.isDecorated);
+        EditorContribution.this.contributor.fireToolPropertyChange(IZoomContributor.IS_DECORATED,
+            !EditorContribution.this.isDecorated);
         setDecoSelection((boolean) contributor.getProperty(IZoomContributor.IS_DECORATED));
       }
     });
@@ -149,7 +148,8 @@ public class EditorContribution extends WorkbenchWindowControlContribution
               if (EditorContribution.this.zoomManager != null) {
                 EditorContribution.this.zoomManager.setZoom(((double) zoom) / 100);
               }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException numEx) {
+              //do nothing
             }
 
           }
@@ -192,8 +192,12 @@ public class EditorContribution extends WorkbenchWindowControlContribution
 
   @Override
   public void zoomChanged(double zoom) {
-    this.zoomSlider.getSliderControl().setSelection((int) (zoom * 100));
-    this.updateLabel();
+    try {
+      this.zoomSlider.getSliderControl().setSelection((int) (zoom * 100));
+      this.updateLabel();
+    } catch (Exception exc) {
+      this.zoomManager.removeZoomListener(EditorContribution.this);
+    }
   }
 
   private void updateLabel() {
@@ -206,36 +210,15 @@ public class EditorContribution extends WorkbenchWindowControlContribution
     return true;
   }
 
-  /**
-   * enables all widgets contained in the main composite of this class
-   *
-   * @author Lukas Balzer
-   *
-   * @param enabled
-   *          if components should be enabled
-   */
-  private void setEnabled(boolean enabled) {
-    try {
-      this.zoomLabel.setEnabled(enabled);
-      this.zoomSlider.setEnabled(enabled);
-      this.setDecoSelection((boolean) this.contributor.getProperty(IZoomContributor.IS_DECORATED));
-      this.decoButton.setEnabled(enabled);
-      this.zoomInButton.setEnabled(enabled);
-      this.zoomOutButton.setEnabled(enabled);
-    } catch (Exception e) {
-      return;
-    }
-  }
-
   private void setDecoSelection(boolean enabled) {
     this.isDecorated = enabled;
+    String path;
     if (enabled) {
-      this.decoButton
-          .setImage(Activator.getImage("icons/buttons/DecoButton_Selected.png")); //$NON-NLS-1$
+      path = "icons/buttons/DecoButton_Selected.png"; //$NON-NLS-1$
     } else {
-      this.decoButton
-          .setImage(Activator.getImage("icons/buttons/DecoButton.png")); //$NON-NLS-1$
+      path = "icons/buttons/DecoButton.png"; //$NON-NLS-1$
     }
+    this.decoButton.setImage(Activator.getImage(path));
   }
 
   @Override
@@ -270,6 +253,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution
   public void dispose() {
     try {
       if (this.contributor != null) {
+        this.zoomManager.removeZoomListener(EditorContribution.this);
         this.contributor.removePropertyListener(this);
       }
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
