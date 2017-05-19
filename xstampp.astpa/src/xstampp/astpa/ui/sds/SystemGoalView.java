@@ -64,7 +64,7 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
    * 
    */
   public SystemGoalView() {
-
+    super(true);
   }
 
   /**

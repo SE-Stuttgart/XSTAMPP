@@ -1,7 +1,5 @@
 package xstampp.usermanagement.ui.settings;
 
-import java.util.UUID;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -31,7 +29,8 @@ import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
-import xstampp.usermanagement.roles.Admin;
+
+import java.util.UUID;
 
 public class UserManagementPage implements ISettingsPage {
   private static final int REFRESH_USERS = 1;
@@ -40,7 +39,7 @@ public class UserManagementPage implements ISettingsPage {
   private String name;
 
   @Override
-  public Composite createControl(CTabFolder control, ModalShell parent, UUID modelId) {
+  public Composite createControl(CTabFolder control, final ModalShell parent, UUID modelId) {
     final IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(modelId);
     Composite userPage = new Composite(control, SWT.NONE);
     userPage.setLayout(new FormLayout());

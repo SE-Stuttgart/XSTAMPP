@@ -1,11 +1,5 @@
 package xstampp.usermanagement.ui.settings;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.UUID;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -32,6 +26,12 @@ import xstampp.usermanagement.api.ICollaborationSystem;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 
 public class CollaborationSettings implements ISettingsPage, Observer {
 
@@ -68,9 +68,9 @@ public class CollaborationSettings implements ISettingsPage, Observer {
         for (Composite comp : listEntries) {
           comp.dispose();
         }
-        UserSystem userSystem = (UserSystem) getDataModel().getUserSystem();
+        final UserSystem userSystem = (UserSystem) getDataModel().getUserSystem();
         boolean evenRow = true;
-        for (IUser user : userSystem.getRegistry()) {
+        for (final IUser user : userSystem.getRegistry()) {
           if (user.checkAccess(AccessRights.ACCESS) && !user.checkAccess(AccessRights.ADMIN)) {
             final Composite composite = new Composite(tableComposite, SWT.None);
             composite.setLayout(new GridLayout(2, false));
@@ -98,10 +98,10 @@ public class CollaborationSettings implements ISettingsPage, Observer {
               // assigned
               createBtn.setText(Messages.CollaborationSettings_CreateWorkingCopy);
               createBtn.setToolTipText(Messages.CollaborationSettings_WorkingCopyToolTip);
-              final UUID originalId = modelId;
+              final UUID originalId = getDataModel().getProjectId();
               createBtn.addSelectionListener(new SelectionAdapter() {
                 @Override
-                public void widgetSelected(SelectionEvent e) {
+                public void widgetSelected(SelectionEvent event) {
                   IDataModel model = ProjectManager.getContainerInstance().getDataModel(originalId);
                   if (model != null && user.getWorkingProjectId() == null) {
                     String projectName = model.getProjectName();
@@ -120,7 +120,7 @@ public class CollaborationSettings implements ISettingsPage, Observer {
                       boolean initialCall = true;
 
                       @Override
-                      public void widgetSelected(SelectionEvent e) {
+                      public void widgetSelected(SelectionEvent event) {
                         if (initialCall) {
                           // This listener is called directly after it is added so
                           initialCall = false;
@@ -137,7 +137,7 @@ public class CollaborationSettings implements ISettingsPage, Observer {
                   model.getProjectName()));
               createBtn.addSelectionListener(new SelectionAdapter() {
                 @Override
-                public void widgetSelected(SelectionEvent e) {
+                public void widgetSelected(SelectionEvent event) {
                   system.syncDataWithUser(user);
                 }
               });
@@ -196,7 +196,7 @@ public class CollaborationSettings implements ISettingsPage, Observer {
   }
 
   @Override
-  public void update(Observable o, Object arg) {
+  public void update(Observable model, Object arg) {
     try {
       if (arg != null
           && (arg.equals(IUserSystem.NOTIFY_LOGIN) || arg.equals(IUserSystem.NOTIFY_USER))) {
@@ -207,7 +207,7 @@ public class CollaborationSettings implements ISettingsPage, Observer {
         }
       }
     } catch (Exception exc) {
-      o.deleteObserver(this);
+      model.deleteObserver(this);
     }
   }
 

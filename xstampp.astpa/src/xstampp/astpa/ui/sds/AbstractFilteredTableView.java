@@ -71,6 +71,9 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 	 *
 	 */
 	protected abstract class EditSupportProvider{
+	  protected boolean canEdit(Object element) {
+	    return true;
+	  }
 		/**
 		 * Returns the value that is available for editing the given element<br> this function is called 
 		 * by the EditingSupport of the displayed table, if this returns null the edit is disabled<p>
@@ -108,7 +111,7 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 
 		@Override
 		protected boolean canEdit(Object element) {
-			return true;
+			return supportProvider.canEdit(element);
 		}
 
 		@Override

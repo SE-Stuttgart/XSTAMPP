@@ -9,12 +9,6 @@
 
 package xstampp.usermanagement.ui.contribution;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.UUID;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -45,6 +39,12 @@ import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.util.ColorManager;
 import xstampp.util.STPAPluginUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 
 /**
  * A toolbar {@link WorkbenchWindowControlContribution} which displays depending on the selected

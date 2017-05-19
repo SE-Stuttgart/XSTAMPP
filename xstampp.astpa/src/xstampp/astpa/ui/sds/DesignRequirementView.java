@@ -65,7 +65,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 	 * 
 	 */
 	public DesignRequirementView() {
-
+    super(true);
 	}
 
 	/**
