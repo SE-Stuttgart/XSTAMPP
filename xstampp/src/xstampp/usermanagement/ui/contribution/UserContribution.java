@@ -135,7 +135,7 @@ public class UserContribution extends WorkbenchWindowControlContribution
       public void widgetSelected(SelectionEvent event) {
         if (userSystem != null) {
           Point p = label.toDisplay(label.getLocation());
-          new MenuShell(selection,userSystem, new Point(p.x, p.y + 20));
+          new MenuShell(selection, userSystem, new Point(p.x, p.y + 20));
         }
       }
     });
@@ -166,7 +166,6 @@ public class UserContribution extends WorkbenchWindowControlContribution
 
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-    ProjectManager.getLOGGER().debug("selection of user contribution changed to: " + selection);
     this.setVisible(selection instanceof IProjectSelection);
     if (selection instanceof IProjectSelection
         && !((IProjectSelection) selection).getProjectId().equals(projectId)) {
@@ -255,7 +254,9 @@ public class UserContribution extends WorkbenchWindowControlContribution
 
   @Override
   public void update(Observable arg0, Object arg1) {
-    if (arg1 != null && arg1 instanceof Integer) {
+    if (ObserverValue.UserSystem.equals(arg1)) {
+      refresh(userProject);
+    } else if (arg1 != null && arg1 instanceof Integer) {
       switch ((int) arg1) {
         case IUserSystem.NOTIFY_LOGIN:
         case IUserSystem.NOTIFY_LOGOUT:

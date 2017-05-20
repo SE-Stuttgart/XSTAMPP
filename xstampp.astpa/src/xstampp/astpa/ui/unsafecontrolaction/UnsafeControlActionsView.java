@@ -106,6 +106,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
         boolean canDelete) {
       super(grid, initialText, uca);
       setShowDelete(canDelete);
+      setReadOnly(!canDelete);
     }
 
     @Override

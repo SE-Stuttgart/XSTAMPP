@@ -369,20 +369,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
         factor.getId(), new ContentProviderHazards(getDataModel(), component.getId(), factor.getId(), entry),
         getGridWrapper(), true));
 
-    entryRow.addCell(++cellNumber,new GridCellText(""));
-    /*
-     * The Safety Constraint is dispayed if available, if the text is
-     * null than a new entry can be added or one of the existing constraints 
-     * can be imported
-     */
-    if (entry.getConstraintText() == null) {
-      GridCellText constraintsCell = new GridCellText(new String());
-      constraintsCell.addCellButton(new NewConstraintButton(component.getId(), factor.getId(),entry.getId(), getDataModel()));
-      constraintsCell.addCellButton(new CellButtonImportConstraint(getGrid(),entry,component.getId(), factor.getId(),getDataModel()));
-      entryRow.addCell(++cellNumber,constraintsCell);
-    } else {
-      entryRow.addCell(++cellNumber,new CellEditorSafetyConstraint(getGridWrapper(), getDataModel(), component.getId(), factor.getId(),entry));
-    }
+
+    cellNumber = createConstraints(entryRow, ++cellNumber, entry, component, factor);
     entryRow.addCell(++cellNumber,new CellEditorFactorNote(getGridWrapper(),getDataModel(),component.getId(), factor.getId(),entry));
     return entryRow;
   }

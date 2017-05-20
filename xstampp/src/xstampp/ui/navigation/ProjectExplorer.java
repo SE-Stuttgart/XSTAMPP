@@ -619,7 +619,6 @@ public final class ProjectExplorer extends ViewPart
 
   @Override
   public void setSelection(ISelection selection) {
-    ProjectManager.getLOGGER().debug("selection changed to " + selection);
     this.activeSelection = selection;
     for (ISelectionChangedListener listenerObj : ProjectExplorer.this.selectionListener) {
       listenerObj.selectionChanged(

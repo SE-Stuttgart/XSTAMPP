@@ -121,7 +121,6 @@ public abstract class AbstractSelector implements IProjectSelection {
 
   @Override
   public void activate() {
-    ProjectManager.getLOGGER().debug("activate editor");
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(getPathHistory());
     this.site.getSelectionProvider().setSelection(this);
     activeSelection = this;
