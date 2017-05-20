@@ -27,7 +27,7 @@ public class MenuShell extends MouseTrackAdapter {
   private static final String _PAGE = "xstampp.settings.users"; //$NON-NLS-1$
   private Shell shell;
 
-  public MenuShell(IProjectSelection selection, final UserSystem system, Point location) {
+  public MenuShell(final IProjectSelection selection, final UserSystem system, Point location) {
     shell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.None);
     shell.setLocation(location);
     shell.addShellListener(new ShellAdapter() {
