@@ -17,10 +17,12 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class EntryResponsibilitiesPage<T extends ATableModel> implements ISettingsPage {
@@ -107,6 +109,9 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
     return true;
   }
 
+  public Map<UUID, IUser> getResult() {
+    return this.editingSupport.save();
+  }
   @Override
   public boolean isVisible(UUID projectId) {
     IDataModel model = ProjectManager.getContainerInstance().getDataModel(projectId);

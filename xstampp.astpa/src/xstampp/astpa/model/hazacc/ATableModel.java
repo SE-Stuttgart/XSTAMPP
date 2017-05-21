@@ -69,6 +69,12 @@ public abstract class ATableModel implements ITableModel, IEntryWithNameId {
     this.number = number;
   }
 
+  public ATableModel(xstampp.astpa.haz.ITableModel model, int i) {
+    this.id = model.getId();
+    this.title = model.getTitle();
+    this.description = model.getDescription();
+    this.number = i;
+  }
   /**
    * Empty constructor used for JAXB. Do not use it!
    * 

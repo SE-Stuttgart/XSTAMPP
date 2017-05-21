@@ -31,7 +31,7 @@ import xstampp.model.ObserverValue;
  * @since 2.0
  * 
  */
-public class SDSController {
+public class SDSController{
 
 	@XmlElementWrapper(name = "safetyConstraints")
 	@XmlElement(name = "safetyConstraint")
@@ -58,25 +58,43 @@ public class SDSController {
 		this.designRequirements = new ArrayList<>();
 	}
 
-	/**
-	 * Adds a new safety constraint to the list of safety constraints.
-	 * 
-	 * @param title
-	 *            the title of the new safety constraint
-	 * @param description
-	 *            the description of the new safety constraint
-	 * 
-	 * @return the id of the new safety constraint
-	 * 
-	 * @author Fabian Toth
-	 */
-	public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
-		SafetyConstraint safetyConstraint = new SafetyConstraint(title,
-				description, this.safetyConstraints.size() + 1);
-		safetyConstraint.setCreatedBy(createdBy);
-		this.safetyConstraints.add(safetyConstraint);
-		return safetyConstraint.getId();
-	}
+  /**
+   * Adds a new safety constraint to the list of safety constraints.
+   * 
+   * @param title
+   *            the title of the new safety constraint
+   * @param description
+   *            the description of the new safety constraint
+   * 
+   * @return the id of the new safety constraint
+   * 
+   * @author Fabian Toth
+   */
+  public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
+    SafetyConstraint safetyConstraint = new SafetyConstraint(title,
+        description, this.safetyConstraints.size() + 1);
+    safetyConstraint.setCreatedBy(createdBy);
+    this.safetyConstraints.add(safetyConstraint);
+    return safetyConstraint.getId();
+  }
+
+  /**
+   * Adds a new safety constraint to the list of safety constraints.
+   * 
+   * @param title
+   *            the title of the new safety constraint
+   * @param description
+   *            the description of the new safety constraint
+   * 
+   * @return the id of the new safety constraint
+   * 
+   * @author Fabian Toth
+   */
+  public UUID addSafetyConstraint(ITableModel model) {
+    SafetyConstraint safetyConstraint = new SafetyConstraint(model, this.safetyConstraints.size() + 1);
+    this.safetyConstraints.add(safetyConstraint);
+    return safetyConstraint.getId();
+  }
 
 	/**
 	 * Gives a list of all Safety Constraints.

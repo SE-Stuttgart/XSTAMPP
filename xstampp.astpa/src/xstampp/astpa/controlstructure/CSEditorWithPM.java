@@ -92,7 +92,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		componentElements.add(new CombinedTemplateCreationEntry(
 				Messages.ProcessModel, Messages.CreateProcessModel,
 				ComponentType.PROCESS_MODEL, new CSModelCreationFactory(
-						ComponentType.PROCESS_MODEL, this.getModelInterface()),
+						ComponentType.PROCESS_MODEL, this.getRoot()),
 				imgDesc, imgDescLarge));
 
 		PaletteDrawer additionalElements = new PaletteDrawer(Messages.Others);
@@ -105,7 +105,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		additionalElements.add(new CombinedTemplateCreationEntry(
 				Messages.ProcessVariable, Messages.CreateProcessVariable,
 				ComponentType.PROCESS_VARIABLE, new CSModelCreationFactory(
-						ComponentType.PROCESS_VARIABLE, this.getModelInterface()),
+						ComponentType.PROCESS_VARIABLE, this.getRoot()),
 				imgDesc, imgDescLarge));
 
 		imgDesc = Activator
@@ -115,7 +115,7 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		additionalElements.add(new CombinedTemplateCreationEntry(
 				Messages.ProcessValue, Messages.CreateProcessValue,
 				ComponentType.PROCESS_VALUE, new CSModelCreationFactory(
-						ComponentType.PROCESS_VALUE, this.getModelInterface()),
+						ComponentType.PROCESS_VALUE, this.getRoot()),
 				imgDesc, imgDescLarge));
 		
 		PaletteDrawer otherElements = new PaletteDrawer(Messages.Others);
@@ -123,12 +123,12 @@ public class CSEditorWithPM extends CSAbstractEditor {
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_40.png"); //$NON-NLS-1$
 		otherElements.add(new CombinedTemplateCreationEntry(Messages.TextBox, Messages.CreateTextBox, ComponentType.TEXTFIELD,
-				new CSModelCreationFactory(ComponentType.TEXTFIELD, this.getModelInterface()), imgDesc, imgDescLarge));
+				new CSModelCreationFactory(ComponentType.TEXTFIELD, this.getRoot()), imgDesc, imgDescLarge));
 
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_40.png"); //$NON-NLS-1$
 		otherElements.add(new CombinedTemplateCreationEntry(Messages.DashedBox, Messages.CreateDashedBox, ComponentType.DASHEDBOX,
-				new CSModelCreationFactory(ComponentType.DASHEDBOX, this.getModelInterface()), imgDesc, imgDescLarge));
+				new CSModelCreationFactory(ComponentType.DASHEDBOX, this.getRoot()), imgDesc, imgDescLarge));
 		return root;
 	}
 

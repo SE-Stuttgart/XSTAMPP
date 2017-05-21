@@ -359,7 +359,7 @@ public class HazAccController {
   }
 
   public List<xstampp.astpa.haz.hazacc.Link> getAllHazAccLinks() {
-    return this.links;
+    return new ArrayList<>(this.links);
   }
 
   private int getAccidentNumber() {

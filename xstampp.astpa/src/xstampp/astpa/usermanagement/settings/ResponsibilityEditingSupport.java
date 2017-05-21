@@ -94,7 +94,7 @@ public class ResponsibilityEditingSupport extends EditingSupport {
     }
   }
 
-  public void save() {
-    userSystem.assignResponsibilities(userToResponibilitiesMap);
+  public Map<UUID, IUser> save() {
+    return userToResponibilitiesMap;
   }
 }

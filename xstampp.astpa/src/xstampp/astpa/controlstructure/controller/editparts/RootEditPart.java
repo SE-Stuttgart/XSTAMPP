@@ -107,13 +107,15 @@ public class RootEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected void createEditPolicies() {
-		this.installEditPolicy(Messages.SnapFeedback, new SnapFeedbackPolicy());
-		// this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new
-		// CSDeletePolicy(this.getDataModel()));
-		this.installEditPolicy(EditPolicy.LAYOUT_ROLE,
-				new CSEditPolicy(this.getDataModel(), this.getStepId()));
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+	  if(canEdit()) {
+  		this.installEditPolicy(Messages.SnapFeedback, new SnapFeedbackPolicy());
+  		// this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new
+  		// CSDeletePolicy(this.getDataModel()));
+  		this.installEditPolicy(EditPolicy.LAYOUT_ROLE,
+  				new CSEditPolicy(this.getDataModel(), this.getStepId()));
+  		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+  				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+	  }
 	}
 
 	@Override

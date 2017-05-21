@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
@@ -145,6 +146,13 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 		return cmd;
 	}
 
+  @Override
+  public Command getCommand(Request request) {
+    if (getHost().canEdit()) {
+      return super.getCommand(request);
+    }
+    return null;
+  }
 	@Override
 	public IControlStructureEditPart getHost() {
 		return (IControlStructureEditPart) super.getHost();

@@ -74,6 +74,7 @@ public class UnsafeControlAction
     this.id = UUID.randomUUID();
     this.number = 0;
   }
+  
 
   /**
    * Empty constructor for JAXB. Do not use it!
@@ -94,8 +95,11 @@ public class UnsafeControlAction
    *          the description to set
    */
   public String setDescription(String description) {
-    String result = this.description;
-    this.description = description;
+    String result = null;
+    if(!description.equals(this.description) ){
+      result = this.description;
+      this.description = description;
+    }
     return result;
   }
 

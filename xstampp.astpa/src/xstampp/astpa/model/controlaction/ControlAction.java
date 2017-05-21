@@ -178,6 +178,28 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
   }
 
   /**
+   * Adds a unsafe control action to this control action
+   * 
+   * @param description
+   *          the description of the new control action
+   * @param unsafeControlActionType
+   *          the type of the enw control action
+   * @return the id of the new control action
+   * 
+   * @author Fabian Toth
+   */
+  public UUID addUnsafeControlAction(int number, String description,
+      UnsafeControlActionType unsafeControlActionType, UUID id) {
+    UnsafeControlAction unsafeControlAction = new UnsafeControlAction(description,
+        unsafeControlActionType);
+    unsafeControlAction.setId(id);
+    this.unsafeControlActions.add(unsafeControlAction);
+    unsafeControlAction.setNumber(number);
+    return unsafeControlAction.getId();
+  }
+
+  
+  /**
    * Searches the unsafe control action and removes it when it is in the list
    * 
    * @param unsafeControlActionId

@@ -1,7 +1,9 @@
 package xstampp.astpa.usermanagement.settings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import messages.Messages;
@@ -17,6 +19,7 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.EmptyUserSystem;
+import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 
 /**
@@ -26,9 +29,9 @@ import xstampp.usermanagement.api.IUserProject;
  */
 public class ResponsibilitySettings implements ISettingsPage {
 
-  private List<ISettingsPage> pages;
+  private List<EntryResponsibilitiesPage<?>> pages;
   private List<String> pageTitles;
-  private String name;
+  private IUserProject dataModel;
   
   public ResponsibilitySettings() {
     super();
@@ -43,16 +46,20 @@ public class ResponsibilitySettings implements ISettingsPage {
 
   @Override
   public boolean doAccept() {
-    boolean result = true;
-    for (ISettingsPage page : pages) {
-      result &= page.doAccept();
+    Map<UUID,IUser> map = new HashMap<>();
+    for (EntryResponsibilitiesPage<?> page : pages) {
+      map.putAll(page.getResult());
     }
-    return result;
+    getDataModel().getUserSystem().assignResponsibilities(map);
+    return true;
   }
 
   @Override
   public Composite createControl(CTabFolder control, ModalShell parent, UUID modelId) {
 
+    if (!setDataModel(ProjectManager.getContainerInstance().getDataModel(modelId))) {
+      return new Composite(control, SWT.None);
+    }
     final CTabFolder folder = new CTabFolder(control, SWT.BORDER);
     folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
     folder.setSimple(false);
@@ -90,12 +97,31 @@ public class ResponsibilitySettings implements ISettingsPage {
 
   @Override
   public void setName(String name) {
-    this.name = name;
+    //fixed name
   }
 
   @Override
   public String getId() {
     return "xstampp.astpa.settings.responsibilities";
+  }
+
+  /**
+   * @return the dataModel
+   */
+  public IUserProject getDataModel() {
+    return dataModel;
+  }
+
+  /**
+   * @param dataModel
+   *          the dataModel to set
+   */
+  public boolean setDataModel(IDataModel dataModel) {
+    if(dataModel instanceof IUserProject) {
+      this.dataModel = (IUserProject)dataModel;
+      return true;
+    }
+    return false;
   }
 
 }

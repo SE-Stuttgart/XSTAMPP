@@ -231,6 +231,7 @@ public abstract class ModalShell {
     if (!invalidLabel.isDisposed()) {
       this.invalidLabel.setText(error);
       this.invalidLabel.setVisible(true);
+      this.invalidLabel.getShell().layout();
     }
   }
 

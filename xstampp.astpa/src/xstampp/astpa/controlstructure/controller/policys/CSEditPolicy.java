@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -54,8 +52,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * 
- * CSEditPolicy manages the positioning/creation of the components inside their
- * parents
+ * CSEditPolicy manages the positioning/creation of the components inside their parents
  * 
  * 
  * @version 1.0
@@ -64,274 +61,267 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class CSEditPolicy extends XYLayoutEditPolicy {
 
-	private IControlStructureEditorDataModel dataModel;
-	private Figure parentFeedback;
-	private final String stepID;
-	private Border tmpBorder;
-	private ConnectionFigure relative;
-	private List<IFigure> feedback = new ArrayList<>();
+  private IControlStructureEditorDataModel dataModel;
+  private Figure parentFeedback;
+  private final String stepID;
+  private Border tmpBorder;
+  private ConnectionFigure relative;
+  private List<IFigure> feedback = new ArrayList<>();
   private UUID rootId;
-	/**
-	 * the offset of the process variables and values
-	 * 
-	 * @author Lukas Balzer
-	 */
-	public static final int PROCESS_MODEL_COLUMN = 20;
+  /**
+   * the offset of the process variables and values
+   * 
+   * @author Lukas Balzer
+   */
+  public static final int PROCESS_MODEL_COLUMN = 20;
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            TODO
-	 */
-	public CSEditPolicy(IControlStructureEditorDataModel model, String stepId) {
-		super();
-		this.stepID = stepId;
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          TODO
+   */
+  public CSEditPolicy(IControlStructureEditorDataModel model, String stepId) {
+    super();
+    this.stepID = stepId;
 
-		this.dataModel = model;
-	}
+    this.dataModel = model;
+  }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param rect
-	 *            the rectangle to translate
-	 */
-	public void getAbsoluteLayout(Translatable rect) {
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param rect
+   *          the rectangle to translate
+   */
+  public void getAbsoluteLayout(Translatable rect) {
 
-		this.translateFromAbsoluteToLayoutRelative(rect);
+    this.translateFromAbsoluteToLayoutRelative(rect);
 
-	}
+  }
 
-	public UUID getRootId() {
-	  if(rootId == null) {
-	    rootId =((IRectangleComponent)getHost().getViewer().getContents().getModel()).getId();
-	  }
+  public UUID getRootId() {
+    if (rootId == null) {
+      rootId = ((IRectangleComponent) getHost().getViewer().getContents().getModel()).getId();
+    }
     return rootId;
   }
-	
-	@Override
-	protected Command createChangeConstraintCommand(EditPart child,
-			Object constraint) {
 
-		ComponentChangeLayoutCommand command = new ComponentChangeLayoutCommand(
-		    getRootId(), this.dataModel, this.stepID);
-		
-		IFigure childFigure = ((IControlStructureEditPart) child).getFigure();
-		getHost().getRoot();
-		command.setModel(child.getModel());
-		command.setConstraint((Rectangle) constraint);
-		return command;
-	}
+  @Override
+  protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
+    ComponentChangeLayoutCommand command = null;
+    if (getHost().canEdit()) {
+      command = new ComponentChangeLayoutCommand(getRootId(), this.dataModel, this.stepID);
 
-	@Override
-	protected Command getCreateCommand(CreateRequest request) {
-		if ((request.getType() == RequestConstants.REQ_CREATE)) {
-			ComponentCreateCommand command = new ComponentCreateCommand(
-					getRootId(), this.dataModel, this.stepID);
-			command.setFeedbackLayer(this.getFeedbackLayer());
-			// the root Edit Part is the EditPart on which this policy is
-			// installed
-			IRectangleComponent rootModel = (IRectangleComponent) this
-					.getHost().getModel();
-			
-			// the EditPart on shall be created is the newObject which is given
-			// by the request,
-			// which is send from the ModelCreationFactory
-			IRectangleComponent compModel = (IRectangleComponent) request
-					.getNewObject();
+      IFigure childFigure = ((IControlStructureEditPart) child).getFigure();
+      getHost().getRoot();
+      command.setModel(child.getModel());
+      command.setConstraint((Rectangle) constraint);
+    }
+    return command;
+  }
 
-			command.setRootModel(rootModel);
-			command.setComponentModel(compModel);
+  @Override
+  protected Command getCreateCommand(CreateRequest request) {
+    if (request.getType() == RequestConstants.REQ_CREATE && getHost().canEdit()) {
+      ComponentCreateCommand command = new ComponentCreateCommand(getRootId(), this.dataModel,
+          this.stepID);
+      command.setFeedbackLayer(this.getFeedbackLayer());
+      // the root Edit Part is the EditPart on which this policy is
+      // installed
+      IRectangleComponent rootModel = (IRectangleComponent) this.getHost().getModel();
 
-			if (request.getNewObject() instanceof IComponent) {
-				if(this.relative != null && getFeedbackLayer().getChildren().contains(this.relative.getFeedback())){
-					removeFeedback(this.relative.getFeedback());
-				}
-				this.relative=null;
-				Rectangle constraint = (Rectangle) this
-						.getConstraintFor(request);
-				// if the components are ment for ProcessModel
-//				if ((rootModel.getComponentType() == ComponentType.PROCESS_VARIABLE)
-//						|| (rootModel.getComponentType() == ComponentType.PROCESS_MODEL)) {
-//					command.addConstraint(this.getHost().getParent().getModel());
-//					constraint = this.addProcessModelConstraint(constraint,
-//							rootModel, compModel);
-//				}
+      // the EditPart on shall be created is the newObject which is given
+      // by the request,
+      // which is send from the ModelCreationFactory
+      IRectangleComponent compModel = (IRectangleComponent) request.getNewObject();
 
+      command.setRootModel(rootModel);
+      command.setComponentModel(compModel);
 
-				if ((compModel.getComponentType() == ComponentType.PROCESS_VALUE)
-						&& (rootModel.getComponentType() != ComponentType.PROCESS_VARIABLE)) {
-					this.getFeedbackLayer().getChildren().clear();
-					this.getFeedbackLayer().repaint();
-				}
+      if (request.getNewObject() instanceof IComponent) {
+        if (this.relative != null
+            && getFeedbackLayer().getChildren().contains(this.relative.getFeedback())) {
+          removeFeedback(this.relative.getFeedback());
+        }
+        this.relative = null;
+        Rectangle constraint = (Rectangle) this.getConstraintFor(request);
+        // if the components are ment for ProcessModel
+        // if ((rootModel.getComponentType() == ComponentType.PROCESS_VARIABLE)
+        // || (rootModel.getComponentType() == ComponentType.PROCESS_MODEL)) {
+        // command.addConstraint(this.getHost().getParent().getModel());
+        // constraint = this.addProcessModelConstraint(constraint,
+        // rootModel, compModel);
+        // }
 
-				if (constraint.x < 0) {
-					constraint.x = 0;
-					constraint.y = 0;
-				}
+        if ((compModel.getComponentType() == ComponentType.PROCESS_VALUE)
+            && (rootModel.getComponentType() != ComponentType.PROCESS_VARIABLE)) {
+          this.getFeedbackLayer().getChildren().clear();
+          this.getFeedbackLayer().repaint();
+        }
 
-				if (!constraint.getSize().contains(
-						this.getDefaultSizeFor(
-								(ComponentType) request.getNewObjectType(),
-								constraint))) {
-					constraint.setSize(this.getDefaultSizeFor(
-							(ComponentType) request.getNewObjectType(),
-							constraint));
-				}
-				if(command.canExecute() &&!(getHost() instanceof RootEditPart)){
-					this.getHostFigure().showFeedback();
-				}
-				command.setLayout(constraint);
+        if (constraint.x < 0) {
+          constraint.x = 0;
+          constraint.y = 0;
+        }
 
-				//this if branch checks whether the command takes place on the root, since the a relation
-				//can only exist on the root
-				if(getHost() instanceof RootEditPart
-						&& (compModel.getComponentType() == ComponentType.CONTAINER ||
-							compModel.getComponentType() == ComponentType.CONTROLACTION)){
-					this.relative= findNearestRelative(constraint.getCenter());
-					
-					if(this.relative != null){
-						addFeedback(this.relative.getFeedback());
-						command.setRelative(this.relative.getId());
-					}
-				}
-				return command;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Finds the nearest relative (in general the nearest connection) 
-	 * if there is no it returns null
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param point the point which should be used
-	 * @return the nearest relative or null if no
-	 */
-	private ConnectionFigure findNearestRelative(Point point) {
-		Rectangle bounds;
-		double distance=Double.MAX_VALUE;
-		double newDistance;
-		ConnectionFigure relativeFigure = null;
-			for(Object connection:getLayer(LayerConstants.CONNECTION_LAYER).getChildren()){
-				if(connection instanceof ConnectionFigure){
-					bounds = ((ConnectionFigure) connection).getBounds();
-					newDistance = point.getDistance(bounds.getCenter());
-					if(newDistance < distance){
-						relativeFigure= (ConnectionFigure) connection;
-						distance = newDistance;
-					}
-				}
-			}
-			return relativeFigure;
-		}
-	
-	@Override
-	public void eraseSourceFeedback(Request request) {
-		// TODO Auto-generated method stub
-		super.eraseSourceFeedback(request);
-	}
-	@Override
-	public void eraseTargetFeedback(Request request) {
-		// TODO Auto-generated method stub
-		super.eraseTargetFeedback(request);
-	}
-	@Override
-	public IControlStructureEditPart getHost() {
-		return (IControlStructureEditPart) super.getHost();
-	}
+        if (!constraint.getSize().contains(
+            this.getDefaultSizeFor((ComponentType) request.getNewObjectType(), constraint))) {
+          constraint.setSize(
+              this.getDefaultSizeFor((ComponentType) request.getNewObjectType(), constraint));
+        }
+        if (command.canExecute() && !(getHost() instanceof RootEditPart)) {
+          this.getHostFigure().showFeedback();
+        }
+        command.setLayout(constraint);
 
-	@Override
-	protected IControlStructureFigure getHostFigure() {
-		// TODO Auto-generated method stub
-		return (IControlStructureFigure) super.getHostFigure();
-	}
-	private Dimension getDefaultSizeFor(ComponentType type, Rectangle rect) {
-		Dimension dim = new Dimension();
-		switch (type) {
-		case PROCESS_VALUE:
-		case TEXTFIELD:
-			dim.setWidth(Math.max(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.width,
-					rect.width));
-			dim.setHeight(Math.max(
-					TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.height, rect.height));
-			return dim;
-		default:
+        // this if branch checks whether the command takes place on the root, since the a relation
+        // can only exist on the root
+        if (getHost() instanceof RootEditPart
+            && (compModel.getComponentType() == ComponentType.CONTAINER
+                || compModel.getComponentType() == ComponentType.CONTROLACTION)) {
+          this.relative = findNearestRelative(constraint.getCenter());
 
-			dim.setWidth(Math.max(
-					ComponentFigure.COMPONENT_FIGURE_DEFSIZE.width, rect.width));
-			dim.setHeight(Math.max(
-					ComponentFigure.COMPONENT_FIGURE_DEFSIZE.height,
-					rect.height));
-			return dim;
-		}
-	}
+          if (this.relative != null) {
+            addFeedback(this.relative.getFeedback());
+            command.setRelative(this.relative.getId());
+          }
+        }
+        return command;
+      }
+    }
+    return null;
+  }
 
-	private Rectangle addProcessModelConstraint(Rectangle constraint,
-			IRectangleComponent rootModel, IRectangleComponent compModel) {
-		constraint.y = ((IControlStructureFigure) this.getHost().getFigure())
-				.getTextField().getPreferredSize().height;
+  /**
+   * Finds the nearest relative (in general the nearest connection) if there is no it returns null
+   *
+   * @author Lukas Balzer
+   *
+   * @param point
+   *          the point which should be used
+   * @return the nearest relative or null if no
+   */
+  private ConnectionFigure findNearestRelative(Point point) {
+    Rectangle bounds;
+    double distance = Double.MAX_VALUE;
+    double newDistance;
+    ConnectionFigure relativeFigure = null;
+    for (Object connection : getLayer(LayerConstants.CONNECTION_LAYER).getChildren()) {
+      if (connection instanceof ConnectionFigure) {
+        bounds = ((ConnectionFigure) connection).getBounds();
+        newDistance = point.getDistance(bounds.getCenter());
+        if (newDistance < distance) {
+          relativeFigure = (ConnectionFigure) connection;
+          distance = newDistance;
+        }
+      }
+    }
+    return relativeFigure;
+  }
 
-		if (rootModel.getComponentType() == ComponentType.PROCESS_MODEL) {
-			constraint.y += CSEditPolicy.PROCESS_MODEL_COLUMN;
-			constraint.setWidth(rootModel.getLayout(this.stepID
-					.equals(CSEditor.ID)).width
-					- (2 * CSEditPolicy.PROCESS_MODEL_COLUMN));
+  @Override
+  public void eraseSourceFeedback(Request request) {
+    // TODO Auto-generated method stub
+    super.eraseSourceFeedback(request);
+  }
 
-		} else if (compModel.getComponentType() == ComponentType.PROCESS_VALUE) {
-			this.parentFeedback = new Figure();
-			this.parentFeedback.setBorder(new LineBorder(
-					ColorConstants.lightBlue));
-			Rectangle bounds = rootModel.getLayout(
-					this.stepID.equals(CSEditor.ID)).getCopy();
-			this.getHostFigure().translateToAbsolute(bounds);
-			this.parentFeedback.setBounds(bounds);
-			if (this.getFeedbackLayer().getChildren().size() > 1) {
-				this.getFeedbackLayer().getChildren().clear();
-				this.getFeedbackLayer().repaint();
-			}
-			this.addFeedback(this.parentFeedback);
+  @Override
+  public void eraseTargetFeedback(Request request) {
+    // TODO Auto-generated method stub
+    super.eraseTargetFeedback(request);
+  }
 
-		}
-		for (Object constraintChild : this.getHost().getChildren()) {
-			constraint.y += ((IControlStructureEditPart) constraintChild)
-					.getFigure().getBounds().height;
+  @Override
+  public IControlStructureEditPart getHost() {
+    return (IControlStructureEditPart) super.getHost();
+  }
 
-		}
-		constraint.x = CSEditPolicy.PROCESS_MODEL_COLUMN;
+  @Override
+  protected IControlStructureFigure getHostFigure() {
+    // TODO Auto-generated method stub
+    return (IControlStructureFigure) super.getHostFigure();
+  }
 
-		return constraint;
-	}
-	 @Override
-	public Command getCommand(Request request) {
-		if(RequestConstants.REQ_MOVE_CHILDREN.equals(request.getType())){
-			EditPart part = getHost().getViewer().findObjectAt(((ChangeBoundsRequest)request).getLocation());
-			Object connectable =((ChangeBoundsRequest)request).getEditParts().get(0);
-			if(part instanceof IRelativePart && connectable instanceof IMemberEditPart 
-					&& ((IRelativePart) part).getId() != ((IMemberEditPart)connectable).getRelativeId()){
-				IFigure conn= ((IRelativePart) part).getFeedback(((IMemberEditPart)connectable));
-				if(!(this.feedback.contains(conn))){
-					addFeedback(conn);		
-					this.feedback.add(conn);
-				}
-				return new SwapRelativeCommand(getRootId(), this.dataModel,this.stepID,
-											(IRelativePart) part, (IMemberEditPart) connectable);
-			}
-			for(IFigure figure:this.feedback){
-				if(figure.getParent() == getFeedbackLayer()){
-					removeFeedback(figure);
-				}
-			}
-			this.feedback.clear();
-			
-			}
-		return super.getCommand(request);
-	}
+  private Dimension getDefaultSizeFor(ComponentType type, Rectangle rect) {
+    Dimension dim = new Dimension();
+    switch (type) {
+      case PROCESS_VALUE:
+      case TEXTFIELD:
+        dim.setWidth(Math.max(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.width, rect.width));
+        dim.setHeight(Math.max(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.height, rect.height));
+        return dim;
+      default:
+
+        dim.setWidth(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.width, rect.width));
+        dim.setHeight(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.height, rect.height));
+        return dim;
+    }
+  }
+
+  private Rectangle addProcessModelConstraint(Rectangle constraint, IRectangleComponent rootModel,
+      IRectangleComponent compModel) {
+    constraint.y = ((IControlStructureFigure) this.getHost().getFigure()).getTextField()
+        .getPreferredSize().height;
+
+    if (rootModel.getComponentType() == ComponentType.PROCESS_MODEL) {
+      constraint.y += CSEditPolicy.PROCESS_MODEL_COLUMN;
+      constraint.setWidth(rootModel.getLayout(this.stepID.equals(CSEditor.ID)).width
+          - (2 * CSEditPolicy.PROCESS_MODEL_COLUMN));
+
+    } else if (compModel.getComponentType() == ComponentType.PROCESS_VALUE) {
+      this.parentFeedback = new Figure();
+      this.parentFeedback.setBorder(new LineBorder(ColorConstants.lightBlue));
+      Rectangle bounds = rootModel.getLayout(this.stepID.equals(CSEditor.ID)).getCopy();
+      this.getHostFigure().translateToAbsolute(bounds);
+      this.parentFeedback.setBounds(bounds);
+      if (this.getFeedbackLayer().getChildren().size() > 1) {
+        this.getFeedbackLayer().getChildren().clear();
+        this.getFeedbackLayer().repaint();
+      }
+      this.addFeedback(this.parentFeedback);
+
+    }
+    for (Object constraintChild : this.getHost().getChildren()) {
+      constraint.y += ((IControlStructureEditPart) constraintChild).getFigure().getBounds().height;
+
+    }
+    constraint.x = CSEditPolicy.PROCESS_MODEL_COLUMN;
+
+    return constraint;
+  }
+
+  @Override
+  public Command getCommand(Request request) {
+    if (!getHost().canEdit()) {
+      return null;
+    }
+    if (RequestConstants.REQ_MOVE_CHILDREN.equals(request.getType())) {
+      EditPart part = getHost().getViewer()
+          .findObjectAt(((ChangeBoundsRequest) request).getLocation());
+      Object connectable = ((ChangeBoundsRequest) request).getEditParts().get(0);
+      if (part instanceof IRelativePart && connectable instanceof IMemberEditPart
+          && ((IRelativePart) part).getId() != ((IMemberEditPart) connectable).getRelativeId()) {
+        IFigure conn = ((IRelativePart) part).getFeedback(((IMemberEditPart) connectable));
+        if (!(this.feedback.contains(conn))) {
+          addFeedback(conn);
+          this.feedback.add(conn);
+        }
+        return new SwapRelativeCommand(getRootId(), this.dataModel, this.stepID,
+            (IRelativePart) part, (IMemberEditPart) connectable);
+      }
+      for (IFigure figure : this.feedback) {
+        if (figure.getParent() == getFeedbackLayer()) {
+          removeFeedback(figure);
+        }
+      }
+      this.feedback.clear();
+
+    }
+    return super.getCommand(request);
+  }
 }

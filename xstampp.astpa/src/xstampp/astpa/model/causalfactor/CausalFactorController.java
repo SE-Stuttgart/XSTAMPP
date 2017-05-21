@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -29,6 +27,7 @@ import xstampp.astpa.haz.causalfactor.CausalFactorHazardLink;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
@@ -52,62 +51,73 @@ public class CausalFactorController implements ICausalFactorController {
 
   @XmlElementWrapper(name = "causalComponents")
   @XmlElement(name = "causalComponent")
-  private Map<UUID,CausalCSComponent> causalComponents;
+  private Map<UUID, CausalCSComponent> causalComponents;
 
   @XmlAttribute(name = "useScenarios")
   private boolean useScenarios;
-	/**
-	 * Constructor of the causal factor controller
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 */
-	public CausalFactorController() {
-		this.links = new ArrayList<>();
-		this.setUseScenarios(true);
-	}
 
-	@Override
+  /**
+   * Constructor of the causal factor controller
+   * 
+   * @author Fabian Toth
+   * 
+   */
+  public CausalFactorController() {
+    this.links = new ArrayList<>();
+    this.setUseScenarios(true);
+  }
+
+  @Override
   public UUID addCausalFactor(IRectangleComponent csComp) {
-	  UUID factorId = null;
-    if(validateCausalComponent(csComp.getComponentType())){
-      if (causalComponents== null) {
+    UUID factorId = null;
+    if (validateCausalComponent(csComp.getComponentType())) {
+      if (causalComponents == null) {
         this.causalComponents = new HashMap<>();
       }
-      if(!this.causalComponents.containsKey(csComp.getId())){
+      if (!this.causalComponents.containsKey(csComp.getId())) {
         this.causalComponents.put(csComp.getId(), new CausalCSComponent());
       }
       factorId = this.causalComponents.get(csComp.getId()).addCausalFactor();
     }
     return factorId;
-		
-	}
-	
-	@Override
-	public List<UUID> getLinkedUCAList(UUID factorId){
-	  List<UUID> list = new ArrayList<>();
-	  if(causalComponents != null){
-  	  for(CausalCSComponent comp: causalComponents.values()){
-  	    list.addAll(comp.getLinkedUCAList(factorId));
-  	  }
-	  }
-	  return list;
-	}
-	@Override
-  public boolean setCausalFactorText(UUID componentId,UUID causalFactorId, String causalFactorText) {
-	  CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-	  if(factor != null){
-	    factor.setText(causalFactorText);
+
+  }
+
+  @Override
+  public List<UUID> getLinkedUCAList(UUID factorId) {
+    List<UUID> list = new ArrayList<>();
+    if (causalComponents != null) {
+      for (CausalCSComponent comp : causalComponents.values()) {
+        list.addAll(comp.getLinkedUCAList(factorId));
+      }
+    }
+    return list;
+  }
+
+  @Override
+  public boolean setCausalFactorText(UUID componentId, UUID causalFactorId,
+      String causalFactorText) {
+    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
+    if (factor != null) {
+      factor.setText(causalFactorText);
       return true;
-	  }
-		return false;
-	}
+    }
+    return false;
+  }
 
   @Override
   public UUID addCausalUCAEntry(UUID componentId, UUID causalFactorId, UUID ucaID) {
     CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    if(factor != null){
+    if (factor != null) {
       return factor.addUCAEntry(ucaID);
+    }
+    return null;
+  }
+
+  public UUID addCausalUCAEntry(UUID componentId, UUID causalFactorId, ICausalFactorEntry entry) {
+    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
+    if (factor != null) {
+      return factor.addUCAEntry(entry);
     }
     return null;
   }
@@ -115,19 +125,20 @@ public class CausalFactorController implements ICausalFactorController {
   @Override
   public UUID addCausalHazardEntry(UUID componentId, UUID causalFactorId) {
     CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    if(factor != null){
+    if (factor != null) {
       return factor.addHazardEntry();
     }
     return null;
   }
 
   @Override
-  public CausalFactorEntryData changeCausalEntry(UUID componentId, UUID causalFactorId, CausalFactorEntryData entryData) {
+  public CausalFactorEntryData changeCausalEntry(UUID componentId, UUID causalFactorId,
+      CausalFactorEntryData entryData) {
     CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    
-    if(factor != null){
+
+    if (factor != null) {
       CausalFactorEntry entry = (CausalFactorEntry) factor.getEntry(entryData.getId());
-      if(entry != null){
+      if (entry != null) {
         return entry.changeCausalEntry(entryData);
       }
     }
@@ -136,14 +147,14 @@ public class CausalFactorController implements ICausalFactorController {
 
   @Override
   public boolean removeCausalFactor(UUID componentId, UUID causalFactor) {
-    if(causalComponents != null){
-      if(componentId == null){
-        for(CausalCSComponent comp: causalComponents.values()){
-          if(comp.removeCausalFactor(causalFactor)){
+    if (causalComponents != null) {
+      if (componentId == null) {
+        for (CausalCSComponent comp : causalComponents.values()) {
+          if (comp.removeCausalFactor(causalFactor)) {
             return true;
           }
-        } 
-      }else if(causalComponents.containsKey(componentId)){
+        }
+      } else if (causalComponents.containsKey(componentId)) {
         CausalCSComponent comp = this.causalComponents.get(componentId);
         return comp.removeCausalFactor(causalFactor);
       }
@@ -154,24 +165,24 @@ public class CausalFactorController implements ICausalFactorController {
   @Override
   public boolean removeCausalEntry(UUID componentId, UUID causalFactorId, UUID entryId) {
     CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    
-    if(factor != null){
+
+    if (factor != null) {
       return factor.removeEntry(entryId);
     }
     return false;
   }
-  
+
   @Override
   public ICausalComponent getCausalComponent(IRectangleComponent csComp) {
     CausalCSComponent component = null;
-    if(csComp != null && validateCausalComponent(csComp.getComponentType())){
-      if(causalComponents == null){
+    if (csComp != null && validateCausalComponent(csComp.getComponentType())) {
+      if (causalComponents == null) {
         causalComponents = new HashMap<>();
       }
-      if(!causalComponents.containsKey(csComp.getId())){
+      if (!causalComponents.containsKey(csComp.getId())) {
         causalComponents.put(csComp.getId(), new CausalCSComponent());
       }
-      
+
       component = causalComponents.get(csComp.getId());
       component.setText(csComp.getText());
       component.setId(csComp.getId());
@@ -179,44 +190,47 @@ public class CausalFactorController implements ICausalFactorController {
     }
     return component;
   }
-  
-  private CausalFactor internal_getCausalFactor(UUID componentId,UUID causalFactorId){
-    if(causalComponents != null && this.causalComponents.containsKey(componentId)){
+
+  private CausalFactor internal_getCausalFactor(UUID componentId, UUID causalFactorId) {
+    if (causalComponents != null && this.causalComponents.containsKey(componentId)) {
       return causalComponents.get(componentId).getCausalFactor(causalFactorId);
     }
     return null;
   }
 
-  private boolean validateCausalComponent(ComponentType type){
-    switch(type){
-    case ACTUATOR:
-    case CONTROLLED_PROCESS:
-    case CONTROLLER:
-    case SENSOR:
-      return true;
-    default:
-      return false;
-    
+  private boolean validateCausalComponent(ComponentType type) {
+    switch (type) {
+      case ACTUATOR:
+      case CONTROLLED_PROCESS:
+      case CONTROLLER:
+      case SENSOR:
+        return true;
+      default:
+        return false;
+
     }
   }
 
-  public void prepareForExport(HazAccController hazAccController, List<IRectangleComponent> children,
-      List<AbstractLTLProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+  public void prepareForExport(HazAccController hazAccController,
+      List<IRectangleComponent> children, List<AbstractLTLProvider> allRefinedRules,
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
 
-      for (IRectangleComponent child : children) {
-        if(getCausalComponent(child) != null){
-          this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,allRefinedRules, allUnsafeControlActions);
-        }
+    for (IRectangleComponent child : children) {
+      if (getCausalComponent(child) != null) {
+        this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,
+            allRefinedRules, allUnsafeControlActions);
       }
+    }
   }
 
   public void prepareForSave(HazAccController hazAccController, List<Component> list,
-      List<AbstractLTLProvider> allRefinedRules, List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
-    Map<UUID,List<UUID>> hazardLinksMap = new HashMap<>();
-    if(links != null){
-      for(CausalFactorHazardLink link : links){
+      List<AbstractLTLProvider> allRefinedRules,
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+    Map<UUID, List<UUID>> hazardLinksMap = new HashMap<>();
+    if (links != null) {
+      for (CausalFactorHazardLink link : links) {
         UUID factorId = link.getCausalFactorId();
-        if(!hazardLinksMap.containsKey(factorId)){
+        if (!hazardLinksMap.containsKey(factorId)) {
           hazardLinksMap.put(factorId, new ArrayList<UUID>());
         }
         hazardLinksMap.get(factorId).add(link.getHazardId());
@@ -225,20 +239,21 @@ public class CausalFactorController implements ICausalFactorController {
       links = null;
     }
     ArrayList<UUID> removeList = new ArrayList<>();
-    if(causalComponents != null){
+    if (causalComponents != null) {
       removeList.addAll(causalComponents.keySet());
     }
     for (Component child : list) {
       removeList.remove(child.getId());
-      if(getCausalComponent(child) != null){
-        this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap,hazAccController, child,allRefinedRules, allUnsafeControlActions);
+      if (getCausalComponent(child) != null) {
+        this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap, hazAccController,
+            child, allRefinedRules, allUnsafeControlActions);
       }
     }
-    if(causalComponents != null){
-      for(UUID id: removeList){
+    if (causalComponents != null) {
+      for (UUID id : removeList) {
         this.causalComponents.remove(id);
       }
-      if(this.causalComponents.isEmpty()){
+      if (this.causalComponents.isEmpty()) {
         causalComponents = null;
       }
     }
@@ -253,6 +268,5 @@ public class CausalFactorController implements ICausalFactorController {
   public void setUseScenarios(boolean useScenarios) {
     this.useScenarios = useScenarios;
   }
-	
-  
+
 }

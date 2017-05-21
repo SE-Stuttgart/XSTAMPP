@@ -308,10 +308,7 @@ public class ControlStructureController {
    * @author Fabian Toth
    */
   public IRectangleComponent getRoot() {
-    if(activeRoot == null) {
-      return this.internalRoot(0);
-    }
-    return activeRoot;
+    return this.internalRoot(0);
   }
 
   public List<IRectangleComponent> getRoots() {

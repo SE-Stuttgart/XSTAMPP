@@ -48,10 +48,12 @@ public class RefreshRunner extends Thread {
         try {
           update = loader.loadSystem(file);
           if (update instanceof UserSystem) {
+            ProjectManager.getLOGGER().debug("User System updated");
             system.refresh((UserSystem) update);
           }
           modifyStamp = file.lastModified();
         } catch (Exception e1) {
+          ProjectManager.getLOGGER().debug("refresh failure");
           // ignore
         }
         try {

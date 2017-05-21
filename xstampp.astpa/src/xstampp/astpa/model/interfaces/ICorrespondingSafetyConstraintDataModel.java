@@ -53,7 +53,7 @@ public interface ICorrespondingSafetyConstraintDataModel extends IDataModel,ICom
 	 * @return the id of the corresponding safety constraint. null if the action
 	 *         fails
 	 */
-	UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+	boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
 			String safetyConstraintDescription);
 
 	/**

@@ -24,6 +24,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+
 import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
@@ -96,7 +99,7 @@ public class UserSystem extends Observable implements IUserSystem {
 
   @Override
   public boolean assignResponsibility(UUID responsibility) {
-    return assignResponsibility(currentUser,responsibility);
+    return assignResponsibility(currentUser, responsibility);
   }
 
   @Override
@@ -294,10 +297,17 @@ public class UserSystem extends Observable implements IUserSystem {
 
   private void save() {
     SaveUserJob saveJob = new SaveUserJob(this, systemName);
+    saveJob.addJobChangeListener(new JobChangeAdapter() {
+      @Override
+      public void done(IJobChangeEvent event) {
+        if (event.getResult().isOK()) {
+          ProjectManager.getLOGGER().debug("User System has been updated");
+        }
+      }
+    });
     saveJob.schedule();
     setChanged();
     notifyObservers();
-    ProjectManager.getLOGGER().debug("User System has been updated");
   }
 
   @Override

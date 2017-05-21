@@ -192,7 +192,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	private static final int SCLAE_TEXT_WIDTH = 150;
 	private static final int SCALE_FONT = 10;
 	protected static final int IMG_EXPAND = 10;
-
+	private IRectangleComponent root;
 	private ToolBar toolBar;
 	private ZoomManager zoomManager;
 	private Label label;
@@ -325,7 +325,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 * @return the root component
 	 */
 	private IRectangleComponent createRoot() {
-		IRectangleComponent root = null;
+		root = null;
 		if(((STPAEditorInput)getEditorInput()).getProperties().containsKey(RenameRootComponentHandler.ROOT_ID)) { 
 		  for(IRectangleComponent availableRoot: this.getModelInterface().getRoots()) {
 		    if(availableRoot.getId().toString().equals(((STPAEditorInput)getEditorInput()).getProperties().get(RenameRootComponentHandler.ROOT_ID))) {
@@ -361,7 +361,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		viewer.setRootEditPart(rootEditPart);
 		viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(
-				viewer, this.getModelInterface()));
+				viewer, this.getRoot()));
 
 		this.zoomManager = rootEditPart.getZoomManager();
 
@@ -1427,6 +1427,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public IRectangleComponent getRoot() {
+    return root;
+  }
 }
 
 

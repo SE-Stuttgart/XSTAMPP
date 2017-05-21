@@ -51,6 +51,7 @@ import xstampp.astpa.haz.hazacc.Link;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
@@ -94,6 +95,7 @@ import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.astpa.model.service.CausalDataUndoCallback;
 import xstampp.astpa.model.service.UndoAccidentChangeCallback;
+import xstampp.astpa.model.service.UndoCSCChangeCallback;
 import xstampp.astpa.model.service.UndoControlActionChangeCallback;
 import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
 import xstampp.astpa.model.service.UndoGoalChangeCallback;
@@ -299,6 +301,19 @@ public class DataModelController extends AbstractDataModel
     return result;
   }
 
+  public UUID addCausalUCAEntry(UUID component, UUID causalFactorId, ICausalFactorEntry entry) {
+    if (!getUserSystem().checkAccess(
+        controlActionController.getControlActionFor(entry.getUcaLink()).getId(),
+        AccessRights.ACCESS)) {
+      return null;
+    }
+    UUID result = this.causalFactorController.addCausalUCAEntry(component, causalFactorId, entry);
+    if (result != null) {
+      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
+    }
+    return result;
+  }
+
   @Override
   public UUID addComponent(UUID parentId, Rectangle layout, String text, ComponentType type,
       Integer index) {
@@ -423,7 +438,19 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.sdsController.addSafetyConstraint(title, description,getUserSystem().getCurrentUserId());
+    UUID id = this.sdsController.addSafetyConstraint(title, description,
+        getUserSystem().getCurrentUserId());
+    if (id != null) {
+      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+    }
+    return id;
+  }
+
+  public UUID addSafetyConstraint(ITableModel model) {
+    if (model == null) {
+      return null;
+    }
+    UUID id = this.sdsController.addSafetyConstraint(model);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
     }
@@ -481,6 +508,20 @@ public class DataModelController extends AbstractDataModel
 
     UUID result = this.controlActionController.addUnsafeControlAction(controlActionId, description,
         unsafeControlActionType);
+    if (result != null) {
+      this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+    }
+    return result;
+  }
+
+  public UUID addUnsafeControlAction(UUID controlActionId, String description,
+      UnsafeControlActionType unsafeControlActionType, UUID ucaId) {
+    if ((controlActionId == null) || (description == null) || (unsafeControlActionType == null)) {
+      return null;
+    }
+
+    UUID result = this.controlActionController.addUnsafeControlAction(controlActionId, description,
+        unsafeControlActionType,ucaId);
     if (result != null) {
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
     }
@@ -1710,16 +1751,20 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+  public boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
       String safetyConstraintDescription) {
     if ((unsafeControlActionId == null) || (safetyConstraintDescription == null)) {
-      return null;
+      return false;
     }
 
-    UUID id = this.controlActionController.setCorrespondingSafetyConstraint(unsafeControlActionId,
-        safetyConstraintDescription);
-    this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
-    return id;
+    String oldString = this.controlActionController
+        .setCorrespondingSafetyConstraint(unsafeControlActionId, safetyConstraintDescription);
+    if (oldString != null) {
+      UndoCSCChangeCallback callback = new UndoCSCChangeCallback(this, unsafeControlActionId);
+      callback.setDescriptionChange(oldString, safetyConstraintDescription);
+      this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+    }
+    return false;
   }
 
   @Override
@@ -2135,6 +2180,15 @@ public class DataModelController extends AbstractDataModel
   public <T> T getAdapter(Class<T> clazz) {
     if (clazz == ICollaborationSystem.class) {
       return (T) new AstpaCollaborationSystem(this);
+    }
+    if (clazz == ControlActionController.class) {
+      return (T) this.controlActionController;
+    }
+    if (clazz == SDSController.class) {
+      return (T) this.sdsController;
+    }
+    if (clazz == HazAccController.class) {
+      return (T) this.hazAccController;
     }
     return null;
   }

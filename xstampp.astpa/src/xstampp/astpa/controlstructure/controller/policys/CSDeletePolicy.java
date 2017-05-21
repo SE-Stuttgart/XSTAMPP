@@ -15,6 +15,7 @@ package xstampp.astpa.controlstructure.controller.policys;
 
 import java.util.UUID;
 
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
@@ -65,6 +66,14 @@ public class CSDeletePolicy extends ComponentEditPolicy {
 		return command;
 
 	}
+
+  @Override
+  public Command getCommand(Request request) {
+    if (getHost().canEdit()) {
+      return super.getCommand(request);
+    }
+    return null;
+  }
 
 	@Override
 	public IControlStructureEditPart getHost() {

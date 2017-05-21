@@ -19,6 +19,7 @@ import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -30,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 import xstampp.Activator;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * This toolbar Contribution provides tools for a graphical editor Editors can interact with this
@@ -149,7 +151,7 @@ public class EditorContribution extends WorkbenchWindowControlContribution
                 EditorContribution.this.zoomManager.setZoom(((double) zoom) / 100);
               }
             } catch (NumberFormatException numEx) {
-              //do nothing
+              // do nothing
             }
 
           }
@@ -230,22 +232,27 @@ public class EditorContribution extends WorkbenchWindowControlContribution
 
   @Override
   public void partActivated(IWorkbenchPart part) {
-    if (part instanceof IZoomContributor) {
-      this.contributor = ((IZoomContributor) part);
-      this.contributor.addPropertyListener(this);
-      this.zoomManager = this.contributor.getZoomManager();
+    try {
+      if (part instanceof IZoomContributor) {
+        this.contributor = ((IZoomContributor) part);
+        this.contributor.addPropertyListener(this);
+        this.zoomManager = this.contributor.getZoomManager();
 
-      this.zoomManager.addZoomListener(EditorContribution.this);
-      this.zoomSlider.getSliderControl()
-          .setSelection((int) (EditorContribution.this.zoomManager.getZoom() * 100));
-      this.zoomSlider.getSliderControl().notifyListeners(SWT.Selection, null);
-    } else {
+        this.zoomManager.addZoomListener(EditorContribution.this);
+        ProjectManager.getLOGGER().debug("ZOOM Contribution updated: " + this);
+        this.zoomSlider.getSliderControl()
+            .setSelection((int) (EditorContribution.this.zoomManager.getZoom() * 100));
+        this.zoomSlider.getSliderControl().notifyListeners(SWT.Selection, null);
+      } else {
 
-      if (!(this.contributor instanceof EmptyZoomContributor)) {
-        this.zoomManager.removeZoomListener(EditorContribution.this);
-        this.contributor.removePropertyListener(this);
-        this.contributor = new EmptyZoomContributor();
+        if (!(this.contributor instanceof EmptyZoomContributor)) {
+          this.zoomManager.removeZoomListener(EditorContribution.this);
+          this.contributor.removePropertyListener(this);
+          this.contributor = new EmptyZoomContributor();
+        }
       }
+    } catch (SWTException exc) {
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
     }
   }
 

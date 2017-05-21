@@ -174,7 +174,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 			    componentRow.addChildRow(createCausalFactorRow(cellNumber, component, factor, ucaMap));
 				}
 			}
-			if(checkAccess(AccessRights.WRITE)) {
+			if(checkAccess(AccessRights.ADMIN)) {
   			GridRow buttonRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
   			buttonRow.addCell(++cellNumber,new GridCellButtonAddCausalFactor(component,getDataModel()));
   			buttonRow.setColumnSpan(cellNumber, getGridWrapper().getColumnLabels().length - cellNumber - 1);

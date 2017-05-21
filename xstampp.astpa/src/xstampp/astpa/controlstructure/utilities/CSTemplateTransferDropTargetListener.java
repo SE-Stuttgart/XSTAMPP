@@ -19,6 +19,7 @@ import org.eclipse.gef.requests.CreationFactory;
 
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -32,7 +33,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 public class CSTemplateTransferDropTargetListener extends
 		TemplateTransferDropTargetListener {
 
-	private final IControlStructureEditorDataModel dataModel;
+	private final IRectangleComponent dataModel;
 
 	/**
 	 * 
@@ -45,7 +46,7 @@ public class CSTemplateTransferDropTargetListener extends
 	 *            The data model Controller
 	 */
 	public CSTemplateTransferDropTargetListener(EditPartViewer viewer,
-			IControlStructureEditorDataModel model) {
+			IRectangleComponent model) {
 		super(viewer);
 		this.dataModel = model;
 	}
@@ -53,7 +54,7 @@ public class CSTemplateTransferDropTargetListener extends
 	@Override
 	protected CreationFactory getFactory(Object template) {
 		return new CSModelCreationFactory((ComponentType) template,
-				this.dataModel);
+		    dataModel);
 	}
 
 }

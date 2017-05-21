@@ -53,6 +53,8 @@ import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserProject;
 import xstampp.util.DirectEditor;
 
 /**
@@ -114,18 +116,20 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	 */
 	@Override
 	protected void createEditPolicies() {
-		/*
-		 * the Edit role is a constant which tells the program in what policy is
-		 * to use in what situation when performed,
-		 * performRequest(EditPolicy.constant) is called
-		 */
-		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
-		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-				new CSDirectEditPolicy(this.dataModel, this.stepId));
-		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
-				this.dataModel, this.stepId));
-		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
-				this.dataModel, this.stepId));
+	  if(canEdit()) {
+  		/*
+  		 * the Edit role is a constant which tells the program in what policy is
+  		 * to use in what situation when performed,
+  		 * performRequest(EditPolicy.constant) is called
+  		 */
+  		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
+  		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+  				new CSDirectEditPolicy(this.dataModel, this.stepId));
+  		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
+  				this.dataModel, this.stepId));
+  		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
+  				this.dataModel, this.stepId));
+	  }
 	}
 
 	/**
@@ -136,7 +140,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 	 */
 	@Override
 	public void performRequest(Request req) {
-		if (req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
+		if (canEdit() && req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
 			this.performDirectEditing();
 			this.refreshVisuals();
 		}
@@ -422,5 +426,12 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 			getFigure().setPreferenceStore(store);
 		}
 		this.store = store;
+  }
+
+  public boolean canEdit() {
+	  if(getDataModel() instanceof IUserProject) {
+	    return ((IUserProject) getDataModel()).getUserSystem().checkAccess(AccessRights.ADMIN);
+	  }
+	  return true;
 	}
 }

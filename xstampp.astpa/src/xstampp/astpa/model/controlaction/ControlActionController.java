@@ -240,6 +240,33 @@ public class ControlActionController {
   }
 
   /**
+   * Adds a unsafe control action to the control action with the given id
+   * 
+   * @param controlActionId
+   *          the id of the control action
+   * @param description
+   *          the description of the new unsafe control action
+   * @param unsafeControlActionType
+   *          the type of the new unsafe control action
+   * @return the id of the new unsafe control action
+   * 
+   * @author Fabian Toth
+   */
+  public UUID addUnsafeControlAction(UUID controlActionId, String description,
+      UnsafeControlActionType unsafeControlActionType, UUID ucaId) {
+    ControlAction controlAction = this.getInternalControlAction(controlActionId);
+    if (controlAction == null) {
+      return null;
+    }
+    controlAction.addUnsafeControlAction(getNextUCACount(), description,
+        unsafeControlActionType,ucaId);
+    if (ucaId != null) {
+      getControlActionMap().put(ucaId, controlAction);
+    }
+    return ucaId;
+  }
+
+  /**
    * Searches the unsafe control action and removes it
    * 
    * @param unsafeControlActionId
@@ -462,15 +489,18 @@ public class ControlActionController {
    *          the text of the corresponding safety constraint
    * @return the id of the corresponding safety constraint. null if the action fails
    */
-  public UUID setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+  public String setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
       String safetyConstraintDescription) {
     UnsafeControlAction unsafeControlAction = this
         .getInternalUnsafeControlAction(unsafeControlActionId);
     if (unsafeControlAction == null) {
       return null;
     }
-    unsafeControlAction.getCorrespondingSafetyConstraint().setText(safetyConstraintDescription);
-    return unsafeControlAction.getCorrespondingSafetyConstraint().getId();
+    String oldTitle = unsafeControlAction.getCorrespondingSafetyConstraint().getText();
+    if(unsafeControlAction.getCorrespondingSafetyConstraint().setText(safetyConstraintDescription)) {
+      return oldTitle;
+    }
+    return null;
   }
 
   /**
@@ -615,7 +645,7 @@ public class ControlActionController {
   }
 
   public List<UCAHazLink> getAllUCALinks() {
-    return this.links;
+    return new ArrayList<UCAHazLink>(this.links);
   }
 
   /**

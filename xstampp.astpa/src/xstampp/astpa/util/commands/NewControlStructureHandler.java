@@ -31,6 +31,7 @@ public class NewControlStructureHandler extends AbstractHandler {
       UUID id = UUID.fromString(idString);
       if (ProjectManager.getContainerInstance().canAccess(id)) {
         IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(id);
+        
         NewControlStructureShell shell = new NewControlStructureShell((IControlStructureEditorDataModel) dataModel);
         shell.open();
       }

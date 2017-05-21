@@ -123,14 +123,14 @@ public class CSEditor extends CSAbstractEditor {
 				.getImageDescriptor("/icons/buttons/controlstructure/controller_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(Messages.Controller + "", Messages.CreateController,
 				ComponentType.CONTROLLER,
-				new CSModelCreationFactory(ComponentType.CONTROLLER, this.getModelInterface()), imgDesc, imgDescLarge);
+				new CSModelCreationFactory(ComponentType.CONTROLLER, this.getRoot()), imgDesc, imgDescLarge);
 		componentElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.CONTROLLER, entry);
 
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/actuator_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/actuator_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(Messages.Actuator, Messages.CreateActuator, ComponentType.ACTUATOR,
-				new CSModelCreationFactory(ComponentType.ACTUATOR, this.getModelInterface()), imgDesc, imgDescLarge);
+				new CSModelCreationFactory(ComponentType.ACTUATOR, this.getRoot()), imgDesc, imgDescLarge);
 		componentElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.ACTUATOR, entry);
 
@@ -138,7 +138,7 @@ public class CSEditor extends CSAbstractEditor {
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/process_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(Messages.ControlledProcess, Messages.CreateControlledProcess,
 				ComponentType.CONTROLLED_PROCESS,
-				new CSModelCreationFactory(ComponentType.CONTROLLED_PROCESS, this.getModelInterface()), imgDesc,
+				new CSModelCreationFactory(ComponentType.CONTROLLED_PROCESS, this.getRoot()), imgDesc,
 				imgDescLarge);
 		componentElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.CONTROLLED_PROCESS, entry);
@@ -146,7 +146,7 @@ public class CSEditor extends CSAbstractEditor {
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/sensor_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/sensor_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(Messages.Sensor, Messages.CreateSensor, ComponentType.SENSOR,
-				new CSModelCreationFactory(ComponentType.SENSOR, this.getModelInterface()), imgDesc, imgDescLarge);
+				new CSModelCreationFactory(ComponentType.SENSOR, this.getRoot()), imgDesc, imgDescLarge);
 		componentElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.SENSOR, entry);
 
@@ -154,7 +154,7 @@ public class CSEditor extends CSAbstractEditor {
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/ControlAction_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(Messages.ControlAction, Messages.CreateControlAction,
 				ComponentType.CONTROLACTION,
-				new CSModelCreationFactory(ComponentType.CONTROLACTION, this.getModelInterface()), imgDesc,
+				new CSModelCreationFactory(ComponentType.CONTROLACTION, this.getRoot()), imgDesc,
 				imgDescLarge);
 		componentElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.CONTROLACTION, entry);
@@ -163,7 +163,7 @@ public class CSEditor extends CSAbstractEditor {
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/Container_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry("List of Control Actions",
 				"Create a container, in which you can bundle Control Actions", ComponentType.CONTAINER,
-				new CSModelCreationFactory(ComponentType.CONTAINER, this.getModelInterface()), imgDesc, imgDescLarge);
+				new CSModelCreationFactory(ComponentType.CONTAINER, this.getRoot()), imgDesc, imgDescLarge);
 		componentElements.add(entry);
 		root.add(separator);
 		PaletteDrawer connectionElements = new PaletteDrawer(Messages.ConnectingElements);
@@ -191,14 +191,14 @@ public class CSEditor extends CSAbstractEditor {
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/text_box_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(Messages.TextBox, Messages.CreateTextBox, ComponentType.TEXTFIELD,
-				new CSModelCreationFactory(ComponentType.TEXTFIELD, this.getModelInterface()), imgDesc, imgDescLarge);
+				new CSModelCreationFactory(ComponentType.TEXTFIELD, this.getRoot()), imgDesc, imgDescLarge);
 		otherElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.TEXTFIELD, entry);
 
 		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_32.png"); //$NON-NLS-1$
 		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_40.png"); //$NON-NLS-1$
 		entry = new CombinedTemplateCreationEntry(Messages.DashedBox, Messages.CreateDashedBox, ComponentType.DASHEDBOX,
-				new CSModelCreationFactory(ComponentType.DASHEDBOX, this.getModelInterface()), imgDesc, imgDescLarge);
+				new CSModelCreationFactory(ComponentType.DASHEDBOX, this.getRoot()), imgDesc, imgDescLarge);
 		otherElements.add(entry);
 	this.toolEntryToComponentType.put(ComponentType.DASHEDBOX, entry);
 

@@ -152,12 +152,28 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
 	}
   
 	public UUID addUCAEntry(UUID ucaId){
+    CausalFactorEntry entry = new CausalFactorEntry(ucaId);
+    return addUCAEntry(entry);
+  }
+
+	public UUID addUCAEntry(ICausalFactorEntry entry){
+	  CausalFactorEntry addEntry;
+	  if(!(entry instanceof CausalFactorEntry)) {
+	    addEntry = new CausalFactorEntry(entry.getUcaLink(),entry.getId());
+	    addEntry.setConstraintText(entry.getConstraintText());
+	    addEntry.setScenarioLinks(entry.getScenarioLinks());
+	    addEntry.setNote(entry.getNote());
+	  } else {
+	    addEntry = (CausalFactorEntry) entry;
+	  }
     if(this.entries == null){
       this.entries = new ArrayList<>();
     }
-    CausalFactorEntry entry = new CausalFactorEntry(ucaId);
-    this.entries.add(entry);
-    return entry.getId();
+    if(!entries.contains(addEntry)) {
+      this.entries.add(addEntry);
+      return entry.getId();
+    }
+    return null;
   }
 	public UUID addHazardEntry(){
 	  CausalFactorEntry entry = int_addHazardEntry();
