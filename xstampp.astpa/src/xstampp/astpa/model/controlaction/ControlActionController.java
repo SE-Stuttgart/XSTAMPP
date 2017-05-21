@@ -76,9 +76,6 @@ public class ControlActionController {
   private Map<UUID, ControlAction> controlActionsToUcaIds;
 
   private final Map<UUID, ControlAction> trash;
-
-  private Integer ruleNr;
-
   /**
    * Constructor for the controller
    * 
@@ -89,7 +86,6 @@ public class ControlActionController {
     this.trash = new HashMap<>();
     this.controlActions = new ArrayList<>();
     this.links = new ArrayList<>();
-    this.ruleNr = -1;
     this.nextUcaIndex = null;
   }
 
@@ -953,8 +949,6 @@ public class ControlActionController {
    */
   public boolean removeSafetyRule(boolean removeAll, UUID id) {
     if (removeAll) {
-      // if removeAll than the rule index is set to 0 so the next rule is added with the index 0
-      ruleNr = 0;
       this.rules = new ArrayList<>();
     } else if (rules != null) {
       // the rule which should be removed is searched for in both the
@@ -988,15 +982,6 @@ public class ControlActionController {
 
   public IControlAction getControlActionFor(UUID ucaId) {
     return getControlActionMap().get(ucaId);
-  }
-
-  private int getRuleNumber() {
-    if (ruleNr == -1) {
-      ruleNr = getAllRefinedRules(true).size();
-    }
-    int returnNr = ruleNr;
-    ruleNr++;
-    return returnNr;
   }
 
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {

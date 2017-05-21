@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -65,6 +66,7 @@ import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.interfaces.IEditorBase;
 import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 
 /**
@@ -156,7 +158,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     ControlActionsView
   }
 
-  private UUID selectedEntry;
+  private ATableModel selectedEntry;
+
+  private Button deleteItemsButton;
 
   private class CommonSelectionChangedListener implements ISelectionChangedListener {
 
@@ -172,10 +176,11 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       if (event.getSelection() instanceof IStructuredSelection) {
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         if (selection.getFirstElement() instanceof ATableModel) {
-          selectedEntry = ((ATableModel) selection.getFirstElement()).getId();
+          selectedEntry = ((ATableModel) selection.getFirstElement());
           getDescriptionWidget()
               .setText(((ATableModel) selection.getFirstElement()).getDescription());
-          getDescriptionWidget().setEnabled(canEdit(selectedEntry));
+          deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
+          getDescriptionWidget().setEnabled(canEdit(selectedEntry, AccessRights.WRITE));
 
         }
       }
@@ -372,8 +377,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   }
 
   /**
-   * Constructs a commonTableView that can be manipulated at will<br> calling
-   * {@link #CommonTableView(boolean)} with <b>true</b>
+   * Constructs a commonTableView that can be manipulated at will<br>
+   * calling {@link #CommonTableView(boolean)} with <b>true</b>
    * 
    * @author Jarkko Heidenwag
    * @author Lukas Balzer
@@ -452,7 +457,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     tableComposite.setLayout(this.tableColumnLayout);
 
     createButtonBar();
-    
+
     Composite rightHeadComposite = new Composite(textContainer, SWT.NONE);
     rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
     rightHeadComposite.setLayout(new GridLayout(2, true));
@@ -482,15 +487,15 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           CommonTableView.this.getDescriptionWidget().selectAll();
         }
         switch (e.keyCode) {
-        case SWT.ARROW_LEFT: {
-          ((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x - 1,
-              ((Text) e.getSource()).getSelection().x - 1);
-          break;
-        }
-        case SWT.ARROW_RIGHT: {
-          ((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x + 1,
-              ((Text) e.getSource()).getSelection().x + 1);
-        }
+          case SWT.ARROW_LEFT: {
+            ((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x - 1,
+                ((Text) e.getSource()).getSelection().x - 1);
+            break;
+          }
+          case SWT.ARROW_RIGHT: {
+            ((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x + 1,
+                ((Text) e.getSource()).getSelection().x + 1);
+          }
         }
       }
 
@@ -532,6 +537,13 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.tableColumnLayout.setColumnData(this.idColumn.getColumn(),
         new ColumnWeightData(idWeight, idMinWidth, true));
     this.idColumn.setLabelProvider(new ColumnLabelProvider() {
+      @Override
+      public Color getForeground(Object element) {
+        if (!canEdit((ATableModel) element, AccessRights.WRITE)) {
+          return getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+        }
+        return null;
+      }
 
       @Override
       public String getText(Object element) {
@@ -549,6 +561,14 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         new ColumnWeightData(titleWeight, titleMinWidth, false));
     titleColumn.getColumn().setResizable(false);
     this.titleColumn.setLabelProvider(new ColumnLabelProvider() {
+
+      @Override
+      public Color getForeground(Object element) {
+        if (!canEdit((ATableModel) element, AccessRights.WRITE)) {
+          return getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+        }
+        return null;
+      }
 
       @Override
       public String getText(Object element) {
@@ -617,7 +637,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.addNewItemButton.setLayoutData(gridData);
     this.addNewItemButton.setImage(ADD);
     // the Button for deleting selected items
-    Button deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
+    deleteItemsButton = new Button(this.buttonComposite, SWT.PUSH);
     deleteItemsButton.setLayoutData(gridData);
     deleteItemsButton.setImage(DELETE);
 
@@ -677,14 +697,13 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     });
     moveDown.setImage(MOVE_DOWN);
 
-
-    if (hasRestrictedAccess && getDataInterface() instanceof IUserProject &&
-        !((IUserProject) getDataInterface()).getUserSystem().checkAccess(AccessRights.ADMIN)) {
+    if (hasRestrictedAccess && getDataInterface() instanceof IUserProject
+        && !((IUserProject) getDataInterface()).getUserSystem().checkAccess(AccessRights.ADMIN)) {
       this.addNewItemButton.setEnabled(false);
       deleteItemsButton.setEnabled(false);
     }
-    if (getDataInterface() instanceof IUserProject &&
-          !((IUserProject) getDataInterface()).getUserSystem().checkAccess(AccessRights.ADMIN)) {
+    if (getDataInterface() instanceof IUserProject
+        && !((IUserProject) getDataInterface()).getUserSystem().checkAccess(AccessRights.ADMIN)) {
       moveDown.setEnabled(false);
       moveUp.setEnabled(false);
       deleteAllButton.setEnabled(false);
@@ -735,17 +754,17 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     super.update(dataModelController, updatedValue);
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-    case ACCIDENT:
-    case HAZARD:
-    case HAZ_ACC_LINK:
-    case DESIGN_REQUIREMENT:
-    case SAFETY_CONSTRAINT:
-    case SYSTEM_GOAL:
-      this.refreshView();
-      break;
+      case ACCIDENT:
+      case HAZARD:
+      case HAZ_ACC_LINK:
+      case DESIGN_REQUIREMENT:
+      case SAFETY_CONSTRAINT:
+      case SYSTEM_GOAL:
+        this.refreshView();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 
@@ -813,7 +832,10 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   public abstract void updateTable();
 
   public UUID getCurrentSelection() {
-    return this.selectedEntry;
+    if (this.selectedEntry != null) {
+      return this.selectedEntry.getId();
+    }
+    return null;
   }
 
   protected void resetCurrentSelection() {
@@ -856,14 +878,23 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
     @Override
     protected boolean canEdit(Object element) {
-        return CommonTableView.this.canEdit(((ATableModel) element).getId());
+      return CommonTableView.this.canEdit((ATableModel) element, AccessRights.WRITE);
     }
   }
 
-  protected boolean canEdit(UUID entryId) {
-    if (hasRestrictedAccess && getDataInterface() instanceof IUserProject) {
-      return ((IUserProject) getDataInterface()).getUserSystem().checkAccess(entryId,
-          AccessRights.ACCESS);
+  protected boolean canEdit(ATableModel entryId) {
+    return canEdit(entryId, AccessRights.WRITE);
+  }
+
+  protected boolean canEdit(ATableModel entryId, AccessRights level) {
+    if (getDataInterface() instanceof IUserProject) {
+      IUser user = ((IUserProject) getDataInterface()).getUserSystem().getCurrentUser();
+      if (user != null && user.getUserId().equals(entryId.getCreatedBy())) {
+        return true;
+      } else {
+        return ((IUserProject) getDataInterface()).getUserSystem().checkAccess(entryId.getId(),
+            level);
+      }
     }
     return true;
   }

@@ -36,7 +36,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="accident"
-											type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+											type="Q1:sdsType" minOccurs="0" maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -48,7 +48,7 @@
 											<xs:complexType>
 												<xs:complexContent>
 													<xs:extension
-														base="Q1:hazaccType">
+														base="Q1:sdsType">
 														<xs:attribute
 															name="severity" type="xs:string" use="optional">
 														</xs:attribute>
@@ -94,7 +94,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element
-											name="safetyConstraint" type="Q1:hazaccType" minOccurs="0"
+											name="safetyConstraint" type="Q1:sdsType" minOccurs="0"
 											maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
@@ -103,7 +103,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="systemGoal"
-											type="Q1:hazaccType" minOccurs="0" maxOccurs="unbounded" />
+											type="Q1:sdsType" minOccurs="0" maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -111,7 +111,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element
-											name="designRequirement" type="Q1:hazaccType" minOccurs="0"
+											name="designRequirement" type="Q1:sdsType" minOccurs="0"
 											maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
@@ -168,7 +168,8 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="controlaction"
-											maxOccurs="unbounded" minOccurs="0" type="Q1:caType" />
+											maxOccurs="unbounded" minOccurs="0"
+											type="Q1:caType" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -347,22 +348,14 @@
 
 	</xs:complexType>
 
-	<xs:complexType name="hazaccType">
+	<xs:complexType name="sdsType">
 		<xs:all>
 			<xs:element type="xs:nonNegativeInteger" name="number" />
 			<xs:element type="xs:string" name="title" />
 			<xs:element type="xs:string" name="description" />
 			<xs:element type="xs:string" name="id" />
 		</xs:all>
-	</xs:complexType>
-
-	<xs:complexType name="sdsType">
-		<xs:sequence>
-			<xs:element type="xs:nonNegativeInteger" name="number" />
-			<xs:element type="xs:string" name="title" />
-			<xs:element type="xs:string" name="description" />
-			<xs:element type="xs:string" name="id" />
-		</xs:sequence>
+		<xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
 	</xs:complexType>
 
 	<xs:complexType name="componentType">
@@ -602,35 +595,41 @@
 				maxOccurs="1" minOccurs="1" />
 			<xs:element type="xs:string" name="title" maxOccurs="1"
 				minOccurs="1" />
-			<xs:element type="xs:string" name="description" maxOccurs="1"
-				minOccurs="1" />
+			<xs:element type="xs:string" name="description"
+				maxOccurs="1" minOccurs="1" />
 			<xs:element type="xs:string" name="id" maxOccurs="1"
 				minOccurs="1" />
 			<xs:element name="unsafecontrolactions" maxOccurs="1"
 				minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="unsafecontrolaction" maxOccurs="unbounded"
-							minOccurs="0">
+						<xs:element name="unsafecontrolaction"
+							maxOccurs="unbounded" minOccurs="0">
 							<xs:complexType>
 								<xs:all>
-									<xs:element name="correspondingSafetyConstraint"
-										maxOccurs="1" minOccurs="0">
+									<xs:element
+										name="correspondingSafetyConstraint" maxOccurs="1"
+										minOccurs="0">
 										<xs:complexType>
 											<xs:all>
-												<xs:element type="xs:string" name="text" />
-												<xs:element type="xs:string" name="id" />
+												<xs:element
+													type="xs:string" name="text" />
+												<xs:element
+													type="xs:string" name="id" />
 											</xs:all>
 										</xs:complexType>
 									</xs:element>
-									<xs:element type="xs:string" name="description" />
-									<xs:element name="number" type="xs:int" maxOccurs="1"
-										minOccurs="0">
+									<xs:element type="xs:string"
+										name="description" />
+									<xs:element name="number"
+										type="xs:int" maxOccurs="1" minOccurs="0">
 									</xs:element>
-									<xs:element type="xs:string" name="id" />
-									<xs:element type="xs:string" name="links" maxOccurs="1"
-										minOccurs="0" />
-									<xs:element type="xs:string" name="type" />
+									<xs:element type="xs:string"
+										name="id" />
+									<xs:element type="xs:string"
+										name="links" maxOccurs="1" minOccurs="0" />
+									<xs:element type="xs:string"
+										name="type" />
 								</xs:all>
 
 							</xs:complexType>
@@ -662,8 +661,8 @@
 				minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element type="Q1:combieType1" name="combinationOfPMValues"
-							maxOccurs="unbounded" minOccurs="0" />
+						<xs:element type="Q1:combieType1"
+							name="combinationOfPMValues" maxOccurs="unbounded" minOccurs="0" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -671,8 +670,8 @@
 				minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element type="Q1:combieType2" name="combinationOfPMValues"
-							maxOccurs="unbounded" minOccurs="0" />
+						<xs:element type="Q1:combieType2"
+							name="combinationOfPMValues" maxOccurs="unbounded" minOccurs="0" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -701,8 +700,8 @@
 			<xs:element name="rules" maxOccurs="1" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="rule" type="Q1:rsrType" maxOccurs="unbounded"
-							minOccurs="0">
+						<xs:element name="rule" type="Q1:rsrType"
+							maxOccurs="unbounded" minOccurs="0">
 						</xs:element>
 					</xs:sequence>
 				</xs:complexType>
@@ -714,6 +713,7 @@
 			<xs:element type="xs:string" name="componentLink"
 				maxOccurs="1" minOccurs="0" />
 		</xs:all>
+		<xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
 	</xs:complexType>
 
 
@@ -808,4 +808,5 @@
 	</xs:complexType>
 
 	<xs:complexType name="ScenarioDataType"></xs:complexType>
+
 </xs:schema>

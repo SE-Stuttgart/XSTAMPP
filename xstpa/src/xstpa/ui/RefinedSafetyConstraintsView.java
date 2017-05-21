@@ -106,6 +106,11 @@ public class RefinedSafetyConstraintsView extends AbstractFilteredTableView{
 		// TODO Auto-generated method stub
 		return false;
 	}
+  @Override
+  protected boolean canEdit(Object element) {
+    // TODO Auto-generated method stub
+    return true;
+  }
 	
 	
 	

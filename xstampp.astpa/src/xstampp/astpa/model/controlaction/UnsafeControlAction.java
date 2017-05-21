@@ -96,7 +96,7 @@ public class UnsafeControlAction
   public String setDescription(String description) {
     String result = this.description;
     this.description = description;
-    return description;
+    return result;
   }
 
   @Override

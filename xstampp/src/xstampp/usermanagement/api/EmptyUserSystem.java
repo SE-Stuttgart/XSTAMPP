@@ -108,12 +108,16 @@ public class EmptyUserSystem implements IUserSystem {
 
   @Override
   public boolean isResponsible(UUID userId, UUID entryId) {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
   public boolean isResponsible(UUID entryId) {
+    return true;
+  }
+
+  @Override
+  public boolean assignResponsibility(UUID responsibility) {
     // TODO Auto-generated method stub
     return false;
   }

@@ -21,7 +21,7 @@ import xstampp.usermanagement.api.UserManagement;
 
 public class UserSystemLoader {
   
-  public IUserSystem loadSystem(File file) {
+  public IUserSystem loadSystem(File file) throws Exception{
     
     IUserSystem system = new EmptyUserSystem();
     try (StringWriter writer = new StringWriter();
@@ -44,7 +44,7 @@ public class UserSystemLoader {
       Unmarshaller um = context.createUnmarshaller();
       system = ((UserSystem) um.unmarshal(xmlFile));
     } catch (Exception exc) {
-      exc.printStackTrace();
+      //$FALL-THROUGH$
     }
     return system;
   }

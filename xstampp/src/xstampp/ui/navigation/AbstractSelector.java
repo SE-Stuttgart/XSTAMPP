@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -87,11 +88,16 @@ public abstract class AbstractSelector implements IProjectSelection {
   }
 
   @Override
-  public boolean expandTree(boolean expand, boolean first) {
+  public boolean expandTree(boolean expand, boolean first) throws SWTException {
     boolean affected = !(this.children.size() == 0 || this.treeItem.getExpanded() == expand);
     this.treeItem.setExpanded(expand);
-    for (IProjectSelection item : this.children) {
-      affected = item.expandTree(expand, false) || affected;
+    for (int i = this.children.size() - 1; i >= 0; i--) {
+      IProjectSelection item = this.children.get(i);
+      try {
+        affected = item.expandTree(expand, false) || affected;
+      } catch (Exception exc) {
+        this.children.remove(i);
+      }
     }
     if (first && expand && !affected) {
       if (children.size() > 0) {
@@ -129,14 +135,14 @@ public abstract class AbstractSelector implements IProjectSelection {
   public void deaktivate() {
     parent.deaktivate();
   }
-  
+
   @Override
   public void closeEditors() {
     for (IProjectSelection child : children) {
       child.closeEditors();
     }
   }
-  
+
   public void setUnsaved(boolean unsaved) {
 
   }

@@ -70,9 +70,10 @@ public class SDSController {
 	 * 
 	 * @author Fabian Toth
 	 */
-	public UUID addSafetyConstraint(String title, String description) {
+	public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
 		SafetyConstraint safetyConstraint = new SafetyConstraint(title,
 				description, this.safetyConstraints.size() + 1);
+		safetyConstraint.setCreatedBy(createdBy);
 		this.safetyConstraints.add(safetyConstraint);
 		return safetyConstraint.getId();
 	}

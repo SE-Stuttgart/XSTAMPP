@@ -44,11 +44,16 @@ public class RefreshRunner extends Thread {
     ProjectManager.getLOGGER().debug("Started user system refresh runner");
     while (!terminated) {
       if (file.exists() && file.lastModified() > modifyStamp) {
-        IUserSystem update = loader.loadSystem(file);
-        if (update instanceof UserSystem) {
-          system.refresh((UserSystem) update);
+        IUserSystem update;
+        try {
+          update = loader.loadSystem(file);
+          if (update instanceof UserSystem) {
+            system.refresh((UserSystem) update);
+          }
+          modifyStamp = file.lastModified();
+        } catch (Exception e1) {
+          // ignore
         }
-        modifyStamp = file.lastModified();
         try {
           Thread.sleep(100);
         } catch (InterruptedException e) {

@@ -423,7 +423,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.sdsController.addSafetyConstraint(title, description);
+    UUID id = this.sdsController.addSafetyConstraint(title, description,getUserSystem().getCurrentUserId());
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
     }
@@ -828,12 +828,12 @@ public class DataModelController extends AbstractDataModel
     if (controlActionId == null) {
       return null;
     }
-    if (!(this.controlActionController
-        .getControlAction(controlActionId) instanceof ControlAction)) {
-      return null;
-    }
-
     return this.controlActionController.getControlAction(controlActionId);
+  }
+
+  @Override
+  public ITableModel getControlActionForUca(UUID ucaId) {
+    return this.controlActionController.getControlActionFor(ucaId);
   }
 
   @Override
@@ -1086,7 +1086,8 @@ public class DataModelController extends AbstractDataModel
   public IUserSystem getUserSystem() {
     if (userSystem instanceof EmptyUserSystem && userSystemId != null) {
       try {
-        this.userSystem = UserManagement.getInstance().loadSystem(userSystemName, userSystemId, exclusiveUserId);
+        this.userSystem = UserManagement.getInstance().loadSystem(userSystemName, userSystemId,
+            exclusiveUserId);
         this.userSystemName = userSystem.getSystemName();
       } catch (Exception e) {
         e.printStackTrace();
@@ -1584,7 +1585,7 @@ public class DataModelController extends AbstractDataModel
     if ((accidentId == null) || (description == null)) {
       return false;
     }
-    
+
     ITableModel accident = this.hazAccController.getAccident(accidentId);
     if (!(accident instanceof Accident)) {
       return false;

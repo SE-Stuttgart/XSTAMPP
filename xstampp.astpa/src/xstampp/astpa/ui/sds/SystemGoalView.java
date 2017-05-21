@@ -229,7 +229,7 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
     this.getDataInterface().removeSystemGoal(model.getId());
   }
 
-  private class SGEditingSupport extends EditingSupport {
+  private class SGEditingSupport extends AbstractEditingSupport {
 
     /**
      * 
@@ -240,11 +240,6 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
      */
     public SGEditingSupport(ColumnViewer viewer) {
       super(viewer);
-    }
-
-    @Override
-    protected boolean canEdit(Object element) {
-      return true;
     }
 
     @Override

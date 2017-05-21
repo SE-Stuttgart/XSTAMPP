@@ -251,7 +251,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
     this.getDataInterface().removeDesignRequirement(model.getId());
 	}
 	
-	private class DREditingSupport extends EditingSupport {
+	private class DREditingSupport extends AbstractEditingSupport {
 
 		/**
 		 * 
@@ -262,11 +262,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 		 */
 		public DREditingSupport(ColumnViewer viewer) {
 			super(viewer);
-		}
-
-		@Override
-		protected boolean canEdit(Object element) {
-			return true;
 		}
 
 		@Override

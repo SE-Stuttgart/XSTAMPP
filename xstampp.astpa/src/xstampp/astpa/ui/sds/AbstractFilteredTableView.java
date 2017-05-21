@@ -133,6 +133,15 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 	}
 	
 	protected class CSCLabelProvider extends ColumnLabelProvider{
+
+    @Override
+    public Color getForeground(Object element) {
+      if (!canEdit(element)) {
+        return getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+      }
+      return null;
+    }
+    
 		@Override
 		public Color getBackground(Object element) {
 			int index = ((List<?>)tableViewer.getInput()).indexOf(element);
@@ -388,5 +397,6 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 	
 	abstract protected List<?> getInput();
 	abstract protected boolean hasEditSupport();
+	abstract protected boolean canEdit(Object element);
 
 }

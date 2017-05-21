@@ -317,7 +317,7 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
     this.getDataInterface().removeControlAction(model.getId());
 	}
 	
-	private class CAEditingSupport extends EditingSupport {
+	private class CAEditingSupport extends AbstractEditingSupport {
 
 		/**
 		 * 
@@ -328,11 +328,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 		 */
 		public CAEditingSupport(ColumnViewer viewer) {
 			super(viewer);
-		}
-
-		@Override
-		protected boolean canEdit(Object element) {
-			return true;
 		}
 
 		@Override

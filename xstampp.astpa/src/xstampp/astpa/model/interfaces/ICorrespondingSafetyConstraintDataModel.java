@@ -16,6 +16,7 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.model.IDataModel;
 
@@ -62,4 +63,15 @@ public interface ICorrespondingSafetyConstraintDataModel extends IDataModel,ICom
 	 * @return the current id
 	 */
 	int getUCANumber(UUID ucaID);
+
+  /**
+   * Returns the the control action as {@link ITableModel} for which the unsafe control action
+   * belonging to the given {@link UUID}. If the id is not registered for a uca than <i>null</i> is
+   * returned.
+   * 
+   * @param ucaId
+   *          an {@link UUID} for a registered uca in the system
+   * @return a {@link ITableModel} for a control action or <i>null</i>
+   */
+  ITableModel getControlActionForUca(UUID ucaId);
 }

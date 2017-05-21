@@ -255,10 +255,10 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
     GridRow entryRow = new GridRow(this.getGridWrapper().getColumnLabels().length,1,new int[]{2,3,6});
     //add the uca id + description in a read only cell with an delete button
 	  String ucaDescription = ucaMap.get(entry.getUcaLink()).getTitle() + "\n"+ucaMap.get(entry.getUcaLink()).getDescription();
-	  
     CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(), ucaDescription,
                                       component.getId(), factor.getId(), entry.getId());
-    if(!checkAccess(AccessRights.WRITE)) {
+    UUID controlAction = getDataModel().getControlActionForUca(entry.getUcaLink()).getId();
+    if(!checkAccess(controlAction, AccessRights.WRITE)) {
       cell.setReadOnly(true);
       cell.setShowDelete(false);
     }

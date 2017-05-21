@@ -28,6 +28,8 @@ import xstampp.model.IEntryFilter;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.GridCellButton;
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserProject;
 
 /**
  * The add button.
@@ -68,7 +70,12 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
       
       @Override
       public boolean check(IUnsafeControlAction model) {
-        return !linkedIds.contains(model.getId()) && !dataInterface.getLinksOfUCA(model.getId()).isEmpty();
+        boolean canWrite = true;
+        if (dataInterface instanceof IUserProject) {
+          canWrite = ((IUserProject) dataInterface).getUserSystem().checkAccess(
+              dataInterface.getControlActionForUca(model.getId()).getId(), AccessRights.WRITE);
+        }
+        return canWrite && !linkedIds.contains(model.getId()) && !dataInterface.getLinksOfUCA(model.getId()).isEmpty();
       }
     });
 	  LinkProposal[] proposals = new LinkProposal[ucaList.size()];

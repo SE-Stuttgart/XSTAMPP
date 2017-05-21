@@ -115,7 +115,13 @@ public class UserManagement {
         file = new File(filePath);
       }
     }
-    IUserSystem system = loader.loadSystem(file);
+    IUserSystem system = new EmptyUserSystem();;
+    try {
+      system = loader.loadSystem(file);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     if (system.getSystemId().equals(systemId) && system instanceof UserSystem) {
       ((UserSystem) system).setSystemName(file.getName());
       ((UserSystem) system).setExclusiveUser(exclusiveUser);
@@ -149,7 +155,13 @@ public class UserManagement {
     String filePath = diag.open();
     if (filePath != null) {
       File file = new File(filePath);
-      IUserSystem system = loader.loadSystem(file);
+      IUserSystem system = new EmptyUserSystem();
+      try {
+        system = loader.loadSystem(file);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
       if (system instanceof UserSystem) {
         ((UserSystem) system).setSystemName(file.getName());
         return system;

@@ -16,8 +16,8 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -29,10 +29,12 @@ import xstampp.astpa.model.interfaces.ITableModel;
  * @since 2.1
  * 
  */
-@XmlType(propOrder = { "number", "title", "description", "links", "id" })
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class ATableModel implements ITableModel, IEntryWithNameId {
 
+  @XmlAttribute
+  private UUID createdBy;
+  
   @XmlElement
   private UUID id;
 
@@ -231,4 +233,11 @@ public abstract class ATableModel implements ITableModel, IEntryWithNameId {
     return this.getNumber() - o.getNumber();
   }
 
+  public void setCreatedBy(UUID createdBy) {
+    this.createdBy = createdBy;
+  }
+  
+  public UUID getCreatedBy() {
+    return createdBy;
+  }
 }

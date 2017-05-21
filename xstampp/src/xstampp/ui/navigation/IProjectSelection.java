@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -49,7 +50,7 @@ public interface IProjectSelection extends ISelection {
    *          TODO
    * @return TODO
    */
-  boolean expandTree(boolean expand, boolean first);
+  boolean expandTree(boolean expand, boolean first) throws SWTException;
 
   /**
    * changes the related tree item to the given

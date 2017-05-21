@@ -44,6 +44,7 @@ public class AstpaCollaborationSystem implements ICollaborationSystem {
         controller.setHazardDescription(entry.getId(), userEntry.getDescription());
       }
     }
+    
     event.data = 60;
     listener.handleEvent(event);
     for (IHAZXControlAction entry : controller.getAllControlActionsU()) {

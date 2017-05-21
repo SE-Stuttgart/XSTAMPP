@@ -251,7 +251,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
     resetCurrentSelection();
     this.getDataInterface().removeSafetyConstraint(model.getId());
 	}
-	private class SCEditingSupport extends EditingSupport {
+	private class SCEditingSupport extends AbstractEditingSupport {
 
 		/**
 		 * 
@@ -262,11 +262,6 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 		 */
 		public SCEditingSupport(ColumnViewer viewer) {
 			super(viewer);
-		}
-
-		@Override
-		protected boolean canEdit(Object element) {
-			return true;
 		}
 
 		@Override

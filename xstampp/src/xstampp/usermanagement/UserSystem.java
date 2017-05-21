@@ -95,6 +95,11 @@ public class UserSystem extends Observable implements IUserSystem {
   }
 
   @Override
+  public boolean assignResponsibility(UUID responsibility) {
+    return assignResponsibility(currentUser,responsibility);
+  }
+
+  @Override
   public boolean assignResponsibility(IUser user, UUID responsibility) {
     Map<UUID, IUser> responsibilityMap = new HashMap<>();
     responsibilityMap.put(responsibility, user);
@@ -109,7 +114,7 @@ public class UserSystem extends Observable implements IUserSystem {
         UUID entryId = entry.getKey();
         UUID userId = entry.getValue().getUserId();
         if (entry.getValue() instanceof AbstractUser) {
-          changed = this.responsibilities.add(userId, entryId);
+          changed |= this.responsibilities.add(userId, entryId);
         }
       }
       if (changed) {
