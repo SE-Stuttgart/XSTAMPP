@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.hazacc.Link;
+import xstampp.astpa.preferences.IASTPADefaults;
 import xstampp.model.ObserverValue;
 
 /**
@@ -68,7 +69,7 @@ public class HazAccController {
     this.accidents = new ArrayList<>();
     this.hazards = new ArrayList<>();
     this.links = new ArrayList<>();
-    this.useSeverity = false;
+    this.useSeverity = IASTPADefaults.USE_SEVERITY_ANALYSIS;
   }
 
   /**

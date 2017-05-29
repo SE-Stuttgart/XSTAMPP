@@ -34,6 +34,7 @@ import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.preferences.IASTPADefaults;
 import xstampp.model.AbstractLTLProvider;
 
 /**
@@ -64,7 +65,7 @@ public class CausalFactorController implements ICausalFactorController {
    */
   public CausalFactorController() {
     this.links = new ArrayList<>();
-    this.setUseScenarios(true);
+    this.setUseScenarios(IASTPADefaults.USE_CAUSAL_SCENARIO_ANALYSIS);
   }
 
   @Override

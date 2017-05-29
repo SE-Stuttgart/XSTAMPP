@@ -34,6 +34,7 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.preferences.IASTPADefaults;
 
 /**
  * Controller-class for working with the control structure diagram
@@ -80,7 +81,7 @@ public class ControlStructureController {
    * @author Fabian Toth
    */
   public ControlStructureController() {
-    useMultiRoots = false;
+    useMultiRoots = IASTPADefaults.USE_MULTI_CONTROL_STRUCTURES;
     this.connections = new ArrayList<>();
     this.rootComponents = new ArrayList<>();
     this.rootComponents.add(new Component("level 0", new Rectangle(), ComponentType.ROOT));
