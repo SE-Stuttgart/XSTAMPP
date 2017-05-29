@@ -1,5 +1,11 @@
 package xstampp.usermanagement.ui.settings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -26,12 +32,6 @@ import xstampp.usermanagement.api.ICollaborationSystem;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.UUID;
 
 public class CollaborationSettings implements ISettingsPage, Observer {
 

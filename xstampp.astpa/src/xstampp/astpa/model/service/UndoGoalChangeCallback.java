@@ -1,13 +1,12 @@
 package xstampp.astpa.model.service;
 
-import java.util.UUID;
-
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 
 public class UndoGoalChangeCallback extends UndoTableModelChangeCallback<ISystemGoalViewDataModel> {
 
-  public UndoGoalChangeCallback(ISystemGoalViewDataModel dataModel, UUID entryId) {
-    super(dataModel, entryId);
+  public UndoGoalChangeCallback(ISystemGoalViewDataModel dataModel, ITableModel model) {
+    super(dataModel, model);
   }
 
   @Override

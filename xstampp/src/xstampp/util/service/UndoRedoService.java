@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
- *  
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package xstampp.util.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -20,27 +20,29 @@ import org.eclipse.ui.ISources;
 import xstampp.util.IUndoCallback;
 
 public class UndoRedoService extends AbstractSourceProvider {
-  
+
   /**
    * The variable id of the canUndo
    * 
    * @author Lukas Balzer
    */
   public static final String CAN_UNDO = "xstampp.util.service.canUndo"; //$NON-NLS-1$
-  
+
   /**
    * The variable id of the canRedo
    * 
    * @author Lukas Balzer
    */
   public static final String CAN_REDO = "xstampp.util.service.canRedo"; //$NON-NLS-1$
-  
-  private static final int LIMIT = 15;
+
+  private static final int LIMIT = 50;
   private Stack<IUndoCallback> undoStack;
   private Stack<IUndoCallback> redoStack;
   private boolean canUndo;
   private boolean canRedo;
   private boolean lock;
+  private List<IUndoCallback> recordList;
+  private boolean recording;
 
   public UndoRedoService() {
     this.undoStack = new Stack<>();
@@ -50,11 +52,42 @@ public class UndoRedoService extends AbstractSourceProvider {
     this.lock = false;
   }
 
+  /**
+   * this initializes a new record list in which all following {@link IUndoCallback}'s will be
+   * included.
+   * 
+   */
+  public void startRecord() {
+    this.recording = true;
+    this.recordList = new ArrayList<>();
+  }
+
+  /**
+   * returns the recordList that includes all {@link IUndoCallback}'s since the last call of
+   * {@link #startRecord()}, sets the record list of this service to null when finished.
+   * 
+   * @return the recordList that includes all {@link IUndoCallback}'s since the last call of
+   *         {@link #startRecord()} or null if {@link #startRecord()} hasn't been called since the
+   *         last call of this method
+   */
+  public List<IUndoCallback> getRecord() {
+    List<IUndoCallback> recordList = null;
+    if (recording) {
+      recordList = new ArrayList<>(this.recordList);
+      this.recording = false;
+      this.recordList = null;
+      this.undoStack.removeAll(recordList);
+    }
+    return recordList;
+  }
+
   public IUndoCallback push(IUndoCallback callback) {
-    if(!this.lock) {
+    if (!this.lock && recording) {
+      this.recordList.add(callback);
+    } else if (!this.lock) {
       this.canUndo = true;
       fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, true);
-      if(this.undoStack.size() + 1 > LIMIT) {
+      if (this.undoStack.size() + 1 > LIMIT) {
         this.undoStack.removeElementAt(0);
       }
       return this.undoStack.push(callback);
@@ -65,7 +98,7 @@ public class UndoRedoService extends AbstractSourceProvider {
   private IUndoCallback _pushRedo(IUndoCallback callback) {
     this.canRedo = true;
     fireSourceChanged(ISources.WORKBENCH, CAN_REDO, this.canRedo);
-    if(this.undoStack.size() + 1 > LIMIT) {
+    if (this.undoStack.size() + 1 > LIMIT) {
       this.redoStack.removeElementAt(0);
     }
     return this.redoStack.push(callback);

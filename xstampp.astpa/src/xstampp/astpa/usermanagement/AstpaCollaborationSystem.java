@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UCAHazLink;
@@ -18,10 +20,12 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.UnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
 import xstampp.ui.common.ProjectManager;
-import xstampp.usermanagement.api.ICollaborationSystem;
+import xstampp.usermanagement.api.CollaborationSystem;
 import xstampp.usermanagement.api.IUser;
+import xstampp.util.IUndoCallback;
+import xstampp.util.service.UndoRedoService;
 
-public class AstpaCollaborationSystem implements ICollaborationSystem {
+public class AstpaCollaborationSystem extends CollaborationSystem {
 
   private DataModelController controller;
 
@@ -29,8 +33,12 @@ public class AstpaCollaborationSystem implements ICollaborationSystem {
     this.controller = controller;
   }
 
-  protected boolean syncDataWithUser(IUser user, Listener listener) {
-
+  public int syncDataWithUser(IUser user, Listener listener) {
+    ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
+        .getService(ISourceProviderService.class);
+    UndoRedoService provider = (UndoRedoService) service
+        .getSourceProvider(UndoRedoService.CAN_REDO);
+    provider.startRecord();
     List<UUID> responsibilities = controller.getUserSystem().getResponsibilities(user.getUserId());
 
     DataModelController userController = (DataModelController) ProjectManager.getContainerInstance()
@@ -136,20 +144,7 @@ public class AstpaCollaborationSystem implements ICollaborationSystem {
     }
     event.data = 100;
     listener.handleEvent(event);
-    return false;
-  }
-
-  @Override
-  public boolean syncDataWithUser(IUser user) {
-    SyncShell syncShell = new SyncShell(user, this);
-    syncShell.open();
-    return (boolean) syncShell.getReturnValue();
-  }
-
-  @Override
-  public boolean syncDataWithUser(List<IUser> users) {
-    SyncShell syncShell = new SyncShell(users, this);
-    syncShell.open();
-    return (boolean) syncShell.getReturnValue();
+    List<IUndoCallback> record = provider.getRecord();
+    return record.size();
   }
 }

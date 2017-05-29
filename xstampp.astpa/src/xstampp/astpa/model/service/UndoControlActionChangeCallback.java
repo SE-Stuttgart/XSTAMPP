@@ -1,13 +1,12 @@
 package xstampp.astpa.model.service;
 
-import java.util.UUID;
-
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 
 public class UndoControlActionChangeCallback extends UndoTableModelChangeCallback<IControlActionViewDataModel> {
 
-  public UndoControlActionChangeCallback(IControlActionViewDataModel dataModel, UUID entryId) {
-    super(dataModel, entryId);
+  public UndoControlActionChangeCallback(IControlActionViewDataModel dataModel, ITableModel model) {
+    super(dataModel, model);
   }
 
   @Override

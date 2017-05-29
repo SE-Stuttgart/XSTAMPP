@@ -124,7 +124,7 @@
 					<xs:complexType>
 						<xs:all>
 							<xs:element name="component"
-								type="Q1:componentType" maxOccurs="1" minOccurs="0"/>
+								type="Q1:componentType" maxOccurs="1" minOccurs="0" />
 							<xs:element name="connections">
 								<xs:complexType>
 									<xs:sequence>
@@ -146,16 +146,21 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="rootComponents" maxOccurs="1" minOccurs="0">
+							<xs:element name="rootComponents"
+								maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="root"
-											type="Q1:componentType" maxOccurs="unbounded" minOccurs="0">
+											type="Q1:componentType" maxOccurs="unbounded"
+											minOccurs="0">
 										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 						</xs:all>
+						<xs:attribute name="useMultiRoots"
+							type="xs:boolean" use="optional">
+						</xs:attribute>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="ignoreLTLValue"

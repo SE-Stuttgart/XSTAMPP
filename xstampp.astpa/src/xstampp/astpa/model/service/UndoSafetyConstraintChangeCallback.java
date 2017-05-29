@@ -1,13 +1,12 @@
 package xstampp.astpa.model.service;
 
-import java.util.UUID;
-
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
 
 public class UndoSafetyConstraintChangeCallback extends UndoTableModelChangeCallback<ISafetyConstraintViewDataModel> {
 
-  public UndoSafetyConstraintChangeCallback(ISafetyConstraintViewDataModel dataModel, UUID entryId) {
-    super(dataModel, entryId);
+  public UndoSafetyConstraintChangeCallback(ISafetyConstraintViewDataModel dataModel, ITableModel model) {
+    super(dataModel, model);
   }
 
   @Override

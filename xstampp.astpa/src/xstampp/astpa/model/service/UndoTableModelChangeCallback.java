@@ -2,6 +2,7 @@ package xstampp.astpa.model.service;
 
 import java.util.UUID;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.model.IDataModel;
 import xstampp.util.IUndoCallback;
 
@@ -14,11 +15,11 @@ public abstract class UndoTableModelChangeCallback<T extends IDataModel> impleme
   private String oldTitle;
   private String newTitle;
   private boolean titleDirty;
-  private UUID entryId;
+  private ITableModel entry;
 
-  public UndoTableModelChangeCallback(T dataModel, UUID entryId) {
+  public UndoTableModelChangeCallback(T dataModel, ITableModel model) {
     this.dataModel = dataModel;
-    this.entryId = entryId;
+    this.entry = model;
   }
 
   public void setDescriptionChange(String oldDescription, String newDescription) {
@@ -53,7 +54,7 @@ public abstract class UndoTableModelChangeCallback<T extends IDataModel> impleme
   }
 
   public UUID getEntryId() {
-    return entryId;
+    return entry.getId();
   }
   /**
    * @return the dataModel
@@ -61,7 +62,7 @@ public abstract class UndoTableModelChangeCallback<T extends IDataModel> impleme
   public T getDataModel() {
     return dataModel;
   }
-
+  
   protected abstract void undoDescription(String description);
   protected abstract void undoTitle(String title);
 }

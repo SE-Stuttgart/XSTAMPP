@@ -13,6 +13,7 @@
 
 package xstampp.astpa.model.controlaction.safetyconstraint;
 
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.sds.ASafetyConstraint;
 
 /**
@@ -21,7 +22,7 @@ import xstampp.astpa.model.sds.ASafetyConstraint;
  * @author Fabian Toth
  * 
  */
-public class CorrespondingSafetyConstraint extends ASafetyConstraint {
+public class CorrespondingSafetyConstraint extends ASafetyConstraint implements ITableModel {
 
 	/**
 	 * Constructor of a corresponding safety constraint
@@ -43,5 +44,28 @@ public class CorrespondingSafetyConstraint extends ASafetyConstraint {
 	public CorrespondingSafetyConstraint() {
 		// empty constructor for JAXB
 	}
+
+  @Override
+  public int compareTo(ITableModel o) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public String getDescription() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int getNumber() {
+    return 0;
+  }
+
+  @Override
+  public String getTitle() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }

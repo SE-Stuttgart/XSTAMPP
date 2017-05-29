@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
@@ -66,6 +67,9 @@ public class ControlStructureController {
   @XmlTransient
   private PMSTATE step2Initialiesed = PMSTATE.UNKNOWN;
 
+  @XmlAttribute
+  private Boolean useMultiRoots;
+
   private enum PMSTATE {
     UNKNOWN, INITIALISED, UNTOUCHED;
   }
@@ -76,6 +80,7 @@ public class ControlStructureController {
    * @author Fabian Toth
    */
   public ControlStructureController() {
+    useMultiRoots = false;
     this.connections = new ArrayList<>();
     this.rootComponents = new ArrayList<>();
     this.rootComponents.add(new Component("level 0", new Rectangle(), ComponentType.ROOT));
@@ -694,6 +699,13 @@ public class ControlStructureController {
     return values;
   }
 
+  public void setUseMultiRoots(Boolean useMultiRoots) {
+    this.useMultiRoots = useMultiRoots;
+  }
+  
+  public Boolean useMultiRoots() {
+    return useMultiRoots;
+  }
   public boolean usesHAZXData() {
     for (Component comp : this.getInternalComponents()) {
       if (comp.getComponentType().equals(ComponentType.CONTAINER))

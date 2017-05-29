@@ -117,8 +117,11 @@ public class CausalFactorEntry implements ICausalFactorEntry {
    *          the hazardIds to set
    */
   public boolean setHazardIds(List<UUID> hazardIds) {
-    this.hazardIds = hazardIds;
-    return true;
+    if (this.hazardIds == null || !this.hazardIds.equals(hazardIds)) {
+      this.hazardIds = hazardIds;
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -136,8 +139,11 @@ public class CausalFactorEntry implements ICausalFactorEntry {
    *          the note to set
    */
   public boolean setNote(String note) {
-    this.note = note;
-    return true;
+    if (note == null || !note.equals(getNote())) {
+      this.note = note;
+      return true;
+    }
+    return false;
   }
 
   public UUID getId() {
@@ -165,8 +171,11 @@ public class CausalFactorEntry implements ICausalFactorEntry {
    *          the scenarioLinks to set
    */
   public boolean setScenarioLinks(List<UUID> scenarioLinks) {
-    this.scenarioLinks = scenarioLinks;
-    return true;
+    if (this.scenarioLinks == null || !this.scenarioLinks.equals(scenarioLinks)) {
+      this.scenarioLinks = scenarioLinks;
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -181,27 +190,31 @@ public class CausalFactorEntry implements ICausalFactorEntry {
 
   public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData) {
     CausalFactorUCAEntryData resultData = new CausalFactorUCAEntryData(id);
-    if (entryData.noteChanged()) {
+    boolean res = false;
+    if (entryData.noteChanged() && !entryData.getNote().equals(getNote())) {
       resultData.setNote(note);
-      setNote(entryData.getNote());
+      res &= setNote(entryData.getNote());
     }
 
     if (entryData.hazardsChanged()) {
       resultData.setHazardIds(hazardIds);
-      setHazardIds(entryData.getHazardIds());
+      res &= setHazardIds(entryData.getHazardIds());
     }
 
     if (entryData.constraintChanged()) {
       resultData.setConstraint(constraintText);
-      setConstraintText(entryData.getSafetyConstraint());
+      res &= setConstraintText(entryData.getSafetyConstraint());
     }
 
     if (entryData instanceof CausalFactorUCAEntryData
         && ((CausalFactorUCAEntryData) entryData).scenariosChanged()) {
       resultData.setScenarioLinks(scenarioLinks);
-      setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
+      res &= setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
     }
-    return resultData;
+    if (res) {
+      return resultData;
+    }
+    return null;
   }
 
   /**

@@ -2,6 +2,8 @@ package xstampp.usermanagement.api;
 
 import java.util.List;
 
+import org.eclipse.swt.widgets.Listener;
+
 /**
  * 
  * @author Lukas Balzer
@@ -21,7 +23,9 @@ public interface ICollaborationSystem {
    * @return if the given {@link IUser#getWorkingProjectId()} did provide a valid project Id and the
    *         current project data were successfully merged
    */
-  boolean syncDataWithUser(IUser user);
+  int syncDataWithUser(IUser user);
 
   boolean syncDataWithUser(List<IUser> users);
+  
+  int syncDataWithUser(IUser user, Listener listener);
 }

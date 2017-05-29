@@ -160,6 +160,9 @@
 								</xs:complexType>
 							</xs:element>
 						</xs:all>
+                        <xs:attribute name="useMultiRoots"
+                            type="xs:boolean" use="optional">
+                        </xs:attribute>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="crc">
