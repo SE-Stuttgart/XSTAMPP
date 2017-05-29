@@ -1,9 +1,12 @@
 package xstampp.ui.navigation;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+
+import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
+
 import java.util.Map;
 import java.util.UUID;
-
-import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
  * An object containing all the necessary information to create a sub selector in the project
@@ -27,6 +30,7 @@ public class TreeItemDescription {
   private Map<String, String> properties;
   private IConfigurationElement element;
   private String[] commandAdditions;
+  private String isVisible;
 
   /**
    * Constructs a new instance and fills all the fields with its counterparts in the given element.
@@ -40,14 +44,15 @@ public class TreeItemDescription {
       UUID projectId) {
     this(parent, projectId);
     this.element = element;
-    this.command = element.getAttribute("command");
-    this.id = element.getAttribute("id") + projectId.toString();
-    this.name = element.getAttribute("name");
+    this.command = element.getAttribute("command"); //$NON-NLS-1$
+    this.id = element.getAttribute("id") + projectId.toString(); //$NON-NLS-1$
+    this.name = element.getAttribute("name"); //$NON-NLS-1$
     this.elementName = element.getName();
-    icon = element.getAttribute("icon");
+    icon = element.getAttribute("icon"); //$NON-NLS-1$
     namespaceIdentifier = element.getNamespaceIdentifier();
-    editorId = element.getAttribute("editorId");
+    editorId = element.getAttribute("editorId"); //$NON-NLS-1$
     children = element.getChildren();
+    isVisible = element.getAttribute("isVisible"); //$NON-NLS-1$
 
   }
 
@@ -154,5 +159,14 @@ public class TreeItemDescription {
 
   public String[] getCommandAdditions() {
     return commandAdditions;
+  }
+
+  public boolean isVisible() {
+    IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(this.projectId);
+    Boolean visible = dataModel.getProperty(isVisible, Boolean.class);
+    if (visible != null) {
+      return visible;
+    }
+    return true;
   }
 }

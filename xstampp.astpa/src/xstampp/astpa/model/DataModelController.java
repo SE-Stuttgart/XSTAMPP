@@ -2192,4 +2192,15 @@ public class DataModelController extends AbstractDataModel
     }
     return null;
   }
+  
+  @Override
+  public <T> T getProperty(String key, Class<T> clazz) {
+    if(clazz == Boolean.class && "astpa.use.multics".equals(key)){
+      return (T) Boolean.FALSE;
+    }
+    if(clazz == Boolean.class && "astpa.use.singlecs".equals(key)){
+      return (T) Boolean.TRUE;
+    }
+    return super.getProperty(key, clazz);
+  }
 }

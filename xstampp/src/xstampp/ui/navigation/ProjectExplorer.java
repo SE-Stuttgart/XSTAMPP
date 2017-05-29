@@ -280,6 +280,9 @@ public final class ProjectExplorer extends ViewPart
   }
 
   private void addTreeItem(TreeItemDescription descriptor) {
+    if (!descriptor.isVisible()) {
+      return;
+    }
     String selectionId = descriptor.getId() + descriptor.getProjectId().toString();
     final TreeItem subItem = new TreeItem(descriptor.getParent().getItem(),
         SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
@@ -335,18 +338,10 @@ public final class ProjectExplorer extends ViewPart
   }
 
   /**
-   * This method deals with the two maps which are used to define a selection,<br>
-   * <table border="1">
-   * <tr>
-   * <th>treeItemToStepId -</th>
-   * <th>every treeitem gets an id for the project,step or category</th>
-   * </tr>
-   * <tr>
-   * <th>selectionIdToSelector -</th>
-   * <th>every selectionId is than mapped to a Selector item which defines the selection</th>
-   * </tr>
-   * </table>
-   * .
+   * This method deals with the two maps which are used to define a selection,<br> <table
+   * border="1"> <tr> <th>treeItemToStepId -</th> <th>every treeitem gets an id for the project,step
+   * or category</th> </tr> <tr> <th>selectionIdToSelector -</th> <th>every selectionId is than
+   * mapped to a Selector item which defines the selection</th> </tr> </table> .
    * 
    *
    * @author Lukas Balzer
@@ -515,38 +510,38 @@ public final class ProjectExplorer extends ViewPart
   public void update(Observable dataModelController, Object updatedValue) {
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-      case DELETE:
-      case PROJECT_TREE:
-      case PROJECT_NAME: {
-        this.updateProjects();
-        break;
+    case DELETE:
+    case PROJECT_TREE:
+    case PROJECT_NAME: {
+      this.updateProjects();
+      break;
+    }
+    case CLEAN_UP: {
+      for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
+        ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
       }
-      case CLEAN_UP: {
-        for (UUID model : ProjectManager.getContainerInstance().getProjectKeys()) {
-          ProjectManager.getContainerInstance().getDataModel(model).deleteObserver(this);
-        }
-        break;
+      break;
+    }
+    case SAVE: {
+      IProjectSelection selection = this.selectorsToSelectionId
+          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+      if (selection != null) {
+        ((ProjectSelector) selection).setUnsaved(false);
       }
-      case SAVE: {
-        IProjectSelection selection = this.selectorsToSelectionId.get(
-            ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-        if (selection != null) {
-          ((ProjectSelector) selection).setUnsaved(false);
-        }
 
-        break;
-      }
-      case UNSAVED_CHANGES: {
-        IProjectSelection selection = this.selectorsToSelectionId.get(
-            ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
-        ((ProjectSelector) selection).setUnsaved(true);
-        ((ProjectSelector) selection)
-            .setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(
-                ProjectManager.getContainerInstance().getProjectID(dataModelController)));
-        break;
-      }
-      default:
-        break;
+      break;
+    }
+    case UNSAVED_CHANGES: {
+      IProjectSelection selection = this.selectorsToSelectionId
+          .get(ProjectManager.getContainerInstance().getProjectID(dataModelController).toString());
+      ((ProjectSelector) selection).setUnsaved(true);
+      ((ProjectSelector) selection)
+          .setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(
+              ProjectManager.getContainerInstance().getProjectID(dataModelController)));
+      break;
+    }
+    default:
+      break;
     }
   }
 

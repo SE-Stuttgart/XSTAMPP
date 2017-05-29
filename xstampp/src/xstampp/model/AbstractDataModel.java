@@ -66,4 +66,13 @@ public abstract class AbstractDataModel extends Observable implements IDataModel
     this.notifyObservers(value);
   }
 
+  @Override
+  public <T> T getAdapter(Class<T> clazz) {
+    return null;
+  }
+  
+  @Override
+  public <T> T getProperty(String key, Class<T> clazz) {
+    return null;
+  }
 }

@@ -190,7 +190,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
 	  GridRow factorRow = new GridRow(this.getGridWrapper().getColumnLabels().length-1,1,new int[]{1});
     CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(), factor
         .getText(), component.getId(),factor.getId());
-    if(!checkAccess(AccessRights.WRITE)) {
+    if(!checkAccess(AccessRights.ADMIN)) {
       cell.setReadOnly(true);
       cell.setShowDelete(false);
     }
@@ -206,7 +206,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
     
     //A new row is added to the factorRow for adding additional entries
     GridRow addEntriesRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
-    addEntriesRow.addCell(++cellNumber,new GridCellButtonAddUCAEntry(component, factor.getId(), getDataModel(),getGrid()));
+    if(checkAccess(AccessRights.WRITE)) {
+      addEntriesRow.addCell(++cellNumber,new GridCellButtonAddUCAEntry(component, factor.getId(), getDataModel(),getGrid()));
+    }
 
     addEntriesRow.setColumnSpan(cellNumber, getGridWrapper().getColumnLabels().length - cellNumber - 1);
     factorRow.addChildRow(addEntriesRow);
@@ -299,7 +301,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
        * null than a new entry can be added or one of the existing constraints 
        * can be imported
        */
-      if (entry.getConstraintText() == null && checkAccess(AccessRights.WRITE)) {
+      ITableModel actionForUca = getDataModel().getControlActionForUca(entry.getUcaLink());
+      if (entry.getConstraintText() == null
+          && checkAccess(actionForUca.getId(),AccessRights.WRITE)) {
         
         GridCellText constraintsCell = new GridCellText(new String());
         constraintsCell.addCellButton(new NewConstraintButton(component.getId(), factor.getId(),entry.getId(), getDataModel()));
@@ -307,7 +311,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel>{
         entryRow.addCell(cellNumber,constraintsCell);
       } else {
         CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(), getDataModel(), component.getId(), factor.getId(),entry);
-        if(!checkAccess(AccessRights.WRITE)) {
+        if(!checkAccess(actionForUca.getId(),AccessRights.WRITE)) {
           cell.setReadOnly(true);
           cell.setShowDelete(false);
         }

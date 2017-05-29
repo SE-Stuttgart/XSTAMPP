@@ -87,6 +87,14 @@ Each step can be categoriesed and muliple editors where the Step can be progress
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="isVisible" type="string">
+            <annotation>
+               <documentation>
+                  a key used in the xstampp.model.IDataModel.getProperties(String, Boolean) to map a property of type Boolean telling whether this item should be visible in the xstampp.ui.navigation.ProjectExplorer or not.
+By default the item is visible and used.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -144,6 +152,14 @@ Each step can be categoriesed and muliple editors where the Step can be progress
             <annotation>
                <documentation>
                   
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="isVisible" type="string">
+            <annotation>
+               <documentation>
+                  a key used in the xstampp.model.IDataModel.getProperties(String, Boolean) to map a property of type Boolean telling whether this item should be visible in the xstampp.ui.navigation.ProjectExplorer or not.
+By default the item is visible and used.
                </documentation>
             </annotation>
          </attribute>
@@ -341,6 +357,14 @@ add a new editor
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.ui.commands/command/@id"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="isVisible" type="string">
+            <annotation>
+               <documentation>
+                  a key used in the xstampp.model.IDataModel.getProperties(String, Boolean) to map a property of type Boolean telling whether this item should be visible in the xstampp.ui.navigation.ProjectExplorer or not.
+By default the item is visible and used.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

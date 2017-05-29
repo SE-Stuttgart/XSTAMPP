@@ -46,6 +46,7 @@
                   editorId="astpa.steps.step1_4"
                   icon="icons/buttons/navigation/STEP1_4(16).png"
                   id="astpa.navigation.step1_4"
+                  isVisible="&quot;bla&quot;"
                   name="Linking of Accidents and Hazards">
             </step>
             <step
@@ -65,6 +66,7 @@
                   editorId="astpa.steps.step1_8"
                   icon="icons/buttons/navigation/STEP1_8(16).png"
                   id="xstampp.astpa.controlStructure_List"
+                  isVisible="astpa.use.multics"
                   name="Control Structure Diagrams"
                   provider="xstampp.astpa.controlstructure.ControlStructureProvider">
                <commandAddition
@@ -75,6 +77,14 @@
                      commandId="xstampp.astpa.command.cs.deleteRoot">
                </commandAddition>
             </editor_List>
+            <step
+                  default_editor="true"
+                  editorId="astpa.steps.step1_8"
+                  icon="icons/buttons/navigation/STEP1_8(16).png"
+                  id="xstampp.astpa.step1_8"
+                  isVisible="astpa.use.singlecs"
+                  name="Control Structure Diagrams">
+            </step>
          </category>
          <category
                icon="icons/branding/step2ControlActions.png"

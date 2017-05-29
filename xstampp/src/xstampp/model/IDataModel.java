@@ -142,10 +142,12 @@ public interface IDataModel {
   void initializeProject();
 
   /**
-   * This method can be called when creating a project with existing data
-   * from an existing {@link IDataModel}. The initialized project is independent from its original,
-   * but contains the same entries and components with respect to their values and uuids.
-   * @param original A {@link IDataModel} that serves as original.
+   * This method can be called when creating a project with existing data from an existing
+   * {@link IDataModel}. The initialized project is independent from its original, but contains the
+   * same entries and components with respect to their values and uuids.
+   * 
+   * @param original
+   *          A {@link IDataModel} that serves as original.
    */
   void initializeProject(IDataModel original);
 
@@ -178,7 +180,7 @@ public interface IDataModel {
 
   /**
    * This method should act as counterpart of {@link IDataModel#lockUpdate()} it should release the
-   * lock and trigger an update of the requested value
+   * lock and trigger an update of the requested value.
    * 
    * @param values
    *          the values that should be updated
@@ -186,7 +188,19 @@ public interface IDataModel {
   void releaseLockAndUpdate(ObserverValue[] values);
 
   void setUnsavedAndChanged();
-  
+
   <T> T getAdapter(Class<T> clazz);
 
+  /**
+   * Returns a property of an type <b>T</b> that is stored as property mapped to the given key
+   * string
+   * 
+   * @param key
+   *          a key for which the data model can contain a property of the given class
+   * @param clazz
+   *          the class of the requested property, if a property is stored for the given string but
+   *          of a different class this method method should return <code>null</code>
+   * @return null if no property was stored in the data model or the property had the wrong type.
+   */
+  <T> T getProperty(String key, Class<T> clazz);
 }
