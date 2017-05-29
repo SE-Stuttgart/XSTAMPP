@@ -13,7 +13,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<version>2.2.0</version>
+	<version>2.3.0</version>
 	<groupId>xstampp.group</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
@@ -32,8 +32,10 @@
 		<module>../xstampp</module>
 		<module>../xstampp.astpa</module>
 		<module>../xstampp.acast</module>
+        <module>../xstpa</module>
 		<module>../astpa.feature</module>
 		<module>../xstampp.acast.feature</module>
+		<module>../xstpa.feature</module>
 	</modules>
 
 	<repositories>

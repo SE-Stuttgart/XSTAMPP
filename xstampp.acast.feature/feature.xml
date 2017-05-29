@@ -2,7 +2,7 @@
 <feature
       id="xstampp.acast.feature"
       label="A-CAST Feature"
-      version="1.0.5.qualifier"
+      version="1.0.5"
       plugin="xstampp.acast">
 
    <description url="http://www.example.com/description">

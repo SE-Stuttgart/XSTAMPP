@@ -2,7 +2,7 @@
 <feature
       id="astpa.feature"
       label="A-STPA feature"
-      version="2.2.0"
+      version="2.3.0"
       plugin="xstampp.astpa">
 
    <description>
@@ -103,7 +103,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <requires>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.gef" version="3.9.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef" version="3.9.100" match="compatible"/>
       <import plugin="org.eclipse.equinox.p2.core"/>
       <import plugin="org.eclipse.equinox.p2.operations" version="2.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.p2.engine" version="2.3.0" match="greaterOrEqual"/>
@@ -176,5 +176,11 @@ This Agreement is governed by the laws of the State of New York and the intellec
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="xstpa"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

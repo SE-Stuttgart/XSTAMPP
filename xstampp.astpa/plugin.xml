@@ -83,7 +83,7 @@
                   icon="icons/buttons/navigation/STEP1_8(16).png"
                   id="xstampp.astpa.step1_8"
                   isVisible="astpa.use.singlecs"
-                  name="Control Structure Diagrams">
+                  name="Control Structure Diagram">
             </step>
          </category>
          <category
