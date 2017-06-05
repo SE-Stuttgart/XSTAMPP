@@ -2079,7 +2079,10 @@ public class DataModelController extends AbstractDataModel
     String oldDescription = this.controlActionController.setUcaDescription(unsafeControlActionId,
         description);
     if (oldDescription != null) {
-      pushToUndo(new UndoUCAChangesCallback(this, unsafeControlActionId));
+      UndoUCAChangesCallback callback = new UndoUCAChangesCallback(this, unsafeControlActionId);
+      callback.setDescriptionChange(oldDescription, description);
+      
+      pushToUndo(callback);
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
       return true;
     }

@@ -11,10 +11,6 @@
 
 package xstampp.astpa.ui;
 
-import java.util.List;
-import java.util.Observable;
-import java.util.UUID;
-
 import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,6 +36,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -69,6 +67,10 @@ import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 
+import java.util.List;
+import java.util.Observable;
+import java.util.UUID;
+
 /**
  * @author Jarkko Heidenwag
  * @author Lukas Balzer
@@ -84,6 +86,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private static String id;
 
   private TableViewer tableViewer;
+  
+  private boolean internalUpdate;
 
   private Label itemsLabel, filterLabel, descriptionLabel;
 
@@ -396,6 +400,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
    */
   public CommonTableView(boolean restrict) {
     this.hasRestrictedAccess = restrict;
+    this.internalUpdate = false;
   }
 
   /**
@@ -486,21 +491,17 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         if (((e.stateMask == SWT.CTRL) || (e.stateMask == SWT.COMMAND)) && (e.keyCode == 'a')) {
           CommonTableView.this.getDescriptionWidget().selectAll();
         }
-        switch (e.keyCode) {
-          case SWT.ARROW_LEFT: {
-            ((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x - 1,
-                ((Text) e.getSource()).getSelection().x - 1);
-            break;
-          }
-          case SWT.ARROW_RIGHT: {
-            ((Text) e.getSource()).setSelection(((Text) e.getSource()).getSelection().x + 1,
-                ((Text) e.getSource()).getSelection().x + 1);
-          }
-        }
       }
 
     });
 
+    this.descriptionWidget.addModifyListener(new ModifyListener() {
+      
+      @Override
+      public void modifyText(ModifyEvent e) {
+        internalUpdate = true;
+      }
+    });
     // the table viewer
     this.setTableViewer(new TableViewer(tableComposite,
         SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP));
@@ -761,6 +762,12 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       case SAFETY_CONSTRAINT:
       case SYSTEM_GOAL:
         this.refreshView();
+        if(!internalUpdate && selectedEntry != null) {
+          getDescriptionWidget()
+          .setText(selectedEntry.getDescription());
+        }else {
+          internalUpdate = false;
+        }
         break;
 
       default:
