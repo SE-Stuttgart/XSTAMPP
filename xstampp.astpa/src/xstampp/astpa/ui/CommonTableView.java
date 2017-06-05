@@ -33,6 +33,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -478,8 +480,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
     // the textfield for the description of the selected item
     this.descriptionWidget = new Text(textContainer,
-        SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
+        SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP|SWT.SEARCH);
 
+    this.descriptionWidget.setMessage(Messages.DoubleClickToEditTitle);
     this.descriptionWidget.setEnabled(false);
     this.descriptionWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -568,15 +571,18 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         if (!canEdit((ATableModel) element, AccessRights.WRITE)) {
           return getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
         }
+        if (((ATableModel) element).getTitle().equals("")) {
+          return getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND);
+        }
         return null;
       }
 
       @Override
       public String getText(Object element) {
-        if (element instanceof ATableModel) {
-          return ((ATableModel) element).getTitle();
+        if (((ATableModel) element).getTitle().equals("")) {
+          return Messages.DoubleClickToEditTitle;
         }
-        return null;
+        return ((ATableModel) element).getTitle();
       }
     });
     // detecting a double click
@@ -886,6 +892,10 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     @Override
     protected boolean canEdit(Object element) {
       return CommonTableView.this.canEdit((ATableModel) element, AccessRights.WRITE);
+    }
+
+    protected Object getValue(String string) {
+      return string;
     }
   }
 

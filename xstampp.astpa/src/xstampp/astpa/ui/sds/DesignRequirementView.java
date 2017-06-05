@@ -13,8 +13,6 @@
 
 package xstampp.astpa.ui.sds;
 
-import java.util.UUID;
-
 import messages.Messages;
 
 import org.eclipse.jface.action.Action;
@@ -28,8 +26,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -47,6 +43,8 @@ import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+
+import java.util.UUID;
 
 /**
  * @author Jarkko Heidenwag
@@ -107,7 +105,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 				DesignRequirementView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				DesignRequirementView.this.refreshView();
 				DesignRequirementView.this.getDataInterface().addDesignRequirement(
-						"", Messages.DescriptionOfThisDesignReq); //$NON-NLS-1$
+						"", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				int newID = DesignRequirementView.this.getDataInterface()
 						.getAllDesignRequirements().size() - 1;
 				DesignRequirementView.this.updateTable();
@@ -154,27 +152,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
 		this.getTableViewer().getTable()
 				.addListener(SWT.KeyDown, returnListener);
-
-		// check if the description is default and delete it in that case
-		this.getDescriptionWidget().addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-				Text text = (Text) e.widget;
-				String description = text.getText();
-				if (description.compareTo(Messages.DescriptionOfThisDesignReq) == 0) {
-					DesignRequirementView.this.getDataInterface()
-							.setDesignRequirementDescription(getCurrentSelection(), ""); //$NON-NLS-1$
-					text.setText(""); //$NON-NLS-1$
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				// intentionally empty
-
-			}
-		});
 
 		// Listener for the Description
 		this.getDescriptionWidget().addModifyListener(new ModifyListener() {
@@ -272,28 +249,12 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
 		@Override
 		protected Object getValue(Object element) {
-			if (element instanceof DesignRequirement) {
-				// deleting the default title
-				if ((((DesignRequirement) element).getTitle()
-						.compareTo(Messages.DoubleClickToEditTitle)) == 0) {
-					((DesignRequirement) element).setTitle(""); //$NON-NLS-1$
-				}
-				return ((DesignRequirement) element).getTitle();
-			}
-			return null;
+			return getValue(((DesignRequirement) element).getTitle());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			if (element instanceof DesignRequirement) {
-				((DesignRequirement) element).setTitle(String.valueOf(value));
-				// Fill in the default title if the user left it blank
-				if (((DesignRequirement) element).getTitle().length() == 0) {
-					((DesignRequirement) element)
-							.setTitle(Messages.DoubleClickToEditTitle);
-				}
-			}
-			DesignRequirementView.this.refreshView();
+			((DesignRequirement) element).setTitle(String.valueOf(value));
 		}
 	}
 

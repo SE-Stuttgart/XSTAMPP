@@ -24,8 +24,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -104,8 +102,7 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
         SystemGoalView.this.getFilter().setSearchText(""); //$NON-NLS-1$
         SystemGoalView.this.getFilterTextField().setText(""); //$NON-NLS-1$
         SystemGoalView.this.refreshView();
-        SystemGoalView.this.getDataInterface().addSystemGoal("", //$NON-NLS-1$
-            Messages.DescriptionOfThisSystemGoal);
+        SystemGoalView.this.getDataInterface().addSystemGoal("","");//$NON-NLS-1$ //$NON-NLS-2$
         int newID = SystemGoalView.this.getDataInterface().getAllSystemGoals().size() - 1;
         SystemGoalView.this.updateTable();
         SystemGoalView.this.refreshView();
@@ -137,27 +134,6 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
     };
 
     this.getTableViewer().getTable().addListener(SWT.KeyDown, returnListener);
-
-    // check if the description is default and delete it in that case
-    this.getDescriptionWidget().addFocusListener(new FocusListener() {
-
-      @Override
-      public void focusGained(FocusEvent e) {
-        Text text = (Text) e.widget;
-        String description = text.getText();
-        if (description.compareTo(Messages.DescriptionOfThisSystemGoal) == 0) {
-          SystemGoalView.this.getDataInterface().setSystemGoalDescription(getCurrentSelection(),
-              ""); //$NON-NLS-1$
-          text.setText(""); //$NON-NLS-1$
-        }
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        // intentionally empty
-
-      }
-    });
 
     // Listener for the Description
     this.getDescriptionWidget().addModifyListener(new ModifyListener() {
@@ -249,26 +225,12 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
 
     @Override
     protected Object getValue(Object element) {
-      if (element instanceof SystemGoal) {
-        // deleting the default title
-        if ((((SystemGoal) element).getTitle().compareTo(Messages.DoubleClickToEditTitle)) == 0) {
-          ((SystemGoal) element).setTitle(""); //$NON-NLS-1$
-        }
-        return ((SystemGoal) element).getTitle();
-      }
-      return null;
+      return super.getValue(((SystemGoal) element).getTitle());
     }
 
     @Override
     protected void setValue(Object element, Object value) {
-      if (element instanceof SystemGoal) {
-        ((SystemGoal) element).setTitle(String.valueOf(value));
-        // Fill in the default title if the user left it blank
-        if (((SystemGoal) element).getTitle().length() == 0) {
-          ((SystemGoal) element).setTitle(Messages.DoubleClickToEditTitle);
-        }
-      }
-      SystemGoalView.this.refreshView();
+      ((SystemGoal) element).setTitle(String.valueOf(value));
     }
   }
 

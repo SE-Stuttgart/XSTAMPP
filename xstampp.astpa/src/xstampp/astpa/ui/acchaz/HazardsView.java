@@ -68,6 +68,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
   public HazardsView() {
     super(true);
   }
+
   /**
    * Create contents of the view part.
    * 
@@ -104,7 +105,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
         HazardsView.this.getFilter().setSearchText(""); //$NON-NLS-1$
         HazardsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
         // HazardsView.this.refreshView();
-        HazardsView.this.getDataInterface().addHazard(Messages.DoubleClickToEditTitle, "");
+        HazardsView.this.getDataInterface().addHazard("", "");
         int newID = getTableViewer().getTable().getItemCount() - 1;
         HazardsView.this.getTableViewer().setSelection(
             new StructuredSelection(HazardsView.this.getTableViewer().getElementAt(newID)), true);
@@ -133,27 +134,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
     };
 
     this.getTableViewer().getTable().addListener(SWT.KeyDown, returnListener);
-
-    // check if the description is default and delete it in that case
-    this.getDescriptionWidget().addFocusListener(new FocusListener() {
-
-      @Override
-      public void focusGained(FocusEvent e) {
-        Text text = (Text) e.widget;
-        String description = text.getText();
-        if (description.compareTo(Messages.DescriptionOfThisHazard) == 0) {
-          UUID id = getCurrentSelection();
-          HazardsView.this.getDataInterface().setHazardDescription(id, ""); //$NON-NLS-1$
-          text.setText(""); //$NON-NLS-1$
-        }
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        // intentionally empty
-
-      }
-    });
 
     // Listener for the Description
     this.getDescriptionWidget().addModifyListener(new ModifyListener() {
@@ -250,7 +230,8 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
     if (this.getDataInterface().isUseSeverity()) {
       TableViewerColumn severityColumn = new TableViewerColumn(HazardsView.this.getTableViewer(),
           SWT.NONE);
-      severityColumn.getColumn().setToolTipText(xstampp.astpa.messages.Messages.ProjectSpecifics_UseSeverityTip);
+      severityColumn.getColumn()
+          .setToolTipText(xstampp.astpa.messages.Messages.ProjectSpecifics_UseSeverityTip);
       severityColumn.getColumn().setText("Severity*");
       severityColumn.setLabelProvider(new ColumnLabelProvider() {
 
@@ -322,28 +303,13 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
     @Override
     protected Object getValue(Object element) {
-      if (element instanceof Hazard) {
-        // deleting the default title
-        if ((((Hazard) element).getTitle().compareTo(Messages.DoubleClickToEditTitle)) == 0) {
-          ((Hazard) element).setTitle(""); //$NON-NLS-1$
-        }
-        return ((Hazard) element).getTitle();
-      }
-      return null;
+      return getValue(((Hazard) element).getTitle());
     }
 
     @Override
     protected void setValue(Object element, Object value) {
-      if (element instanceof Hazard) {
-        HazardsView.this.getDataInterface().setHazardTitle(((Hazard) element).getId(),
-            String.valueOf(value));
-        // Fill in the default title if the user left it blank
-        if (String.valueOf(value).length() == 0) {
-          HazardsView.this.getDataInterface().setHazardTitle(((Hazard) element).getId(),
-              Messages.DoubleClickToEditTitle);
-        }
-      }
-      HazardsView.this.refreshView();
+      HazardsView.this.getDataInterface().setHazardTitle(((Hazard) element).getId(),
+          String.valueOf(value));
     }
   }
 

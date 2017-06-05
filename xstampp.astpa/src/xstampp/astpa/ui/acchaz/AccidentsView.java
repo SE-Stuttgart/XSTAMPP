@@ -111,8 +111,7 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 				AccidentsView.this.getFilter().setSearchText(""); //$NON-NLS-1$
 				AccidentsView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				AccidentsView.this.refreshView();
-				AccidentsView.this.getDataInterface().addAccident(
-						Messages.DoubleClickToEditTitle, Messages.DescriptionOfThisAccident);
+				AccidentsView.this.getDataInterface().addAccident("",""); //$NON-NLS-1$ //$NON-NLS-2$
 				int newID = AccidentsView.this.getDataInterface().getAllAccidents()
 						.size() - 1;
 				AccidentsView.this.updateTable();
@@ -159,27 +158,6 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 
 		this.getTableViewer().getTable()
 				.addListener(SWT.KeyDown, returnListener);
-
-		// check if the description is default and delete it in that case
-		this.getDescriptionWidget().addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-				Text text = (Text) e.widget;
-				String description = text.getText();
-				if (description.compareTo(Messages.DescriptionOfThisAccident) == 0) {
-					UUID id = getCurrentSelection();
-					AccidentsView.this.getDataInterface().setAccidentDescription(id,
-							""); //$NON-NLS-1$
-					text.setText(""); //$NON-NLS-1$
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				// intentionally empty
-			}
-		});
 
 		// Listener for the Description
 		this.getDescriptionWidget().addModifyListener(new ModifyListener() {
@@ -307,27 +285,12 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 
 		@Override
 		protected Object getValue(Object element) {
-			if (element instanceof Accident) {
-				// deleting the default title
-				if ((((Accident) element).getTitle()
-						.compareTo(Messages.DoubleClickToEditTitle)) == 0) {
-					((Accident) element).setTitle(""); //$NON-NLS-1$
-				}
-				return ((Accident) element).getTitle();
-			}
-			return null;
+			return getValue(((Accident) element).getTitle());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			if (element instanceof Accident) {
-				AccidentsView.this.getDataInterface().setAccidentTitle(((Accident) element).getId(),String.valueOf(value));
-				// Fill in the default title if the user left it blank
-				if (String.valueOf(value).length() == 0) {
-					AccidentsView.this.getDataInterface().setAccidentTitle(((Accident) element).getId(),Messages.DoubleClickToEditTitle);
-				}
-			}
-			AccidentsView.this.refreshView();
+			AccidentsView.this.getDataInterface().setAccidentTitle(((Accident) element).getId(),String.valueOf(value));
 		}
 	}
 

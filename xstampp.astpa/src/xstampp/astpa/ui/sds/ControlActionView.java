@@ -13,9 +13,6 @@
 
 package xstampp.astpa.ui.sds;
 
-import java.util.Observable;
-import java.util.UUID;
-
 import messages.Messages;
 
 import org.eclipse.jface.action.Action;
@@ -32,8 +29,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -54,6 +49,9 @@ import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+
+import java.util.Observable;
+import java.util.UUID;
 
 /**
  * @author Jarkko Heidenwag
@@ -113,7 +111,7 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 				ControlActionView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				ControlActionView.this.refreshView();
 				ControlActionView.this.getDataInterface().addControlAction(
-						"", Messages.DescriptionOfThisControlAction); //$NON-NLS-1$
+						"", ""); //$NON-NLS-1$
 				int newID = ControlActionView.this.getDataInterface()
 						.getAllControlActions().size() - 1;
 				ControlActionView.this.updateTable();
@@ -160,28 +158,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
 		this.getTableViewer().getTable()
 				.addListener(SWT.KeyDown, returnListener);
-
-		// check if the description is default and delete it in that case
-		this.getDescriptionWidget().addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-				Text text = (Text) e.widget;
-				String description = text.getText();
-				if (description
-						.compareTo(Messages.DescriptionOfThisControlAction) == 0) {
-					ControlActionView.this.getDataInterface()
-							.setControlActionDescription(getCurrentSelection(), ""); //$NON-NLS-1$
-					text.setText(""); //$NON-NLS-1$
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				// intentionally empty
-
-			}
-		});
 
 		// Listener for the Description
 		this.getDescriptionWidget().addModifyListener(new ModifyListener() {
@@ -338,28 +314,12 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
 		@Override
 		protected Object getValue(Object element) {
-			if (element instanceof ControlAction) {
-				// deleting the default title
-				if ((((ControlAction) element).getTitle()
-						.compareTo(Messages.DoubleClickToEditTitle)) == 0) {
-					((ControlAction) element).setTitle(""); //$NON-NLS-1$
-				}
-				return ((ControlAction) element).getTitle();
-			}
-			return null;
+			return getValue(((ControlAction) element).getTitle());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			if (element instanceof ControlAction) {
-				getDataInterface().setControlActionTitle(((ControlAction) element).getId(), String.valueOf(value));
-				// Fill in the default title if the user left it blank
-				if (((ControlAction) element).getTitle().length() == 0) {
-					getDataInterface().setControlActionTitle(((ControlAction) element).getId(),
-														Messages.DoubleClickToEditTitle);
-				}
-			}
-			ControlActionView.this.refreshView();
+			getDataInterface().setControlActionTitle(((ControlAction) element).getId(), String.valueOf(value));
 		}
 	}
 

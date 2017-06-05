@@ -107,7 +107,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 				SafetyConstraintView.this.getFilterTextField().setText(""); //$NON-NLS-1$
 				SafetyConstraintView.this.refreshView();
 				SafetyConstraintView.this.getDataInterface().addSafetyConstraint(
-						"", Messages.DescriptionOfThisSafetyConstr); //$NON-NLS-1$
+						"", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				int newID = SafetyConstraintView.this.getDataInterface()
 						.getAllSafetyConstraints().size() - 1;
 				SafetyConstraintView.this.updateTable();
@@ -154,28 +154,6 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
 		this.getTableViewer().getTable()
 				.addListener(SWT.KeyDown, returnListener);
-
-		// check if the description is default and delete it in that case
-		this.getDescriptionWidget().addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-				Text text = (Text) e.widget;
-				String description = text.getText();
-				if (description
-						.compareTo(Messages.DescriptionOfThisSafetyConstr) == 0) {
-					SafetyConstraintView.this.getDataInterface()
-							.setSafetyConstraintDescription(getCurrentSelection(), ""); //$NON-NLS-1$
-					text.setText(""); //$NON-NLS-1$
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				// intentionally empty
-
-			}
-		});
 
 		// Listener for the Description
 		this.getDescriptionWidget().addModifyListener(new ModifyListener() {
@@ -272,28 +250,12 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
 		@Override
 		protected Object getValue(Object element) {
-			if (element instanceof SafetyConstraint) {
-				// deleting the default title
-				if ((((SafetyConstraint) element).getTitle()
-						.compareTo(Messages.DoubleClickToEditTitle)) == 0) {
-					((SafetyConstraint) element).setTitle(""); //$NON-NLS-1$
-				}
-				return ((SafetyConstraint) element).getTitle();
-			}
-			return null;
+			return getValue(((SafetyConstraint) element).getTitle());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			if (element instanceof SafetyConstraint) {
-				((SafetyConstraint) element).setTitle(String.valueOf(value));
-				// Fill in the default title if the user left it blank
-				if (((SafetyConstraint) element).getTitle().length() == 0) {
-					((SafetyConstraint) element)
-							.setTitle(Messages.DoubleClickToEditTitle);
-				}
-			}
-			SafetyConstraintView.this.refreshView();
+			((SafetyConstraint) element).setTitle(String.valueOf(value));
 		}
 	}
 
