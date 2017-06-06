@@ -64,7 +64,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
   private static final String NOHAZ_FILTER = "not hazardous"; //$NON-NLS-1$
   private static final String HAZID_FILTER = "Hazard ID"; //$NON-NLS-1$
 
-  private static final String[] columns = new String[] { Messages.ControlAction, Messages.NotGiven,
+  private String[] columns = new String[] { Messages.ControlAction, Messages.NotGiven,
       Messages.GivenIncorrectly, Messages.WrongTiming, Messages.StoppedTooSoon };
 
   /**
@@ -72,8 +72,34 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
    */
   private UcaContentProvider ucaContentProvider = null;
 
+  /**
+   * Constructs an UnsafeControlActionsView with a filter and the default set of column names
+   * defined in the STPA
+   */
   public UnsafeControlActionsView() {
     setUseFilter(true);
+  }
+
+  /**
+   * Constructs an UnsafeControlActionsView with a filter
+   * 
+   * @param columns
+   *          must be a string array of size 4, containing the names of the columns
+   */
+  public UnsafeControlActionsView(String[] columns) {
+    this(columns, true);
+  }
+
+  /**
+   * 
+   * @param columns
+   *          must be a string array of size 4, containing the names of the columns
+   * @param useFilter
+   *          whether to use the filter or not
+   */
+  public UnsafeControlActionsView(String[] columns, boolean useFilter) {
+    setUseFilter(useFilter);
+    this.columns = columns;
   }
 
   @Override
