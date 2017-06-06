@@ -1243,9 +1243,13 @@ public class DataModelController extends AbstractDataModel
     DataModelController.LOGGER.debug("set data update lock to prevent system lacks");
   }
 
-  public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
+  public boolean moveEntry(boolean allWay, boolean moveUp, UUID id, ObserverValue value) {
     boolean result = false;
     switch (value) {
+      case CONTROL_STRUCTURE: {
+        result = this.controlStructureController.moveEntry(allWay,moveUp, id);
+        break;
+      }
       case HAZARD:
       case ACCIDENT:
         result = hazAccController.moveEntry(moveUp, id, value);

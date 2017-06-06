@@ -272,6 +272,6 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
 
   @Override
   protected void moveEntry(UUID id, boolean moveUp) {
-    getDataInterface().moveEntry(moveUp, id, ObserverValue.SYSTEM_GOAL);
+    getDataInterface().moveEntry(false, moveUp, id, ObserverValue.SYSTEM_GOAL);
   }
 }

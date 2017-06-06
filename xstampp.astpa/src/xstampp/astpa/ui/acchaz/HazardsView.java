@@ -351,6 +351,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
   @Override
   protected void moveEntry(UUID id, boolean moveUp) {
-    getDataInterface().moveEntry(moveUp, id, ObserverValue.HAZARD);
+    getDataInterface().moveEntry(false, moveUp, id, ObserverValue.HAZARD);
   }
 }

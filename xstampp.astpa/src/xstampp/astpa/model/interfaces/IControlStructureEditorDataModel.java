@@ -21,6 +21,7 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
    * @return true if the control action has been removed
    */
   boolean removeControlAction(UUID controlActionId);
+  
+  public boolean moveEntry(boolean allWay,boolean moveUp,UUID id, ObserverValue value);
 
   /**
    * Adds a new root component with the given values. <br> Triggers an update for

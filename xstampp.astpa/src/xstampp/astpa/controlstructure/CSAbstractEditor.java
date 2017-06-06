@@ -420,7 +420,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 
 
 		ContextMenuProvider contextProvider = new CSContextMenuProvider(viewer,
-				this.getActionRegistry());
+				this.getActionRegistry(),getModelInterface());
 		viewer.setContextMenu(contextProvider);
 		((FigureCanvas) viewer.getControl())
 				.setScrollBarVisibility(FigureCanvas.AUTOMATIC);

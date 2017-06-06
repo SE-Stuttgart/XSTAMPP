@@ -299,6 +299,6 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
 	@Override
 	protected void moveEntry(UUID id, boolean moveUp) {
-		getDataInterface().moveEntry(moveUp, id, ObserverValue.SAFETY_CONSTRAINT);
+		getDataInterface().moveEntry(false, moveUp, id, ObserverValue.SAFETY_CONSTRAINT);
 	}
 }

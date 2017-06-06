@@ -1173,7 +1173,7 @@ public class Controller extends AbstractDataModel implements IDataModel,
 	}
 
 	@Override
-	public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
+	public boolean moveEntry(boolean allWay, boolean moveUp, UUID id, ObserverValue value) {
 		// TODO Auto-generated method stub
 		return false;
 	}

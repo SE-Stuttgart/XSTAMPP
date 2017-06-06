@@ -15,5 +15,5 @@ import java.util.UUID;
 import xstampp.model.ObserverValue;
 
 public interface ICommonTables {
-	public boolean moveEntry(boolean moveUp,UUID id,ObserverValue value);
+	public boolean moveEntry(boolean allWay,boolean moveUp,UUID id, ObserverValue value);
 }

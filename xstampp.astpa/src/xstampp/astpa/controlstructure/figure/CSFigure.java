@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+  * Copyright (c) 2013-2016 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -118,16 +118,15 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 
 	@Override
 	public void paintChildren(Graphics graphics) {
-		if ((this.image != null) && this.withIcon) {
-			double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
-			Rectangle rect = this.textLabel.getBounds();
-			this.setConstraint(this.textLabel, new Rectangle((int) newPos, rect.y, rect.width, rect.height));
-			graphics.scale(0.25);
-			graphics.drawImage(this.image, 1, 1);
-			graphics.scale(4);
-		}
-
 		super.paintChildren(graphics);
+		if ((this.image != null) && this.withIcon) {
+      double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
+      Rectangle rect = this.textLabel.getBounds();
+      this.setConstraint(this.textLabel, new Rectangle((int) newPos, rect.y, rect.width, rect.height));
+      graphics.scale(0.25);
+      graphics.drawImage(this.image, 1, 1);
+      graphics.scale(4);
+    }
 	}
 
 	@Override
@@ -190,6 +189,12 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 		if (isDirty) {
 			isDirty = false;
 			setBounds(rect);
+			
+			for (Object child : getChildren()) {
+        if (child instanceof IControlStructureFigure) {
+          ((IControlStructureFigure) child).refresh();
+        }
+      }
 			if (this.getChildren().size() > 1) {
 				// the height of the rectangle is set to the ideal height for
 				// the
@@ -205,11 +210,7 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 			this.textLabel.setText(text);
 			this.textLabel.repaint();
 			this.getParent().setConstraint(this, rect);
-			for (Object child : getChildren()) {
-				if (child instanceof IControlStructureFigure) {
-					((IControlStructureFigure) child).refresh();
-				}
-			}
+			
 		}
 	}
 

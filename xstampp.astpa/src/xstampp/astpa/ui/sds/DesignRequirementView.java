@@ -297,6 +297,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
 	@Override
 	protected void moveEntry(UUID id, boolean moveUp) {
-		getDataInterface().moveEntry(moveUp, id, ObserverValue.DESIGN_REQUIREMENT);
+		getDataInterface().moveEntry(false, moveUp, id, ObserverValue.DESIGN_REQUIREMENT);
 	}
 }

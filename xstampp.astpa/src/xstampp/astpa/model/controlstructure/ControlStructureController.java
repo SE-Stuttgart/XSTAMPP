@@ -260,7 +260,12 @@ public class ControlStructureController {
     return changed;
   }
 
-  
+
+
+  public boolean moveEntry(boolean allWay,boolean moveUp, UUID id) {
+    return _getActiveRoot().moveComponent(allWay,moveUp, id);
+  }
+
   /**
    * This methode recovers a Component which was deleted before, from the componentTrash
    * 

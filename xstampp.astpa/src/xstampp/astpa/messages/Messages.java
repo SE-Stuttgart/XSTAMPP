@@ -6,6 +6,10 @@ public class Messages extends NLS {
   private static final String BUNDLE_NAME = "xstampp.astpa.messages.messages"; //$NON-NLS-1$
   public static String ControlStructure_NameMustBeUnique;
   public static String ControlStructure_New;
+  public static String CSContextMenuProvider_MoveDOWN;
+  public static String CSContextMenuProvider_MoveUP;
+  public static String CSContextMenuProvider_MoveUP_DOWNAllWay;
+  public static String CSContextMenuProvider_MoveUP_DOWNOneStep;
   public static String DeleteControlStructureQuestion;
   public static String DeleteControlStructureTitle;
   public static String ListOfCAEditPart_ToolTip0;

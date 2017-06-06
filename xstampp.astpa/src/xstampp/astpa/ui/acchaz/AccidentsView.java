@@ -335,7 +335,7 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 
 	@Override
 	protected void moveEntry(UUID id, boolean moveUp) {
-		getDataInterface().moveEntry(moveUp, id, ObserverValue.ACCIDENT);
+		getDataInterface().moveEntry(false, moveUp, id, ObserverValue.ACCIDENT);
 	}
 
 }
