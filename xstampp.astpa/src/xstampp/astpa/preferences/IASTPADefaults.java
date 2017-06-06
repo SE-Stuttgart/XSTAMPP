@@ -10,7 +10,7 @@ public interface IASTPADefaults {
    * Whether or not it should be possible to define the severity of Hazards. <p>
    * <i><b>Note</b> This can be changed in the project settings menu of the program</i>
    */
-  static final boolean USE_SEVERITY_ANALYSIS = true;
+  static final boolean USE_SEVERITY_ANALYSIS = false;
 
   /**
    * Whether or not it should be possible to define multiple control structure diagrams in an stpa
@@ -20,11 +20,11 @@ public interface IASTPADefaults {
    * <p>
    * <i><b>NOTE:</b>this feature is still in <b>BETA</b> and can not be enabled/disabled in the project settings menu of the program<i>
    */
-  static final boolean USE_MULTI_CONTROL_STRUCTURES = false;
+  static final boolean USE_MULTI_CONTROL_STRUCTURES = true;
 
   /**
    * Whether or not he causal analysis should include graphical support for defining scenarios <p>
    * <i><b>Note</b> This can be changed in the project settings menu of the program</i>
    */
-  static final boolean USE_CAUSAL_SCENARIO_ANALYSIS = false;
+  static final boolean USE_CAUSAL_SCENARIO_ANALYSIS = true;
 }

@@ -33,6 +33,7 @@ import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
 import xstampp.astpa.controlstructure.figure.CSRectangleContainer;
+import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.preferences.IControlStructureConstants;
 
@@ -44,7 +45,7 @@ import xstampp.preferences.IControlStructureConstants;
  * @author Lukas Balzer
  * 
  */
-public class RectangleEditPart extends AbstractMemberEditPart implements ISelectionChangedListener{
+public class ListOfCAEditPart extends AbstractMemberEditPart implements ISelectionChangedListener{
 
 	/**
 	 * this constuctor sets the unique ID of this EditPart which is the same in
@@ -57,7 +58,7 @@ public class RectangleEditPart extends AbstractMemberEditPart implements ISelect
 	 * @param stepId
 	 *            TODO
 	 */
-	public RectangleEditPart(IControlStructureEditorDataModel model,
+	public ListOfCAEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
 		super(model, stepId, 1);
 	}
@@ -92,7 +93,7 @@ public class RectangleEditPart extends AbstractMemberEditPart implements ISelect
 	tmp.setPreferenceStore(getStore());
 	tmp.addMouseMotionListener(this);
 	tmp.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
-	tmp.setToolTip(new Label("rec"));
+	tmp.setToolTip(new Label(Messages.ListOfCAEditPart_ToolTip0));
 
 		return tmp;
 	}

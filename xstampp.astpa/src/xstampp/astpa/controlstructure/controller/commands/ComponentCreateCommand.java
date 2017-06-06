@@ -173,7 +173,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 		this.componentId = this.getDataModel().addComponent(
 				this.parentModel.getId(),
 				this.layout, this.compModel.getText(),
-				this.compModel.getComponentType(), 0);
+				this.compModel.getComponentType(), -1);
 		//the following branch adds the functionality if inheriting the relation from a container component
 		if(this.parentModel.getComponentType() == ComponentType.CONTAINER){
 			this.getDataModel().setRelativeOfComponent(this.componentId, this.parentModel.getRelative());

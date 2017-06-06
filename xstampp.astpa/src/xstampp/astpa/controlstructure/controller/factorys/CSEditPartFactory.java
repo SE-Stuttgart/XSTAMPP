@@ -29,7 +29,7 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
 import xstampp.astpa.controlstructure.controller.editparts.ProcessModelEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessValueEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessVariableEditPart;
-import xstampp.astpa.controlstructure.controller.editparts.RectangleEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.ListOfCAEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.SensorEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.TextFieldEditPart;
@@ -101,7 +101,7 @@ public class CSEditPartFactory implements EditPartFactory {
 			break;
 		}
 		case CONTAINER:{
-			part = new RectangleEditPart(this.dataModel, this.stepId);
+			part = new ListOfCAEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}

@@ -8,6 +8,7 @@ public class Messages extends NLS {
   public static String ControlStructure_New;
   public static String DeleteControlStructureQuestion;
   public static String DeleteControlStructureTitle;
+  public static String ListOfCAEditPart_ToolTip0;
   public static String ProjectSpecifics_GeneralSettings;
   public static String ProjectSpecifics_ReopenHazardView;
   public static String ProjectSpecifics_UseCausalScenarios;
