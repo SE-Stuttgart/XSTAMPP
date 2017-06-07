@@ -325,9 +325,9 @@ public final class ProjectExplorer extends ViewPart
     }
     if (selector != null) {
       this.addOrReplaceItem(selectionId, selector, subItem);
-      if (this.stepEditorsToStepId.containsKey(descriptor.getId())) { // $NON-NLS-1$
+      if (this.stepEditorsToStepId.containsKey(descriptor.getElement().getAttribute("id"))) { // $NON-NLS-1$
         for (IConfigurationElement subEditorConf : this.stepEditorsToStepId
-            .get(descriptor.getId())) {
+            .get(descriptor.getElement().getAttribute("id"))) {
           addTreeItem(new TreeItemDescription(subEditorConf, selector, descriptor.getProjectId()));
         }
       }
