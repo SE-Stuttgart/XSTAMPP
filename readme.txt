@@ -1,5 +1,10 @@
 Change Log:
-
+XSTAMPP 2.3.1:
+	Features:
+		- Move Components in the control structure Up and Down by right clicking on them
+	Bugfixes:
+	Others:
+		- COntrol Structure Components are now added in the front level/ at the bottom of a list
 XSTAMPP 2.3.0:
 	Features:
 		- Added Project Settings Dialog in 'Project->Project Settings' and the context menu of the project explorer
