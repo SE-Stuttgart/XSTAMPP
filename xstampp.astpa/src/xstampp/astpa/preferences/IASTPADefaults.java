@@ -20,7 +20,7 @@ public interface IASTPADefaults {
    * <p>
    * <i><b>NOTE:</b>this feature is still in <b>BETA</b> and can not be enabled/disabled in the project settings menu of the program<i>
    */
-  static final boolean USE_MULTI_CONTROL_STRUCTURES = true;
+  static final boolean USE_MULTI_CONTROL_STRUCTURES = false;
 
   /**
    * Whether or not he causal analysis should include graphical support for defining scenarios <p>
