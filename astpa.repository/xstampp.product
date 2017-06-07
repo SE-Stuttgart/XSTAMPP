@@ -44,7 +44,6 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -140,6 +139,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.draw2d"/>
       <feature id="astpa.feature"/>
+      <feature id="xstpa.feature"/>
       <feature id="xstampp.acast.feature"/>
    </features>
 
