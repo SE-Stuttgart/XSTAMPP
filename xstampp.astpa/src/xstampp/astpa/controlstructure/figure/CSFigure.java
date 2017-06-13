@@ -124,6 +124,7 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
       Rectangle rect = this.textLabel.getBounds();
       this.setConstraint(this.textLabel, new Rectangle((int) newPos, rect.y, rect.width, rect.height));
       graphics.scale(0.25);
+      graphics.setAntialias(SWT.ON);
       graphics.drawImage(this.image, 1, 1);
       graphics.scale(4);
     }

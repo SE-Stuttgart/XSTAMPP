@@ -25,6 +25,7 @@ import xstampp.astpa.controlstructure.controller.editparts.ControlActionEditPart
 import xstampp.astpa.controlstructure.controller.editparts.ControlledProcessEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ControllerEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.DashedBoxEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.FeedbackEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessModelEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessValueEditPart;
@@ -110,11 +111,16 @@ public class CSEditPartFactory implements EditPartFactory {
 			id = ((IRectangleComponent) model).getId();
 			break;
 		}
-		case SENSOR: {
-			part = new SensorEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
-			break;
-		}
+    case SENSOR: {
+      part = new SensorEditPart(this.dataModel, this.stepId);
+      id = ((IRectangleComponent) model).getId();
+      break;
+    }
+    case FEEDBACK: {
+      part = new FeedbackEditPart(this.dataModel, this.stepId);
+      id = ((IRectangleComponent) model).getId();
+      break;
+    }
 		case CONTROLLER: {
 			part = new ControllerEditPart(this.dataModel, this.stepId);
 			id = ((IRectangleComponent) model).getId();

@@ -143,15 +143,24 @@ public class CSModelCreationFactory implements CreationFactory {
 			text = Messages.ProcessValue + " " + count; //$NON-NLS-1$
 			break;
 		}
-		case SENSOR: {
-			text = Messages.Sensor + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
+    case SENSOR: {
+      text = Messages.Sensor + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
+    case FEEDBACK: {
+      text = "Feedback" + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
 		case TEXTFIELD: {
 			text = Messages.TextBox + " " + count; //$NON-NLS-1$
 			for (IRectangleComponent x : this.dataModel.getChildren()) {
