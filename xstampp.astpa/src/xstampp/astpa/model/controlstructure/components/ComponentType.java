@@ -50,6 +50,7 @@ public enum ComponentType{
 	 */
 	ACTUATOR,
 
+	FEEDBACK,
 	/**
 	 * This constant is used to create a new Process
 	 */
@@ -75,6 +76,7 @@ public enum ComponentType{
 	 */
 	SENSOR,
 
+	OTHER_COMPONENT,
 	/**
 	 * This Constant is used to create a root
 	 */

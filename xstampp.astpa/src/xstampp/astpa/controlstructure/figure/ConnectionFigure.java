@@ -83,6 +83,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
         _point.translate(1, 0);
   		}
   		rect= new Rectangle(p1.getTranslated(-10, -10), p1.getTranslated(10, 10));
+      graphics.setAntialias(SWT.ON);
   		graphics.setClip(rect);
   		graphics.setBackgroundColor(xstampp.util.ColorManager.COLOR_BLACK);
       graphics.translate(_point.x, _point.y);
