@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.palette.PaletteListener;
@@ -30,7 +31,7 @@ import org.eclipse.ui.ISelectionListener;
  * @author Lukas Balzer
  * 
  */
-public interface IControlStructureEditor extends CommandStackListener,
+public interface IControlStructureEditor extends CommandStackListener,CommandStackEventListener,
 		ISelectionListener, MouseListener, PaletteListener,
 		SelectionListener, ZoomListener, PropertyChangeListener,
 		ISelectionChangedListener {

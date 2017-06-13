@@ -1,11 +1,9 @@
 /*************************************************************************
- * Copyright (c) 2014-2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
+ * Copyright (c) 2014-2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  **************************************************************************/
 
@@ -44,14 +42,9 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
   private UUID projectID;
 
   protected static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
+
   @Override
   public void doSave(IProgressMonitor monitor) {
-    // if (this.isDirty()) {
-    // Map<String, String> values = new HashMap<>();
-    // values.put("saveProjectId", this.projectID.toString());
-    // STPAPluginUtils.executeParaCommand("astpa.save", values);
-    // ProjectManager.getContainerInstance().getDataModel(projectID).setStored();
-    // }
   }
 
   @Override
@@ -72,8 +65,7 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   @Override
   public void dispose() {
-    ProjectManager.getLOGGER().debug("Editor: " 
-                   + getTitle() + " closed"); //$NON-NLS-1$ //$NON-NLS-2$
+    ProjectManager.getLOGGER().debug("Editor: " + getTitle() + " closed"); //$NON-NLS-2$ //$NON-NLS-2$
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
     super.dispose();
   }
@@ -127,11 +119,10 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   @Override
   public void partActivated(IWorkbenchPart arg0) {
-    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                  .getActivePage().getActiveEditor() != null) {
-      if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                      .getActivePage().getActiveEditor().getSite().getId()
-          .equals("acast.steps.step2_1")) { //$NON-NLS-1$
+    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .getActiveEditor() != null) {
+      if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()
+          .getSite().getId().equals("acast.steps.step2_1")) { //$NON-NLS-1$
         if (arg0 == this) {
           ((STPAEditorInput) getEditorInput()).activate();
         } else if (arg0 != this) {

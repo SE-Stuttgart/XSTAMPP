@@ -250,7 +250,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		if(!this.asExport){
 			this.createToolBar(editorComposite, data);
 		}
-		this.getCommandStack().addCommandStackListener(this);
+    this.getCommandStack().addCommandStackEventListener(this);
+    this.getCommandStack().addCommandStackListener(this);
 
 		data = new FormData();
 		data.top = new FormAttachment(0);
@@ -286,9 +287,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		viewer.setProperty(IS_DECORATED, this.decoSwitch.getSelection());
 		viewer.addSelectionChangedListener(this);
 		viewer.createControl(parent);
-		this.configureGraphicalViewer(viewer);
 		this.hookGraphicalViewer();
-		this.initializeGraphicalViewer(viewer);
+    this.configureGraphicalViewer(viewer);
 		viewer.getControl().addMouseListener(this);
 		ActionRegistry registry = this.getActionRegistry();
 		Iterator<String> iter = this.selectionActions.iterator();
@@ -302,23 +302,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		
 
 	}
-
-	/**
-	 * This method initializes all functions of the Graphical viewer
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 */
-	private void initializeGraphicalViewer(GraphicalViewer viewer) {
-
-		this.splitter.hookDropTargetListener(viewer);
-
-		viewer.setContents(this.createRoot());
-		((IControlStructureEditPart)viewer.getContents()).setPreferenceStore(this.store);
-		viewer.getContents().refresh();
-
-	}
-
+	
 	/**
 	 * @author Lukas Balzer
 	 * 
@@ -360,9 +344,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 		// zooming
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		viewer.setRootEditPart(rootEditPart);
-		viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(
-				viewer, this.getRoot()));
+		this.splitter.hookDropTargetListener(viewer);
 
+    viewer.setContents(this.createRoot());
+    ((IControlStructureEditPart)viewer.getContents()).setPreferenceStore(this.store);
+    viewer.getContents().refresh();
+    viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(
+        viewer, this.getRoot()));
 		this.zoomManager = rootEditPart.getZoomManager();
 
 		this.zoomManager.getViewport().addCoordinateListener(
@@ -718,43 +706,47 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
 	 */
 	@Override
 	public void commandStackChanged(EventObject event) {
-		this.firePropertyChange(IEditorPart.PROP_DIRTY);
-		ISharedImages sharedImages = PlatformUI.getWorkbench()
-				.getSharedImages();
-
-		// the undo/redo buttons in the toolbar are either activated or
-		// deactivated
-		// depending on the change
-		if (this.getCommandStack().canRedo()) {
-			this.redo.setImage(sharedImages
-					.getImage(ISharedImages.IMG_TOOL_FORWARD));
-			this.redo.setGrayed(false);
-			this.redo.setEnabled(true);
-			this.redo.addMouseListener(this);
-
-		} else {
-			this.redo.setGrayed(true);
-			this.redo.setEnabled(false);
-			this.redo.removeMouseListener(this);
-
-		}
-
-		if (this.getCommandStack().canUndo()) {
-			this.undo.setImage(sharedImages
-					.getImage(ISharedImages.IMG_TOOL_BACK));
-			if (!this.undo.isListening(Event.MOUSE_UP)) {
-				this.undo.addMouseListener(this);
-			}
-		} else {
-			this.undo.setImage(sharedImages
-					.getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
-			this.undo.removeMouseListener(this);
-		}
-		this.updateActions(this.stackActions);
-		this.updateActions(this.propertyActions);
-		this.updateActions(this.selectionActions);
+		stackChanged(null);
 	}
 
+	@Override
+	public void stackChanged(CommandStackEvent event) {
+	  this.firePropertyChange(IEditorPart.PROP_DIRTY);
+    ISharedImages sharedImages = PlatformUI.getWorkbench()
+        .getSharedImages();
+
+    // the undo/redo buttons in the toolbar are either activated or
+    // deactivated
+    // depending on the change
+    if (this.getCommandStack().canRedo()) {
+      this.redo.setImage(sharedImages
+          .getImage(ISharedImages.IMG_TOOL_FORWARD));
+      this.redo.setGrayed(false);
+      this.redo.setEnabled(true);
+      this.redo.addMouseListener(this);
+
+    } else {
+      this.redo.setGrayed(true);
+      this.redo.setEnabled(false);
+      this.redo.removeMouseListener(this);
+
+    }
+
+    if (this.getCommandStack().canUndo()) {
+      this.undo.setImage(sharedImages
+          .getImage(ISharedImages.IMG_TOOL_BACK));
+      if (!this.undo.isListening(Event.MOUSE_UP)) {
+        this.undo.addMouseListener(this);
+      }
+    } else {
+      this.undo.setImage(sharedImages
+          .getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
+      this.undo.removeMouseListener(this);
+    }
+    this.updateActions(this.stackActions);
+    this.updateActions(this.propertyActions);
+    this.updateActions(this.selectionActions);
+	}
 	/**
 	 * this method returns a stack with all executed commands in it, this Stack
 	 * is used for e.g. undo/redo by removing/re-adding commands to the stack
