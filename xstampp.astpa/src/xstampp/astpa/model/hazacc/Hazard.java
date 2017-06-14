@@ -13,10 +13,10 @@
 
 package xstampp.astpa.model.hazacc;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import xstampp.astpa.model.interfaces.Severity;
 
 /**
  * Class for hazards
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Hazard extends ATableModel {
   
   @XmlAttribute
-  private int severity;
+  private Integer severity;
 
 	/**
 	 * Constructor of a hazard
@@ -44,7 +44,7 @@ public class Hazard extends ATableModel {
 	 */
 	public Hazard(String title, String description, int number) {
 		super(title, description, number);
-		setSeverity(0);
+		setSeverity(Severity.S0);
 	}
 
 	/**
@@ -53,6 +53,7 @@ public class Hazard extends ATableModel {
 	 * @author Fabian Toth
 	 */
 	public Hazard() {
+    setSeverity(Severity.S0);
 		// empty constructor for JAXB
 	}
 
@@ -60,20 +61,14 @@ public class Hazard extends ATableModel {
   public String getIdString() {
     return "H-" +this.getNumber();
   }
-
-  /**
-   * @return the severity
-   */
-  public int getSeverity() {
-    return severity;
-  }
-
-  /**
-   * @param severity the severity to set
-   */
-  public int setSeverity(int severity) {
-    int oldValue = this.severity;
-    this.severity = severity;
-    return oldValue;
+  
+  @Override
+  public Severity getSeverity() {
+    if(severity != null) {
+      int severityIndex = severity;
+      severity = null;
+      setSeverity(Severity.values()[severityIndex]);
+    }
+    return super.getSeverity();
   }
 }

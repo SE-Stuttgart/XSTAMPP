@@ -25,7 +25,7 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag
  * 
  */
-public interface IHazardViewDataModel extends IDataModel,ICommonTables {
+public interface IHazardViewDataModel extends IDataModel,ICommonTables,ISeverityDataModel {
 
 	/**
 	 * Getter for all existing hazards
@@ -121,26 +121,4 @@ public interface IHazardViewDataModel extends IDataModel,ICommonTables {
 	 * @return the list of all accidents being linked to the given accident.
 	 */
 	List<ITableModel> getLinkedAccidents(UUID hazardId);
-	
-	/**
-   * @return the severity
-   */
-  public int getHazardSeverity(UUID hazardId);
-
-  /**
-   * @param severity the severity to set
-   */
-  public boolean setHazardSeverity(UUID hazardId, int severity);
-  
-
-  /**
-   * @return the useSeverity
-   */
-  public boolean isUseSeverity();
-
-  /**
-   * @param useSeverity the useSeverity to set
-   * @return if the value was really changed 
-   */
-  public boolean setUseSeverity(boolean useSeverity);
 }

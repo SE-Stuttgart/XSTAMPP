@@ -13,6 +13,10 @@
 
 package xstampp.astpa.ui.acchaz;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.jface.action.Action;
@@ -28,8 +32,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -50,9 +52,6 @@ import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
-import java.util.List;
-import java.util.UUID;
-
 /**
  * @author Jarkko Heidenwag
  * 
@@ -72,7 +71,8 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 	 * 
 	 */
 	public AccidentsView() {
-    super(true);
+    super(EnumSet.of(TableStyle.RESTRICTED,TableStyle.WITH_SEVERITY));
+    setUpdateValues(EnumSet.of(ObserverValue.ACCIDENT,ObserverValue.SEVERITY));
 	}
 
 	/**
@@ -312,19 +312,6 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 	@Override
 	public String getTitle() {
 		return Messages.Accidents;
-	}
-
-	
-
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return the type of this view
-	 */
-	@Override
-	public commonTableType getCommonTableType() {
-		return commonTableType.AccidentsView;
 	}
 
 	@Override

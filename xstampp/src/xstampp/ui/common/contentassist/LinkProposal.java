@@ -18,7 +18,8 @@ public class LinkProposal implements IContentProposal {
   private String label;
   private String description;
   private UUID proposalId;
-
+  private boolean selected = false;
+  
   @Override
   public String getContent() {
     return description;
@@ -54,6 +55,14 @@ public class LinkProposal implements IContentProposal {
   
   public UUID getProposalId() {
     return proposalId;
+  }
+
+  public boolean isSelected() {
+    return selected;
+  }
+
+  public void setSelected(boolean selected) {
+    this.selected = selected;
   }
   
 }

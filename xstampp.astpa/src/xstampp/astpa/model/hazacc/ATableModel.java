@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
 
@@ -30,7 +31,7 @@ import xstampp.astpa.model.interfaces.ITableModel;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class ATableModel implements ITableModel, IEntryWithNameId {
+public abstract class ATableModel extends EntryWithSeverity implements ITableModel, IEntryWithNameId {
 
   @XmlAttribute
   private UUID createdBy;

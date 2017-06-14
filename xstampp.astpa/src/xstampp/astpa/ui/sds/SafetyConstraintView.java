@@ -13,6 +13,9 @@
 
 package xstampp.astpa.ui.sds;
 
+import java.util.EnumSet;
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.jface.action.Action;
@@ -26,8 +29,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -46,8 +47,6 @@ import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
-import java.util.UUID;
-
 /**
  * @author Jarkko Heidenwag
  * 
@@ -65,7 +64,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 	 * 
 	 */
 	public SafetyConstraintView() {
-
+    setUpdateValues(EnumSet.of(ObserverValue.SAFETY_CONSTRAINT));
 	}
 
 	/**
@@ -277,18 +276,6 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 	@Override
 	public String getTitle() {
 		return Messages.SafetyConstraints;
-	}
-
-
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return the type of this view
-	 */
-	@Override
-	public commonTableType getCommonTableType() {
-		return commonTableType.SafetyConstraintsView;
 	}
 
 	@Override

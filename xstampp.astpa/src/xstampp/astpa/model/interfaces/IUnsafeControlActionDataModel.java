@@ -30,7 +30,7 @@ import xstampp.model.IEntryFilter;
  * @author Benedikt Markt, Patrick Wickenhaeuser
  * 
  */
-public interface IUnsafeControlActionDataModel extends IDataModel {
+public interface IUnsafeControlActionDataModel extends IDataModel,ISeverityDataModel {
 
 	/**
 	 * Getter for the Control Actions

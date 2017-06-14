@@ -19,6 +19,10 @@ public class Messages extends NLS {
   public static String ProjectSpecifics_UseCausalScenariosTip;
   public static String ProjectSpecifics_UseSeverity;
   public static String ProjectSpecifics_UseSeverityTip;
+  public static String Severity_S0;
+  public static String Severity_S1;
+  public static String Severity_S2;
+  public static String Severity_S3;
   static {
     // initialize resource bundle
     NLS.initializeMessages(BUNDLE_NAME, Messages.class);

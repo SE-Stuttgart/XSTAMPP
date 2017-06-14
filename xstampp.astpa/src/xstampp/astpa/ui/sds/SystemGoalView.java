@@ -42,6 +42,7 @@ import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
 /**
@@ -63,6 +64,7 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
    */
   public SystemGoalView() {
     super(true);
+    setUpdateValues(EnumSet.of(ObserverValue.SYSTEM_GOAL));
   }
 
   /**
@@ -251,17 +253,6 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
   @Override
   public String getTitle() {
     return Messages.SystemGoals;
-  }
-
-  /**
-   * 
-   * @author Jarkko Heidenwag
-   * 
-   * @return the type of this view
-   */
-  @Override
-  public commonTableType getCommonTableType() {
-    return commonTableType.SystemGoalsView;
   }
 
   @Override

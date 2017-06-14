@@ -11,18 +11,25 @@
 
 package xstampp.astpa.ui;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Observable;
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,8 +40,6 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -44,6 +49,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,10 +63,15 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.interfaces.ISeverityDataModel;
+import xstampp.astpa.model.interfaces.ISeverityEntry;
+import xstampp.astpa.model.interfaces.Severity;
+import xstampp.astpa.ui.unsafecontrolaction.SeverityButton;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -68,10 +80,6 @@ import xstampp.ui.editors.interfaces.IEditorBase;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
-
-import java.util.List;
-import java.util.Observable;
-import java.util.UUID;
 
 /**
  * @author Jarkko Heidenwag
@@ -88,9 +96,10 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private static String id;
 
   private TableViewer tableViewer;
-  
+
   private boolean internalUpdate;
 
+  private EnumSet<ObserverValue> updateValues;
   private Label itemsLabel, filterLabel, descriptionLabel;
 
   private Composite tableContainer;
@@ -104,7 +113,12 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private ATableFilter filter;
   private Text filterTextField;
   private T dataInterface;
-  private boolean hasRestrictedAccess;
+  EnumSet<TableStyle> style;
+
+  protected enum TableStyle {
+    RESTRICTED, WITH_SEVERITY
+  }
+
   private static final Image DELETE = Activator
       .getImageDescriptor("/icons/buttons/commontables/remove.png") //$NON-NLS-1$
       .createImage();
@@ -120,49 +134,6 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private static final Image MOVE_DOWN = Activator
       .getImageDescriptor("/icons/buttons/commontables/down.png") //$NON-NLS-1$
       .createImage();
-
-  /**
-   * 
-   * @author Jarkko Heidenwag
-   * 
-   */
-  public enum commonTableType {
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     */
-    UNDEFINED,
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     */
-    SafetyConstraintsView,
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     */
-    SystemGoalsView,
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     */
-    DesignRequirementsView,
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     */
-    AccidentsView,
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     */
-    HazardsView,
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     */
-    ControlActionsView
-  }
 
   private ATableModel selectedEntry;
 
@@ -401,8 +372,21 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
    *          access rights in a user system.
    */
   public CommonTableView(boolean restrict) {
-    this.hasRestrictedAccess = restrict;
+    this.style = EnumSet.noneOf(TableStyle.class);
+    if (restrict) {
+      this.style.add(TableStyle.RESTRICTED);
+    }
     this.internalUpdate = false;
+    updateValues = EnumSet.noneOf(ObserverValue.class);
+  }
+
+  public CommonTableView(EnumSet<TableStyle> style) {
+    this();
+    this.style = style;
+  }
+
+  public void setUpdateValues(EnumSet<ObserverValue> updateValues) {
+    this.updateValues = updateValues;
   }
 
   /**
@@ -480,7 +464,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
     // the textfield for the description of the selected item
     this.descriptionWidget = new Text(textContainer,
-        SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP|SWT.SEARCH);
+        SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP | SWT.SEARCH);
 
     this.descriptionWidget.setMessage(Messages.DoubleClickToEditTitle);
     this.descriptionWidget.setEnabled(false);
@@ -499,7 +483,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     });
 
     this.descriptionWidget.addModifyListener(new ModifyListener() {
-      
+
       @Override
       public void modifyText(ModifyEvent e) {
         internalUpdate = true;
@@ -585,6 +569,10 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         return ((ATableModel) element).getTitle();
       }
     });
+
+    if (style.contains(TableStyle.WITH_SEVERITY)) {
+      addSeverityColumn();
+    }
     // detecting a double click
     ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
         this.getTableViewer()) {
@@ -704,7 +692,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     });
     moveDown.setImage(MOVE_DOWN);
 
-    if (hasRestrictedAccess && getDataInterface() instanceof IUserProject
+    if (style.contains(TableStyle.RESTRICTED) && getDataInterface() instanceof IUserProject
         && !((IUserProject) getDataInterface()).getUserSystem().checkAccess(AccessRights.ADMIN)) {
       this.addNewItemButton.setEnabled(false);
       deleteItemsButton.setEnabled(false);
@@ -759,36 +747,14 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   @Override
   public void update(Observable dataModelController, Object updatedValue) {
     super.update(dataModelController, updatedValue);
-    ObserverValue type = (ObserverValue) updatedValue;
-    switch (type) {
-      case ACCIDENT:
-      case HAZARD:
-      case HAZ_ACC_LINK:
-      case DESIGN_REQUIREMENT:
-      case SAFETY_CONSTRAINT:
-      case SYSTEM_GOAL:
-        this.refreshView();
-        if(!internalUpdate && selectedEntry != null) {
-          getDescriptionWidget()
-          .setText(selectedEntry.getDescription());
-        }else {
-          internalUpdate = false;
-        }
-        break;
-
-      default:
-        break;
+    if (updateValues.contains(updatedValue)) {
+      this.refreshView();
+      if (!internalUpdate && selectedEntry != null) {
+        getDescriptionWidget().setText(selectedEntry.getDescription());
+      } else {
+        internalUpdate = false;
+      }
     }
-  }
-
-  /**
-   * 
-   * @author Jarkko Heidenwag
-   * 
-   * @return the type of this view
-   */
-  public commonTableType getCommonTableType() {
-    return commonTableType.UNDEFINED;
   }
 
   /**
@@ -901,6 +867,68 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
   protected boolean canEdit(ATableModel entryId) {
     return canEdit(entryId, AccessRights.WRITE);
+  }
+
+  private void addSeverityColumn() {
+    if (getDataInterface() instanceof ISeverityDataModel) {
+      final ISeverityDataModel model = ((ISeverityDataModel) getDataInterface());
+      if (model.isUseSeverity()) {
+        TableViewerColumn severityColumn = new TableViewerColumn(getTableViewer(), SWT.NONE);
+        severityColumn.getColumn()
+            .setToolTipText(xstampp.astpa.messages.Messages.ProjectSpecifics_UseSeverityTip);
+        severityColumn.getColumn().setText("Severity*");
+        severityColumn.setLabelProvider(new ColumnLabelProvider() {
+
+          @Override
+          public String getText(Object element) {
+            try {
+              return ((ISeverityEntry) element).getSeverity().toString();
+            } catch (Exception exc) {
+              return "";
+            }
+          }
+        });
+        severityColumn.setEditingSupport(new EditingSupport(getTableViewer()) {
+          String[] severities = new String[] { Severity.S0.toString(), Severity.S1.toString(),
+              Severity.S2.toString(), Severity.S3.toString() };
+
+          @Override
+          protected void setValue(Object element, Object value) {
+            model.setSeverity(element, Severity.values()[(int) value]);
+          }
+
+          @Override
+          protected Object getValue(Object element) {
+            try {
+              return ((ISeverityEntry) element).getSeverity().ordinal();
+            } catch (Exception exc) {
+              return 0;
+            }
+          }
+
+          @Override
+          protected CellEditor getCellEditor(Object element) {
+
+            return null;
+          }
+
+          @Override
+          protected boolean canEdit(Object element) {
+            SeverityButton button = new SeverityButton(((ISeverityEntry) element),
+                getDataInterface(), getViewer().getControl());
+            Point location = getTableViewer().getTable()
+                .getDisplay().getCursorLocation();
+            getTableViewer().getTable().toDisplay(location);
+            Point point = new Point(0,0);
+            point.x = idColumn.getColumn().getWidth() + titleColumn.getColumn().getWidth();
+            button.onButtonDown(point, new Rectangle(0, 0, 0, 0));
+            return true;
+          }
+        });
+        this.getTableColumnLayout().setColumnData(severityColumn.getColumn(),
+            new ColumnWeightData(10, 50, false));
+      }
+    }
   }
 
   protected boolean canEdit(ATableModel entryId, AccessRights level) {

@@ -15,6 +15,8 @@ package xstampp.astpa.model.hazacc;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.astpa.model.interfaces.Severity;
+
 /**
  * Class for accidents
  *
@@ -38,6 +40,7 @@ public class Accident extends ATableModel {
 	 */
 	public Accident(String title, String description, int number) {
 		super(title, description, number);
+    setSeverity(Severity.S0);
 	}
 
 	/**
@@ -46,6 +49,7 @@ public class Accident extends ATableModel {
 	 * @author Fabian Toth
 	 */
 	public Accident() {
+    setSeverity(Severity.S0);
 		// empty constructor for JAXB
 	}
 

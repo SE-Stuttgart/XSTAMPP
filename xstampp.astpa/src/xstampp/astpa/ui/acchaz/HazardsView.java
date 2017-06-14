@@ -11,6 +11,10 @@
 
 package xstampp.astpa.ui.acchaz;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.UUID;
+
 import messages.Messages;
 
 import org.eclipse.jface.action.Action;
@@ -21,15 +25,12 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -50,9 +51,6 @@ import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
-import java.util.List;
-import java.util.UUID;
-
 /**
  * @author Jarkko Heidenwag
  * 
@@ -66,7 +64,8 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
   public static final String ID = "astpa.steps.step1_3"; //$NON-NLS-1$
 
   public HazardsView() {
-    super(true);
+    super(EnumSet.of(TableStyle.RESTRICTED,TableStyle.WITH_SEVERITY));
+    setUpdateValues(EnumSet.of(ObserverValue.HAZARD,ObserverValue.SEVERITY));
   }
 
   /**
@@ -175,8 +174,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
     this.getTableColumnLayout().setColumnData(linksColumn.getColumn(),
         new ColumnWeightData(10, 50, false));
-
-    addSeverityColumn();
+    
     // KeyListener for deleting hazards by selecting them and pressing the
     // delete key
     HazardsView.this.getTableViewer().getControl().addKeyListener(new KeyAdapter() {
@@ -224,57 +222,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
     this.updateTable();
 
-  }
-
-  private void addSeverityColumn() {
-    if (this.getDataInterface().isUseSeverity()) {
-      TableViewerColumn severityColumn = new TableViewerColumn(HazardsView.this.getTableViewer(),
-          SWT.NONE);
-      severityColumn.getColumn()
-          .setToolTipText(xstampp.astpa.messages.Messages.ProjectSpecifics_UseSeverityTip);
-      severityColumn.getColumn().setText("Severity*");
-      severityColumn.setLabelProvider(new ColumnLabelProvider() {
-
-        @Override
-        public String getText(Object element) {
-          return "S"
-              + HazardsView.this.getDataInterface().getHazardSeverity(((Hazard) element).getId());
-        }
-      });
-      severityColumn.setEditingSupport(new EditingSupport(getTableViewer()) {
-        String[] severities = new String[] { "S0", "S1", "S2", "S3" };
-
-        @Override
-        protected void setValue(Object element, Object value) {
-          if (element instanceof Hazard) {
-            HazardsView.this.getDataInterface().setHazardSeverity(((Hazard) element).getId(),
-                (int) value);
-          }
-        }
-
-        @Override
-        protected Object getValue(Object element) {
-          try {
-            return HazardsView.this.getDataInterface()
-                .getHazardSeverity(((Hazard) element).getId());
-          } catch (Exception exc) {
-            return 0;
-          }
-        }
-
-        @Override
-        protected CellEditor getCellEditor(Object element) {
-          return new ComboBoxCellEditor(getTableViewer().getTable(), severities);
-        }
-
-        @Override
-        protected boolean canEdit(Object element) {
-          return true;
-        }
-      });
-      this.getTableColumnLayout().setColumnData(severityColumn.getColumn(),
-          new ColumnWeightData(10, 50, false));
-    }
   }
 
   @Override
@@ -330,17 +277,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
   @Override
   public String getTitle() {
     return Messages.Hazards;
-  }
-
-  /**
-   * 
-   * @author Jarkko Heidenwag
-   * 
-   * @return the type of this view
-   */
-  @Override
-  public commonTableType getCommonTableType() {
-    return commonTableType.HazardsView;
   }
 
   @Override

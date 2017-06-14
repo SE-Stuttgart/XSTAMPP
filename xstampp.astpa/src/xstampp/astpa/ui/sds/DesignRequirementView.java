@@ -44,6 +44,7 @@ import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
 /**
@@ -64,6 +65,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 	 */
 	public DesignRequirementView() {
     super(true);
+    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT));
 	}
 
 	/**
@@ -276,17 +278,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 	@Override
 	public String getTitle() {
 		return Messages.DesignRequirements;
-	}
-
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return the type of this view
-	 */
-	@Override
-	public commonTableType getCommonTableType() {
-		return commonTableType.DesignRequirementsView;
 	}
 
 	@Override

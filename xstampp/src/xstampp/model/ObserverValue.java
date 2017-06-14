@@ -131,6 +131,6 @@ public enum ObserverValue {
   /**
    * Enum value that is triggered before the datamodel is deleted.
    */
-  DELETE, CLEAN_UP, Extended_DATA, PROJECT_TREE,UserSystem;
+  DELETE, CLEAN_UP, Extended_DATA, PROJECT_TREE,UserSystem, SEVERITY;
 
 }

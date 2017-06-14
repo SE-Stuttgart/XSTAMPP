@@ -89,6 +89,7 @@ import xstampp.astpa.model.interfaces.IStatusLineDataModel;
 import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.projectdata.ProjectDataController;
 import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.model.sds.SDSController;
@@ -1889,16 +1890,13 @@ public class DataModelController extends AbstractDataModel
     return false;
   }
 
-  @Override
-  public int getHazardSeverity(UUID hazardId) {
-    return this.hazAccController.getHazardSeverity(hazardId);
-  }
-
-  @Override
-  public boolean setHazardSeverity(UUID hazardId, int severity) {
-    int hazardSeverity = this.hazAccController.setHazardSeverity(hazardId, severity);
-    if (hazardSeverity != severity) {
-      setUnsavedAndChanged(ObserverValue.HAZARD);
+  public boolean setSeverity(Object entry, Severity severity) {
+    Severity oldValue = null;
+    if(entry instanceof EntryWithSeverity) {
+      oldValue = ((EntryWithSeverity) entry).setSeverity(severity);
+    }
+    if (oldValue != null) {
+      setUnsavedAndChanged(ObserverValue.SEVERITY);
       return true;
     }
     return false;

@@ -29,6 +29,7 @@ import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.CommonGridView;
 import xstampp.model.IDataModel;
@@ -280,8 +281,12 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
       if (this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()) {
         idRow.addCell(columnIndex, new GridCellBlank(true));
       } else {
-        idRow.addCell(columnIndex,
-            new GridCellText(UCA1 + this.getDataModel().getUCANumber(tooSoonUca.getId()))); // $NON-NLS-1$
+        GridCellText idCell = new GridCellText(
+            UCA1 + this.getDataModel().getUCANumber(tooSoonUca.getId()));
+        if(getDataModel().isUseSeverity()) {
+          idCell.addCellButton(new SeverityButton((ISeverityEntry) tooSoonUca,getDataModel(),getGrid()));
+        }
+        idRow.addCell(columnIndex, idCell);
       }
       UnsafeControlActionCell editor = new UnsafeControlActionCell(getGridWrapper(),
           tooSoonUca.getDescription(), tooSoonUca.getId(), canWrite);

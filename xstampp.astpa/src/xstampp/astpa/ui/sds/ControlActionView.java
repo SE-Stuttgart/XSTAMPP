@@ -50,6 +50,7 @@ import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
+import java.util.EnumSet;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -71,6 +72,7 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 	 */
 	public ControlActionView() {
     super(true);
+    setUpdateValues(EnumSet.of(ObserverValue.CONTROL_ACTION));
 	}
 
 	/**
@@ -353,17 +355,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 	@Override
 	public String getTitle() {
 		return Messages.ControlActions;
-	}
-
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return the type of this view
-	 */
-	@Override
-	public commonTableType getCommonTableType() {
-		return commonTableType.ControlActionsView;
 	}
 
 

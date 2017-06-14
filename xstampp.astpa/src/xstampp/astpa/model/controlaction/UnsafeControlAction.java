@@ -14,9 +14,11 @@ package xstampp.astpa.model.controlaction;
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
+import xstampp.astpa.model.interfaces.Severity;
 
 import java.util.UUID;
 
@@ -33,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "unsafecontrolaction")
 @XmlAccessorType(XmlAccessType.NONE)
-public class UnsafeControlAction
+public class UnsafeControlAction extends EntryWithSeverity
     implements IUnsafeControlAction, ICorrespondingUnsafeControlAction, IEntryWithNameId {
 
   @XmlElement(name = "description")
@@ -73,6 +75,7 @@ public class UnsafeControlAction
     this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(""); //$NON-NLS-1$
     this.id = UUID.randomUUID();
     this.number = 0;
+    setSeverity(Severity.S0);
   }
   
 
@@ -82,6 +85,7 @@ public class UnsafeControlAction
    * @author Fabian Toth
    */
   public UnsafeControlAction() {
+    setSeverity(Severity.S0);
     // empty constructor for JAXB
   }
 

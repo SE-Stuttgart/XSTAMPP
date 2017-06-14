@@ -376,28 +376,6 @@ public class HazAccController {
     }
     return this.hazardIndex++;
   }
-  
-  /**
-   * @return the severity
-   */
-  public int getHazardSeverity(UUID hazardId) {
-    Hazard hazard = getHazard(hazardId);
-    if(hazard != null) {
-      return getHazard(hazardId).getSeverity();
-    }
-    return 0;
-  }
-
-  /**
-   * @param severity the severity to set
-   */
-  public int setHazardSeverity(UUID hazardId, int severity) {
-    Hazard hazard = getHazard(hazardId);
-    if(hazard != null) {
-      return getHazard(hazardId).setSeverity(severity);
-    }
-    return 0;
-  }
 
   /**
    * @return the useSeverity
