@@ -33,6 +33,7 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
       UUID linkId = ((LinkProposal)proposal).getProposalId();
       if (linkId != null) {
         publicInterface.addLink(assignedId, linkId);
+        grid.getGrid().redraw();
       }
     }
   }

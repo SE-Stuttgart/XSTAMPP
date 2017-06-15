@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Text;
 public class LinkingShell {
 
   private LinkProposal[] proposals;
+  private LinkProposal[] currentContent;
   private IContentProposalListener listener;
   private Point mouseLoc;
   private Shell shell;
@@ -133,15 +134,12 @@ public class LinkingShell {
     final List proposalList = new List(shell,
         SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.WRAP | SWT.BORDER_SOLID);
     proposalList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    String[] entrys = new String[this.proposals.length];
     int selected = 0;
     for (int i = 0; i < this.proposals.length; i++) {
-      entrys[i] = this.proposals[i].getLabel();
       if (this.proposals[i].isSelected()) {
         selected = i;
       }
     }
-    proposalList.setItems(entrys);
     proposalList.addSelectionListener(new SelectionAdapter() {
 
       @Override
@@ -188,10 +186,9 @@ public class LinkingShell {
 
       @Override
       public void mouseDoubleClick(MouseEvent e) {
-        if (proposalList.getSelectionIndex() >= 0
-            && proposalList.getSelectionIndex() < LinkingShell.this.proposals.length) {
+        if (currentContent != null) {
 
-          notifyListener(LinkingShell.this.proposals[proposalList.getSelectionIndex()]);
+          notifyListener(LinkingShell.this.currentContent[proposalList.getSelectionIndex()]);
           LinkingShell.this.shell.close();
           descShell.close();
         }
@@ -202,17 +199,20 @@ public class LinkingShell {
 
       @Override
       public void modifyText(ModifyEvent e) {
-        ArrayList<String> entrys = new ArrayList<>();
+        ArrayList<String> entryLabels = new ArrayList<>();
+        ArrayList<LinkProposal> proposalEntries = new ArrayList<>();
         for (int i = 0; i < proposals.length; i++) {
           if (proposals[i].getLabel().toLowerCase().contains(searchField.getText().toLowerCase())) {
-            entrys.add(proposals[i].getLabel());
+            entryLabels.add(proposals[i].getLabel());
+            proposalEntries.add(proposals[i]);
           }
         }
-        proposalList.setItems(entrys.toArray(new String[0]));
+        currentContent = proposalEntries.toArray(new LinkProposal[0]);
+        proposalList.setItems(entryLabels.toArray(new String[0]));
 
       }
     });
-
+    searchField.setText(""); //$NON-NLS-1$
     proposalList.addKeyListener(new KeyListener() {
 
       @Override

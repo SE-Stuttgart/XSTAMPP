@@ -496,7 +496,7 @@ public class DataModelController extends AbstractDataModel
     }
 
     if (this.controlActionController.addUCAHazardLink(unsafeControlActionId, hazardId)) {
-      this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+      this.setUnsavedAndChanged();
       return true;
     }
     return false;
@@ -1546,7 +1546,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
     if (this.controlActionController.removeUCAHazardLink(unsafeControlActionId, hazardId)) {
-      this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+      this.setUnsavedAndChanged();
       return true;
     }
     return false;

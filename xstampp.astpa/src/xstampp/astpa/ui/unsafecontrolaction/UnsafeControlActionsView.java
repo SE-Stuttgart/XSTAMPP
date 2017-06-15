@@ -277,21 +277,20 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
     }
     boolean canWrite = checkAccess(cAction.getId(), AccessRights.WRITE);
     if (ucaList.size() > i) {
-      IUnsafeControlAction tooSoonUca = ucaList.get(i);
-      if (this.ucaContentProvider.getLinkedItems(tooSoonUca.getId()).isEmpty()) {
-        idRow.addCell(columnIndex, new GridCellBlank(true));
-      } else {
-        GridCellText idCell = new GridCellText(
-            UCA1 + this.getDataModel().getUCANumber(tooSoonUca.getId()));
-        if(getDataModel().isUseSeverity()) {
-          idCell.addCellButton(new SeverityButton((ISeverityEntry) tooSoonUca,getDataModel(),getGrid()));
-        }
-        idRow.addCell(columnIndex, idCell);
+      IUnsafeControlAction uca = ucaList.get(i);
+      
+      GridCellText idCell = new UcaIdCell(
+          UCA1 + this.getDataModel().getUCANumber(uca.getId()),
+          ucaContentProvider,
+          uca.getId());
+      if(getDataModel().isUseSeverity()) {
+        idCell.addCellButton(new SeverityButton((ISeverityEntry) uca,getDataModel(),getGrid()));
       }
+      idRow.addCell(columnIndex, idCell);
       UnsafeControlActionCell editor = new UnsafeControlActionCell(getGridWrapper(),
-          tooSoonUca.getDescription(), tooSoonUca.getId(), canWrite);
+          uca.getDescription(), uca.getId(), canWrite);
       ucaRow.addCell(columnIndex, editor);
-      linkRow.addCell(columnIndex, new GridCellLinking<UcaContentProvider>(tooSoonUca.getId(),
+      linkRow.addCell(columnIndex, new GridCellLinking<UcaContentProvider>(uca.getId(),
           this.ucaContentProvider, getGridWrapper(), canWrite));
       return true;
     }
