@@ -3,7 +3,6 @@ package xstampp.astpa.ui.unsafecontrolaction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -23,33 +22,33 @@ public class SeverityButton extends CellButton {
   private ISeverityEntry uca;
   private Severity currentSeverity;
   private Control control;
-  private boolean hovered;
-  private static final Image hoveredImage = Activator.getImageDescriptor("/icons/buttons/dropDownCanvas.png").createImage();
+  private static final Image hoveredImage = Activator
+      .getImageDescriptor("/icons/buttons/dropDownCanvas.png").createImage();
 
   public SeverityButton(ISeverityEntry uca, IDataModel model, Control grid) {
-    
-    super(new Rectangle(0, 0,38,16),hoveredImage);
+
+    super(new Rectangle(0, 0, 38, 16), hoveredImage);
     this.control = grid;
     this.uca = uca;
     this.model = (ISeverityDataModel) model;
     currentSeverity = this.uca.getSeverity();
     setText(currentSeverity.toString());
   }
-  
+
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     LinkProposal[] proposals = new LinkProposal[4];
-    for(int i = 0; i < Severity.values().length;i++) {
+    for (int i = 0; i < Severity.values().length; i++) {
       proposals[i] = new LinkProposal();
       proposals[i].setDescription(Severity.values()[i].getDescription());
       proposals[i].setLabel(Severity.values()[i].toString());
-      if(currentSeverity.ordinal() == i) {
+      if (currentSeverity.ordinal() == i) {
         proposals[i].setSelected(true);
       }
     }
     AutoCompleteField assist = new AutoCompleteField(proposals, control);
-    assist.setPopupPosition(new Point(relativeMouse.x + cellBounds.x,
-                                        relativeMouse.y + cellBounds.y));
+    assist.setPopupPosition(
+        new Point(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
     if (this.control.getDisplay() != null) {
       assist.setProposalListener(new IContentProposalListener() {
 
@@ -70,13 +69,9 @@ public class SeverityButton extends CellButton {
           "for some reason the Platform can't find a suficient display!");
     }
   }
+
   @Override
-  public void onPaint(GC gc, Rectangle cellBounds) {
-    super.onPaint(gc, cellBounds);
-    
-  }
-  
-  public void setHovered(boolean hovered) {
-    this.hovered = hovered;
+  public String getToolTip() {
+    return "Press to edit the severity";
   }
 }

@@ -90,6 +90,10 @@ public class CellButton implements ICellButton {
     return null;
   }
 
+  public String getToolTip() {
+    return null;
+  }
+
   public void setText(String text) {
     this.text = text;
   }

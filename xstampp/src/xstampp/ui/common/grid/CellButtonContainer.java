@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -41,7 +39,7 @@ public class CellButtonContainer {
   public CellButtonContainer() {
     this.buttons = new ArrayList<ICellButton>();
     this.buttonColumn = new ArrayList<ICellButton>();
-    this.bounds = new Rectangle(4,4,4,4);
+    this.bounds = new Rectangle(4, 4, 4, 4);
   }
 
   /**
@@ -56,10 +54,10 @@ public class CellButtonContainer {
    */
   public void paintButtons(GridCellRenderer renderer, GC gc) {
     Rectangle cellBounds = renderer.getBounds();
-    if(buttonColumn.size() > 0){
+    if (buttonColumn.size() > 0) {
       int columnTopY = bounds.y;
       int columnX = cellBounds.width - this.bounds.width;
-      for(ICellButton button : buttonColumn){
+      for (ICellButton button : buttonColumn) {
         button.getBounds().x = columnX;
         button.getBounds().y = columnTopY;
         columnTopY += button.getBounds().height + bounds.y;
@@ -72,9 +70,8 @@ public class CellButtonContainer {
   }
 
   /**
-   * Adds a button to the cell container which is placed in a button column
-   * at the right border of cell.
-   * for that the x and y values are adapted each time the button is drawn
+   * Adds a button to the cell container which is placed in a button column at the right border of
+   * cell. for that the x and y values are adapted each time the button is drawn
    * 
    * @author Patrick Wickenhaeuser, Lukas Balzer
    * 
@@ -88,7 +85,6 @@ public class CellButtonContainer {
     addCellButton(button);
   }
 
-  
   /**
    * Adds a normal Cell button which is than printed in the
    * {@link #paintButtons(GridCellRenderer, GC)} method
@@ -96,9 +92,10 @@ public class CellButtonContainer {
    * @param button
    *          the new button
    */
-  public void addCellButton(ICellButton button){
+  public void addCellButton(ICellButton button) {
     this.buttons.add(button);
   }
+
   /**
    * Checks if any buttons is hit.
    * 
@@ -131,7 +128,7 @@ public class CellButtonContainer {
    * 
    */
   public void clearButtons() {
-    this.bounds = new Rectangle(4,4,4,4);
+    this.bounds = new Rectangle(4, 4, 4, 4);
     this.buttons.clear();
     this.buttonColumn.clear();
   }
@@ -148,15 +145,17 @@ public class CellButtonContainer {
   }
 
   public String getToolTip(Point point) {
-    if(buttons != null){
+    if (buttons != null) {
       for (ICellButton button : buttons) {
-        return button.setToolTip(point);
+        if (button.getBounds().contains(point)) {
+          return button.getToolTip();
+        }
       }
     }
     return null;
   }
-  
-  public Rectangle getBounds(){
+
+  public Rectangle getBounds() {
     return bounds;
   }
 }

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -19,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-
+import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
@@ -40,7 +38,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ScrollBar;
+
 import xstampp.Activator;
 
 /**
@@ -115,7 +115,8 @@ public class GridWrapper {
       Point cellCoord = this.grid.getGrid().getCell(mousePoint);
 
       Point relativeMouse = null;
-      if ((cellCoord != null) && (cellCoord.y >= 0) && (cellCoord.y < this.grid.getGrid().getItemCount())) {
+      if ((cellCoord != null) && (cellCoord.y >= 0)
+          && (cellCoord.y < this.grid.getGrid().getItemCount())) {
         GridItem item = this.grid.getGrid().getItem(cellCoord.y);
         Rectangle itemBounds = item.getBounds(cellCoord.x);
 
@@ -169,9 +170,20 @@ public class GridWrapper {
 
     @Override
     public void mouseMove(MouseEvent e) {
-      IGridCell cell = this.getCellFromMouse(e);
-      if (cell != null) {
-        // actualGrid.setToolTipText(cell.getToolTip(new Point(e.x, e.y)));
+
+      IGridCell cell = getCellFromMouse(e);
+      Point mousePoint = new Point(e.x, e.y);
+      Point cellCoord = this.grid.getGrid().getCell(mousePoint);
+
+      if ((cellCoord != null) && (cellCoord.y >= 0)
+          && (cellCoord.y < this.grid.getGrid().getItemCount())) {
+        GridItem item = this.grid.getGrid().getItem(cellCoord.y);
+        Rectangle itemBounds = item.getBounds(cellCoord.x);
+
+        this.grid.mousePosition = new Point(mousePoint.x - itemBounds.x,
+            mousePoint.y - itemBounds.y);
+        String toolTip = cell.getToolTip(this.grid.mousePosition);
+        this.grid.setToolTip(toolTip);
       }
       this.grid.setHoveredCell(cell);
     }
@@ -334,6 +346,8 @@ public class GridWrapper {
   private float[] columnratios;
   public Integer persistedScrollIndex;
 
+  private Point mousePosition;
+
   /**
    * Get the image for the add button.
    * 
@@ -343,7 +357,8 @@ public class GridWrapper {
    */
   public static final Image getAddButton16() {
     if (GridWrapper.addImage16 == null) {
-      GridWrapper.addImage16 = Activator.getImageDescriptor(GridWrapper.ADD_ICON_PATH_16).createImage();
+      GridWrapper.addImage16 = Activator.getImageDescriptor(GridWrapper.ADD_ICON_PATH_16)
+          .createImage();
     }
 
     return GridWrapper.addImage16;
@@ -358,7 +373,8 @@ public class GridWrapper {
    */
   public static final Image getAddButton32() {
     if (GridWrapper.addImage32 == null) {
-      GridWrapper.addImage32 = Activator.getImageDescriptor(GridWrapper.ADD_ICON_PATH_32).createImage();
+      GridWrapper.addImage32 = Activator.getImageDescriptor(GridWrapper.ADD_ICON_PATH_32)
+          .createImage();
     }
 
     return GridWrapper.addImage32;
@@ -373,7 +389,8 @@ public class GridWrapper {
    */
   public static final Image getDeleteButton16() {
     if (GridWrapper.deleteLinkImage16 == null) {
-      GridWrapper.deleteLinkImage16 = Activator.getImageDescriptor(GridWrapper.DELETE_LINK_ICON_PATH_16).createImage();
+      GridWrapper.deleteLinkImage16 = Activator
+          .getImageDescriptor(GridWrapper.DELETE_LINK_ICON_PATH_16).createImage();
     }
 
     return GridWrapper.deleteLinkImage16;
@@ -388,7 +405,8 @@ public class GridWrapper {
    */
   public static final Image getDeleteButton32() {
     if (GridWrapper.deleteLinkImage32 == null) {
-      GridWrapper.deleteLinkImage32 = Activator.getImageDescriptor(GridWrapper.DELETE_LINK_ICON_PATH_32).createImage();
+      GridWrapper.deleteLinkImage32 = Activator
+          .getImageDescriptor(GridWrapper.DELETE_LINK_ICON_PATH_32).createImage();
     }
 
     return GridWrapper.deleteLinkImage32;
@@ -403,7 +421,8 @@ public class GridWrapper {
    */
   public static final Image getLinkButton16() {
     if (GridWrapper.editLinkImage16 == null) {
-      GridWrapper.editLinkImage16 = Activator.getImageDescriptor(GridWrapper.EDIT_LINK_ICON_PATH_16).createImage();
+      GridWrapper.editLinkImage16 = Activator.getImageDescriptor(GridWrapper.EDIT_LINK_ICON_PATH_16)
+          .createImage();
     }
 
     return GridWrapper.editLinkImage16;
@@ -418,7 +437,8 @@ public class GridWrapper {
    */
   public static final Image getLinkButton24() {
     if (GridWrapper.editLinkImage24 == null) {
-      GridWrapper.editLinkImage24 = Activator.getImageDescriptor(GridWrapper.EDIT_LINK_ICON_PATH_24).createImage();
+      GridWrapper.editLinkImage24 = Activator.getImageDescriptor(GridWrapper.EDIT_LINK_ICON_PATH_24)
+          .createImage();
     }
 
     return GridWrapper.editLinkImage24;
@@ -433,7 +453,8 @@ public class GridWrapper {
    */
   public static final Image getLinkButton32() {
     if (GridWrapper.editLinkImage32 == null) {
-      GridWrapper.editLinkImage32 = Activator.getImageDescriptor(GridWrapper.EDIT_LINK_ICON_PATH_32).createImage();
+      GridWrapper.editLinkImage32 = Activator.getImageDescriptor(GridWrapper.EDIT_LINK_ICON_PATH_32)
+          .createImage();
     }
 
     return GridWrapper.editLinkImage32;
@@ -457,6 +478,8 @@ public class GridWrapper {
 
   private boolean selectRow = true;
 
+  private String toolTip = null;
+
   /**
    * Ctor.
    * 
@@ -471,6 +494,7 @@ public class GridWrapper {
     this.rows = new ArrayList<GridRow>();
     this.nebulaRows = new ArrayList<NebulaGridRowWrapper>();
     this.hoveredCell = null;
+    this.mousePosition = new Point(0, 0);
     this.actualGrid = new Grid(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.VIRTUAL);
     this.actualGrid.setHeaderVisible(true);
     this.actualGrid.getHeaderHeight();
@@ -481,13 +505,25 @@ public class GridWrapper {
     this.actualGrid.addMouseMoveListener(new GridMouseMoveListener(this));
     this.actualGrid.addFocusListener(new GridFocusListener(this));
     this.cellRenderer = new GridCellRenderer(this);
+    new DefaultToolTip(actualGrid) {
+      @Override
+      protected String getText(Event event) {
+        return getToolTip();
+      }
+
+      @Override
+      protected boolean shouldCreateToolTip(Event event) {
+        return getToolTip() != null;
+      }
+    };
     this.actualGrid.addPaintListener(new PaintListener() {
 
       @Override
       public void paintControl(PaintEvent paintEvent) {
+        // setToolTip(null);
         int maximum = actualGrid.getVerticalBar().getMaximum();
         if (persistedScrollIndex != null && persistedScrollIndex < maximum) {
-          actualGrid.getVerticalBar().setSelection(Math.min(persistedScrollIndex + 1,maximum));
+          actualGrid.getVerticalBar().setSelection(Math.min(persistedScrollIndex + 1, maximum));
           actualGrid.redraw();
           persistedScrollIndex = null;
         }
@@ -529,8 +565,8 @@ public class GridWrapper {
   }
 
   /**
-   * Traverses all rows recursively to find the cell containing the element with
-   * the given uuid and the activates it
+   * Traverses all rows recursively to find the cell containing the element with the given uuid and
+   * the activates it
    * 
    * @author Benedikt Markt
    * 
@@ -773,7 +809,8 @@ public class GridWrapper {
    * @return whether the cell is hovered.
    */
   public boolean isCellHovered(IGridCell cell) {
-    if ((this.getGrid() != null) && (this.getHoveredCell() != null) && this.getHoveredCell().equals(cell)) {
+    if ((this.getGrid() != null) && (this.getHoveredCell() != null)
+        && this.getHoveredCell().equals(cell)) {
       return true;
     }
 
@@ -860,7 +897,8 @@ public class GridWrapper {
 
   public void resizeRow(int rowIndex) {
     if (!this.nebulaRows.get(rowIndex).isDisposed()) {
-      this.nebulaRows.get(rowIndex).setHeight(this.nebulaRows.get(rowIndex).getGridRow().getPreferredHeight());
+      this.nebulaRows.get(rowIndex)
+          .setHeight(this.nebulaRows.get(rowIndex).getGridRow().getPreferredHeight());
     }
   }
 
@@ -929,5 +967,17 @@ public class GridWrapper {
 
   public void setSelectRow(boolean selectRow) {
     this.selectRow = selectRow;
+  }
+
+  public Point getMousePosition() {
+    return mousePosition;
+  }
+
+  public void setToolTip(String toolTip) {
+    this.toolTip = toolTip;
+  }
+
+  public String getToolTip() {
+    return toolTip;
   }
 }

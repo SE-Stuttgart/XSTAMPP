@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -34,12 +32,12 @@ public abstract class AbstractGridCell implements IGridCell {
    */
   public static final int DEFAULT_CELL_HEIGHT = 20;
 
-  public static final Color HOVER_COLOR = new Color(null, 205,245, 205);
-  public static final Color PARENT_COLOR = new Color(null, 215,240, 255);
+  public static final Color HOVER_COLOR = new Color(null, 205, 245, 205);
+  public static final Color PARENT_COLOR = new Color(null, 215, 240, 255);
 
-  private static final Color MOD_2_1_GRAY = new Color(null,230, 230,230);
+  private static final Color MOD_2_1_GRAY = new Color(null, 230, 230, 230);
 
-  private static final Color MOD_2_0_GRAY = new Color(null, 245,245,245);
+  private static final Color MOD_2_0_GRAY = new Color(null, 245, 245, 245);
 
   private GridRow row = null;
   private boolean hasChildren;
@@ -100,8 +98,7 @@ public abstract class AbstractGridCell implements IGridCell {
     // alternating color
     // find out the index of the cell
 
-    int index =  this.row.getRowIndex() / this.row.getColorDivider();
-    
+    int index = this.row.getRowIndex() / this.row.getColorDivider();
 
     if ((index % 2) == 0) {
       return MOD_2_0_GRAY;
@@ -112,20 +109,21 @@ public abstract class AbstractGridCell implements IGridCell {
 
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
-    if(item.hasChildren()){
+    if (item.hasChildren()) {
       hasChildren = true;
     }
     this.paintFrame(renderer, gc, item);
   }
 
-  public boolean hasChildren(){
+  public boolean hasChildren() {
     return hasChildren;
   }
-  
+
   @Override
   public GridRow getGridRow() {
     return this.row;
   }
+
   /**
    * Paint the frame.
    * 
@@ -138,15 +136,12 @@ public abstract class AbstractGridCell implements IGridCell {
    * @param item
    *          the nebula grid item the cell belongs to.
    */
-  public void paintFrame(GridCellRenderer renderer, 
-                         GC gc,
-                         NebulaGridRowWrapper item) {
+  public void paintFrame(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
 
     gc.setBackground(this.getBackgroundColor(renderer, gc));
 
-    gc.fillRectangle(renderer.getDrawBounds().x,
-        renderer.getDrawBounds().y, renderer.getDrawBounds().width,
-        renderer.getDrawBounds().height);
+    gc.fillRectangle(renderer.getDrawBounds().x, renderer.getDrawBounds().y,
+        renderer.getDrawBounds().width, renderer.getDrawBounds().height);
 
     this.buttonContainer.paintButtons(renderer, gc);
 
@@ -194,8 +189,7 @@ public abstract class AbstractGridCell implements IGridCell {
   }
 
   /**
-   * draws a string in the given bounds on the gc element, this method also
-   * performs linebreaks
+   * draws a string in the given bounds on the gc element, this method also performs linebreaks
    *
    * @author Lukas Balzer
    *
@@ -211,7 +205,8 @@ public abstract class AbstractGridCell implements IGridCell {
    *          the offset from the right side of the bounds
    * @return the height of the written text sequence
    */
-  protected final int wrapText(Rectangle bounds, GC gc, String text, int left_space, int right_space) {
+  protected final int wrapText(Rectangle bounds, GC gc, String text, int left_space,
+      int right_space) {
     if (text.isEmpty() || bounds.width < 0) {
       return 0;
     }
@@ -254,14 +249,7 @@ public abstract class AbstractGridCell implements IGridCell {
         first = line.isEmpty();
         carryOver = true;
       } else if (!tmpLine.isEmpty() && gc.stringExtent(tmpLine).x >= width) {
-        int end = wrap(gc,
-                       tmpLine,
-                       width - 1,
-                       0,
-                       tmpLine.length() - 1,
-                       0,
-                       1,
-                       1);
+        int end = wrap(gc, tmpLine, width - 1, 0, tmpLine.length() - 1, 0, 1, 1);
         gc.drawString(tmpLine.substring(0, end), bounds.x + left_space, lineHeight);
         lineHeight += metrics.getHeight();
         tmpLine = tmpLine.substring(end);
@@ -304,33 +292,32 @@ public abstract class AbstractGridCell implements IGridCell {
    * @author Lukas Balzer
    *
    * @param gc
-   *         the graphics element
+   *          the graphics element
    * @param line
    *          the String line
    * @param width
    *          the max width of the line
    * @param start
    *          the index the line should start with ( usually 0)
-   * @param end 
-   *          the index of the string end, this is not changed but adapted in
-   *          every recursion step by res
+   * @param end
+   *          the index of the string end, this is not changed but adapted in every recursion step
+   *          by res
    * @param depth
    *          the number of the recursion depth (starting with 0)
    * @param endRes
-   *          a number between 0 and 1 that defines the end index 
-   *          in each recursion
+   *          a number between 0 and 1 that defines the end index in each recursion
    * @param ch
    * @return the maximal end index to ensure that the line is still visible
    */
-  protected final int wrap(GC gc, String line,int width,
-                           int start, int end, int depth, double endRes, double ch) {
-    
+  protected final int wrap(GC gc, String line, int width, int start, int end, int depth,
+      double endRes, double ch) {
+
     double nextEndRes;
     double recursionEnd = endRes * end;
-    if(width < 0){
+    if (width < 0) {
       return 0;
     }
-    //if 
+    // if
     if (gc.stringExtent(line.substring(start, (int) (recursionEnd))).x <= width && ch > 0.1) {
       nextEndRes = Math.min(1, endRes + ch * 0.5);
       return wrap(gc, line, width, start, end, depth + 1, nextEndRes, ch / 2);
@@ -343,8 +330,7 @@ public abstract class AbstractGridCell implements IGridCell {
 
   @Override
   public String getToolTip(Point point) {
-    if(buttonContainer != null)
-    {
+    if (buttonContainer != null) {
       return buttonContainer.getToolTip(point);
     }
     return null;
@@ -352,7 +338,7 @@ public abstract class AbstractGridCell implements IGridCell {
 
   @Override
   public int getPreferredHeight() {
-    if(hasChildren){
+    if (hasChildren) {
       return preferredHeight;
     }
     int defaultHeight = Math.max(DEFAULT_CELL_HEIGHT, buttonContainer.getBounds().height);
@@ -361,9 +347,9 @@ public abstract class AbstractGridCell implements IGridCell {
 
   public void setPreferredHeight(NebulaGridRowWrapper item, int preferredHeight) {
     int heightDiff = item.getGridRow().getChildren().size() * DEFAULT_CELL_HEIGHT - preferredHeight;
-    if (heightDiff >= 0 ) {
+    if (heightDiff >= 0) {
       this.preferredHeight = 1;
-    }else{
+    } else {
       this.preferredHeight = -heightDiff;
     }
     this.preferredHeight = Math.max(this.preferredHeight, this.buttonContainer.getBounds().height);

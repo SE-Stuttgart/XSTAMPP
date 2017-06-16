@@ -17,24 +17,26 @@ public class UcaIdCell extends GridCellText {
   private UUID ucaId;
   private IUnsafeControlActionDataModel ucaDataModel;
   private IUnsafeControlAction unsafeControlAction;
-  public UcaIdCell(UcaContentProvider provider,IUnsafeControlAction entry, IUnsafeControlActionDataModel dataModel) {
+
+  public UcaIdCell(UcaContentProvider provider, IUnsafeControlAction entry,
+      IUnsafeControlActionDataModel dataModel) {
     super("UCA1." + dataModel.getUCANumber(entry.getId()));
     this.provider = provider;
     this.unsafeControlAction = entry;
     this.ucaId = entry.getId();
     this.ucaDataModel = dataModel;
-    
+
   }
-  
+
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
+    clearCellButtons();
     if (provider.getLinkedItems(ucaId).isEmpty()) {
-      super.paintFrame(renderer, gc, item);
-    }else {
-      clearCellButtons();
-      if(ucaDataModel.isUseSeverity()) {
-        SeverityButton button = new SeverityButton((ISeverityEntry) unsafeControlAction,ucaDataModel, item.getParent());
-        button.setHovered(renderer.getGridWrapper().getHoveredCell() == this);
+      paintFrame(renderer, gc, item);
+    } else {
+      if (ucaDataModel.isUseSeverity()) {
+        SeverityButton button = new SeverityButton((ISeverityEntry) unsafeControlAction,
+            ucaDataModel, item.getParent());
         addCellButton(button);
       }
       super.paint(renderer, gc, item);
