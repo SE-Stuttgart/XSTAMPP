@@ -74,7 +74,10 @@ public class CellButtonImportConstraint extends CellButton {
           public void proposalAccepted(IContentProposal proposal) {
             CausalFactorEntryData entryData = new CausalFactorEntryData(entry.getId());
             entryData.setConstraint(proposal.getContent());
+            dataModel.lockUpdate();
             dataModel.changeCausalEntry(componentId, factorId, entryData);
+            dataModel.releaseLockAndUpdate(null);
+            grid.redraw();
           }
         });
     

@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -90,8 +88,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   }
 
   /**
-   * creates a Text editor which is <b>editable</b> and <b>doesn't contain a
-   * delete button</b>. When created the editor is empty
+   * creates a Text editor which is <b>editable</b> and <b>doesn't contain a delete button</b>. When
+   * created the editor is empty
    * 
    * @param grid
    *          The grid canvas, this is needed to show the direct editor
@@ -103,9 +101,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   }
 
   /**
-   * creates a Text editor which is <b>editable</b> and <b>doesn't contain a
-   * delete button</b>. the editor further contains the initial text and is
-   * displayed in the given grid
+   * creates a Text editor which is <b>editable</b> and <b>doesn't contain a delete button</b>. the
+   * editor further contains the initial text and is displayed in the given grid
    * 
    * @param grid
    *          The grid canvas, this is needed to show the direct editor
@@ -120,8 +117,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   }
 
   /**
-   * creates a Text editor which contains the initial text and is displayed in
-   * the given grid
+   * creates a Text editor which contains the initial text and is displayed in the given grid
    * 
    * @author Patrick Wickenhaeuser, Lukas Balzer
    * @param grid
@@ -136,7 +132,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
    *          the id of the entry which is represented and edited in this editor
    * 
    */
-  public GridCellTextEditor(GridWrapper grid, String initialText, Boolean showDelete, Boolean readOnly, UUID entryId) {
+  public GridCellTextEditor(GridWrapper grid, String initialText, Boolean showDelete,
+      Boolean readOnly, UUID entryId) {
     this.useInlineEditor = true;
     this.showDelete = showDelete;
     this.isReadOnly = readOnly;
@@ -155,7 +152,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
       @Override
       public void mouseScrolled(MouseEvent e) {
-        if (GridCellTextEditor.this.editor != null && !GridCellTextEditor.this.editor.getControl().isDisposed()) {
+        if (GridCellTextEditor.this.editor != null
+            && !GridCellTextEditor.this.editor.getControl().isDisposed()) {
           GridCellTextEditor.this.editor.getControl().dispose();
         }
       }
@@ -174,11 +172,13 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     int buttonCollum = 0;
     // calculate the avaiable space and performe a wrap
     if (this.showDelete) {
-      this.deleteSpace = new Rectangle(bounds.x + bounds.width - 16, bounds.y + bounds.height / 2 - 8, 16, 16);
+      this.deleteSpace = new Rectangle(bounds.x + bounds.width - 16,
+          bounds.y + bounds.height / 2 - 8, 16, 16);
       buttonCollum = this.deleteSpace.width;
       gc.drawImage(GridWrapper.getDeleteButton16(), this.deleteSpace.x, this.deleteSpace.y);
     }
     int lineHeight;
+    currentText = getCurrentText();
     if (this.currentText.trim().isEmpty() && !isReadOnly) {
       lineHeight = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum);
     } else {
@@ -198,9 +198,16 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     gc.setForeground(fgColor);
   }
 
+  public String getCurrentText() {
+    return currentText;
+  }
+  
   @Override
   public void onMouseDown(MouseEvent error, Point relativeMouse, Rectangle cellBounds) {
-    if (this.showDelete && GridCellTextEditor.this.deleteSpace.contains(error.x, error.y) && error.button == 1) {
+    if (!getButtonContainer().isEmpty()) {
+      getButtonContainer().onMouseDown(relativeMouse, cellBounds);
+    } else if (this.showDelete && GridCellTextEditor.this.deleteSpace.contains(error.x, error.y)
+        && error.button == 1) {
       delete();
     } else if (!isReadOnly && useInlineEditor) {
       if (editor == null || editor.getControl().isDisposed()) {
@@ -235,7 +242,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
           @Override
           public void modifyText(ModifyEvent error) {
-            if (error.getSource() instanceof Text && !currentText.equals(((Text) error.widget).getText())) {
+            if (error.getSource() instanceof Text
+                && !currentText.equals(((Text) error.widget).getText())) {
               GridCellTextEditor.this.currentText = ((Text) error.widget).getText();
               Rectangle rect = GridCellTextEditor.this.editField;
               Text text = (Text) error.getSource();
@@ -263,10 +271,11 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
       editor.setTextFont(Display.getDefault().getSystemFont());
       editor.setValue(this.currentText);
       editor.setFocus();
-    }else if (!useInlineEditor){
-      final DirectEditorShell editorShell = new DirectEditorShell(this.grid.getGrid(), editField, currentText, cellBounds);
+    } else if (!useInlineEditor) {
+      final DirectEditorShell editorShell = new DirectEditorShell(this.grid.getGrid(), editField,
+          currentText, cellBounds);
       editorShell.addOkListener(new SelectionAdapter() {
-        
+
         @Override
         public void widgetSelected(SelectionEvent e) {
           updateDataModel(editorShell.getContent());
@@ -291,14 +300,14 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   }
 
   /**
-   * This method does nothing by default it is called when the editor is
-   * activated and can be used to execute actions to prepare the dataModel.
+   * This method does nothing by default it is called when the editor is activated and can be used
+   * to execute actions to prepare the dataModel.
    */
   protected abstract void editorOpening();
 
   /**
-   * This method does nothing by default it is called when the editor is
-   * disposed and can be used to execute actions to prepare the dataModel.
+   * This method does nothing by default it is called when the editor is disposed and can be used to
+   * execute actions to prepare the dataModel.
    */
   protected abstract void editorClosing();
 
@@ -325,21 +334,9 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     // do nothing by default
   }
 
-  @Override
-  public void addCellButton(CellButton button) {
-    // the delete Button is aded manually to allow a better handling of the
-    // delete process
-  }
-
-  @Override
-  public void clearCellButtons() {
-    // not needed either
-
-  }
-
   /**
-   * The abstract method which is linked with the delete button note that if
-   * showDelete is set to false, this function is never called.
+   * The abstract method which is linked with the delete button note that if showDelete is set to
+   * false, this function is never called.
    *
    * @author Lukas Balzer
    *
@@ -386,4 +383,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     this.isReadOnly = isReadOnly;
   }
 
+  public GridWrapper getGridWrapper() {
+    return grid;
+  }
 }

@@ -7,7 +7,6 @@ import org.eclipse.swt.graphics.Rectangle;
 
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.model.ISafetyDataModel;
 import xstampp.ui.common.grid.CellButton;
 import xstampp.ui.common.grid.GridWrapper;
 
@@ -34,6 +33,8 @@ public class NewConstraintButton extends CellButton {
 		public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
 	    CausalFactorEntryData data = new CausalFactorEntryData(entryId);
 	    data.setConstraint(new String());
+	    datamodel.lockUpdate();
 	    datamodel.changeCausalEntry(componentId, factorId, data);
+      datamodel.releaseLockAndUpdate(null);
 		}
 	}

@@ -193,23 +193,23 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     boolean res = false;
     if (entryData.noteChanged() && !entryData.getNote().equals(getNote())) {
       resultData.setNote(note);
-      res &= setNote(entryData.getNote());
+      res |= setNote(entryData.getNote());
     }
 
     if (entryData.hazardsChanged()) {
       resultData.setHazardIds(hazardIds);
-      res &= setHazardIds(entryData.getHazardIds());
+      res |= setHazardIds(entryData.getHazardIds());
     }
 
     if (entryData.constraintChanged()) {
       resultData.setConstraint(constraintText);
-      res &= setConstraintText(entryData.getSafetyConstraint());
+      res |= setConstraintText(entryData.getSafetyConstraint());
     }
 
     if (entryData instanceof CausalFactorUCAEntryData
         && ((CausalFactorUCAEntryData) entryData).scenariosChanged()) {
       resultData.setScenarioLinks(scenarioLinks);
-      res &= setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
+      res |= setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
     }
     if (res) {
       return resultData;

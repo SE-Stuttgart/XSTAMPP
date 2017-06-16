@@ -302,24 +302,15 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
        * added or one of the existing constraints can be imported
        */
       ITableModel actionForUca = getDataModel().getControlActionForUca(entry.getUcaLink());
-      if (entry.getConstraintText() == null
-          && (actionForUca == null || checkAccess(actionForUca.getId(), AccessRights.WRITE))) {
-
-        GridCellText constraintsCell = new GridCellText(new String());
-        constraintsCell.addCellButton(new NewConstraintButton(component.getId(), factor.getId(),
-            entry.getId(), getDataModel()));
-        constraintsCell.addCellButton(new CellButtonImportConstraint(getGrid(), entry,
-            component.getId(), factor.getId(), getDataModel()));
-        entryRow.addCell(cellNumber, constraintsCell);
-      } else {
-        CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(),
-            getDataModel(), component.getId(), factor.getId(), entry);
-        if (actionForUca != null && !checkAccess(actionForUca.getId(), AccessRights.WRITE)) {
-          cell.setReadOnly(true);
-          cell.setShowDelete(false);
-        }
-        entryRow.addCell(cellNumber, cell);
+     
+      CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(),
+          getDataModel(), component.getId(), factor.getId(), entry);
+      if (actionForUca != null && !checkAccess(actionForUca.getId(), AccessRights.WRITE)) {
+        cell.setReadOnly(true);
+        cell.setShowDelete(false);
       }
+      entryRow.addCell(cellNumber, cell);
+      
     }
 
     return cellNumber;

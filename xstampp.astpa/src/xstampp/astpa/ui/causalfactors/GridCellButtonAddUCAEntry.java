@@ -102,6 +102,7 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
         }else{
           dataInterface.addCausalUCAEntry(component.getId(), factorId, id);
         }
+        grid.redraw();
       }
     });
 	  diag.openPopup();

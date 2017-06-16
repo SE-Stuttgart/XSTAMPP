@@ -175,6 +175,16 @@ public abstract class AbstractGridCell implements IGridCell {
   }
 
   @Override
+  public void addCellButton(CellButton button) {
+    this.getButtonContainer().addColumButton(button);
+  }
+
+  @Override
+  public void clearCellButtons() {
+    this.getButtonContainer().clearButtons();
+  }
+
+  @Override
   public void setGridRow(GridRow gridRow) {
     this.row = gridRow;
   }

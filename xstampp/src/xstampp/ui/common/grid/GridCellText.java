@@ -95,16 +95,6 @@ public class GridCellText extends AbstractGridCell {
     // intentionally empty
   }
 
-  @Override
-  public void addCellButton(CellButton button) {
-    this.getButtonContainer().addColumButton(button);
-  }
-
-  @Override
-  public void clearCellButtons() {
-    this.getButtonContainer().clearButtons();
-  }
-
 
   @Override
   public void activate() {

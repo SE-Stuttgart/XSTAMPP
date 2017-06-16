@@ -1,10 +1,13 @@
 package xstampp.astpa.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.Severity;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class EntryWithSeverity implements ISeverityEntry {
 
   @XmlAttribute
