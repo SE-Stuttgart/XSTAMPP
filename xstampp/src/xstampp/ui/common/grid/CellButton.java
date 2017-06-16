@@ -19,8 +19,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.util.ColorManager;
-
 /**
  * A button in a cell.
  * 
@@ -47,7 +45,7 @@ public class CellButton implements ICellButton {
     this.rect = rect;
     this.image = image;
   }
-  
+
   /**
    * constructs a button with that contains a string
    * 
@@ -68,15 +66,17 @@ public class CellButton implements ICellButton {
 
   @Override
   public void onPaint(GC gc, Rectangle cellBounds) {
-    if (text != null) {
-      gc.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-      gc.fillRectangle(cellBounds.x + this.getBounds().x - 5, cellBounds.y + this.getBounds().y, 21, 16);
-      gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
-      gc.drawString(text, cellBounds.x + this.getBounds().x, cellBounds.y + this.getBounds().y);
-    } else {
+    if (image != null) {
       gc.drawImage(this.image, 0, 0, this.image.getBounds().width, this.image.getBounds().height,
           cellBounds.x + this.getBounds().x, cellBounds.y + this.getBounds().y,
           this.getBounds().width, this.getBounds().height);
+    }
+    if (text != null) {
+      int height = gc.getFont().getFontData()[0].getHeight();
+      int topOffset = (getBounds().height / 2 - height / 2) / 2;
+      gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
+      gc.drawString(text, cellBounds.x + this.getBounds().x + 3,
+          cellBounds.y + this.getBounds().y + topOffset, true);
     }
   }
 

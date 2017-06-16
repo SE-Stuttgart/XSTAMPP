@@ -278,13 +278,11 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
     boolean canWrite = checkAccess(cAction.getId(), AccessRights.WRITE);
     if (ucaList.size() > i) {
       IUnsafeControlAction uca = ucaList.get(i);
-      
-      GridCellText idCell = new UcaIdCell(
-          UCA1 + this.getDataModel().getUCANumber(uca.getId()),
-          ucaContentProvider,
-          uca.getId());
-      if(getDataModel().isUseSeverity()) {
-        idCell.addCellButton(new SeverityButton((ISeverityEntry) uca,getDataModel(),getGrid()));
+
+      GridCellText idCell = new UcaIdCell(ucaContentProvider, uca, getDataModel());
+      if (getDataModel().isUseSeverity()) {
+        SeverityButton button = new SeverityButton((ISeverityEntry) uca, getDataModel(), getGrid());
+        idCell.addCellButton(button);
       }
       idRow.addCell(columnIndex, idCell);
       UnsafeControlActionCell editor = new UnsafeControlActionCell(getGridWrapper(),

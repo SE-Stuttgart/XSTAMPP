@@ -3,10 +3,13 @@ package xstampp.astpa.ui.unsafecontrolaction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.model.interfaces.ISeverityDataModel;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.Severity;
@@ -20,10 +23,12 @@ public class SeverityButton extends CellButton {
   private ISeverityEntry uca;
   private Severity currentSeverity;
   private Control control;
+  private boolean hovered;
+  private static final Image hoveredImage = Activator.getImageDescriptor("/icons/buttons/dropDownCanvas.png").createImage();
 
   public SeverityButton(ISeverityEntry uca, IDataModel model, Control grid) {
     
-    super(new Rectangle(0, 0,40,16),"");
+    super(new Rectangle(0, 0,38,16),hoveredImage);
     this.control = grid;
     this.uca = uca;
     this.model = (ISeverityDataModel) model;
@@ -64,5 +69,14 @@ public class SeverityButton extends CellButton {
       MessageDialog.openError(null, "Widget is disposed",
           "for some reason the Platform can't find a suficient display!");
     }
+  }
+  @Override
+  public void onPaint(GC gc, Rectangle cellBounds) {
+    super.onPaint(gc, cellBounds);
+    
+  }
+  
+  public void setHovered(boolean hovered) {
+    this.hovered = hovered;
   }
 }
