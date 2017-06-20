@@ -2,6 +2,7 @@ package xstampp.astpa.model.service;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
+import xstampp.model.ObserverValue;
 
 public class UndoHazardChangeCallback extends UndoTableModelChangeCallback<IHazardViewDataModel> {
 
@@ -17,6 +18,11 @@ public class UndoHazardChangeCallback extends UndoTableModelChangeCallback<IHaza
   @Override
   protected void undoTitle(String title) {
     getDataModel().setHazardTitle(getEntryId(), title);
+  }
+
+  @Override
+  public ObserverValue getChangeConstant() {
+    return ObserverValue.HAZARD;
   }
 
 

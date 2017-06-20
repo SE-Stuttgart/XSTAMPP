@@ -2,6 +2,7 @@ package xstampp.astpa.model.service;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.model.ObserverValue;
 
 public class UndoCSCChangeCallback extends UndoTableModelChangeCallback<ICorrespondingSafetyConstraintDataModel> {
 
@@ -16,6 +17,11 @@ public class UndoCSCChangeCallback extends UndoTableModelChangeCallback<ICorresp
 
   @Override
   protected void undoTitle(String title) {
+  }
+
+  @Override
+  public ObserverValue getChangeConstant() {
+    return ObserverValue.UNSAFE_CONTROL_ACTION;
   }
 
 

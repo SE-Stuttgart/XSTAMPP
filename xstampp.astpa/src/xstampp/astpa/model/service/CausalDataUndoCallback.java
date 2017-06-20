@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.util.IUndoCallback;
 
 public class CausalDataUndoCallback implements IUndoCallback {
@@ -36,4 +37,8 @@ public class CausalDataUndoCallback implements IUndoCallback {
     dataModel.changeCausalEntry(componentId, causalFactorId, newData);
   }
 
+  @Override
+  public ObserverValue getChangeConstant() {
+    return ObserverValue.CAUSAL_FACTOR;
+  }
 }

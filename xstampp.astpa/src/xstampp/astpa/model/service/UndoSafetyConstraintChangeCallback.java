@@ -2,6 +2,7 @@ package xstampp.astpa.model.service;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
+import xstampp.model.ObserverValue;
 
 public class UndoSafetyConstraintChangeCallback extends UndoTableModelChangeCallback<ISafetyConstraintViewDataModel> {
 
@@ -17,6 +18,11 @@ public class UndoSafetyConstraintChangeCallback extends UndoTableModelChangeCall
   @Override
   protected void undoTitle(String title) {
     getDataModel().setSafetyConstraintTitle(getEntryId(), title);
+  }
+
+  @Override
+  public ObserverValue getChangeConstant() {
+    return ObserverValue.SAFETY_CONSTRAINT;
   }
 
 

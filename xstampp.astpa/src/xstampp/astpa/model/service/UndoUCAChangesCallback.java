@@ -3,6 +3,7 @@ package xstampp.astpa.model.service;
 import java.util.UUID;
 
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.util.IUndoCallback;
 
 public class UndoUCAChangesCallback implements IUndoCallback {
@@ -37,6 +38,11 @@ public class UndoUCAChangesCallback implements IUndoCallback {
     if(descriptionDirty) {
       this.dataModel.setUcaDescription(ucaID, newDescription);
     }
+  }
+
+  @Override
+  public ObserverValue getChangeConstant() {
+    return ObserverValue.UNSAFE_CONTROL_ACTION;
   }
 
 }

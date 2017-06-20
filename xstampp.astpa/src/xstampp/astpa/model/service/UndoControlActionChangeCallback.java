@@ -2,6 +2,7 @@ package xstampp.astpa.model.service;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
+import xstampp.model.ObserverValue;
 
 public class UndoControlActionChangeCallback extends UndoTableModelChangeCallback<IControlActionViewDataModel> {
 
@@ -17,6 +18,11 @@ public class UndoControlActionChangeCallback extends UndoTableModelChangeCallbac
   @Override
   protected void undoTitle(String title) {
     getDataModel().setControlActionTitle(getEntryId(), title);
+  }
+
+  @Override
+  public ObserverValue getChangeConstant() {
+    return ObserverValue.CONTROL_ACTION;
   }
 
 

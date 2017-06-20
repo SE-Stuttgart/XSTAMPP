@@ -161,14 +161,11 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
         List<ITableModel> links = HazardsView.this.getDataInterface()
             .getLinkedAccidents(((Hazard) element).getId());
         if (!(links == null)) {
-          for (int i = 0; i < links.size(); i++) {
-            linkString += ((Accident) links.get(i)).getIdString();
-            if (i < (links.size() - 1)) {
-              linkString += ", "; //$NON-NLS-1$
-            }
+          for (ITableModel link : links) {
+            linkString += ((Accident) link).getIdString() + ", ";
           }
         }
-        return linkString;
+        return linkString.substring(0, Math.max(0,linkString.length() - 2));
       }
     });
 

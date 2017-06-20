@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import messages.Messages;
+
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.controlaction.UCAHazLink;
 import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
@@ -40,6 +41,7 @@ import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
@@ -76,6 +78,7 @@ public class ControlActionController {
   private Map<UUID, ControlAction> controlActionsToUcaIds;
 
   private final Map<UUID, ControlAction> trash;
+
   /**
    * Constructor for the controller
    * 
@@ -258,8 +261,8 @@ public class ControlActionController {
     if (controlAction == null) {
       return null;
     }
-    controlAction.addUnsafeControlAction(getNextUCACount(), description,
-        unsafeControlActionType,ucaId);
+    controlAction.addUnsafeControlAction(getNextUCACount(), description, unsafeControlActionType,
+        ucaId);
     if (ucaId != null) {
       getControlActionMap().put(ucaId, controlAction);
     }
@@ -311,9 +314,11 @@ public class ControlActionController {
    */
   public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
     List<UUID> result = new ArrayList<>();
-    for (UCAHazLink link : this.links) {
-      if (link.containsId(unsafeControlActionId)) {
-        result.add(link.getHazardId());
+    if(links != null) {
+      for (UCAHazLink link : this.links) {
+        if (link.containsId(unsafeControlActionId)) {
+          result.add(link.getHazardId());
+        }
       }
     }
     return result;
@@ -497,7 +502,8 @@ public class ControlActionController {
       return null;
     }
     String oldTitle = unsafeControlAction.getCorrespondingSafetyConstraint().getText();
-    if(unsafeControlAction.getCorrespondingSafetyConstraint().setText(safetyConstraintDescription)) {
+    if (unsafeControlAction.getCorrespondingSafetyConstraint()
+        .setText(safetyConstraintDescription)) {
       return oldTitle;
     }
     return null;
@@ -558,13 +564,14 @@ public class ControlActionController {
    * Prepares the control actions for the export
    * 
    * @author Fabian Toth
+   * @param linkController 
    * 
    * @param hazAccController
    *          the hazAccController to get the Accidents as objects
    * @param extendedData
    * 
    */
-  public void prepareForExport(HazAccController hazAccController,
+  public void prepareForExport(LinkController linkController, HazAccController hazAccController,
       ControlStructureController csController, String defaultLabel,
       IExtendedDataController extendedData) {
     moveRulesInCA();
@@ -573,7 +580,7 @@ public class ControlActionController {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         List<ITableModel> linkedHazards = new ArrayList<>();
-        for (UUID link : this.getLinksOfUCA(unsafeControlAction.getId())) {
+        for (UUID link : linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlAction.getId())) {
           linkedHazards.add(hazAccController.getHazard(link));
         }
         Collections.sort(linkedHazards);
@@ -628,9 +635,10 @@ public class ControlActionController {
    * 
    * @author Fabian Toth
    * @param extendedData
+   * @param linkController
    * 
    */
-  public void prepareForSave(ExtendedDataController extendedData) {
+  public void prepareForSave(ExtendedDataController extendedData, LinkController linkController) {
     moveRulesInCA();
     for (ControlAction controlAction : this.controlActions) {
       controlAction.prepareForSave(extendedData);
@@ -641,7 +649,12 @@ public class ControlActionController {
         unsafeControlAction.setLinks(null);
       }
     }
-
+    
+    for (UCAHazLink ucaHazLink : getAllUCALinks()) {
+      linkController.addLink(ObserverValue.UNSAFE_CONTROL_ACTION, ucaHazLink.getHazardId(),
+          ucaHazLink.getUnsafeControlActionId());
+    }
+    this.links = null;
   }
 
   public List<UCAHazLink> getAllUCALinks() {

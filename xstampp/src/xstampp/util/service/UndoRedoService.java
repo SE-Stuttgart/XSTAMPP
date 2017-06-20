@@ -104,6 +104,14 @@ public class UndoRedoService extends AbstractSourceProvider {
     return this.redoStack.push(callback);
   }
 
+  /**
+   * This method locks the undo stack for its runtime which prevents any callbacks to be pushed to
+   * the undo stack. Than it calls {@link IUndoCallback#undo()} in the callback at the top of the
+   * stack and pushes it afterwards onto the redo stack. Finally it fires a property change and
+   * releases the lock.
+   * 
+   * @return the {@link IUndoCallback} that is pushed onto the redo stack
+   */
   public IUndoCallback undo() {
     this.lock = true;
     IUndoCallback result = null;
@@ -119,6 +127,13 @@ public class UndoRedoService extends AbstractSourceProvider {
     return result;
   }
 
+  /**
+   * This method calls {@link IUndoCallback#redo()} in the callback at the top of the redo
+   * stack. Finally it fires a property change and
+   * releases the undo lock if one is set.
+   * 
+   * @return the {@link IUndoCallback} that is redone
+   */
   public IUndoCallback redo() {
     IUndoCallback result = null;
     this.canRedo = !this.redoStack.isEmpty();

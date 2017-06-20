@@ -2,6 +2,7 @@ package xstampp.astpa.model.service;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
+import xstampp.model.ObserverValue;
 
 public class UndoGoalChangeCallback extends UndoTableModelChangeCallback<ISystemGoalViewDataModel> {
 
@@ -17,6 +18,11 @@ public class UndoGoalChangeCallback extends UndoTableModelChangeCallback<ISystem
   @Override
   protected void undoTitle(String title) {
     getDataModel().setSystemGoalTitle(getEntryId(), title);
+  }
+
+  @Override
+  public ObserverValue getChangeConstant() {
+    return ObserverValue.SYSTEM_GOAL;
   }
 
 

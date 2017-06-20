@@ -142,7 +142,7 @@ public class Controller extends AbstractDataModel implements IDataModel,
 
 	@Override
 	public void prepareForSave() {
-	  this.controlActionController.prepareForSave(null);
+	  this.controlActionController.prepareForSave(null,null);
 		this.exportInformation = null;
 		this.updateValue(ObserverValue.SAVE);
 	}

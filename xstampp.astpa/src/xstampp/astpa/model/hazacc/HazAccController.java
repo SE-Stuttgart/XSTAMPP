@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.haz.hazacc.Link;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.preferences.IASTPADefaults;
 import xstampp.model.ObserverValue;
 
@@ -299,30 +300,24 @@ public class HazAccController {
    * Prepares the accidents and hazards for the export
    *
    * @author Fabian Toth
+   * @author Lukas Balzer
+   * @param linkController 
    *
    */
-  public void prepareForExport() {
+  public void prepareForExport(LinkController linkController) {
     for (Accident accident : this.accidents) {
-      List<ITableModel> tempLinks = this.getLinkedHazards(accident.getId());
       String linkString = ""; //$NON-NLS-1$
-      for (int i = 0; i < tempLinks.size(); i++) {
-        linkString += tempLinks.get(i).getNumber();
-        if (i < (tempLinks.size() - 1)) {
-          linkString += ", "; //$NON-NLS-1$
-        }
+      for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, accident.getId())) {
+        linkString += getHazard(id).getNumber() + ", "; //$NON-NLS-1$
       }
-      accident.setLinks(linkString);
+      accident.setLinks(linkString.substring(0, linkString.length() - 2));
     }
     for (Hazard hazard : this.hazards) {
-      List<ITableModel> tempLinks = this.getLinkedAccidents(hazard.getId());
       String linkString = ""; //$NON-NLS-1$
-      for (int i = 0; i < tempLinks.size(); i++) {
-        linkString += tempLinks.get(i).getNumber();
-        if (i < (tempLinks.size() - 1)) {
-          linkString += ", "; //$NON-NLS-1$
-        }
+      for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, hazard.getId())) {
+        linkString += getAccident(id).getNumber() + ", "; //$NON-NLS-1$
       }
-      hazard.setLinks(linkString);
+      hazard.setLinks(linkString.substring(0, linkString.length() - 2));
     }
   }
 
@@ -332,12 +327,18 @@ public class HazAccController {
    * @author Fabian Toth
    *
    */
-  public void prepareForSave() {
+  public void prepareForSave(LinkController linkController) {
     for (Accident accident : this.accidents) {
       accident.setLinks(null);
     }
     for (Hazard hazard : this.hazards) {
       hazard.setLinks(null);
+    }
+    if(this.links != null) {
+      for(Link link: this.links) {
+        linkController.addLink(ObserverValue.HAZ_ACC_LINK, link.getAccidentId(), link.getHazardId());
+      }
+      links = null;
     }
   }
 
