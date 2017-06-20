@@ -46,11 +46,13 @@ public class ResponsibilitySettings implements ISettingsPage {
 
   @Override
   public boolean doAccept() {
-    Map<UUID,IUser> map = new HashMap<>();
-    for (EntryResponsibilitiesPage<?> page : pages) {
-      map.putAll(page.getResult());
+    if(getDataModel() != null){
+      Map<UUID,IUser> map = new HashMap<>();
+      for (EntryResponsibilitiesPage<?> page : pages) {
+        map.putAll(page.getResult());
+      }
+      getDataModel().getUserSystem().assignResponsibilities(map);
     }
-    getDataModel().getUserSystem().assignResponsibilities(map);
     return true;
   }
 

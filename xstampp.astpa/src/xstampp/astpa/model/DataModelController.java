@@ -1353,6 +1353,7 @@ public class DataModelController extends AbstractDataModel
     }
     DataModelController.LOGGER.debug("released update lock");
     if (hasChanged()) {
+      setUnsavedAndChanged();
       for (int i = 0; i < blockedUpdates.size(); i++) {
         setUnsavedAndChanged(blockedUpdates.get(i));
       }
