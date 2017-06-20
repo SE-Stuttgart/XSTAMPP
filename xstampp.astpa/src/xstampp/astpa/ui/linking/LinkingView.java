@@ -421,10 +421,9 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
 	 * @author Jarkko Heidenwag
 	 */
 	private void addSelectedLinks() {
-	  if (dataInterface instanceof IUserProject && 
+	  if (!(dataInterface instanceof IUserProject) || 
 	      ((IUserProject) dataInterface).getUserSystem().checkAccess(AccessRights.ADMIN)){
-	    
-	  }else {
+	   
   		List<UUID> accidentIDs = new ArrayList<UUID>();
   		List<UUID> hazardIDs = new ArrayList<UUID>();
   
