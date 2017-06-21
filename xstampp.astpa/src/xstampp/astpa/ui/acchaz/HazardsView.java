@@ -45,9 +45,11 @@ import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.Hazard;
+import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
+import xstampp.astpa.ui.linkingSupport.AccidentLinkSupport;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -80,6 +82,7 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
     this.setDataModelInterface(
         ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
 
+    addLinkSupport(new AccidentLinkSupport<IHazardViewDataModel>(getDataInterface()));
     this.createCommonTableView(parent, Messages.Hazards);
 
     this.getFilterTextField().addKeyListener(new KeyAdapter() {

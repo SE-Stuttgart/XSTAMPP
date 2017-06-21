@@ -25,7 +25,7 @@ import xstampp.model.IDataModel;
  * @author Patrick Wickenhaeuser
  * 
  */
-public interface ILinkingViewDataModel extends IDataModel {
+public interface ILinkingViewDataModel extends IDataModel,ILinkModel {
 
 	/**
 	 * Get all accidents.

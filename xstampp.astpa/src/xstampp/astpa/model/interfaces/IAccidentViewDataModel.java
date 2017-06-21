@@ -25,16 +25,8 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag
  * 
  */
-public interface IAccidentViewDataModel extends IDataModel,ICommonTables,ISeverityDataModel {
+public interface IAccidentViewDataModel extends IDataModel,ICommonTables,ISeverityDataModel,IHazardModel,IAccidentModel {
 
-	/**
-	 * Getter for all existing accidents
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return All accidents
-	 */
-	List<ITableModel> getAllAccidents();
 
 	/**
 	 * Adds an accident. <br>
@@ -89,17 +81,6 @@ public interface IAccidentViewDataModel extends IDataModel,ICommonTables,ISeveri
 	 * @return true if the description has been set
 	 */
 	boolean setAccidentDescription(UUID accidentId, String description);
-
-	/**
-	 * Get an accident by it's ID.
-	 * 
-	 * @author Jarkko Heidenwag, Patrick Wickenhaeuser
-	 * @param accidentId
-	 *            the ID of the accident.
-	 * 
-	 * @return the accident.
-	 */
-	ITableModel getAccident(UUID accidentId);
 
 	/**
 	 * Get all hazards linked to a certain accident.

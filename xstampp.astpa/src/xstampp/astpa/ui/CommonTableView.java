@@ -11,6 +11,7 @@
 
 package xstampp.astpa.ui;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Observable;
@@ -28,8 +29,8 @@ import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +39,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
+import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.KeyAdapter;
@@ -51,6 +53,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -63,7 +66,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.haz.ITableModel;
@@ -71,6 +73,7 @@ import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ISeverityDataModel;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.Severity;
+import xstampp.astpa.ui.linkingSupport.LinkSupport;
 import xstampp.astpa.ui.unsafecontrolaction.SeverityButton;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -95,6 +98,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
   private static String id;
 
+  private List<LinkSupport> linkFields;
   private TableViewer tableViewer;
 
   private boolean internalUpdate;
@@ -113,7 +117,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private ATableFilter filter;
   private Text filterTextField;
   private T dataInterface;
-  EnumSet<TableStyle> style;
+  private EnumSet<TableStyle> style;
 
   protected enum TableStyle {
     RESTRICTED, WITH_SEVERITY
@@ -128,6 +132,12 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private static final Image ADD = Activator
       .getImageDescriptor("/icons/buttons/commontables/add.png") //$NON-NLS-1$
       .createImage();
+  private static final Image ADD_SMALL = Activator
+      .getImageDescriptor("/icons/buttons/plus.png") //$NON-NLS-1$
+      .createImage();
+  private static final Image DELETE_SMALL = Activator
+      .getImageDescriptor("/icons/buttons/minus.png") //$NON-NLS-1$
+      .createImage();
   private static final Image MOVE_UP = Activator
       .getImageDescriptor("/icons/buttons/commontables/up.png") //$NON-NLS-1$
       .createImage();
@@ -138,6 +148,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private ATableModel selectedEntry;
 
   private Button deleteItemsButton;
+
+  private DefaultToolTip toolTipSupport;
 
   private class CommonSelectionChangedListener implements ISelectionChangedListener {
 
@@ -158,7 +170,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
               .setText(((ATableModel) selection.getFirstElement()).getDescription());
           deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
           getDescriptionWidget().setEnabled(canEdit(selectedEntry, AccessRights.WRITE));
-
+          for (LinkSupport linkSupport : linkFields) {
+            linkSupport.update(getCurrentSelection());
+          }
         }
       }
     }
@@ -378,6 +392,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     }
     this.internalUpdate = false;
     updateValues = EnumSet.noneOf(ObserverValue.class);
+    this.linkFields = new ArrayList<>();
   }
 
   public CommonTableView(EnumSet<TableStyle> style) {
@@ -436,11 +451,6 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.filterTextField = new Text(leftHeadComposite, SWT.SINGLE | SWT.BORDER);
     this.filterTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
-    // composite for the description and its label
-    final Composite textContainer = new Composite(sashForm, SWT.NONE);
-    textContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    textContainer.setLayout(new GridLayout(1, false));
-
     // the composite for the table viewer
     Composite tableComposite = new Composite(this.tableContainer, SWT.NONE);
     tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -449,21 +459,22 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
     createButtonBar();
 
-    Composite rightHeadComposite = new Composite(textContainer, SWT.NONE);
-    rightHeadComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-    rightHeadComposite.setLayout(new GridLayout(2, true));
+    // START of the creation of the right side of the view
 
-    this.descriptionLabel = new Label(rightHeadComposite, SWT.LEAD);
+    // composite for the description and its label
+    final Composite textContainer = new Composite(sashForm, SWT.NONE);
+    textContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    textContainer.setLayout(new GridLayout(1, false));
+
+    this.descriptionLabel = new Label(textContainer, SWT.LEAD);
     this.descriptionLabel.setFont(new Font(Display.getCurrent(),
         PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
     this.descriptionLabel.setText(Messages.DescriptionNotes);
 
-    Text invisibleTextField = new Text(rightHeadComposite, SWT.SINGLE | SWT.BORDER);
-    invisibleTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-    invisibleTextField.setVisible(false);
-
+    SashForm leftSash = new SashForm(textContainer, SWT.VERTICAL);
+    leftSash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     // the textfield for the description of the selected item
-    this.descriptionWidget = new Text(textContainer,
+    this.descriptionWidget = new Text(leftSash,
         SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP | SWT.SEARCH);
 
     this.descriptionWidget.setMessage(Messages.DoubleClickToEditTitle);
@@ -489,6 +500,76 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         internalUpdate = true;
       }
     });
+    if(linkFields.size() > 0) {
+      createFooter(leftSash);
+    }
+    tableSetUp(tableComposite);
+    // tab order: if tableComposite is active and tab is pressed,
+    // you will leave the tableContainer and enter the description
+    Control[] controls = { leftHeadComposite, this.buttonComposite, tableComposite };
+    this.tableContainer.setTabList(controls);
+    refreshView();
+  }
+
+  private void createFooter(SashForm leftSash) {
+    Composite footer = new Composite(leftSash, SWT.None);
+    footer.setLayoutData(new GridData(SWT.BOTTOM, SWT.CENTER, true, false));
+    footer.setLayout(new FillLayout(SWT.HORIZONTAL));
+    leftSash.setWeights(new int[] { 5, 1 });
+
+    for (final LinkSupport linkSupport : linkFields) {
+      Composite linkComp = new Composite(footer, SWT.BORDER);
+      linkComp.setLayout(new GridLayout(3, false));
+      Label linkTitle = new Label(linkComp, SWT.WRAP);
+      linkTitle.setText(linkSupport.getTitle());
+      linkTitle.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      Button linkButton = new Button(linkComp, SWT.PUSH);
+      linkButton.setImage(ADD_SMALL);
+      linkButton.addSelectionListener(linkSupport);
+      linkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
+      Button unlinkButton = new Button(linkComp, SWT.PUSH);
+      unlinkButton.setImage(DELETE_SMALL);
+      unlinkButton.addSelectionListener(linkSupport);
+      unlinkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
+
+      Composite linkTable = new Composite(linkComp, SWT.NONE);
+      linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,3,1));
+      tableColumnLayout = new TableColumnLayout();
+      linkTable.setLayout(tableColumnLayout);
+
+      // the table viewer
+      TableViewer tableViewer = new TableViewer(linkTable,
+          SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
+      linkSupport.setDisplayedList(tableViewer);
+      // Listener for showing the description of the selected accident
+      // tableViewer.addSelectionChangedListener(new ..);
+
+      tableViewer.setContentProvider(new ArrayContentProvider());
+      tableViewer.getTable().setLinesVisible(false);
+      tableViewer.getTable().setHeaderVisible(false);
+      ColumnViewerToolTipSupport.enableFor(tableViewer);
+      TableViewerColumn linkColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+      linkColumn.getColumn().setText(Messages.ID);
+      final int idWeight = 5;
+      final int idMinWidth = 39;
+      tableColumnLayout.setColumnData(linkColumn.getColumn(),
+          new ColumnWeightData(idWeight, idMinWidth, true));
+      linkColumn.setLabelProvider(new ColumnLabelProvider() {
+        @Override
+        public String getToolTipText(Object element) {
+          return linkSupport.getDescription((UUID) element);
+        }
+
+        @Override
+        public String getText(Object element) {
+          return linkSupport.getText((UUID) element);
+        }
+      });
+
+    }
+  }
+
+  private void tableSetUp(Composite tableComposite) {
     // the table viewer
     this.setTableViewer(new TableViewer(tableComposite,
         SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP));
@@ -609,11 +690,6 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         // nothing happens
       }
     });
-    // tab order: if tableComposite is active and tab is pressed,
-    // you will leave the tableContainer and enter the description
-    Control[] controls = { leftHeadComposite, this.buttonComposite, tableComposite };
-    this.tableContainer.setTabList(controls);
-    refreshView();
   }
 
   private void createButtonBar() {
@@ -889,8 +965,6 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           }
         });
         severityColumn.setEditingSupport(new EditingSupport(getTableViewer()) {
-          String[] severities = new String[] { Severity.S0.toString(), Severity.S1.toString(),
-              Severity.S2.toString(), Severity.S3.toString() };
 
           @Override
           protected void setValue(Object element, Object value) {
@@ -916,10 +990,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           protected boolean canEdit(Object element) {
             SeverityButton button = new SeverityButton(((ISeverityEntry) element),
                 getDataInterface(), getViewer().getControl());
-            Point location = getTableViewer().getTable()
-                .getDisplay().getCursorLocation();
+            Point location = getTableViewer().getTable().getDisplay().getCursorLocation();
             getTableViewer().getTable().toDisplay(location);
-            Point point = new Point(0,0);
+            Point point = new Point(0, 0);
             point.x = idColumn.getColumn().getWidth() + titleColumn.getColumn().getWidth();
             button.onButtonDown(point, new Rectangle(0, 0, 0, 0));
             return true;
@@ -929,6 +1002,14 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
             new ColumnWeightData(10, 50, false));
       }
     }
+  }
+
+  protected void addLinkSupport(LinkSupport support) {
+    this.linkFields.add(support);
+  }
+
+  void setToolTip(String tip) {
+    this.toolTipSupport.setText(tip);
   }
 
   protected boolean canEdit(ATableModel entryId, AccessRights level) {

@@ -14,6 +14,6 @@ import java.util.UUID;
 
 import xstampp.model.ObserverValue;
 
-public interface ICommonTables {
+public interface ICommonTables extends ILinkModel{
 	public boolean moveEntry(boolean allWay,boolean moveUp,UUID id, ObserverValue value);
 }
