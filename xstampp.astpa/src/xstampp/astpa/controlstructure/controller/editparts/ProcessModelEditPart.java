@@ -25,6 +25,7 @@ import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
+import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -62,7 +63,8 @@ public class ProcessModelEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ComponentFigure(this.getId(),false);
+		IControlStructureFigure tmpFigure =  new ProcessModelFigure(this.getId(),
+        ProcessVariableEditPart.TOP_OFFSET);
 
 		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setBorder(new LineBorder(1));

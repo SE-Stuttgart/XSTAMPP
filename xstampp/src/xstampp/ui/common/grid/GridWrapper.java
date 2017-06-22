@@ -345,7 +345,7 @@ public class GridWrapper {
 
   private float[] columnratios;
   public Integer persistedScrollIndex;
-
+  private boolean lockLocalUpdate;
   private Point mousePosition;
 
   /**
@@ -979,5 +979,29 @@ public class GridWrapper {
 
   public String getToolTip() {
     return toolTip;
+  }
+
+  /**
+   * this helper method sets {@link #lockLocalUpdate} to true, which causes
+   * {@link #fetchUpdateLock()} to return <b>true</b> the next time it is called. Through this
+   * mechanism a single update which is triggered from within the grid itself can be ignored
+   * preventing a complete reload of the table.
+   */
+  public void setUpdateLock() {
+    this.lockLocalUpdate = true;
+  }
+
+  /**
+   * This method returns the current value of {@link #lockLocalUpdate} and sets the value afterwards
+   * to <b>false</b>. Can be used to check if an update should be performed.
+   * 
+   * @return {@link #lockLocalUpdate}
+   */
+  public boolean fetchUpdateLock() {
+    if (lockLocalUpdate) {
+      this.lockLocalUpdate = false;
+      return true;
+    }
+    return false;
   }
 }

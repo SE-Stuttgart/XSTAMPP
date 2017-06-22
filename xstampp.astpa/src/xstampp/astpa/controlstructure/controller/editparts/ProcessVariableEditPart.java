@@ -25,6 +25,7 @@ import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.ProcessModelFigure;
+import xstampp.astpa.controlstructure.figure.ProcessValueFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.preferences.IControlStructureConstants;
 
@@ -35,7 +36,7 @@ import xstampp.preferences.IControlStructureConstants;
  */
 public class ProcessVariableEditPart extends CSAbstractEditPart {
 
-	private static final int TOP_OFFSET = 5;
+	static final int TOP_OFFSET = 5;
 
 	/**
 	 * 
@@ -54,9 +55,8 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ProcessModelFigure(this.getId(),
+		IControlStructureFigure tmpFigure = new ProcessValueFigure(this.getId(),
 				ProcessVariableEditPart.TOP_OFFSET);
-
 		tmpFigure.setPreferenceStore(getStore());
 		LineBorder border= new LineBorder(1){
 			@Override

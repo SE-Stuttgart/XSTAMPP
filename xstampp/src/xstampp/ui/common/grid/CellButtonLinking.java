@@ -32,6 +32,7 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
     public void proposalAccepted(IContentProposal proposal) {
       UUID linkId = ((LinkProposal)proposal).getProposalId();
       if (linkId != null) {
+        grid.setUpdateLock();
         publicInterface.addLink(assignedId, linkId);
         grid.getGrid().redraw();
       }

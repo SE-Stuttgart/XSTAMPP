@@ -1217,6 +1217,12 @@ public class Controller extends AbstractDataModel implements IDataModel,
     return null;
   }
 
+  @Override
+  public ControlStructureController getControlStructureController() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 	
 
 

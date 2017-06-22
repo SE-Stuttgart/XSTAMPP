@@ -17,6 +17,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.model.controlstructure.ControlStructureController;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -29,8 +30,8 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class ComponentChangeParentCommand extends ControlStructureAbstractCommand {
   private IRectangleComponent comp;
-  private UUID oldParentId;
-  private UUID newParentId;
+  private IRectangleComponent oldParent;
+  private IRectangleComponent newParent;
 
   private Rectangle oldLayoutStep0;
   private Rectangle oldLayoutStep2;
@@ -55,7 +56,7 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
 
   @Override
   public void execute() {
-    controller.changeComponentParent(comp.getId(), oldParentId, newParentId, newLayoutStep0,
+    controller.changeComponentParent(comp.getId(), oldParent.getId(), newParent.getId(), newLayoutStep0,
         newLayoutStep2);
   }
 
@@ -66,12 +67,19 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
 
   @Override
   public boolean canExecute() {
+    if ((this.oldParent == null) || (this.newParent == null)) {
+      return false;
+    } else if (this.comp.getComponentType() == ComponentType.PROCESS_VARIABLE) {
+      return this.newParent.getComponentType().equals(ComponentType.PROCESS_MODEL);
+    } else if (this.comp.getComponentType() == ComponentType.PROCESS_VALUE) {
+      return this.newParent.getComponentType().equals(ComponentType.PROCESS_VARIABLE);
+    }
     return true;
   }
 
   @Override
   public void undo() {
-    controller.changeComponentParent(comp.getId(), newParentId, oldParentId, oldLayoutStep0,
+    controller.changeComponentParent(comp.getId(), newParent.getId(), oldParent.getId(), oldLayoutStep0,
         oldLayoutStep2);
   }
 
@@ -85,16 +93,16 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
     this.oldLayoutStep2 = comp.getLayout(false);
   }
 
-  public void setOldParentId(UUID oldParentId) {
-    this.oldParentId = oldParentId;
+  public void setOldParent(IRectangleComponent oldParent) {
+    this.oldParent = oldParent;
   }
 
   /**
-   * @param newParentId
+   * @param newParent
    *          the newParentId to set
    */
-  public void setNewParentId(UUID newParentId) {
-    this.newParentId = newParentId;
+  public void setNewParent(IRectangleComponent newParent) {
+    this.newParent = newParent;
   }
 
 }

@@ -381,23 +381,24 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 
   @Override
   public void update(Observable dataModelController, Object updatedValue) {
-
-    super.update(dataModelController, updatedValue);
-    ObserverValue type = (ObserverValue) updatedValue;
-    switch (type) {
-      case UNSAFE_CONTROL_ACTION:
-      case HAZARD:
-        updateHazards();
-      case CONTROL_ACTION:
-        try {
-          this.reloadTable();
-        } catch (SWTException e) {
-          dataModelController.deleteObserver(this);
-        }
-        break;
-
-      default:
-        break;
+    if(!getGridWrapper().fetchUpdateLock()) { 
+      super.update(dataModelController, updatedValue);
+      ObserverValue type = (ObserverValue) updatedValue;
+      switch (type) {
+        case UNSAFE_CONTROL_ACTION:
+        case HAZARD:
+          updateHazards();
+        case CONTROL_ACTION:
+          try {
+            this.reloadTable();
+          } catch (SWTException e) {
+            dataModelController.deleteObserver(this);
+          }
+          break;
+  
+        default:
+          break;
+      }
     }
   }
 
