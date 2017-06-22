@@ -2237,6 +2237,11 @@ public class DataModelController extends AbstractDataModel
     linkController.addObserver(this);
     return linkController;
   }
+  
+  public ControlStructureController getControlStructureController() {
+    this.controlStructureController.addObserver(this);
+    return controlStructureController;
+  }
 
   @Override
   public <T> T getProperty(String key, Class<T> clazz) {
@@ -2251,9 +2256,13 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public void update(Observable o, Object arg) {
-    if(arg instanceof IUndoCallback) {
+    if(arg == null) {
+      setUnsavedAndChanged();
+    } else if(arg instanceof IUndoCallback) {
       pushToUndo((IUndoCallback) arg);
       setUnsavedAndChanged(((IUndoCallback) arg).getChangeConstant());
+    } else if(arg instanceof ObserverValue) {
+      setUnsavedAndChanged((ObserverValue) arg);
     }
   }
 }

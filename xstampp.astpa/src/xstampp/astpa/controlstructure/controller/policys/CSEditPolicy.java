@@ -32,9 +32,15 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
+import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.commands.ComponentChangeLayoutCommand;
+import xstampp.astpa.controlstructure.controller.commands.ComponentChangeParentCommand;
 import xstampp.astpa.controlstructure.controller.commands.ComponentCreateCommand;
 import xstampp.astpa.controlstructure.controller.commands.SwapRelativeCommand;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
@@ -68,6 +74,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
   private ConnectionFigure relative;
   private List<IFigure> feedback = new ArrayList<>();
   private UUID rootId;
+  private Cursor addCompCursor;
   /**
    * the offset of the process variables and values
    * 
@@ -87,7 +94,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
   public CSEditPolicy(IControlStructureEditorDataModel model, String stepId) {
     super();
     this.stepID = stepId;
-
+    this.addCompCursor = new Cursor(Display.getDefault(),Activator.getImageDescriptor("/icons/buttons/controlstructure/add_curser.png").getImageData(),0,0);
     this.dataModel = model;
   }
 
@@ -296,7 +303,25 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
   }
 
   @Override
+  protected Command createAddCommand(ChangeBoundsRequest request, EditPart child,
+      Object constraint) {
+    ComponentChangeParentCommand command = null;
+    IControlStructureEditPart childPart = (IControlStructureEditPart) child;
+    command = new ComponentChangeParentCommand(getRootId(),
+        this.dataModel, this.stepID);
+    command.setComp((IRectangleComponent) childPart.getModel());
+    command.setOldParentId(((IControlStructureEditPart) childPart.getParent()).getId());
+    Point location = request.getLocation().getCopy();
+    getHost().getFigure().translateFromParent(location);
+    command.setNewLocation(location);
+    command.setNewParentId(getHost().getId());
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setCursor(addCompCursor);
+    return command;
+  }
+
+  @Override
   public Command getCommand(Request request) {
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_ARROW));
     if (!getHost().canEdit()) {
       return null;
     }
@@ -322,6 +347,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
       this.feedback.clear();
 
     }
-    return super.getCommand(request);
+    Command cmd = super.getCommand(request);
+    return cmd;
   }
 }

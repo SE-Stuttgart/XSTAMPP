@@ -211,9 +211,9 @@ public class Component
   @Override
   public Rectangle getLayout(boolean step0) {
     if (step0) {
-      return this.layout;
+      return this.layout.getCopy();
     }
-    return this.layoutPM;
+    return this.layoutPM.getCopy();
 
   }
 

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -35,6 +36,7 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.preferences.IASTPADefaults;
+import xstampp.model.ObserverValue;
 
 /**
  * Controller-class for working with the control structure diagram
@@ -43,7 +45,7 @@ import xstampp.astpa.preferences.IASTPADefaults;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlStructureController {
+public class ControlStructureController extends Observable{
 
   @XmlElement(name = "component")
   private Component root;
@@ -252,18 +254,16 @@ public class ControlStructureController {
           this._getActiveRoot().getChildren().indexOf(component));
       if (this._getActiveRoot().removeChild(componentId)) {
         changed = true;
-      } else if(_getActiveRoot().getId().equals(componentId) &&
-          rootComponents.remove(activeRoot)) {
+      } else if (_getActiveRoot().getId().equals(componentId)
+          && rootComponents.remove(activeRoot)) {
         changed = true;
       }
     }
     return changed;
   }
 
-
-
-  public boolean moveEntry(boolean allWay,boolean moveUp, UUID id) {
-    return _getActiveRoot().moveComponent(allWay,moveUp, id);
+  public boolean moveEntry(boolean allWay, boolean moveUp, UUID id) {
+    return _getActiveRoot().moveComponent(allWay, moveUp, id);
   }
 
   /**
@@ -365,6 +365,46 @@ public class ControlStructureController {
       ((CSConnection) connection).setConnectionType(connectionType);
       changed = true;
       return true;
+    }
+    return false;
+  }
+
+  /**
+   * 
+   * @param componentId
+   *          The id with which the component is registered in the data model
+   * @param oldParentId
+   *          the id of the component which served as old parent component
+   * @param newParentId
+   *          the id of the component which should serve as new parent component
+   * @param layoutStep0
+   *          the layout the component should have in the fundamentals step after the move
+   * @param layoutStep2
+   *          the layout the component should have in stpa step 2 after the move
+   * @return true if a component was found for the given componentId and it could be set as child of
+   *         the new parent
+   */
+  public boolean changeComponentParent(UUID componentId, UUID oldParentId, UUID newParentId,
+      Rectangle layoutStep0, Rectangle layoutStep2) {
+    Component component = getInternalComponent(componentId);
+
+    Component parentComp = getInternalComponent(newParentId);
+    UndoChangeParentCallback callback = new UndoChangeParentCallback(this,componentId, oldParentId,
+        newParentId);
+
+    if (parentComp != null && removeComponent(componentId)) {
+      Rectangle oldLayoutStep1 = component.getLayout(true);
+      Rectangle oldLayoutStep2 = component.getLayout(false);
+
+      Rectangle newLayoutStep1 = layoutStep0;
+      Rectangle newLayoutStep2 = layoutStep2;
+      callback.setNewLayout(newLayoutStep1, newLayoutStep2);
+      callback.setOldLayout(oldLayoutStep1, oldLayoutStep2);
+      component.setLayout(newLayoutStep1, true);
+      component.setLayout(newLayoutStep2, false);
+      setChanged();
+      notifyObservers(ObserverValue.CONTROL_STRUCTURE);
+      return parentComp.addChild(component, -1);
     }
     return false;
   }
@@ -708,10 +748,11 @@ public class ControlStructureController {
   public void setUseMultiRoots(Boolean useMultiRoots) {
     this.useMultiRoots = useMultiRoots;
   }
-  
+
   public Boolean useMultiRoots() {
     return useMultiRoots;
   }
+
   public boolean usesHAZXData() {
     for (Component comp : this.getInternalComponents()) {
       if (comp.getComponentType().equals(ComponentType.CONTAINER))
@@ -761,6 +802,7 @@ public class ControlStructureController {
       return new Component();
     }
   }
+
   private List<Component> _internalGetRoots() {
     if (this.root != null) {
       this.rootComponents = new ArrayList<>();

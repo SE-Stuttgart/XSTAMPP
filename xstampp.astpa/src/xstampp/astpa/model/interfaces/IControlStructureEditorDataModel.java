@@ -15,6 +15,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
@@ -37,8 +38,8 @@ import java.util.UUID;
 public interface IControlStructureEditorDataModel extends IDataModel {
 
   /**
-   * Adds a new component to a root component with the given values. <br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * Adds a new component to a root component with the given values. <br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param parentId
    *          the id of the parent
@@ -58,8 +59,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
       Integer index);
 
   /**
-   * Adds a new component to a root component with the given values. <br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * Adds a new component to a root component with the given values. <br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param controlActionId
    * @param parentId
@@ -83,8 +84,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
       ComponentType type, Integer index);
 
   /**
-   * Removes a control action. <br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
+   * Removes a control action. <br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
    * 
    * @author Jarkko Heidenwag
    * 
@@ -93,12 +94,12 @@ public interface IControlStructureEditorDataModel extends IDataModel {
    * @return true if the control action has been removed
    */
   boolean removeControlAction(UUID controlActionId);
-  
-  public boolean moveEntry(boolean allWay,boolean moveUp,UUID id, ObserverValue value);
+
+  public boolean moveEntry(boolean allWay, boolean moveUp, UUID id, ObserverValue value);
 
   /**
-   * Adds a new root component with the given values. <br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * Adds a new root component with the given values. <br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param layout
    *          the layout of the new component
@@ -112,8 +113,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 
   /**
    * Searches for the component with the given id and changes the layout of it. Can also change root
-   * components<br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * components<br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param componentId
    *          the id of the component
@@ -141,8 +142,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 
   /**
    * Searches for the component with the given id and changes the text of it. Can also change root
-   * components<br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * components<br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param componentId
    *          the id of the component
@@ -156,8 +157,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 
   /**
    * Searches recursively for the component with the given id and removes it. Can also remove root
-   * components<br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * components<br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param componentId
    *          the id of the component to delete
@@ -227,8 +228,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
   public boolean isCSComponentSafetyCritical(UUID componentId);
 
   /**
-   * Adds a new connection with the given values<br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * Adds a new connection with the given values<br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param sourceAnchor
    *          the anchor at the source component
@@ -244,8 +245,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
 
   /**
    * Searches for the connection with the given id and changes the connection type to the new
-   * value<br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * value<br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param connectionId
    *          the id of the connection to change
@@ -286,8 +287,8 @@ public interface IControlStructureEditorDataModel extends IDataModel {
   boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor);
 
   /**
-   * Deletes the connection with the given id<br> Triggers an update for
-   * {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
+   * Deletes the connection with the given id<br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_STRUCTURE}
    * 
    * @param connectionId
    *          the id of the connection
@@ -442,4 +443,6 @@ public interface IControlStructureEditorDataModel extends IDataModel {
    * @return TODO
    */
   public boolean linkControlAction(UUID caId, UUID componentId);
+
+  public ControlStructureController getControlStructureController();
 }
