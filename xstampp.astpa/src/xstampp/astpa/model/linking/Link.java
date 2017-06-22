@@ -3,7 +3,9 @@ package xstampp.astpa.model.linking;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(name = "idLink")
 final class Link {
   @XmlAttribute
   private UUID linkA;

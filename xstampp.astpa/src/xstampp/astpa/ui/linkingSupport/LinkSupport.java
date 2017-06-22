@@ -1,6 +1,5 @@
 package xstampp.astpa.ui.linkingSupport;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +11,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ILinkModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;

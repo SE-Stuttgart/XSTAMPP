@@ -658,7 +658,12 @@ public class ControlActionController {
   }
 
   public List<UCAHazLink> getAllUCALinks() {
-    return new ArrayList<UCAHazLink>(this.links);
+    
+    ArrayList<UCAHazLink> list = new ArrayList<UCAHazLink>();
+    if(this.links != null) {
+      list.addAll(this.links);
+    }
+    return list;
   }
 
   /**

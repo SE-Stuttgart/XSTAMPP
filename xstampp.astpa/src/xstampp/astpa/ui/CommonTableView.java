@@ -98,7 +98,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
   private static String id;
 
-  private List<LinkSupport> linkFields;
+  private List<LinkSupport<?>> linkFields;
   private TableViewer tableViewer;
 
   private boolean internalUpdate;
@@ -170,7 +170,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
               .setText(((ATableModel) selection.getFirstElement()).getDescription());
           deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
           getDescriptionWidget().setEnabled(canEdit(selectedEntry, AccessRights.WRITE));
-          for (LinkSupport linkSupport : linkFields) {
+          for (LinkSupport<?> linkSupport : linkFields) {
             linkSupport.update(getCurrentSelection());
           }
         }
@@ -517,7 +517,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     footer.setLayout(new FillLayout(SWT.HORIZONTAL));
     leftSash.setWeights(new int[] { 5, 1 });
 
-    for (final LinkSupport linkSupport : linkFields) {
+    for (final LinkSupport<?> linkSupport : linkFields) {
       Composite linkComp = new Composite(footer, SWT.BORDER);
       linkComp.setLayout(new GridLayout(3, false));
       Label linkTitle = new Label(linkComp, SWT.WRAP);
@@ -539,7 +539,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
       // the table viewer
       TableViewer tableViewer = new TableViewer(linkTable,
-          SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
+          SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.SINGLE);
       linkSupport.setDisplayedList(tableViewer);
       // Listener for showing the description of the selected accident
       // tableViewer.addSelectionChangedListener(new ..);
@@ -1004,7 +1004,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     }
   }
 
-  protected void addLinkSupport(LinkSupport support) {
+  public void addLinkSupport(LinkSupport<?> support) {
     this.linkFields.add(support);
   }
 

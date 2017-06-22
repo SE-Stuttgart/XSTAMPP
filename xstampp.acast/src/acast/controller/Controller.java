@@ -37,6 +37,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -1206,6 +1207,12 @@ public class Controller extends AbstractDataModel implements IDataModel,
 
   @Override
   public <T> T getAdapter(Class<T> clazz) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public LinkController getLinkController() {
     // TODO Auto-generated method stub
     return null;
   }

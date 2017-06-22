@@ -7,9 +7,15 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import xstampp.model.ObserverValue;
 
 public class LinkController extends Observable{
+  
+  @XmlElement
+  @XmlJavaTypeAdapter(Adapter.class)
   private Map<ObserverValue, List<Link>> linkMap;
 
   public LinkController() {
