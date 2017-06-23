@@ -13,6 +13,10 @@
 
 package xstampp.astpa.model.controlstructure.interfaces;
 
+import java.util.List;
+
+import org.eclipse.draw2d.geometry.Point;
+
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 
 /**
@@ -36,6 +40,7 @@ public interface IConnection extends xstampp.astpa.haz.controlstructure.interfac
 	@Override
 	ConnectionType getConnectionType();
 
+  List<Point> getBendPoints();
 	
 
 

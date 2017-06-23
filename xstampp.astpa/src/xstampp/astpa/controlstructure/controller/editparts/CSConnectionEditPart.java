@@ -15,11 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.draw2d.AbsoluteBendpoint;
+import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IClippingStrategy;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.EditPolicy;
@@ -29,6 +32,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionDeleteEditPolicy;
+import xstampp.astpa.controlstructure.controller.policys.ConnectionBendpointEditPolicy;
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
@@ -119,6 +123,14 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
   @Override
   public void refresh() {
     this.getConnectionFigure().setFixed(true);
+    Connection connection = getConnectionFigure();
+    List<Point> modelConstraint = this.dataModel.getControlStructureController()
+        .getBendPoints(getId());
+    List<AbsoluteBendpoint> figureConstraint = new ArrayList<AbsoluteBendpoint>();
+    for (Point p : modelConstraint) {
+      figureConstraint.add(new AbsoluteBendpoint(p));
+    }
+    connection.setRoutingConstraint(figureConstraint);
     super.refresh();
     this.refreshChildren();
     this.getViewer().getControl().redraw();
@@ -138,6 +150,8 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
         new CSConnectionDeleteEditPolicy(this.dataModel, this.stepId));
     this.installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
         new ConnectionEndpointEditPolicy());
+//    installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
+//        new ConnectionBendpointEditPolicy(this.dataModel, this.stepId));
   }
 
   @Override
@@ -309,7 +323,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 
   @Override
   public boolean canEdit() {
-    if(dataModel instanceof IUserProject) {
+    if (dataModel instanceof IUserProject) {
       return ((IUserProject) dataModel).getUserSystem().checkAccess(AccessRights.ADMIN);
     }
     return true;

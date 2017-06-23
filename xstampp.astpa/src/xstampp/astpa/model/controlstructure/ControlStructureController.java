@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
@@ -409,6 +410,44 @@ public class ControlStructureController extends Observable{
     return false;
   }
 
+  public boolean addBendPoint(UUID connectionId, int x, int y) {
+    IConnection connection = getConnection(connectionId);
+    boolean result = ((CSConnection) connection).addBendPoint(x, y);
+    if(result) {
+      setChanged();
+      notifyObservers(ObserverValue.CONTROL_STRUCTURE);
+    }
+    return result;
+  }
+
+  public boolean removeBendPoint(UUID connectionId, int x, int y) {
+    IConnection connection = getConnection(connectionId);
+    boolean result = ((CSConnection) connection).removeBendPoint(x, y);
+    if(result) {
+      setChanged();
+      notifyObservers(ObserverValue.CONTROL_STRUCTURE);
+    }
+    return result;
+  }
+
+  public boolean changeBendPoint(UUID connectionId,int oldX, int oldY, int x, int y) {
+    IConnection connection = getConnection(connectionId);
+    boolean result = ((CSConnection) connection).removeBendPoint(oldX, oldY);
+    if(result) {
+      ((CSConnection) connection).addBendPoint(x, y);
+    }
+    if(result) {
+      setChanged();
+      notifyObservers(ObserverValue.CONTROL_STRUCTURE);
+    }
+    return ((CSConnection) connection).addBendPoint(x, y);
+  }
+
+  
+  public List<Point> getBendPoints(UUID connectionId) {
+    IConnection connection = getConnection(connectionId);
+    return ((CSConnection) connection).getBendPoints();
+  }
   /**
    * Searches for the connection with the given id and changes the targetId to the new value
    * 
