@@ -225,7 +225,6 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 	@Override
 	public Point getLocation(Point reference) {
 		return this.calcReferencePoint();
-
 	}
 
 	private Point calcReferencePoint() {
@@ -239,8 +238,8 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
 			this.referencePoint.x = (int) (this.refLayout.x
 					+ ((this.refLayout.width * (float) this.anchorFactor.x) / CSAnchor.MAX_PERCENT));
 		}
-		this.referencePoint.x = Math.max(0, this.referencePoint.x);
-		this.referencePoint.y = Math.max(0, this.referencePoint.y);
+		this.referencePoint.x = this.referencePoint.x;
+		this.referencePoint.y = this.referencePoint.y;
 		return this.referencePoint;
 	}
 
