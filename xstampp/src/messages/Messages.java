@@ -49,6 +49,11 @@ public final class Messages extends NLS {
   public static String AbstractExportPage_ExportTheData;
   public static String AbstractExportPage_includeInExport;
   public static String AbstractExportPage_SampleText;
+  public static String AbstractFilteredEditor_CategoryToolTip;
+  public static String AbstractFilteredEditor_ClearFilter;
+  public static String AbstractFilteredEditor_FilterDropDowmToolTip;
+  public static String AbstractFilteredEditor_FilterLabel;
+  public static String AbstractFilteredEditor_FilterTextToolTip;
   @SuppressWarnings("javadoc")
   public static String Arrow;
   @SuppressWarnings("javadoc")

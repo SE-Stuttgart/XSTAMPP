@@ -130,9 +130,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   private boolean isFiltered(ICausalComponent component) {
     // filters for the text filter
-    if (getActiveCategory().equals("ALL")) {
+    if ("ALL".equals(getActiveCategory())) {
       return isFiltered(component.getText());
-    } else if (getActiveCategory().equals(CAUSALFACTORS)) {
+    } else if (CAUSALFACTORS.equals(getActiveCategory())) {
       for (ICausalFactor factor : component.getCausalFactors()) {
         if (!isFiltered(factor.getText())) {
           return false;
@@ -145,7 +145,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   @Override
   protected void fillTable() {
-
+    
     if (this.getDataModel().isUseScenarios()) {
       this.getGridWrapper().setColumnLabels(_withScenarioColumns);
     } else {

@@ -175,8 +175,7 @@ public class GridWrapper {
       Point mousePoint = new Point(e.x, e.y);
       Point cellCoord = this.grid.getGrid().getCell(mousePoint);
 
-      if ((cellCoord != null) && (cellCoord.y >= 0)
-          && (cellCoord.y < this.grid.getGrid().getItemCount())) {
+      if (cell != null  ) {
         GridItem item = this.grid.getGrid().getItem(cellCoord.y);
         Rectangle itemBounds = item.getBounds(cellCoord.x);
 

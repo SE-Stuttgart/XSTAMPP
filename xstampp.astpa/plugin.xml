@@ -34,13 +34,13 @@
                   editorId="astpa.steps.step1_2"
                   icon="icons/buttons/navigation/STEP1_2(16).png"
                   id="astpa.navigation.step1_2"
-                  name="Accidents">
+                  name="System Accidents">
             </step>
             <step
                   editorId="astpa.steps.step1_3"
                   icon="icons/buttons/navigation/STEP1_3(16).png"
                   id="astpa.navigation.step1_3"
-                  name="Hazards">
+                  name="System Hazards">
             </step>
             <step
                   editorId="astpa.steps.step1_4"
