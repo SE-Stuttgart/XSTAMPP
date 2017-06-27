@@ -15,7 +15,6 @@ import java.util.UUID;
 import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Connection;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
@@ -26,6 +25,7 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 
 import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
@@ -196,54 +196,25 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 		
 	}
 	
-	public IFigure getFeedback() {
-		return getFeedback((IFigure)null);
-	}
-	
-	public IFigure getFeedback(IMemberEditPart member) {
-		
-		if(this.feedback == null){
-			this.feedback = new PolylineConnection();
-			this.feedback.setAlpha(150);
-			this.feedback.setAntialias(SWT.ON);
-			this.feedback.setLineWidth(4);
-			this.feedback.setForegroundColor(ColorConstants.darkGreen);
-		}
-		this.feedback.setVisible(true);
+	public IFigure getFeedback(IMemberEditPart member, Color color) {
 		
 		if(member != null && this.currentFeedbackId != member.getId()){
-			this.currentFeedbackId = member.getId();
-			this.feedback.setConnectionRouter(new FeedbackRouter(member.getFigure()));
+	    return getFeedback(member.getFigure(),color);
 		}
-		updateFeedback();
-		return getFeedback(member.getFigure());
+    return null;
 	}
 	
-	/**
-	 * @deprecated use getFeedbach(IFigure) instead
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param bounds
-	 * @return
-	 */
-	@Deprecated
-	public IFigure getFeedback(Rectangle bounds){
-		IFigure figure= new Figure();
-		if(bounds != null){
-			figure.setBounds(bounds);
-		}
-		return getFeedback(figure);
+	public IFigure getFeedback(Color color) {
+	  return getFeedback((IFigure)null, color);
 	}
-	
-	public IFigure getFeedback(IFigure member) {
+	public IFigure getFeedback(IFigure member, Color color) {
 		if(this.feedback == null){
 			this.feedback = new PolylineConnection();
 			this.feedback.setAlpha(150);
 			this.feedback.setAntialias(SWT.ON);
 			this.feedback.setLineWidth(4);
-			this.feedback.setForegroundColor(ColorConstants.darkGreen);
 		}
+    this.feedback.setForegroundColor(color);
 		this.feedback.setVisible(true);
 		this.feedback.setConnectionRouter(new FeedbackRouter(member));
 		

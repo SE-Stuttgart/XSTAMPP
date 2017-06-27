@@ -1,8 +1,7 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
-import messages.Messages;
-
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
@@ -11,6 +10,7 @@ import org.eclipse.swt.graphics.Image;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
+import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -18,7 +18,7 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @author Lukas Balzer
  * 
  */
-public class FeedbackEditPart extends CSAbstractEditPart {
+public class FeedbackEditPart extends AbstractMemberEditPart {
 
 	/**
 	 * this constuctor sets the unique ID of this EditPart which is the same in
@@ -34,6 +34,7 @@ public class FeedbackEditPart extends CSAbstractEditPart {
 	public FeedbackEditPart(IControlStructureEditorDataModel model,
 			String stepId) {
 		super(model, stepId, 1);
+		setFeedbackColor(ColorConstants.darkBlue);
 	}
 
 	@Override
@@ -42,6 +43,7 @@ public class FeedbackEditPart extends CSAbstractEditPart {
 				.getImageDescriptor("/icons/buttons/controlstructure/Feedback_80.png"); //$NON-NLS-1$
 		Image img = imgDesc.createImage(null);
 		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img);
+		tmpFigure.hideBorder();
 		tmpFigure.setPreferenceStore(getStore());
 		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
 		tmpFigure.setToolTip(new Label("Feedback"));
@@ -51,8 +53,7 @@ public class FeedbackEditPart extends CSAbstractEditPart {
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+    this.installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new CSSelectionEditPolicy());
 	}
 
 }

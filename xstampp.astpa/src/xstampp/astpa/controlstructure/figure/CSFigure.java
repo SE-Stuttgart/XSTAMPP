@@ -62,6 +62,7 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 	private IPreferenceStore store;
 	protected Rectangle rect;
 	private String text;
+  private boolean hideBorder = false;
 
 	/**
 	 * the xOrientations array which stores the locations on the x-axis as
@@ -157,16 +158,23 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 	 *            the Color of the new Border
 	 */
 	public void setBorder(Color color) {
-		setDirty();
-		this.border.setColor(color);
-		if (this.getChildren().size() > 1) {
-			this.border.setWidth(2);
-		} else {
-			this.border.setWidth(1);
-		}
-		super.setBorder(this.border);
+	  if(hideBorder) {
+      super.setBorder(null);
+	  } else {
+  		setDirty();
+  		this.border.setColor(color);
+  		if (this.getChildren().size() > 1) {
+  			this.border.setWidth(2);
+  		} else {
+  			this.border.setWidth(1);
+  		}
+  		super.setBorder(this.border);
+	  }
 	}
 
+	public void hideBorder() {
+	  this.hideBorder = true;
+	}
 	@Override
 	public void setLayout(Rectangle rect) {
 		if (this.rect == null || !this.rect.equals(rect)) {

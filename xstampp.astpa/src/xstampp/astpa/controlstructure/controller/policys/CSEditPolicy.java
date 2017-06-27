@@ -94,7 +94,10 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
   public CSEditPolicy(IControlStructureEditorDataModel model, String stepId) {
     super();
     this.stepID = stepId;
-    this.addCompCursor = new Cursor(Display.getDefault(),Activator.getImageDescriptor("/icons/buttons/controlstructure/add_curser.png").getImageData(),0,0);
+    this.addCompCursor = new Cursor(
+        Display.getDefault(), Activator
+            .getImageDescriptor("/icons/buttons/controlstructure/add_curser.png").getImageData(),
+        0, 0);
     this.dataModel = model;
   }
 
@@ -152,8 +155,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 
       if (request.getNewObject() instanceof IComponent) {
         if (this.relative != null
-            && getFeedbackLayer().getChildren().contains(this.relative.getFeedback())) {
-          removeFeedback(this.relative.getFeedback());
+            && getFeedbackLayer().getChildren().contains(this.relative.getFeedback(ColorConstants.darkGray))) {
+          removeFeedback(this.relative.getFeedback(ColorConstants.darkGray));
         }
         this.relative = null;
         Rectangle constraint = (Rectangle) this.getConstraintFor(request);
@@ -190,11 +193,12 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
         // can only exist on the root
         if (getHost() instanceof RootEditPart
             && (compModel.getComponentType() == ComponentType.CONTAINER
-                || compModel.getComponentType() == ComponentType.CONTROLACTION)) {
+                || compModel.getComponentType() == ComponentType.CONTROLACTION
+                || compModel.getComponentType() == ComponentType.FEEDBACK)) {
           this.relative = findNearestRelative(constraint.getCenter());
 
           if (this.relative != null) {
-            addFeedback(this.relative.getFeedback());
+            addFeedback(this.relative.getFeedback(ColorConstants.darkGray));
             command.setRelative(this.relative.getId());
           }
         }
@@ -307,8 +311,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
       Object constraint) {
     ComponentChangeParentCommand command = null;
     IControlStructureEditPart childPart = (IControlStructureEditPart) child;
-    command = new ComponentChangeParentCommand(getRootId(),
-        this.dataModel, this.stepID);
+    command = new ComponentChangeParentCommand(getRootId(), this.dataModel, this.stepID);
     command.setComp((IRectangleComponent) childPart.getModel());
     command.setOldParent((IRectangleComponent) childPart.getParent().getModel());
     Point location = request.getLocation().getCopy();
@@ -321,7 +324,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 
   @Override
   public Command getCommand(Request request) {
-    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_ARROW));
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
+        .setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_ARROW));
     if (!getHost().canEdit()) {
       return null;
     }
@@ -331,7 +335,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
       Object connectable = ((ChangeBoundsRequest) request).getEditParts().get(0);
       if (part instanceof IRelativePart && connectable instanceof IMemberEditPart
           && ((IRelativePart) part).getId() != ((IMemberEditPart) connectable).getRelativeId()) {
-        IFigure conn = ((IRelativePart) part).getFeedback(((IMemberEditPart) connectable));
+        IFigure conn = ((IRelativePart) part).getFeedback(((IMemberEditPart) connectable),
+            ((IMemberEditPart) connectable).getFeedbackColor());
         if (!(this.feedback.contains(conn))) {
           addFeedback(conn);
           this.feedback.add(conn);

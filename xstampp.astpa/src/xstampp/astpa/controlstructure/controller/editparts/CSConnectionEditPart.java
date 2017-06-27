@@ -30,9 +30,9 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionDeleteEditPolicy;
-import xstampp.astpa.controlstructure.controller.policys.ConnectionBendpointEditPolicy;
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
@@ -156,17 +156,12 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
 
   @Override
   public IFigure getFeedback() {
-    return this.getConnectionFigure().getFeedback();
+    return null;
   }
 
   @Override
-  public IFigure getFeedback(IMemberEditPart member) {
-    return this.getConnectionFigure().getFeedback(member);
-  }
-
-  @Override
-  public IFigure getFeedback(Rectangle bounds) {
-    return this.getConnectionFigure().getFeedback(bounds);
+  public IFigure getFeedback(IMemberEditPart member, Color color) {
+    return this.getConnectionFigure().getFeedback(member, color);
   }
 
   @Override
