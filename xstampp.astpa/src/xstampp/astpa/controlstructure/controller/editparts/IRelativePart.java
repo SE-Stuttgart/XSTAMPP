@@ -13,7 +13,7 @@ package xstampp.astpa.controlstructure.controller.editparts;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * an IControlStructureEditPart which can be related to one or many IMemberEditParts 
@@ -32,8 +32,7 @@ public interface IRelativePart extends IControlStructureEditPart{
 	 * @param member a component whioch implements IConnectable
 	 * @return a PolylineFigure
 	 */
-	IFigure getFeedback(IMemberEditPart member);
-	IFigure getFeedback(Rectangle bounds);
+	IFigure getFeedback(IMemberEditPart member, Color color);
 	IFigure getFeedback();
 	
 	/**

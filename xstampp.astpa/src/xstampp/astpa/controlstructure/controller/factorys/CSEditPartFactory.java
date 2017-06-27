@@ -25,6 +25,7 @@ import xstampp.astpa.controlstructure.controller.editparts.ControlActionEditPart
 import xstampp.astpa.controlstructure.controller.editparts.ControlledProcessEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ControllerEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.DashedBoxEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.EmptyComponentEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.FeedbackEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessModelEditPart;
@@ -94,60 +95,53 @@ public class CSEditPartFactory implements EditPartFactory {
 		// the EditPart which acts as the controller in the MVC architecture of
 		// gef
 		IControlStructureEditPart part = null;
-		UUID id;
+		UUID id = null;
 		switch (((IComponent) model).getComponentType()) {
 		case CONTROLACTION: {
 			part = new ControlActionEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
-		case CONTAINER:{
-			part = new ListOfCAEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
-			break;
-		}
+    case CONTAINER:{
+      part = new ListOfCAEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case UNDEFINED:{
+      part = new EmptyComponentEditPart(this.dataModel, this.stepId);
+      break;
+    }
 		case ACTUATOR: {
 			part = new ActuatorEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
     case SENSOR: {
       part = new SensorEditPart(this.dataModel, this.stepId);
-      id = ((IRectangleComponent) model).getId();
       break;
     }
     case FEEDBACK: {
       part = new FeedbackEditPart(this.dataModel, this.stepId);
-      id = ((IRectangleComponent) model).getId();
       break;
     }
 		case CONTROLLER: {
 			part = new ControllerEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case CONTROLLED_PROCESS: {
 			part = new ControlledProcessEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case PROCESS_MODEL: {
 			part = new ProcessModelEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case PROCESS_VARIABLE: {
 			part = new ProcessVariableEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case PROCESS_VALUE: {
 			part = new ProcessValueEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case CONNECTION: {
-			id = ((IConnection) model).getId();
 			part = this.getConnectionFrom((IConnection) model);
 			if(part == null){
 				return null;
@@ -156,19 +150,21 @@ public class CSEditPartFactory implements EditPartFactory {
 		}
 		case ROOT: {
 			part = new RootEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		case DASHEDBOX: {
 			part = new DashedBoxEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 			break;
 		}
 		default: {
 			part = new TextFieldEditPart(this.dataModel, this.stepId);
-			id = ((IRectangleComponent) model).getId();
 		}
 		}
+		if(model instanceof IRectangleComponent) {
+      id = ((IRectangleComponent) model).getId();
+		} else if(model instanceof IConnection) {
+      id = ((IConnection) model).getId();
+    }
 		// allocates the model to it's controller
 		part.setModel(model);
 		part.setPreferenceStore(store);

@@ -16,6 +16,8 @@ package xstampp.astpa.controlstructure;
 import java.util.HashMap;
 import java.util.Map;
 
+import messages.Messages;
+
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -26,7 +28,6 @@ import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.gef.tools.MarqueeSelectionTool;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -34,7 +35,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 
-import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
@@ -60,21 +60,7 @@ public class CSEditor extends CSAbstractEditor {
 	public static final String ID = "astpa.steps.step1_8"; //$NON-NLS-1$
 	private double zoomLevel;
 	private Viewport viewLocation;
-	private ToolEntry simpleConnectionEntry;
 	private Map<Object, ToolEntry> toolEntryToComponentType;
-
-	private class OpenAction extends Action {
-		private ToolEntry entry;
-
-		public OpenAction(ToolEntry entry) {
-			this.entry = entry;
-		}
-
-		@Override
-		public void run() {
-			getEditDomain().getPaletteViewer().setActiveTool(this.entry);
-		}
-	}
 
 	/**
 	 * this sets the zoom initially to 100%
@@ -172,6 +158,12 @@ public class CSEditor extends CSAbstractEditor {
 				"Create a container, in which you can bundle Control Actions", ComponentType.CONTAINER,
 				new CSModelCreationFactory(ComponentType.CONTAINER, this.getRoot()), imgDesc, imgDescLarge);
 		componentElements.add(entry);
+    
+    imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/component_palette_32.png"); //$NON-NLS-1$
+    imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/component_palette_40.png"); //$NON-NLS-1$
+    entry = new CombinedTemplateCreationEntry("Other Component", "Create an undefined Component that has no Type", ComponentType.UNDEFINED,
+        new CSModelCreationFactory(ComponentType.UNDEFINED, this.getRoot()), imgDesc, imgDescLarge);
+    componentElements.add(entry);
 		root.add(separator);
 		PaletteDrawer connectionElements = new PaletteDrawer(Messages.ConnectingElements);
 		root.add(connectionElements);
@@ -202,11 +194,11 @@ public class CSEditor extends CSAbstractEditor {
 		otherElements.add(entry);
 		this.toolEntryToComponentType.put(ComponentType.TEXTFIELD, entry);
 
-		imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_32.png"); //$NON-NLS-1$
-		imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_40.png"); //$NON-NLS-1$
-		entry = new CombinedTemplateCreationEntry(Messages.DashedBox, Messages.CreateDashedBox, ComponentType.DASHEDBOX,
-				new CSModelCreationFactory(ComponentType.DASHEDBOX, this.getRoot()), imgDesc, imgDescLarge);
-		otherElements.add(entry);
+    imgDesc = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_32.png"); //$NON-NLS-1$
+    imgDescLarge = Activator.getImageDescriptor("/icons/buttons/controlstructure/dashed_box_40.png"); //$NON-NLS-1$
+    entry = new CombinedTemplateCreationEntry(Messages.DashedBox, Messages.CreateDashedBox, ComponentType.DASHEDBOX,
+        new CSModelCreationFactory(ComponentType.DASHEDBOX, this.getRoot()), imgDesc, imgDescLarge);
+    otherElements.add(entry);
 	this.toolEntryToComponentType.put(ComponentType.DASHEDBOX, entry);
 
 		return root;

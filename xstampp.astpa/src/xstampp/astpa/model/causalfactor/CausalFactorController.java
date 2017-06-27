@@ -204,6 +204,7 @@ public class CausalFactorController implements ICausalFactorController {
       case ACTUATOR:
       case CONTROLLED_PROCESS:
       case CONTROLLER:
+      case UNDEFINED:
       case SENSOR:
         return true;
       default:

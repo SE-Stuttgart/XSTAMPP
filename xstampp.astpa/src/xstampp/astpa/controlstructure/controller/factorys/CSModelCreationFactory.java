@@ -16,15 +16,14 @@ package xstampp.astpa.controlstructure.controller.factorys;
 import java.util.HashMap;
 import java.util.Map;
 
+import messages.Messages;
+
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.requests.CreationFactory;
-
-import messages.Messages;
 
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  *
@@ -98,12 +97,18 @@ public class CSModelCreationFactory implements CreationFactory {
 			}
 			break;
 		}
-		case CONTAINER: {
+    case CONTAINER: {
 
-			text = "?";
-			break;
+      text = "?";
+      break;
 
-		}
+    }
+    case UNDEFINED: {
+
+      text = "Component";
+      break;
+
+    }
 		case CONTROLLER: {
 			text = Messages.Controller + " " + count; //$NON-NLS-1$
 			for (IRectangleComponent x : this.dataModel.getChildren()) {

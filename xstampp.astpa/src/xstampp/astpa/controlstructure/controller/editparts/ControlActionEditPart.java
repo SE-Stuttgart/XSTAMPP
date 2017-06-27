@@ -16,12 +16,15 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.swt.SWT;
 
+import java.util.UUID;
+
 import messages.Messages;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
+import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -61,7 +64,15 @@ public class ControlActionEditPart extends AbstractMemberEditPart{
 		return tmpFigure;
 	}
 
-	
+	@Override
+	protected void refreshVisuals() {
+	  UUID link = getDataModel().getComponent(getId()).getControlActionLink();
+	  ITableModel controlAction = getDataModel().getControlAction(link);
+	  if(controlAction != null) {
+	    figure.setToolTip(new Label(Messages.ControlAction+"-"+controlAction.getNumber()));
+	  }
+	  super.refreshVisuals();
+	}
 	@Override
 	protected void createEditPolicies() {
 		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$

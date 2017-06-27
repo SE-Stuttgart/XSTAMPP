@@ -50,7 +50,8 @@ public enum ComponentType{
 	 */
 	ACTUATOR,
 
-	FEEDBACK,
+  FEEDBACK,
+  UNDEFINED,
 	/**
 	 * This constant is used to create a new Process
 	 */

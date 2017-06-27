@@ -105,26 +105,34 @@ public class TextFieldFigure extends CSFigure {
 		//the text field is not decorated
 	}
 
-	/**
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param dashed whether the component is dashed or not
-	 */
-	public void setDashed() {
-		setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH){
-			@Override
-			public int getStyle() {
-				return SWT.LINE_CUSTOM;
-			}
-			@Override
-			public void paint(IFigure figure, Graphics graphics,
-					Insets insets) {
-				graphics.setLineStyle(SWT.LINE_CUSTOM);
-				graphics.setLineDashOffset(4);
-				graphics.setLineDash(new int[]{4});
-				super.paint(figure, graphics, insets);
-			}
-		});
-	}
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   * @param dashed whether the component is dashed or not
+   */
+  public void setDashed() {
+    setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH){
+      @Override
+      public int getStyle() {
+        return SWT.LINE_CUSTOM;
+      }
+      @Override
+      public void paint(IFigure figure, Graphics graphics,
+          Insets insets) {
+        graphics.setLineStyle(SWT.LINE_CUSTOM);
+        graphics.setLineDashOffset(4);
+        graphics.setLineDash(new int[]{4});
+        super.paint(figure, graphics, insets);
+      }
+    });
+  }
+
+  /**
+   *
+   * @author Lukas Balzer
+   */
+  public void setBordered() {
+    setBorder(new LineBorder(ColorConstants.black, 1));
+  }
 }
