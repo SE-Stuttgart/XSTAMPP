@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -116,6 +116,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     categories.put(ComponentType.CONTROLLER.name(), true);
     categories.put(ComponentType.CONTROLLED_PROCESS.name(), true);
     categories.put(ComponentType.SENSOR.name(), true);
+    categories.put(ComponentType.UNDEFINED.name(), true);
     categories.put(CAUSALFACTORS, false);
     categories.put("UCA", false);
     return categories;
@@ -124,8 +125,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   @Override
   protected String[] getCategoryArray() {
     return new String[] { "ALL", ComponentType.ACTUATOR.name(), ComponentType.CONTROLLER.name(),
-        ComponentType.CONTROLLED_PROCESS.name(), ComponentType.SENSOR.name(), CAUSALFACTORS,
-        "UCA" };
+        ComponentType.CONTROLLED_PROCESS.name(), ComponentType.SENSOR.name(),
+        ComponentType.UNDEFINED.name(), CAUSALFACTORS, "UCA" };
   }
 
   private boolean isFiltered(ICausalComponent component) {
@@ -145,7 +146,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   @Override
   protected void fillTable() {
-    
+
     if (this.getDataModel().isUseScenarios()) {
       this.getGridWrapper().setColumnLabels(_withScenarioColumns);
     } else {
@@ -242,13 +243,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   }
 
   /**
-   * adds the:</br>
-   * <h5>uca row with</h5>
-   * <ul>
-   * <li>uca text (read only)
-   * <li>hazard links (read only)
-   * <li>a row for each scenario
-   * </ul>
+   * adds the:</br> <h5>uca row with</h5> <ul> <li>uca text (read only) <li>hazard links (read only)
+   * <li>a row for each scenario </ul>
    * 
    * @param cellNumber
    */
@@ -302,7 +298,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
        * added or one of the existing constraints can be imported
        */
       ITableModel actionForUca = getDataModel().getControlActionForUca(entry.getUcaLink());
-     
+
       CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(),
           getDataModel(), component.getId(), factor.getId(), entry);
       if (actionForUca != null && !checkAccess(actionForUca.getId(), AccessRights.WRITE)) {
@@ -310,7 +306,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
         cell.setShowDelete(false);
       }
       entryRow.addCell(cellNumber, cell);
-      
+
     }
 
     return cellNumber;
@@ -347,14 +343,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   }
 
   /**
-   * adds the:</br>
-   * <h5>uca row with</h5>
-   * <ul>
-   * <li>an empty cell with a delete (read only)
-   * <li>hazard linking cell
-   * <li>an empty scenario cell
-   * <li>a cell for importing or creating a new safety constraint
-   * </ul>
+   * adds the:</br> <h5>uca row with</h5> <ul> <li>an empty cell with a delete (read only)
+   * <li>hazard linking cell <li>an empty scenario cell <li>a cell for importing or creating a new
+   * safety constraint </ul>
    * 
    * @param cellNumber
    */
@@ -382,25 +373,25 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     if (controller.getProjectName().equals(getDataModel().getProjectName())) {
       super.update(dataModelController, updatedValue);
       switch ((ObserverValue) updatedValue) {
-        case UNSAFE_CONTROL_ACTION: {
-          List<ICorrespondingUnsafeControlAction> ucaList = this.getDataModel().getUCAList(null);
-          String[] names = new String[ucaList.size()];
-          UUID[] values = new UUID[ucaList.size()];
-          for (int i = 0; i < ucaList.size(); i++) {
-            names[i] = ucaList.get(i).getTitle();
-            values[i] = ucaList.get(i).getId();
-          }
-          addChoices("UCA", names);
-          addChoiceValues("UCA", values);
+      case UNSAFE_CONTROL_ACTION: {
+        List<ICorrespondingUnsafeControlAction> ucaList = this.getDataModel().getUCAList(null);
+        String[] names = new String[ucaList.size()];
+        UUID[] values = new UUID[ucaList.size()];
+        for (int i = 0; i < ucaList.size(); i++) {
+          names[i] = ucaList.get(i).getTitle();
+          values[i] = ucaList.get(i).getId();
         }
-        case CONTROL_STRUCTURE:
-        case HAZARD:
-        case Extended_DATA:
-        case CAUSAL_FACTOR:
-          reloadTable();
-          break;
-        default:
-          break;
+        addChoices("UCA", names);
+        addChoiceValues("UCA", values);
+      }
+      case CONTROL_STRUCTURE:
+      case HAZARD:
+      case Extended_DATA:
+      case CAUSAL_FACTOR:
+        reloadTable();
+        break;
+      default:
+        break;
       }
     }
   }
