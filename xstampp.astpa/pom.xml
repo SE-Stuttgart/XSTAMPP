@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-   <artifactId>xstampp.astpa</artifactId>
-   <packaging>eclipse-plugin</packaging>
-   <name>A-STPA Plugin</name>
+	<artifactId>xstampp.astpa</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>A-STPA Plugin</name>
 
-   <parent>
-      <version>2.3.0</version>
-      <groupId>xstampp.group</groupId>
-      <artifactId>parent</artifactId>
-      <relativePath>../xstampp.parent</relativePath>
-   </parent>
+	<parent>
+		<version>2.3.0</version>
+		<groupId>xstampp.group</groupId>
+		<artifactId>parent</artifactId>
+		<relativePath>../xstampp.parent</relativePath>
+	</parent>
 
 </project>

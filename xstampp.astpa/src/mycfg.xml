@@ -1,20 +1,15 @@
-<!--
-    Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
-    Institute of Software Technology, Software Engineering Group
-    University of Stuttgart, Germany
-     
-    All rights reserved. This program and the accompanying materials are made
-    available under the terms of the Eclipse Public License v1.0 which
-    accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
- -->
+<!-- Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner 
+	Institute of Software Technology, Software Engineering Group University of 
+	Stuttgart, Germany All rights reserved. This program and the accompanying 
+	materials are made available under the terms of the Eclipse Public License 
+	v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html -->
 <fop version="1.1">
-<renderers>
-   <renderer mime="application/pdf">
-      <fonts>
-         <!-- automatically detect operating system installed fonts -->
-         <auto-detect/>
-      </fonts>
-   </renderer>
-</renderers>
+	<renderers>
+		<renderer mime="application/pdf">
+			<fonts>
+				<!-- automatically detect operating system installed fonts -->
+				<auto-detect />
+			</fonts>
+		</renderer>
+	</renderers>
 </fop>
