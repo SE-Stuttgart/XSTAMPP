@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ public abstract class AbstractGridCell implements IGridCell {
   private static final Color MOD_2_1_GRAY = new Color(null, 230, 230, 230);
 
   private static final Color MOD_2_0_GRAY = new Color(null, 245, 245, 245);
-
+  private Rectangle cellBounds;
   private GridRow row = null;
   private boolean hasChildren;
   private int preferredHeight;
@@ -109,6 +109,7 @@ public abstract class AbstractGridCell implements IGridCell {
 
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
+	  cellBounds = renderer.getBounds();
     if (item.hasChildren()) {
       hasChildren = true;
     }
@@ -354,5 +355,9 @@ public abstract class AbstractGridCell implements IGridCell {
     }
     this.preferredHeight = Math.max(this.preferredHeight, this.buttonContainer.getBounds().height);
     item.setHeight(this.preferredHeight);
+  }
+  
+  public Rectangle getCellBounds() {
+    return cellBounds;
   }
 }

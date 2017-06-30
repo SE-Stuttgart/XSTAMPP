@@ -10,6 +10,7 @@ import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.ui.common.shell.ModalShell.Style;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUserProject;
 
@@ -19,7 +20,7 @@ public class NewControlStructureShell extends ModalShell {
   private IControlStructureEditorDataModel dataModel;
 
   public NewControlStructureShell(IControlStructureEditorDataModel dataModel) {
-    super(Messages.ControlStructure_New, PACKED);
+    super(Messages.ControlStructure_New, Style.PACKED);
     this.dataModel = dataModel;
   }
 

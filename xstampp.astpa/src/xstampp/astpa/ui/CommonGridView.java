@@ -71,7 +71,7 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
    * 
    */
   protected final void reloadTable() {
-    if(!this.lockreload){
+    if(!this.grid.fetchUpdateLock()) {
       this.lockreload = true;
       int tmp= this.grid.getGrid().getVerticalBar().getSelection();
       this.grid.persistedScrollIndex = tmp;

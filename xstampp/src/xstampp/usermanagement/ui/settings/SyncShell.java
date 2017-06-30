@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.ui.common.shell.ModalShell.Style;
 import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.api.CollaborationSystem;
 import xstampp.usermanagement.api.ICollaborationSystem;
@@ -34,7 +35,7 @@ public class SyncShell extends ModalShell {
   }
 
   public SyncShell(List<IUser> users, ICollaborationSystem system) {
-    super(Messages.SyncShell_0, PACKED);
+    super(Messages.SyncShell_0, Style.PACKED);
     setAcceptLabel(Messages.SyncShell_1);
     this.users = users;
     this.system = system;

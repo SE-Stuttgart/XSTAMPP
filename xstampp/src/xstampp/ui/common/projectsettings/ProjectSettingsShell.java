@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.ui.common.shell.ModalShell.Style;
 import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.ui.settings.CollaborationSettings;
@@ -67,7 +68,7 @@ public class ProjectSettingsShell extends ModalShell {
    */
   public ProjectSettingsShell(UUID projectId, String pageName) {
     super(Messages.ProjectSettingsShell_Title
-        + ProjectManager.getContainerInstance().getTitle(projectId), APPLYABLE);
+        + ProjectManager.getContainerInstance().getTitle(projectId), Style.APPLYABLE);
     this.projectId = projectId;
     this.pageName = pageName;
     this.pages = new ArrayList<>();

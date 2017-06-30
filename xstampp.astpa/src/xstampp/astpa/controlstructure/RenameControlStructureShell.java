@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.ui.common.shell.ModalShell.Style;
 
 public class RenameControlStructureShell extends ModalShell {
 
@@ -16,7 +17,7 @@ public class RenameControlStructureShell extends ModalShell {
   private UUID rootId;
 
   public RenameControlStructureShell(IControlStructureEditorDataModel dataModel, UUID rootId) {
-    super("Rename Control Structure",PACKED);
+    super("Rename Control Structure",Style.PACKED);
     this.dataModel = dataModel;
     this.rootId = rootId;
     this.dataModel.setActiveRoot(rootId);

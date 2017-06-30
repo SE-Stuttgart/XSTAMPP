@@ -9,6 +9,8 @@
 
 package xstampp.ui.common.shell;
 
+import java.util.EnumSet;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -65,16 +67,19 @@ import xstampp.util.ColorManager;
  */
 public abstract class ModalShell {
 
-  /**
-   * When this style constant is added to the style of this shell an 'Apply' button is added to this
-   * shell which calls {@link #doAccept()}.
-   */
-  public static final int APPLYABLE = 1 << 2;
-  /**
-   * When this style constant is added to the style of this shell the content of it is packed to its
-   * minimum size after creation.
-   */
-  public static final int PACKED = 1 << 3;
+	public enum Style {
+
+		  /**
+		   * When this style constant is added to the style of this shell an 'Apply' button is added to this
+		   * shell which calls {@link #doAccept()}.
+		   */
+			APPLYABLE,
+		  /**
+		   * When this style constant is added to the style of this shell the content of it is packed to its
+		   * minimum size after creation.
+		   */
+		  PACKED;
+	}
   private String title;
   private Point size;
   private String acceptLabel;
@@ -83,7 +88,7 @@ public abstract class ModalShell {
   private Button applyButton;
   private boolean isAccepted;
   private Object returnValue;
-  private int style;
+  private EnumSet<Style> style;
 
   /**
    * Constructs a ModalShell with he given title and a <code>Cancel</code> Button that closes the
@@ -99,13 +104,25 @@ public abstract class ModalShell {
    * 
    * 
    */
-  public ModalShell(String title, String acceptLabel, int style) {
+  public ModalShell(String title, String acceptLabel, EnumSet<Style> style) {
     this.title = title;
     this.acceptLabel = acceptLabel;
     this.style = style;
     setSize(300, 200);
     this.isAccepted = false;
 
+  }
+  
+  /**
+   * calls {@link #ModalShell(String, String, EnumSet)} with {@link EnumSet#of(Enum)}
+   * 
+   * @param style
+   *          One of the integer constants defined in this class {@link Style}
+   * 
+   * 
+   */
+  public ModalShell(String title, String acceptLabel, Style style) {
+	  this(title, acceptLabel, EnumSet.of(style));
   }
 
   /**
@@ -119,7 +136,7 @@ public abstract class ModalShell {
    *          the label of the Button that accepts the entry
    */
   public ModalShell(String title, String acceptLabel) {
-    this(title, acceptLabel, 0);
+    this(title, acceptLabel, EnumSet.noneOf(Style.class));
 
   }
 
@@ -136,7 +153,7 @@ public abstract class ModalShell {
   /**
    * calls {@link #ModalShell(String,integer)} with <code>Ok</code> as second argument.
    */
-  public ModalShell(String title, int style) {
+  public ModalShell(String title, Style style) {
     this(title, "Ok", style);
   }
 
@@ -169,7 +186,7 @@ public abstract class ModalShell {
     GridData gridData = new GridData(SWT.RIGHT, SWT.BOTTOM, false, false);
     gridData.widthHint = SWT.DEFAULT;
     gridData.heightHint = SWT.DEFAULT;
-    if ((this.style & APPLYABLE) != 0) {
+    if (this.style.contains(Style.APPLYABLE)) {
 
       footer.setLayout(new GridLayout(4, false));
       applyButton = new Button(footer, SWT.PUSH);
@@ -208,7 +225,7 @@ public abstract class ModalShell {
     });
     cancelButton.setLayoutData(gridData);
     canAccept();
-    if ((this.style & PACKED) != 0) {
+    if (this.style.contains(Style.PACKED)) {
       shell.pack();
     }
     shell.open();
@@ -276,7 +293,7 @@ public abstract class ModalShell {
     try {
       boolean valid = validate();
       this.okButton.setEnabled(valid);
-      if ((this.style & APPLYABLE) != 0) {
+      if (this.style.contains(Style.APPLYABLE)) {
         this.applyButton.setEnabled(valid);
       }
       setUnchecked();

@@ -40,7 +40,7 @@ public abstract class AbstractUserShell extends ModalShell {
    *          whether of not the password input should hide or show characters
    */
   public AbstractUserShell(UserSystem userSystem, boolean hidePassword) {
-    super("User", PACKED);
+    super("User", Style.PACKED);
     setUserLabelStyle(SWT.None);
     this.selectedUser = null;
     this.userSystem = userSystem;

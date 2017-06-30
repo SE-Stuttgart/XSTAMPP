@@ -22,6 +22,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.shell.ModalShell;
+import xstampp.ui.common.shell.ModalShell.Style;
 import xstampp.ui.navigation.IProjectSelection;
 
 /**
@@ -51,7 +52,7 @@ public class RenameCommand extends AbstractHandler {
     private UUID projectId;
 
     public ProjectRenameShell(String title, UUID projectId) {
-      super(title,PACKED);
+      super(title,Style.PACKED);
       this.projectId = projectId;
     }
 

@@ -23,8 +23,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -37,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
 import messages.Messages;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 import xstampp.util.DirectEditor;
-import xstampp.util.DirectEditorShell;
 
 /**
  * A cell that contains an SWT text editor.
@@ -64,6 +61,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   private boolean isReadOnly;
   private UUID entryId;
   private boolean useInlineEditor;
+  private GridTextEditorProvider editorProvider;
 
   private class TextLocator implements CellEditorLocator {
 
@@ -134,7 +132,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
    */
   public GridCellTextEditor(GridWrapper grid, String initialText, Boolean showDelete,
       Boolean readOnly, UUID entryId) {
-    this.useInlineEditor = true;
+    editorProvider = new GridTextEditorProvider();
+    this.useInlineEditor = false;
     this.showDelete = showDelete;
     this.isReadOnly = readOnly;
     this.entryId = entryId;
@@ -271,17 +270,17 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
       editor.setTextFont(Display.getDefault().getSystemFont());
       editor.setValue(this.currentText);
       editor.setFocus();
-    } else if (!useInlineEditor) {
-      final DirectEditorShell editorShell = new DirectEditorShell(this.grid.getGrid(), editField,
-          currentText, cellBounds);
-      editorShell.addOkListener(new SelectionAdapter() {
-
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-          updateDataModel(editorShell.getContent());
-        }
-      });
-      editorShell.open();
+    } else if (!isReadOnly && !useInlineEditor) {
+      Point point =grid.getGrid().toDisplay(editField.x,editField.y);
+      point =Display.getDefault().map(grid.getGrid(), null, editField.x,editField.y);
+      Rectangle rectangle = new Rectangle(point.x, point.y, cellBounds.width, cellBounds.height);
+    	String string = editorProvider.open(currentText, editField, rectangle);
+    	if(string != null) {
+    	  currentText = string.trim();
+    	  grid.setUpdateLock();
+        updateDataModel(currentText);
+        grid.getGrid().redraw();
+    	}
     }
   }
 
