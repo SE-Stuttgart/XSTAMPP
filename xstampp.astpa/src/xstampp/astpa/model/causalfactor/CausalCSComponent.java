@@ -169,5 +169,10 @@ public class CausalCSComponent implements ICausalComponent{
       causalFactor.prepareForSave(hazardLinksMap,hazAccController, allRefinedRules,allUnsafeControlActions);
     }
   }
- 
+
+  void moveSafetyConstraints(List<CausalSafetyConstraint> list) {
+    for (CausalFactor factor : factors) {
+      factor.moveSafetyConstraints(list);
+    }
+  }
 }

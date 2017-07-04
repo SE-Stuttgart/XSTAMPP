@@ -8,7 +8,7 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package xstampp.astpa.model.causalfactor.linkEntries;
+package xstampp.astpa.model.causalfactor;
 
 import java.util.List;
 import java.util.UUID;

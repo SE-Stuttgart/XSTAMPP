@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -26,8 +24,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
-import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
-import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntryContainer;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
@@ -42,149 +38,153 @@ import xstampp.model.AbstractLTLProvider;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactor implements ICausalFactor, IEntryWithNameId {
-  
-  @XmlElement(name="id")
-	private UUID id;
-  
-  @XmlElement(name="text")
-	private String text;
-  
-  @XmlElement(name="safetyConstraint")
-	private CausalSafetyConstraint safetyConstraint;
 
-  @XmlElement(name="note")
-	private String note;
-  
-  @XmlElement(name="hazardLinks")
-	private String links;
-  
-  @XmlElementWrapper(name="causalEntries")
-  @XmlElement(name="causalEntry")
+  @XmlElement(name = "id")
+  private UUID id;
+
+  @XmlElement(name = "text")
+  private String text;
+
+  @XmlElement(name = "safetyConstraint")
+  private CausalSafetyConstraint safetyConstraint;
+
+  @XmlElement(name = "note")
+  private String note;
+
+  @XmlElement(name = "hazardLinks")
+  private String links;
+
+  @XmlElementWrapper(name = "causalEntries")
+  @XmlElement(name = "causalEntry")
   private List<CausalFactorEntry> entries;
-  
-	/**
-	 * Constructor of a causal factor
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param text
-	 *            the text of the new causal factor
-	 */
-	public CausalFactor(String text) {
-		this.id = UUID.randomUUID();
-		this.text = text;
-	}
 
-	/**
-	 * Empty constructor used for JAXB. Do not use it!
-	 * 
-	 * @author Fabian Toth
-	 */
-	public CausalFactor() {
-		// empty constructor for JAXB
-	}
+  @XmlElement
+  private UUID constraintId;
 
-	@Override
-	public UUID getId() {
-		return this.id;
-	}
+  /**
+   * Constructor of a causal factor
+   * 
+   * @author Fabian Toth
+   * 
+   * @param text
+   *          the text of the new causal factor
+   */
+  public CausalFactor(String text) {
+    this.id = UUID.randomUUID();
+    this.text = text;
+  }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(UUID id) {
-		this.id = id;
-	}
+  /**
+   * Empty constructor used for JAXB. Do not use it!
+   * 
+   * @author Fabian Toth
+   */
+  public CausalFactor() {
+    // empty constructor for JAXB
+  }
 
-	@Override
-	public String getText() {
-		return this.text;
-	}
+  @Override
+  public UUID getId() {
+    return this.id;
+  }
 
-	/**
-	 * @param text
-	 *            the text to set
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
+  /**
+   * @param id
+   *          the id to set
+   */
+  void setId(UUID id) {
+    this.id = id;
+  }
 
-	@Override
-	public ITableModel getSafetyConstraint() {
-		return this.safetyConstraint;
-	}
+  @Override
+  public String getText() {
+    return this.text;
+  }
 
-	/**
-	 * @param safetyConstraint
-	 *            the safetyConstraint to set
-	 */
-	public void setSafetyConstraint(CausalSafetyConstraint safetyConstraint) {
-		this.safetyConstraint = safetyConstraint;
-	}
+  /**
+   * @param text
+   *          the text to set
+   */
+  void setText(String text) {
+    this.text = text;
+  }
 
-	@Override
-	public String getNote() {
-		return this.note;
-	}
+  @Override
+  public ITableModel getSafetyConstraint() {
+    return this.safetyConstraint;
+  }
 
-	/**
-	 * @param note
-	 *            the note to set
-	 */
-	public void setNote(String note) {
-		this.note = note;
-	}
+  /**
+   * @param safetyConstraint
+   *          the safetyConstraint to set
+   */
+  void setSafetyConstraint(CausalSafetyConstraint safetyConstraint) {
+    this.safetyConstraint = safetyConstraint;
+  }
 
-	/**
-	 * @return the links
-	 */
-	public String getLinks() {
-		return this.links;
-	}
+  @Override
+  public String getNote() {
+    return this.note;
+  }
 
-	/**
-	 * @param links
-	 *            the links to set
-	 */
-	public void setLinks(String links) {
-		this.links = links;
-	}
-  
-	public UUID addUCAEntry(UUID ucaId){
+  /**
+   * @param note
+   *          the note to set
+   */
+  public void setNote(String note) {
+    this.note = note;
+  }
+
+  /**
+   * @return the links
+   */
+  public String getLinks() {
+    return this.links;
+  }
+
+  /**
+   * @param links
+   *          the links to set
+   */
+  public void setLinks(String links) {
+    this.links = links;
+  }
+
+  public UUID addUCAEntry(UUID ucaId) {
     CausalFactorEntry entry = new CausalFactorEntry(ucaId);
     return addUCAEntry(entry);
   }
 
-	public UUID addUCAEntry(ICausalFactorEntry entry){
-	  CausalFactorEntry addEntry;
-	  if(!(entry instanceof CausalFactorEntry)) {
-	    addEntry = new CausalFactorEntry(entry.getUcaLink(),entry.getId());
-	    addEntry.setConstraintText(entry.getConstraintText());
-	    addEntry.setScenarioLinks(entry.getScenarioLinks());
-	    addEntry.setNote(entry.getNote());
-	  } else {
-	    addEntry = (CausalFactorEntry) entry;
-	  }
-    if(this.entries == null){
+  public UUID addUCAEntry(ICausalFactorEntry entry) {
+    CausalFactorEntry addEntry;
+    if (!(entry instanceof CausalFactorEntry)) {
+      addEntry = new CausalFactorEntry(entry.getUcaLink(), entry.getId());
+      addEntry.setConstraintText(entry.getConstraintText());
+      addEntry.setScenarioLinks(entry.getScenarioLinks());
+      addEntry.setNote(entry.getNote());
+    } else {
+      addEntry = (CausalFactorEntry) entry;
+    }
+    if (this.entries == null) {
       this.entries = new ArrayList<>();
     }
-    if(!entries.contains(addEntry)) {
+    if (!entries.contains(addEntry)) {
       this.entries.add(addEntry);
       return entry.getId();
     }
     return null;
   }
-	public UUID addHazardEntry(){
-	  CausalFactorEntry entry = int_addHazardEntry();
-	  if(entry == null){
-	    return null;
-	  }
+
+  public UUID addHazardEntry() {
+    CausalFactorEntry entry = int_addHazardEntry();
+    if (entry == null) {
+      return null;
+    }
     return entry.getId();
   }
-	
-	private CausalFactorEntry int_addHazardEntry(){
-    if(this.entries == null){
+
+  private CausalFactorEntry int_addHazardEntry() {
+    if (this.entries == null) {
       this.entries = new ArrayList<>();
     }
     CausalFactorEntry entry;
@@ -192,57 +192,56 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
     this.entries.add(entry);
     return entry;
   }
-	
-	public boolean removeEntry(UUID entryId){
-	  for (int i= 0;entries != null && i < entries.size(); i++) {
-      if(entries.get(i).getId().equals(entryId)){
+
+  public boolean removeEntry(UUID entryId) {
+    for (int i = 0; entries != null && i < entries.size(); i++) {
+      if (entries.get(i).getId().equals(entryId)) {
         return entries.remove(i) != null;
       }
     }
-	  return false;
-	}
-	
-	public ICausalFactorEntry getEntry(UUID entryId){
-	  for (int i= 0;entries != null && i < entries.size(); i++) {
-      if(entries.get(i).getId().equals(entryId)){
+    return false;
+  }
+
+  public ICausalFactorEntry getEntry(UUID entryId) {
+    for (int i = 0; entries != null && i < entries.size(); i++) {
+      if (entries.get(i).getId().equals(entryId)) {
         return entries.get(i);
       }
     }
     return null;
-	}
+  }
 
   @Override
   public List<ICausalFactorEntry> getAllEntries() {
     List<ICausalFactorEntry> result = new ArrayList<>();
-    for (int i= 0;entries != null && i < entries.size(); i++) {
-      result.add(new CausalFactorEntryContainer(entries.get(i)));      
+    for (int i = 0; entries != null && i < entries.size(); i++) {
+      result.add(new CausalFactorEntryContainer(entries.get(i)));
     }
     return result;
   }
-  
-  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData){
+
+  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData) {
     CausalFactorEntry entry = (CausalFactorEntry) getEntry(entryData.getId());
-    if(entry != null){
+    if (entry != null) {
       return entry.changeCausalEntry(entryData);
     }
     return null;
   }
-  
+
   public void prepareForExport(HazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions){
-    for (int i= 0;entries != null && i < entries.size(); i++) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+    for (int i = 0; entries != null && i < entries.size(); i++) {
       entries.get(i).prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
     }
   }
 
   public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
-                             HazAccController hazAccController,
-                             List<AbstractLTLProvider> allRefinedRules,
-                             List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
-    if(hazardLinksMap.containsKey(getId()) || note != null || safetyConstraint != null){
+      HazAccController hazAccController, List<AbstractLTLProvider> allRefinedRules,
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+    if (hazardLinksMap.containsKey(getId()) || note != null || safetyConstraint != null) {
       CausalFactorEntry entry = int_addHazardEntry();
-      if(entry != null){
+      if (entry != null) {
         entry.setConstraintText(getSafetyConstraint().getText());
         entry.setHazardIds(hazardLinksMap.get(getId()));
         entry.setNote(getNote());
@@ -250,22 +249,36 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
       safetyConstraint = null;
       note = null;
     }
-    
-    if(entries != null){
+
+    if (entries != null) {
       for (CausalFactorEntry entry : entries) {
-        entry.prepareForSave(hazAccController,allUnsafeControlActions);
+        entry.prepareForSave(hazAccController, allUnsafeControlActions);
       }
     }
   }
-  public List<UUID> getLinkedUCAList(){
+
+  public List<UUID> getLinkedUCAList() {
     List<UUID> list = new ArrayList<>();
-    if(entries != null){
-      for(CausalFactorEntry entry : entries){
-        if(entry.getUcaLink() != null){
+    if (entries != null) {
+      for (CausalFactorEntry entry : entries) {
+        if (entry.getUcaLink() != null) {
           list.add(entry.getUcaLink());
         }
       }
     }
     return list;
+  }
+
+  void moveSafetyConstraints(List<CausalSafetyConstraint> list) {
+    if (safetyConstraint != null) {
+      CausalSafetyConstraint newConstraint = new CausalSafetyConstraint(
+          safetyConstraint.getDescription());
+      safetyConstraint = null;
+      constraintId = safetyConstraint.getId();
+      list.add(newConstraint);
+    }
+    for (CausalFactorEntry factorEntry : entries) {
+      factorEntry.moveSafetyConstraints(list);
+    }
   }
 }

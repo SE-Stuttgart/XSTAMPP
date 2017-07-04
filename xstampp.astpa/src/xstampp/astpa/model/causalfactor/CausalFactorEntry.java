@@ -6,7 +6,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package xstampp.astpa.model.causalfactor.linkEntries;
+package xstampp.astpa.model.causalfactor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,9 @@ public class CausalFactorEntry implements ICausalFactorEntry {
 
   @XmlElement(name = "constraintText")
   private String constraintText;
+
+  @XmlElement
+  private UUID constraintId;
 
   @XmlElementWrapper(name = "hazardIds")
   @XmlElement(name = "id")
@@ -132,6 +135,15 @@ public class CausalFactorEntry implements ICausalFactorEntry {
       return new String();
     }
     return note;
+  }
+
+  void moveSafetyConstraints(List<CausalSafetyConstraint> list) {
+    if (constraintText != null) {
+      CausalSafetyConstraint safetyConstraint = new CausalSafetyConstraint(constraintText);
+      constraintText = null;
+      constraintId = safetyConstraint.getId();
+      list.add(safetyConstraint);
+    }
   }
 
   /**
@@ -285,6 +297,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     if (getConstraintText() != null && getConstraintText().equals("")) {
       setConstraintText(null);
     }
+
     scenarioEntries = null;
     if (hazardIds != null) {
       UUID[] hazIds = (UUID[]) this.hazardIds.toArray(new UUID[0]);

@@ -23,11 +23,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
-import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -55,6 +55,10 @@ public class CausalFactorController implements ICausalFactorController {
 
   @XmlAttribute(name = "useScenarios")
   private boolean useScenarios;
+  
+  @XmlElementWrapper(name="causalSafetyConstraints")
+  @XmlElement(name="causalSafetyConstraint")
+  private List<CausalSafetyConstraint> causalSafetyConstraints;
 
   /**
    * Constructor of the causal factor controller
@@ -64,6 +68,7 @@ public class CausalFactorController implements ICausalFactorController {
    */
   public CausalFactorController() {
     this.links = new ArrayList<>();
+    this.causalSafetyConstraints = new NumberedArrayList<>();
     this.setUseScenarios(IASTPADefaults.USE_CAUSAL_SCENARIO_ANALYSIS);
   }
 
@@ -241,6 +246,7 @@ public class CausalFactorController implements ICausalFactorController {
       if (getCausalComponent(child) != null) {
         this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap, hazAccController,
             child, allRefinedRules, allUnsafeControlActions);
+        this.causalComponents.get(child.getId()).moveSafetyConstraints(causalSafetyConstraints);
       }
     }
     if (causalComponents != null) {
