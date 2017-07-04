@@ -10,19 +10,6 @@
  *******************************************************************************/
 package xstampp.astpa.util.jobs;
 
-import messages.Messages;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
-import xstampp.astpa.haz.HAZController;
-import xstampp.astpa.haz.IHAZModel;
-import xstampp.model.IDataModel;
-import xstampp.ui.common.ProjectManager;
-import xstampp.util.XstamppJob;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +23,17 @@ import java.util.Observable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
+
+import messages.Messages;
+import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
+import xstampp.util.XstamppJob;
 
 /**
  * a runtime job which is stores a DataModel in a given File
@@ -95,14 +92,7 @@ public class SaveJob extends XstamppJob {
 		    }
         
         tmpFile.createNewFile();
-				Object haz;
-				//if the user wants to use the old haz format, than a new controller is created 
-				//containing the old data model
-				if(tmpFile.getName().endsWith("haz")){
-					haz = new HAZController((IHAZModel) this.controller);
-				}else{
-					haz = this.controller;
-				}
+				Object haz= this.controller;
 				context = JAXBContext.newInstance(haz.getClass());
 				
 				Marshaller m = context.createMarshaller();

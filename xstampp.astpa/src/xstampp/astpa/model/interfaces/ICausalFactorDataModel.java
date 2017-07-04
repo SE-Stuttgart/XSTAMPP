@@ -14,15 +14,13 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UCAHazLink;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
+import xstampp.astpa.model.controlaction.UCAHazLink;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
@@ -90,7 +88,7 @@ public interface ICausalFactorDataModel extends IDataModel, ICausalFactorControl
    * 
    * @return the list of all corresponding safety constraints
    */
-  List<ISafetyConstraint> getCorrespondingSafetyConstraints();
+  List<ITableModel> getCorrespondingSafetyConstraints();
 
   /**
    * {@link IHazardViewDataModel#getHazards(UUID[])}

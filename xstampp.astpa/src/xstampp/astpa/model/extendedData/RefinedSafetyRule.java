@@ -15,9 +15,9 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
+import xstampp.model.ITableEntry;
 import xstampp.model.IValueCombie;
 
 @XmlRootElement(name = "rule")
@@ -146,7 +146,7 @@ public class RefinedSafetyRule extends AbstractLTLProvider{
 	
 	
 	@Override
-	public int compareTo(ITableModel sibling) {
+	public int compareTo(ITableEntry sibling) {
 		int sign =(int) Math.signum(getNumber() - sibling.getNumber());
 		return sign;
 	}

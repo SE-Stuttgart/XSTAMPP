@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
+import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;

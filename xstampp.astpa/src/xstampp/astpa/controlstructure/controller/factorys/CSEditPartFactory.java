@@ -13,6 +13,12 @@
 
 package xstampp.astpa.controlstructure.controller.factorys;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
@@ -28,28 +34,22 @@ import xstampp.astpa.controlstructure.controller.editparts.DashedBoxEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.EmptyComponentEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.FeedbackEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
+import xstampp.astpa.controlstructure.controller.editparts.ListOfCAEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessModelEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessValueEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.ProcessVariableEditPart;
-import xstampp.astpa.controlstructure.controller.editparts.ListOfCAEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.SensorEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.TextFieldEditPart;
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
-import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.preferences.IControlStructureConstants;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 // import astpa.rcp.controlstucture.model.ComponentModel;
 

@@ -20,7 +20,8 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import acast.model.ITableModel;
+import xstampp.astpa.model.hazacc.Hazard;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * Controller-class for working with accidents and hazards and links between

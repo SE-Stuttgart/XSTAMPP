@@ -15,8 +15,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -41,12 +39,12 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.astpa.haz.ITableModel;
+import messages.Messages;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.Hazard;
-import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.AccidentLinkSupport;

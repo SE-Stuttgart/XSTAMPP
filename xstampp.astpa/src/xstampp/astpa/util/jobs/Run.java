@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,6 +23,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
+import messages.Messages;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;

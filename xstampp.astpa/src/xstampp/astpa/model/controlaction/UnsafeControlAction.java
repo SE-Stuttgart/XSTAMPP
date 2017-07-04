@@ -11,21 +11,21 @@
 
 package xstampp.astpa.model.controlaction;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.EntryWithSeverity;
-import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.interfaces.IEntryWithNameId;
-import xstampp.astpa.model.interfaces.Severity;
-
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import xstampp.astpa.model.EntryWithSeverity;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
+import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.interfaces.IEntryWithNameId;
+import xstampp.astpa.model.interfaces.Severity;
+import xstampp.model.ITableEntry;
 
 /**
  * Class for unsafe control action objects.
@@ -73,6 +73,7 @@ public class UnsafeControlAction extends EntryWithSeverity
     this.description = description;
     this.type = type;
     this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(""); //$NON-NLS-1$
+    correspondingSafetyConstraint.setNumber(getNumber());
     this.id = UUID.randomUUID();
     this.number = 0;
     setSeverity(Severity.S0);
@@ -86,7 +87,6 @@ public class UnsafeControlAction extends EntryWithSeverity
    */
   public UnsafeControlAction() {
     setSeverity(Severity.S0);
-    // empty constructor for JAXB
   }
 
   @Override
@@ -164,12 +164,14 @@ public class UnsafeControlAction extends EntryWithSeverity
     this.links = links;
   }
 
-  public void setNumber(int number) {
+  public boolean setNumber(int number) {
     this.number = number;
+    this.correspondingSafetyConstraint.setNumber(number);
+    return true;
   }
 
   @Override
-  public int compareTo(ITableModel o) {
+  public int compareTo(ITableEntry o) {
     try {
       if (o.getNumber() < this.getNumber()) {
         return 1;
@@ -197,4 +199,15 @@ public class UnsafeControlAction extends EntryWithSeverity
     return getTitle() + ":" + getDescription();
   }
 
+
+  @Override
+  public String getIdString() {
+    return getTitle();
+  }
+
+  public void prepareForSave() {
+    identifier = null;
+    setLinks(null);
+    correspondingSafetyConstraint.prepareForSave();
+  }
 }

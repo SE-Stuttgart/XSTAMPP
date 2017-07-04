@@ -13,8 +13,8 @@ package xstampp.astpa.model.extendedData.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.AbstractLTLProvider;

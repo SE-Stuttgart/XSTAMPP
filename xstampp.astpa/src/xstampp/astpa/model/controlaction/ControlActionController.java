@@ -26,13 +26,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import messages.Messages;
-
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UCAHazLink;
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
@@ -41,8 +37,8 @@ import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
@@ -189,9 +185,9 @@ public class ControlActionController {
    * 
    * @author Fabian Toth
    */
-  public List<IHAZXControlAction> getAllControlActionsU() {
-    List<IHAZXControlAction> result = new ArrayList<>();
-    for (ControlAction controlAction : this.controlActions) {
+  public List<IControlAction> getAllControlActionsU() {
+    List<IControlAction> result = new ArrayList<>();
+    for (IControlAction controlAction : this.controlActions) {
       result.add(controlAction);
     }
     return result;
@@ -206,8 +202,8 @@ public class ControlActionController {
    * 
    * @author Fabian Toth
    */
-  public IHAZXControlAction getControlActionU(UUID controlActionId) {
-    for (IHAZXControlAction controlAction : this.controlActions) {
+  public IControlAction getControlActionU(UUID controlActionId) {
+    for (IControlAction controlAction : this.controlActions) {
       if (controlAction.getId().equals(controlActionId)) {
         return controlAction;
       }
@@ -501,12 +497,9 @@ public class ControlActionController {
     if (unsafeControlAction == null) {
       return null;
     }
-    String oldTitle = unsafeControlAction.getCorrespondingSafetyConstraint().getText();
-    if (unsafeControlAction.getCorrespondingSafetyConstraint()
-        .setText(safetyConstraintDescription)) {
-      return oldTitle;
-    }
-    return null;
+    String oldTitle = unsafeControlAction.getCorrespondingSafetyConstraint()
+        .setTitle(safetyConstraintDescription);
+    return oldTitle;
   }
 
   /**
@@ -537,8 +530,8 @@ public class ControlActionController {
    * 
    * @return the list of all corresponding safety constraints
    */
-  public List<ISafetyConstraint> getCorrespondingSafetyConstraints() {
-    List<ISafetyConstraint> result = new ArrayList<>();
+  public List<ITableModel> getCorrespondingSafetyConstraints() {
+    List<ITableModel> result = new ArrayList<>();
     for (ICorrespondingUnsafeControlAction unsafeControlAction : this
         .getAllUnsafeControlActions()) {
       result.add(unsafeControlAction.getCorrespondingSafetyConstraint());
@@ -645,8 +638,7 @@ public class ControlActionController {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
 
-        unsafeControlAction.identifier = null;
-        unsafeControlAction.setLinks(null);
+        unsafeControlAction.prepareForSave();
       }
     }
     

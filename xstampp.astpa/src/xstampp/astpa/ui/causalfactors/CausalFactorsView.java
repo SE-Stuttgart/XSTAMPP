@@ -18,12 +18,10 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 
-import xstampp.astpa.haz.ITableModel;
+import messages.Messages;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
@@ -31,6 +29,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.ui.CommonGridView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;

@@ -2,7 +2,7 @@ package xstampp.astpa.model.service;
 
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.IDataModel;
 import xstampp.util.IUndoCallback;
 

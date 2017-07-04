@@ -16,8 +16,6 @@ package xstampp.astpa.ui.sds;
 import java.util.Arrays;
 import java.util.List;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -51,6 +49,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;

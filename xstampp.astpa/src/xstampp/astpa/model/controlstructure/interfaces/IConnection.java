@@ -25,7 +25,7 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
  * @author Fabian Toth
  * 
  */
-public interface IConnection extends xstampp.astpa.haz.controlstructure.interfaces.IConnection,IComponent {
+public interface IConnection extends IComponent {
 
 
 	
@@ -37,10 +37,13 @@ public interface IConnection extends xstampp.astpa.haz.controlstructure.interfac
 	 * 
 	 * @author Lukas Balzer, Aliaksei Babkovich
 	 */
-	@Override
 	ConnectionType getConnectionType();
 
   List<Point> getBendPoints();
+
+  IAnchor getTargetAnchor();
+
+  IAnchor getSourceAnchor();
 	
 
 

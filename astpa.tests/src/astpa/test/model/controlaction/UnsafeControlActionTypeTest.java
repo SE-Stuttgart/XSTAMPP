@@ -2,7 +2,7 @@ package astpa.test.model.controlaction;
 
 import org.junit.Test;
 
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 
 /**
  * 

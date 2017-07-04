@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.haz.causalfactor.CausalFactorHazardLink;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
@@ -48,7 +47,7 @@ public class CausalFactorController implements ICausalFactorController {
 
   @XmlElementWrapper(name = "causalFactorHazardLinks")
   @XmlElement(name = "causalFactorHazardLink")
-  private List<CausalFactorHazardLink> links;
+  private List<Object> links;
 
   @XmlElementWrapper(name = "causalComponents")
   @XmlElement(name = "causalComponent")
@@ -230,13 +229,6 @@ public class CausalFactorController implements ICausalFactorController {
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     Map<UUID, List<UUID>> hazardLinksMap = new HashMap<>();
     if (links != null) {
-      for (CausalFactorHazardLink link : links) {
-        UUID factorId = link.getCausalFactorId();
-        if (!hazardLinksMap.containsKey(factorId)) {
-          hazardLinksMap.put(factorId, new ArrayList<UUID>());
-        }
-        hazardLinksMap.get(factorId).add(link.getHazardId());
-      }
       links.clear();
       links = null;
     }

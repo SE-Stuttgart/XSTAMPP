@@ -48,7 +48,7 @@ public class SafetyConstraint extends ATableModel {
    * @param model
    *          The model containing the title, description and id
    */
-  public SafetyConstraint(xstampp.astpa.haz.ITableModel model, int i) {
+  public SafetyConstraint(ITableModel model, int i) {
     super(model, i);
   }
 

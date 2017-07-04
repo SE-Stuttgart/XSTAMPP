@@ -13,7 +13,9 @@
 
 package xstampp.astpa.ui.sds;
 
-import messages.Messages;
+import java.util.EnumSet;
+import java.util.Observable;
+import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -39,8 +41,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
+import messages.Messages;
 import xstampp.astpa.model.controlaction.ControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.ATableModel;
@@ -49,10 +52,6 @@ import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-
-import java.util.EnumSet;
-import java.util.Observable;
-import java.util.UUID;
 
 /**
  * @author Jarkko Heidenwag
@@ -241,9 +240,9 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
 					@Override
 					public String getText(Object element) {
-						if (element instanceof IHAZXControlAction) {
+						if (element instanceof IControlAction) {
 							IRectangleComponent comp=ControlActionView.this.getDataInterface().
-									getComponent(((IHAZXControlAction) element).getComponentLink());
+									getComponent(((IControlAction) element).getComponentLink());
 							if(comp == null){
 								return null;
 							}
@@ -270,9 +269,9 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
 					@Override
 					public String getText(Object element) {
-						if (element instanceof IHAZXControlAction) {
+						if (element instanceof IControlAction) {
 							IRectangleComponent comp=ControlActionView.this.getDataInterface().
-									getComponent(((IHAZXControlAction) element).getComponentLink());
+									getComponent(((IControlAction) element).getComponentLink());
 							if(comp == null){
 								return null;
 							}

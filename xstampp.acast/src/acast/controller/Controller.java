@@ -12,8 +12,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import messages.Messages;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
@@ -24,10 +22,20 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
+import acast.Activator;
+import acast.export.ExportInformation;
+import acast.jobs.SaveJob;
+import acast.model.hazacc.HazController;
+import acast.model.interfaces.IAccidentDescriptionViewDataModel;
+import acast.model.interfaces.IProximalEventsViewDataModel;
+import acast.model.interfaces.IResponsibilityDataModel;
+import acast.ui.accidentDescription.ProximalEvent;
+import acast.ui.accidentDescription.ProximalEventsController;
+import acast.ui.accidentDescription.Responsibility;
+import messages.Messages;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.Component;
@@ -35,29 +43,20 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.model.interfaces.IHazardViewDataModel;
+import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.sds.SDSController;
+import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.model.AbstractDataModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import acast.Activator;
-import acast.export.ExportInformation;
-import acast.jobs.SaveJob;
-import acast.model.ITableModel;
-import acast.model.hazacc.HazController;
-import acast.model.hazacc.Hazard;
-import acast.model.interfaces.IAccidentDescriptionViewDataModel;
-import acast.model.interfaces.IHazardViewDataModel;
-import acast.model.interfaces.IProximalEventsViewDataModel;
-import acast.model.interfaces.IResponsibilityDataModel;
-import acast.model.interfaces.ISafetyConstraintViewDataModel;
-import acast.model.sds.SDSController;
-import acast.model.sds.SafetyConstraint;
-import acast.ui.accidentDescription.ProximalEvent;
-import acast.ui.accidentDescription.ProximalEventsController;
-import acast.ui.accidentDescription.Responsibility;
 
 @XmlRootElement(namespace = "acast.model")
 public class Controller extends AbstractDataModel implements IDataModel,
@@ -402,14 +401,14 @@ public class Controller extends AbstractDataModel implements IDataModel,
 	@Override
 	public List<IControlAction> getAllControlActions() {
 		List<IControlAction> result = new ArrayList<>();
-		for (IHAZXControlAction controlAction : this.controlActionController.getAllControlActionsU()) {
+		for (IControlAction controlAction : this.controlActionController.getAllControlActionsU()) {
 			result.add(controlAction);
 		}
 		return result;
 	}
 
 	@Override
-	public xstampp.astpa.haz.ITableModel getControlAction(UUID controlActionId) {
+	public xstampp.astpa.model.interfaces.ITableModel getControlAction(UUID controlActionId) {
 		if (controlActionId == null) {
 			return null;
 		}
@@ -660,7 +659,7 @@ public class Controller extends AbstractDataModel implements IDataModel,
 			return null;
 		}
 
-		UUID id = this.sdsController.addSafetyConstraint(title, description);
+		UUID id = this.sdsController.addSafetyConstraint(title, description, null);
 		this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
 		return id;
 	}
@@ -1219,6 +1218,42 @@ public class Controller extends AbstractDataModel implements IDataModel,
 
   @Override
   public ControlStructureController getControlStructureController() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean setSeverity(Object entry, Severity severity) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isUseSeverity() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean setUseSeverity(boolean useSeverity) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public List<ITableModel> getHazards(List<UUID> ids) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<ITableModel> getAllAccidents() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public ITableModel getAccident(UUID accidentId) {
     // TODO Auto-generated method stub
     return null;
   }

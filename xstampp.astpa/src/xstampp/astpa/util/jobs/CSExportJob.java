@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -39,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;

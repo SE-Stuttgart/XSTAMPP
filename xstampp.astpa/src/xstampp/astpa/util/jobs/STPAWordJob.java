@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.Document;
@@ -44,15 +42,15 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STShd;
 
+import messages.Messages;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.UnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
 
@@ -231,7 +229,7 @@ public class STPAWordJob extends XstamppJob {
 	 * 
 	 * @param paragraph 
 	 */
-	private void addUCATable(XWPFDocument document,List<IHAZXControlAction> list){
+	private void addUCATable(XWPFDocument document,List<IControlAction> list){
 		addNewTitle(Messages.UnsafeControlActionsTable, document);
 		XWPFTable ucaTable = document.createTable(1,5);
 		XWPFTableRow row = ucaTable.getRow(0);

@@ -1,5 +1,10 @@
 package xstampp.astpa.usermanagement.settings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -19,11 +24,6 @@ import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public abstract class EntryResponsibilitiesPage<T extends ATableModel> implements ISettingsPage {
 

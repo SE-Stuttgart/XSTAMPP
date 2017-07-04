@@ -19,7 +19,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
+
 
 
 /**

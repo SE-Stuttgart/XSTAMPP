@@ -13,8 +13,8 @@ package xstpa.model;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 

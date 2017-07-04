@@ -16,8 +16,7 @@ import java.util.Observable;
 import java.util.UUID;
 
 import messages.Messages;
-
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.ui.ATableFilter;

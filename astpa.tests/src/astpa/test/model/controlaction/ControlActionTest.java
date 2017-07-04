@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.ControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 
 /**
  * Test class for control action

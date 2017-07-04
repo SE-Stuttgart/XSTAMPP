@@ -14,14 +14,12 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UCAHazLink;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.UCAHazLink;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
@@ -137,7 +135,7 @@ public interface IExtendedDataModel extends IDataModel,IExtendedDataController{
   /**
    * {@link IUnsafeControlActionDataModel#getAllControlActionsU()}
    */
-  List<IHAZXControlAction> getAllControlActionsU();
+  List<IControlAction> getAllControlActionsU();
   
   /**
    * {@link IControlActionViewDataModel#getAllControlActions()}

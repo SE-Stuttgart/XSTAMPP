@@ -1,14 +1,14 @@
 package xstampp.astpa.usermanagement.settings;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.hazacc.ATableModel;
-import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
-import xstampp.ui.common.ProjectManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.ui.common.ProjectManager;
 
 public class ControlActionsResponsibilityPage extends EntryResponsibilitiesPage<ATableModel> {
 

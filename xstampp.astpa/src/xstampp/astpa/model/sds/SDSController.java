@@ -20,8 +20,9 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.haz.ITableModel;
+import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 /**
@@ -41,9 +42,17 @@ public class SDSController{
 	@XmlElement(name = "systemGoal")
 	private List<SystemGoal> systemGoals;
 
-	@XmlElementWrapper(name = "designRequirements")
-	@XmlElement(name = "designRequirement")
-	private List<DesignRequirement> designRequirements;
+  @XmlElementWrapper(name = "designRequirements")
+  @XmlElement(name = "designRequirement")
+  private List<DesignRequirement> designRequirements;
+
+  @XmlElementWrapper(name = "designRequirementsStep1")
+  @XmlElement(name = "designRequirementStep1")
+  private List<DesignRequirement> designRequirementsStep1;
+
+  @XmlElementWrapper(name = "designRequirementsStep2")
+  @XmlElement(name = "designRequirementStep2")
+  private List<DesignRequirement> designRequirementsStep2;
 
 	/**
 	 * 
@@ -53,9 +62,9 @@ public class SDSController{
 	 * 
 	 */
 	public SDSController() {
-		this.safetyConstraints = new ArrayList<>();
-		this.systemGoals = new ArrayList<>();
-		this.designRequirements = new ArrayList<>();
+		this.safetyConstraints = new NumberedArrayList<>();
+		this.systemGoals = new NumberedArrayList<>();
+		this.designRequirements = new NumberedArrayList<>();
 	}
 
   /**

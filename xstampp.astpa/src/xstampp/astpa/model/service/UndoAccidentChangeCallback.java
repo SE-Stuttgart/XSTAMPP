@@ -1,7 +1,7 @@
 package xstampp.astpa.model.service;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 public class UndoAccidentChangeCallback extends UndoTableModelChangeCallback<IAccidentViewDataModel> {

@@ -23,7 +23,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
-import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
+import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.preferences.IControlStructureConstants;
 
 /**

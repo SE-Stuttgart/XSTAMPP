@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IHazardModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 public class HazardLinkSupport<M extends IHazardModel> extends LinkSupport<M> {

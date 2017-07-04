@@ -10,15 +10,9 @@
  *******************************************************************************/
 package xstampp.astpa.util.jobs;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -34,8 +28,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import messages.Messages;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,7 +35,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.xml.sax.SAXException;
 
-import xstampp.astpa.haz.HAZController;
+import messages.Messages;
 import xstampp.astpa.model.DataModelController;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
@@ -73,11 +65,8 @@ public class STPALoadJob extends AbstractLoadJob {
 	      FileInputStream inputStream = new FileInputStream(getFile());) {
 			// validate the file
 			URL schemaFile;
-			if(this.getFile().getName().endsWith("haz")){
-				schemaFile = HAZController.class.getResource("/hazschema.xsd"); //$NON-NLS-1$
-			}else{
-				schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
-			}
+			schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
+			
       IOUtils.copy(inputStream, writer, "UTF-8");
       String line = writer.toString();
      //gt and lt are replaced by null chars for the time of unescaping

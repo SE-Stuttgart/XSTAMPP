@@ -5,10 +5,10 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * Controller-class for working with control actions

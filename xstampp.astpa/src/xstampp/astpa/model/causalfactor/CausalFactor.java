@@ -13,17 +13,6 @@
 
 package xstampp.astpa.model.causalfactor;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
-import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
-import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntryContainer;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.astpa.model.interfaces.IEntryWithNameId;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
-import xstampp.model.AbstractLTLProvider;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +22,17 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+
+import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
+import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntry;
+import xstampp.astpa.model.causalfactor.linkEntries.CausalFactorEntryContainer;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.model.interfaces.IEntryWithNameId;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.model.AbstractLTLProvider;
 
 /**
  * A causal factor
@@ -111,7 +111,7 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
 	}
 
 	@Override
-	public ISafetyConstraint getSafetyConstraint() {
+	public ITableModel getSafetyConstraint() {
 		return this.safetyConstraint;
 	}
 

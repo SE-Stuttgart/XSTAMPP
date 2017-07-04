@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.UUID;
 
 import messages.Messages;
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**

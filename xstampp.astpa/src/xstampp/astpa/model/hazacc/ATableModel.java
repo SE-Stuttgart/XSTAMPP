@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.model.ITableEntry;
 
 /**
  * Abstract class for everything that can be shown in a table
@@ -31,11 +32,12 @@ import xstampp.astpa.model.interfaces.ITableModel;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class ATableModel extends EntryWithSeverity implements ITableModel, IEntryWithNameId {
+public abstract class ATableModel extends EntryWithSeverity
+    implements ITableModel, IEntryWithNameId {
 
   @XmlAttribute
   private UUID createdBy;
-  
+
   @XmlElement
   private UUID id;
 
@@ -70,12 +72,13 @@ public abstract class ATableModel extends EntryWithSeverity implements ITableMod
     this.number = number;
   }
 
-  public ATableModel(xstampp.astpa.haz.ITableModel model, int i) {
+  public ATableModel(ITableModel model, int i) {
     this.id = model.getId();
     this.title = model.getTitle();
     this.description = model.getDescription();
     this.number = i;
   }
+
   /**
    * Empty constructor used for JAXB. Do not use it!
    * 
@@ -145,7 +148,8 @@ public abstract class ATableModel extends EntryWithSeverity implements ITableMod
    *          the new title
    * 
    * @author Fabian Toth
-   * @return TODO
+   * @author Lukas Balzer
+   * @return The old title if the title has been changed null otherwise
    */
   public String setTitle(String title) {
     if (this.title == null || !this.title.equals(title)) {
@@ -163,7 +167,7 @@ public abstract class ATableModel extends EntryWithSeverity implements ITableMod
 
   @Override
   public String getText() {
-    return this.title;
+    return this.getTitle();
   }
 
   @Override
@@ -236,14 +240,14 @@ public abstract class ATableModel extends EntryWithSeverity implements ITableMod
   }
 
   @Override
-  public int compareTo(xstampp.astpa.haz.ITableModel o) {
+  public int compareTo(ITableEntry o) {
     return this.getNumber() - o.getNumber();
   }
 
   public void setCreatedBy(UUID createdBy) {
     this.createdBy = createdBy;
   }
-  
+
   public UUID getCreatedBy() {
     return createdBy;
   }

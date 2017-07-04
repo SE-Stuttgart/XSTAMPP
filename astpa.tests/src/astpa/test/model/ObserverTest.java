@@ -10,9 +10,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;

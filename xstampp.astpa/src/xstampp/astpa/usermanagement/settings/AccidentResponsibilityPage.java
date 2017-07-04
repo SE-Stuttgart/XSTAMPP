@@ -1,13 +1,13 @@
 package xstampp.astpa.usermanagement.settings;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.model.hazacc.ATableModel;
-import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
-import xstampp.ui.common.ProjectManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.ui.common.ProjectManager;
 
 public class AccidentResponsibilityPage extends EntryResponsibilitiesPage<ATableModel> {
 

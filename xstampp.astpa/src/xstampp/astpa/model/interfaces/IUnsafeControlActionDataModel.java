@@ -16,10 +16,9 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.model.IDataModel;
 import xstampp.model.IEntryFilter;
@@ -39,7 +38,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel,ISeverityDataM
 	 *
 	 * @return the list of Control Actions
 	 */
-	List<IHAZXControlAction> getAllControlActionsU();
+	List<IControlAction> getAllControlActionsU();
 	
 	/**
    * creates a new list with all entries according to the given
@@ -65,7 +64,7 @@ public interface IUnsafeControlActionDataModel extends IDataModel,ISeverityDataM
 	 * 
 	 * @return the control action with the given id or null
 	 */
-	IHAZXControlAction getControlActionU(UUID controlActionId);
+	IControlAction getControlActionU(UUID controlActionId);
 
 	/**
 	 * Add an unsafe control action to a given control action.<br>

@@ -8,17 +8,17 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UCAHazLink;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.haz.hazacc.Link;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
+import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.UnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.api.CollaborationSystem;
 import xstampp.usermanagement.api.IUser;
@@ -71,12 +71,12 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
     // sync the accident-hazard links
     for (Link ucaHazLink : controller.getAllHazAccLinks()) {
       if (!userController.getAllHazAccLinks().contains(ucaHazLink)) {
-        controller.deleteLink(ucaHazLink.getAccidentId(), ucaHazLink.getHazardId());
+        controller.deleteLink(ucaHazLink.getLinkA(), ucaHazLink.getLinkB());
       }
     }
     for (Link ucaHazLink : userController.getAllHazAccLinks()) {
       if (!controller.getAllHazAccLinks().contains(ucaHazLink)) {
-        controller.addLink(ucaHazLink.getAccidentId(), ucaHazLink.getHazardId());
+        controller.addLink(ucaHazLink.getLinkA(), ucaHazLink.getLinkB());
       }
     }
 
@@ -86,9 +86,9 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
     // Synchronize all COntrol actions the given user is responsible for
     // furthermore all unsafe control actions and corresponding safety constraints for
     // this control action are synchronized
-    for (IHAZXControlAction userCa : userController.getAllControlActionsU()) {
+    for (IControlAction userCa : userController.getAllControlActionsU()) {
 
-      IHAZXControlAction originalCa = controller.getControlActionU(userCa.getId());
+      IControlAction originalCa = controller.getControlActionU(userCa.getId());
       if (originalCa != null && responsibilities.contains(userCa.getId())) {
         controller.setControlActionTitle(userCa.getId(), userCa.getTitle());
         controller.setControlActionDescription(userCa.getId(), userCa.getDescription());

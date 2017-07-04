@@ -16,11 +16,10 @@ import java.util.UUID;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-import xstampp.astpa.haz.ITableModel;
+import xstampp.model.ITableEntry;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 import xstampp.ui.common.contentassist.LinkProposal;
@@ -56,9 +55,9 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
 
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
-    List<? extends ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
+    List<? extends ITableEntry> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
    
-    List<? extends ITableModel> items = this.publicInterface.getAllItems();
+    List<? extends ITableEntry> items = this.publicInterface.getAllItems();
     // remove all already linked items
     items.removeAll(linkedItems);
 

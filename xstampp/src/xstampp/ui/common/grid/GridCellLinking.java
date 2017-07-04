@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.astpa.haz.ITableModel;
+import xstampp.model.ITableEntry;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 
@@ -66,11 +66,11 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
    */
   private class DeleteLinkButton extends CellButton {
 
-    private ITableModel tableModel;
-    private ITableContentProvider<? extends ITableModel> provider;
+    private ITableEntry tableModel;
+    private ITableContentProvider<? extends ITableEntry> provider;
 
-    public DeleteLinkButton(Rectangle rect, Image image, ITableModel tableModel,
-        ITableContentProvider<? extends ITableModel> provider) {
+    public DeleteLinkButton(Rectangle rect, Image image, ITableEntry tableModel,
+        ITableContentProvider<? extends ITableEntry> provider) {
       super(rect, image);
       this.tableModel = tableModel;
       this.provider = provider;
@@ -85,7 +85,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   }
 
   /**
-   * constructs a generic gridCell that is capable of containing several editable ITableModel links.
+   * constructs a generic gridCell that is capable of containing several editable ITableEntry links.
    * 
    * @author Benedikt Markt
    * 
@@ -101,7 +101,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   }
 
   /**
-   * constructs a generic gridCell that is capable of containing several editable ITableModel links.
+   * constructs a generic gridCell that is capable of containing several editable ITableEntry links.
    * 
    * @author Benedikt Markt
    * 
@@ -142,7 +142,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
 
     gc.setBackground(this.getBackgroundColor(renderer, gc));
 
-    List<? extends ITableModel> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
+    List<? extends ITableEntry> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
     Collections.sort(linkedItems);
     this.buttonContainer.clearButtons();
     for (CellButton button : buttons) {
@@ -156,7 +156,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
       int yOff = 0;
       int tmpLines = 1;
       boolean hovered = this.grid.getHoveredCell() == GridCellLinking.this;
-      for (final ITableModel model : linkedItems) {
+      for (final ITableEntry model : linkedItems) {
 
         String linkText = "[" + this.publicInterface.getPrefix() + model.getNumber() //$NON-NLS-1$
             + "]"; //$NON-NLS-1$

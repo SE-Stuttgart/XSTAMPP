@@ -6,14 +6,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "idLink")
-final class Link {
+public final class Link {
   @XmlAttribute
   private UUID linkA;
 
   @XmlAttribute
   private UUID linkB;
 
-  Link(UUID a, UUID b) {
+  public Link(UUID a, UUID b) {
     linkA = a;
     linkB = b;
   }
@@ -23,11 +23,11 @@ final class Link {
     linkB = null;
   }
 
-  UUID getLinkA() {
+  public UUID getLinkA() {
     return linkA;
   }
 
-  UUID getLinkB() {
+  public UUID getLinkB() {
     return linkB;
   }
 

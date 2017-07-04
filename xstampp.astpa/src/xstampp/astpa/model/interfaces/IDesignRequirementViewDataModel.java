@@ -16,7 +16,6 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.model.IDataModel;
 
 /**

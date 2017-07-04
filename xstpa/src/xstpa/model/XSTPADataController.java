@@ -20,14 +20,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
-import org.eclipse.swt.widgets.Display;
-
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
-import xstampp.astpa.model.controlstructure.components.Component;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.model.AbstractLTLProvider;

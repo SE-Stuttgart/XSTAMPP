@@ -48,11 +48,11 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
+import xstampp.astpa.model.hazacc.Hazard;
+import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import acast.Activator;
-import acast.model.hazacc.Hazard;
-import acast.model.interfaces.IHazardViewDataModel;
 
 /**
  * @author Jarkko Heidenwag

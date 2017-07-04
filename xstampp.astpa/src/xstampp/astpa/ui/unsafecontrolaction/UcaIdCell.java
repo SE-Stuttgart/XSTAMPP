@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.eclipse.swt.graphics.GC;
 
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.ui.common.grid.GridCellRenderer;

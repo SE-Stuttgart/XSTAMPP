@@ -10,13 +10,13 @@
  *******************************************************************************/
 package xstampp.astpa.controlstructure.controller.editparts;
 
+import java.util.UUID;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.swt.SWT;
-
-import java.util.UUID;
 
 import messages.Messages;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
@@ -24,8 +24,8 @@ import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * TODO

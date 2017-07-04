@@ -1,7 +1,7 @@
 package xstampp.astpa.model.service;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 public class UndoSafetyConstraintChangeCallback extends UndoTableModelChangeCallback<ISafetyConstraintViewDataModel> {

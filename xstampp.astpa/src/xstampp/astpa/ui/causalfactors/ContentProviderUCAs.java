@@ -14,7 +14,7 @@ package xstampp.astpa.ui.causalfactors;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;

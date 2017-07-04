@@ -15,8 +15,7 @@ package xstampp.astpa.model.controlaction.safetyconstraint;
 
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * Interface for a unsafe control action for the corresponding safety
@@ -25,7 +24,7 @@ import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
  * @author Fabian Toth
  * 
  */
-public interface ICorrespondingUnsafeControlAction extends xstampp.astpa.haz.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction, ITableModel {
+public interface ICorrespondingUnsafeControlAction extends ITableModel {
 
 	/**
 	 * @return the description
@@ -48,8 +47,7 @@ public interface ICorrespondingUnsafeControlAction extends xstampp.astpa.haz.con
 	 * 
 	 * @return the correspondingSafetyConstraint
 	 */
-	@Override
-	ISafetyConstraint getCorrespondingSafetyConstraint();
+	ITableModel getCorrespondingSafetyConstraint();
 	
 	/**
    * @return the links

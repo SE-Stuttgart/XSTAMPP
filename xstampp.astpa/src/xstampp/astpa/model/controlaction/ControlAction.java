@@ -20,9 +20,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
@@ -37,7 +37,7 @@ import xstampp.model.IValueCombie;
  * @author Fabian Toth, Lukas Balzer
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlAction extends ATableModel implements IHAZXControlAction {
+public class ControlAction extends ATableModel implements IControlAction {
 
   @XmlElementWrapper(name = "unsafecontrolactions")
   @XmlElement(name = "unsafecontrolaction")
@@ -224,7 +224,7 @@ public class ControlAction extends ATableModel implements IHAZXControlAction {
    * 
    * @author Fabian Toth
    */
-  public List<UnsafeControlAction> getInternalUnsafeControlActions() {
+  List<UnsafeControlAction> getInternalUnsafeControlActions() {
     return this.unsafeControlActions;
   }
 

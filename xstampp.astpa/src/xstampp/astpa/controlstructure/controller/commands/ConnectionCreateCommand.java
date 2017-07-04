@@ -22,10 +22,10 @@ import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
-import xstampp.astpa.haz.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

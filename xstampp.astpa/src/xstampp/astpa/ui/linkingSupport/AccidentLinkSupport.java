@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.interfaces.IAccidentModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 public class AccidentLinkSupport<M extends IAccidentModel> extends LinkSupport<M> {

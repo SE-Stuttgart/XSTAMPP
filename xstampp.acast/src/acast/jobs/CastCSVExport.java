@@ -6,19 +6,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import xstampp.model.IDataModel;
 import acast.controller.Controller;
-import acast.model.ITableModel;
 import acast.ui.accidentDescription.ProximalEvent;
 import acast.ui.accidentDescription.Responsibility;
 import acast.wizards.BufferedCSVWriter;
+import messages.Messages;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.model.IDataModel;
 
 public class CastCSVExport extends Job {
 

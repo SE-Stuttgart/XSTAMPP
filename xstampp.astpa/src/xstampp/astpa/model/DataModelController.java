@@ -30,8 +30,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import messages.Messages;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
@@ -44,14 +42,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.framework.Bundle;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.causalfactor.CausalFactorHazardLink;
-import xstampp.astpa.haz.controlaction.UCAHazLink;
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.haz.hazacc.Link;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
@@ -60,8 +52,11 @@ import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
+import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.UnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
@@ -83,7 +78,6 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.astpa.model.interfaces.IHAZXModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.model.interfaces.ILinkingViewDataModel;
 import xstampp.astpa.model.interfaces.INavigationViewDataModel;
@@ -91,15 +85,16 @@ import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
 import xstampp.astpa.model.interfaces.IStatusLineDataModel;
 import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.model.interfaces.Severity;
+import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.projectdata.ProjectDataController;
 import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
 import xstampp.astpa.model.service.CausalDataUndoCallback;
 import xstampp.astpa.model.service.UndoAccidentChangeCallback;
 import xstampp.astpa.model.service.UndoCSCChangeCallback;
@@ -139,7 +134,7 @@ import xstampp.util.service.UndoRedoService;
 @XmlRootElement(namespace = "astpa.model")
 @XmlAccessorType(XmlAccessType.NONE)
 public class DataModelController extends AbstractDataModel
-    implements ISafetyDataModel, IHAZXModel, ILinkingViewDataModel, INavigationViewDataModel,
+    implements ISafetyDataModel, ILinkingViewDataModel, INavigationViewDataModel,
     ISystemDescriptionViewDataModel, IAccidentViewDataModel, IHazardViewDataModel,
     IStatusLineDataModel, IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel,
     ISystemGoalViewDataModel, IControlActionViewDataModel, IControlStructureEditorDataModel,
@@ -715,14 +710,14 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<IControlAction> getAllControlActions() {
     List<IControlAction> result = new ArrayList<>();
-    for (IHAZXControlAction controlAction : this.controlActionController.getAllControlActionsU()) {
+    for (IControlAction controlAction : this.controlActionController.getAllControlActionsU()) {
       result.add(controlAction);
     }
     return result;
   }
 
   @Override
-  public List<IHAZXControlAction> getAllControlActionsU() {
+  public List<IControlAction> getAllControlActionsU() {
     return this.controlActionController.getAllControlActionsU();
   }
 
@@ -731,7 +726,6 @@ public class DataModelController extends AbstractDataModel
     return this.sdsController.getAllDesignRequirements();
   }
 
-  @Override
   public List<Link> getAllHazAccLinks() {
     List<Link> links = new ArrayList<>();
     Map<UUID, UUID> linksFor = this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK);
@@ -782,7 +776,6 @@ public class DataModelController extends AbstractDataModel
     return this.controlActionController.getAllUnsafeControlActions();
   }
 
-  @Override
   public String getAstpaVersion() {
     return this.astpaVersion;
   }
@@ -849,12 +842,6 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public List<CausalFactorHazardLink> getCausalFactorHazLinks() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public IRectangleComponent getComponent(UUID componentId) {
     if ((componentId == null)) {
       return null;
@@ -897,13 +884,12 @@ public class DataModelController extends AbstractDataModel
     return this.controlActionController.getControlAction(controlActionId);
   }
 
-  @Override
   public ITableModel getControlActionForUca(UUID ucaId) {
     return this.controlActionController.getControlActionFor(ucaId);
   }
 
   @Override
-  public IHAZXControlAction getControlActionU(UUID controlActionId) {
+  public IControlAction getControlActionU(UUID controlActionId) {
     if (controlActionId == null) {
       return null;
     }
@@ -912,7 +898,7 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public List<ISafetyConstraint> getCorrespondingSafetyConstraints() {
+  public List<ITableModel> getCorrespondingSafetyConstraints() {
     return this.controlActionController.getCorrespondingSafetyConstraints();
   }
 

@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
-
 /**
  * Represents a link between a unsafe control action and a hazard
  * 

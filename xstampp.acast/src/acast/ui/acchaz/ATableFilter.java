@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import acast.model.ATableModelCAST;
+import xstampp.astpa.model.hazacc.ATableModel;
 
 /**
  *
@@ -48,8 +48,8 @@ public class ATableFilter extends ViewerFilter {
 		if ((this.searchString == null) || (this.searchString.length() == 0)) {
 			return true;
 		}
-		if (element instanceof ATableModelCAST) {
-			ATableModelCAST p = (ATableModelCAST) element;
+		if (element instanceof ATableModel) {
+			ATableModel p = (ATableModel) element;
 			if (p.getTitle().toLowerCase().matches(this.searchString)) {
 				return true;
 			}

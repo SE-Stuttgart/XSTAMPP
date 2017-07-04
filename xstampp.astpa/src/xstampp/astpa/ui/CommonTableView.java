@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -67,11 +65,12 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ISeverityDataModel;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.ui.linkingSupport.LinkSupport;
 import xstampp.astpa.ui.unsafecontrolaction.SeverityButton;

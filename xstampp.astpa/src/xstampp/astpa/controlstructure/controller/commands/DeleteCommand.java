@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 
-import xstampp.astpa.haz.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**

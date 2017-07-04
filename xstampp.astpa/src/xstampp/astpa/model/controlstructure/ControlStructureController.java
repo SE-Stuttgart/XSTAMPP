@@ -28,12 +28,12 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.astpa.haz.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
+import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.preferences.IASTPADefaults;

@@ -13,7 +13,8 @@
 
 package xstampp.astpa.model.causalfactor;
 
-import xstampp.astpa.model.sds.ASafetyConstraint;
+import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.model.ITableEntry;
 
 /**
  * A corresponding safety constraint
@@ -21,7 +22,7 @@ import xstampp.astpa.model.sds.ASafetyConstraint;
  * @author Fabian Toth
  * 
  */
-public class CausalSafetyConstraint extends ASafetyConstraint {
+public class CausalSafetyConstraint extends ATableModel{
 
 	/**
 	 * Constructor of a causal factor safety constraint
@@ -32,7 +33,7 @@ public class CausalSafetyConstraint extends ASafetyConstraint {
 	 * @author Fabian Toth
 	 */
 	public CausalSafetyConstraint(String description) {
-		super(description);
+		super(description,null,0);
 	}
 
 	/**
@@ -43,5 +44,21 @@ public class CausalSafetyConstraint extends ASafetyConstraint {
 	public CausalSafetyConstraint() {
 		// empty constructor for JAXB
 	}
+
+  @Override
+  public int compareTo(ITableEntry o) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public String getDescription() {
+    return null;
+  }
+
+  @Override
+  public int getNumber() {
+    return 0;
+  }
 
 }

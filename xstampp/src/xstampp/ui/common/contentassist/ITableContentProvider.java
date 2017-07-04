@@ -16,7 +16,7 @@ package xstampp.ui.common.contentassist;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.haz.ITableModel;
+import xstampp.model.ITableEntry;
 import xstampp.ui.common.grid.GridCellLinking;
 
 
@@ -28,7 +28,7 @@ import xstampp.ui.common.grid.GridCellLinking;
  * @author Benedikt Markt, Lukas Balzer
  * @see GridCellLinking
  */
-public interface ITableContentProvider<T extends ITableModel> {
+public interface ITableContentProvider<T extends ITableEntry> {
 
   /**
    * Returns all items.

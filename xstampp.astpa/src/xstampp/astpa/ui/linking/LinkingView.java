@@ -48,9 +48,9 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import messages.Messages;
 import xstampp.astpa.Activator;
-import xstampp.astpa.haz.ITableModel;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ILinkingViewDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;

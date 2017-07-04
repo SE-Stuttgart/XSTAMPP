@@ -13,8 +13,9 @@
 
 package xstampp.astpa.model.controlaction.safetyconstraint;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.model.sds.ASafetyConstraint;
+import javax.xml.bind.annotation.XmlElement;
+
+import xstampp.astpa.model.hazacc.ATableModel;
 
 /**
  * A corresponding safety constraint
@@ -22,8 +23,11 @@ import xstampp.astpa.model.sds.ASafetyConstraint;
  * @author Fabian Toth
  * 
  */
-public class CorrespondingSafetyConstraint extends ASafetyConstraint implements ITableModel {
+public class CorrespondingSafetyConstraint extends ATableModel {
 
+  @XmlElement
+  private String text;
+  
 	/**
 	 * Constructor of a corresponding safety constraint
 	 * 
@@ -33,7 +37,7 @@ public class CorrespondingSafetyConstraint extends ASafetyConstraint implements 
 	 * @author Fabian Toth
 	 */
 	public CorrespondingSafetyConstraint(String text) {
-		super(text);
+		super(text,null,0);
 	}
 
 	/**
@@ -44,28 +48,18 @@ public class CorrespondingSafetyConstraint extends ASafetyConstraint implements 
 	public CorrespondingSafetyConstraint() {
 		// empty constructor for JAXB
 	}
+	
+	@Override
+	public String getTitle() {
+	  if(text != null) {
+	    this.setTitle(text);
+	    text = null;
+	  }
+	  return super.getTitle();
+	}
 
-  @Override
-  public int compareTo(ITableModel o) {
-    // TODO Auto-generated method stub
-    return 0;
+  public void prepareForSave() {
+    getTitle();
+    setLinks(null);
   }
-
-  @Override
-  public String getDescription() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public int getNumber() {
-    return 0;
-  }
-
-  @Override
-  public String getTitle() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }

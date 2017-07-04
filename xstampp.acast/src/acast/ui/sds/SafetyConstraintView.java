@@ -16,8 +16,6 @@ package acast.ui.sds;
 import java.util.Iterator;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -48,13 +46,14 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
-import xstampp.model.IDataModel;
-import xstampp.ui.common.ProjectManager;
 import acast.Activator;
-import acast.model.interfaces.ISafetyConstraintViewDataModel;
-import acast.model.sds.SafetyConstraint;
 import acast.ui.acchaz.ATableFilter;
 import acast.ui.acchaz.CommonTableView;
+import messages.Messages;
+import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
+import xstampp.astpa.model.sds.SafetyConstraint;
+import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
 
 /**
  *

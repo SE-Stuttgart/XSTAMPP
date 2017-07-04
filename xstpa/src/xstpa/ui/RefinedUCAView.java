@@ -19,8 +19,8 @@ import java.util.Observable;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUCAHazLink;
+import xstampp.astpa.model.controlaction.IUCAHazLink;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.ui.CommonGridView;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;

@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.model.sds.interfaces.ISafetyConstraint;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.CellButton;
@@ -52,7 +52,7 @@ public class CellButtonImportConstraint extends CellButton {
 
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
-    List<ISafetyConstraint> safetyConstraints = dataModel.getCorrespondingSafetyConstraints();
+    List<ITableModel> safetyConstraints = dataModel.getCorrespondingSafetyConstraints();
     
     List<LinkProposal> proposals = new ArrayList<>();
     String tmp;

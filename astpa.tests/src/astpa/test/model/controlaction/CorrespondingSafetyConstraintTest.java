@@ -28,9 +28,9 @@ public class CorrespondingSafetyConstraintTest {
 		Assert.assertNotNull(correspondingSafetyConstraint.getId());
 		
 		correspondingSafetyConstraint = new CorrespondingSafetyConstraint();
-		correspondingSafetyConstraint.setText("Test");
+		correspondingSafetyConstraint.setTitle("Test");
 		Assert.assertEquals("Test", correspondingSafetyConstraint.getText());
-		correspondingSafetyConstraint.setText("Test description");
+		correspondingSafetyConstraint.setTitle("Test description");
 		Assert.assertEquals("Test description", correspondingSafetyConstraint.getText());
 		UUID id = UUID.randomUUID();
 		correspondingSafetyConstraint.setId(id);

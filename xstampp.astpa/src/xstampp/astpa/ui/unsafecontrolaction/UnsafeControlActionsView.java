@@ -17,19 +17,17 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
-import xstampp.astpa.haz.ITableModel;
-import xstampp.astpa.haz.controlaction.UnsafeControlActionType;
-import xstampp.astpa.haz.controlaction.interfaces.IControlAction;
-import xstampp.astpa.haz.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IHAZXControlAction;
+import messages.Messages;
+import xstampp.astpa.model.controlaction.interfaces.IControlAction;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.CommonGridView;
 import xstampp.model.IDataModel;
@@ -207,7 +205,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 
   @Override
   protected void fillTable() throws SWTException {
-    List<IHAZXControlAction> list = getDataModel().getAllControlActionsU();
+    List<IControlAction> list = getDataModel().getAllControlActionsU();
     if (list.isEmpty()) {
       return;
     }
