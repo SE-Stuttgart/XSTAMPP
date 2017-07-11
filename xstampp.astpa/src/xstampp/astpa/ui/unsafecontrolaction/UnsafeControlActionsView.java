@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ import xstampp.usermanagement.api.AccessRights;
  */
 public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActionDataModel> {
 
-  public static final String UCA1 = "UCA1.";
+  public static final String UCA1 = "UCA1."; //$NON-NLS-1$
   /**
    * ViewPart ID.
    */
@@ -63,8 +63,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
   private static final String NOHAZ_FILTER = "not hazardous"; //$NON-NLS-1$
   private static final String HAZID_FILTER = "Hazard ID"; //$NON-NLS-1$
 
-  private String[] columns = new String[] { Messages.ControlAction, Messages.NotGiven,
-      Messages.GivenIncorrectly, Messages.WrongTiming, Messages.StoppedTooSoon };
+  private String[] columns = null;
 
   /**
    * Interfaces to communicate with the data model.
@@ -187,13 +186,23 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
    */
   @Override
   public void createPartControl(Composite parent) {
+    this.setDataModelInterface(ProjectManager.getContainerInstance()
+        .getDataModel(this.getProjectID()));
     super.createPartControl(parent, columns);
+    this.getGridWrapper().setHeaderToolTip(xstampp.astpa.messages.Messages.UnsafeControlActionsView_HeaderToolTip);
     updateHazards();
   }
 
   @Override
   public void setDataModelInterface(IDataModel dataInterface) {
     super.setDataModelInterface(dataInterface);
+    if (columns == null) {
+      columns = new String[5];
+      columns[0] = Messages.ControlAction;
+      for (int i = 0; i < 4; i++) {
+        columns[i + 1] = getDataModel().getControlActionController().getUCAHeaders()[i];
+      }
+    }
     this.ucaContentProvider = new UcaContentProvider(getDataModel());
   }
 
@@ -326,37 +335,37 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
    */
   private boolean isUCAFiltered(IUnsafeControlAction uca) {
     switch (getActiveCategory()) {
-      case UCAID_FILTER:
-        return isFiltered(this.getDataModel().getUCANumber(uca.getId()), UCAID_FILTER);
-      case UCA_FILTER:
-        return isFiltered(uca.getDescription(), UCA_FILTER);
-      case HAZ_FILTER:
-        if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
-          return true;
-        }
-        for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
-          if (!isFiltered(model.getTitle(), HAZ_FILTER)
-              || !isFiltered(model.getDescription(), HAZ_FILTER)) {
-            return false;
-          }
-          return true;
-        }
-      case NOHAZ_FILTER:
-        if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() != 0) {
-          return true;
-        }
-      case HAZID_FILTER:
-        if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
-          return true;
-        }
-        for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
-          if (!isFiltered(model.getNumber(), HAZID_FILTER)) {
-            return false;
-          }
+    case UCAID_FILTER:
+      return isFiltered(this.getDataModel().getUCANumber(uca.getId()), UCAID_FILTER);
+    case UCA_FILTER:
+      return isFiltered(uca.getDescription(), UCA_FILTER);
+    case HAZ_FILTER:
+      if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
+        return true;
+      }
+      for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
+        if (!isFiltered(model.getTitle(), HAZ_FILTER)
+            || !isFiltered(model.getDescription(), HAZ_FILTER)) {
+          return false;
         }
         return true;
-      default:
-        return isFiltered(uca.getDescription(), UCA_FILTER);
+      }
+    case NOHAZ_FILTER:
+      if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() != 0) {
+        return true;
+      }
+    case HAZID_FILTER:
+      if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
+        return true;
+      }
+      for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
+        if (!isFiltered(model.getNumber(), HAZID_FILTER)) {
+          return false;
+        }
+      }
+      return true;
+    default:
+      return isFiltered(uca.getDescription(), UCA_FILTER);
     }
   }
 
@@ -379,23 +388,23 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 
   @Override
   public void update(Observable dataModelController, Object updatedValue) {
-    if(!getGridWrapper().fetchUpdateLock()) { 
+    if (!getGridWrapper().fetchUpdateLock()) {
       super.update(dataModelController, updatedValue);
       ObserverValue type = (ObserverValue) updatedValue;
       switch (type) {
-        case UNSAFE_CONTROL_ACTION:
-        case HAZARD:
-          updateHazards();
-        case CONTROL_ACTION:
-          try {
-            this.reloadTable();
-          } catch (SWTException e) {
-            dataModelController.deleteObserver(this);
-          }
-          break;
-  
-        default:
-          break;
+      case UNSAFE_CONTROL_ACTION:
+      case HAZARD:
+        updateHazards();
+      case CONTROL_ACTION:
+        try {
+          this.reloadTable();
+        } catch (SWTException e) {
+          dataModelController.deleteObserver(this);
+        }
+        break;
+
+      default:
+        break;
       }
     }
   }

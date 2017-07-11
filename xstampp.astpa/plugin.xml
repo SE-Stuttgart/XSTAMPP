@@ -137,6 +137,10 @@
             id="xstampp.astpa.settings.responsibilities"
             name="Responibilities">
       </SettingsPage>
+      <SettingsPage
+            class="xstampp.astpa.preferences.UCAHeaderSettings"
+            name="UCA Table">
+      </SettingsPage>
    </extension>
    <extension
          name="%extension.name.pdfExport"

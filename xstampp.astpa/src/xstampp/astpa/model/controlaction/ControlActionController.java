@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,6 +25,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+
+import org.eclipse.core.runtime.Assert;
 
 import messages.Messages;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -43,6 +46,7 @@ import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * Manager class for control actions.
@@ -51,7 +55,7 @@ import xstampp.model.ObserverValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlActionController {
+public class ControlActionController extends Observable {
 
   @XmlElementWrapper(name = "controlactions")
   @XmlElement(name = "controlaction")
@@ -71,6 +75,10 @@ public class ControlActionController {
   @XmlAttribute(name = "nextCAIndex")
   private Integer nextCAIndex;
 
+  @XmlElementWrapper(name = "ucaCustomHeaders")
+  @XmlElement(name = "ucaHeader")
+  private List<String> ucaCustomHeaders;
+
   private Map<UUID, ControlAction> controlActionsToUcaIds;
 
   private final Map<UUID, ControlAction> trash;
@@ -86,6 +94,8 @@ public class ControlActionController {
     this.controlActions = new ArrayList<>();
     this.links = new ArrayList<>();
     this.nextUcaIndex = null;
+    this.ucaCustomHeaders = null;
+
   }
 
   /**
@@ -310,7 +320,7 @@ public class ControlActionController {
    */
   public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
     List<UUID> result = new ArrayList<>();
-    if(links != null) {
+    if (links != null) {
       for (UCAHazLink link : this.links) {
         if (link.containsId(unsafeControlActionId)) {
           result.add(link.getHazardId());
@@ -412,9 +422,8 @@ public class ControlActionController {
 
   /**
    * creates a new list with all entries according to the given {@link IEntryFilter} or with all
-   * uca's defined if the filter is given as <b>null</b>
-   * <p>
-   * Note that modifications of the returned list will not affect the list stored in the dataModel
+   * uca's defined if the filter is given as <b>null</b> <p> Note that modifications of the returned
+   * list will not affect the list stored in the dataModel
    * 
    * @param filter
    *          an implementation of {@link IEntryFilter} which checks {@link IUnsafeControlAction}'s
@@ -557,7 +566,7 @@ public class ControlActionController {
    * Prepares the control actions for the export
    * 
    * @author Fabian Toth
-   * @param linkController 
+   * @param linkController
    * 
    * @param hazAccController
    *          the hazAccController to get the Accidents as objects
@@ -573,7 +582,8 @@ public class ControlActionController {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         List<ITableModel> linkedHazards = new ArrayList<>();
-        for (UUID link : linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlAction.getId())) {
+        for (UUID link : linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION,
+            unsafeControlAction.getId())) {
           linkedHazards.add(hazAccController.getHazard(link));
         }
         Collections.sort(linkedHazards);
@@ -641,18 +651,21 @@ public class ControlActionController {
         unsafeControlAction.prepareForSave();
       }
     }
-    
+
     for (UCAHazLink ucaHazLink : getAllUCALinks()) {
       linkController.addLink(ObserverValue.UNSAFE_CONTROL_ACTION, ucaHazLink.getHazardId(),
           ucaHazLink.getUnsafeControlActionId());
     }
     this.links = null;
+    if (this.ucaCustomHeaders != null && this.ucaCustomHeaders.size() == 0) {
+      this.ucaCustomHeaders = null;
+    }
   }
 
   public List<UCAHazLink> getAllUCALinks() {
-    
+
     ArrayList<UCAHazLink> list = new ArrayList<UCAHazLink>();
-    if(this.links != null) {
+    if (this.links != null) {
       list.addAll(this.links);
     }
     return list;
@@ -979,8 +992,8 @@ public class ControlActionController {
    * This method removes a safety rule if it is stored as general rule or as rule in control action
    * 
    * @param removeAll
-   *          whether all currently stored RefinedSafetyRule objects should be deleted<br>
-   *          when this is true than the ruleId will be ignored
+   *          whether all currently stored RefinedSafetyRule objects should be deleted<br> when this
+   *          is true than the ruleId will be ignored
    * @param ruleId
    *          an id of a RefinedSafetyRule object stored in a controlAction
    * 
@@ -1054,4 +1067,47 @@ public class ControlActionController {
     return this.controlActionsToUcaIds;
   }
 
+  public void setUCACustomHeaders(String[] ucaHeaders) {
+    Assert.isTrue(ucaHeaders.length == 4, "The uca label array must always be of size 4");
+    boolean isRedundant = true;
+    if (this.ucaCustomHeaders == null) {
+      this.ucaCustomHeaders = new ArrayList<>(4);
+    }
+    for (int i = 0; i < ucaHeaders.length; i++) {
+      this.ucaCustomHeaders.add(i, ucaHeaders[i]);
+      isRedundant = false;
+    }
+    if (isRedundant) {
+      this.ucaCustomHeaders = null;
+    } else {
+      setChanged();
+      notifyObservers(ObserverValue.UNSAFE_CONTROL_ACTION);
+    }
+  }
+
+  public String[] getUCAHeaders() {
+    String[] headers = new String[4];
+    if (this.ucaCustomHeaders == null) {
+
+      this.ucaCustomHeaders = new ArrayList<>();
+      this.ucaCustomHeaders.add(Messages.NotGiven);
+      this.ucaCustomHeaders.add(Messages.GivenIncorrectly);
+      this.ucaCustomHeaders.add(Messages.WrongTiming);
+      this.ucaCustomHeaders.add(Messages.StoppedTooSoon);
+    }
+
+    try {
+      headers[0] = this.ucaCustomHeaders.get(0);
+      headers[1] = this.ucaCustomHeaders.get(1);
+      headers[2] = this.ucaCustomHeaders.get(2);
+      headers[3] = this.ucaCustomHeaders.get(3);
+    } catch (IndexOutOfBoundsException exc) {
+      ProjectManager.getLOGGER().error(
+          "The array with Unsafe Control Actions types was expected to contain 4 labels but it contained " //$NON-NLS-1$
+              + this.ucaCustomHeaders.size());
+      headers = null;
+    }
+
+    return headers;
+  }
 }

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -139,7 +139,7 @@ public class DataModelController extends AbstractDataModel
     IStatusLineDataModel, IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel,
     ISystemGoalViewDataModel, IControlActionViewDataModel, IControlStructureEditorDataModel,
     IUnsafeControlActionDataModel, ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel,
-    IExtendedDataModel, IUserProject,Observer {
+    IExtendedDataModel, IUserProject, Observer {
 
   private static final Logger LOGGER = ProjectManager.getLOGGER();
   private static final String HAZ = "haz";
@@ -424,7 +424,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (getLinkController().addLink(ObserverValue.HAZ_ACC_LINK,accidentId, hazardId)) {
+    if (getLinkController().addLink(ObserverValue.HAZ_ACC_LINK, accidentId, hazardId)) {
       return true;
     }
     return false;
@@ -503,7 +503,8 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (this.getLinkController().addLink(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId, hazardId)) {
+    if (this.getLinkController().addLink(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId,
+        hazardId)) {
       this.setUnsavedAndChanged();
       return true;
     }
@@ -666,7 +667,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (this.getLinkController().deleteLink(ObserverValue.HAZ_ACC_LINK,accidentId, hazardId)) {
+    if (this.getLinkController().deleteLink(ObserverValue.HAZ_ACC_LINK, accidentId, hazardId)) {
       return false;
     }
     return true;
@@ -730,7 +731,7 @@ public class DataModelController extends AbstractDataModel
     List<Link> links = new ArrayList<>();
     Map<UUID, UUID> linksFor = this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK);
     for (Entry<UUID, UUID> link : linksFor.entrySet()) {
-      links.add(new Link(link.getKey(),link.getValue()));
+      links.add(new Link(link.getKey(), link.getValue()));
     }
     return links;
   }
@@ -764,9 +765,10 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<UCAHazLink> getAllUCALinks() {
     List<UCAHazLink> links = new ArrayList<>();
-    Map<UUID, UUID> linksFor = this.getLinkController().getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION);
+    Map<UUID, UUID> linksFor = this.getLinkController()
+        .getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION);
     for (Entry<UUID, UUID> link : linksFor.entrySet()) {
-      links.add(new UCAHazLink(link.getKey(),link.getValue()));
+      links.add(new UCAHazLink(link.getKey(), link.getValue()));
     }
     return links;
   }
@@ -995,7 +997,7 @@ public class DataModelController extends AbstractDataModel
     List<ITableModel> result = new ArrayList<>();
     for (UUID link : links) {
       ITableModel accident = this.getAccident(link);
-      if(accident != null) {
+      if (accident != null) {
         result.add(accident);
       }
     }
@@ -1036,7 +1038,8 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
-    return this.linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId);
+    return this.linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION,
+        unsafeControlActionId);
   }
 
   @Override
@@ -1266,24 +1269,24 @@ public class DataModelController extends AbstractDataModel
   public boolean moveEntry(boolean allWay, boolean moveUp, UUID id, ObserverValue value) {
     boolean result = false;
     switch (value) {
-      case CONTROL_STRUCTURE: {
-        result = this.controlStructureController.moveEntry(allWay, moveUp, id);
-        break;
-      }
-      case HAZARD:
-      case ACCIDENT:
-        result = hazAccController.moveEntry(moveUp, id, value);
-        break;
-      case DESIGN_REQUIREMENT:
-      case SAFETY_CONSTRAINT:
-      case SYSTEM_GOAL:
-        result = sdsController.moveEntry(moveUp, id, value);
-        break;
-      case CONTROL_ACTION:
-        result = controlActionController.moveEntry(moveUp, id, value);
-        break;
-      default:
-        break;
+    case CONTROL_STRUCTURE: {
+      result = this.controlStructureController.moveEntry(allWay, moveUp, id);
+      break;
+    }
+    case HAZARD:
+    case ACCIDENT:
+      result = hazAccController.moveEntry(moveUp, id, value);
+      break;
+    case DESIGN_REQUIREMENT:
+    case SAFETY_CONSTRAINT:
+    case SYSTEM_GOAL:
+      result = sdsController.moveEntry(moveUp, id, value);
+      break;
+    case CONTROL_ACTION:
+      result = controlActionController.moveEntry(moveUp, id, value);
+      break;
+    default:
+      break;
     }
     if (result) {
       setUnsavedAndChanged(value);
@@ -1565,7 +1568,8 @@ public class DataModelController extends AbstractDataModel
     if ((unsafeControlActionId == null) || (hazardId == null)) {
       return false;
     }
-    if (this.linkController.deleteLink(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId, hazardId)) {
+    if (this.linkController.deleteLink(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId,
+        hazardId)) {
       this.setUnsavedAndChanged();
       return true;
     }
@@ -1578,8 +1582,9 @@ public class DataModelController extends AbstractDataModel
     if (unsafeControlActionId == null) {
       return false;
     }
-    this.getLinkController().deleteAllFor(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId);
-    
+    this.getLinkController().deleteAllFor(ObserverValue.UNSAFE_CONTROL_ACTION,
+        unsafeControlActionId);
+
     if (result) {
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
     }
@@ -2223,10 +2228,16 @@ public class DataModelController extends AbstractDataModel
     linkController.addObserver(this);
     return linkController;
   }
-  
+
   public ControlStructureController getControlStructureController() {
     this.controlStructureController.addObserver(this);
     return controlStructureController;
+  }
+
+  public ControlActionController getControlActionController() {
+    this.controlActionController.addObserver(this);
+    return controlActionController;
+
   }
 
   @Override
@@ -2242,12 +2253,12 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public void update(Observable o, Object arg) {
-    if(arg == null) {
+    if (arg == null) {
       setUnsavedAndChanged();
-    } else if(arg instanceof IUndoCallback) {
+    } else if (arg instanceof IUndoCallback) {
       pushToUndo((IUndoCallback) arg);
       setUnsavedAndChanged(((IUndoCallback) arg).getChangeConstant());
-    } else if(arg instanceof ObserverValue) {
+    } else if (arg instanceof ObserverValue) {
       setUnsavedAndChanged((ObserverValue) arg);
     }
   }
