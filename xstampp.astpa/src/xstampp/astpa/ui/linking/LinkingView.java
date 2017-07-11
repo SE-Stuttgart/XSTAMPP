@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -93,7 +93,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
   /**
    * Current mode in which the tables are.
    */
-  private boolean accidentMode;
+  private boolean aToB_Mode;
 
   /**
    * The interface to the data model.
@@ -118,20 +118,20 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    * 
    * @author Patrick Wickenhaeuser
    */
-  public boolean isAccidentMode() {
-    return this.accidentMode;
+  public boolean isInAtoB_Mode() {
+    return this.aToB_Mode;
   }
 
   /**
    * Sets the table mode.
    * 
-   * @param accidentMode
+   * @param aToB_Mode
    *          The new mode.
    * 
    * @author Patrick Wickenhaeuser
    */
   public void setAccidentMode(boolean accidentMode) {
-    this.accidentMode = accidentMode;
+    this.aToB_Mode = accidentMode;
 
     // clear selection
     this.selectionTableViewer.setSelection(null);
@@ -162,7 +162,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    * @author Patrick Wickenhaeuser
    */
   public LinkingView() {
-    this.accidentMode = true;
+    this.aToB_Mode = true;
   }
 
   /**
@@ -171,7 +171,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    * @author Patrick Wickenhaeuser
    */
   private void updateSelectionTable() {
-    if (this.accidentMode) {
+    if (this.aToB_Mode) {
       this.selectionTableViewer.setInput(this.dataInterface.getAllAccidents());
     } else {
       this.selectionTableViewer.setInput(this.dataInterface.getAllHazards());
@@ -185,7 +185,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    */
   private void updateAvailableTable() {
     if (this.selectedId != null) {
-      if (this.accidentMode) {
+      if (this.aToB_Mode) {
         java.util.List<ITableModel> linked = this.dataInterface.getLinkedHazards(this.selectedId);
         java.util.List<ITableModel> available = new java.util.ArrayList<ITableModel>(
             this.dataInterface.getAllHazards());
@@ -223,7 +223,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    */
   private void updateCurrentTable() {
     if (this.selectedId != null) {
-      if (this.accidentMode) {
+      if (this.aToB_Mode) {
         this.currentTableViewer.setInput(this.dataInterface.getLinkedHazards(this.selectedId));
       } else {
         this.currentTableViewer.setInput(this.dataInterface.getLinkedAccidents(this.selectedId));
@@ -241,7 +241,8 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    * 
    * @author Patrick Wickenhaeuser
    */
-  private void updateSelection() {
+
+  protected void updateSelection() {
     IStructuredSelection selection = (IStructuredSelection) this.selectionTableViewer
         .getSelection();
 
@@ -249,7 +250,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
       this.selectedId = ((ITableModel) selection.getFirstElement()).getId();
     } else {
       List<ITableModel> selectionList;
-      if (this.accidentMode) {
+      if (this.aToB_Mode) {
         selectionList = this.dataInterface.getAllAccidents();
       } else {
         selectionList = this.dataInterface.getAllHazards();
@@ -320,7 +321,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
   @SuppressWarnings("unchecked")
   private void removelAllCurrentLinks() {
     UUID elementId = this.selectedId;
-    if (LinkingView.this.accidentMode) {
+    if (LinkingView.this.aToB_Mode) {
       java.util.List<ITableModel> current = (java.util.List<ITableModel>) LinkingView.this.currentTableViewer
           .getInput();
 
@@ -351,7 +352,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    */
   private void addAllAvailableLinks() {
     UUID elementId = this.selectedId;
-    if (LinkingView.this.accidentMode) {
+    if (LinkingView.this.aToB_Mode) {
 
       @SuppressWarnings("unchecked")
       List<ITableModel> available = (List<ITableModel>) LinkingView.this.availableTableViewer
@@ -392,7 +393,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
     Object[] selected = LinkingView.this.getSelectedCurrent();
 
     if (selected != null) {
-      if (LinkingView.this.accidentMode) {
+      if (LinkingView.this.aToB_Mode) {
         accidentIDs.add(this.selectedId);
         for (Object element : selected) {
           hazardIDs.add(((ITableModel) element).getId());
@@ -413,43 +414,41 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
   }
 
   /**
-	 * Adds the currently selected hazards/accidents in the available table, if
-	 * any, to the linked hazards/accident. Does not do anything if no
-	 * hazard/accident is selected.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 * @author Jarkko Heidenwag
-	 */
-	private void addSelectedLinks() {
-	  if (!(dataInterface instanceof IUserProject) || 
-	      ((IUserProject) dataInterface).getUserSystem().checkAccess(AccessRights.ADMIN)){
-	   
-  		List<UUID> accidentIDs = new ArrayList<UUID>();
-  		List<UUID> hazardIDs = new ArrayList<UUID>();
-  
-  		Object[] selected = LinkingView.this.getSelectedAvailable();
-  
-  		if (selected != null) {
-  			if (LinkingView.this.accidentMode) {
-  				accidentIDs.add(this.selectedId);
-  				for (Object element : selected) {
-  					hazardIDs.add(((ITableModel) element).getId());
-  				}
-  			} else {
-  				for (Object element : selected) {
-  					accidentIDs.add(((ITableModel) element).getId());
-  				}
-  				hazardIDs.add(this.selectedId);
-  			}
-  			for (int i = 0; i < accidentIDs.size(); i++) {
-  				for (int j = 0; j < hazardIDs.size(); j++) {
-  					this.dataInterface.addLink(accidentIDs.get(i),
-  							hazardIDs.get(j));
-  				}
-  			}
-  		}
-	  }
-	}
+   * Adds the currently selected hazards/accidents in the available table, if any, to the linked
+   * hazards/accident. Does not do anything if no hazard/accident is selected.
+   * 
+   * @author Patrick Wickenhaeuser
+   * @author Jarkko Heidenwag
+   */
+  private void addSelectedLinks() {
+    if (!(dataInterface instanceof IUserProject)
+        || ((IUserProject) dataInterface).getUserSystem().checkAccess(AccessRights.ADMIN)) {
+
+      List<UUID> accidentIDs = new ArrayList<UUID>();
+      List<UUID> hazardIDs = new ArrayList<UUID>();
+
+      Object[] selected = LinkingView.this.getSelectedAvailable();
+
+      if (selected != null) {
+        if (LinkingView.this.aToB_Mode) {
+          accidentIDs.add(this.selectedId);
+          for (Object element : selected) {
+            hazardIDs.add(((ITableModel) element).getId());
+          }
+        } else {
+          for (Object element : selected) {
+            accidentIDs.add(((ITableModel) element).getId());
+          }
+          hazardIDs.add(this.selectedId);
+        }
+        for (int i = 0; i < accidentIDs.size(); i++) {
+          for (int j = 0; j < hazardIDs.size(); j++) {
+            this.dataInterface.addLink(accidentIDs.get(i), hazardIDs.get(j));
+          }
+        }
+      }
+    }
+  }
 
   @Override
   public String getId() {
@@ -555,7 +554,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
 
       @Override
       public void widgetSelected(SelectionEvent e) {
-        LinkingView.this.setAccidentMode(!LinkingView.this.accidentMode);
+        LinkingView.this.setAccidentMode(!LinkingView.this.aToB_Mode);
       }
     });
     this.modeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -728,8 +727,8 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    * 
    * @author Patrick Wickenhaeuser
    */
-  private void updateMode() {
-    if (this.accidentMode) {
+  protected void updateMode() {
+    if (this.aToB_Mode) {
       this.lblSelected.setText(Messages.Accidents);
       this.lblAvailableForLinking.setText(Messages.HazardsAvailableForLinking);
       this.lblCurrentlyLinked.setText(Messages.CurrentlyLinkedHazards);
@@ -742,6 +741,22 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
     }
 
     this.updateSelection();
+  }
+
+  public void setUpdateAvailableForLinking(String text) {
+    this.lblAvailableForLinking.setText(text);
+  }
+
+  public void setUpdateSelected(String text) {
+    this.lblSelected.setText(text);
+  }
+
+  public void setUpdateCurrentlyLinked(String text) {
+    this.lblCurrentlyLinked.setText(text);
+  }
+
+  public void setUpdateModeButton(String text) {
+    this.modeButton.setText(text);
   }
 
   @Override
@@ -759,20 +774,20 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
     super.update(dataModelController, updatedValue);
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-      case ACCIDENT:
-        this.updateAll();
-        break;
+    case ACCIDENT:
+      this.updateAll();
+      break;
 
-      case HAZARD:
-        this.updateAll();
-        break;
+    case HAZARD:
+      this.updateAll();
+      break;
 
-      case HAZ_ACC_LINK:
-        this.updateAll();
-        break;
+    case HAZ_ACC_LINK:
+      this.updateAll();
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
   }
 

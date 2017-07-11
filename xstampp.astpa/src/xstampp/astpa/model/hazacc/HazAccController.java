@@ -15,6 +15,7 @@ package xstampp.astpa.model.hazacc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
@@ -37,7 +39,7 @@ import xstampp.model.ObserverValue;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class HazAccController {
+public class HazAccController extends Observable implements IHazAccController{
 
   @XmlElementWrapper(name = "accidents")
   @XmlElement(name = "accident")
@@ -73,34 +75,20 @@ public class HazAccController {
     this.useSeverity = IASTPADefaults.USE_SEVERITY_ANALYSIS;
   }
 
-  /**
-   * Creates a new accident and adds it to the list of accidents.
-   *
-   * @param title
-   *          the title of the new accident
-   * @param description
-   *          the description of the new accident
-   * @return the ID of the new accident
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#addAccident(java.lang.String, java.lang.String)
    */
+  @Override
   public UUID addAccident(String title, String description) {
     Accident newAccident = new Accident(title, description, 0);
     this.accidents.add(newAccident);
     return newAccident.getId();
   }
 
-  /**
-   * Removes the accident from the list of accidents and removes all links
-   * associated with this accident.
-   *
-   * @param id
-   *          Accident's ID
-   * @return true if the accident has been removed
-   *
-   * @author Fabian Toth
-   *
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#removeAccident(java.util.UUID)
    */
+  @Override
   public boolean removeAccident(UUID id) {
     ITableModel accident = this.getAccident(id);
     this.deleteAllLinks(id);
@@ -112,6 +100,10 @@ public class HazAccController {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#moveEntry(boolean, java.util.UUID, xstampp.model.ObserverValue)
+   */
+  @Override
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
     if (value.equals(ObserverValue.ACCIDENT)) {
       return ATableModel.move(moveUp, id, accidents);
@@ -121,15 +113,10 @@ public class HazAccController {
     return true;
   }
 
-  /**
-   * Searches for an Accident with given ID
-   *
-   * @param accidentID
-   *          the id of the accident
-   * @return found accident
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#getAccident(java.util.UUID)
    */
+  @Override
   public ITableModel getAccident(UUID accidentID) {
     for (ITableModel accident : this.accidents) {
       if (accident.getId().equals(accidentID)) {
@@ -139,13 +126,10 @@ public class HazAccController {
     return null;
   }
 
-  /**
-   * Gets all accidents
-   *
-   * @return all accidents
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#getAllAccidents()
    */
+  @Override
   public List<ITableModel> getAllAccidents() {
     List<ITableModel> result = new ArrayList<>();
     for (Accident accident : this.accidents) {
@@ -154,15 +138,10 @@ public class HazAccController {
     return result;
   }
 
-  /**
-   * Searches for all the hazards linked with given accident.
-   *
-   * @param accidentId
-   *          the id of the accident
-   * @return list of hazards linked to the given accident
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#getLinkedHazards(java.util.UUID)
    */
+  @Override
   public List<ITableModel> getLinkedHazards(UUID accidentId) {
     List<ITableModel> result = new ArrayList<>();
     for (HazAccLink link : this.links) {
@@ -174,34 +153,20 @@ public class HazAccController {
     return result;
   }
 
-  /**
-   * Creates a new hazard and adds it to the list of hazards.
-   *
-   * @param title
-   *          the title of the new hazard
-   * @param description
-   *          the description of the new hazard
-   * @return the ID of the new hazard
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#addHazard(java.lang.String, java.lang.String)
    */
+  @Override
   public UUID addHazard(String title, String description) {
     Hazard newHazard = new Hazard(title, description, 0);
     this.hazards.add(newHazard);
     return newHazard.getId();
   }
 
-  /**
-   * Removes the hazard from the list of hazards and remove all links associated
-   * with this hazard.
-   *
-   * @param id
-   *          the hazard's ID
-   * @return true if the hazard has been removed
-   *
-   * @author Fabian Toth
-   *
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#removeHazard(java.util.UUID)
    */
+  @Override
   public boolean removeHazard(UUID id) {
     ITableModel hazard = this.getHazard(id);
     this.deleteAllLinks(hazard.getId());
@@ -213,43 +178,26 @@ public class HazAccController {
     return true;
   }
 
-  /**
-   * Creates a link between an accident and a hazard.
-   *
-   * @param accidentId
-   *          the id of the accident
-   * @param hazardId
-   *          the id of the hazard
-   *
-   * @author Fabian Toth
-   * @return
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#addLink(java.util.UUID, java.util.UUID)
    */
+  @Override
   public boolean addLink(UUID accidentId, UUID hazardId) {
     return this.links.add(new HazAccLink(accidentId, hazardId));
   }
 
-  /**
-   * Removes a link between an accident and a hazard.
-   *
-   * @param accidentId
-   *          the id of the accident
-   * @param hazardId
-   *          the id of the hazard
-   * @return true if the link has been removed
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#deleteLink(java.util.UUID, java.util.UUID)
    */
+  @Override
   public boolean deleteLink(UUID accidentId, UUID hazardId) {
     return this.links.remove(new HazAccLink(accidentId, hazardId));
   }
 
-  /**
-   * Gets all hazards
-   *
-   * @return all hazards
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#getAllHazards()
    */
+  @Override
   public List<ITableModel> getAllHazards() {
     List<ITableModel> result = new ArrayList<>();
     for (Hazard hazard : this.hazards) {
@@ -258,15 +206,10 @@ public class HazAccController {
     return result;
   }
 
-  /**
-   * Searches for all the accidents linked with given hazard.
-   *
-   * @param hazardId
-   *          the ID of the hazard
-   * @return list of accidents linked with given hazard
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#getLinkedAccidents(java.util.UUID)
    */
+  @Override
   public List<ITableModel> getLinkedAccidents(UUID hazardId) {
     List<ITableModel> result = new ArrayList<>();
     for (HazAccLink link : this.links) {
@@ -278,15 +221,10 @@ public class HazAccController {
     return result;
   }
 
-  /**
-   * Searches for a Hazard with given ID
-   *
-   * @param hazardId
-   *          the id of the hazard
-   * @return found hazard
-   *
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#getHazard(java.util.UUID)
    */
+  @Override
   public Hazard getHazard(UUID hazardId) {
     for (Hazard hazard : this.hazards) {
       if (hazard.getId().equals(hazardId)) {
@@ -296,14 +234,10 @@ public class HazAccController {
     return null;
   }
 
-  /**
-   * Prepares the accidents and hazards for the export
-   *
-   * @author Fabian Toth
-   * @author Lukas Balzer
-   * @param linkController 
-   *
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#prepareForExport(xstampp.astpa.model.linking.LinkController)
    */
+  @Override
   public void prepareForExport(LinkController linkController) {
     for (Accident accident : this.accidents) {
       String linkString = ""; //$NON-NLS-1$
@@ -325,12 +259,10 @@ public class HazAccController {
     }
   }
 
-  /**
-   * Removes the preparations that were made for the export
-   *
-   * @author Fabian Toth
-   *
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#prepareForSave(xstampp.astpa.model.linking.LinkController)
    */
+  @Override
   public void prepareForSave(LinkController linkController) {
     for (Accident accident : this.accidents) {
       accident.setLinks(null);
@@ -364,20 +296,26 @@ public class HazAccController {
     this.links.removeAll(toDelete);
   }
 
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#getAllHazAccLinks()
+   */
+  @Override
   public List<HazAccLink> getAllHazAccLinks() {
     return new ArrayList<>(this.links);
   }
 
-  /**
-   * @return the useSeverity
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#isUseSeverity()
    */
+  @Override
   public boolean isUseSeverity() {
     return useSeverity;
   }
 
-  /**
-   * @param useSeverity the useSeverity to set
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#setUseSeverity(boolean)
    */
+  @Override
   public boolean setUseSeverity(boolean useSeverity) {
     if(useSeverity != this.useSeverity) {
       this.useSeverity = useSeverity;

@@ -16,6 +16,7 @@ import java.util.Observable;
 import java.util.UUID;
 
 import xstampp.astpa.model.controlaction.ControlActionController;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -188,5 +189,5 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
    *  
    * @return the {@link ControlActionController} of this project
    */
-  ControlActionController getControlActionController();
+  IControlActionController getControlActionController();
 }

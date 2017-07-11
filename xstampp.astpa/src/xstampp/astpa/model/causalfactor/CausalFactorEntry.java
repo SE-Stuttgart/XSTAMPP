@@ -22,7 +22,7 @@ import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.AbstractLTLProvider;
 
@@ -237,7 +237,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
    * @param allRefinedRules
    * @param allUnsafeControlActions
    */
-  public void prepareForExport(HazAccController hazAccController,
+  public void prepareForExport(IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
 
@@ -286,7 +286,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     }
   }
 
-  public boolean prepareForSave(HazAccController hazAccController,
+  public boolean prepareForSave(IHazAccController hazAccController,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     // get rid of redundant entries which should not be stored
     setHazardLinks(null);

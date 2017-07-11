@@ -143,13 +143,20 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     return isFiltered(component.getText(), component.getComponentType().name());
   }
 
+  public String[] getScenarioColumns() {
+    return _withScenarioColumns;
+  }
+  
+  public String[] getColumns() {
+    return _withoutColumns;
+  }
   @Override
   protected void fillTable() {
 
     if (this.getDataModel().isUseScenarios()) {
-      this.getGridWrapper().setColumnLabels(_withScenarioColumns);
+      this.getGridWrapper().setColumnLabels(getScenarioColumns());
     } else {
-      this.getGridWrapper().setColumnLabels(_withoutColumns);
+      this.getGridWrapper().setColumnLabels(getColumns());
     }
     List<ICausalComponent> components = this.getDataModel().getCausalComponents(null);
     for (ICausalComponent component : components) {

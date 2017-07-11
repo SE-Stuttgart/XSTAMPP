@@ -50,6 +50,7 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.UCAHazLink;
@@ -71,6 +72,7 @@ import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.Hazard;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
@@ -145,7 +147,7 @@ public class DataModelController extends AbstractDataModel
   private static final String HAZ = "haz";
   private static final String HAZX = "hazx";
 
-  @XmlAttribute(name = "astpaversion")
+  
   private String astpaVersion;
 
   @XmlAttribute(name = "userSystemId")
@@ -195,6 +197,14 @@ public class DataModelController extends AbstractDataModel
   private List<ObserverValue> blockedUpdates;
   private IUserSystem userSystem;
 
+  public void setVersion(String astpaVersion) {
+    this.astpaVersion = astpaVersion;
+  }
+
+  @XmlAttribute(name = "version")
+  public String getVersion() {
+    return this.astpaVersion;
+  }
   /**
    * Constructor of the DataModel Controller
    * 
@@ -218,7 +228,7 @@ public class DataModelController extends AbstractDataModel
     if (bundle != null) {
       Dictionary<?, ?> dictionary = bundle.getHeaders();
       String versionWithQualifier = (String) dictionary.get(Messages.BundleVersion);
-      this.astpaVersion = versionWithQualifier.substring(0, versionWithQualifier.lastIndexOf('.'));
+      this.setVersion(versionWithQualifier.substring(0, versionWithQualifier.lastIndexOf('.')));
     }
 
   }
@@ -244,7 +254,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.hazAccController.addAccident(title, description);
+    UUID id = this.getHazAccController().addAccident(title, description);
     this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
     return id;
   }
@@ -405,7 +415,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.hazAccController.addHazard(title, description);
+    UUID id = this.getHazAccController().addHazard(title, description);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.HAZARD);
     }
@@ -417,10 +427,10 @@ public class DataModelController extends AbstractDataModel
     if ((accidentId == null) || (hazardId == null)) {
       return false;
     }
-    if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
+    if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
       return false;
     }
-    if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
+    if (!(this.getHazAccController().getAccident(accidentId) instanceof Accident)) {
       return false;
     }
 
@@ -495,7 +505,7 @@ public class DataModelController extends AbstractDataModel
     if ((unsafeControlActionId == null) || (hazardId == null)) {
       return false;
     }
-    if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
+    if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
       return false;
     }
     if (this.controlActionController
@@ -695,7 +705,7 @@ public class DataModelController extends AbstractDataModel
     if (accidentId == null) {
       return null;
     }
-    ITableModel accident = this.hazAccController.getAccident(accidentId);
+    ITableModel accident = this.getHazAccController().getAccident(accidentId);
     if (!(accident instanceof Accident)) {
       return null;
     }
@@ -705,7 +715,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ITableModel> getAllAccidents() {
-    return this.hazAccController.getAllAccidents();
+    return this.getHazAccController().getAllAccidents();
   }
 
   @Override
@@ -738,7 +748,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ITableModel> getAllHazards() {
-    return this.hazAccController.getAllHazards();
+    return this.getHazAccController().getAllHazards();
   }
 
   @Override
@@ -776,10 +786,6 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
     return this.controlActionController.getAllUnsafeControlActions();
-  }
-
-  public String getAstpaVersion() {
-    return this.astpaVersion;
   }
 
   /**
@@ -933,7 +939,7 @@ public class DataModelController extends AbstractDataModel
     if (hazardId == null) {
       return null;
     }
-    ITableModel hazard = this.hazAccController.getHazard(hazardId);
+    ITableModel hazard = this.getHazAccController().getHazard(hazardId);
     if (!(hazard instanceof Hazard)) {
       return null;
     }
@@ -1275,7 +1281,7 @@ public class DataModelController extends AbstractDataModel
     }
     case HAZARD:
     case ACCIDENT:
-      result = hazAccController.moveEntry(moveUp, id, value);
+      result = getHazAccController().moveEntry(moveUp, id, value);
       break;
     case DESIGN_REQUIREMENT:
     case SAFETY_CONSTRAINT:
@@ -1298,11 +1304,11 @@ public class DataModelController extends AbstractDataModel
   public boolean prepareForExport() {
 
     this.exportInformation = null;
-    this.hazAccController.prepareForExport(linkController);
+    this.getHazAccController().prepareForExport(linkController);
     this.extendedDataController.prepareForExport();
-    this.controlActionController.prepareForExport(linkController, this.hazAccController,
+    this.controlActionController.prepareForExport(linkController, this.getHazAccController(),
         this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController);
-    this.causalFactorController.prepareForExport(this.hazAccController, getRoot().getChildren(),
+    this.causalFactorController.prepareForExport(this.getHazAccController(), getRoot().getChildren(),
         getAllScenarios(true, true, true), getAllUnsafeControlActions());
     this.projectDataManager.prepareForExport();
     this.exportInformation = new ExportInformation();
@@ -1312,10 +1318,10 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public void prepareForSave() {
-    this.hazAccController.prepareForSave(linkController);
+    this.getHazAccController().prepareForSave(linkController);
     this.extendedDataController.prepareForSave();
     this.controlActionController.prepareForSave(this.extendedDataController, linkController);
-    this.causalFactorController.prepareForSave(this.hazAccController,
+    this.causalFactorController.prepareForSave(this.getHazAccController(),
         controlStructureController.getInternalComponents(), getAllScenarios(true, true, true),
         getAllUnsafeControlActions());
 
@@ -1325,7 +1331,7 @@ public class DataModelController extends AbstractDataModel
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
   }
 
-  private void pushToUndo(IUndoCallback callback) {
+  protected void pushToUndo(IUndoCallback callback) {
     ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
         .getService(ISourceProviderService.class);
     UndoRedoService provider = (UndoRedoService) service
@@ -1389,11 +1395,11 @@ public class DataModelController extends AbstractDataModel
     if (getUserSystem().checkAccess(accidentId, AccessRights.CREATE) && accidentId == null) {
       return false;
     }
-    if (!(this.hazAccController.getAccident(accidentId) instanceof Accident)) {
+    if (!(this.getHazAccController().getAccident(accidentId) instanceof Accident)) {
       return false;
     }
 
-    boolean result = this.hazAccController.removeAccident(accidentId);
+    boolean result = this.getHazAccController().removeAccident(accidentId);
     if (result) {
       this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
     }
@@ -1512,11 +1518,11 @@ public class DataModelController extends AbstractDataModel
     if (getUserSystem().checkAccess(hazardId, AccessRights.CREATE) && hazardId == null) {
       return false;
     }
-    if (!(this.hazAccController.getHazard(hazardId) instanceof Hazard)) {
+    if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
       return false;
     }
     this.controlActionController.removeAllLinks(hazardId);
-    if (this.hazAccController.removeHazard(hazardId)) {
+    if (this.getHazAccController().removeHazard(hazardId)) {
       this.setUnsavedAndChanged(ObserverValue.HAZARD);
       return true;
     }
@@ -1658,7 +1664,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    ITableModel accident = this.hazAccController.getAccident(accidentId);
+    ITableModel accident = this.getHazAccController().getAccident(accidentId);
     if (!(accident instanceof Accident)) {
       return false;
     }
@@ -1682,7 +1688,7 @@ public class DataModelController extends AbstractDataModel
     if ((accidentId == null) || (title == null)) {
       return false;
     }
-    ITableModel accident = this.hazAccController.getAccident(accidentId);
+    ITableModel accident = this.getHazAccController().getAccident(accidentId);
     if (!(accident instanceof Accident)) {
       return false;
     }
@@ -1879,7 +1885,7 @@ public class DataModelController extends AbstractDataModel
     if ((description == null) || (hazardId == null)) {
       return false;
     }
-    Hazard hazard = this.hazAccController.getHazard(hazardId);
+    Hazard hazard = this.getHazAccController().getHazard(hazardId);
     if (!(hazard instanceof Hazard)) {
       return false;
     }
@@ -1899,7 +1905,7 @@ public class DataModelController extends AbstractDataModel
     if ((title == null) || (hazardId == null)) {
       return false;
     }
-    Hazard hazard = this.hazAccController.getHazard(hazardId);
+    Hazard hazard = this.getHazAccController().getHazard(hazardId);
     if (!(hazard instanceof Hazard)) {
       return false;
     }
@@ -2194,13 +2200,13 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean isUseSeverity() {
-    return this.hazAccController.isUseSeverity();
+    return this.getHazAccController().isUseSeverity();
   }
 
   @Override
   public boolean setUseSeverity(boolean useSeverity) {
     if (this.getUserSystem().checkAccess(AccessRights.ADMIN)
-        && this.hazAccController.setUseSeverity(useSeverity)) {
+        && this.getHazAccController().setUseSeverity(useSeverity)) {
       setUnsavedAndChanged(ObserverValue.HAZARD);
       return true;
     }
@@ -2220,7 +2226,7 @@ public class DataModelController extends AbstractDataModel
       return (T) this.sdsController;
     }
     if (clazz == HazAccController.class) {
-      return (T) this.hazAccController;
+      return (T) this.getHazAccController();
     }
     return null;
   }
@@ -2235,12 +2241,18 @@ public class DataModelController extends AbstractDataModel
     return controlStructureController;
   }
 
-  public ControlActionController getControlActionController() {
+  public IControlActionController getControlActionController() {
     this.controlActionController.addObserver(this);
     return controlActionController;
 
   }
 
+  public IHazAccController getHazAccController() {
+    this.hazAccController.addObserver(this);
+    return hazAccController;
+
+  }
+  
   @Override
   public <T> T getProperty(String key, Class<T> clazz) {
     if (clazz == Boolean.class && "astpa.use.multics".equals(key)) {

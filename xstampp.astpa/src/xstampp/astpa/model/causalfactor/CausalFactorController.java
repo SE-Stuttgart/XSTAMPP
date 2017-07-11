@@ -32,7 +32,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.preferences.IASTPADefaults;
 import xstampp.model.AbstractLTLProvider;
 
@@ -217,7 +217,7 @@ public class CausalFactorController implements ICausalFactorController {
     }
   }
 
-  public void prepareForExport(HazAccController hazAccController,
+  public void prepareForExport(IHazAccController hazAccController,
       List<IRectangleComponent> children, List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
 
@@ -230,7 +230,7 @@ public class CausalFactorController implements ICausalFactorController {
     System.out.println();
   }
 
-  public void prepareForSave(HazAccController hazAccController, List<Component> list,
+  public void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
     Map<UUID, List<UUID>> hazardLinksMap = new HashMap<>();

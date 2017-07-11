@@ -31,7 +31,7 @@ public final class Link {
     return linkB;
   }
 
-  boolean links(UUID part) {
+  public boolean links(UUID part) {
     return part != null && (part.equals(this.linkA) || part.equals(this.linkB));
   }
 

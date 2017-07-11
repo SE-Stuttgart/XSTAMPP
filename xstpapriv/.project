@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>xstpapriv</name>
+	<comment></comment>
+	<projects>
+		<project>astpa.feature</project>
+		<project>astpa.repository</project>
+		<project>astpa.tests</project>
+		<project>xstampp</project>
+		<project>xstampp.acast</project>
+		<project>xstampp.acast.feature</project>
+		<project>xstampp.astpa</project>
+		<project>xstampp.extension</project>
+		<project>xstampp.parent</project>
+		<project>xstampp.stpasec</project>
+		<project>xstpa.feature</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.ManifestBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.SchemaBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.pde.PluginNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+</projectDescription>
