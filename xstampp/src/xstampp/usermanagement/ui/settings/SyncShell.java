@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.shell.ModalShell;
-import xstampp.ui.common.shell.ModalShell.Style;
 import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.api.CollaborationSystem;
 import xstampp.usermanagement.api.ICollaborationSystem;

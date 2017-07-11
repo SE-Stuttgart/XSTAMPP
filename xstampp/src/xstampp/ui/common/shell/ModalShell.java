@@ -22,7 +22,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -31,8 +33,7 @@ import xstampp.util.ColorManager;
 /**
  * defines an Application modal shell which should be used for all dialogs in XSTAMPP.
  * 
- * <br>
- * Example implementation:
+ * <br> Example implementation:
  * 
  * <pre>
  * public class ExampleShell extends ModalShell {
@@ -67,19 +68,20 @@ import xstampp.util.ColorManager;
  */
 public abstract class ModalShell {
 
-	public enum Style {
+  public enum Style {
 
-		  /**
-		   * When this style constant is added to the style of this shell an 'Apply' button is added to this
-		   * shell which calls {@link #doAccept()}.
-		   */
-			APPLYABLE,
-		  /**
-		   * When this style constant is added to the style of this shell the content of it is packed to its
-		   * minimum size after creation.
-		   */
-		  PACKED;
-	}
+    /**
+     * When this style constant is added to the style of this shell an 'Apply' button is added to
+     * this shell which calls {@link #doAccept()}.
+     */
+    APPLYABLE,
+    /**
+     * When this style constant is added to the style of this shell the content of it is packed to
+     * its minimum size after creation.
+     */
+    PACKED;
+  }
+
   private String title;
   private Point size;
   private String acceptLabel;
@@ -96,11 +98,8 @@ public abstract class ModalShell {
    * {@link #doAccept()} and closes the application depending on the returned boolean.
    * 
    * @param style
-   *          One of the integer constants defined in this class
-   *          <ul>
-   *          <li>{@link #APPLYABLE}
-   *          <li>{@link #PACKED}
-   *          </ul>
+   *          One of the integer constants defined in this class <ul> <li>{@link #APPLYABLE}
+   *          <li>{@link #PACKED} </ul>
    * 
    * 
    */
@@ -112,7 +111,7 @@ public abstract class ModalShell {
     this.isAccepted = false;
 
   }
-  
+
   /**
    * calls {@link #ModalShell(String, String, EnumSet)} with {@link EnumSet#of(Enum)}
    * 
@@ -122,7 +121,7 @@ public abstract class ModalShell {
    * 
    */
   public ModalShell(String title, String acceptLabel, Style style) {
-	  this(title, acceptLabel, EnumSet.of(style));
+    this(title, acceptLabel, EnumSet.of(style));
   }
 
   /**
@@ -316,8 +315,7 @@ public abstract class ModalShell {
    * This method is called whenever the ok/accept button is pressed. Depending on the return value
    * the modal shell is closed.
    * 
-   * <br>
-   * if the content can not be accepted and the method returns false, the
+   * <br> if the content can not be accepted and the method returns false, the
    * {@link ModalShell#invalidate(String)} method can be called informing the user about details
    * 
    * @return if the input should be accepted or not
@@ -328,8 +326,7 @@ public abstract class ModalShell {
    * Is called during the shell set up and also gets the main shell as parent with a <b>two column
    * gridLayout</b>.
    * 
-   * <br>
-   * <i>Note: The Layout of the given shell should not be changed by implementations</i>
+   * <br> <i>Note: The Layout of the given shell should not be changed by implementations</i>
    * 
    * @param parent
    *          the parent shell which is displayed to the user
@@ -365,7 +362,7 @@ public abstract class ModalShell {
   protected final class TextInput {
     private String text = "";
 
-    public TextInput(Shell shell, int style, String label, String initialValue) {
+    public TextInput(Composite shell, int style, String label, String initialValue) {
       GridData labelData = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 2, 1);
       this.text = initialValue;
       Label nameLabel = new Label(shell, SWT.None);
@@ -385,7 +382,7 @@ public abstract class ModalShell {
       nameText.setLayoutData(textData);
     }
 
-    public TextInput(Shell shell, int style, String label) {
+    public TextInput(Composite shell, int style, String label) {
       this(shell, style, label, ""); //$NON-NLS-1$
     }
 
@@ -396,8 +393,9 @@ public abstract class ModalShell {
 
   protected final class BooleanInput {
     private boolean selected;
+    private Listener selectionListener;
 
-    public BooleanInput(Shell shell, int style, String label, boolean initialValue) {
+    public BooleanInput(Composite shell, int style, String label, boolean initialValue) {
       Button nameLabel = new Button(shell, style);
       nameLabel.setText(label);
       nameLabel.setSelection(initialValue);
@@ -408,9 +406,28 @@ public abstract class ModalShell {
         @Override
         public void widgetSelected(SelectionEvent ev) {
           selected = ((Button) ev.getSource()).getSelection();
+          if (selectionListener != null) {
+            Event event = new Event();
+            event.item = ((Button) ev.getSource());
+            selectionListener.handleEvent(event);
+          }
           canAccept();
         }
       });
+    }
+
+    /**
+     * this sets a listener that is called whenever the {@link BooleanInput} is selected. The
+     * {@link Event} used is given the {@link Button} as widget so that it can be extracted with:
+     * 
+     * <pre>
+     * {@link Button} button = (({@link Button}) event.item)
+     * </pre>
+     * 
+     * @param selectionListener
+     */
+    public void setSelectionListener(Listener selectionListener) {
+      this.selectionListener = selectionListener;
     }
 
     public boolean getSelection() {

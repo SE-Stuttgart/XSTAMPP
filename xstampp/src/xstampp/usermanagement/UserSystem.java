@@ -90,7 +90,7 @@ public class UserSystem extends Observable implements IUserSystem {
   public UserSystem(Admin admin, String projectName) {
     this();
     adminRegistry.add(admin);
-    this.systemName = projectName + ".user";
+    this.systemName = projectName + ".user"; //$NON-NLS-1$
     this.systemId = UUID.randomUUID();
     this.currentUser = admin;
     save();
@@ -301,7 +301,7 @@ public class UserSystem extends Observable implements IUserSystem {
       @Override
       public void done(IJobChangeEvent event) {
         if (event.getResult().isOK()) {
-          ProjectManager.getLOGGER().debug("User System has been updated");
+          ProjectManager.getLOGGER().debug("User System has been updated"); //$NON-NLS-1$
         }
       }
     });

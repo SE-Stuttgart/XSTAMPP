@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.navigation.IProjectSelection;
+import xstampp.usermanagement.Messages;
 import xstampp.usermanagement.UserSystem;
 import xstampp.util.STPAPluginUtils;
 
@@ -40,7 +41,8 @@ public class MenuShell extends MouseTrackAdapter {
     GridLayout layout = new GridLayout();
     shell.setLayout(layout);
     Label settings = new Label(shell, SWT.None);
-    settings.setText("Open Settings");
+    settings.setText(Messages.MenuShell_openUserSettings);
+    settings.setToolTipText(Messages.MenuShell_UserSettingsToolTip);
     settings.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
     settings.addMouseListener(new MouseAdapter() {
       @Override
@@ -55,7 +57,7 @@ public class MenuShell extends MouseTrackAdapter {
         PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
     settings.addMouseTrackListener(this);
     Label logout = new Label(shell, SWT.PUSH);
-    logout.setText("Log out");
+    logout.setText(Messages.MenuShell_Logout);
     logout.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
     logout.addMouseTrackListener(this);
     logout.addMouseListener(new MouseAdapter() {

@@ -10,6 +10,10 @@
 package xstampp.usermanagement.ui;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 
 import xstampp.ui.common.shell.ModalShell;
@@ -30,6 +34,7 @@ public abstract class AbstractUserShell extends ModalShell {
   private TextInput usernameInput;
   private IUser selectedUser;
   private int userLabelStyle;
+  private Group inputGroup;
 
   /**
    * Constructs a {@link ModalShell} with <code>User</code> as title .
@@ -49,18 +54,21 @@ public abstract class AbstractUserShell extends ModalShell {
 
   @Override
   protected void createCenter(Shell shell) {
+    inputGroup = new Group(shell, SWT.None);
+    inputGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+    inputGroup.setLayout(new GridLayout(2, false));
     if (selectedUser != null) {
-      this.usernameInput = new TextInput(shell, getUserLabelStyle(), "Username",
+      this.usernameInput = new TextInput(inputGroup, getUserLabelStyle(), "Username",
           selectedUser.getUsername());
     } else {
-      this.usernameInput = new TextInput(shell, getUserLabelStyle(), "Username");
+      this.usernameInput = new TextInput(inputGroup, getUserLabelStyle(), "Username");
     }
 
     int passwordStyle = SWT.None;
     if (hidePassword) {
       passwordStyle = SWT.PASSWORD;
     }
-    this.passwordInput = new TextInput(shell, passwordStyle, "password");
+    this.passwordInput = new TextInput(inputGroup, passwordStyle, "password");
   }
 
   public String getPassword() {
@@ -113,5 +121,11 @@ public abstract class AbstractUserShell extends ModalShell {
 
   public void setUserLabelStyle(int userLabelStyle) {
     this.userLabelStyle = userLabelStyle;
+  }
+  
+  void setEnableUserInput(boolean enabled) {
+    for (Control control : this.inputGroup.getChildren()) {
+      control.setEnabled(enabled);
+    }
   }
 }

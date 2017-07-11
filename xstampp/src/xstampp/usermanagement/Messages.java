@@ -12,6 +12,11 @@ public class Messages extends NLS {
   public static String CreateUserShell_CreateReadOnlyUser;
   public static String CreateUserShell_CreateUser;
   public static String CreateUserShell_UsernameExists;
+  public static String LoginShell_InvalidCredentials;
+  public static String LoginShell_ReadOnlyLogin;
+  public static String MenuShell_Logout;
+  public static String MenuShell_openUserSettings;
+  public static String MenuShell_UserSettingsToolTip;
   public static String ProjectSettingsShell_Collaboration;
   public static String ProjectSettingsShell_Title;
   public static String ProjectSettingsShell_UserManagementTitle;

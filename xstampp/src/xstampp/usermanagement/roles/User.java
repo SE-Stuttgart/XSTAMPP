@@ -11,7 +11,6 @@ package xstampp.usermanagement.roles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,8 +33,7 @@ public class User extends AbstractUser {
   private List<AccessRights> accessLevel;
 
   public User() {
-    this("", "", AccessRights.READ_ONLY); //$NON-NLS-1$ //$NON-NLS-2$
-    this.accessLevel = new ArrayList<>();
+    this("", "", new AccessRights[] { AccessRights.READ_ONLY, AccessRights.ACCESS }); // $NON-NLS-1$ //$NON-NLS-2$
   }
 
   public User(String username, String password, AccessRights accessRights) {
