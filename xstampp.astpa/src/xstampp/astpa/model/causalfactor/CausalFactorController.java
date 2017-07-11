@@ -227,6 +227,7 @@ public class CausalFactorController implements ICausalFactorController {
             allRefinedRules, allUnsafeControlActions);
       }
     }
+    System.out.println();
   }
 
   public void prepareForSave(HazAccController hazAccController, List<Component> list,

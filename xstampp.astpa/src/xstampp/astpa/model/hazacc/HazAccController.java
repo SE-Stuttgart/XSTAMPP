@@ -310,14 +310,18 @@ public class HazAccController {
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, accident.getId())) {
         linkString += getHazard(id).getNumber() + ", "; //$NON-NLS-1$
       }
-      accident.setLinks(linkString.substring(0, linkString.length() - 2));
+      if(linkString.length() >  2) {
+        accident.setLinks(linkString.substring(0, linkString.length() - 2));
+      }
     }
     for (Hazard hazard : this.hazards) {
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, hazard.getId())) {
         linkString += getAccident(id).getNumber() + ", "; //$NON-NLS-1$
       }
-      hazard.setLinks(linkString.substring(0, linkString.length() - 2));
+      if(linkString.length() >  2) {
+        hazard.setLinks(linkString.substring(0, linkString.length() - 2));
+      }
     }
   }
 

@@ -915,28 +915,31 @@
 				<!-- Checks if there are some components for the CausalFactors-Table -->
 					<xsl:when test="causalfactor/causalComponents">
 						<xsl:for-each select="causalfactor/causalComponents/entry/value">
-							<xsl:choose>
-								<xsl:when test="causalFactors">
-									<fo:table-row border-bottom="2pt solid black"
-										border-top="2pt solid black">
-										<fo:table-cell padding="4px" background-color="#FFFFFF"
-											color="#000000" border-right="2pt solid black">
-											<fo:block  font-weight="bold">
-												<xsl:value-of select="title" />
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-										
+							
+							<fo:table-row border-bottom="2pt solid black"
+								border-top="2pt solid black">
+								<fo:table-cell padding="4px" background-color="#FFFFFF"
+									color="#000000" border-right="2pt solid black">
+									<fo:block  font-weight="bold">
+										<xsl:value-of select="title" />
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<xsl:choose>
+										<xsl:when test="causalFactors">
 											<!-- ***** CausalFactors with its relatives ***** -->
 											<fo:block >
 											<xsl:call-template name="causalFactorSubTable"> 
 				                            	<xsl:with-param name="useScenarios" select="$useScenarios" />
 				                           	</xsl:call-template>
 											</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</xsl:when>
-							</xsl:choose>
+										</xsl:when>
+										<xsl:otherwise>
+											<fo:block/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:table-cell>
+							</fo:table-row>
 						</xsl:for-each>
 					</xsl:when>
 					<!-- If there are no CausalFactor-Components defined the first row -->
