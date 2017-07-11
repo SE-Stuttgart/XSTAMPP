@@ -277,8 +277,10 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
       constraintId = safetyConstraint.getId();
       list.add(newConstraint);
     }
-    for (CausalFactorEntry factorEntry : entries) {
-      factorEntry.moveSafetyConstraints(list);
+    if (entries != null) {
+      for (CausalFactorEntry factorEntry : entries) {
+        factorEntry.moveSafetyConstraints(list);
+      }
     }
   }
 }

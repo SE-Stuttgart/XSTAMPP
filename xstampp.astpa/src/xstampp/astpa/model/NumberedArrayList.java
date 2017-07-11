@@ -32,4 +32,9 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
     }
     return nextNumber++;
   }
+  
+  @Override
+  public boolean isEmpty() {
+    return super.isEmpty() && nextNumber == null;
+  }
 }

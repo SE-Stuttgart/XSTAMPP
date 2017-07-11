@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -58,6 +60,8 @@ import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
+
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(namespace = "acast.model")
 public class Controller extends AbstractDataModel implements IDataModel,
 		IAccidentDescriptionViewDataModel, IHazardViewDataModel,
@@ -143,6 +147,7 @@ public class Controller extends AbstractDataModel implements IDataModel,
 	@Override
 	public void prepareForSave() {
 	  this.controlActionController.prepareForSave(null,null);
+	  this.sdsController.prepareForSave();
 		this.exportInformation = null;
 		this.updateValue(ObserverValue.SAVE);
 	}

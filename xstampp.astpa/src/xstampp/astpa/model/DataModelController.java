@@ -1320,6 +1320,7 @@ public class DataModelController extends AbstractDataModel
         getAllUnsafeControlActions());
 
     this.projectDataManager.prepareForSave();
+    this.sdsController.prepareForSave();
     this.exportInformation = null;
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
   }

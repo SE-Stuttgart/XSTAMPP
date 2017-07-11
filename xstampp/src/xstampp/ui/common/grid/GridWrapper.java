@@ -13,6 +13,7 @@ package xstampp.ui.common.grid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -346,7 +347,7 @@ public class GridWrapper {
   public Integer persistedScrollIndex;
   private boolean lockLocalUpdate;
   private Point mousePosition;
-
+  private String[] headerToolTips = null;
   /**
    * Get the image for the add button.
    * 
@@ -798,6 +799,23 @@ public class GridWrapper {
     return selectedCells;
   }
 
+  public String[] getHeaderToolTips() {
+    return headerToolTips;
+  }
+
+  public void setHeaderToolTips(String[] headerToolTips) {
+    this.headerToolTips = headerToolTips;
+    refreshColumns();
+  }
+
+
+  public void setHeaderToolTip(String headerToolTip) {
+    this.headerToolTips = new String[columnLabels.length];
+    Arrays.fill(this.headerToolTips, headerToolTip);
+    refreshColumns();
+    
+  }
+
   /**
    * Checks whether a given cell is hovered.
    * 
@@ -886,7 +904,9 @@ public class GridWrapper {
       childColumn.setWordWrap(true);
       childColumn.setHeaderWordWrap(true);
       childColumn.setWidth(GridWrapper.DEFAULT_COLUMN_WIDTH);
-      // childColumn.setResizeable(true);
+      if(headerToolTips != null) {
+        childColumn.setHeaderTooltip(headerToolTips[i]);
+      }
       childColumn.setCellRenderer(cellRenderer);
       childColumn.setMinimumWidth(50);
       childColumn.addControlListener(new ColumnResizeAdapter(i));
