@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests
+Bundle-SymbolicName: xstampp.astpa.tests
+Bundle-Version: 2.4.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: xstampp.astpa,
+ xstampp,
+ org.junit,
+ org.eclipse.ui
+Eclipse-RegisterBuddy: org.apache.log4j
+Import-Package: org.eclipse.draw2d.geometry,
+ xstampp.astpa.model,
+ xstampp.astpa.model.controlaction,
+ xstampp.astpa.model.controlstructure.components

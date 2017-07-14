@@ -13,29 +13,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<version>2.3.0</version>
+	<version>2.4.0</version>
 	<groupId>xstampp.group</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
 	<name>XSTAMPP Parent</name>
 
 	<properties>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<tycho-version>0.24.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 	</properties>
 
 	<modules>
-		<module>../astpa.repository</module>
-        <module>../astpa.extension</module>
+        <module>../xstampp.extension</module>
 		<module>../xstampp</module>
 		<module>../xstampp.astpa</module>
 		<module>../xstampp.acast</module>
-        <module>../xstpa</module>
-		<module>../astpa.feature</module>
+        <module>../xstampp.xstpa</module>
+		<module>../xstampp.stpapriv</module>
+		<module>../xstampp.xstpapriv</module>
+		<module>../xstampp.stpasec</module>
+		<module>../xstampp.xstpasec</module>
 		<module>../xstampp.acast.feature</module>
-		<module>../xstpa.feature</module>
+		<module>../xstampp.xstpa.feature</module>
+		<module>../xstampp.stpapriv.feature</module>
+		<module>../xstampp.xstpapriv.feature</module>
+		<module>../xstampp.stpasec.feature</module>
+		<module>../xstampp.xstpasec.feature</module>
+		<module>../xstampp.feature</module>
+		<module>../xstampp.repository</module>
+		
 	</modules>
 
 	<repositories>
@@ -53,6 +62,12 @@
 		<repository>
 			<id>eclipse-mars</id>
 			<url>http://download.eclipse.org/releases/mars</url>
+			<layout>p2</layout>
+		</repository>
+		
+		<repository>
+			<id>GEF 3.x releases</id>
+			<url>http://download.eclipse.org/tools/gef/updates/legacy/releases/</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>

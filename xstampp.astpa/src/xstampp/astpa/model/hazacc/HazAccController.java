@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
@@ -52,15 +51,9 @@ public class HazAccController extends Observable implements IHazAccController{
   @XmlElementWrapper(name = "links")
   @XmlElement(name = "link")
   private List<HazAccLink> links;
-
-  @XmlAttribute(name = "nextAccidentNumber")
-  private Integer accidentIndex;
-
-  @XmlAttribute(name = "nextHazardNumber")
-  private Integer hazardIndex;
   
   @XmlAttribute(name = "useSeverity")
-  private boolean useSeverity;
+  private Boolean useSeverity;
 
   /**
    * Constructor for the controller
@@ -69,10 +62,6 @@ public class HazAccController extends Observable implements IHazAccController{
    *
    */
   public HazAccController() {
-    this.accidents = new NumberedArrayList<>();
-    this.hazards = new NumberedArrayList<>();
-    this.links = new ArrayList<>();
-    this.useSeverity = IASTPADefaults.USE_SEVERITY_ANALYSIS;
   }
 
   /* (non-Javadoc)
@@ -81,7 +70,7 @@ public class HazAccController extends Observable implements IHazAccController{
   @Override
   public UUID addAccident(String title, String description) {
     Accident newAccident = new Accident(title, description, 0);
-    this.accidents.add(newAccident);
+    this.getAccidents().add(newAccident);
     return newAccident.getId();
   }
 
@@ -92,10 +81,10 @@ public class HazAccController extends Observable implements IHazAccController{
   public boolean removeAccident(UUID id) {
     ITableModel accident = this.getAccident(id);
     this.deleteAllLinks(id);
-    int index = this.accidents.indexOf(accident);
-    this.accidents.remove(index);
-    for (; index < this.accidents.size(); index++) {
-      this.accidents.get(index).setNumber(index + 1);
+    int index = this.getAccidents().indexOf(accident);
+    this.getAccidents().remove(index);
+    for (; index < this.getAccidents().size(); index++) {
+      this.getAccidents().get(index).setNumber(index + 1);
     }
     return true;
   }
@@ -106,9 +95,9 @@ public class HazAccController extends Observable implements IHazAccController{
   @Override
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
     if (value.equals(ObserverValue.ACCIDENT)) {
-      return ATableModel.move(moveUp, id, accidents);
+      return ATableModel.move(moveUp, id, getAccidents());
     } else if (value.equals(ObserverValue.HAZARD)) {
-      return ATableModel.move(moveUp, id, hazards);
+      return ATableModel.move(moveUp, id, getHazards());
     }
     return true;
   }
@@ -118,7 +107,7 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   @Override
   public ITableModel getAccident(UUID accidentID) {
-    for (ITableModel accident : this.accidents) {
+    for (ITableModel accident : this.getAccidents()) {
       if (accident.getId().equals(accidentID)) {
         return accident;
       }
@@ -132,7 +121,7 @@ public class HazAccController extends Observable implements IHazAccController{
   @Override
   public List<ITableModel> getAllAccidents() {
     List<ITableModel> result = new ArrayList<>();
-    for (Accident accident : this.accidents) {
+    for (Accident accident : this.getAccidents()) {
       result.add(accident);
     }
     return result;
@@ -159,7 +148,7 @@ public class HazAccController extends Observable implements IHazAccController{
   @Override
   public UUID addHazard(String title, String description) {
     Hazard newHazard = new Hazard(title, description, 0);
-    this.hazards.add(newHazard);
+    this.getHazards().add(newHazard);
     return newHazard.getId();
   }
 
@@ -170,10 +159,10 @@ public class HazAccController extends Observable implements IHazAccController{
   public boolean removeHazard(UUID id) {
     ITableModel hazard = this.getHazard(id);
     this.deleteAllLinks(hazard.getId());
-    int index = this.hazards.indexOf(hazard);
-    this.hazards.remove(index);
-    for (; index < this.hazards.size(); index++) {
-      this.hazards.get(index).setNumber(index + 1);
+    int index = this.getHazards().indexOf(hazard);
+    this.getHazards().remove(index);
+    for (; index < this.getHazards().size(); index++) {
+      this.getHazards().get(index).setNumber(index + 1);
     }
     return true;
   }
@@ -200,7 +189,7 @@ public class HazAccController extends Observable implements IHazAccController{
   @Override
   public List<ITableModel> getAllHazards() {
     List<ITableModel> result = new ArrayList<>();
-    for (Hazard hazard : this.hazards) {
+    for (Hazard hazard : this.getHazards()) {
       result.add(hazard);
     }
     return result;
@@ -226,7 +215,7 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   @Override
   public Hazard getHazard(UUID hazardId) {
-    for (Hazard hazard : this.hazards) {
+    for (Hazard hazard : this.getHazards()) {
       if (hazard.getId().equals(hazardId)) {
         return hazard;
       }
@@ -239,7 +228,7 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   @Override
   public void prepareForExport(LinkController linkController) {
-    for (Accident accident : this.accidents) {
+    for (Accident accident : this.getAccidents()) {
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, accident.getId())) {
         linkString += getHazard(id).getNumber() + ", "; //$NON-NLS-1$
@@ -248,7 +237,7 @@ public class HazAccController extends Observable implements IHazAccController{
         accident.setLinks(linkString.substring(0, linkString.length() - 2));
       }
     }
-    for (Hazard hazard : this.hazards) {
+    for (Hazard hazard : this.getHazards()) {
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, hazard.getId())) {
         linkString += getAccident(id).getNumber() + ", "; //$NON-NLS-1$
@@ -263,19 +252,29 @@ public class HazAccController extends Observable implements IHazAccController{
    * @see xstampp.astpa.model.hazacc.IHazAccController#prepareForSave(xstampp.astpa.model.linking.LinkController)
    */
   @Override
-  public void prepareForSave(LinkController linkController) {
-    for (Accident accident : this.accidents) {
+  public boolean prepareForSave(LinkController linkController) {
+    boolean isUsed = false;
+    for (Accident accident : this.getAccidents()) {
       accident.setLinks(null);
     }
-    for (Hazard hazard : this.hazards) {
+    if(accidents != null && accidents.isEmpty()) {
+      accidents = null;
+    }
+    isUsed |= accidents != null;
+    for (Hazard hazard : this.getHazards()) {
       hazard.setLinks(null);
     }
+    if(hazards != null && hazards.isEmpty()) {
+      hazards = null;
+    }
+    isUsed |= hazards != null;
     if(this.links != null) {
       for(HazAccLink link: this.links) {
         linkController.addLink(ObserverValue.HAZ_ACC_LINK, link.getAccidentId(), link.getHazardId());
       }
       links = null;
     }
+    return isUsed;
   }
 
   /**
@@ -309,7 +308,10 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   @Override
   public boolean isUseSeverity() {
-    return useSeverity;
+    if(useSeverity != null) {
+      return useSeverity;
+    }
+    return IASTPADefaults.USE_SEVERITY_ANALYSIS;
   }
 
   /* (non-Javadoc)
@@ -317,10 +319,24 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   @Override
   public boolean setUseSeverity(boolean useSeverity) {
-    if(useSeverity != this.useSeverity) {
+    if(this.useSeverity == null || useSeverity != this.useSeverity) {
       this.useSeverity = useSeverity;
       return true;
     }
     return false;
+  }
+  
+  private List<Accident> getAccidents() {
+    if(this.accidents == null) {
+      this.accidents = new NumberedArrayList<>();
+    }
+    return accidents;
+  }
+  
+  private List<Hazard> getHazards() {
+    if(this.hazards == null) {
+      this.hazards = new NumberedArrayList<>();
+    }
+    return hazards;
   }
 }

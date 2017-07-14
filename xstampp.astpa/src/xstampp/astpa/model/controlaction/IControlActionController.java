@@ -281,9 +281,10 @@ public interface IControlActionController {
    * @author Fabian Toth
    * @param extendedData
    * @param linkController
+   * @return whether the controller is used or not, and can therefore be deleted
    * 
    */
-  void prepareForSave(ExtendedDataController extendedData, LinkController linkController);
+  boolean prepareForSave(ExtendedDataController extendedData, LinkController linkController);
 
   List<UCAHazLink> getAllUCALinks();
 

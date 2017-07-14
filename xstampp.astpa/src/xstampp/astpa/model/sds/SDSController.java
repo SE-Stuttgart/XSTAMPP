@@ -345,21 +345,28 @@ public class SDSController {
     return true;
   }
 
-  public void prepareForSave() {
+  public boolean prepareForSave() {
+    boolean isUsed = false;
     if (designRequirements != null && designRequirements.isEmpty()) {
       designRequirements = null;
     }
+    isUsed |= designRequirements != null;
     if (designRequirementsStep1 != null && designRequirementsStep1.isEmpty()) {
       designRequirementsStep1 = null;
     }
+    isUsed |= designRequirementsStep1 != null;
     if (designRequirementsStep2 != null && designRequirementsStep2.isEmpty()) {
       designRequirementsStep2 = null;
     }
+    isUsed |= designRequirementsStep2 != null;
     if (safetyConstraints != null && safetyConstraints.isEmpty()) {
       safetyConstraints = null;
     }
+    isUsed |= safetyConstraints != null;
     if (systemGoals != null && systemGoals.isEmpty()) {
       systemGoals = null;
     }
+    isUsed |= systemGoals != null;
+    return isUsed;
   }
 }

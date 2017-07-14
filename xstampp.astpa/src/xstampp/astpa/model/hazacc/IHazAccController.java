@@ -167,9 +167,10 @@ public interface IHazAccController {
    * Removes the preparations that were made for the export
    *
    * @author Fabian Toth
+   * @return TODO
    *
    */
-  void prepareForSave(LinkController linkController);
+  boolean prepareForSave(LinkController linkController);
 
   List<HazAccLink> getAllHazAccLinks();
 

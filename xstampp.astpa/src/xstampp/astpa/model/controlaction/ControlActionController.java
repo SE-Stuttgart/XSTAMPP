@@ -89,25 +89,32 @@ public class ControlActionController extends Observable implements IControlActio
    */
   public ControlActionController() {
     this.trash = new HashMap<>();
-    this.controlActions = new ArrayList<>();
     this.links = new ArrayList<>();
+    this.nextCAIndex = null;
     this.nextUcaIndex = null;
     this.ucaCustomHeaders = null;
 
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addControlAction(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addControlAction(java.lang.String,
+   * java.lang.String)
    */
   @Override
   public UUID addControlAction(String title, String description) {
     ControlAction controlAction = new ControlAction(title, description, getCANumber());
-    this.controlActions.add(controlAction);
+    this.getControlActions().add(controlAction);
     return controlAction.getId();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeControlAction(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#removeControlAction(java.util.UUID)
    */
   @Override
   public boolean removeControlAction(UUID controlActionId) {
@@ -115,32 +122,38 @@ public class ControlActionController extends Observable implements IControlActio
     for (IUnsafeControlAction unsafeControlAction : controlAction.getUnsafeControlActions()) {
       this.removeAllLinks(unsafeControlAction.getId());
     }
-    int index = this.controlActions.indexOf(controlAction);
-    this.controlActions.remove(index);
+    int index = this.getControlActions().indexOf(controlAction);
+    this.getControlActions().remove(index);
     this.trash.put(controlActionId, controlAction);
-    for (; index < this.controlActions.size(); index++) {
-      this.controlActions.get(index).setNumber(index + 1);
+    for (; index < this.getControlActions().size(); index++) {
+      this.getControlActions().get(index).setNumber(index + 1);
     }
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#recoverControlAction(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#recoverControlAction(java.util.UUID)
    */
   @Override
   public boolean recoverControlAction(UUID id) {
     if ((this.trash.size() > 0) && this.trash.containsKey(id)) {
-      return this.controlActions.add(this.trash.get(id));
+      return this.getControlActions().add(this.trash.get(id));
     }
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getControlAction(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getControlAction(java.util.UUID)
    */
   @Override
   public ITableModel getControlAction(UUID controlActionId) {
-    for (ITableModel controlAction : this.controlActions) {
+    for (ITableModel controlAction : this.getControlActions()) {
       if (controlAction.getId().equals(controlActionId)) {
         return controlAction;
       }
@@ -148,36 +161,43 @@ public class ControlActionController extends Observable implements IControlActio
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getAllControlActions()
    */
   @Override
   public List<ITableModel> getAllControlActions() {
     List<ITableModel> result = new ArrayList<>();
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       result.add(controlAction);
     }
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getAllControlActionsU()
    */
   @Override
   public List<IControlAction> getAllControlActionsU() {
     List<IControlAction> result = new ArrayList<>();
-    for (IControlAction controlAction : this.controlActions) {
+    for (IControlAction controlAction : this.getControlActions()) {
       result.add(controlAction);
     }
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getControlActionU(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getControlActionU(java.util.UUID)
    */
   @Override
   public IControlAction getControlActionU(UUID controlActionId) {
-    for (IControlAction controlAction : this.controlActions) {
+    for (IControlAction controlAction : this.getControlActions()) {
       if (controlAction.getId().equals(controlActionId)) {
         return controlAction;
       }
@@ -185,8 +205,12 @@ public class ControlActionController extends Observable implements IControlActio
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addUnsafeControlAction(java.util.UUID, java.lang.String, xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addUnsafeControlAction(java.util.
+   * UUID, java.lang.String, xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType)
    */
   @Override
   public UUID addUnsafeControlAction(UUID controlActionId, String description,
@@ -203,8 +227,13 @@ public class ControlActionController extends Observable implements IControlActio
     return ucaId;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addUnsafeControlAction(java.util.UUID, java.lang.String, xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addUnsafeControlAction(java.util.
+   * UUID, java.lang.String, xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType,
+   * java.util.UUID)
    */
   @Override
   public UUID addUnsafeControlAction(UUID controlActionId, String description,
@@ -221,12 +250,16 @@ public class ControlActionController extends Observable implements IControlActio
     return ucaId;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeUnsafeControlAction(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#removeUnsafeControlAction(java.util.
+   * UUID)
    */
   @Override
   public boolean removeUnsafeControlAction(UUID unsafeControlActionId) {
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       for (IUnsafeControlAction uca : controlAction.getUnsafeControlActions()) {
         if (uca.getId().equals(unsafeControlActionId)) {
           this.removeAllLinks(unsafeControlActionId);
@@ -242,7 +275,7 @@ public class ControlActionController extends Observable implements IControlActio
   }
 
   private ControlAction getInternalControlAction(UUID controlActionId) {
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       if (controlAction.getId().equals(controlActionId)) {
         return controlAction;
       }
@@ -250,7 +283,9 @@ public class ControlActionController extends Observable implements IControlActio
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getLinksOfUCA(java.util.UUID)
    */
   @Override
@@ -266,23 +301,33 @@ public class ControlActionController extends Observable implements IControlActio
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addUCAHazardLink(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addUCAHazardLink(java.util.UUID,
+   * java.util.UUID)
    */
   @Override
   public boolean addUCAHazardLink(UUID unsafeControlActionId, UUID hazardId) {
     return this.links.add(new UCAHazLink(unsafeControlActionId, hazardId));
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeUCAHazardLink(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#removeUCAHazardLink(java.util.UUID,
+   * java.util.UUID)
    */
   @Override
   public boolean removeUCAHazardLink(UUID unsafeControlActionId, UUID hazardId) {
     return this.links.remove(new UCAHazLink(unsafeControlActionId, hazardId));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#removeAllLinks(java.util.UUID)
    */
   @Override
@@ -296,8 +341,12 @@ public class ControlActionController extends Observable implements IControlActio
     return this.links.removeAll(toDelete);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#setUcaDescription(java.util.UUID, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#setUcaDescription(java.util.UUID,
+   * java.lang.String)
    */
   @Override
   public String setUcaDescription(UUID unsafeControlActionId, String description) {
@@ -309,7 +358,9 @@ public class ControlActionController extends Observable implements IControlActio
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getAllUnsafeControlActions()
    */
   @Override
@@ -324,14 +375,17 @@ public class ControlActionController extends Observable implements IControlActio
     });
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getUCAList(xstampp.model.IEntryFilter)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.controlaction.IControlActionController#getUCAList(xstampp.model.
+   * IEntryFilter)
    */
   @Override
   public List<ICorrespondingUnsafeControlAction> getUCAList(
       IEntryFilter<IUnsafeControlAction> filter) {
     List<ICorrespondingUnsafeControlAction> result = new ArrayList<>();
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       for (IUnsafeControlAction unsafeControlAction : controlAction.getUnsafeControlActions()) {
         // an unsafe controlaction is only to be conssidered if it leads to a hazard
         if (filter == null || filter.check(unsafeControlAction)) {
@@ -343,12 +397,14 @@ public class ControlActionController extends Observable implements IControlActio
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getUCANumber(java.util.UUID)
    */
   @Override
   public int getUCANumber(UUID ucaID) {
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         boolean isSearched = unsafeControlAction.getId().equals(ucaID);
@@ -365,7 +421,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   private void assignUCANumbers() {
     nextUcaIndex = 1;
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         unsafeControlAction.setNumber(nextUcaIndex);
@@ -381,8 +437,12 @@ public class ControlActionController extends Observable implements IControlActio
     return nextUcaIndex++;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#setCorrespondingSafetyConstraint(java.util.UUID, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#setCorrespondingSafetyConstraint(
+   * java.util.UUID, java.lang.String)
    */
   @Override
   public String setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
@@ -407,7 +467,7 @@ public class ControlActionController extends Observable implements IControlActio
    * @return the unsafe control action with the given id
    */
   public UnsafeControlAction getInternalUnsafeControlAction(UUID unsafeControlActionId) {
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         if (unsafeControlAction.getId().equals(unsafeControlActionId)) {
@@ -418,8 +478,11 @@ public class ControlActionController extends Observable implements IControlActio
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getCorrespondingSafetyConstraints()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getCorrespondingSafetyConstraints()
    */
   @Override
   public List<ITableModel> getCorrespondingSafetyConstraints() {
@@ -433,7 +496,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   private void moveRulesInCA() {
     if (rules != null) {
-      for (ControlAction controlAction : this.controlActions) {
+      for (ControlAction controlAction : this.getControlActions()) {
         for (int i = this.rules.size() - 1; i >= 0; i--) {
           if (controlAction.intern_addRefinedRule(rules.get(i))) {
             rules.remove(rules.get(i));
@@ -445,15 +508,21 @@ public class ControlActionController extends Observable implements IControlActio
 
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#prepareForExport(xstampp.astpa.model.linking.LinkController, xstampp.astpa.model.hazacc.IHazAccController, xstampp.astpa.model.controlstructure.ControlStructureController, java.lang.String, xstampp.astpa.model.extendedData.interfaces.IExtendedDataController)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#prepareForExport(xstampp.astpa.model
+   * .linking.LinkController, xstampp.astpa.model.hazacc.IHazAccController,
+   * xstampp.astpa.model.controlstructure.ControlStructureController, java.lang.String,
+   * xstampp.astpa.model.extendedData.interfaces.IExtendedDataController)
    */
   @Override
   public void prepareForExport(LinkController linkController, IHazAccController hazAccController,
       ControlStructureController csController, String defaultLabel,
       IExtendedDataController extendedData) {
     moveRulesInCA();
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       controlAction.prepareForExport(extendedData, csController, defaultLabel);
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
@@ -509,13 +578,17 @@ public class ControlActionController extends Observable implements IControlActio
     }
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#prepareForSave(xstampp.astpa.model.extendedData.ExtendedDataController, xstampp.astpa.model.linking.LinkController)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#prepareForSave(xstampp.astpa.model.
+   * extendedData.ExtendedDataController, xstampp.astpa.model.linking.LinkController)
    */
   @Override
-  public void prepareForSave(ExtendedDataController extendedData, LinkController linkController) {
+  public boolean prepareForSave(ExtendedDataController extendedData, LinkController linkController) {
     moveRulesInCA();
-    for (ControlAction controlAction : this.controlActions) {
+    for (ControlAction controlAction : this.getControlActions()) {
       controlAction.prepareForSave(extendedData);
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
@@ -529,12 +602,22 @@ public class ControlActionController extends Observable implements IControlActio
           ucaHazLink.getUnsafeControlActionId());
     }
     this.links = null;
+    boolean isUsed = nextCAIndex != null || nextUcaIndex != null;
+    
     if (this.ucaCustomHeaders != null && this.ucaCustomHeaders.size() == 0) {
       this.ucaCustomHeaders = null;
     }
+    isUsed |= this.ucaCustomHeaders != null;
+    
+    if(this.controlActions != null && controlActions.isEmpty()) {
+      controlActions = null;
+    }
+    return isUsed || this.controlActions != null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getAllUCALinks()
    */
   @Override
@@ -547,8 +630,12 @@ public class ControlActionController extends Observable implements IControlActio
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#setComponentLink(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#setComponentLink(java.util.UUID,
+   * java.util.UUID)
    */
   @Override
   public boolean setComponentLink(UUID componentLink, UUID caId) {
@@ -559,8 +646,11 @@ public class ControlActionController extends Observable implements IControlActio
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#isSafetyCritical(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#isSafetyCritical(java.util.UUID)
    */
   @Override
   public boolean isSafetyCritical(UUID caID) {
@@ -568,8 +658,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.isCASafetyCritical();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#setSafetyCritical(java.util.UUID, boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#setSafetyCritical(java.util.UUID,
+   * boolean)
    */
   @Override
   public boolean setSafetyCritical(UUID caID, boolean isSafetyCritical) {
@@ -581,8 +675,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.setSafetyCritical(isSafetyCritical);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getValuesWhenNotProvided(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getValuesWhenNotProvided(java.util.
+   * UUID)
    */
   @Override
   public List<NotProvidedValuesCombi> getValuesWhenNotProvided(UUID caID) {
@@ -593,8 +691,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.getValuesAffectedWhenNotProvided();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#setValuesWhenNotProvided(java.util.UUID, java.util.List)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#setValuesWhenNotProvided(java.util.
+   * UUID, java.util.List)
    */
   @Override
   public void setValuesWhenNotProvided(UUID caID,
@@ -606,8 +708,12 @@ public class ControlActionController extends Observable implements IControlActio
     action.setValuesWhenNotProvided(valuesWhenNotProvided);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addValueWhenNotProvided(java.util.UUID, xstampp.astpa.model.controlaction.NotProvidedValuesCombi)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addValueWhenNotProvided(java.util.
+   * UUID, xstampp.astpa.model.controlaction.NotProvidedValuesCombi)
    */
   @Override
   public boolean addValueWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
@@ -618,8 +724,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.addValuesWhenNotProvided(valueWhenNotProvided);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeValueWhenNotProvided(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#removeValueWhenNotProvided(java.util
+   * .UUID, java.util.UUID)
    */
   @Override
   public boolean removeValueWhenNotProvided(UUID caID, UUID combieId) {
@@ -630,8 +740,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.removeValuesWhenNotProvided(combieId);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getValuesWhenProvided(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getValuesWhenProvided(java.util.
+   * UUID)
    */
   @Override
   public List<ProvidedValuesCombi> getValuesWhenProvided(UUID caID) {
@@ -639,8 +753,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.getValuesAffectedWhenProvided();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#setValuesWhenProvided(java.util.UUID, java.util.List)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#setValuesWhenProvided(java.util.
+   * UUID, java.util.List)
    */
   @Override
   public void setValuesWhenProvided(UUID caID, List<ProvidedValuesCombi> valuesWhenProvided) {
@@ -648,8 +766,12 @@ public class ControlActionController extends Observable implements IControlActio
     action.setValuesWhenProvided(valuesWhenProvided);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addValueWhenProvided(java.util.UUID, xstampp.astpa.model.controlaction.ProvidedValuesCombi)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addValueWhenProvided(java.util.UUID,
+   * xstampp.astpa.model.controlaction.ProvidedValuesCombi)
    */
   @Override
   public boolean addValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
@@ -660,8 +782,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.addValueWhenProvided(valueWhenProvided);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeValueWhenProvided(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#removeValueWhenProvided(java.util.
+   * UUID, java.util.UUID)
    */
   @Override
   public boolean removeValueWhenProvided(UUID caID, UUID combieId) {
@@ -672,8 +798,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.removeValueWhenProvided(combieId);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getNotProvidedVariables(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getNotProvidedVariables(java.util.
+   * UUID)
    */
   @Override
   public List<UUID> getNotProvidedVariables(UUID caID) {
@@ -681,8 +811,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.getNotProvidedVariables();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addNotProvidedVariable(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addNotProvidedVariable(java.util.
+   * UUID, java.util.UUID)
    */
   @Override
   public void addNotProvidedVariable(UUID caID, UUID notProvidedVariable) {
@@ -690,8 +824,11 @@ public class ControlActionController extends Observable implements IControlActio
     action.addNotProvidedVariable(notProvidedVariable);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getProvidedVariables(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getProvidedVariables(java.util.UUID)
    */
   @Override
   public List<UUID> getProvidedVariables(UUID caID) {
@@ -699,8 +836,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.getProvidedVariables();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addProvidedVariable(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addProvidedVariable(java.util.UUID,
+   * java.util.UUID)
    */
   @Override
   public void addProvidedVariable(UUID caID, UUID providedVariable) {
@@ -708,8 +849,12 @@ public class ControlActionController extends Observable implements IControlActio
     action.addProvidedVariable(providedVariable);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeNotProvidedVariable(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#removeNotProvidedVariable(java.util.
+   * UUID, java.util.UUID)
    */
   @Override
   public boolean removeNotProvidedVariable(UUID caID, UUID notProvidedVariable) {
@@ -721,8 +866,12 @@ public class ControlActionController extends Observable implements IControlActio
     return action.removeNotProvidedVariable(notProvidedVariable);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeProvidedVariable(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#removeProvidedVariable(java.util.
+   * UUID, java.util.UUID)
    */
   @Override
   public boolean removeProvidedVariable(UUID caID, UUID providedVariable) {
@@ -734,7 +883,9 @@ public class ControlActionController extends Observable implements IControlActio
     return action.removeProvidedVariable(providedVariable);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getAllRefinedRules(boolean)
    */
   @Override
@@ -744,7 +895,7 @@ public class ControlActionController extends Observable implements IControlActio
     if (!onlyFormal && rules != null) {
       list.addAll(rules);
     }
-    for (ControlAction controlAction : controlActions) {
+    for (ControlAction controlAction : getControlActions()) {
       if (controlAction.getAllRefinedRules() != null) {
         list.addAll(controlAction.getAllRefinedRules());
       }
@@ -753,12 +904,16 @@ public class ControlActionController extends Observable implements IControlActio
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#addRefinedRuleLink(java.util.UUID, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#addRefinedRuleLink(java.util.UUID,
+   * java.util.UUID)
    */
   @Override
   public boolean addRefinedRuleLink(UUID ruleID, UUID caID) {
-    for (ControlAction controlAction : controlActions) {
+    for (ControlAction controlAction : getControlActions()) {
       if (controlAction.getId().equals(caID)) {
         return controlAction.addRefinedRuleLink(ruleID);
       }
@@ -766,8 +921,11 @@ public class ControlActionController extends Observable implements IControlActio
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#removeSafetyRule(boolean, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.controlaction.IControlActionController#removeSafetyRule(boolean,
+   * java.util.UUID)
    */
   @Override
   public boolean removeSafetyRule(boolean removeAll, UUID id) {
@@ -783,7 +941,7 @@ public class ControlActionController extends Observable implements IControlActio
       }
     }
 
-    for (ControlAction controlAction : controlActions) {
+    for (ControlAction controlAction : getControlActions()) {
       if (controlAction.removeSafetyRule(removeAll, id)) {
         return true;
       }
@@ -791,12 +949,14 @@ public class ControlActionController extends Observable implements IControlActio
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#usesHAZXData()
    */
   @Override
   public boolean usesHAZXData() {
-    for (ControlAction action : this.controlActions) {
+    for (ControlAction action : this.getControlActions()) {
       if (action.isCASafetyCritical())
         return true;
       if (!action.getNotProvidedVariables().isEmpty())
@@ -807,26 +967,34 @@ public class ControlActionController extends Observable implements IControlActio
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#getControlActionFor(java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#getControlActionFor(java.util.UUID)
    */
   @Override
   public IControlAction getControlActionFor(UUID ucaId) {
     return getControlActionMap().get(ucaId);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#moveEntry(boolean, java.util.UUID, xstampp.model.ObserverValue)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.controlaction.IControlActionController#moveEntry(boolean,
+   * java.util.UUID, xstampp.model.ObserverValue)
    */
   @Override
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
     if (value.equals(ObserverValue.CONTROL_ACTION)) {
-      return ATableModel.move(moveUp, id, controlActions);
+      return ATableModel.move(moveUp, id, getControlActions());
     }
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#setNextUcaIndext(int)
    */
   @Override
@@ -836,7 +1004,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   private int getCANumber() {
     if (this.nextCAIndex == null) {
-      this.nextCAIndex = this.controlActions.size() + 1;
+      this.nextCAIndex = this.getControlActions().size() + 1;
     }
     return this.nextCAIndex++;
   }
@@ -844,7 +1012,7 @@ public class ControlActionController extends Observable implements IControlActio
   private Map<UUID, ControlAction> getControlActionMap() {
     if (this.controlActionsToUcaIds == null) {
       this.controlActionsToUcaIds = new HashMap<>();
-      for (ControlAction controlAction : this.controlActions) {
+      for (ControlAction controlAction : this.getControlActions()) {
         for (IUnsafeControlAction uca : controlAction.getUnsafeControlActions()) {
           this.controlActionsToUcaIds.put(uca.getId(), controlAction);
         }
@@ -853,8 +1021,12 @@ public class ControlActionController extends Observable implements IControlActio
     return this.controlActionsToUcaIds;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.controlaction.IControlActionController#setUCACustomHeaders(java.lang.String[])
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.controlaction.IControlActionController#setUCACustomHeaders(java.lang.String
+   * [])
    */
   @Override
   public void setUCACustomHeaders(String[] ucaHeaders) {
@@ -864,7 +1036,7 @@ public class ControlActionController extends Observable implements IControlActio
       this.ucaCustomHeaders = new ArrayList<>(4);
     }
     for (int i = 0; i < ucaHeaders.length; i++) {
-      this.ucaCustomHeaders.add(i, ucaHeaders[i]);
+      this.ucaCustomHeaders.set(i, ucaHeaders[i]);
       isRedundant = false;
     }
     if (isRedundant) {
@@ -875,7 +1047,9 @@ public class ControlActionController extends Observable implements IControlActio
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#getUCAHeaders()
    */
   @Override
@@ -903,5 +1077,12 @@ public class ControlActionController extends Observable implements IControlActio
     }
 
     return headers;
+  }
+
+  private List<ControlAction> getControlActions() {
+    if(this.controlActions == null) {
+      this.controlActions = new ArrayList<>();
+    }
+    return controlActions;
   }
 }

@@ -147,7 +147,6 @@ public class DataModelController extends AbstractDataModel
   private static final String HAZ = "haz";
   private static final String HAZX = "hazx";
 
-  
   private String astpaVersion;
 
   @XmlAttribute(name = "userSystemId")
@@ -205,6 +204,7 @@ public class DataModelController extends AbstractDataModel
   public String getVersion() {
     return this.astpaVersion;
   }
+
   /**
    * Constructor of the DataModel Controller
    * 
@@ -215,10 +215,7 @@ public class DataModelController extends AbstractDataModel
     super();
     this.linkController = new LinkController();
     this.projectDataManager = new ProjectDataController();
-    this.hazAccController = new HazAccController();
-    this.sdsController = new SDSController();
     this.controlStructureController = new ControlStructureController();
-    this.controlActionController = new ControlActionController();
     this.causalFactorController = new CausalFactorController();
     this.extendedDataController = new ExtendedDataController();
     getIgnoreLTLValue();
@@ -231,6 +228,64 @@ public class DataModelController extends AbstractDataModel
       this.setVersion(versionWithQualifier.substring(0, versionWithQualifier.lastIndexOf('.')));
     }
 
+  }
+
+  @Override
+  public void initializeProject() {
+    this.controlStructureController.initializeCSS();
+  }
+
+  @Override
+  public void initializeProject(IDataModel original) {
+    initializeProject();
+    if (original instanceof DataModelController) {
+      this.userSystemId = ((DataModelController) original).userSystemId;
+      this.userSystemName = ((DataModelController) original).userSystemName;
+      this.causalFactorController = ((DataModelController) original).causalFactorController;
+      this.controlActionController = ((DataModelController) original).controlActionController;
+      this.controlStructureController = ((DataModelController) original).controlStructureController;
+      this.hazAccController = ((DataModelController) original).hazAccController;
+      this.sdsController = ((DataModelController) original).sdsController;
+      this.extendedDataController = ((DataModelController) original).extendedDataController;
+    }
+
+  }
+
+  @Override
+  public boolean prepareForExport() {
+
+    this.exportInformation = null;
+    this.getHazAccController().prepareForExport(linkController);
+    this.extendedDataController.prepareForExport();
+    this.getControlActionController().prepareForExport(linkController, this.getHazAccController(),
+        this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController);
+    this.causalFactorController.prepareForExport(this.getHazAccController(),
+        getRoot().getChildren(), getAllScenarios(true, true, true), getAllUnsafeControlActions());
+    this.projectDataManager.prepareForExport();
+    this.exportInformation = new ExportInformation();
+    ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");
+    return true;
+  }
+
+  @Override
+  public void prepareForSave() {
+    
+    this.extendedDataController.prepareForSave();
+    if (!this.getControlActionController().prepareForSave(this.extendedDataController, linkController)) {
+      this.controlActionController = null;
+    }
+    this.causalFactorController.prepareForSave(this.getHazAccController(),
+        controlStructureController.getInternalComponents(), getAllScenarios(true, true, true),
+        getAllUnsafeControlActions());
+    if (!this.getHazAccController().prepareForSave(linkController)) {
+      this.hazAccController = null;
+    }
+    this.projectDataManager.prepareForSave();
+    if (!this.getSdsController().prepareForSave()) {
+      this.sdsController = null;
+    }
+    this.exportInformation = null;
+    ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
   }
 
   @Override
@@ -263,7 +318,7 @@ public class DataModelController extends AbstractDataModel
   public void addCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
 
     if (this.controlStructureController.getComponent(notProvidedVariable) != null) {
-      this.controlActionController.addNotProvidedVariable(caID, notProvidedVariable);
+      this.getControlActionController().addNotProvidedVariable(caID, notProvidedVariable);
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
     } else {
       LOGGER.debug("given provided id is not related to a valid component");
@@ -274,7 +329,7 @@ public class DataModelController extends AbstractDataModel
   public void addCAProvidedVariable(UUID caID, UUID providedVariable) {
 
     if (this.controlStructureController.getComponent(providedVariable) != null) {
-      this.controlActionController.addProvidedVariable(caID, providedVariable);
+      this.getControlActionController().addProvidedVariable(caID, providedVariable);
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
     } else {
       LOGGER.debug("given provided id is not related to a valid component");
@@ -312,8 +367,8 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public UUID addCausalUCAEntry(UUID component, UUID causalFactorId, UUID ucaId) {
-    if (!getUserSystem().checkAccess(controlActionController.getControlActionFor(ucaId).getId(),
-        AccessRights.ACCESS)) {
+    if (!getUserSystem().checkAccess(
+        getControlActionController().getControlActionFor(ucaId).getId(), AccessRights.ACCESS)) {
       return null;
     }
     UUID result = this.causalFactorController.addCausalUCAEntry(component, causalFactorId, ucaId);
@@ -325,7 +380,7 @@ public class DataModelController extends AbstractDataModel
 
   public UUID addCausalUCAEntry(UUID component, UUID causalFactorId, ICausalFactorEntry entry) {
     if (!getUserSystem().checkAccess(
-        controlActionController.getControlActionFor(entry.getUcaLink()).getId(),
+        getControlActionController().getControlActionFor(entry.getUcaLink()).getId(),
         AccessRights.ACCESS)) {
       return null;
     }
@@ -351,7 +406,7 @@ public class DataModelController extends AbstractDataModel
       caLink = addControlAction(text, Messages.DescriptionOfThisControlAction);
       result = this.controlStructureController.addComponent(caLink, parentId, layout, text, type,
           index);
-      this.controlActionController.setComponentLink(result, caLink);
+      this.getControlActionController().setComponentLink(result, caLink);
     } else {
       result = this.controlStructureController.addComponent(parentId, layout, text, type, index);
     }
@@ -388,7 +443,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.controlActionController.addControlAction(title, description);
+    UUID id = this.getControlActionController().addControlAction(title, description);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
     }
@@ -401,7 +456,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.sdsController.addDesignRequirement(title, description);
+    UUID id = this.getSdsController().addDesignRequirement(title, description);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
     }
@@ -459,7 +514,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.sdsController.addSafetyConstraint(title, description,
+    UUID id = this.getSdsController().addSafetyConstraint(title, description,
         getUserSystem().getCurrentUserId());
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
@@ -471,7 +526,7 @@ public class DataModelController extends AbstractDataModel
     if (model == null) {
       return null;
     }
-    UUID id = this.sdsController.addSafetyConstraint(model);
+    UUID id = this.getSdsController().addSafetyConstraint(model);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
     }
@@ -493,7 +548,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.sdsController.addSystemGoal(title, description);
+    UUID id = this.getSdsController().addSystemGoal(title, description);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
     }
@@ -508,8 +563,15 @@ public class DataModelController extends AbstractDataModel
     if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
       return false;
     }
-    if (this.controlActionController
-        .getInternalUnsafeControlAction(unsafeControlActionId) == null) {
+    boolean ucaExists = false;
+    for (ICorrespondingUnsafeControlAction uca : this.getControlActionController()
+        .getAllUnsafeControlActions()) {
+      if (uca.getId().equals(unsafeControlActionId)) {
+        ucaExists = true;
+        break;
+      }
+    }
+    if (ucaExists) {
       return false;
     }
 
@@ -528,8 +590,8 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID result = this.controlActionController.addUnsafeControlAction(controlActionId, description,
-        unsafeControlActionType);
+    UUID result = this.getControlActionController().addUnsafeControlAction(controlActionId,
+        description, unsafeControlActionType);
     if (result != null) {
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
     }
@@ -542,8 +604,8 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID result = this.controlActionController.addUnsafeControlAction(controlActionId, description,
-        unsafeControlActionType, ucaId);
+    UUID result = this.getControlActionController().addUnsafeControlAction(controlActionId,
+        description, unsafeControlActionType, ucaId);
     if (result != null) {
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
     }
@@ -567,7 +629,7 @@ public class DataModelController extends AbstractDataModel
    *         controlAction id
    */
   public boolean addValuesWhenNotProvided(UUID caID, NotProvidedValuesCombi valueWhenNotProvided) {
-    if (this.controlActionController.addValueWhenNotProvided(caID, valueWhenNotProvided)) {
+    if (this.getControlActionController().addValueWhenNotProvided(caID, valueWhenNotProvided)) {
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
       return true;
     }
@@ -586,7 +648,7 @@ public class DataModelController extends AbstractDataModel
    *         controlAction id
    */
   public boolean addValueWhenProvided(UUID caID, ProvidedValuesCombi valueWhenProvided) {
-    if (this.controlActionController.addValueWhenProvided(caID, valueWhenProvided)) {
+    if (this.getControlActionController().addValueWhenProvided(caID, valueWhenProvided)) {
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
       return true;
     }
@@ -721,7 +783,7 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<IControlAction> getAllControlActions() {
     List<IControlAction> result = new ArrayList<>();
-    for (IControlAction controlAction : this.controlActionController.getAllControlActionsU()) {
+    for (IControlAction controlAction : this.getControlActionController().getAllControlActionsU()) {
       result.add(controlAction);
     }
     return result;
@@ -729,12 +791,12 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<IControlAction> getAllControlActionsU() {
-    return this.controlActionController.getAllControlActionsU();
+    return this.getControlActionController().getAllControlActionsU();
   }
 
   @Override
   public List<ITableModel> getAllDesignRequirements() {
-    return this.sdsController.getAllDesignRequirements();
+    return this.getSdsController().getAllDesignRequirements();
   }
 
   public List<Link> getAllHazAccLinks() {
@@ -758,7 +820,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ITableModel> getAllSafetyConstraints() {
-    return this.sdsController.getAllSafetyConstraints();
+    return this.getSdsController().getAllSafetyConstraints();
   }
 
   @Override
@@ -769,7 +831,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ITableModel> getAllSystemGoals() {
-    return this.sdsController.getAllSystemGoals();
+    return this.getSdsController().getAllSystemGoals();
   }
 
   @Override
@@ -785,7 +847,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
-    return this.controlActionController.getAllUnsafeControlActions();
+    return this.getControlActionController().getAllUnsafeControlActions();
   }
 
   /**
@@ -797,7 +859,7 @@ public class DataModelController extends AbstractDataModel
    */
   public List<UUID> getCANotProvidedVariables(UUID caID) {
     ArrayList<UUID> list = new ArrayList<>();
-    for (UUID id : this.controlActionController.getNotProvidedVariables(caID)) {
+    for (UUID id : this.getControlActionController().getNotProvidedVariables(caID)) {
       if (getComponent(id) != null) {
         list.add(id);
       }
@@ -814,7 +876,7 @@ public class DataModelController extends AbstractDataModel
    */
   public List<UUID> getCAProvidedVariables(UUID caID) {
     ArrayList<UUID> list = new ArrayList<>();
-    for (UUID id : this.controlActionController.getProvidedVariables(caID)) {
+    for (UUID id : this.getControlActionController().getProvidedVariables(caID)) {
       if (getComponent(id) != null) {
         list.add(id);
       }
@@ -889,11 +951,11 @@ public class DataModelController extends AbstractDataModel
     if (controlActionId == null) {
       return null;
     }
-    return this.controlActionController.getControlAction(controlActionId);
+    return this.getControlActionController().getControlAction(controlActionId);
   }
 
   public ITableModel getControlActionForUca(UUID ucaId) {
-    return this.controlActionController.getControlActionFor(ucaId);
+    return this.getControlActionController().getControlActionFor(ucaId);
   }
 
   @Override
@@ -902,12 +964,12 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    return this.controlActionController.getControlActionU(controlActionId);
+    return this.getControlActionController().getControlActionU(controlActionId);
   }
 
   @Override
   public List<ITableModel> getCorrespondingSafetyConstraints() {
-    return this.controlActionController.getCorrespondingSafetyConstraints();
+    return this.getControlActionController().getCorrespondingSafetyConstraints();
   }
 
   @Override
@@ -915,7 +977,8 @@ public class DataModelController extends AbstractDataModel
     if (designRequirementId == null) {
       return null;
     }
-    ITableModel designRequirement = this.sdsController.getDesignRequirement(designRequirementId);
+    ITableModel designRequirement = this.getSdsController()
+        .getDesignRequirement(designRequirementId);
     if (!(designRequirement instanceof DesignRequirement)) {
       return null;
     }
@@ -975,7 +1038,7 @@ public class DataModelController extends AbstractDataModel
    */
   public List<IValueCombie> getIValuesWhenCANotProvided(UUID caID) {
     ArrayList<IValueCombie> combies = new ArrayList<>();
-    for (IValueCombie combie : this.controlActionController.getValuesWhenNotProvided(caID)) {
+    for (IValueCombie combie : this.getControlActionController().getValuesWhenNotProvided(caID)) {
       combies.add(combie);
     }
     return combies;
@@ -988,7 +1051,7 @@ public class DataModelController extends AbstractDataModel
    */
   public List<IValueCombie> getIvaluesWhenCAProvided(UUID caID) {
     ArrayList<IValueCombie> combies = new ArrayList<>();
-    for (IValueCombie combie : this.controlActionController.getValuesWhenProvided(caID)) {
+    for (IValueCombie combie : this.getControlActionController().getValuesWhenProvided(caID)) {
       combies.add(combie);
     }
     return combies;
@@ -1083,11 +1146,12 @@ public class DataModelController extends AbstractDataModel
     if (safetyConstraintId == null) {
       return null;
     }
-    if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
+    if (!(this.getSdsController()
+        .getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
       return null;
     }
 
-    return this.sdsController.getSafetyConstraint(safetyConstraintId);
+    return this.getSdsController().getSafetyConstraint(safetyConstraintId);
   }
 
   @Override
@@ -1110,22 +1174,22 @@ public class DataModelController extends AbstractDataModel
     if (systemGoalId == null) {
       return null;
     }
-    if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
+    if (!(this.getSdsController().getSystemGoal(systemGoalId) instanceof SystemGoal)) {
       return null;
     }
 
-    return this.sdsController.getSystemGoal(systemGoalId);
+    return this.getSdsController().getSystemGoal(systemGoalId);
   }
 
   @Override
   public List<ICorrespondingUnsafeControlAction> getUCAList(
       IEntryFilter<IUnsafeControlAction> filter) {
-    return controlActionController.getUCAList(filter);
+    return getControlActionController().getUCAList(filter);
   }
 
   @Override
   public int getUCANumber(UUID ucaID) {
-    return this.controlActionController.getUCANumber(ucaID);
+    return this.getControlActionController().getUCANumber(ucaID);
   }
 
   @Override
@@ -1209,7 +1273,7 @@ public class DataModelController extends AbstractDataModel
    * @return the NotProvidedValuesCombi objects when not provided
    */
   public List<NotProvidedValuesCombi> getValuesWhenCANotProvided(UUID caID) {
-    return this.controlActionController.getValuesWhenNotProvided(caID);
+    return this.getControlActionController().getValuesWhenNotProvided(caID);
   }
 
   /**
@@ -1218,33 +1282,12 @@ public class DataModelController extends AbstractDataModel
    * @return the ProvidedValuesCombi when provided
    */
   public List<ProvidedValuesCombi> getValuesWhenCAProvided(UUID caID) {
-    return this.controlActionController.getValuesWhenProvided(caID);
-  }
-
-  @Override
-  public void initializeProject() {
-    this.controlStructureController.initializeCSS();
-  }
-
-  @Override
-  public void initializeProject(IDataModel original) {
-    initializeProject();
-    if (original instanceof DataModelController) {
-      this.userSystemId = ((DataModelController) original).userSystemId;
-      this.userSystemName = ((DataModelController) original).userSystemName;
-      this.causalFactorController = ((DataModelController) original).causalFactorController;
-      this.controlActionController = ((DataModelController) original).controlActionController;
-      this.controlStructureController = ((DataModelController) original).controlStructureController;
-      this.hazAccController = ((DataModelController) original).hazAccController;
-      this.sdsController = ((DataModelController) original).sdsController;
-      this.extendedDataController = ((DataModelController) original).extendedDataController;
-    }
-
+    return this.getControlActionController().getValuesWhenProvided(caID);
   }
 
   @Override
   public boolean isCASafetyCritical(UUID caID) {
-    return this.controlActionController.isSafetyCritical(caID);
+    return this.getControlActionController().isSafetyCritical(caID);
   }
 
   @Override
@@ -1259,7 +1302,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean linkControlAction(UUID caId, UUID componentId) {
-    if (this.controlActionController.setComponentLink(componentId, caId)) {
+    if (this.getControlActionController().setComponentLink(componentId, caId)) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
       return true;
     }
@@ -1286,10 +1329,10 @@ public class DataModelController extends AbstractDataModel
     case DESIGN_REQUIREMENT:
     case SAFETY_CONSTRAINT:
     case SYSTEM_GOAL:
-      result = sdsController.moveEntry(moveUp, id, value);
+      result = getSdsController().moveEntry(moveUp, id, value);
       break;
     case CONTROL_ACTION:
-      result = controlActionController.moveEntry(moveUp, id, value);
+      result = getControlActionController().moveEntry(moveUp, id, value);
       break;
     default:
       break;
@@ -1298,37 +1341,6 @@ public class DataModelController extends AbstractDataModel
       setUnsavedAndChanged(value);
     }
     return result;
-  }
-
-  @Override
-  public boolean prepareForExport() {
-
-    this.exportInformation = null;
-    this.getHazAccController().prepareForExport(linkController);
-    this.extendedDataController.prepareForExport();
-    this.controlActionController.prepareForExport(linkController, this.getHazAccController(),
-        this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController);
-    this.causalFactorController.prepareForExport(this.getHazAccController(), getRoot().getChildren(),
-        getAllScenarios(true, true, true), getAllUnsafeControlActions());
-    this.projectDataManager.prepareForExport();
-    this.exportInformation = new ExportInformation();
-    ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");
-    return true;
-  }
-
-  @Override
-  public void prepareForSave() {
-    this.getHazAccController().prepareForSave(linkController);
-    this.extendedDataController.prepareForSave();
-    this.controlActionController.prepareForSave(this.extendedDataController, linkController);
-    this.causalFactorController.prepareForSave(this.getHazAccController(),
-        controlStructureController.getInternalComponents(), getAllScenarios(true, true, true),
-        getAllUnsafeControlActions());
-
-    this.projectDataManager.prepareForSave();
-    this.sdsController.prepareForSave();
-    this.exportInformation = null;
-    ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
   }
 
   protected void pushToUndo(IUndoCallback callback) {
@@ -1365,7 +1377,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean recoverControlAction(UUID id) {
-    return this.controlActionController.recoverControlAction(id);
+    return this.getControlActionController().recoverControlAction(id);
 
   }
 
@@ -1408,7 +1420,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean removeCANotProvidedVariable(UUID caID, UUID notProvidedVariable) {
-    if (this.controlActionController.removeNotProvidedVariable(caID, notProvidedVariable)) {
+    if (this.getControlActionController().removeNotProvidedVariable(caID, notProvidedVariable)) {
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
       return true;
     }
@@ -1417,7 +1429,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean removeCAProvidedVariable(UUID caID, UUID providedVariable) {
-    if (this.controlActionController.removeProvidedVariable(caID, providedVariable)) {
+    if (this.getControlActionController().removeProvidedVariable(caID, providedVariable)) {
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
       return true;
     }
@@ -1479,14 +1491,14 @@ public class DataModelController extends AbstractDataModel
     if (controlActionId == null) {
       return false;
     }
-    ITableModel caObject = this.controlActionController.getControlAction(controlActionId);
+    ITableModel caObject = this.getControlActionController().getControlAction(controlActionId);
     if (caObject == null || !(caObject instanceof ControlAction)) {
       return false;
     }
     boolean refreshCS = this.controlStructureController
         .removeComponent(((ControlAction) caObject).getComponentLink());
 
-    if (this.controlActionController.removeControlAction(controlActionId)) {
+    if (this.getControlActionController().removeControlAction(controlActionId)) {
 
       this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
       if (refreshCS) {
@@ -1502,11 +1514,11 @@ public class DataModelController extends AbstractDataModel
     if (designRequirementId == null) {
       return false;
     }
-    if (!(this.sdsController
+    if (!(this.getSdsController()
         .getDesignRequirement(designRequirementId) instanceof DesignRequirement)) {
       return false;
     }
-    if (this.sdsController.removeDesignRequirement(designRequirementId)) {
+    if (this.getSdsController().removeDesignRequirement(designRequirementId)) {
       this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
       return true;
     }
@@ -1521,7 +1533,7 @@ public class DataModelController extends AbstractDataModel
     if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
       return false;
     }
-    this.controlActionController.removeAllLinks(hazardId);
+    this.getControlActionController().removeAllLinks(hazardId);
     if (this.getHazAccController().removeHazard(hazardId)) {
       this.setUnsavedAndChanged(ObserverValue.HAZARD);
       return true;
@@ -1543,11 +1555,12 @@ public class DataModelController extends AbstractDataModel
     if (safetyConstraintId == null) {
       return false;
     }
-    if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
+    if (!(this.getSdsController()
+        .getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
       return false;
     }
 
-    if (this.sdsController.removeSafetyConstraint(safetyConstraintId)) {
+    if (this.getSdsController().removeSafetyConstraint(safetyConstraintId)) {
       this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
       return true;
     }
@@ -1559,11 +1572,11 @@ public class DataModelController extends AbstractDataModel
     if (systemGoalId == null) {
       return false;
     }
-    if (!(this.sdsController.getSystemGoal(systemGoalId) instanceof SystemGoal)) {
+    if (!(this.getSdsController().getSystemGoal(systemGoalId) instanceof SystemGoal)) {
       return false;
     }
 
-    if (this.sdsController.removeSystemGoal(systemGoalId)) {
+    if (this.getSdsController().removeSystemGoal(systemGoalId)) {
       this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
       return true;
     }
@@ -1604,8 +1617,8 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    this.controlActionController.removeAllLinks(unsafeControlActionId);
-    if (this.controlActionController.removeUnsafeControlAction(unsafeControlActionId)) {
+    this.getControlActionController().removeAllLinks(unsafeControlActionId);
+    if (this.getControlActionController().removeUnsafeControlAction(unsafeControlActionId)) {
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
       return true;
     }
@@ -1629,7 +1642,7 @@ public class DataModelController extends AbstractDataModel
    *         controlAction id
    */
   public boolean removeValueWhenNotProvided(UUID caID, UUID combieId) {
-    if (this.controlActionController.removeValueWhenNotProvided(caID, combieId)) {
+    if (this.getControlActionController().removeValueWhenNotProvided(caID, combieId)) {
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
       return true;
     }
@@ -1648,7 +1661,7 @@ public class DataModelController extends AbstractDataModel
    *         controlAction id
    */
   public boolean removeValueWhenProvided(UUID caID, UUID combieId) {
-    if (this.controlActionController.removeValueWhenProvided(caID, combieId)) {
+    if (this.getControlActionController().removeValueWhenProvided(caID, combieId)) {
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
       return true;
     }
@@ -1711,7 +1724,7 @@ public class DataModelController extends AbstractDataModel
    *          the isSafetyCritical to set
    */
   public boolean setCASafetyCritical(UUID caID, boolean isSafetyCritical) {
-    if (this.controlActionController.setSafetyCritical(caID, isSafetyCritical)) {
+    if (this.getControlActionController().setSafetyCritical(caID, isSafetyCritical)) {
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
       return true;
     }
@@ -1741,7 +1754,7 @@ public class DataModelController extends AbstractDataModel
     if ((controlActionId == null) || (description == null)) {
       return false;
     }
-    ITableModel controlAction = this.controlActionController.getControlAction(controlActionId);
+    ITableModel controlAction = this.getControlActionController().getControlAction(controlActionId);
     if (!(controlAction instanceof ControlAction)) {
       return false;
     }
@@ -1762,14 +1775,14 @@ public class DataModelController extends AbstractDataModel
     if ((controlActionId == null) || (title == null)) {
       return false;
     }
-    ITableModel controlAction = this.controlActionController.getControlAction(controlActionId);
+    ITableModel controlAction = this.getControlActionController().getControlAction(controlActionId);
     if (!(controlAction instanceof ControlAction)) {
       return false;
     }
     boolean result = false;
 
-    String oldTitle = ((ControlAction) controlActionController.getControlAction(controlActionId))
-        .setTitle(title);
+    String oldTitle = ((ControlAction) getControlActionController()
+        .getControlAction(controlActionId)).setTitle(title);
     if (oldTitle != null) {
       UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
           controlAction);
@@ -1789,13 +1802,10 @@ public class DataModelController extends AbstractDataModel
   public boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
       String safetyConstraintDescription) {
     try {
-
-      UnsafeControlAction action = this.controlActionController
-          .getInternalUnsafeControlAction(unsafeControlActionId);
-      String oldString = this.controlActionController
+      String oldString = this.getControlActionController()
           .setCorrespondingSafetyConstraint(unsafeControlActionId, safetyConstraintDescription);
       if (oldString != null) {
-        UndoCSCChangeCallback callback = new UndoCSCChangeCallback(this, action);
+        UndoCSCChangeCallback callback = new UndoCSCChangeCallback(this, unsafeControlActionId);
         callback.setDescriptionChange(oldString, safetyConstraintDescription);
         this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
         return true;
@@ -1841,7 +1851,7 @@ public class DataModelController extends AbstractDataModel
     if ((description == null) || (designRequirementId == null)) {
       return false;
     }
-    ITableModel requirement = this.sdsController.getDesignRequirement(designRequirementId);
+    ITableModel requirement = this.getSdsController().getDesignRequirement(designRequirementId);
     if (!(requirement instanceof DesignRequirement)) {
       return false;
     }
@@ -1863,7 +1873,7 @@ public class DataModelController extends AbstractDataModel
     if ((title == null) || (designRequirementId == null)) {
       return false;
     }
-    ITableModel requirement = this.sdsController.getDesignRequirement(designRequirementId);
+    ITableModel requirement = this.getSdsController().getDesignRequirement(designRequirementId);
     if (!(requirement instanceof DesignRequirement)) {
       return false;
     }
@@ -2014,7 +2024,7 @@ public class DataModelController extends AbstractDataModel
     if ((description == null) || (safetyConstraintId == null)) {
       return false;
     }
-    ITableModel safetyConstraint = this.sdsController.getSafetyConstraint(safetyConstraintId);
+    ITableModel safetyConstraint = this.getSdsController().getSafetyConstraint(safetyConstraintId);
     if (!(safetyConstraint instanceof SafetyConstraint)) {
       return false;
     }
@@ -2036,7 +2046,7 @@ public class DataModelController extends AbstractDataModel
     if ((title == null) || (safetyConstraintId == null)) {
       return false;
     }
-    ITableModel safetyConstraint = this.sdsController.getSafetyConstraint(safetyConstraintId);
+    ITableModel safetyConstraint = this.getSdsController().getSafetyConstraint(safetyConstraintId);
     if (!(safetyConstraint instanceof SafetyConstraint)) {
       return false;
     }
@@ -2067,7 +2077,7 @@ public class DataModelController extends AbstractDataModel
     if ((systemGoalId == null) || (description == null)) {
       return false;
     }
-    ITableModel systemGoal = this.sdsController.getSystemGoal(systemGoalId);
+    ITableModel systemGoal = this.getSdsController().getSystemGoal(systemGoalId);
     if (!(systemGoal instanceof SystemGoal)) {
       return false;
     }
@@ -2088,7 +2098,7 @@ public class DataModelController extends AbstractDataModel
     if ((systemGoalId == null) || (title == null)) {
       return false;
     }
-    ITableModel systemGoal = this.sdsController.getSystemGoal(systemGoalId);
+    ITableModel systemGoal = this.getSdsController().getSystemGoal(systemGoalId);
     if (!(systemGoal instanceof SystemGoal)) {
       return false;
     }
@@ -2108,8 +2118,8 @@ public class DataModelController extends AbstractDataModel
     if ((unsafeControlActionId == null) || (description == null)) {
       return false;
     }
-    String oldDescription = this.controlActionController.setUcaDescription(unsafeControlActionId,
-        description);
+    String oldDescription = this.getControlActionController()
+        .setUcaDescription(unsafeControlActionId, description);
     if (oldDescription != null) {
       UndoUCAChangesCallback callback = new UndoUCAChangesCallback(this, unsafeControlActionId);
       callback.setDescriptionChange(oldDescription, description);
@@ -2133,13 +2143,13 @@ public class DataModelController extends AbstractDataModel
   @Override
   public void setValuesWhenCANotProvided(UUID caID,
       List<NotProvidedValuesCombi> valuesWhenNotProvided) {
-    this.controlActionController.setValuesWhenNotProvided(caID, valuesWhenNotProvided);
+    this.getControlActionController().setValuesWhenNotProvided(caID, valuesWhenNotProvided);
     setUnsavedAndChanged(ObserverValue.Extended_DATA);
   }
 
   @Override
   public void setValuesWhenCAProvided(UUID caID, List<ProvidedValuesCombi> valuesWhenProvided) {
-    this.controlActionController.setValuesWhenProvided(caID, valuesWhenProvided);
+    this.getControlActionController().setValuesWhenProvided(caID, valuesWhenProvided);
     setUnsavedAndChanged(ObserverValue.Extended_DATA);
 
   }
@@ -2188,7 +2198,7 @@ public class DataModelController extends AbstractDataModel
   }
 
   public boolean usesHAZXData() {
-    if (this.controlActionController.usesHAZXData())
+    if (this.getControlActionController().usesHAZXData())
       return true;
     if (this.controlStructureController.usesHAZXData())
       return true;
@@ -2223,7 +2233,7 @@ public class DataModelController extends AbstractDataModel
       return (T) this.controlActionController;
     }
     if (clazz == SDSController.class) {
-      return (T) this.sdsController;
+      return (T) this.getSdsController();
     }
     if (clazz == HazAccController.class) {
       return (T) this.getHazAccController();
@@ -2242,17 +2252,29 @@ public class DataModelController extends AbstractDataModel
   }
 
   public IControlActionController getControlActionController() {
+    if (this.controlActionController == null) {
+      this.controlActionController = new ControlActionController();
+    }
     this.controlActionController.addObserver(this);
     return controlActionController;
 
   }
 
   public IHazAccController getHazAccController() {
+    if (this.hazAccController == null) {
+      this.hazAccController = new HazAccController();
+    }
     this.hazAccController.addObserver(this);
     return hazAccController;
-
   }
-  
+
+  public SDSController getSdsController() {
+    if (this.sdsController == null) {
+      this.sdsController = new SDSController();
+    }
+    return sdsController;
+  }
+
   @Override
   public <T> T getProperty(String key, Class<T> clazz) {
     if (clazz == Boolean.class && "astpa.use.multics".equals(key)) {

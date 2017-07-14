@@ -15,11 +15,15 @@ public abstract class UndoTableModelChangeCallback<T extends IDataModel> impleme
   private String oldTitle;
   private String newTitle;
   private boolean titleDirty;
-  private ITableModel entry;
+  private UUID entryId;
 
   public UndoTableModelChangeCallback(T dataModel, ITableModel model) {
     this.dataModel = dataModel;
-    this.entry = model;
+    this.entryId = model.getId();
+  }
+  public UndoTableModelChangeCallback(T dataModel, UUID modelId) {
+    this.dataModel = dataModel;
+    this.entryId = modelId;
   }
 
   public void setDescriptionChange(String oldDescription, String newDescription) {
@@ -54,7 +58,7 @@ public abstract class UndoTableModelChangeCallback<T extends IDataModel> impleme
   }
 
   public UUID getEntryId() {
-    return entry.getId();
+    return entryId;
   }
   /**
    * @return the dataModel
