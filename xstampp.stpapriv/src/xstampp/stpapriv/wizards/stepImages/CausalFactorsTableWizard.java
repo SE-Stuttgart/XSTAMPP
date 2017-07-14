@@ -12,7 +12,7 @@ package xstampp.stpapriv.wizards.stepImages;
 
 import messages.Messages;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.ui.causalfactors.SecCausalFactorsView;
+import xstampp.stpapriv.ui.causalfactors.PrivacyCausalFactorsView;
 import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
@@ -29,7 +29,7 @@ public class CausalFactorsTableWizard extends AbstractExportWizard {
 	 * 
 	 */
 	public CausalFactorsTableWizard() {
-		super(SecCausalFactorsView.ID);
+		super(PrivacyCausalFactorsView.ID);
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$
 		this.setExportPage(new TableExportPage(filters,
 				Messages.CausalFactorsTable + Messages.AsImage, Activator.PLUGIN_ID));

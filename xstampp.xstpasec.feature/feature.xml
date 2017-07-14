@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="xstampp.xstpasec.feature"
+      label="XSTPASec Feature"
+      version="1.0.0"
+      plugin="xstampp.xstpasec">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="xstampp.extension" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="xstampp" version="1.0.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.draw2d" version="3.9.101" match="greaterOrEqual"/>
+      <import plugin="xstampp.stpasec"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="org.eclipse.nebula.widgets.grid"/>
+      <import plugin="xstampp.astpa" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.css"/>
+      <import plugin="org.apache.commons.io"/>
+      <import plugin="org.eclipse.core.resources"/>
+   </requires>
+
+   <plugin
+         id="xstampp.xstpasec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

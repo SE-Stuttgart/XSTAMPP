@@ -83,7 +83,7 @@ public class ControlTable extends AbstractTableComposite implements IStructuredC
 			try {
 				int index =  list.indexOf(element);
 				if ((index % 2) == 0) {
-					return SecView.BACKGROUND;
+					return PrivacyRelationsView.BACKGROUND;
 				} else {	    
 					return null;
 				}
@@ -98,7 +98,7 @@ public class ControlTable extends AbstractTableComposite implements IStructuredC
 	private TableViewer controlActionViewer;
 	private Table controlActionTable;
 
-	public ControlTable(Composite parent) {
+	public ControlTable(Composite parent, String[] columns) {
 		super(parent);
 		setLayout(new TableColumnLayout());
 		
@@ -115,28 +115,28 @@ public class ControlTable extends AbstractTableComposite implements IStructuredC
 	    controlActionEditors[4] = new CheckboxCellEditor(controlActionTable);
 
 	    controlActionEditors[5] = new TextCellEditor(controlActionTable);
-	    controlActionViewer.setColumnProperties(SecView.CA_PROPS_COLUMNS);
+	    controlActionViewer.setColumnProperties(columns);
 	    controlActionViewer.setCellEditors(controlActionEditors);
 		
  // add Columns for Control Actions table (list of control actions)
 	    
 	    TableColumn caColumn = new TableColumn(controlActionTable, SWT.LEFT);
-	    caColumn.setText(SecView.CONTROL_ACTIONS);
+	    caColumn.setText(PrivacyRelationsView.CONTROL_ACTIONS);
 	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
 	    caColumn = new TableColumn(controlActionTable, SWT.LEFT);
 	    caColumn.setText("Privacy-Compromising Control Actions");
 	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
 	    caColumn = new TableColumn(controlActionTable, SWT.LEFT);
-	    caColumn.setText(SecView.PRIVACY_CRITICAL);
+	    caColumn.setText(PrivacyRelationsView.PRIVACY_CRITICAL);
 	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
 	    caColumn = new TableColumn(controlActionTable, SWT.LEFT);
-	    caColumn.setText(SecView.SECURITY_CRITICAL);
+	    caColumn.setText(PrivacyRelationsView.SECURITY_CRITICAL);
 	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
 	    caColumn = new TableColumn(controlActionTable, SWT.LEFT);
-	    caColumn.setText(SecView.SAFETY_CRITICAL);
+	    caColumn.setText(PrivacyRelationsView.SAFETY_CRITICAL);
 	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
 	    caColumn = new TableColumn(controlActionTable, SWT.LEFT);
-	    caColumn.setText(SecView.COMMENTS);
+	    caColumn.setText(PrivacyRelationsView.COMMENTS);
 	    ((AbstractColumnLayout) getLayout()).setColumnData(caColumn, new ColumnWeightData(1, 30, false));
 	    
 	    
@@ -149,10 +149,10 @@ public class ControlTable extends AbstractTableComposite implements IStructuredC
 		            if((event.index == 4)&(event.item.getData().getClass() == ControlEntry.class))  {
 		            	
 		            	ControlEntry entry = (ControlEntry) event.item.getData();
-		            	Image tmpImage = SecView.UNCHECKED;
+		            	Image tmpImage = PrivacyRelationsView.UNCHECKED;
 		            	if (entry.getSafetyCritical()){
 		            		System.out.println(4);
-		                tmpImage = SecView.CHECKED;
+		                tmpImage = PrivacyRelationsView.CHECKED;
 		            	}
 
 		                int tmpWidth = 0;
@@ -176,10 +176,10 @@ public class ControlTable extends AbstractTableComposite implements IStructuredC
 		            else if((event.index == 2)&(event.item.getData().getClass() == ControlEntry.class))  {
 		            	
 		            	ControlEntry entry = (ControlEntry) event.item.getData();
-		            	Image tmpImage = SecView.UNCHECKED;
+		            	Image tmpImage = PrivacyRelationsView.UNCHECKED;
 		            	if (entry.getPrivacyCritical()){
 		            		System.out.println(2);
-		                tmpImage = SecView.CHECKED;
+		                tmpImage = PrivacyRelationsView.CHECKED;
 		            	}
 
 		                int tmpWidth = 0;
@@ -203,10 +203,10 @@ public class ControlTable extends AbstractTableComposite implements IStructuredC
 		            else if((event.index == 3)&(event.item.getData().getClass() == ControlEntry.class))  {
 		            	
 		            	ControlEntry entry = (ControlEntry) event.item.getData();
-		            	Image tmpImage = SecView.UNCHECKED;
+		            	Image tmpImage = PrivacyRelationsView.UNCHECKED;
 		            	if (entry.getSecurityCritical()){
 		            		System.out.println(3);
-		                tmpImage = SecView.CHECKED;
+		                tmpImage = PrivacyRelationsView.CHECKED;
 		            	}
 
 		                int tmpWidth = 0;

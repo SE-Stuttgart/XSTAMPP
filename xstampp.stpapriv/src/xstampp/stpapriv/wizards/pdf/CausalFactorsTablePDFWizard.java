@@ -12,7 +12,7 @@ package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.ui.causalfactors.SecCausalFactorsView;
+import xstampp.stpapriv.ui.causalfactors.PrivacyCausalFactorsView;
 import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
@@ -29,7 +29,7 @@ public class CausalFactorsTablePDFWizard extends AbstractExportWizard {
 	 * 
 	 */
 	public CausalFactorsTablePDFWizard() {
-		super(SecCausalFactorsView.ID);
+		super(PrivacyCausalFactorsView.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$
 		this.setExportPage(new TableExportPage(filters,
 				Messages.CausalFactorsTable + Messages.AsPDF, Activator.PLUGIN_ID));

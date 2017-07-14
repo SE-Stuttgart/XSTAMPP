@@ -19,7 +19,6 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -72,6 +71,7 @@ public class PrivacyController extends DataModelController {
     super();
     this.vulLossController = new VulLossController();
     this.constraintController = new ConstraintResultController(this);
+    this.controlActionController = new SecControlActionController();
   }
 
   public PrivacyController(Object object) {
@@ -165,6 +165,9 @@ public class PrivacyController extends DataModelController {
 
   @Override
   public IControlActionController getControlActionController() {
+    if(this.controlActionController == null) {
+      this.controlActionController = new SecControlActionController();
+    }
     return controlActionController;
   }
 }

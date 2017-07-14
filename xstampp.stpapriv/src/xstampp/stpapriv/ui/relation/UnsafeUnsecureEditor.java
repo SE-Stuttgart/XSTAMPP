@@ -30,11 +30,11 @@ public class UnsafeUnsecureEditor extends CSEditor{
 	      public void partOpened(IWorkbenchPartReference partRef) {
 	        if (partRef.getId().equals(ID) && PlatformUI.getWorkbench()
 	            .getActiveWorkbenchWindow().getActivePage()
-	            .findView(SecView.ID) == null) {
+	            .findView(PrivacyRelationsView.ID) == null) {
 	          IWorkbenchPage page = PlatformUI.getWorkbench()
 	              .getActiveWorkbenchWindow().getActivePage();
 	          try {
-	            part = page.showView(SecView.ID);
+	            part = page.showView(PrivacyRelationsView.ID);
 	          } catch (PartInitException e) {
 	            // TODO Auto-generated catch block
 	            e.printStackTrace();

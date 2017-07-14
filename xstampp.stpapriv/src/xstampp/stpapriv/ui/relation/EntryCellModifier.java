@@ -9,7 +9,7 @@ import xstampp.stpapriv.model.relation.ControlEntry;
 
 public class EntryCellModifier implements ICellModifier {
 	private Viewer viewer;
-	private SecView view;
+	private PrivacyRelationsView view;
 	private PrivacyController model;
 
 	public EntryCellModifier(Viewer viewer, PrivacyController controller) {
@@ -43,13 +43,13 @@ public class EntryCellModifier implements ICellModifier {
 	public Object getValue(Object element, String property) {
 
 		ControlEntry entry = (ControlEntry) element;
-		if (SecView.SAFETY_CRITICAL.equals(property)) {
+		if (PrivacyRelationsView.SAFETY_CRITICAL.equals(property)) {
 			return Boolean.valueOf(entry.getSafetyCritical());
-		} else if (SecView.COMMENTS.equals(property)) {
+		} else if (PrivacyRelationsView.COMMENTS.equals(property)) {
 			return entry.getComments();
-		} else if (SecView.SECURITY_CRITICAL.equals(property)) {
+		} else if (PrivacyRelationsView.SECURITY_CRITICAL.equals(property)) {
 			return Boolean.valueOf(entry.getSecurityCritical());
-		} else if (SecView.PRIVACY_CRITICAL.equals(property)) {
+		} else if (PrivacyRelationsView.PRIVACY_CRITICAL.equals(property)) {
 			return Boolean.valueOf(entry.getPrivacyCritical());
 		}
 
@@ -74,16 +74,16 @@ public class EntryCellModifier implements ICellModifier {
 		}
 
     ControlEntry entry = (ControlEntry) element;
-    if (SecView.SAFETY_CRITICAL.equals(property)) {
+    if (PrivacyRelationsView.SAFETY_CRITICAL.equals(property)) {
       entry.setSafetyCritical(!(Boolean) entry.getSafetyCritical());
       model.setUCASafetyCritical(entry.getId(), entry.getSafetyCritical());
-    } else if (SecView.SECURITY_CRITICAL.equals(property)) {
+    } else if (PrivacyRelationsView.SECURITY_CRITICAL.equals(property)) {
       entry.setSecurityCritical(!(Boolean) entry.getSecurityCritical());
       model.setUCASecurityCritical(entry.getId(), entry.getSecurityCritical());
-    }else if (SecView.PRIVACY_CRITICAL.equals(property)) {
+    }else if (PrivacyRelationsView.PRIVACY_CRITICAL.equals(property)) {
       entry.setPrivacyCritical(!(Boolean) entry.getPrivacyCritical());
       model.setUCAPrivacyCritical(entry.getId(), entry.getPrivacyCritical());
-    } else if (SecView.COMMENTS.equals(property)) {
+    } else if (PrivacyRelationsView.COMMENTS.equals(property)) {
       entry.setComments((String) value);
       model.setControlActionDescription(entry.getIdCA(), (String) value);
     }
@@ -92,11 +92,11 @@ public class EntryCellModifier implements ICellModifier {
 
 	}
 
-	public SecView getView() {
+	public PrivacyRelationsView getView() {
 		return view;
 	}
 
-	public void setView(SecView view) {
+	public void setView(PrivacyRelationsView view) {
 		this.view = view;
 	}
 }

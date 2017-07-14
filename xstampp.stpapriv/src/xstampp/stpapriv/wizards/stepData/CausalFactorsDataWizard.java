@@ -12,7 +12,7 @@ package xstampp.stpapriv.wizards.stepData;
 
 import messages.Messages;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.ui.causalfactors.SecCausalFactorsView;
+import xstampp.stpapriv.ui.causalfactors.PrivacyCausalFactorsView;
 import xstampp.stpapriv.util.jobs.ICSVExportConstants;
 import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.CSVExportPage;
@@ -30,7 +30,7 @@ public class CausalFactorsDataWizard extends AbstractExportWizard {
 	 * 
 	 */
 	public CausalFactorsDataWizard() {
-		super(SecCausalFactorsView.ID);
+		super(PrivacyCausalFactorsView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 		this.setExportPage(new CSVExportPage(filters, Messages.CausalFactors + Messages.AsDataSet, Activator.PLUGIN_ID));
 	}

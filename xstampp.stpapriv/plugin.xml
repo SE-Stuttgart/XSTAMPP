@@ -533,7 +533,7 @@
             name="%editor.name.Hazards">
       </editor>
       <editor
-            class="xstampp.stpapriv.ui.linking.SecLinkingView"
+            class="xstampp.stpapriv.ui.linking.PrivacyLinkingView"
             default="false"
             icon="icons/buttons/navigation/STEP1_4(16).png"
             id="stpapriv.steps.step1_4"
@@ -582,7 +582,7 @@
             name="%editor.name.CorrespondingSafetyConstraints">
       </editor>
       <editor
-            class="xstampp.stpapriv.ui.causalfactors.SecCausalFactorsView"
+            class="xstampp.stpapriv.ui.causalfactors.PrivacyCausalFactorsView"
             default="false"
             icon="icons/buttons/navigation/STEP3_2(16).png"
             id="stpapriv.steps.step3_2"
@@ -1187,7 +1187,7 @@
             restorable="true">
       </view>
       <view
-            class="xstampp.stpapriv.ui.relation.SecView"
+            class="xstampp.stpapriv.ui.relation.PrivacyRelationsView"
             id="stpapriv.view.context"
             name="name"
             restorable="true">

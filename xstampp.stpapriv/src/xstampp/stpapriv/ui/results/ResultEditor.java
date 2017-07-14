@@ -49,7 +49,7 @@ import xstampp.preferences.IPreferenceConstants;
 import xstampp.stpapriv.diagram.DiagramView;
 import xstampp.stpapriv.model.PrivacyController;
 import xstampp.stpapriv.model.results.ConstraintResult;
-import xstampp.stpapriv.ui.relation.SecView;
+import xstampp.stpapriv.ui.relation.PrivacyRelationsView;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.interfaces.IEditorBase;
@@ -455,9 +455,9 @@ public class ResultEditor extends StandartEditorPart implements Observer {
 
 					ConstraintResult entry = (ConstraintResult) event.item.getData();
 					if (!(entry.getIdCompare()[0] == 0)) {
-						Image tmpImage = SecView.UNCHECKED;
+						Image tmpImage = PrivacyRelationsView.UNCHECKED;
 						if (entry.isSafe()) {
-							tmpImage = SecView.CHECKED;
+							tmpImage = PrivacyRelationsView.CHECKED;
 						}
 
 						int tmpWidth = 0;
@@ -486,9 +486,9 @@ public class ResultEditor extends StandartEditorPart implements Observer {
 				} else if ((event.index == 5) & (event.item.getData().getClass() == ConstraintResult.class)) {
 					ConstraintResult entry = (ConstraintResult) event.item.getData();
 					if (!(entry.getIdCompare()[0] == 0)) {
-						Image tmpImage = SecView.UNCHECKED;
+						Image tmpImage = PrivacyRelationsView.UNCHECKED;
 						if (entry.isSecure()) {
-							tmpImage = SecView.CHECKED;
+							tmpImage = PrivacyRelationsView.CHECKED;
 						}
 
 						int tmpWidth = 0;
@@ -517,9 +517,9 @@ public class ResultEditor extends StandartEditorPart implements Observer {
 				}else if ((event.index == 4) & (event.item.getData().getClass() == ConstraintResult.class)) {
 					ConstraintResult entry = (ConstraintResult) event.item.getData();
 					if (!(entry.getIdCompare()[0] == 0)) {
-						Image tmpImage = SecView.UNCHECKED;
+						Image tmpImage = PrivacyRelationsView.UNCHECKED;
 						if (entry.isPrivate()) {
-							tmpImage = SecView.CHECKED;
+							tmpImage = PrivacyRelationsView.CHECKED;
 						}
 
 						int tmpWidth = 0;

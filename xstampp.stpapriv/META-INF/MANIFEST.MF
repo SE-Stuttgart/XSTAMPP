@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Stpapriv
+Bundle-Name: STPAPriiv
 Bundle-SymbolicName: xstampp.stpapriv;singleton:=true
-Bundle-Version: 2.1.0
+Bundle-Version: 1.0.0
 Bundle-Activator: xstampp.stpapriv.Activator
 Require-Bundle: org.eclipse.ui,
  xstampp.extension;bundle-version="1.0.0",
@@ -24,6 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.zest.layouts;bundle-version="1.1.200"
 Bundle-ActivationPolicy: lazy
 Export-Package: xstampp.stpapriv;uses:="org.osgi.framework,org.eclipse.jface.resource,org.eclipse.ui.plugin",
+ xstampp.stpapriv.diagram,
  xstampp.stpapriv.messages,
  xstampp.stpapriv.model;
   uses:="xstampp.model,
@@ -31,13 +32,14 @@ Export-Package: xstampp.stpapriv;uses:="org.osgi.framework,org.eclipse.jface.res
    xstampp.astpa.model.controlstructure.interfaces,
    xstampp.stpapriv.model.controlaction.interfaces,
    xstampp.stpapriv.model.interfaces,
-   xstampp.astpa.model.controlstructure.components
-   org.eclipse.core.runtime.jobs,
+   xstampp.astpa.model.controlstructure.components  org.eclipse.core.runtime.jobs,
    xstampp.stpapriv.model.controlaction,
    org.eclipse.swt.custom,
    org.apache.log4j,
    org.eclipse.draw2d.geometry",
  xstampp.stpapriv.model.controlaction,
+ xstampp.stpapriv.model.relation,
+ xstampp.stpapriv.model.results,
  xstampp.stpapriv.model.vulloss;uses:="xstampp.model,xstampp.astpa.haz",
  xstampp.stpapriv.ui;uses:="org.eclipse.swt.widgets,xstampp.ui.editors",
  xstampp.stpapriv.ui.causalScenarios;
@@ -47,6 +49,7 @@ Export-Package: xstampp.stpapriv;uses:="org.osgi.framework,org.eclipse.jface.res
    org.eclipse.swt.widgets,
    xstampp.ui.editors,
    xstampp.stpapriv.model.interfaces",
+ xstampp.stpapriv.ui.relation,
  xstampp.stpapriv.ui.sds;
   uses:="xstampp.model,
    org.eclipse.swt.graphics,

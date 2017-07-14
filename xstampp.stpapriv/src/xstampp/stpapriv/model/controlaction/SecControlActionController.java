@@ -1130,7 +1130,8 @@ public class SecControlActionController implements IControlActionController{
   }
 
   @Override
-  public void prepareForSave(ExtendedDataController extendedData, LinkController linkController) {
+  public boolean prepareForSave(ExtendedDataController extendedData, LinkController linkController) {
+    return true;
     // TODO Auto-generated method stub
     
   }

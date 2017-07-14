@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="xstampp.stpasec.feature"
+      label="STPASec Feature"
+      version="1.0.0"
+      plugin="xstampp.stpasec">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.draw2d"/>
+      <import plugin="org.eclipse.swt" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
+      <import plugin="xstampp"/>
+      <import plugin="org.eclipse.gef" version="3.9.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.core"/>
+      <import plugin="org.eclipse.equinox.p2.operations" version="2.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.engine" version="2.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.8.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.ui.workbench.addons.swt" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="xstampp.extension" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.jobs"/>
+      <import plugin="org.eclipse.nebula.widgets.grid" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="xstampp.astpa" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.zest.core" version="1.5.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.zest.layouts" version="1.1.300" match="greaterOrEqual"/>
+      <import plugin="xstampp.stpapriv" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.log4j"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.zest.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.zest.layouts"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="xstampp.stpasec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

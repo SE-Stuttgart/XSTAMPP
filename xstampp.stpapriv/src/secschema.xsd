@@ -80,29 +80,43 @@
 				<xs:element name="sds" maxOccurs="1" minOccurs="0">
 					<xs:complexType>
 						<xs:all>
-							<xs:element name="safetyConstraints">
+							<xs:element name="safetyConstraints" maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element
-											name="safetyConstraint" type="Q1:sdsType" minOccurs="0"
-											maxOccurs="unbounded" />
+										<xs:element name="safetyConstraint" type="Q1:sdsType"
+											minOccurs="0" maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="systemGoals">
+							<xs:element name="systemGoals" maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="systemGoal"
-											type="Q1:sdsType" minOccurs="0" maxOccurs="unbounded" />
+										<xs:element name="systemGoal" type="Q1:sdsType"
+											minOccurs="0" maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="designRequirements">
+							<xs:element name="designRequirements" maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element
-											name="designRequirement" type="Q1:sdsType" minOccurs="0"
-											maxOccurs="unbounded" />
+										<xs:element name="designRequirement" type="Q1:sdsType"
+											minOccurs="0" maxOccurs="unbounded" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="designRequirementsStep1" maxOccurs="1" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="designRequirement" type="Q1:sdsType"
+											minOccurs="0" maxOccurs="unbounded" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="designRequirementsStep2" maxOccurs="1" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="designRequirement" type="Q1:sdsType"
+											minOccurs="0" maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -198,8 +212,7 @@
 						</xs:attribute>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="causalfactor" maxOccurs="1"
-					minOccurs="0">
+				<xs:element name="causalfactor" maxOccurs="1" minOccurs="0">
 					<xs:complexType>
 						<xs:all>
 							<xs:element name="causalFactorHazardLinks"
@@ -211,8 +224,10 @@
 											maxOccurs="unbounded">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element name="causalFactorId" type="xs:string" />
-													<xs:element name="vulnerabilityId" type="xs:string" />
+													<xs:element
+														name="causalFactorId" type="xs:string" />
+													<xs:element
+														name="hazardId" type="xs:string" />
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
@@ -256,8 +271,8 @@
 																	minOccurs="0">
 																</xs:element>
 															</xs:all>
-															
-															
+
+
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>
@@ -266,8 +281,20 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
+							<xs:element name="causalSafetyConstraints"
+								maxOccurs="1" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element
+											name="causalSafetyConstraint" type="Q1:sdsType"
+											maxOccurs="unbounded" minOccurs="0">
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
 						</xs:all>
-						<xs:attribute name="useScenarios" type="xs:boolean" use="optional">
+						<xs:attribute name="useScenarios" type="xs:boolean"
+							use="optional">
 						</xs:attribute>
 					</xs:complexType>
 				</xs:element>
@@ -302,6 +329,44 @@
 							</xs:element>
 
 						</xs:all>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="linkController" maxOccurs="1"
+					minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="linkMap" maxOccurs="1" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="linkList" maxOccurs="unbounded"
+											minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="links" maxOccurs="1"
+														minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="link" maxOccurs="unbounded"
+																	minOccurs="0">
+																	<xs:complexType>
+																		<xs:attribute name="linkA" type="xs:string">
+																		</xs:attribute>
+																		<xs:attribute name="linkB" type="xs:string">
+																		</xs:attribute>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="key" use="required" type="xs:string">
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
 			</xs:all>
