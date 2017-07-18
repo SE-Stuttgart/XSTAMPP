@@ -1,11 +1,11 @@
 package xstampp.stpasec.wizards.stepData;
 
 import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.messages.SecMessages;
 import xstampp.stpasec.ui.results.ResultEditor;
 import xstampp.stpasec.util.jobs.ICSVExportConstants;
-import xstampp.stpasec.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.CSVExportPage;
 
 public class ResultWizard extends AbstractExportWizard{

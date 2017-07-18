@@ -14,8 +14,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import messages.Messages;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -25,6 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.util.jobs.Run;
 import xstampp.ui.common.ProjectManager;

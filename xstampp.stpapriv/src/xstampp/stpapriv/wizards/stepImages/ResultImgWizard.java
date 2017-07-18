@@ -1,10 +1,10 @@
 package xstampp.stpapriv.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.messages.SecMessages;
 import xstampp.stpapriv.ui.results.ResultEditor;
-import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
 public class ResultImgWizard extends AbstractExportWizard {

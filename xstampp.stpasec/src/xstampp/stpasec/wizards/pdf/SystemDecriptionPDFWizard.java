@@ -12,7 +12,7 @@ package xstampp.stpasec.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
-import xstampp.stpasec.wizards.AbstractExportWizard;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.wizards.pages.SystemDescriptionExportPage;
 
 /**

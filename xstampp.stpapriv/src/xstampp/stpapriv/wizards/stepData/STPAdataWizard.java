@@ -10,12 +10,12 @@
  *******************************************************************************/
 package xstampp.stpapriv.wizards.stepData;
 
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.ui.vulloss.LossesView;
 import xstampp.stpapriv.ui.vulloss.VulnerabilityView;
 import xstampp.stpapriv.util.jobs.ICSVExportConstants;
-import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.MultiDataPage;
 
 /**

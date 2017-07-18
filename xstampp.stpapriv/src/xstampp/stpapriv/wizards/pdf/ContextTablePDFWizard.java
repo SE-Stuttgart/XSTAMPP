@@ -11,9 +11,9 @@
 package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.model.PrivacyController;
-import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.TableExportPage;
 

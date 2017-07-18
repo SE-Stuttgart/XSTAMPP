@@ -11,9 +11,9 @@
 package xstampp.stpapriv.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.ui.causalfactors.PrivacyCausalFactorsView;
-import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
 /**

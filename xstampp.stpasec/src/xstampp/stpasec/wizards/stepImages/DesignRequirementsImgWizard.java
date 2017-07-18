@@ -11,9 +11,9 @@
 package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
-import xstampp.stpasec.Activator;
 import xstampp.astpa.ui.sds.DesignRequirementView;
-import xstampp.stpasec.wizards.AbstractExportWizard;
+import xstampp.astpa.wizards.AbstractExportWizard;
+import xstampp.stpasec.Activator;
 import xstampp.ui.wizards.TableExportPage;
 
 public class DesignRequirementsImgWizard extends AbstractExportWizard {

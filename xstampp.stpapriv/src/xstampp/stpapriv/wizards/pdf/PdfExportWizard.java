@@ -13,17 +13,16 @@
 
 package xstampp.stpapriv.wizards.pdf;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.model.PrivacyController;
 import xstampp.stpapriv.util.jobs.STPAWordJob;
-import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.PdfExportPage;
 

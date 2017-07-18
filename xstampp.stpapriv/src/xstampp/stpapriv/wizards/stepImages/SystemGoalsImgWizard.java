@@ -12,8 +12,8 @@ package xstampp.stpapriv.wizards.stepImages;
 
 import messages.Messages;
 import xstampp.astpa.ui.sds.SystemGoalView;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
 public class SystemGoalsImgWizard extends AbstractExportWizard {

@@ -12,8 +12,8 @@ package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.util.jobs.CSExportJob;
-import xstampp.stpasec.wizards.AbstractExportWizard;
 import xstampp.stpasec.wizards.pages.ControlStructureExportPage;
 
 /**

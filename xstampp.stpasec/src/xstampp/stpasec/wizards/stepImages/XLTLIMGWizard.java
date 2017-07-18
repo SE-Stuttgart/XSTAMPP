@@ -11,8 +11,8 @@
 package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
-import xstampp.stpasec.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
 public class XLTLIMGWizard extends AbstractExportWizard {

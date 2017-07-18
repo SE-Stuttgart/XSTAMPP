@@ -11,10 +11,10 @@
 package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
+import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.messages.SecMessages;
 import xstampp.stpasec.ui.vulloss.LossesView;
-import xstampp.stpasec.wizards.AbstractExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
 public class LossesImgWizard extends AbstractExportWizard {
