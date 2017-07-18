@@ -12,7 +12,6 @@
 package xstampp.astpa.ui.acchaz;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
@@ -20,13 +19,10 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -41,10 +37,8 @@ import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
 import xstampp.astpa.model.hazacc.ATableModel;
-import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
-import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.AccidentLinkSupport;
@@ -150,29 +144,6 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
     EditingSupport titleEditingSupport = new HazEditingSupport(HazardsView.this.getTableViewer());
     this.getTitleColumn().setEditingSupport(titleEditingSupport);
 
-    TableViewerColumn linksColumn;
-
-    linksColumn = new TableViewerColumn(HazardsView.this.getTableViewer(), SWT.NONE);
-    linksColumn.getColumn().setText(Messages.Links);
-    linksColumn.setLabelProvider(new ColumnLabelProvider() {
-
-      @Override
-      public String getText(Object element) {
-        String linkString = ""; //$NON-NLS-1$
-        List<ITableModel> links = HazardsView.this.getDataInterface()
-            .getLinkedAccidents(((Hazard) element).getId());
-        if (!(links == null)) {
-          for (ITableModel link : links) {
-            linkString += ((Accident) link).getIdString() + ", ";
-          }
-        }
-        return linkString.substring(0, Math.max(0,linkString.length() - 2));
-      }
-    });
-
-    this.getTableColumnLayout().setColumnData(linksColumn.getColumn(),
-        new ColumnWeightData(10, 50, false));
-    
     // KeyListener for deleting hazards by selecting them and pressing the
     // delete key
     HazardsView.this.getTableViewer().getControl().addKeyListener(new KeyAdapter() {

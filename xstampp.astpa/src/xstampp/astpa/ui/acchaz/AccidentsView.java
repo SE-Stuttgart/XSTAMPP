@@ -178,34 +178,6 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
 				AccidentsView.this.getTableViewer());
 		this.addTitleEditor(titleEditingSupport);
 
-		TableViewerColumn linksColumn;
-		linksColumn = new TableViewerColumn(
-				AccidentsView.this.getTableViewer(), SWT.NONE);
-		linksColumn.getColumn().setText(Messages.Links);
-		linksColumn.setLabelProvider(new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				String linkString = ""; //$NON-NLS-1$
-				List<ITableModel> links = AccidentsView.this.getDataInterface()
-						.getLinkedHazards(((Accident) element).getId());
-				if (!(links == null)) {
-					for (int i = 0; i < links.size(); i++) {
-						linkString += ((Hazard)links.get(i)).getIdString();
-						if (i < (links.size() - 1)) {
-							linkString += ", "; //$NON-NLS-1$
-						}
-					}
-				}
-				return linkString;
-			}
-		});
-
-		final int linksWeight = 10;
-		final int linksMinWidth = 50;
-		this.getTableColumnLayout().setColumnData(linksColumn.getColumn(),
-				new ColumnWeightData(linksWeight, linksMinWidth, false));
-
 		// KeyListener for deleting accidents by selecting them and pressing the
 		// delete key
 		AccidentsView.this.getTableViewer().getControl()

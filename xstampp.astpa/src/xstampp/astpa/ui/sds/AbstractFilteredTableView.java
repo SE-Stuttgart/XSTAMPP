@@ -217,7 +217,7 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
 		for(String category: filter.getCategorys()){
 			Button bothButton = new Button(filterComposite, SWT.RADIO);
 			bothButton.setText(category);
-			bothButton.setSelection(true);
+			bothButton.setSelection(false);
 			final String fin_category = category;
 			bothButton.addSelectionListener(new SelectionListener() {
 	

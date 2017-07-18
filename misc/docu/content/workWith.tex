@@ -35,10 +35,11 @@
 \end{figure}
 \subsection{Create a new plugin:}
 \begin{itemize}
+\item contributing plugins should be named as \textit{xstampp.}$<your Plugin>$
 \item create a new plugin by clicking $New\rightarrow Others..\rightarrow Plug-in Developement\rightarrow Plug-in Project$
 \item add dependencies xstampp and xstampp.extension
 \item add the extension xstampp.extension.steppedProcess to your plugin
-\item create a class implemnting IDataModel
+\item create a class implementing IDataModel
 \item create stepEditors which must extend StandartEditorPart and implement IViewBase
 \item xstampp loads the files which are selected in the load Dialog or already located in the workspace 
 	  by directly calling a load command registered as command in the steppedProcess extensionPoint herefore it needs:
@@ -47,4 +48,5 @@
 	\item a load Handler extending AbstractHandler which is registered as default handler for the load command 
 	\item let your handler.execute() return a new instance of your load job
 	\end{itemize}
+\item XSTAMPP uses Eclipse Tycho as build tool, to include a  plugin into its build process it need to be configured as Maven plugin\footnote{http://www.vogella.com/tutorials/EclipseTycho/article.html}
 \end{itemize}

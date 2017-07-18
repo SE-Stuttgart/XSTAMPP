@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -40,6 +40,8 @@ import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -68,10 +70,12 @@ import org.eclipse.ui.IWorkbenchPart;
 import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.interfaces.ILinkModel;
 import xstampp.astpa.model.interfaces.ISeverityDataModel;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.ui.linkingSupport.LinkSupport;
 import xstampp.astpa.ui.unsafecontrolaction.SeverityButton;
 import xstampp.model.IDataModel;
@@ -131,11 +135,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private static final Image ADD = Activator
       .getImageDescriptor("/icons/buttons/commontables/add.png") //$NON-NLS-1$
       .createImage();
-  private static final Image ADD_SMALL = Activator
-      .getImageDescriptor("/icons/buttons/plus.png") //$NON-NLS-1$
+  private static final Image ADD_SMALL = Activator.getImageDescriptor("/icons/buttons/plus.png") //$NON-NLS-1$
       .createImage();
-  private static final Image DELETE_SMALL = Activator
-      .getImageDescriptor("/icons/buttons/minus.png") //$NON-NLS-1$
+  private static final Image DELETE_SMALL = Activator.getImageDescriptor("/icons/buttons/minus.png") //$NON-NLS-1$
       .createImage();
   private static final Image MOVE_UP = Activator
       .getImageDescriptor("/icons/buttons/commontables/up.png") //$NON-NLS-1$
@@ -367,8 +369,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   }
 
   /**
-   * Constructs a commonTableView that can be manipulated at will<br>
-   * calling {@link #CommonTableView(boolean)} with <b>true</b>
+   * Constructs a commonTableView that can be manipulated at will<br> calling
+   * {@link #CommonTableView(boolean)} with <b>true</b>
    * 
    * @author Jarkko Heidenwag
    * @author Lukas Balzer
@@ -499,7 +501,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         internalUpdate = true;
       }
     });
-    if(linkFields.size() > 0) {
+    if (linkFields.size() > 0) {
       createFooter(leftSash);
     }
     tableSetUp(tableComposite);
@@ -532,7 +534,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       unlinkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
 
       Composite linkTable = new Composite(linkComp, SWT.NONE);
-      linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,3,1));
+      linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
       tableColumnLayout = new TableColumnLayout();
       linkTable.setLayout(tableColumnLayout);
 
@@ -572,7 +574,19 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     // the table viewer
     this.setTableViewer(new TableViewer(tableComposite,
         SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP));
-
+    tableComposite.addControlListener(new ControlListener() {
+      
+      @Override
+      public void controlResized(ControlEvent e) {
+        getTableViewer().getTable().redraw();
+      }
+      
+      @Override
+      public void controlMoved(ControlEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+    });
     // Listener for showing the description of the selected accident
     this.getTableViewer().addSelectionChangedListener(new CommonSelectionChangedListener());
     this.getTableViewer().setContentProvider(new ArrayContentProvider());
@@ -626,8 +640,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     final int titleWeight = 50;
     final int titleMinWidth = 50;
     this.tableColumnLayout.setColumnData(this.titleColumn.getColumn(),
-        new ColumnWeightData(titleWeight, titleMinWidth, false));
-    titleColumn.getColumn().setResizable(false);
+        new ColumnWeightData(titleWeight, titleMinWidth, true));
+    titleColumn.getColumn().setResizable(true);
     this.titleColumn.setLabelProvider(new ColumnLabelProvider() {
 
       @Override
@@ -652,6 +666,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
     if (style.contains(TableStyle.WITH_SEVERITY)) {
       addSeverityColumn();
+    }
+    if (!linkFields.isEmpty()) {
+      addLinkColumn();
     }
     // detecting a double click
     ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
@@ -1001,6 +1018,34 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
             new ColumnWeightData(10, 50, false));
       }
     }
+  }
+
+  private void addLinkColumn() {
+    TableViewerColumn linksColumn;
+    linksColumn = new TableViewerColumn(getTableViewer(), SWT.NONE);
+    linksColumn.getColumn().setText(Messages.Links);
+    linksColumn.setLabelProvider(new ColumnLabelProvider() {
+
+      @Override
+      public String getText(Object element) {
+        String linkString = ""; //$NON-NLS-1$
+        LinkController linkController = ((ILinkModel) getDataInterface()).getLinkController();
+        UUID partId = ((ITableModel) element).getId();
+        for (LinkSupport<?> support : linkFields) {
+          for (UUID uuid : linkController.getLinksFor(support.getLinkType(), partId)) {
+            linkString += support.getText(uuid) + ", "; //$NON-NLS-1$
+          }
+        }
+
+        return linkString.substring(0, Math.max(0, linkString.length() - 2));
+      }
+    });
+
+    final int linksWeight = 10;
+    final int linksMinWidth = 50;
+    this.getTableColumnLayout().setColumnData(linksColumn.getColumn(),
+        new ColumnWeightData(linksWeight, linksMinWidth, false));
+
   }
 
   public void addLinkSupport(LinkSupport<?> support) {

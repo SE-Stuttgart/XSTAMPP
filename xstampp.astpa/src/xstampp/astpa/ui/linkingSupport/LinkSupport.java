@@ -1,5 +1,6 @@
 package xstampp.astpa.ui.linkingSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +10,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.model.interfaces.ILinkModel;
@@ -20,16 +23,26 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     implements IContentProposalListener {
   private TableViewer displayedList;
   private UUID[] currentContent;
-  private UUID currentId;
+  private UUID currentLinkedId;
   private M dataInterface;
   private java.util.List<UUID> available;
+  private List<Listener> changeListeners;
 
   public LinkSupport(M dataInterface) {
     this.dataInterface = dataInterface;
+    this.changeListeners = new ArrayList<>();
   }
 
+  /**
+   * Sets the id of the entry which's links are displayed in the {@link TableViewer} set in
+   * {@link #setDisplayedList(TableViewer)}. This method updates the array obtained by
+   * {@link #getCurrentContent()} as well as the {@link List} returned by {@link #getAvailable()}.
+   * 
+   * @param id
+   *          an id that should serve to create linkings with.
+   */
   public void update(UUID id) {
-    currentId = id;
+    currentLinkedId = id;
     currentContent = null;
     if (!this.displayedList.getTable().isDisposed()) {
       currentContent = fetch().toArray(new UUID[0]);
@@ -37,8 +50,23 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     }
   }
 
-  final int indexOf(String label) {
-    return available.indexOf(label);
+  /**
+   * 
+   * @param label
+   *          the literal returned by {@link #getDescription(UUID)} of the abstract classes
+   *          implementation.
+   * @return the index of the linked item with the given description, or <b>null</b> if the label
+   *         didn't match any current linked item
+   */
+  public final int indexOf(String label) {
+    if (label != null) {
+      for (int i = 0; i < currentContent.length; i++) {
+        if (label.equals(getDescription(i))) {
+          return i;
+        }
+      }
+    }
+    return -1;
   }
 
   public void setDisplayedList(TableViewer displayedList) {
@@ -54,7 +82,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   }
 
   public UUID getCurrentId() {
-    return currentId;
+    return currentLinkedId;
   }
 
   public String getDescription(int index) {
@@ -64,27 +92,58 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     return null;
   }
 
-
   @Override
   public void proposalAccepted(IContentProposal proposal) {
 
     int indexOf = indexOf(proposal.getLabel());
     if (indexOf > 0) {
       UUID uuid = getCurrentContent()[indexOf];
-      getDataInterface().getLinkController().addLink(getLinkType(), getCurrentId(),
-          uuid);
+      getDataInterface().getLinkController().addLink(getLinkType(), getCurrentId(), uuid);
+      notifyChangeListeners();
     }
   }
 
+  /**
+   * fetches the ID's of all items linked to the currently selected one.
+   * 
+   * @return a {@link List} of {@link UUID}'s
+   */
   List<UUID> fetch() {
-    return getDataInterface().getLinkController().getLinksFor(getLinkType(),
-        getCurrentId());
+    return getDataInterface().getLinkController().getLinksFor(getLinkType(), getCurrentId());
   }
 
-  public void unlink(int index) {
+  /**
+   * Deletes the link at given index of the widget from the data model.
+   * 
+   * @return whether the link was successfully removed or not.
+   */
+  public boolean unlink(int index) {
     UUID uuid = getCurrentContent()[index];
-    getDataInterface().getLinkController().deleteLink(getLinkType(), getCurrentId(),
-        uuid);
+    boolean deleteLink = getDataInterface().getLinkController().deleteLink(getLinkType(),
+        getCurrentId(), uuid);
+    if (deleteLink) {
+      notifyChangeListeners();
+    }
+    return deleteLink;
+  }
+
+  /**
+   * Adds a {@link Listener} to the list of listeners that get notified whenever the list is
+   * Modified meaning a link is added or removed.
+   * 
+   * @param listener
+   *          A listener that should be called whenever the list of links is changed
+   */
+  public void addChangeListener(Listener listener) {
+    this.changeListeners.add(listener);
+  }
+
+  private void notifyChangeListeners() {
+    for (Listener listener : this.changeListeners) {
+      Event event = new Event();
+      event.widget = displayedList.getTable();
+      listener.handleEvent(event);
+    }
   }
 
   abstract java.util.List<UUID> getAvailable();

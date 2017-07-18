@@ -43,6 +43,7 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
@@ -134,20 +135,16 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
-      <feature id="org.eclipse.gef"/>
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.draw2d"/>
-      <feature id="xstampp.acast.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
       <feature id="org.eclipse.ecf.core.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.feature"/>
       <feature id="org.eclipse.ecf.core.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="xstampp.stpapriv.feature" version="1.0.0"/>
-      <feature id="xstampp.xstpapriv.feature" version="1.0.0"/>
-      <feature id="xstampp.stpasec.feature" version="1.0.0"/>
-      <feature id="xstampp.xstpasec.feature" version="1.0.0"/>
+      <feature id="xstampp.feature" version="2.4.0"/>
+      <feature id="org.eclipse.gef"/>
    </features>
 
    <configurations>
@@ -159,7 +156,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </configurations>
 
    <repositories>
-      <repository location="http://sourceforge.net/projects/stampp/files/updatesite/" enabled="true" />
+      <repository location="http://https://github.com/asimabdulkhaleq/XSTAMPP/tree/updatesite" enabled="true" />
    </repositories>
 
    <preferencesInfo>
