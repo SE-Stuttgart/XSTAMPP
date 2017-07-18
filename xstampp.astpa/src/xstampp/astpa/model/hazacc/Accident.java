@@ -39,7 +39,7 @@ public class Accident extends ATableModel {
 	 * @author Fabian Toth
 	 */
 	public Accident(String title, String description, int number) {
-		super(title, description, number);
+		super(title, description, -1);
     setSeverity(Severity.S0);
 	}
 

@@ -212,7 +212,7 @@ public abstract class ATableModel extends EntryWithSeverity
    * @return
    */
   public boolean setNumber(int number) {
-    if (this.number < 0) {
+    if (this.number != number) {
       this.number = number;
       return true;
     }

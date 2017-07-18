@@ -33,7 +33,7 @@ public class CausalSafetyConstraint extends ATableModel{
 	 * @author Fabian Toth
 	 */
 	public CausalSafetyConstraint(String description) {
-		super(description,null,0);
+		super(description,null,-1);
 	}
 
 	/**

@@ -45,6 +45,7 @@ import org.osgi.framework.Bundle;
 import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
+import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
@@ -54,7 +55,6 @@ import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.UCAHazLink;
-import xstampp.astpa.model.controlaction.UnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -93,7 +93,7 @@ import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.projectdata.ProjectDataController;
-import xstampp.astpa.model.sds.DesignRequirement;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
@@ -101,7 +101,6 @@ import xstampp.astpa.model.service.CausalDataUndoCallback;
 import xstampp.astpa.model.service.UndoAccidentChangeCallback;
 import xstampp.astpa.model.service.UndoCSCChangeCallback;
 import xstampp.astpa.model.service.UndoControlActionChangeCallback;
-import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
 import xstampp.astpa.model.service.UndoGoalChangeCallback;
 import xstampp.astpa.model.service.UndoHazardChangeCallback;
 import xstampp.astpa.model.service.UndoSafetyConstraintChangeCallback;
@@ -456,7 +455,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.getSdsController().addDesignRequirement(title, description);
+    UUID id = this.getSdsController().addDesignRequirement(title, description, ObserverValue.DESIGN_REQUIREMENT);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
     }
@@ -978,10 +977,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
     ITableModel designRequirement = this.getSdsController()
-        .getDesignRequirement(designRequirementId);
-    if (!(designRequirement instanceof DesignRequirement)) {
-      return null;
-    }
+        .getDesignRequirement(designRequirementId, null);
     return designRequirement;
   }
 
@@ -1514,11 +1510,7 @@ public class DataModelController extends AbstractDataModel
     if (designRequirementId == null) {
       return false;
     }
-    if (!(this.getSdsController()
-        .getDesignRequirement(designRequirementId) instanceof DesignRequirement)) {
-      return false;
-    }
-    if (this.getSdsController().removeDesignRequirement(designRequirementId)) {
+    if (this.getSdsController().removeDesignRequirement(designRequirementId, null)) {
       this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
       return true;
     }
@@ -1848,46 +1840,12 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean setDesignRequirementDescription(UUID designRequirementId, String description) {
-    if ((description == null) || (designRequirementId == null)) {
-      return false;
-    }
-    ITableModel requirement = this.getSdsController().getDesignRequirement(designRequirementId);
-    if (!(requirement instanceof DesignRequirement)) {
-      return false;
-    }
-
-    String oldDescription = ((ATableModel) requirement).setDescription(description);
-    if (oldDescription != null) {
-      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this,
-          requirement);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-      return true;
-    }
-    return false;
+    return getSdsController().setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT, designRequirementId, description);
   }
 
   @Override
   public boolean setDesignRequirementTitle(UUID designRequirementId, String title) {
-    if ((title == null) || (designRequirementId == null)) {
-      return false;
-    }
-    ITableModel requirement = this.getSdsController().getDesignRequirement(designRequirementId);
-    if (!(requirement instanceof DesignRequirement)) {
-      return false;
-    }
-
-    String oldTitle = ((ATableModel) requirement).setTitle(title);
-    if (oldTitle != null) {
-      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this,
-          requirement);
-      changeCallback.setTitleChange(oldTitle, title);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-      return true;
-    }
-    return false;
+    return getSdsController().setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT, designRequirementId, title);
   }
 
   @Override
@@ -2268,13 +2226,21 @@ public class DataModelController extends AbstractDataModel
     return hazAccController;
   }
 
-  public SDSController getSdsController() {
+  public ISDSController getSdsController() {
     if (this.sdsController == null) {
       this.sdsController = new SDSController();
     }
+    this.sdsController.addObserver(this);
     return sdsController;
   }
 
+  public ICausalController getCausalFactorController() {
+    if(this.causalFactorController == null) {
+      this.causalFactorController = new CausalFactorController();
+    }
+    return this.causalFactorController;
+  }
+  @SuppressWarnings("unchecked")
   @Override
   public <T> T getProperty(String key, Class<T> clazz) {
     if (clazz == Boolean.class && "astpa.use.multics".equals(key)) {

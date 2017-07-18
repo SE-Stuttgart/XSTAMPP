@@ -13,6 +13,7 @@ package xstampp.astpa.model.sds;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
 import xstampp.model.ObserverValue;
 
 /**
@@ -30,7 +32,7 @@ import xstampp.model.ObserverValue;
  * @since 2.0
  * 
  */
-public class SDSController {
+public class SDSController extends Observable implements ISDSController {
 
   @XmlElementWrapper(name = "safetyConstraints")
   @XmlElement(name = "safetyConstraint")
@@ -67,231 +69,177 @@ public class SDSController {
     this.designRequirementsStep2 = new NumberedArrayList<>();
   }
 
-  /**
-   * Adds a new safety constraint to the list of safety constraints.
-   * 
-   * @param title
-   *          the title of the new safety constraint
-   * @param description
-   *          the description of the new safety constraint
-   * 
-   * @return the id of the new safety constraint
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(java.lang.String, java.lang.String, java.util.UUID)
    */
+  @Override
   public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
-    if (this.safetyConstraints == null) {
-      this.safetyConstraints = new NumberedArrayList<>();
-    }
-    SafetyConstraint safetyConstraint = new SafetyConstraint(title, description,
-        this.safetyConstraints.size() + 1);
+    SafetyConstraint safetyConstraint = new SafetyConstraint(title, description, 0);
     safetyConstraint.setCreatedBy(createdBy);
-    this.safetyConstraints.add(safetyConstraint);
+    this.getSafetyConstraints().add(safetyConstraint);
     return safetyConstraint.getId();
   }
 
-  /**
-   * Adds a new safety constraint to the list of safety constraints.
-   * 
-   * @param title
-   *          the title of the new safety constraint
-   * @param description
-   *          the description of the new safety constraint
-   * 
-   * @return the id of the new safety constraint
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(xstampp.astpa.model.interfaces.ITableModel)
    */
+  @Override
   public UUID addSafetyConstraint(ITableModel model) {
-    if (this.safetyConstraints == null) {
-      this.safetyConstraints = new NumberedArrayList<>();
-    }
-    SafetyConstraint safetyConstraint = new SafetyConstraint(model,
-        this.safetyConstraints.size() + 1);
-    this.safetyConstraints.add(safetyConstraint);
+    SafetyConstraint safetyConstraint = new SafetyConstraint(model, 0);
+    this.getSafetyConstraints().add(safetyConstraint);
     return safetyConstraint.getId();
   }
 
-  /**
-   * Gives a list of all Safety Constraints.
-   * 
-   * @return a list of Safety Contraints
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#getAllSafetyConstraints()
    */
+  @Override
   public List<ITableModel> getAllSafetyConstraints() {
     List<ITableModel> result = new ArrayList<>();
-    if (safetyConstraints != null) {
-      for (SafetyConstraint safetyConstraint : this.safetyConstraints) {
-        result.add(safetyConstraint);
-      }
+    for (SafetyConstraint safetyConstraint : this.getSafetyConstraints()) {
+      result.add(safetyConstraint);
     }
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#moveEntry(boolean, java.util.UUID, xstampp.model.ObserverValue)
+   */
+  @Override
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
     if (value.equals(ObserverValue.SYSTEM_GOAL)) {
-      return ATableModel.move(moveUp, id, systemGoals);
+      return ATableModel.move(moveUp, id, getSystemGoals());
     } else if (value.equals(ObserverValue.SAFETY_CONSTRAINT)) {
-      return ATableModel.move(moveUp, id, safetyConstraints);
+      return ATableModel.move(moveUp, id, getSafetyConstraints());
     } else if (value.equals(ObserverValue.DESIGN_REQUIREMENT)) {
-      return ATableModel.move(moveUp, id, designRequirements);
+      return ATableModel.move(moveUp, id, getDesignRequirements());
+    } else if (value.equals(ObserverValue.DESIGN_REQUIREMENT_STEP1)) {
+      return ATableModel.move(moveUp, id, getDesignRequirementsStep1());
+    } else if (value.equals(ObserverValue.DESIGN_REQUIREMENT_STEP2)) {
+      return ATableModel.move(moveUp, id, getDesignRequirementsStep2());
     }
     return true;
   }
 
-  /**
-   * Getter for a specific Safety Constraint. Returns null if there is no safety constraint with
-   * this id
-   * 
-   * @param safetyConstraintId
-   *          the id of the safety constraint
-   * @return safety constraint object
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#getSafetyConstraint(java.util.UUID)
    */
+  @Override
   public ITableModel getSafetyConstraint(UUID safetyConstraintId) {
-    if (this.safetyConstraints != null) {
-      for (ITableModel s : this.safetyConstraints) {
-        if (s.getId().equals(safetyConstraintId)) {
-          return s;
-        }
+    for (ITableModel s : this.getSafetyConstraints()) {
+      if (s.getId().equals(safetyConstraintId)) {
+        return s;
       }
     }
     return null;
   }
 
-  /**
-   * Removes a safety constraint from the list of safety constraints.
-   * 
-   * @param safetyConstraintId
-   *          the id of the safety constraint
-   * 
-   * @return true if the safety constraint has been removed
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#removeSafetyConstraint(java.util.UUID)
    */
+  @Override
   public boolean removeSafetyConstraint(UUID safetyConstraintId) {
-    if (this.safetyConstraints != null) {
-      ITableModel safetyConstraint = this.getSafetyConstraint(safetyConstraintId);
-      int index = this.safetyConstraints.indexOf(safetyConstraint);
-      this.safetyConstraints.remove(index);
-      for (; index < this.safetyConstraints.size(); index++) {
-        this.safetyConstraints.get(index).setNumber(index + 1);
-      }
+    ITableModel safetyConstraint = this.getSafetyConstraint(safetyConstraintId);
+    int index = this.getSafetyConstraints().indexOf(safetyConstraint);
+    this.getSafetyConstraints().remove(index);
+    for (; index < this.getSafetyConstraints().size(); index++) {
+      this.getSafetyConstraints().get(index).setNumber(index + 1);
     }
+    setChanged();
+    notifyObservers(ObserverValue.SAFETY_CONSTRAINT);
     return true;
   }
 
-  /**
-   * Adds a new system goal to the list of system goals.
-   * 
-   * @param title
-   *          the title of the new system goal
-   * @param description
-   *          the description of the new system goal
-   * 
-   * @return the id of the new system goal
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#addSystemGoal(java.lang.String, java.lang.String)
    */
+  @Override
   public UUID addSystemGoal(String title, String description) {
-    if (this.systemGoals == null) {
-      this.systemGoals = new NumberedArrayList<>();
-    }
-    SystemGoal systemGoal = new SystemGoal(title, description, this.systemGoals.size() + 1);
-    this.systemGoals.add(systemGoal);
+    SystemGoal systemGoal = new SystemGoal(title, description, 0);
+    this.getSystemGoals().add(systemGoal);
     return systemGoal.getId();
   }
 
-  /**
-   * Gives a list of all System Goals.
-   * 
-   * @return a list of Safety Goals
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#getAllSystemGoals()
    */
+  @Override
   public List<ITableModel> getAllSystemGoals() {
     List<ITableModel> result = new ArrayList<>();
-    if (this.systemGoals != null) {
-      for (SystemGoal systemGoal : this.systemGoals) {
-        result.add(systemGoal);
-      }
+    for (SystemGoal systemGoal : this.getSystemGoals()) {
+      result.add(systemGoal);
     }
     return result;
   }
 
-  /**
-   * Gives the system goal object that belongs to the given id
-   * 
-   * @param systemGoalId
-   *          the id of the system goal
-   * @return system goal object
-   * 
-   * @author Jaqueline Patzek, Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#getSystemGoal(java.util.UUID)
    */
+  @Override
   public ITableModel getSystemGoal(UUID systemGoalId) {
-    if (this.systemGoals != null) {
-      for (ITableModel s : this.systemGoals) {
-        if (s.getId().equals(systemGoalId)) {
-          return s;
-        }
+    for (ITableModel s : this.getSystemGoals()) {
+      if (s.getId().equals(systemGoalId)) {
+        return s;
       }
     }
     return null;
   }
 
-  /**
-   * Removes the system goal with the given id from the list of system goals.
-   * 
-   * @param systemGoalId
-   *          the id of the system goal
-   * 
-   * @return true if the system goal has been removed
-   * 
-   * @author Jaqueline Patzek, Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#removeSystemGoal(java.util.UUID)
    */
+  @Override
   public boolean removeSystemGoal(UUID systemGoalId) {
-    if (this.systemGoals != null) {
-      ITableModel systemGoal = this.getSystemGoal(systemGoalId);
-      int index = this.systemGoals.indexOf(systemGoal);
-      this.systemGoals.remove(index);
-      for (; index < this.systemGoals.size(); index++) {
-        this.systemGoals.get(index).setNumber(index + 1);
-      }
+    ITableModel systemGoal = this.getSystemGoal(systemGoalId);
+    int index = this.getSystemGoals().indexOf(systemGoal);
+    this.getSystemGoals().remove(index);
+    for (; index < this.getSystemGoals().size(); index++) {
+      this.getSystemGoals().get(index).setNumber(index + 1);
     }
     return true;
   }
 
-  /**
-   * Adds a new design requirement to the list of design requirements.
-   * 
-   * @param title
-   *          the title of the new design requirement
-   * @param description
-   *          the title of the new design requirement
-   * 
-   * @return the id of the new design requirement
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String, java.lang.String)
    */
+  @Override
   public UUID addDesignRequirement(String title, String description) {
-    if (this.designRequirements == null) {
-      this.designRequirements = new NumberedArrayList<>();
+    return addDesignRequirement(title, description, ObserverValue.DESIGN_REQUIREMENT);
+  }
+
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String, java.lang.String, xstampp.model.ObserverValue)
+   */
+  @Override
+  public UUID addDesignRequirement(String title, String description, ObserverValue type) {
+    List<DesignRequirement> list;
+    switch (type) {
+    case DESIGN_REQUIREMENT: {
+      list = getDesignRequirements();
+      break;
     }
-    DesignRequirement designRequirement = new DesignRequirement(title, description,
-        this.designRequirements.size() + 1);
-    this.designRequirements.add(designRequirement);
+    case DESIGN_REQUIREMENT_STEP1: {
+      list = getDesignRequirementsStep1();
+      break;
+    }
+    case DESIGN_REQUIREMENT_STEP2: {
+      list = getDesignRequirementsStep2();
+      break;
+    }
+    default:
+      return null;
+    }
+    DesignRequirement designRequirement = new DesignRequirement(title, description, 0);
+    list.add(designRequirement);
+    setChanged();
+    notifyObservers(type);
     return designRequirement.getId();
   }
 
-  /**
-   * Gives a list of all Design Requirements.
-   * 
-   * @return a list of Design Requirements
-   * 
-   * @author Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#getAllDesignRequirements()
    */
+  @Override
   public List<ITableModel> getAllDesignRequirements() {
     List<ITableModel> result = new ArrayList<>();
     if (this.designRequirements != null) {
@@ -302,49 +250,138 @@ public class SDSController {
     return result;
   }
 
-  /**
-   * Gives the design requirement object that belongs to the given id
-   * 
-   * @param designRequirementId
-   *          ID of the design requirement
-   * @return design requirement object
-   * 
-   * @author Jaqueline Patzek, Fabian Toth
+  public List<ITableModel> getAllDesignRequirements(ObserverValue type) {
+    List<ITableModel> result = new ArrayList<>();
+    switch (type) {
+    case DESIGN_REQUIREMENT: {
+      result.addAll(designRequirements);
+      break;
+    }
+    case DESIGN_REQUIREMENT_STEP1: {
+      result.addAll(designRequirementsStep1);
+      break;
+    }
+    case DESIGN_REQUIREMENT_STEP2: {
+      result.addAll(designRequirementsStep2);
+      break;
+    }
+    default:
+      break;
+    }
+     return result;
+  }
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#getDesignRequirement(java.util.UUID)
    */
+  @Override
   public ITableModel getDesignRequirement(UUID designRequirementId) {
-    if (this.designRequirements != null) {
-      for (ITableModel d : this.designRequirements) {
-        if (d.getId().equals(designRequirementId)) {
-          return d;
-        }
+    return getDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
+  }
+
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#getDesignRequirement(java.util.UUID, xstampp.model.ObserverValue)
+   */
+  @Override
+  public ITableModel getDesignRequirement(UUID designRequirementId, ObserverValue type) {
+    List<DesignRequirement> list;
+    switch (type) {
+    case DESIGN_REQUIREMENT: {
+      list = getDesignRequirements();
+      break;
+    }
+    case DESIGN_REQUIREMENT_STEP1: {
+      list = getDesignRequirementsStep1();
+      break;
+    }
+    case DESIGN_REQUIREMENT_STEP2: {
+      list = getDesignRequirementsStep2();
+      break;
+    }
+    default:
+      return null;
+    }
+    for (ITableModel d : list) {
+      if (d.getId().equals(designRequirementId)) {
+        return d;
       }
     }
 
     return null;
   }
 
-  /**
-   * Removes the design requirement with the given id from the list of design requirements.
-   * 
-   * @param designRequirementId
-   *          ID of the design requirement
-   * @return true if the design requirement has been removed
-   * 
-   * @author Jaqueline Patzek, Fabian Toth
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#removeDesignRequirement(java.util.UUID)
    */
+  @Override
   public boolean removeDesignRequirement(UUID designRequirementId) {
-
-    if (this.designRequirements != null) {
-      ITableModel designRequirement = this.getDesignRequirement(designRequirementId);
-      int index = this.designRequirements.indexOf(designRequirement);
-      this.designRequirements.remove(index);
-      for (; index < this.designRequirements.size(); index++) {
-        this.designRequirements.get(index).setNumber(index + 1);
-      }
-    }
-    return true;
+    return removeDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
   }
 
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#removeDesignRequirement(java.util.UUID, xstampp.model.ObserverValue)
+   */
+  @Override
+  public boolean removeDesignRequirement(UUID designRequirementId, ObserverValue type) {
+
+    ITableModel designRequirement = this.getDesignRequirement(designRequirementId, type);
+    if (this.designRequirements.remove(designRequirement)) {
+      setChanged();
+      notifyObservers(type);
+      return true;
+    }
+    return false;
+  }
+
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#setDesignRequirementDescription(xstampp.model.ObserverValue, java.util.UUID, java.lang.String)
+   */
+  @Override
+  public boolean setDesignRequirementDescription(ObserverValue type, UUID designRequirementId,
+      String description) {
+    if ((description == null) || (designRequirementId == null)) {
+      return false;
+    }
+    ITableModel requirement = getDesignRequirement(designRequirementId, null);
+
+    String oldDescription = ((ATableModel) requirement).setDescription(description);
+    if (oldDescription != null) {
+      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this, type,
+          requirement);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      setChanged();
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#setDesignRequirementTitle(xstampp.model.ObserverValue, java.util.UUID, java.lang.String)
+   */
+  @Override
+  public boolean setDesignRequirementTitle(ObserverValue type, UUID designRequirementId,
+      String title) {
+    if ((title == null) || (designRequirementId == null)) {
+      return false;
+    }
+    ITableModel requirement = getDesignRequirement(designRequirementId, null);
+
+    String oldTitle = ((ATableModel) requirement).setTitle(title);
+    if (oldTitle != null) {
+      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this, type,
+          requirement);
+      changeCallback.setTitleChange(oldTitle, title);
+      setChanged();
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  /* (non-Javadoc)
+   * @see xstampp.astpa.model.sds.ISDSController#prepareForSave()
+   */
+  @Override
   public boolean prepareForSave() {
     boolean isUsed = false;
     if (designRequirements != null && designRequirements.isEmpty()) {
@@ -368,5 +405,40 @@ public class SDSController {
     }
     isUsed |= systemGoals != null;
     return isUsed;
+  }
+
+  private List<SafetyConstraint> getSafetyConstraints() {
+    if (this.safetyConstraints == null) {
+      this.safetyConstraints = new NumberedArrayList<>();
+    }
+    return safetyConstraints;
+  }
+
+  private List<SystemGoal> getSystemGoals() {
+    if (this.systemGoals == null) {
+      this.systemGoals = new NumberedArrayList<>();
+    }
+    return systemGoals;
+  }
+
+  private List<DesignRequirement> getDesignRequirements() {
+    if (this.designRequirements == null) {
+      this.designRequirements = new NumberedArrayList<>();
+    }
+    return designRequirements;
+  }
+
+  private List<DesignRequirement> getDesignRequirementsStep1() {
+    if (this.designRequirementsStep1 == null) {
+      this.designRequirementsStep1 = new NumberedArrayList<>();
+    }
+    return designRequirementsStep1;
+  }
+
+  private List<DesignRequirement> getDesignRequirementsStep2() {
+    if (this.designRequirementsStep2 == null) {
+      this.designRequirementsStep2 = new NumberedArrayList<>();
+    }
+    return designRequirementsStep2;
   }
 }

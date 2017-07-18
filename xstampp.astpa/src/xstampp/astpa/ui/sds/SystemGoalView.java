@@ -14,35 +14,11 @@ package xstampp.astpa.ui.sds;
 import java.util.EnumSet;
 import java.util.UUID;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
-import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Text;
-
 import messages.Messages;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
-import xstampp.astpa.model.sds.SystemGoal;
-import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
-import xstampp.ui.common.ProjectManager;
 
 /**
  * @author Jarkko Heidenwag
@@ -62,177 +38,14 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
    * 
    */
   public SystemGoalView() {
-    super(true);
+    super(EnumSet.of(TableStyle.RESTRICTED), Messages.SystemGoals);
     setUpdateValues(EnumSet.of(ObserverValue.SYSTEM_GOAL));
-  }
-
-  /**
-   * Create contents of the view part.
-   * 
-   * @author Jarkko Heidenwag
-   * @param parent
-   *          The parent composite
-   */
-  @Override
-  public void createPartControl(Composite parent) {
-    this.setDataModelInterface(
-        ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
-
-    this.createCommonTableView(parent, Messages.SystemGoals);
-
-    this.getFilterTextField().addKeyListener(new KeyAdapter() {
-
-      @Override
-      public void keyReleased(KeyEvent ke) {
-        SystemGoalView.this.getFilter()
-            .setSearchText(SystemGoalView.this.getFilterTextField().getText());
-        SystemGoalView.this.refreshView();
-      }
-    });
-
-    this.setFilter(new ATableFilter());
-    this.getTableViewer().addFilter(this.getFilter());
-
-    Listener addSystemGoalListener = new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        if ((event.type == SWT.KeyDown) && (event.keyCode != 'n')) {
-          return;
-        }
-        SystemGoalView.this.getFilter().setSearchText(""); //$NON-NLS-1$
-        SystemGoalView.this.getFilterTextField().setText(""); //$NON-NLS-1$
-        SystemGoalView.this.refreshView();
-        SystemGoalView.this.getDataInterface().addSystemGoal("","");//$NON-NLS-1$ //$NON-NLS-2$
-        int newID = SystemGoalView.this.getDataInterface().getAllSystemGoals().size() - 1;
-        SystemGoalView.this.updateTable();
-        SystemGoalView.this.refreshView();
-        SystemGoalView.this.getTableViewer().setSelection(
-            new StructuredSelection(SystemGoalView.this.getTableViewer().getElementAt(newID)),
-            true);
-        SystemGoalView.this.getTitleColumn().getViewer()
-            .editElement(SystemGoalView.this.getTableViewer().getElementAt(newID), 1);
-      }
-    };
-
-    this.getAddNewItemButton().addListener(SWT.Selection, addSystemGoalListener);
-
-    this.getTableViewer().getTable().addListener(SWT.KeyDown, addSystemGoalListener);
-
-    // Listener for editing a title by pressing return
-    Listener returnListener = new Listener() {
-
-      @Override
-      public void handleEvent(Event event) {
-        if ((event.type == SWT.KeyDown) && (event.keyCode == SWT.CR)
-            && (!SystemGoalView.this.getTableViewer().getSelection().isEmpty())) {
-          int indexFirstSelected = SystemGoalView.this.getTableViewer().getTable()
-              .getSelectionIndices()[0];
-          SystemGoalView.this.getTitleColumn().getViewer().editElement(
-              SystemGoalView.this.getTableViewer().getElementAt(indexFirstSelected), 1);
-        }
-      }
-    };
-
-    this.getTableViewer().getTable().addListener(SWT.KeyDown, returnListener);
-
-    // Listener for the Description
-    this.getDescriptionWidget().addModifyListener(new ModifyListener() {
-
-      @Override
-      public void modifyText(ModifyEvent e) {
-          Text text = (Text) e.widget;
-          String description = text.getText();
-          SystemGoalView.this.getDataInterface().setSystemGoalDescription(getCurrentSelection(), description);
-      }
-    });
-
-    final EditingSupport titleEditingSupport = new SGEditingSupport(
-        SystemGoalView.this.getTableViewer());
-    this.getTitleColumn().setEditingSupport(titleEditingSupport);
-
-    // KeyListener for deleting system goals by selecting them and pressing
-    // the delete key
-    SystemGoalView.this.getTableViewer().getControl().addKeyListener(new KeyAdapter() {
-
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        if ((e.keyCode == SWT.DEL) || ((e.stateMask == SWT.COMMAND) && (e.keyCode == SWT.BS))) {
-          IStructuredSelection selection = (IStructuredSelection) SystemGoalView.this
-              .getTableViewer().getSelection();
-          if (selection.isEmpty()) {
-            return;
-          }
-          SystemGoalView.this.deleteItems();
-        }
-      }
-    });
-
-    // Adding a right click context menu and the option to delete an entry
-    // this way
-    MenuManager menuMgr = new MenuManager();
-    Menu menu = menuMgr.createContextMenu(SystemGoalView.this.getTableViewer().getControl());
-    menuMgr.addMenuListener(new IMenuListener() {
-
-      @Override
-      public void menuAboutToShow(IMenuManager manager) {
-        if (SystemGoalView.this.getTableViewer().getSelection().isEmpty()) {
-          return;
-        }
-        if (SystemGoalView.this.getTableViewer().getSelection() instanceof IStructuredSelection) {
-          Action deleteSystemGoal = new Action(Messages.DeleteSystemGoals) {
-
-            @Override
-            public void run() {
-              SystemGoalView.this.deleteItems();
-            }
-          };
-          manager.add(deleteSystemGoal);
-        }
-      }
-
-    });
-
-    menuMgr.setRemoveAllWhenShown(true);
-    SystemGoalView.this.getTableViewer().getControl().setMenu(menu);
-
-    this.updateTable();
-
   }
 
   @Override
   protected void deleteEntry(ATableModel model) {
     resetCurrentSelection();
     this.getDataInterface().removeSystemGoal(model.getId());
-  }
-
-  private class SGEditingSupport extends AbstractEditingSupport {
-
-    /**
-     * 
-     * @author Jarkko Heidenwag
-     * 
-     * @param viewer
-     *          the ColumnViewer
-     */
-    public SGEditingSupport(ColumnViewer viewer) {
-      super(viewer);
-    }
-
-    @Override
-    protected CellEditor getCellEditor(Object element) {
-      return new TextCellEditor(SystemGoalView.this.getTableViewer().getTable());
-    }
-
-    @Override
-    protected Object getValue(Object element) {
-      return super.getValue(((SystemGoal) element).getTitle());
-    }
-
-    @Override
-    protected void setValue(Object element, Object value) {
-      ((SystemGoal) element).setTitle(String.valueOf(value));
-    }
   }
 
   /**
@@ -263,5 +76,20 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
   @Override
   protected void moveEntry(UUID id, boolean moveUp) {
     getDataInterface().moveEntry(false, moveUp, id, ObserverValue.SYSTEM_GOAL);
+  }
+
+  @Override
+  protected void addNewEntry() {
+    SystemGoalView.this.getDataInterface().addSystemGoal("", "");//$NON-NLS-1$ //$NON-NLS-2$
+  }
+
+  @Override
+  protected void updateDescription(UUID uuid, String description) {
+    SystemGoalView.this.getDataInterface().setSystemGoalDescription(getCurrentSelection(), description);
+  }
+
+  @Override
+  protected void updateTitle(UUID id, String title) {
+    getDataInterface().setSystemGoalTitle(id, title);
   }
 }

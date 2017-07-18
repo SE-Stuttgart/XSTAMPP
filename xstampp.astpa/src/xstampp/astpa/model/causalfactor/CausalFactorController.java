@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.IHazAccController;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.preferences.IASTPADefaults;
 import xstampp.model.AbstractLTLProvider;
 
@@ -43,7 +44,7 @@ import xstampp.model.AbstractLTLProvider;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class CausalFactorController implements ICausalFactorController {
+public class CausalFactorController implements ICausalFactorController, ICausalController {
 
   @XmlElementWrapper(name = "causalFactorHazardLinks")
   @XmlElement(name = "causalFactorHazardLink")
@@ -55,9 +56,9 @@ public class CausalFactorController implements ICausalFactorController {
 
   @XmlAttribute(name = "useScenarios")
   private boolean useScenarios;
-  
-  @XmlElementWrapper(name="causalSafetyConstraints")
-  @XmlElement(name="causalSafetyConstraint")
+
+  @XmlElementWrapper(name = "causalSafetyConstraints")
+  @XmlElement(name = "causalSafetyConstraint")
   private List<CausalSafetyConstraint> causalSafetyConstraints;
 
   /**
@@ -119,6 +120,7 @@ public class CausalFactorController implements ICausalFactorController {
     return null;
   }
 
+  @Override
   public UUID addCausalUCAEntry(UUID componentId, UUID causalFactorId, ICausalFactorEntry entry) {
     CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
     if (factor != null) {
@@ -205,18 +207,19 @@ public class CausalFactorController implements ICausalFactorController {
 
   private boolean validateCausalComponent(ComponentType type) {
     switch (type) {
-      case ACTUATOR:
-      case CONTROLLED_PROCESS:
-      case CONTROLLER:
-      case UNDEFINED:
-      case SENSOR:
-        return true;
-      default:
-        return false;
+    case ACTUATOR:
+    case CONTROLLED_PROCESS:
+    case CONTROLLER:
+    case UNDEFINED:
+    case SENSOR:
+      return true;
+    default:
+      return false;
 
     }
   }
 
+  @Override
   public void prepareForExport(IHazAccController hazAccController,
       List<IRectangleComponent> children, List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
@@ -230,6 +233,7 @@ public class CausalFactorController implements ICausalFactorController {
     System.out.println();
   }
 
+  @Override
   public void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
@@ -258,6 +262,15 @@ public class CausalFactorController implements ICausalFactorController {
         causalComponents = null;
       }
     }
+  }
+
+  @Override
+  public List<ITableModel> getSafetyConstraints() {
+    List<ITableModel> list = new ArrayList<>();
+    if (causalSafetyConstraints != null) {
+      list.addAll(causalSafetyConstraints);
+    }
+    return list;
   }
 
   @Override

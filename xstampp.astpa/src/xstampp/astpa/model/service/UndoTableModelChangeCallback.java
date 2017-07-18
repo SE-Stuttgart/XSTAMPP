@@ -6,7 +6,7 @@ import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.IDataModel;
 import xstampp.util.IUndoCallback;
 
-public abstract class UndoTableModelChangeCallback<T extends IDataModel> implements IUndoCallback {
+public abstract class UndoTableModelChangeCallback<T> implements IUndoCallback {
 
   private T dataModel;
   private String oldDescription;

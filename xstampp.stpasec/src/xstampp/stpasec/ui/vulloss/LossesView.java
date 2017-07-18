@@ -41,10 +41,9 @@ import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
 import xstampp.astpa.model.hazacc.ATableModel;
-import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.ui.ATableFilter;
-import xstampp.astpa.ui.CommonTableView;
+import xstampp.astpa.ui.acchaz.AccidentsView;
 import xstampp.model.ObserverValue;
 import xstampp.stpapriv.model.vulloss.Loss;
 import xstampp.stpapriv.model.vulloss.Vulnerability;
@@ -55,7 +54,7 @@ import xstampp.ui.common.ProjectManager;
  * @author Jarkko Heidenwag
  * 
  */
-public class LossesView extends CommonTableView<IAccidentViewDataModel> {
+public class LossesView extends AccidentsView {
 
 	/**
 	 * @author Jarkko Heidenwag
@@ -70,7 +69,7 @@ public class LossesView extends CommonTableView<IAccidentViewDataModel> {
 	 * 
 	 */
 	public LossesView() {
-		 super();
+		 super(SecMessages.Losses);
 
 	}
 

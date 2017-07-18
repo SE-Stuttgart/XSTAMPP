@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -37,6 +41,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -63,6 +68,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -81,6 +87,7 @@ import xstampp.astpa.ui.unsafecontrolaction.SeverityButton;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.interfaces.IEditorBase;
 import xstampp.usermanagement.api.AccessRights;
@@ -151,6 +158,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private Button deleteItemsButton;
 
   private DefaultToolTip toolTipSupport;
+
+  private String tableHeader;
 
   private class CommonSelectionChangedListener implements ISelectionChangedListener {
 
@@ -393,12 +402,20 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     }
     this.internalUpdate = false;
     updateValues = EnumSet.noneOf(ObserverValue.class);
+    this.tableHeader = ""; //$NON-NLS-1$
     this.linkFields = new ArrayList<>();
   }
 
   public CommonTableView(EnumSet<TableStyle> style) {
     this();
-    this.style = style;
+    if (style != null) {
+      this.style = style;
+    }
+  }
+
+  public CommonTableView(EnumSet<TableStyle> style, String tableHeader) {
+    this(style);
+    this.tableHeader = tableHeader;
   }
 
   public void setUpdateValues(EnumSet<ObserverValue> updateValues) {
@@ -414,7 +431,11 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
    */
   @Override
   public void createPartControl(Composite parent) {
-    // to be implemented by the sub class
+    this.setDataModelInterface(
+        ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
+    this.createCommonTableView(parent, tableHeader);
+    this.setFilter(new ATableFilter());
+    this.getTableViewer().addFilter(this.getFilter());
   }
 
   /**
@@ -452,6 +473,14 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.filterTextField = new Text(leftHeadComposite, SWT.SINGLE | SWT.BORDER);
     this.filterTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
+    this.getFilterTextField().addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(KeyEvent ke) {
+        getFilter().setSearchText(getFilterTextField().getText());
+        refreshView();
+      }
+    });
     // the composite for the table viewer
     Composite tableComposite = new Composite(this.tableContainer, SWT.NONE);
     tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -499,12 +528,14 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       @Override
       public void modifyText(ModifyEvent e) {
         internalUpdate = true;
+        Text text = (Text) e.widget;
+        updateDescription(getCurrentSelection(), text.getText());
       }
     });
     if (linkFields.size() > 0) {
       createFooter(leftSash);
     }
-    tableSetUp(tableComposite);
+    createTableViewer(tableComposite);
     // tab order: if tableComposite is active and tab is pressed,
     // you will leave the tableContainer and enter the description
     Control[] controls = { leftHeadComposite, this.buttonComposite, tableComposite };
@@ -570,21 +601,21 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     }
   }
 
-  private void tableSetUp(Composite tableComposite) {
+  private void createTableViewer(Composite tableComposite) {
     // the table viewer
     this.setTableViewer(new TableViewer(tableComposite,
         SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP));
     tableComposite.addControlListener(new ControlListener() {
-      
+
       @Override
       public void controlResized(ControlEvent e) {
         getTableViewer().getTable().redraw();
       }
-      
+
       @Override
       public void controlMoved(ControlEvent e) {
         // TODO Auto-generated method stub
-        
+
       }
     });
     // Listener for showing the description of the selected accident
@@ -688,6 +719,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     };
     TableViewerEditor.create(this.getTableViewer(), null, activationSupport,
         ColumnViewerEditor.DEFAULT);
+
+    this.addTitleEditor(new AbstractEditingSupport(getTableViewer()));
     // ctrl + a selects all items with this KeyListener
     this.getTableViewer().getTable().addKeyListener(new KeyListener() {
 
@@ -706,6 +739,82 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         // nothing happens
       }
     });
+    Listener addListener = new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        if ((event.type == SWT.KeyDown) && (event.keyCode != 'n')) {
+          return;
+        }
+        getFilter().setSearchText(""); //$NON-NLS-1$
+        getFilterTextField().setText(""); //$NON-NLS-1$
+        addNewEntry();
+        refreshView();
+        updateTable();
+        refreshView();
+      }
+    };
+
+    this.getAddNewItemButton().addListener(SWT.Selection, addListener);
+
+    this.getTableViewer().getTable().addListener(SWT.KeyDown, addListener);
+    // Listener for editing a title by pressing return
+    this.getTableViewer().getTable().addListener(SWT.KeyDown, new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        if ((event.type == SWT.KeyDown) && (event.keyCode == SWT.CR)
+            && (!getTableViewer().getSelection().isEmpty())) {
+          int indexFirstSelected = getTableViewer().getTable().getSelectionIndices()[0];
+          getTitleColumn().getViewer()
+              .editElement(getTableViewer().getElementAt(indexFirstSelected), 1);
+        }
+      }
+    });
+
+    // KeyListener for deleting design requirements by selecting them and
+    // pressing the delete key
+    getTableViewer().getControl().addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(final KeyEvent e) {
+        if ((e.keyCode == SWT.DEL) || ((e.stateMask == SWT.COMMAND) && (e.keyCode == SWT.BS))) {
+          IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
+          if (selection.isEmpty()) {
+            return;
+          }
+          deleteItems();
+        }
+      }
+    });
+
+    // Adding a right click context menu and the option to delete an entry
+    // this way
+    MenuManager menuMgr = new MenuManager();
+    Menu menu = menuMgr.createContextMenu(getTableViewer().getControl());
+    menuMgr.addMenuListener(new IMenuListener() {
+
+      @Override
+      public void menuAboutToShow(IMenuManager manager) {
+        if (getTableViewer().getSelection().isEmpty()) {
+          return;
+        }
+        if (getTableViewer().getSelection() instanceof IStructuredSelection) {
+          Action deleteDesignRequirement = new Action("Delete") {
+
+            @Override
+            public void run() {
+              deleteItems();
+            }
+          };
+          manager.add(deleteDesignRequirement);
+        }
+      }
+    });
+
+    menuMgr.setRemoveAllWhenShown(true);
+    getTableViewer().getControl().setMenu(menu);
+
   }
 
   private void createButtonBar() {
@@ -894,14 +1003,6 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     }
   }
 
-  protected abstract void deleteEntry(ATableModel model);
-
-  /**
-   * @author Jarkko Heidenwag
-   * 
-   */
-  public abstract void updateTable();
-
   public UUID getCurrentSelection() {
     if (this.selectedEntry != null) {
       return this.selectedEntry.getId();
@@ -938,7 +1039,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     super.partActivated(arg0);
   }
 
-  protected abstract class AbstractEditingSupport extends EditingSupport {
+  protected class AbstractEditingSupport extends EditingSupport {
 
     /**
      * EditingSupport for the title column
@@ -950,6 +1051,22 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     @Override
     protected boolean canEdit(Object element) {
       return CommonTableView.this.canEdit((ATableModel) element, AccessRights.WRITE);
+    }
+
+    @Override
+    protected CellEditor getCellEditor(Object element) {
+      return new TextCellEditor(getTableViewer().getTable());
+    }
+
+    @Override
+    protected Object getValue(Object element) {
+      return getValue(((ATableModel) element).getTitle());
+    }
+
+    @Override
+    protected void setValue(Object element, Object value) {
+      UUID uuid = ((ATableModel) element).getId();
+      updateTitle(uuid, String.valueOf(value));
     }
 
     protected Object getValue(String string) {
@@ -1068,4 +1185,18 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     }
     return true;
   }
+
+  protected abstract void deleteEntry(ATableModel model);
+
+  protected abstract void addNewEntry();
+
+  /**
+   * @author Jarkko Heidenwag
+   * 
+   */
+  public abstract void updateTable();
+
+  protected abstract void updateDescription(UUID uuid, String description);
+
+  protected abstract void updateTitle(UUID id, String title);
 }

@@ -16,6 +16,7 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.IDataModel;
 
 /**
@@ -78,6 +79,7 @@ public interface IDesignRequirementViewDataModel extends IDataModel,ICommonTable
 	 */
 	boolean setDesignRequirementTitle(UUID designRequirementId, String title);
 
+  public ISDSController getSdsController();
 	/**
 	 * Setter for the description of an design requirement. <br>
 	 * Triggers an update for

@@ -59,7 +59,7 @@
                   editorId="astpa.steps.step1_7"
                   icon="icons/buttons/navigation/STEP1_7(16).png"
                   id="astpa.navigation.step1_7"
-                  name="Design Requirements">
+                  name="%editor.name.DesignRequirenment">
             </step>
             <editor_List
                   command="xstampp.astpa.newControlStructure.command"
@@ -108,6 +108,13 @@
                   id="astpa.navigation.step2_3"
                   name="Corresponding Safety Constraints">
             </step>
+            <step
+                  default_editor="true"
+                  editorId="astpa.steps.step2_4"
+                  icon="icons/buttons/navigation/STEP1_7(16).png"
+                  id="astpa.navigation.step2_4"
+                  name="%editor.name.DesignRequirenment">
+            </step>
          </category>
          <category
                icon="icons/branding/step3CausalAnalysis.png"
@@ -124,6 +131,13 @@
                   icon="icons/buttons/navigation/STEP3_2(16).png"
                   id="astpa.navigation.step3_2"
                   name="Causal Factors Table">
+            </step>
+            <step
+                  default_editor="true"
+                  editorId="astpa.steps.step3_3"
+                  icon="icons/buttons/navigation/STEP1_7(16).png"
+                  id="astpa.navigation.step3_3"
+                  name="%editor.name.DesignRequirenment">
             </step>
          </category>
       </process>
@@ -585,6 +599,20 @@
             default="false"
             id="xstampp.astpa.editor.ltlTable"
             name="%editor.name.0">
+      </editor>
+      <editor
+            class="xstampp.astpa.ui.sds.DesignRequirementStep2View"
+            default="false"
+            icon="icons/buttons/navigation/STEP1_7(16).png"
+            id="astpa.steps.step3_3"
+            name="%editor.name.DesignRequirenment">
+      </editor>
+      <editor
+            class="xstampp.astpa.ui.sds.DesignRequirementStep1View"
+            default="false"
+            icon="icons/buttons/navigation/STEP1_7(16).png"
+            id="astpa.steps.step2_4"
+            name="%editor.name.DesignRequirenment">
       </editor>
    </extension>
    <extension

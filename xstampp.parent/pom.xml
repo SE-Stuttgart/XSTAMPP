@@ -60,6 +60,12 @@
 		</repository>
 		
 		<repository>
+			<id>eclipse-neon</id>
+			<url>http://download.eclipse.org/eclipse/updates/4.6</url>
+			<layout>p2</layout>
+		</repository>
+		
+		<repository>
 			<id>eclipse-mars</id>
 			<url>http://download.eclipse.org/releases/mars</url>
 			<layout>p2</layout>
