@@ -14,7 +14,7 @@ package xstampp.stpapriv.ui.causalfactors;
 
 import messages.Messages;
 import xstampp.astpa.ui.causalfactors.CausalFactorsView;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 
 /**
  * The view to add causal factors to control structure components, edit them and add links to the
@@ -24,11 +24,11 @@ import xstampp.stpapriv.messages.SecMessages;
  */
 public class PrivacyCausalFactorsView extends CausalFactorsView {
   private static String[] _withScenarioColumns = new String[] { Messages.Component,
-      Messages.CausalFactors, "Privacy-compromising Control Action", SecMessages.VulnerabilityLinks,
-      "Causal Scenarios", SecMessages.SecurityConstraint, Messages.NotesSlashRationale };
+      Messages.CausalFactors, "Privacy-compromising Control Action", PrivMessages.VulnerabilityLinks,
+      "Causal Scenarios", PrivMessages.SecurityConstraint, Messages.NotesSlashRationale };
   private static String[] _withoutColumns = new String[] { Messages.Component,
-      Messages.CausalFactors, "Privacy-compromising Control Action", SecMessages.VulnerabilityLinks,
-      SecMessages.SecurityConstraint, Messages.NotesSlashRationale };
+      Messages.CausalFactors, "Privacy-compromising Control Action", PrivMessages.VulnerabilityLinks,
+      PrivMessages.SecurityConstraint, Messages.NotesSlashRationale };
   /**
    * ViewPart ID.
    */

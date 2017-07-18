@@ -36,7 +36,7 @@ import xstampp.astpa.ui.unsafecontrolaction.SeverityButton;
 import xstampp.astpa.ui.unsafecontrolaction.UnsafeControlActionsView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridCellBlank;
@@ -69,8 +69,8 @@ public class UnsecureControlActionsView extends UnsafeControlActionsView{
 	private static final String HAZID_FILTER="Vulnerability ID"; //$NON-NLS-1$
 
   private String[] columns = new String[] {
-    Messages.ControlAction, SecMessages.NotGiven2,
-    SecMessages.GivenIncorrectly2, SecMessages.WrongTiming2,
+    Messages.ControlAction, PrivMessages.NotGiven2,
+    PrivMessages.GivenIncorrectly2, PrivMessages.WrongTiming2,
     Messages.StoppedTooSoon };
 
 
@@ -200,7 +200,7 @@ public class UnsecureControlActionsView extends UnsafeControlActionsView{
 	}
 	@Override
 	public DeleteGridEntryAction<IUnsafeControlActionDataModel> getDeleteAction() {
-	  return new DeleteUcaAction(getGridWrapper(), getDataModel(),SecMessages.UnsecureControlActions,UCA1);
+	  return new DeleteUcaAction(getGridWrapper(), getDataModel(),PrivMessages.UnsecureControlActions,UCA1);
 	}
 	
 	@Override

@@ -3,7 +3,6 @@ package xstampp.stpapriv.ui.results;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.apache.poi.ss.formula.functions.Even;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;

@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
 import xstampp.model.ObserverValue;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.SecATableFilter;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
@@ -82,7 +82,7 @@ public class SecurityConstraintView extends CommonTableView<ISafetyConstraintVie
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
 
-		this.createCommonTableView(parent, SecMessages.SecurityConstraints);
+		this.createCommonTableView(parent, PrivMessages.SecurityConstraints);
 
 		this.getFilterTextField().addKeyListener(new KeyAdapter() {
 
@@ -207,7 +207,7 @@ public class SecurityConstraintView extends CommonTableView<ISafetyConstraintVie
 				}
 				if (SecurityConstraintView.this.getTableViewer().getSelection() instanceof IStructuredSelection) {
 					Action deleteSafetyConstraint = new Action(
-							SecMessages.DeleteSecurityConstraints) {
+							PrivMessages.DeleteSecurityConstraints) {
 
 						@Override
 						public void run() {
@@ -278,7 +278,7 @@ public class SecurityConstraintView extends CommonTableView<ISafetyConstraintVie
 
 	@Override
 	public String getTitle() {
-		return SecMessages.SecurityConstraints;
+		return PrivMessages.SecurityConstraints;
 	}
 
 	@Override

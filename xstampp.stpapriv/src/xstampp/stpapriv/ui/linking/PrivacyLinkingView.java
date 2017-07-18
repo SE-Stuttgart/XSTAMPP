@@ -14,7 +14,7 @@
 package xstampp.stpapriv.ui.linking;
 
 import xstampp.astpa.ui.linking.LinkingView;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 
 /**
  * Editor to create and delete links between hazards and accidents. There are
@@ -39,15 +39,15 @@ public class PrivacyLinkingView extends LinkingView {
 	 */
 	public void updateMode() {
 		if (isInAtoB_Mode()) {
-			this.setUpdateSelected(SecMessages.Losses);
-			this.setUpdateAvailableForLinking(SecMessages.VulnerabilitiesAvailableForLinking);
-			this.setUpdateCurrentlyLinked(SecMessages.CurrentlyLinkedVulnerabilities);
-			this.setUpdateModeButton(SecMessages.SwitchToVulnerabilities);
+			this.setUpdateSelected(PrivMessages.Losses);
+			this.setUpdateAvailableForLinking(PrivMessages.VulnerabilitiesAvailableForLinking);
+			this.setUpdateCurrentlyLinked(PrivMessages.CurrentlyLinkedVulnerabilities);
+			this.setUpdateModeButton(PrivMessages.SwitchToVulnerabilities);
 		} else {
-			this.setUpdateSelected(SecMessages.Vulnerabilities);
-			this.setUpdateAvailableForLinking(SecMessages.LossesAvailableForLinking);
-			this.setUpdateCurrentlyLinked(SecMessages.CurrentlyLinkedLosses);
-			this.setUpdateModeButton(SecMessages.SwitchToLosses);
+			this.setUpdateSelected(PrivMessages.Vulnerabilities);
+			this.setUpdateAvailableForLinking(PrivMessages.LossesAvailableForLinking);
+			this.setUpdateCurrentlyLinked(PrivMessages.CurrentlyLinkedLosses);
+			this.setUpdateModeButton(PrivMessages.SwitchToLosses);
 		}
 
 		updateSelection();
@@ -55,7 +55,7 @@ public class PrivacyLinkingView extends LinkingView {
 
 	
 	public String getTitle() {
-		return SecMessages.LinkingOfLossesAndVulnerabilities;
+		return PrivMessages.LinkingOfLossesAndVulnerabilities;
 	}
 
 }

@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import messages.Messages;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
@@ -48,8 +49,9 @@ import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.vulloss.VulLossController;
+import xstampp.ui.common.ProjectManager;
 
 /**
  * Manager class for control actions.
@@ -78,6 +80,9 @@ public class SecControlActionController implements IControlActionController{
 	@XmlAttribute(name = "nextCAIndex")
 	private Integer nextCAIndex;
 
+
+	  private List<String> ucaCustomHeaders;
+	
 	private Map<UUID, ControlAction> controlActionsToUcaIds;
 
 	private final Map<UUID, ControlAction> trash;
@@ -634,7 +639,7 @@ public class SecControlActionController implements IControlActionController{
 				StringBuffer linkString = new StringBuffer();
 				String id = "";
 				if (linkedHazards.size() == 0) {
-					linkString.append(SecMessages.ControlActionController_NotVulnerable);
+					linkString.append(PrivMessages.ControlActionController_NotVulnerable);
 				} else {
 
 					id = Integer.toString(getUCANumber(unsafeControlAction.getId()));
@@ -660,7 +665,7 @@ public class SecControlActionController implements IControlActionController{
 						}
 						Collections.sort(linkedHazards);
 						if (linkedHazards.size() == 0) {
-							linkString.append(SecMessages.ControlActionController_NotVulnerable);
+							linkString.append(PrivMessages.ControlActionController_NotVulnerable);
 						} else {
 
 							for (int i = 0; i < linkedHazards.size(); i++) {
@@ -1144,8 +1149,29 @@ public class SecControlActionController implements IControlActionController{
 
   @Override
   public String[] getUCAHeaders() {
-    // TODO Auto-generated method stub
-    return null;
+    String[] headers = new String[4];
+    if (this.ucaCustomHeaders == null) {
+
+      this.ucaCustomHeaders = new ArrayList<>();
+      this.ucaCustomHeaders.add(PrivMessages.NotGiven2);
+      this.ucaCustomHeaders.add(PrivMessages.GivenIncorrectly2);
+      this.ucaCustomHeaders.add(PrivMessages.WrongTiming2);
+      this.ucaCustomHeaders.add(Messages.StoppedTooSoon);
+    }
+
+    try {
+      headers[0] = this.ucaCustomHeaders.get(0);
+      headers[1] = this.ucaCustomHeaders.get(1);
+      headers[2] = this.ucaCustomHeaders.get(2);
+      headers[3] = this.ucaCustomHeaders.get(3);
+    } catch (IndexOutOfBoundsException exc) {
+      ProjectManager.getLOGGER().error(
+          "The array with Privacy-Compromising Control Actions types was expected to contain 4 labels but it contained " //$NON-NLS-1$
+              + this.ucaCustomHeaders.size());
+      headers = null;
+    }
+
+    return headers;
   }
 
 }

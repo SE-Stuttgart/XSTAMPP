@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.model.ObserverValue;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.PrivacyController;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
@@ -87,19 +87,19 @@ public class Run extends XstamppJob{
 	private static final int REPORT_WORK =8;
 	private String dir;
 	private boolean isCanceled;
-	private String[] xslMap = new String[] {SecMessages.Losses,"/fopAccidents.xsl",//$NON-NLS-1$
-											SecMessages.Vulnerabilities,"/fopHazards.xsl",//$NON-NLS-1$
+	private String[] xslMap = new String[] {PrivMessages.Losses,"/fopAccidents.xsl",//$NON-NLS-1$
+											PrivMessages.Vulnerabilities,"/fopHazards.xsl",//$NON-NLS-1$
 											Messages.CausalFactors,"/fopcausal.xsl",//$NON-NLS-1$
-											SecMessages.CorrespondingSecurityConstraints,"/fopCorrespondingSafetyConstraints.xsl",//$NON-NLS-1$
+											PrivMessages.CorrespondingSecurityConstraints,"/fopCorrespondingSafetyConstraints.xsl",//$NON-NLS-1$
 											Messages.DesignRequirements,"/fopDesignRequirements.xsl",//$NON-NLS-1$
-											SecMessages.SecurityConstraints,"/fopSafetyConstraints.xsl",//$NON-NLS-1$
+											PrivMessages.SecurityConstraints,"/fopSafetyConstraints.xsl",//$NON-NLS-1$
 											Messages.SystemDescription,"/fopSystemDescription.xsl",//$NON-NLS-1$
 											Messages.SystemGoals,"/fopSystemGoals.xsl",//$NON-NLS-1$
-											SecMessages.UnsecureControlActionsTable,"/fopuca.xsl"};//$NON-NLS-1$
+											PrivMessages.UnsecureControlActionsTable,"/fopuca.xsl"};//$NON-NLS-1$
 
 	private String[] xstpaXslMap = new String[] {Messages.ContextTables,"/fopContextTable.xsl",//$NON-NLS-1$
-											SecMessages.RefinedSecurityConstraintsTable,"/fopRefinedConstraints.xsl",//$NON-NLS-1$
-											SecMessages.RefinedUnsecureControlActions,"/fopRefinedUnsafeControlActions.xsl",//$NON-NLS-1$
+											PrivMessages.RefinedSecurityConstraintsTable,"/fopRefinedConstraints.xsl",//$NON-NLS-1$
+											PrivMessages.RefinedUnsecureControlActions,"/fopRefinedUnsafeControlActions.xsl",//$NON-NLS-1$
 											Messages.LTLFormulasTable,"/fopLTLPropertys.xsl"};//$NON-NLS-1$
 	private boolean exportReport;
 	private boolean exportImages;

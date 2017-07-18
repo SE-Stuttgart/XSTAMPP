@@ -11,15 +11,18 @@
  * 
  *******************************************************************************/
 
-package xstampp.stpasec.messages;
+package xstampp.stpapriv.messages;
 
 import org.eclipse.osgi.util.NLS;
 
+
 // CHECKSTYLE:OFF
-public final class SecMessages extends NLS {
+public final class PrivMessages extends NLS{
 
-	private static final String BUNDLE_NAME = "xstampp.stpasec.messages.secmessages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "xstampp.stpapriv.messages.privmessages"; //$NON-NLS-1$
 
+
+	
 	public static String Delete_losses;
 	public static String DoYouWishToDeleteTheLoss;
 	public static String ConfirmTheDeletionOfTheFollowingLosses;
@@ -77,13 +80,13 @@ public final class SecMessages extends NLS {
 	public static String WrongTiming2;
 	public static String saveSec;
 	public static String savingSec;
-
+	
 	static {
 		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, SecMessages.class);
+		NLS.initializeMessages(BUNDLE_NAME, PrivMessages.class);
 	}
 
-	private SecMessages() {
+	private PrivMessages() {
 	}
 }
 // CHECKSTYLE:ON

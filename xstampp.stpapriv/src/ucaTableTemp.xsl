@@ -502,15 +502,17 @@
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="10%"
 			border-style="none" />
-		<fo:table-column column-number="2" column-width="10%"
+		<fo:table-column column-number="2" column-width="9%"
 			border-style="none" />
-		<fo:table-column column-number="3" column-width="50%"
+		<fo:table-column column-number="3" column-width="48%"
 			border-style="none" />
-		<fo:table-column column-number="4" column-width="10%"
+		<fo:table-column column-number="4" column-width="9%"
 			border-style="none" />			
-		<fo:table-column column-number="5" column-width="10%"
+		<fo:table-column column-number="5" column-width="8%"
 			border-style="none" />
-		<fo:table-column column-number="6" column-width="10%"
+		<fo:table-column column-number="6" column-width="8%"
+			border-style="none" />
+					<fo:table-column column-number="7" column-width="8%"
 			border-style="none" />
 								
 		<fo:table-header border="none" background-color="#1A277A"

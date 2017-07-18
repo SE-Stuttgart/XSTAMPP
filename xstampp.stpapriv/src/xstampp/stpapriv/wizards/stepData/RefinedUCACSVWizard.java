@@ -22,7 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 
 import xstampp.model.IDataModel;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.util.jobs.XCSVExportJob;
 import xstampp.stpapriv.wizards.AbstractExportWizard;
 import xstampp.ui.common.ProjectManager;
@@ -43,7 +43,7 @@ public class RefinedUCACSVWizard extends AbstractExportWizard {
 	public RefinedUCACSVWizard() {
 		super("");
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
-		this.setExportPage(new CSVExportPage(filters, SecMessages.RefinedUnsecureControlActions + Messages.AsDataSet, Activator.PLUGIN_ID));
+		this.setExportPage(new CSVExportPage(filters, PrivMessages.RefinedUnsecureControlActions + Messages.AsDataSet, Activator.PLUGIN_ID));
 	}
 
 	@Override

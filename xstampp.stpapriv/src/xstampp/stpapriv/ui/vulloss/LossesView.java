@@ -46,7 +46,7 @@ import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.vulloss.Loss;
 import xstampp.stpapriv.model.vulloss.Vulnerability;
 import xstampp.ui.common.ProjectManager;
@@ -85,7 +85,7 @@ public class LossesView extends CommonTableView<IAccidentViewDataModel> {
 	public void createPartControl(Composite parent) {
 		this.setDataModelInterface(ProjectManager.getContainerInstance()
 				.getDataModel(this.getProjectID()));
-		this.createCommonTableView(parent, SecMessages.Losses);
+		this.createCommonTableView(parent, PrivMessages.Losses);
 
 		this.getFilterTextField().addKeyListener(new KeyAdapter() {
 
@@ -237,7 +237,7 @@ public class LossesView extends CommonTableView<IAccidentViewDataModel> {
 				}
 				if (LossesView.this.getTableViewer().getSelection() instanceof IStructuredSelection) {
 					Action deleteAccident = new Action(
-							SecMessages.Delete_losses) {
+							PrivMessages.Delete_losses) {
 
 						@Override
 						public void run() {
@@ -310,7 +310,7 @@ public class LossesView extends CommonTableView<IAccidentViewDataModel> {
 
 	@Override
 	public String getTitle() {
-		return SecMessages.Losses;
+		return PrivMessages.Losses;
 	}
 
 	@Override

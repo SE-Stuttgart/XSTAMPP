@@ -19,7 +19,7 @@ import messages.Messages;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.ui.ATableFilter;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class SecATableFilter extends ATableFilter{
 	public SecATableFilter() {
 		this.getCategorys().clear();
 		this.getCategorys().add(Messages.All);
-		this.getCategorys().add(SecMessages.CorrespondingSecurityConstraints);
+		this.getCategorys().add(PrivMessages.CorrespondingSecurityConstraints);
 	}
 
 	@Override

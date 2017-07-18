@@ -9,7 +9,7 @@
             editorId="stpasec.steps.step1_1"
             extension="sec"
             extensionDescriptions="extended STPA Project;STPA Project"
-            icon="icons/branding/project16.png"
+            icon="icons/branding/project162.png"
             id="stpasec.navigation.process"
             name="STPA for Security Project"
             newWizard="stpasec.wizards.NewWizard"
