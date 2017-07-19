@@ -698,10 +698,12 @@
 										maxOccurs="1" minOccurs="0">
 										<xs:complexType>
 											<xs:all>
-												<xs:element
-													type="xs:string" name="text" />
-												<xs:element
+											<xs:element
 													type="xs:string" name="id" />
+												<xs:element
+													type="xs:string" name="title" />
+												<xs:element
+													type="xs:string" name="number" />
 											</xs:all>
 										</xs:complexType>
 									</xs:element>
@@ -715,7 +717,9 @@
 										maxOccurs="1" minOccurs="0" />
 									<xs:element type="xs:string" name="type" />
 								</xs:all>
-
+								<xs:attribute name="severityType" type="xs:string"
+									use="optional">
+								</xs:attribute>
 							</xs:complexType>
 						</xs:element>
 					</xs:sequence>
