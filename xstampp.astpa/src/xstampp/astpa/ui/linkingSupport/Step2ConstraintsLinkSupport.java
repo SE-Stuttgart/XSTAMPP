@@ -12,8 +12,8 @@ public class Step2ConstraintsLinkSupport extends LinkSupport<DataModelController
 
   private List<ITableModel> safetyConstraints;
 
-  public Step2ConstraintsLinkSupport(DataModelController dataInterface) {
-    super(dataInterface);
+  public Step2ConstraintsLinkSupport(DataModelController dataInterface, ObserverValue type) {
+    super(dataInterface, type);
   }
 
   @Override
@@ -46,11 +46,6 @@ public class Step2ConstraintsLinkSupport extends LinkSupport<DataModelController
   @Override
   public String getTitle() {
     return "Causal Safety Constraint Links";
-  }
-
-  @Override
-  public ObserverValue getLinkType() {
-    return ObserverValue.DESIGN_REQUIREMENT_STEP1;
   }
 
 }

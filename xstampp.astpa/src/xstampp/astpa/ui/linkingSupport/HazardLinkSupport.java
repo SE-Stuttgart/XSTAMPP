@@ -10,8 +10,8 @@ import xstampp.model.ObserverValue;
 
 public class HazardLinkSupport<M extends IHazardModel> extends LinkSupport<M> {
 
-  public HazardLinkSupport(M dataInterface) {
-    super(dataInterface);
+  public HazardLinkSupport(M dataInterface, ObserverValue type) {
+    super(dataInterface, type);
   }
 
   @Override
@@ -36,15 +36,9 @@ public class HazardLinkSupport<M extends IHazardModel> extends LinkSupport<M> {
     ITableModel hazard = getDataInterface().getHazard(id);
     return hazard.getDescription();
   }
-  
+
   @Override
   public String getTitle() {
     return "Hazard Linking";
   }
-
-  @Override
-  public ObserverValue getLinkType() {
-    return ObserverValue.HAZ_ACC_LINK;
-  }
-
 }

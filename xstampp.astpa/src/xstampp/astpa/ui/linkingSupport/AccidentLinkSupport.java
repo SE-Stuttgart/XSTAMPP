@@ -1,4 +1,4 @@
-package xstampp.astpa.ui.linkingSupport;
+ package xstampp.astpa.ui.linkingSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,8 @@ import xstampp.model.ObserverValue;
 
 public class AccidentLinkSupport<M extends IAccidentModel> extends LinkSupport<M> {
 
-  public AccidentLinkSupport(M dataInterface) {
-    super(dataInterface);
+  public AccidentLinkSupport(M dataInterface, ObserverValue type) {
+    super(dataInterface, type);
   }
 
   @Override
@@ -40,11 +40,6 @@ public class AccidentLinkSupport<M extends IAccidentModel> extends LinkSupport<M
   @Override
   public String getTitle() {
     return "Accident Links";
-  }
-
-  @Override
-  public ObserverValue getLinkType() {
-    return ObserverValue.HAZ_ACC_LINK;
   }
 
 }

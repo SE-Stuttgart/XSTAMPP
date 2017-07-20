@@ -45,7 +45,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
   protected void initialize() {
     setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT));
-    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface()));
+    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),ObserverValue.DESIGN_REQUIREMENT));
   }
 
   @Override

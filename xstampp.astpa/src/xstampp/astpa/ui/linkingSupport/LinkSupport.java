@@ -27,9 +27,11 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   private M dataInterface;
   private java.util.List<UUID> available;
   private List<Listener> changeListeners;
+  private ObserverValue type;
 
-  public LinkSupport(M dataInterface) {
+  public LinkSupport(M dataInterface, ObserverValue type) {
     this.dataInterface = dataInterface;
+    this.type = type;
     this.changeListeners = new ArrayList<>();
   }
 
@@ -154,7 +156,9 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
 
   public abstract String getTitle();
 
-  public abstract ObserverValue getLinkType();
+  public ObserverValue getLinkType() {
+    return type;
+  }
 
   @Override
   public void widgetSelected(SelectionEvent e) {

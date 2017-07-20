@@ -53,7 +53,7 @@ public class DesignRequirementStep1View extends CommonTableView<IDesignRequireme
 
   @Override
   public void createCommonTableView(Composite parent, String tableHeader) {
-    addLinkSupport(new Step1ConstraintsLinkSupport((DataModelController) getDataInterface()));
+    addLinkSupport(new Step1ConstraintsLinkSupport((DataModelController) getDataInterface(),ObserverValue.DESIGN_REQUIREMENT_STEP1));
     super.createCommonTableView(parent, tableHeader);
   }
 

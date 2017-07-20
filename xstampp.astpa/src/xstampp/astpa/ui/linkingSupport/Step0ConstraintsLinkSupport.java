@@ -10,8 +10,8 @@ import xstampp.model.ObserverValue;
 
 public class Step0ConstraintsLinkSupport extends LinkSupport<DataModelController> {
 
-  public Step0ConstraintsLinkSupport(DataModelController dataInterface) {
-    super(dataInterface);
+  public Step0ConstraintsLinkSupport(DataModelController dataInterface, ObserverValue type) {
+    super(dataInterface, type);
   }
 
   @Override
@@ -40,11 +40,6 @@ public class Step0ConstraintsLinkSupport extends LinkSupport<DataModelController
   @Override
   public String getTitle() {
     return "Safety Constraint Links";
-  }
-
-  @Override
-  public ObserverValue getLinkType() {
-    return ObserverValue.DESIGN_REQUIREMENT;
   }
 
 }
