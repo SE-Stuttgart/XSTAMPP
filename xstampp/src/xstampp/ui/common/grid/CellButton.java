@@ -13,6 +13,7 @@ package xstampp.ui.common.grid;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -66,20 +67,46 @@ public class CellButton implements ICellButton {
 
   @Override
   public void onPaint(GC gc, Rectangle cellBounds) {
-    if (image != null) {
-      gc.drawImage(this.image, 0, 0, this.image.getBounds().width, this.image.getBounds().height,
-          cellBounds.x + this.getBounds().x, cellBounds.y + this.getBounds().y,
-          this.getBounds().width, this.getBounds().height);
-    }
-    if (text != null) {
-      int height = gc.getFont().getFontData()[0].getHeight();
-      int topOffset = (getBounds().height / 2 - height / 2) / 2;
-      gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
-      gc.drawString(text, cellBounds.x + this.getBounds().x + 3,
-          cellBounds.y + this.getBounds().y + topOffset, true);
+    onPaint(gc, cellBounds, true);
+  }
+
+  
+  public void onPaint(GC gc, Rectangle cellBounds, boolean enabled) {
+    if(enabled) {
+      if (image != null) {
+        gc.drawImage(this.image, 0, 0, this.image.getBounds().width, this.image.getBounds().height,
+            cellBounds.x + this.getBounds().x, cellBounds.y + this.getBounds().y,
+            this.getBounds().width, this.getBounds().height);
+      }
+      if (text != null) {
+        int height = gc.getFont().getFontData()[0].getHeight();
+        int topOffset = (getBounds().height / 2 - height / 2) / 2;
+        gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
+        gc.drawString(text, cellBounds.x + this.getBounds().x + 3,
+            cellBounds.y + this.getBounds().y + topOffset, true);
+      }
+    } else {
+      Color background = gc.getBackground();
+      gc.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+      gc.fillRectangle(0, 0, getBounds().width, getBounds().height);
+      gc.setBackground(background);
     }
   }
 
+  public Point getPreferedBounds() {
+    int height = 0;
+    int width = 0;
+    if (image != null) {
+      height = image.getBounds().height;
+      width = image.getBounds().width;
+    }
+    if (text != null) {
+      int fontHeight = Display.getDefault().getSystemFont().getFontData()[0].getHeight();
+      height = Math.max(height, fontHeight);
+      width = Math.max(width, fontHeight * text.length());
+    } 
+    return new Point(width, height);
+  }
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     Logger.getRootLogger().debug("Button pressed onButtonDown"); //$NON-NLS-1$

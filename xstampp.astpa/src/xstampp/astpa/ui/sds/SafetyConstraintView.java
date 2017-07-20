@@ -14,10 +14,15 @@ package xstampp.astpa.ui.sds;
 import java.util.EnumSet;
 import java.util.UUID;
 
+import org.eclipse.swt.widgets.Composite;
+
 import messages.Messages;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
 import xstampp.astpa.ui.CommonTableView;
+import xstampp.astpa.ui.linkingSupport.AccidentLinkSupport;
+import xstampp.astpa.ui.linkingSupport.DesignReq0LinkSupport;
 import xstampp.model.ObserverValue;
 
 /**
@@ -42,12 +47,22 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
 
   /**
    * @author Jarkko Heidenwag
-   * @param tableHeader TODO
+   * @param tableHeader
+   *          TODO
    * 
    */
   public SafetyConstraintView(String tableHeader) {
-    super(null,tableHeader);
-    setUpdateValues(EnumSet.of(ObserverValue.SAFETY_CONSTRAINT));
+    super(null, tableHeader);
+    setUpdateValues(EnumSet.of(ObserverValue.SAFETY_CONSTRAINT, ObserverValue.ACC_S0_LINK));
+  }
+
+  @Override
+  public void createCommonTableView(Composite parent, String tableHeader) {
+    addLinkSupport(new DesignReq0LinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.DESIGN_REQUIREMENT));
+    addLinkSupport(new AccidentLinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.ACC_S0_LINK));
+    super.createCommonTableView(parent, tableHeader);
   }
 
   @Override

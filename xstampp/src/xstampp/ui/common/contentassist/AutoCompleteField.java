@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -38,15 +36,19 @@ public class AutoCompleteField {
   /**
    * 
    * @author Benedikt Markt
-   * @param control TODO
+   * @author Lukas Balzer
+   * @param proposals
+   *          a list of {@link LinkProposal}'s that will be displayed in the linking shell
+   * @param control
+   *          the {@link Control} that is used to determine the position of the linking shells
    */
   public AutoCompleteField(LinkProposal[] proposals, Control control) {
     this.control = control;
     this.listeners = new ArrayList<>();
     shell.setNextProposal(proposals);
-  
+
   }
-  
+
   /**
    * 
    * @author Benedikt Markt
@@ -69,8 +71,7 @@ public class AutoCompleteField {
   }
 
   /**
-   * This function calculates a position by merging two Point and sets it as the
-   * popups Position.
+   * This function calculates a position by merging two Point and sets it as the popups Position.
    * 
    * @author Lukas Balzer
    * 
@@ -104,7 +105,7 @@ public class AutoCompleteField {
   public void openShell() {
     shell.createControl(control);
   }
-  
+
   /**
    * Closes the proposal popup immediately.
    * 
@@ -118,8 +119,8 @@ public class AutoCompleteField {
   /**
    * sets the listener of the content assist popup.
    * 
-   * @param listener a proposal listener that is called in
-   *        the case that a proposal is accepted.
+   * @param listener
+   *          a proposal listener that is called in the case that a proposal is accepted.
    */
   public void setProposalListener(IContentProposalListener listener) {
     listeners.add(listener);

@@ -1,35 +1,28 @@
- package xstampp.astpa.ui.linkingSupport;
+package xstampp.astpa.ui.linkingSupport;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.IAccidentModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
-public class AccidentLinkSupport<M extends IAccidentModel> extends LinkSupport<M> {
+public class AccidentLinkSupport extends LinkSupport<DataModelController> {
 
-  public AccidentLinkSupport(M dataInterface, ObserverValue type) {
+  public AccidentLinkSupport(DataModelController dataInterface, ObserverValue type) {
     super(dataInterface, type);
   }
 
   @Override
-  List<UUID> getAvailable() {
-		setModelList(getDataInterface().getAllAccidents());
-    List<UUID> result = new ArrayList<>();
-		for (ITableModel haz : getModelList()) {
-      result.add(haz.getId());
-    }
-    result.removeAll(fetch());
-    return result;
+  protected List<ITableModel> getModels() {
+    return getDataInterface().getAllAccidents();
   }
 
   @Override
-	protected String getLiteral() {
-		return "A-";
+  protected String getLiteral() {
+    return "A-";
   }
-  
+
   @Override
   public String getTitle() {
     return "Accident Links";

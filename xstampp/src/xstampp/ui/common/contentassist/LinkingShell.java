@@ -77,7 +77,7 @@ class LinkingShell {
    * instance.
    * 
    * @param control
-   *          TODO
+   *          the {@link Control} used for calculating the optimal position of the two proposal {@link Shell}'s
    */
   public void createControl(Control control) {
     if (this.shell != null && !this.shell.isDisposed()) {
@@ -93,31 +93,33 @@ class LinkingShell {
 
     this.shell.setLayout(new GridLayout());
     this.shell.setSize(labelShellSize);
+    
     // calculate the correct position of the shell, so that it's not displayed beyond the
     // display bounds
-    Point shellLocation = new Point(mouseLoc.x, mouseLoc.y);
-    if (control.getBounds().width - (labelShellSize.x + mouseLoc.x) < 0) {
-      shellLocation.x = mouseLoc.x - labelShellSize.x;
+    Point shellLocation = control.toDisplay(mouseLoc.x, mouseLoc.y);
+    
+    if (Display.getDefault().getBounds().width - (labelShellSize.x + shellLocation.x) < 0) {
+      shellLocation.x = shellLocation.x - labelShellSize.x;
     }
-    if (control.getBounds().height - (labelShellSize.y + mouseLoc.y) < 0) {
-      shellLocation.y = mouseLoc.y - labelShellSize.y;
+    if (Display.getDefault().getBounds().height - (labelShellSize.y + shellLocation.y) < 0) {
+      shellLocation.y = shellLocation.y - labelShellSize.y;
     }
+    
     this.shell.setLocation(shellLocation);
+    
     final Shell descShell = new Shell(SWT.RESIZE);
     descShell.setLayout(new FormLayout());
     descShell.setSize(descShellSize);
     // calculate the correct position of the shell, so that it's not displayed beyond the
     // display bounds
-    shellLocation = new Point(shell.getBounds().x + shell.getBounds().width + shellsOffset,
+    Point descShellLocation = new Point(shell.getBounds().x + shell.getBounds().width + shellsOffset,
         shell.getBounds().y);
-    if (control.getBounds().width - (shellLocation.x + descShellSize.x) < 0) {
-      shellLocation.x = shell.getBounds().x - descShellSize.x - shellsOffset;
+    if (Display.getDefault().getBounds().width - (descShellLocation.x + descShellSize.x) < 0) {
+      descShellLocation.x = shell.getBounds().x - descShellSize.x - shellsOffset;
     }
-    descShell.setLocation(shellLocation);
+    descShell.setLocation(descShellLocation);
     descShell.setBackground(new Color(null, 231, 240, 228));
 
-    this.shell.setLocation(control.toDisplay(shell.getLocation().x, shell.getLocation().y));
-    descShell.setLocation(control.toDisplay(descShell.getLocation().x, descShell.getLocation().y));
     this.shell.addShellListener(new ShellAdapter() {
       @Override
       public void shellDeactivated(ShellEvent error) {

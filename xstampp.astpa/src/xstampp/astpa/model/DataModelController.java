@@ -989,7 +989,7 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
     ITableModel designRequirement = this.getSdsController()
-        .getDesignRequirement(designRequirementId, null);
+        .getDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
     return designRequirement;
   }
 

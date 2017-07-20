@@ -14,7 +14,10 @@ package xstampp.astpa.ui.acchaz;
 import java.util.EnumSet;
 import java.util.UUID;
 
+import org.eclipse.swt.widgets.Composite;
+
 import messages.Messages;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.ui.CommonTableView;
@@ -39,8 +42,15 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
 
   public HazardsView(String tableHeader) {
     super(EnumSet.of(TableStyle.RESTRICTED, TableStyle.WITH_SEVERITY), tableHeader);
-    setUpdateValues(EnumSet.of(ObserverValue.HAZARD, ObserverValue.SEVERITY));
-    addLinkSupport(new AccidentLinkSupport<IHazardViewDataModel>(getDataInterface(),ObserverValue.HAZ_ACC_LINK));
+    setUpdateValues(
+        EnumSet.of(ObserverValue.HAZARD, ObserverValue.SEVERITY, ObserverValue.HAZ_ACC_LINK));
+  }
+
+  @Override
+  public void createCommonTableView(Composite parent, String tableHeader) {
+    addLinkSupport(new AccidentLinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.HAZ_ACC_LINK));
+    super.createCommonTableView(parent, tableHeader);
   }
 
   @Override

@@ -16,10 +16,13 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -33,7 +36,8 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 
-public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter implements IContentProposalListener {
+public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
+    implements IContentProposalListener {
   private TableViewer displayedList;
   private UUID[] currentContent;
   private UUID currentLinkedId;
@@ -41,8 +45,8 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   private java.util.List<UUID> available;
   private List<Listener> changeListeners;
   private ObserverValue type;
-	private List<ITableModel> modelList;
-	private Composite linkComp;
+  private List<ITableModel> modelList;
+  private Composite linkComp;
 
   public LinkSupport(M dataInterface, ObserverValue type) {
     this.dataInterface = dataInterface;
@@ -62,7 +66,12 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     currentLinkedId = id;
     currentContent = null;
     if (!this.displayedList.getTable().isDisposed()) {
+
+      for (Control control : linkComp.getChildren()) {
+        control.setEnabled(true);
+      }
       currentContent = fetch().toArray(new UUID[0]);
+      this.displayedList.getTable().setEnabled(true);
       this.displayedList.setInput(currentContent);
     }
   }
@@ -76,13 +85,13 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    *         didn't match any current linked item
    */
   public final int indexOf(String label) {
-		if (label != null && available != null) {
-			int index = 0;
-			for (UUID model : available) {
-				if (label.equals(getText(model))) {
-					return index;
+    if (label != null && available != null) {
+      int index = 0;
+      for (UUID model : available) {
+        if (label.equals(getText(model))) {
+          return index;
         }
-				index++;
+        index++;
       }
     }
     return -1;
@@ -115,8 +124,8 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   public void proposalAccepted(IContentProposal proposal) {
 
     int indexOf = indexOf(proposal.getLabel());
-		if (indexOf >= 0) {
-			UUID uuid = available.get(indexOf);
+    if (indexOf >= 0) {
+      UUID uuid = available.get(indexOf);
       getDataInterface().getLinkController().addLink(getLinkType(), getCurrentId(), uuid);
       notifyChangeListeners();
     }
@@ -138,7 +147,8 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    */
   public boolean unlink(int index) {
     UUID uuid = getCurrentContent()[index];
-		boolean deleteLink = getDataInterface().getLinkController().deleteLink(getLinkType(), getCurrentId(), uuid);
+    boolean deleteLink = getDataInterface().getLinkController().deleteLink(getLinkType(),
+        getCurrentId(), uuid);
     if (deleteLink) {
       notifyChangeListeners();
     }
@@ -146,12 +156,11 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   }
 
   /**
-	 * Adds a {@link Listener} to the list of listeners that get notified whenever
-	 * the list is Modified meaning a link is added or removed.
+   * Adds a {@link Listener} to the list of listeners that get notified whenever the list is
+   * Modified meaning a link is added or removed.
    * 
    * @param listener
-	 *            A listener that should be called whenever the list of links is
-	 *            changed
+   *          A listener that should be called whenever the list of links is changed
    */
   public void addChangeListener(Listener listener) {
     this.changeListeners.add(listener);
@@ -165,28 +174,46 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     }
   }
 
-  abstract java.util.List<UUID> getAvailable();
+  List<UUID> getAvailable() {
+    setModelList(getModels());
+    List<UUID> result = new ArrayList<>();
+    for (ITableModel constraint : getModelList()) {
+      result.add(constraint.getId());
+    }
+    result.removeAll(fetch());
+    return result;
+  }
 
-	public String getText(UUID id) {
-		for (ITableModel model : modelList) {
-			if (model.getId().equals(id)) {
-				return getLiteral() + model.getNumber();
-			}
-		}
-		return null;
-	}
+  public String getText(UUID id) {
+    for (ITableModel model : getModels()) {
+      if (model.getId().equals(id)) {
+        return getLiteral() + model.getNumber();
+      }
+    }
+    return null;
+  }
 
-	public String getDescription(UUID id) {
-		for (ITableModel model : modelList) {
-			if (model.getId().equals(id)) {
-				return model.getDescription(); // $NON-NLS-1$
-			}
-		}
-		return null;
-	}
+  public String getDescription(UUID id) {
+    for (ITableModel model : getModelList()) {
+      if (model.getId().equals(id)) {
+        return model.getDescription(); // $NON-NLS-1$
+      }
+    }
+    return null;
+  }
 
-	protected abstract String getLiteral();
-	protected abstract String getTitle();
+  /**
+   * This returns a list of all ITAbleModels that can be linked by this {@link LinkSupport}.<br>
+   * e.g. all Hazards from the data model in the {@link HazardLinkSupport}
+   * 
+   * @return a {@link List} with all {@link ITableModel}'s that can be linked
+   */
+  protected abstract List<ITableModel> getModels();
+
+  protected abstract String getLiteral();
+
+  protected abstract String getTitle();
+
   public ObserverValue getLinkType() {
     return type;
   }
@@ -206,68 +233,87 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     AutoCompleteField scLinking = new AutoCompleteField(proposals,
         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
     scLinking.setProposalListener(this);
-//		Point point = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().toDisplay(new Point(e.x, e.y));
-//		scLinking.setPopupPosition(point);
+    Point location = Display.getDefault().getCursorLocation();
+    Point point = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
+        .toControl(location);
+    scLinking.setPopupPosition(point);
     scLinking.openPopup();
   }
 
-	public List<ITableModel> getModelList() {
-		if (modelList == null) {
-			return new ArrayList<>();
-		}
-		return modelList;
-	}
+  public List<ITableModel> getModelList() {
+    if (modelList == null) {
+      return new ArrayList<>();
+    }
+    return modelList;
+  }
 
-	public void setModelList(List<ITableModel> modelList) {
-		this.modelList = modelList;
-	}
-	
-	public void createLinkWidget(Composite parent) {
-		linkComp = new Composite(parent, SWT.BORDER);
-		linkComp.setLayout(new GridLayout(3, false));
-		Label linkTitle = new Label(linkComp, SWT.WRAP);
-		linkTitle.setText(getTitle());
-		linkTitle.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		Button linkButton = new Button(linkComp, SWT.PUSH);
-		linkButton.setImage(CommonTableView.ADD_SMALL);
-		linkButton.addSelectionListener(this);
-		linkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
-		Button unlinkButton = new Button(linkComp, SWT.PUSH);
-		unlinkButton.setImage(CommonTableView.DELETE_SMALL);
-		unlinkButton.addSelectionListener(this);
-		unlinkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
+  public void setModelList(List<ITableModel> modelList) {
+    this.modelList = modelList;
+  }
 
-		Composite linkTable = new Composite(linkComp, SWT.NONE);
-		linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		TableColumnLayout tableColumnLayout = new TableColumnLayout();
-		linkTable.setLayout(tableColumnLayout);
+  public void createLinkWidget(Composite parent) {
+    linkComp = new Composite(parent, SWT.BORDER);
+    linkComp.setLayout(new GridLayout(3, false));
+    Label linkTitle = new Label(linkComp, SWT.WRAP);
+    linkTitle.setText(getTitle());
+    linkTitle.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    Button linkButton = new Button(linkComp, SWT.PUSH);
 
-		// the table viewer
-		TableViewer tableViewer = new TableViewer(linkTable,
-				SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.SINGLE);
-		setDisplayedList(tableViewer);
-		// Listener for showing the description of the selected accident
-		// tableViewer.addSelectionChangedListener(new ..);
+    linkButton.setImage(CommonTableView.ADD_SMALL);
+    linkButton.addSelectionListener(this);
+    linkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
+    linkButton.setEnabled(false);
 
-		tableViewer.setContentProvider(new ArrayContentProvider());
-		tableViewer.getTable().setLinesVisible(false);
-		tableViewer.getTable().setHeaderVisible(false);
-		ColumnViewerToolTipSupport.enableFor(tableViewer);
-		TableViewerColumn linkColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		linkColumn.getColumn().setText(Messages.ID);
-		final int idWeight = 5;
-		final int idMinWidth = 39;
-		tableColumnLayout.setColumnData(linkColumn.getColumn(), new ColumnWeightData(idWeight, idMinWidth, true));
-		linkColumn.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getToolTipText(Object element) {
-				return getDescription((UUID) element);
-			}
+    Button unlinkButton = new Button(linkComp, SWT.PUSH);
+    unlinkButton.setImage(CommonTableView.DELETE_SMALL);
+    unlinkButton.setEnabled(false);
+    unlinkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
 
-			@Override
-			public String getText(Object element) {
-				return getText((UUID) element);
-			}
-		});
-	}
+    Composite linkTable = new Composite(linkComp, SWT.NONE);
+    linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+    TableColumnLayout tableColumnLayout = new TableColumnLayout();
+    linkTable.setLayout(tableColumnLayout);
+
+    // the table viewer
+    final TableViewer tableViewer = new TableViewer(linkTable,
+        SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI);
+    setDisplayedList(tableViewer);
+    // Listener for showing the description of the selected accident
+    // tableViewer.addSelectionChangedListener(new ..);
+    tableViewer.getTable().setEnabled(false);
+    tableViewer.setContentProvider(new ArrayContentProvider());
+    tableViewer.getTable().setLinesVisible(false);
+    tableViewer.getTable().setHeaderVisible(false);
+    ColumnViewerToolTipSupport.enableFor(tableViewer);
+    TableViewerColumn linkColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+    linkColumn.getColumn().setText(Messages.ID);
+    final int idWeight = 5;
+    final int idMinWidth = 39;
+    tableViewer.setInput(currentContent);
+    tableColumnLayout.setColumnData(linkColumn.getColumn(),
+        new ColumnWeightData(idWeight, idMinWidth, true));
+    linkColumn.setLabelProvider(new ColumnLabelProvider() {
+      @Override
+      public String getToolTipText(Object element) {
+        return getDescription((UUID) element);
+      }
+
+      @Override
+      public String getText(Object element) {
+        return LinkSupport.this.getText((UUID) element);
+      }
+    });
+
+    unlinkButton.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        int[] indices = tableViewer.getTable().getSelectionIndices();
+        for (int i = indices.length; i > 0; --i) {
+          UUID uuid = currentContent[i - 1];
+          getDataInterface().getLinkController().deleteLink(getLinkType(), getCurrentId(), uuid);
+          notifyChangeListeners();
+        }
+      }
+    });
+  }
 }

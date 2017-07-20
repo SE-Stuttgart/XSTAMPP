@@ -6,25 +6,25 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
-public class Step2ConstraintsLinkSupport extends LinkSupport<DataModelController> {
+public class DesignReq0LinkSupport extends LinkSupport<DataModelController> {
 
-  public Step2ConstraintsLinkSupport(DataModelController dataInterface, ObserverValue type) {
+  public DesignReq0LinkSupport(DataModelController dataInterface, ObserverValue type) {
     super(dataInterface, type);
   }
 
   @Override
   protected List<ITableModel> getModels() {
-    return getDataInterface().getCausalFactorController().getSafetyConstraints();
+    return getDataInterface().getAllDesignRequirements();
   }
 
   @Override
   protected String getLiteral() {
-    return "S2.";
+    return "DR0.";
   }
 
   @Override
   public String getTitle() {
-    return "Causal Safety Constraint Links";
+    return "Design Requirement Links";
   }
 
 }

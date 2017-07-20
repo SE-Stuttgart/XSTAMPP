@@ -341,7 +341,7 @@ public class SDSController extends Observable implements ISDSController {
     if ((description == null) || (designRequirementId == null)) {
       return false;
     }
-    ITableModel requirement = getDesignRequirement(designRequirementId, null);
+    ITableModel requirement = getDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
 
     String oldDescription = ((ATableModel) requirement).setDescription(description);
     if (oldDescription != null) {
@@ -364,7 +364,7 @@ public class SDSController extends Observable implements ISDSController {
     if ((title == null) || (designRequirementId == null)) {
       return false;
     }
-    ITableModel requirement = getDesignRequirement(designRequirementId, null);
+    ITableModel requirement = getDesignRequirement(designRequirementId, type);
 
     String oldTitle = ((ATableModel) requirement).setTitle(title);
     if (oldTitle != null) {

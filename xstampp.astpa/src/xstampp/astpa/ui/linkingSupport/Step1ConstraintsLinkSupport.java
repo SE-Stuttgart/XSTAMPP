@@ -1,8 +1,6 @@
 package xstampp.astpa.ui.linkingSupport;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -15,14 +13,8 @@ public class Step1ConstraintsLinkSupport extends LinkSupport<DataModelController
   }
 
   @Override
-  List<UUID> getAvailable() {
-		setModelList(getDataInterface().getCorrespondingSafetyConstraints());
-    List<UUID> result = new ArrayList<>();
-		for (ITableModel constraint : getModelList()) {
-      result.add(constraint.getId());
-    }
-    result.removeAll(fetch());
-    return result;
+  protected List<ITableModel> getModels() {
+    return getDataInterface().getCorrespondingSafetyConstraints();
   }
 
   @Override

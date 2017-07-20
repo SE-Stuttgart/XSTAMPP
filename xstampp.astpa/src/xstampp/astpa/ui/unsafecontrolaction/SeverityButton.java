@@ -3,10 +3,14 @@ package xstampp.astpa.ui.unsafecontrolaction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.interfaces.ISeverityDataModel;
@@ -17,22 +21,38 @@ import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.CellButton;
 
-public class SeverityButton extends CellButton {
+public class SeverityButton extends CellButton implements Listener, PaintListener {
   private ISeverityDataModel model;
-  private ISeverityEntry uca;
+  private ISeverityEntry entry;
   private Severity currentSeverity;
   private Control control;
   private static final Image hoveredImage = Activator
       .getImageDescriptor("/icons/buttons/dropDownCanvas.png").createImage();
 
-  public SeverityButton(ISeverityEntry uca, IDataModel model, Control grid) {
+  /**
+   * 
+   * @param entry
+   * @param model
+   * @param control
+   *          the control which is updated every time the severity changes and used for placing the
+   *          linking shell
+   */
+  public SeverityButton(ISeverityEntry entry, IDataModel model, Control control) {
 
-    super(new Rectangle(0, 0, 38, 16), hoveredImage);
-    this.control = grid;
-    this.uca = uca;
+    super(hoveredImage.getBounds(), hoveredImage);
+    this.control = control;
+    this.entry = entry;
     this.model = (ISeverityDataModel) model;
-    currentSeverity = this.uca.getSeverity();
-    setText(currentSeverity.toString());
+    setEntry(entry);
+  }
+
+  public void setEntry(ISeverityEntry entry) {
+    if (entry != null) {
+      this.entry = entry;
+      currentSeverity = this.entry.getSeverity();
+      setText(this.entry.getSeverity().toString());
+      control.redraw();
+    }
   }
 
   @Override
@@ -42,7 +62,7 @@ public class SeverityButton extends CellButton {
       proposals[i] = new LinkProposal();
       proposals[i].setDescription(Severity.values()[i].getDescription());
       proposals[i].setLabel(Severity.values()[i].toString());
-      if (currentSeverity.ordinal() == i) {
+      if (currentSeverity != null && currentSeverity.ordinal() == i) {
         proposals[i].setSelected(true);
       }
     }
@@ -57,7 +77,7 @@ public class SeverityButton extends CellButton {
           Severity severity = Severity.valueOf(proposal.getLabel());
           if (severity != null) {
             currentSeverity = severity;
-            model.setSeverity(uca, severity);
+            model.setSeverity(entry, severity);
             setText(severity.toString());
             control.redraw();
           }
@@ -73,5 +93,17 @@ public class SeverityButton extends CellButton {
   @Override
   public String getToolTip() {
     return "Press to edit the severity";
+  }
+
+  @Override
+  public void handleEvent(Event e) {
+    if(entry != null) {
+      onButtonDown(new Point(e.x, e.y), new Rectangle(0, 0, e.width, e.height));
+    }
+  }
+
+  @Override
+  public void paintControl(PaintEvent e) {
+    onPaint(e.gc, new Rectangle(e.x, e.y, e.width, e.height), entry != null);
   }
 }
