@@ -263,8 +263,9 @@ public final class ProjectExplorer extends ViewPart
     IConfigurationElement projectExt = ProjectManager.getContainerInstance()
         .getConfigurationFor(projectId);
     projectItem.setData(ProjectExplorer.EXTENSION, projectExt);
+    String identifier = projectExt.getNamespaceIdentifier();
     selector.setReadOnly(!ProjectManager.getContainerInstance().canWriteOnProject(projectId));
-    ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(pluginId,
+    ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin(identifier,
         projectExt.getAttribute("icon")); //$NON-NLS-1$
     projectItem.setImage(imgDesc.createImage());
 

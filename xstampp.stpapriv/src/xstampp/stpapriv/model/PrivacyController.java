@@ -55,7 +55,7 @@ public class PrivacyController extends DataModelController {
   @XmlElement(name = "vulloss")
   private VulLossController vulLossController;
 
-  @XmlElement(name = "cac")
+  @XmlElement(name = "secCac")
   private SecControlActionController controlActionController;
 
   @XmlElement(name = "crc")

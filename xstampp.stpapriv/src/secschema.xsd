@@ -165,7 +165,7 @@
 				<xs:element name="ignoreLTLValue"
 					type="Q1:componentType" maxOccurs="1" minOccurs="0">
 				</xs:element>
-				<xs:element name="cac" maxOccurs="1" minOccurs="0">
+				<xs:element name="secCac" maxOccurs="1" minOccurs="0">
 					<xs:complexType>
 						<xs:all>
 							<xs:element name="controlactions">

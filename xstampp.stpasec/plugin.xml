@@ -9,7 +9,7 @@
             editorId="stpasec.steps.step1_1"
             extension="sec"
             extensionDescriptions="extended STPA Project;STPA Project"
-            icon="icons/branding/project16.png"
+            icon="icons/Logo_small_sec.png"
             id="stpasec.navigation.process"
             name="STPA for Security Project"
             newWizard="stpasec.wizards.NewWizard"
@@ -155,7 +155,7 @@
       <wizard
             category="xstampp.stpasec.export.main"
             class="xstampp.stpasec.wizards.pdf.PdfExportWizard"
-            icon="icons/Logo_small.png"
+            icon="icons/Logo_small_sec.png"
             id="xstampp.stpasec.export.pdf"
             name="%wizard.name.finalReport">
          <description>
@@ -257,7 +257,7 @@
       <wizard
             category="xstampp.stpasec.export.main"
             class="xstampp.stpasec.wizards.stepData.STPAdataWizard"
-            icon="icons/Logo_small.png"
+            icon="icons/Logo_small_sec.png"
             id="stpasec.datawizard"
             name="%wizard.name.allSTPAdata">
          <description>
@@ -490,7 +490,7 @@
       <wizard
             category="astpa"           
             class="xstampp.stpasec.wizards.NewProjectWizard"
-            icon="icons/Logo_small.png"
+            icon="icons/Logo_small_sec.png"
             id="stpasec.wizards.NewWizard"
             name="%wizard.name.STPAProject">
       </wizard>
