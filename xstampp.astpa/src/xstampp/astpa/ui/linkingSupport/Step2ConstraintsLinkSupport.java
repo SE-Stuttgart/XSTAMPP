@@ -18,9 +18,9 @@ public class Step2ConstraintsLinkSupport extends LinkSupport<DataModelController
 
   @Override
   List<UUID> getAvailable() {
-    safetyConstraints = getDataInterface().getCausalFactorController().getSafetyConstraints();
+		setModelList(getDataInterface().getCausalFactorController().getSafetyConstraints());
     List<UUID> result = new ArrayList<>();
-    for (ITableModel constraint : safetyConstraints) {
+		for (ITableModel constraint : getModelList()) {
       result.add(constraint.getId());
     }
     result.removeAll(fetch());
@@ -28,20 +28,9 @@ public class Step2ConstraintsLinkSupport extends LinkSupport<DataModelController
   }
 
   @Override
-  public String getText(UUID id) {
-    for (ITableModel constraint : safetyConstraints) {
-      if (constraint.getId().equals(id)) {
-        return "S2." + constraint.getNumber(); //$NON-NLS-1$
-      }
+	protected String getLiteral() {
+		return "S2.";
     }
-    return null;
-  }
-
-  @Override
-  public String getDescription(UUID id) {
-    ITableModel hazard = getDataInterface().getSafetyConstraint(id);
-    return hazard.getDescription();
-  }
 
   @Override
   public String getTitle() {

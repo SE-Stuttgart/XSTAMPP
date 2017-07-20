@@ -580,21 +580,21 @@ public class SecControlActionController implements IControlActionController{
 		return null;
 	}
 
-	/**
-	 * Gets the list of all corresponding safety constraints
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @return the list of all corresponding safety constraints
-	 */
-	public List<ITableModel> getCorrespondingSafetyConstraints() {
-		List<ITableModel> result = new ArrayList<>();
-    for (ICorrespondingUnsafeControlAction unsafeControlAction : this
-        .getAllUnsafeControlActions()) {
-			result.add(unsafeControlAction.getCorrespondingSafetyConstraint());
-		}
-		return result;
+	@Override
+	  public List<ITableModel> getCorrespondingSafetyConstraints() {
+		return getCorrespondingSafetyConstraints(null);
 	}
+
+	  @Override
+	  public List<ITableModel> getCorrespondingSafetyConstraints(IEntryFilter<IUnsafeControlAction> filter) {
+	    List<ITableModel> result = new ArrayList<>();
+	    for (ICorrespondingUnsafeControlAction unsafeControlAction : this
+	        .getUCAList(filter)) {
+	      result.add(unsafeControlAction.getCorrespondingSafetyConstraint());
+	    }
+	    return result;
+	  }
+
 
 	private void moveRulesInCA() {
 		if (rules != null) {

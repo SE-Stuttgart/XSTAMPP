@@ -72,8 +72,7 @@ public class UnsafeControlAction extends EntryWithSeverity
   public UnsafeControlAction(String description, UnsafeControlActionType type) {
     this.description = description;
     this.type = type;
-    this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(""); //$NON-NLS-1$
-    correspondingSafetyConstraint.setNumber(getNumber());
+    this.correspondingSafetyConstraint = null; //$NON-NLS-1$
     this.id = UUID.randomUUID();
     this.number = 0;
     setSeverity(Severity.S0);
@@ -137,6 +136,7 @@ public class UnsafeControlAction extends EntryWithSeverity
   public CorrespondingSafetyConstraint getCorrespondingSafetyConstraint() {
     if (this.correspondingSafetyConstraint == null) {
       this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(new String());
+      correspondingSafetyConstraint.setNumber(getNumber());
 
     }
     return this.correspondingSafetyConstraint;

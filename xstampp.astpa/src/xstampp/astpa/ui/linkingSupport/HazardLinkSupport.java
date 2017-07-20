@@ -16,9 +16,9 @@ public class HazardLinkSupport<M extends IHazardModel> extends LinkSupport<M> {
 
   @Override
   List<UUID> getAvailable() {
-    List<ITableModel> hazards = getDataInterface().getAllHazards();
+		setModelList(getDataInterface().getAllHazards());
     List<UUID> result = new ArrayList<>();
-    for (ITableModel haz : hazards) {
+		for (ITableModel haz : getModelList()) {
       result.add(haz.getId());
     }
     result.removeAll(fetch());
@@ -26,15 +26,8 @@ public class HazardLinkSupport<M extends IHazardModel> extends LinkSupport<M> {
   }
 
   @Override
-  public String getText(UUID id) {
-    ITableModel hazard = getDataInterface().getHazard(id);
-    return "H-" + hazard.getNumber(); //$NON-NLS-1$
-  }
-
-  @Override
-  public String getDescription(UUID id) {
-    ITableModel hazard = getDataInterface().getHazard(id);
-    return hazard.getDescription();
+	protected String getLiteral() {
+		return "H-";
   }
 
   @Override

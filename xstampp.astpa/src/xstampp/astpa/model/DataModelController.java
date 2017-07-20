@@ -846,7 +846,13 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
-    return this.getControlActionController().getAllUnsafeControlActions();
+    return this.getControlActionController().getUCAList(new IEntryFilter<IUnsafeControlAction>() {
+
+        @Override
+        public boolean check(IUnsafeControlAction model) {
+          return !getLinksOfUCA(model.getId()).isEmpty();
+        }
+      });
   }
 
   /**
@@ -968,7 +974,13 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ITableModel> getCorrespondingSafetyConstraints() {
-    return this.getControlActionController().getCorrespondingSafetyConstraints();
+    return this.getControlActionController().getCorrespondingSafetyConstraints(new IEntryFilter<IUnsafeControlAction>() {
+
+        @Override
+        public boolean check(IUnsafeControlAction model) {
+          return !getLinksOfUCA(model.getId()).isEmpty();
+        }
+      });
   }
 
   @Override

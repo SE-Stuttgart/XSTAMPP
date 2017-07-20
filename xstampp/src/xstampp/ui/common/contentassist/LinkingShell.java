@@ -36,12 +36,13 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class LinkingShell {
+class LinkingShell {
 
   private LinkProposal[] proposals;
   private LinkProposal[] currentContent;
@@ -54,7 +55,8 @@ public class LinkingShell {
   private java.util.List<Label> descChildren;
 
   public LinkingShell() {
-    this.mouseLoc = new Point(0, 0);
+	  
+    this.mouseLoc = Display.getDefault().getCursorLocation();
     descShellSize = new Point(300, 300);
     labelShellSize = new Point(200, 300);
     descChildren = new ArrayList<>();

@@ -25,9 +25,9 @@ import xstampp.astpa.model.hazacc.ATableModel;
  */
 public class CorrespondingSafetyConstraint extends ATableModel {
 
-  @XmlElement
-  private String text;
-  
+	@XmlElement
+	private String text;
+
 	/**
 	 * Constructor of a corresponding safety constraint
 	 * 
@@ -37,7 +37,7 @@ public class CorrespondingSafetyConstraint extends ATableModel {
 	 * @author Fabian Toth
 	 */
 	public CorrespondingSafetyConstraint(String text) {
-		super(text,null,0);
+		super(text, null, 0);
 	}
 
 	/**
@@ -48,18 +48,28 @@ public class CorrespondingSafetyConstraint extends ATableModel {
 	public CorrespondingSafetyConstraint() {
 		// empty constructor for JAXB
 	}
-	
+
 	@Override
 	public String getTitle() {
-	  if(text != null) {
-	    this.setTitle(text);
-	    text = null;
-	  }
-	  return super.getTitle();
+		return this.text;
 	}
 
-  public void prepareForSave() {
-    getTitle();
-    setLinks(null);
-  }
+	@Override
+	public String setTitle(String title) {
+		if (this.text == null || !this.text.equals(title)) {
+			String result = this.text;
+			this.text = title;
+			return result;
+		}
+		return null;
+	}
+	
+	public String getText() {
+		return text;
+	}
+
+	public void prepareForSave() {
+		getTitle();
+		setLinks(null);
+	}
 }

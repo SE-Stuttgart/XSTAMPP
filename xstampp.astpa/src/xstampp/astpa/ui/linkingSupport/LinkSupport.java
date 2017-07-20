@@ -6,21 +6,34 @@ import java.util.UUID;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
 import xstampp.astpa.model.interfaces.ILinkModel;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 
-public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
-    implements IContentProposalListener {
+public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter implements IContentProposalListener {
   private TableViewer displayedList;
   private UUID[] currentContent;
   private UUID currentLinkedId;
@@ -28,6 +41,8 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   private java.util.List<UUID> available;
   private List<Listener> changeListeners;
   private ObserverValue type;
+	private List<ITableModel> modelList;
+	private Composite linkComp;
 
   public LinkSupport(M dataInterface, ObserverValue type) {
     this.dataInterface = dataInterface;
@@ -61,11 +76,13 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    *         didn't match any current linked item
    */
   public final int indexOf(String label) {
-    if (label != null) {
-      for (int i = 0; i < currentContent.length; i++) {
-        if (label.equals(getDescription(i))) {
-          return i;
+		if (label != null && available != null) {
+			int index = 0;
+			for (UUID model : available) {
+				if (label.equals(getText(model))) {
+					return index;
         }
+				index++;
       }
     }
     return -1;
@@ -98,8 +115,8 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   public void proposalAccepted(IContentProposal proposal) {
 
     int indexOf = indexOf(proposal.getLabel());
-    if (indexOf > 0) {
-      UUID uuid = getCurrentContent()[indexOf];
+		if (indexOf >= 0) {
+			UUID uuid = available.get(indexOf);
       getDataInterface().getLinkController().addLink(getLinkType(), getCurrentId(), uuid);
       notifyChangeListeners();
     }
@@ -121,8 +138,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    */
   public boolean unlink(int index) {
     UUID uuid = getCurrentContent()[index];
-    boolean deleteLink = getDataInterface().getLinkController().deleteLink(getLinkType(),
-        getCurrentId(), uuid);
+		boolean deleteLink = getDataInterface().getLinkController().deleteLink(getLinkType(), getCurrentId(), uuid);
     if (deleteLink) {
       notifyChangeListeners();
     }
@@ -130,11 +146,12 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   }
 
   /**
-   * Adds a {@link Listener} to the list of listeners that get notified whenever the list is
-   * Modified meaning a link is added or removed.
+	 * Adds a {@link Listener} to the list of listeners that get notified whenever
+	 * the list is Modified meaning a link is added or removed.
    * 
    * @param listener
-   *          A listener that should be called whenever the list of links is changed
+	 *            A listener that should be called whenever the list of links is
+	 *            changed
    */
   public void addChangeListener(Listener listener) {
     this.changeListeners.add(listener);
@@ -150,12 +167,26 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
 
   abstract java.util.List<UUID> getAvailable();
 
-  public abstract String getText(UUID id);
+	public String getText(UUID id) {
+		for (ITableModel model : modelList) {
+			if (model.getId().equals(id)) {
+				return getLiteral() + model.getNumber();
+			}
+		}
+		return null;
+	}
 
-  public abstract String getDescription(UUID id);
+	public String getDescription(UUID id) {
+		for (ITableModel model : modelList) {
+			if (model.getId().equals(id)) {
+				return model.getDescription(); // $NON-NLS-1$
+			}
+		}
+		return null;
+	}
 
-  public abstract String getTitle();
-
+	protected abstract String getLiteral();
+	protected abstract String getTitle();
   public ObserverValue getLinkType() {
     return type;
   }
@@ -175,9 +206,68 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     AutoCompleteField scLinking = new AutoCompleteField(proposals,
         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
     scLinking.setProposalListener(this);
-    Point point = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
-        .toDisplay(new Point(e.x, e.y));
-    scLinking.setPopupPosition(point);
+//		Point point = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().toDisplay(new Point(e.x, e.y));
+//		scLinking.setPopupPosition(point);
     scLinking.openPopup();
   }
+
+	public List<ITableModel> getModelList() {
+		if (modelList == null) {
+			return new ArrayList<>();
+		}
+		return modelList;
+	}
+
+	public void setModelList(List<ITableModel> modelList) {
+		this.modelList = modelList;
+	}
+	
+	public void createLinkWidget(Composite parent) {
+		linkComp = new Composite(parent, SWT.BORDER);
+		linkComp.setLayout(new GridLayout(3, false));
+		Label linkTitle = new Label(linkComp, SWT.WRAP);
+		linkTitle.setText(getTitle());
+		linkTitle.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		Button linkButton = new Button(linkComp, SWT.PUSH);
+		linkButton.setImage(CommonTableView.ADD_SMALL);
+		linkButton.addSelectionListener(this);
+		linkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
+		Button unlinkButton = new Button(linkComp, SWT.PUSH);
+		unlinkButton.setImage(CommonTableView.DELETE_SMALL);
+		unlinkButton.addSelectionListener(this);
+		unlinkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
+
+		Composite linkTable = new Composite(linkComp, SWT.NONE);
+		linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		TableColumnLayout tableColumnLayout = new TableColumnLayout();
+		linkTable.setLayout(tableColumnLayout);
+
+		// the table viewer
+		TableViewer tableViewer = new TableViewer(linkTable,
+				SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.SINGLE);
+		setDisplayedList(tableViewer);
+		// Listener for showing the description of the selected accident
+		// tableViewer.addSelectionChangedListener(new ..);
+
+		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.getTable().setLinesVisible(false);
+		tableViewer.getTable().setHeaderVisible(false);
+		ColumnViewerToolTipSupport.enableFor(tableViewer);
+		TableViewerColumn linkColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		linkColumn.getColumn().setText(Messages.ID);
+		final int idWeight = 5;
+		final int idMinWidth = 39;
+		tableColumnLayout.setColumnData(linkColumn.getColumn(), new ColumnWeightData(idWeight, idMinWidth, true));
+		linkColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getToolTipText(Object element) {
+				return getDescription((UUID) element);
+			}
+
+			@Override
+			public String getText(Object element) {
+				return getText((UUID) element);
+			}
+		});
+	}
 }

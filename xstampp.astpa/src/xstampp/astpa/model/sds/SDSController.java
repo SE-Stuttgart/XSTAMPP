@@ -254,15 +254,15 @@ public class SDSController extends Observable implements ISDSController {
     List<ITableModel> result = new ArrayList<>();
     switch (type) {
     case DESIGN_REQUIREMENT: {
-      result.addAll(designRequirements);
+      result.addAll(getDesignRequirements());
       break;
     }
     case DESIGN_REQUIREMENT_STEP1: {
-      result.addAll(designRequirementsStep1);
+      result.addAll(getDesignRequirementsStep1());
       break;
     }
     case DESIGN_REQUIREMENT_STEP2: {
-      result.addAll(designRequirementsStep2);
+      result.addAll(getDesignRequirementsStep2());
       break;
     }
     default:
