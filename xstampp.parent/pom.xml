@@ -53,11 +53,6 @@
             <url>http://download.eclipse.org/technology/nebula/snapshot</url>
             <layout>p2</layout>
         </repository>
-		<repository>
-			<id>eclipse-luna</id>
-			<url>http://download.eclipse.org/releases/luna</url>
-			<layout>p2</layout>
-		</repository>
 		
 		<repository>
 			<id>eclipse-neon</id>
