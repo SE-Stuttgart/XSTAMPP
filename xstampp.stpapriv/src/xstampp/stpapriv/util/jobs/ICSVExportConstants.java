@@ -13,7 +13,7 @@ package xstampp.stpapriv.util.jobs;
 import java.util.ArrayList;
 
 import messages.Messages;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 
 /**
  * @since 2.0
@@ -34,14 +34,14 @@ public interface ICSVExportConstants {
 
 		{
 			this.add(Messages.SystemDescription);
-			this.add(SecMessages.Losses);
-			this.add(SecMessages.Vulnerabilities);
-			this.add(SecMessages.SecurityConstraints);
+			this.add(PrivMessages.Losses);
+			this.add(PrivMessages.Vulnerabilities);
+			this.add(PrivMessages.SecurityConstraints);
 			this.add(Messages.SystemGoals);
 			this.add(Messages.DesignRequirements);
 			this.add(Messages.ControlActions);
-			this.add(SecMessages.CorrespondingSecurityConstraints);
-			this.add(SecMessages.UnsecureControlActionsTable);
+			this.add(PrivMessages.CorrespondingSecurityConstraints);
+			this.add(PrivMessages.UnsecureControlActionsTable);
 			this.add(Messages.CausalFactorsTable);
 			this.add("Results");
 		}

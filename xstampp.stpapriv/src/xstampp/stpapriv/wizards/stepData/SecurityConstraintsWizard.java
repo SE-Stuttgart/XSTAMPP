@@ -13,7 +13,7 @@ package xstampp.stpapriv.wizards.stepData;
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.sds.SecurityConstraintView;
 import xstampp.stpapriv.util.jobs.ICSVExportConstants;
 import xstampp.ui.wizards.CSVExportPage;
@@ -34,7 +34,7 @@ public class SecurityConstraintsWizard extends AbstractExportWizard {
 		super(SecurityConstraintView.ID);
 		String[] filters = new String[] { "*.csv" }; //$NON-NLS-1$
 		this.setExportPage(new CSVExportPage(filters,
-				SecMessages.SecurityConstraints + Messages.AsDataSet, Activator.PLUGIN_ID));
+				PrivMessages.SecurityConstraints + Messages.AsDataSet, Activator.PLUGIN_ID));
 	}
 
 	@Override

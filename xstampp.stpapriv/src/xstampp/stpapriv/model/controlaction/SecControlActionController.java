@@ -48,7 +48,7 @@ import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.vulloss.VulLossController;
 
 /**
@@ -634,7 +634,7 @@ public class SecControlActionController implements IControlActionController{
 				StringBuffer linkString = new StringBuffer();
 				String id = "";
 				if (linkedHazards.size() == 0) {
-					linkString.append(SecMessages.ControlActionController_NotVulnerable);
+					linkString.append(PrivMessages.ControlActionController_NotVulnerable);
 				} else {
 
 					id = Integer.toString(getUCANumber(unsafeControlAction.getId()));
@@ -660,7 +660,7 @@ public class SecControlActionController implements IControlActionController{
 						}
 						Collections.sort(linkedHazards);
 						if (linkedHazards.size() == 0) {
-							linkString.append(SecMessages.ControlActionController_NotVulnerable);
+							linkString.append(PrivMessages.ControlActionController_NotVulnerable);
 						} else {
 
 							for (int i = 0; i < linkedHazards.size(); i++) {

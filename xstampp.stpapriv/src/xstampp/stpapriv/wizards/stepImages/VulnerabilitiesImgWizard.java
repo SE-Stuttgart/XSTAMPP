@@ -13,7 +13,7 @@ package xstampp.stpapriv.wizards.stepImages;
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.vulloss.VulnerabilityView;
 import xstampp.ui.wizards.TableExportPage;
 
@@ -23,7 +23,7 @@ public class VulnerabilitiesImgWizard extends AbstractExportWizard {
 		super(VulnerabilityView.ID);
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$
 		this.setExportPage(new TableExportPage(filters,
-				SecMessages.Vulnerabilities + Messages.AsImage, Activator.PLUGIN_ID));
+				PrivMessages.Vulnerabilities + Messages.AsImage, Activator.PLUGIN_ID));
 	}
 
 	@Override

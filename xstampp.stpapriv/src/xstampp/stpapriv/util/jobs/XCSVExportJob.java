@@ -31,7 +31,7 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.PrivacyController;
 
 public class XCSVExportJob extends Job {
@@ -51,8 +51,8 @@ public class XCSVExportJob extends Job {
 			this.add(Messages.ContextTables);
 			this.add(Messages.LTLFormulasTable);
 			this.add("Refined Rules Table");
-			this.add(SecMessages.RefinedSecurityConstraintsTable);
-			this.add(SecMessages.RefinedUnsecureControlActions);
+			this.add(PrivMessages.RefinedSecurityConstraintsTable);
+			this.add(PrivMessages.RefinedUnsecureControlActions);
 		}
 		
 	};
@@ -212,7 +212,7 @@ public class XCSVExportJob extends Job {
 		writer.println();
 	}
 	private void getRUCATableString(PrintWriter writer){
-		writer.println(SecMessages.RefinedUnsecureControlActions + " of project " + controller.getProjectName());
+		writer.println(PrivMessages.RefinedUnsecureControlActions + " of project " + controller.getProjectName());
 		ArrayList<AbstractLTLProvider> list_notProvided;
 		ArrayList<AbstractLTLProvider> list_provided;
 		ArrayList<AbstractLTLProvider> list_wrongProvided;
@@ -291,7 +291,7 @@ public class XCSVExportJob extends Job {
 		
 	}
 	private void getRefinedConstraintsString(PrintWriter writer){
-		writer.println(SecMessages.RefinedSecurityConstraintsTable + " of project " + controller.getProjectName());
+		writer.println(PrivMessages.RefinedSecurityConstraintsTable + " of project " + controller.getProjectName());
 		writer.print("ID" +seperator);
 		writer.println("Refined Privacy Constraint");
 		for(AbstractLTLProvider provider: controller.getLTLPropertys()){

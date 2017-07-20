@@ -19,7 +19,7 @@ import java.util.Observable;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.unsecurecontrolaction.UnsecureControlActionsView;
 import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -40,8 +40,8 @@ public class RefinedUCAView extends CommonGridView<IExtendedDataModel> {
 	private static final String CA="control action";
 	private static final String UCA="refined privacy-compromising control actions";
   private static final String[] columns = new String[] {
-      Messages.ControlAction, SecMessages.NotGiven2,
-      SecMessages.GivenIncorrectly2, SecMessages.WrongTiming2,
+      Messages.ControlAction, PrivMessages.NotGiven2,
+      PrivMessages.GivenIncorrectly2, PrivMessages.WrongTiming2,
       Messages.StoppedTooSoon };
 	private static final String ID = "xstpapriv.editors.refinedUCA";
 	

@@ -13,7 +13,7 @@ package xstampp.stpapriv.wizards.stepImages;
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.vulloss.LossesView;
 import xstampp.ui.wizards.TableExportPage;
 
@@ -23,7 +23,7 @@ public class LossesImgWizard extends AbstractExportWizard {
 		super(LossesView.ID);
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 		this.setExportPage(new TableExportPage(filters,
-				SecMessages.Losses + Messages.AsImage, Activator.PLUGIN_ID));
+				PrivMessages.Losses + Messages.AsImage, Activator.PLUGIN_ID));
 	}
 
 	@Override

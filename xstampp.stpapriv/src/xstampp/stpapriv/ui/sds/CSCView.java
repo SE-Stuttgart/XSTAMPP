@@ -23,7 +23,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.ui.sds.AbstractFilteredTableView;
 import xstampp.model.ObserverValue;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.SecATableFilter;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUserProject;
@@ -47,8 +47,8 @@ public class CSCView extends AbstractFilteredTableView {
 	 * 
 	 */
 	public CSCView() {
-		super(new SecATableFilter(), new String[] { Messages.ID, SecMessages.UnsecureControlActions, Messages.ID,
-				SecMessages.CorrespondingSecurityConstraints });
+		super(new SecATableFilter(), new String[] { Messages.ID, PrivMessages.UnsecureControlActions, Messages.ID,
+				PrivMessages.CorrespondingSecurityConstraints });
 		setColumnWeights(new int[] { -1, 5, -1, 5 });
 		addEditingSupport(3, new EditSupportProvider() {
 			@Override
@@ -82,7 +82,7 @@ public class CSCView extends AbstractFilteredTableView {
 
 	@Override
 	public String getTitle() {
-		return SecMessages.CorrespondingSecurityConstraints;
+		return PrivMessages.CorrespondingSecurityConstraints;
 	}
 
 	@Override

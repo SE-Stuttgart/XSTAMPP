@@ -36,7 +36,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.IDataModel;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.PrivacyController;
 import xstampp.stpapriv.model.results.ConstraintResult;
 import xstampp.util.BufferedCSVWriter;
@@ -96,15 +96,15 @@ public class StpaCSVExport extends Job {
 			}
 			if ((type & ICSVExportConstants.ACCIDENT) != 0) {
 				this.exportAsCSV(this.model.getAllAccidents(), csvWriter,
-						SecMessages.Losses);
+						PrivMessages.Losses);
 			}
 			if ((type & ICSVExportConstants.HAZARD) != 0) {
 				this.exportAsCSV(this.model.getAllHazards(), csvWriter,
-						SecMessages.Vulnerabilities);
+						PrivMessages.Vulnerabilities);
 			}
 			if ((type & ICSVExportConstants.SAFETY_CONSTRAINT) != 0) {
 				this.exportAsCSV(this.model.getAllSafetyConstraints(),"SR0.",
-						csvWriter, SecMessages.SecurityConstraints);
+						csvWriter, PrivMessages.SecurityConstraints);
 			}
 			if ((type & ICSVExportConstants.SYSTEM_GOAL) != 0) {
 				this.exportAsCSV(this.model.getAllSystemGoals(), csvWriter,
@@ -119,10 +119,10 @@ public class StpaCSVExport extends Job {
 						Messages.ControlActions);
 			}
 			if ((type & ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS) != 0) {
-				this.writeCscCSV(csvWriter,SecMessages.CorrespondingSecurityConstraints);
+				this.writeCscCSV(csvWriter,PrivMessages.CorrespondingSecurityConstraints);
 			}
 			if ((type & ICSVExportConstants.UNSAFE_CONTROL_ACTION) != 0) {
-				this.writeUCACSV(csvWriter, SecMessages.UnsecureControlActionsTable);
+				this.writeUCACSV(csvWriter, PrivMessages.UnsecureControlActionsTable);
 			}
 			if ((type & ICSVExportConstants.CAUSAL_FACTOR) != 0) {
 				this.writeCausalFactorsCSV(csvWriter,
@@ -258,10 +258,10 @@ public class StpaCSVExport extends Job {
 		writer.newLine();
 		writer.writeCell(Messages.Component);
 		writer.writeCell(Messages.CausalFactors);
-    writer.writeCell(SecMessages.UnsecureControlActions);
-    writer.writeCell(SecMessages.VulnerabilityLinks);
+    writer.writeCell(PrivMessages.UnsecureControlActions);
+    writer.writeCell(PrivMessages.VulnerabilityLinks);
     writer.writeCell("Scenario");
-		writer.writeCell(SecMessages.SecurityConstraints);
+		writer.writeCell(PrivMessages.SecurityConstraints);
 		writer.write(Messages.NotesSlashRationale);
 		writer.newLine();
 		boolean writeNote = true;
@@ -350,9 +350,9 @@ public class StpaCSVExport extends Job {
 		writer.write(this.model.getProjectName());
 		writer.newLine();
 		writer.writeCell(Messages.ControlAction);
-		writer.writeCell(SecMessages.NotGiven2);
-		writer.writeCell(SecMessages.GivenIncorrectly2);
-		writer.writeCell(SecMessages.WrongTiming2);
+		writer.writeCell(PrivMessages.NotGiven2);
+		writer.writeCell(PrivMessages.GivenIncorrectly2);
+		writer.writeCell(PrivMessages.WrongTiming2);
 		writer.write(Messages.StoppedTooSoon);
 		writer.newLine();
 		writer.newLine();
@@ -466,9 +466,9 @@ public class StpaCSVExport extends Job {
 		csvWriter.write(this.model.getProjectName());
 		csvWriter.newLine();
 		csvWriter.writeCell(Messages.ID);
-		csvWriter.writeCell(SecMessages.UnsecureControlActions);
+		csvWriter.writeCell(PrivMessages.UnsecureControlActions);
 		csvWriter.writeCell(Messages.ID);
-		csvWriter.writeCell(SecMessages.CorrespondingSecurityConstraints);
+		csvWriter.writeCell(PrivMessages.CorrespondingSecurityConstraints);
 		csvWriter.newLine();
 		for (ICorrespondingUnsafeControlAction data : this.model
 				.getAllUnsafeControlActions()) {

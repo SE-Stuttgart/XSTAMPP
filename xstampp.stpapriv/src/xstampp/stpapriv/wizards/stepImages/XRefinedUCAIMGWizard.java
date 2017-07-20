@@ -13,7 +13,7 @@ package xstampp.stpapriv.wizards.stepImages;
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.ui.wizards.TableExportPage;
 
 public class XRefinedUCAIMGWizard extends AbstractExportWizard {
@@ -22,14 +22,14 @@ public class XRefinedUCAIMGWizard extends AbstractExportWizard {
 		super("");
 		String[] filters = new String[] {"*.png" ,"*.bmp"}; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				SecMessages.RefinedUnsecureControlActions + Messages.AsImage, Activator.PLUGIN_ID)); //$NON-NLS-1$
+				PrivMessages.RefinedUnsecureControlActions + Messages.AsImage, Activator.PLUGIN_ID)); //$NON-NLS-1$
 		
 	}
 
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopRefinedUnsafeControlActions.xsl", false,SecMessages.RefinedUnsecureControlActions, false); ////$NON-NLS-1$
+				"/fopRefinedUnsafeControlActions.xsl", false,PrivMessages.RefinedUnsecureControlActions, false); ////$NON-NLS-1$
 	}
 }
 

@@ -49,7 +49,7 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.PrivacyController;
 import xstampp.stpapriv.model.controlaction.UnsecureControlAction;
 import xstampp.ui.common.ProjectManager;
@@ -139,8 +139,8 @@ public class STPAWordJob extends XstamppJob {
 			addDescription(document);
 
 			addTableModel(controller.getAllSystemGoals(), "",Messages.SystemGoals, document);
-			addTableModel(controller.getAllAccidents(), "",SecMessages.Losses, document);
-			addTableModel(controller.getAllHazards(), "",SecMessages.Vulnerabilities, document);
+			addTableModel(controller.getAllAccidents(), "",PrivMessages.Losses, document);
+			addTableModel(controller.getAllHazards(), "",PrivMessages.Vulnerabilities, document);
 			addTableModel(controller.getAllDesignRequirements(), "",Messages.DesignRequirements, document);
 			addPicture(document, Messages.ControlStructure, normalCSArray,csRatio);
 			addPicture(document, Messages.ControlStructureDiagramWithProcessModel, pmCSArray,csPmRatio);
@@ -231,14 +231,14 @@ public class STPAWordJob extends XstamppJob {
 	 * @param paragraph 
 	 */
 	private void addUCATable(XWPFDocument document,List<IControlAction> list){
-		addNewTitle(SecMessages.UnsecureControlActionsTable, document);
+		addNewTitle(PrivMessages.UnsecureControlActionsTable, document);
 		XWPFTable ucaTable = document.createTable(1,5);
 		XWPFTableRow row = ucaTable.getRow(0);
 		row.getCell(0);
 		
 		String[] heads = new String[] {
-				Messages.ControlAction, SecMessages.NotGiven2,
-				SecMessages.GivenIncorrectly2, SecMessages.WrongTiming2,
+				Messages.ControlAction, PrivMessages.NotGiven2,
+				PrivMessages.GivenIncorrectly2, PrivMessages.WrongTiming2,
 				Messages.StoppedTooSoon };
 		XWPFRun run;
 		XWPFParagraph paragraph;

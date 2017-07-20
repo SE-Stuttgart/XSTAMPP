@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.Status;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 
 import xstampp.model.IDataModel;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.XstamppJob;
 
@@ -60,7 +60,7 @@ public class SaveJob extends XstamppJob {
 	 *            JAXBContext
 	 */
 	public SaveJob(File file, IDataModel controller) {
-		super(SecMessages.saveSec);
+		super(PrivMessages.saveSec);
 		this.file = file;
 		this.controller = controller;
 		
@@ -74,7 +74,7 @@ public class SaveJob extends XstamppJob {
 	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask(SecMessages.savingSec, IProgressMonitor.UNKNOWN);
+		monitor.beginTask(PrivMessages.savingSec, IProgressMonitor.UNKNOWN);
 		JAXBContext context;
 		
       File tmpFile = new File(file.getParentFile(),"$"+file.getName()+".tmp");

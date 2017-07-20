@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**
@@ -69,6 +69,6 @@ public class UcaContentProvider  implements ITableContentProvider<ITableModel> {
 
   @Override
   public String getEmptyMessage() {
-    return SecMessages.NotVulnerable;
+    return PrivMessages.NotVulnerable;
   }
 }

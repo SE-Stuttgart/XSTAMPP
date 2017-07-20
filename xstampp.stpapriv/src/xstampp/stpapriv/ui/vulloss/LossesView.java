@@ -14,7 +14,7 @@
 package xstampp.stpapriv.ui.vulloss;
 
 import xstampp.astpa.ui.acchaz.AccidentsView;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 
 /**
  * @author Jarkko Heidenwag
@@ -35,7 +35,7 @@ public class LossesView extends AccidentsView {
 	 * 
 	 */
 	public LossesView() {
-		 super(SecMessages.Losses);
+		 super(PrivMessages.Losses);
 
 	}
 
@@ -46,7 +46,7 @@ public class LossesView extends AccidentsView {
 
 	@Override
 	public String getTitle() {
-		return SecMessages.Losses;
+		return PrivMessages.Losses;
 	}
 
 }

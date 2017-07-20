@@ -13,7 +13,7 @@ package xstampp.stpapriv.wizards.pdf;
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.vulloss.LossesView;
 import xstampp.ui.wizards.TableExportPage;
 
@@ -23,13 +23,13 @@ public class LossesPDFWizard extends AbstractExportWizard {
 		super(LossesView.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				SecMessages.Losses + Messages.AsPDF, Activator.PLUGIN_ID));
+				PrivMessages.Losses + Messages.AsPDF, Activator.PLUGIN_ID));
 		
 	}
 
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopAccidents.xsl", false, SecMessages.Losses, false); ////$NON-NLS-1$
+				"/fopAccidents.xsl", false, PrivMessages.Losses, false); ////$NON-NLS-1$
 	}
 }

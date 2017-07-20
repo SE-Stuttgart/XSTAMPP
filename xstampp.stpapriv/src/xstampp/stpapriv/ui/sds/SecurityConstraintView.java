@@ -14,7 +14,7 @@
 package xstampp.stpapriv.ui.sds;
 
 import xstampp.astpa.ui.sds.SafetyConstraintView;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 
 /**
  * @author Jarkko Heidenwag
@@ -23,7 +23,7 @@ import xstampp.stpapriv.messages.SecMessages;
 public class SecurityConstraintView extends SafetyConstraintView {
 
 	public SecurityConstraintView() {
-    super(SecMessages.SecurityConstraints);
+    super(PrivMessages.SecurityConstraints);
   }
 
   /**
@@ -39,7 +39,7 @@ public class SecurityConstraintView extends SafetyConstraintView {
 
 	@Override
 	public String getTitle() {
-		return SecMessages.SecurityConstraints;
+		return PrivMessages.SecurityConstraints;
 	}
 
 }

@@ -13,7 +13,7 @@ package xstampp.stpapriv.wizards.pdf;
 import messages.Messages;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
-import xstampp.stpapriv.messages.SecMessages;
+import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.sds.CSCView;
 import xstampp.ui.wizards.TableExportPage;
 
@@ -23,12 +23,12 @@ public class CSCPDFWizard extends AbstractExportWizard {
 		super(CSCView.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 
 		this.setExportPage(new TableExportPage(filters,
-				SecMessages.CorrespondingSecurityConstraints + Messages.AsPDF, Activator.PLUGIN_ID));
+				PrivMessages.CorrespondingSecurityConstraints + Messages.AsPDF, Activator.PLUGIN_ID));
 	}
 
 	@Override
 	public boolean performFinish() {
 		return this.performXSLExport(				
-				"/fopCorrespondingSafetyConstraints.xsl", false, SecMessages.CorrespondingSecurityConstraints, false); ////$NON-NLS-1$
+				"/fopCorrespondingSafetyConstraints.xsl", false, PrivMessages.CorrespondingSecurityConstraints, false); ////$NON-NLS-1$
 	}
 }
