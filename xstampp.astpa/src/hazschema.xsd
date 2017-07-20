@@ -31,7 +31,7 @@
 				<xs:element name="hazacc" maxOccurs="1" minOccurs="0">
 					<xs:complexType>
 						<xs:all>
-							<xs:element name="accidents">
+							<xs:element name="accidents" maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="accident" minOccurs="0"
@@ -49,7 +49,7 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="hazards">
+							<xs:element name="hazards" maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="hazard" minOccurs="0" maxOccurs="unbounded">
@@ -147,7 +147,7 @@
 						<xs:all>
 							<xs:element name="component" type="Q1:componentType"
 								maxOccurs="1" minOccurs="0" />
-							<xs:element name="connections">
+							<xs:element name="connections" maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="connection" minOccurs="0"
@@ -186,7 +186,7 @@
 				<xs:element name="cac" maxOccurs="1" minOccurs="0">
 					<xs:complexType>
 						<xs:all>
-							<xs:element name="controlactions">
+							<xs:element name="controlactions" maxOccurs="1" minOccurs="0">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="controlaction"
@@ -396,21 +396,24 @@
 							minOccurs="0">
 							<xs:complexType>
 								<xs:all>
-									<xs:element name="hazardIds" maxOccurs="1"
-										minOccurs="0" type="Q1:idList">
+									<xs:element name="hazardIds"
+										maxOccurs="1" minOccurs="0" type="Q1:idList">
 
 									</xs:element>
-									<xs:element name="constraintText" type="xs:string"
-										maxOccurs="1" minOccurs="0">
+									<xs:element name="constraintText"
+										type="xs:string" maxOccurs="1" minOccurs="0">
 									</xs:element>
-									<xs:element name="note" type="xs:string" maxOccurs="1"
-										minOccurs="0">
+									<xs:element name="note"
+										type="xs:string" maxOccurs="1" minOccurs="0">
 									</xs:element>
-									<xs:element name="ucaLink" type="xs:string"
-										maxOccurs="1" minOccurs="0">
+									<xs:element name="ucaLink"
+										type="xs:string" maxOccurs="1" minOccurs="0">
 									</xs:element>
-									<xs:element name="scenarioLinks" maxOccurs="1"
-										minOccurs="0" type="Q1:idList">
+									<xs:element name="scenarioLinks"
+										maxOccurs="1" minOccurs="0" type="Q1:idList">
+									</xs:element>
+									<xs:element name="constraintId"
+										type="xs:string" maxOccurs="1" minOccurs="0">
 									</xs:element>
 								</xs:all>
 								<xs:attribute name="id" type="xs:string" use="required">
@@ -433,10 +436,10 @@
 
 	<xs:complexType name="sdsType">
 		<xs:all>
-			<xs:element type="xs:nonNegativeInteger" name="number" />
-			<xs:element type="xs:string" name="title" />
-			<xs:element type="xs:string" name="description" />
-			<xs:element type="xs:string" name="id" />
+			<xs:element type="xs:nonNegativeInteger" name="number" maxOccurs="1" minOccurs="0"/>
+			<xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="0"/>
+			<xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="0"/>
+			<xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="0"/>
 		</xs:all>
 		<xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
 	</xs:complexType>
@@ -694,8 +697,16 @@
 										maxOccurs="1" minOccurs="0">
 										<xs:complexType>
 											<xs:all>
-												<xs:element type="xs:string" name="text" />
-												<xs:element type="xs:string" name="id" />
+												<xs:element
+													type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
+												<xs:element
+													type="xs:string" name="id" />
+												<xs:element
+													name="number" type="xs:int">
+												</xs:element>
+												<xs:element
+													name="title" type="xs:string" maxOccurs="1" minOccurs="0">
+												</xs:element>
 											</xs:all>
 										</xs:complexType>
 									</xs:element>

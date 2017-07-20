@@ -257,8 +257,19 @@ public interface IControlActionController {
    * @author Fabian Toth
    * 
    * @return the list of all corresponding safety constraints
+ * @deprecated Use {@link #getCorrespondingSafetyConstraints(IEntryFilter)} instead
    */
   List<ITableModel> getCorrespondingSafetyConstraints();
+
+/**
+   * Gets the list of all corresponding safety constraints
+   * 
+   * @author Fabian Toth
+ * @param filter TODO
+   * 
+   * @return the list of all corresponding safety constraints
+   */
+  List<ITableModel> getCorrespondingSafetyConstraints(IEntryFilter<IUnsafeControlAction> filter);
 
   /**
    * Prepares the control actions for the export

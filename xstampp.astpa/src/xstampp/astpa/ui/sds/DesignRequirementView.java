@@ -14,6 +14,8 @@ package xstampp.astpa.ui.sds;
 import java.util.EnumSet;
 import java.util.UUID;
 
+import org.eclipse.swt.widgets.Composite;
+
 import messages.Messages;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.hazacc.ATableModel;
@@ -45,7 +47,6 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
 
   protected void initialize() {
     setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT));
-    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface()));
   }
 
   @Override
@@ -54,6 +55,11 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
     this.getDataInterface().removeDesignRequirement(model.getId());
   }
 
+  @Override
+	public void createCommonTableView(Composite parent, String tableHeader) {
+	    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface()));
+		super.createCommonTableView(parent, tableHeader);
+	}
   /**
    * @author Jarkko Heidenwag
    * 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lifecycleMappingMetadata>
+  <pluginExecutions>
+    <pluginExecution>
+      <pluginExecutionFilter>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <versionRange>2.5</versionRange>
+        <goals>
+          <goal>clean</goal>
+        </goals>
+      </pluginExecutionFilter>
+      <action>
+        <ignore />
+      </action>
+    </pluginExecution>
+    <pluginExecution>
+      <pluginExecutionFilter>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <versionRange>0.24.0</versionRange>
+        <goals>
+          <goal>build-qualifier-aggregator</goal>
+          <goal>validate-version</goal>
+          <goal>build-qualifier</goal>
+          <goal>validate-id</goal>
+        </goals>
+      </pluginExecutionFilter>
+      <action>
+        <ignore />
+      </action>
+    </pluginExecution>
+    <pluginExecution>
+      <pluginExecutionFilter>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <versionRange>0.24.0</versionRange>
+        <goals>
+          <goal>compile</goal>
+        </goals>
+      </pluginExecutionFilter>
+      <action>
+        <ignore />
+      </action>
+    </pluginExecution>
+  </pluginExecutions>
+</lifecycleMappingMetadata>

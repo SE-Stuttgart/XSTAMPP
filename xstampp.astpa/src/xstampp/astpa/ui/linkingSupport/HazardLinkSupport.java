@@ -10,41 +10,34 @@ import xstampp.model.ObserverValue;
 
 public class HazardLinkSupport<M extends IHazardModel> extends LinkSupport<M> {
 
-  public HazardLinkSupport(M dataInterface) {
-    super(dataInterface);
-  }
+	public HazardLinkSupport(M dataInterface) {
+		super(dataInterface);
+	}
 
-  @Override
-  List<UUID> getAvailable() {
-    List<ITableModel> hazards = getDataInterface().getAllHazards();
-    List<UUID> result = new ArrayList<>();
-    for (ITableModel haz : hazards) {
-      result.add(haz.getId());
-    }
-    result.removeAll(fetch());
-    return result;
-  }
+	@Override
+	List<UUID> getAvailable() {
+		setModelList(getDataInterface().getAllHazards());
+		List<UUID> result = new ArrayList<>();
+		for (ITableModel haz : getModelList()) {
+			result.add(haz.getId());
+		}
+		result.removeAll(fetch());
+		return result;
+	}
 
-  @Override
-  public String getText(UUID id) {
-    ITableModel hazard = getDataInterface().getHazard(id);
-    return "H-" + hazard.getNumber(); //$NON-NLS-1$
-  }
+	@Override
+	protected String getLiteral() {
+		return "H-";
+	}
 
-  @Override
-  public String getDescription(UUID id) {
-    ITableModel hazard = getDataInterface().getHazard(id);
-    return hazard.getDescription();
-  }
-  
-  @Override
-  public String getTitle() {
-    return "Hazard Linking";
-  }
+	@Override
+	public String getTitle() {
+		return "Hazard Linking";
+	}
 
-  @Override
-  public ObserverValue getLinkType() {
-    return ObserverValue.HAZ_ACC_LINK;
-  }
+	@Override
+	public ObserverValue getLinkType() {
+		return ObserverValue.HAZ_ACC_LINK;
+	}
 
 }

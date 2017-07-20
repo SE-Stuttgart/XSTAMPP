@@ -10,41 +10,37 @@ import xstampp.model.ObserverValue;
 
 public class Step1ConstraintsLinkSupport extends LinkSupport<DataModelController> {
 
-  public Step1ConstraintsLinkSupport(DataModelController dataInterface) {
-    super(dataInterface);
-  }
+	private List<ITableModel> safetyConstraints;
 
-  @Override
-  List<UUID> getAvailable() {
-    List<ITableModel> safetyConstraints = getDataInterface().getCorrespondingSafetyConstraints();
-    List<UUID> result = new ArrayList<>();
-    for (ITableModel constraint : safetyConstraints) {
-      result.add(constraint.getId());
-    }
-    result.removeAll(fetch());
-    return result;
-  }
+	public Step1ConstraintsLinkSupport(DataModelController dataInterface) {
+		super(dataInterface);
+	}
 
-  @Override
-  public String getText(UUID id) {
-    ITableModel constraint = getDataInterface().getSafetyConstraint(id);
-    return "S1." + constraint.getNumber(); //$NON-NLS-1$
-  }
+	@Override
+	List<UUID> getAvailable() {
+		setModelList(getDataInterface().getCorrespondingSafetyConstraints());
+		List<UUID> result = new ArrayList<>();
+		for (ITableModel constraint : getModelList()) {
+			result.add(constraint.getId());
+		}
+		result.removeAll(fetch());
+		return result;
+	}
 
-  @Override
-  public String getDescription(UUID id) {
-    ITableModel hazard = getDataInterface().getSafetyConstraint(id);
-    return hazard.getDescription();
-  }
-  
-  @Override
-  public String getTitle() {
-    return "Corresponding Safety Constraint Links";
-  }
+	@Override
+	protected String getLiteral() {
+		// TODO Auto-generated method stub
+		return "S1.";
+	}
 
-  @Override
-  public ObserverValue getLinkType() {
-    return ObserverValue.DESIGN_REQUIREMENT_STEP1;
-  }
+	@Override
+	public String getTitle() {
+		return "Corresponding Safety Constraint Links";
+	}
+
+	@Override
+	public ObserverValue getLinkType() {
+		return ObserverValue.DESIGN_REQUIREMENT_STEP1;
+	}
 
 }
