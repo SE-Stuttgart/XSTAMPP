@@ -782,6 +782,11 @@
                name="refStepId"
                optional="true">
          </commandParameter>
+         <commandParameter
+               id="xstampp.ui.editor.selection.id"
+               name="selection id"
+               optional="true">
+         </commandParameter>
       </command>
       <command
             id="xstampp.saveall"

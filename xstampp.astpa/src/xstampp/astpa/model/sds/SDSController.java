@@ -48,11 +48,11 @@ public class SDSController extends Observable implements ISDSController {
 
   @XmlElementWrapper(name = "designRequirementsStep1")
   @XmlElement(name = "designRequirement")
-  private List<DesignRequirement> designRequirementsStep1;
+  private List<DesignRequirementStep1> designRequirementsStep1;
 
   @XmlElementWrapper(name = "designRequirementsStep2")
   @XmlElement(name = "designRequirement")
-  private List<DesignRequirement> designRequirementsStep2;
+  private List<DesignRequirementStep2> designRequirementsStep2;
 
   /**
    * 
@@ -212,29 +212,45 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public UUID addDesignRequirement(String title, String description, ObserverValue type) {
-    List<DesignRequirement> list;
     switch (type) {
     case DESIGN_REQUIREMENT: {
-      list = getDesignRequirements();
-      break;
+      return addDesignRequirementStep0(title, description);
     }
     case DESIGN_REQUIREMENT_STEP1: {
-      list = getDesignRequirementsStep1();
-      break;
+      return addDesignRequirementStep1(title, description);
     }
     case DESIGN_REQUIREMENT_STEP2: {
-      list = getDesignRequirementsStep2();
-      break;
+      return addDesignRequirementStep2(title, description);
     }
     default:
       return null;
     }
+  }
+  
+  private UUID addDesignRequirementStep0(String title, String description) {
     DesignRequirement designRequirement = new DesignRequirement(title, description, 0);
-    list.add(designRequirement);
+    getDesignRequirements().add(designRequirement);
     setChanged();
-    notifyObservers(type);
+    notifyObservers(ObserverValue.DESIGN_REQUIREMENT);
     return designRequirement.getId();
   }
+  
+  private UUID addDesignRequirementStep1(String title, String description) {
+    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(title, description, 0);
+    getDesignRequirementsStep1().add(designRequirement);
+    setChanged();
+    notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP1);
+    return designRequirement.getId();
+  }
+  
+  private UUID addDesignRequirementStep2(String title, String description) {
+    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(title, description, 0);
+    getDesignRequirementsStep2().add(designRequirement);
+    setChanged();
+    notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP2);
+    return designRequirement.getId();
+  }
+  
 
   /* (non-Javadoc)
    * @see xstampp.astpa.model.sds.ISDSController#getAllDesignRequirements()
@@ -283,7 +299,7 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public ITableModel getDesignRequirement(UUID designRequirementId, ObserverValue type) {
-    List<DesignRequirement> list;
+    List<? extends ITableModel> list;
     switch (type) {
     case DESIGN_REQUIREMENT: {
       list = getDesignRequirements();
@@ -428,14 +444,14 @@ public class SDSController extends Observable implements ISDSController {
     return designRequirements;
   }
 
-  private List<DesignRequirement> getDesignRequirementsStep1() {
+  private List<DesignRequirementStep1> getDesignRequirementsStep1() {
     if (this.designRequirementsStep1 == null) {
       this.designRequirementsStep1 = new NumberedArrayList<>();
     }
     return designRequirementsStep1;
   }
 
-  private List<DesignRequirement> getDesignRequirementsStep2() {
+  private List<DesignRequirementStep2> getDesignRequirementsStep2() {
     if (this.designRequirementsStep2 == null) {
       this.designRequirementsStep2 = new NumberedArrayList<>();
     }

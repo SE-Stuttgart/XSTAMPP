@@ -503,9 +503,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.descriptionLabel.setText(Messages.DescriptionNotes);
     if (style.contains(TableStyle.WITH_SEVERITY) && getDataInterface() instanceof ISeverityDataModel
         && ((ISeverityDataModel) getDataInterface()).isUseSeverity()) {
-      Label severityGroup = new Label(textContainer, SWT.NONE);
-      severityGroup.setText("Severity");
-      severityGroup.setLayoutData(new GridData(SWT.END, SWT.CENTER, true, true));
+      Label severityLabel = new Label(textContainer, SWT.NONE);
+      severityLabel.setText("Severity");
+      severityLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, true, false));
       Composite severityComposite = new Composite(textContainer, SWT.NONE);
       severityButton = new SeverityButton(null, getDataInterface(), severityComposite);
       severityComposite.addPaintListener(severityButton);
@@ -516,7 +516,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       severityComposite.setLayoutData(layoutData);
 
     } else {
-      descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+      descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
     }
     Composite rightBody = new Composite(textContainer, SWT.None);
     rightBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));

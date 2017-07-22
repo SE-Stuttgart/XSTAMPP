@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.action.IMenuListener;
@@ -26,6 +27,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.editors.STPAEditorInput;
+import xstampp.ui.editors.StandartEditorPart;
 
 /**
  * a Selection class which is used to carry information about the project step.
@@ -87,7 +89,7 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
    * @author Lukas Balzer
    */
   public void openDefaultEditor() {
-    openEditor(this.getDefaultEditorId());
+    openEditor(this.getDefaultEditorId(), null);
   }
 
   /**
@@ -98,8 +100,24 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
    *          the id
    */
   public void openEditor(String id) {
+    openEditor(id, null);
+  }
+
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   * @param id
+   *          the id
+   * @param selectionId TODO
+   */
+  public void openEditor(String id, UUID selectionId) {
     STPAEditorInput input = this.inputs.get(id);
-    input.setProperties(getProperties());
+    Map<String, String> map = getProperties();
+    if ( selectionId != null) {
+      map.put(StandartEditorPart.SELECTED_ENTRY, selectionId.toString());
+    }
+    input.setProperties(map);
     if (input != null) {
       input.addViews(this.additionalViews);
       if (id.equals("acast.steps.step2_1")) { //$NON-NLS-1$

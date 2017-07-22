@@ -11,12 +11,15 @@
 
 package xstampp.ui.menu.file.commands;
 
+import java.util.UUID;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.navigation.ProjectExplorer;
 import xstampp.ui.navigation.StepSelector;
 
@@ -33,13 +36,22 @@ public class OpenStepEditor extends AbstractHandler {
     Object currentSelection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
         .getSelection(ProjectExplorer.ID); // $NON-NLS-1$
     String openWithEditor = event.getParameter("xstampp.command.steps.open"); //$NON-NLS-1$
+    String selectionIdString = event.getParameter(StandartEditorPart.SELECTED_ENTRY); //$NON-NLS-1$
+    UUID selectionId = null;
+    if(selectionIdString != null) {
+      try {
+        selectionId = UUID.fromString(selectionIdString);
+      } catch(IllegalArgumentException exc) {
+        exc.printStackTrace();
+      }
+    }
     // if the currentSelection is a stepSelector than it is transfered in a
     // proper object
     if (currentSelection instanceof StepSelector) {
       StepSelector selector = ((StepSelector) currentSelection);
       if (ProjectManager.getContainerInstance().canAccess(selector.getProjectId())) {
         if (openWithEditor != null) {
-          selector.openEditor(openWithEditor);
+          selector.openEditor(openWithEditor, selectionId);
         } else {
           selector.openDefaultEditor();
         }

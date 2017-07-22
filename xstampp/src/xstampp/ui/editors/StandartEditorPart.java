@@ -41,6 +41,8 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   private UUID projectID;
 
+  public static final String SELECTED_ENTRY = "xstampp.ui.editor.selection.id";
+
   protected static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
 
   @Override
@@ -65,7 +67,7 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   @Override
   public void dispose() {
-    ProjectManager.getLOGGER().debug("Editor: " + getTitle() + " closed"); //$NON-NLS-2$ //$NON-NLS-2$
+    ProjectManager.getLOGGER().debug("Editor: " + getTitle() + " closed"); //$NON-NLS-2$
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
     super.dispose();
   }
@@ -107,12 +109,12 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
   public void update(Observable dataModelController, Object updatedValue) {
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-      case DELETE: {
-        this.getSite().getPage().closeEditor(this, false);
-        break;
-      }
-      default:
-        break;
+    case DELETE: {
+      this.getSite().getPage().closeEditor(this, false);
+      break;
+    }
+    default:
+      break;
     }
 
   }

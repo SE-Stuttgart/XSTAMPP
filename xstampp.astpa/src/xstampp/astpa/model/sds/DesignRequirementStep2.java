@@ -21,24 +21,24 @@ import xstampp.astpa.model.ATableModel;
  * @author Jaqueline Patzek, Fabian Toth
  * @since 2.0
  */
-public class DesignRequirement extends ATableModel {
+public class DesignRequirementStep2 extends ATableModel {
 
   /**
    * {@link ATableModel#ATableModel(String, String, int)}
    */
-	public DesignRequirement(String title, String description, int number) {
+	public DesignRequirementStep2(String title, String description, int number) {
 		super(title, description, number);
 	}
 
 	/**
    * {@link ATableModel#ATableModel()}
 	 */
-	public DesignRequirement() {
+	public DesignRequirementStep2() {
 		// empty constructor for JAXB
 	}
   
   @Override
   public String getIdString() {
-    return "DR0." + getNumber();
+    return "DR2." + getNumber();
   }
 }
