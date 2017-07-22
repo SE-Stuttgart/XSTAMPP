@@ -65,7 +65,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -75,7 +74,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import messages.Messages;
 import xstampp.astpa.Activator;
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.interfaces.ILinkModel;
 import xstampp.astpa.model.interfaces.ISeverityDataModel;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
@@ -83,7 +82,6 @@ import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.ui.linkingSupport.LinkSupport;
-import xstampp.astpa.ui.unsafecontrolaction.SeverityButton;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -181,7 +179,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           getDescriptionWidget()
               .setText(((ATableModel) selection.getFirstElement()).getDescription());
           deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
-          if(severityButton != null) {
+          if (severityButton != null) {
             severityButton.setEntry(selectedEntry);
           }
           getDescriptionWidget().setEnabled(canEdit(selectedEntry, AccessRights.WRITE));
@@ -503,7 +501,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.descriptionLabel.setFont(new Font(Display.getCurrent(),
         PreferenceConverter.getFontData(IEditorBase.STORE, IPreferenceConstants.DEFAULT_FONT)));
     this.descriptionLabel.setText(Messages.DescriptionNotes);
-    if (getDataInterface() instanceof ISeverityDataModel
+    if (style.contains(TableStyle.WITH_SEVERITY) && getDataInterface() instanceof ISeverityDataModel
         && ((ISeverityDataModel) getDataInterface()).isUseSeverity()) {
       Label severityGroup = new Label(textContainer, SWT.NONE);
       severityGroup.setText("Severity");
@@ -517,12 +515,11 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       layoutData.horizontalAlignment = SWT.END;
       severityComposite.setLayoutData(layoutData);
 
-      
     } else {
       descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
     }
     Composite rightBody = new Composite(textContainer, SWT.None);
-    rightBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,3,1));
+    rightBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
     rightBody.setLayout(new GridLayout());
     SashForm leftSash = new SashForm(rightBody, SWT.VERTICAL);
     leftSash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

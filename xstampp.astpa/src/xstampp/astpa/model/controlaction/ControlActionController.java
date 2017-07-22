@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import org.eclipse.core.runtime.Assert;
 
 import messages.Messages;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -37,7 +38,6 @@ import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
-import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;

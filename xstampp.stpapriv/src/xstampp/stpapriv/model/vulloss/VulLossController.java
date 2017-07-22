@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.model.ObserverValue;
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.HazAccLink;
 import xstampp.astpa.model.interfaces.ITableModel;

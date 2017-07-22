@@ -16,7 +16,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;

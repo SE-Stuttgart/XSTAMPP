@@ -17,4 +17,14 @@ public interface IControlAction extends ITableModel{
   public UUID getComponentLink();
   public List<AbstractLTLProvider> getAllRefinedRules();
   public IUnsafeControlAction getUnsafeControlAction(UUID ucaId);
+
+  /**
+   * @return a copie of the provided variables list
+   */
+  List<UUID> getProvidedVariables();
+
+  /**
+   * @return a copie of the the notProvidedVariables List
+   */
+  List<UUID> getNotProvidedVariables();
 }

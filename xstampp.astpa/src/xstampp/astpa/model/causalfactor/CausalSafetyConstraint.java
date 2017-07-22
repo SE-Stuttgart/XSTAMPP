@@ -13,7 +13,7 @@
 
 package xstampp.astpa.model.causalfactor;
 
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.model.ITableEntry;
 
 /**

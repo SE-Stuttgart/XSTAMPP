@@ -13,7 +13,7 @@
 
 package xstampp.astpa.model.sds;
 
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 
 /**
  * Class for system goals

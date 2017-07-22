@@ -16,6 +16,7 @@ package xstampp.astpa.model.hazacc;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.interfaces.Severity;
 
 /**

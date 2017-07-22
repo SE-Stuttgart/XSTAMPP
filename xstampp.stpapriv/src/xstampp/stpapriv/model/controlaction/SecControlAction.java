@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
@@ -33,7 +34,6 @@ import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
-import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IValueCombie;
 

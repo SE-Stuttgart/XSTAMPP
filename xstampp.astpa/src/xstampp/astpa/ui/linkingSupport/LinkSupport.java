@@ -194,7 +194,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   }
 
   public String getDescription(UUID id) {
-    for (ITableModel model : getModelList()) {
+    for (ITableModel model : getModels()) {
       if (model.getId().equals(id)) {
         return model.getDescription(); // $NON-NLS-1$
       }

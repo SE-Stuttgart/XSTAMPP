@@ -30,6 +30,7 @@ import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.CommonGridView;
+import xstampp.astpa.ui.SeverityButton;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -191,6 +192,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
     super.createPartControl(parent, columns);
     this.getGridWrapper().setHeaderToolTip(xstampp.astpa.messages.Messages.UnsafeControlActionsView_HeaderToolTip);
     updateHazards();
+    reloadTable();
   }
 
   @Override

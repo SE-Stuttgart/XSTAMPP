@@ -1,4 +1,4 @@
-package xstampp.astpa.ui.unsafecontrolaction;
+package xstampp.astpa.ui;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;

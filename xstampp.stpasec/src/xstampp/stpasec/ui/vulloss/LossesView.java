@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.astpa.ui.acchaz.AccidentsView;

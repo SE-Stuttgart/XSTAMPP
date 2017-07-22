@@ -15,7 +15,7 @@ package xstampp.astpa.model.controlaction.safetyconstraint;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 
 /**
  * A corresponding safety constraint

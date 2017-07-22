@@ -22,10 +22,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;

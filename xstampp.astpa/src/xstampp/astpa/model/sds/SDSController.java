@@ -19,8 +19,8 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.NumberedArrayList;
-import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
 import xstampp.model.ObserverValue;

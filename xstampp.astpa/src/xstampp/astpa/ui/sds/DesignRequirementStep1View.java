@@ -17,8 +17,8 @@ import java.util.UUID;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.Step1ConstraintsLinkSupport;

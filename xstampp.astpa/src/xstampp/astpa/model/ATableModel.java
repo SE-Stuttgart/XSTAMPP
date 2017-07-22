@@ -9,7 +9,7 @@
  * 
  *******************************************************************************/
 
-package xstampp.astpa.model.hazacc;
+package xstampp.astpa.model;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ITableEntry;

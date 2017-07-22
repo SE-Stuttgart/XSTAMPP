@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -32,7 +33,6 @@ import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
-import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IValueCombie;
 
@@ -310,9 +310,7 @@ public class ControlAction extends ATableModel implements IControlAction {
 		return false;
 	}
 
-	/**
-	 * @return a copie of the the notProvidedVariables List
-	 */
+	@Override
 	public List<UUID> getNotProvidedVariables() {
 		if (this.notProvidedVariables == null) {
 			return new ArrayList<>();
@@ -335,9 +333,7 @@ public class ControlAction extends ATableModel implements IControlAction {
 		this.notProvidedVariables.add(notProvidedVariable);
 	}
 
-	/**
-	 * @return a copie of the provided variables list
-	 */
+	@Override
 	public List<UUID> getProvidedVariables() {
 		if (this.providedVariables == null) {
 			this.providedVariables = new ArrayList<>();

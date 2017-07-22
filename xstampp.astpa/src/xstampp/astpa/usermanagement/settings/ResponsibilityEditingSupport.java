@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.usermanagement.Messages;
 import xstampp.usermanagement.api.AccessRights;

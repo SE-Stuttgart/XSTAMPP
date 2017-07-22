@@ -68,7 +68,6 @@ import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.export.ExportInformation;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
-import xstampp.astpa.model.hazacc.ATableModel;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.Hazard;

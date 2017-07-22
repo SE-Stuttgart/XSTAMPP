@@ -11,7 +11,7 @@
 
 package xstampp.astpa.model.sds;
 
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 
 /**

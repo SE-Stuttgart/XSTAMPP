@@ -15,7 +15,7 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 import messages.Messages;
-import xstampp.astpa.model.hazacc.ATableModel;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.model.ObserverValue;

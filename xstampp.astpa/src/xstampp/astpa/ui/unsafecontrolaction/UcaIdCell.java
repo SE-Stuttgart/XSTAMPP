@@ -7,6 +7,7 @@ import org.eclipse.swt.graphics.GC;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.astpa.ui.SeverityButton;
 import xstampp.ui.common.grid.GridCellRenderer;
 import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
