@@ -573,7 +573,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (this.getLinkController().addLink(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId,
+    if (this.getLinkController().addLink(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId,
         hazardId)) {
       this.setUnsavedAndChanged();
       return true;
@@ -836,7 +836,7 @@ public class DataModelController extends AbstractDataModel
   public List<UCAHazLink> getAllUCALinks() {
     List<UCAHazLink> links = new ArrayList<>();
     Map<UUID, UUID> linksFor = this.getLinkController()
-        .getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION);
+        .getLinksFor(ObserverValue.UCA_HAZ_LINK);
     for (Entry<UUID, UUID> link : linksFor.entrySet()) {
       links.add(new UCAHazLink(link.getKey(), link.getValue()));
     }
@@ -1069,7 +1069,7 @@ public class DataModelController extends AbstractDataModel
     if (hazardId == null) {
       return null;
     }
-    List<UUID> links = this.linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, hazardId);
+    List<UUID> links = this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK, hazardId);
     List<ITableModel> result = new ArrayList<>();
     for (UUID link : links) {
       ITableModel accident = this.getAccident(link);
@@ -1085,7 +1085,7 @@ public class DataModelController extends AbstractDataModel
     if (accidentId == null) {
       return null;
     }
-    List<UUID> links = this.linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, accidentId);
+    List<UUID> links = this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK, accidentId);
     List<ITableModel> result = new ArrayList<>();
     for (UUID link : links) {
       result.add(this.getHazard(link));
@@ -1109,12 +1109,12 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<UUID> getLinkedUCAList(UUID factorId) {
-    return this.linkController.getLinksFor(ObserverValue.CAUSAL_FACTOR, factorId);
+    return this.getLinkController().getLinksFor(ObserverValue.CAUSAL_FACTOR, factorId);
   }
 
   @Override
   public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
-    return this.linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION,
+    return this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK,
         unsafeControlActionId);
   }
 
@@ -1591,7 +1591,7 @@ public class DataModelController extends AbstractDataModel
     if ((unsafeControlActionId == null) || (hazardId == null)) {
       return false;
     }
-    if (this.linkController.deleteLink(ObserverValue.UNSAFE_CONTROL_ACTION, unsafeControlActionId,
+    if (this.getLinkController().deleteLink(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId,
         hazardId)) {
       this.setUnsavedAndChanged();
       return true;
@@ -1605,11 +1605,11 @@ public class DataModelController extends AbstractDataModel
     if (unsafeControlActionId == null) {
       return false;
     }
-    this.getLinkController().deleteAllFor(ObserverValue.UNSAFE_CONTROL_ACTION,
+    this.getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK,
         unsafeControlActionId);
 
     if (result) {
-      this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+      this.setUnsavedAndChanged(ObserverValue.UCA_HAZ_LINK);
     }
     return result;
   }
@@ -1619,10 +1619,11 @@ public class DataModelController extends AbstractDataModel
     if (unsafeControlActionId == null) {
       return false;
     }
-
+    getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
     this.getControlActionController().removeAllLinks(unsafeControlActionId);
     if (this.getControlActionController().removeUnsafeControlAction(unsafeControlActionId)) {
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+      this.setUnsavedAndChanged(ObserverValue.UCA_HAZ_LINK);
       return true;
     }
     return false;

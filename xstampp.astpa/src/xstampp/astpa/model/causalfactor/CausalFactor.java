@@ -159,7 +159,8 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
     CausalFactorEntry addEntry;
     if (!(entry instanceof CausalFactorEntry)) {
       addEntry = new CausalFactorEntry(entry.getUcaLink(), entry.getId());
-      addEntry.setConstraintText(entry.getConstraintText());
+      
+      addEntry.setConstraintId(entry.getConstraintId());
       addEntry.setScenarioLinks(entry.getScenarioLinks());
       addEntry.setNote(entry.getNote());
     } else {
@@ -215,7 +216,7 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
   public List<ICausalFactorEntry> getAllEntries() {
     List<ICausalFactorEntry> result = new ArrayList<>();
     for (int i = 0; entries != null && i < entries.size(); i++) {
-      result.add(new CausalFactorEntryContainer(entries.get(i)));
+      result.add(entries.get(i));
     }
     return result;
   }
@@ -230,19 +231,22 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
 
   public void prepareForExport(IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      List<CausalSafetyConstraint> safetyConstraints) {
     for (int i = 0; entries != null && i < entries.size(); i++) {
-      entries.get(i).prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
+      entries.get(i).prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions, safetyConstraints);
     }
   }
 
   public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
       IHazAccController hazAccController, List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      List<CausalSafetyConstraint> safetyConstraints) {
     if (hazardLinksMap.containsKey(getId()) || note != null || safetyConstraint != null) {
       CausalFactorEntry entry = int_addHazardEntry();
       if (entry != null) {
-        entry.setConstraintText(getSafetyConstraint().getText());
+        safetyConstraints.add(safetyConstraint);
+        entry.setConstraintId(getSafetyConstraint().getId());
         entry.setHazardIds(hazardLinksMap.get(getId()));
         entry.setNote(getNote());
       }

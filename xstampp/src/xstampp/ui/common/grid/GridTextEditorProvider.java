@@ -20,21 +20,26 @@ import xstampp.util.ColorManager;
 public class GridTextEditorProvider {
   private String returnString;
 
-  public String open(String text, Rectangle textSize, Rectangle size) {
+  /**
+   * 
+   * @param text the initial text of the editor
+   * @param textSize the size of the text input
+   * @param size the overall 
+   * @return
+   */
+  public String open(String text, Rectangle size) {
     final Shell shell = new Shell(Display.getCurrent().getActiveShell(),
         SWT.APPLICATION_MODAL | SWT.RESIZE);
-    Rectangle shellBounds = new Rectangle(size.x, size.y, size.width, size.height);
-    shellBounds.width = Math.max(size.width, 150);
-    shellBounds.height = size.height + 22;
+    size.width = Math.max(size.width, 150);
     returnString = null;
     final GridLayout layout = new GridLayout();
     shell.setLayout(layout);
     
-    shell.setLocation(shellBounds.x - 5,shellBounds.y);
+    shell.setLocation(size.x - 5,size.y);
     final Text textField = new Text(shell, SWT.WRAP | SWT.V_SCROLL);
     textField.setLocation(new Point(0, 0));
     textField.setText(text);
-    GridData layoutData = new GridData(textSize.width,textSize.height);
+    GridData layoutData = new GridData(size.width,size.height);
     layoutData.horizontalAlignment = SWT.FILL;
     layoutData.verticalAlignment = SWT.FILL;
     layoutData.grabExcessHorizontalSpace = true;

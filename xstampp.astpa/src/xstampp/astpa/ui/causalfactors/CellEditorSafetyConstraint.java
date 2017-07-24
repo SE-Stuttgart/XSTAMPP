@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.GC;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellRenderer;
 import xstampp.ui.common.grid.GridCellTextEditor;
@@ -31,7 +32,7 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   public CellEditorSafetyConstraint(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
       UUID componentId, UUID factorId, ICausalFactorEntry entry) {
-    super(gridWrapper, entry.getConstraintText(), factorId);
+    super(gridWrapper, dataInterface.getcontrentry.getConstraintText(), factorId);
     this.entry = entry;
     setShowDelete(true);
     this.causalDataInterface = dataInterface;
@@ -42,7 +43,10 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   @Override
   public String getCurrentText() {
-    return entry.getConstraintText();
+    for (ITableModel model : this.causalDataInterface.getCorrespondingSafetyConstraints()) {
+      if(model.get)
+    }
+    return entry.getConstraintId();
   }
   
   @Override

@@ -166,7 +166,9 @@ public class UnsafeControlAction extends EntryWithSeverity
 
   public boolean setNumber(int number) {
     this.number = number;
-    this.correspondingSafetyConstraint.setNumber(number);
+    if(this.correspondingSafetyConstraint != null) {
+      this.correspondingSafetyConstraint.setNumber(number);
+    }
     return true;
   }
 

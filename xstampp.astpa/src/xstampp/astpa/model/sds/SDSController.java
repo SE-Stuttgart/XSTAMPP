@@ -69,8 +69,11 @@ public class SDSController extends Observable implements ISDSController {
     this.designRequirementsStep2 = new NumberedArrayList<>();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(java.lang.String, java.lang.String, java.util.UUID)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(java.lang.String,
+   * java.lang.String, java.util.UUID)
    */
   @Override
   public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
@@ -80,8 +83,11 @@ public class SDSController extends Observable implements ISDSController {
     return safetyConstraint.getId();
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(xstampp.astpa.model.interfaces.ITableModel)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(xstampp.astpa.model.interfaces.
+   * ITableModel)
    */
   @Override
   public UUID addSafetyConstraint(ITableModel model) {
@@ -90,7 +96,9 @@ public class SDSController extends Observable implements ISDSController {
     return safetyConstraint.getId();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#getAllSafetyConstraints()
    */
   @Override
@@ -102,8 +110,11 @@ public class SDSController extends Observable implements ISDSController {
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#moveEntry(boolean, java.util.UUID, xstampp.model.ObserverValue)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#moveEntry(boolean, java.util.UUID,
+   * xstampp.model.ObserverValue)
    */
   @Override
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
@@ -121,7 +132,9 @@ public class SDSController extends Observable implements ISDSController {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#getSafetyConstraint(java.util.UUID)
    */
   @Override
@@ -134,7 +147,9 @@ public class SDSController extends Observable implements ISDSController {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#removeSafetyConstraint(java.util.UUID)
    */
   @Override
@@ -150,7 +165,9 @@ public class SDSController extends Observable implements ISDSController {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#addSystemGoal(java.lang.String, java.lang.String)
    */
   @Override
@@ -160,7 +177,9 @@ public class SDSController extends Observable implements ISDSController {
     return systemGoal.getId();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#getAllSystemGoals()
    */
   @Override
@@ -172,7 +191,9 @@ public class SDSController extends Observable implements ISDSController {
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#getSystemGoal(java.util.UUID)
    */
   @Override
@@ -185,7 +206,9 @@ public class SDSController extends Observable implements ISDSController {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#removeSystemGoal(java.util.UUID)
    */
   @Override
@@ -199,16 +222,22 @@ public class SDSController extends Observable implements ISDSController {
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String,
+   * java.lang.String)
    */
   @Override
   public UUID addDesignRequirement(String title, String description) {
     return addDesignRequirement(title, description, ObserverValue.DESIGN_REQUIREMENT);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String, java.lang.String, xstampp.model.ObserverValue)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String,
+   * java.lang.String, xstampp.model.ObserverValue)
    */
   @Override
   public UUID addDesignRequirement(String title, String description, ObserverValue type) {
@@ -226,7 +255,7 @@ public class SDSController extends Observable implements ISDSController {
       return null;
     }
   }
-  
+
   private UUID addDesignRequirementStep0(String title, String description) {
     DesignRequirement designRequirement = new DesignRequirement(title, description, 0);
     getDesignRequirements().add(designRequirement);
@@ -234,7 +263,7 @@ public class SDSController extends Observable implements ISDSController {
     notifyObservers(ObserverValue.DESIGN_REQUIREMENT);
     return designRequirement.getId();
   }
-  
+
   private UUID addDesignRequirementStep1(String title, String description) {
     DesignRequirementStep1 designRequirement = new DesignRequirementStep1(title, description, 0);
     getDesignRequirementsStep1().add(designRequirement);
@@ -242,7 +271,7 @@ public class SDSController extends Observable implements ISDSController {
     notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP1);
     return designRequirement.getId();
   }
-  
+
   private UUID addDesignRequirementStep2(String title, String description) {
     DesignRequirementStep2 designRequirement = new DesignRequirementStep2(title, description, 0);
     getDesignRequirementsStep2().add(designRequirement);
@@ -250,9 +279,10 @@ public class SDSController extends Observable implements ISDSController {
     notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP2);
     return designRequirement.getId();
   }
-  
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#getAllDesignRequirements()
    */
   @Override
@@ -284,9 +314,12 @@ public class SDSController extends Observable implements ISDSController {
     default:
       break;
     }
-     return result;
+    return result;
   }
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#getDesignRequirement(java.util.UUID)
    */
   @Override
@@ -294,8 +327,11 @@ public class SDSController extends Observable implements ISDSController {
     return getDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#getDesignRequirement(java.util.UUID, xstampp.model.ObserverValue)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#getDesignRequirement(java.util.UUID,
+   * xstampp.model.ObserverValue)
    */
   @Override
   public ITableModel getDesignRequirement(UUID designRequirementId, ObserverValue type) {
@@ -325,7 +361,9 @@ public class SDSController extends Observable implements ISDSController {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#removeDesignRequirement(java.util.UUID)
    */
   @Override
@@ -333,8 +371,11 @@ public class SDSController extends Observable implements ISDSController {
     return removeDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#removeDesignRequirement(java.util.UUID, xstampp.model.ObserverValue)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#removeDesignRequirement(java.util.UUID,
+   * xstampp.model.ObserverValue)
    */
   @Override
   public boolean removeDesignRequirement(UUID designRequirementId, ObserverValue type) {
@@ -348,8 +389,11 @@ public class SDSController extends Observable implements ISDSController {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#setDesignRequirementDescription(xstampp.model.ObserverValue, java.util.UUID, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see xstampp.astpa.model.sds.ISDSController#setDesignRequirementDescription(xstampp.model.
+   * ObserverValue, java.util.UUID, java.lang.String)
    */
   @Override
   public boolean setDesignRequirementDescription(ObserverValue type, UUID designRequirementId,
@@ -357,7 +401,7 @@ public class SDSController extends Observable implements ISDSController {
     if ((description == null) || (designRequirementId == null)) {
       return false;
     }
-    ITableModel requirement = getDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
+    ITableModel requirement = getDesignRequirement(designRequirementId, type);
 
     String oldDescription = ((ATableModel) requirement).setDescription(description);
     if (oldDescription != null) {
@@ -371,8 +415,12 @@ public class SDSController extends Observable implements ISDSController {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.sds.ISDSController#setDesignRequirementTitle(xstampp.model.ObserverValue, java.util.UUID, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * xstampp.astpa.model.sds.ISDSController#setDesignRequirementTitle(xstampp.model.ObserverValue,
+   * java.util.UUID, java.lang.String)
    */
   @Override
   public boolean setDesignRequirementTitle(ObserverValue type, UUID designRequirementId,
@@ -394,7 +442,9 @@ public class SDSController extends Observable implements ISDSController {
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.sds.ISDSController#prepareForSave()
    */
   @Override

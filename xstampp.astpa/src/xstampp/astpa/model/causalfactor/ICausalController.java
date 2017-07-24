@@ -50,4 +50,10 @@ public interface ICausalController {
 
   void setUseScenarios(boolean useScenarios);
 
+  /**
+   * 
+   * @param id the id of a constraint that has been created in the causal analysis
+   * @return the {@link ITableModel} or null if the {@link UUID} doesn't exist
+   */
+  public ITableModel getSafetyConstraint(UUID id);
 }

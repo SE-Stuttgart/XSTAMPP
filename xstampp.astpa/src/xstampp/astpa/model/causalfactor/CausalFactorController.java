@@ -227,7 +227,7 @@ public class CausalFactorController implements ICausalFactorController, ICausalC
     for (IRectangleComponent child : children) {
       if (getCausalComponent(child) != null) {
         this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,
-            allRefinedRules, allUnsafeControlActions);
+            allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints());
       }
     }
     System.out.println();
@@ -250,7 +250,7 @@ public class CausalFactorController implements ICausalFactorController, ICausalC
       removeList.remove(child.getId());
       if (getCausalComponent(child) != null) {
         this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap, hazAccController,
-            child, allRefinedRules, allUnsafeControlActions);
+            child, allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints());
         this.causalComponents.get(child.getId()).moveSafetyConstraints(causalSafetyConstraints);
       }
     }
@@ -271,6 +271,24 @@ public class CausalFactorController implements ICausalFactorController, ICausalC
       list.addAll(causalSafetyConstraints);
     }
     return list;
+  }
+
+  @Override
+  public ITableModel getSafetyConstraint(UUID id) {
+    for (CausalSafetyConstraint constraint : getCausalSafetyConstraints()) {
+      if (constraint.getId().equals(id)) {
+        return constraint;
+      }
+    }
+    return null;
+
+  }
+
+  private List<CausalSafetyConstraint> getCausalSafetyConstraints() {
+    if (causalSafetyConstraints == null) {
+      this.causalSafetyConstraints = new NumberedArrayList<>();
+    }
+    return causalSafetyConstraints;
   }
 
   @Override

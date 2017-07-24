@@ -100,14 +100,6 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     return constraintText;
   }
 
-  public boolean setConstraintText(String constraintText) {
-    if (this.constraintText == null || !this.constraintText.equals(constraintText)) {
-      this.constraintText = constraintText;
-      return true;
-    }
-    return false;
-  }
-
   /**
    * @return the hazardIds
    */
@@ -200,6 +192,14 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     return ucaLink;
   }
 
+  void setConstraintId(UUID constraintId) {
+    this.constraintId = constraintId;
+  }
+
+  public UUID getConstraintId() {
+    return constraintId;
+  }
+
   public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData) {
     CausalFactorUCAEntryData resultData = new CausalFactorUCAEntryData(id);
     boolean res = false;
@@ -211,11 +211,6 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     if (entryData.hazardsChanged()) {
       resultData.setHazardIds(hazardIds);
       res |= setHazardIds(entryData.getHazardIds());
-    }
-
-    if (entryData.constraintChanged()) {
-      resultData.setConstraint(constraintText);
-      res |= setConstraintText(entryData.getSafetyConstraint());
     }
 
     if (entryData instanceof CausalFactorUCAEntryData
@@ -239,7 +234,8 @@ public class CausalFactorEntry implements ICausalFactorEntry {
    */
   public void prepareForExport(IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      List<CausalSafetyConstraint> safetyConstraints) {
 
     // if there is a link to a uca then sync the respective description and hazard links
     if (getUcaLink() != null) {
@@ -271,9 +267,12 @@ public class CausalFactorEntry implements ICausalFactorEntry {
         }
       }
     }
-    // prevent the string entries to be null to ensure a smooth export
-    if (getConstraintText() == null) {
-      setConstraintText("");
+
+    constraintText = "";
+    for (CausalSafetyConstraint constraint : safetyConstraints) {
+      if (constraint.getId().equals(constraintId)) {
+        constraintText = constraint.getTitle();
+      }
     }
     if (getHazardLinks() == null) {
       setHazardLinks("");
@@ -294,10 +293,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     if (getNote().equals("")) {
       setNote(null);
     }
-    if (getConstraintText() != null && getConstraintText().equals("")) {
-      setConstraintText(null);
-    }
-
+    constraintText = null;
     scenarioEntries = null;
     if (hazardIds != null) {
       UUID[] hazIds = (UUID[]) this.hazardIds.toArray(new UUID[0]);

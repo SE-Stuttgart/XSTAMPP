@@ -145,17 +145,19 @@ public class CausalCSComponent implements ICausalComponent {
 
   public void prepareForExport(IHazAccController hazAccController, IRectangleComponent child,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      List<CausalSafetyConstraint> safetyConstraints) {
     this.text = child.getText();
     for (CausalFactor causalFactor : internal_getFactors()) {
-      causalFactor.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions);
+      causalFactor.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions, safetyConstraints);
     }
   }
 
   public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
       IHazAccController hazAccController, ICausalComponent child,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      List<CausalSafetyConstraint> safetyConstraints) {
     List<ICausalFactor> causalFactors = child.getCausalFactors();
     if (causalFactors != null) {
       for (ICausalFactor legacyEntry : causalFactors) {
@@ -165,7 +167,7 @@ public class CausalCSComponent implements ICausalComponent {
     }
     for (CausalFactor causalFactor : internal_getFactors()) {
       causalFactor.prepareForSave(hazardLinksMap, hazAccController, allRefinedRules,
-          allUnsafeControlActions);
+          allUnsafeControlActions, safetyConstraints);
     }
   }
 
