@@ -2250,6 +2250,7 @@ public class DataModelController extends AbstractDataModel
     if(this.causalFactorController == null) {
       this.causalFactorController = new CausalFactorController();
     }
+    this.causalFactorController.addObserver(this);
     return this.causalFactorController;
   }
   @SuppressWarnings("unchecked")

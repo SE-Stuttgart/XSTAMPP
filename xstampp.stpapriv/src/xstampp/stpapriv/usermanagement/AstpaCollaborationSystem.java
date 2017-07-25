@@ -16,7 +16,6 @@ import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.UnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.hazacc.HazAccLink;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.stpapriv.model.PrivacyController;
@@ -132,7 +131,8 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
 	                .contains(userController.getControlActionForUca(entry.getUcaLink()).getId())) {
 	              controller.addCausalUCAEntry(component.getId(), factor.getId(), entry);
 	              CausalFactorUCAEntryData entryData = new CausalFactorUCAEntryData(entry.getId());
-	              entryData.setConstraint(entry.getConstraintText());
+	              entryData.setConstraint(
+	                  userController.getCausalFactorController().getConstraintTextFor(entry.getId()));
 	              entryData.setNote(entry.getNote());
 	              entryData.setScenarioLinks(entry.getScenarioLinks());
 	              controller.changeCausalEntry(component.getId(), factor.getId(), entryData);

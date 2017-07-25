@@ -247,7 +247,7 @@ public class StpaCSVExport extends Job {
           writer.writeCell(ucaCell);
           writer.writeCell(hazCell);
           writer.writeCell();
-          writer.writeCell(entry.getConstraintText());
+          writer.writeCell(model.getCausalFactorController().getConstraintTextFor(entry.getId()));
           writer.writeCell(factor.getNote());
           writer.newLine();
           

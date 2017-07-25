@@ -131,7 +131,8 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
 	                .contains(userController.getControlActionForUca(entry.getUcaLink()).getId())) {
 	              controller.addCausalUCAEntry(component.getId(), factor.getId(), entry);
 	              CausalFactorUCAEntryData entryData = new CausalFactorUCAEntryData(entry.getId());
-	              entryData.setConstraint(entry.getConstraintText());
+	              entryData.setConstraint(
+	                  userController.getCausalFactorController().getConstraintTextFor(entry.getId()));
 	              entryData.setNote(entry.getNote());
 	              entryData.setScenarioLinks(entry.getScenarioLinks());
 	              controller.changeCausalEntry(component.getId(), factor.getId(), entryData);

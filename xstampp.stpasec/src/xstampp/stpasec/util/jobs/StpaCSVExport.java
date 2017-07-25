@@ -33,7 +33,6 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.IDataModel;
 import xstampp.stpapriv.model.PrivacyController;
@@ -244,7 +243,7 @@ public class StpaCSVExport extends Job {
 	
 	private void writeCausalFactorsCSV(BufferedCSVWriter writer, String title)
 			throws IOException {
-    IExtendedDataModel model = this.model;
+    PrivacyController model = this.model;
 		// the First two Rows are filled with the view- and the Column-titles
 		writer.newLine();
 		writer.write(title + " - "); ////$NON-NLS-1$
@@ -293,7 +292,8 @@ public class StpaCSVExport extends Job {
           writer.writeCell(ucaCell);
           writer.writeCell(hazCell);
             writer.writeCell();
-              writer.writeCell(entry.getConstraintText());
+              writer.writeCell(
+                  model.getCausalFactorController().getConstraintTextFor(entry.getId()));
           writer.writeCell(factor.getNote());
           writer.newLine();
 				  

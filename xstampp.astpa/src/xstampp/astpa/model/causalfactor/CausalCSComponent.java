@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -132,15 +131,6 @@ public class CausalCSComponent implements ICausalComponent {
 
   public void setType(ComponentType type) {
     this.type = type;
-  }
-
-  public boolean changeCausalEntry(UUID causalFactorId, CausalFactorEntryData entryData) {
-    CausalFactor factor = getCausalFactor(causalFactorId);
-
-    if (factor != null) {
-      return factor.changeCausalEntry(entryData) != null;
-    }
-    return false;
   }
 
   public void prepareForExport(IHazAccController hazAccController, IRectangleComponent child,

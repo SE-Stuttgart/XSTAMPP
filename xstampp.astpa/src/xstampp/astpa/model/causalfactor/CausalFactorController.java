@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -44,7 +45,8 @@ import xstampp.model.AbstractLTLProvider;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class CausalFactorController implements ICausalFactorController, ICausalController {
+public class CausalFactorController extends Observable
+    implements ICausalFactorController, ICausalController {
 
   @XmlElementWrapper(name = "causalFactorHazardLinks")
   @XmlElement(name = "causalFactorHazardLink")
@@ -59,7 +61,7 @@ public class CausalFactorController implements ICausalFactorController, ICausalC
 
   @XmlElementWrapper(name = "causalSafetyConstraints")
   @XmlElement(name = "causalSafetyConstraint")
-  private List<CausalSafetyConstraint> causalSafetyConstraints;
+  private NumberedArrayList<CausalSafetyConstraint> causalSafetyConstraints;
 
   /**
    * Constructor of the causal factor controller
@@ -146,7 +148,7 @@ public class CausalFactorController implements ICausalFactorController, ICausalC
     if (factor != null) {
       CausalFactorEntry entry = (CausalFactorEntry) factor.getEntry(entryData.getId());
       if (entry != null) {
-        return entry.changeCausalEntry(entryData);
+        return entry.changeCausalEntry(entryData, causalSafetyConstraints);
       }
     }
     return null;
@@ -284,7 +286,19 @@ public class CausalFactorController implements ICausalFactorController, ICausalC
 
   }
 
-  private List<CausalSafetyConstraint> getCausalSafetyConstraints() {
+  @Override
+  public String getConstraintTextFor(UUID id) {
+    if (id == null) {
+      return ""; //$NON-NLS-1$
+    }
+    ITableModel constraint = getSafetyConstraint(id);
+    if (constraint != null) {
+      return constraint.getTitle();
+    }
+    return ""; //$NON-NLS-1$
+  }
+
+  private NumberedArrayList<CausalSafetyConstraint> getCausalSafetyConstraints() {
     if (causalSafetyConstraints == null) {
       this.causalSafetyConstraints = new NumberedArrayList<>();
     }

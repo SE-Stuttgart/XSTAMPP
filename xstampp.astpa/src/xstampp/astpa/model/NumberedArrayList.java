@@ -54,6 +54,18 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
     return nextNumber++;
   }
 
+  public E get(UUID id) {
+    if(id == null ) {
+      return null;
+    }
+    for (E entry : this) {
+      if (entry.getId().equals(id)) {
+        return entry;
+      }
+    }
+    return null;
+
+  }
   @Override
   public boolean isEmpty() {
     return super.isEmpty() && nextNumber == null;

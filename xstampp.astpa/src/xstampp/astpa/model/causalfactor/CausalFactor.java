@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -159,7 +158,7 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
     CausalFactorEntry addEntry;
     if (!(entry instanceof CausalFactorEntry)) {
       addEntry = new CausalFactorEntry(entry.getUcaLink(), entry.getId());
-      
+
       addEntry.setConstraintId(entry.getConstraintId());
       addEntry.setScenarioLinks(entry.getScenarioLinks());
       addEntry.setNote(entry.getNote());
@@ -221,20 +220,13 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
     return result;
   }
 
-  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData) {
-    CausalFactorEntry entry = (CausalFactorEntry) getEntry(entryData.getId());
-    if (entry != null) {
-      return entry.changeCausalEntry(entryData);
-    }
-    return null;
-  }
-
   public void prepareForExport(IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints) {
     for (int i = 0; entries != null && i < entries.size(); i++) {
-      entries.get(i).prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions, safetyConstraints);
+      entries.get(i).prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions,
+          safetyConstraints);
     }
   }
 

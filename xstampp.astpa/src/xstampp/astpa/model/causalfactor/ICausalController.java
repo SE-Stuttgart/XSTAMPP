@@ -52,8 +52,20 @@ public interface ICausalController {
 
   /**
    * 
-   * @param id the id of a constraint that has been created in the causal analysis
+   * @param id
+   *          the id of a constraint that has been created in the causal analysis
    * @return the {@link ITableModel} or null if the {@link UUID} doesn't exist
    */
   public ITableModel getSafetyConstraint(UUID id);
+
+  /**
+   * Returns the constraint text for the causal factor entry or an empty String if no
+   * safetyConstraint was found.
+   * 
+   * @param id
+   *          the {@link UUID} which was assigned to an {@link CausalFactorEntry}
+   * @return the title of the {@link CausalSafetyConstraint}, or an empty String if no constraint
+   *         was found for the given id.
+   */
+  String getConstraintTextFor(UUID id);
 }

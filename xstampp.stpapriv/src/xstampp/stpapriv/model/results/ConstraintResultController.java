@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
-import xstampp.astpa.model.causalfactor.CausalFactorEntryContainer;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
@@ -246,8 +245,7 @@ public class ConstraintResultController extends Observable implements Observer {
 				for (ICausalFactor tempCF : entry.getCausalFactors()) {
 
 					if (!tempCF.getAllEntries().isEmpty()) {
-						for (ICausalFactorEntry tempCFES : tempCF.getAllEntries()) {
-							CausalFactorEntryContainer tempCFE = (CausalFactorEntryContainer) tempCFES;
+						for (ICausalFactorEntry tempCFE : tempCF.getAllEntries()) {
 							if (tempCFE != null && tempCFE.getScenarioLinks() != null) {
 								for (UUID templtl : tempCFE.getScenarioLinks()) {
 									if (ltlMap.get(templtl).getRefinedSafetyConstraint() != null) {

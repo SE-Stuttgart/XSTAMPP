@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
@@ -200,7 +201,8 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     return constraintId;
   }
 
-  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData) {
+  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData,
+      NumberedArrayList<CausalSafetyConstraint> causalSafetyConstraints) {
     CausalFactorUCAEntryData resultData = new CausalFactorUCAEntryData(id);
     boolean res = false;
     if (entryData.noteChanged() && !entryData.getNote().equals(getNote())) {
@@ -211,6 +213,22 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     if (entryData.hazardsChanged()) {
       resultData.setHazardIds(hazardIds);
       res |= setHazardIds(entryData.getHazardIds());
+    }
+
+    if (entryData.constraintChanged()) {
+      CausalSafetyConstraint safetyConstraint = causalSafetyConstraints.get(getConstraintId());
+
+      if (safetyConstraint != null) {
+        String title = safetyConstraint.setTitle(entryData.getSafetyConstraint());
+        resultData.setConstraint(title);
+        res |= true;
+      } else {
+        resultData.setConstraint("");
+        safetyConstraint = new CausalSafetyConstraint(
+            entryData.getSafetyConstraint());
+        setConstraintId(safetyConstraint.getId());
+        res |= causalSafetyConstraints.add(safetyConstraint);
+      }
     }
 
     if (entryData instanceof CausalFactorUCAEntryData

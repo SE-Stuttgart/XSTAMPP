@@ -154,23 +154,26 @@ class LinkingShell {
             descChildren.get(i).dispose();
           }
           Label label = null;
-          for (String s : LinkingShell.this.proposals[proposalList.getSelectionIndex()]
-              .getDescription().split("\n")) {
-            FormData data = new FormData();
-            data.top = new FormAttachment(label);
-            data.left = new FormAttachment(0);
-            data.right = new FormAttachment(100);
-            label = new Label(descShell, SWT.WRAP | SWT.SHADOW_OUT);
-            label.setBackground(new Color(null, 231, 240, 228));
-            if (s.contains("\t")) {
-              s = s.replace('\t', ' ').trim();
-              data.left = new FormAttachment(10);
+          if(LinkingShell.this.proposals[proposalList.getSelectionIndex()]
+              .getDescription() != null) {
+            for (String s : LinkingShell.this.proposals[proposalList.getSelectionIndex()]
+                .getDescription().split("\n")) {
+              FormData data = new FormData();
+              data.top = new FormAttachment(label);
+              data.left = new FormAttachment(0);
+              data.right = new FormAttachment(100);
+              label = new Label(descShell, SWT.WRAP | SWT.SHADOW_OUT);
+              label.setBackground(new Color(null, 231, 240, 228));
+              if (s.contains("\t")) {
+                s = s.replace('\t', ' ').trim();
+                data.left = new FormAttachment(10);
+              }
+              label.setText(s);
+              label.setLayoutData(data);
+              descChildren.add(label);
             }
-            label.setText(s);
-            label.setLayoutData(data);
-            descChildren.add(label);
+            descShell.layout(); 
           }
-          descShell.layout();
         }
       }
     });

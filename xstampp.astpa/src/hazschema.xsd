@@ -700,11 +700,10 @@
 												<xs:element
 													type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
 												<xs:element
-													type="xs:string" name="id" />
-												<xs:element
-													name="number" type="xs:int">
+													type="xs:string" name="id" />
+                                                <xs:element name="number" type="xs:int" maxOccurs="1" minOccurs="0">
 												</xs:element>
-												<xs:element
+                                                <xs:element
 													name="title" type="xs:string" maxOccurs="1" minOccurs="0">
 												</xs:element>
 											</xs:all>
