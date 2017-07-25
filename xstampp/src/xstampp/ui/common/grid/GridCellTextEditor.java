@@ -176,18 +176,18 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
       buttonCollum = this.deleteSpace.width;
       gc.drawImage(GridWrapper.getDeleteButton16(), this.deleteSpace.x, this.deleteSpace.y);
     }
-    int lineHeight;
+    Point textBounds = new Point(0, 0);
     currentText = getCurrentText();
     if (this.currentText.trim().isEmpty() && !isReadOnly) {
-      lineHeight = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum);
+      textBounds = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum);
     } else {
-      lineHeight = wrapText(bounds, gc, this.currentText, 2, buttonCollum);
+      textBounds = wrapText(bounds, gc, this.currentText, 2, buttonCollum);
     }
     if (isReadOnly) {
-      lineHeight = Math.max(lineHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
+      textBounds.y = Math.max(textBounds.y, AbstractGridCell.DEFAULT_CELL_HEIGHT);
     }
-    setPreferredHeight(item, lineHeight);
-    this.editField = new Rectangle(bounds.x, bounds.y, bounds.width - buttonCollum, lineHeight);
+    setPreferredHeight(item, textBounds.y);
+    this.editField = new Rectangle(bounds.x, bounds.y, textBounds.x, textBounds.y);
     if (bounds.height + 2 < this.editField.height || bounds.height - 2 > this.editField.height) {
       this.grid.resizeRows();
     }

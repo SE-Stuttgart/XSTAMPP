@@ -206,12 +206,13 @@ public abstract class AbstractGridCell implements IGridCell {
    *          the offset from the right side of the bounds
    * @return the height of the written text sequence
    */
-  protected final int wrapText(Rectangle bounds, GC gc, String text, int left_space,
+  protected final Point wrapText(Rectangle bounds, GC gc, String text, int left_space,
       int right_space) {
-    if (text.isEmpty() || bounds.width < 0) {
-      return 0;
-    }
+    Point textBounds = new Point(bounds.width - left_space - right_space, 0);
     FontMetrics metrics = gc.getFontMetrics();
+    if (text.isEmpty() || bounds.width < 0) {
+      return textBounds;
+    }
     // the line height is set absolute so that the strings are drawn on the
     // right position
     int lineHeight = bounds.y;
@@ -222,7 +223,6 @@ public abstract class AbstractGridCell implements IGridCell {
     boolean first = true;
     boolean carryOver = false;
     int wordIndex = 1;
-    int width = bounds.width - 2 - right_space;
     while (wordIndex <= words.length) {
       if (!first) {
         space = " ";
@@ -249,12 +249,12 @@ public abstract class AbstractGridCell implements IGridCell {
         tmpLine = tmpLine.substring(0, tmpLine.indexOf("\n"));
         first = line.isEmpty();
         carryOver = true;
-      } else if (!tmpLine.isEmpty() && gc.stringExtent(tmpLine).x >= width) {
-        int end = wrap(gc, tmpLine, width - 1, 0, tmpLine.length() - 1, 0, 1, 1);
+      } else if (!tmpLine.isEmpty() && gc.stringExtent(tmpLine).x >= textBounds.x) {
+        int end = wrap(gc, tmpLine, textBounds.x - 1, 0, tmpLine.length() - 1, 0, 1, 1);
         gc.drawString(tmpLine.substring(0, end), bounds.x + left_space, lineHeight);
         lineHeight += metrics.getHeight();
         tmpLine = tmpLine.substring(end);
-      } else if (gc.stringExtent(line + space + tmpLine).x >= width) {
+      } else if (gc.stringExtent(line + space + tmpLine).x >= textBounds.x) {
 
         gc.drawString(line, bounds.x + left_space, lineHeight);
         lineHeight += metrics.getHeight();
@@ -283,7 +283,8 @@ public abstract class AbstractGridCell implements IGridCell {
     // since line_height was initialized in absolute scale but this function
     // should calculate the
     // relative text height the y -coordinate must be subtracted
-    return lineHeight - (bounds.y - 2);
+    textBounds.y = lineHeight - (bounds.y - 2);
+    return textBounds;
 
   }
 

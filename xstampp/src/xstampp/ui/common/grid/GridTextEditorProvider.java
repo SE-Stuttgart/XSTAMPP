@@ -3,6 +3,8 @@ package xstampp.ui.common.grid;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -27,24 +29,37 @@ public class GridTextEditorProvider {
    * @param size the overall 
    * @return
    */
-  public String open(String text, Rectangle size) {
+  public String open(String text, final Rectangle size) {
     final Shell shell = new Shell(Display.getCurrent().getActiveShell(),
         SWT.APPLICATION_MODAL | SWT.RESIZE);
-    size.width = Math.max(size.width, 150);
     returnString = null;
     final GridLayout layout = new GridLayout();
     shell.setLayout(layout);
     
     shell.setLocation(size.x - 5,size.y);
-    final Text textField = new Text(shell, SWT.WRAP | SWT.V_SCROLL);
+    final Text textField = new Text(shell, SWT.WRAP);
     textField.setLocation(new Point(0, 0));
     textField.setText(text);
-    GridData layoutData = new GridData(size.width,size.height);
+    final GridData layoutData = new GridData(size.width,size.height);
     layoutData.horizontalAlignment = SWT.FILL;
     layoutData.verticalAlignment = SWT.FILL;
     layoutData.grabExcessHorizontalSpace = true;
     layoutData.grabExcessVerticalSpace = true;
     textField.setLayoutData(layoutData);
+    textField.addModifyListener(new ModifyListener() {
+      
+      @Override
+      public void modifyText(ModifyEvent e) {
+        Point computeSize = textField.computeSize(size.width, SWT.DEFAULT);
+        GridData layoutData = new GridData(size.width,computeSize.y);
+        layoutData.horizontalAlignment = SWT.FILL;
+        layoutData.verticalAlignment = SWT.FILL;
+        layoutData.grabExcessHorizontalSpace = true;
+        layoutData.grabExcessVerticalSpace = true;
+        textField.setLayoutData(layoutData);
+        shell.layout(true);
+      }
+    });
     Composite buttonComp = new Composite(shell, SWT.None);
     buttonComp.setLayout(new GridLayout(2,true));
     buttonComp.setLayoutData(new GridData(SWT.END, SWT.BOTTOM, false, false));

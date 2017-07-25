@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
@@ -74,11 +75,11 @@ public class GridCellText extends AbstractGridCell {
     final Color fgColor = gc.getForeground();
     gc.setForeground(GridCellText.TEXT_COLOR);
 
-    int newHeight = wrapText(renderer.getDrawBounds(), gc, this.text.trim(), 2, 0);
-    boolean needRefresh = newHeight > AbstractGridCell.DEFAULT_CELL_HEIGHT 
-                        && newHeight != getPreferredHeight();
+    Point textBounds = wrapText(renderer.getDrawBounds(), gc, this.text.trim(), 2, 0);
+    boolean needRefresh = textBounds.y > AbstractGridCell.DEFAULT_CELL_HEIGHT 
+                        && textBounds.y != getPreferredHeight();
     item.getGridRow().setDirty(needRefresh);
-    int cellHeight = Math.max(newHeight, AbstractGridCell.DEFAULT_CELL_HEIGHT);
+    int cellHeight = Math.max(textBounds.y, AbstractGridCell.DEFAULT_CELL_HEIGHT);
     setPreferredHeight(item,cellHeight);
     // restore bg color
     gc.setBackground(bgColor);
