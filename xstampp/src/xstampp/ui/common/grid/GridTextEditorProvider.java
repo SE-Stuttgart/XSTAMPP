@@ -37,7 +37,7 @@ public class GridTextEditorProvider {
     shell.setLayout(layout);
     
     shell.setLocation(size.x - 5,size.y);
-    final Text textField = new Text(shell, SWT.WRAP);
+    final Text textField = new Text(shell, SWT.WRAP | SWT.V_SCROLL);
     textField.setLocation(new Point(0, 0));
     textField.setText(text);
     final GridData layoutData = new GridData(size.width,size.height);
@@ -46,24 +46,11 @@ public class GridTextEditorProvider {
     layoutData.grabExcessHorizontalSpace = true;
     layoutData.grabExcessVerticalSpace = true;
     textField.setLayoutData(layoutData);
-    textField.addModifyListener(new ModifyListener() {
-      
-      @Override
-      public void modifyText(ModifyEvent e) {
-        Point computeSize = textField.computeSize(size.width, SWT.DEFAULT);
-        GridData layoutData = new GridData(size.width,computeSize.y);
-        layoutData.horizontalAlignment = SWT.FILL;
-        layoutData.verticalAlignment = SWT.FILL;
-        layoutData.grabExcessHorizontalSpace = true;
-        layoutData.grabExcessVerticalSpace = true;
-        textField.setLayoutData(layoutData);
-        shell.layout(true);
-      }
-    });
+    
     Composite buttonComp = new Composite(shell, SWT.None);
     buttonComp.setLayout(new GridLayout(2,true));
     buttonComp.setLayoutData(new GridData(SWT.END, SWT.BOTTOM, false, false));
-    GridData data = new GridData(70,20);
+    GridData data = new GridData(70,30);
     data.horizontalAlignment = SWT.RIGHT;
     data.grabExcessHorizontalSpace = false;
     data.grabExcessVerticalSpace = false;

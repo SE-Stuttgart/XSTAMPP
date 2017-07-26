@@ -849,7 +849,7 @@ public class DataModelController extends AbstractDataModel
 
         @Override
         public boolean check(IUnsafeControlAction model) {
-          return !getLinksOfUCA(model.getId()).isEmpty();
+          return getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK, model.getId());
         }
       });
   }

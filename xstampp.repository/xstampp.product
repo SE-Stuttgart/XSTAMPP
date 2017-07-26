@@ -43,7 +43,6 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -156,7 +155,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </configurations>
 
    <repositories>
-      <repository location="http://https://github.com/asimabdulkhaleq/XSTAMPP/tree/updatesite" enabled="true" />
+      <repository location="http://https://github.com/asimabdulkhaleq/XSTAMPP/raw/updatesite" enabled="true" />
    </repositories>
 
    <preferencesInfo>

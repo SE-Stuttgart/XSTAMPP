@@ -76,6 +76,12 @@ public class LinkController extends Observable {
     return links;
   }
 
+  /**
+   * 
+   * @param linkType the {@link ObserverValue} of the link
+   * @param part the id of the element 
+   * @return whether the {@link LinkController} contains a link for the given id or not
+   */
   public boolean isLinked(ObserverValue linkType, UUID part) {
     if (this.linkMap.containsKey(linkType)) {
       for (Link link : this.linkMap.get(linkType)) {
