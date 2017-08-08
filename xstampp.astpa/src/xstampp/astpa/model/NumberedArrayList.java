@@ -30,7 +30,9 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
       add(trash.remove(e.getId()), e);
       return true;
     }
-    e.setNumber(this.getNextNumber());
+    if(e.getNumber() < 0) {
+      e.setNumber(this.getNextNumber());
+    }
     return super.add(e);
   }
 

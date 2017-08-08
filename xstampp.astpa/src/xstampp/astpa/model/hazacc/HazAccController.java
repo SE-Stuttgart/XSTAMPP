@@ -43,11 +43,11 @@ public class HazAccController extends Observable implements IHazAccController{
 
   @XmlElementWrapper(name = "accidents")
   @XmlElement(name = "accident")
-  private List<Accident> accidents;
+  private NumberedArrayList<Accident> accidents;
 
   @XmlElementWrapper(name = "hazards")
   @XmlElement(name = "hazard")
-  private List<Hazard> hazards;
+  private NumberedArrayList<Hazard> hazards;
 
   @XmlElementWrapper(name = "links")
   @XmlElement(name = "link")
@@ -81,7 +81,6 @@ public class HazAccController extends Observable implements IHazAccController{
   @Override
   public boolean removeAccident(UUID id) {
     ITableModel accident = this.getAccident(id);
-    this.deleteAllLinks(id);
     int index = this.getAccidents().indexOf(accident);
     this.getAccidents().remove(index);
     for (; index < this.getAccidents().size(); index++) {
@@ -159,7 +158,6 @@ public class HazAccController extends Observable implements IHazAccController{
   @Override
   public boolean removeHazard(UUID id) {
     ITableModel hazard = this.getHazard(id);
-    this.deleteAllLinks(hazard.getId());
     int index = this.getHazards().indexOf(hazard);
     this.getHazards().remove(index);
     for (; index < this.getHazards().size(); index++) {
@@ -288,9 +286,11 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   private void deleteAllLinks(UUID id) {
     List<HazAccLink> toDelete = new ArrayList<>();
-    for (HazAccLink link : this.links) {
-      if (link.containsId(id)) {
-        toDelete.add(link);
+    if(this.links != null) {
+      for (HazAccLink link : this.links) {
+        if (link.containsId(id)) {
+          toDelete.add(link);
+        }
       }
     }
     this.links.removeAll(toDelete);

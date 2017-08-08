@@ -68,7 +68,7 @@ public abstract class ATableModel extends EntryWithSeverity
     this.id = UUID.randomUUID();
     this.title = title;
     this.description = description;
-    this.number = number;
+    this.number = -1;
   }
 
   public ATableModel(ITableModel model, int i) {

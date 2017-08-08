@@ -1417,7 +1417,7 @@ public class DataModelController extends AbstractDataModel
     if (!(this.getHazAccController().getAccident(accidentId) instanceof Accident)) {
       return false;
     }
-
+    getLinkController().deleteAllFor(ObserverValue.HAZ_ACC_LINK, accidentId);
     boolean result = this.getHazAccController().removeAccident(accidentId);
     if (result) {
       this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
@@ -1536,7 +1536,7 @@ public class DataModelController extends AbstractDataModel
     if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
       return false;
     }
-    this.getControlActionController().removeAllLinks(hazardId);
+    getLinkController().deleteAllFor(ObserverValue.HAZ_ACC_LINK, hazardId);
     if (this.getHazAccController().removeHazard(hazardId)) {
       this.setUnsavedAndChanged(ObserverValue.HAZARD);
       return true;

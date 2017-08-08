@@ -36,23 +36,23 @@ public class SDSController extends Observable implements ISDSController {
 
   @XmlElementWrapper(name = "safetyConstraints")
   @XmlElement(name = "safetyConstraint")
-  private List<SafetyConstraint> safetyConstraints;
+  private NumberedArrayList<SafetyConstraint> safetyConstraints;
 
   @XmlElementWrapper(name = "systemGoals")
   @XmlElement(name = "systemGoal")
-  private List<SystemGoal> systemGoals;
+  private NumberedArrayList<SystemGoal> systemGoals;
 
   @XmlElementWrapper(name = "designRequirements")
   @XmlElement(name = "designRequirement")
-  private List<DesignRequirement> designRequirements;
+  private NumberedArrayList<DesignRequirement> designRequirements;
 
   @XmlElementWrapper(name = "designRequirementsStep1")
   @XmlElement(name = "designRequirement")
-  private List<DesignRequirementStep1> designRequirementsStep1;
+  private NumberedArrayList<DesignRequirementStep1> designRequirementsStep1;
 
   @XmlElementWrapper(name = "designRequirementsStep2")
   @XmlElement(name = "designRequirement")
-  private List<DesignRequirementStep2> designRequirementsStep2;
+  private NumberedArrayList<DesignRequirementStep2> designRequirementsStep2;
 
   /**
    * 
