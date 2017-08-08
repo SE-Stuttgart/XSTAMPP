@@ -43,6 +43,13 @@
 				        <macosx>XSTAMPP.app</macosx>
 				      </rootFolders>
 				    </product>
+				    <product>
+				      <id>xstampp_for_conti_product</id>
+        				<attachId>other</attachId>
+				      <rootFolders>
+				        <macosx>XSTAMPP.app</macosx>
+				      </rootFolders>
+				    </product>
 				  </products>
 				</configuration>
 				<executions>

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="2.4.0" useFeatures="true" includeLaunchers="true">
+<product name="STAMP For STPA Platform" uid="xstampp_for_STPA" id="xstampp.xstampp_for_STPA" application="xstampp.application" version="2.4.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/xstampp/icons/xstampp/logox128.png"/>
       <text>
          XSTAMPP - An eXtensible STAMP Platform for Safety Engineering
-		 including the A-STPA, A-CAST, XSTPA, STPAPriv and STPASec Plugins
+		 including only the A-STPA Plugin to perform a STPA Analysis 
 
 ©2014 - 2017
 http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html
@@ -145,12 +145,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="xstampp.feature" version="2.4.0"/>
       <feature id="org.eclipse.gef"/>
-      <feature id="xstampp.acast.feature" version="1.0.6"/>
-      <feature id="xstampp.stpapriv.feature" version="1.0.0"/>
-      <feature id="xstampp.stpasec.feature" version="1.0.0"/>
-      <feature id="xstampp.xstpa.feature" version="1.1.2"/>
-      <feature id="xstampp.xstpapriv.feature" version="1.0.0"/>
-      <feature id="xstampp.xstpasec.feature" version="1.0.0"/>
    </features>
 
    <configurations>
