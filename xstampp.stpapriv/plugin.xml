@@ -642,84 +642,14 @@
             name="%command.name.Load">
       </command>
       <command
-            defaultHandler="xstampp.astpa.controlstructure.controller.commands.OpenNewTool"
-            id="xstampp.stpapriv.cseditor.changeTool"
-            name="%command.name.switchTool">
-         <commandParameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               name="name"
-               optional="true">
-         </commandParameter>
-      </command>
-      <command
-            defaultHandler="xstampp.stpapriv.util.commands.BoleanPreferenceToggle"
-            id="xstampp.stpapriv.controlstructure.preferenceToggle"
-            name="%command.name.preferenceToggle">
-         <commandParameter
-               id="xstampp.stpapriv.command.preference"
-               name="preference name"
-               optional="false">
-         </commandParameter>
-      </command>
-      <command
             defaultHandler="xstampp.stpapriv.util.commands.RunCommand"
             id="xstampp.stpapriv.command.run"
             name="%command.name.Run">
       </command>
       <command
-            defaultHandler="xstampp.astpa.controlstructure.controller.commands.PasteComponentsHandler"
-            id="xstampp.stpapriv.command.cs.paste"
-            name="%command.name.Copy">
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.controlstructure.controller.commands.CopyComponentsHandler"
-            id="xstampp.stpapriv.command.cs.copy"
-            name="%command.name.Paste">
-      </command>
-      <command
             defaultHandler="xstampp.stpapriv.diagram.CallEditor"
             id="xstampp.stpapriv.opendiagram"
             name="OpenDiagram">
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.util.commands.NewControlStructureHandler"
-            id="xstampp.astpa.newControlStructure.command"
-            name="%command.name">
-         <commandParameter
-               id="xstampp.dynamicStep.commandParameter.projectId"
-               name="%commandParameter.name.3"
-               optional="false">
-         </commandParameter>
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.util.commands.RenameRootComponentHandler"
-            id="xstampp.astpa.command.cs.rename"
-            name="%command.cs.rename.name.0">
-         <commandParameter
-               id="xstampp.dynamicStep.commandParameter.projectId"
-               name="%commandParameter.name.4"
-               optional="false">
-         </commandParameter>
-         <commandParameter
-               id="xstampp.astpa.cs.rootId"
-               name="%commandParameter.name.5"
-               optional="false">
-         </commandParameter>
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.util.commands.DeleteRootComponentHandler"
-            id="xstampp.astpa.command.cs.deleteRoot"
-            name="%command.name.0">
-         <commandParameter
-               id="xstampp.dynamicStep.commandParameter.projectId"
-               name="%commandParameter.name.6"
-               optional="false">
-         </commandParameter>
-         <commandParameter
-               id="xstampp.astpa.cs.rootId"
-               name="%commandParameter.name.7"
-               optional="false">
-         </commandParameter>
       </command>
    </extension>
    <extension
@@ -732,11 +662,11 @@
                style="push">
          </command>
          <command
-               commandId="xstampp.stpapriv.command.cs.copy"
+               commandId="xstampp.astpa.command.cs.copy"
                style="push">
          </command>
          <command
-               commandId="xstampp.stpapriv.command.cs.paste"
+               commandId="xstampp.astpa.command.cs.paste"
                style="push">
          </command>
          <command
@@ -758,42 +688,42 @@
             </parameter>
          </command>
          <command
-               commandId="xstampp.stpapriv.cseditor.changeTool"
+               commandId="xstampp.astpa.cseditor.changeTool"
                label="%command.label.Select"
                style="push">
             <parameter
-                  name="xstampp.stpapriv.cseditor.toolconstant"
+                  name="xstampp.astpa.cseditor.toolconstant"
                   value="SELECT">
             </parameter>
          </command>
          <command
-               commandId="xstampp.stpapriv.cseditor.changeTool"
+               commandId="xstampp.astpa.cseditor.changeTool"
                label="%command.label.Marquee"
                style="push">
             <parameter
-                  name="xstampp.stpapriv.cseditor.toolconstant"
+                  name="xstampp.astpa.cseditor.toolconstant"
                   value="MARQUEE">
             </parameter>
          </command>
          <menu
                label="%menu.label.Connections">
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/arrow_simple_16.png"
                   label="%command.label.newConnection"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="ARROW_SIMPLE">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/arrow_dashed_16.png"
                   label="%command.label.dashedConnection"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="ARROW_DASHED">
                </parameter>
             </command>
@@ -801,72 +731,72 @@
          <menu
                label="%menu.label.Components">
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/controller_16.png"
                   label="%command.label.Controller"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="CONTROLLER">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/actuator_16.png"
                   label="%command.label.Actuator"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="ACTUATOR">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/process_16.png"
                   label="%command.label.ControlledProcess"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="CONTROLLED_PROCESS">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/sensor_16.png"
                   label="%command.label.Sensor"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="SENSOR">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/ControlAction_16.png"
                   label="%command.label.ControlAction"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="CONTROLACTION">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/text_box_16.png"
                   label="%command.label.TextBox"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="TEXTFIELD">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpapriv.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/dashed_box_16.png"
                   label="%command.label.DashedBox"
                   style="push">
                <parameter
-                     name="xstampp.stpapriv.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="DASHEDBOX">
                </parameter>
             </command>
@@ -878,14 +808,14 @@
             <visibleWhen
                   checkEnabled="true">
                <with
-                     variable="xstampp.stpapriv.connectionMode">
+                     variable="xstampp.astpa.connectionMode">
                   <equals
                         value="true">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpapriv.command.preference"
+                  name="xstampp.stpasec.command.preference"
                   value="ConnectionMode">
             </parameter>
          </command>
@@ -896,14 +826,14 @@
             <visibleWhen
                   checkEnabled="false">
                <with
-                     variable="xstampp.stpapriv.connectionMode">
+                     variable="xstampp.astpa.connectionMode">
                   <equals
                         value="false">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpapriv.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ConnectionMode">
             </parameter>
          </command>
@@ -914,14 +844,14 @@
             <visibleWhen
                   checkEnabled="false">
                <with
-                     variable="xstampp.stpapriv.ShowCAListBorder">
+                     variable="xstampp.astpa.ShowCAListBorder">
                   <equals
                         value="false">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpapriv.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowListOfControlActionBorder">
             </parameter>
          </command>
@@ -932,31 +862,31 @@
             <visibleWhen
                   checkEnabled="true">
                <with
-                     variable="xstampp.stpapriv.ShowCAListBorder">
+                     variable="xstampp.astpa.ShowCAListBorder">
                   <equals
                         value="true">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpapriv.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowListOfControlActionBorder">
             </parameter>
          </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="popup:stpapriv.steps.step3_1">
+            locationURI="popup:astpa.steps.step3_1">
          <command
                commandId="xstampp.ui.commands.selectAll"
                style="push">
          </command>
          <command
-               commandId="xstampp.stpapriv.command.cs.copy"
+               commandId="xstampp.astpa.command.cs.copy"
                style="push">
          </command>
          <command
-               commandId="xstampp.stpapriv.command.cs.paste"
+               commandId="xstampp.astpa.command.cs.paste"
                style="push">
          </command>
          <command
@@ -966,14 +896,14 @@
             <visibleWhen
                   checkEnabled="false">
                <with
-                     variable="xstampp.stpapriv.ProcessModelBorder">
+                     variable="xstampp.astpa.ProcessModelBorder">
                   <equals
                         value="false">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpapriv.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowProcessModelBorder">
             </parameter>
          </command>
@@ -984,14 +914,14 @@
             <visibleWhen
                   checkEnabled="true">
                <with
-                     variable="xstampp.stpapriv.ProcessModelBorder">
+                     variable="xstampp.astpa.ProcessModelBorder">
                   <equals
                         value="true">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpapriv.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowProcessModelBorder">
             </parameter>
          </command>
@@ -1001,7 +931,7 @@
                style="push">
             <parameter
                   name="xstampp.commandParameter.openwizard"
-                  value="stpapriv.wizard3_1">
+                  value="astpa.wizard3_1">
             </parameter>
          </command>
          <command
@@ -1010,7 +940,7 @@
                style="push">
             <parameter
                   name="preferencePageId"
-                  value="xstampp.stpapriv.preferencepage.cs">
+                  value="xstampp.astpa.preferencepage.cs">
             </parameter>
          </command>
       </menuContribution>

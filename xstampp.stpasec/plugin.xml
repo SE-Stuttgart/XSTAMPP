@@ -732,11 +732,11 @@
                style="push">
          </command>
          <command
-               commandId="xstampp.stpasec.command.cs.copy"
+               commandId="xstampp.astpa.command.cs.copy"
                style="push">
          </command>
          <command
-               commandId="xstampp.stpasec.command.cs.paste"
+               commandId="xstampp.astpa.command.cs.paste"
                style="push">
          </command>
          <command
@@ -758,42 +758,42 @@
             </parameter>
          </command>
          <command
-               commandId="xstampp.stpasec.cseditor.changeTool"
+               commandId="xstampp.astpa.cseditor.changeTool"
                label="%command.label.Select"
                style="push">
             <parameter
-                  name="xstampp.stpasec.cseditor.toolconstant"
+                  name="xstampp.astpa.cseditor.toolconstant"
                   value="SELECT">
             </parameter>
          </command>
          <command
-               commandId="xstampp.stpasec.cseditor.changeTool"
+               commandId="xstampp.astpa.cseditor.changeTool"
                label="%command.label.Marquee"
                style="push">
             <parameter
-                  name="xstampp.stpasec.cseditor.toolconstant"
+                  name="xstampp.astpa.cseditor.toolconstant"
                   value="MARQUEE">
             </parameter>
          </command>
          <menu
                label="%menu.label.Connections">
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/arrow_simple_16.png"
                   label="%command.label.newConnection"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="ARROW_SIMPLE">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/arrow_dashed_16.png"
                   label="%command.label.dashedConnection"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="ARROW_DASHED">
                </parameter>
             </command>
@@ -801,72 +801,72 @@
          <menu
                label="%menu.label.Components">
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/controller_16.png"
                   label="%command.label.Controller"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="CONTROLLER">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/actuator_16.png"
                   label="%command.label.Actuator"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="ACTUATOR">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/process_16.png"
                   label="%command.label.ControlledProcess"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="CONTROLLED_PROCESS">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/sensor_16.png"
                   label="%command.label.Sensor"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="SENSOR">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/ControlAction_16.png"
                   label="%command.label.ControlAction"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="CONTROLACTION">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/text_box_16.png"
                   label="%command.label.TextBox"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="TEXTFIELD">
                </parameter>
             </command>
             <command
-                  commandId="xstampp.stpasec.cseditor.changeTool"
+                  commandId="xstampp.astpa.cseditor.changeTool"
                   icon="icons/buttons/controlstructure/dashed_box_16.png"
                   label="%command.label.DashedBox"
                   style="push">
                <parameter
-                     name="xstampp.stpasec.cseditor.toolconstant"
+                     name="xstampp.astpa.cseditor.toolconstant"
                      value="DASHEDBOX">
                </parameter>
             </command>
@@ -952,11 +952,11 @@
                style="push">
          </command>
          <command
-               commandId="xstampp.stpasec.command.cs.copy"
+               commandId="xstampp.astpa.command.cs.copy"
                style="push">
          </command>
          <command
-               commandId="xstampp.stpasec.command.cs.paste"
+               commandId="xstampp.astpa.command.cs.paste"
                style="push">
          </command>
          <command
