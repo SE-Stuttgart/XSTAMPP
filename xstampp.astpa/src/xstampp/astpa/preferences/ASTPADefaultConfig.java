@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 
 import org.eclipse.core.runtime.Platform;
 
+import xstampp.ui.common.ProjectManager;
+
 /**
  * @author Lukas Balzer
  *
@@ -40,10 +42,10 @@ public class ASTPADefaultConfig {
   public final boolean USE_CAUSAL_SCENARIO_ANALYSIS;
 
   private ASTPADefaultConfig() {
-    USE_CAUSAL_SCENARIO_ANALYSIS = fetchSTPAConfig("stpa.defaults.useCausalScenarioAnalysis", true);
+    USE_CAUSAL_SCENARIO_ANALYSIS = fetchSTPAConfig("stpa.defaults.useCausalScenarioAnalysis", false);
     USE_MULTI_CONTROL_STRUCTURES = fetchSTPAConfig("stpa.defaults.useMultiControlStructures",
         false);
-    USE_SEVERITY_ANALYSIS = fetchSTPAConfig("stpa.defaults.useSeverityAnalysis", false);
+    USE_SEVERITY_ANALYSIS = fetchSTPAConfig("stpa.defaults.useSeverityAnalysis", true);
   }
 
   public static ASTPADefaultConfig getInstance() {
@@ -54,18 +56,23 @@ public class ASTPADefaultConfig {
   }
 
   private boolean fetchSTPAConfig(String valueId, boolean defaultValue) {
-    try (InputStream stream = Platform.getConfigurationLocation().getURL().openStream();
+    boolean returnValue = defaultValue;
+     try (InputStream stream = Platform.getConfigurationLocation().getDataArea("/config.ini").openStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
       String line = reader.readLine();
+      ProjectManager.getLOGGER().debug(
+          "fetching default config from " + Platform.getConfigurationLocation().getDataArea("/config.ini").getPath());
       while (line != null) {
         if (line.startsWith(valueId)) {
-          return Boolean.getBoolean(line.split("=")[1]);
+          String[] split = line.split("=");
+          returnValue = Boolean.parseBoolean(split[1]);
+          break;
         }
         line = reader.readLine();
       }
     } catch (Exception ioExc) {
-      return defaultValue;
+      ProjectManager.getLOGGER().warn("Couldn't fetch default stpa preference " + valueId, ioExc);
     }
-    return defaultValue;
+    return returnValue;
   }
 }
