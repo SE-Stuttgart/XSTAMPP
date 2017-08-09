@@ -24,9 +24,12 @@ public class GridTextEditorProvider {
 
   /**
    * 
-   * @param text the initial text of the editor
-   * @param textSize the size of the text input
-   * @param size the overall 
+   * @param text
+   *          the initial text of the editor
+   * @param textSize
+   *          the size of the text input
+   * @param size
+   *          the overall
    * @return
    */
   public String open(String text, final Rectangle size) {
@@ -35,22 +38,22 @@ public class GridTextEditorProvider {
     returnString = null;
     final GridLayout layout = new GridLayout();
     shell.setLayout(layout);
-    
-    shell.setLocation(size.x - 5,size.y);
+
+    shell.setLocation(size.x - (layout.marginWidth + layout.horizontalSpacing), size.y);
     final Text textField = new Text(shell, SWT.WRAP | SWT.V_SCROLL);
     textField.setLocation(new Point(0, 0));
     textField.setText(text);
-    final GridData layoutData = new GridData(size.width,size.height);
+    final GridData layoutData = new GridData(size.width, size.height);
     layoutData.horizontalAlignment = SWT.FILL;
     layoutData.verticalAlignment = SWT.FILL;
     layoutData.grabExcessHorizontalSpace = true;
     layoutData.grabExcessVerticalSpace = true;
     textField.setLayoutData(layoutData);
-    
+
     Composite buttonComp = new Composite(shell, SWT.None);
-    buttonComp.setLayout(new GridLayout(2,true));
+    buttonComp.setLayout(new GridLayout(2, true));
     buttonComp.setLayoutData(new GridData(SWT.END, SWT.BOTTOM, false, false));
-    GridData data = new GridData(70,30);
+    GridData data = new GridData(70, 30);
     data.horizontalAlignment = SWT.RIGHT;
     data.grabExcessHorizontalSpace = false;
     data.grabExcessVerticalSpace = false;

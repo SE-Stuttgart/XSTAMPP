@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -86,11 +86,12 @@ public class CSCView extends AbstractFilteredTableView {
     super.update(dataModelController, updatedValue);
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-      case UNSAFE_CONTROL_ACTION:
-        packColumns();
-        break;
-      default:
-        break;
+    case UCA_HAZ_LINK:
+    case UNSAFE_CONTROL_ACTION:
+      packColumns();
+      break;
+    default:
+      break;
     }
   }
 
@@ -111,37 +112,37 @@ public class CSCView extends AbstractFilteredTableView {
 
   protected CSCLabelProvider getColumnProvider(int columnIndex) {
     switch (columnIndex) {
-      case 0:
-        return new CSCLabelProvider() {
-          @Override
-          public String getText(Object element) {
-            return "UCA1." + CSCView.this.getDataInterface()
-                .getUCANumber(((ICorrespondingUnsafeControlAction) element).getId());
-          }
-        };
-      case 1:
-        return new CSCLabelProvider() {
-          @Override
-          public String getText(Object element) {
-            return ((ICorrespondingUnsafeControlAction) element).getDescription();
-          }
-        };
-      case 2:
-        return new CSCLabelProvider() {
-          @Override
-          public String getText(Object element) {
-            return "SC1." + CSCView.this.getDataInterface()
-                .getUCANumber(((ICorrespondingUnsafeControlAction) element).getId());
-          }
-        };
-      case 3:
-        return new CSCLabelProvider() {
-          @Override
-          public String getText(Object element) {
-            return ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint()
-                .getText();
-          }
-        };
+    case 0:
+      return new CSCLabelProvider() {
+        @Override
+        public String getText(Object element) {
+          return "UCA1." + CSCView.this.getDataInterface()
+              .getUCANumber(((ICorrespondingUnsafeControlAction) element).getId());
+        }
+      };
+    case 1:
+      return new CSCLabelProvider() {
+        @Override
+        public String getText(Object element) {
+          return ((ICorrespondingUnsafeControlAction) element).getDescription();
+        }
+      };
+    case 2:
+      return new CSCLabelProvider() {
+        @Override
+        public String getText(Object element) {
+          return "SC1." + CSCView.this.getDataInterface()
+              .getUCANumber(((ICorrespondingUnsafeControlAction) element).getId());
+        }
+      };
+    case 3:
+      return new CSCLabelProvider() {
+        @Override
+        public String getText(Object element) {
+          return ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint()
+              .getText();
+        }
+      };
 
     }
     return null;

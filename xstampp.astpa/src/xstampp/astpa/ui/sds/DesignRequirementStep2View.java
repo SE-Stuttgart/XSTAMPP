@@ -42,12 +42,14 @@ public class DesignRequirementStep2View extends CommonTableView<IDesignRequireme
    */
   public DesignRequirementStep2View() {
     super(EnumSet.of(TableStyle.RESTRICTED), Messages.DesignRequirements);
-    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP2));
+    setUpdateValues(
+        EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP2, ObserverValue.DR2_CausalSC_LINK));
   }
 
   @Override
   public void createCommonTableView(Composite parent, String tableHeader) {
-    addLinkSupport(new Step2ConstraintsLinkSupport((DataModelController) getDataInterface(),ObserverValue.DESIGN_REQUIREMENT_STEP2));
+    addLinkSupport(new Step2ConstraintsLinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.DR2_CausalSC_LINK));
     super.createCommonTableView(parent, tableHeader);
   }
 

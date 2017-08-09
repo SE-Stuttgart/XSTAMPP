@@ -28,7 +28,7 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
-import xstampp.astpa.preferences.IASTPADefaults;
+import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.ObserverValue;
 
 /**
@@ -312,7 +312,7 @@ public class HazAccController extends Observable implements IHazAccController{
     if(useSeverity != null) {
       return useSeverity;
     }
-    return IASTPADefaults.USE_SEVERITY_ANALYSIS;
+    return ASTPADefaultConfig.getInstance().USE_SEVERITY_ANALYSIS;
   }
 
   /* (non-Javadoc)

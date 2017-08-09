@@ -267,9 +267,10 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public void prepareForSave() {
-    
+
     this.extendedDataController.prepareForSave();
-    if (!this.getControlActionController().prepareForSave(this.extendedDataController, linkController)) {
+    if (!this.getControlActionController().prepareForSave(this.extendedDataController,
+        linkController)) {
       this.controlActionController = null;
     }
     this.causalFactorController.prepareForSave(this.getHazAccController(),
@@ -454,7 +455,8 @@ public class DataModelController extends AbstractDataModel
       return null;
     }
 
-    UUID id = this.getSdsController().addDesignRequirement(title, description, ObserverValue.DESIGN_REQUIREMENT);
+    UUID id = this.getSdsController().addDesignRequirement(title, description,
+        ObserverValue.DESIGN_REQUIREMENT);
     if (id != null) {
       this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
     }
@@ -835,8 +837,7 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<UCAHazLink> getAllUCALinks() {
     List<UCAHazLink> links = new ArrayList<>();
-    Map<UUID, UUID> linksFor = this.getLinkController()
-        .getLinksFor(ObserverValue.UCA_HAZ_LINK);
+    Map<UUID, UUID> linksFor = this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK);
     for (Entry<UUID, UUID> link : linksFor.entrySet()) {
       links.add(new UCAHazLink(link.getKey(), link.getValue()));
     }
@@ -847,11 +848,11 @@ public class DataModelController extends AbstractDataModel
   public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
     return this.getControlActionController().getUCAList(new IEntryFilter<IUnsafeControlAction>() {
 
-        @Override
-        public boolean check(IUnsafeControlAction model) {
-          return getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK, model.getId());
-        }
-      });
+      @Override
+      public boolean check(IUnsafeControlAction model) {
+        return getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK, model.getId());
+      }
+    });
   }
 
   /**
@@ -973,13 +974,14 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<ITableModel> getCorrespondingSafetyConstraints() {
-    return this.getControlActionController().getCorrespondingSafetyConstraints(new IEntryFilter<IUnsafeControlAction>() {
+    return this.getControlActionController()
+        .getCorrespondingSafetyConstraints(new IEntryFilter<IUnsafeControlAction>() {
 
-        @Override
-        public boolean check(IUnsafeControlAction model) {
-          return !getLinksOfUCA(model.getId()).isEmpty();
-        }
-      });
+          @Override
+          public boolean check(IUnsafeControlAction model) {
+            return !getLinksOfUCA(model.getId()).isEmpty();
+          }
+        });
   }
 
   @Override
@@ -1114,8 +1116,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
-    return this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK,
-        unsafeControlActionId);
+    return this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
   }
 
   @Override
@@ -1605,8 +1606,7 @@ public class DataModelController extends AbstractDataModel
     if (unsafeControlActionId == null) {
       return false;
     }
-    this.getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK,
-        unsafeControlActionId);
+    this.getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
 
     if (result) {
       this.setUnsavedAndChanged(ObserverValue.UCA_HAZ_LINK);
@@ -1619,9 +1619,21 @@ public class DataModelController extends AbstractDataModel
     if (unsafeControlActionId == null) {
       return false;
     }
-    getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
     this.getControlActionController().removeAllLinks(unsafeControlActionId);
+    final UUID id = unsafeControlActionId;
+    List<ITableModel> constraints = getControlActionController()
+        .getCorrespondingSafetyConstraints(new IEntryFilter<IUnsafeControlAction>() {
+
+          @Override
+          public boolean check(IUnsafeControlAction model) {
+            return id.equals(model.getId());
+          }
+        });
     if (this.getControlActionController().removeUnsafeControlAction(unsafeControlActionId)) {
+      getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
+      for (ITableModel model : constraints) {
+        getLinkController().deleteAllFor(ObserverValue.DR1_CSC_LINK, model.getId());
+      }
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
       this.setUnsavedAndChanged(ObserverValue.UCA_HAZ_LINK);
       return true;
@@ -1852,12 +1864,14 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean setDesignRequirementDescription(UUID designRequirementId, String description) {
-    return getSdsController().setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT, designRequirementId, description);
+    return getSdsController().setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT,
+        designRequirementId, description);
   }
 
   @Override
   public boolean setDesignRequirementTitle(UUID designRequirementId, String title) {
-    return getSdsController().setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT, designRequirementId, title);
+    return getSdsController().setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT,
+        designRequirementId, title);
   }
 
   @Override
@@ -2247,12 +2261,13 @@ public class DataModelController extends AbstractDataModel
   }
 
   public ICausalController getCausalFactorController() {
-    if(this.causalFactorController == null) {
+    if (this.causalFactorController == null) {
       this.causalFactorController = new CausalFactorController();
     }
     this.causalFactorController.addObserver(this);
     return this.causalFactorController;
   }
+
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getProperty(String key, Class<T> clazz) {

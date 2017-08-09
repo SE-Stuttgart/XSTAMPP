@@ -42,7 +42,7 @@ public class DesignRequirementStep1View extends CommonTableView<IDesignRequireme
    */
   public DesignRequirementStep1View() {
     super();
-    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP1));
+    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP1, ObserverValue.DR1_CSC_LINK));
   }
 
   @Override
@@ -53,7 +53,8 @@ public class DesignRequirementStep1View extends CommonTableView<IDesignRequireme
 
   @Override
   public void createCommonTableView(Composite parent, String tableHeader) {
-    addLinkSupport(new Step1ConstraintsLinkSupport((DataModelController) getDataInterface(),ObserverValue.DESIGN_REQUIREMENT_STEP1));
+    addLinkSupport(new Step1ConstraintsLinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.DR1_CSC_LINK));
     super.createCommonTableView(parent, tableHeader);
   }
 

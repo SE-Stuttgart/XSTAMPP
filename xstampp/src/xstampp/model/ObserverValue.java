@@ -91,6 +91,14 @@ public enum ObserverValue {
    * @author Fabian Toth
    */
   DESIGN_REQUIREMENT,
+  
+  /**
+   */
+  DESIGN_REQUIREMENT_STEP1,
+  
+  /**
+   */
+  DESIGN_REQUIREMENT_STEP2,
 
   /**
    * Enum for changes in the system goal table.
@@ -131,6 +139,46 @@ public enum ObserverValue {
   /**
    * Enum value that is triggered before the datamodel is deleted.
    */
-  DELETE, CLEAN_UP, Extended_DATA, PROJECT_TREE,UserSystem, SEVERITY, DESIGN_REQUIREMENT_STEP1, DESIGN_REQUIREMENT_STEP2, ACC_S0_LINK, UCA_HAZ_LINK;
+  DELETE,
+  
+  /**
+   */
+  CLEAN_UP,
+  
+  /**
+   */
+  Extended_DATA,
+  
+  /**
+   */
+  PROJECT_TREE,
+  
+  /**
+   */
+  UserSystem,
+  
+  /**
+   */
+  SEVERITY,
+  
+  /**
+   */
+  ACC_S0_LINK,
+  
+  /**
+   */
+  DR0_SC_LINK,
+  
+  /**
+   */
+  DR1_CSC_LINK,
+  
+  /**
+   */
+  DR2_CausalSC_LINK,
+  
+  /**
+   */
+  UCA_HAZ_LINK;
 
 }

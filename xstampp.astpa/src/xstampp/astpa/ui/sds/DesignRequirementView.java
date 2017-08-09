@@ -46,7 +46,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
   }
 
   protected void initialize() {
-    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT));
+    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT, ObserverValue.DR0_SC_LINK));
   }
 
   @Override
@@ -56,10 +56,12 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
   }
 
   @Override
-	public void createCommonTableView(Composite parent, String tableHeader) {
-    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),ObserverValue.DESIGN_REQUIREMENT));
-		super.createCommonTableView(parent, tableHeader);
-	}
+  public void createCommonTableView(Composite parent, String tableHeader) {
+    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.DR0_SC_LINK));
+    super.createCommonTableView(parent, tableHeader);
+  }
+
   /**
    * @author Jarkko Heidenwag
    * 

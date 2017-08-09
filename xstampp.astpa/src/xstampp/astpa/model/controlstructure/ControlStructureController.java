@@ -36,7 +36,7 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.preferences.IASTPADefaults;
+import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.ObserverValue;
 
 /**
@@ -84,7 +84,7 @@ public class ControlStructureController extends Observable{
    * @author Fabian Toth
    */
   public ControlStructureController() {
-    useMultiRoots = IASTPADefaults.USE_MULTI_CONTROL_STRUCTURES;
+    useMultiRoots = ASTPADefaultConfig.getInstance().USE_MULTI_CONTROL_STRUCTURES;
     this.connections = new ArrayList<>();
     this.rootComponents = new ArrayList<>();
     this.rootComponents.add(new Component("level 0", new Rectangle(), ComponentType.ROOT));

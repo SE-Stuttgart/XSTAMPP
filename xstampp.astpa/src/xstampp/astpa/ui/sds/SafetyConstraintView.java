@@ -54,7 +54,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
   public SafetyConstraintView(String tableHeader) {
     super(null, tableHeader);
     setUpdateValues(EnumSet.of(ObserverValue.SAFETY_CONSTRAINT, ObserverValue.ACC_S0_LINK,
-        ObserverValue.DESIGN_REQUIREMENT));
+        ObserverValue.DR0_SC_LINK));
   }
 
   @Override
