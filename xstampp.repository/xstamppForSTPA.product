@@ -44,6 +44,7 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
@@ -153,6 +154,9 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="xstampp" autoStart="true" startLevel="5" />
       <property name="-Dosgi.configuration.area.default" value="null" />
+      <property name="stpa.defaults.useCausalScenarioAnalysis" value="false" />
+      <property name="stpa.defaults.useMultiControlStructures" value="false" />
+      <property name="stpa.defaults.useSeverityAnalysis" value="true" />
    </configurations>
 
    <repositories>
