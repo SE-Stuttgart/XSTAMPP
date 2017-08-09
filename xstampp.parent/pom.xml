@@ -50,7 +50,7 @@
 	<repositories>
         <repository>
             <id>nebula</id>
-            <url>http://download.eclipse.org/technology/nebula/snapshot</url>
+            <url>http://download.eclipse.org/nebula/releases/1.3.0</url>
             <layout>p2</layout>
         </repository>
 		

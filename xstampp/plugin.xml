@@ -1100,6 +1100,30 @@
          pattern="org\.eclipse\.ui\.editors/org\.eclipse\.ui\.edit\.text\.gotoPreviousAnnotation">
    </activityPatternBinding>
 </extension>
+<extension
+      id="xstampp_for_STPA"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="xstampp.application"
+         name="STAMP For STPA Platform">
+      <property
+            name="windowImages"
+            value="icons/xstampp/logox16.png,icons/xstampp/logox32.png,icons/xstampp/logox48.png,icons/xstampp/logox64.png,icons/xstampp/logox128.png">
+      </property>
+      <property
+            name="aboutText"
+            value="XSTAMPP - An eXtensible STAMP Platform for Safety Engineering&#x0A;		 including only the A-STPA Plugin to perform a STPA Analysis &#x0A;&#x0A;©2014 - 2017&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstampp.html&#x0A;&#x0A;Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner&#x0A;Institute of Software Technology, Software Engineering Group&#x0A;University of Stuttgart, Germany&#x0A;&#x0A;X-STPA &#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/xstpa.html&#x0A;&#x0A;A-CAST&#x0A;http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html">
+      </property>
+      <property
+            name="aboutImage"
+            value="icons/xstampp/logox128.png">
+      </property>
+      <property
+            name="startupProgressRect"
+            value="2,275,445,15">
+      </property>
+   </product>
+</extension>
 
 
 
