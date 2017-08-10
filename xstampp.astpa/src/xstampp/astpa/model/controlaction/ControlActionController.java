@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Assert;
 
 import messages.Messages;
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -57,7 +58,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   @XmlElementWrapper(name = "controlactions")
   @XmlElement(name = "controlaction")
-  private List<ControlAction> controlActions;
+  private NumberedArrayList<ControlAction> controlActions;
 
   @XmlElementWrapper(name = "links")
   @XmlElement(name = "link")
@@ -98,7 +99,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   @Override
   public UUID addControlAction(String title, String description) {
-    ControlAction controlAction = new ControlAction(title, description, getCANumber());
+    ControlAction controlAction = new ControlAction(title, description);
     this.getControlActions().add(controlAction);
     return controlAction.getId();
   }
@@ -786,7 +787,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   private List<ControlAction> getControlActions() {
     if (this.controlActions == null) {
-      this.controlActions = new ArrayList<>();
+      this.controlActions = new NumberedArrayList<>();
     }
     return controlActions;
   }

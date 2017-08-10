@@ -40,6 +40,13 @@ public class SystemGoal extends ATableModel {
 		super(title, description, number);
 	}
 
+  /**
+   * {@link ATableModel#ATableModel(String, String)}
+   */
+  public SystemGoal(String title, String description) {
+    super(title, description);
+  }
+
 	/**
 	 * Empty constructor for JAXB. Do not use it!
 	 * 

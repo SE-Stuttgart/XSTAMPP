@@ -68,7 +68,7 @@ public abstract class ATableModel extends EntryWithSeverity
     this.id = UUID.randomUUID();
     this.title = title;
     this.description = description;
-    this.number = -1;
+    this.number = number;
   }
 
   public ATableModel(ITableModel model, int i) {
@@ -85,6 +85,10 @@ public abstract class ATableModel extends EntryWithSeverity
    */
   public ATableModel() {
     this.number = -1;
+  }
+
+  public ATableModel(String title, String description) {
+    this(title,description,-1);
   }
 
   public static <T> boolean move(boolean up, UUID id, List<T> list) {

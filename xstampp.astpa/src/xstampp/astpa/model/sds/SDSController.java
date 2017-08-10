@@ -77,7 +77,7 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
-    SafetyConstraint safetyConstraint = new SafetyConstraint(title, description, 0);
+    SafetyConstraint safetyConstraint = new SafetyConstraint(title, description);
     safetyConstraint.setCreatedBy(createdBy);
     this.getSafetyConstraints().add(safetyConstraint);
     return safetyConstraint.getId();
@@ -91,7 +91,7 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public UUID addSafetyConstraint(ITableModel model) {
-    SafetyConstraint safetyConstraint = new SafetyConstraint(model, 0);
+    SafetyConstraint safetyConstraint = new SafetyConstraint(model, -1);
     this.getSafetyConstraints().add(safetyConstraint);
     return safetyConstraint.getId();
   }
@@ -172,7 +172,7 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public UUID addSystemGoal(String title, String description) {
-    SystemGoal systemGoal = new SystemGoal(title, description, 0);
+    SystemGoal systemGoal = new SystemGoal(title, description);
     this.getSystemGoals().add(systemGoal);
     return systemGoal.getId();
   }
@@ -257,7 +257,7 @@ public class SDSController extends Observable implements ISDSController {
   }
 
   private UUID addDesignRequirementStep0(String title, String description) {
-    DesignRequirement designRequirement = new DesignRequirement(title, description, 0);
+    DesignRequirement designRequirement = new DesignRequirement(title, description);
     getDesignRequirements().add(designRequirement);
     setChanged();
     notifyObservers(ObserverValue.DESIGN_REQUIREMENT);
@@ -265,7 +265,7 @@ public class SDSController extends Observable implements ISDSController {
   }
 
   private UUID addDesignRequirementStep1(String title, String description) {
-    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(title, description, 0);
+    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(title, description);
     getDesignRequirementsStep1().add(designRequirement);
     setChanged();
     notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP1);
@@ -273,7 +273,7 @@ public class SDSController extends Observable implements ISDSController {
   }
 
   private UUID addDesignRequirementStep2(String title, String description) {
-    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(title, description, 0);
+    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(title, description);
     getDesignRequirementsStep2().add(designRequirement);
     setChanged();
     notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP2);

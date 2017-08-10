@@ -99,6 +99,24 @@ public class ControlAction extends ATableModel implements IControlAction {
     return this.componentLink;
   }
 
+
+  /**
+   * Constructor of a control action
+   * 
+   * @param title
+   *          the title of the new accident
+   * @param description
+   *          the description of the new accident
+   * @param number
+   *          the number of the new accident
+   * 
+   * @author Fabian Toth
+   */
+  public ControlAction(String title, String description) {
+    super(title, description);
+    this.unsafeControlActions = new ArrayList<>();
+  }
+  
   /**
    * Constructor of a control action
    * 

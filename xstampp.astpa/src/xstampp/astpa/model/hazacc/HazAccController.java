@@ -70,7 +70,7 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   @Override
   public UUID addAccident(String title, String description) {
-    Accident newAccident = new Accident(title, description, 0);
+    Accident newAccident = new Accident(title, description);
     this.getAccidents().add(newAccident);
     return newAccident.getId();
   }
@@ -147,7 +147,7 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   @Override
   public UUID addHazard(String title, String description) {
-    Hazard newHazard = new Hazard(title, description, 0);
+    Hazard newHazard = new Hazard(title, description);
     this.getHazards().add(newHazard);
     return newHazard.getId();
   }

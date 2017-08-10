@@ -58,6 +58,10 @@ public class Hazard extends ATableModel {
 		// empty constructor for JAXB
 	}
 
+  public Hazard(String title, String description) {
+    super(title, description);
+  }
+
   @Override
   public String getIdString() {
     return "H-" +this.getNumber();

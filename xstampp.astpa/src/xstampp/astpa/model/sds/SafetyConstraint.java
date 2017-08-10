@@ -40,6 +40,13 @@ public class SafetyConstraint extends ATableModel {
   }
 
   /**
+   * {@link ATableModel#ATableModel(String, String)}
+   */
+  public SafetyConstraint(String title, String description) {
+    super(title, description);
+  }
+
+  /**
    * Empty constructor used for JAXB. Do not use it!
    * 
    * @author Lukas Balzer

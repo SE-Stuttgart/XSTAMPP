@@ -30,6 +30,13 @@ public class DesignRequirementStep2 extends ATableModel {
 		super(title, description, number);
 	}
 
+  /**
+   * {@link ATableModel#ATableModel(String, String)}
+   */
+  public DesignRequirementStep2(String title, String description) {
+    super(title, description);
+  }
+
 	/**
    * {@link ATableModel#ATableModel()}
 	 */
