@@ -13,8 +13,12 @@
 
 package xstampp.stpapriv.ui.vulloss;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.ui.acchaz.AccidentsView;
+import xstampp.astpa.ui.linkingSupport.Step0ConstraintsLinkSupport;
+import xstampp.model.ObserverValue;
 import xstampp.stpapriv.messages.PrivMessages;
+import xstampp.stpapriv.ui.linkSuppport.VulnerabilityLinkSupport;
 
 /**
  * @author Jarkko Heidenwag
@@ -39,7 +43,11 @@ public class LossesView extends AccidentsView {
 
 	}
 
-	@Override
+	public LossesView(String title) {
+    super(title);
+  }
+
+  @Override
 	public String getId() {
 		return LossesView.ID;
 	}
@@ -48,5 +56,13 @@ public class LossesView extends AccidentsView {
 	public String getTitle() {
 		return PrivMessages.Losses;
 	}
+
+  @Override
+  protected void addLinkSupports() {
+    addLinkSupport(new VulnerabilityLinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.HAZ_ACC_LINK));
+    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
+        ObserverValue.ACC_S0_LINK));
+  }
 
 }

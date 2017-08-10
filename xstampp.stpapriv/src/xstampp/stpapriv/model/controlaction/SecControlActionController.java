@@ -27,7 +27,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import messages.Messages;
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
@@ -62,7 +64,7 @@ public class SecControlActionController implements IControlActionController{
 
 	@XmlElementWrapper(name = "controlactions")
 	@XmlElement(name = "controlaction")
-	private List<ControlAction> controlActions;
+	private NumberedArrayList<ControlAction> controlActions;
 
 	@XmlElementWrapper(name = "seclinks")
 	@XmlElement(name = "seclink")
@@ -90,7 +92,7 @@ public class SecControlActionController implements IControlActionController{
 	 */
 	public SecControlActionController() {
 		this.trash = new HashMap<>();
-		this.controlActions = new ArrayList<>();
+		this.controlActions = new NumberedArrayList<>();
 		this.links = new ArrayList<>();
 		this.nextUcaIndex = null;
 	}
@@ -107,7 +109,7 @@ public class SecControlActionController implements IControlActionController{
 	 * @author Fabian Toth
 	 */
 	public UUID addControlAction(String title, String description) {
-		ControlAction controlAction = new ControlAction(title, description, getCANumber());
+		ControlAction controlAction = new ControlAction(title, description);
 		this.controlActions.add(controlAction);
 		return controlAction.getId();
 	}
@@ -1144,8 +1146,10 @@ public class SecControlActionController implements IControlActionController{
 
   @Override
   public String[] getUCAHeaders() {
-    // TODO Auto-generated method stub
-    return null;
+    return new String[] {
+        Messages.ControlAction, PrivMessages.NotGiven2,
+        PrivMessages.GivenIncorrectly2, PrivMessages.WrongTiming2,
+        Messages.StoppedTooSoon };
   }
 
 }

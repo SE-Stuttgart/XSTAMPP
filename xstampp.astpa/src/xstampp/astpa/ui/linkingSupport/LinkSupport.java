@@ -187,7 +187,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   public String getText(UUID id) {
     for (ITableModel model : getModels()) {
       if (model.getId().equals(id)) {
-        return getLiteral() + model.getNumber();
+        return model.getIdString();
       }
     }
     return null;

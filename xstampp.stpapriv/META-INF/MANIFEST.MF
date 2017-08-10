@@ -66,6 +66,7 @@ Export-Package: xstampp.stpapriv;uses:="org.osgi.framework,org.eclipse.jface.res
    org.eclipse.swt.widgets,
    xstampp.ui.editors,
    xstampp.stpapriv.model.interfaces",
+ xstampp.stpapriv.ui.vulloss,
  xstampp.stpapriv.util.jobs;
   uses:="xstampp.model,
    org.eclipse.core.runtime.jobs,

@@ -14,8 +14,6 @@ package xstampp.astpa.ui.sds;
 import java.util.EnumSet;
 import java.util.UUID;
 
-import org.eclipse.swt.widgets.Composite;
-
 import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
@@ -58,12 +56,11 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
   }
 
   @Override
-  public void createCommonTableView(Composite parent, String tableHeader) {
+  protected void addLinkSupports() {
     addLinkSupport(new DesignReq0LinkSupport((DataModelController) getDataInterface(),
         ObserverValue.DESIGN_REQUIREMENT));
     addLinkSupport(new AccidentLinkSupport((DataModelController) getDataInterface(),
         ObserverValue.ACC_S0_LINK));
-    super.createCommonTableView(parent, tableHeader);
   }
 
   @Override

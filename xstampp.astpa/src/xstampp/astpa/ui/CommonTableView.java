@@ -442,6 +442,21 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   }
 
   /**
+   * This method allows children of this to add default {@link LinkSupport}'s to the table view.
+   * Implementors should call the {@link CommonTableView#addLinkSupport(LinkSupport))} to add the required link
+   * widgets,<br>
+   * <p>
+   * NOTE: The links are displayed in an extra column if at least one {@link LinkSupport} is added
+   * and as widgets below the description Text which leads to visibility issues when to much (> 3,
+   * depending on the expected resolution) {@link LinkSupport}'s are added.<br>
+   * <p>
+   * The default implementation does nothing
+   */
+  protected void addLinkSupports() {
+    // the default implementation deas nothing
+  }
+
+  /**
    * Create the standard contents of the CommonTableView.
    * 
    * @author Jarkko Heidenwag
@@ -451,6 +466,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
    *          Type of item, e.g. "Accidents"
    */
   public void createCommonTableView(Composite parent, String tableHeader) {
+    addLinkSupports();
     SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
 
     // composite for the table and the "New item" button

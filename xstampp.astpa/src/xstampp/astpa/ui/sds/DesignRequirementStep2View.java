@@ -14,8 +14,6 @@ package xstampp.astpa.ui.sds;
 import java.util.EnumSet;
 import java.util.UUID;
 
-import org.eclipse.swt.widgets.Composite;
-
 import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
@@ -47,10 +45,9 @@ public class DesignRequirementStep2View extends CommonTableView<IDesignRequireme
   }
 
   @Override
-  public void createCommonTableView(Composite parent, String tableHeader) {
+  protected void addLinkSupports() {
     addLinkSupport(new Step2ConstraintsLinkSupport((DataModelController) getDataInterface(),
         ObserverValue.DR2_CausalSC_LINK));
-    super.createCommonTableView(parent, tableHeader);
   }
 
   @Override
