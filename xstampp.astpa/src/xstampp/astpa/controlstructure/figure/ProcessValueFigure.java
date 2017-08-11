@@ -20,8 +20,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import xstampp.astpa.controlstructure.controller.editparts.ProcessVariableEditPart;
-
 /**
  * 
  * @author Lukas Balzer
@@ -63,9 +61,11 @@ public class ProcessValueFigure extends CSFigure {
 		Dimension size = this.getTextField().getSize();
 		for (Object child : getChildren()) {
       if(child instanceof IControlStructureFigure) {
-        Dimension dimension = ((IControlStructureFigure) child).getBounds().getSize();
-        size.height += dimension.height + topOffset;
-        size.width += dimension.width;
+        Rectangle dimension = ((IControlStructureFigure) child).getBounds();
+        int diff = size.height - (dimension.height + topOffset + dimension.y);
+        if(diff < 0 ) {
+          size.height -= diff;
+        }
       }
     }
     rect.setSize(size);

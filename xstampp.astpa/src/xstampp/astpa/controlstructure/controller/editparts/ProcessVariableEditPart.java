@@ -55,8 +55,9 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ProcessValueFigure(this.getId(),
+	  ProcessValueFigure tmpFigure = new ProcessValueFigure(this.getId(),
 				ProcessVariableEditPart.TOP_OFFSET);
+		tmpFigure.setAutoPositioning(false);
 		tmpFigure.setPreferenceStore(getStore());
 		LineBorder border= new LineBorder(1){
 			@Override
