@@ -13,7 +13,7 @@ package xstpapriv;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "xstpasec.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "xstpapriv.messages"; //$NON-NLS-1$
 	public static String AddsNewTableEntry;
 	public static String ChecksTableForConflicts;
 	public static String ContextTableContext_NotProvided;
