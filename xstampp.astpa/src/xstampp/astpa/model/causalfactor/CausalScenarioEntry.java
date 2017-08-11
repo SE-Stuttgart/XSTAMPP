@@ -40,6 +40,10 @@ public class CausalScenarioEntry {
     }
   }
 
+  public CausalScenarioEntry() {
+
+  }
+
   /**
    * @param description
    *          the description to set
@@ -47,7 +51,6 @@ public class CausalScenarioEntry {
   public void setDescription(String description) {
     this.description = description;
   }
-
 
   void moveSafetyConstraints(List<CausalSafetyConstraint> list) {
     if (constraint != null) {
@@ -57,6 +60,7 @@ public class CausalScenarioEntry {
       list.add(safetyConstraint);
     }
   }
+
   /**
    * @param constraint
    *          the constraint to set
