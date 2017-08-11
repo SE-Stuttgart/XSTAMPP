@@ -55,6 +55,19 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
         ObserverValue.HAZ_ACC_LINK, ObserverValue.ACC_S0_LINK));
   }
 
+  /**
+   * @author Jarkko Heidenwag
+   * @param tableHeader
+   *          TODO
+   * @param style 
+   * 
+   */
+  public AccidentsView(String tableHeader, EnumSet<TableStyle> style) {
+    super(style, tableHeader);
+    setUpdateValues(EnumSet.of(ObserverValue.ACCIDENT, ObserverValue.SEVERITY,
+        ObserverValue.HAZ_ACC_LINK, ObserverValue.ACC_S0_LINK));
+  }
+
   @Override
   protected void addLinkSupports() {
     addLinkSupport(new HazardLinkSupport((DataModelController) getDataInterface(),
