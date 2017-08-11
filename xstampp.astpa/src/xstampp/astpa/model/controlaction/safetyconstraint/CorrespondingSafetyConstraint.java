@@ -38,6 +38,7 @@ public class CorrespondingSafetyConstraint extends ATableModel {
 	 */
 	public CorrespondingSafetyConstraint(String text) {
 		super(text, null, 0);
+		this.text = text;
 	}
 
 	/**

@@ -11,12 +11,12 @@
 package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.messages.SecMessages;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class XRefinedSCIMGWizard extends AbstractExportWizard {
+public class XRefinedSCIMGWizard extends AbstractPrivacyExportWizard {
 
 	public XRefinedSCIMGWizard() {
 		super("");

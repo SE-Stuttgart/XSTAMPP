@@ -16,8 +16,10 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.swt.widgets.Display;
 
+import acast.controller.Controller;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.ExportPackage;
 import xstampp.util.XstamppJob;
 
 /**
@@ -114,10 +116,12 @@ public class Run extends XstamppJob implements IJobChangeListener {
 		if (this.exportImages) {
 			monitor.setTaskName(Messages.ExportImage);
 			for (int i = 0; i < this.xslMap.length && this.exportImages; i += 2) {
-				ExportJob job = new ExportJob(this.projectID, getName(),
+				ExportPackage data = new ExportPackage(getName(),
 						this.dir + IMAGE_DIR + File.separator + this.xslMap[i] + ".png",
 						// $NON-NLS-1$
-						this.xslMap[i + 1], true, this.decoSwitch);
+						this.xslMap[i + 1],Controller.class);
+				data.setDataModelClazz(Controller.class);
+				ExportJob job = new ExportJob(this.projectID, data, true, this.decoSwitch);
 				job.showPreview(false);
 				job.addJobChangeListener(this);
 				if (i==0){
@@ -131,10 +135,12 @@ public class Run extends XstamppJob implements IJobChangeListener {
 		if (this.exportPDFs) {
 			monitor.setTaskName(Messages.ExportingPdf);
 			for (int i = 0; i < this.xslMap.length && this.exportPDFs; i += 2) {
-				ExportJob pdfJob = new ExportJob(this.projectID, getName(),
+				ExportPackage data = new ExportPackage(getName(),
 						this.dir + PDF_DIR + File.separator + this.xslMap[i] + ".pdf",
 						// $NON-NLS-1$
-						this.xslMap[i + 1], true, false);
+						this.xslMap[i + 1],Controller.class);
+				data.setDataModelClazz(Controller.class);
+				ExportJob pdfJob = new ExportJob(this.projectID, data, true, false);
 				pdfJob.showPreview(false);
 				pdfJob.addJobChangeListener(this);
 				pdfJob.schedule();
@@ -142,8 +148,10 @@ public class Run extends XstamppJob implements IJobChangeListener {
 		}
 
 		if (this.exportReport) {
-			ExportJob pdfRepJob = new ExportJob(this.projectID, getName(), this.dir + getName() + ".pdf", //$NON-NLS-1$
-					"/fopxsl.xsl", true, this.decoSwitch); //$NON-NLS-1$
+			ExportPackage data = new ExportPackage(getName(), this.dir + getName() + ".pdf", //$NON-NLS-1$
+					"/fopxsl.xsl",Controller.class);
+			data.setDataModelClazz(Controller.class);
+			ExportJob pdfRepJob = new ExportJob(this.projectID, data, true, this.decoSwitch); //$NON-NLS-1$
 			pdfRepJob.setCSDirty();
 			pdfRepJob.setCSImagePath(this.dir + IMAGE_DIR);
 			pdfRepJob.showPreview(false);

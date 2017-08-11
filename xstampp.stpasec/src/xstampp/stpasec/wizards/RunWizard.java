@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.util.jobs.Run;
 import xstampp.ui.common.ProjectManager;
@@ -32,7 +31,7 @@ import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
 import xstampp.ui.wizards.PdfExportPage;
 
-public class RunWizard extends AbstractExportWizard {
+public class RunWizard extends AbstractPrivacyExportWizard {
 
 	private RunPage page;
 

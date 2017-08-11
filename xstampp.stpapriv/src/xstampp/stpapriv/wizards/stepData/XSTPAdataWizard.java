@@ -15,11 +15,11 @@ import java.io.IOException;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.model.IDataModel;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.util.jobs.XCSVExportJob;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.CSVExportPage;
 import xstampp.ui.wizards.MultiDataPage;
@@ -29,7 +29,7 @@ import xstampp.ui.wizards.MultiDataPage;
  * @author Lukas Balzer
  * 
  */
-public class XSTPAdataWizard extends AbstractExportWizard {
+public class XSTPAdataWizard extends AbstractPrivacyExportWizard {
 
 	MultiDataPage site;
 

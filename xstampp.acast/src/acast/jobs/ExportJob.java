@@ -11,9 +11,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
-import xstampp.model.IDataModel;
-import xstampp.ui.common.ProjectManager;
 import acast.controller.Controller;
+import xstampp.ui.common.ProjectManager;
+import xstampp.util.ExportPackage;
 
 /**
  * Eclipse job that handles the export
@@ -23,7 +23,6 @@ import acast.controller.Controller;
  *
  */
 public class ExportJob extends xstampp.astpa.util.jobs.ExportJob {
-
 
 	/**
 	 * Constructor of the export job
@@ -36,22 +35,23 @@ public class ExportJob extends xstampp.astpa.util.jobs.ExportJob {
 	 * @param filePath
 	 *            the path to the pdf file
 	 * @param xslName
-	 *            the name of the file in which the xsl file is stored which
-	 *            should be used
+	 *            the name of the file in which the xsl file is stored which should
+	 *            be used
 	 * @param asOne
 	 *            true if all content shall be exported on a single page
 	 * @param decorate
 	 *            if the control structure components should be pictured with
 	 *            colored borders and image labels
 	 */
-	public ExportJob(UUID projectId, String name, String filePath, String xslName, boolean asOne, boolean decorate) {
-		super(projectId, name, filePath, xslName, asOne, decorate);
+	public ExportJob(UUID projectId, ExportPackage data, boolean asOne, boolean decorate) {
+		super(projectId, data, asOne, decorate);
 	}
 
 	@Override
 	protected boolean canExport() {
 		return false;
 	}
+
 	@Override
 	protected Object getModel() {
 		return ProjectManager.getContainerInstance().getDataModel(getProjectId());
@@ -61,9 +61,17 @@ public class ExportJob extends xstampp.astpa.util.jobs.ExportJob {
 	protected JAXBContext getModelContent() throws JAXBException {
 		return JAXBContext.newInstance(Controller.class);
 	}
-	
+
+	/**
+	 * @deprecated Use {@link #getxslTransformer(String,ClassLoader)} instead
+	 */
 	@Override
 	protected Transformer getxslTransformer(String resource) {
+		return getxslTransformer(resource, null);
+	}
+
+	@Override
+	protected Transformer getxslTransformer(String resource, Class loader) {
 		URL xslUrl = this.getClass().getResource(resource);
 
 		if (xslUrl == null) {
@@ -75,8 +83,7 @@ public class ExportJob extends xstampp.astpa.util.jobs.ExportJob {
 			transfact.setURIResolver(new URIResolver() {
 				@Override
 				public Source resolve(String href, String base) {
-					return new StreamSource(this.getClass().getClassLoader()
-							.getResourceAsStream("/" + href)); //$NON-NLS-1$
+					return new StreamSource(this.getClass().getClassLoader().getResourceAsStream("/" + href)); //$NON-NLS-1$
 				}
 			});
 			return transfact.newTransformer(transformXSLSource);

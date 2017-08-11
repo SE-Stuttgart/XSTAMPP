@@ -12,11 +12,11 @@ package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
 import xstampp.astpa.ui.sds.SystemGoalView;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class SystemGoalsImgWizard extends AbstractExportWizard {
+public class SystemGoalsImgWizard extends AbstractPrivacyExportWizard {
 
 	public SystemGoalsImgWizard() {
 		super(SystemGoalView.ID);

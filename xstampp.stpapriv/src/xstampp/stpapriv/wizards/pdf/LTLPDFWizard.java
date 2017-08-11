@@ -11,11 +11,11 @@
 package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class LTLPDFWizard extends AbstractExportWizard {
+public class LTLPDFWizard extends AbstractPrivacyExportWizard {
 
 	public LTLPDFWizard() {
 		super("");

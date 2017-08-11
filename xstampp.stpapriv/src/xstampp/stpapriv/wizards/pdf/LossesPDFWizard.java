@@ -11,13 +11,13 @@
 package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.vulloss.LossesView;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class LossesPDFWizard extends AbstractExportWizard {
+public class LossesPDFWizard extends AbstractPrivacyExportWizard {
 
 	public LossesPDFWizard() {
 		super(LossesView.ID);

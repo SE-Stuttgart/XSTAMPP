@@ -22,6 +22,8 @@ import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.IExportPage;
+import xstampp.util.ExportPackage;
+import acast.controller.Controller;
 import acast.jobs.CastCSVExport;
 import acast.jobs.ExportJob;
 import acast.wizards.pages.CSVExportPage;
@@ -131,8 +133,9 @@ public abstract class AbstractExportWizard extends Wizard implements
 			if(mimeType == null){
 				return false;
 			}
+			ExportPackage exportPackage = new ExportPackage(jobMessage, filePath,fopName,Controller.class);
 			ExportJob exportJob = new ExportJob(this.getExportPage().getProjectID(),
-					jobMessage, filePath,fopName, true, forceCSDeco);
+					exportPackage, true, forceCSDeco);
 
 			exportJob.addJobChangeListener(new ExportJobChangeAdapter());
 			exportJob.setCSDirty();

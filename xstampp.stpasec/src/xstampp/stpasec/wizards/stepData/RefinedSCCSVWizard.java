@@ -19,11 +19,11 @@ import java.io.IOException;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.model.IDataModel;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.messages.SecMessages;
 import xstampp.stpasec.util.jobs.XCSVExportJob;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.CSVExportPage;
 
@@ -32,7 +32,7 @@ import xstampp.ui.wizards.CSVExportPage;
  * @author Lukas Balzer
  * 
  */
-public class RefinedSCCSVWizard extends AbstractExportWizard {
+public class RefinedSCCSVWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

@@ -15,11 +15,11 @@
 package xstampp.stpasec.wizards.stepData;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.messages.SecMessages;
 import xstampp.stpasec.ui.vulloss.LossesView;
 import xstampp.stpasec.util.jobs.ICSVExportConstants;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.CSVExportPage;
 
 /**
@@ -27,7 +27,7 @@ import xstampp.ui.wizards.CSVExportPage;
  * @author Lukas Balzer
  * 
  */
-public class LossesWizard extends AbstractExportWizard {
+public class LossesWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

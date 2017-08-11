@@ -30,6 +30,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.AbstractExportPage;
+import xstampp.util.ExportPackage;
 import xstampp.util.STPAPluginUtils;
 import xstampp.util.XstamppJob;
 
@@ -179,9 +180,10 @@ public class Run extends XstamppJob{
 		}
 		for(int i= 0;i<this.xslMap.length && this.exportImages;i+=2){
 			fileName = this.xslMap[i] +".png";
-			ExportJob job = new ExportJob(getProjectID(), getJobName(fileName), 
-											this.dir+ IMAGE_DIR + File.separator + fileName,  
-										 	this.xslMap[i+1], true, false);
+			ExportPackage data = new ExportPackage(getJobName(fileName), 
+					this.dir+ IMAGE_DIR + File.separator + fileName,  
+				 	this.xslMap[i+1],DataModelController.class);
+			ExportJob job = new ExportJob(getProjectID(), data, true, false);
 			job.setPageFormat(exportImagesFormat);
 			job.showPreview(false);
 			if(!addJob(job)){
@@ -191,9 +193,10 @@ public class Run extends XstamppJob{
 		}
 		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedIMGs;i+=2){
 			fileName = this.xstpaXslMap[i] +".png";
-			ExportJob job = new ExportJob(getProjectID(), getJobName(fileName), 
-											this.dir+ EX_IMAGE_DIR + File.separator + fileName,  
-										 	this.xstpaXslMap[i+1], true, false);
+			ExportPackage data = new ExportPackage(getJobName(fileName), 
+					this.dir+ EX_IMAGE_DIR + File.separator + fileName,  
+				 	this.xstpaXslMap[i+1],DataModelController.class);
+			ExportJob job = new ExportJob(getProjectID(), data, true, false);
 			job.setPageFormat(exportExtendedIMGsFormat);
 			job.showPreview(false);
 			if(!addJob(job)){
@@ -216,9 +219,10 @@ public class Run extends XstamppJob{
 			monitor.worked(CS_IMG_WORK);
 		}
 		for(int i= 0;i<this.xslMap.length && this.exportPDFs;i+=2){
-			ExportJob pdfJob = new ExportJob(getProjectID(), "Expoting " +this.xslMap[i] +".pdf",
-											this.dir + PDF_DIR + File.separator + this.xslMap[i] +".pdf", //$NON-NLS-1$
-											this.xslMap[i+1], true, false);
+			ExportPackage data = new ExportPackage("Expoting " +this.xslMap[i] +".pdf",
+					this.dir + PDF_DIR + File.separator + this.xslMap[i] +".pdf", //$NON-NLS-1$
+					this.xslMap[i+1],DataModelController.class);
+			ExportJob pdfJob = new ExportJob(getProjectID(), data, true, false);
 			pdfJob.showPreview(false);
 			pdfJob.setPageFormat(exportPDFsFormat);
 			if(!addJob(pdfJob)){
@@ -227,9 +231,10 @@ public class Run extends XstamppJob{
 			monitor.worked(XSL_WORK);
 		}
 		for(int i= 0;i<this.xstpaXslMap.length && this.exportExtendedPDFs;i+=2){
-			ExportJob pdfJob = new ExportJob(getProjectID(), "Expoting " +this.xstpaXslMap[i] +".pdf",
-											this.dir + EX_PDF_DIR + File.separator + this.xstpaXslMap[i] +".pdf", //$NON-NLS-1$
-											this.xstpaXslMap[i+1], true, false);
+			ExportPackage data = new ExportPackage("Expoting " +this.xstpaXslMap[i] +".pdf",
+					this.dir + EX_PDF_DIR + File.separator + this.xstpaXslMap[i] +".pdf", //$NON-NLS-1$
+					this.xstpaXslMap[i+1],DataModelController.class);
+			ExportJob pdfJob = new ExportJob(getProjectID(), data, true, false);
 			pdfJob.setPageFormat(exportExtendedPDFsFormat);
 			pdfJob.showPreview(false);
 			if(!addJob(pdfJob)){
@@ -238,9 +243,10 @@ public class Run extends XstamppJob{
 			monitor.worked(XSL_WORK);
 		}
 		if(this.exportReport){
-			ExportJob pdfRepJob = new ExportJob(getProjectID(), getJobName("Final Report"),
+			ExportPackage data = new ExportPackage(getJobName("Final Report"),
 					this.dir + getName()+".pdf", //$NON-NLS-1$
-					"/fopxsl.xsl", true, false); //$NON-NLS-1$
+					"/fopxsl.xsl",DataModelController.class);
+			ExportJob pdfRepJob = new ExportJob(getProjectID(), data, true, false); //$NON-NLS-1$
 			pdfRepJob.setCSDirty();
 			pdfRepJob.setPageFormat(exportReportFormat);
 			pdfRepJob.showPreview(false);

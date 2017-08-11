@@ -12,7 +12,7 @@ package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
-import xstampp.astpa.wizards.AbstractExportWizard;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.stpapriv.wizards.pages.SystemDescriptionExportPage;
 
 /**
@@ -20,7 +20,7 @@ import xstampp.stpapriv.wizards.pages.SystemDescriptionExportPage;
  * @author Lukas Balzer
  * 
  */
-public class SystemDecriptionPDFWizard extends AbstractExportWizard {
+public class SystemDecriptionPDFWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

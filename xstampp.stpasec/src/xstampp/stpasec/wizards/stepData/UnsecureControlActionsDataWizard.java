@@ -11,11 +11,11 @@
 package xstampp.stpasec.wizards.stepData;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.messages.SecMessages;
 import xstampp.stpasec.ui.unsecurecontrolaction.UnsecureControlActionsView;
 import xstampp.stpasec.util.jobs.ICSVExportConstants;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.CSVExportPage;
 
 /**
@@ -23,7 +23,7 @@ import xstampp.ui.wizards.CSVExportPage;
  * @author Lukas Balzer
  * 
  */
-public class UnsecureControlActionsDataWizard extends AbstractExportWizard {
+public class UnsecureControlActionsDataWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

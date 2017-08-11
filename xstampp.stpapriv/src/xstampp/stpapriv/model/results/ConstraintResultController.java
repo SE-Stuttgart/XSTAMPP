@@ -202,7 +202,7 @@ public class ConstraintResultController extends Observable implements Observer {
 				for (IUnsafeControlAction action : tempaction.getUnsafeControlActions()) {
 					ConstraintResult temp = new ConstraintResult();
 					UnsecureControlAction tempUCA = (UnsecureControlAction) action;
-					if (!tempUCA.getCorrespondingSafetyConstraint().getText().equals("")) {
+					if (tempUCA.getCorrespondingSafetyConstraint() != null && !tempUCA.getCorrespondingSafetyConstraint().getText().equals("")) {
 						temp.setScId("SC1." + tempUCA.getNumber());
 						temp.setId(tempUCA.getId());
 						if (set == false) {

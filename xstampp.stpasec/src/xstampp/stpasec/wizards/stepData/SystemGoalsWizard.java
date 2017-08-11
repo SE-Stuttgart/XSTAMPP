@@ -12,9 +12,9 @@ package xstampp.stpasec.wizards.stepData;
 
 import messages.Messages;
 import xstampp.astpa.ui.sds.SystemGoalView;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.util.jobs.ICSVExportConstants;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.CSVExportPage;
 
 /**
@@ -22,7 +22,7 @@ import xstampp.ui.wizards.CSVExportPage;
  * @author Lukas Balzer
  * 
  */
-public class SystemGoalsWizard extends AbstractExportWizard {
+public class SystemGoalsWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

@@ -27,6 +27,7 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import xstampp.astpa.Activator;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.util.jobs.ExportJob;
 import xstampp.astpa.util.jobs.StpaCSVExport;
 import xstampp.model.IDataModel;
@@ -34,6 +35,7 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.CSVExportPage;
 import xstampp.ui.wizards.IExportPage;
+import xstampp.util.ExportPackage;
 
 /**
  * 
@@ -141,8 +143,9 @@ public abstract class AbstractExportWizard extends Wizard implements
 			if(mimeType == null){
 				return false;
 			}
+			ExportPackage data = new ExportPackage(jobMessage, filePath, fopName,getExportModel());
 			ExportJob exportJob = new ExportJob(this.getExportPage().getProjectID(),
-					jobMessage, filePath,fopName, true, forceCSDeco);
+					data, true, forceCSDeco);
 			exportJob.setPdfTitle(pdfTitle);
 			exportJob.setTextSize(getExportPage().getContentSize());
 			exportJob.setTableHeadSize(getExportPage().getHeadSize());
@@ -164,6 +167,10 @@ public abstract class AbstractExportWizard extends Wizard implements
 			return false;
 		}
 		return true;
+	}
+
+	protected Class<?> getExportModel() {
+		return DataModelController.class;
 	}
 
 	/**

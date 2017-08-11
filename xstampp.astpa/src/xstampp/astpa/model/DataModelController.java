@@ -1522,7 +1522,7 @@ public class DataModelController extends AbstractDataModel
     if (designRequirementId == null) {
       return false;
     }
-    if (this.getSdsController().removeDesignRequirement(designRequirementId, null)) {
+    if (this.getSdsController().removeDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT)) {
       this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
       return true;
     }

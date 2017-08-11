@@ -11,13 +11,13 @@
 package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.model.PrivacyController;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.TableExportPage;
 
-public class ContextTablePDFWizard extends AbstractExportWizard {
+public class ContextTablePDFWizard extends AbstractPrivacyExportWizard {
 
 	public ContextTablePDFWizard() {
 		super("");

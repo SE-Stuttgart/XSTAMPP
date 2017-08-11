@@ -22,20 +22,14 @@ import java.io.OutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
-import org.apache.fop.area.AreaTreeModel;
-import org.apache.fop.area.AreaTreeParser;
-import org.apache.fop.area.Span;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -55,246 +49,229 @@ import xstampp.ui.wizards.AbstractExportPage;
  */
 public abstract class JAXBExportJob extends XstamppJob implements IJobChangeListener {
 
-  private boolean enablePreview = true;
-  private static final float MP_TO_INCH = 72270f;
-  private static final Logger LOGGER = Logger.getRootLogger();
-  private String filePath;
-  private ByteArrayOutputStream outStream;
-  private final String fileType;
-  private final String xslName;
-  private float textSize;
-  private float titleSize;
-  private float tableHeadSize;
-  private String pageFormat = AbstractExportPage.A4_PORTRAIT;
-  private String pdfTitle = "";
-  /**
-   * the xslfoTransormer is beeing related to the xsl which describes the pdf
-   * export.
-   */
-  private Transformer xslfoTransformer;
+	private boolean enablePreview = true;
+	private static final Logger LOGGER = Logger.getRootLogger();
+	private ByteArrayOutputStream outStream;
+	private final String fileType;
+	private String pageFormat = AbstractExportPage.A4_PORTRAIT;
+	private String pdfTitle = "";
+	/**
+	 * the xslfoTransormer is beeing related to the xsl which describes the pdf
+	 * export.
+	 */
+	private Transformer xslfoTransformer;
+	private ExportPackage exportData;
 
-  /**
-   * Constructor of the export job
-   * 
-   * @author Fabian Toth, Lukas Balzer
-   * @param projectId
-   *          the project which
-   * @param name
-   *          the name of the job
-   * @param filePath
-   *          the path to the pdf file
-   * @param xslName
-   *          the name of the file in which the xsl file is stored which should
-   *          be used
-   * @param asOne
-   *          true if all content shall be exported on a single page
-   * @param decorate
-   *          if the control structure components should be pictured with
-   *          colored borders and image labels
-   */
-  public JAXBExportJob(String name, String filePath, String xslName) {
-    super(name);
-    this.filePath = filePath;
-    this.fileType = ProjectManager.getContainerInstance().getMimeConstant(filePath);
-    this.xslName = xslName;
-    this.tableHeadSize = 14;
-    this.titleSize = 24;
-    this.textSize = 12;
-    addJobChangeListener(this);
-  }
 
-  @Override
-  protected IStatus run(IProgressMonitor monitor) {
 
-    // monitor.worked(1);
-    // put the xml jaxb content into an output stream
-    this.outStream = new ByteArrayOutputStream();
-    if (this.filePath != null) {
-      JAXBContext context;
-      try {
-        context = getModelContent();
-        Marshaller contextMarshaller = context.createMarshaller();
-        contextMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        contextMarshaller.marshal(getModel(), this.outStream);
-      } catch (JAXBException e) {
-        JAXBExportJob.LOGGER.error(e.getMessage(), e);
-        return Status.OK_STATUS;
-      }
-    } else {
-      JAXBExportJob.LOGGER.error("Report cannot be exported: Invalid file path"); //$NON-NLS-1$
-      return Status.CANCEL_STATUS;
-    }
-    // monitor.worked(2);
+	public JAXBExportJob(ExportPackage data) {
+		super(data.getName());
+		assert(exportData.getDataModelClazz() != null);
+		assert(exportData.getFilePath() != null);
+		assert(exportData.getXslName() != null);
+		exportData = data;
+		this.fileType = ProjectManager.getContainerInstance().getMimeConstant(exportData.getFilePath());
+		addJobChangeListener(this);
+	}
 
-    FopFactory fopFactory = FopFactory.newInstance();
-    ByteArrayOutputStream pdfoutStream = new ByteArrayOutputStream();
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
 
-    StreamSource informationSource = new StreamSource(new ByteArrayInputStream(this.outStream.toByteArray()));
+		// monitor.worked(1);
+		// put the xml jaxb content into an output stream
+		this.outStream = new ByteArrayOutputStream();
+		if (exportData.getFilePath() != null) {
+			JAXBContext context;
+			try {
+				context = getModelContent();
+				Marshaller contextMarshaller = context.createMarshaller();
+				contextMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+				contextMarshaller.marshal(getModel(), this.outStream);
+			} catch (JAXBException e) {
+				JAXBExportJob.LOGGER.error(e.getMessage(), e);
+				return Status.OK_STATUS;
+			}
+		} else {
+			JAXBExportJob.LOGGER.error("Report cannot be exported: Invalid file path"); //$NON-NLS-1$
+			return Status.CANCEL_STATUS;
+		}
+		// monitor.worked(2);
 
-    try {
+		FopFactory fopFactory = FopFactory.newInstance();
+		ByteArrayOutputStream pdfoutStream = new ByteArrayOutputStream();
 
-      this.xslfoTransformer = getxslTransformer(xslName);
-      if (xslfoTransformer == null) {
-        JAXBExportJob.LOGGER.error("Fop xsl: " + this.xslName + " not found"); //$NON-NLS-1$
-        return Status.CANCEL_STATUS;
-      }
+		StreamSource informationSource = new StreamSource(new ByteArrayInputStream(this.outStream.toByteArray()));
 
-      File pdfFile = new File(this.filePath);
-      if (!pdfFile.exists()) {
-        pdfFile.createNewFile();
-      }
-      if (monitor.isCanceled()) {
-        return Status.CANCEL_STATUS;
-      }
-      // this.xslfoTransformer.setParameter("page.layout", pageFormat);
-      this.xslfoTransformer.setParameter("page.title", pdfTitle);
-      try (OutputStream out = new BufferedOutputStream(new FileOutputStream(pdfFile));
-          FileOutputStream str = new FileOutputStream(pdfFile);) {
-        if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {
-          this.titleSize *= 2;
-          this.textSize *= 2;
-          this.tableHeadSize *= 2;
+		try {
 
-          float width = 2 * Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
-          float height = 2 * Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
-          if (pageFormat.equals(AbstractExportPage.A4_LANDSCAPE)) {
-            fopFactory.setPageWidth(height + "in");
-            fopFactory.setPageHeight(width + "in");
-          } else {
-            fopFactory.setPageWidth(width + "in");
-            fopFactory.setPageHeight(height + "in");
-          }
+			this.xslfoTransformer = getxslTransformer(exportData.getXslName(), exportData.getDataModelClazz());
+			if (xslfoTransformer == null) {
+				JAXBExportJob.LOGGER.error("Fop xsl: " + exportData.getXslName() + " not found"); //$NON-NLS-1$
+				return Status.CANCEL_STATUS;
+			}
 
-          this.xslfoTransformer.setParameter("page.layout", "auto");
-          this.xslfoTransformer.setParameter("title.size", this.titleSize);
-          this.xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
-          this.xslfoTransformer.setParameter("text.size", this.textSize);
-          this.xslfoTransformer.setParameter("header.omit", "true"); //$NON-NLS-1$
-          // this.getFirstDocumentSpan(this.xslfoTransformer,fopFactory);
-        } else {
-          this.xslfoTransformer.setParameter("page.layout", pageFormat);
-          this.xslfoTransformer.setParameter("title.size", this.titleSize);
-          this.xslfoTransformer.setParameter("table.head.size", this.tableHeadSize);
-          this.xslfoTransformer.setParameter("text.size", this.textSize);
-          this.xslfoTransformer.setParameter("header.omit", "false"); //$NON-NLS-1$
-        }
-        //
-        // monitor.worked(4);
-        Fop fop;
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        foUserAgent.setOutputFile(pdfFile);
-        fop = fopFactory.newFop(this.fileType, foUserAgent, pdfoutStream);
+			File pdfFile = new File(exportData.getFilePath());
+			if (!pdfFile.exists()) {
+				pdfFile.createNewFile();
+			}
+			if (monitor.isCanceled()) {
+				return Status.CANCEL_STATUS;
+			}
+			// this.xslfoTransformer.setParameter("page.layout", pageFormat);
+			this.xslfoTransformer.setParameter("page.title", pdfTitle);
+			try (OutputStream out = new BufferedOutputStream(new FileOutputStream(pdfFile));
+					FileOutputStream str = new FileOutputStream(pdfFile);) {
+				if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {
+					exportData.setTitleSize(exportData.getTitleSize() * 2);
+					exportData.setTextSize(exportData.getTextSize() * 2);
+					exportData.setTableHeadSize(exportData.getTableHeadSize() * 2);
 
-        SAXResult res = new SAXResult(fop.getDefaultHandler());
+					float width = 2 * Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
+					float height = 2 * Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
+					if (pageFormat.equals(AbstractExportPage.A4_LANDSCAPE)) {
+						fopFactory.setPageWidth(height + "in");
+						fopFactory.setPageHeight(width + "in");
+					} else {
+						fopFactory.setPageWidth(width + "in");
+						fopFactory.setPageHeight(height + "in");
+					}
 
-        // transform the informationSource with the transformXSLSource
+					this.xslfoTransformer.setParameter("page.layout", "auto");
+					this.xslfoTransformer.setParameter("title.size", exportData.getTitleSize());
+					this.xslfoTransformer.setParameter("table.head.size", exportData.getTableHeadSize());
+					this.xslfoTransformer.setParameter("text.size", exportData.getTextSize());
+					this.xslfoTransformer.setParameter("header.omit", "true"); //$NON-NLS-1$
+					// this.getFirstDocumentSpan(this.xslfoTransformer,fopFactory);
+				} else {
+					this.xslfoTransformer.setParameter("page.layout", pageFormat);
+					this.xslfoTransformer.setParameter("title.size", exportData.getTitleSize());
+					this.xslfoTransformer.setParameter("table.head.size", exportData.getTableHeadSize());
+					this.xslfoTransformer.setParameter("text.size", exportData.getTextSize());
+					this.xslfoTransformer.setParameter("header.omit", "false"); //$NON-NLS-1$
+				}
+				//
+				// monitor.worked(4);
+				Fop fop;
+				FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+				foUserAgent.setOutputFile(pdfFile);
+				fop = fopFactory.newFop(this.fileType, foUserAgent, pdfoutStream);
 
-        this.xslfoTransformer.transform(informationSource, res);
+				SAXResult res = new SAXResult(fop.getDefaultHandler());
 
-        str.write(pdfoutStream.toByteArray());
-        str.close();
+				// transform the informationSource with the transformXSLSource
 
-        // monitor.worked(5);
-        if (pdfFile.exists() && this.enablePreview) {
-          if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().open(pdfFile);
-          }
-        }
-      }
-    } catch (SAXException | IOException | TransformerException e) {
-      setError(e);
-      ProjectManager.getLOGGER().error(e.getMessage());
-      return Status.CANCEL_STATUS;
-    }
-    return Status.OK_STATUS;
-  }
+				this.xslfoTransformer.transform(informationSource, res);
 
-  
+				str.write(pdfoutStream.toByteArray());
+				str.close();
 
-  @Override
-  protected void canceling() {
-    if (this.xslfoTransformer != null) {
-      this.xslfoTransformer.reset();
-    }
-    super.canceling();
-  }
+				// monitor.worked(5);
+				if (pdfFile.exists() && this.enablePreview) {
+					if (Desktop.isDesktopSupported()) {
+						Desktop.getDesktop().open(pdfFile);
+					}
+				}
+			}
+		} catch (SAXException | IOException | TransformerException e) {
+			setError(e);
+			ProjectManager.getLOGGER().error(e.getMessage());
+			return Status.CANCEL_STATUS;
+		}
+		return Status.OK_STATUS;
+	}
 
-  public void showPreview(boolean preview) {
-    this.enablePreview = preview;
-  }
+	@Override
+	protected void canceling() {
+		if (this.xslfoTransformer != null) {
+			this.xslfoTransformer.reset();
+		}
+		super.canceling();
+	}
 
-  /**
-   * one of the two constants {@link AbstractExportPage#A4_PORTRAIT} or
-   * {@link AbstractExportPage#A4_LANDSCAPE} defined in AbstractExportPage.
-   * 
-   * @param pageFormat
-   *          the pageFormat to set
-   */
-  public void setPageFormat(String pageFormat) {
-    this.pageFormat = pageFormat;
-  }
+	public void showPreview(boolean preview) {
+		this.enablePreview = preview;
+	}
 
-  /**
-   * Sets the PDF Title, to the given value.
-   * @param pdfTitle
-   *          the pdfTitle to set
-   */
-  public void setPdfTitle(String pdfTitle) {
-    this.pdfTitle = pdfTitle;
-  }
+	/**
+	 * one of the two constants {@link AbstractExportPage#A4_PORTRAIT} or
+	 * {@link AbstractExportPage#A4_LANDSCAPE} defined in AbstractExportPage.
+	 * 
+	 * @param pageFormat
+	 *            the pageFormat to set
+	 */
+	public void setPageFormat(String pageFormat) {
+		this.pageFormat = pageFormat;
+	}
 
-  /**
-   * @return the model file from which the export informations are created,,
-   *         implementers must take care that the returned object can be parsed
-   *         to an xml file
-   * @see Marshaller#marshal(Object, OutputStream)
-   */
-  protected abstract Object getModel();
+	/**
+	 * Sets the PDF Title, to the given value.
+	 * 
+	 * @param pdfTitle
+	 *            the pdfTitle to set
+	 */
+	public void setPdfTitle(String pdfTitle) {
+		this.pdfTitle = pdfTitle;
+	}
 
-  /**
-   * @return The class with which the jaxb instance is created
-   */
-  protected abstract JAXBContext getModelContent() throws JAXBException;
+	/**
+	 * @return the model file from which the export informations are created,,
+	 *         implementers must take care that the returned object can be parsed to
+	 *         an xml file
+	 * @see Marshaller#marshal(Object, OutputStream)
+	 */
+	protected abstract Object getModel();
 
-  protected abstract Transformer getxslTransformer(String resource);
+	/**
+	 * @return The class with which the jaxb instance is created
+	 */
+	protected JAXBContext getModelContent() throws JAXBException {
+		return JAXBContext.newInstance(exportData.getDataModelClazz());
+	}
 
-  /**
-   * @return the filePath
-   */
-  public String getFilePath() {
-    return this.filePath;
-  }
+	/**
+	 * @deprecated Use {@link #getxslTransformer(String,ClassLoader)} instead
+	 */
+	protected abstract Transformer getxslTransformer(String resource);
 
-  /**
-   * @param filePath
-   *          the filePath to set
-   */
-  public void setFilePath(String filePath) {
-    this.filePath = filePath;
-  }
+	protected abstract Transformer getxslTransformer(String resource, Class clazz);
 
-  /**
-   * @param textSize
-   *          the textSize to set
-   */
-  public void setTextSize(float textSize) {
-    this.textSize = textSize;
-  }
+	/**
+	 * @return the filePath
+	 */
+	public String getFilePath() {
+		return exportData.getFilePath();
+	}
 
-  /**
-   * @param titleSize
-   *          the titleSize to set
-   */
-  public void setTitleSize(float titleSize) {
-    this.titleSize = titleSize;
-  }
+	/**
+	 * @param filePath
+	 *            the filePath to set
+	 */
+	public void setFilePath(String filePath) {
+		exportData.setFilePath(filePath);
+	}
 
-  /**
-   * @param tableHeadSize
-   *          the tableHeadSize to set
-   */
-  public void setTableHeadSize(float tableHeadSize) {
-    this.tableHeadSize = tableHeadSize;
-  }
+	/**
+	 * @param textSize
+	 *            the textSize to set
+	 */
+	public void setTextSize(float textSize) {
+		exportData.setTextSize(textSize);
+	}
+
+	/**
+	 * @param titleSize
+	 *            the titleSize to set
+	 */
+	public void setTitleSize(float titleSize) {
+		exportData.setTitleSize(titleSize);
+	}
+
+	/**
+	 * @param tableHeadSize
+	 *            the tableHeadSize to set
+	 */
+	public void setTableHeadSize(float tableHeadSize) {
+		exportData.setTableHeadSize(tableHeadSize);
+	}
 
 }

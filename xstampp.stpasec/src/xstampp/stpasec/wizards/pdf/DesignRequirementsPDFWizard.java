@@ -12,11 +12,11 @@ package xstampp.stpasec.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.ui.sds.DesignRequirementView;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class DesignRequirementsPDFWizard extends AbstractExportWizard {
+public class DesignRequirementsPDFWizard extends AbstractPrivacyExportWizard {
 
 	public DesignRequirementsPDFWizard() {
 		super(DesignRequirementView.ID);

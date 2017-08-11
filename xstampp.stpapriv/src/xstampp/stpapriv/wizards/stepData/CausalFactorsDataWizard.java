@@ -11,10 +11,10 @@
 package xstampp.stpapriv.wizards.stepData;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.ui.causalfactors.PrivacyCausalFactorsView;
 import xstampp.stpapriv.util.jobs.ICSVExportConstants;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.CSVExportPage;
 
 /**
@@ -22,7 +22,7 @@ import xstampp.ui.wizards.CSVExportPage;
  * @author Lukas Balzer
  * 
  */
-public class CausalFactorsDataWizard extends AbstractExportWizard {
+public class CausalFactorsDataWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

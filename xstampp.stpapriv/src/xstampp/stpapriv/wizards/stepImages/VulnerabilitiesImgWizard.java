@@ -11,13 +11,13 @@
 package xstampp.stpapriv.wizards.stepImages;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.vulloss.VulnerabilityView;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class VulnerabilitiesImgWizard extends AbstractExportWizard {
+public class VulnerabilitiesImgWizard extends AbstractPrivacyExportWizard {
 
 	public VulnerabilitiesImgWizard() {
 		super(VulnerabilityView.ID);

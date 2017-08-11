@@ -11,11 +11,11 @@
 package xstampp.stpapriv.wizards.stepData;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.sds.CSCView;
 import xstampp.stpapriv.util.jobs.ICSVExportConstants;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.CSVExportPage;
 
 /**
@@ -25,7 +25,7 @@ import xstampp.ui.wizards.CSVExportPage;
  * @author Lukas Balzer
  * 
  */
-public class CSCWizard extends AbstractExportWizard {
+public class CSCWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

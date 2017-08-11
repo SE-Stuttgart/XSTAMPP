@@ -297,7 +297,9 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 	 */
 	@Override
 	public void addHighlighter(Point ref) {
-		((RootFigure) this.getParent()).addHighlighter(ref);
+		if(getParent() instanceof RootFigure) {
+			((RootFigure) this.getParent()).addHighlighter(ref);
+		}
 	}
 
 	/**

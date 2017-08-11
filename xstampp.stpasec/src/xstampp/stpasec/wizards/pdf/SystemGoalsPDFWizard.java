@@ -12,11 +12,11 @@ package xstampp.stpasec.wizards.pdf;
 
 import messages.Messages;
 import xstampp.astpa.ui.sds.SystemGoalView;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class SystemGoalsPDFWizard extends AbstractExportWizard {
+public class SystemGoalsPDFWizard extends AbstractPrivacyExportWizard {
 
 	public SystemGoalsPDFWizard() {
 		super(SystemGoalView.ID);

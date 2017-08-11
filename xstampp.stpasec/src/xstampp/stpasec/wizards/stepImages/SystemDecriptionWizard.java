@@ -12,7 +12,7 @@ package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
 import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
-import xstampp.astpa.wizards.AbstractExportWizard;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.stpasec.wizards.pages.SystemDescriptionExportPage;
 
 /**
@@ -20,7 +20,7 @@ import xstampp.stpasec.wizards.pages.SystemDescriptionExportPage;
  * @author Lukas Balzer
  * 
  */
-public class SystemDecriptionWizard extends AbstractExportWizard {
+public class SystemDecriptionWizard extends AbstractPrivacyExportWizard {
 
 	/**
 	 * 

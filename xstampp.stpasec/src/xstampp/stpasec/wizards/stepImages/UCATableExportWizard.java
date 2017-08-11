@@ -11,9 +11,9 @@
 package xstampp.stpasec.wizards.stepImages;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.ui.unsecurecontrolaction.UnsecureControlActionsView;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
 /**
@@ -21,7 +21,7 @@ import xstampp.ui.wizards.TableExportPage;
  * @author Lukas Balzer
  * 
  */
-public class UCATableExportWizard extends AbstractExportWizard {
+public class UCATableExportWizard extends AbstractPrivacyExportWizard {
 	TableExportPage exportPage;
 
 	/**

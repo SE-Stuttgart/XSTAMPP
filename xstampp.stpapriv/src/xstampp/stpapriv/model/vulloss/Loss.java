@@ -54,6 +54,10 @@ public class Loss extends Accident {
 		// empty constructor for JAXB
 	}
 
+	public Loss(String title, String description) {
+		super(title, description);
+	}
+
 	@Override
 	public String getIdString() {
 	  return "L-" +this.getNumber();

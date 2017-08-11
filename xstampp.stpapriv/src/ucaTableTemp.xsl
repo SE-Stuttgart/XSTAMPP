@@ -502,15 +502,17 @@
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="10%"
 			border-style="none" />
-		<fo:table-column column-number="2" column-width="10%"
+		<fo:table-column column-number="2" column-width="5%"
 			border-style="none" />
-		<fo:table-column column-number="3" column-width="50%"
+		<fo:table-column column-number="3" column-width="35%"
 			border-style="none" />
-		<fo:table-column column-number="4" column-width="10%"
+		<fo:table-column column-number="4" column-width="20%"
 			border-style="none" />			
 		<fo:table-column column-number="5" column-width="10%"
 			border-style="none" />
 		<fo:table-column column-number="6" column-width="10%"
+			border-style="none" />
+		<fo:table-column column-number="7" column-width="10%"
 			border-style="none" />
 								
 		<fo:table-header border="none" background-color="#1A277A"
@@ -530,7 +532,7 @@
 						<fo:block font-weight="bold">Privacy Constraint</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Corres-ponding Constraint</fo:block>
+						<fo:block font-weight="bold">Corresponding Constraint</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Privacy Related</fo:block>
@@ -760,8 +762,8 @@
             <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks whether there are some Control Actions defined -->
-					<xsl:when test="cac/controlactions/controlaction">
-						<xsl:for-each select="cac/controlactions/controlaction">
+					<xsl:when test="secCac/controlactions/controlaction">
+						<xsl:for-each select="secCac/controlactions/controlaction">
 							<fo:table-row border="none">
 								<xsl:if test="position() mod 2 = 0">
 									<xsl:attribute name="background-color">
@@ -864,9 +866,9 @@
 				<xsl:choose>
 					<!-- Checks for hazardous UCA -->
 					<xsl:when
-						test="cac/controlactions/controlaction/unsecurecontrolactions/unsecurecontrolaction[links != 'Not Hazardous']">
+						test="secCac/controlactions/controlaction/unsecurecontrolactions/unsecurecontrolaction[links != 'Not Hazardous']">
 						<xsl:for-each
-							select="cac/controlactions/controlaction/unsecurecontrolactions/unsecurecontrolaction[links != 'Not Hazardous']">
+							select="secCac/controlactions/controlaction/unsecurecontrolactions/unsecurecontrolaction[links != 'Not Hazardous']">
 	
 								<fo:table-row border="none">
 									<xsl:if test="position() mod 2 = 0">
@@ -1304,8 +1306,8 @@
            <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 					<!-- Checks if there are some Control Actions already defined -->
-					<xsl:when test="cac/controlactions/controlaction">
-						<xsl:for-each select="cac/controlactions/controlaction">
+					<xsl:when test="secCac/controlactions/controlaction">
+						<xsl:for-each select="secCac/controlactions/controlaction">
 							<fo:table-row border-bottom="2pt solid black"
 								border-top="2pt solid black">
 								<fo:table-cell padding="4px" background-color="#FFFFFF"

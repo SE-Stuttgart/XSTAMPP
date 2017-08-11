@@ -1,13 +1,13 @@
 package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.results.ResultEditor;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class ResultPDFWizard extends AbstractExportWizard{
+public class ResultPDFWizard extends AbstractPrivacyExportWizard{
 	public ResultPDFWizard() {
 		super(ResultEditor.ID);
 		String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$ 

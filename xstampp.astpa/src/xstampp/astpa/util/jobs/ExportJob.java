@@ -33,6 +33,7 @@ import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.util.ExportPackage;
 import xstampp.util.JAXBExportJob;
 
 /**
@@ -83,9 +84,9 @@ public class ExportJob extends JAXBExportJob{
 	 *            if the control structure components should be pictured with
 	 *            colored borders and image labels
 	 */
-	public ExportJob(UUID projectId, String name, String filePath, String xslName,
+	public ExportJob(UUID projectId, ExportPackage data,
 			boolean asOne, boolean decorate) {
-		super(name, filePath, xslName);
+		super(data);
 		this.projectId = projectId;
 		this.decorate = decorate;
 		this.isCsDirty = false;
@@ -142,11 +143,6 @@ public class ExportJob extends JAXBExportJob{
 	}
 
 	@Override
-	protected JAXBContext getModelContent() throws JAXBException {
-		return JAXBContext.newInstance(DataModelController.class);
-	}
-
-	@Override
 	protected Observable getModelObserver() {
 		return (Observable)getModel();
 	}
@@ -155,9 +151,17 @@ public class ExportJob extends JAXBExportJob{
 		return this.projectId;
 	}
 
+	/**
+	 * @deprecated Use {@link #getxslTransformer(String,ClassLoader)} instead
+	 */
 	@Override
 	protected Transformer getxslTransformer(String resource) {
-		URL xslUrl = this.getClass().getResource(resource);
+		return getxslTransformer(resource, null);
+	}
+
+	@Override
+	protected Transformer getxslTransformer(String resource, final Class clazz) {
+		URL xslUrl = clazz.getResource(resource);
 
 		if (xslUrl == null) {
 			return null;
@@ -168,7 +172,7 @@ public class ExportJob extends JAXBExportJob{
 			transfact.setURIResolver(new URIResolver() {
 				@Override
 				public Source resolve(String href, String base) {
-					return new StreamSource(this.getClass().getClassLoader()
+					return new StreamSource(clazz
 							.getResourceAsStream("/" + href)); //$NON-NLS-1$
 				}
 			});

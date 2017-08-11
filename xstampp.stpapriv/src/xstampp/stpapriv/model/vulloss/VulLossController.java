@@ -80,7 +80,7 @@ public class VulLossController extends HazAccController {
    * @author Fabian Toth
    */
   public UUID addAccident(String title, String description) {
-    Loss newAccident = new Loss(title, description, getAccidentNumber());
+    Loss newAccident = new Loss(title, description);
     this.losses.add(newAccident);
     return newAccident.getId();
   }
@@ -181,7 +181,7 @@ public class VulLossController extends HazAccController {
    * @author Fabian Toth
    */
   public UUID addHazard(String title, String description) {
-    Vulnerability newHazard = new Vulnerability(title, description, getHazardNumber());
+    Vulnerability newHazard = new Vulnerability(title, description);
     this.vulnerabilities.add(newHazard);
     return newHazard.getId();
   }
@@ -201,9 +201,6 @@ public class VulLossController extends HazAccController {
     this.deleteAllLinks(hazard.getId());
     int index = this.vulnerabilities.indexOf(hazard);
     this.vulnerabilities.remove(index);
-    for (; index < this.vulnerabilities.size(); index++) {
-      this.vulnerabilities.get(index).setNumber(index + 1);
-    }
     return true;
   }
 
@@ -356,20 +353,6 @@ public class VulLossController extends HazAccController {
 
   public List<HazAccLink> getAllHazAccLinks() {
     return new ArrayList<>(this.links);
-  }
-
-  private int getAccidentNumber() {
-    if (this.accidentIndex == null) {
-      this.accidentIndex = this.losses.size() + 1;
-    }
-    return this.accidentIndex++;
-  }
-
-  private int getHazardNumber() {
-    if (this.hazardIndex == null) {
-      this.hazardIndex = this.vulnerabilities.size() + 1;
-    }
-    return this.hazardIndex++;
   }
 
 }

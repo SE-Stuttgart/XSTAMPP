@@ -11,13 +11,13 @@
 package xstampp.stpapriv.wizards.pdf;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.sds.CSCView;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
-public class CSCPDFWizard extends AbstractExportWizard {
+public class CSCPDFWizard extends AbstractPrivacyExportWizard {
 
 	public CSCPDFWizard() {
 		super(CSCView.ID);

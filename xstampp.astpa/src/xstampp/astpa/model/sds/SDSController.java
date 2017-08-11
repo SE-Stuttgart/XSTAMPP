@@ -157,9 +157,6 @@ public class SDSController extends Observable implements ISDSController {
     ITableModel safetyConstraint = this.getSafetyConstraint(safetyConstraintId);
     int index = this.getSafetyConstraints().indexOf(safetyConstraint);
     this.getSafetyConstraints().remove(index);
-    for (; index < this.getSafetyConstraints().size(); index++) {
-      this.getSafetyConstraints().get(index).setNumber(index + 1);
-    }
     setChanged();
     notifyObservers(ObserverValue.SAFETY_CONSTRAINT);
     return true;
@@ -216,9 +213,6 @@ public class SDSController extends Observable implements ISDSController {
     ITableModel systemGoal = this.getSystemGoal(systemGoalId);
     int index = this.getSystemGoals().indexOf(systemGoal);
     this.getSystemGoals().remove(index);
-    for (; index < this.getSystemGoals().size(); index++) {
-      this.getSystemGoals().get(index).setNumber(index + 1);
-    }
     return true;
   }
 

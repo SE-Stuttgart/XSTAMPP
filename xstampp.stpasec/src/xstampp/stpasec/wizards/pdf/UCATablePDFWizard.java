@@ -11,10 +11,10 @@
 package xstampp.stpasec.wizards.pdf;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.messages.SecMessages;
 import xstampp.stpasec.ui.unsecurecontrolaction.UnsecureControlActionsView;
+import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.wizards.TableExportPage;
 
 /**
@@ -22,7 +22,7 @@ import xstampp.ui.wizards.TableExportPage;
  * @author Lukas Balzer
  * 
  */
-public class UCATablePDFWizard extends AbstractExportWizard {
+public class UCATablePDFWizard extends AbstractPrivacyExportWizard {
 	TableExportPage exportPage;
 
 	/**

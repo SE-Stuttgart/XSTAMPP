@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import messages.Messages;
-import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.model.PrivacyController;
 import xstampp.stpapriv.util.jobs.STPAWordJob;
+import xstampp.stpapriv.wizards.AbstractPrivacyExportWizard;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.PdfExportPage;
 
@@ -32,7 +32,7 @@ import xstampp.ui.wizards.PdfExportPage;
  * @author Sebastian Sieber
  * 
  */
-public class PdfExportWizard extends AbstractExportWizard {
+public class PdfExportWizard extends AbstractPrivacyExportWizard {
 
 	private final PdfExportPage page;
 
