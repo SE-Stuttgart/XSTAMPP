@@ -50,7 +50,11 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
     if (entry != null) {
       this.entry = entry;
       currentSeverity = this.entry.getSeverity();
-      setText(this.entry.getSeverity().toString());
+      if (this.entry.getSeverity() != null) {
+        setText(this.entry.getSeverity().toString());
+      } else {
+        setText("-");
+      }
       control.redraw();
     }
   }
@@ -97,7 +101,7 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
 
   @Override
   public void handleEvent(Event e) {
-    if(entry != null) {
+    if (entry != null) {
       onButtonDown(new Point(e.x, e.y), new Rectangle(0, 0, e.width, e.height));
     }
   }

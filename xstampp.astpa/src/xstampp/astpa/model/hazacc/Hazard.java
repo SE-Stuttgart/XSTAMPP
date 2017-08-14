@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
@@ -27,49 +25,49 @@ import xstampp.astpa.model.interfaces.Severity;
  */
 @XmlRootElement(name = "hazard")
 public class Hazard extends ATableModel {
-  
+
   @XmlAttribute
   private Integer severity;
 
-	/**
-	 * Constructor of a hazard
-	 *
-	 * @param title
-	 *            the title of the new hazard
-	 * @param description
-	 *            the description of the new hazard
-	 * @param number
-	 *            the number of the new hazard
-	 *
-	 * @author Fabian Toth
-	 */
-	public Hazard(String title, String description, int number) {
-		super(title, description, number);
-		setSeverity(Severity.S0);
-	}
-
-	/**
-	 * Empty constructor used for JAXB. Do not use it!
-	 *
-	 * @author Fabian Toth
-	 */
-	public Hazard() {
+  /**
+   * Constructor of a hazard
+   *
+   * @param title
+   *          the title of the new hazard
+   * @param description
+   *          the description of the new hazard
+   * @param number
+   *          the number of the new hazard
+   *
+   * @author Fabian Toth
+   */
+  public Hazard(String title, String description, int number) {
+    super(title, description, number);
     setSeverity(Severity.S0);
-		// empty constructor for JAXB
-	}
+  }
+
+  /**
+   * Empty constructor used for JAXB. Do not use it!
+   *
+   * @author Fabian Toth
+   */
+  public Hazard() {
+    this("", "", -1); //$NON-NLS-1$ //$NON-NLS-2$
+    // empty constructor for JAXB
+  }
 
   public Hazard(String title, String description) {
-    super(title, description);
+    this(title, description, -1); // $NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
   public String getIdString() {
-    return "H-" +this.getNumber();
+    return "H-" + this.getNumber();
   }
-  
+
   @Override
   public Severity getSeverity() {
-    if(severity != null) {
+    if (severity != null) {
       int severityIndex = severity;
       severity = null;
       setSeverity(Severity.values()[severityIndex]);

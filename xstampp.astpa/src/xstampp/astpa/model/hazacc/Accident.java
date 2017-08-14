@@ -50,12 +50,12 @@ public class Accident extends ATableModel {
 	 * @author Fabian Toth
 	 */
 	public Accident() {
-    setSeverity(Severity.S0);
+    this("", "", -1); //$NON-NLS-1$ //$NON-NLS-2$
 		// empty constructor for JAXB
 	}
 
 	public Accident(String title, String description) {
-    super(title, description);
+    this(title, description, -1);
   }
 
   @Override
