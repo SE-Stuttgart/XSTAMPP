@@ -248,7 +248,7 @@ public class ConstraintResultController extends Observable implements Observer {
 						for (ICausalFactorEntry tempCFE : tempCF.getAllEntries()) {
 							if (tempCFE != null && tempCFE.getScenarioLinks() != null) {
 								for (UUID templtl : tempCFE.getScenarioLinks()) {
-									if (ltlMap.get(templtl).getRefinedSafetyConstraint() != null) {
+									if (ltlMap.containsKey(templtl) && ltlMap.get(templtl).getRefinedSafetyConstraint() != null) {
 										if (ltlMap.containsKey(templtl)
 												&& !(ltlMap.get(templtl).getRefinedSafetyConstraint().equals(""))) {
 											ConstraintResult tempResult = new ConstraintResult();
