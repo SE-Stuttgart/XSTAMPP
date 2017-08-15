@@ -50,7 +50,6 @@ public class DiagramView extends ViewPart {
 		
 		// Graph will hold all other objects
 		graph = new Graph(parent, SWT.NONE);
-		System.out.println(controlAction != null);
 		// now a few nodes
 
 

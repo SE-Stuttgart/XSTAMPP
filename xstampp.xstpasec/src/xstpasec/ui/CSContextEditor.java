@@ -18,6 +18,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.ui.common.ProjectManager;
 
 public class CSContextEditor extends CSEditorWithPM {
 
@@ -43,11 +44,13 @@ public class CSContextEditor extends CSEditorWithPM {
           IWorkbenchPage page = PlatformUI.getWorkbench()
               .getActiveWorkbenchWindow().getActivePage();
           try {
-            part = page.showView(View.ID);
-          } catch (PartInitException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
+				part = page.showView(View.ID);
+			} catch(NullPointerException exc) {
+				ProjectManager.getLOGGER().error("", exc);
+			} catch (PartInitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
         }
       }

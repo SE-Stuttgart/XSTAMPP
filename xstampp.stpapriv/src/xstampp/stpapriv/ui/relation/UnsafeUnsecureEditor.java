@@ -17,7 +17,8 @@ public class UnsafeUnsecureEditor extends CSEditor{
 	public UnsafeUnsecureEditor() {
 	    super();
 	    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-	    .addPartListener(new IPartListener2() {
+	    .addPartListener(new
+	    		IPartListener2() {
 	      private IViewPart part = null;
 	      @Override
 	      public void partVisible(IWorkbenchPartReference partRef) {
@@ -28,9 +29,7 @@ public class UnsafeUnsecureEditor extends CSEditor{
 	      
 	      @Override
 	      public void partOpened(IWorkbenchPartReference partRef) {
-	        if (partRef.getId().equals(ID) && PlatformUI.getWorkbench()
-	            .getActiveWorkbenchWindow().getActivePage()
-	            .findView(PrivacyRelationsView.ID) == null) {
+	        if (partRef.getId().equals(ID)) {
 	          IWorkbenchPage page = PlatformUI.getWorkbench()
 	              .getActiveWorkbenchWindow().getActivePage();
 	          try {

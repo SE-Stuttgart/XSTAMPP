@@ -601,7 +601,7 @@
             name="Causal Scenarios">
       </editor>
       <editor
-            class="xstampp.stpapriv.ui.relation.UnsafeUnsecureEditor"
+            class="xstampp.stpasec.ui.relation.UnsafeUnsecureEditor"
             default="false"
             id="stpasec.editor.unsafe"
             name="Unsafe Editor">
@@ -1189,7 +1189,7 @@
       <view
             class="xstampp.stpasec.ui.relation.SecView"
             id="stpasec.view.context"
-            name="name"
+            name="Context View"
             restorable="true">
       </view>
       <view

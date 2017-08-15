@@ -43,7 +43,12 @@ public class CSContextEditor extends CSEditorWithPM {
           IWorkbenchPage page = PlatformUI.getWorkbench()
               .getActiveWorkbenchWindow().getActivePage();
           try {
-            part = page.showView(View.ID);
+        	  part = page.findView(View.ID);
+	        	if(part != null) {
+	        		page.bringToTop(part);
+	        	} else {
+	        		part = page.showView(View.ID);
+	        	}
           } catch (PartInitException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
