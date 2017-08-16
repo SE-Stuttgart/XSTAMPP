@@ -31,6 +31,7 @@ public class UnsafeUnsecureController extends Observable implements Observer{
 		this.variablesList = new HashMap<>();
 		this.controlentries  = new HashMap<>();
 		this.model = (PrivacyController) model;
+		model.addObserver(this);
 		clear();
 		
 		
@@ -216,7 +217,10 @@ public class UnsafeUnsecureController extends Observable implements Observer{
 		public void update(Observable arg0, Object updatedValue) {
 			final ObserverValue value= (ObserverValue) updatedValue; 
 			switch(value){
-				case CONTROL_STRUCTURE:
+      case UCA_HAZ_LINK:
+      case UNSAFE_CONTROL_ACTION:
+      case CONTROL_ACTION:
+				  
 					new Runnable() {
 						@Override
 						public void run() {

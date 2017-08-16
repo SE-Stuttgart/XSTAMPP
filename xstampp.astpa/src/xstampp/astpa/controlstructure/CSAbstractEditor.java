@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -17,6 +15,7 @@ import java.awt.Event;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -144,9 +143,8 @@ import xstampp.util.STPAPluginUtils;
 
 /**
  * 
- * CSGraphicalEditor is an implementation of the
- * <code>org.eclipse.ui.part.EditorPart</code> the code is based on the
- * implementation of GraphicalEditor
+ * CSGraphicalEditor is an implementation of the <code>org.eclipse.ui.part.EditorPart</code> the
+ * code is based on the implementation of GraphicalEditor
  * 
  * @version 1.0
  * @author Lukas Balzer
@@ -154,573 +152,538 @@ import xstampp.util.STPAPluginUtils;
  * 
  */
 public abstract class CSAbstractEditor extends StandartEditorPart implements
-		IControlStructureEditor,IZoomContributor, IPropertyChangeListener, ISelectionProvider {
+    IControlStructureEditor, IZoomContributor, IPropertyChangeListener, ISelectionProvider {
 
+  /**
+   * The GraphicalViewer is responsible for displaying all graphical Elements on the screen
+   */
+  private GraphicalViewer graphicalViewer;
 
+  /**
+   * the actionRegistry stores all Actions which can be performed by this Editor
+   * 
+   * @see CSAbstractEditor#createActions()
+   */
+  private ActionRegistry actionRegistry;
+  private IControlStructureEditorDataModel modelInterface;
+  private DefaultEditDomain editDomain;
+  private List<String> selectionActions = new ArrayList<String>();
+  private List<String> stackActions = new ArrayList<String>();
+  private List<String> propertyActions = new ArrayList<String>();
+  private PaletteViewerProvider paletteProvider;
+  private FlyoutPaletteComposite splitter;
+  private CSPalettePage page;
+  private static final int DEL_KEY = 127;
+  private static final int ZOOM_LEVEL = 30;
+  private static final double ZOOM_STEP = 0.1;
+  private static final double MIN_ZOOM = 0.2;
+  private static final int SCALE_STEP = 10;
+  private static final int MIN_SCALE = 20;
+  private static final int MAX_SCALE = 300;
+  private static final int FULL_SCALE = 100;
+  private static final int TOOL_HEIGHT = 30;
+  private static final int SCALE_WIDTH = 200;
+  private static final int SCLAE_TEXT_WIDTH = 150;
+  private static final int SCALE_FONT = 10;
+  protected static final int IMG_EXPAND = 10;
+  private IRectangleComponent root;
+  private ToolBar toolBar;
+  private ZoomManager zoomManager;
+  private Label label;
+  private Slider scale;
+  private Button redo;
+  private Button undo;
+  // this bool can be set if a decoration in the next Image is wished
+  private int timeOfLastChange = 0;
 
-	/**
-	 * The GraphicalViewer is responsible for displaying all graphical Elements
-	 * on the screen
-	 */
-	private GraphicalViewer graphicalViewer;
+  private Button decoSwitch;
 
-	/**
-	 * the actionRegistry stores all Actions which can be performed by this
-	 * Editor
-	 * 
-	 * @see CSAbstractEditor#createActions()
-	 */
-	private ActionRegistry actionRegistry;
-	private IControlStructureEditorDataModel modelInterface;
-	private DefaultEditDomain editDomain;
-	private List<String> selectionActions = new ArrayList<String>();
-	private List<String> stackActions = new ArrayList<String>();
-	private List<String> propertyActions = new ArrayList<String>();
-	private PaletteViewerProvider paletteProvider;
-	private FlyoutPaletteComposite splitter;
-	private CSPalettePage page;
-	private static final int DEL_KEY = 127;
-	private static final int ZOOM_LEVEL = 30;
-	private static final double ZOOM_STEP = 0.1;
-	private static final double MIN_ZOOM = 0.2;
-	private static final int SCALE_STEP = 10;
-	private static final int MIN_SCALE = 20;
-	private static final int MAX_SCALE = 300;
-	private static final int FULL_SCALE = 100;
-	private static final int TOOL_HEIGHT = 30;
-	private static final int SCALE_WIDTH = 200;
-	private static final int SCLAE_TEXT_WIDTH = 150;
-	private static final int SCALE_FONT = 10;
-	protected static final int IMG_EXPAND = 10;
-	private IRectangleComponent root;
-	private ToolBar toolBar;
-	private ZoomManager zoomManager;
-	private Label label;
-	private Slider scale;
-	private Button redo;
-	private Button undo;
-	// this bool can be set if a decoration in the next Image is wished
-	private int timeOfLastChange = 0;
+  private boolean asExport;
 
-	private Button decoSwitch;
+  private CopyComponentCommand copySelectionCommand;
 
-	private boolean asExport;
-	
-	private CopyComponentCommand copySelectionCommand;
+  protected Point mousePosition;
 
-	protected Point mousePosition;
+  private Label positionLabel;
 
-	private Label positionLabel;
+  private boolean selectAddedParts = false;
 
-	private boolean selectAddedParts = false;
+  private IPreferenceStore store;
 
-	private IPreferenceStore store;
+  private ArrayList<ISelectionChangedListener> selectionListeners;
 
-	private ArrayList<ISelectionChangedListener> selectionListeners;
+  /**
+   * This constructor defines the Domain where the editable content should be displayed in
+   * 
+   * @param store
+   *          TODO
+   */
+  public CSAbstractEditor(IPreferenceStore store) {
+    this.store = store;
+    this.setEditDomain(this);
+    this.asExport = false;
+  }
 
-	/**
-	 * This constructor defines the Domain where the editable content should be
-	 * displayed in
-	 * @param store TODO
-	 */
-	public CSAbstractEditor(IPreferenceStore store) {
-		this.store = store;
-		this.setEditDomain(this);
-		this.asExport = false;
-	}
+  public void prepareForExport() {
+    this.asExport = true;
+  }
 
-	public void prepareForExport(){
-		this.asExport = true;
-	}
-	@Override
-	public void createPartControl(Composite parent) {
-		this.setModelInterface(ProjectManager.getContainerInstance()
-				.getDataModel(this.getProjectID()));
-		FormLayout layout = new FormLayout();
-		
-		Composite editorComposite = new Composite(parent, SWT.BORDER);
-		editorComposite.setBackground(null);
-		editorComposite.setLayout(layout);
-		
-		FormData data = new FormData();
-		data.height = CSAbstractEditor.TOOL_HEIGHT;
-		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
-		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
-		data.left = new FormAttachment(0);
-		if(!this.asExport){
-			this.createToolBar(editorComposite, data);
-		}
+  @Override
+  public void createPartControl(Composite parent) {
+    this.setModelInterface(ProjectManager.getContainerInstance().getDataModel(this.getProjectID()));
+    setUpdateValues(EnumSet.of(ObserverValue.CONTROL_STRUCTURE));
+    FormLayout layout = new FormLayout();
+
+    Composite editorComposite = new Composite(parent, SWT.BORDER);
+    editorComposite.setBackground(null);
+    editorComposite.setLayout(layout);
+
+    FormData data = new FormData();
+    data.height = CSAbstractEditor.TOOL_HEIGHT;
+    data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
+    data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
+    data.left = new FormAttachment(0);
+    if (!this.asExport) {
+      this.createToolBar(editorComposite, data);
+    }
     this.getCommandStack().addCommandStackEventListener(this);
     this.getCommandStack().addCommandStackListener(this);
 
-		data = new FormData();
-		data.top = new FormAttachment(0);
-		data.bottom = new FormAttachment(this.toolBar);
-		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
-		data.left = new FormAttachment(0);
-		this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.None,
-				this.getSite().getPage(), this.getPaletteViewerProvider(),
-				this.getPalettePreferences());
-		
-		this.splitter.setLayoutData(data);
-		this.initializeActionRegistry();
-		this.createGraphicalViewer(this.splitter);
-		this.splitter.setGraphicalControl(this.getGraphicalControl());
-		if (this.page != null) {
-			this.splitter.setExternalViewer(this.page.getPaletteViewer());
-			this.page = null;
+    data = new FormData();
+    data.top = new FormAttachment(0);
+    data.bottom = new FormAttachment(this.toolBar);
+    data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
+    data.left = new FormAttachment(0);
+    this.splitter = new FlyoutPaletteComposite(editorComposite, SWT.None, this.getSite().getPage(),
+        this.getPaletteViewerProvider(), this.getPalettePreferences());
 
-		}
-		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
+    this.splitter.setLayoutData(data);
+    this.initializeActionRegistry();
+    this.createGraphicalViewer(this.splitter);
+    this.splitter.setGraphicalControl(this.getGraphicalControl());
+    if (this.page != null) {
+      this.splitter.setExternalViewer(this.page.getPaletteViewer());
+      this.page = null;
 
-		this.store.addPropertyChangeListener(this);
-		getSite().setSelectionProvider(this);
-		
-	}
+    }
+    this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
 
-	protected void createGraphicalViewer(Composite parent) {
+    this.store.addPropertyChangeListener(this);
+    getSite().setSelectionProvider(this);
 
-		GraphicalViewer viewer = new ScrollingGraphicalViewer();
-		viewer.setKeyHandler(new KeyHandler());
-		this.setGraphicalViewer(viewer);
-		viewer.setProperty(STEP_EDITOR, this.getId());
-		viewer.setProperty(IS_DECORATED, this.decoSwitch.getSelection());
-		viewer.addSelectionChangedListener(this);
-		viewer.createControl(parent);
-		this.hookGraphicalViewer();
+  }
+
+  protected void createGraphicalViewer(Composite parent) {
+
+    GraphicalViewer viewer = new ScrollingGraphicalViewer();
+    viewer.setKeyHandler(new KeyHandler());
+    this.setGraphicalViewer(viewer);
+    viewer.setProperty(STEP_EDITOR, this.getId());
+    viewer.setProperty(IS_DECORATED, this.decoSwitch.getSelection());
+    viewer.addSelectionChangedListener(this);
+    viewer.createControl(parent);
+    this.hookGraphicalViewer();
     this.configureGraphicalViewer(viewer);
-		viewer.getControl().addMouseListener(this);
-		ActionRegistry registry = this.getActionRegistry();
-		Iterator<String> iter = this.selectionActions.iterator();
-		while (iter.hasNext()) {
-			IAction action = registry.getAction(iter.next());
-			if (action instanceof SelectionAction) {
-				
-				((SelectionAction) action).setSelectionProvider(viewer);
-			}
-		}
-		
+    viewer.getControl().addMouseListener(this);
+    ActionRegistry registry = this.getActionRegistry();
+    Iterator<String> iter = this.selectionActions.iterator();
+    while (iter.hasNext()) {
+      IAction action = registry.getAction(iter.next());
+      if (action instanceof SelectionAction) {
 
-	}
-	
-	/**
-	 * @author Lukas Balzer
-	 * 
-	 * @return the root component
-	 */
-	private IRectangleComponent createRoot() {
-		root = null;
-		if(((STPAEditorInput)getEditorInput()).getProperties().containsKey(RenameRootComponentHandler.ROOT_ID)) { 
-		  for(IRectangleComponent availableRoot: this.getModelInterface().getRoots()) {
-		    if(availableRoot.getId().toString().equals(((STPAEditorInput)getEditorInput()).getProperties().get(RenameRootComponentHandler.ROOT_ID))) {
-		      root = availableRoot;
-		    }
-		  }
-		} else {
-		  root = this.getModelInterface().getRoot();
-		}
-		if (root == null) {
-			this.getModelInterface().setRoot(new Rectangle(), new String());
-			root = this.getModelInterface().getRoot();
-		}
+        ((SelectionAction) action).setSelectionProvider(viewer);
+      }
+    }
+
+  }
+
+  /**
+   * @author Lukas Balzer
+   * 
+   * @return the root component
+   */
+  private IRectangleComponent createRoot() {
+    root = null;
+    if (((STPAEditorInput) getEditorInput()).getProperties()
+        .containsKey(RenameRootComponentHandler.ROOT_ID)) {
+      for (IRectangleComponent availableRoot : this.getModelInterface().getRoots()) {
+        if (availableRoot.getId().toString().equals(((STPAEditorInput) getEditorInput())
+            .getProperties().get(RenameRootComponentHandler.ROOT_ID))) {
+          root = availableRoot;
+        }
+      }
+    } else {
+      root = this.getModelInterface().getRoot();
+    }
+    if (root == null) {
+      this.getModelInterface().setRoot(new Rectangle(), new String());
+      root = this.getModelInterface().getRoot();
+    }
     getModelInterface().setActiveRoot(root.getId());
-		return root;
-	}
+    return root;
+  }
 
-	/**
-	 * Called to configure the graphical viewer before it receives its contents.
-	 * This is where the root editpart should be configured. Subclasses should
-	 * extend or override this method as needed.
-	 */
-	public void configureGraphicalViewer(GraphicalViewer viewer) {
-		viewer.getControl().setBackground(ColorConstants.listBackground);
+  /**
+   * Called to configure the graphical viewer before it receives its contents. This is where the
+   * root editpart should be configured. Subclasses should extend or override this method as needed.
+   */
+  public void configureGraphicalViewer(GraphicalViewer viewer) {
+    viewer.getControl().setBackground(ColorConstants.listBackground);
 
-		double[] zoomLevel = new double[CSAbstractEditor.ZOOM_LEVEL];
-		ArrayList<String> zoomContributions;
+    double[] zoomLevel = new double[CSAbstractEditor.ZOOM_LEVEL];
+    ArrayList<String> zoomContributions;
 
-
-		viewer.setEditPartFactory(new CSEditPartFactory(this.getModelInterface(),
-				this.getId(), this.store));
-		// zooming
-		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
-		viewer.setRootEditPart(rootEditPart);
-		this.splitter.hookDropTargetListener(viewer);
+    viewer.setEditPartFactory(
+        new CSEditPartFactory(this.getModelInterface(), this.getId(), this.store));
+    // zooming
+    ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
+    viewer.setRootEditPart(rootEditPart);
+    this.splitter.hookDropTargetListener(viewer);
 
     viewer.setContents(this.createRoot());
-    ((IControlStructureEditPart)viewer.getContents()).setPreferenceStore(this.store);
+    ((IControlStructureEditPart) viewer.getContents()).setPreferenceStore(this.store);
     viewer.getContents().refresh();
-    viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(
-        viewer, this.getRoot()));
-		this.zoomManager = rootEditPart.getZoomManager();
+    viewer.addDropTargetListener(new CSTemplateTransferDropTargetListener(viewer, this.getRoot()));
+    this.zoomManager = rootEditPart.getZoomManager();
 
-		this.zoomManager.getViewport().addCoordinateListener(
-				new CoordinateListener() {
-					@Override
-					public void coordinateSystemChanged(IFigure source) {
+    this.zoomManager.getViewport().addCoordinateListener(new CoordinateListener() {
+      @Override
+      public void coordinateSystemChanged(IFigure source) {
 
-						CSAbstractEditor.this
-								.setViewport(CSAbstractEditor.this.zoomManager
-										.getViewport());
-						CSAbstractEditor.this.zoomManager.getViewport()
-								.setVerticalRangeModel(CSAbstractEditor.this.getViewport()
-												.getVerticalRangeModel());
-						CSAbstractEditor.this.zoomManager.getViewport()
-								.setHorizontalRangeModel(CSAbstractEditor.this.getViewport()
-												.getHorizontalRangeModel());
-						CSAbstractEditor.this.zoomManager.getViewport()
-								.setViewLocation(CSAbstractEditor.this.getViewport()
-												.getViewLocation());
-						CSAbstractEditor.this.zoomManager.getViewport().validate();
-					}
-				});
-		this.getActionRegistry().registerAction(new ZoomInAction(this.zoomManager));
+        CSAbstractEditor.this.setViewport(CSAbstractEditor.this.zoomManager.getViewport());
+        CSAbstractEditor.this.zoomManager.getViewport()
+            .setVerticalRangeModel(CSAbstractEditor.this.getViewport().getVerticalRangeModel());
+        CSAbstractEditor.this.zoomManager.getViewport()
+            .setHorizontalRangeModel(CSAbstractEditor.this.getViewport().getHorizontalRangeModel());
+        CSAbstractEditor.this.zoomManager.getViewport()
+            .setViewLocation(CSAbstractEditor.this.getViewport().getViewLocation());
+        CSAbstractEditor.this.zoomManager.getViewport().validate();
+      }
+    });
+    this.getActionRegistry().registerAction(new ZoomInAction(this.zoomManager));
 
-		this.getActionRegistry().registerAction(new ZoomOutAction(this.zoomManager));
-		// array of possibles zoom levels. 0.2 = 20%, 3.0 = 300%
-		for (int zoomFactor = 0; zoomFactor < CSAbstractEditor.ZOOM_LEVEL; zoomFactor++) {
-			zoomLevel[zoomFactor] = CSAbstractEditor.MIN_ZOOM
-					+ (zoomFactor * CSAbstractEditor.ZOOM_STEP);
-		}
+    this.getActionRegistry().registerAction(new ZoomOutAction(this.zoomManager));
+    // array of possibles zoom levels. 0.2 = 20%, 3.0 = 300%
+    for (int zoomFactor = 0; zoomFactor < CSAbstractEditor.ZOOM_LEVEL; zoomFactor++) {
+      zoomLevel[zoomFactor] = CSAbstractEditor.MIN_ZOOM + (zoomFactor * CSAbstractEditor.ZOOM_STEP);
+    }
 
-		this.zoomManager.setZoomLevels(zoomLevel);
+    this.zoomManager.setZoomLevels(zoomLevel);
 
-		zoomContributions = new ArrayList<String>();
-		zoomContributions.add(ZoomManager.FIT_ALL);
-		zoomContributions.add(ZoomManager.FIT_HEIGHT);
-		zoomContributions.add(ZoomManager.FIT_WIDTH);
-		this.zoomManager.setZoomLevelContributions(zoomContributions);
+    zoomContributions = new ArrayList<String>();
+    zoomContributions.add(ZoomManager.FIT_ALL);
+    zoomContributions.add(ZoomManager.FIT_HEIGHT);
+    zoomContributions.add(ZoomManager.FIT_WIDTH);
+    this.zoomManager.setZoomLevelContributions(zoomContributions);
 
-		this.zoomManager.addZoomListener(this);
+    this.zoomManager.addZoomListener(this);
 
-		// keyboard shortcuts
+    // keyboard shortcuts
 
-		viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY,
-				0),this.getActionRegistry().getAction(ActionFactory.DELETE.getId()));
+    viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY, 0),
+        this.getActionRegistry().getAction(ActionFactory.DELETE.getId()));
 
-		viewer.getKeyHandler().put(KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0), this
-				.getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
+    viewer.getKeyHandler().put(KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0),
+        this.getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
 
-		viewer.getKeyHandler().put(KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0), this
-				.getActionRegistry().getAction(GEFActionConstants.ZOOM_OUT));
+    viewer.getKeyHandler().put(KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0),
+        this.getActionRegistry().getAction(GEFActionConstants.ZOOM_OUT));
 
-		viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.CONTROL),
-				MouseWheelZoomHandler.SINGLETON);
+    viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.CONTROL),
+        MouseWheelZoomHandler.SINGLETON);
 
+    ContextMenuProvider contextProvider = new CSContextMenuProvider(viewer,
+        this.getActionRegistry(), getModelInterface());
+    viewer.setContextMenu(contextProvider);
+    ((FigureCanvas) viewer.getControl()).setScrollBarVisibility(FigureCanvas.AUTOMATIC);
+    this.getSite().registerContextMenu(viewer.getContextMenu(), viewer);
+  }
 
-		ContextMenuProvider contextProvider = new CSContextMenuProvider(viewer,
-				this.getActionRegistry(),getModelInterface());
-		viewer.setContextMenu(contextProvider);
-		((FigureCanvas) viewer.getControl())
-				.setScrollBarVisibility(FigureCanvas.AUTOMATIC);
-		this.getSite().registerContextMenu(viewer.getContextMenu(), viewer);
-	}
+  /**
+   * Hooks the GraphicalViewer to the rest of the Editor. By default, the viewer is added to the
+   * SelectionSynchronizer, which can be used to keep 2 or more EditPartViewers in sync. The viewer
+   * is also registered as the ISelectionProvider for the Editor's PartSite.
+   */
+  protected void hookGraphicalViewer() {
+    this.getSite().setSelectionProvider(this.getGraphicalViewer());
 
-	/**
-	 * Hooks the GraphicalViewer to the rest of the Editor. By default, the
-	 * viewer is added to the SelectionSynchronizer, which can be used to keep 2
-	 * or more EditPartViewers in sync. The viewer is also registered as the
-	 * ISelectionProvider for the Editor's PartSite.
-	 */
-	protected void hookGraphicalViewer() {
-		this.getSite().setSelectionProvider(this.getGraphicalViewer());
+  }
 
-	}
+  /**
+   * this method (re-)creates the toolbar on the given composite The parent should have a formlayout
+   * since this class only accepts one
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param parent
+   *          the composite on which the toolbar should appear
+   * @param toolbarData
+   *          the data whoch determine where the toolbar shall be displayed
+   * 
+   * @see CSAbstractEditor#toolBar
+   */
+  private void createToolBar(Composite parent, FormData toolbarData) {
+    this.toolBar = new ToolBar(parent, SWT.HORIZONTAL | SWT.SHADOW_OUT);
+    FormLayout layout = new FormLayout();
 
-	/**
-	 * this method (re-)creates the toolbar on the given composite The parent
-	 * should have a formlayout since this class only accepts one
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param parent
-	 *            the composite on which the toolbar should appear
-	 * @param toolbarData
-	 *            the data whoch determine where the toolbar shall be displayed
-	 * 
-	 * @see CSAbstractEditor#toolBar
-	 */
-	private void createToolBar(Composite parent, FormData toolbarData) {
-		this.toolBar = new ToolBar(parent, SWT.HORIZONTAL | SWT.SHADOW_OUT);
-		FormLayout layout = new FormLayout();
+    this.toolBar.setLayout(layout);
+    this.toolBar.setLayoutData(toolbarData);
 
-		this.toolBar.setLayout(layout);
-		this.toolBar.setLayoutData(toolbarData);
+    FormData data = new FormData();
+    ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
 
-		FormData data = new FormData();
-		ISharedImages sharedImages = PlatformUI.getWorkbench()
-				.getSharedImages();
+    // adding the undo/redo Buttons
+    this.undo = new Button(this.toolBar, SWT.BUTTON_MASK);
+    data = new FormData(CSAbstractEditor.TOOL_HEIGHT, CSAbstractEditor.TOOL_HEIGHT);
+    data.left = new FormAttachment(0);
+    this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
+    this.undo.setLayoutData(data);
+    this.redo = new Button(this.toolBar, SWT.BUTTON1);
+    data = new FormData(CSAbstractEditor.TOOL_HEIGHT, CSAbstractEditor.TOOL_HEIGHT);
+    data.left = new FormAttachment(this.undo);
+    this.redo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
+    this.redo.setLayoutData(data);
 
-		// adding the undo/redo Buttons
-		this.undo = new Button(this.toolBar, SWT.BUTTON_MASK);
-		data = new FormData(CSAbstractEditor.TOOL_HEIGHT,
-				CSAbstractEditor.TOOL_HEIGHT);
-		data.left = new FormAttachment(0);
-		this.undo.setImage(sharedImages
-				.getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
-		this.undo.setLayoutData(data);
-		this.redo = new Button(this.toolBar, SWT.BUTTON1);
-		data = new FormData(CSAbstractEditor.TOOL_HEIGHT,
-				CSAbstractEditor.TOOL_HEIGHT);
-		data.left = new FormAttachment(this.undo);
-		this.redo.setImage(sharedImages
-				.getImage(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
-		this.redo.setLayoutData(data);
+    this.decoSwitch = new Button(this.toolBar, SWT.TOGGLE);
+    data = new FormData();
+    data.height = CSAbstractEditor.TOOL_HEIGHT;
+    data.left = new FormAttachment(this.redo, 30);
+    this.decoSwitch.setLayoutData(data);
+    setDecoration(true);
+    this.decoSwitch.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        CSAbstractEditor.this.setDecoration(((Button) e.getSource()).getSelection());
 
-		this.decoSwitch = new Button(this.toolBar, SWT.TOGGLE);
-		data = new FormData();
-		data.height = CSAbstractEditor.TOOL_HEIGHT;
-		data.left = new FormAttachment(this.redo, 30);
-		this.decoSwitch.setLayoutData(data);
-		setDecoration(true);
-		this.decoSwitch.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-					CSAbstractEditor.this.setDecoration(((Button)e.getSource()).getSelection());
+      }
+    });
 
-			}
-		});
+    final Button preferenceButton = new Button(this.toolBar, SWT.PUSH);
+    preferenceButton.setText("Preferenes"); //$NON-NLS-1$
+    data = new FormData();
+    data.height = CSAbstractEditor.TOOL_HEIGHT;
+    data.left = new FormAttachment(this.decoSwitch, 30);
+    preferenceButton.setLayoutData(data);
+    preferenceButton.addSelectionListener(new SelectionAdapter() {
 
-		final Button preferenceButton = new Button(this.toolBar, SWT.PUSH);
-		preferenceButton.setText("Preferenes"); //$NON-NLS-1$
-		data = new FormData();
-		data.height = CSAbstractEditor.TOOL_HEIGHT;
-		data.left = new FormAttachment(this.decoSwitch, 30);
-		preferenceButton.setLayoutData(data);
-		preferenceButton.addSelectionListener(new SelectionAdapter() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Map<String, String> values = new HashMap<>();
-				values.put("preferencePageId", "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$ //$NON-NLS-2$
-  	    	  	STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
-			}
-		});
-		
-		data = new FormData();
-		data.height = CSAbstractEditor.TOOL_HEIGHT;
-		data.width = 200;
-		data.left = new FormAttachment(preferenceButton, 30);
-		this.positionLabel= new Label(this.toolBar, SWT.CENTER);
-		this.positionLabel.setText(" ----- x ----- "); //$NON-NLS-1$
-		this.positionLabel.setLayoutData(data);
-		
-		if (getModelInterface().getFileExtension().equals("acc")) { //$NON-NLS-1$
-			final Button showResponsibilityViewButton = new Button(
-					this.toolBar, SWT.None);
-			showResponsibilityViewButton.setText("Show Responsibilities");
-			data = new FormData();
-			data.height = CSAbstractEditor.TOOL_HEIGHT;
-			data.left = new FormAttachment(positionLabel, 30);
-			showResponsibilityViewButton.setLayoutData(data);
-			showResponsibilityViewButton
-					.addSelectionListener(new SelectionAdapter() {
-						@Override
-						public void widgetSelected(SelectionEvent e) {
-							try {
-								PlatformUI.getWorkbench()
-										.getActiveWorkbenchWindow().getActivePage()
-										.showView("A-CAST.view1"); //$NON-NLS-1$
-							} catch (PartInitException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        Map<String, String> values = new HashMap<>();
+        values.put("preferencePageId", "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$ //$NON-NLS-2$
+        STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
+      }
+    });
 
-					});
+    data = new FormData();
+    data.height = CSAbstractEditor.TOOL_HEIGHT;
+    data.width = 200;
+    data.left = new FormAttachment(preferenceButton, 30);
+    this.positionLabel = new Label(this.toolBar, SWT.CENTER);
+    this.positionLabel.setText(" ----- x ----- "); //$NON-NLS-1$
+    this.positionLabel.setLayoutData(data);
 
+    if (getModelInterface().getFileExtension().equals("acc")) { //$NON-NLS-1$
+      final Button showResponsibilityViewButton = new Button(this.toolBar, SWT.None);
+      showResponsibilityViewButton.setText("Show Responsibilities");
+      data = new FormData();
+      data.height = CSAbstractEditor.TOOL_HEIGHT;
+      data.left = new FormAttachment(positionLabel, 30);
+      showResponsibilityViewButton.setLayoutData(data);
+      showResponsibilityViewButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+          try {
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .showView("A-CAST.view1"); //$NON-NLS-1$
+          } catch (PartInitException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          }
+        }
 
+      });
 
-		}else if(this instanceof CSEditorWithPM){
-			Button bSyncSteps = new Button(this.toolBar, SWT.None);
-			bSyncSteps.setText("Synchronise with control structure diagram");
-			data = new FormData();
-			data.height = CSAbstractEditor.TOOL_HEIGHT;
-			data.left = new FormAttachment(positionLabel, 30);
-			bSyncSteps.setLayoutData(data);
-			bSyncSteps.addSelectionListener(new SelectionAdapter() {
-						@Override
-						public void widgetSelected(SelectionEvent e) {
-							if(MessageDialog.openConfirm(getSite().getShell(), "Synchronise Layouts?", "Do you really want to set the layouts\n"
-																				+ "of all components in the control structure to those of the components\n"
-																				+ "defined in " + '"'+"Establish Fundamentals/Control Structure"+'"'+"?")){
-								getModelInterface().synchronizeLayouts();
-							}
-						}
+    } else if (this instanceof CSEditorWithPM) {
+      Button bSyncSteps = new Button(this.toolBar, SWT.None);
+      bSyncSteps.setText("Synchronise with control structure diagram");
+      data = new FormData();
+      data.height = CSAbstractEditor.TOOL_HEIGHT;
+      data.left = new FormAttachment(positionLabel, 30);
+      bSyncSteps.setLayoutData(data);
+      bSyncSteps.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+          if (MessageDialog.openConfirm(getSite().getShell(), "Synchronise Layouts?",
+              "Do you really want to set the layouts\n"
+                  + "of all components in the control structure to those of the components\n"
+                  + "defined in " + '"' + "Establish Fundamentals/Control Structure" + '"' + "?")) {
+            getModelInterface().synchronizeLayouts();
+          }
+        }
 
-					});
-		}
-		
-		
-		
-		data = new FormData();
-		data.top = new FormAttachment(0);
-		data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
-		data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
-		this.scale = new Slider(this.toolBar, SWT.HORIZONTAL);
-		this.scale.setBounds(0, 0, CSAbstractEditor.SCALE_WIDTH,
-				CSAbstractEditor.TOOL_HEIGHT);
-		this.scale.setMaximum(CSAbstractEditor.MAX_SCALE);
-		this.scale.setMinimum(CSAbstractEditor.MIN_SCALE);
-		this.scale.setPageIncrement(CSAbstractEditor.SCALE_STEP);
-		this.scale.setIncrement(CSAbstractEditor.SCALE_STEP);
-		this.scale.setToolTipText(Messages.ZoomItem);
-		this.scale.setSelection(CSAbstractEditor.FULL_SCALE);
-		this.scale.addSelectionListener(this);
-		this.scale.setLayoutData(data);
+      });
+    }
 
-		data = new FormData();
-		data.right = new FormAttachment(this.scale);
-		data.top = new FormAttachment(this.scale, 0, SWT.CENTER);
-		this.label = new Label(this.toolBar, SWT.HORIZONTAL);
-		this.label.setSize(CSAbstractEditor.SCLAE_TEXT_WIDTH,
-				CSAbstractEditor.TOOL_HEIGHT / 2);
-		this.label.setFont(new Font(null, Messages.ZoomLevel,
-				CSAbstractEditor.SCALE_FONT, SWT.NORMAL));
-		this.label.setText(Integer.toString(this.scale.getSelection()) + "%"); //$NON-NLS-1$
-		this.label.setLayoutData(data);
-		IToolBarManager toolManager = new ToolBarManager(this.toolBar);
-		ToolBarContributionItem item = new ToolBarContributionItem(toolManager);
-		this.getEditorSite().getActionBars().getToolBarManager().add(item);
-	}
+    data = new FormData();
+    data.top = new FormAttachment(0);
+    data.bottom = new FormAttachment(CSAbstractEditor.FULL_SCALE);
+    data.right = new FormAttachment(CSAbstractEditor.FULL_SCALE);
+    this.scale = new Slider(this.toolBar, SWT.HORIZONTAL);
+    this.scale.setBounds(0, 0, CSAbstractEditor.SCALE_WIDTH, CSAbstractEditor.TOOL_HEIGHT);
+    this.scale.setMaximum(CSAbstractEditor.MAX_SCALE);
+    this.scale.setMinimum(CSAbstractEditor.MIN_SCALE);
+    this.scale.setPageIncrement(CSAbstractEditor.SCALE_STEP);
+    this.scale.setIncrement(CSAbstractEditor.SCALE_STEP);
+    this.scale.setToolTipText(Messages.ZoomItem);
+    this.scale.setSelection(CSAbstractEditor.FULL_SCALE);
+    this.scale.addSelectionListener(this);
+    this.scale.setLayoutData(data);
 
-	/**
-	 * Initializes the ActionRegistry. This registry may be used by
-	 * {@link ActionBarContributor ActionBarContributors} and/or
-	 * {@link ContextMenuProvider ContextMenuProviders}.
-	 * <P>
-	 * This method may be called on Editor creation, or lazily the first time
-	 * {@link #getActionRegistry()} is called.
-	 */
-	protected void initializeActionRegistry() {
-		this.createActions();
-		this.updateActions(this.propertyActions);
-		this.updateActions(this.stackActions);
-		this.updateActions(this.selectionActions);
+    data = new FormData();
+    data.right = new FormAttachment(this.scale);
+    data.top = new FormAttachment(this.scale, 0, SWT.CENTER);
+    this.label = new Label(this.toolBar, SWT.HORIZONTAL);
+    this.label.setSize(CSAbstractEditor.SCLAE_TEXT_WIDTH, CSAbstractEditor.TOOL_HEIGHT / 2);
+    this.label.setFont(new Font(null, Messages.ZoomLevel, CSAbstractEditor.SCALE_FONT, SWT.NORMAL));
+    this.label.setText(Integer.toString(this.scale.getSelection()) + "%"); //$NON-NLS-1$
+    this.label.setLayoutData(data);
+    IToolBarManager toolManager = new ToolBarManager(this.toolBar);
+    ToolBarContributionItem item = new ToolBarContributionItem(toolManager);
+    this.getEditorSite().getActionBars().getToolBarManager().add(item);
+  }
 
-	}
+  /**
+   * Initializes the ActionRegistry. This registry may be used by {@link ActionBarContributor
+   * ActionBarContributors} and/or {@link ContextMenuProvider ContextMenuProviders}.
+   * <P>
+   * This method may be called on Editor creation, or lazily the first time
+   * {@link #getActionRegistry()} is called.
+   */
+  protected void initializeActionRegistry() {
+    this.createActions();
+    this.updateActions(this.propertyActions);
+    this.updateActions(this.stackActions);
+    this.updateActions(this.selectionActions);
 
-	/**
-	 * Sets the ActionRegistry for this EditorPart.
-	 * 
-	 * @param registry
-	 *            the registry
-	 */
-	protected void setActionRegistry(ActionRegistry registry) {
-		this.actionRegistry = registry;
-	}
+  }
 
-	/**
-	 * Returns the list of {@link IAction IActions} dependant any actions in the
-	 * Editor. These actions should implement the {@link UpdateAction} interface
-	 * so that they can be updated in response to property changes. An example
-	 * is the "Save" action.
-	 * 
-	 * @param the
-	 *            enum constant which says what actions should be returned
-	 * @return the list of actions, depending on the enum constant
-	 * 
-	 * @author Lukas Balzer
-	 */
-	protected List<String> getCSActions(CSAction actionName) {
-		switch (actionName) {
-		case PROPERTY_ACTION: {
-			return this.propertyActions;
-		}
-		case STACK_ACTION: {
-			return this.stackActions;
-		}
-		case SELECTION_ACTION: {
-			return this.selectionActions;
-		}
-		case CREATE_ACTION:
-			break;
-		case DEFAULT:
-			break;
-		case RECONNECT_ACTION:
-			break;
-		default:
-			break;
-		}
-		return this.propertyActions;
-	}
+  /**
+   * Sets the ActionRegistry for this EditorPart.
+   * 
+   * @param registry
+   *          the registry
+   */
+  protected void setActionRegistry(ActionRegistry registry) {
+    this.actionRegistry = registry;
+  }
 
-	/**
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(IWorkbenchPart,
-	 *      ISelection)
-	 */
-	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		// If not the active editor, ignore selection changed.
-		this.updateActions(this.selectionActions);
-		
-	}
+  /**
+   * Returns the list of {@link IAction IActions} dependant any actions in the Editor. These actions
+   * should implement the {@link UpdateAction} interface so that they can be updated in response to
+   * property changes. An example is the "Save" action.
+   * 
+   * @param the
+   *          enum constant which says what actions should be returned
+   * @return the list of actions, depending on the enum constant
+   * 
+   * @author Lukas Balzer
+   */
+  protected List<String> getCSActions(CSAction actionName) {
+    switch (actionName) {
+    case PROPERTY_ACTION: {
+      return this.propertyActions;
+    }
+    case STACK_ACTION: {
+      return this.stackActions;
+    }
+    case SELECTION_ACTION: {
+      return this.selectionActions;
+    }
+    case CREATE_ACTION:
+      break;
+    case DEFAULT:
+      break;
+    case RECONNECT_ACTION:
+      break;
+    default:
+      break;
+    }
+    return this.propertyActions;
+  }
 
-	/**
-	 * Creates actions for this editor. Subclasses should override this method
-	 * to create and register actions with the {@link ActionRegistry}.
-	 * 
-	 * @author Lukas Balzer
-	 */
-	protected void createActions() {
+  /**
+   * @see org.eclipse.ui.ISelectionListener#selectionChanged(IWorkbenchPart, ISelection)
+   */
+  @Override
+  public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+    // If not the active editor, ignore selection changed.
+    this.updateActions(this.selectionActions);
 
-		ActionRegistry registry = new ActionRegistry();
-		IAction action;
-		action = new UndoAction(this);
-		registry.registerAction(action);
-		this.stackActions.add(action.getId());
+  }
 
-		action = new RedoAction(this);
-		registry.registerAction(action);
-		this.stackActions.add(action.getId());
+  /**
+   * Creates actions for this editor. Subclasses should override this method to create and register
+   * actions with the {@link ActionRegistry}.
+   * 
+   * @author Lukas Balzer
+   */
+  protected void createActions() {
 
-		action = new SelectAllAction(this);
-		registry.registerAction(action);
+    ActionRegistry registry = new ActionRegistry();
+    IAction action;
+    action = new UndoAction(this);
+    registry.registerAction(action);
+    this.stackActions.add(action.getId());
 
-		action = new DeleteAction((IWorkbenchPart) this);
-		registry.registerAction(action);
-		((SelectionAction)action).setSelectionProvider(getGraphicalViewer());
-		this.selectionActions.add(action.getId());
+    action = new RedoAction(this);
+    registry.registerAction(action);
+    this.stackActions.add(action.getId());
 
-		action = new DirectEditAction(this);
-		registry.registerAction(action);
-		((SelectionAction)action).setSelectionProvider(getGraphicalViewer());
-		this.selectionActions.add(action.getId());
+    action = new SelectAllAction(this);
+    registry.registerAction(action);
 
-		action = new SaveAction(this);
-		action.setText(Messages.ExportImage);
-		registry.registerAction(action);
-		this.selectionActions.add(action.getId());
+    action = new DeleteAction((IWorkbenchPart) this);
+    registry.registerAction(action);
+    ((SelectionAction) action).setSelectionProvider(getGraphicalViewer());
+    this.selectionActions.add(action.getId());
 
-		action = new PrintAction(this);
+    action = new DirectEditAction(this);
+    registry.registerAction(action);
+    ((SelectionAction) action).setSelectionProvider(getGraphicalViewer());
+    this.selectionActions.add(action.getId());
 
-		registry.registerAction(action);
-		this.setActionRegistry(registry);
-	}
+    action = new SaveAction(this);
+    action.setText(Messages.ExportImage);
+    registry.registerAction(action);
+    this.selectionActions.add(action.getId());
 
-	/**
-	 * When the command stack changes, the actions interested in the command
-	 * stack are updated.
-	 * 
-	 * @param event
-	 *            the change event
-	 */
-	@Override
-	public void commandStackChanged(EventObject event) {
-		stackChanged(null);
-	}
+    action = new PrintAction(this);
 
-	@Override
-	public void stackChanged(CommandStackEvent event) {
-	  this.firePropertyChange(IEditorPart.PROP_DIRTY);
-    ISharedImages sharedImages = PlatformUI.getWorkbench()
-        .getSharedImages();
+    registry.registerAction(action);
+    this.setActionRegistry(registry);
+  }
+
+  /**
+   * When the command stack changes, the actions interested in the command stack are updated.
+   * 
+   * @param event
+   *          the change event
+   */
+  @Override
+  public void commandStackChanged(EventObject event) {
+    stackChanged(null);
+  }
+
+  @Override
+  public void stackChanged(CommandStackEvent event) {
+    this.firePropertyChange(IEditorPart.PROP_DIRTY);
+    ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
 
     // the undo/redo buttons in the toolbar are either activated or
     // deactivated
     // depending on the change
     if (this.getCommandStack().canRedo()) {
-      this.redo.setImage(sharedImages
-          .getImage(ISharedImages.IMG_TOOL_FORWARD));
+      this.redo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_FORWARD));
       this.redo.setGrayed(false);
       this.redo.setEnabled(true);
       this.redo.addMouseListener(this);
@@ -733,696 +696,681 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
     }
 
     if (this.getCommandStack().canUndo()) {
-      this.undo.setImage(sharedImages
-          .getImage(ISharedImages.IMG_TOOL_BACK));
+      this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK));
       if (!this.undo.isListening(Event.MOUSE_UP)) {
         this.undo.addMouseListener(this);
       }
     } else {
-      this.undo.setImage(sharedImages
-          .getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
+      this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
       this.undo.removeMouseListener(this);
     }
     this.updateActions(this.stackActions);
     this.updateActions(this.propertyActions);
     this.updateActions(this.selectionActions);
-	}
-	/**
-	 * this method returns a stack with all executed commands in it, this Stack
-	 * is used for e.g. undo/redo by removing/re-adding commands to the stack
-	 * 
-	 * @return the stack of the domain where the executed commands are stored
-	 */
-	protected CommandStack getCommandStack() {
-		return this.getEditDomain().getCommandStack();
+  }
 
-	}
+  /**
+   * this method returns a stack with all executed commands in it, this Stack is used for e.g.
+   * undo/redo by removing/re-adding commands to the stack
+   * 
+   * @return the stack of the domain where the executed commands are stored
+   */
+  protected CommandStack getCommandStack() {
+    return this.getEditDomain().getCommandStack();
 
-	/**
-	 * This method sets the GraphicalViewer of this Editor and adds it to the
-	 * EditDomain
-	 * 
-	 * @author Lukas
-	 * 
-	 * @param viewer
-	 *            the Viewer instance wich says what type of viewer is used, for
-	 *            example a scalable
-	 */
-	public void setGraphicalViewer(GraphicalViewer viewer) {
-		this.getEditDomain().addViewer(viewer);
-		this.graphicalViewer = viewer;
-	}
+  }
 
-	
-	@Override
-	public GraphicalViewer getGraphicalViewer() {
-		return this.graphicalViewer;
-	}
+  /**
+   * This method sets the GraphicalViewer of this Editor and adds it to the EditDomain
+   * 
+   * @author Lukas
+   * 
+   * @param viewer
+   *          the Viewer instance wich says what type of viewer is used, for example a scalable
+   */
+  public void setGraphicalViewer(GraphicalViewer viewer) {
+    this.getEditDomain().addViewer(viewer);
+    this.graphicalViewer = viewer;
+  }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return The DefaultEditDomain referring to this instance
-	 */
-	public DefaultEditDomain getEditDomain() {
-		return this.editDomain;
-	}
+  @Override
+  public GraphicalViewer getGraphicalViewer() {
+    return this.graphicalViewer;
+  }
 
-	/**
-	 * sets the EditDomain and calls <code>CSEditor.getPaletteRoot()</code> on
-	 * it to create the attached palette
-	 * 
-	 * @author Lukas Balzer
-	 * @param editor
-	 *            the editor
-	 */
-	public final void setEditDomain(EditorPart editor) {
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return The DefaultEditDomain referring to this instance
+   */
+  public DefaultEditDomain getEditDomain() {
+    return this.editDomain;
+  }
 
-		this.editDomain = new DefaultEditDomain(editor){
-	
-			@Override
-			public void mouseMove(MouseEvent mouseEvent, EditPartViewer viewer) {
-			
-				org.eclipse.draw2d.geometry.Point point = new org.eclipse.draw2d.geometry.Point(mouseEvent.x,mouseEvent.y);
-//				getZoomManager().getViewport().translateFromParent(point);
-				CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
-				root.getFigure().translateToRelative(point);
-				CSAbstractEditor.this.mousePosition = new Point(point.x, point.y);
-				CSAbstractEditor.this.positionLabel.setText(CSAbstractEditor.this.mousePosition.x 
-															+ " x " + CSAbstractEditor.this.mousePosition.y); //$NON-NLS-1$
-				super.mouseMove(mouseEvent, viewer);
-			}
-		};
-		this.editDomain.getCommandStack().addCommandStackEventListener(new CommandStackEventListener() {
-			
-			@Override
-			public void stackChanged(CommandStackEvent event) {
-				if(event.isPreChangeEvent()){
-					getModelInterface().lockUpdate();
-				}else if(event.isPostChangeEvent()){
-					getModelInterface().releaseLockAndUpdate(new ObserverValue[]{ObserverValue.CONTROL_STRUCTURE,ObserverValue.CONTROL_ACTION});
-				}
-			}
-		});
-	}
+  /**
+   * sets the EditDomain and calls <code>CSEditor.getPaletteRoot()</code> on it to create the
+   * attached palette
+   * 
+   * @author Lukas Balzer
+   * @param editor
+   *          the editor
+   */
+  public final void setEditDomain(EditorPart editor) {
 
-	/**
-	 * Lazily creates and returns the action registry.
-	 * 
-	 * @return the action registry
-	 */
-	protected ActionRegistry getActionRegistry() {
-		if (this.actionRegistry == null) {
-			this.actionRegistry = new ActionRegistry();
-		}
-		return this.actionRegistry;
-	}
+    this.editDomain = new DefaultEditDomain(editor) {
 
-	@Override
-	public void setFocus() {
-		this.getGraphicalViewer().getControl().setFocus();
-		ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
-				.getWorkbench().getService(ISourceProviderService.class);
-		sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
-		
-	}
+      @Override
+      public void mouseMove(MouseEvent mouseEvent, EditPartViewer viewer) {
 
-	/**
-	 * Creates a PaletteViewerProvider that will be used to create palettes for
-	 * the view and the flyout.
-	 * 
-	 * @return the palette provider
-	 */
-	private PaletteViewerProvider createPaletteViewerProvider() {
-		return new CSPaletteViewerProvider(this.getEditDomain());
-	}
+        org.eclipse.draw2d.geometry.Point point = new org.eclipse.draw2d.geometry.Point(
+            mouseEvent.x, mouseEvent.y);
+        // getZoomManager().getViewport().translateFromParent(point);
+        CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
+        root.getFigure().translateToRelative(point);
+        CSAbstractEditor.this.mousePosition = new Point(point.x, point.y);
+        CSAbstractEditor.this.positionLabel.setText(
+            CSAbstractEditor.this.mousePosition.x + " x " + CSAbstractEditor.this.mousePosition.y); //$NON-NLS-1$
+        super.mouseMove(mouseEvent, viewer);
+      }
+    };
+    this.editDomain.getCommandStack().addCommandStackEventListener(new CommandStackEventListener() {
 
-	private class CSPaletteViewerProvider extends PaletteViewerProvider {
+      @Override
+      public void stackChanged(CommandStackEvent event) {
+        if (event.isPreChangeEvent()) {
+          getModelInterface().lockUpdate();
+        } else if (event.isPostChangeEvent()) {
+          getModelInterface().releaseLockAndUpdate(new ObserverValue[] {
+              ObserverValue.CONTROL_STRUCTURE, ObserverValue.CONTROL_ACTION });
+        }
+      }
+    });
+  }
 
+  /**
+   * Lazily creates and returns the action registry.
+   * 
+   * @return the action registry
+   */
+  protected ActionRegistry getActionRegistry() {
+    if (this.actionRegistry == null) {
+      this.actionRegistry = new ActionRegistry();
+    }
+    return this.actionRegistry;
+  }
 
-		public CSPaletteViewerProvider(DefaultEditDomain domain) {
-			super(domain);
-		}
+  @Override
+  public void setFocus() {
+    this.getGraphicalViewer().getControl().setFocus();
+    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+        .getWorkbench().getService(ISourceProviderService.class);
+    sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
 
-		@Override
-		protected void configurePaletteViewer(PaletteViewer viewer) {
-			super.configurePaletteViewer(viewer);
-			viewer.addDragSourceListener(new TemplateTransferDragSourceListener(
-					viewer));
-			viewer.addPaletteListener(CSAbstractEditor.this);
+  }
 
-		}
-	}
+  /**
+   * Creates a PaletteViewerProvider that will be used to create palettes for the view and the
+   * flyout.
+   * 
+   * @return the palette provider
+   */
+  private PaletteViewerProvider createPaletteViewerProvider() {
+    return new CSPaletteViewerProvider(this.getEditDomain());
+  }
 
-	/**
-	 * @return a newly-created {@link CustomPalettePage}
-	 */
-	protected CSPalettePage createPalettePage() {
-		return new CSPalettePage(this.getPaletteViewerProvider());
-	}
+  private class CSPaletteViewerProvider extends PaletteViewerProvider {
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
-	 */
-	@Override
-	public void dispose() {
-		this.store.removePropertyChangeListener(this);
-		this.getCommandStack().removeCommandStackListener(this);
-		this.modelInterface.deleteObserver(this);
-		this.getSite().getWorkbenchWindow().getSelectionService()
-				.removeSelectionListener(this);
-		this.getEditDomain().setActiveTool(null);
-		this.getActionRegistry().dispose();
-		super.dispose();
-	}
+    public CSPaletteViewerProvider(DefaultEditDomain domain) {
+      super(domain);
+    }
 
-	/**
-	 * @author Lukas Balzer
-	 * @param store The preference store which should be used, see that 
-	 * 				the store must contain all keys defined in IControlStructureConstants
-	 * @see IControlStructureConstants 
-	 */
-	public void setPreferenceStore(IPreferenceStore store){
-		
-		if(this.store != null){
-			this.store.removePropertyChangeListener(this);
-		}
-		this.store = store;
-		if(this.store != null){
-			this.store.addPropertyChangeListener(this);
-		}
-		if(this.graphicalViewer != null){
-			((IControlStructureEditPart)this.graphicalViewer.getContents()).setPreferenceStore(this.store);
-			((CSEditPartFactory)this.graphicalViewer.getEditPartFactory()).setStore(this.store);
-		}
-	}
-	/**
-	 * Creates the GraphicalViewer on the specified <code>Composite.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 */
+    @Override
+    protected void configurePaletteViewer(PaletteViewer viewer) {
+      super.configurePaletteViewer(viewer);
+      viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
+      viewer.addPaletteListener(CSAbstractEditor.this);
 
-	/**
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	@Override
-	public Object getAdapter(Class type) {
-		if (type == GraphicalViewer.class) {
-			return this.getGraphicalViewer();
-		}
-		if (type == CommandStack.class) {
-			return this.getCommandStack();
-		}
-		if (type == ActionRegistry.class) {
-			return this.getActionRegistry();
-		}
-		if ((type == EditPart.class) && (this.getGraphicalViewer() != null)) {
-			return this.getGraphicalViewer().getRootEditPart();
-		}
-		if ((type == IFigure.class) && (this.getGraphicalViewer() != null)) {
-			return ((GraphicalEditPart) this.getGraphicalViewer()
-					.getRootEditPart()).getFigure();
-		}
-		if (type == PalettePage.class) {
-			if (this.splitter == null) {
-				this.page = this.createPalettePage();
-				return this.page;
-			}
-			return this.createPalettePage();
-		}
-		return super.getAdapter(type);
-	}
+    }
+  }
 
-	/**
-	 * @return the graphical viewer's control
-	 */
-	protected Control getGraphicalControl() {
-		return this.getGraphicalViewer().getControl();
-	}
+  /**
+   * @return a newly-created {@link CustomPalettePage}
+   */
+  protected CSPalettePage createPalettePage() {
+    return new CSPalettePage(this.getPaletteViewerProvider());
+  }
 
-	/**
-	 * By default, this method returns a FlyoutPreferences object that stores
-	 * the flyout settings in the GEF plugin. Sub-classes may override.
-	 * 
-	 * @return the FlyoutPreferences object used to save the flyout palette's
-	 *         preferences
-	 */
+  /**
+   * @see org.eclipse.ui.IWorkbenchPart#dispose()
+   */
+  @Override
+  public void dispose() {
+    this.store.removePropertyChangeListener(this);
+    this.getCommandStack().removeCommandStackListener(this);
+    this.modelInterface.deleteObserver(this);
+    this.getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
+    this.getEditDomain().setActiveTool(null);
+    this.getActionRegistry().dispose();
+    super.dispose();
+  }
 
-	protected FlyoutPreferences getPalettePreferences() {
-		return new CSPalettePreferences();
-	}
+  /**
+   * @author Lukas Balzer
+   * @param store
+   *          The preference store which should be used, see that the store must contain all keys
+   *          defined in IControlStructureConstants
+   * @see IControlStructureConstants
+   */
+  public void setPreferenceStore(IPreferenceStore store) {
 
-	/**
-	 * Returns the PaletteRoot for the palette viewer.
-	 * 
-	 * @return the palette root
-	 */
-	protected abstract PaletteRoot getPaletteRoot();
+    if (this.store != null) {
+      this.store.removePropertyChangeListener(this);
+    }
+    this.store = store;
+    if (this.store != null) {
+      this.store.addPropertyChangeListener(this);
+    }
+    if (this.graphicalViewer != null) {
+      ((IControlStructureEditPart) this.graphicalViewer.getContents())
+          .setPreferenceStore(this.store);
+      ((CSEditPartFactory) this.graphicalViewer.getEditPartFactory()).setStore(this.store);
+    }
+  }
 
-	/**
-	 * Returns the palette viewer provider that is used to create palettes for
-	 * the view and the flyout. Creates one if it doesn't already exist.
-	 * 
-	 * @return the PaletteViewerProvider that can be used to create
-	 *         PaletteViewers for this editor
-	 * @see #createPaletteViewerProvider()
-	 */
-	protected final PaletteViewerProvider getPaletteViewerProvider() {
-		if (this.paletteProvider == null) {
-			this.paletteProvider = this.createPaletteViewerProvider();
-		}
+  /**
+   * Creates the GraphicalViewer on the specified <code>Composite.
+   * 
+   * @param parent
+   *          the parent composite
+   */
 
-		return this.paletteProvider;
-	}
+  /**
+   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+   */
+  @Override
+  public Object getAdapter(Class type) {
+    if (type == GraphicalViewer.class) {
+      return this.getGraphicalViewer();
+    }
+    if (type == CommandStack.class) {
+      return this.getCommandStack();
+    }
+    if (type == ActionRegistry.class) {
+      return this.getActionRegistry();
+    }
+    if ((type == EditPart.class) && (this.getGraphicalViewer() != null)) {
+      return this.getGraphicalViewer().getRootEditPart();
+    }
+    if ((type == IFigure.class) && (this.getGraphicalViewer() != null)) {
+      return ((GraphicalEditPart) this.getGraphicalViewer().getRootEditPart()).getFigure();
+    }
+    if (type == PalettePage.class) {
+      if (this.splitter == null) {
+        this.page = this.createPalettePage();
+        return this.page;
+      }
+      return this.createPalettePage();
+    }
+    return super.getAdapter(type);
+  }
 
-	/**
-	 * A convenience method for updating a set of actions defined by the given
-	 * List of action IDs. The actions are found by looking up the ID in the
-	 * {@link #getActionRegistry() action registry}. If the corresponding action
-	 * is an {@link UpdateAction}, it will have its
-	 * <code>update() method called.
-	 * 
-	 * @param actions
-	 *            the list of IDs to update
-	 */
-	protected void updateActions(List<String> actions) {
-		ActionRegistry registry = this.getActionRegistry();
-		Iterator<String> iter = actions.iterator();
-		while (iter.hasNext()) {
-			IAction action = registry.getAction(iter.next());
-			if (action instanceof UpdateAction) {
-				((UpdateAction) action).update();
-			}
-		}
-	}
+  /**
+   * @return the graphical viewer's control
+   */
+  protected Control getGraphicalControl() {
+    return this.getGraphicalViewer().getControl();
+  }
 
-	protected boolean printStructure(String path, int imgOffset, String name,
-			String processName, boolean decorate) {
+  /**
+   * By default, this method returns a FlyoutPreferences object that stores the flyout settings in
+   * the GEF plugin. Sub-classes may override.
+   * 
+   * @return the FlyoutPreferences object used to save the flyout palette's preferences
+   */
 
-		Job exportJob = new CSExportJob(path, imgOffset,
-				(String) this.getGraphicalViewer().getProperty(
-						IControlStructureEditor.STEP_EDITOR), this.getProjectID(),
-				true, decorate);
-		exportJob.schedule();
-		exportJob.addJobChangeListener(new JobChangeAdapter());
-		return true;
-	}
+  protected FlyoutPreferences getPalettePreferences() {
+    return new CSPalettePreferences();
+  }
 
-	/**
-	 * @deprecated use setModelInterface(IDataModel dataInterface) directly
-	 *
-	 * @author Lukas
-	 *
-	 * @param dataInterface
-	 */
-	@Deprecated
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.setModelInterface(dataInterface);
-		this.getModelInterface().addObserver(this);
+  /**
+   * Returns the PaletteRoot for the palette viewer.
+   * 
+   * @return the palette root
+   */
+  protected abstract PaletteRoot getPaletteRoot();
 
-//		this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
-	}
+  /**
+   * Returns the palette viewer provider that is used to create palettes for the view and the
+   * flyout. Creates one if it doesn't already exist.
+   * 
+   * @return the PaletteViewerProvider that can be used to create PaletteViewers for this editor
+   * @see #createPaletteViewerProvider()
+   */
+  protected final PaletteViewerProvider getPaletteViewerProvider() {
+    if (this.paletteProvider == null) {
+      this.paletteProvider = this.createPaletteViewerProvider();
+    }
 
-	@Override
-	public void setSite(IWorkbenchPartSite site) {
-		super.setSite(site);
-	}
+    return this.paletteProvider;
+  }
 
-	@Override
-	public void update(Observable dataModelController, Object updatedValue) {
-		super.update(dataModelController, updatedValue);
-		ObserverValue type = (ObserverValue) updatedValue;
-		
-		switch (type) {
-		case CONTROL_STRUCTURE: {
-				Display.getDefault().asyncExec(new Runnable() {
-					
-					@Override
-					public void run() {
-						CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
-						if (root != null) {
-							root.refresh();
-						}
-					}
-				});
-			List<IControlStructureEditPart> addedParts =((CSEditPartFactory)this.getGraphicalViewer().getEditPartFactory()).fetchNewParts();
-			if(this.selectAddedParts && !addedParts.isEmpty()){
-				this.selectAddedParts = false;
-				this.graphicalViewer.select(addedParts.get(0));
-				for(EditPart e :addedParts){
-					this.graphicalViewer.appendSelection(e);
-				}
-			}
-			break;
-		}
-		default:
-			break;
-		}
+  /**
+   * A convenience method for updating a set of actions defined by the given List of action IDs. The
+   * actions are found by looking up the ID in the {@link #getActionRegistry() action registry}. If
+   * the corresponding action is an {@link UpdateAction}, it will have its <code>update() method
+   * called.
+   * 
+   * @param actions
+   *          the list of IDs to update
+   */
+  protected void updateActions(List<String> actions) {
+    ActionRegistry registry = this.getActionRegistry();
+    Iterator<String> iter = actions.iterator();
+    while (iter.hasNext()) {
+      IAction action = registry.getAction(iter.next());
+      if (action instanceof UpdateAction) {
+        ((UpdateAction) action).update();
+      }
+    }
+  }
 
-	}
+  protected boolean printStructure(String path, int imgOffset, String name, String processName,
+      boolean decorate) {
 
-	@Override
-	public void mouseDoubleClick(MouseEvent e) {
-		List<EditPart> selection = this.getGraphicalViewer()
-				.getSelectedEditParts();
-		if ((selection.size() == 1)
-				&& !(selection.get(0) instanceof CSConnectionEditPart)) {
-			Request req = new Request();
-			req.setType(RequestConstants.REQ_DIRECT_EDIT);
-			((CSAbstractEditPart) selection.get(0)).performRequest(req);
-		}
+    Job exportJob = new CSExportJob(path, imgOffset,
+        (String) this.getGraphicalViewer().getProperty(IControlStructureEditor.STEP_EDITOR),
+        this.getProjectID(), true, decorate);
+    exportJob.schedule();
+    exportJob.addJobChangeListener(new JobChangeAdapter());
+    return true;
+  }
 
-	}
+  /**
+   * @deprecated use setModelInterface(IDataModel dataInterface) directly
+   *
+   * @author Lukas
+   *
+   * @param dataInterface
+   */
+  @Deprecated
+  public void setDataModelInterface(IDataModel dataInterface) {
+    this.setModelInterface(dataInterface);
+    this.getModelInterface().addObserver(this);
 
-	@Override
-	public void mouseDown(MouseEvent e) {
-		// is never used
-	}
+    // this.getEditDomain().setPaletteRoot(this.getPaletteRoot());
+  }
 
-	@Override
-	public void mouseUp(MouseEvent e) {
+  @Override
+  public void setSite(IWorkbenchPartSite site) {
+    super.setSite(site);
+  }
 
-		if (e.time != this.timeOfLastChange) {
-			// makes sure that the method is called only one time with one
-			// trigger
+  @Override
+  public void update(Observable dataModelController, Object updatedValue) {
+    super.update(dataModelController, updatedValue);
+    ObserverValue type = (ObserverValue) updatedValue;
 
-			if (e.getSource().equals(this.undo)
-					&& this.getCommandStack().canUndo()) {
-				this.getCommandStack().undo();
-			} else if (e.getSource().equals(this.redo)
-					&& this.getCommandStack().canRedo()) {
-				this.getCommandStack().redo();
-			}
-			this.timeOfLastChange = e.time;
-		}
-	}
+    if (getUpdateValues().contains(updatedValue)) {
+      Display.getDefault().asyncExec(new Runnable() {
 
-	@Override
-	public void widgetSelected(SelectionEvent e) {
-		if (e.getSource().equals(this.scale)) {
-			int tmpZoom = this.scale.getSelection();
-			if (Math.abs(CSAbstractEditor.FULL_SCALE - tmpZoom) < CSAbstractEditor.SCALE_STEP) {
-				tmpZoom = CSAbstractEditor.FULL_SCALE;
-				this.scale.setSelection(tmpZoom);
-			}
-			String zoom = Integer.toString(tmpZoom);
-			this.zoomManager.setZoomAsText(zoom);
-			this.label.setText(zoom + "%"); //$NON-NLS-1$
+        @Override
+        public void run() {
+          CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
+          if (root != null) {
+            root.refresh();
+          }
+        }
+      });
+      List<IControlStructureEditPart> addedParts = ((CSEditPartFactory) this.getGraphicalViewer()
+          .getEditPartFactory()).fetchNewParts();
+      if (this.selectAddedParts && !addedParts.isEmpty()) {
+        this.selectAddedParts = false;
+        this.graphicalViewer.select(addedParts.get(0));
+        for (EditPart e : addedParts) {
+          this.graphicalViewer.appendSelection(e);
+        }
+      }
+    }
 
-		}
+  }
 
-	}
+  @Override
+  public void mouseDoubleClick(MouseEvent e) {
+    List<EditPart> selection = this.getGraphicalViewer().getSelectedEditParts();
+    if ((selection.size() == 1) && !(selection.get(0) instanceof CSConnectionEditPart)) {
+      Request req = new Request();
+      req.setType(RequestConstants.REQ_DIRECT_EDIT);
+      ((CSAbstractEditPart) selection.get(0)).performRequest(req);
+    }
 
-	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		// is never used
-	}
+  }
 
-	@Override
-	public void zoomChanged(double zoom) {
-		this.update(null, ObserverValue.CONTROL_STRUCTURE);
-		int level = (int) (zoom * CSAbstractEditor.FULL_SCALE);
-		this.scale.setSelection(level);
-		this.label.setText(level + "%"); //$NON-NLS-1$
-		this.setZoomLevel(zoom);
-		this.zoomManager.setZoom(zoom);
-		// this.stepEditor.setViewLocation(this.manager.getViewport().getViewLocation());
+  @Override
+  public void mouseDown(MouseEvent e) {
+    // is never used
+  }
 
-	}
+  @Override
+  public void mouseUp(MouseEvent e) {
 
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if(event.getPropertyName().equals(IZoomContributor.IS_DECORATED)){
-			this.decoSwitch.notifyListeners(SWT.Selection, null);
-			this.decoSwitch.setSelection((boolean) event.getNewValue());
-		}
-		if ((event.getPropertyName() == IControlStructureEditor.STEP_EDITOR)
-				&& (this.getGraphicalViewer() != null)) {
-			this.getGraphicalViewer().getContents().refresh();
-		}
+    if (e.time != this.timeOfLastChange) {
+      // makes sure that the method is called only one time with one
+      // trigger
 
-	}
-	
-	@Override
-	public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
-		if(event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER) && this instanceof CSEditorWithPM){
-			getGraphicalControl().redraw();
-		}
-	}
-	@Override
-	public Object getProperty(String propertyString){
-		return getGraphicalViewer().getProperty(propertyString);
-	}
+      if (e.getSource().equals(this.undo) && this.getCommandStack().canUndo()) {
+        this.getCommandStack().undo();
+      } else if (e.getSource().equals(this.redo) && this.getCommandStack().canRedo()) {
+        this.getCommandStack().redo();
+      }
+      this.timeOfLastChange = e.time;
+    }
+  }
 
-	@Override
-	public void activeToolChanged(PaletteViewer palette, ToolEntry tool) {
-		if (this.getGraphicalViewer() == null) {
-			return;
-		}
-		if (tool instanceof ConnectionCreationToolEntry) {
-			((RootEditPart) this.getGraphicalViewer().getContents())
-					.enableFigureOffset();
-			((RootEditPart) this.getGraphicalViewer().getContents())
-					.addAnchorsGrid();
-		}else{
-			((RootEditPart) this.getGraphicalViewer().getContents())
-				.getFigure().removeHighlighter();
-			((RootEditPart) this.getGraphicalViewer().getContents())
-				.disableFigureOffset();
-			((RootEditPart) this.getGraphicalViewer().getContents())
-				.setAnchorsGrid(false);
-		}
-		
-		if(tool instanceof CombinedTemplateCreationEntry){
-			
-			//if the current project should be stored as a haz file, a warning is promted when the user trys to insert not storeable
-			//components
-			boolean conflict= ProjectManager.getContainerInstance().getProjectExtension(getProjectID()).equals("haz");//$NON-NLS-1$
-			boolean hideWarning =PlatformUI.getPreferenceStore().getBoolean(IControlStructureConstants.CS_HideIllegalComponentWarning);
-			//the message is only promted if the choosen tool creates one of the new and thus not in haz storable components
-			ComponentType obj =(ComponentType) ((CombinedTemplateCreationEntry) tool).getTemplate();
-			boolean criticalComp =obj == ComponentType.CONTAINER || obj == ComponentType.DASHEDBOX; 
-			if(criticalComp && !hideWarning && conflict){
-				MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(null,Messages.LossOfData,
-													String.format(Messages.InformationCannotBeStored,obj.toString()),
-													Messages.DontPromtThisMsgAgain,false,null,null);
-				hideWarning = dialog.getToggleState();
-				if(dialog.getReturnCode() == Window.OK){
-					ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx"); //$NON-NLS-1$
-				}
-				PlatformUI.getPreferenceStore().setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);
-			}
-		}
-	
-	}
+  @Override
+  public void widgetSelected(SelectionEvent e) {
+    if (e.getSource().equals(this.scale)) {
+      int tmpZoom = this.scale.getSelection();
+      if (Math.abs(CSAbstractEditor.FULL_SCALE - tmpZoom) < CSAbstractEditor.SCALE_STEP) {
+        tmpZoom = CSAbstractEditor.FULL_SCALE;
+        this.scale.setSelection(tmpZoom);
+      }
+      String zoom = Integer.toString(tmpZoom);
+      this.zoomManager.setZoomAsText(zoom);
+      this.label.setText(zoom + "%"); //$NON-NLS-1$
 
-	@Override
-	public void initialSync(boolean step1, boolean step3) {
-		if (step1 && !step3) {
-			this.getModelInterface().synchronizeLayouts();
-		}
-	}
+    }
 
-	/**
-	 * @param values
-	 *            <ol>
-	 *            <li>[0] must be the filePath
-	 *            <li>[1] if there is a second value it is assumed as the offset
-	 *            if not a default value is used
-	 *            <li>[3] if there is a third value it is assumed as the boolean
-	 *            deciding the decoration if there is no such value decoration
-	 *            is turned off
-	 *            </ol>
-	 */
-	protected boolean initExport(String name, String processName,
-			Object[] values) {
-		int offset;
-		boolean decorate;
-		// these if-blocks check whether there are appropriate values, and if
-		// it's the right one if not it sets a default value
-		if ((values[0] == null) || !(values[0] instanceof String)) {
-			return false;
-		}
+  }
 
-		if ((values.length < 2) || (values[1] == null)
-				|| !(values[1] instanceof Integer)) {
-			offset = CSAbstractEditor.IMG_EXPAND;
-		} else {
-			offset = (int) values[1];
-		}
+  @Override
+  public void widgetDefaultSelected(SelectionEvent e) {
+    // is never used
+  }
 
-		if ((values.length < 3) || (values[2] == null)
-				|| !(values[2] instanceof Boolean)) {
-			decorate = false;
-		} else {
-			decorate = (boolean) values[2];
-		}
-		return this.printStructure((String) values[0], offset, name,
-				processName, decorate);
-	}
+  @Override
+  public void zoomChanged(double zoom) {
+    this.update(null, ObserverValue.CONTROL_STRUCTURE);
+    int level = (int) (zoom * CSAbstractEditor.FULL_SCALE);
+    this.scale.setSelection(level);
+    this.label.setText(level + "%"); //$NON-NLS-1$
+    this.setZoomLevel(zoom);
+    this.zoomManager.setZoom(zoom);
+    // this.stepEditor.setViewLocation(this.manager.getViewport().getViewLocation());
 
-	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
-		this.updateActions(this.selectionActions);
-		if(this.selectionListeners != null){
-			for(ISelectionChangedListener listener:selectionListeners){
-				listener.selectionChanged(event);
-			}
-		}
-	}
+  }
 
-	private void setDecoration(boolean deco){
-		if(getGraphicalViewer() != null){
- 			this.graphicalViewer.setProperty(IS_DECORATED, deco);
-			RootEditPart root = (RootEditPart) this.getGraphicalViewer()
-					.getContents();
-			root.getFigure().setDeco(deco);
-			root.refresh();
-		}
-		this.decoSwitch.setSelection(deco);
-		if(deco){
-			this.decoSwitch.setText(Messages.ControlStructure_DecoOn);
-		}else{
-			this.decoSwitch.setText(Messages.ControlStructure_DecoOff);
-		}
-		
-	}
-	
-	@Override
-	public void updateZoom(double zoom) {
-		this.zoomManager.setZoom(zoom);
-	}
+  @Override
+  public void propertyChange(PropertyChangeEvent event) {
+    if (event.getPropertyName().equals(IZoomContributor.IS_DECORATED)) {
+      this.decoSwitch.notifyListeners(SWT.Selection, null);
+      this.decoSwitch.setSelection((boolean) event.getNewValue());
+    }
+    if ((event.getPropertyName() == IControlStructureEditor.STEP_EDITOR)
+        && (this.getGraphicalViewer() != null)) {
+      this.getGraphicalViewer().getContents().refresh();
+    }
 
-	@Override
-	public ZoomManager getZoomManager() {
-		return this.zoomManager;
-	}
-	
-	@Override
-	public void addPropertyListener(PropertyChangeListener listener) {
-		this.getGraphicalViewer().addPropertyChangeListener(listener);
-		
-	}
-	
-	@Override
-	public void removePropertyListener(PropertyChangeListener listener) {
-		this.getGraphicalViewer().removePropertyChangeListener(listener);
-		
-	}
-	@Override
-	public void fireToolPropertyChange(String property, Object value){
-		if(property.equals(IS_DECORATED) && value instanceof Boolean){
-			this.setDecoration((boolean) value);
-			
-		}
-		
-	}
+  }
 
-	/**
-	 * @return the modelInterface
-	 */
-	public IControlStructureEditorDataModel getModelInterface() {
-		return this.modelInterface;
-	}
+  @Override
+  public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
+    if (event.getProperty().equals(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)
+        && this instanceof CSEditorWithPM) {
+      getGraphicalControl().redraw();
+    }
+  }
 
-	/**
-	 * @param modelInterface the modelInterface to set
-	 */
-	public void setModelInterface(IDataModel modelInterface) {
-		Assert.isLegal(modelInterface instanceof IControlStructureEditorDataModel,
-						"The data model must implement the interface IControlStructureEditorDataModel!"); //$NON-NLS-1$
-		this.modelInterface = (IControlStructureEditorDataModel) modelInterface;
-		this.modelInterface.addObserver(this);
-	}
-	@Override
-	public void selectAll() {
-		this.getActionRegistry().getAction(ActionFactory.SELECT_ALL.getId()).run();
-	}
+  @Override
+  public Object getProperty(String propertyString) {
+    return getGraphicalViewer().getProperty(propertyString);
+  }
 
-	
-	public boolean copy(){
-	  UUID id = ((IRectangleComponent)getGraphicalViewer().getContents().getModel()).getId();
-		this.copySelectionCommand = new CopyComponentCommand(id,getModelInterface(),getId());
-		IControlStructureEditPart parentPart = null;
-		for(Object obj:getGraphicalViewer().getSelectedEditParts()){
-			EditPart newParentPart = ((GraphicalEditPart)obj).getParent();
-			if(parentPart != null && parentPart.getClass() != newParentPart.getClass()){
-				boolean equalParents =parentPart.getClass() != newParentPart.getClass();
-				boolean parentIsChild = newParentPart.getChildren().contains(parentPart);
-				boolean parentSelected= getGraphicalViewer().getSelectedEditParts().contains(newParentPart);
-				if(!equalParents && !parentSelected && !parentIsChild){
-					Display.getDefault().beep();
-					return false;
-				}
-			}
-			if(newParentPart instanceof IControlStructureEditPart){
-				parentPart = (IControlStructureEditPart) ((IControlStructureEditPart)obj).getParent();
-				this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), parentPart.getId());
-			}
-			else if((GraphicalEditPart)obj instanceof CSConnectionEditPart){
-				this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), null);
-			}
-		}
-		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
-		if(parentPart != null){
-			parentPart.getFigure().translateFromParent(p);
-			this.copySelectionCommand.setPosition(p);
-		}else{
-			return false;
-		}
-		return !getGraphicalViewer().getSelectedEditParts().isEmpty();
-	}
-	
-	public boolean paste(){
-		if(this.copySelectionCommand == null){
-			return false;
-		}
-		CSAbstractEditPart part = (CSAbstractEditPart)this.graphicalViewer.getContents();
-		org.eclipse.draw2d.geometry.Point p =new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,this.mousePosition.y);
-		part.getFigure().translateToAbsolute(p);
-		IControlStructureFigure figure =  (IControlStructureFigure) part.getFigure().findFigureAt(p);
-		figure.translateFromParent(p);
-		this.copySelectionCommand.setPastePosition(figure.getId(),p.x,p.y);
-		if(!this.copySelectionCommand.canExecute()){
-			Display.getDefault().beep();
-			return false;
-		}
-		getCommandStack().execute(this.copySelectionCommand);
-		this.selectAddedParts  = true;
-		
-		return true;
-	}
-	
-	@Override
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		if(selectionListeners == null){
-			this.selectionListeners=new ArrayList<>();
-		}
-		this.selectionListeners.add(listener);
-	}
-	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
-		if(selectionListeners != null){
-			this.selectionListeners.remove(listener);
-		}
-	}
-	@Override
-	public void setSelection(ISelection selection) {
-		//the selection can not be changed here
-	}
+  @Override
+  public void activeToolChanged(PaletteViewer palette, ToolEntry tool) {
+    if (this.getGraphicalViewer() == null) {
+      return;
+    }
+    if (tool instanceof ConnectionCreationToolEntry) {
+      ((RootEditPart) this.getGraphicalViewer().getContents()).enableFigureOffset();
+      ((RootEditPart) this.getGraphicalViewer().getContents()).addAnchorsGrid();
+    } else {
+      ((RootEditPart) this.getGraphicalViewer().getContents()).getFigure().removeHighlighter();
+      ((RootEditPart) this.getGraphicalViewer().getContents()).disableFigureOffset();
+      ((RootEditPart) this.getGraphicalViewer().getContents()).setAnchorsGrid(false);
+    }
 
-	@Override
-	public ISelection getSelection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public IRectangleComponent getRoot() {
+    if (tool instanceof CombinedTemplateCreationEntry) {
+
+      // if the current project should be stored as a haz file, a warning is promted when the user
+      // trys to insert not storeable
+      // components
+      boolean conflict = ProjectManager.getContainerInstance().getProjectExtension(getProjectID())
+          .equals("haz");//$NON-NLS-1$
+      boolean hideWarning = PlatformUI.getPreferenceStore()
+          .getBoolean(IControlStructureConstants.CS_HideIllegalComponentWarning);
+      // the message is only promted if the choosen tool creates one of the new and thus not in haz
+      // storable components
+      ComponentType obj = (ComponentType) ((CombinedTemplateCreationEntry) tool).getTemplate();
+      boolean criticalComp = obj == ComponentType.CONTAINER || obj == ComponentType.DASHEDBOX;
+      if (criticalComp && !hideWarning && conflict) {
+        MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(null,
+            Messages.LossOfData, String.format(Messages.InformationCannotBeStored, obj.toString()),
+            Messages.DontPromtThisMsgAgain, false, null, null);
+        hideWarning = dialog.getToggleState();
+        if (dialog.getReturnCode() == Window.OK) {
+          ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx"); //$NON-NLS-1$
+        }
+        PlatformUI.getPreferenceStore()
+            .setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);
+      }
+    }
+
+  }
+
+  @Override
+  public void initialSync(boolean step1, boolean step3) {
+    if (step1 && !step3) {
+      this.getModelInterface().synchronizeLayouts();
+    }
+  }
+
+  /**
+   * @param values
+   *          <ol>
+   *          <li>[0] must be the filePath
+   *          <li>[1] if there is a second value it is assumed as the offset if not a default value
+   *          is used
+   *          <li>[3] if there is a third value it is assumed as the boolean deciding the decoration
+   *          if there is no such value decoration is turned off
+   *          </ol>
+   */
+  protected boolean initExport(String name, String processName, Object[] values) {
+    int offset;
+    boolean decorate;
+    // these if-blocks check whether there are appropriate values, and if
+    // it's the right one if not it sets a default value
+    if ((values[0] == null) || !(values[0] instanceof String)) {
+      return false;
+    }
+
+    if ((values.length < 2) || (values[1] == null) || !(values[1] instanceof Integer)) {
+      offset = CSAbstractEditor.IMG_EXPAND;
+    } else {
+      offset = (int) values[1];
+    }
+
+    if ((values.length < 3) || (values[2] == null) || !(values[2] instanceof Boolean)) {
+      decorate = false;
+    } else {
+      decorate = (boolean) values[2];
+    }
+    return this.printStructure((String) values[0], offset, name, processName, decorate);
+  }
+
+  @Override
+  public void selectionChanged(SelectionChangedEvent event) {
+    this.updateActions(this.selectionActions);
+    if (this.selectionListeners != null) {
+      for (ISelectionChangedListener listener : selectionListeners) {
+        listener.selectionChanged(event);
+      }
+    }
+  }
+
+  private void setDecoration(boolean deco) {
+    if (getGraphicalViewer() != null) {
+      this.graphicalViewer.setProperty(IS_DECORATED, deco);
+      RootEditPart root = (RootEditPart) this.getGraphicalViewer().getContents();
+      root.getFigure().setDeco(deco);
+      root.refresh();
+    }
+    this.decoSwitch.setSelection(deco);
+    if (deco) {
+      this.decoSwitch.setText(Messages.ControlStructure_DecoOn);
+    } else {
+      this.decoSwitch.setText(Messages.ControlStructure_DecoOff);
+    }
+
+  }
+
+  @Override
+  public void updateZoom(double zoom) {
+    this.zoomManager.setZoom(zoom);
+  }
+
+  @Override
+  public ZoomManager getZoomManager() {
+    return this.zoomManager;
+  }
+
+  @Override
+  public void addPropertyListener(PropertyChangeListener listener) {
+    this.getGraphicalViewer().addPropertyChangeListener(listener);
+
+  }
+
+  @Override
+  public void removePropertyListener(PropertyChangeListener listener) {
+    this.getGraphicalViewer().removePropertyChangeListener(listener);
+
+  }
+
+  @Override
+  public void fireToolPropertyChange(String property, Object value) {
+    if (property.equals(IS_DECORATED) && value instanceof Boolean) {
+      this.setDecoration((boolean) value);
+
+    }
+
+  }
+
+  /**
+   * @return the modelInterface
+   */
+  public IControlStructureEditorDataModel getModelInterface() {
+    return this.modelInterface;
+  }
+
+  /**
+   * @param modelInterface
+   *          the modelInterface to set
+   */
+  public void setModelInterface(IDataModel modelInterface) {
+    Assert.isLegal(modelInterface instanceof IControlStructureEditorDataModel,
+        "The data model must implement the interface IControlStructureEditorDataModel!"); //$NON-NLS-1$
+    this.modelInterface = (IControlStructureEditorDataModel) modelInterface;
+    this.modelInterface.addObserver(this);
+  }
+
+  @Override
+  public void selectAll() {
+    this.getActionRegistry().getAction(ActionFactory.SELECT_ALL.getId()).run();
+  }
+
+  public boolean copy() {
+    UUID id = ((IRectangleComponent) getGraphicalViewer().getContents().getModel()).getId();
+    this.copySelectionCommand = new CopyComponentCommand(id, getModelInterface(), getId());
+    IControlStructureEditPart parentPart = null;
+    for (Object obj : getGraphicalViewer().getSelectedEditParts()) {
+      EditPart newParentPart = ((GraphicalEditPart) obj).getParent();
+      if (parentPart != null && parentPart.getClass() != newParentPart.getClass()) {
+        boolean equalParents = parentPart.getClass() != newParentPart.getClass();
+        boolean parentIsChild = newParentPart.getChildren().contains(parentPart);
+        boolean parentSelected = getGraphicalViewer().getSelectedEditParts()
+            .contains(newParentPart);
+        if (!equalParents && !parentSelected && !parentIsChild) {
+          Display.getDefault().beep();
+          return false;
+        }
+      }
+      if (newParentPart instanceof IControlStructureEditPart) {
+        parentPart = (IControlStructureEditPart) ((IControlStructureEditPart) obj).getParent();
+        this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(),
+            parentPart.getId());
+      } else if ((GraphicalEditPart) obj instanceof CSConnectionEditPart) {
+        this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), null);
+      }
+    }
+    org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(
+        this.mousePosition.x, this.mousePosition.y);
+    if (parentPart != null) {
+      parentPart.getFigure().translateFromParent(p);
+      this.copySelectionCommand.setPosition(p);
+    } else {
+      return false;
+    }
+    return !getGraphicalViewer().getSelectedEditParts().isEmpty();
+  }
+
+  public boolean paste() {
+    if (this.copySelectionCommand == null) {
+      return false;
+    }
+    CSAbstractEditPart part = (CSAbstractEditPart) this.graphicalViewer.getContents();
+    org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(
+        this.mousePosition.x, this.mousePosition.y);
+    part.getFigure().translateToAbsolute(p);
+    IControlStructureFigure figure = (IControlStructureFigure) part.getFigure().findFigureAt(p);
+    figure.translateFromParent(p);
+    this.copySelectionCommand.setPastePosition(figure.getId(), p.x, p.y);
+    if (!this.copySelectionCommand.canExecute()) {
+      Display.getDefault().beep();
+      return false;
+    }
+    getCommandStack().execute(this.copySelectionCommand);
+    this.selectAddedParts = true;
+
+    return true;
+  }
+
+  @Override
+  public void addSelectionChangedListener(ISelectionChangedListener listener) {
+    if (selectionListeners == null) {
+      this.selectionListeners = new ArrayList<>();
+    }
+    this.selectionListeners.add(listener);
+  }
+
+  @Override
+  public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+    if (selectionListeners != null) {
+      this.selectionListeners.remove(listener);
+    }
+  }
+
+  @Override
+  public void setSelection(ISelection selection) {
+    // the selection can not be changed here
+  }
+
+  @Override
+  public ISelection getSelection() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public IRectangleComponent getRoot() {
     return root;
   }
 }
-
-

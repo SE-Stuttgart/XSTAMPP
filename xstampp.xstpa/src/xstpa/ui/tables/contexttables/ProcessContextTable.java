@@ -151,7 +151,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	public ProcessContextTable(Composite parent) {
 		super(parent);
 		setLayout(new FormLayout());
-		contextCompositeLeft = new Composite(this, SWT.BORDER);
+		contextCompositeLeft = new Composite(this, SWT.NONE);
 	    contextCompositeLeft.setLayout( new GridLayout(1, false));
 	    
 	    // set the formdata for context table part (middle)
@@ -162,7 +162,7 @@ public class ProcessContextTable extends AbstractTableComposite {
 	    contextCompositeLeft.setLayoutData( fData );
 	    
 	    
-	    contextCompositeRight = new Composite(this, SWT.BORDER);
+	    contextCompositeRight = new Composite(this, SWT.NONE);
 
 	    contextCompositeRight.setLayout(new FillLayout());
 	    

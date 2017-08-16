@@ -8,6 +8,7 @@
             allowMultiple="false"
             class="xstpapriv.ui.View"
             id="xstpapriv.view.contextTables"
+            inject="true"
             name="%view.name.contextTables"
             restorable="true">
       </view>

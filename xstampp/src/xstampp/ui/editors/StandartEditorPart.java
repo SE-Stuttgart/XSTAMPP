@@ -9,6 +9,7 @@
 
 package xstampp.ui.editors;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -40,7 +41,7 @@ import xstampp.util.STPAPluginUtils;
 public abstract class StandartEditorPart extends EditorPart implements IEditorBase, IPartListener {
 
   private UUID projectID;
-
+  private EnumSet<ObserverValue> updateValues;
   public static final String SELECTED_ENTRY = "xstampp.ui.editor.selection.id";
 
   protected static final RGB PARENT_BACKGROUND_COLOR = new RGB(215, 240, 255);
@@ -119,6 +120,7 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   }
 
+  
   @Override
   public void partActivated(IWorkbenchPart arg0) {
     if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
@@ -165,4 +167,15 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
     // so nothing by default
   }
 
+  public EnumSet<ObserverValue> getUpdateValues() {
+    return updateValues;
+  }
+
+  public void setUpdateValues(EnumSet<ObserverValue> updateValues) {
+    this.updateValues = updateValues;
+  }
+
+  public void addUpdateValue (ObserverValue value) {
+    this.updateValues.add(value);
+  }
 }

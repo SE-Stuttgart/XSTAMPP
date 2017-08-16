@@ -50,6 +50,7 @@ public class XSTPADataController extends Observable implements Observer{
 		this.dependenciesIFProvided  = new HashMap<>();
 		this.dependenciesNotProvided = new HashMap<>();
 		this.model = (IExtendedDataModel) model;
+    model.addObserver(this);
 		clear();
 		
 		

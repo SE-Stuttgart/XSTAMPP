@@ -17,6 +17,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.model.IDataModel;
 import xstampp.stpapriv.Activator;
 import xstampp.stpapriv.model.relation.UnsafeUnsecureController;
 import xstampp.ui.common.ProjectManager;
@@ -76,6 +78,16 @@ public class PrivacyRelationsView extends ViewPart {
 
   public static String[] contextProps;
 
+  public PrivacyRelationsView() {
+  }
+
+  public PrivacyRelationsView(IDataModel model) {
+    if (model instanceof IExtendedDataModel) {
+      dataController = new UnsafeUnsecureController((IExtendedDataModel) model);
+    }
+  }
+  
+
   /**
    * This is a callback that will allow us to create the viewer and initialize it.
    */
@@ -115,13 +127,17 @@ public class PrivacyRelationsView extends ViewPart {
 
     IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
         .getActiveEditor();
-    if (part != null && part instanceof StandartEditorPart) {
+    if (dataController == null && part != null && part instanceof StandartEditorPart) {
       UnsafeUnsecureController controller = Activator
           .getDataFor(((StandartEditorPart) part).getProjectID());
       if (controller != null) {
         setController(controller);
       } else {
         setController(new UnsafeUnsecureController(null));
+      }
+    } else if (dataController != null) {
+      for (AbstractTableComposite table : this.tableList) {
+        table.setController(dataController);
       }
     }
     openTable(mainTable, null);

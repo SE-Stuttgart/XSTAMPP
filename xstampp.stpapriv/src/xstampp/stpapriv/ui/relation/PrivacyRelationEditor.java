@@ -1,4 +1,4 @@
-package xstampp.stpasec.ui.relation;
+package xstampp.stpapriv.ui.relation;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -7,13 +7,13 @@ import org.eclipse.swt.widgets.Composite;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.model.ObserverValue;
 
-public class UnsafeUnsecureEditor extends CSEditor {
+public class PrivacyRelationEditor extends CSEditor {
 
-	public static final String ID = "stpasec.editor.unsafe";
+  public static final String ID = "stpapriv.editor.unsafe";
 
-	public UnsafeUnsecureEditor() {
-		super();
-	}
+  public PrivacyRelationEditor() {
+    super();
+  }
 
   @Override
   public void createPartControl(Composite parent) {
@@ -22,13 +22,13 @@ public class UnsafeUnsecureEditor extends CSEditor {
     addUpdateValue(ObserverValue.UCA_HAZ_LINK);
     addUpdateValue(ObserverValue.UNSAFE_CONTROL_ACTION);
     addUpdateValue(ObserverValue.CONTROL_ACTION);
-    new SecView(getModelInterface()).createPartControl(form);
+    new PrivacyRelationsView(getModelInterface()).createPartControl(form);
     form.setWeights(new int[] { 3, 1 });
   }
 
-	@Override
-	public String getTitle() {
-		return "Unsafe Unsecure Editor";
-	}
+  @Override
+  public String getTitle() {
+    return "Privacy Relation Editor";
+  }
 
 }
