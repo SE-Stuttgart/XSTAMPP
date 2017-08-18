@@ -47,8 +47,10 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
 import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
+import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
+import xstampp.astpa.controlstructure.figure.FigureConstraints;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -120,7 +122,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
     }
     return rootId;
   }
-
+  
   @Override
   protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
     ComponentChangeLayoutCommand command = null;

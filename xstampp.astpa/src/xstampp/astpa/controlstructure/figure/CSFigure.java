@@ -13,6 +13,7 @@
 
 package xstampp.astpa.controlstructure.figure;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -51,6 +52,8 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 	private final UUID componentID;
 	private int leftMargin = 0;
 	protected static final int CENTER_COMPENSATION = 2;
+	private EnumSet<FigureConstraints> style = EnumSet.noneOf(FigureConstraints.class);
+
 	/**
 	 * The border which is normally shown as decoration
 	 * 
@@ -413,4 +416,12 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 			((IControlStructureFigure) getParent()).setDirty();
 		}
 	}
+
+  public EnumSet<FigureConstraints> getStyle() {
+    return style;
+  }
+
+  public void setStyle(EnumSet<FigureConstraints> style) {
+    this.style = style;
+  }
 }
