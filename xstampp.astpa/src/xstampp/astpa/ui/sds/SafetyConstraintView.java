@@ -58,7 +58,7 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
   @Override
   protected void addLinkSupports() {
     addLinkSupport(new DesignReq0LinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.DESIGN_REQUIREMENT));
+        ObserverValue.DR0_SC_LINK));
     addLinkSupport(new AccidentLinkSupport((DataModelController) getDataInterface(),
         ObserverValue.ACC_S0_LINK));
   }

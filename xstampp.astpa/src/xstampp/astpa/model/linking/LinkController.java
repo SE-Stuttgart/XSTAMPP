@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -56,8 +57,8 @@ public class LinkController extends Observable {
       for (ObserverValue value : this.linkMap.keySet()) {
         links.addAll(getLinksFor(value, part));
       }
-    } else if (this.linkMap.containsKey(linkType)) {
-      for (Link link : this.linkMap.get(linkType)) {
+    } else {
+      for (Link link : getLinkObjectsFor(linkType)) {
         if (link.links(part)) {
           links.add(link.getLinkFor(part));
         }
@@ -69,17 +70,34 @@ public class LinkController extends Observable {
   public Map<UUID, UUID> getLinksFor(ObserverValue linkType) {
     Map<UUID, UUID> links = new HashMap<>();
     if (this.linkMap.containsKey(linkType)) {
-      for (Link link : this.linkMap.get(linkType)) {
+      for (Link link : getLinkObjectsFor(linkType)) {
         links.put(link.getLinkA(), link.getLinkB());
       }
     }
     return links;
   }
 
+  private List<Link> getLinkObjectsFor(ObserverValue linkType) {
+    if (this.linkMap.containsKey(linkType)) {
+      this.linkMap.get(linkType).removeIf(new Predicate<Link>() {
+
+        @Override
+        public boolean test(Link t) {
+          return t.getLinkA() == null || t.getLinkB() == null;
+        }
+        
+      });
+      return this.linkMap.get(linkType);
+    }
+    return  new ArrayList<>();
+  }
+
   /**
    * 
-   * @param linkType the {@link ObserverValue} of the link
-   * @param part the id of the element 
+   * @param linkType
+   *          the {@link ObserverValue} of the link
+   * @param part
+   *          the id of the element
    * @return whether the {@link LinkController} contains a link for the given id or not
    */
   public boolean isLinked(ObserverValue linkType, UUID part) {

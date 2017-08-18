@@ -51,6 +51,12 @@ public final class Link {
       return this.links((UUID) obj);
     }
     if (obj instanceof Link) {
+      if(((Link) obj).getLinkA() == null && getLinkA() == null) {
+        return true;
+      }
+      if(((Link) obj).getLinkB() == null && getLinkB() == null) {
+        return true;
+      }
       return ((Link) obj).links(this.linkA) && ((Link) obj).links(this.linkB);
     }
     return super.equals(obj);
