@@ -143,14 +143,14 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <feature id="org.eclipse.ecf.filetransfer.feature"/>
       <feature id="org.eclipse.ecf.core.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="xstampp.feature" version="2.4.1"/>
+      <feature id="xstampp.feature"/>
       <feature id="org.eclipse.gef"/>
-      <feature id="xstampp.acast.feature" version="1.0.6"/>
-      <feature id="xstampp.stpapriv.feature" version="1.0.0"/>
-      <feature id="xstampp.stpasec.feature" version="1.0.0"/>
-      <feature id="xstampp.xstpa.feature" version="1.1.2"/>
-      <feature id="xstampp.xstpapriv.feature" version="1.0.0"/>
-      <feature id="xstampp.xstpasec.feature" version="1.0.0"/>
+      <feature id="xstampp.acast.feature"/>
+      <feature id="xstampp.stpapriv.feature"/>
+      <feature id="xstampp.stpasec.feature"/>
+      <feature id="xstampp.xstpa.feature"/>
+      <feature id="xstampp.xstpapriv.feature"/>
+      <feature id="xstampp.xstpasec.feature"/>
    </features>
 
    <configurations>
