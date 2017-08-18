@@ -310,10 +310,9 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 	 */
 	@Override
 	public void removeHighlighter() {
-		if (this.getParent() == null) {
-			return;
+		if (this.getParent() != null && getParent() instanceof RootFigure) {
+      ((RootFigure) this.getParent()).removeHighlighter();
 		}
-		((RootFigure) this.getParent()).removeHighlighter();
 	}
 
 	@Override

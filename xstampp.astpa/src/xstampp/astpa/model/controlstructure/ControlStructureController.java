@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ import xstampp.model.ObserverValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlStructureController extends Observable{
+public class ControlStructureController extends Observable {
 
   @XmlElement(name = "component")
   private Component root;
@@ -288,6 +288,7 @@ public class ControlStructureController extends Observable{
         for (UUID connectionId : this.removedLinks.get(componentId)) {
           this.recoverConnection(connectionId);
         }
+        this.removedLinks.remove(componentId);
       }
       if (success) {
         changed = true;
@@ -390,7 +391,7 @@ public class ControlStructureController extends Observable{
     Component component = getInternalComponent(componentId);
 
     Component parentComp = getInternalComponent(newParentId);
-    UndoChangeParentCallback callback = new UndoChangeParentCallback(this,componentId, oldParentId,
+    UndoChangeParentCallback callback = new UndoChangeParentCallback(this, componentId, oldParentId,
         newParentId);
 
     if (parentComp != null && removeComponent(componentId)) {
@@ -403,9 +404,18 @@ public class ControlStructureController extends Observable{
       callback.setOldLayout(oldLayoutStep1, oldLayoutStep2);
       component.setLayout(newLayoutStep1, true);
       component.setLayout(newLayoutStep2, false);
-      setChanged();
-      notifyObservers(ObserverValue.CONTROL_STRUCTURE);
-      return parentComp.addChild(component, -1);
+      if (parentComp.addChild(component, -1)) {
+        if (this.removedLinks.containsKey(componentId)) {
+          for (UUID connectionId : this.removedLinks.get(componentId)) {
+            this.recoverConnection(connectionId);
+          }
+          this.removedLinks.remove(componentId);
+        }
+        setChanged();
+        notifyObservers(ObserverValue.CONTROL_STRUCTURE);
+        return true;
+      }
+
     }
     return false;
   }
@@ -413,7 +423,7 @@ public class ControlStructureController extends Observable{
   public boolean addBendPoint(UUID connectionId, int x, int y) {
     IConnection connection = getConnection(connectionId);
     boolean result = ((CSConnection) connection).addBendPoint(x, y);
-    if(result) {
+    if (result) {
       setChanged();
       notifyObservers(ObserverValue.CONTROL_STRUCTURE);
     }
@@ -423,31 +433,31 @@ public class ControlStructureController extends Observable{
   public boolean removeBendPoint(UUID connectionId, int x, int y) {
     IConnection connection = getConnection(connectionId);
     boolean result = ((CSConnection) connection).removeBendPoint(x, y);
-    if(result) {
+    if (result) {
       setChanged();
       notifyObservers(ObserverValue.CONTROL_STRUCTURE);
     }
     return result;
   }
 
-  public boolean changeBendPoint(UUID connectionId,int oldX, int oldY, int x, int y) {
+  public boolean changeBendPoint(UUID connectionId, int oldX, int oldY, int x, int y) {
     IConnection connection = getConnection(connectionId);
     boolean result = ((CSConnection) connection).removeBendPoint(oldX, oldY);
-    if(result) {
+    if (result) {
       ((CSConnection) connection).addBendPoint(x, y);
     }
-    if(result) {
+    if (result) {
       setChanged();
       notifyObservers(ObserverValue.CONTROL_STRUCTURE);
     }
     return ((CSConnection) connection).addBendPoint(x, y);
   }
 
-  
   public List<Point> getBendPoints(UUID connectionId) {
     IConnection connection = getConnection(connectionId);
     return ((CSConnection) connection).getBendPoints();
   }
+
   /**
    * Searches for the connection with the given id and changes the targetId to the new value
    * 
