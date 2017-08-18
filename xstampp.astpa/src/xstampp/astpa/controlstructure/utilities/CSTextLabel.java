@@ -69,15 +69,15 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
 		super();
 		this.setParent(csFigure);
 		this.content = new TextFlow();
-		this.content.setBackgroundColor(ColorConstants.white);
+//		this.content.setOpaque(opaque);BackgroundColor(ColorConstants.white);
 		this.content.setFont(Display.getDefault().getSystemFont());
 		this.content.setLayoutManager(new ParagraphTextLayout(this.content,
 				ParagraphTextLayout.WORD_WRAP_SOFT));
 		this.content.setLocation(new Point(0, 0));
 		this.content.setForegroundColor(ColorConstants.black);
 		this.content.setVisible(true);
-		this.setOpaque(true);
-		this.content.setOpaque(true);
+		this.setOpaque(false);
+		this.content.setOpaque(false);
 		this.add(this.content);
 
 	}

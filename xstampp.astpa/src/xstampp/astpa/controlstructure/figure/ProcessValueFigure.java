@@ -58,7 +58,7 @@ public class ProcessValueFigure extends CSFigure {
 		this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width,-1));
 		this.getTextField().revalidate();
 		this.setConstraint(this.getTextField(),this.getTextField().getBounds());
-		Dimension size = this.getTextField().getSize();
+		Rectangle size = new Rectangle(rect.getLocation(), getTextField().getSize());
 		for (Object child : getChildren()) {
       if(child instanceof IControlStructureFigure) {
         Rectangle dimension = ((IControlStructureFigure) child).getBounds();
@@ -68,7 +68,7 @@ public class ProcessValueFigure extends CSFigure {
         }
       }
     }
-    rect.setSize(size);
+    rect.setSize(rect.union(size).getSize());
 		// the component is drawn right below its previous child
     if(this.isAutoPositioning()) {
       rect.setX(ProcessValueFigure.PROCESS_MODEL_COLUMN);
