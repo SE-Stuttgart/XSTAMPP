@@ -239,7 +239,6 @@ public class EditorContribution extends WorkbenchWindowControlContribution
         this.zoomManager = this.contributor.getZoomManager();
 
         this.zoomManager.addZoomListener(EditorContribution.this);
-        ProjectManager.getLOGGER().debug("ZOOM Contribution updated: " + this);
         this.zoomSlider.getSliderControl()
             .setSelection((int) (EditorContribution.this.zoomManager.getZoom() * 100));
         this.zoomSlider.getSliderControl().notifyListeners(SWT.Selection, null);

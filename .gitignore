@@ -10,4 +10,4 @@ astpa/ExportTest/foppdf.pdf
 *.out
 misc/docu/Readme.pdf
 misc/docu/*.log
-misc/docu/content/*.log
+*.log

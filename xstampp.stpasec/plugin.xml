@@ -642,21 +642,11 @@
             name="%command.name.Load">
       </command>
       <command
-            defaultHandler="xstampp.astpa.controlstructure.controller.commands.OpenNewTool"
-            id="xstampp.stpasec.cseditor.changeTool"
-            name="%command.name.switchTool">
-         <commandParameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               name="name"
-               optional="true">
-         </commandParameter>
-      </command>
-      <command
             defaultHandler="xstampp.stpasec.util.commands.BoleanPreferenceToggle"
             id="xstampp.stpasec.controlstructure.preferenceToggle"
             name="%command.name.preferenceToggle">
          <commandParameter
-               id="xstampp.stpasec.command.preference"
+               id="xstampp.astpa.command.preference"
                name="preference name"
                optional="false">
          </commandParameter>
@@ -667,59 +657,9 @@
             name="%command.name.Run">
       </command>
       <command
-            defaultHandler="xstampp.astpa.controlstructure.controller.commands.PasteComponentsHandler"
-            id="xstampp.stpasec.command.cs.paste"
-            name="%command.name.Copy">
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.controlstructure.controller.commands.CopyComponentsHandler"
-            id="xstampp.stpasec.command.cs.copy"
-            name="%command.name.Paste">
-      </command>
-      <command
             defaultHandler="xstampp.stpasec.diagram.CallEditor"
             id="xstampp.stpasec.opendiagram"
             name="OpenDiagram">
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.util.commands.NewControlStructureHandler"
-            id="xstampp.astpa.newControlStructure.command"
-            name="%command.name">
-         <commandParameter
-               id="xstampp.dynamicStep.commandParameter.projectId"
-               name="%commandParameter.name.3"
-               optional="false">
-         </commandParameter>
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.util.commands.RenameRootComponentHandler"
-            id="xstampp.astpa.command.cs.rename"
-            name="%command.cs.rename.name.0">
-         <commandParameter
-               id="xstampp.dynamicStep.commandParameter.projectId"
-               name="%commandParameter.name.4"
-               optional="false">
-         </commandParameter>
-         <commandParameter
-               id="xstampp.astpa.cs.rootId"
-               name="%commandParameter.name.5"
-               optional="false">
-         </commandParameter>
-      </command>
-      <command
-            defaultHandler="xstampp.astpa.util.commands.DeleteRootComponentHandler"
-            id="xstampp.astpa.command.cs.deleteRoot"
-            name="%command.name.0">
-         <commandParameter
-               id="xstampp.dynamicStep.commandParameter.projectId"
-               name="%commandParameter.name.6"
-               optional="false">
-         </commandParameter>
-         <commandParameter
-               id="xstampp.astpa.cs.rootId"
-               name="%commandParameter.name.7"
-               optional="false">
-         </commandParameter>
       </command>
    </extension>
    <extension
@@ -878,14 +818,14 @@
             <visibleWhen
                   checkEnabled="true">
                <with
-                     variable="xstampp.stpasec.connectionMode">
+                     variable="xstampp.astpa.connectionMode">
                   <equals
                         value="true">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpasec.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ConnectionMode">
             </parameter>
          </command>
@@ -896,14 +836,14 @@
             <visibleWhen
                   checkEnabled="false">
                <with
-                     variable="xstampp.stpasec.connectionMode">
+                     variable="xstampp.astpa.connectionMode">
                   <equals
                         value="false">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpasec.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ConnectionMode">
             </parameter>
          </command>
@@ -914,14 +854,14 @@
             <visibleWhen
                   checkEnabled="false">
                <with
-                     variable="xstampp.stpasec.ShowCAListBorder">
+                     variable="xstampp.astpa.ShowCAListBorder">
                   <equals
                         value="false">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpasec.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowListOfControlActionBorder">
             </parameter>
          </command>
@@ -932,14 +872,14 @@
             <visibleWhen
                   checkEnabled="true">
                <with
-                     variable="xstampp.stpasec.ShowCAListBorder">
+                     variable="xstampp.astpa.ShowCAListBorder">
                   <equals
                         value="true">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpasec.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowListOfControlActionBorder">
             </parameter>
          </command>
@@ -966,14 +906,14 @@
             <visibleWhen
                   checkEnabled="false">
                <with
-                     variable="xstampp.stpasec.ProcessModelBorder">
+                     variable="xstampp.astpa.ProcessModelBorder">
                   <equals
                         value="false">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpasec.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowProcessModelBorder">
             </parameter>
          </command>
@@ -984,14 +924,14 @@
             <visibleWhen
                   checkEnabled="true">
                <with
-                     variable="xstampp.stpasec.ProcessModelBorder">
+                     variable="xstampp.astpa.ProcessModelBorder">
                   <equals
                         value="true">
                   </equals>
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpasec.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ShowProcessModelBorder">
             </parameter>
          </command>
@@ -1039,134 +979,19 @@
       </wizard>
    </extension>
    <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+1">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="SELECT">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+2">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="MARQUEE">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+3">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="CONTROLLER">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+4">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="ACTUATOR">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+5">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="CONTROLLED_PROCESS">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+6">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="SENSOR">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+7">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="CONTROLACTION">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+8">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="ARROW_SIMPLE">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+9">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="TEXTFIELD">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.cseditor.changeTool"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+0">
-         <parameter
-               id="xstampp.stpasec.cseditor.toolconstant"
-               value="DASHEDBOX">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpasec.command.cs.copy"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+C">
-      </key>
-      <key
-            commandId="xstampp.stpasec.command.cs.paste"
-            contextId="xstampp.stpasec.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+V">
-      </key>
-   </extension>
-   <extension
          point="org.eclipse.ui.services">
       <sourceProvider
             provider="xstampp.astpa.util.CSConnectionModeProvider">
          <variable
-               name="xstampp.stpasec.connectionMode"
+               name="xstampp.astpa.connectionMode"
                priorityLevel="workbench">
          </variable>
          <variable
-               name="xstampp.stpasec.ProcessModelBorder"
+               name="xstampp.astpa.ProcessModelBorder"
                priorityLevel="workbench">
          </variable>
          <variable
-               name="xstampp.stpasec.ShowCAListBorder"
+               name="xstampp.astpa.ShowCAListBorder"
                priorityLevel="activeWorkbenchWindow">
          </variable>
       </sourceProvider>

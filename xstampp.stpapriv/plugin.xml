@@ -815,7 +815,7 @@
                </with>
             </visibleWhen>
             <parameter
-                  name="xstampp.stpasec.command.preference"
+                  name="xstampp.astpa.command.preference"
                   value="ConnectionMode">
             </parameter>
          </command>
@@ -969,134 +969,19 @@
       </wizard>
    </extension>
    <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+1">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="SELECT">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+2">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="MARQUEE">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+3">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="CONTROLLER">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+4">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="ACTUATOR">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+5">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="CONTROLLED_PROCESS">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+6">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="SENSOR">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+7">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="CONTROLACTION">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+8">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="ARROW_SIMPLE">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+9">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="TEXTFIELD">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.cseditor.changeTool"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+0">
-         <parameter
-               id="xstampp.stpapriv.cseditor.toolconstant"
-               value="DASHEDBOX">
-         </parameter>
-      </key>
-      <key
-            commandId="xstampp.stpapriv.command.cs.copy"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+C">
-      </key>
-      <key
-            commandId="xstampp.stpapriv.command.cs.paste"
-            contextId="xstampp.stpapriv.csContext"
-            schemeId="bindingscheme"
-            sequence="M1+V">
-      </key>
-   </extension>
-   <extension
          point="org.eclipse.ui.services">
       <sourceProvider
             provider="xstampp.astpa.util.CSConnectionModeProvider">
          <variable
-               name="xstampp.stpapriv.connectionMode"
+               name="xstampp.astpa.connectionMode"
                priorityLevel="workbench">
          </variable>
          <variable
-               name="xstampp.stpapriv.ProcessModelBorder"
+               name="xstampp.astpa.ProcessModelBorder"
                priorityLevel="workbench">
          </variable>
          <variable
-               name="xstampp.stpapriv.ShowCAListBorder"
+               name="xstampp.astpa.ShowCAListBorder"
                priorityLevel="activeWorkbenchWindow">
          </variable>
       </sourceProvider>
