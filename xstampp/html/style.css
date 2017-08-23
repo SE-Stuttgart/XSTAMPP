@@ -17,10 +17,27 @@ h5
 a{
 	color:violet;
 }
-body{
-	padding-top:200px;
-	background-image: url('../xstampp.intro/graphics/design/header.png');
+
+.footer {
+	margin-top: 50px;
+	font-size: 9px; 
+}
+
+.header {
+	font-size: 30px;
+	text-align: left;
+	padding-top: 200px;
+	padding-left: 250px;
+	background-image: url('../icons/Logo.png');
+	height: 40px;
 	background-repeat:no-repeat;
 	background-color:white;
+}
+
+body{
 	color:black;
+}
+
+a {
+	color: black;
 }

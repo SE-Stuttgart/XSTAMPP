@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<link href="../style.css" rel="stylesheet" type="text/css">
+<link href="glossary.css" rel="stylesheet" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>STPA Glossary</title>
+</head>
+
+<body>
+<div class="header">Glossary</div>
+<ol>
+	<li><a href="#accident">ACCIDENT</a>
+	<li><a href="#actuator">ACTUATOR</a>
+	<li><a href="#causal factor">CAUSAL FACTOR</a>
+	<li><a href="#command">COMMAND</a>
+	<li><a href="#control-action">CONTROL ACTION</a>
+	<li><a href="#control-structure">CONTROL STRUCTURE</a>
+	<li><a href="#controlled-process">CONTROLLED PROCESS</a>
+	<li><a href="#controller">CONTROLLER</a>
+	<li><a href="#feedback">FEEDBACK</a>
+	<li><a href="#hazard">HAZARD</a>
+	<li><a href="#loss">LOSS</a>
+	<li><a href="#safety">SAFETY</a>
+	<li><a href="#safety-constraint">SAFETY CONSTRAINT</a>
+	<li><a href="#design-requirement">SAFETY REQUIREMENT</a>
+	<li><a href="#scenario">(HAZARDOUS) SCENARIO</a>
+	<li><a href="#sensor">SENSOR</a>
+	<li><a href="#uca">UNSAFE CONTROL ACTION</a>
+</ol>
+
+<h3 id="accident">ACCIDENT</h3>
+undesired or unplanned event that results in a loss, including loss or injury to
+human life, property damage, environmental pollution, mission loss etc.
+<h3 id="actuator">ACTUATOR</h3>
+a human operator or mechanical device tasked with directly acting upon a process
+and changing its physical state. Valve systems (valve + the motor associated to it), doors,
+magnets (their electronic controller and power source included) or a nurse are actuators that
+respectively implement control on the following processes: &quot;fluid flow&quot;, &quot;egress availability&quot;,
+&quot;beam position&quot;, &quot;patient position&quot;. Actuators, like sensors, can be smart in that they can be
+programmable; they may therefore need to be studied with the same concepts as the controllers
+are.
+<h3 id="causal factor">CAUSAL FACTOR</h3>
+cause of a <a href="#scenario">(hazardous) scenario</a> (STPA Step 2).
+<h3 id="command">COMMAND</h3>
+a signal providing a set of instructions (goals, set points, order) issued by a
+controller with the intent of acting upon a process by activation of a device or implementation of
+a procedure. Communication and Control, along with Hierarchy and Emergence, are
+fundamental systems theory concepts at the foundation of STAMP. Commands are issued by
+Controllers, with the intent that they be implemented by Actuators to act on the Controlled
+Process
+<h3 id="control-action">CONTROL ACTION</h3>
+the bringing about of an alteration in the system&apos;s state through activation
+of a device or implementation of a procedure with the intent of regulating or guiding the
+operation of a human being, machine, apparatus, or system. They are the result of an Actuator
+implementing a control Command issued by a Controller, and aim at controlling the state of the
+Controlled Process
+<h3 id="control-structure">CONTROL STRUCTURE</h3>
+hierarchy of process loops created to steer a system&apos;s operations and
+control its states. In the context of a hazard analysis, we are most concerned with the control of
+hazardous states aimed at eliminating, reducing or mitigating them.
+<h3 id="controlled-process">CONTROLLED PROCESS</h3>
+ although at times reducible to the state of a physical element (e.g.
+framing a &quot;door&quot; as a controlled process whose values can be &quot;open&quot; or &quot;shut&quot;), it appears
+fruitful to rather consider the controlled process identified in STAMP process loops to be the
+system&apos;s attribute or state variable that the controller aims to control (e.g. thinking of the door
+not as the controlled process but, together with its motor, as an actuator that implements control
+on the possibility of egress).
+<h3 id="controller">CONTROLLER</h3>
+a human or automated system that is responsible for controlling the system&apos;s
+processes by issuing commands to be implemented by system actuators.
+<h3 id="feedback">FEEDBACK</h3>
+ evaluative or corrective information about an action, event, or process that is
+transmitted to the original or controlling source..
+<h3 id="hazard">HAZARD</h3>
+ system state of set or conditions that, together with a particular set of worst-case
+environmental conditions, will lead to an accident.
+<h3 id="loss">LOSS</h3>
+ decrease in amount, magnitude or degree including destruction or ruin.
+<h3 id="safety">SAFETY</h3>
+ freedom from loss.
+<h3 id="safety-constraint">SAFETY CONSTRAINT</h3>
+ bound set on system design options and operations to restrict, compel
+to avoid or forbid the performance of actions that would lead to a hazard.
+<h3 id="design-requirement">SAFETY/DESIGN REQUIREMENT</h3>
+ design requirement formulated to include the enforcement of safety
+constraints as a design objective.
+<h3 id="scenario">(HAZARDOUS) SCENARIO</h3>
+ an account or synopsis of a possible course of action or events
+resulting in a hazard. See Causal Factor.
+<h3 id="sensor">SENSOR</h3>
+ human or mechanical device tasked with measuring a process variable by responding
+to a physical stimulus (as heat, light, sound, pressure, magnetism, or a particular motion) and
+transmit a resulting impulse (as for measurement or operating a control)..
+<h3 id="uca">UNSAFE CONTROL ACTION</h3>
+ control action that leads to a hazard (STPA Step 1).
+<div class="footer">
+ Definitions from:<br>Antoine, B. (2013). Systems Theoretic Hazard Analysis (STPA) applied to the risk review of complex systems: an example from the medical device industry (Doctoral dissertation, Massachusetts Institute of Technology).
+ </div>
+ </body>
+ </html>

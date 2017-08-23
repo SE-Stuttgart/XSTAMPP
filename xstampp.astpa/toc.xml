@@ -6,4 +6,6 @@
       <anchor id="usingastpa"/>
    </topic>  
    <topic label="Version History" href="html/history.html"/>
+   <topic href="html/glossary/glossary.html" label="Glossary">
+   </topic>
 </toc>
