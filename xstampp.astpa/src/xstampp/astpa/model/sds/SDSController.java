@@ -71,7 +71,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(java.lang.String,
    * java.lang.String, java.util.UUID)
    */
@@ -85,7 +84,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(xstampp.astpa.model.interfaces.
    * ITableModel)
    */
@@ -98,7 +96,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#getAllSafetyConstraints()
    */
   @Override
@@ -112,7 +109,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#moveEntry(boolean, java.util.UUID,
    * xstampp.model.ObserverValue)
    */
@@ -134,7 +130,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#getSafetyConstraint(java.util.UUID)
    */
   @Override
@@ -149,7 +144,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#removeSafetyConstraint(java.util.UUID)
    */
   @Override
@@ -164,7 +158,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#addSystemGoal(java.lang.String, java.lang.String)
    */
   @Override
@@ -176,7 +169,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#getAllSystemGoals()
    */
   @Override
@@ -190,7 +182,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#getSystemGoal(java.util.UUID)
    */
   @Override
@@ -205,7 +196,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#removeSystemGoal(java.util.UUID)
    */
   @Override
@@ -218,7 +208,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String,
    * java.lang.String)
    */
@@ -229,7 +218,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#addDesignRequirement(java.lang.String,
    * java.lang.String, xstampp.model.ObserverValue)
    */
@@ -276,7 +264,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#getAllDesignRequirements()
    */
   @Override
@@ -313,7 +300,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#getDesignRequirement(java.util.UUID)
    */
   @Override
@@ -323,7 +309,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#getDesignRequirement(java.util.UUID,
    * xstampp.model.ObserverValue)
    */
@@ -357,7 +342,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#removeDesignRequirement(java.util.UUID)
    */
   @Override
@@ -367,7 +351,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#removeDesignRequirement(java.util.UUID,
    * xstampp.model.ObserverValue)
    */
@@ -385,7 +368,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#setDesignRequirementDescription(xstampp.model.
    * ObserverValue, java.util.UUID, java.lang.String)
    */
@@ -411,7 +393,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see
    * xstampp.astpa.model.sds.ISDSController#setDesignRequirementTitle(xstampp.model.ObserverValue,
    * java.util.UUID, java.lang.String)
@@ -438,7 +419,6 @@ public class SDSController extends Observable implements ISDSController {
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.sds.ISDSController#prepareForSave()
    */
   @Override

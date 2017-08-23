@@ -35,9 +35,10 @@ public class Import extends AbstractHandler {
 
     ProjectManager viewContainer = ProjectManager.getContainerInstance();
     // Enable the save entries in the menu
-    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI.getWorkbench()
-        .getService(ISourceProviderService.class);
-    CommandState saveStateService = (CommandState) sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
+    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+        .getWorkbench().getService(ISourceProviderService.class);
+    CommandState saveStateService = (CommandState) sourceProviderService
+        .getSourceProvider(CommandState.SAVE_STATE);
     // saveStateService.setEnabled();
     String recentPath = event.getParameter("loadRecentProject"); //$NON-NLS-1$
 
@@ -45,7 +46,8 @@ public class Import extends AbstractHandler {
         .findPerspectiveWithId("xstampp.defaultPerspective");//$NON-NLS-1$
     //
     if (descriptor != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
-      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(descriptor);
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .setPerspective(descriptor);
     }
 
     if (recentPath == null) {

@@ -146,10 +146,11 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   public String[] getScenarioColumns() {
     return _withScenarioColumns;
   }
-  
+
   public String[] getColumns() {
     return _withoutColumns;
   }
+
   @Override
   protected void fillTable() {
 
@@ -249,8 +250,13 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   }
 
   /**
-   * adds the:</br> <h5>uca row with</h5> <ul> <li>uca text (read only) <li>hazard links (read only)
-   * <li>a row for each scenario </ul>
+   * adds the:</br>
+   * <h5>uca row with</h5>
+   * <ul>
+   * <li>uca text (read only)
+   * <li>hazard links (read only)
+   * <li>a row for each scenario
+   * </ul>
    * 
    * @param cellNumber
    */
@@ -349,9 +355,15 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   }
 
   /**
-   * adds the:</br> <h5>uca row with</h5> <ul> <li>an empty cell with a delete (read only)
-   * <li>hazard linking cell <li>an empty scenario cell <li>a cell for importing or creating a new
-   * safety constraint </ul>
+   * adds the:</br>
+   * <h5>uca row with</h5>
+   * <ul>
+   * <li>an empty cell with a delete (read only)
+   * <li>hazard linking cell
+   * <li>an empty scenario cell
+   * <li>a cell for importing or creating a new
+   * safety constraint
+   * </ul>
    * 
    * @param cellNumber
    */

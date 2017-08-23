@@ -36,67 +36,67 @@ import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 
 public class CSModelCreationFactory implements CreationFactory {
 
-	private ComponentType type;
-	private static Map<ComponentType, Integer> countMap;
-	private final IRectangleComponent dataModel;
+  private ComponentType type;
+  private static Map<ComponentType, Integer> countMap;
+  private final IRectangleComponent dataModel;
 
-	/**
-	 *
-	 *
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 * @param type
-	 *            the Type of the model which should be constructed
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 *
-	 */
-	public CSModelCreationFactory(ComponentType type, IRectangleComponent model) {
-		this.type = type;
-		this.dataModel = model;
+  /**
+   *
+   *
+   * @author Lukas Balzer, Aliaksei Babkovich
+   * @param type
+   *          the Type of the model which should be constructed
+   * @param model
+   *          The DataModel which contains all model classes
+   *
+   */
+  public CSModelCreationFactory(ComponentType type, IRectangleComponent model) {
+    this.type = type;
+    this.dataModel = model;
 
-	}
+  }
 
-	/**
-	 * @return the requested component object
-	 * @see Component
-	 */
-	@Override
-	public Object getNewObject() {
-		String text;
-		if (countMap == null) {
-			countMap = new HashMap<>();
-		}
-		if (countMap.containsKey(this.type)) {
-			countMap.put(this.type, countMap.get(this.type) + 1);
-		} else {
-			countMap.put(this.type, 1);
-		}
-		int count = countMap.get(this.type);
-		switch (this.type) {
-		case CONTROLACTION: {
-			text = Messages.ControlAction + " " + count; //$NON-NLS-1$
-			
-			return new Component(null, text, new Rectangle(), this.type);
-		}
-		case ACTUATOR: {
-			text = Messages.Actuator + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
-		case DASHEDBOX: {
+  /**
+   * @return the requested component object
+   * @see Component
+   */
+  @Override
+  public Object getNewObject() {
+    String text;
+    if (countMap == null) {
+      countMap = new HashMap<>();
+    }
+    if (countMap.containsKey(this.type)) {
+      countMap.put(this.type, countMap.get(this.type) + 1);
+    } else {
+      countMap.put(this.type, 1);
+    }
+    int count = countMap.get(this.type);
+    switch (this.type) {
+    case CONTROLACTION: {
+      text = Messages.ControlAction + " " + count; //$NON-NLS-1$
 
-			text = Messages.DashedBox + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
+      return new Component(null, text, new Rectangle(), this.type);
+    }
+    case ACTUATOR: {
+      text = Messages.Actuator + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
+    case DASHEDBOX: {
+
+      text = Messages.DashedBox + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
     case CONTAINER: {
 
       text = "?";
@@ -109,46 +109,46 @@ public class CSModelCreationFactory implements CreationFactory {
       break;
 
     }
-		case CONTROLLER: {
-			text = Messages.Controller + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
-		case CONTROLLED_PROCESS: {
-			text = Messages.ControlledProcess + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
-		case PROCESS_MODEL: {
-			text = Messages.ProcessModel + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
-		case PROCESS_VARIABLE: {
-			text = Messages.ProcessVariable + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
-		case PROCESS_VALUE: {
-			text = Messages.ProcessValue + " " + count; //$NON-NLS-1$
-			break;
-		}
+    case CONTROLLER: {
+      text = Messages.Controller + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
+    case CONTROLLED_PROCESS: {
+      text = Messages.ControlledProcess + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
+    case PROCESS_MODEL: {
+      text = Messages.ProcessModel + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
+    case PROCESS_VARIABLE: {
+      text = Messages.ProcessVariable + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
+    case PROCESS_VALUE: {
+      text = Messages.ProcessValue + " " + count; //$NON-NLS-1$
+      break;
+    }
     case SENSOR: {
       text = Messages.Sensor + " " + count; //$NON-NLS-1$
       for (IRectangleComponent x : this.dataModel.getChildren()) {
@@ -167,27 +167,27 @@ public class CSModelCreationFactory implements CreationFactory {
       }
       break;
     }
-		case TEXTFIELD: {
-			text = Messages.TextBox + " " + count; //$NON-NLS-1$
-			for (IRectangleComponent x : this.dataModel.getChildren()) {
-				if (x.getText().equals(text)) {
-					text = text + " (2)";
-				}
-			}
-			break;
-		}
-		default: {
-			text = ""; //$NON-NLS-1$
-			break;
-		}
-		}
-		return new Component(text, new Rectangle(), this.type);
+    case TEXTFIELD: {
+      text = Messages.TextBox + " " + count; //$NON-NLS-1$
+      for (IRectangleComponent x : this.dataModel.getChildren()) {
+        if (x.getText().equals(text)) {
+          text = text + " (2)";
+        }
+      }
+      break;
+    }
+    default: {
+      text = ""; //$NON-NLS-1$
+      break;
+    }
+    }
+    return new Component(text, new Rectangle(), this.type);
 
-	}
+  }
 
-	@Override
-	public Object getObjectType() {
-		return this.type;
-	}
+  @Override
+  public Object getObjectType() {
+    return this.type;
+  }
 
 }

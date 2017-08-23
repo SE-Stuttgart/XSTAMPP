@@ -25,10 +25,12 @@ import java.util.UUID;
 public class GridCellBlank extends AbstractGridCell {
 
   private boolean fixedHeight;
-  
+
   /**
    * this constructs a blank cell with nothing in it.
-   * @param fixedHeight TODO
+   * 
+   * @param fixedHeight
+   *          TODO
    * @param fixedHeight
    *          whether the height should be set to a fixed value,
    *          by default {@link AbstractGridCell#DEFAULT_CELL_HEIGHT}
@@ -62,12 +64,12 @@ public class GridCellBlank extends AbstractGridCell {
 
   @Override
   public int getPreferredHeight() {
-    if ( fixedHeight ) {
+    if (fixedHeight) {
       return AbstractGridCell.DEFAULT_CELL_HEIGHT;
     }
     return 1;
   }
-  
+
   @Override
   public void activate() {
     // intentionally empty

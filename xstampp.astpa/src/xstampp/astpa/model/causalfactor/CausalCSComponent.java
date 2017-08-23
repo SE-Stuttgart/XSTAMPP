@@ -139,7 +139,8 @@ public class CausalCSComponent implements ICausalComponent {
       List<CausalSafetyConstraint> safetyConstraints) {
     this.text = child.getText();
     for (CausalFactor causalFactor : internal_getFactors()) {
-      causalFactor.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions, safetyConstraints);
+      causalFactor.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions,
+          safetyConstraints);
     }
   }
 

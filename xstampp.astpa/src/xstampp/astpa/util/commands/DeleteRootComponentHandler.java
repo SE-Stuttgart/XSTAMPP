@@ -26,7 +26,7 @@ import xstampp.ui.navigation.ProjectExplorer;
 
 /**
  * 
- * @author Lukas Balzer  - Initial implementation
+ * @author Lukas Balzer - Initial implementation
  *
  */
 public class DeleteRootComponentHandler extends AbstractHandler {
@@ -47,7 +47,8 @@ public class DeleteRootComponentHandler extends AbstractHandler {
         dataModel.setActiveRoot(rootId);
         IRectangleComponent component = dataModel.getComponent(rootId);
         String title = String.format(Messages.DeleteControlStructureTitle, component.getText());
-        String message = String.format(Messages.DeleteControlStructureQuestion, component.getText());
+        String message = String.format(Messages.DeleteControlStructureQuestion,
+            component.getText());
 
         if (MessageDialog.openConfirm(
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title, message)
@@ -60,7 +61,7 @@ public class DeleteRootComponentHandler extends AbstractHandler {
         }
       }
     } catch (Exception exc) {
-        exc.printStackTrace();
+      exc.printStackTrace();
     }
     return null;
   }

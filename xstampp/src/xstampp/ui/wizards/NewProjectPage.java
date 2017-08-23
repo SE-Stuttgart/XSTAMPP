@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -143,7 +143,8 @@ public class NewProjectPage extends AbstractWizardPage implements ModifyListener
           // if the default path checkbox is checked the path choice is
           // automatically resettet to
           // the workspace location
-          NewProjectPage.this.pathComposite.setText(Platform.getInstanceLocation().getURL().getPath());
+          NewProjectPage.this.pathComposite
+              .setText(Platform.getInstanceLocation().getURL().getPath());
           NewProjectPage.this.pathComposite.setEnabled(false);
         } else {
           NewProjectPage.this.pathComposite.setEnabled(true);
@@ -206,7 +207,8 @@ public class NewProjectPage extends AbstractWizardPage implements ModifyListener
         && ((this.pathComposite == null) || this.pathComposite.getText().equals(""))) { //$NON-NLS-1$
       return false;
     }
-    if (ProjectManager.getContainerInstance().getProjects().containsValue(this.getNewProjectName())) {
+    if (ProjectManager.getContainerInstance().getProjects()
+        .containsValue(this.getNewProjectName())) {
       this.setErrorMessage(Messages.ProjectExists);
       return false;
     }
@@ -229,7 +231,8 @@ public class NewProjectPage extends AbstractWizardPage implements ModifyListener
    * @return the path where the Data for the new project is stored
    */
   public String getNewProjectPath() {
-    return this.pathComposite.getText() + File.separator + this.getNewProjectName() + "." + this.projectExtension; //$NON-NLS-1$
+    return this.pathComposite.getText() + File.separator + this.getNewProjectName() + "." //$NON-NLS-1$
+        + this.projectExtension;
 
   }
 

@@ -109,12 +109,13 @@ public class StepSelector extends AbstractSelectorWithAdditions implements IMenu
    *
    * @param id
    *          the id
-   * @param selectionId TODO
+   * @param selectionId
+   *          TODO
    */
   public void openEditor(String id, UUID selectionId) {
     STPAEditorInput input = this.inputs.get(id);
     Map<String, String> map = getProperties();
-    if ( selectionId != null) {
+    if (selectionId != null) {
       map.put(StandartEditorPart.SELECTED_ENTRY, selectionId.toString());
     }
     input.setProperties(map);

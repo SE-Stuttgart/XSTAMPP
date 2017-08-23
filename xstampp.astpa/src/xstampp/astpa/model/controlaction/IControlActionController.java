@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.model.controlaction;
 
 import java.util.List;
@@ -216,7 +227,9 @@ public interface IControlActionController {
 
   /**
    * creates a new list with all entries according to the given {@link IEntryFilter} or with all
-   * uca's defined if the filter is given as <b>null</b> <p> Note that modifications of the returned
+   * uca's defined if the filter is given as <b>null</b>
+   * <p>
+   * Note that modifications of the returned
    * list will not affect the list stored in the dataModel
    * 
    * @param filter
@@ -257,15 +270,16 @@ public interface IControlActionController {
    * @author Fabian Toth
    * 
    * @return the list of all corresponding safety constraints
- * @deprecated Use {@link #getCorrespondingSafetyConstraints(IEntryFilter)} instead
+   * @deprecated Use {@link #getCorrespondingSafetyConstraints(IEntryFilter)} instead
    */
   List<ITableModel> getCorrespondingSafetyConstraints();
 
-/**
+  /**
    * Gets the list of all corresponding safety constraints
    * 
    * @author Fabian Toth
- * @param filter TODO
+   * @param filter
+   *          TODO
    * 
    * @return the list of all corresponding safety constraints
    */
@@ -515,7 +529,8 @@ public interface IControlActionController {
    * This method removes a safety rule if it is stored as general rule or as rule in control action
    * 
    * @param removeAll
-   *          whether all currently stored RefinedSafetyRule objects should be deleted<br> when this
+   *          whether all currently stored RefinedSafetyRule objects should be deleted<br>
+   *          when this
    *          is true than the ruleId will be ignored
    * @param ruleId
    *          an id of a RefinedSafetyRule object stored in a controlAction

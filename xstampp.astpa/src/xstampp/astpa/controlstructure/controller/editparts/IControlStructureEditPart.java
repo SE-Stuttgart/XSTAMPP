@@ -25,33 +25,34 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @author Lukas
  * 
  */
-public interface IControlStructureEditPart extends GraphicalEditPart,MouseMotionListener {
+public interface IControlStructureEditPart extends GraphicalEditPart, MouseMotionListener {
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return the id of this editParts model
-	 */
-	UUID getId();
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return the id of this editParts model
+   */
+  UUID getId();
 
-	/**
-	 * provides the right transformation to realize the a child-parent
-	 * releationship in gef
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param t
-	 *            the Translatable which is given to it's parents figure
-	 */
-	void translateToRoot(Translatable t);
-	
-	/**
-	 * @param store the store to set
-	 */
-	public void setPreferenceStore(IPreferenceStore store);
+  /**
+   * provides the right transformation to realize the a child-parent
+   * releationship in gef
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param t
+   *          the Translatable which is given to it's parents figure
+   */
+  void translateToRoot(Translatable t);
 
-	void refreshModel();
+  /**
+   * @param store
+   *          the store to set
+   */
+  public void setPreferenceStore(IPreferenceStore store);
+
+  void refreshModel();
 
   boolean canEdit();
 }

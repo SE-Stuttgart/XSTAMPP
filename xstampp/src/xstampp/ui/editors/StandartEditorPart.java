@@ -120,7 +120,6 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
 
   }
 
-  
   @Override
   public void partActivated(IWorkbenchPart arg0) {
     if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
@@ -175,7 +174,7 @@ public abstract class StandartEditorPart extends EditorPart implements IEditorBa
     this.updateValues = updateValues;
   }
 
-  public void addUpdateValue (ObserverValue value) {
+  public void addUpdateValue(ObserverValue value) {
     this.updateValues.add(value);
   }
 }

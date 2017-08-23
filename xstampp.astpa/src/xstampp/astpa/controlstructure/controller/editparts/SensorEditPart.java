@@ -34,39 +34,39 @@ import xstampp.preferences.IControlStructureConstants;
  */
 public class SensorEditPart extends CSAbstractEditPart {
 
-	/**
-	 * this constuctor sets the unique ID of this EditPart which is the same in
-	 * its model and figure
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            this steps id
-	 */
-	public SensorEditPart(IControlStructureEditorDataModel model, String stepId) {
-		super(model, stepId, 1);
-	}
+  /**
+   * this constuctor sets the unique ID of this EditPart which is the same in
+   * its model and figure
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          this steps id
+   */
+  public SensorEditPart(IControlStructureEditorDataModel model, String stepId) {
+    super(model, stepId, 1);
+  }
 
-	@Override
-	protected IFigure createFigure() {
-		ImageDescriptor imgDesc = Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/sensor_80.png"); //$NON-NLS-1$
-		Image img = imgDesc.createImage(null);
-		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
-				IControlStructureConstants.CONTROLSTRUCTURE_SENSOR_COLOR);
-		tmpFigure.setPreferenceStore(getStore());
-		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
-		tmpFigure.setToolTip(new Label(Messages.Sensor));
-		return tmpFigure;
-	}
+  @Override
+  protected IFigure createFigure() {
+    ImageDescriptor imgDesc = Activator
+        .getImageDescriptor("/icons/buttons/controlstructure/sensor_80.png"); //$NON-NLS-1$
+    Image img = imgDesc.createImage(null);
+    ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
+        IControlStructureConstants.CONTROLSTRUCTURE_SENSOR_COLOR);
+    tmpFigure.setPreferenceStore(getStore());
+    tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
+    tmpFigure.setToolTip(new Label(Messages.Sensor));
+    return tmpFigure;
+  }
 
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
-	}
+  @Override
+  protected void createEditPolicies() {
+    super.createEditPolicies();
+    this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+        new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+  }
 
 }

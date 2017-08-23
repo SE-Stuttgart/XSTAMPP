@@ -25,52 +25,52 @@ import xstampp.astpa.model.ATableModel;
  */
 public class CorrespondingSafetyConstraint extends ATableModel {
 
-	@XmlElement
-	private String text;
+  @XmlElement
+  private String text;
 
-	/**
-	 * Constructor of a corresponding safety constraint
-	 * 
-	 * @param text
-	 *            the text of the new safety constraint
-	 * 
-	 * @author Fabian Toth
-	 */
-	public CorrespondingSafetyConstraint(String text) {
-		super(text, null, 0);
-		this.text = text;
-	}
+  /**
+   * Constructor of a corresponding safety constraint
+   * 
+   * @param text
+   *          the text of the new safety constraint
+   * 
+   * @author Fabian Toth
+   */
+  public CorrespondingSafetyConstraint(String text) {
+    super(text, null, 0);
+    this.text = text;
+  }
 
-	/**
-	 * Empty constructor used for JAXB. Do not use it!
-	 * 
-	 * @author Fabian Toth
-	 */
-	public CorrespondingSafetyConstraint() {
-		// empty constructor for JAXB
-	}
+  /**
+   * Empty constructor used for JAXB. Do not use it!
+   * 
+   * @author Fabian Toth
+   */
+  public CorrespondingSafetyConstraint() {
+    // empty constructor for JAXB
+  }
 
-	@Override
-	public String getTitle() {
-		return this.text;
-	}
+  @Override
+  public String getTitle() {
+    return this.text;
+  }
 
-	@Override
-	public String setTitle(String title) {
-		if (this.text == null || !this.text.equals(title)) {
-			String result = this.text;
-			this.text = title;
-			return result;
-		}
-		return null;
-	}
-	
-	public String getText() {
-		return text;
-	}
+  @Override
+  public String setTitle(String title) {
+    if (this.text == null || !this.text.equals(title)) {
+      String result = this.text;
+      this.text = title;
+      return result;
+    }
+    return null;
+  }
 
-	public void prepareForSave() {
-		getTitle();
-		setLinks(null);
-	}
+  public String getText() {
+    return text;
+  }
+
+  public void prepareForSave() {
+    getTitle();
+    setLinks(null);
+  }
 }

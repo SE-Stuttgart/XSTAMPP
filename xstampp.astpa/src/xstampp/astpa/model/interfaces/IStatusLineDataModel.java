@@ -20,23 +20,23 @@ import xstampp.model.IDataModel;
  */
 public interface IStatusLineDataModel extends IDataModel {
 
-	/**
-	 * Checks if there are unsaved changes or not
-	 * 
-	 * @return whether there are unsaved changes or not
-	 * 
-	 * @author Fabian Toth
-	 */
-	@Override
-	boolean hasUnsavedChanges();
+  /**
+   * Checks if there are unsaved changes or not
+   * 
+   * @return whether there are unsaved changes or not
+   * 
+   * @author Fabian Toth
+   */
+  @Override
+  boolean hasUnsavedChanges();
 
-	/**
-	 * Getter for the projectName.
-	 * 
-	 * @return projectName
-	 * 
-	 * @author Sebastian Sieber
-	 */
-	@Override
-	String getProjectName();
+  /**
+   * Getter for the projectName.
+   * 
+   * @return projectName
+   * 
+   * @author Sebastian Sieber
+   */
+  @Override
+  String getProjectName();
 }

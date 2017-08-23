@@ -43,7 +43,9 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
 
   /**
    * creates a new list with all entries according to the given {@link IEntryFilter} or with all
-   * uca's defined if the filter is given as <b>null</b> <p> Note that modifications of the returned
+   * uca's defined if the filter is given as <b>null</b>
+   * <p>
+   * Note that modifications of the returned
    * list will not affect the list stored in the dataModel
    * 
    * @param filter
@@ -68,7 +70,8 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
   IControlAction getControlActionU(UUID controlActionId);
 
   /**
-   * Add an unsafe control action to a given control action.<br> Triggers an update for
+   * Add an unsafe control action to a given control action.<br>
+   * Triggers an update for
    * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
    * 
    * @author Benedikt Markt, Patrick Wickenhaeuser
@@ -85,7 +88,8 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
       UnsafeControlActionType unsafeControlActionType);
 
   /**
-   * Set the description of an unsafe control action. <br> Triggers an update for
+   * Set the description of an unsafe control action. <br>
+   * Triggers an update for
    * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
    * 
    * @param controlActionId
@@ -101,7 +105,8 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
   boolean setUcaDescription(UUID unsafeControlActionId, String description);
 
   /**
-   * Removes a unsafe control action.<br> Triggers an update for
+   * Removes a unsafe control action.<br>
+   * Triggers an update for
    * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
    * 
    * @author Fabian Toth
@@ -124,7 +129,8 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
   List<ITableModel> getLinkedHazardsOfUCA(UUID unsafeControlActionId);
 
   /**
-   * Adds a link between a unsafe control action and a hazard.<br> Triggers an update for
+   * Adds a link between a unsafe control action and a hazard.<br>
+   * Triggers an update for
    * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
    * 
    * @param unsafeControlActionId
@@ -138,7 +144,8 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
   boolean addUCAHazardLink(UUID unsafeControlActionId, UUID hazardId);
 
   /**
-   * Deletes the link between an accident and a hazard. <br> Triggers an update for
+   * Deletes the link between an accident and a hazard. <br>
+   * Triggers an update for
    * {@link org.extended.safetyproject.model.ObserverValue#UNSAFE_CONTROL_ACTION}
    * 
    * @param unsafeControlActionId
@@ -184,9 +191,10 @@ public interface IUnsafeControlActionDataModel extends IDataModel, ISeverityData
 
   /**
    * by calling this method the {@link ControlActionController} of the data model is added to the
-   * list of {@link Observable}'s of the {@link IDataModel} and the {@link ControlActionController} is returned
+   * list of {@link Observable}'s of the {@link IDataModel} and the {@link ControlActionController}
+   * is returned
    * and can be used to call any available method with the {@link IDataModel} observing any changes.
-   *  
+   * 
    * @return the {@link ControlActionController} of this project
    */
   IControlActionController getControlActionController();

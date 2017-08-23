@@ -28,39 +28,39 @@ import xstampp.ui.common.contentassist.ITableContentProvider;
  */
 public class UcaContentProvider implements ITableContentProvider<ITableModel> {
   private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
-	private final transient IUnsafeControlActionDataModel ucaInterface;
+  private final transient IUnsafeControlActionDataModel ucaInterface;
 
-	/**
-	 * 
-	 * @author Benedikt Markt
-	 * 
-	 * @param ucaInterface
-	 *            the interface to the datamodel
-	 * 
-	 */
-	public UcaContentProvider(final IUnsafeControlActionDataModel ucaInterface) {
-		this.ucaInterface = ucaInterface;
-	}
+  /**
+   * 
+   * @author Benedikt Markt
+   * 
+   * @param ucaInterface
+   *          the interface to the datamodel
+   * 
+   */
+  public UcaContentProvider(final IUnsafeControlActionDataModel ucaInterface) {
+    this.ucaInterface = ucaInterface;
+  }
 
-	@Override
-	public List<ITableModel> getAllItems() {
-		return this.ucaInterface.getAllHazards();
-	}
+  @Override
+  public List<ITableModel> getAllItems() {
+    return this.ucaInterface.getAllHazards();
+  }
 
-	@Override
-	public List<ITableModel> getLinkedItems(final UUID itemId) {
-		return this.ucaInterface.getLinkedHazardsOfUCA(itemId);
-	}
+  @Override
+  public List<ITableModel> getLinkedItems(final UUID itemId) {
+    return this.ucaInterface.getLinkedHazardsOfUCA(itemId);
+  }
 
-	@Override
-	public void addLink(final UUID item1, final UUID item2) {
-		this.ucaInterface.addUCAHazardLink(item1, item2);
-	}
+  @Override
+  public void addLink(final UUID item1, final UUID item2) {
+    this.ucaInterface.addUCAHazardLink(item1, item2);
+  }
 
-	@Override
-	public void removeLink(final UUID item, final UUID removeItem) {
-		this.ucaInterface.removeUCAHazardLink(item, removeItem);
-	}
+  @Override
+  public void removeLink(final UUID item, final UUID removeItem) {
+    this.ucaInterface.removeUCAHazardLink(item, removeItem);
+  }
 
   @Override
   public String getPrefix() {

@@ -39,7 +39,7 @@ import xstampp.model.ObserverValue;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class HazAccController extends Observable implements IHazAccController{
+public class HazAccController extends Observable implements IHazAccController {
 
   @XmlElementWrapper(name = "accidents")
   @XmlElement(name = "accident")
@@ -52,7 +52,7 @@ public class HazAccController extends Observable implements IHazAccController{
   @XmlElementWrapper(name = "links")
   @XmlElement(name = "link")
   private List<HazAccLink> links;
-  
+
   @XmlAttribute(name = "useSeverity")
   private Boolean useSeverity;
 
@@ -65,8 +65,10 @@ public class HazAccController extends Observable implements IHazAccController{
   public HazAccController() {
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.hazacc.IHazAccController#addAccident(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#addAccident(java.lang.String,
+   * java.lang.String)
    */
   @Override
   public UUID addAccident(String title, String description) {
@@ -75,7 +77,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return newAccident.getId();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#removeAccident(java.util.UUID)
    */
   @Override
@@ -89,8 +92,10 @@ public class HazAccController extends Observable implements IHazAccController{
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.hazacc.IHazAccController#moveEntry(boolean, java.util.UUID, xstampp.model.ObserverValue)
+  /*
+   * (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#moveEntry(boolean, java.util.UUID,
+   * xstampp.model.ObserverValue)
    */
   @Override
   public boolean moveEntry(boolean moveUp, UUID id, ObserverValue value) {
@@ -102,7 +107,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#getAccident(java.util.UUID)
    */
   @Override
@@ -115,7 +121,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#getAllAccidents()
    */
   @Override
@@ -127,7 +134,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#getLinkedHazards(java.util.UUID)
    */
   @Override
@@ -142,7 +150,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#addHazard(java.lang.String, java.lang.String)
    */
   @Override
@@ -152,7 +161,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return newHazard.getId();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#removeHazard(java.util.UUID)
    */
   @Override
@@ -166,7 +176,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#addLink(java.util.UUID, java.util.UUID)
    */
   @Override
@@ -174,7 +185,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return this.links.add(new HazAccLink(accidentId, hazardId));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#deleteLink(java.util.UUID, java.util.UUID)
    */
   @Override
@@ -182,7 +194,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return this.links.remove(new HazAccLink(accidentId, hazardId));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#getAllHazards()
    */
   @Override
@@ -194,7 +207,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#getLinkedAccidents(java.util.UUID)
    */
   @Override
@@ -209,7 +223,8 @@ public class HazAccController extends Observable implements IHazAccController{
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#getHazard(java.util.UUID)
    */
   @Override
@@ -222,8 +237,10 @@ public class HazAccController extends Observable implements IHazAccController{
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.hazacc.IHazAccController#prepareForExport(xstampp.astpa.model.linking.LinkController)
+  /*
+   * (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#prepareForExport(xstampp.astpa.model.linking.
+   * LinkController)
    */
   @Override
   public void prepareForExport(LinkController linkController) {
@@ -232,7 +249,7 @@ public class HazAccController extends Observable implements IHazAccController{
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, accident.getId())) {
         linkString += getHazard(id).getNumber() + ", "; //$NON-NLS-1$
       }
-      if(linkString.length() >  2) {
+      if (linkString.length() > 2) {
         accident.setLinks(linkString.substring(0, linkString.length() - 2));
       }
     }
@@ -241,14 +258,16 @@ public class HazAccController extends Observable implements IHazAccController{
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, hazard.getId())) {
         linkString += getAccident(id).getNumber() + ", "; //$NON-NLS-1$
       }
-      if(linkString.length() >  2) {
+      if (linkString.length() > 2) {
         hazard.setLinks(linkString.substring(0, linkString.length() - 2));
       }
     }
   }
 
-  /* (non-Javadoc)
-   * @see xstampp.astpa.model.hazacc.IHazAccController#prepareForSave(xstampp.astpa.model.linking.LinkController)
+  /*
+   * (non-Javadoc)
+   * @see xstampp.astpa.model.hazacc.IHazAccController#prepareForSave(xstampp.astpa.model.linking.
+   * LinkController)
    */
   @Override
   public boolean prepareForSave(LinkController linkController) {
@@ -256,20 +275,21 @@ public class HazAccController extends Observable implements IHazAccController{
     for (Accident accident : this.getAccidents()) {
       accident.setLinks(null);
     }
-    if(accidents != null && accidents.isEmpty()) {
+    if (accidents != null && accidents.isEmpty()) {
       accidents = null;
     }
     isUsed |= accidents != null;
     for (Hazard hazard : this.getHazards()) {
       hazard.setLinks(null);
     }
-    if(hazards != null && hazards.isEmpty()) {
+    if (hazards != null && hazards.isEmpty()) {
       hazards = null;
     }
     isUsed |= hazards != null;
-    if(this.links != null) {
-      for(HazAccLink link: this.links) {
-        linkController.addLink(ObserverValue.HAZ_ACC_LINK, link.getAccidentId(), link.getHazardId());
+    if (this.links != null) {
+      for (HazAccLink link : this.links) {
+        linkController.addLink(ObserverValue.HAZ_ACC_LINK, link.getAccidentId(),
+            link.getHazardId());
       }
       links = null;
     }
@@ -286,7 +306,7 @@ public class HazAccController extends Observable implements IHazAccController{
    */
   private void deleteAllLinks(UUID id) {
     List<HazAccLink> toDelete = new ArrayList<>();
-    if(this.links != null) {
+    if (this.links != null) {
       for (HazAccLink link : this.links) {
         if (link.containsId(id)) {
           toDelete.add(link);
@@ -296,7 +316,8 @@ public class HazAccController extends Observable implements IHazAccController{
     this.links.removeAll(toDelete);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#getAllHazAccLinks()
    */
   @Override
@@ -304,38 +325,40 @@ public class HazAccController extends Observable implements IHazAccController{
     return new ArrayList<>(this.links);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#isUseSeverity()
    */
   @Override
   public boolean isUseSeverity() {
-    if(useSeverity != null) {
+    if (useSeverity != null) {
       return useSeverity;
     }
     return ASTPADefaultConfig.getInstance().USE_SEVERITY_ANALYSIS;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see xstampp.astpa.model.hazacc.IHazAccController#setUseSeverity(boolean)
    */
   @Override
   public boolean setUseSeverity(boolean useSeverity) {
-    if(this.useSeverity == null || useSeverity != this.useSeverity) {
+    if (this.useSeverity == null || useSeverity != this.useSeverity) {
       this.useSeverity = useSeverity;
       return true;
     }
     return false;
   }
-  
+
   private List<Accident> getAccidents() {
-    if(this.accidents == null) {
+    if (this.accidents == null) {
       this.accidents = new NumberedArrayList<>();
     }
     return accidents;
   }
-  
+
   private List<Hazard> getHazards() {
-    if(this.hazards == null) {
+    if (this.hazards == null) {
       this.hazards = new NumberedArrayList<>();
     }
     return hazards;

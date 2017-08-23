@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class AbstractLtlProviderData{
+public class AbstractLtlProviderData {
 
   private String combies;
 
@@ -29,7 +29,7 @@ public class AbstractLtlProviderData{
   private List<UUID> relatedUcas;
 
   /**
-   * @return A formula which formulates the critical combination in Linear Temporal Logic. 
+   * @return A formula which formulates the critical combination in Linear Temporal Logic.
    */
   public String getLtlProperty() {
     return this.ltl;
@@ -49,7 +49,7 @@ public class AbstractLtlProviderData{
   public String getSafetyRule() {
     return this.rule;
   }
-  
+
   /**
    * 
    * @return A list with UUIDs which must belong to UCA's {@link #getAllUnsafeControlActions()}.
@@ -85,12 +85,13 @@ public class AbstractLtlProviderData{
     this.relatedUcas = relatedUcas;
   }
 
-  public boolean addRelatedUcas(UUID link){
-    if(this.relatedUcas == null){
+  public boolean addRelatedUcas(UUID link) {
+    if (this.relatedUcas == null) {
       this.relatedUcas = new ArrayList<>();
     }
     return this.relatedUcas.add(link);
   }
+
   public String getCombies() {
     return combies;
   }

@@ -26,26 +26,26 @@ import xstampp.astpa.model.interfaces.ITableModel;
  */
 public interface ICausalFactor {
 
-	/**
-	 * @return the id
-	 */
-	UUID getId();
+  /**
+   * @return the id
+   */
+  UUID getId();
 
-	/**
-	 * @return the text
-	 */
-	String getText();
+  /**
+   * @return the text
+   */
+  String getText();
 
-	/**
-	 * @return the safetyConstraint
-	 */
-	ITableModel getSafetyConstraint();
+  /**
+   * @return the safetyConstraint
+   */
+  ITableModel getSafetyConstraint();
 
-	/**
-	 * @return the note
-	 */
-	String getNote();
-	
+  /**
+   * @return the note
+   */
+  String getNote();
+
   List<ICausalFactorEntry> getAllEntries();
 
 }

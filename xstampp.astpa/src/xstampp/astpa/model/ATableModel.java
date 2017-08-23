@@ -88,7 +88,7 @@ public abstract class ATableModel extends EntryWithSeverity
   }
 
   public ATableModel(String title, String description) {
-    this(title,description,-1);
+    this(title, description, -1);
   }
 
   public static <T> boolean move(boolean up, UUID id, List<T> list) {

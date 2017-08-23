@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -36,12 +36,12 @@ public class OpenStepEditor extends AbstractHandler {
     Object currentSelection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
         .getSelection(ProjectExplorer.ID); // $NON-NLS-1$
     String openWithEditor = event.getParameter("xstampp.command.steps.open"); //$NON-NLS-1$
-    String selectionIdString = event.getParameter(StandartEditorPart.SELECTED_ENTRY); //$NON-NLS-1$
+    String selectionIdString = event.getParameter(StandartEditorPart.SELECTED_ENTRY); // $NON-NLS-1$
     UUID selectionId = null;
-    if(selectionIdString != null) {
+    if (selectionIdString != null) {
       try {
         selectionId = UUID.fromString(selectionIdString);
-      } catch(IllegalArgumentException exc) {
+      } catch (IllegalArgumentException exc) {
         exc.printStackTrace();
       }
     }

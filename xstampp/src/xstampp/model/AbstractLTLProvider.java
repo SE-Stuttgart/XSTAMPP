@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -59,14 +59,15 @@ public abstract class AbstractLTLProvider implements ITableEntry {
   protected UUID caID;
 
   /**
-   * @return A formula which formulates the critical combination in Linear Temporal Logic 
+   * @return A formula which formulates the critical combination in Linear Temporal Logic
    */
   public String getLtlProperty() {
     return this.ltl;
   }
 
   /**
-   * @return A refined UCA entry which describes the interaction between control action and process values
+   * @return A refined UCA entry which describes the interaction between control action and process
+   *         values
    */
   public String getRefinedUCA() {
     return this.rUCA;
@@ -78,6 +79,7 @@ public abstract class AbstractLTLProvider implements ITableEntry {
   public String getSafetyRule() {
     return this.rule;
   }
+
   /**
    * 
    * @return The number of the referenced rule.
@@ -92,7 +94,7 @@ public abstract class AbstractLTLProvider implements ITableEntry {
   public UUID getRelatedControlActionID() {
     return this.caID;
   }
-  
+
   /**
    * 
    * @return A list with UUIDs which must belong to UCA's {@link #getAllUnsafeControlActions()}.
@@ -114,10 +116,11 @@ public abstract class AbstractLTLProvider implements ITableEntry {
   public UUID getRuleId() {
     return this.id;
   }
-  
+
   /**
    * 
-   * @return the Type of the context the rule should be generated for one of the <code>TYPE</code> constants Defined in IValueCombie
+   * @return the Type of the context the rule should be generated for one of the <code>TYPE</code>
+   *         constants Defined in IValueCombie
    */
   public String getType() {
     return this.type;

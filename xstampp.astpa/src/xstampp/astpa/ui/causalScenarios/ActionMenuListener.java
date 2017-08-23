@@ -19,41 +19,44 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 
 public class ActionMenuListener implements IMenuListener {
-  
+
   private List<IAction> actions;
 
   public ActionMenuListener(IAction action) {
     super();
     addAction(action);
   }
-  
+
   public ActionMenuListener(IAction[] actions) {
     super();
     for (int i = 0; i < actions.length; i++) {
       addAction(actions[i]);
     }
   }
-  
+
   public ActionMenuListener(List<IAction> actions) {
     super();
     this.actions = actions;
   }
+
   @Override
   public void menuAboutToShow(IMenuManager manager) {
     for (IAction iAction : actions) {
       manager.add(iAction);
       iAction.setEnabled(iAction.isEnabled());
     }
-    
+
   }
+
   public List<IAction> getActions() {
     return actions;
   }
+
   public void addAction(IAction actions) {
-    if(this.actions == null){
+    if (this.actions == null) {
       this.actions = new ArrayList<>();
     }
     this.actions.add(actions);
   }
-  
+
 }

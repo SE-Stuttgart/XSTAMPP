@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import xstampp.usermanagement.UserSystem;
  *
  */
 public interface IUserProject extends IDataModel {
-  
+
   /**
    * This getter should never return null but instead implementing systems
    * should initialize the user system as an {@link EmptyUserSystem}.
@@ -34,7 +34,7 @@ public interface IUserProject extends IDataModel {
   IUserSystem getUserSystem();
 
   IUserSystem createUserSystem();
-  
+
   IUserSystem loadUserSystem();
 
   UUID getExclusiveUserId();

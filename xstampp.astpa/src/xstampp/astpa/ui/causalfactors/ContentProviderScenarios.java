@@ -32,76 +32,77 @@ import xstampp.ui.common.contentassist.ITableContentProvider;
 public class ContentProviderScenarios implements ITableContentProvider<AbstractLTLProvider> {
 
   private static final String HAZARD_ID_PREFIX = "SC-"; //$NON-NLS-1$
-	private final transient ICausalFactorDataModel caInterface;
+  private final transient ICausalFactorDataModel caInterface;
   private ICausalFactorEntry entry;
   private UUID componentId;
   private UUID factorId;
   private UUID ucaId;
 
-	/**
-	 * 
-	 * @author Benedikt Markt
-	 * 
-	 * @param caInterface
-	 *            The data model interface
-	 * 
-	 */
-	public ContentProviderScenarios(final ICausalFactorDataModel caInterface,UUID componentId,UUID factorId, ICausalFactorEntry entry) {
-		this.caInterface = caInterface;
+  /**
+   * 
+   * @author Benedikt Markt
+   * 
+   * @param caInterface
+   *          The data model interface
+   * 
+   */
+  public ContentProviderScenarios(final ICausalFactorDataModel caInterface, UUID componentId,
+      UUID factorId, ICausalFactorEntry entry) {
+    this.caInterface = caInterface;
     this.componentId = componentId;
     this.factorId = factorId;
     this.entry = entry;
     this.ucaId = entry.getUcaLink();
-	}
+  }
 
-	@Override
-	public List<AbstractLTLProvider> getAllItems() {
-		return this.caInterface.getAllRefinedRules(new IEntryFilter<AbstractLTLProvider>() {
-      
+  @Override
+  public List<AbstractLTLProvider> getAllItems() {
+    return this.caInterface.getAllRefinedRules(new IEntryFilter<AbstractLTLProvider>() {
+
       @Override
       public boolean check(AbstractLTLProvider model) {
-        if(model.getUCALinks() == null){
+        if (model.getUCALinks() == null) {
           return false;
         }
         return model.getUCALinks().contains(ucaId);
       }
     });
-	}
+  }
 
-	@Override
-	public List<AbstractLTLProvider> getLinkedItems(final UUID itemId) {
-	  List<AbstractLTLProvider> linkedScenarios = new ArrayList<>();
-	  if(entry.getScenarioLinks() != null){
-  	  for(UUID scenarios : entry.getScenarioLinks()){
-  	    linkedScenarios.add(caInterface.getRefinedScenario(scenarios));
-  	  }
-	  }
-		return linkedScenarios;
-	}
+  @Override
+  public List<AbstractLTLProvider> getLinkedItems(final UUID itemId) {
+    List<AbstractLTLProvider> linkedScenarios = new ArrayList<>();
+    if (entry.getScenarioLinks() != null) {
+      for (UUID scenarios : entry.getScenarioLinks()) {
+        linkedScenarios.add(caInterface.getRefinedScenario(scenarios));
+      }
+    }
+    return linkedScenarios;
+  }
 
-	@Override
-	public void addLink(final UUID item1, final UUID item2) {
-	  CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-	  List<UUID> ids = new ArrayList<>();
-	  if(entry.getScenarioLinks() != null){
-	    ids.addAll(entry.getScenarioLinks());
-	  }
-	  ids.add(item2);
-	  data.setScenarioLinks(ids);
-		this.caInterface.changeCausalEntry(componentId,factorId, data);
-	}
+  @Override
+  public void addLink(final UUID item1, final UUID item2) {
+    CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
+    List<UUID> ids = new ArrayList<>();
+    if (entry.getScenarioLinks() != null) {
+      ids.addAll(entry.getScenarioLinks());
+    }
+    ids.add(item2);
+    data.setScenarioLinks(ids);
+    this.caInterface.changeCausalEntry(componentId, factorId, data);
+  }
 
-	@Override
-	public void removeLink(final UUID item, final UUID removeItem) {
-	  CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-	  List<UUID> ids = new ArrayList<>();
-    if(entry.getScenarioLinks() != null){
+  @Override
+  public void removeLink(final UUID item, final UUID removeItem) {
+    CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
+    List<UUID> ids = new ArrayList<>();
+    if (entry.getScenarioLinks() != null) {
       ids.addAll(entry.getScenarioLinks());
     }
     ids.remove(removeItem);
     data.setScenarioLinks(ids);
-    this.caInterface.changeCausalEntry(componentId,factorId, data);
-	}
+    this.caInterface.changeCausalEntry(componentId, factorId, data);
+  }
 
   @Override
   public String getPrefix() {

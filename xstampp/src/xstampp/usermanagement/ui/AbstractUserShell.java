@@ -122,7 +122,7 @@ public abstract class AbstractUserShell extends ModalShell {
   public void setUserLabelStyle(int userLabelStyle) {
     this.userLabelStyle = userLabelStyle;
   }
-  
+
   void setEnableUserInput(boolean enabled) {
     for (Control control : this.inputGroup.getChildren()) {
       control.setEnabled(enabled);

@@ -30,40 +30,40 @@ import xstampp.util.DirectEditor;
  */
 public class CSDirectEditManager extends DirectEditManager {
 
-	private CSTextLabel label;
+  private CSTextLabel label;
 
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param source
-	 *            The Component in which the editAction is executed
-	 * @param editorType
-	 *            The Type of the Editor which is used to edit the Label
-	 * @param locator
-	 *            The locator class decides where the Editor is positioned
-	 * @param label
-	 *            The Label whose content is to be manipulated
-	 */
-	public CSDirectEditManager(GraphicalEditPart source, Class<?> editorType,
-			CellEditorLocator locator, CSTextLabel label) {
-		super(source, editorType, locator);
-		this.label = label;
+  /**
+   * 
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param source
+   *          The Component in which the editAction is executed
+   * @param editorType
+   *          The Type of the Editor which is used to edit the Label
+   * @param locator
+   *          The locator class decides where the Editor is positioned
+   * @param label
+   *          The Label whose content is to be manipulated
+   */
+  public CSDirectEditManager(GraphicalEditPart source, Class<?> editorType,
+      CellEditorLocator locator, CSTextLabel label) {
+    super(source, editorType, locator);
+    this.label = label;
 
-	}
+  }
 
-	@Override
-	protected void initCellEditor() {
-		String initialLabelText = this.label.getText();
+  @Override
+  protected void initCellEditor() {
+    String initialLabelText = this.label.getText();
 
-		this.getCellEditor().setValue(initialLabelText);
+    this.getCellEditor().setValue(initialLabelText);
 
-		((DirectEditor) this.getCellEditor()).setTextFont(this.label
-				.getFont());
-		((DirectEditor) this.getCellEditor()).setTextColor(this.label
-				.getForegroundColor());
+    ((DirectEditor) this.getCellEditor()).setTextFont(this.label
+        .getFont());
+    ((DirectEditor) this.getCellEditor()).setTextColor(this.label
+        .getForegroundColor());
 
-	}
+  }
 
 }

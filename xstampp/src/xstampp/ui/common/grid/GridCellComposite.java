@@ -145,7 +145,8 @@ public class GridCellComposite extends Composite implements IGridCell {
   }
 
   @Override
-  public void onMouseDown(MouseEvent e, org.eclipse.swt.graphics.Point relativeMouse, Rectangle cellBounds) {
+  public void onMouseDown(MouseEvent e, org.eclipse.swt.graphics.Point relativeMouse,
+      Rectangle cellBounds) {
     // intentionally empty
   }
 

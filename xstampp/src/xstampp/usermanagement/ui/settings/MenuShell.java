@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer- initial API and implementation
+ ******************************************************************************/
 package xstampp.usermanagement.ui.settings;
 
 import java.util.HashMap;
@@ -37,7 +48,7 @@ public class MenuShell extends MouseTrackAdapter {
         shell.close();
       }
     });
-    
+
     GridLayout layout = new GridLayout();
     shell.setLayout(layout);
     Label settings = new Label(shell, SWT.None);
@@ -76,8 +87,8 @@ public class MenuShell extends MouseTrackAdapter {
 
   @Override
   public void mouseEnter(MouseEvent e) {
-    ((Label) e.getSource()).setBackground(
-        PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY));
+    ((Label) e.getSource())
+        .setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY));
   }
 
   @Override

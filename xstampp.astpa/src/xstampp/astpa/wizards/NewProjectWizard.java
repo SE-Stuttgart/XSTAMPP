@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -32,35 +32,35 @@ import xstampp.util.STPAPluginUtils;
  */
 public class NewProjectWizard extends Wizard implements INewWizard {
 
-	private final NewProjectPage page;
+  private final NewProjectPage page;
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 */
-	public NewProjectWizard() {
-		ImageDescriptor desc = Activator
-				.getImageDescriptor("icons/branding/i64.png"); //$NON-NLS-1$
-		this.page = new NewProjectPage(Messages.CreateNewProject,
-				Messages.NewProject, desc,new String[]{"hazx","haz"}, //$NON-NLS-1$ //$NON-NLS-2$
-				new String[]{Messages.HazXDesc,Messages.HazDesc});
-		this.addPage(this.page);
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   */
+  public NewProjectWizard() {
+    ImageDescriptor desc = Activator
+        .getImageDescriptor("icons/branding/i64.png"); //$NON-NLS-1$
+    this.page = new NewProjectPage(Messages.CreateNewProject,
+        Messages.NewProject, desc, new String[] { "hazx", "haz" }, //$NON-NLS-1$ //$NON-NLS-2$
+        new String[] { Messages.HazXDesc, Messages.HazDesc });
+    this.addPage(this.page);
+  }
 
-	@Override
-	public boolean performFinish() {
+  @Override
+  public boolean performFinish() {
 
-		Map<String, String> values = new HashMap<>();
-		values.put("astpa.new.name", this.page.getNewProjectName()); //$NON-NLS-1$
-		values.put("astpa.new.path", this.page.getNewProjectPath()); //$NON-NLS-1$
-		STPAPluginUtils.executeParaCommand("astpa.commands.new", values); //$NON-NLS-1$
-		return true;
-	}
+    Map<String, String> values = new HashMap<>();
+    values.put("astpa.new.name", this.page.getNewProjectName()); //$NON-NLS-1$
+    values.put("astpa.new.path", this.page.getNewProjectPath()); //$NON-NLS-1$
+    STPAPluginUtils.executeParaCommand("astpa.commands.new", values); //$NON-NLS-1$
+    return true;
+  }
 
-	@Override
-	public void init(IWorkbench arg0, IStructuredSelection arg1) {
-		// initially empty
+  @Override
+  public void init(IWorkbench arg0, IStructuredSelection arg1) {
+    // initially empty
 
-	}
+  }
 }

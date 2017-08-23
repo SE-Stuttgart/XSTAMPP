@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -36,7 +36,8 @@ public class FontChooserHandle extends AbstractHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
-    Object activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+    Object activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .getActiveEditor();
     if (activeEditor instanceof ITextEditor) {
       String fontName = event.getParameter("xstampp.commandParameter.fontfamily"); //$NON-NLS-1$
       String fontSize = event.getParameter("xstampp.commandParameter.fontsize");//$NON-NLS-1$
@@ -46,9 +47,11 @@ public class FontChooserHandle extends AbstractHandler {
       }
       if (fontSize != null) {
         try {
-          ((ITextEditor) activeEditor).setFontSize(ITextEditor.FONT_SIZE, Integer.parseInt(fontSize));
+          ((ITextEditor) activeEditor).setFontSize(ITextEditor.FONT_SIZE,
+              Integer.parseInt(fontSize));
         } catch (NumberFormatException e) {
-          ProjectManager.getLOGGER().error(this.getClass() + " has recived: " + fontSize + " but expected an Integer"); //$NON-NLS-1$ //$NON-NLS-2$
+          ProjectManager.getLOGGER()
+              .error(this.getClass() + " has recived: " + fontSize + " but expected an Integer"); //$NON-NLS-1$ //$NON-NLS-2$
         }
       }
 

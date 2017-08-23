@@ -134,18 +134,18 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
       return false;
     }
     switch (this.compModel.getComponentType()) {
-      case PROCESS_MODEL: {
-        return this.parentModel.getComponentType() == ComponentType.CONTROLLER;
-      }
-      case PROCESS_VARIABLE: {
-        return this.parentModel.getComponentType() == ComponentType.PROCESS_MODEL;
-      }
-      case PROCESS_VALUE: {
-        return this.parentModel.getComponentType() == ComponentType.PROCESS_VARIABLE;
-      }
-      default: {
-        return true;
-      }
+    case PROCESS_MODEL: {
+      return this.parentModel.getComponentType() == ComponentType.CONTROLLER;
+    }
+    case PROCESS_VARIABLE: {
+      return this.parentModel.getComponentType() == ComponentType.PROCESS_MODEL;
+    }
+    case PROCESS_VALUE: {
+      return this.parentModel.getComponentType() == ComponentType.PROCESS_VARIABLE;
+    }
+    default: {
+      return true;
+    }
     }
 
   }

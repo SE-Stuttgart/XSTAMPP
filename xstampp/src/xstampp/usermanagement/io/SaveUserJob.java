@@ -39,8 +39,11 @@ public class SaveUserJob extends XstamppJob {
 
   /**
    * Constructs the job.
-   * @param database the {@link IUserSystem} which is stored
-   * @param name the name of the project for which this user database is used
+   * 
+   * @param database
+   *          the {@link IUserSystem} which is stored
+   * @param name
+   *          the name of the project for which this user database is used
    */
   public SaveUserJob(UserSystem database, String name) {
     super("save user data...");

@@ -348,6 +348,7 @@ public class GridWrapper {
   private boolean lockLocalUpdate;
   private Point mousePosition;
   private String[] headerToolTips = null;
+
   /**
    * Get the image for the add button.
    * 
@@ -808,12 +809,11 @@ public class GridWrapper {
     refreshColumns();
   }
 
-
   public void setHeaderToolTip(String headerToolTip) {
     this.headerToolTips = new String[columnLabels.length];
     Arrays.fill(this.headerToolTips, headerToolTip);
     refreshColumns();
-    
+
   }
 
   /**
@@ -904,7 +904,7 @@ public class GridWrapper {
       childColumn.setWordWrap(true);
       childColumn.setHeaderWordWrap(true);
       childColumn.setWidth(GridWrapper.DEFAULT_COLUMN_WIDTH);
-      if(headerToolTips != null) {
+      if (headerToolTips != null) {
         childColumn.setHeaderTooltip(headerToolTips[i]);
       }
       childColumn.setCellRenderer(cellRenderer);

@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -29,30 +29,31 @@ import xstampp.ui.common.grid.GridCellButton;
  */
 public class GridCellButtonAddCausalFactor extends GridCellButton {
 
-	private ICausalComponent component;
+  private ICausalComponent component;
   private ICausalFactorDataModel dataInterface;
 
-	/**
-	 * Ctor.
-	 * 
-	 * @author Patrick Wickenhaeuser
-	 * 
-	 * @param component
-	 *            the component the add buttons adds causal factors to.
-	 */
-	public GridCellButtonAddCausalFactor(ICausalComponent component,ICausalFactorDataModel dataInterface) {
-		super(Messages.AddNewCausalFactor);
+  /**
+   * Ctor.
+   * 
+   * @author Patrick Wickenhaeuser
+   * 
+   * @param component
+   *          the component the add buttons adds causal factors to.
+   */
+  public GridCellButtonAddCausalFactor(ICausalComponent component,
+      ICausalFactorDataModel dataInterface) {
+    super(Messages.AddNewCausalFactor);
 
-		this.component = component;
+    this.component = component;
     this.dataInterface = dataInterface;
-	}
+  }
 
-	@Override
-	public void onMouseDown(MouseEvent e,
-			org.eclipse.swt.graphics.Point relativeMouse,
-			Rectangle cellBounds) {
-		ProjectManager.getLOGGER().info(Messages.AddingNewCausalFactor);
-		UUID factorId = dataInterface
-				.addCausalFactor(component.getId());
-	}
+  @Override
+  public void onMouseDown(MouseEvent e,
+      org.eclipse.swt.graphics.Point relativeMouse,
+      Rectangle cellBounds) {
+    ProjectManager.getLOGGER().info(Messages.AddingNewCausalFactor);
+    UUID factorId = dataInterface
+        .addCausalFactor(component.getId());
+  }
 }

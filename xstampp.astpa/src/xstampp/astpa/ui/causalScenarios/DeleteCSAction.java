@@ -18,24 +18,26 @@ import xstampp.model.AbstractLTLProvider;
 import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridWrapper;
 
-public class DeleteCSAction extends DeleteGridEntryAction<IExtendedDataModel>{
-  
-  public DeleteCSAction(GridWrapper grid, IExtendedDataModel dataModel, String entryType, String prefix) {
+public class DeleteCSAction extends DeleteGridEntryAction<IExtendedDataModel> {
+
+  public DeleteCSAction(GridWrapper grid, IExtendedDataModel dataModel, String entryType,
+      String prefix) {
     super(grid, dataModel, entryType, prefix);
   }
-  
+
   @Override
   protected String getIdString(UUID id) {
     String idString = null;
     AbstractLTLProvider refinedRule = getDataModel().getRefinedScenario(id);
-    if(refinedRule != null){
-      idString = getPrefix()+refinedRule.getNumber();
+    if (refinedRule != null) {
+      idString = getPrefix() + refinedRule.getNumber();
     }
     return idString;
   }
-  
+
   @Override
   protected void removeEntry(UUID id) {
-    getDataModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.CAUSAL_SCENARIO, false, id);
+    getDataModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.CAUSAL_SCENARIO, false,
+        id);
   }
 }

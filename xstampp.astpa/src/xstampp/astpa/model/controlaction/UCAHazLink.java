@@ -30,108 +30,108 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class UCAHazLink implements IUCAHazLink {
 
-  @XmlElement(name="unsafeControlActionId")
-	private UUID unsafeControlActionId;
-  
-  @XmlElement(name="hazardId")
-	private UUID hazardId;
+  @XmlElement(name = "unsafeControlActionId")
+  private UUID unsafeControlActionId;
 
-	/**
-	 * Constructor for a link
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param unsafeControlActionId
-	 *            the id of the accident
-	 * @param hazardId
-	 *            the id of the hazard
-	 */
-	public UCAHazLink(UUID unsafeControlActionId, UUID hazardId) {
-		this.unsafeControlActionId = unsafeControlActionId;
-		this.hazardId = hazardId;
-	}
+  @XmlElement(name = "hazardId")
+  private UUID hazardId;
 
-	/**
-	 * Empty constructor for JAXB. Do not use it!
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 */
-	public UCAHazLink() {
-		// empty constructor for JAXB
-	}
+  /**
+   * Constructor for a link
+   * 
+   * @author Fabian Toth
+   * 
+   * @param unsafeControlActionId
+   *          the id of the accident
+   * @param hazardId
+   *          the id of the hazard
+   */
+  public UCAHazLink(UUID unsafeControlActionId, UUID hazardId) {
+    this.unsafeControlActionId = unsafeControlActionId;
+    this.hazardId = hazardId;
+  }
 
-	@Override
-	public UUID getUnsafeControlActionId() {
-		return this.unsafeControlActionId;
-	}
+  /**
+   * Empty constructor for JAXB. Do not use it!
+   * 
+   * @author Fabian Toth
+   * 
+   */
+  public UCAHazLink() {
+    // empty constructor for JAXB
+  }
 
-	/**
-	 * @param unsafeControlActionId
-	 *            the accidentId to set
-	 */
-	public void setUnsafeControlActionId(UUID unsafeControlActionId) {
-		this.unsafeControlActionId = unsafeControlActionId;
-	}
+  @Override
+  public UUID getUnsafeControlActionId() {
+    return this.unsafeControlActionId;
+  }
 
-	@Override
-	public UUID getHazardId() {
-		return this.hazardId;
-	}
+  /**
+   * @param unsafeControlActionId
+   *          the accidentId to set
+   */
+  public void setUnsafeControlActionId(UUID unsafeControlActionId) {
+    this.unsafeControlActionId = unsafeControlActionId;
+  }
 
-	/**
-	 * @param hazardId
-	 *            the hazardId to set
-	 */
-	public void setHazardId(UUID hazardId) {
-		this.hazardId = hazardId;
-	}
+  @Override
+  public UUID getHazardId() {
+    return this.hazardId;
+  }
 
-	@Override
-	public boolean containsId(UUID id) {
-		return this.unsafeControlActionId.equals(id)
-				|| this.hazardId.equals(id);
-	}
+  /**
+   * @param hazardId
+   *          the hazardId to set
+   */
+  public void setHazardId(UUID hazardId) {
+    this.hazardId = hazardId;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result)
-				+ ((this.unsafeControlActionId == null) ? 0
-						: this.unsafeControlActionId.hashCode());
-		result = (prime * result)
-				+ ((this.hazardId == null) ? 0 : this.hazardId.hashCode());
-		return result;
-	}
+  @Override
+  public boolean containsId(UUID id) {
+    return this.unsafeControlActionId.equals(id)
+        || this.hazardId.equals(id);
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		UCAHazLink other = (UCAHazLink) obj;
-		if (this.unsafeControlActionId == null) {
-			if (other.unsafeControlActionId != null) {
-				return false;
-			}
-		} else if (!this.unsafeControlActionId
-				.equals(other.unsafeControlActionId)) {
-			return false;
-		}
-		if (this.hazardId == null) {
-			if (other.hazardId != null) {
-				return false;
-			}
-		} else if (!this.hazardId.equals(other.hazardId)) {
-			return false;
-		}
-		return true;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = (prime * result)
+        + ((this.unsafeControlActionId == null) ? 0
+            : this.unsafeControlActionId.hashCode());
+    result = (prime * result)
+        + ((this.hazardId == null) ? 0 : this.hazardId.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (this.getClass() != obj.getClass()) {
+      return false;
+    }
+    UCAHazLink other = (UCAHazLink) obj;
+    if (this.unsafeControlActionId == null) {
+      if (other.unsafeControlActionId != null) {
+        return false;
+      }
+    } else if (!this.unsafeControlActionId
+        .equals(other.unsafeControlActionId)) {
+      return false;
+    }
+    if (this.hazardId == null) {
+      if (other.hazardId != null) {
+        return false;
+      }
+    } else if (!this.hazardId.equals(other.hazardId)) {
+      return false;
+    }
+    return true;
+  }
 }

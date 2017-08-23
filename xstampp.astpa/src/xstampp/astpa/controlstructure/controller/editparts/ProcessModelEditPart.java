@@ -35,49 +35,48 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class ProcessModelEditPart extends CSAbstractEditPart {
 
-	private static final int TOP_OFFSET = 10;
+  private static final int TOP_OFFSET = 10;
 
-	/**
-	 * Constructor sets the unique ID of {@link ProcessModelEditPart}
-	 * 
-	 * @author Aliaksei Babkovich
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            TODO
-	 */
-	public ProcessModelEditPart(IControlStructureEditorDataModel model,
-			String stepId) {
-		super(model, stepId, 1);
-		this.activate();
-	}
+  /**
+   * Constructor sets the unique ID of {@link ProcessModelEditPart}
+   * 
+   * @author Aliaksei Babkovich
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          TODO
+   */
+  public ProcessModelEditPart(IControlStructureEditorDataModel model,
+      String stepId) {
+    super(model, stepId, 1);
+    this.activate();
+  }
 
+  @Override
+  public void deactivate() {
+    ((IControlStructureEditPart) this.getParent()).getFigure().setBorder(
+        new LineBorder(ColorConstants.blue, 1));
+    super.deactivate();
+  }
 
-	@Override
-	public void deactivate() {
-		((IControlStructureEditPart) this.getParent()).getFigure().setBorder(
-				new LineBorder(ColorConstants.blue, 1));
-		super.deactivate();
-	}
-
-	@Override
-	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure =  new ProcessModelFigure(this.getId(),
+  @Override
+  protected IFigure createFigure() {
+    IControlStructureFigure tmpFigure = new ProcessModelFigure(this.getId(),
         ProcessVariableEditPart.TOP_OFFSET);
 
-		tmpFigure.setPreferenceStore(getStore());
-		tmpFigure.setBorder(new LineBorder(1));
+    tmpFigure.setPreferenceStore(getStore());
+    tmpFigure.setBorder(new LineBorder(1));
 
-		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
-		((CSAbstractEditPart) this.getParent()).getFigure().setBorder(
-				new LineBorder(ColorConstants.blue, 2));
-		tmpFigure.setToolTip(new Label(Messages.ProcessModel));
-		return tmpFigure;
-	}
+    tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
+    ((CSAbstractEditPart) this.getParent()).getFigure().setBorder(
+        new LineBorder(ColorConstants.blue, 2));
+    tmpFigure.setToolTip(new Label(Messages.ProcessModel));
+    return tmpFigure;
+  }
 
-	@Override
-	public void translateToRoot(Translatable t) {
-		this.getFigure().getParent().translateFromParent(t);
-	}
+  @Override
+  public void translateToRoot(Translatable t) {
+    this.getFigure().getParent().translateFromParent(t);
+  }
 }

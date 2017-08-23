@@ -32,47 +32,47 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class CSPalettePage extends PaletteViewerPage {
 
-	private FlyoutPaletteComposite splitter;
+  private FlyoutPaletteComposite splitter;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param provider
-	 *            the provider used to create a PaletteViewer
-	 */
-	public CSPalettePage(PaletteViewerProvider provider) {
-		super(provider);
+  /**
+   * Constructor
+   * 
+   * @param provider
+   *          the provider used to create a PaletteViewer
+   */
+  public CSPalettePage(PaletteViewerProvider provider) {
+    super(provider);
 
-	}
+  }
 
-	/**
-	 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		if (this.splitter != null) {
-			this.splitter.setExternalViewer(this.viewer);
-		}
-	}
+  /**
+   * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
+  public void createControl(Composite parent) {
+    super.createControl(parent);
+    if (this.splitter != null) {
+      this.splitter.setExternalViewer(this.viewer);
+    }
+  }
 
-	/**
-	 * @see org.eclipse.ui.part.IPage#dispose()
-	 */
-	@Override
-	public void dispose() {
-		if (this.splitter != null) {
-			this.splitter.setExternalViewer(null);
-		}
-		super.dispose();
+  /**
+   * @see org.eclipse.ui.part.IPage#dispose()
+   */
+  @Override
+  public void dispose() {
+    if (this.splitter != null) {
+      this.splitter.setExternalViewer(null);
+    }
+    super.dispose();
 
-	}
+  }
 
-	/**
-	 * @return the PaletteViewer created and displayed by this page
-	 */
-	public PaletteViewer getPaletteViewer() {
-		return this.viewer;
-	}
+  /**
+   * @return the PaletteViewer created and displayed by this page
+   */
+  public PaletteViewer getPaletteViewer() {
+    return this.viewer;
+  }
 
 }

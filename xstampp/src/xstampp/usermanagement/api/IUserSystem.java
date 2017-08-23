@@ -47,7 +47,7 @@ public interface IUserSystem {
   public String getSystemName();
 
   public boolean assignResponsibility(UUID responsibility);
-  
+
   public boolean assignResponsibility(IUser user, UUID responsibility);
 
   public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap);

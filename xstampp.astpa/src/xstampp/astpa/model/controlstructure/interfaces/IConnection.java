@@ -27,24 +27,19 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
  */
 public interface IConnection extends IComponent {
 
-
-	
-
-	/**
-	 * Getter for the connection type
-	 * 
-	 * @return the type constant of the Connection
-	 * 
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 */
-	ConnectionType getConnectionType();
+  /**
+   * Getter for the connection type
+   * 
+   * @return the type constant of the Connection
+   * 
+   * @author Lukas Balzer, Aliaksei Babkovich
+   */
+  ConnectionType getConnectionType();
 
   List<Point> getBendPoints();
 
   IAnchor getTargetAnchor();
 
   IAnchor getSourceAnchor();
-	
-
 
 }

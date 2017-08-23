@@ -31,7 +31,8 @@ import xstampp.Activator;
  * @author Sebastian Sieber
  * 
  */
-public class PreferencePageColorAndFont extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class PreferencePageColorAndFont extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
   private ColorFieldEditor navigationSelectedColor;
 
@@ -59,14 +60,17 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage implem
   @Override
   protected void createFieldEditors() {
     this.useNavigationColor = new BooleanFieldEditor(IPreferenceConstants.USE_NAVIGATION_COLORS,
-        Messages.PreferencePageColorAndFont_DoYouWantToHighlight_selected_step_items, this.getFieldEditorParent());
+        Messages.PreferencePageColorAndFont_DoYouWantToHighlight_selected_step_items,
+        this.getFieldEditorParent());
     this.addField(this.useNavigationColor);
 
-    this.navigationSelectedColor = new ColorFieldEditor(IPreferenceConstants.NAVIGATION_ITEM_SELECTED,
-        Messages.SelectedNavItem, this.getFieldEditorParent());
+    this.navigationSelectedColor = new ColorFieldEditor(
+        IPreferenceConstants.NAVIGATION_ITEM_SELECTED, Messages.SelectedNavItem,
+        this.getFieldEditorParent());
     this.addField(this.navigationSelectedColor);
 
-    this.extensionSortChooser = new RadioGroupFieldEditor(IPreferenceConstants.NAVIGATION_EXTENSION_SORT,
+    this.extensionSortChooser = new RadioGroupFieldEditor(
+        IPreferenceConstants.NAVIGATION_EXTENSION_SORT,
         Messages.PreferencePageColorAndFont_SortExplorerByExtension, 3,
         new String[][] { { Messages.PreferencePageColorAndFont_From_a_to_z, "1" }, //$NON-NLS-1$
             { Messages.PreferencePageColorAndFont_From_z_to_a, "-1" }, //$NON-NLS-1$
@@ -83,8 +87,8 @@ public class PreferencePageColorAndFont extends FieldEditorPreferencePage implem
     this.addField(this.nameSortChooser);
 
     // Fonts
-    this.defaultFont = new FontFieldEditor(IPreferenceConstants.DEFAULT_FONT, Messages.DefaultNavigationFont,
-        this.getFieldEditorParent());
+    this.defaultFont = new FontFieldEditor(IPreferenceConstants.DEFAULT_FONT,
+        Messages.DefaultNavigationFont, this.getFieldEditorParent());
     this.addField(this.defaultFont);
   }
 

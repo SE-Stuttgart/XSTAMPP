@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -47,81 +47,81 @@ import xstampp.util.AbstractLoadJob;
  *
  */
 public class STPALoadJob extends AbstractLoadJob {
-	
-	/**
-	 *
-	 * @author Lukas Balzer
-	 *
-	 */
-	public STPALoadJob() {
-		super();
-	}
 
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
-		setName("Loading " +getFile().getName() + "...");
-		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
-		try(StringWriter writer = new StringWriter();
-	      FileInputStream inputStream = new FileInputStream(getFile());) {
-			// validate the file
-			URL schemaFile;
-			schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
-			
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   */
+  public STPALoadJob() {
+    super();
+  }
+
+  @Override
+  protected IStatus run(IProgressMonitor monitor) {
+    setName("Loading " + getFile().getName() + "...");
+    monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
+    try (StringWriter writer = new StringWriter();
+        FileInputStream inputStream = new FileInputStream(getFile());) {
+      // validate the file
+      URL schemaFile;
+      schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
+
       IOUtils.copy(inputStream, writer, "UTF-8");
       String line = writer.toString();
-     //gt and lt are replaced by null chars for the time of unescaping
+      // gt and lt are replaced by null chars for the time of unescaping
       line = line.replace("\0", "\0\0\0\0"); //$NON-NLS-1$ //$NON-NLS-2$
       line = line.replace(">", "\0\0"); //$NON-NLS-1$ //$NON-NLS-2$
-			line = line.replace("<", "\0"); //$NON-NLS-1$ //$NON-NLS-2$
-			line = StringEscapeUtils.unescapeHtml4(line);
-			//now all gt/lt signs left after the unescaping are not part of the xml
-			//syntax and get back escaped to assure the correct xml parsing
-			line = line.replace("&", "&amp;"); //$NON-NLS-1$ //$NON-NLS-2$
-	    line = line.replace(">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
-	    line = line.replace("<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
-	      
+      line = line.replace("<", "\0"); //$NON-NLS-1$ //$NON-NLS-2$
+      line = StringEscapeUtils.unescapeHtml4(line);
+      // now all gt/lt signs left after the unescaping are not part of the xml
+      // syntax and get back escaped to assure the correct xml parsing
+      line = line.replace("&", "&amp;"); //$NON-NLS-1$ //$NON-NLS-2$
+      line = line.replace(">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
+      line = line.replace("<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
+
       line = line.replace("\0\0\0\0", "\0"); //$NON-NLS-1$ //$NON-NLS-2$
-			line = line.replace("\0\0",">"); //$NON-NLS-1$ //$NON-NLS-2$
-			line = line.replace("\0","<"); //$NON-NLS-1$ //$NON-NLS-2$
-			Reader stream= new StringReader(line); 
-			Source xmlFile = new StreamSource(stream,getFile().toURI().toString());
-			SchemaFactory schemaFactory = SchemaFactory
-					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = schemaFactory.newSchema(schemaFile);
-	
-			Validator validator = schema.newValidator();
-			validator.validate(xmlFile);
-			System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-			JAXBContext context = JAXBContext.newInstance(DataModelController.class);
+      line = line.replace("\0\0", ">"); //$NON-NLS-1$ //$NON-NLS-2$
+      line = line.replace("\0", "<"); //$NON-NLS-1$ //$NON-NLS-2$
+      Reader stream = new StringReader(line);
+      Source xmlFile = new StreamSource(stream, getFile().toURI().toString());
+      SchemaFactory schemaFactory = SchemaFactory
+          .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      Schema schema = schemaFactory.newSchema(schemaFile);
 
-			Unmarshaller um = context.createUnmarshaller();
-			stream= new StringReader(line); 
-      xmlFile = new StreamSource(stream,getFile().toURI().toString());
-			this.setController((IDataModel) um.unmarshal(xmlFile));
-			ProjectManager.getLOGGER().debug("Loading of " + getFile().getName() +" successful");
-			System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize"); //$NON-NLS-1$
+      Validator validator = schema.newValidator();
+      validator.validate(xmlFile);
+      System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+      JAXBContext context = JAXBContext.newInstance(DataModelController.class);
 
-		} catch (SAXException e) {
-			this.getLog().error(e.getMessage(), e);
-			addErrorMsg(String.format(Messages.InvalidSchemaFile ,"hazschema.xsd"));  
-			addErrorMsg(e.getMessage());  
-			return Status.CANCEL_STATUS;
-		} catch (IOException e) {
-			this.getLog().error(e.getMessage(), e);
-			addErrorMsg(e.getMessage());  
-			return Status.CANCEL_STATUS;
-		} catch (JAXBException e) {
-			e.printStackTrace();
-			addErrorMsg(String.format(Messages.ThisHazFileIsInvalid,getFile().getName()));
-			addErrorMsg(e.getMessage());  
-			return Status.CANCEL_STATUS;
+      Unmarshaller um = context.createUnmarshaller();
+      stream = new StringReader(line);
+      xmlFile = new StreamSource(stream, getFile().toURI().toString());
+      this.setController((IDataModel) um.unmarshal(xmlFile));
+      ProjectManager.getLOGGER().debug("Loading of " + getFile().getName() + " successful");
+      System.getProperties().remove("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize"); //$NON-NLS-1$
 
-		}
-		return Status.OK_STATUS;
-	}
+    } catch (SAXException e) {
+      this.getLog().error(e.getMessage(), e);
+      addErrorMsg(String.format(Messages.InvalidSchemaFile, "hazschema.xsd"));
+      addErrorMsg(e.getMessage());
+      return Status.CANCEL_STATUS;
+    } catch (IOException e) {
+      this.getLog().error(e.getMessage(), e);
+      addErrorMsg(e.getMessage());
+      return Status.CANCEL_STATUS;
+    } catch (JAXBException e) {
+      e.printStackTrace();
+      addErrorMsg(String.format(Messages.ThisHazFileIsInvalid, getFile().getName()));
+      addErrorMsg(e.getMessage());
+      return Status.CANCEL_STATUS;
 
-	@Override
-	protected Observable getModelObserver() {
-		return null;
-	}
+    }
+    return Status.OK_STATUS;
+  }
+
+  @Override
+  protected Observable getModelObserver() {
+    return null;
+  }
 }

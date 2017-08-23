@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
 
     @Override
     public void proposalAccepted(IContentProposal proposal) {
-      UUID linkId = ((LinkProposal)proposal).getProposalId();
+      UUID linkId = ((LinkProposal) proposal).getProposalId();
       if (linkId != null) {
         grid.setUpdateLock();
         publicInterface.addLink(assignedId, linkId);
@@ -37,49 +37,48 @@ public class CellButtonLinking<T extends ITableContentProvider<?>> extends CellB
       }
     }
   }
+
   private T publicInterface;
   private UUID assignedId;
   private GridWrapper grid;
 
-  public CellButtonLinking(GridWrapper grid, T publicInterface,UUID assignedId) {
-    super(new Rectangle(-1, -1,
-        GridWrapper.getLinkButton16().getBounds().width,
-        GridWrapper.getLinkButton16().getBounds().height),
-    GridWrapper.getLinkButton16());
+  public CellButtonLinking(GridWrapper grid, T publicInterface, UUID assignedId) {
+    super(new Rectangle(-1, -1, GridWrapper.getLinkButton16().getBounds().width,
+        GridWrapper.getLinkButton16().getBounds().height), GridWrapper.getLinkButton16());
     this.grid = grid;
     // TODO Auto-generated constructor stub
     this.publicInterface = publicInterface;
     this.assignedId = assignedId;
-    
+
   }
 
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     List<? extends ITableEntry> linkedItems = this.publicInterface.getLinkedItems(this.assignedId);
-   
+
     List<? extends ITableEntry> items = this.publicInterface.getAllItems();
     // remove all already linked items
     items.removeAll(linkedItems);
 
     LinkProposal[] proposals = new LinkProposal[items.size()];
-    
+
     for (int i = 0; i < items.size(); i++) {
       String itemNumber = this.publicInterface.getPrefix() + items.get(i).getNumber();
       String itemTitle = items.get(i).getTitle();
       proposals[i] = new LinkProposal();
       proposals[i].setProposalId(items.get(i).getId());
-      if(itemTitle == null){
+      if (itemTitle == null) {
         proposals[i].setLabel(itemNumber);
-      }else{
+      } else {
         proposals[i].setLabel(itemNumber + " - " + itemTitle);
       }
       proposals[i].setDescription(items.get(i).getDescription());
     }
-    
+
     AutoCompleteField linkField = new AutoCompleteField(proposals, grid.getGrid());
 
-    linkField.setPopupPosition(new Point(relativeMouse.x + cellBounds.x,
-                                        relativeMouse.y + cellBounds.y));
+    linkField.setPopupPosition(
+        new Point(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
 
     if (this.grid.getGrid().getDisplay() != null) {
       linkField.setProposalListener(new PropopsalListener());

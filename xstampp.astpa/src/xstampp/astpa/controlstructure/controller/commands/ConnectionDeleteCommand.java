@@ -31,72 +31,72 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class ConnectionDeleteCommand extends ControlStructureAbstractCommand {
 
-	private UUID connectionId;
-	private List<UUID> memberIDs;
+  private UUID connectionId;
+  private List<UUID> memberIDs;
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            TODO
-	 */
-	public ConnectionDeleteCommand(UUID rootId,
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          TODO
+   */
+  public ConnectionDeleteCommand(UUID rootId,
       IControlStructureEditorDataModel model, String stepID) {
-    super(rootId,model,stepID);
-		this.memberIDs = new ArrayList<>();
-	}
+    super(rootId, model, stepID);
+    this.memberIDs = new ArrayList<>();
+  }
 
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 * 
-	 * @param structureEditPart
-	 *            the ConnectionModel which shall be removed
-	 * 
-	 */
-	public void setLink(IRelativePart structureEditPart) {
-		this.connectionId = structureEditPart.getId();
-		for(IMemberEditPart part: structureEditPart.getMembers()){
-			this.memberIDs.add(part.getId());
-		}
+  /**
+   * 
+   * 
+   * @author Lukas Balzer, Aliaksei Babkovich
+   * 
+   * @param structureEditPart
+   *          the ConnectionModel which shall be removed
+   * 
+   */
+  public void setLink(IRelativePart structureEditPart) {
+    this.connectionId = structureEditPart.getId();
+    for (IMemberEditPart part : structureEditPart.getMembers()) {
+      this.memberIDs.add(part.getId());
+    }
 
-	}
+  }
 
-	@Override
-	public boolean canExecute() {
-		if (this.connectionId == null) {
-			return false;
-		}
-		return this.getStepID().equals(CSEditor.ID);
-	}
+  @Override
+  public boolean canExecute() {
+    if (this.connectionId == null) {
+      return false;
+    }
+    return this.getStepID().equals(CSEditor.ID);
+  }
 
-	@Override
-	public void execute() {
+  @Override
+  public void execute() {
     super.execute();
-		this.getDataModel().removeConnection(this.connectionId);
-		for(UUID memberId:this.memberIDs){
-			this.getDataModel().setRelativeOfComponent(memberId, null);
-		}
-	}
+    this.getDataModel().removeConnection(this.connectionId);
+    for (UUID memberId : this.memberIDs) {
+      this.getDataModel().setRelativeOfComponent(memberId, null);
+    }
+  }
 
-	@Override
-	public boolean canUndo() {
-		if (this.connectionId == null) {
-			return false;
-		}
-		return true;
-	}
+  @Override
+  public boolean canUndo() {
+    if (this.connectionId == null) {
+      return false;
+    }
+    return true;
+  }
 
-	@Override
-	public void undo() {
-		this.getDataModel().recoverConnection(this.connectionId);
-		for(UUID memberId:this.memberIDs){
-			this.getDataModel().setRelativeOfComponent(memberId, this.connectionId);
-		}
-	}
+  @Override
+  public void undo() {
+    this.getDataModel().recoverConnection(this.connectionId);
+    for (UUID memberId : this.memberIDs) {
+      this.getDataModel().setRelativeOfComponent(memberId, this.connectionId);
+    }
+  }
 
 }

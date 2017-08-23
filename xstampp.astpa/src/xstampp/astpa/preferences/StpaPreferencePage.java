@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -21,37 +21,37 @@ import xstampp.astpa.ui.CommonTableView;
 import xstampp.preferences.IPreferenceConstants;
 
 /**
-*
-* @author Lukas Balzer
-* @since 2.0.0
-*
-*/
-public class StpaPreferencePage  extends FieldEditorPreferencePage
-implements IWorkbenchPreferencePage {
+ *
+ * @author Lukas Balzer
+ * @since 2.0.0
+ *
+ */
+public class StpaPreferencePage extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
-	private BooleanFieldEditor showNrColinTables;
+  private BooleanFieldEditor showNrColinTables;
 
   public StpaPreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-	}
+    super(FieldEditorPreferencePage.GRID);
+  }
 
-	@Override
-	public void init(IWorkbench workbench) {
+  @Override
+  public void init(IWorkbench workbench) {
 
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("A-STPA Preferences");
-		
-	}
+    setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    setDescription("A-STPA Preferences");
 
-	@Override
-	protected void createFieldEditors() {
-	  showNrColinTables = new BooleanFieldEditor(CommonTableView.COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN,
+  }
+
+  @Override
+  protected void createFieldEditors() {
+    showNrColinTables = new BooleanFieldEditor(CommonTableView.COMMON_TABLE_VIEW_SHOW_NUMBER_COLUMN,
         "Show the row numbers in the Hazard, Accident, System Goals, Design Requirements and safety Constraints Views",
         this.getFieldEditorParent());
     addField(showNrColinTables);
-	}
+  }
 
-	@Override
+  @Override
   protected void checkState() {
     super.checkState();
   }

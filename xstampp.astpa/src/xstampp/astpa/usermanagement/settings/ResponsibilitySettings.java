@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.usermanagement.settings;
 
 import java.util.ArrayList;
@@ -31,7 +42,7 @@ public class ResponsibilitySettings implements ISettingsPage {
   private List<EntryResponsibilitiesPage<?>> pages;
   private List<String> pageTitles;
   private IUserProject dataModel;
-  
+
   public ResponsibilitySettings() {
     super();
     this.pages = new ArrayList<>();
@@ -45,8 +56,8 @@ public class ResponsibilitySettings implements ISettingsPage {
 
   @Override
   public boolean doAccept() {
-    if(getDataModel() != null){
-      Map<UUID,IUser> map = new HashMap<>();
+    if (getDataModel() != null) {
+      Map<UUID, IUser> map = new HashMap<>();
       for (EntryResponsibilitiesPage<?> page : pages) {
         map.putAll(page.getResult());
       }
@@ -75,7 +86,7 @@ public class ResponsibilitySettings implements ISettingsPage {
     pageTitles.add(Messages.SafetyConstraints);
     pages.add(new ControlActionsResponsibilityPage());
     pageTitles.add(Messages.ControlActions);
-    for (int i= 0; i < this.pages.size(); i++) {
+    for (int i = 0; i < this.pages.size(); i++) {
       CTabItem item = new CTabItem(folder, SWT.None);
       item.setText(pageTitles.get(i));
       item.setControl(pages.get(i).createControl(folder, parent, modelId));
@@ -88,7 +99,7 @@ public class ResponsibilitySettings implements ISettingsPage {
   public boolean isVisible(UUID projectId) {
     IDataModel model = ProjectManager.getContainerInstance().getDataModel(projectId);
     return model instanceof IUserProject
-        && !(((IUserProject) model).getUserSystem()instanceof EmptyUserSystem);
+        && !(((IUserProject) model).getUserSystem() instanceof EmptyUserSystem);
   }
 
   @Override
@@ -98,7 +109,7 @@ public class ResponsibilitySettings implements ISettingsPage {
 
   @Override
   public void setName(String name) {
-    //fixed name
+    // fixed name
   }
 
   @Override
@@ -118,8 +129,8 @@ public class ResponsibilitySettings implements ISettingsPage {
    *          the dataModel to set
    */
   public boolean setDataModel(IDataModel dataModel) {
-    if(dataModel instanceof IUserProject) {
-      this.dataModel = (IUserProject)dataModel;
+    if (dataModel instanceof IUserProject) {
+      this.dataModel = (IUserProject) dataModel;
       return true;
     }
     return false;

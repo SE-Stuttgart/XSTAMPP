@@ -20,72 +20,71 @@ package xstampp.astpa.model.controlstructure.components;
  * @since 2.0
  * 
  */
-public enum ComponentType{
-	/**
-	 * This enum represents a container component
-	 */
-	CONTAINER,
-	/**
-	 * This constant is used to create Text Fields
-	 */
-	TEXTFIELD,
+public enum ComponentType {
+  /**
+   * This enum represents a container component
+   */
+  CONTAINER,
+  /**
+   * This constant is used to create Text Fields
+   */
+  TEXTFIELD,
 
-	/**
-	 * This constant is used to create Dashed Boxes
-	 */
-	DASHEDBOX,
+  /**
+   * This constant is used to create Dashed Boxes
+   */
+  DASHEDBOX,
 
-	/**
-	 * This type is used to create/store a visualization of a cointroloAction
-	 */
-	CONTROLACTION,
+  /**
+   * This type is used to create/store a visualization of a cointroloAction
+   */
+  CONTROLACTION,
 
-	/**
-	 * This constant is used to create Controller
-	 */
-	CONTROLLER,
+  /**
+   * This constant is used to create Controller
+   */
+  CONTROLLER,
 
-	/**
-	 * This constant is used to create Actuator
-	 */
-	ACTUATOR,
+  /**
+   * This constant is used to create Actuator
+   */
+  ACTUATOR,
 
-  FEEDBACK,
-  UNDEFINED,
-	/**
-	 * This constant is used to create a new Process
-	 */
-	CONTROLLED_PROCESS,
+  FEEDBACK, UNDEFINED,
+  /**
+   * This constant is used to create a new Process
+   */
+  CONTROLLED_PROCESS,
 
-	/**
-	 * This constant is used to create a new Process Model
-	 */
-	PROCESS_MODEL,
+  /**
+   * This constant is used to create a new Process Model
+   */
+  PROCESS_MODEL,
 
-	/**
-	 * This constant is used to create a new Process Variable
-	 */
-	PROCESS_VARIABLE,
+  /**
+   * This constant is used to create a new Process Variable
+   */
+  PROCESS_VARIABLE,
 
-	/**
-	 * This constant is used to create a new Process State
-	 */
-	PROCESS_VALUE,
+  /**
+   * This constant is used to create a new Process State
+   */
+  PROCESS_VALUE,
 
-	/**
-	 * This constant is used to create a new Sensor
-	 */
-	SENSOR,
+  /**
+   * This constant is used to create a new Sensor
+   */
+  SENSOR,
 
-	OTHER_COMPONENT,
-	/**
-	 * This Constant is used to create a root
-	 */
-	ROOT,
+  OTHER_COMPONENT,
+  /**
+   * This Constant is used to create a root
+   */
+  ROOT,
 
-	/**
-	 * This constant is used to create a new Connection
-	 */
-	CONNECTION;
+  /**
+   * This constant is used to create a new Connection
+   */
+  CONNECTION;
 
 }

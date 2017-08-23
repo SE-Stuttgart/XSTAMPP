@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -59,7 +59,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
   private static final int STACK = 8;
   private static final String SEPERATOR = ","; //$NON-NLS-1$
   private static final String WS_IDENTIFIER = "stamp"; //$NON-NLS-1$
-  private static final Preferences LOCAL_PREFERENCES = Preferences.userNodeForPackage(ChooseWorkLocation.class);
+  private static final Preferences LOCAL_PREFERENCES = Preferences
+      .userNodeForPackage(ChooseWorkLocation.class);
 
   /**
    * creates a new instance of the Workspace choose Dialog and creates a
@@ -74,7 +75,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
   public ChooseWorkLocation(Shell parentShell) {
     super(parentShell);
     this.recentLocs = new ArrayList<>();
-    String recentLocations = ChooseWorkLocation.LOCAL_PREFERENCES.get(IPreferenceConstants.WS_RECENT, null);
+    String recentLocations = ChooseWorkLocation.LOCAL_PREFERENCES
+        .get(IPreferenceConstants.WS_RECENT, null);
     if (recentLocations != null) {
       String[] pathArray = recentLocations.split(ChooseWorkLocation.SEPERATOR);
       for (int i = 0; i < ChooseWorkLocation.STACK; i++) {
@@ -119,7 +121,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
         dd.setMessage(Messages.WorkspaceSetDesc);
         dd.setFilterPath(ChooseWorkLocation.this.workspacePathCombo.getText());
         String pick = dd.open();
-        if ((pick == null) && (ChooseWorkLocation.this.workspacePathCombo.getText().length() == 0)) {
+        if ((pick == null)
+            && (ChooseWorkLocation.this.workspacePathCombo.getText().length() == 0)) {
           ChooseWorkLocation.this.setMessage(Messages.IlegalPath, IMessageProvider.ERROR);
         } else if (pick != null) {
           ChooseWorkLocation.this.setMessage(""); //$NON-NLS-1$
@@ -147,8 +150,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
     this.rememeberWS = new Button(inner, SWT.CHECK);
     this.rememeberWS.setText(Messages.RememberWorkspace);
     this.rememeberWS.setLayoutData(data);
-    this.rememeberWS
-        .setSelection(ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(IPreferenceConstants.WS_REMEMBER, false));
+    this.rememeberWS.setSelection(
+        ChooseWorkLocation.LOCAL_PREFERENCES.getBoolean(IPreferenceConstants.WS_REMEMBER, false));
     this.rememeberWS.addSelectionListener(new SelectionAdapter() {
 
       @Override
@@ -174,7 +177,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
 
   @Override
   protected void okPressed() {
-    ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(IPreferenceConstants.WS_REMEMBER, this.rememeberWS.getSelection());
+    ChooseWorkLocation.LOCAL_PREFERENCES.putBoolean(IPreferenceConstants.WS_REMEMBER,
+        this.rememeberWS.getSelection());
     if (!this.addRecentWS(this.workspacePathCombo.getText())) {
       return;
     }
@@ -228,7 +232,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
    *          if it does not exist already
    * @return null if everything is ok, or an error message if not
    */
-  public static String checkWorkspaceDirectory(Shell parentShell, String workspaceLocation, boolean askCreate) {
+  public static String checkWorkspaceDirectory(Shell parentShell, String workspaceLocation,
+      boolean askCreate) {
     File wsFile = new File(workspaceLocation);
     if (!wsFile.exists()) {
       if (askCreate && MessageDialog.openConfirm(parentShell, Messages.NewDir,
@@ -251,7 +256,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
     // since an identifier is added to each newly created workspace, we can
     // easily check
     // whether the selected path is a workspace or not
-    File wsMarkerTest = new File(workspaceLocation + File.separator + ChooseWorkLocation.WS_IDENTIFIER);
+    File wsMarkerTest = new File(
+        workspaceLocation + File.separator + ChooseWorkLocation.WS_IDENTIFIER);
 
     if (!wsMarkerTest.exists()) {
       if (askCreate && MessageDialog.openConfirm(parentShell, Messages.WorkspaceNew,
@@ -272,7 +278,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
       // if a workspace is created he gets a file identifier (which is an
       // empty file)
       // to recognize a workspace related to this platform
-      File wsMarker = new File(workspaceFile.getAbsolutePath() + File.separator + ChooseWorkLocation.WS_IDENTIFIER);
+      File wsMarker = new File(
+          workspaceFile.getAbsolutePath() + File.separator + ChooseWorkLocation.WS_IDENTIFIER);
       wsMarker.createNewFile();
       // if remember workspace is set false, initWorkspce stores to reset it
       // once the workspace is initialized
@@ -326,7 +333,8 @@ public class ChooseWorkLocation extends TitleAreaDialog {
    *         workspace is available
    */
   public static String getLastUsedWorkspace() {
-    String lastWorkspace = ChooseWorkLocation.LOCAL_PREFERENCES.get(IPreferenceConstants.WS_RECENT, null);
+    String lastWorkspace = ChooseWorkLocation.LOCAL_PREFERENCES.get(IPreferenceConstants.WS_RECENT,
+        null);
     if (lastWorkspace == null) {
       return null;
     }

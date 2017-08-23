@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -49,7 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomPerspectiveSwitch extends WorkbenchWindowControlContribution implements IPerspectiveListener {
+public class CustomPerspectiveSwitch extends WorkbenchWindowControlContribution
+    implements IPerspectiveListener {
 
   private class PerspectiveShortcut extends ToolBarContributionItem {
     private Image icon;
@@ -85,11 +86,13 @@ public class CustomPerspectiveSwitch extends WorkbenchWindowControlContribution 
 
       this.comValues = new HashMap<>();
       this.perspectiveId = element.getId();
-      this.comValues.put(IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE_PARM_ID, this.perspectiveId);
+      this.comValues.put(IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE_PARM_ID,
+          this.perspectiveId);
       this.perspectiveName = element.getLabel();
       this.icon = element.getImageDescriptor().createImage();
       if (icon == null) {
-        this.icon = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_DEF_VIEW);
+        this.icon = PlatformUI.getWorkbench().getSharedImages()
+            .getImage(ISharedImages.IMG_DEF_VIEW);
       }
       ImageData imData = new ImageData(50, 16, 24, new PaletteData(0xff0000, 0x00ff00, 0x0000ff));
       imData.setAlpha(0, 0, 0); // just to force alpha array allocation with the
@@ -126,7 +129,8 @@ public class CustomPerspectiveSwitch extends WorkbenchWindowControlContribution 
       if (this.icon != null) {
         iconLabel.setImage(this.icon);
       } else {
-        iconLabel.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_DEF_VIEW));
+        iconLabel.setImage(
+            PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_DEF_VIEW));
       }
       this.shortcut = new Label(main, SWT.SHADOW_IN);
       this.shortcut.setText(this.perspectiveName);
@@ -140,7 +144,8 @@ public class CustomPerspectiveSwitch extends WorkbenchWindowControlContribution 
       this.shortcut.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseUp(MouseEvent e) {
-          STPAPluginUtils.executeParaCommand(IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE,
+          STPAPluginUtils.executeParaCommand(
+              IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE,
               PerspectiveShortcut.this.comValues);
         }
       });
@@ -223,7 +228,8 @@ public class CustomPerspectiveSwitch extends WorkbenchWindowControlContribution 
   public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor descriptor) {
     this.manager.removeAll();
     this.activePerspectiveId = descriptor.getId();
-    List<PerspectiveShortcut> shortcuts = this.configsToPerspectiveIds.get(this.activePerspectiveId);
+    List<PerspectiveShortcut> shortcuts = this.configsToPerspectiveIds
+        .get(this.activePerspectiveId);
 
     for (PerspectiveShortcut shortcut : this.shortcutsToPerspectiveIds.values()) {
       shortcut.setSelectedIfEqual(this.activePerspectiveId);

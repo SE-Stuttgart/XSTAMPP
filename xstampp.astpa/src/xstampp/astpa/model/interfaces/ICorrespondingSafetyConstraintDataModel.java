@@ -26,42 +26,43 @@ import xstampp.model.IDataModel;
  * @author Fabian Toth
  * 
  */
-public interface ICorrespondingSafetyConstraintDataModel extends IDataModel,ICommonTables {
+public interface ICorrespondingSafetyConstraintDataModel extends IDataModel, ICommonTables {
 
-	/**
-	 * Gets all corresponding safety constraints
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @return the list of all corresponding safety constraints
-	 */
-	List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions();
+  /**
+   * Gets all corresponding safety constraints
+   * 
+   * @author Fabian Toth
+   * 
+   * @return the list of all corresponding safety constraints
+   */
+  List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions();
 
-	/**
-	 * Sets the corresponding safety constraint of the unsafe control action
-	 * which is identified by the given id.<br>
-	 * Triggers an update for
-	 * {@link astpa.model.ObserverValue#UNSAFE_CONTROL_ACTION}
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @param unsafeControlActionId
-	 *            the id of the unsafe control action
-	 * @param safetyConstraintDescription
-	 *            the text of the corresponding safety constraint
-	 * @return the id of the corresponding safety constraint. null if the action
-	 *         fails
-	 */
-	boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
-			String safetyConstraintDescription);
+  /**
+   * Sets the corresponding safety constraint of the unsafe control action
+   * which is identified by the given id.<br>
+   * Triggers an update for
+   * {@link astpa.model.ObserverValue#UNSAFE_CONTROL_ACTION}
+   * 
+   * @author Fabian Toth
+   * 
+   * @param unsafeControlActionId
+   *          the id of the unsafe control action
+   * @param safetyConstraintDescription
+   *          the text of the corresponding safety constraint
+   * @return the id of the corresponding safety constraint. null if the action
+   *         fails
+   */
+  boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+      String safetyConstraintDescription);
 
-	/**
-	 * returns the current id number of the UnsafeControlAction with the given ucaID
-	 *  
-	 * @param ucaID the UnsafeControlAction id
-	 * @return the current id
-	 */
-	int getUCANumber(UUID ucaID);
+  /**
+   * returns the current id number of the UnsafeControlAction with the given ucaID
+   * 
+   * @param ucaID
+   *          the UnsafeControlAction id
+   * @return the current id
+   */
+  int getUCANumber(UUID ucaID);
 
   /**
    * Returns the the control action as {@link ITableModel} for which the unsafe control action

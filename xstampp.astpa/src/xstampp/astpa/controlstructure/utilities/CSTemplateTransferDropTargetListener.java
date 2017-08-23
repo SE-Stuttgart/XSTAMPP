@@ -31,30 +31,30 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * 
  */
 public class CSTemplateTransferDropTargetListener extends
-		TemplateTransferDropTargetListener {
+    TemplateTransferDropTargetListener {
 
-	private final IRectangleComponent dataModel;
+  private final IRectangleComponent dataModel;
 
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param viewer
-	 *            the EditPartViewer to which it shall drop
-	 * @param model
-	 *            The data model Controller
-	 */
-	public CSTemplateTransferDropTargetListener(EditPartViewer viewer,
-			IRectangleComponent model) {
-		super(viewer);
-		this.dataModel = model;
-	}
+  /**
+   * 
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param viewer
+   *          the EditPartViewer to which it shall drop
+   * @param model
+   *          The data model Controller
+   */
+  public CSTemplateTransferDropTargetListener(EditPartViewer viewer,
+      IRectangleComponent model) {
+    super(viewer);
+    this.dataModel = model;
+  }
 
-	@Override
-	protected CreationFactory getFactory(Object template) {
-		return new CSModelCreationFactory((ComponentType) template,
-		    dataModel);
-	}
+  @Override
+  protected CreationFactory getFactory(Object template) {
+    return new CSModelCreationFactory((ComponentType) template,
+        dataModel);
+  }
 
 }

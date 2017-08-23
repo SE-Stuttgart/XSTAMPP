@@ -99,7 +99,6 @@ public class ControlAction extends ATableModel implements IControlAction {
     return this.componentLink;
   }
 
-
   /**
    * Constructor of a control action
    * 
@@ -116,7 +115,7 @@ public class ControlAction extends ATableModel implements IControlAction {
     super(title, description);
     this.unsafeControlActions = new ArrayList<>();
   }
-  
+
   /**
    * Constructor of a control action
    * 
@@ -216,7 +215,6 @@ public class ControlAction extends ATableModel implements IControlAction {
     return unsafeControlAction.getId();
   }
 
-  
   /**
    * Searches the unsafe control action and removes it when it is in the list
    * 

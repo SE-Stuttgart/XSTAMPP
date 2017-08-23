@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -33,12 +33,13 @@ public class CellButtonAddScenario extends CellButton {
   private UUID factorId;
   private ICausalFactorDataModel dataModel;
 
-  public CellButtonAddScenario(ICausalFactorEntry entry,UUID componentId,UUID factorId,ICausalFactorDataModel dataInterface) {
+  public CellButtonAddScenario(ICausalFactorEntry entry, UUID componentId, UUID factorId,
+      ICausalFactorDataModel dataInterface) {
     super(new Rectangle(-1, -1,
         GridWrapper.getAddButton16().getBounds().width,
         GridWrapper.getAddButton16().getBounds().height),
-    GridWrapper.getAddButton16());
-    
+        GridWrapper.getAddButton16());
+
     this.entry = entry;
     this.componentId = componentId;
     this.factorId = factorId;
@@ -47,16 +48,17 @@ public class CellButtonAddScenario extends CellButton {
 
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
-    if(entry.getUcaLink() != null){
+    if (entry.getUcaLink() != null) {
       AbstractLtlProviderData data = new AbstractLtlProviderData();
       List<UUID> ids = new ArrayList<>();
       ids.add(entry.getUcaLink());
       data.setRelatedUcas(ids);
-      UUID id= dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null, IValueCombie.TYPE_ANYTIME);
-      if(id != null){
+      UUID id = dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null,
+          IValueCombie.TYPE_ANYTIME);
+      if (id != null) {
         CausalFactorUCAEntryData entryData = new CausalFactorUCAEntryData(entry.getId());
         List<UUID> scenarioLinks = new ArrayList<>();
-        if(entry.getScenarioLinks() != null){
+        if (entry.getScenarioLinks() != null) {
           scenarioLinks.addAll(entry.getScenarioLinks());
         }
         scenarioLinks.add(id);

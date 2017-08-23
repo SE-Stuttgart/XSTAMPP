@@ -42,11 +42,11 @@ public class GridRow {
   private boolean needsRefresh;
 
   private int rowIndex;
-  
+
   private Point columnSpan;
-  
+
   private int[] rowSpanningCells;
-  
+
   /**
    * Ctor.
    * 
@@ -64,7 +64,7 @@ public class GridRow {
     setColorDivider(colorDivide);
     this.childrenRows = new ArrayList<GridRow>();
     this.cells = new ArrayList<IGridCell>(columnCount);
-    for ( int i = 0; i < columnCount; i++) {
+    for (int i = 0; i < columnCount; i++) {
       IGridCell cell = new GridCellBlank(false);
       cell.setGridRow(this);
       cells.add(cell);
@@ -76,27 +76,29 @@ public class GridRow {
 
   /**
    * constructs a row for the grid it is inserted in
-   *  {@link #getRowSpanningCells()} is only column 0.
+   * {@link #getRowSpanningCells()} is only column 0.
+   * 
    * @param colorDivide
    *          The amount of rows that should be colored in the same color to
    *          mark multiple rows that are related
    * @param columnCount
    *          the total amount of columns in the parent gird
    */
-  public GridRow(int columnCount,int colorDivide) {
-    this(columnCount,colorDivide, new int[]{0});
+  public GridRow(int columnCount, int colorDivide) {
+    this(columnCount, colorDivide, new int[] { 0 });
   }
-  
+
   /**
    * constructs a row that has a color divider {@link #getColorDivider()} of 1
    * and a {@link #getRowSpanningCells()} is only column 0.
+   * 
    * @param columnCount
    *          the total amount of columns in the parent gird
    */
   public GridRow(int columnCount) {
-    this(columnCount,1);
+    this(columnCount, 1);
   }
-  
+
   public void setDirty(boolean dirty) {
     if (this.parentRow != null) {
       this.parentRow.setDirty(dirty);
@@ -131,10 +133,10 @@ public class GridRow {
    *          the child row.
    */
   public void addChildRow(GridRow row) {
-    
-//    if ( childrenRows.size() > 0 ) {
-//      Assert.isTrue(row.getCells().size() == childrenRows.get(0).getCells().size());
-//    }
+
+    // if ( childrenRows.size() > 0 ) {
+    // Assert.isTrue(row.getCells().size() == childrenRows.get(0).getCells().size());
+    // }
     this.childrenRows.add(row);
     row.setColorDivider(colorDivider);
     row.setParentRow(this);
@@ -164,10 +166,10 @@ public class GridRow {
   }
 
   public void addCell(int columnIndex, IGridCell cell) {
-    this.cells.set(columnIndex,cell);
+    this.cells.set(columnIndex, cell);
     cell.setGridRow(this);
   }
-  
+
   /**
    * Get the parent row.
    * 
@@ -219,12 +221,13 @@ public class GridRow {
   }
 
   public void setColorDivider(int colorDivider) {
-    if(colorDivider == 0){
+    if (colorDivider == 0) {
       this.colorDivider = 1;
-    }else{
+    } else {
       this.colorDivider = colorDivider;
     }
   }
+
   public int getRowIndex() {
     return rowIndex;
   }
@@ -236,7 +239,7 @@ public class GridRow {
   public void setColumnSpan(int index, int span) {
     this.columnSpan = new Point(index, span);
   }
-  
+
   public Point getColumnSpan() {
     return columnSpan;
   }
@@ -254,10 +257,11 @@ public class GridRow {
   }
 
   /**
-   * set the row indices which should span the 
+   * set the row indices which should span the
    * child rows if this row has some.
    * 
-   * @param spanningCells the indices of the cells to span the child rows of the row
+   * @param spanningCells
+   *          the indices of the cells to span the child rows of the row
    */
   public void setRowSpanningCells(int[] spanningCells) {
     this.rowSpanningCells = spanningCells;
@@ -271,7 +275,8 @@ public class GridRow {
   }
 
   /**
-   * @param nebulaRow the nebulaRow to set
+   * @param nebulaRow
+   *          the nebulaRow to set
    */
   public void setNebulaRow(NebulaGridRowWrapper nebulaRow) {
     this.nebulaRow = nebulaRow;

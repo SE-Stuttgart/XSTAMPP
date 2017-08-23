@@ -53,6 +53,7 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
 
   int treeIndent = 20;
   private static Color foreground = new Color(Display.getCurrent(), 255, 255, 255);
+
   /**
    * Ctor.
    * 
@@ -78,7 +79,8 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
         cell.paint(this, gc, item);
         Color fColor = gc.getForeground();
         gc.setForeground(foreground);
-        gc.drawRectangle(this.getBounds().x, this.getBounds().y, this.getBounds().width, this.getBounds().height);
+        gc.drawRectangle(this.getBounds().x, this.getBounds().y, this.getBounds().width,
+            this.getBounds().height);
         // restore old foreground color
         gc.setForeground(fColor);
       }
@@ -107,7 +109,8 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
     if (!isWordWrap()) {
       x += gc.textExtent(item.getText(getColumn())).x + rightMargin;
 
-      textHeight = topMargin + textTopMargin + gc.getFontMetrics().getHeight() + textBottomMargin + bottomMargin;
+      textHeight = topMargin + textTopMargin + gc.getFontMetrics().getHeight() + textBottomMargin
+          + bottomMargin;
     } else {
       int plainTextWidth;
       if (wHint == SWT.DEFAULT)
@@ -154,12 +157,12 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
     return this.gridWrapper;
   }
 
- 
   @Override
   public void setBounds(Rectangle bounds) {
     // TODO Auto-generated method stub
     super.setBounds(bounds);
   }
+
   /**
    * Returns the drawable area of a cell
    * 
@@ -169,8 +172,9 @@ public class GridCellRenderer extends org.eclipse.nebula.widgets.grid.GridCellRe
    */
   public Rectangle getDrawBounds() {
     Rectangle renderBounds = this.getBounds();
-    Rectangle bounds = new Rectangle(renderBounds.x + this.borderSize + 1, renderBounds.y + this.borderSize,
-        renderBounds.width - this.borderSize, renderBounds.height - this.borderSize);
+    Rectangle bounds = new Rectangle(renderBounds.x + this.borderSize + 1,
+        renderBounds.y + this.borderSize, renderBounds.width - this.borderSize,
+        renderBounds.height - this.borderSize);
 
     return bounds;
   }

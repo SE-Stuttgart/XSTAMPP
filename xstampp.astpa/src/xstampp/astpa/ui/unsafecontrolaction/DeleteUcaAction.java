@@ -17,17 +17,18 @@ import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridWrapper;
 
-public class DeleteUcaAction extends DeleteGridEntryAction<IUnsafeControlActionDataModel>{
+public class DeleteUcaAction extends DeleteGridEntryAction<IUnsafeControlActionDataModel> {
 
-  public DeleteUcaAction(GridWrapper grid, IUnsafeControlActionDataModel dataModel, String entryType, String prefix) {
+  public DeleteUcaAction(GridWrapper grid, IUnsafeControlActionDataModel dataModel,
+      String entryType, String prefix) {
     super(grid, dataModel, entryType, prefix);
   }
 
   @Override
   protected String getIdString(UUID id) {
     String idString = null;
-    if(getDataModel().getUCANumber(id) >= 0){
-       idString = getPrefix()+getDataModel()
+    if (getDataModel().getUCANumber(id) >= 0) {
+      idString = getPrefix() + getDataModel()
           .getUCANumber(id);
     }
     return idString;
@@ -37,5 +38,5 @@ public class DeleteUcaAction extends DeleteGridEntryAction<IUnsafeControlActionD
   protected void removeEntry(UUID id) {
     getDataModel().removeUnsafeControlAction(id);
   }
-  
+
 }

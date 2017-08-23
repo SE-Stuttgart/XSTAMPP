@@ -204,7 +204,8 @@ public class STPAEditorInput implements IEditorInput {
       this.stepItem.getItem().getParentItem().setBackground(ColorConstants.lightGray);
     }
     if (!this.stepItem.getItem().getParentItem().getParentItem().getExpanded()) {
-      this.stepItem.getItem().getParentItem().getParentItem().setBackground(ColorConstants.lightGray);
+      this.stepItem.getItem().getParentItem().getParentItem()
+          .setBackground(ColorConstants.lightGray);
     }
   }
 

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer- initial API and implementation
+ ******************************************************************************/
 package xstampp.usermanagement.ui.settings;
 
 import java.util.ArrayList;
@@ -51,7 +62,8 @@ public class SyncShell extends ModalShell {
     for (IUser user : users) {
       value += system.syncDataWithUser(user, listener);
     }
-    MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.SyncShell_2, String.format(Messages.SyncShell_3,value));
+    MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+        Messages.SyncShell_2, String.format(Messages.SyncShell_3, value));
     setReturnValue(value);
     return true;
   }
@@ -74,7 +86,7 @@ public class SyncShell extends ModalShell {
         int percent;
         try {
           percent = (int) e.data;
-        } catch(Exception exc){
+        } catch (Exception exc) {
           percent = 0;
         }
         Rectangle bounds = bar.getBounds();

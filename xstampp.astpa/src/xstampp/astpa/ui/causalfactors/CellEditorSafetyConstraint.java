@@ -31,7 +31,9 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   public CellEditorSafetyConstraint(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
       UUID componentId, UUID factorId, ICausalFactorEntry entry) {
-    super(gridWrapper, dataInterface.getCausalFactorController().getConstraintTextFor(entry.getConstraintId()), factorId);
+    super(gridWrapper,
+        dataInterface.getCausalFactorController().getConstraintTextFor(entry.getConstraintId()),
+        factorId);
     this.entry = entry;
     setShowDelete(true);
     this.causalDataInterface = dataInterface;
@@ -42,14 +44,16 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   @Override
   public String getCurrentText() {
-    return causalDataInterface.getCausalFactorController().getConstraintTextFor(entry.getConstraintId());
+    return causalDataInterface.getCausalFactorController()
+        .getConstraintTextFor(entry.getConstraintId());
   }
-  
+
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     clearCellButtons();
     if (entry.getConstraintId() == null) {
-      addCellButton(new NewConstraintButton(componentId, factorId, entry.getId(), causalDataInterface));
+      addCellButton(
+          new NewConstraintButton(componentId, factorId, entry.getId(), causalDataInterface));
       addCellButton(new CellButtonImportConstraint(getGridWrapper().getGrid(), entry, componentId,
           factorId, causalDataInterface));
       paintFrame(renderer, gc, item);

@@ -75,7 +75,8 @@ public class Welcome extends AbstractHandler {
     IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench().getPerspectiveRegistry()
         .findPerspectiveWithId("astpa.welcome.perspective");//$NON-NLS-1$
     if (descriptor != null) {
-      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(descriptor);
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+          .setPerspective(descriptor);
     }
     return null;
   }

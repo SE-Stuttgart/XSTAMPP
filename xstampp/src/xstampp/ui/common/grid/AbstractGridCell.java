@@ -109,7 +109,7 @@ public abstract class AbstractGridCell implements IGridCell {
 
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
-	  cellBounds = renderer.getBounds();
+    cellBounds = renderer.getBounds();
     if (item.hasChildren()) {
       hasChildren = true;
     }
@@ -357,7 +357,7 @@ public abstract class AbstractGridCell implements IGridCell {
     this.preferredHeight = Math.max(this.preferredHeight, this.buttonContainer.getBounds().height);
     item.setHeight(this.preferredHeight);
   }
-  
+
   public Rectangle getCellBounds() {
     return cellBounds;
   }

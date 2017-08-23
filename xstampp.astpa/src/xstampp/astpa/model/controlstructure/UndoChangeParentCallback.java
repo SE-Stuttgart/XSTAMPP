@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.model.controlstructure;
 
 import java.util.UUID;
@@ -19,7 +30,8 @@ public class UndoChangeParentCallback implements IUndoCallback {
   private Rectangle newLayoutStep2;
   private ControlStructureController controller;
 
-  UndoChangeParentCallback(ControlStructureController controller, UUID componentId, UUID oldParentId, UUID newParentId) {
+  UndoChangeParentCallback(ControlStructureController controller, UUID componentId,
+      UUID oldParentId, UUID newParentId) {
     this.controller = controller;
     this.compId = componentId;
     this.oldParentId = oldParentId;
@@ -35,14 +47,17 @@ public class UndoChangeParentCallback implements IUndoCallback {
     this.oldLayoutStep0 = step1;
     this.oldLayoutStep2 = step2;
   }
+
   @Override
   public void undo() {
-    controller.changeComponentParent(compId, newParentId, oldParentId, oldLayoutStep0, oldLayoutStep2);
+    controller.changeComponentParent(compId, newParentId, oldParentId, oldLayoutStep0,
+        oldLayoutStep2);
   }
 
   @Override
   public void redo() {
-    controller.changeComponentParent(compId, oldParentId, newParentId, newLayoutStep0, newLayoutStep2);
+    controller.changeComponentParent(compId, oldParentId, newParentId, newLayoutStep0,
+        newLayoutStep2);
   }
 
   @Override

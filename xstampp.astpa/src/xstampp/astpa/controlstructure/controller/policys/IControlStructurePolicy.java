@@ -24,14 +24,14 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
  */
 public interface IControlStructurePolicy extends EditPolicy {
 
-	/**
-	 * 
-	 * @author Lukas
-	 * 
-	 * @return the host casted to a IControlStructureEditPart
-	 * @Override {@link EditPolicy#getHost()}
-	 */
-	@Override
-	IControlStructureEditPart getHost();
+  /**
+   * 
+   * @author Lukas
+   * 
+   * @return the host casted to a IControlStructureEditPart
+   * @Override {@link EditPolicy#getHost()}
+   */
+  @Override
+  IControlStructureEditPart getHost();
 
 }

@@ -22,45 +22,45 @@ package xstampp.astpa.controlstructure;
  */
 public enum CSAction {
 
-	/**
-	 * a manipulating action which changes the Layout can be changed with that
-	 * Constant name
-	 * 
-	 * @author Lukas Balzer
-	 */
-	PROPERTY_ACTION,
+  /**
+   * a manipulating action which changes the Layout can be changed with that
+   * Constant name
+   * 
+   * @author Lukas Balzer
+   */
+  PROPERTY_ACTION,
 
-	/**
-	 * a action which interacts with the stack or any buffered value
-	 * 
-	 * @author Lukas Balzer
-	 */
-	STACK_ACTION,
+  /**
+   * a action which interacts with the stack or any buffered value
+   * 
+   * @author Lukas Balzer
+   */
+  STACK_ACTION,
 
-	/**
-	 * a selection action that refers to any of the components in the CSDiagram
-	 * can be referenced with that enum
-	 * 
-	 * @author Lukas Balzer
-	 */
-	SELECTION_ACTION,
+  /**
+   * a selection action that refers to any of the components in the CSDiagram
+   * can be referenced with that enum
+   * 
+   * @author Lukas Balzer
+   */
+  SELECTION_ACTION,
 
-	/**
-	 * This enumeration is needed to describe a connection reconnect action
-	 * 
-	 * @author Lukas Balzer
-	 */
-	RECONNECT_ACTION,
+  /**
+   * This enumeration is needed to describe a connection reconnect action
+   * 
+   * @author Lukas Balzer
+   */
+  RECONNECT_ACTION,
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 */
-	CREATE_ACTION,
+  /**
+   * 
+   * @author Lukas Balzer
+   */
+  CREATE_ACTION,
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 */
-	DEFAULT;
+  /**
+   * 
+   * @author Lukas Balzer
+   */
+  DEFAULT;
 }

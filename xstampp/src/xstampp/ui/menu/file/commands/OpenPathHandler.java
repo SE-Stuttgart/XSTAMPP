@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -34,9 +34,11 @@ public class OpenPathHandler extends AbstractHandler {
       return null;
     }
     if (path.equals("instance")) { //$NON-NLS-1$
-      STPAPluginUtils.OpenInFileBrowser(new File(Platform.getInstanceLocation().getURL().getFile()).getAbsolutePath());
+      STPAPluginUtils.OpenInFileBrowser(
+          new File(Platform.getInstanceLocation().getURL().getFile()).getAbsolutePath());
     }
-    ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+    ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+        .getSelectionService().getSelection();
     if (path.equals("output") && selection instanceof IProjectSelection) { //$NON-NLS-1$
       String outputFolder = Platform.getInstanceLocation().getURL().getFile() + File.separator;
       outputFolder += ((AbstractSelector) selection).getProjectOutput();

@@ -71,13 +71,11 @@ public class CSCView extends AbstractFilteredTableView {
     });
   }
 
-  
   public CSCView(ATableFilter aTableFilter, String[] strings) {
-	super(aTableFilter, strings);
-}
+    super(aTableFilter, strings);
+  }
 
-
-@Override
+  @Override
   public String getId() {
     return CSCView.ID;
   }

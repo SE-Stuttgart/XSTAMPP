@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -23,11 +23,13 @@ public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
 
   private UUID ruleId;
   private ICausalFactorDataModel dataInterface;
-  
-  public CellEditorCausalScenarioConstraint(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
-                      UUID ruleId, ScenarioType type) {
-    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getRefinedSafetyConstraint(),ruleId);
-    if(type != ScenarioType.CAUSAL_SCENARIO){
+
+  public CellEditorCausalScenarioConstraint(GridWrapper gridWrapper,
+      ICausalFactorDataModel dataInterface,
+      UUID ruleId, ScenarioType type) {
+    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getRefinedSafetyConstraint(),
+        ruleId);
+    if (type != ScenarioType.CAUSAL_SCENARIO) {
       setReadOnly(true);
     }
     this.dataInterface = dataInterface;
@@ -39,21 +41,21 @@ public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
     AbstractLtlProviderData data = new AbstractLtlProviderData();
     data.setRefinedConstraint(newText);
     dataInterface.updateRefinedRule(ruleId, data, null);
-    
+
   }
-  
+
   @Override
   public void delete() {
-    //not used
+    // not used
   }
 
   @Override
   protected void editorOpening() {
     dataInterface.lockUpdate();
   }
-  
+
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
+    dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.Extended_DATA });
   }
 }

@@ -73,9 +73,9 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
         super.keyReleased(e);
       }
     });
-//    ok = new Button(composite, SWT.PUSH);
-//    ok.setText("Ok");
-//    deactivate();
+    // ok = new Button(composite, SWT.PUSH);
+    // ok.setText("Ok");
+    // deactivate();
   }
 
   /**
@@ -125,8 +125,8 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
     org.eclipse.swt.graphics.Rectangle textRect = this.text.getBounds();
     rect.setX(textRect.x);
     rect.setY(textRect.y);
-    rect.setWidth(textRect.width+30);
-    rect.setHeight(textRect.height+30);
+    rect.setWidth(textRect.width + 30);
+    rect.setHeight(textRect.height + 30);
 
     return rect;
   }
@@ -201,8 +201,8 @@ public class DirectEditor extends TextCellEditor implements ModifyListener {
 
     locator.relocate(this);
     doSetFocus();
-    if(ok != null){
-      ok.setBounds(text.getBounds().x, text.getBounds().y + text.getBounds().height, 30,30);
+    if (ok != null) {
+      ok.setBounds(text.getBounds().x, text.getBounds().y + text.getBounds().height, 30, 30);
       ok.setVisible(true);
     }
     getControl().setVisible(true);

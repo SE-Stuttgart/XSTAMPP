@@ -41,7 +41,8 @@ public class AboutHandler extends AbstractHandler {
   /**
    * The A-STPA logo to be displayed on the left of the dialog.
    */
-  private static final Image DIALOG_IMAGE = Activator.getImageDescriptor("icons/Logo.png").createImage(); //$NON-NLS-1$
+  private static final Image DIALOG_IMAGE = Activator.getImageDescriptor("icons/Logo.png") //$NON-NLS-1$
+      .createImage();
   /**
    * The string displayed on the bar of the dialog.
    */
@@ -91,10 +92,10 @@ public class AboutHandler extends AbstractHandler {
      * @param defaultIndex
      *          only one button is used on this dialog so it must be 0.
      */
-    public AboutDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,
-        int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
-      super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-          defaultIndex);
+    public AboutDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage,
+        String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+      super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType,
+          dialogButtonLabels, defaultIndex);
 
     }
 
@@ -115,8 +116,9 @@ public class AboutHandler extends AbstractHandler {
 
     Shell parentShell = HandlerUtil.getActiveShell(event);
     String dialogMessage = this.getDialogMessage();
-    AboutDialog dialog = new AboutDialog(parentShell, AboutHandler.DIALOG_TITLE, AboutHandler.DIALOG_IMAGE,
-        dialogMessage, AboutHandler.NONE, AboutHandler.DIALOG_BUTTONS_LABELS, AboutHandler.DEFAULT_INDEX);
+    AboutDialog dialog = new AboutDialog(parentShell, AboutHandler.DIALOG_TITLE,
+        AboutHandler.DIALOG_IMAGE, dialogMessage, AboutHandler.NONE,
+        AboutHandler.DIALOG_BUTTONS_LABELS, AboutHandler.DEFAULT_INDEX);
 
     dialog.open();
     return null;
@@ -132,14 +134,15 @@ public class AboutHandler extends AbstractHandler {
 
     Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
     Dictionary<?, ?> dictionary = bundle.getHeaders();
-    String visitLine = Messages.AboutKontakt + ": " + "https://sourceforge.net/projects/astpa/";  //$NON-NLS-1$//$NON-NLS-2$
+    String visitLine = Messages.AboutKontakt + ": " + "https://sourceforge.net/projects/astpa/"; //$NON-NLS-1$//$NON-NLS-2$
     String contactPerson = "Contact Person : Asim Abdulkhaleq \n Email: Asim.Abdulkhaleq@informatik.uni-stuttgart.de"; //$NON-NLS-1$
     String versionLine = this.getVersionLine((String) dictionary.get(Messages.BundleVersion));
-    String team = Messages.DevelopmentTeam + "\t  " + "Aleksander Zotov, Aliaksei Babkovich, Benedikt Markt," //$NON-NLS-1$//$NON-NLS-2$
+    String team = Messages.DevelopmentTeam + "\t  " //$NON-NLS-1$
+        + "Aleksander Zotov, Aliaksei Babkovich, Benedikt Markt," //$NON-NLS-1$
         + "\n\t\t  " + "Fabian Toth, Jarkko Heidenwag, Jaqueline Patzek, Adam " //$NON-NLS-1$ //$NON-NLS-2$
         + "\n\t\t  " + "Grahovac, Lukas Balzer, Patrick Wickenhäuser, Sebastian Sieber"; //$NON-NLS-1$ //$NON-NLS-2$
-    return AboutHandler.DIALOG_MESSAGE_TITLE + "\n" + versionLine + "\n\n" + AboutHandler.COPYRIGHT_LINE //$NON-NLS-1$ //$NON-NLS-2$
-        + "\n\n" + team + "\n\n" + visitLine + "\n\n" + contactPerson; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    return AboutHandler.DIALOG_MESSAGE_TITLE + "\n" + versionLine + "\n\n" //$NON-NLS-1$ //$NON-NLS-2$
+        + AboutHandler.COPYRIGHT_LINE + "\n\n" + team + "\n\n" + visitLine + "\n\n" + contactPerson; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   /**

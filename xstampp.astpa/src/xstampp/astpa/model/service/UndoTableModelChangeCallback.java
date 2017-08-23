@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.model.service;
 
 import java.util.UUID;
@@ -21,6 +32,7 @@ public abstract class UndoTableModelChangeCallback<T> implements IUndoCallback {
     this.dataModel = dataModel;
     this.entryId = model.getId();
   }
+
   public UndoTableModelChangeCallback(T dataModel, UUID modelId) {
     this.dataModel = dataModel;
     this.entryId = modelId;
@@ -40,19 +52,20 @@ public abstract class UndoTableModelChangeCallback<T> implements IUndoCallback {
 
   @Override
   public void undo() {
-    if(descriptionDirty){
+    if (descriptionDirty) {
       undoDescription(this.oldDescription);
     }
-    if(titleDirty){
+    if (titleDirty) {
       undoTitle(this.oldTitle);
     }
   }
+
   @Override
   public void redo() {
-    if(descriptionDirty){
+    if (descriptionDirty) {
       undoDescription(this.newDescription);
     }
-    if(titleDirty){
+    if (titleDirty) {
       undoTitle(this.newTitle);
     }
   }
@@ -60,13 +73,15 @@ public abstract class UndoTableModelChangeCallback<T> implements IUndoCallback {
   public UUID getEntryId() {
     return entryId;
   }
+
   /**
    * @return the dataModel
    */
   public T getDataModel() {
     return dataModel;
   }
-  
+
   protected abstract void undoDescription(String description);
+
   protected abstract void undoTitle(String title);
 }

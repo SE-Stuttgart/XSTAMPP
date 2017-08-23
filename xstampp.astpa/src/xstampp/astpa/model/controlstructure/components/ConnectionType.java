@@ -21,13 +21,13 @@ package xstampp.astpa.model.controlstructure.components;
  */
 public enum ConnectionType {
 
-	/**
-	 * a blank Arrow
-	 */
-	ARROW_SIMPLE,
-	/**
-	 * a dotted Arrow
-	 */
-	ARROW_DASHED;
+  /**
+   * a blank Arrow
+   */
+  ARROW_SIMPLE,
+  /**
+   * a dotted Arrow
+   */
+  ARROW_DASHED;
 
 }

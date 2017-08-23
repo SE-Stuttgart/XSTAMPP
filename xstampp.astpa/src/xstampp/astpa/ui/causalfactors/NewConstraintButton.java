@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.ui.causalfactors;
 
 import java.util.UUID;
@@ -12,29 +23,30 @@ import xstampp.ui.common.grid.GridWrapper;
 
 public class NewConstraintButton extends CellButton {
 
-    private UUID componentId;
-    private UUID factorId;
-    private UUID entryId;
-    private ICausalFactorDataModel datamodel;
+  private UUID componentId;
+  private UUID factorId;
+  private UUID entryId;
+  private ICausalFactorDataModel datamodel;
 
-		public NewConstraintButton(UUID componentId, UUID factorId,UUID entryId, ICausalFactorDataModel datamodel) {
-			super(new Rectangle(
-          -1, -1,
-          GridWrapper.getAddButton16().getBounds().width,
-          GridWrapper.getAddButton16().getBounds().height),
-          GridWrapper.getAddButton16());
-      this.componentId = componentId;
-      this.factorId = factorId;
-      this.entryId = entryId;
-      this.datamodel = datamodel;
-		}
+  public NewConstraintButton(UUID componentId, UUID factorId, UUID entryId,
+      ICausalFactorDataModel datamodel) {
+    super(new Rectangle(
+        -1, -1,
+        GridWrapper.getAddButton16().getBounds().width,
+        GridWrapper.getAddButton16().getBounds().height),
+        GridWrapper.getAddButton16());
+    this.componentId = componentId;
+    this.factorId = factorId;
+    this.entryId = entryId;
+    this.datamodel = datamodel;
+  }
 
-		@Override
-		public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
-	    CausalFactorEntryData data = new CausalFactorEntryData(entryId);
-	    data.setConstraint(new String());
-	    datamodel.lockUpdate();
-	    datamodel.changeCausalEntry(componentId, factorId, data);
-      datamodel.releaseLockAndUpdate(null);
-		}
-	}
+  @Override
+  public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
+    CausalFactorEntryData data = new CausalFactorEntryData(entryId);
+    data.setConstraint(new String());
+    datamodel.lockUpdate();
+    datamodel.changeCausalEntry(componentId, factorId, data);
+    datamodel.releaseLockAndUpdate(null);
+  }
+}

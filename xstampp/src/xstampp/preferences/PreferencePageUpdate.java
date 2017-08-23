@@ -25,7 +25,8 @@ import xstampp.Activator;
  * @author Sebastian Sieber
  * 
  */
-public class PreferencePageUpdate extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class PreferencePageUpdate extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
   private StringFieldEditor updateLinkFieldEditor;
 

@@ -27,39 +27,39 @@ import xstampp.astpa.model.interfaces.Severity;
 @XmlRootElement(name = "accident")
 public class Accident extends ATableModel {
 
-	/**
-	 * Constructor of an accident
-	 *
-	 * @param title
-	 *            the title of the new accident
-	 * @param description
-	 *            the description of the new accident
-	 * @param number
-	 *            the number of the new accident
-	 *
-	 * @author Fabian Toth
-	 */
-	public Accident(String title, String description, int number) {
-		super(title, description, -1);
+  /**
+   * Constructor of an accident
+   *
+   * @param title
+   *          the title of the new accident
+   * @param description
+   *          the description of the new accident
+   * @param number
+   *          the number of the new accident
+   *
+   * @author Fabian Toth
+   */
+  public Accident(String title, String description, int number) {
+    super(title, description, -1);
     setSeverity(Severity.S0);
-	}
+  }
 
-	/**
-	 * Empty constructor for JAXB. Do not use it!
-	 *
-	 * @author Fabian Toth
-	 */
-	public Accident() {
+  /**
+   * Empty constructor for JAXB. Do not use it!
+   *
+   * @author Fabian Toth
+   */
+  public Accident() {
     this("", "", -1); //$NON-NLS-1$ //$NON-NLS-2$
-		// empty constructor for JAXB
-	}
+    // empty constructor for JAXB
+  }
 
-	public Accident(String title, String description) {
+  public Accident(String title, String description) {
     this(title, description, -1);
   }
 
   @Override
-	public String getIdString() {
-	  return "A-" +this.getNumber();
-	}
+  public String getIdString() {
+    return "A-" + this.getNumber();
+  }
 }

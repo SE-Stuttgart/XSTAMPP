@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.model.hazacc;
 
 import java.util.List;
@@ -158,7 +169,7 @@ public interface IHazAccController {
    *
    * @author Fabian Toth
    * @author Lukas Balzer
-   * @param linkController 
+   * @param linkController
    *
    */
   void prepareForExport(LinkController linkController);
@@ -180,7 +191,8 @@ public interface IHazAccController {
   boolean isUseSeverity();
 
   /**
-   * @param useSeverity the useSeverity to set
+   * @param useSeverity
+   *          the useSeverity to set
    */
   boolean setUseSeverity(boolean useSeverity);
 

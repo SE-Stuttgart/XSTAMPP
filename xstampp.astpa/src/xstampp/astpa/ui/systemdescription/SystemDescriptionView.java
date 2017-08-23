@@ -144,24 +144,24 @@ public class SystemDescriptionView extends StandartEditorPart
     super.update(dataModelController, updatedValue);
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-      case PROJECT_DESCRIPTION:
-        // this.resetProjectDescription();
-        break;
-      case PROJECT_NAME:
-        this.resetProjectName();
-        break;
-      case SAVE:
-        Display.getDefault().asyncExec(new Runnable() {
+    case PROJECT_DESCRIPTION:
+      // this.resetProjectDescription();
+      break;
+    case PROJECT_NAME:
+      this.resetProjectName();
+      break;
+    case SAVE:
+      Display.getDefault().asyncExec(new Runnable() {
 
-          @Override
-          public void run() {
-            applyProjectDescriptionToDataModel(false);
+        @Override
+        public void run() {
+          applyProjectDescriptionToDataModel(false);
 
-          }
-        });
-        break;
-      default:
-        break;
+        }
+      });
+      break;
+    default:
+      break;
     }
   }
 
@@ -398,7 +398,7 @@ public class SystemDescriptionView extends StandartEditorPart
         && !((IUserProject) dataInterface).getUserSystem().checkAccess(AccessRights.ADMIN)) {
       style |= SWT.READ_ONLY;
     }
-      this.descriptionText = new StyledText(composite, style);
+    this.descriptionText = new StyledText(composite, style);
 
     this.gridData = new GridData();
     this.gridData.horizontalSpan = 2;
@@ -662,18 +662,18 @@ public class SystemDescriptionView extends StandartEditorPart
     if (range.font != null) {
       data = range.font.getFontData()[0];
       switch (style) {
-        case (BOLD): {
-          return (data.getStyle() & SWT.BOLD) == 0;
-        }
-        case (ITALIC): {
-          return (data.getStyle() & SWT.ITALIC) == 0;
-        }
-        case (UNDERLINE): {
-          return !range.underline;
-        }
-        case (STRIKEOUT): {
-          return !range.strikeout;
-        }
+      case (BOLD): {
+        return (data.getStyle() & SWT.BOLD) == 0;
+      }
+      case (ITALIC): {
+        return (data.getStyle() & SWT.ITALIC) == 0;
+      }
+      case (UNDERLINE): {
+        return !range.underline;
+      }
+      case (STRIKEOUT): {
+        return !range.strikeout;
+      }
       }
     }
     return mustSET;
@@ -704,60 +704,60 @@ public class SystemDescriptionView extends StandartEditorPart
     }
     boolean setFont = false;
     switch (style) {
-      case (FOREGROUND): {
-        styleRange.foreground = this.textForegroundColor;
-        break;
+    case (FOREGROUND): {
+      styleRange.foreground = this.textForegroundColor;
+      break;
+    }
+    case (BACKGROUND): {
+      styleRange.background = this.textBackgroundColor;
+      break;
+    }
+    case (INCREASE): {
+      data.setHeight(data.getHeight() + 1);
+      setFont = true;
+      break;
+    }
+    case (DECREASE): {
+      data.setHeight(data.getHeight() - 1);
+      setFont = true;
+      break;
+    }
+    case (FONT_SIZE): {
+      data.setHeight(height);
+      setFont = true;
+      break;
+    }
+    case (FONT_FAMILY): {
+      data.setName(name);
+      setFont = true;
+      break;
+    }
+    case (BOLD): {
+      if (setProp) {
+        data.setStyle(data.getStyle() | SWT.BOLD);
+      } else {
+        data.setStyle(data.getStyle() - SWT.BOLD);
       }
-      case (BACKGROUND): {
-        styleRange.background = this.textBackgroundColor;
-        break;
+      setFont = true;
+      break;
+    }
+    case (ITALIC): {
+      if (setProp) {
+        data.setStyle(data.getStyle() | SWT.ITALIC);
+      } else {
+        data.setStyle(data.getStyle() - SWT.ITALIC);
       }
-      case (INCREASE): {
-        data.setHeight(data.getHeight() + 1);
-        setFont = true;
-        break;
-      }
-      case (DECREASE): {
-        data.setHeight(data.getHeight() - 1);
-        setFont = true;
-        break;
-      }
-      case (FONT_SIZE): {
-        data.setHeight(height);
-        setFont = true;
-        break;
-      }
-      case (FONT_FAMILY): {
-        data.setName(name);
-        setFont = true;
-        break;
-      }
-      case (BOLD): {
-        if (setProp) {
-          data.setStyle(data.getStyle() | SWT.BOLD);
-        } else {
-          data.setStyle(data.getStyle() - SWT.BOLD);
-        }
-        setFont = true;
-        break;
-      }
-      case (ITALIC): {
-        if (setProp) {
-          data.setStyle(data.getStyle() | SWT.ITALIC);
-        } else {
-          data.setStyle(data.getStyle() - SWT.ITALIC);
-        }
-        setFont = true;
-        break;
-      }
-      case (UNDERLINE): {
-        styleRange.underline = setProp;
-        break;
-      }
-      case (STRIKEOUT): {
-        styleRange.strikeout = setProp;
-        break;
-      }
+      setFont = true;
+      break;
+    }
+    case (UNDERLINE): {
+      styleRange.underline = setProp;
+      break;
+    }
+    case (STRIKEOUT): {
+      styleRange.strikeout = setProp;
+      break;
+    }
     }
     if (setFont) {
 

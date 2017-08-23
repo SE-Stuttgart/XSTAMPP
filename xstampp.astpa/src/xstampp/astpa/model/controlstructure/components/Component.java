@@ -527,7 +527,7 @@ public class Component
   }
 
   public boolean moveComponent(boolean allWay, boolean moveUp, UUID childId) {
-    if(!getId().equals(childId)) {
+    if (!getId().equals(childId)) {
       for (int i = 0; i < children.size(); i++) {
         if (children.get(i).getId().equals(childId)) {
           try {
@@ -544,7 +544,7 @@ public class Component
               }
             }
             Component component = children.get(i);
-            if(i != fac) {
+            if (i != fac) {
               children.remove(i);
               children.add(fac, component);
               return true;

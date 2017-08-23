@@ -59,7 +59,7 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
    * @author Jarkko Heidenwag
    * @param tableHeader
    *          TODO
-   * @param style 
+   * @param style
    * 
    */
   public AccidentsView(String tableHeader, EnumSet<TableStyle> style) {

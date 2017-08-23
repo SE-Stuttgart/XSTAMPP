@@ -105,17 +105,17 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
     connection.setTolerance(2);
     connection.setLineStyle(SWT.LINE_CUSTOM);
     switch (((CSConnection) this.getModel()).getConnectionType()) {
-      case ARROW_SIMPLE: {
-        connection.setLineStyle(SWT.LINE_SOLID);
-        break;
-      }
-      case ARROW_DASHED: {
-        connection.setLineDashOffset(CSConnectionEditPart.DASH);
-        connection.setLineDash(new float[] { CSConnectionEditPart.DASH });
-        break;
-      }
-      default:
-        return null;
+    case ARROW_SIMPLE: {
+      connection.setLineStyle(SWT.LINE_SOLID);
+      break;
+    }
+    case ARROW_DASHED: {
+      connection.setLineDashOffset(CSConnectionEditPart.DASH);
+      connection.setLineDash(new float[] { CSConnectionEditPart.DASH });
+      break;
+    }
+    default:
+      return null;
     }
     return connection;
   }
@@ -150,8 +150,8 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
         new CSConnectionDeleteEditPolicy(this.dataModel, this.stepId));
     this.installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
         new ConnectionEndpointEditPolicy());
-//    installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
-//        new ConnectionBendpointEditPolicy(this.dataModel, this.stepId));
+    // installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
+    // new ConnectionBendpointEditPolicy(this.dataModel, this.stepId));
   }
 
   @Override

@@ -26,38 +26,39 @@ import org.eclipse.swt.events.KeyEvent;
 import messages.Messages;
 import xstampp.ui.common.ProjectManager;
 
-public abstract class DeleteGridEntryAction<M> extends Action{
+public abstract class DeleteGridEntryAction<M> extends Action {
   private GridWrapper grid;
   private M dataModel;
   private final String entryType;
   private String prefix;
-  
+
   /**
-   * This constructor constructs a <i>Delete</i> Action 
+   * This constructor constructs a <i>Delete</i> Action
    * and registers a KeyListener in the underlying editor that
    * enables executing the action by pressing the <code>Delete</code> Button
    * on the Keyboard.
    * The Action can delete selected entries in a nebula grid editor.
    * 
-   * @param grid a GridWrapper instance
-   * @param dataModel the dataModel of the type <i>M</i>
-   * @param entryType the type of entry that is handled by the individual implementation
-   * @param prefix the prefix used for creating an id string {@link #getId()}
+   * @param grid
+   *          a GridWrapper instance
+   * @param dataModel
+   *          the dataModel of the type <i>M</i>
+   * @param entryType
+   *          the type of entry that is handled by the individual implementation
+   * @param prefix
+   *          the prefix used for creating an id string {@link #getId()}
    */
-  public DeleteGridEntryAction(GridWrapper grid,
-      M dataModel,
-      String entryType,
-      String prefix) {
-    super(String.format(Messages.DeleteMask,new String()));
+  public DeleteGridEntryAction(GridWrapper grid, M dataModel, String entryType, String prefix) {
+    super(String.format(Messages.DeleteMask, new String()));
     this.entryType = entryType;
     this.grid = grid;
     this.setPrefix(prefix);
     setDataModel(dataModel);
-    
+
     grid.getGrid().addKeyListener(new KeyAdapter() {
-      
+
       @Override
-      public void keyPressed(KeyEvent event){
+      public void keyPressed(KeyEvent event) {
         if ((event.keyCode == SWT.DEL)
             || ((event.stateMask == SWT.COMMAND) && (event.keyCode == SWT.BS))) {
           run();
@@ -65,7 +66,7 @@ public abstract class DeleteGridEntryAction<M> extends Action{
       }
     });
   }
-  
+
   /**
    * this implementation of the run method searches for
    * all selected cells in the grid and triggers a deletion of all
@@ -84,73 +85,73 @@ public abstract class DeleteGridEntryAction<M> extends Action{
 
       if (cell != null && !(cell instanceof GridCellBlank)) {
         IGridCell editor = ((IGridCell) cell);
-        UUID ucaID=editor.getUUID();
-        if(!deleteList.containsKey(ucaID)){
+        UUID ucaID = editor.getUUID();
+        if (!deleteList.containsKey(ucaID)) {
           String idString = getIdString(ucaID);
-          if(idString != null){
-            csIDs = csIDs+ "\n" + idString;
-            deleteList.put(ucaID,idString);
+          if (idString != null) {
+            csIDs = csIDs + "\n" + idString;
+            deleteList.put(ucaID, idString);
             preformDelete = true;
           }
         }
       }
     }
     if (preformDelete && MessageDialog.openConfirm(getGrid().getGrid().getShell(),
-        Messages.RemoveAll,
-        String.format(Messages.DeleteQuestionMask, entryType) + csIDs)) {
-      
+        Messages.RemoveAll, String.format(Messages.DeleteQuestionMask, entryType) + csIDs)) {
+
       for (Entry<UUID, String> id : deleteList.entrySet()) {
         removeEntry(id.getKey());
-        ProjectManager.getLOGGER().debug("Delete"+entryType+":" + id.getValue());
+        ProjectManager.getLOGGER().debug("Delete" + entryType + ":" + id.getValue());
       }
     }
-  
+
   }
-  
+
   /**
-   * returns a human readable id string of the entry 
+   * returns a human readable id string of the entry
    * with which the entry can be uniquely identified.
    * 
-   * @param id the UUID of the entry with which the 
+   * @param id
+   *          the UUID of the entry with which the
    *          corresponding data is stored in the data model
    * @return a human readable id string of the entry
    */
   protected abstract String getIdString(UUID id);
-  
+
   /**
    * calls the function which deletes the entry from the dataModel
-   * @param id the UUID of the entry with which the 
+   * 
+   * @param id
+   *          the UUID of the entry with which the
    *          corresponding data is stored in the data model
    */
   protected abstract void removeEntry(UUID id);
-  
-  
-  
-  private void setDataModel(M dataModel){
+
+  private void setDataModel(M dataModel) {
     this.dataModel = dataModel;
   }
- 
+
   public M getDataModel() {
     return dataModel;
   }
-  
+
   @Override
   public boolean isEnabled() {
-    
-    if(grid.getGrid().getCellSelectionCount() <= 0){
+
+    if (grid.getGrid().getCellSelectionCount() <= 0) {
       return false;
     }
     List<IGridCell> selected = grid.getSelectedCellList();
 
     for (int i = 0; i < selected.size(); i++) {
       IGridCell cell = selected.get(i);
-      if(!(cell instanceof GridCellBlank) && cell.getUUID() != null){
+      if (!(cell instanceof GridCellBlank) && cell.getUUID() != null) {
         return true;
       }
     }
     return false;
   }
-  
+
   public GridWrapper getGrid() {
     return grid;
   }

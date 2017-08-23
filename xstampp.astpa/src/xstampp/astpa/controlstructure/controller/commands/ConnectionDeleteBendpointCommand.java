@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.controlstructure.controller.commands;
 
 import java.util.UUID;
@@ -6,7 +17,6 @@ import org.eclipse.draw2d.geometry.Point;
 
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
-
 
 /**
  * Command used to delete a bendpoint from a {@link OPMLink} This class is declared final since it
@@ -38,7 +48,8 @@ public final class ConnectionDeleteBendpointCommand extends ControlStructureAbst
    */
   @Override
   public void execute() {
-    getDataModel().getControlStructureController().removeBendPoint(link.getId(), location.x, location.y);
+    getDataModel().getControlStructureController().removeBendPoint(link.getId(), location.x,
+        location.y);
   }
 
   /**
@@ -46,7 +57,8 @@ public final class ConnectionDeleteBendpointCommand extends ControlStructureAbst
    */
   @Override
   public void undo() {
-    getDataModel().getControlStructureController().addBendPoint(link.getId(), location.x, location.y);
+    getDataModel().getControlStructureController().addBendPoint(link.getId(), location.x,
+        location.y);
   }
 
   /**

@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public class LoadWorkspace extends Job {
     IConfigurationElement[] elements = Platform.getExtensionRegistry()
         .getConfigurationElementsFor("xstampp.extension.steppedProcess");
     for (IConfigurationElement extElement : elements) {
-      if(extElement.getName().contains("process")) {
+      if (extElement.getName().contains("process")) {
         String[] ext = extElement.getAttribute("extension").split(";"); //$NON-NLS-1$
         String modelClass = extElement.getAttribute("DataModelClass");
         for (int i = 0; i < ext.length; i++) {
@@ -58,7 +58,8 @@ public class LoadWorkspace extends Job {
         }
 
         String[] fileSegments = f.getName().split("\\."); //$NON-NLS-1$
-        if ((fileSegments.length > 1) && ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
+        if ((fileSegments.length > 1)
+            && ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
           fileList.add(f);
         }
       }
@@ -76,8 +77,8 @@ public class LoadWorkspace extends Job {
       });
       for (File projectFile : fileList) {
         try {
-          Object ob = ProjectManager.getContainerInstance().loadDataModelFile(projectFile.getAbsolutePath(),
-              projectFile.getAbsolutePath());
+          Object ob = ProjectManager.getContainerInstance()
+              .loadDataModelFile(projectFile.getAbsolutePath(), projectFile.getAbsolutePath());
           if (ob instanceof AbstractLoadJob) {
             ((AbstractLoadJob) ob).join();
           }

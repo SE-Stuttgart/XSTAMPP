@@ -22,28 +22,28 @@ import xstampp.model.ITableEntry;
  * @author Fabian Toth
  * 
  */
-public class CausalSafetyConstraint extends ATableModel{
+public class CausalSafetyConstraint extends ATableModel {
 
-	/**
-	 * Constructor of a causal factor safety constraint
-	 * 
-	 * @param description
-	 *            the description of the new safety constraint
-	 * 
-	 * @author Fabian Toth
-	 */
-	public CausalSafetyConstraint(String description) {
-		super(description,null,-1);
-	}
+  /**
+   * Constructor of a causal factor safety constraint
+   * 
+   * @param description
+   *          the description of the new safety constraint
+   * 
+   * @author Fabian Toth
+   */
+  public CausalSafetyConstraint(String description) {
+    super(description, null, -1);
+  }
 
-	/**
-	 * Empty constructor used for JAXB. Do not use it!
-	 * 
-	 * @author Fabian Toth
-	 */
-	public CausalSafetyConstraint() {
-		// empty constructor for JAXB
-	}
+  /**
+   * Empty constructor used for JAXB. Do not use it!
+   * 
+   * @author Fabian Toth
+   */
+  public CausalSafetyConstraint() {
+    // empty constructor for JAXB
+  }
 
   @Override
   public int compareTo(ITableEntry o) {

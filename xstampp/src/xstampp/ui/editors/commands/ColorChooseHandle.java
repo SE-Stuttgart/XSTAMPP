@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -40,7 +40,8 @@ public class ColorChooseHandle extends AbstractHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
-    Object activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+    Object activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .getActiveEditor();
     String colorType = event.getParameter("xstampp.commandParameter.color.type"); //$NON-NLS-1$
     String redValue = event.getParameter("xstampp.commandParameter.color.red"); //$NON-NLS-1$
     String greenValue = event.getParameter("xstampp.commandParameter.color.green"); //$NON-NLS-1$
@@ -48,9 +49,11 @@ public class ColorChooseHandle extends AbstractHandler {
     if (activeEditor instanceof ITextEditor && colorType != null) {
       RGB newRgb;
       if (redValue != null && greenValue != null && blueValue != null) {
-        newRgb = new RGB(Integer.parseInt(redValue), Integer.parseInt(greenValue), Integer.parseInt(blueValue));
+        newRgb = new RGB(Integer.parseInt(redValue), Integer.parseInt(greenValue),
+            Integer.parseInt(blueValue));
       } else {
-        ColorDialog dialog = new ColorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+        ColorDialog dialog = new ColorDialog(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 
         newRgb = dialog.open();
 

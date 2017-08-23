@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public abstract class AbstractWizardPage extends WizardPage {
   protected static final FormAttachment LABEL_FORM_OFFSET = new FormAttachment(0);
   protected static final int LABEL_WIDTH = 140;
   protected static final int LABEL_HEIGHT = 25;
-  protected static final int TEXT_COLUMN =AbstractWizardPage.LABEL_WIDTH + 1;
+  protected static final int TEXT_COLUMN = AbstractWizardPage.LABEL_WIDTH + 1;
   protected static final int BUTTON_COLUMN = 430;
   private int fontState = 0;
 
@@ -130,8 +130,8 @@ public abstract class AbstractWizardPage extends WizardPage {
     ArrayList<RGB> blueShades = new ArrayList<>();
     ArrayList<RGB> grayShades = new ArrayList<>();
 
-    this.initShadeLists(redShades, blackShades, yellowShades, greenShades, purpleShades, whiteShades, blueShades,
-        grayShades);
+    this.initShadeLists(redShades, blackShades, yellowShades, greenShades, purpleShades,
+        whiteShades, blueShades, grayShades);
 
     if (state == this.fontState) {
       folder = "/font"; //$NON-NLS-1$
@@ -141,29 +141,37 @@ public abstract class AbstractWizardPage extends WizardPage {
 
     // set icon
     if (redShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textRed.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textRed.ico") //$NON-NLS-1$
+              .createImage());
     } else if (blackShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textBlack.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textBlack.ico") //$NON-NLS-1$
+              .createImage());
     } else if (yellowShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textYellow.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textYellow.ico") //$NON-NLS-1$
+              .createImage());
     } else if (greenShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textGreen.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textGreen.ico") //$NON-NLS-1$
+              .createImage());
     } else if (purpleShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textPurple.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textPurple.ico") //$NON-NLS-1$
+              .createImage());
     } else if (whiteShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textWhite.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textWhite.ico") //$NON-NLS-1$
+              .createImage());
     } else if (blueShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textBlue.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textBlue.ico") //$NON-NLS-1$
+              .createImage());
     } else if (grayShades.contains(rgb)) {
-      lbColorIcon.setImage(Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textGrey.ico") //$NON-NLS-1$
-          .createImage());
+      lbColorIcon.setImage(
+          Activator.getImageDescriptor(AbstractWizardPage.IMAGE_PATH + folder + "/textGrey.ico") //$NON-NLS-1$
+              .createImage());
     }
 
   }
@@ -183,8 +191,10 @@ public abstract class AbstractWizardPage extends WizardPage {
    *          Integer
    * @param constant
    */
-  protected void openColorDialog(Button srcBtn, Text srcText, Label srcLbl, int state, String constant) {
-    ColorDialog colorDialog = new ColorDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+  protected void openColorDialog(Button srcBtn, Text srcText, Label srcLbl, int state,
+      String constant) {
+    ColorDialog colorDialog = new ColorDialog(
+        PlatformUI.getWorkbench().getDisplay().getActiveShell());
     colorDialog.setText(Messages.SelectColor);
     RGB selectedColor = colorDialog.open();
     if (selectedColor == null) {
@@ -217,9 +227,9 @@ public abstract class AbstractWizardPage extends WizardPage {
    * @param grayShades
    *          ArrayList<RGB>
    */
-  private void initShadeLists(ArrayList<RGB> redShades, ArrayList<RGB> blackShades, ArrayList<RGB> yellowShades,
-      ArrayList<RGB> greenShades, ArrayList<RGB> purpleShades, ArrayList<RGB> whiteShades, ArrayList<RGB> blueShades,
-      ArrayList<RGB> grayShades) {
+  private void initShadeLists(ArrayList<RGB> redShades, ArrayList<RGB> blackShades,
+      ArrayList<RGB> yellowShades, ArrayList<RGB> greenShades, ArrayList<RGB> purpleShades,
+      ArrayList<RGB> whiteShades, ArrayList<RGB> blueShades, ArrayList<RGB> grayShades) {
 
     // RGB values
     final int twoHundredAndFiftyFive = 255;
@@ -228,7 +238,8 @@ public abstract class AbstractWizardPage extends WizardPage {
     final int oneHundredAndTwentyEight = 128;
     // initialize
     if (redShades.size() == 0) {
-      redShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
+      redShades
+          .add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
       redShades.add(new RGB(twoHundredAndFiftyFive, zero, zero));
       redShades.add(new RGB(oneHundredAndTwentyEight, sixtyfour, sixtyfour));
       redShades.add(new RGB(oneHundredAndTwentyEight, zero, zero));
@@ -245,11 +256,13 @@ public abstract class AbstractWizardPage extends WizardPage {
       yellowShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, zero));
       yellowShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, sixtyfour));
       yellowShades.add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, zero));
-      yellowShades.add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, oneHundredAndTwentyEight));
+      yellowShades
+          .add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, oneHundredAndTwentyEight));
     }
 
     if (greenShades.size() == 0) {
-      greenShades.add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, oneHundredAndTwentyEight));
+      greenShades
+          .add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, oneHundredAndTwentyEight));
       greenShades.add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, zero));
       greenShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, sixtyfour));
       greenShades.add(new RGB(sixtyfour, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
@@ -265,9 +278,12 @@ public abstract class AbstractWizardPage extends WizardPage {
 
     final int onehundredAndNinetyTwo = 192;
     if (purpleShades.size() == 0) {
-      purpleShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, onehundredAndNinetyTwo));
-      purpleShades.add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, twoHundredAndFiftyFive));
-      purpleShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, onehundredAndNinetyTwo));
+      purpleShades
+          .add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, onehundredAndNinetyTwo));
+      purpleShades
+          .add(new RGB(twoHundredAndFiftyFive, oneHundredAndTwentyEight, twoHundredAndFiftyFive));
+      purpleShades
+          .add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, onehundredAndNinetyTwo));
       purpleShades.add(new RGB(twoHundredAndFiftyFive, zero, twoHundredAndFiftyFive));
       purpleShades.add(new RGB(oneHundredAndTwentyEight, zero, sixtyfour));
       purpleShades.add(new RGB(twoHundredAndFiftyFive, zero, oneHundredAndTwentyEight));
@@ -275,16 +291,19 @@ public abstract class AbstractWizardPage extends WizardPage {
       purpleShades.add(new RGB(oneHundredAndTwentyEight, zero, twoHundredAndFiftyFive));
       purpleShades.add(new RGB(sixtyfour, zero, sixtyfour));
       purpleShades.add(new RGB(sixtyfour, zero, oneHundredAndTwentyEight));
-      purpleShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, twoHundredAndFiftyFive));
+      purpleShades
+          .add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, twoHundredAndFiftyFive));
     }
 
     if (whiteShades.size() == 0) {
-      whiteShades.add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
+      whiteShades
+          .add(new RGB(twoHundredAndFiftyFive, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
     }
 
     final int onehundredAndSixty = 160;
     if (blueShades.size() == 0) {
-      blueShades.add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
+      blueShades
+          .add(new RGB(oneHundredAndTwentyEight, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
       blueShades.add(new RGB(zero, twoHundredAndFiftyFive, twoHundredAndFiftyFive));
       blueShades.add(new RGB(zero, sixtyfour, oneHundredAndTwentyEight));
       blueShades.add(new RGB(zero, zero, twoHundredAndFiftyFive));
@@ -296,8 +315,10 @@ public abstract class AbstractWizardPage extends WizardPage {
     }
 
     if (grayShades.size() == 0) {
-      grayShades.add(new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
-      grayShades.add(new RGB(onehundredAndNinetyTwo, onehundredAndNinetyTwo, onehundredAndNinetyTwo));
+      grayShades.add(
+          new RGB(oneHundredAndTwentyEight, oneHundredAndTwentyEight, oneHundredAndTwentyEight));
+      grayShades
+          .add(new RGB(onehundredAndNinetyTwo, onehundredAndNinetyTwo, onehundredAndNinetyTwo));
     }
 
   }
@@ -339,7 +360,8 @@ public abstract class AbstractWizardPage extends WizardPage {
    * 
    */
   protected String openExportDialog(String[] filters, String[] names) {
-    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+    FileDialog fileDialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+        SWT.OPEN);
     fileDialog.setFilterExtensions(filters);
     fileDialog.setFilterNames(names);
     fileDialog.setFileName(this.getProjectName());
@@ -356,7 +378,8 @@ public abstract class AbstractWizardPage extends WizardPage {
    * 
    */
   protected String openDirectoryDialog() {
-    DirectoryDialog fileDialog = new DirectoryDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+    DirectoryDialog fileDialog = new DirectoryDialog(
+        PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
     fileDialog.setFilterPath(Platform.getInstanceLocation().getURL().getPath().toString());
     String filePath = fileDialog.open();
     if (filePath != null) {
@@ -383,10 +406,12 @@ public abstract class AbstractWizardPage extends WizardPage {
    */
   private String openLogoDialog() {
     final String[] filterNames = { "JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)", //$NON-NLS-1$
-        "PNG (*.png)", "TIFF (*.tif;*.tiff)", "GIF (*.gif)", "Bitmap (*.bmp;*.dib)", "SVG (*.svg;*.svgz)" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        "PNG (*.png)", "TIFF (*.tif;*.tiff)", "GIF (*.gif)", "Bitmap (*.bmp;*.dib)", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        "SVG (*.svg;*.svgz)" };//$NON-NLS-1$
     final String[] filterExtensions = { "*.jpg", "*.png", "*.jpe", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         "*.jfif", "*.jpeg", "*.tif", "*.tiff", "*.gif", "*.bmp", "*.dib", "*.svg", "*.svgz" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
-    FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+    FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+        SWT.OPEN);
     dlg.setFilterExtensions(filterExtensions);
     dlg.setFilterNames(filterNames);
     dlg.setText(Messages.Open);
@@ -511,27 +536,25 @@ public abstract class AbstractWizardPage extends WizardPage {
       data.width = LABEL_WIDTH;
       data.left = LABEL_FORM_OFFSET;
       labelExport.setLayoutData(data);
-      
+
       this.path = new Text(this, SWT.BORDER | SWT.SINGLE);
       FormData pathForm = new FormData();
       pathForm.top = new FormAttachment(null);
       pathForm.height = SWT.DEFAULT;
-      pathForm.left = new FormAttachment(labelExport,COMPONENT_OFFSET);
+      pathForm.left = new FormAttachment(labelExport, COMPONENT_OFFSET);
       pathForm.right = new FormAttachment(80);
       this.path.setLayoutData(pathForm);
-      
+
       this.pathButton = new Button(this, SWT.NONE);
       data = new FormData();
       data.top = new FormAttachment(null);
       data.width = 55;
-      data.left = new FormAttachment(path,COMPONENT_OFFSET);
+      data.left = new FormAttachment(path, COMPONENT_OFFSET);
       this.pathButton.setLayoutData(data);
       this.pathButton.setText("..."); //$NON-NLS-1$
-      
-      
+
       this.path.setText(""); //$NON-NLS-1$
       this.path.setEditable(false);
-
 
     }
 
@@ -571,7 +594,8 @@ public abstract class AbstractWizardPage extends WizardPage {
      * @param filterNames
      *          a string array containing a description of the extension
      */
-    public PathComposite(final String[] filter, final String[] filterNames, Composite parent, int style) {
+    public PathComposite(final String[] filter, final String[] filterNames, Composite parent,
+        int style) {
       this(filter, filterNames, parent, style, Messages.Destination);
     }
 
@@ -592,7 +616,8 @@ public abstract class AbstractWizardPage extends WizardPage {
      * @param name
      *          the name which specifies the path to be chosen
      */
-    public PathComposite(String[] filter, String[] filterNames, Composite parent, int style, String name) {
+    public PathComposite(String[] filter, String[] filterNames, Composite parent, int style,
+        String name) {
       this(parent, name);
       this.addButtonListener(this);
       this.filter = filter;
@@ -640,7 +665,8 @@ public abstract class AbstractWizardPage extends WizardPage {
         PathComposite.this.path.setText(AbstractWizardPage.this.openLogoDialog());
 
       } else if (this.dialogStyle == PathComposite.PATH_DIALOG) {
-        PathComposite.this.path.setText(AbstractWizardPage.this.openExportDialog(this.filter, this.filterNames));
+        PathComposite.this.path
+            .setText(AbstractWizardPage.this.openExportDialog(this.filter, this.filterNames));
       } else if (this.dialogStyle == PathComposite.DIR_DIALOG) {
         PathComposite.this.path.setText(AbstractWizardPage.this.openDirectoryDialog());
       }
@@ -686,7 +712,6 @@ public abstract class AbstractWizardPage extends WizardPage {
       data.width = LABEL_WIDTH;
       data.left = LABEL_FORM_OFFSET;
       labelBackgroundColor.setLayoutData(data);
-      
 
       this.colorIcon = new Label(this, SWT.NONE);
       data = new FormData();
@@ -703,22 +728,22 @@ public abstract class AbstractWizardPage extends WizardPage {
       data = new FormData();
       data.top = new FormAttachment(null);
       data.height = SWT.DEFAULT;
-      data.left = new FormAttachment(colorIcon,COMPONENT_OFFSET);
+      data.left = new FormAttachment(colorIcon, COMPONENT_OFFSET);
       data.right = new FormAttachment(80);
       colorText.setLayoutData(data);
       this.colorText.setEditable(false);
-      
+
       this.colorButton = new Button(this, SWT.NONE);
       this.colorButton.setText("..."); //$NON-NLS-1$
       data = new FormData();
       data.top = new FormAttachment(null);
       data.height = SWT.DEFAULT;
       data.width = 55;
-      data.left = new FormAttachment(colorText,COMPONENT_OFFSET);
+      data.left = new FormAttachment(colorText, COMPONENT_OFFSET);
       colorButton.setLayoutData(data);
-      
-      
-      String companyBackgroundColor = PreferenceConverter.getColor(AbstractWizardPage.this.store, constant).toString();
+
+      String companyBackgroundColor = PreferenceConverter
+          .getColor(AbstractWizardPage.this.store, constant).toString();
 
       if (companyBackgroundColor != null) {
         this.colorText.setText(companyBackgroundColor);
@@ -731,8 +756,8 @@ public abstract class AbstractWizardPage extends WizardPage {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-          AbstractWizardPage.this.openColorDialog(ColorChooser.this.colorButton, ColorChooser.this.colorText,
-              ColorChooser.this.colorIcon, 1, constant);
+          AbstractWizardPage.this.openColorDialog(ColorChooser.this.colorButton,
+              ColorChooser.this.colorText, ColorChooser.this.colorIcon, 1, constant);
         }
 
         @Override

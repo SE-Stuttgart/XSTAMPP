@@ -19,7 +19,6 @@ import java.util.UUID;
 import xstampp.model.ITableEntry;
 import xstampp.ui.common.grid.GridCellLinking;
 
-
 /**
  * 
  * Interface for connecting various resources to an table with multiple subitems
@@ -38,7 +37,7 @@ public interface ITableContentProvider<T extends ITableEntry> {
    * @return all items
    */
   List<T> getAllItems();
-  
+
   /**
    * this getter is used to provide a String
    * that can be displayed in case that there are
@@ -80,12 +79,10 @@ public interface ITableContentProvider<T extends ITableEntry> {
    *          the item to unlink, this is the id of the ITableModel entry
    */
   void removeLink(UUID item, UUID removeItem);
-  
-  
+
   /**
    * @return a literal which is written in front of the linked entrys id number
    */
   String getPrefix();
-  
-  
+
 }

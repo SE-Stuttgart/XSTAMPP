@@ -164,7 +164,8 @@ public class GridCellEditor extends GridCellComposite {
     // this.setRedraw(false);
     renderer.getBounds();
     gc.getClipping();
-    this.compositeArea.setBounds(0, 0, renderer.getDrawBounds().width - 1, renderer.getDrawBounds().height);
+    this.compositeArea.setBounds(0, 0, renderer.getDrawBounds().width - 1,
+        renderer.getDrawBounds().height);
     this.compositeArea.setVisible(true);
     if (this.hasFocus) {
       this.description.setBackground(new Color(Display.getCurrent(), 255, 255, 255));
@@ -177,7 +178,8 @@ public class GridCellEditor extends GridCellComposite {
   }
 
   @Override
-  public void onMouseDown(MouseEvent e, org.eclipse.swt.graphics.Point relativeMouse, Rectangle cellBounds) {
+  public void onMouseDown(MouseEvent e, org.eclipse.swt.graphics.Point relativeMouse,
+      Rectangle cellBounds) {
     this.activate();
   }
 

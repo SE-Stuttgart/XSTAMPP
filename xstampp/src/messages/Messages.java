@@ -266,8 +266,9 @@ public final class Messages extends NLS {
   public static String DeleteControlActions;
   /**
    * A string that asks the user to confirm the deletion of one or more
-   * entries inserted as 
-   * <br/><b><i>%s</i></b>: (e.g. a 'control action', 'design requirement')
+   * entries inserted as
+   * <br/>
+   * <b><i>%s</i></b>: (e.g. a 'control action', 'design requirement')
    * <p/>
    * <code>
    * Do you really want to delete the <i>Control Action</i>:<br>
@@ -275,11 +276,12 @@ public final class Messages extends NLS {
    * </ul></code>
    */
   public static String DeleteQuestionMask;
-  
+
   /**
    * A string that asks the user to confirm the deletion of one or more
-   * entries inserted as 
-   * <br/><b><i>%s</i></b>: (e.g. a 'control action', 'design requirement')
+   * entries inserted as
+   * <br/>
+   * <b><i>%s</i></b>: (e.g. a 'control action', 'design requirement')
    * <p/>
    * <code>Delete <i>Control Action</i></code>
    */

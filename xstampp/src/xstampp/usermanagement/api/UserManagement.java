@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer- initial API and implementation
+ ******************************************************************************/
 package xstampp.usermanagement.api;
 
 import java.io.File;
@@ -115,7 +126,8 @@ public class UserManagement {
         file = new File(filePath);
       }
     }
-    IUserSystem system = new EmptyUserSystem();;
+    IUserSystem system = new EmptyUserSystem();
+    ;
     try {
       system = loader.loadSystem(file);
     } catch (Exception e) {

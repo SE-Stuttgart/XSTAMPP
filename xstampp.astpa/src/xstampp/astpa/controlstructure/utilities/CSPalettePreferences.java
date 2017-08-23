@@ -27,61 +27,61 @@ import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
  */
 public class CSPalettePreferences implements FlyoutPreferences {
 
-	private static final int INITIAL_PALETTE_WIDTH = 200;
+  private static final int INITIAL_PALETTE_WIDTH = 200;
 
-	/**
-	 * the state represented by an integer value
-	 * 
-	 * @see #setPaletteState
-	 */
-	private int paletteState;
+  /**
+   * the state represented by an integer value
+   * 
+   * @see #setPaletteState
+   */
+  private int paletteState;
 
-	private int dockLocation;
+  private int dockLocation;
 
-	private int paletteWidth;
+  private int paletteWidth;
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 */
-	public CSPalettePreferences() {
-		this.dockLocation = PositionConstants.EAST;
-		this.paletteWidth = CSPalettePreferences.INITIAL_PALETTE_WIDTH;
-		this.paletteState = FlyoutPaletteComposite.STATE_PINNED_OPEN;
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   */
+  public CSPalettePreferences() {
+    this.dockLocation = PositionConstants.EAST;
+    this.paletteWidth = CSPalettePreferences.INITIAL_PALETTE_WIDTH;
+    this.paletteState = FlyoutPaletteComposite.STATE_PINNED_OPEN;
+  }
 
-	@Override
-	public int getDockLocation() {
-		return this.dockLocation;
-	}
+  @Override
+  public int getDockLocation() {
+    return this.dockLocation;
+  }
 
-	@Override
-	public int getPaletteState() {
-		return this.paletteState;
-	}
+  @Override
+  public int getPaletteState() {
+    return this.paletteState;
+  }
 
-	@Override
-	public int getPaletteWidth() {
-		return this.paletteWidth;
-	}
+  @Override
+  public int getPaletteWidth() {
+    return this.paletteWidth;
+  }
 
-	@Override
-	public void setDockLocation(int location) {
-		this.dockLocation = location;
+  @Override
+  public void setDockLocation(int location) {
+    this.dockLocation = location;
 
-	}
+  }
 
-	@Override
-	public void setPaletteState(int state) {
-		this.paletteState = state;
+  @Override
+  public void setPaletteState(int state) {
+    this.paletteState = state;
 
-	}
+  }
 
-	@Override
-	public void setPaletteWidth(int width) {
-		this.paletteWidth = width;
+  @Override
+  public void setPaletteWidth(int width) {
+    this.paletteWidth = width;
 
-	}
+  }
 
 }

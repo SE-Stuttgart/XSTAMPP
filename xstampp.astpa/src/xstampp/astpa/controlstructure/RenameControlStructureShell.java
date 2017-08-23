@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.controlstructure;
 
 import java.util.UUID;
@@ -17,7 +28,7 @@ public class RenameControlStructureShell extends ModalShell {
   private UUID rootId;
 
   public RenameControlStructureShell(IControlStructureEditorDataModel dataModel, UUID rootId) {
-    super("Rename Control Structure",Style.PACKED);
+    super("Rename Control Structure", Style.PACKED);
     this.dataModel = dataModel;
     this.rootId = rootId;
     this.dataModel.setActiveRoot(rootId);
@@ -30,13 +41,13 @@ public class RenameControlStructureShell extends ModalShell {
 
   @Override
   protected boolean doAccept() {
-    for (IRectangleComponent comp: dataModel.getRoots()) {
-      if(comp.getText().equals(nameInput.getText())) {
+    for (IRectangleComponent comp : dataModel.getRoots()) {
+      if (comp.getText().equals(nameInput.getText())) {
         invalidate("The name for the control structure must be unique!");
         return false;
       }
     }
-    if(dataModel.changeComponentText(rootId, nameInput.getText())) {
+    if (dataModel.changeComponentText(rootId, nameInput.getText())) {
       setReturnValue(nameInput.getText());
       return true;
     }
@@ -46,7 +57,7 @@ public class RenameControlStructureShell extends ModalShell {
   @Override
   protected void createCenter(Shell parent) {
     String text = dataModel.getComponent(rootId).getText();
-    this.nameInput = new TextInput(parent, SWT.None, "Name:",text);
+    this.nameInput = new TextInput(parent, SWT.None, "Name:", text);
 
   }
 

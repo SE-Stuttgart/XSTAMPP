@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.model.service;
 
 import java.util.UUID;
@@ -20,18 +31,18 @@ public class CausalDataUndoCallback implements IUndoCallback {
       UUID causalFactorId,
       CausalFactorEntryData oldData,
       CausalFactorEntryData newData) {
-        this.dataModel = dataModel;
-        this.componentId = componentId;
-        this.causalFactorId = causalFactorId;
-        this.oldData = oldData;
-        this.newData = newData;
+    this.dataModel = dataModel;
+    this.componentId = componentId;
+    this.causalFactorId = causalFactorId;
+    this.oldData = oldData;
+    this.newData = newData;
   }
-  
+
   @Override
   public void undo() {
     dataModel.changeCausalEntry(componentId, causalFactorId, oldData);
   }
-  
+
   @Override
   public void redo() {
     dataModel.changeCausalEntry(componentId, causalFactorId, newData);

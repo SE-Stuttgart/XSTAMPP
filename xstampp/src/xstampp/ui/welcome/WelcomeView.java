@@ -206,28 +206,28 @@ public class WelcomeView extends ViewPart implements IEditorBase {
      * icons----------------------------------------------
      */
     final Canvas newProject = this.addHoveredLabel(background, WelcomeView.getNewProjectIcon(),
-        Messages.WelcomeView_0,
-        new Point(WelcomeView.MAIN_ICONS_COLUMN, 330), Messages.CreateNew, "org.eclipse.ui.newWizard"); //$NON-NLS-1$
+        Messages.WelcomeView_0, new Point(WelcomeView.MAIN_ICONS_COLUMN, 330), Messages.CreateNew,
+        "org.eclipse.ui.newWizard"); //$NON-NLS-1$
     newProject.setToolTipText(WelcomeView.NEW_PROJECT_TOOLTIP);
 
     final Canvas loadProject = this.addHoveredLabel(background, WelcomeView.getLoadProjectIcon(),
-        Messages.WelcomeView_1,
-        new Point(WelcomeView.MAIN_ICONS_COLUMN, 390), Messages.LoadExistingProject, "xstampp.command.load"); //$NON-NLS-1$
+        Messages.WelcomeView_1, new Point(WelcomeView.MAIN_ICONS_COLUMN, 390),
+        Messages.LoadExistingProject, "xstampp.command.load"); //$NON-NLS-1$
     loadProject.setToolTipText(WelcomeView.LOAD_PROJECT_TOOLTIP);
 
     final Canvas help = this.addHoveredLabel(background, WelcomeView.getHelpImage(),
-        Messages.WelcomeView_2,
-        new Point(WelcomeView.MAIN_ICONS_COLUMN, 450), Messages.HelpContents, "org.eclipse.ui.help.helpContents"); //$NON-NLS-1$
+        Messages.WelcomeView_2, new Point(WelcomeView.MAIN_ICONS_COLUMN, 450),
+        Messages.HelpContents, "org.eclipse.ui.help.helpContents"); //$NON-NLS-1$
     help.setToolTipText(Messages.HelpToolTip);
 
     final Canvas settings = this.addHoveredLabel(background, WelcomeView.getSettingsImage(),
-        Messages.WelcomeView_3,
-        new Point(WelcomeView.MAIN_ICONS_COLUMN, 510), Messages.Preferences, "org.eclipse.ui.window.preferences"); //$NON-NLS-1$
+        Messages.WelcomeView_3, new Point(WelcomeView.MAIN_ICONS_COLUMN, 510), Messages.Preferences,
+        "org.eclipse.ui.window.preferences"); //$NON-NLS-1$
     settings.setToolTipText(Messages.PreferencesToolTip);
 
     final Canvas toWorkbench = this.addHoveredLabel(background, WelcomeView.getCloseImage(),
-        Messages.WelcomeView_4, new Point(WelcomeView.MAIN_ICONS_COLUMN, 570), Messages.WelcomeView_ToWorkbench,
-        "astpa.commands.toWorkbench"); //$NON-NLS-1$
+        Messages.WelcomeView_4, new Point(WelcomeView.MAIN_ICONS_COLUMN, 570),
+        Messages.WelcomeView_ToWorkbench, "astpa.commands.toWorkbench"); //$NON-NLS-1$
     toWorkbench.setToolTipText(Messages.GoToWorkbench);
 
     /*
@@ -250,8 +250,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
     final Button checkBox = new Button(background, SWT.CHECK);
     checkBox.setText(Messages.ShowPageOnStartup);
     checkBox.setToolTipText(Messages.ShowPageOnStartup);
-    checkBox.setSelection(
-        Activator.getDefault().getPreferenceStore().getBoolean(WelcomeView.getShowWelcomeOnStartupPreferences()));
+    checkBox.setSelection(Activator.getDefault().getPreferenceStore()
+        .getBoolean(WelcomeView.getShowWelcomeOnStartupPreferences()));
 
     this.getViewSite().getActionBars().getStatusLineManager().setMessage(""); //$NON-NLS-1$
 
@@ -269,7 +269,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
 
       @Override
       public void mouseEnter(MouseEvent e) {
-        WelcomeView.this.getViewSite().getActionBars().getStatusLineManager().setMessage(checkBox.getToolTipText());
+        WelcomeView.this.getViewSite().getActionBars().getStatusLineManager()
+            .setMessage(checkBox.getToolTipText());
       }
     });
 
@@ -282,8 +283,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
       @Override
       public void widgetSelected(SelectionEvent e) {
         // store new state in preferences
-        Activator.getDefault().getPreferenceStore().setValue(WelcomeView.getShowWelcomeOnStartupPreferences(),
-            checkBox.getSelection());
+        Activator.getDefault().getPreferenceStore()
+            .setValue(WelcomeView.getShowWelcomeOnStartupPreferences(), checkBox.getSelection());
       }
     });
 
@@ -295,8 +296,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
     checkBox.setLayoutData(checkBoxFormData);
   }
 
-  private Canvas addHoveredLabel(Composite parent, final Image icon, final String helpText, Point relativePosition,
-      final String text, final String command) {
+  private Canvas addHoveredLabel(Composite parent, final Image icon, final String helpText,
+      Point relativePosition, final String text, final String command) {
     final Canvas newLabel = new Canvas(parent, SWT.NONE);
 
     FormData formData = new FormData();
@@ -312,7 +313,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
       public void paintControl(PaintEvent e) {
         e.gc.drawImage(icon, 0, 0);
         e.gc.setFont(new Font(null, WelcomeView.TitleFont));
-        e.gc.drawString(text, icon.getBounds().width + 10, (icon.getBounds().height / 2) - 12, true);
+        e.gc.drawString(text, icon.getBounds().width + 10, (icon.getBounds().height / 2) - 12,
+            true);
 
       }
     });
@@ -329,7 +331,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
       @Override
       public void mouseEnter(MouseEvent e) {
         newLabel.setBackground(ColorConstants.lightBlue);
-        WelcomeView.this.getViewSite().getActionBars().getStatusLineManager().setMessage(newLabel.getToolTipText());
+        WelcomeView.this.getViewSite().getActionBars().getStatusLineManager()
+            .setMessage(newLabel.getToolTipText());
         WelcomeView.this.quickHelp.setText(helpText);
 
       }
@@ -348,8 +351,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
   }
 
   @SuppressWarnings("unused")
-  private Label addHoveredButton(Composite parent, final Image icon, final String helpText, Point relativePosition,
-      final Image hoveredIcon, final String command) {
+  private Label addHoveredButton(Composite parent, final Image icon, final String helpText,
+      Point relativePosition, final Image hoveredIcon, final String command) {
     final Label newLabel = new Label(parent, SWT.NONE);
 
     FormData formData = new FormData();
@@ -379,7 +382,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
       @Override
       public void mouseEnter(MouseEvent e) {
         newLabel.setImage(hoveredIcon);
-        WelcomeView.this.getViewSite().getActionBars().getStatusLineManager().setMessage(newLabel.getToolTipText());
+        WelcomeView.this.getViewSite().getActionBars().getStatusLineManager()
+            .setMessage(newLabel.getToolTipText());
         WelcomeView.this.quickHelp.setText(helpText);
 
       }
@@ -443,7 +447,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getNewProjectIcon() {
     if (WelcomeView.newProjectImage == null) {
-      WelcomeView.newProjectImage = Activator.getImageDescriptor(WelcomeView.NEW_PROJECT_ICON).createImage();
+      WelcomeView.newProjectImage = Activator.getImageDescriptor(WelcomeView.NEW_PROJECT_ICON)
+          .createImage();
     }
 
     return WelcomeView.newProjectImage;
@@ -458,8 +463,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getNewProjectIconHovered() {
     if (WelcomeView.newProjectImageHovered == null) {
-      WelcomeView.newProjectImageHovered = Activator.getImageDescriptor(WelcomeView.NEW_PROJECT_ICON_HOVERED)
-          .createImage();
+      WelcomeView.newProjectImageHovered = Activator
+          .getImageDescriptor(WelcomeView.NEW_PROJECT_ICON_HOVERED).createImage();
     }
 
     return WelcomeView.newProjectImageHovered;
@@ -474,7 +479,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getLoadProjectIcon() {
     if (WelcomeView.loadProjectImage == null) {
-      WelcomeView.loadProjectImage = Activator.getImageDescriptor(WelcomeView.LOAD_PROJECT_ICON).createImage();
+      WelcomeView.loadProjectImage = Activator.getImageDescriptor(WelcomeView.LOAD_PROJECT_ICON)
+          .createImage();
     }
 
     return WelcomeView.loadProjectImage;
@@ -489,8 +495,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getLoadProjectIconHovered() {
     if (WelcomeView.loadProjectImageHovered == null) {
-      WelcomeView.loadProjectImageHovered = Activator.getImageDescriptor(WelcomeView.LOAD_PROJECT_ICON_HOVERED)
-          .createImage();
+      WelcomeView.loadProjectImageHovered = Activator
+          .getImageDescriptor(WelcomeView.LOAD_PROJECT_ICON_HOVERED).createImage();
     }
 
     return WelcomeView.loadProjectImageHovered;
@@ -520,7 +526,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getExitIconHovered() {
     if (WelcomeView.exitImageHovered == null) {
-      WelcomeView.exitImageHovered = Activator.getImageDescriptor(WelcomeView.EXIT_ICON_HOVERED).createImage();
+      WelcomeView.exitImageHovered = Activator.getImageDescriptor(WelcomeView.EXIT_ICON_HOVERED)
+          .createImage();
     }
 
     return WelcomeView.exitImageHovered;
@@ -535,7 +542,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getBackgroundImage() {
     if (WelcomeView.backgroundImage == null) {
-      WelcomeView.backgroundImage = Activator.getImageDescriptor(WelcomeView.BACKGROUND_IMAGE).createImage();
+      WelcomeView.backgroundImage = Activator.getImageDescriptor(WelcomeView.BACKGROUND_IMAGE)
+          .createImage();
     }
 
     return WelcomeView.backgroundImage;
@@ -580,7 +588,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getCloseImageHovered() {
     if (WelcomeView.closeImageHovered == null) {
-      WelcomeView.closeImageHovered = Activator.getImageDescriptor(WelcomeView.CLOSE_IMAGE_HOVERED).createImage();
+      WelcomeView.closeImageHovered = Activator.getImageDescriptor(WelcomeView.CLOSE_IMAGE_HOVERED)
+          .createImage();
     }
 
     return WelcomeView.closeImageHovered;
@@ -595,7 +604,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getSettingsImage() {
     if (WelcomeView.settingsImage == null) {
-      WelcomeView.settingsImage = Activator.getImageDescriptor(WelcomeView.SETTINGS_ICON).createImage();
+      WelcomeView.settingsImage = Activator.getImageDescriptor(WelcomeView.SETTINGS_ICON)
+          .createImage();
     }
 
     return WelcomeView.settingsImage;
@@ -610,7 +620,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getSettingsImageHovered() {
     if (WelcomeView.settingsImageHovered == null) {
-      WelcomeView.settingsImageHovered = Activator.getImageDescriptor(WelcomeView.SETTINGS_ICON_HOVERED).createImage();
+      WelcomeView.settingsImageHovered = Activator
+          .getImageDescriptor(WelcomeView.SETTINGS_ICON_HOVERED).createImage();
     }
 
     return WelcomeView.settingsImageHovered;
@@ -640,7 +651,8 @@ public class WelcomeView extends ViewPart implements IEditorBase {
    */
   public static final Image getHelpImageHovered() {
     if (WelcomeView.helpImageHovered == null) {
-      WelcomeView.helpImageHovered = Activator.getImageDescriptor(WelcomeView.HELP_ICON_HOVERED).createImage();
+      WelcomeView.helpImageHovered = Activator.getImageDescriptor(WelcomeView.HELP_ICON_HOVERED)
+          .createImage();
     }
 
     return WelcomeView.helpImageHovered;

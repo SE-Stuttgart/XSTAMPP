@@ -50,9 +50,9 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
   public LinkingCommandAdapter(Control control, IControlContentAdapter controlContentAdapter,
       IContentProposalProvider proposalProvider, String commandId, char[] autoActivationCharacters,
       boolean installDecoration) {
-    super(control, controlContentAdapter, proposalProvider,
-        commandId, autoActivationCharacters, installDecoration);
-    
+    super(control, controlContentAdapter, proposalProvider, commandId, autoActivationCharacters,
+        installDecoration);
+
     this.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_INSERT);
     this.setFilterStyle(ContentProposalAdapter.FILTER_NONE);
     this.setAutoActivationCharacters(null);
@@ -73,8 +73,8 @@ public class LinkingCommandAdapter extends ContentAssistCommandAdapter {
 
       @Override
       public void focusLost(FocusEvent e) {
-        
-        if ( !hasProposalPopupFocus() ) {
+
+        if (!hasProposalPopupFocus()) {
           getControl().dispose();
         }
       }

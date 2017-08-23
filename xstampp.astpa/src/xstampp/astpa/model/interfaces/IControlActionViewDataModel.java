@@ -27,104 +27,104 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag, Fabian Toth
  * 
  */
-public interface IControlActionViewDataModel extends IDataModel,ICommonTables {
+public interface IControlActionViewDataModel extends IDataModel, ICommonTables {
 
-	/**
-	 * Getter for all existing control actions
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return All control actions
-	 */
-	List<IControlAction> getAllControlActions();
+  /**
+   * Getter for all existing control actions
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   * @return All control actions
+   */
+  List<IControlAction> getAllControlActions();
 
-	/**
-	 * Adds a control action. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @param description
-	 *            The description of the new control action
-	 * @param title
-	 *            The title of the new control action
-	 * @return String ID of the new control action
-	 */
-	UUID addControlAction(String title, String description);
-	
-	/**
-	 * Searches recursively for the component with the given id
-	 * 
-	 * @param componentId
-	 *            the id of the child
-	 * @return the component with the given id, null if the component does not
-	 *         exist
-	 * 
-	 * @author Fabian Toth
-	 */
-	IRectangleComponent getComponent(UUID componentId);
-	
-	/**
-	 * Gets the connection with the given id
-	 * 
-	 * @param connectionId
-	 *            the id of the connection
-	 * @return the connection with the given id, null if the connection does not
-	 *         exist
-	 * 
-	 * @author Fabian Toth
-	 */
-	IConnection getConnection(UUID connectionId);
-	
-	/**
-	 * Removes a control action. <br>
-	 * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @param controlActionId
-	 *            The ID of the control action which has to be deleted
-	 * @return true if the control action has been removed
-	 */
-	boolean removeControlAction(UUID controlActionId);
+  /**
+   * Adds a control action. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   * @param description
+   *          The description of the new control action
+   * @param title
+   *          The title of the new control action
+   * @return String ID of the new control action
+   */
+  UUID addControlAction(String title, String description);
 
-	/**
-	 * Setter for the title of a control action. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * @param controlActionId
-	 *            The control action's id
-	 * 
-	 * @param title
-	 *            The control action's new title
-	 * @return true if the title has been set
-	 */
-	boolean setControlActionTitle(UUID controlActionId, String title);
+  /**
+   * Searches recursively for the component with the given id
+   * 
+   * @param componentId
+   *          the id of the child
+   * @return the component with the given id, null if the component does not
+   *         exist
+   * 
+   * @author Fabian Toth
+   */
+  IRectangleComponent getComponent(UUID componentId);
 
-	/**
-	 * Setter for the description of a control action. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * @param controlActionId
-	 *            The control action's id
-	 * 
-	 * @param description
-	 *            The control action's new description
-	 * @return true if the description has been set
-	 */
-	boolean setControlActionDescription(UUID controlActionId, String description);
+  /**
+   * Gets the connection with the given id
+   * 
+   * @param connectionId
+   *          the id of the connection
+   * @return the connection with the given id, null if the connection does not
+   *         exist
+   * 
+   * @author Fabian Toth
+   */
+  IConnection getConnection(UUID connectionId);
 
-	/**
-	 * Get a control action by it's ID.
-	 * 
-	 * @author Jarkko Heidenwag, Patrick Wickenhaeuser
-	 * @param controlActionId
-	 *            the ID of the control action.
-	 * 
-	 * @return the control action.
-	 */
-	ITableModel getControlAction(UUID controlActionId);
+  /**
+   * Removes a control action. <br>
+   * Triggers an update for {@link org.extended.safetyproject.model.ObserverValue#CONTROL_ACTION}
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   * @param controlActionId
+   *          The ID of the control action which has to be deleted
+   * @return true if the control action has been removed
+   */
+  boolean removeControlAction(UUID controlActionId);
+
+  /**
+   * Setter for the title of a control action. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
+   * 
+   * @author Jarkko Heidenwag
+   * @param controlActionId
+   *          The control action's id
+   * 
+   * @param title
+   *          The control action's new title
+   * @return true if the title has been set
+   */
+  boolean setControlActionTitle(UUID controlActionId, String title);
+
+  /**
+   * Setter for the description of a control action. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
+   * 
+   * @author Jarkko Heidenwag
+   * @param controlActionId
+   *          The control action's id
+   * 
+   * @param description
+   *          The control action's new description
+   * @return true if the description has been set
+   */
+  boolean setControlActionDescription(UUID controlActionId, String description);
+
+  /**
+   * Get a control action by it's ID.
+   * 
+   * @author Jarkko Heidenwag, Patrick Wickenhaeuser
+   * @param controlActionId
+   *          the ID of the control action.
+   * 
+   * @return the control action.
+   */
+  ITableModel getControlAction(UUID controlActionId);
 
 }

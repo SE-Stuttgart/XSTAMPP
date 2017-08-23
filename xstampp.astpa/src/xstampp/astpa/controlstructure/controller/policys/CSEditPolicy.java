@@ -155,7 +155,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
 
       if (request.getNewObject() instanceof IComponent) {
         if (this.relative != null
-            && getFeedbackLayer().getChildren().contains(this.relative.getFeedback(ColorConstants.darkGray))) {
+            && getFeedbackLayer().getChildren()
+                .contains(this.relative.getFeedback(ColorConstants.darkGray))) {
           removeFeedback(this.relative.getFeedback(ColorConstants.darkGray));
         }
         this.relative = null;
@@ -261,16 +262,16 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
   private Dimension getDefaultSizeFor(ComponentType type, Rectangle rect) {
     Dimension dim = new Dimension();
     switch (type) {
-      case PROCESS_VALUE:
-      case TEXTFIELD:
-        dim.setWidth(Math.max(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.width, rect.width));
-        dim.setHeight(Math.max(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.height, rect.height));
-        return dim;
-      default:
+    case PROCESS_VALUE:
+    case TEXTFIELD:
+      dim.setWidth(Math.max(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.width, rect.width));
+      dim.setHeight(Math.max(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE.height, rect.height));
+      return dim;
+    default:
 
-        dim.setWidth(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.width, rect.width));
-        dim.setHeight(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.height, rect.height));
-        return dim;
+      dim.setWidth(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.width, rect.width));
+      dim.setHeight(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.height, rect.height));
+      return dim;
     }
   }
 

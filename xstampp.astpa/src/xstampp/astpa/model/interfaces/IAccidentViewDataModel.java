@@ -24,71 +24,71 @@ import xstampp.model.IDataModel;
  * @author Jarkko Heidenwag
  * 
  */
-public interface IAccidentViewDataModel extends IDataModel,ICommonTables,ISeverityDataModel,IHazardModel,IAccidentModel {
+public interface IAccidentViewDataModel
+    extends IDataModel, ICommonTables, ISeverityDataModel, IHazardModel, IAccidentModel {
 
+  /**
+   * Adds an accident. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   * @param description
+   *          The description of the new accident
+   * @param title
+   *          The title of the new accident
+   * @return String ID of the new Accident
+   */
+  UUID addAccident(String title, String description);
 
-	/**
-	 * Adds an accident. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @param description
-	 *            The description of the new accident
-	 * @param title
-	 *            The title of the new accident
-	 * @return String ID of the new Accident
-	 */
-	UUID addAccident(String title, String description);
+  /**
+   * Deletes an accident. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   * @param accidentId
+   *          The ID of the accident which has to be deleted
+   * @return true if the accident has been removed
+   */
+  boolean removeAccident(UUID accidentId);
 
-	/**
-	 * Deletes an accident. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @param accidentId
-	 *            The ID of the accident which has to be deleted
-	 * @return true if the accident has been removed
-	 */
-	boolean removeAccident(UUID accidentId);
+  /**
+   * Setter for the title of an accident. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
+   * 
+   * @author Jarkko Heidenwag
+   * @param accidentId
+   *          The accident's id
+   * 
+   * @param title
+   *          The accident's new title
+   * @return true if the title has been set
+   */
+  boolean setAccidentTitle(UUID accidentId, String title);
 
-	/**
-	 * Setter for the title of an accident. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * @param accidentId
-	 *            The accident's id
-	 * 
-	 * @param title
-	 *            The accident's new title
-	 * @return true if the title has been set
-	 */
-	boolean setAccidentTitle(UUID accidentId, String title);
+  /**
+   * Setter for the description of an accident. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
+   * 
+   * @author Jarkko Heidenwag
+   * @param accidentId
+   *          The accidents's id
+   * 
+   * @param description
+   *          The accident's new description
+   * @return true if the description has been set
+   */
+  boolean setAccidentDescription(UUID accidentId, String description);
 
-	/**
-	 * Setter for the description of an accident. <br>
-	 * Triggers an update for {@link astpa.model.ObserverValue#ACCIDENT}
-	 * 
-	 * @author Jarkko Heidenwag
-	 * @param accidentId
-	 *            The accidents's id
-	 * 
-	 * @param description
-	 *            The accident's new description
-	 * @return true if the description has been set
-	 */
-	boolean setAccidentDescription(UUID accidentId, String description);
-
-	/**
-	 * Get all hazards linked to a certain accident.
-	 * 
-	 * @author Jarkko Heidenwag, Patrick Wickenhaeuser
-	 * 
-	 * @param accidentId
-	 *            the accident of which all linked hazards should be returned.
-	 * @return the list of all hazards being linked to the given accident.
-	 */
-	List<ITableModel> getLinkedHazards(UUID accidentId);
+  /**
+   * Get all hazards linked to a certain accident.
+   * 
+   * @author Jarkko Heidenwag, Patrick Wickenhaeuser
+   * 
+   * @param accidentId
+   *          the accident of which all linked hazards should be returned.
+   * @return the list of all hazards being linked to the given accident.
+   */
+  List<ITableModel> getLinkedHazards(UUID accidentId);
 }

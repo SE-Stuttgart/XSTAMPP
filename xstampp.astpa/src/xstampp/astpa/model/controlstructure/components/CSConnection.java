@@ -165,27 +165,27 @@ public class CSConnection implements IConnection {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   public boolean addBendPoint(int x, int y) {
-    if(this.bendPoints == null) {
+    if (this.bendPoints == null) {
       this.bendPoints = new ArrayList<>();
     }
     return this.bendPoints.add(new Point(x, y));
   }
-  
+
   public boolean removeBendPoint(int x, int y) {
     boolean contains = this.bendPoints.contains(new Point(x, y));
     boolean result = this.bendPoints.remove(new Point(x, y));
-    if(this.bendPoints.isEmpty()) {
+    if (this.bendPoints.isEmpty()) {
       this.bendPoints = null;
     }
     return result;
   }
-  
+
   public List<Point> getBendPoints() {
-    
+
     ArrayList<Point> arrayList = new ArrayList<Point>();
-    if(bendPoints != null) {
+    if (bendPoints != null) {
       arrayList.addAll(bendPoints);
     }
     return arrayList;

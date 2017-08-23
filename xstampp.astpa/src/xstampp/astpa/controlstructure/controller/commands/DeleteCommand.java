@@ -29,86 +29,87 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class DeleteCommand extends ControlStructureAbstractCommand {
 
-	private IRectangleComponent model;
-	private IRectangleComponent parentModel;
+  private IRectangleComponent model;
+  private IRectangleComponent parentModel;
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepID
-	 *            the id which tells the command in which step he is
-	 */
-	public DeleteCommand(UUID rootId,
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepID
+   *          the id which tells the command in which step he is
+   */
+  public DeleteCommand(UUID rootId,
       IControlStructureEditorDataModel model, String stepID) {
-    super(rootId,model,stepID);
-	}
+    super(rootId, model, stepID);
+  }
 
-	@Override
-	public void execute() {
+  @Override
+  public void execute() {
 
     super.execute();
-		boolean isDeleteAllowed = ControlStructureAbstractCommand.COMPONENTS_MAP
-				.get(this.getStepID()).contains(this.model.getComponentType());
-		
-		if(isDeleteAllowed ||  MessageDialog.openConfirm(null, "Delete not step related component", "Do you really want to delete"+
-															"\nthe component created in the control structure of step 0?")){
-			this.getDataModel().removeComponent(this.model.getId());
-			this.getDataModel().removeControlAction(
-					this.model.getControlActionLink());
-		}
-	}
+    boolean isDeleteAllowed = ControlStructureAbstractCommand.COMPONENTS_MAP
+        .get(this.getStepID()).contains(this.model.getComponentType());
 
-	@Override
-	public boolean canExecute() {
-		return ((this.model != null) && (this.parentModel != null));
-	}
+    if (isDeleteAllowed || MessageDialog.openConfirm(null, "Delete not step related component",
+        "Do you really want to delete" +
+            "\nthe component created in the control structure of step 0?")) {
+      this.getDataModel().removeComponent(this.model.getId());
+      this.getDataModel().removeControlAction(
+          this.model.getControlActionLink());
+    }
+  }
 
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 * 
-	 * @param model
-	 *            the model which is to delete
-	 * 
-	 */
-	public void setModel(IRectangleComponent model) {
-		this.model = model;
+  @Override
+  public boolean canExecute() {
+    return ((this.model != null) && (this.parentModel != null));
+  }
 
-	}
+  /**
+   * 
+   * 
+   * @author Lukas Balzer, Aliaksei Babkovich
+   * 
+   * @param model
+   *          the model which is to delete
+   * 
+   */
+  public void setModel(IRectangleComponent model) {
+    this.model = model;
 
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 * 
-	 * @param parentModel
-	 *            the parentModel which contains the model as child
-	 */
-	public void setParentModel(Object parentModel) {
-		if (parentModel instanceof IRectangleComponent) {
-			this.parentModel = (IRectangleComponent) parentModel;
-		}
-	}
+  }
 
-	@Override
-	public void undo() {
-		this.getDataModel().recoverControlAction(
-				this.model.getControlActionLink());
-		this.getDataModel().recoverComponent(this.parentModel.getId(),
-				this.model.getId());
-		this.getDataModel().changeComponentLayout(this.model.getId(),
-				this.model.getLayout(false), false);
+  /**
+   * 
+   * 
+   * @author Lukas Balzer, Aliaksei Babkovich
+   * 
+   * @param parentModel
+   *          the parentModel which contains the model as child
+   */
+  public void setParentModel(Object parentModel) {
+    if (parentModel instanceof IRectangleComponent) {
+      this.parentModel = (IRectangleComponent) parentModel;
+    }
+  }
 
-	}
+  @Override
+  public void undo() {
+    this.getDataModel().recoverControlAction(
+        this.model.getControlActionLink());
+    this.getDataModel().recoverComponent(this.parentModel.getId(),
+        this.model.getId());
+    this.getDataModel().changeComponentLayout(this.model.getId(),
+        this.model.getLayout(false), false);
 
-	@Override
-	public void redo() {
-		this.execute();
+  }
 
-	}
+  @Override
+  public void redo() {
+    this.execute();
+
+  }
 
 }

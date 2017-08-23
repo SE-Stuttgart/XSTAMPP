@@ -46,7 +46,7 @@ public class DynamicStepSelector extends AbstractSelectorWithAdditions implement
    */
   public DynamicStepSelector(TreeItem item, TreeItemDescription descriptor,
       IDynamicStepsProvider provider, IWorkbenchPartSite site) {
-    super(item, descriptor,site);
+    super(item, descriptor, site);
     this.commandId = descriptor.getCommand();
     this.pluginId = descriptor.getNamespaceIdentifier();
     setProvider(provider);
@@ -78,7 +78,7 @@ public class DynamicStepSelector extends AbstractSelectorWithAdditions implement
 
     manager.add(contributionItem);
   }
-  
+
   public IDynamicStepsProvider getProvider() {
     return provider;
   }

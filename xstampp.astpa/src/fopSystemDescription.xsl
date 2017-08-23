@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
+<!--
+  Copyright (C) 2017 Jaqueline Patzek, Patrick Wickenhäuser,Lukas Balzer StuPro 2013 / 2014
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
+  
+  Contributors:
+      Jaqueline Patzek, Patrick Wickenhäuser,Lukas Balzer  - initial API and implementation
+-->
 <xsl:stylesheet version="1.0"
 	xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<!-- author: Jaqueline Patzek, Patrick Wickenhäuser,Lukas Balzer -->

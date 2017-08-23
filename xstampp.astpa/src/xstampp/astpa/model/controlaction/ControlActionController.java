@@ -605,7 +605,6 @@ public class ControlActionController extends Observable implements IControlActio
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#
    * getProvidedVariables(java.util.UUID)
    */

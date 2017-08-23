@@ -31,101 +31,101 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  * @version 1.0
  */
 public class ComponentChangeLayoutCommand extends
-ControlStructureAbstractCommand {
+    ControlStructureAbstractCommand {
 
-	private IRectangleComponent model;
-	private Rectangle layout;
-	private Rectangle oldLayout;
-	private int heightConstraint;
-	private int widthConstraint;
+  private IRectangleComponent model;
+  private Rectangle layout;
+  private Rectangle oldLayout;
+  private int heightConstraint;
+  private int widthConstraint;
 
-	/**
-	 *
-	 * @author Lukas Balzer
-	 * @param model
-	 *            The dataModel which contains all model classes
-	 * @param stepID
-	 *            the stepEditor ID
-	 */
+  /**
+   *
+   * @author Lukas Balzer
+   * @param model
+   *          The dataModel which contains all model classes
+   * @param stepID
+   *          the stepEditor ID
+   */
   public ComponentChangeLayoutCommand(UUID rootId,
       IControlStructureEditorDataModel model, String stepID) {
-    super(rootId,model,stepID);
-		setMinConstraint(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE);
-	}
+    super(rootId, model, stepID);
+    setMinConstraint(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE);
+  }
 
-	@Override
-	public void execute() {
-	  super.execute();
-		this.getDataModel().changeComponentLayout(this.model.getId(),
-				this.layout, this.getStepID().equals(CSEditor.ID));
+  @Override
+  public void execute() {
+    super.execute();
+    this.getDataModel().changeComponentLayout(this.model.getId(),
+        this.layout, this.getStepID().equals(CSEditor.ID));
 
-	}
+  }
 
-	/**
-	 * set the minimum width/height for the component
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param constraint
-	 *            the minimum width and height to which the component can be
-	 *            scaled
-	 */
-	public void setMinConstraint(Dimension constraint) {
-		this.widthConstraint = constraint.width;
-		this.heightConstraint = constraint.height;
-	}
+  /**
+   * set the minimum width/height for the component
+   *
+   * @author Lukas Balzer
+   *
+   * @param constraint
+   *          the minimum width and height to which the component can be
+   *          scaled
+   */
+  public void setMinConstraint(Dimension constraint) {
+    this.widthConstraint = constraint.width;
+    this.heightConstraint = constraint.height;
+  }
 
-	/**
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param rect
-	 *            the new layout constraint
-	 */
-	public void setConstraint(Rectangle rect) {
-		this.layout = new Rectangle();
-//		this.layout.width = Math.max(rect.width, this.widthConstraint);
-//		this.layout.height = Math.max(rect.height, this.heightConstraint);
-		this.layout.width = rect.width;
-		this.layout.height =rect.height;
-		this.layout.x = Math.max(rect.x, 0);
-		this.layout.y = Math.max(rect.y, 0);
-	}
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   * @param rect
+   *          the new layout constraint
+   */
+  public void setConstraint(Rectangle rect) {
+    this.layout = new Rectangle();
+    // this.layout.width = Math.max(rect.width, this.widthConstraint);
+    // this.layout.height = Math.max(rect.height, this.heightConstraint);
+    this.layout.width = rect.width;
+    this.layout.height = rect.height;
+    this.layout.x = Math.max(rect.x, 0);
+    this.layout.y = Math.max(rect.y, 0);
+  }
 
-	/**
-	 *
-	 * @author Lukas
-	 *
-	 * @param layout
-	 *            the layout
-	 */
-	public void setOldLayout(Rectangle layout) {
-		this.oldLayout = layout;
-	}
+  /**
+   *
+   * @author Lukas
+   *
+   * @param layout
+   *          the layout
+   */
+  public void setOldLayout(Rectangle layout) {
+    this.oldLayout = layout;
+  }
 
-	@Override
-	public boolean canExecute() {
-		return true;
-	}
+  @Override
+  public boolean canExecute() {
+    return true;
+  }
 
-	/**
-	 *
-	 * @author Lukas Balzer
-	 *
-	 * @param model
-	 *            the new model
-	 */
-	public void setModel(Object model) {
-		this.model = (IRectangleComponent) model;
-		this.oldLayout = ((IRectangleComponent) model).getLayout(this
-				.getStepID().equals(CSEditor.ID));
+  /**
+   *
+   * @author Lukas Balzer
+   *
+   * @param model
+   *          the new model
+   */
+  public void setModel(Object model) {
+    this.model = (IRectangleComponent) model;
+    this.oldLayout = ((IRectangleComponent) model).getLayout(this
+        .getStepID().equals(CSEditor.ID));
 
-	}
+  }
 
-	@Override
-	public void undo() {
-		this.getDataModel().changeComponentLayout(this.model.getId(),
-				this.oldLayout, this.getStepID().equals(CSEditor.ID));
-	}
+  @Override
+  public void undo() {
+    this.getDataModel().changeComponentLayout(this.model.getId(),
+        this.oldLayout, this.getStepID().equals(CSEditor.ID));
+  }
 
 }

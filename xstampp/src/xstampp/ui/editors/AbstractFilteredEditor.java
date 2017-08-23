@@ -115,7 +115,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
           categoryCombo.setItems(getCategoryArray());
           filterCombo.setItems(new String[0]);
           filterText.setText(""); //$NON-NLS-1$
-          activeCategory = null; //$NON-NLS-1$
+          activeCategory = null; // $NON-NLS-1$
           filterValue = ""; //$NON-NLS-1$
           updateFilter();
         }

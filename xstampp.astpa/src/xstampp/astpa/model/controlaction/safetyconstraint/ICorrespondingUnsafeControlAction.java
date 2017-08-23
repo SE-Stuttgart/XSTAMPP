@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
  * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
  * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
  * Zotov).
@@ -26,30 +26,30 @@ import xstampp.astpa.model.interfaces.ITableModel;
  */
 public interface ICorrespondingUnsafeControlAction extends ITableModel {
 
-	/**
-	 * @return the description
-	 * 
-	 * @author Fabian Toth
-	 */
-	@Override
-	String getDescription();
+  /**
+   * @return the description
+   * 
+   * @author Fabian Toth
+   */
+  @Override
+  String getDescription();
 
-	/**
-	 * @return the id
-	 * 
-	 * @author Fabian Toth
-	 */
-	@Override
-	UUID getId();
+  /**
+   * @return the id
+   * 
+   * @author Fabian Toth
+   */
+  @Override
+  UUID getId();
 
-	/**
-	 * @author Fabian Toth
-	 * 
-	 * @return the correspondingSafetyConstraint
-	 */
-	ITableModel getCorrespondingSafetyConstraint();
-	
-	/**
+  /**
+   * @author Fabian Toth
+   * 
+   * @return the correspondingSafetyConstraint
+   */
+  ITableModel getCorrespondingSafetyConstraint();
+
+  /**
    * @return the links
    */
   public String getLinks();

@@ -55,7 +55,7 @@ class LinkingShell {
   private java.util.List<Label> descChildren;
 
   public LinkingShell() {
-	  
+
     this.mouseLoc = Display.getDefault().getCursorLocation();
     descShellSize = new Point(300, 300);
     labelShellSize = new Point(200, 300);
@@ -77,7 +77,8 @@ class LinkingShell {
    * instance.
    * 
    * @param control
-   *          the {@link Control} used for calculating the optimal position of the two proposal {@link Shell}'s
+   *          the {@link Control} used for calculating the optimal position of the two proposal
+   *          {@link Shell}'s
    */
   public void createControl(Control control) {
     if (this.shell != null && !this.shell.isDisposed()) {
@@ -93,27 +94,27 @@ class LinkingShell {
 
     this.shell.setLayout(new GridLayout());
     this.shell.setSize(labelShellSize);
-    
+
     // calculate the correct position of the shell, so that it's not displayed beyond the
     // display bounds
     Point shellLocation = control.toDisplay(mouseLoc.x, mouseLoc.y);
-    
+
     if (Display.getDefault().getBounds().width - (labelShellSize.x + shellLocation.x) < 0) {
       shellLocation.x = shellLocation.x - labelShellSize.x;
     }
     if (Display.getDefault().getBounds().height - (labelShellSize.y + shellLocation.y) < 0) {
       shellLocation.y = shellLocation.y - labelShellSize.y;
     }
-    
+
     this.shell.setLocation(shellLocation);
-    
+
     final Shell descShell = new Shell(SWT.RESIZE);
     descShell.setLayout(new FormLayout());
     descShell.setSize(descShellSize);
     // calculate the correct position of the shell, so that it's not displayed beyond the
     // display bounds
-    Point descShellLocation = new Point(shell.getBounds().x + shell.getBounds().width + shellsOffset,
-        shell.getBounds().y);
+    Point descShellLocation = new Point(
+        shell.getBounds().x + shell.getBounds().width + shellsOffset, shell.getBounds().y);
     if (Display.getDefault().getBounds().width - (descShellLocation.x + descShellSize.x) < 0) {
       descShellLocation.x = shell.getBounds().x - descShellSize.x - shellsOffset;
     }
@@ -154,7 +155,7 @@ class LinkingShell {
             descChildren.get(i).dispose();
           }
           Label label = null;
-          if(LinkingShell.this.proposals[proposalList.getSelectionIndex()]
+          if (LinkingShell.this.proposals[proposalList.getSelectionIndex()]
               .getDescription() != null) {
             for (String s : LinkingShell.this.proposals[proposalList.getSelectionIndex()]
                 .getDescription().split("\n")) {
@@ -172,7 +173,7 @@ class LinkingShell {
               label.setLayoutData(data);
               descChildren.add(label);
             }
-            descShell.layout(); 
+            descShell.layout();
           }
         }
       }

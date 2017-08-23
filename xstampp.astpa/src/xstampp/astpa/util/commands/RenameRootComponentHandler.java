@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.util.commands;
 
 import java.util.UUID;
@@ -25,7 +36,8 @@ public class RenameRootComponentHandler extends AbstractHandler {
       UUID rootId = UUID.fromString(rootIdString);
       if (ProjectManager.getContainerInstance().canAccess(id)) {
         IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(id);
-        RenameControlStructureShell shell = new RenameControlStructureShell((IControlStructureEditorDataModel) dataModel, rootId);
+        RenameControlStructureShell shell = new RenameControlStructureShell(
+            (IControlStructureEditorDataModel) dataModel, rootId);
         shell.open();
         return shell.getReturnValue();
       }

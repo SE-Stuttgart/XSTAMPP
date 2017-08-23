@@ -32,7 +32,6 @@ public class GridCellText extends AbstractGridCell {
 
   private String text;
 
-
   private UUID uuid;
 
   private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0, 0, 0);
@@ -59,8 +58,8 @@ public class GridCellText extends AbstractGridCell {
   public GridCellText(String text) {
     this(text, null);
   }
-  
-  public GridCellText(String text, UUID id){
+
+  public GridCellText(String text, UUID id) {
     this.uuid = id;
     this.text = text;
   }
@@ -76,11 +75,11 @@ public class GridCellText extends AbstractGridCell {
     gc.setForeground(GridCellText.TEXT_COLOR);
 
     Point textBounds = wrapText(renderer.getDrawBounds(), gc, this.text.trim(), 2, 0);
-    boolean needRefresh = textBounds.y > AbstractGridCell.DEFAULT_CELL_HEIGHT 
-                        && textBounds.y != getPreferredHeight();
+    boolean needRefresh = textBounds.y > AbstractGridCell.DEFAULT_CELL_HEIGHT
+        && textBounds.y != getPreferredHeight();
     item.getGridRow().setDirty(needRefresh);
     int cellHeight = Math.max(textBounds.y, AbstractGridCell.DEFAULT_CELL_HEIGHT);
-    setPreferredHeight(item,cellHeight);
+    setPreferredHeight(item, cellHeight);
     // restore bg color
     gc.setBackground(bgColor);
     // restore fg color
@@ -95,7 +94,6 @@ public class GridCellText extends AbstractGridCell {
   public void cleanUp() {
     // intentionally empty
   }
-
 
   @Override
   public void activate() {

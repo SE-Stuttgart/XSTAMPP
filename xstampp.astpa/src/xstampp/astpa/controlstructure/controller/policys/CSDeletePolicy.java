@@ -31,41 +31,41 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class CSDeletePolicy extends ComponentEditPolicy {
 
-	private IControlStructureEditorDataModel dataModel;
-	private final String stepID;
+  private IControlStructureEditorDataModel dataModel;
+  private final String stepID;
   private UUID rootId;
 
-	/**
-	 * 
-	 * @author Lukas
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            TODO
-	 */
-	public CSDeletePolicy(IControlStructureEditorDataModel model, String stepId) {
-		super();
-		this.stepID = stepId;
-		this.dataModel = model;
-	}
+  /**
+   * 
+   * @author Lukas
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          TODO
+   */
+  public CSDeletePolicy(IControlStructureEditorDataModel model, String stepId) {
+    super();
+    this.stepID = stepId;
+    this.dataModel = model;
+  }
 
   public UUID getRootId() {
-    if(rootId == null) {
-      rootId =((IRectangleComponent)getHost().getViewer().getContents().getModel()).getId();
+    if (rootId == null) {
+      rootId = ((IRectangleComponent) getHost().getViewer().getContents().getModel()).getId();
     }
     return rootId;
   }
 
-	@Override
-	protected Command createDeleteCommand(GroupRequest deleteRequest) {
-		DeleteCommand command = new DeleteCommand(getRootId(), this.dataModel, this.stepID);
-		command.setModel((IRectangleComponent) this.getHost().getModel());
+  @Override
+  protected Command createDeleteCommand(GroupRequest deleteRequest) {
+    DeleteCommand command = new DeleteCommand(getRootId(), this.dataModel, this.stepID);
+    command.setModel((IRectangleComponent) this.getHost().getModel());
 
-		command.setParentModel(this.getHost().getParent().getModel());
-		return command;
+    command.setParentModel(this.getHost().getParent().getModel());
+    return command;
 
-	}
+  }
 
   @Override
   public Command getCommand(Request request) {
@@ -75,9 +75,9 @@ public class CSDeletePolicy extends ComponentEditPolicy {
     return null;
   }
 
-	@Override
-	public IControlStructureEditPart getHost() {
-		return (IControlStructureEditPart) super.getHost();
-	}
+  @Override
+  public IControlStructureEditPart getHost() {
+    return (IControlStructureEditPart) super.getHost();
+  }
 
 }

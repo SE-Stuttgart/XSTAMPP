@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.preferences;
 
 import java.io.BufferedReader;
@@ -42,7 +53,8 @@ public class ASTPADefaultConfig {
   public final boolean USE_CAUSAL_SCENARIO_ANALYSIS;
 
   private ASTPADefaultConfig() {
-    USE_CAUSAL_SCENARIO_ANALYSIS = fetchSTPAConfig("stpa.defaults.useCausalScenarioAnalysis", false);
+    USE_CAUSAL_SCENARIO_ANALYSIS = fetchSTPAConfig("stpa.defaults.useCausalScenarioAnalysis",
+        false);
     USE_MULTI_CONTROL_STRUCTURES = fetchSTPAConfig("stpa.defaults.useMultiControlStructures",
         false);
     USE_SEVERITY_ANALYSIS = fetchSTPAConfig("stpa.defaults.useSeverityAnalysis", true);
@@ -57,11 +69,14 @@ public class ASTPADefaultConfig {
 
   private boolean fetchSTPAConfig(String valueId, boolean defaultValue) {
     boolean returnValue = defaultValue;
-     try (InputStream stream = Platform.getConfigurationLocation().getDataArea("/config.ini").openStream();
+    try (
+        InputStream stream = Platform.getConfigurationLocation().getDataArea("/config.ini")
+            .openStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
       String line = reader.readLine();
       ProjectManager.getLOGGER().debug(
-          "fetching default config from " + Platform.getConfigurationLocation().getDataArea("/config.ini").getPath());
+          "fetching default config from "
+              + Platform.getConfigurationLocation().getDataArea("/config.ini").getPath());
       while (line != null) {
         if (line.startsWith(valueId)) {
           String[] split = line.split("=");

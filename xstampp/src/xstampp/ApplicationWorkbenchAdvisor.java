@@ -37,7 +37,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
   @Override
   public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-                                    IWorkbenchWindowConfigurer configurer) {
+      IWorkbenchWindowConfigurer configurer) {
     return new ApplicationWorkbenchWindowAdvisor(configurer);
 
   }

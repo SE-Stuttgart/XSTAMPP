@@ -83,17 +83,16 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
   }
 
-
   @Override
   public void postWindowCreate() {
     super.postWindowCreate();
     final Shell shell = this.getWindowConfigurer().getWindow().getShell();
     shell.setMinimumSize(ApplicationWorkbenchWindowAdvisor.MINIMUM_WINDOW_SIZE);
-    //to prevent any broken editor references to show up, this command makes sure
+    // to prevent any broken editor references to show up, this command makes sure
     // xstampp always starts up without any open editors
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
     ServiceReference<?> reference = Activator.getContext()
-                                              .getServiceReference(IProvisioningAgent.SERVICE_NAME);
+        .getServiceReference(IProvisioningAgent.SERVICE_NAME);
     Activator.getContext().ungetService(reference);
   }
 

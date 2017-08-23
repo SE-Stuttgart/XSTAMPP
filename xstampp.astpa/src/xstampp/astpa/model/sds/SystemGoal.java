@@ -24,21 +24,21 @@ import xstampp.astpa.model.ATableModel;
  */
 public class SystemGoal extends ATableModel {
 
-	/**
-	 * Constructor of a system goal
-	 * 
-	 * @param title
-	 *            the title of the new system goal
-	 * @param description
-	 *            the description of the new system goal
-	 * @param number
-	 *            the number of the new system goal
-	 * 
-	 * @author Fabian Toth, Jaqueline Patzek
-	 */
-	public SystemGoal(String title, String description, int number) {
-		super(title, description, number);
-	}
+  /**
+   * Constructor of a system goal
+   * 
+   * @param title
+   *          the title of the new system goal
+   * @param description
+   *          the description of the new system goal
+   * @param number
+   *          the number of the new system goal
+   * 
+   * @author Fabian Toth, Jaqueline Patzek
+   */
+  public SystemGoal(String title, String description, int number) {
+    super(title, description, number);
+  }
 
   /**
    * {@link ATableModel#ATableModel(String, String)}
@@ -47,12 +47,12 @@ public class SystemGoal extends ATableModel {
     super(title, description);
   }
 
-	/**
-	 * Empty constructor for JAXB. Do not use it!
-	 * 
-	 * @author Fabian Toth, Jaqueline Patzek
-	 */
-	public SystemGoal() {
-		// empty constructor for JAXB
-	}
+  /**
+   * Empty constructor for JAXB. Do not use it!
+   * 
+   * @author Fabian Toth, Jaqueline Patzek
+   */
+  public SystemGoal() {
+    // empty constructor for JAXB
+  }
 }

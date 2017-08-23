@@ -52,7 +52,7 @@ public class RenameCommand extends AbstractHandler {
     private UUID projectId;
 
     public ProjectRenameShell(String title, UUID projectId) {
-      super(title,Style.PACKED);
+      super(title, Style.PACKED);
       this.projectId = projectId;
     }
 

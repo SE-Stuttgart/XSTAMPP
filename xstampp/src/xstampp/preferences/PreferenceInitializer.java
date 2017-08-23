@@ -93,21 +93,24 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     this.store.setDefault(IPreferenceConstants.NAVIGATION_NAME_SORT, 1);
     // Colors
     PreferenceConverter.setDefault(this.store, IPreferenceConstants.NAVIGATION_ITEM_SELECTED,
-        Display.getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_NAVIGATION_ITEM_SELECTED).getRGB());
+        Display.getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_NAVIGATION_ITEM_SELECTED)
+            .getRGB());
 
     PreferenceConverter.setDefault(this.store, IPreferenceConstants.NAVIGATION_ITEM_UNSELECTED,
-        Display.getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_NAVIGATION_ITEM_UNSELECTED).getRGB());
+        Display.getCurrent()
+            .getSystemColor(PreferenceInitializer.DEFAULT_NAVIGATION_ITEM_UNSELECTED).getRGB());
 
     PreferenceConverter.setDefault(this.store, IPreferenceConstants.HOVER_ITEM,
         Display.getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_HOVER_ITEM).getRGB());
 
-    PreferenceConverter.setDefault(this.store, IPreferenceConstants.SPLITTER_FOREGROUND,
-        Display.getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_SPLITTER_FOREGROUND).getRGB());
+    PreferenceConverter.setDefault(this.store, IPreferenceConstants.SPLITTER_FOREGROUND, Display
+        .getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_SPLITTER_FOREGROUND).getRGB());
 
-    PreferenceConverter.setDefault(this.store, IPreferenceConstants.SPLITTER_BACKGROUND,
-        Display.getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_SPLITTER_BACKGROUND).getRGB());
+    PreferenceConverter.setDefault(this.store, IPreferenceConstants.SPLITTER_BACKGROUND, Display
+        .getCurrent().getSystemColor(PreferenceInitializer.DEFAULT_SPLITTER_BACKGROUND).getRGB());
 
-    PreferenceConverter.setDefault(this.store, IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR, new RGB(0, 0, 0));
+    PreferenceConverter.setDefault(this.store, IPreferenceConstants.CONTROLSTRUCTURE_FONT_COLOR,
+        new RGB(0, 0, 0));
 
     // Fonts
     PreferenceConverter.setDefault(this.store, IPreferenceConstants.NAVIGATION_TITLE_FONT,
@@ -129,6 +132,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     this.store.setDefault(IPreferenceConstants.SHOW_WELCOME_ON_STARTUP_PREFERENCES, true);
 
     // Update
-    this.store.setDefault(IPreferenceConstants.UPDATE_LINK, PreferenceInitializer.DEFAULT_UPDATE_LINK);
+    this.store.setDefault(IPreferenceConstants.UPDATE_LINK,
+        PreferenceInitializer.DEFAULT_UPDATE_LINK);
   }
 }

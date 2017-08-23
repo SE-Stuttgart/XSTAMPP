@@ -30,39 +30,39 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class ProcessValueEditPart extends CSAbstractEditPart {
 
-	private static final int TOP_OFFSET = 4;
+  private static final int TOP_OFFSET = 4;
 
-	/**
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            TODO
-	 */
-	public ProcessValueEditPart(IControlStructureEditorDataModel model,
-			String stepId) {
-		super(model, stepId, 1);
+  /**
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          TODO
+   */
+  public ProcessValueEditPart(IControlStructureEditorDataModel model,
+      String stepId) {
+    super(model, stepId, 1);
 
-	}
+  }
 
-	@Override
-	protected IFigure createFigure() {
-		IControlStructureFigure tmpFigure = new ProcessValueFigure(this.getId(),
-				ProcessValueEditPart.TOP_OFFSET);
+  @Override
+  protected IFigure createFigure() {
+    IControlStructureFigure tmpFigure = new ProcessValueFigure(this.getId(),
+        ProcessValueEditPart.TOP_OFFSET);
 
-		tmpFigure.setPreferenceStore(getStore());
-		tmpFigure.setBorder(null);
-		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
-		tmpFigure.setToolTip(new Label(Messages.ProcessValue));
-		return tmpFigure;
-	}
+    tmpFigure.setPreferenceStore(getStore());
+    tmpFigure.setBorder(null);
+    tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
+    tmpFigure.setToolTip(new Label(Messages.ProcessValue));
+    return tmpFigure;
+  }
 
-	@Override
-	public void translateToRoot(Translatable t) {
-		this.getFigure().getParent().translateFromParent(t);
-		this.getFigure().getParent().getParent().translateFromParent(t);
-		this.getFigure().getParent().getParent().getParent()
-				.translateFromParent(t);
-	}
+  @Override
+  public void translateToRoot(Translatable t) {
+    this.getFigure().getParent().translateFromParent(t);
+    this.getFigure().getParent().getParent().translateFromParent(t);
+    this.getFigure().getParent().getParent().getParent()
+        .translateFromParent(t);
+  }
 }

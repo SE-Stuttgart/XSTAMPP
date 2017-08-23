@@ -29,38 +29,38 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class EmptyComponentEditPart extends CSAbstractEditPart {
 
-	/**
-	 * this constuctor sets the unique ID of the
-	 * {@link EmptyComponentEditPart} which is the same in its model and
-	 * figure
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            this steps id
-	 */
-	public EmptyComponentEditPart(IControlStructureEditorDataModel model,
-			String stepId) {
-		super(model, stepId, 1);
-	}
+  /**
+   * this constuctor sets the unique ID of the
+   * {@link EmptyComponentEditPart} which is the same in its model and
+   * figure
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          this steps id
+   */
+  public EmptyComponentEditPart(IControlStructureEditorDataModel model,
+      String stepId) {
+    super(model, stepId, 1);
+  }
 
-	@Override
-	protected IFigure createFigure() {
-	  TextFieldFigure tmpFigure = new TextFieldFigure(this.getId(),true,true);
-		tmpFigure.setPreferenceStore(getStore());
-		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
-		tmpFigure.setToolTip(new Label("Undefined Component"));
-		tmpFigure.setBordered();
-		return tmpFigure;
-	}
+  @Override
+  protected IFigure createFigure() {
+    TextFieldFigure tmpFigure = new TextFieldFigure(this.getId(), true, true);
+    tmpFigure.setPreferenceStore(getStore());
+    tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
+    tmpFigure.setToolTip(new Label("Undefined Component"));
+    tmpFigure.setBordered();
+    return tmpFigure;
+  }
 
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
-	}
+  @Override
+  protected void createEditPolicies() {
+    super.createEditPolicies();
+    this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+        new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+  }
 
 }

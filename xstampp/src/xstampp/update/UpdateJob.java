@@ -130,8 +130,8 @@ public class UpdateJob extends Job {
             updates += update.toString().replaceAll("==>", "to") + "\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           }
           if (operation.getPossibleUpdates().length > 0) {
-            UpdateJob.this.doInstall = MessageDialog.openQuestion(UpdateJob.this.parent, Messages.ReallyInstallUpdates,
-                updates);
+            UpdateJob.this.doInstall = MessageDialog.openQuestion(UpdateJob.this.parent,
+                Messages.ReallyInstallUpdates, updates);
           } else if (!UpdateJob.this.startUp) {
             MessageDialog.openInformation(UpdateJob.this.parent, Messages.UpdateFromIDE,
                 Messages.TheUpdateRoutineDoesNotWorkWhenASTPAIsExecutedFromTheIDE);
@@ -149,7 +149,8 @@ public class UpdateJob extends Job {
         throw new NullPointerException();
       }
       // register a job change listener to track
-      provisioningJob.addJobChangeListener(new UpdateJobChangeAdapter(this.parent, this.viewContainer));
+      provisioningJob
+          .addJobChangeListener(new UpdateJobChangeAdapter(this.parent, this.viewContainer));
       provisioningJob.schedule();
     }
     return Status.OK_STATUS;
@@ -173,10 +174,11 @@ class UpdateJobChangeAdapter extends JobChangeAdapter {
         @Override
         public void run() {
           boolean restart = MessageDialog.openQuestion(UpdateJobChangeAdapter.this.parent,
-              Messages.UpdatesInstalledRestart, Messages.UpdatesHaveBeenInstalledSuccessfullyDoYouWantToRestart);
+              Messages.UpdatesInstalledRestart,
+              Messages.UpdatesHaveBeenInstalledSuccessfullyDoYouWantToRestart);
           if (UpdateJobChangeAdapter.this.viewContainer.getUnsavedChanges()) {
-            restart = restart && !MessageDialog.openQuestion(UpdateJobChangeAdapter.this.parent, Messages.PlatformName,
-                Messages.ThereAreUnsafedChangesDoYouWantToStoreThemAbort);
+            restart = restart && !MessageDialog.openQuestion(UpdateJobChangeAdapter.this.parent,
+                Messages.PlatformName, Messages.ThereAreUnsafedChangesDoYouWantToStoreThemAbort);
           }
           if (restart) {
             PlatformUI.getWorkbench().restart();

@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2016 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -68,12 +68,15 @@ public class OpenWizardHandler extends AbstractHandler {
   public Object convertToObject(String parameterValue) throws ParameterValueConversionException {
     // the method searches for for export, import and news wizards
     IWorkbenchWizard wizard = null;
-    IWizardDescriptor wizardDescriptor = PlatformUI.getWorkbench().getExportWizardRegistry().findWizard(parameterValue);
+    IWizardDescriptor wizardDescriptor = PlatformUI.getWorkbench().getExportWizardRegistry()
+        .findWizard(parameterValue);
     if (wizardDescriptor == null) {
-      wizardDescriptor = PlatformUI.getWorkbench().getNewWizardRegistry().findWizard(parameterValue);
+      wizardDescriptor = PlatformUI.getWorkbench().getNewWizardRegistry()
+          .findWizard(parameterValue);
     }
     if (wizardDescriptor == null) {
-      wizardDescriptor = PlatformUI.getWorkbench().getImportWizardRegistry().findWizard(parameterValue);
+      wizardDescriptor = PlatformUI.getWorkbench().getImportWizardRegistry()
+          .findWizard(parameterValue);
     }
 
     if (wizardDescriptor == null) {

@@ -60,78 +60,90 @@ import xstampp.util.ColorManager;
  * @author Jarkko Heidenwag, Lukas Balzer
  * 
  */
-public abstract class AbstractFilteredTableView extends StandartEditorPart{
-	
-	/**
-	 * an object of type EditSupportProvider is used to construct an EditingSupport using the
-	 * methods {@link EditSupportProvider#getEditingValue(Object)} and {@link EditSupportProvider#setEditValue(Object, Object)} 
-	 * 
-	 * @author Lukas Balzer
-	 *
-	 */
-	protected abstract class EditSupportProvider{
-	  protected boolean canEdit(Object element) {
-	    return true;
-	  }
-		/**
-		 * Returns the value that is available for editing the given element<br> this function is called 
-		 * by the EditingSupport of the displayed table, if this returns null the edit is disabled<p>
-		 * <b>the default value is null, implementors should overwrite this function to enable the editing support</b> 
-		 * @param element the element of the table column in focus
-		 * 
-		 * @return the value that is available for editing the given element, or null if the given element cannot be edited
-		 * 
-		 */
-		abstract protected Object getEditingValue(Object element);
-		
-		/**
-		 * Called in the setValue function of the Editing support,
-		 * the default implementation does nothing 
-		 * @param element the model 
-		 * @param value the new value
-		 */
-		abstract protected void setEditValue(Object element, Object value);
-	}
-	
-	private class CSCEditingSupport extends EditingSupport {
+public abstract class AbstractFilteredTableView extends StandartEditorPart {
 
-		private EditSupportProvider supportProvider;
-		/**
-		 * 
-		 * @author Jarkko Heidenwag
-		 * 
-		 * @param viewer
-		 *            the ColumnViewer
-		 */
-		public CSCEditingSupport(ColumnViewer viewer, EditSupportProvider provider) {
-			super(viewer);
-			this.supportProvider = provider;
-		}
+  /**
+   * an object of type EditSupportProvider is used to construct an EditingSupport using the
+   * methods {@link EditSupportProvider#getEditingValue(Object)} and
+   * {@link EditSupportProvider#setEditValue(Object, Object)}
+   * 
+   * @author Lukas Balzer
+   *
+   */
+  protected abstract class EditSupportProvider {
+    protected boolean canEdit(Object element) {
+      return true;
+    }
 
-		@Override
-		protected boolean canEdit(Object element) {
-			return supportProvider.canEdit(element);
-		}
+    /**
+     * Returns the value that is available for editing the given element<br>
+     * this function is called
+     * by the EditingSupport of the displayed table, if this returns null the edit is disabled
+     * <p>
+     * <b>the default value is null, implementors should overwrite this function to enable the
+     * editing support</b>
+     * 
+     * @param element
+     *          the element of the table column in focus
+     * 
+     * @return the value that is available for editing the given element, or null if the given
+     *         element cannot be edited
+     * 
+     */
+    abstract protected Object getEditingValue(Object element);
 
-		@Override
-		protected CellEditor getCellEditor(Object element) {
-			return new TextCellEditor(tableViewer.getTable(),SWT.NONE);
-		}
+    /**
+     * Called in the setValue function of the Editing support,
+     * the default implementation does nothing
+     * 
+     * @param element
+     *          the model
+     * @param value
+     *          the new value
+     */
+    abstract protected void setEditValue(Object element, Object value);
+  }
 
-		@Override
-		protected Object getValue(Object element) {
-			return supportProvider.getEditingValue(element);
-		}
+  private class CSCEditingSupport extends EditingSupport {
 
-		@Override
-		protected void setValue(Object element, Object value) {
-			supportProvider.setEditValue(element, value);
-			tableViewer.refresh(true, true);
-			tableViewer.setInput(getInput());
-		}
-	}
-	
-	protected class CSCLabelProvider extends ColumnLabelProvider{
+    private EditSupportProvider supportProvider;
+
+    /**
+     * 
+     * @author Jarkko Heidenwag
+     * 
+     * @param viewer
+     *          the ColumnViewer
+     */
+    public CSCEditingSupport(ColumnViewer viewer, EditSupportProvider provider) {
+      super(viewer);
+      this.supportProvider = provider;
+    }
+
+    @Override
+    protected boolean canEdit(Object element) {
+      return supportProvider.canEdit(element);
+    }
+
+    @Override
+    protected CellEditor getCellEditor(Object element) {
+      return new TextCellEditor(tableViewer.getTable(), SWT.NONE);
+    }
+
+    @Override
+    protected Object getValue(Object element) {
+      return supportProvider.getEditingValue(element);
+    }
+
+    @Override
+    protected void setValue(Object element, Object value) {
+      supportProvider.setEditValue(element, value);
+      tableViewer.refresh(true, true);
+      tableViewer.setInput(getInput());
+    }
+  }
+
+  protected class CSCLabelProvider extends ColumnLabelProvider {
 
     @Override
     public Color getForeground(Object element) {
@@ -140,262 +152,264 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart{
       }
       return null;
     }
-    
-		@Override
-		public Color getBackground(Object element) {
-			int index = ((List<?>)tableViewer.getInput()).indexOf(element);
-			if(index % 2 == 0){
-				return ColorManager.registerColor("EVEN_TABLE_ENTRY", new RGB(230,230,230));
-			}
-			return ColorManager.registerColor("UNEVEN_TABLE_ENTRY", new RGB(255,255,255));
-		}
-	}
-	
-	
-	private IDataModel dataInterface;
-	private TableViewer tableViewer;
-	protected ModeFilter filter;
-	private Text filterTextField;
-	private TableViewerColumn safetyConstraintsColumn;
-	private String[] headers;
-	private EditSupportProvider[] editingSupports;
-	private int[] columnWeights;
-	private boolean[] refreshVector;
-	/**
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
-	public AbstractFilteredTableView(ModeFilter filter, String[] cols) {
-		this.filter = filter;
-		this.headers = cols;
-		columnWeights = new int[this.headers.length];
-		editingSupports = new EditSupportProvider[this.headers.length];
-		refreshVector = new boolean[this.headers.length];
-		Arrays.fill(columnWeights, 1);
-		Arrays.fill(editingSupports, null);
-		Arrays.fill(refreshVector, false);
-		
-	}
 
-	/**
-	 * this method assigns new weights to the columns defined by the header names in the constructor
-	 *
-	 * @param columnWeights an array containing new weights for each column in the table the length of the given array must match the amounts of columns
-	 */
-	public void setColumnWeights(int[] columnWeights) {
-		Assert.isTrue(this.columnWeights.length == columnWeights.length);
-		this.columnWeights = columnWeights;
-	}
-	
-	/**
-	 * Create contents of the view part.
-	 * 
-	 * @author Jarkko Heidenwag
-	 * @param parent
-	 *            The parent composite
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
-		this.setDataModelInterface(ProjectManager.getContainerInstance()
-				.getDataModel(this.getProjectID()));
-		 // setting up the outer composite
-		Composite cscComposite = new Composite(parent, SWT.NONE);
-		cscComposite
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		cscComposite.setLayout(new GridLayout(1, true));
+    @Override
+    public Color getBackground(Object element) {
+      int index = ((List<?>) tableViewer.getInput()).indexOf(element);
+      if (index % 2 == 0) {
+        return ColorManager.registerColor("EVEN_TABLE_ENTRY", new RGB(230, 230, 230));
+      }
+      return ColorManager.registerColor("UNEVEN_TABLE_ENTRY", new RGB(255, 255, 255));
+    }
+  }
 
-		// setting up the composite for the filter
-		Composite filterComposite = new Composite(cscComposite, SWT.NONE);
-		filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false));
-		filterComposite.setLayout(new GridLayout(filter.getCategorys().size() +2, false));
-		Label filterLabel = new Label(filterComposite, SWT.TRAIL);
-		filterLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		filterLabel.setText(Messages.Filter);
+  private IDataModel dataInterface;
+  private TableViewer tableViewer;
+  protected ModeFilter filter;
+  private Text filterTextField;
+  private TableViewerColumn safetyConstraintsColumn;
+  private String[] headers;
+  private EditSupportProvider[] editingSupports;
+  private int[] columnWeights;
+  private boolean[] refreshVector;
 
-		for(String category: filter.getCategorys()){
-			Button bothButton = new Button(filterComposite, SWT.RADIO);
-			bothButton.setText(category);
-			bothButton.setSelection(false);
-			final String fin_category = category;
-			bothButton.addSelectionListener(new SelectionListener() {
-	
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					AbstractFilteredTableView.this.filter.setCSCFilterMode(fin_category);
-					AbstractFilteredTableView.this.emptyFilter();
-				}
-	
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-					// intentionally empty
-				}
-			});
-		}
-	
+  /**
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   */
+  public AbstractFilteredTableView(ModeFilter filter, String[] cols) {
+    this.filter = filter;
+    this.headers = cols;
+    columnWeights = new int[this.headers.length];
+    editingSupports = new EditSupportProvider[this.headers.length];
+    refreshVector = new boolean[this.headers.length];
+    Arrays.fill(columnWeights, 1);
+    Arrays.fill(editingSupports, null);
+    Arrays.fill(refreshVector, false);
 
-		this.filterTextField = new Text(filterComposite, SWT.SINGLE
-				| SWT.BORDER);
-		this.filterTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false));
+  }
 
-		// KeyListener for the filter
-		this.filterTextField.addKeyListener(new KeyAdapter() {
+  /**
+   * this method assigns new weights to the columns defined by the header names in the constructor
+   *
+   * @param columnWeights
+   *          an array containing new weights for each column in the table the length of the given
+   *          array must match the amounts of columns
+   */
+  public void setColumnWeights(int[] columnWeights) {
+    Assert.isTrue(this.columnWeights.length == columnWeights.length);
+    this.columnWeights = columnWeights;
+  }
 
-			@Override
-			public void keyReleased(KeyEvent ke) {
-				AbstractFilteredTableView.this.filter.setSearchText(AbstractFilteredTableView.this.filterTextField
-						.getText());
-				AbstractFilteredTableView.this.tableViewer.refresh(true, true);
-				tableViewer.setInput(getInput());
-			}
-		});
+  /**
+   * Create contents of the view part.
+   * 
+   * @author Jarkko Heidenwag
+   * @param parent
+   *          The parent composite
+   */
+  @Override
+  public void createPartControl(Composite parent) {
+    this.setDataModelInterface(ProjectManager.getContainerInstance()
+        .getDataModel(this.getProjectID()));
+    // setting up the outer composite
+    Composite cscComposite = new Composite(parent, SWT.NONE);
+    cscComposite
+        .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    cscComposite.setLayout(new GridLayout(1, true));
 
-		// setting up the composite for the table
-		Composite tableComposite = new Composite(cscComposite, SWT.NONE);
-		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
-		tableComposite.setLayout(new GridLayout(1, true));
-		TableColumnLayout tableColumnLayout = new TableColumnLayout();
-		tableComposite.setLayout(tableColumnLayout);
-		// setting up the table viewer
-		this.tableViewer = new TableViewer(tableComposite, SWT.BORDER
-				| SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI);
-		this.tableViewer.setContentProvider(new ArrayContentProvider());
-		this.tableViewer.getTable().setLinesVisible(true);
-		this.tableViewer.getTable().setHeaderVisible(true);
-		if(this.filter != null){
-			AbstractFilteredTableView.this.tableViewer.addFilter(this.filter);
-		}
+    // setting up the composite for the filter
+    Composite filterComposite = new Composite(cscComposite, SWT.NONE);
+    filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+        false));
+    filterComposite.setLayout(new GridLayout(filter.getCategorys().size() + 2, false));
+    Label filterLabel = new Label(filterComposite, SWT.TRAIL);
+    filterLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+    filterLabel.setText(Messages.Filter);
 
-		for (int i = 0; i < headers.length; i++) {
-			TableViewerColumn column = new TableViewerColumn(
-					this.tableViewer, SWT.NONE);
-			column.setLabelProvider(getColumnProvider(i));
-			column.getColumn().setText(this.headers[i]);
-			if(columnWeights[i]<0){
-				refreshVector[i] = true;
-				tableColumnLayout.setColumnData(
-						column.getColumn(),
-						new ColumnWeightData(1,30, true));
-			}else{
-				tableColumnLayout.setColumnData(
-					column.getColumn(),
-					new ColumnWeightData(columnWeights[i],30, true));
-			}
-			
-			if(editingSupports[i] != null){
-				column.setEditingSupport(new CSCEditingSupport(tableViewer, editingSupports[i]));
-			}
-		}
-		
-		
+    for (String category : filter.getCategorys()) {
+      Button bothButton = new Button(filterComposite, SWT.RADIO);
+      bothButton.setText(category);
+      bothButton.setSelection(false);
+      final String fin_category = category;
+      bothButton.addSelectionListener(new SelectionListener() {
 
-		// detecting a double click
-		ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
-				this.tableViewer) {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+          AbstractFilteredTableView.this.filter.setCSCFilterMode(fin_category);
+          AbstractFilteredTableView.this.emptyFilter();
+        }
 
-			@Override
-			protected boolean isEditorActivationEvent(
-					ColumnViewerEditorActivationEvent event) {
-				final int leftClick = 1;
-				// Enable editor only with mouse double click
-				if (((event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION) && (((MouseEvent) event.sourceEvent).button == leftClick))
-						|| (event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC)) {
-					return true;
-				}
-				return false;
-			}
-		};
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+          // intentionally empty
+        }
+      });
+    }
 
-		// Listener for editing a title by pressing return
-		Listener returnListener = new Listener() {
+    this.filterTextField = new Text(filterComposite, SWT.SINGLE
+        | SWT.BORDER);
+    this.filterTextField.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+        true, false));
 
-			@Override
-			public void handleEvent(Event event) {
-				if ((event.type == SWT.KeyDown) && (event.keyCode == SWT.CR)
-						&& (!AbstractFilteredTableView.this.tableViewer.getSelection().isEmpty())) {
-					int selected = AbstractFilteredTableView.this.tableViewer.getTable()
-							.getSelectionIndex();
-					AbstractFilteredTableView.this.safetyConstraintsColumn
-							.getViewer()
-							.editElement(
-									AbstractFilteredTableView.this.tableViewer
-											.getElementAt(selected),
-									1);
-				}
-			}
-		};
+    // KeyListener for the filter
+    this.filterTextField.addKeyListener(new KeyAdapter() {
 
-		this.tableViewer.getTable().addListener(SWT.KeyDown, returnListener);
+      @Override
+      public void keyReleased(KeyEvent ke) {
+        AbstractFilteredTableView.this.filter
+            .setSearchText(AbstractFilteredTableView.this.filterTextField
+                .getText());
+        AbstractFilteredTableView.this.tableViewer.refresh(true, true);
+        tableViewer.setInput(getInput());
+      }
+    });
 
-		if(hasEditSupport()){
-			TableViewerEditor.create(this.tableViewer, null, activationSupport,
-					ColumnViewerEditor.TABBING_HORIZONTAL
-							| ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
-							| ColumnViewerEditor.TABBING_VERTICAL
-							| ColumnViewerEditor.KEYBOARD_ACTIVATION);
-		}
-		packColumns();
-		
+    // setting up the composite for the table
+    Composite tableComposite = new Composite(cscComposite, SWT.NONE);
+    tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+        true));
+    tableComposite.setLayout(new GridLayout(1, true));
+    TableColumnLayout tableColumnLayout = new TableColumnLayout();
+    tableComposite.setLayout(tableColumnLayout);
+    // setting up the table viewer
+    this.tableViewer = new TableViewer(tableComposite, SWT.BORDER
+        | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI);
+    this.tableViewer.setContentProvider(new ArrayContentProvider());
+    this.tableViewer.getTable().setLinesVisible(true);
+    this.tableViewer.getTable().setHeaderVisible(true);
+    if (this.filter != null) {
+      AbstractFilteredTableView.this.tableViewer.addFilter(this.filter);
+    }
 
-	}
+    for (int i = 0; i < headers.length; i++) {
+      TableViewerColumn column = new TableViewerColumn(
+          this.tableViewer, SWT.NONE);
+      column.setLabelProvider(getColumnProvider(i));
+      column.getColumn().setText(this.headers[i]);
+      if (columnWeights[i] < 0) {
+        refreshVector[i] = true;
+        tableColumnLayout.setColumnData(
+            column.getColumn(),
+            new ColumnWeightData(1, 30, true));
+      } else {
+        tableColumnLayout.setColumnData(
+            column.getColumn(),
+            new ColumnWeightData(columnWeights[i], 30, true));
+      }
 
-	protected final void packColumns() {
-		this.tableViewer.refresh(true, true);
-		this.tableViewer.setInput(getInput());
-		for(int i=0; i< refreshVector.length;i++){
-			TableColumn col = this.tableViewer.getTable().getColumn(i);
-			if(refreshVector[i]){
-				col.pack();
-			}
-		}
-	}
+      if (editingSupports[i] != null) {
+        column.setEditingSupport(new CSCEditingSupport(tableViewer, editingSupports[i]));
+      }
+    }
 
-	
-	public void setDataModelInterface(IDataModel dataInterface) {
-		this.dataInterface = dataInterface;
-		this.dataInterface.addObserver(this);
-	}
-	
-	protected IDataModel getDataInterface(){
-		return dataInterface;
-	}
-	
-	protected void refresh(){
-		if(!this.tableViewer.getTable().isDisposed()){
-			this.tableViewer.refresh(true, true);
-			this.tableViewer.setInput(getInput());
-		}
-	}
-	
-	/**
-	 * deletes any String contained in the filter text field
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 */
-	private void emptyFilter() {
-		this.filter.setSearchText(""); //$NON-NLS-1$
-		this.filterTextField.setText(""); //$NON-NLS-1$
-		this.tableViewer.refresh(true, true);
-		this.tableViewer.setInput(getInput());
-	}
-	protected void addEditingSupport(int index, EditSupportProvider support) {
-		this.editingSupports[index] = support;
-	}
-	
-	@Override
-	public void dispose() {
-		this.dataInterface.deleteObserver(this);
-		super.dispose();
-	}
+    // detecting a double click
+    ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
+        this.tableViewer) {
 
-	abstract protected CSCLabelProvider getColumnProvider(int columnIndex);
-	
-	abstract protected List<?> getInput();
-	abstract protected boolean hasEditSupport();
-	abstract protected boolean canEdit(Object element);
+      @Override
+      protected boolean isEditorActivationEvent(
+          ColumnViewerEditorActivationEvent event) {
+        final int leftClick = 1;
+        // Enable editor only with mouse double click
+        if (((event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION)
+            && (((MouseEvent) event.sourceEvent).button == leftClick))
+            || (event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC)) {
+          return true;
+        }
+        return false;
+      }
+    };
+
+    // Listener for editing a title by pressing return
+    Listener returnListener = new Listener() {
+
+      @Override
+      public void handleEvent(Event event) {
+        if ((event.type == SWT.KeyDown) && (event.keyCode == SWT.CR)
+            && (!AbstractFilteredTableView.this.tableViewer.getSelection().isEmpty())) {
+          int selected = AbstractFilteredTableView.this.tableViewer.getTable()
+              .getSelectionIndex();
+          AbstractFilteredTableView.this.safetyConstraintsColumn
+              .getViewer()
+              .editElement(
+                  AbstractFilteredTableView.this.tableViewer
+                      .getElementAt(selected),
+                  1);
+        }
+      }
+    };
+
+    this.tableViewer.getTable().addListener(SWT.KeyDown, returnListener);
+
+    if (hasEditSupport()) {
+      TableViewerEditor.create(this.tableViewer, null, activationSupport,
+          ColumnViewerEditor.TABBING_HORIZONTAL
+              | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
+              | ColumnViewerEditor.TABBING_VERTICAL
+              | ColumnViewerEditor.KEYBOARD_ACTIVATION);
+    }
+    packColumns();
+
+  }
+
+  protected final void packColumns() {
+    this.tableViewer.refresh(true, true);
+    this.tableViewer.setInput(getInput());
+    for (int i = 0; i < refreshVector.length; i++) {
+      TableColumn col = this.tableViewer.getTable().getColumn(i);
+      if (refreshVector[i]) {
+        col.pack();
+      }
+    }
+  }
+
+  public void setDataModelInterface(IDataModel dataInterface) {
+    this.dataInterface = dataInterface;
+    this.dataInterface.addObserver(this);
+  }
+
+  protected IDataModel getDataInterface() {
+    return dataInterface;
+  }
+
+  protected void refresh() {
+    if (!this.tableViewer.getTable().isDisposed()) {
+      this.tableViewer.refresh(true, true);
+      this.tableViewer.setInput(getInput());
+    }
+  }
+
+  /**
+   * deletes any String contained in the filter text field
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   */
+  private void emptyFilter() {
+    this.filter.setSearchText(""); //$NON-NLS-1$
+    this.filterTextField.setText(""); //$NON-NLS-1$
+    this.tableViewer.refresh(true, true);
+    this.tableViewer.setInput(getInput());
+  }
+
+  protected void addEditingSupport(int index, EditSupportProvider support) {
+    this.editingSupports[index] = support;
+  }
+
+  @Override
+  public void dispose() {
+    this.dataInterface.deleteObserver(this);
+    super.dispose();
+  }
+
+  abstract protected CSCLabelProvider getColumnProvider(int columnIndex);
+
+  abstract protected List<?> getInput();
+
+  abstract protected boolean hasEditSupport();
+
+  abstract protected boolean canEdit(Object element);
 
 }

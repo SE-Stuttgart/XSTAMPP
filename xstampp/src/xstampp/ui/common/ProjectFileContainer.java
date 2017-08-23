@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import xstampp.preferences.IPreferenceConstants;
  * @author Lukas Balzer
  * @since 2.1.0
  */
-public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
+public class ProjectFileContainer implements Comparable<ProjectFileContainer> {
 
   private IDataModel controller;
   private String extension;
@@ -96,9 +96,10 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
     return folderPath + File.separator + getProjectName() + "." + extension; //$NON-NLS-1$
   }
 
-  public File getProjectFile(){
+  public File getProjectFile() {
     return new File(getPath());
   }
+
   /**
    * @param path
    *          the path to set
@@ -135,7 +136,8 @@ public class ProjectFileContainer implements Comparable<ProjectFileContainer>{
   }
 
   /**
-   * @param lock the lock to set
+   * @param lock
+   *          the lock to set
    */
   public void setLock(boolean lock) {
     this.lock = lock;

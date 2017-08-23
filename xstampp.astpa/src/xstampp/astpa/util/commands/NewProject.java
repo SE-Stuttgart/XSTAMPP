@@ -32,28 +32,28 @@ import xstampp.ui.menu.file.commands.CommandState;
  */
 public class NewProject extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		String nameParam = event.getParameter("astpa.new.name"); //$NON-NLS-1$
-		String pathParam = event.getParameter("astpa.new.path"); //$NON-NLS-1$
-		if ((nameParam == null) || (pathParam == null)) {
-			ProjectManager.getLOGGER().debug("failed to initialize new Project");
-		}
+    String nameParam = event.getParameter("astpa.new.name"); //$NON-NLS-1$
+    String pathParam = event.getParameter("astpa.new.path"); //$NON-NLS-1$
+    if ((nameParam == null) || (pathParam == null)) {
+      ProjectManager.getLOGGER().debug("failed to initialize new Project");
+    }
 
-		if(ProjectManager.getContainerInstance().startUp(DataModelController.class,
-				nameParam, pathParam, null) == null){
-			ProjectManager.getLOGGER().debug("failed to start up new Project");
-		}
+    if (ProjectManager.getContainerInstance().startUp(DataModelController.class,
+        nameParam, pathParam, null) == null) {
+      ProjectManager.getLOGGER().debug("failed to start up new Project");
+    }
 
-		IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
-				.getPerspectiveRegistry()
-				.findPerspectiveWithId("xstampp.defaultPerspective"); //$NON-NLS-1$
-		if (descriptor != null) {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().setPerspective(descriptor);
-		}
-		return null;
-	}
+    IPerspectiveDescriptor descriptor = PlatformUI.getWorkbench()
+        .getPerspectiveRegistry()
+        .findPerspectiveWithId("xstampp.defaultPerspective"); //$NON-NLS-1$
+    if (descriptor != null) {
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+          .getActivePage().setPerspective(descriptor);
+    }
+    return null;
+  }
 
 }

@@ -33,7 +33,8 @@ import xstampp.util.ColorManager;
 /**
  * defines an Application modal shell which should be used for all dialogs in XSTAMPP.
  * 
- * <br> Example implementation:
+ * <br>
+ * Example implementation:
  * 
  * <pre>
  * public class ExampleShell extends ModalShell {
@@ -98,8 +99,11 @@ public abstract class ModalShell {
    * {@link #doAccept()} and closes the application depending on the returned boolean.
    * 
    * @param style
-   *          One of the integer constants defined in this class <ul> <li>{@link #APPLYABLE}
-   *          <li>{@link #PACKED} </ul>
+   *          One of the integer constants defined in this class
+   *          <ul>
+   *          <li>{@link #APPLYABLE}
+   *          <li>{@link #PACKED}
+   *          </ul>
    * 
    * 
    */
@@ -315,7 +319,8 @@ public abstract class ModalShell {
    * This method is called whenever the ok/accept button is pressed. Depending on the return value
    * the modal shell is closed.
    * 
-   * <br> if the content can not be accepted and the method returns false, the
+   * <br>
+   * if the content can not be accepted and the method returns false, the
    * {@link ModalShell#invalidate(String)} method can be called informing the user about details
    * 
    * @return if the input should be accepted or not
@@ -326,7 +331,8 @@ public abstract class ModalShell {
    * Is called during the shell set up and also gets the main shell as parent with a <b>two column
    * gridLayout</b>.
    * 
-   * <br> <i>Note: The Layout of the given shell should not be changed by implementations</i>
+   * <br>
+   * <i>Note: The Layout of the given shell should not be changed by implementations</i>
    * 
    * @param parent
    *          the parent shell which is displayed to the user

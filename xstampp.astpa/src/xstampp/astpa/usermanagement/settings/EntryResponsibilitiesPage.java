@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * Lukas Balzer - initial API and implementation
+ ******************************************************************************/
 package xstampp.astpa.usermanagement.settings;
 
 import java.util.ArrayList;
@@ -30,7 +41,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
   private IUserProject dataModel;
   private ResponsibilityEditingSupport editingSupport;
   private String name;
-  
+
   @Override
   public Composite createControl(CTabFolder control, ModalShell parent, UUID modelId) {
     if (!setDataModel(ProjectManager.getContainerInstance().getDataModel(modelId))) {
@@ -39,8 +50,9 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
 
     Composite tableComposite = new Composite(control, SWT.NONE);
     tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    
-    final TableViewer viewer = new TableViewer(tableComposite,  SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
+
+    final TableViewer viewer = new TableViewer(tableComposite,
+        SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
 
     viewer.getTable().setLinesVisible(true);
     viewer.getTable().setHeaderVisible(true);
@@ -49,20 +61,19 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
     idColumn.setLabelProvider(new ColumnLabelProvider() {
       @Override
       public String getText(Object element) {
-        return "" + ((ATableModel)element).getNumber(); //$NON-NLS-1$
+        return "" + ((ATableModel) element).getNumber(); //$NON-NLS-1$
       }
     });
-    
+
     TableViewerColumn nameColumn = new TableViewerColumn(viewer, SWT.LEAD);
     nameColumn.getColumn().setText("Name");
     nameColumn.setLabelProvider(new ColumnLabelProvider() {
       @Override
       public String getText(Object element) {
-        return ((ATableModel)element).getText();
+        return ((ATableModel) element).getText();
       }
     });
-    
-    
+
     TableViewerColumn respColumn = new TableViewerColumn(viewer, SWT.LEAD);
     respColumn.getColumn().setText("User");
     respColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -74,18 +85,17 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
     editingSupport = new ResponsibilityEditingSupport(viewer, getDataModel());
     respColumn.setEditingSupport(editingSupport);
     List<T> entryList = new ArrayList<>();
-    if(getDataModel().getUserSystem().checkAccess(AccessRights.ADMIN)) {
+    if (getDataModel().getUserSystem().checkAccess(AccessRights.ADMIN)) {
       entryList = getEntryList(modelId);
     } else {
       for (T entry : getEntryList(modelId)) {
-        if(getDataModel().getUserSystem().isResponsible(entry.getId())) {
+        if (getDataModel().getUserSystem().isResponsible(entry.getId())) {
           entryList.add(entry);
         }
       }
     }
     viewer.setContentProvider(new ArrayContentProvider());
     viewer.setInput(entryList);
-    
 
     TableColumnLayout tableColumnLayout = new TableColumnLayout();
     tableComposite.setLayout(tableColumnLayout);
@@ -112,6 +122,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
   public Map<UUID, IUser> getResult() {
     return this.editingSupport.save();
   }
+
   @Override
   public boolean isVisible(UUID projectId) {
     IDataModel model = ProjectManager.getContainerInstance().getDataModel(projectId);
@@ -131,8 +142,8 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
    *          the dataModel to set
    */
   public boolean setDataModel(IDataModel dataModel) {
-    if(dataModel instanceof IUserProject) {
-      this.dataModel = (IUserProject)dataModel;
+    if (dataModel instanceof IUserProject) {
+      this.dataModel = (IUserProject) dataModel;
       return true;
     }
     return false;
@@ -147,7 +158,6 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
   public void setName(String name) {
     this.name = name;
   }
-
 
   @Override
   public String getId() {

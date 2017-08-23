@@ -23,13 +23,13 @@ import xstampp.model.IDataModel;
  */
 public interface INavigationViewDataModel extends IDataModel {
 
-	/**
-	 * Getter for the projectName
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @return the projectName
-	 */
-	@Override
-	String getProjectName();
+  /**
+   * Getter for the projectName
+   * 
+   * @author Fabian Toth
+   * 
+   * @return the projectName
+   */
+  @Override
+  String getProjectName();
 }

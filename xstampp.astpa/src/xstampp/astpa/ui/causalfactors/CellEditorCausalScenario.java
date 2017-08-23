@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -35,15 +35,16 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
   private ICausalFactorEntry entry;
   private UUID componentId;
   private UUID factorId;
-  
-  public CellEditorCausalScenario(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
-                      ICausalFactorEntry entry, ICausalComponent component, ICausalFactor factor, UUID ruleId, ScenarioType type) {
-    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getSafetyRule(),ruleId);
+
+  public CellEditorCausalScenario(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
+      ICausalFactorEntry entry, ICausalComponent component, ICausalFactor factor, UUID ruleId,
+      ScenarioType type) {
+    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getSafetyRule(), ruleId);
     this.entry = entry;
     this.type = type;
     this.componentId = component.getId();
     this.factorId = factor.getId();
-    if(type != ScenarioType.CAUSAL_SCENARIO){
+    if (type != ScenarioType.CAUSAL_SCENARIO) {
       setReadOnly(true);
     }
     setShowDelete(true);
@@ -56,24 +57,25 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
     AbstractLtlProviderData data = new AbstractLtlProviderData();
     data.setRule(newText);
     dataInterface.updateRefinedRule(ruleId, data, null);
-    
+
   }
-  
+
   @Override
   public void delete() {
-    if(MessageDialog.openConfirm(null, "Delete Causal Scenario?", "Do you really want to delete this Scenario?\n"
-        + "Note that all references will be deleted as well")){
-      if(type == ScenarioType.CAUSAL_SCENARIO){
-        dataInterface.removeRefinedSafetyRule(type , false, ruleId);
+    if (MessageDialog.openConfirm(null, "Delete Causal Scenario?",
+        "Do you really want to delete this Scenario?\n"
+            + "Note that all references will be deleted as well")) {
+      if (type == ScenarioType.CAUSAL_SCENARIO) {
+        dataInterface.removeRefinedSafetyRule(type, false, ruleId);
       }
       CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
       List<UUID> ids = new ArrayList<>();
-      if(entry.getScenarioLinks() != null){
+      if (entry.getScenarioLinks() != null) {
         ids.addAll(entry.getScenarioLinks());
       }
       ids.remove(ruleId);
       data.setScenarioLinks(ids);
-      this.dataInterface.changeCausalEntry(componentId,factorId, data);
+      this.dataInterface.changeCausalEntry(componentId, factorId, data);
     }
   }
 
@@ -81,9 +83,9 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
   protected void editorOpening() {
     dataInterface.lockUpdate();
   }
-  
+
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[]{ObserverValue.Extended_DATA});
+    dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.Extended_DATA });
   }
 }

@@ -557,16 +557,16 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
           0);
       int resultNum = dialog.open();
       switch (resultNum) {
-        case -1:
-          return false;
-        case 0:
-          return ProjectManager.getContainerInstance().saveAllDataModels();
-        case 1:
-          return true;
-        case 2:
-          return false;
-        default:
-          break;
+      case -1:
+        return false;
+      case 0:
+        return ProjectManager.getContainerInstance().saveAllDataModels();
+      case 1:
+        return true;
+      case 2:
+        return false;
+      default:
+        break;
       }
     }
     return true;
@@ -829,7 +829,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     this.extensionsToModelClass.put(modelClass, ext);
     LOGGER.debug("registered extension: " + ext); //$NON-NLS-1$
   }
-  
+
   /**
    *
    * @author Lukas Balzer

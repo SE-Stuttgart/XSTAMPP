@@ -44,280 +44,281 @@ import java.util.UUID;
 
 public class RootFigure extends CSFigure implements MouseMotionListener {
 
-	private Figure highlighter;
-	private boolean useOffset = false;
-	private static final int ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH = 10;
-	private static final int NONACTIVE_ANCHOR_HIGHLIGHTER_WIDTH = 6;
-	public static final int COMP_OFFSET = 20;
+  private Figure highlighter;
+  private boolean useOffset = false;
+  private static final int ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH = 10;
+  private static final int NONACTIVE_ANCHOR_HIGHLIGHTER_WIDTH = 6;
+  public static final int COMP_OFFSET = 20;
 
-	private List<IFigure> componentList = new ArrayList<>();
-	private boolean generalEnable = false;
-	private boolean hasDeco;
+  private List<IFigure> componentList = new ArrayList<>();
+  private boolean generalEnable = false;
+  private boolean hasDeco;
 
-	/**
-	 * Constructs the RootFigure which is used as the basis of the
-	 * GraphicalEditor, this method is only called once in CSEditor
-	 * 
-	 * @author Lukas Balzer
-	 * @param id
-	 *            the id which the figure inherits from its model
-	 * 
-	 */
-	public RootFigure(UUID id) {
-		super(id, false);
-		this.useLocalCoordinates();
-		this.hasDeco = true;
-		this.addMouseMotionListener(this);
-	}
+  /**
+   * Constructs the RootFigure which is used as the basis of the
+   * GraphicalEditor, this method is only called once in CSEditor
+   * 
+   * @author Lukas Balzer
+   * @param id
+   *          the id which the figure inherits from its model
+   * 
+   */
+  public RootFigure(UUID id) {
+    super(id, false);
+    this.useLocalCoordinates();
+    this.hasDeco = true;
+    this.addMouseMotionListener(this);
+  }
 
-	
-	@Override
-	protected boolean useLocalCoordinates() {
-		return true;
-	}
+  @Override
+  protected boolean useLocalCoordinates() {
+    return true;
+  }
 
-	@Override
-	public ConnectionAnchor getConnectionAnchor(Point ref) {
+  @Override
+  public ConnectionAnchor getConnectionAnchor(Point ref) {
 
-		IAnchorFigure temp = new CSFlyAnchor(this, ref);
+    IAnchorFigure temp = new CSFlyAnchor(this, ref);
 
-		return temp;
-	}
+    return temp;
+  }
 
-	@Override
-	public void addHighlighter(Point ref) {
-		
-		this.translateToRelative(ref);
-		int width = RootFigure.ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
-		int offset = (width / 2)-1;
-		if (this.highlighter == null) {
-			this.highlighter = new Figure() {
-				@Override
-				public boolean containsPoint(int x, int y) {
-					return false;
-				}
-			};
-			this.highlighter.setBorder(new LineBorder(ColorConstants.blue, 3));
-			this.highlighter.setOpaque(false);
-			this.add(this.highlighter);
-		}
-		Rectangle rec = new Rectangle(ref.x - offset, ref.y - offset, width,
-				width);
-		this.translateFromParent(rec);
-		this.highlighter.setBounds(rec);
-		this.highlighter.setVisible(true);
-	}
+  @Override
+  public void addHighlighter(Point ref) {
 
-	/**
-	 * 
-	 * @author Aliaksei Babkovich, Lukas Balzer
-	 * @param childrenList
-	 *            a list of all children model classes
-	 * 
-	 */
-	public void addAnchorsGrid(List<IRectangleComponent> childrenList) {
+    this.translateToRelative(ref);
+    int width = RootFigure.ACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
+    int offset = (width / 2) - 1;
+    if (this.highlighter == null) {
+      this.highlighter = new Figure() {
+        @Override
+        public boolean containsPoint(int x, int y) {
+          return false;
+        }
+      };
+      this.highlighter.setBorder(new LineBorder(ColorConstants.blue, 3));
+      this.highlighter.setOpaque(false);
+      this.add(this.highlighter);
+    }
+    Rectangle rec = new Rectangle(ref.x - offset, ref.y - offset, width,
+        width);
+    this.translateFromParent(rec);
+    this.highlighter.setBounds(rec);
+    this.highlighter.setVisible(true);
+  }
 
-		if(getPreferenceStore().getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)){
-			return;
-		}
-		int width = RootFigure.NONACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
-		int offset = (width / 2);
-		List<Point> childrenAnchorsPoints = new ArrayList<>();
-		Rectangle childLayout;
-		Figure anchorHighlighter = null;
-		List<Figure> childFigures = new ArrayList<>(getChildren());
-		for (Object child : childFigures) {
-			if (child instanceof CSFigure && ((CSFigure)child).isCanConnect()) {
-				childLayout = new Rectangle(((CSFigure)child).getBounds());
-				for (float factor : CSFigure.X_ORIENTATIONS) {
-					// for each entry in the array two anchorPoints are created
-					// for
-					// the top and the bottom
-					Point positionTop = new Point();
-					positionTop.x = (int) (childLayout.x + (childLayout.width * factor));
-					positionTop.y = childLayout.y;
-					childrenAnchorsPoints.add(positionTop);
+  /**
+   * 
+   * @author Aliaksei Babkovich, Lukas Balzer
+   * @param childrenList
+   *          a list of all children model classes
+   * 
+   */
+  public void addAnchorsGrid(List<IRectangleComponent> childrenList) {
 
-					Point positionBottom = new Point();
-					positionBottom.x = positionTop.x;
-					positionBottom.y = positionTop.y + childLayout.height;
-					childrenAnchorsPoints.add(positionBottom);
-				}
-				for (float factor : CSFigure.Y_ORIENTATIONS) {
-					// for each entry in the array two anchorPoints are created
-					// for
-					// the left and the right side
-					Point positionLeft = new Point();
-					positionLeft.x = childLayout.x;
-					positionLeft.y = (int) (childLayout.y + (childLayout.height * factor));
-					childrenAnchorsPoints.add(positionLeft);
+    if (getPreferenceStore()
+        .getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_INDIVIDUAL_CONNECTIONS)) {
+      return;
+    }
+    int width = RootFigure.NONACTIVE_ANCHOR_HIGHLIGHTER_WIDTH;
+    int offset = (width / 2);
+    List<Point> childrenAnchorsPoints = new ArrayList<>();
+    Rectangle childLayout;
+    Figure anchorHighlighter = null;
+    List<Figure> childFigures = new ArrayList<>(getChildren());
+    for (Object child : childFigures) {
+      if (child instanceof CSFigure && ((CSFigure) child).isCanConnect()) {
+        childLayout = new Rectangle(((CSFigure) child).getBounds());
+        for (float factor : CSFigure.X_ORIENTATIONS) {
+          // for each entry in the array two anchorPoints are created
+          // for
+          // the top and the bottom
+          Point positionTop = new Point();
+          positionTop.x = (int) (childLayout.x + (childLayout.width * factor));
+          positionTop.y = childLayout.y;
+          childrenAnchorsPoints.add(positionTop);
 
-					Point positionRight = new Point();
-					positionRight.x = positionLeft.x + childLayout.width;
-					positionRight.y = positionLeft.y;
-					childrenAnchorsPoints.add(positionRight);
-				}
+          Point positionBottom = new Point();
+          positionBottom.x = positionTop.x;
+          positionBottom.y = positionTop.y + childLayout.height;
+          childrenAnchorsPoints.add(positionBottom);
+        }
+        for (float factor : CSFigure.Y_ORIENTATIONS) {
+          // for each entry in the array two anchorPoints are created
+          // for
+          // the left and the right side
+          Point positionLeft = new Point();
+          positionLeft.x = childLayout.x;
+          positionLeft.y = (int) (childLayout.y + (childLayout.height * factor));
+          childrenAnchorsPoints.add(positionLeft);
 
-				for (Point anchor : childrenAnchorsPoints) {
-					anchorHighlighter = new Figure();
-					anchorHighlighter
-							.setBackgroundColor(ColorConstants.lightBlue);
-					anchorHighlighter.setOpaque(true);
-					this.add(anchorHighlighter);
-					Rectangle rec = new Rectangle(anchor.x - offset, anchor.y
-							- offset, width, width);
-					this.translateFromParent(rec);
-					anchorHighlighter.setBounds(rec);
-					anchorHighlighter.setVisible(true);
-					this.componentList.add(anchorHighlighter);
-				}
-			}
-		}
+          Point positionRight = new Point();
+          positionRight.x = positionLeft.x + childLayout.width;
+          positionRight.y = positionLeft.y;
+          childrenAnchorsPoints.add(positionRight);
+        }
 
-	}
+        for (Point anchor : childrenAnchorsPoints) {
+          anchorHighlighter = new Figure();
+          anchorHighlighter
+              .setBackgroundColor(ColorConstants.lightBlue);
+          anchorHighlighter.setOpaque(true);
+          this.add(anchorHighlighter);
+          Rectangle rec = new Rectangle(anchor.x - offset, anchor.y
+              - offset, width, width);
+          this.translateFromParent(rec);
+          anchorHighlighter.setBounds(rec);
+          anchorHighlighter.setVisible(true);
+          this.componentList.add(anchorHighlighter);
+        }
+      }
+    }
 
-	public void setConstraint(Rectangle r) {
-	  setBounds(getBounds().union(r));
-	}
-	@Override
-	public void removeHighlighter() {
-		if (this.highlighter != null) {
-			this.highlighter.setVisible(false);
-		}
-	}
+  }
 
-	/**
-	 * removes the anchors grid from the editorview
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 */
-	public void removeAnchorsGrid() {
-		for (IFigure component : this.componentList) {
-			component.setVisible(false);
-			this.remove(component);
-		}
-		this.componentList.clear();
-	}
+  public void setConstraint(Rectangle r) {
+    setBounds(getBounds().union(r));
+  }
 
-	@Override
-	public IFigure findFigureAt(int x, int y, TreeSearch search) {
-		if (true) {
-			return super.findFigureAt(x, y, search);
-		}
-		int[] xNet = new int[]{0,-1,1,-1,1};
-		int[] yNet = new int[]{0,-1,-1,1,1};
-		IFigure tmpDescendant;
-		for (int i = 0; i < xNet.length; i++) {
-			for (int delta = 0; delta < ((2 * RootFigure.COMP_OFFSET) + 1); delta++) {
-				int tmpX = x + xNet[i]*delta;
-				int tmpY = y + yNet[i]*delta;
-				tmpDescendant = super.findFigureAt(tmpX,
-						tmpY, search);
-				if (tmpDescendant instanceof CSFigure && ((CSFigure) tmpDescendant).isCanConnect()) {
-					return tmpDescendant;
-				}
-			}
-		}
-		return super.findFigureAt(x, y, search);
-	}
+  @Override
+  public void removeHighlighter() {
+    if (this.highlighter != null) {
+      this.highlighter.setVisible(false);
+    }
+  }
 
-	@Override
-	public void repaint() {
-		super.repaint();
-		this.removeHighlighter();
-	}
+  /**
+   * removes the anchors grid from the editorview
+   * 
+   * @author Lukas Balzer
+   * 
+   */
+  public void removeAnchorsGrid() {
+    for (IFigure component : this.componentList) {
+      component.setVisible(false);
+      this.remove(component);
+    }
+    this.componentList.clear();
+  }
 
-	@Override
-	public void paintChildren(Graphics graphics) {
-			super.paintChildren(graphics);
-	}
+  @Override
+  public IFigure findFigureAt(int x, int y, TreeSearch search) {
+    if (true) {
+      return super.findFigureAt(x, y, search);
+    }
+    int[] xNet = new int[] { 0, -1, 1, -1, 1 };
+    int[] yNet = new int[] { 0, -1, -1, 1, 1 };
+    IFigure tmpDescendant;
+    for (int i = 0; i < xNet.length; i++) {
+      for (int delta = 0; delta < ((2 * RootFigure.COMP_OFFSET) + 1); delta++) {
+        int tmpX = x + xNet[i] * delta;
+        int tmpY = y + yNet[i] * delta;
+        tmpDescendant = super.findFigureAt(tmpX,
+            tmpY, search);
+        if (tmpDescendant instanceof CSFigure && ((CSFigure) tmpDescendant).isCanConnect()) {
+          return tmpDescendant;
+        }
+      }
+    }
+    return super.findFigureAt(x, y, search);
+  }
 
-	@Override
-	public void setLayout(Rectangle rect) {
-		this.setBounds(rect);
-	}
+  @Override
+  public void repaint() {
+    super.repaint();
+    this.removeHighlighter();
+  }
 
-	@Override
-	public void disableOffset() {
-		this.useOffset = false;
-	}
+  @Override
+  public void paintChildren(Graphics graphics) {
+    super.paintChildren(graphics);
+  }
 
-	@Override
-	public void enableOffset() {
-		this.useOffset = true;
-	}
+  @Override
+  public void setLayout(Rectangle rect) {
+    this.setBounds(rect);
+  }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 */
-	public void generalEnableOffset() {
-		this.generalEnable = true;
-	}
+  @Override
+  public void disableOffset() {
+    this.useOffset = false;
+  }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 */
-	public void generalDisableOffset() {
-		this.generalEnable = false;
-	}
+  @Override
+  public void enableOffset() {
+    this.useOffset = true;
+  }
 
-	@Override
-	public void mouseDragged(MouseEvent me) {
-		// Does nothing by default
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   */
+  public void generalEnableOffset() {
+    this.generalEnable = true;
+  }
 
-	@Override
-	public void mouseEntered(MouseEvent me) {
-		if (this.generalEnable) {
-			this.enableOffset();
-		}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   */
+  public void generalDisableOffset() {
+    this.generalEnable = false;
+  }
 
-	}
+  @Override
+  public void mouseDragged(MouseEvent me) {
+    // Does nothing by default
+  }
 
-	@Override
-	public void mouseExited(MouseEvent me) {
-		this.removeHighlighter();
-		this.disableOffset();
-	}
+  @Override
+  public void mouseEntered(MouseEvent me) {
+    if (this.generalEnable) {
+      this.enableOffset();
+    }
 
-	@Override
-	public void mouseHover(MouseEvent me) {
+  }
 
-		// Does nothing by default
-	}
+  @Override
+  public void mouseExited(MouseEvent me) {
+    this.removeHighlighter();
+    this.disableOffset();
+  }
 
-	@Override
-	public void mouseMoved(MouseEvent me) {
-		// // Does nothing by default
-	}
+  @Override
+  public void mouseHover(MouseEvent me) {
 
-	@Override
-	public void setDeco(boolean deco) {
-		this.hasDeco = deco;
-		for (Object child : this.getChildren()) {
-			if (child instanceof IControlStructureFigure) {
-				((IControlStructureFigure) child).setDeco(deco);
-			}
-		}
-	}
+    // Does nothing by default
+  }
 
-	@Override
-	public boolean hasDeco() {
-		return this.hasDeco;
-	}
-	@Override
-	public void setDirty() {
-		//root component is always refreshed
-	}
+  @Override
+  public void mouseMoved(MouseEvent me) {
+    // // Does nothing by default
+  }
 
+  @Override
+  public void setDeco(boolean deco) {
+    this.hasDeco = deco;
+    for (Object child : this.getChildren()) {
+      if (child instanceof IControlStructureFigure) {
+        ((IControlStructureFigure) child).setDeco(deco);
+      }
+    }
+  }
+
+  @Override
+  public boolean hasDeco() {
+    return this.hasDeco;
+  }
+
+  @Override
+  public void setDirty() {
+    // root component is always refreshed
+  }
 
   @Override
   public boolean useOffset() {
-		return useOffset;
-	}
+    return useOffset;
+  }
 }

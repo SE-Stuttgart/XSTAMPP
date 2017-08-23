@@ -30,7 +30,8 @@ import xstampp.Activator;
  * @author Sebastian Sieber
  * 
  */
-public class PreferencePageExport extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class PreferencePageExport extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
   private StringFieldEditor companyNameFieldEditor;
   private FileFieldEditor companyLogoFieldEditor;
@@ -52,20 +53,21 @@ public class PreferencePageExport extends FieldEditorPreferencePage implements I
 
   @Override
   protected void createFieldEditors() {
-    this.companyNameFieldEditor = new StringFieldEditor(IPreferenceConstants.COMPANY_NAME, Messages.Company,
-        this.getFieldEditorParent());
+    this.companyNameFieldEditor = new StringFieldEditor(IPreferenceConstants.COMPANY_NAME,
+        Messages.Company, this.getFieldEditorParent());
     this.addField(this.companyNameFieldEditor);
 
-    this.companyLogoFieldEditor = new FileFieldEditor(IPreferenceConstants.COMPANY_LOGO, Messages.Logo,
-        this.getFieldEditorParent());
+    this.companyLogoFieldEditor = new FileFieldEditor(IPreferenceConstants.COMPANY_LOGO,
+        Messages.Logo, this.getFieldEditorParent());
     this.addField(this.companyLogoFieldEditor);
 
-    this.companyColorBackgroundFieldEditor = new ColorFieldEditor(IPreferenceConstants.COMPANY_BACKGROUND_COLOR,
-        Messages.BackgroundColor, this.getFieldEditorParent());
+    this.companyColorBackgroundFieldEditor = new ColorFieldEditor(
+        IPreferenceConstants.COMPANY_BACKGROUND_COLOR, Messages.BackgroundColor,
+        this.getFieldEditorParent());
     this.addField(this.companyColorBackgroundFieldEditor);
 
-    this.companyColorFontFieldEditor = new ColorFieldEditor(IPreferenceConstants.COMPANY_FONT_COLOR, Messages.FontColor,
-        this.getFieldEditorParent());
+    this.companyColorFontFieldEditor = new ColorFieldEditor(IPreferenceConstants.COMPANY_FONT_COLOR,
+        Messages.FontColor, this.getFieldEditorParent());
     this.addField(this.companyColorFontFieldEditor);
   }
 

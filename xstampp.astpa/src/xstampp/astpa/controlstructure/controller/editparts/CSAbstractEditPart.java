@@ -70,368 +70,374 @@ import xstampp.util.DirectEditor;
  * 
  */
 public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
-		implements IControlStructureEditPart, NodeEditPart {
-	private final String stepId;
-	private IControlStructureEditorDataModel dataModel;
-	private List<IConnection> connectionRegisty;
-	private int layer;
-	private IPreferenceStore store;
+    implements IControlStructureEditPart, NodeEditPart {
+  private final String stepId;
+  private IControlStructureEditorDataModel dataModel;
+  private List<IConnection> connectionRegisty;
+  private int layer;
+  private IPreferenceStore store;
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            this steps id
-	 * @param layer The layer on which this component is drawn
-	 */
-	public CSAbstractEditPart(IControlStructureEditorDataModel model,
-			String stepId, Integer layer) {
-		this.layer = layer;
-		this.stepId = stepId;
-		this.dataModel = model;
-		this.connectionRegisty = new ArrayList<IConnection>();
-	}
-	@Override
-	protected IFigure createFigure() {
-		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), false);
-		tmpFigure.setPreferenceStore(store);
-		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getFigure());
-		return tmpFigure;
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          this steps id
+   * @param layer
+   *          The layer on which this component is drawn
+   */
+  public CSAbstractEditPart(IControlStructureEditorDataModel model,
+      String stepId, Integer layer) {
+    this.layer = layer;
+    this.stepId = stepId;
+    this.dataModel = model;
+    this.connectionRegisty = new ArrayList<IConnection>();
+  }
 
-	/**
-	 * This installs the policies which define the provided edit-actions like
-	 * 
-	 * <ul>
-	 * <li>resize
-	 * <li>move
-	 * 
-	 * </ul>
-	 * 
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
-	 */
-	@Override
-	protected void createEditPolicies() {
-	  if(canEdit()) {
-  		/*
-  		 * the Edit role is a constant which tells the program in what policy is
-  		 * to use in what situation when performed,
-  		 * performRequest(EditPolicy.constant) is called
-  		 */
-  		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
-  		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-  				new CSDirectEditPolicy(this.dataModel, this.stepId));
-  		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
-  				this.dataModel, this.stepId));
-  		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
-  				this.dataModel, this.stepId));
-	  }
-	}
+  @Override
+  protected IFigure createFigure() {
+    ComponentFigure tmpFigure = new ComponentFigure(this.getId(), false);
+    tmpFigure.setPreferenceStore(store);
+    tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getFigure());
+    return tmpFigure;
+  }
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
-	 * @author Lukas Balzer, Aliaksei Babkovich
-	 */
-	@Override
-	public void performRequest(Request req) {
-		if (canEdit() && req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
-			this.performDirectEditing();
-			this.refreshVisuals();
-		}
-	}
+  /**
+   * This installs the policies which define the provided edit-actions like
+   * 
+   * <ul>
+   * <li>resize
+   * <li>move
+   * 
+   * </ul>
+   * 
+   * 
+   * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
+   */
+  @Override
+  protected void createEditPolicies() {
+    if (canEdit()) {
+      /*
+       * the Edit role is a constant which tells the program in what policy is
+       * to use in what situation when performed,
+       * performRequest(EditPolicy.constant) is called
+       */
+      this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
+      this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+          new CSDirectEditPolicy(this.dataModel, this.stepId));
+      this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
+          this.dataModel, this.stepId));
+      this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
+          this.dataModel, this.stepId));
+    }
+  }
 
-	@Override
-	protected void refreshVisuals() {
-			getFigure().refresh();
+  /**
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
+   * @author Lukas Balzer, Aliaksei Babkovich
+   */
+  @Override
+  public void performRequest(Request req) {
+    if (canEdit() && req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
+      this.performDirectEditing();
+      this.refreshVisuals();
+    }
+  }
 
-			for (Object child : this.getChildren()) {
-				((IControlStructureEditPart) child).refresh();
-			}
-	}
+  @Override
+  protected void refreshVisuals() {
+    getFigure().refresh();
 
-	public void refreshModel() {
+    for (Object child : this.getChildren()) {
+      ((IControlStructureEditPart) child).refresh();
+    }
+  }
 
-		this.refreshChildren();
-		if (this.dataModel.getComponent(this.getId()) == null) {
-			this.getViewer().getEditPartRegistry().remove(this);
-		} else {
-			IControlStructureFigure figureTemp = this.getFigure();
-			IRectangleComponent modelTemp = this.dataModel.getComponent(this
-					.getId());
-			String stepID = (String) this.getViewer().getProperty(
-					IControlStructureEditor.STEP_EDITOR);
+  public void refreshModel() {
 
-			
-			figureTemp.setLayout(modelTemp.getLayout(stepID
-					.equals(CSEditor.ID)));
-			figureTemp.setText(modelTemp.getText());
-			
-			for (Object child : this.getChildren()) {
-				((IControlStructureEditPart) child).refreshModel();
-			}
-		}
-	}
-	@Override
-	public void refresh() {
-		refreshModel();
-		this.refreshVisuals();
-	}
+    this.refreshChildren();
+    if (this.dataModel.getComponent(this.getId()) == null) {
+      this.getViewer().getEditPartRegistry().remove(this);
+    } else {
+      IControlStructureFigure figureTemp = this.getFigure();
+      IRectangleComponent modelTemp = this.dataModel.getComponent(this
+          .getId());
+      String stepID = (String) this.getViewer().getProperty(
+          IControlStructureEditor.STEP_EDITOR);
 
-	/**
-	 * a function that is called whenever a DirectEdit action is performed
-	 * 
-	 * @author Lukas Balzer
-	 */
-	private void performDirectEditing() {
-		CSTextLabel label = ((CSFigure) this.getFigure()).getTextField();
-		CSDirectEditManager manager = new CSDirectEditManager(this,
-				DirectEditor.class, new CSCellEditorLocator(label), label);
-		manager.show();
-		this.refreshVisuals();
-	}
+      figureTemp.setLayout(modelTemp.getLayout(stepID
+          .equals(CSEditor.ID)));
+      figureTemp.setText(modelTemp.getText());
 
-	/**
-	 * This function refreshes the EditPartRegistry with respect to the ASTPA
-	 * DataModel, when a connection editPart is registered that doesn't have a
-	 * model in the dataModel it's deleted
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 */
-	public void refreshConnections() {
-		CSConnectionEditPart editPart;
-		List<IConnection> tmpRegistry = new ArrayList<IConnection>();
-		for (IConnection connection : this.dataModel.getConnections()) {
+      for (Object child : this.getChildren()) {
+        ((IControlStructureEditPart) child).refreshModel();
+      }
+    }
+  }
 
-			editPart = (CSConnectionEditPart) this
-					.createOrFindConnection(connection);
-			if(editPart == null){
-				getViewer().getEditPartFactory().createEditPart(this, connection);
-			}
-			if(editPart != null){
-				((IControlStructureEditPart)editPart).setPreferenceStore(this.store);
-				tmpRegistry.add(connection);
-				editPart.refresh();
-			}
-		}
-		for (IConnection conn : this.connectionRegisty) {
-			if (!tmpRegistry.contains(conn)) {
-				editPart = (CSConnectionEditPart) this.getViewer().getEditPartRegistry().get(conn);
-				if(editPart != null){
-					editPart.removeNotify();
-					this.getViewer().getEditPartRegistry().remove(conn);
-				}
-			}
-		}
-		this.connectionRegisty = tmpRegistry;
+  @Override
+  public void refresh() {
+    refreshModel();
+    this.refreshVisuals();
+  }
 
-	}
+  /**
+   * a function that is called whenever a DirectEdit action is performed
+   * 
+   * @author Lukas Balzer
+   */
+  private void performDirectEditing() {
+    CSTextLabel label = ((CSFigure) this.getFigure()).getTextField();
+    CSDirectEditManager manager = new CSDirectEditManager(this,
+        DirectEditor.class, new CSCellEditorLocator(label), label);
+    manager.show();
+    this.refreshVisuals();
+  }
 
-	/**
-	 * @author Benedikt Markt
-	 */
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
-		if (key == SnapToHelper.class) {
+  /**
+   * This function refreshes the EditPartRegistry with respect to the ASTPA
+   * DataModel, when a connection editPart is registered that doesn't have a
+   * model in the dataModel it's deleted
+   * 
+   * @author Lukas Balzer
+   * 
+   */
+  public void refreshConnections() {
+    CSConnectionEditPart editPart;
+    List<IConnection> tmpRegistry = new ArrayList<IConnection>();
+    for (IConnection connection : this.dataModel.getConnections()) {
 
-			List<SnapToHelper> helpers = new ArrayList<SnapToHelper>();
-			helpers.add(new SnapToGeometry(this));
+      editPart = (CSConnectionEditPart) this
+          .createOrFindConnection(connection);
+      if (editPart == null) {
+        getViewer().getEditPartFactory().createEditPart(this, connection);
+      }
+      if (editPart != null) {
+        ((IControlStructureEditPart) editPart).setPreferenceStore(this.store);
+        tmpRegistry.add(connection);
+        editPart.refresh();
+      }
+    }
+    for (IConnection conn : this.connectionRegisty) {
+      if (!tmpRegistry.contains(conn)) {
+        editPart = (CSConnectionEditPart) this.getViewer().getEditPartRegistry().get(conn);
+        if (editPart != null) {
+          editPart.removeNotify();
+          this.getViewer().getEditPartRegistry().remove(conn);
+        }
+      }
+    }
+    this.connectionRegisty = tmpRegistry;
 
-			helpers.add(new SnapToGrid(this));
-			helpers.add(new SnapToGuides(this));
+  }
 
-			if (helpers.size() == 0) {
-				return null;
-			}
+  /**
+   * @author Benedikt Markt
+   */
+  @Override
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+    if (key == SnapToHelper.class) {
 
-			return new CompoundSnapToHelper(
-					helpers.toArray(new SnapToHelper[0]));
+      List<SnapToHelper> helpers = new ArrayList<SnapToHelper>();
+      helpers.add(new SnapToGeometry(this));
 
-		}
-		return super.getAdapter(key);
-	}
+      helpers.add(new SnapToGrid(this));
+      helpers.add(new SnapToGuides(this));
 
-	@Override
-	public List<IRectangleComponent> getModelChildren() {
-		return ((IComponent) this.getModel()).getChildren(this.getViewer().getProperty(IControlStructureEditor.STEP_EDITOR).equals(CSEditor.ID));
-	}
+      if (helpers.size() == 0) {
+        return null;
+      }
 
-	@Override
-	public List<IConnection> getModelSourceConnections() {
+      return new CompoundSnapToHelper(
+          helpers.toArray(new SnapToHelper[0]));
 
-		return this.connectionRegisty;
-	}
+    }
+    return super.getAdapter(key);
+  }
 
-	@Override
-	public List<IConnection> getModelTargetConnections() {
-		return this.connectionRegisty;
-	}
+  @Override
+  public List<IRectangleComponent> getModelChildren() {
+    return ((IComponent) this.getModel()).getChildren(
+        this.getViewer().getProperty(IControlStructureEditor.STEP_EDITOR).equals(CSEditor.ID));
+  }
 
-	/**
-	 * this function is not needed
-	 */
-	@Override
-	public ConnectionAnchor getSourceConnectionAnchor(
-			ConnectionEditPart connection) {
-		return null;
-	}
+  @Override
+  public List<IConnection> getModelSourceConnections() {
 
-	/**
-	 * this function is not needed
-	 */
-	@Override
-	public ConnectionAnchor getTargetConnectionAnchor(
-			ConnectionEditPart connection) {
-		return null;
-	}
+    return this.connectionRegisty;
+  }
 
-	/**
-	 * this function returns the connection anchor depending on the request
-	 * 
-	 * @author Lukas Balzer
-	 */
-	@Override
-	public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-		Point ref;
-		if (request instanceof CreateConnectionRequest) {
-			ref = ((CreateConnectionRequest) request).getLocation();
-		} else {
-			ReconnectRequest reqTemp = ((ReconnectRequest) request);
-			ref = reqTemp.getLocation();
-		}
+  @Override
+  public List<IConnection> getModelTargetConnections() {
+    return this.connectionRegisty;
+  }
 
-//		((CSFigure) this.getFigure()).getConnectionAnchor(ref);
-		return ((CSFigure) this.getFigure()).getConnectionAnchor(ref);
-	}
+  /**
+   * this function is not needed
+   */
+  @Override
+  public ConnectionAnchor getSourceConnectionAnchor(
+      ConnectionEditPart connection) {
+    return null;
+  }
 
-	/**
-	 * This function returns the targetConnectionAnchor for a specific
-	 * Connection the anchor is identified by the negative partId of its source
-	 * 
-	 * @author Lukas Balzer
-	 */
-	@Override
-	public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-		Point ref;
-		if (request instanceof CreateConnectionRequest) {
-			ref = ((CreateConnectionRequest) request).getLocation();
-		} else {
-			ReconnectRequest reqTemp = ((ReconnectRequest) request);
-			ref = reqTemp.getLocation();
-		}
+  /**
+   * this function is not needed
+   */
+  @Override
+  public ConnectionAnchor getTargetConnectionAnchor(
+      ConnectionEditPart connection) {
+    return null;
+  }
 
-		return ((CSFigure) this.getFigure()).getConnectionAnchor(ref);
-	}
+  /**
+   * this function returns the connection anchor depending on the request
+   * 
+   * @author Lukas Balzer
+   */
+  @Override
+  public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+    Point ref;
+    if (request instanceof CreateConnectionRequest) {
+      ref = ((CreateConnectionRequest) request).getLocation();
+    } else {
+      ReconnectRequest reqTemp = ((ReconnectRequest) request);
+      ref = reqTemp.getLocation();
+    }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return The DataModel must be passed to the commands so that changes can
-	 *         be made directly in the DataModel
-	 */
-	public IControlStructureEditorDataModel getDataModel() {
-		return this.dataModel;
-	}
+    // ((CSFigure) this.getFigure()).getConnectionAnchor(ref);
+    return ((CSFigure) this.getFigure()).getConnectionAnchor(ref);
+  }
 
-	@Override
-	public UUID getId() {
-		return ((IComponent) this.getModel()).getId();
-	}
+  /**
+   * This function returns the targetConnectionAnchor for a specific
+   * Connection the anchor is identified by the negative partId of its source
+   * 
+   * @author Lukas Balzer
+   */
+  @Override
+  public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+    Point ref;
+    if (request instanceof CreateConnectionRequest) {
+      ref = ((CreateConnectionRequest) request).getLocation();
+    } else {
+      ReconnectRequest reqTemp = ((ReconnectRequest) request);
+      ref = reqTemp.getLocation();
+    }
 
-	@Override
-	public void translateToRoot(Translatable t) {
-		this.getFigure().translateToAbsolute(t);
-	}
+    return ((CSFigure) this.getFigure()).getConnectionAnchor(ref);
+  }
 
-	@Override
-	public IControlStructureFigure getFigure() {
-		if(getParent() == null){
-			return null;
-		}
-		return (IControlStructureFigure) super.getFigure();
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return The DataModel must be passed to the commands so that changes can
+   *         be made directly in the DataModel
+   */
+  public IControlStructureEditorDataModel getDataModel() {
+    return this.dataModel;
+  }
 
-	/**
-	 * @return the stepId
-	 */
-	public String getStepId() {
-		return this.stepId;
-	}
+  @Override
+  public UUID getId() {
+    return ((IComponent) this.getModel()).getId();
+  }
 
-	/**
-	 * @return the layer
-	 */
-	public int getLayer() {
-		return this.layer;
-	}
+  @Override
+  public void translateToRoot(Translatable t) {
+    this.getFigure().translateToAbsolute(t);
+  }
 
-	/**
-	 * @param layer the layer to set
-	 */
-	public void setLayer(int layer) {
-		this.layer = layer;
-	}
-	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		//Do nothing by default
-	}
+  @Override
+  public IControlStructureFigure getFigure() {
+    if (getParent() == null) {
+      return null;
+    }
+    return (IControlStructureFigure) super.getFigure();
+  }
 
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		//Do nothing by default
-	}
+  /**
+   * @return the stepId
+   */
+  public String getStepId() {
+    return this.stepId;
+  }
 
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		this.getFigure().disableFeedback();
-		
-	}
+  /**
+   * @return the layer
+   */
+  public int getLayer() {
+    return this.layer;
+  }
 
-	@Override
-	public void mouseHover(MouseEvent arg0) {
-		//Do nothing by default
-		
-	}
+  /**
+   * @param layer
+   *          the layer to set
+   */
+  public void setLayer(int layer) {
+    this.layer = layer;
+  }
 
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		//Do nothing by default
-		
-	}
+  @Override
+  public void mouseDragged(MouseEvent arg0) {
+    // Do nothing by default
+  }
 
-	public void addSourceConnection(CSConnectionEditPart conn){
-		primAddSourceConnection(conn,0);
-	}
-	
-	public void addTargetConnection(CSConnectionEditPart conn){
-		primAddTargetConnection(conn, 0);
-	}
-	/**
-	 * @return the store
-	 */
-	public IPreferenceStore getStore() {
-		return this.store;
-	}
-	
-	@Override
-	public void setPreferenceStore(IPreferenceStore store) {
-		if(getFigure() != null){
-			getFigure().setPreferenceStore(store);
-		}
-		this.store = store;
+  @Override
+  public void mouseEntered(MouseEvent arg0) {
+    // Do nothing by default
+  }
+
+  @Override
+  public void mouseExited(MouseEvent arg0) {
+    this.getFigure().disableFeedback();
+
+  }
+
+  @Override
+  public void mouseHover(MouseEvent arg0) {
+    // Do nothing by default
+
+  }
+
+  @Override
+  public void mouseMoved(MouseEvent arg0) {
+    // Do nothing by default
+
+  }
+
+  public void addSourceConnection(CSConnectionEditPart conn) {
+    primAddSourceConnection(conn, 0);
+  }
+
+  public void addTargetConnection(CSConnectionEditPart conn) {
+    primAddTargetConnection(conn, 0);
+  }
+
+  /**
+   * @return the store
+   */
+  public IPreferenceStore getStore() {
+    return this.store;
+  }
+
+  @Override
+  public void setPreferenceStore(IPreferenceStore store) {
+    if (getFigure() != null) {
+      getFigure().setPreferenceStore(store);
+    }
+    this.store = store;
   }
 
   public boolean canEdit() {
-	  if(getDataModel() instanceof IUserProject) {
-	    return ((IUserProject) getDataModel()).getUserSystem().checkAccess(AccessRights.ADMIN);
-	  }
-	  return true;
-	}
+    if (getDataModel() instanceof IUserProject) {
+      return ((IUserProject) getDataModel()).getUserSystem().checkAccess(AccessRights.ADMIN);
+    }
+    return true;
+  }
 }

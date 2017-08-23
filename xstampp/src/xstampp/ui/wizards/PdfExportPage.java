@@ -145,7 +145,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       data = new FormData();
       data.top = new FormAttachment(null);
       data.height = SWT.DEFAULT;
-      data.left = new FormAttachment(labelCompany,COMPONENT_OFFSET);
+      data.left = new FormAttachment(labelCompany, COMPONENT_OFFSET);
       data.right = new FormAttachment(80);
       textCompany.setLayoutData(data);
       String companyName = this.store.getString(IPreferenceConstants.COMPANY_NAME);
@@ -165,7 +165,8 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       }
 
       // ----Create the logo path chooser composite---------------------------
-      this.logoComposite = new PathComposite(null, null, this.container, PathComposite.LOGO_DIALOG, Messages.Logo);
+      this.logoComposite = new PathComposite(null, null, this.container, PathComposite.LOGO_DIALOG,
+          Messages.Logo);
       this.logoComposite.addTextListener(new ModifyListener() {
 
         @Override
@@ -246,11 +247,11 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       decoLabel.setLayoutData(decoData);
       this.decoSwitch = new Button(decoSwitchComposite, SWT.CHECK);
       decoData = new FormData();
-      decoData.left = new FormAttachment(decoLabel,COMPONENT_OFFSET);
+      decoData.left = new FormAttachment(decoLabel, COMPONENT_OFFSET);
       decoData.top = new FormAttachment(0);
-      
+
       decoSwitch.setLayoutData(decoData);
-      
+
       topElement = decoSwitchComposite;
     }
 

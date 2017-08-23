@@ -24,34 +24,34 @@ import xstampp.astpa.model.controlstructure.components.ConnectionType;
  */
 public class ConnectionCreationFactory implements CreationFactory {
 
-	private ConnectionType connectionType;
+  private ConnectionType connectionType;
 
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer,Aliaksei Babkovich
-	 * 
-	 * @param typeConstant
-	 *            the type of the Connection Described by a constant
-	 * 
-	 * 
-	 */
-	public ConnectionCreationFactory(ConnectionType typeConstant) {
-		this.connectionType = typeConstant;
-	}
+  /**
+   * 
+   * 
+   * @author Lukas Balzer,Aliaksei Babkovich
+   * 
+   * @param typeConstant
+   *          the type of the Connection Described by a constant
+   * 
+   * 
+   */
+  public ConnectionCreationFactory(ConnectionType typeConstant) {
+    this.connectionType = typeConstant;
+  }
 
-	@Override
-	public Object getNewObject() {
-		return null;
-	}
+  @Override
+  public Object getNewObject() {
+    return null;
+  }
 
-	/**
-	 * @return the Type of the Connection as enum type
-	 * @see ConnectionType
-	 */
-	@Override
-	public Object getObjectType() {
-		return this.connectionType;
-	}
+  /**
+   * @return the Type of the Connection as enum type
+   * @see ConnectionType
+   */
+  @Override
+  public Object getObjectType() {
+    return this.connectionType;
+  }
 
 }

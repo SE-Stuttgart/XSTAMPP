@@ -57,7 +57,7 @@ public class CreateUserShell extends AbstractUserShell {
       }
     }
     if (createRoUserInput.getSelection()) {
-      setSelectedUser(new User(getUsername(), getPassword(), 
+      setSelectedUser(new User(getUsername(), getPassword(),
           new AccessRights[] { AccessRights.READ_ONLY, AccessRights.ACCESS }));
     } else {
       setSelectedUser(new User(getUsername(), getPassword(),

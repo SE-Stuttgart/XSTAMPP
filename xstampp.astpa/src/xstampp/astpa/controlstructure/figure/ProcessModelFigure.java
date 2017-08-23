@@ -22,26 +22,24 @@ import java.util.UUID;
  */
 public class ProcessModelFigure extends CSFigure {
 
-	private final int topOffset;
+  private final int topOffset;
 
-	/**
-	 * @author Lukas Balzer
-	 * @param id
-	 *            the id which the figure inherits from its model
-	 * @param top
-	 *            the offset from the parent models text Label
-	 */
-	public ProcessModelFigure(UUID id, int top) {
-		super(id, false);
-		this.setOpaque(false);
-		this.topOffset = top;
-	}
+  /**
+   * @author Lukas Balzer
+   * @param id
+   *          the id which the figure inherits from its model
+   * @param top
+   *          the offset from the parent models text Label
+   */
+  public ProcessModelFigure(UUID id, int top) {
+    super(id, false);
+    this.setOpaque(false);
+    this.topOffset = top;
+  }
 
+  @Override
+  public void setDeco(boolean deco) {
+    // there's no decoration on process components
+  }
 
-	@Override
-	public void setDeco(boolean deco) {
-		// there's no decoration on process components
-	}
-	
-	
 }

@@ -38,7 +38,6 @@ public class Application implements IApplication {
 
   /*
    * (non-Javadoc)
-   * 
    * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
    * IApplicationContext)
    */
@@ -79,12 +78,11 @@ public class Application implements IApplication {
       }
 
       if (ChooseWorkLocation.getLastUsedWorkspace() != null) {
-        instanceLoc.set(new URL(Messages.File,
-                                null,
-                                ChooseWorkLocation.getLastUsedWorkspace()), false);
+        instanceLoc.set(new URL(Messages.File, null, ChooseWorkLocation.getLastUsedWorkspace()),
+            false);
       }
 
-    } catch (Exception exept){
+    } catch (Exception exept) {
       exept.printStackTrace();
       logger.info(Messages.TheWorkspaceCannotBeChangedWhen + Messages.UsuallyTheIDEStarts);
     }
@@ -105,7 +103,6 @@ public class Application implements IApplication {
 
   /*
    * (non-Javadoc)
-   * 
    * @see org.eclipse.equinox.app.IApplication#stop()
    */
   @Override

@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -29,10 +29,12 @@ public class DirectEditorShell {
   private SelectionListener okListener;
   private String content;
 
-  public DirectEditorShell(Control parent, Rectangle bounds, String initialContent, Rectangle editorBounds) {
+  public DirectEditorShell(Control parent, Rectangle bounds, String initialContent,
+      Rectangle editorBounds) {
     this.shell = new Shell(parent.getShell(), SWT.APPLICATION_MODAL);
     Point absPosition = parent.toDisplay(editorBounds.x - 1, editorBounds.y - 1);
-    this.shell.setBounds(new Rectangle(absPosition.x, absPosition.y, editorBounds.width + 2, editorBounds.height + 35));
+    this.shell.setBounds(new Rectangle(absPosition.x, absPosition.y, editorBounds.width + 2,
+        editorBounds.height + 35));
     this.shell.setLayout(null);
     this.shell.setBackground(null);
     this.shell.setBackgroundMode(SWT.INHERIT_FORCE);

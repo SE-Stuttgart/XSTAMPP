@@ -85,7 +85,8 @@ public class SystemGoalView extends CommonTableView<ISystemGoalViewDataModel> {
 
   @Override
   protected void updateDescription(UUID uuid, String description) {
-    SystemGoalView.this.getDataInterface().setSystemGoalDescription(getCurrentSelection(), description);
+    SystemGoalView.this.getDataInterface().setSystemGoalDescription(getCurrentSelection(),
+        description);
   }
 
   @Override

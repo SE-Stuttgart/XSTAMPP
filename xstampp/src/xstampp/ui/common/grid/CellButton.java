@@ -70,9 +70,8 @@ public class CellButton implements ICellButton {
     onPaint(gc, cellBounds, true);
   }
 
-  
   public void onPaint(GC gc, Rectangle cellBounds, boolean enabled) {
-    if(enabled) {
+    if (enabled) {
       if (image != null) {
         gc.drawImage(this.image, 0, 0, this.image.getBounds().width, this.image.getBounds().height,
             cellBounds.x + this.getBounds().x, cellBounds.y + this.getBounds().y,
@@ -104,9 +103,10 @@ public class CellButton implements ICellButton {
       int fontHeight = Display.getDefault().getSystemFont().getFontData()[0].getHeight();
       height = Math.max(height, fontHeight);
       width = Math.max(width, fontHeight * text.length());
-    } 
+    }
     return new Point(width, height);
   }
+
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     Logger.getRootLogger().debug("Button pressed onButtonDown"); //$NON-NLS-1$

@@ -445,14 +445,13 @@ public interface IControlStructureEditorDataModel extends IDataModel {
   public boolean linkControlAction(UUID caId, UUID componentId);
 
   public ControlStructureController getControlStructureController();
-  
 
   /**
    * Get a control action by it's ID.
    * 
    * @author Jarkko Heidenwag, Patrick Wickenhaeuser
    * @param controlActionId
-   *            the ID of the control action.
+   *          the ID of the control action.
    * 
    * @return the control action.
    */

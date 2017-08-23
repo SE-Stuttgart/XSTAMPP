@@ -26,38 +26,38 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
  */
 public interface ICausalComponent {
 
-	/**
-	 * Getter for the text
-	 * 
-	 * @return the text
-	 * 
-	 * @author Fabian Toth
-	 */
-	String getText();
+  /**
+   * Getter for the text
+   * 
+   * @return the text
+   * 
+   * @author Fabian Toth
+   */
+  String getText();
 
-	/**
-	 * Getter for the id
-	 * 
-	 * @return the id
-	 * 
-	 * @author Fabian Toth
-	 */
-	UUID getId();
+  /**
+   * Getter for the id
+   * 
+   * @return the id
+   * 
+   * @author Fabian Toth
+   */
+  UUID getId();
 
-	/**
-	 * Getter for the causal factors
-	 * 
-	 * @author Fabian Toth
-	 * 
-	 * @return the list of the causal factors
-	 */
-	List<ICausalFactor> getCausalFactors();
+  /**
+   * Getter for the causal factors
+   * 
+   * @author Fabian Toth
+   * 
+   * @return the list of the causal factors
+   */
+  List<ICausalFactor> getCausalFactors();
 
-	/**
-	 * 
-	 * @return The ComponentType which is stored in the model
-	 * 
-	 * @author Lukas Balzer
-	 */
-	ComponentType getComponentType();
+  /**
+   * 
+   * @return The ComponentType which is stored in the model
+   * 
+   * @author Lukas Balzer
+   */
+  ComponentType getComponentType();
 }

@@ -40,12 +40,15 @@ public class Save extends AbstractHandler {
   public Object execute(ExecutionEvent event) throws ExecutionException {
     STPAPluginUtils.executeCommand("org.eclipse.ui.file.save"); //$NON-NLS-1$
     Object doSaveAs = event.getParameter("xstampp.commands.params.doSaveAs"); //$NON-NLS-1$
-    IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ProjectExplorer.ID);
+    IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .findView(ProjectExplorer.ID);
     UUID saveId = null;
 
-    IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+    IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .getActiveEditor();
 
-    if (part != null && part.getViewSite().getSelectionProvider().getSelection() instanceof IProjectSelection) {
+    if (part != null
+        && part.getViewSite().getSelectionProvider().getSelection() instanceof IProjectSelection) {
       Object selection = part.getViewSite().getSelectionProvider().getSelection();
       // if there is any project or step selected in the explorer, this project
       // is stored

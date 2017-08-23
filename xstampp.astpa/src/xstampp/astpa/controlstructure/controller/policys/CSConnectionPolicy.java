@@ -45,106 +45,106 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
 
-	private IControlStructureEditorDataModel dataModel;
-	private final String stepID;
+  private IControlStructureEditorDataModel dataModel;
+  private final String stepID;
   private UUID rootId;
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            TODO
-	 */
-	public CSConnectionPolicy(IControlStructureEditorDataModel model,
-			String stepId) {
-		super();
-		this.stepID = stepId;
-		this.dataModel = model;
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          TODO
+   */
+  public CSConnectionPolicy(IControlStructureEditorDataModel model,
+      String stepId) {
+    super();
+    this.stepID = stepId;
+    this.dataModel = model;
+  }
 
   public UUID getRootId() {
-    if(rootId == null) {
-      rootId =((IRectangleComponent)getHost().getViewer().getContents().getModel()).getId();
+    if (rootId == null) {
+      rootId = ((IRectangleComponent) getHost().getViewer().getContents().getModel()).getId();
     }
     return rootId;
   }
-  
-	@Override
-	protected Command getConnectionCompleteCommand(
-			CreateConnectionRequest request) {
 
-		ConnectionCreateCommand cmd = (ConnectionCreateCommand) request
-				.getStartCommand();
+  @Override
+  protected Command getConnectionCompleteCommand(
+      CreateConnectionRequest request) {
 
-		ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost())
-				.getTargetConnectionAnchor(request);
+    ConnectionCreateCommand cmd = (ConnectionCreateCommand) request
+        .getStartCommand();
 
-		cmd.setTargetModel((IAnchorFigure) targetAnchor);
-		return cmd;
-	}
+    ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost())
+        .getTargetConnectionAnchor(request);
 
-	@Override
-	protected void removeFeedback(IFigure figure) {
-		((IControlStructureFigure) this.getHostFigure()).disableOffset();
-		super.removeFeedback(figure);
-	}
+    cmd.setTargetModel((IAnchorFigure) targetAnchor);
+    return cmd;
+  }
 
-	@Override
-	protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
-		((IControlStructureFigure) this.getHostFigure()).enableOffset();
-		ConnectionCreateCommand cmd = new ConnectionCreateCommand(
-		    getRootId(),this.dataModel, this.stepID);
-		ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost())
-				.getSourceConnectionAnchor(request);
-		cmd.setConnectionType(((ConnectionType) request.getNewObjectType()));
+  @Override
+  protected void removeFeedback(IFigure figure) {
+    ((IControlStructureFigure) this.getHostFigure()).disableOffset();
+    super.removeFeedback(figure);
+  }
 
-		cmd.setSourceModel((IAnchorFigure) sourceAnchor);
+  @Override
+  protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
+    ((IControlStructureFigure) this.getHostFigure()).enableOffset();
+    ConnectionCreateCommand cmd = new ConnectionCreateCommand(
+        getRootId(), this.dataModel, this.stepID);
+    ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost())
+        .getSourceConnectionAnchor(request);
+    cmd.setConnectionType(((ConnectionType) request.getNewObjectType()));
 
-		request.setStartCommand(cmd);
-		return cmd;
-	}
+    cmd.setSourceModel((IAnchorFigure) sourceAnchor);
 
-	@Override
-	protected Command getReconnectSourceCommand(ReconnectRequest request) {
-		((IControlStructureFigure) this.getHostFigure()).enableOffset();
-		CSConnection conn = (CSConnection) request.getConnectionEditPart()
-				.getModel();
-		((CSConnectionEditPart)request.getConnectionEditPart()).getConnectionFigure().setFixed(false);
-		ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost())
-				.getSourceConnectionAnchor(request);
-		ConnectionAnchor targetAnchor = ((CSConnectionEditPart) request
-				.getConnectionEditPart()).getTargetAnchor();
-		ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,
-		    getRootId(),this.dataModel, this.stepID);
+    request.setStartCommand(cmd);
+    return cmd;
+  }
 
-    ((AbstractConnectionAnchor)sourceAnchor).setOwner(getHost().getFigure());
-		cmd.setNewSourceNode((IAnchorFigure) targetAnchor,
-				(IAnchorFigure) sourceAnchor);
+  @Override
+  protected Command getReconnectSourceCommand(ReconnectRequest request) {
+    ((IControlStructureFigure) this.getHostFigure()).enableOffset();
+    CSConnection conn = (CSConnection) request.getConnectionEditPart()
+        .getModel();
+    ((CSConnectionEditPart) request.getConnectionEditPart()).getConnectionFigure().setFixed(false);
+    ConnectionAnchor sourceAnchor = ((CSAbstractEditPart) this.getHost())
+        .getSourceConnectionAnchor(request);
+    ConnectionAnchor targetAnchor = ((CSConnectionEditPart) request
+        .getConnectionEditPart()).getTargetAnchor();
+    ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,
+        getRootId(), this.dataModel, this.stepID);
 
-		return cmd;
-	}
+    ((AbstractConnectionAnchor) sourceAnchor).setOwner(getHost().getFigure());
+    cmd.setNewSourceNode((IAnchorFigure) targetAnchor,
+        (IAnchorFigure) sourceAnchor);
 
-	@Override
-	protected Command getReconnectTargetCommand(ReconnectRequest request) {
-		((IControlStructureFigure) this.getHostFigure()).enableOffset();
-		CSConnection conn = (CSConnection) request.getConnectionEditPart()
-				.getModel();
-    ((CSConnectionEditPart)request.getConnectionEditPart()).getConnectionFigure().setFixed(false);
-		ConnectionAnchor sourceAnchor = ((CSConnectionEditPart) request
-				.getConnectionEditPart()).getSourceAnchor();
-		ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost())
-				.getTargetConnectionAnchor(request);
-		((AbstractConnectionAnchor)targetAnchor).setOwner(getHost().getFigure());
-		ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,
-		    getRootId(),this.dataModel, this.stepID);
+    return cmd;
+  }
 
-		cmd.setNewTargetNode((IAnchorFigure) targetAnchor,
-				(IAnchorFigure) sourceAnchor);
-		return cmd;
-	}
+  @Override
+  protected Command getReconnectTargetCommand(ReconnectRequest request) {
+    ((IControlStructureFigure) this.getHostFigure()).enableOffset();
+    CSConnection conn = (CSConnection) request.getConnectionEditPart()
+        .getModel();
+    ((CSConnectionEditPart) request.getConnectionEditPart()).getConnectionFigure().setFixed(false);
+    ConnectionAnchor sourceAnchor = ((CSConnectionEditPart) request
+        .getConnectionEditPart()).getSourceAnchor();
+    ConnectionAnchor targetAnchor = ((CSAbstractEditPart) this.getHost())
+        .getTargetConnectionAnchor(request);
+    ((AbstractConnectionAnchor) targetAnchor).setOwner(getHost().getFigure());
+    ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn,
+        getRootId(), this.dataModel, this.stepID);
+
+    cmd.setNewTargetNode((IAnchorFigure) targetAnchor,
+        (IAnchorFigure) sourceAnchor);
+    return cmd;
+  }
 
   @Override
   public Command getCommand(Request request) {
@@ -153,8 +153,9 @@ public class CSConnectionPolicy extends GraphicalNodeEditPolicy {
     }
     return null;
   }
-	@Override
-	public IControlStructureEditPart getHost() {
-		return (IControlStructureEditPart) super.getHost();
-	}
+
+  @Override
+  public IControlStructureEditPart getHost() {
+    return (IControlStructureEditPart) super.getHost();
+  }
 }

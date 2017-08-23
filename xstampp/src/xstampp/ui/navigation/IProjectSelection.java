@@ -77,9 +77,9 @@ public interface IProjectSelection extends ISelection {
    *
    */
   void activate();
-  
+
   public void deaktivate();
-  
+
   public void closeEditors();
 
   /**

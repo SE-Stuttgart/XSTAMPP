@@ -41,7 +41,7 @@ public abstract class AbstractUser implements IUser {
 
   @XmlAttribute(name = "workingProjectId", required = false)
   private UUID workingProjectId;
-  
+
   private List<UUID> responsibilities;
 
   /**
@@ -111,7 +111,7 @@ public abstract class AbstractUser implements IUser {
   public void setResponsibilities(List<UUID> responsibilities) {
     this.responsibilities = responsibilities;
   }
-  
+
   @Override
   public List<UUID> getResponsibilities() {
     return responsibilities;

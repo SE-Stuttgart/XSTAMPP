@@ -258,14 +258,14 @@ public class UserContribution extends WorkbenchWindowControlContribution
       refresh(userProject);
     } else if (arg1 != null && arg1 instanceof Integer) {
       switch ((int) arg1) {
-        case IUserSystem.NOTIFY_LOGIN:
-        case IUserSystem.NOTIFY_LOGOUT:
-        case IUserSystem.NOTIFY_USER: {
-          refresh(userProject);
-          break;
-        }
-        default:
-          break;
+      case IUserSystem.NOTIFY_LOGIN:
+      case IUserSystem.NOTIFY_LOGOUT:
+      case IUserSystem.NOTIFY_USER: {
+        refresh(userProject);
+        break;
+      }
+      default:
+        break;
       }
     }
   }

@@ -47,191 +47,192 @@ import xstampp.preferences.IControlStructureConstants;
  * @author Lukas Balzer
  * 
  */
-public class CSTextLabel extends FlowPage implements IPropertyChangeListener{
-	private TextFlow content;
-	private FontData currentFont;
-	private static final int CENTER_COMPENSATION = 2;
-	private boolean extraLine = false;
-	private IPreferenceStore store;
-	private int style;
-	/**
-	 * This constructor initializes the <code>blockFlow</code> and the
-	 * <code>content</code> It also sets the Layout Manager to
-	 * <code>ParagraphTextLayout</code> which layouts the TextFlow in dependency
-	 * to the size
-	 * 
-	 * @author Lukas Balzer
-	 * @param csFigure
-	 *            the parent figure
-	 * 
-	 */
-	public CSTextLabel(IControlStructureFigure csFigure) {
-		super();
-		this.setParent(csFigure);
-		this.content = new TextFlow();
-//		this.content.setOpaque(opaque);BackgroundColor(ColorConstants.white);
-		this.content.setFont(Display.getDefault().getSystemFont());
-		this.content.setLayoutManager(new ParagraphTextLayout(this.content,
-				ParagraphTextLayout.WORD_WRAP_SOFT));
-		this.content.setLocation(new Point(0, 0));
-		this.content.setForegroundColor(ColorConstants.black);
-		this.content.setVisible(true);
-		this.setOpaque(false);
-		this.content.setOpaque(false);
-		this.add(this.content);
+public class CSTextLabel extends FlowPage implements IPropertyChangeListener {
+  private TextFlow content;
+  private FontData currentFont;
+  private static final int CENTER_COMPENSATION = 2;
+  private boolean extraLine = false;
+  private IPreferenceStore store;
+  private int style;
 
-	}
+  /**
+   * This constructor initializes the <code>blockFlow</code> and the
+   * <code>content</code> It also sets the Layout Manager to
+   * <code>ParagraphTextLayout</code> which layouts the TextFlow in dependency
+   * to the size
+   * 
+   * @author Lukas Balzer
+   * @param csFigure
+   *          the parent figure
+   * 
+   */
+  public CSTextLabel(IControlStructureFigure csFigure) {
+    super();
+    this.setParent(csFigure);
+    this.content = new TextFlow();
+    // this.content.setOpaque(opaque);BackgroundColor(ColorConstants.white);
+    this.content.setFont(Display.getDefault().getSystemFont());
+    this.content.setLayoutManager(new ParagraphTextLayout(this.content,
+        ParagraphTextLayout.WORD_WRAP_SOFT));
+    this.content.setLocation(new Point(0, 0));
+    this.content.setForegroundColor(ColorConstants.black);
+    this.content.setVisible(true);
+    this.setOpaque(false);
+    this.content.setOpaque(false);
+    this.add(this.content);
 
-	
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param style
-	 *            a SWT int constant
-	 * @see SWT#NORMAL
-	 * @see SWT#BOLD
-	 * @see SWT#ITALIC
-	 */
-	public void setFontStyle(int style) {
-		this.style = style;
-		this.content.setFont(new Font(null,
-				this.currentFont.getName(), this.currentFont.getHeight(), style)); 
-	}
+  }
 
-	@Override
-	public IFigure findFigureAt(int x, int y, TreeSearch search) {
-		return null;
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param style
+   *          a SWT int constant
+   * @see SWT#NORMAL
+   * @see SWT#BOLD
+   * @see SWT#ITALIC
+   */
+  public void setFontStyle(int style) {
+    this.style = style;
+    this.content.setFont(new Font(null,
+        this.currentFont.getName(), this.currentFont.getHeight(), style));
+  }
 
-	@Override
-	public Font getFont() {
-		FontData[] tmpFont = this.content.getFont().getFontData();
-		int fontHeight = tmpFont[0].getHeight();
-		Dimension p = new Dimension(0, fontHeight);
-		this.translateToAbsolute(p);
-		tmpFont[0].setHeight(p.height);
-		return new Font(null, tmpFont);
-	}
+  @Override
+  public IFigure findFigureAt(int x, int y, TreeSearch search) {
+    return null;
+  }
 
-	@Override
-	public Color getForegroundColor() {
-		return this.content.getForegroundColor();
-	}
+  @Override
+  public Font getFont() {
+    FontData[] tmpFont = this.content.getFont().getFontData();
+    int fontHeight = tmpFont[0].getHeight();
+    Dimension p = new Dimension(0, fontHeight);
+    this.translateToAbsolute(p);
+    tmpFont[0].setHeight(p.height);
+    return new Font(null, tmpFont);
+  }
 
-	/**
-	 * sets the ForegroundColor of the content
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param newColor
-	 *            Color of the text
-	 */
-	public void setForeground(Color newColor) {
-		this.content.setForegroundColor(newColor);
-	}
+  @Override
+  public Color getForegroundColor() {
+    return this.content.getForegroundColor();
+  }
 
-	/**
-	 * Formats the text and returns it
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return the text of this Label
-	 */
-	public String getText() {
-		return this.content.getText();
-	}
+  /**
+   * sets the ForegroundColor of the content
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param newColor
+   *          Color of the text
+   */
+  public void setForeground(Color newColor) {
+    this.content.setForegroundColor(newColor);
+  }
 
-	/**
-	 * @author Lukas Balzer
-	 * 
-	 * @return the Object of this CSTextLabel
-	 */
-	public CSTextLabel getTextField() {
-		return this;
-	}
+  /**
+   * Formats the text and returns it
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return the text of this Label
+   */
+  public String getText() {
+    return this.content.getText();
+  }
 
-	/**
-	 * @author Lukas Balzer
-	 * 
-	 * @return the bounds of the text after the text has been formatted from the
-	 *         LayoutManager
-	 */
-	public Rectangle getTextBounds() {
-		Rectangle rect = this.getParent().getBounds().getCopy();
-		List<FlowBox> fragments = this.content.getFragments();
-		int minHeight = 0;
+  /**
+   * @author Lukas Balzer
+   * 
+   * @return the Object of this CSTextLabel
+   */
+  public CSTextLabel getTextField() {
+    return this;
+  }
 
-		if (fragments.size() != 0) {
-			minHeight = fragments.get(fragments.size() - 1).getBaseline();
-		}
-		rect.setLocation(CSTextLabel.CENTER_COMPENSATION,
-				CSTextLabel.CENTER_COMPENSATION);
-		rect.setHeight(minHeight);
+  /**
+   * @author Lukas Balzer
+   * 
+   * @return the bounds of the text after the text has been formatted from the
+   *         LayoutManager
+   */
+  public Rectangle getTextBounds() {
+    Rectangle rect = this.getParent().getBounds().getCopy();
+    List<FlowBox> fragments = this.content.getFragments();
+    int minHeight = 0;
 
-		return rect;
-	}
+    if (fragments.size() != 0) {
+      minHeight = fragments.get(fragments.size() - 1).getBaseline();
+    }
+    rect.setLocation(CSTextLabel.CENTER_COMPENSATION,
+        CSTextLabel.CENTER_COMPENSATION);
+    rect.setHeight(minHeight);
 
-	@Override
-	public void setBounds(Rectangle rect) {
-		super.setBounds(rect);
-		rect.setLocation(0, 0);
-		this.content.setBounds(rect);
-	}
+    return rect;
+  }
 
-	/**
-	 * 
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param text
-	 *            the new Text to be displayed
-	 */
-	public void setText(String text) {
-//		this.content.getUpdateManager().performUpdate();
-		this.content.setText(text);
-		this.getParent().setBounds(this.content.getBounds());
-		this.content.getLayoutManager().invalidate();
-		this.content.getUpdateManager().performUpdate();
-	}
+  @Override
+  public void setBounds(Rectangle rect) {
+    super.setBounds(rect);
+    rect.setLocation(0, 0);
+    this.content.setBounds(rect);
+  }
 
-	public void setLineVisible(boolean extraLine) {
-		this.extraLine = extraLine;
-	}
-	@Override
-	public void paint(Graphics graphics) {
-		super.paint(graphics);
-		
-		if(this.extraLine && this.store.
-							getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)){
-			graphics.drawLine(0, getBounds().height,getParent().getBounds().x+ getParent().getBounds().width, getBounds().height);
-		}
-	}
+  /**
+   * 
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param text
+   *          the new Text to be displayed
+   */
+  public void setText(String text) {
+    // this.content.getUpdateManager().performUpdate();
+    this.content.setText(text);
+    this.getParent().setBounds(this.content.getBounds());
+    this.content.getLayoutManager().invalidate();
+    this.content.getUpdateManager().performUpdate();
+  }
 
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		syncProperty(event.getProperty());
-	}
-	
-	private void syncProperty(String property){
-		if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT)){
-			this.currentFont= PreferenceConverter.getFontData(this.store, property);
-			this.currentFont.setStyle(style);
-			this.content.setFont(new Font(null,
-					this.currentFont)); 
-		}else if(property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR)){
-			Color fontColor = new Color(Display.getCurrent(), PreferenceConverter
-					.getColor(this.store, property));
-			setForeground(fontColor);
-		}
-		
-	}
+  public void setLineVisible(boolean extraLine) {
+    this.extraLine = extraLine;
+  }
 
+  @Override
+  public void paint(Graphics graphics) {
+    super.paint(graphics);
 
-	public void setPreferenceStore(IPreferenceStore store) {
-		this.store = store;
-		this.store.addPropertyChangeListener( this);
-		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT);
-		syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR);
-	}
+    if (this.extraLine && this.store
+        .getBoolean(IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_MODEL_BORDER)) {
+      graphics.drawLine(0, getBounds().height,
+          getParent().getBounds().x + getParent().getBounds().width, getBounds().height);
+    }
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent event) {
+    syncProperty(event.getProperty());
+  }
+
+  private void syncProperty(String property) {
+    if (property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT)) {
+      this.currentFont = PreferenceConverter.getFontData(this.store, property);
+      this.currentFont.setStyle(style);
+      this.content.setFont(new Font(null,
+          this.currentFont));
+    } else if (property.equals(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR)) {
+      Color fontColor = new Color(Display.getCurrent(), PreferenceConverter
+          .getColor(this.store, property));
+      setForeground(fontColor);
+    }
+
+  }
+
+  public void setPreferenceStore(IPreferenceStore store) {
+    this.store = store;
+    this.store.addPropertyChangeListener(this);
+    syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT);
+    syncProperty(IControlStructureConstants.CONTROLSTRUCTURE_FONT_COLOR);
+  }
 }

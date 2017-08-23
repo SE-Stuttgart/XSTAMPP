@@ -72,12 +72,11 @@ public class UnsafeControlAction extends EntryWithSeverity
   public UnsafeControlAction(String description, UnsafeControlActionType type) {
     this.description = description;
     this.type = type;
-    this.correspondingSafetyConstraint = null; //$NON-NLS-1$
+    this.correspondingSafetyConstraint = null; // $NON-NLS-1$
     this.id = UUID.randomUUID();
     this.number = 0;
     setSeverity(Severity.S0);
   }
-  
 
   /**
    * Empty constructor for JAXB. Do not use it!
@@ -99,7 +98,7 @@ public class UnsafeControlAction extends EntryWithSeverity
    */
   public String setDescription(String description) {
     String result = null;
-    if(!description.equals(this.description) ){
+    if (!description.equals(this.description)) {
       result = this.description;
       this.description = description;
     }
@@ -166,7 +165,7 @@ public class UnsafeControlAction extends EntryWithSeverity
 
   public boolean setNumber(int number) {
     this.number = number;
-    if(this.correspondingSafetyConstraint != null) {
+    if (this.correspondingSafetyConstraint != null) {
       this.correspondingSafetyConstraint.setNumber(number);
     }
     return true;
@@ -200,7 +199,6 @@ public class UnsafeControlAction extends EntryWithSeverity
   public String getText() {
     return getTitle() + ":" + getDescription();
   }
-
 
   @Override
   public String getIdString() {

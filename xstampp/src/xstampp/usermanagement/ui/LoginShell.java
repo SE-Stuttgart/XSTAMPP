@@ -43,8 +43,8 @@ public class LoginShell extends AbstractUserShell {
    */
   public LoginShell(UserSystem userSystem, boolean hidePassword) {
     super(userSystem, true);
-    setTitle(Messages.UserContribution_LoginLabel); //$NON-NLS-1$
-    setAcceptLabel(Messages.UserContribution_LoginLabel); //$NON-NLS-1$
+    setTitle(Messages.UserContribution_LoginLabel); // $NON-NLS-1$
+    setAcceptLabel(Messages.UserContribution_LoginLabel); // $NON-NLS-1$
     if (userSystem.getExclusiveUser() != null) {
       for (IUser user : getUserSystem().getRegistry()) {
         if (user.getUserId().equals(userSystem.getExclusiveUser())) {
@@ -59,7 +59,8 @@ public class LoginShell extends AbstractUserShell {
   @Override
   protected void createCenter(Shell shell) {
     super.createCenter(shell);
-    BooleanInput input = new BooleanInput(shell, SWT.CHECK, Messages.LoginShell_ReadOnlyLogin, false);
+    BooleanInput input = new BooleanInput(shell, SWT.CHECK, Messages.LoginShell_ReadOnlyLogin,
+        false);
     input.setSelectionListener(new Listener() {
 
       @Override

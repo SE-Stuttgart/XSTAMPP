@@ -37,7 +37,7 @@ public interface IUser {
   boolean setUsername(String password, String username);
 
   boolean verifyPassword(String password);
-  
+
   /**
    * checks whether the user is allowed to access the given access level
    *

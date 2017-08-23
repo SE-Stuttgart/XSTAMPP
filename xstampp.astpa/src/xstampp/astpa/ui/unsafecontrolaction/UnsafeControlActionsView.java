@@ -190,7 +190,8 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
     this.setDataModelInterface(ProjectManager.getContainerInstance()
         .getDataModel(this.getProjectID()));
     super.createPartControl(parent, columns);
-    this.getGridWrapper().setHeaderToolTip(xstampp.astpa.messages.Messages.UnsafeControlActionsView_HeaderToolTip);
+    this.getGridWrapper()
+        .setHeaderToolTip(xstampp.astpa.messages.Messages.UnsafeControlActionsView_HeaderToolTip);
     updateHazards();
     reloadTable();
   }

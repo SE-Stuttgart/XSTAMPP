@@ -65,54 +65,56 @@ import xstampp.preferences.IControlStructureConstants;
  */
 public class CSEditPartFactory implements EditPartFactory {
 
-	private IControlStructureEditorDataModel dataModel;
-	private Map<UUID, IControlStructureEditPart> editPartMap = new HashMap<>();
-	private final String stepId;
-	private List<IControlStructureEditPart> addedParts;
-	private IPreferenceStore store;
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            this steps id
-	 * @param store The preference store which should be used, see that 
-	 * 				the store must contain all keys defined in IControlStructureConstants
-	 * @see IControlStructureConstants  
-	 */
-	public CSEditPartFactory(IControlStructureEditorDataModel model,
-			String stepId, IPreferenceStore store) {
-		this.dataModel = model;
-		this.stepId = stepId;
-		this.addedParts = new ArrayList<>();
-		this.setStore(store);
-	}
+  private IControlStructureEditorDataModel dataModel;
+  private Map<UUID, IControlStructureEditPart> editPartMap = new HashMap<>();
+  private final String stepId;
+  private List<IControlStructureEditPart> addedParts;
+  private IPreferenceStore store;
 
-	@Override
-	public EditPart createEditPart(EditPart context, Object model) {
-		// the EditPart which acts as the controller in the MVC architecture of
-		// gef
-		IControlStructureEditPart part = null;
-		UUID id = null;
-		switch (((IComponent) model).getComponentType()) {
-		case CONTROLACTION: {
-			part = new ControlActionEditPart(this.dataModel, this.stepId);
-			break;
-		}
-    case CONTAINER:{
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          this steps id
+   * @param store
+   *          The preference store which should be used, see that
+   *          the store must contain all keys defined in IControlStructureConstants
+   * @see IControlStructureConstants
+   */
+  public CSEditPartFactory(IControlStructureEditorDataModel model,
+      String stepId, IPreferenceStore store) {
+    this.dataModel = model;
+    this.stepId = stepId;
+    this.addedParts = new ArrayList<>();
+    this.setStore(store);
+  }
+
+  @Override
+  public EditPart createEditPart(EditPart context, Object model) {
+    // the EditPart which acts as the controller in the MVC architecture of
+    // gef
+    IControlStructureEditPart part = null;
+    UUID id = null;
+    switch (((IComponent) model).getComponentType()) {
+    case CONTROLACTION: {
+      part = new ControlActionEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case CONTAINER: {
       part = new ListOfCAEditPart(this.dataModel, this.stepId);
       break;
     }
-    case UNDEFINED:{
+    case UNDEFINED: {
       part = new EmptyComponentEditPart(this.dataModel, this.stepId);
       break;
     }
-		case ACTUATOR: {
-			part = new ActuatorEditPart(this.dataModel, this.stepId);
-			break;
-		}
+    case ACTUATOR: {
+      part = new ActuatorEditPart(this.dataModel, this.stepId);
+      break;
+    }
     case SENSOR: {
       part = new SensorEditPart(this.dataModel, this.stepId);
       break;
@@ -121,143 +123,143 @@ public class CSEditPartFactory implements EditPartFactory {
       part = new FeedbackEditPart(this.dataModel, this.stepId);
       break;
     }
-		case CONTROLLER: {
-			part = new ControllerEditPart(this.dataModel, this.stepId);
-			break;
-		}
-		case CONTROLLED_PROCESS: {
-			part = new ControlledProcessEditPart(this.dataModel, this.stepId);
-			break;
-		}
-		case PROCESS_MODEL: {
-			part = new ProcessModelEditPart(this.dataModel, this.stepId);
-			break;
-		}
-		case PROCESS_VARIABLE: {
-			part = new ProcessVariableEditPart(this.dataModel, this.stepId);
-			break;
-		}
-		case PROCESS_VALUE: {
-			part = new ProcessValueEditPart(this.dataModel, this.stepId);
-			break;
-		}
-		case CONNECTION: {
-			part = this.getConnectionFrom((IConnection) model);
-			if(part == null){
-				return null;
-			}
-			break;
-		}
-		case ROOT: {
-			part = new RootEditPart(this.dataModel, this.stepId);
-			break;
-		}
-		case DASHEDBOX: {
-			part = new DashedBoxEditPart(this.dataModel, this.stepId);
-			break;
-		}
-		default: {
-			part = new TextFieldEditPart(this.dataModel, this.stepId);
-		}
-		}
-		if(model instanceof IRectangleComponent) {
+    case CONTROLLER: {
+      part = new ControllerEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case CONTROLLED_PROCESS: {
+      part = new ControlledProcessEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case PROCESS_MODEL: {
+      part = new ProcessModelEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case PROCESS_VARIABLE: {
+      part = new ProcessVariableEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case PROCESS_VALUE: {
+      part = new ProcessValueEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case CONNECTION: {
+      part = this.getConnectionFrom((IConnection) model);
+      if (part == null) {
+        return null;
+      }
+      break;
+    }
+    case ROOT: {
+      part = new RootEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    case DASHEDBOX: {
+      part = new DashedBoxEditPart(this.dataModel, this.stepId);
+      break;
+    }
+    default: {
+      part = new TextFieldEditPart(this.dataModel, this.stepId);
+    }
+    }
+    if (model instanceof IRectangleComponent) {
       id = ((IRectangleComponent) model).getId();
-		} else if(model instanceof IConnection) {
+    } else if (model instanceof IConnection) {
       id = ((IConnection) model).getId();
     }
-		// allocates the model to it's controller
-		part.setModel(model);
-		part.setPreferenceStore(store);
-		this.editPartMap.put(id, part);
-		this.addedParts.add(part);
-		return part;
-	}
+    // allocates the model to it's controller
+    part.setModel(model);
+    part.setPreferenceStore(store);
+    this.editPartMap.put(id, part);
+    this.addedParts.add(part);
+    return part;
+  }
 
-	public List<IControlStructureEditPart> fetchNewParts(){
-		List<IControlStructureEditPart> tempParts = new ArrayList<>(this.addedParts);
-		this.addedParts = new ArrayList<>();
-		return tempParts;
-	}
-	private CSConnectionEditPart getConnectionFrom(IConnection model) {
-		
-		CSAbstractEditPart source = (CSAbstractEditPart) this.editPartMap.get((model).getSourceAnchor()
-				.getOwnerId());
-		
-		CSAbstractEditPart target = (CSAbstractEditPart)this.editPartMap.get((model).getTargetAnchor()
-				.getOwnerId());
-		
-		IAnchor sourceModel = model.getSourceAnchor();
-		IAnchor targetModel = model.getTargetAnchor();
-		
-		if(target == null || source == null){
-			return null;
-		}
-		
-		if(source== null){
-			sourceModel.setIsFlying(true);
-			source = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
-		}
-		IFigure sourceFigure =	source.getFigure();
+  public List<IControlStructureEditPart> fetchNewParts() {
+    List<IControlStructureEditPart> tempParts = new ArrayList<>(this.addedParts);
+    this.addedParts = new ArrayList<>();
+    return tempParts;
+  }
 
-		if(target == null){
-			targetModel.setIsFlying(true);
-			target = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
-		}
-		
-		
-		IFigure targetFigure =	target.getFigure();
-		
+  private CSConnectionEditPart getConnectionFrom(IConnection model) {
 
-		if(targetFigure == null || sourceFigure == null){
-			return null;
-		}
+    CSAbstractEditPart source = (CSAbstractEditPart) this.editPartMap.get((model).getSourceAnchor()
+        .getOwnerId());
 
-		IAnchorFigure sourceAnchor;
-		IAnchorFigure targetAnchor;
+    CSAbstractEditPart target = (CSAbstractEditPart) this.editPartMap.get((model).getTargetAnchor()
+        .getOwnerId());
 
-		if (source instanceof RootEditPart) {
-			targetAnchor = new CSAnchor(targetFigure, targetModel);
-			sourceAnchor = new CSFlyAnchor(sourceFigure, targetAnchor,
-					sourceModel);
-			
-		} else if (target instanceof RootEditPart) {
-			sourceAnchor = new CSAnchor(sourceFigure, sourceModel);
-			targetAnchor = new CSFlyAnchor(targetFigure, sourceAnchor,
-					targetModel);
-		} else {
-			sourceAnchor = new CSAnchor(sourceFigure, sourceModel);
-			targetAnchor = new CSAnchor(targetFigure, targetModel);
-		}
-		CSConnectionEditPart part = new CSConnectionEditPart(this.dataModel,
-				sourceAnchor, targetAnchor, model.getId(), this.stepId);
-		part.setModel(model);
-		part.setSource(source);
-		part.setTarget(target);
-//		source.addSourceConnection(part);
-//		target.addTargetConnection(part);
-		return part;
-	}
+    IAnchor sourceModel = model.getSourceAnchor();
+    IAnchor targetModel = model.getTargetAnchor();
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param id
-	 *            an UUID which is mapped to an editPart
-	 * @return an EditPart for the given id, or null if there is no editPart
-	 *         mapped for this id
-	 */
-	public EditPart getEditPart(UUID id) {
-		if (this.editPartMap.get(id) != null) {
-			return this.editPartMap.get(id);
-		}
-		return new ActuatorEditPart(null, this.stepId);
-	}
+    if (target == null || source == null) {
+      return null;
+    }
 
-	/**
-	 * @param store the store to set
-	 */
-	public void setStore(IPreferenceStore store) {
-		this.store = store;
-	}
+    if (source == null) {
+      sourceModel.setIsFlying(true);
+      source = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
+    }
+    IFigure sourceFigure = source.getFigure();
+
+    if (target == null) {
+      targetModel.setIsFlying(true);
+      target = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
+    }
+
+    IFigure targetFigure = target.getFigure();
+
+    if (targetFigure == null || sourceFigure == null) {
+      return null;
+    }
+
+    IAnchorFigure sourceAnchor;
+    IAnchorFigure targetAnchor;
+
+    if (source instanceof RootEditPart) {
+      targetAnchor = new CSAnchor(targetFigure, targetModel);
+      sourceAnchor = new CSFlyAnchor(sourceFigure, targetAnchor,
+          sourceModel);
+
+    } else if (target instanceof RootEditPart) {
+      sourceAnchor = new CSAnchor(sourceFigure, sourceModel);
+      targetAnchor = new CSFlyAnchor(targetFigure, sourceAnchor,
+          targetModel);
+    } else {
+      sourceAnchor = new CSAnchor(sourceFigure, sourceModel);
+      targetAnchor = new CSAnchor(targetFigure, targetModel);
+    }
+    CSConnectionEditPart part = new CSConnectionEditPart(this.dataModel,
+        sourceAnchor, targetAnchor, model.getId(), this.stepId);
+    part.setModel(model);
+    part.setSource(source);
+    part.setTarget(target);
+    // source.addSourceConnection(part);
+    // target.addTargetConnection(part);
+    return part;
+  }
+
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param id
+   *          an UUID which is mapped to an editPart
+   * @return an EditPart for the given id, or null if there is no editPart
+   *         mapped for this id
+   */
+  public EditPart getEditPart(UUID id) {
+    if (this.editPartMap.get(id) != null) {
+      return this.editPartMap.get(id);
+    }
+    return new ActuatorEditPart(null, this.stepId);
+  }
+
+  /**
+   * @param store
+   *          the store to set
+   */
+  public void setStore(IPreferenceStore store) {
+    this.store = store;
+  }
 }

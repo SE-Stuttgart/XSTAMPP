@@ -26,9 +26,9 @@ public class DesignRequirementStep2 extends ATableModel {
   /**
    * {@link ATableModel#ATableModel(String, String, int)}
    */
-	public DesignRequirementStep2(String title, String description, int number) {
-		super(title, description, number);
-	}
+  public DesignRequirementStep2(String title, String description, int number) {
+    super(title, description, number);
+  }
 
   /**
    * {@link ATableModel#ATableModel(String, String)}
@@ -37,13 +37,13 @@ public class DesignRequirementStep2 extends ATableModel {
     super(title, description);
   }
 
-	/**
+  /**
    * {@link ATableModel#ATableModel()}
-	 */
-	public DesignRequirementStep2() {
-		// empty constructor for JAXB
-	}
-  
+   */
+  public DesignRequirementStep2() {
+    // empty constructor for JAXB
+  }
+
   @Override
   public String getIdString() {
     return "DR2." + getNumber();

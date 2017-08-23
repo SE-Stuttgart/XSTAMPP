@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -18,7 +18,8 @@ import xstampp.ui.common.grid.GridWrapper;
 
 public class DeleteCFAction extends DeleteGridEntryAction<ICausalFactorDataModel> {
 
-  public DeleteCFAction(GridWrapper grid, ICausalFactorDataModel dataModel, String entryType, String prefix) {
+  public DeleteCFAction(GridWrapper grid, ICausalFactorDataModel dataModel, String entryType,
+      String prefix) {
     super(grid, dataModel, entryType, prefix);
   }
 
@@ -29,7 +30,7 @@ public class DeleteCFAction extends DeleteGridEntryAction<ICausalFactorDataModel
 
   @Override
   protected void removeEntry(UUID id) {
-    getDataModel().removeCausalFactor(null,id);
+    getDataModel().removeCausalFactor(null, id);
   }
 
 }

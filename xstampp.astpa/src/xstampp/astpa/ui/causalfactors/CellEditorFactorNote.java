@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -25,10 +25,10 @@ public class CellEditorFactorNote extends GridCellTextEditor {
   private UUID factorId;
   private UUID entryId;
   private ICausalFactorDataModel dataInterface;
-  
-  public CellEditorFactorNote(GridWrapper gridWrapper,ICausalFactorDataModel dataInterface,
-                      UUID componentId,UUID factorId,ICausalFactorEntry entry) {
-    super(gridWrapper, entry.getNote(),factorId);
+
+  public CellEditorFactorNote(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
+      UUID componentId, UUID factorId, ICausalFactorEntry entry) {
+    super(gridWrapper, entry.getNote(), factorId);
     this.dataInterface = dataInterface;
     this.componentId = componentId;
     this.factorId = factorId;
@@ -40,9 +40,9 @@ public class CellEditorFactorNote extends GridCellTextEditor {
     CausalFactorEntryData data = new CausalFactorEntryData(entryId);
     data.setNote(newText);
     dataInterface.changeCausalEntry(componentId, factorId, data);
-    
+
   }
-  
+
   @Override
   public void delete() {
     CausalFactorEntryData data = new CausalFactorEntryData(entryId);
@@ -54,9 +54,9 @@ public class CellEditorFactorNote extends GridCellTextEditor {
   protected void editorOpening() {
     dataInterface.lockUpdate();
   }
-  
+
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[]{});
+    dataInterface.releaseLockAndUpdate(new ObserverValue[] {});
   }
 }

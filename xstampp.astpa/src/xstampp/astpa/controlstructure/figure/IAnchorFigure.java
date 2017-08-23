@@ -19,7 +19,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 
-
 /**
  * 
  * @author Lukas Balzer
@@ -27,33 +26,34 @@ import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
  */
 public interface IAnchorFigure extends ConnectionAnchor {
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return the the x and y factors with which the Anchor position of this
-	 *         anchor could be restored
-	 */
-	Point getAnchorFactor();
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return the the x and y factors with which the Anchor position of this
+   *         anchor could be restored
+   */
+  Point getAnchorFactor();
 
-	/**
-	 * 
-	 * @author Lukas
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 *@param owner the owner of this anchor, will only be changed if a legal owner is given and 
- *					the new owner is not equal to the old
-	 */
-	void updateAnchor(IAnchor model, Object owner);
+  /**
+   * 
+   * @author Lukas
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param owner
+   *          the owner of this anchor, will only be changed if a legal owner is given and
+   *          the new owner is not equal to the old
+   */
+  void updateAnchor(IAnchor model, Object owner);
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return the position of this
-	 */
-	public Point getAnchorPosition();
-	
-	void setPreferenceStore(IPreferenceStore store);
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return the position of this
+   */
+  public Point getAnchorPosition();
+
+  void setPreferenceStore(IPreferenceStore store);
 }

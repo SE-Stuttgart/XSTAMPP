@@ -33,95 +33,95 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public abstract class ControlStructureAbstractCommand extends Command {
 
-	private final IControlStructureEditorDataModel dataModel;
-	private IFigure feedbackLayer;
-	private final String stepID;
+  private final IControlStructureEditorDataModel dataModel;
+  private IFigure feedbackLayer;
+  private final String stepID;
   private UUID rootId;
 
-	protected static final List<ComponentType> COMPONENTS_STEP1 = new ArrayList<ComponentType>() {
-		private static final long serialVersionUID = 1L;
-		{
-			this.add(ComponentType.ACTUATOR);
-			this.add(ComponentType.CONTROLLER);
-			this.add(ComponentType.CONTROLACTION);
-			this.add(ComponentType.CONTROLLED_PROCESS);
-			this.add(ComponentType.SENSOR);
-			this.add(ComponentType.TEXTFIELD);
-			this.add(ComponentType.DASHEDBOX);
-			
-		}
-	};
+  protected static final List<ComponentType> COMPONENTS_STEP1 = new ArrayList<ComponentType>() {
+    private static final long serialVersionUID = 1L;
+    {
+      this.add(ComponentType.ACTUATOR);
+      this.add(ComponentType.CONTROLLER);
+      this.add(ComponentType.CONTROLACTION);
+      this.add(ComponentType.CONTROLLED_PROCESS);
+      this.add(ComponentType.SENSOR);
+      this.add(ComponentType.TEXTFIELD);
+      this.add(ComponentType.DASHEDBOX);
 
-	protected static final List<ComponentType> COMPONENTS_STEP3 = new ArrayList<ComponentType>() {
-		private static final long serialVersionUID = 1L;
+    }
+  };
 
-		{
-			this.add(ComponentType.PROCESS_MODEL);
-			this.add(ComponentType.PROCESS_VALUE);
-			this.add(ComponentType.PROCESS_VARIABLE);
-			this.add(ComponentType.TEXTFIELD);
-			this.add(ComponentType.DASHEDBOX);
-		}
-	};
+  protected static final List<ComponentType> COMPONENTS_STEP3 = new ArrayList<ComponentType>() {
+    private static final long serialVersionUID = 1L;
 
-	protected static final HashMap<String, List<ComponentType>> COMPONENTS_MAP = new HashMap<String, List<ComponentType>>() {
-		private static final long serialVersionUID = 1L;
+    {
+      this.add(ComponentType.PROCESS_MODEL);
+      this.add(ComponentType.PROCESS_VALUE);
+      this.add(ComponentType.PROCESS_VARIABLE);
+      this.add(ComponentType.TEXTFIELD);
+      this.add(ComponentType.DASHEDBOX);
+    }
+  };
 
-		{
-			this.put(CSEditor.ID,
-					ControlStructureAbstractCommand.COMPONENTS_STEP1);
-			this.put(CSEditorWithPM.ID,
-					ControlStructureAbstractCommand.COMPONENTS_STEP3);
+  protected static final HashMap<String, List<ComponentType>> COMPONENTS_MAP = new HashMap<String, List<ComponentType>>() {
+    private static final long serialVersionUID = 1L;
 
-		}
-	};
+    {
+      this.put(CSEditor.ID,
+          ControlStructureAbstractCommand.COMPONENTS_STEP1);
+      this.put(CSEditorWithPM.ID,
+          ControlStructureAbstractCommand.COMPONENTS_STEP3);
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepID
-	 *            the stepEditor ID
-	 */
-	public ControlStructureAbstractCommand(UUID rootId,
-			IControlStructureEditorDataModel model, String stepID) {
-		super();
+    }
+  };
+
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepID
+   *          the stepEditor ID
+   */
+  public ControlStructureAbstractCommand(UUID rootId,
+      IControlStructureEditorDataModel model, String stepID) {
+    super();
     this.setRootId(rootId);
-		this.dataModel = model;
-		this.stepID = stepID;
-	}
+    this.dataModel = model;
+    this.stepID = stepID;
+  }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @return The DataModel which contains all model classes
-	 */
-	public IControlStructureEditorDataModel getDataModel() {
-		return this.dataModel;
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return The DataModel which contains all model classes
+   */
+  public IControlStructureEditorDataModel getDataModel() {
+    return this.dataModel;
+  }
 
-	/**
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param layer
-	 *            the feedback layer which is used to display the feedback
-	 */
-	public void setFeedbackLayer(IFigure layer) {
-		this.feedbackLayer = layer;
-	}
+  /**
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param layer
+   *          the feedback layer which is used to display the feedback
+   */
+  public void setFeedbackLayer(IFigure layer) {
+    this.feedbackLayer = layer;
+  }
 
-	protected void deleteFeedback() {
-		this.feedbackLayer.getChildren().clear();
-		this.feedbackLayer.repaint();
-	}
+  protected void deleteFeedback() {
+    this.feedbackLayer.getChildren().clear();
+    this.feedbackLayer.repaint();
+  }
 
-	protected String getStepID() {
-		return this.stepID;
-	}
+  protected String getStepID() {
+    return this.stepID;
+  }
 
   public UUID getRootId() {
     return rootId;
@@ -130,7 +130,7 @@ public abstract class ControlStructureAbstractCommand extends Command {
   public void setRootId(UUID rootId) {
     this.rootId = rootId;
   }
-  
+
   @Override
   public void execute() {
     getDataModel().setActiveRoot(getRootId());

@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ public class LinkProposal implements IContentProposal {
   private String description;
   private UUID proposalId;
   private boolean selected = false;
-  
+
   @Override
   public String getContent() {
     return description;
@@ -34,7 +34,7 @@ public class LinkProposal implements IContentProposal {
   public void setLabel(String label) {
     this.label = label;
   }
-  
+
   @Override
   public String getLabel() {
     return label;
@@ -43,7 +43,7 @@ public class LinkProposal implements IContentProposal {
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   @Override
   public String getDescription() {
     return description;
@@ -52,7 +52,7 @@ public class LinkProposal implements IContentProposal {
   public void setProposalId(UUID proposalId) {
     this.proposalId = proposalId;
   }
-  
+
   public UUID getProposalId() {
     return proposalId;
   }
@@ -64,5 +64,5 @@ public class LinkProposal implements IContentProposal {
   public void setSelected(boolean selected) {
     this.selected = selected;
   }
-  
+
 }

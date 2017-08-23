@@ -66,7 +66,8 @@ public class GridCellColored extends AbstractGridCell {
    */
   public GridCellColored(GridWrapper grid, RGB color) {
 
-    this.backgroundColor = new Color(grid.getGrid().getDisplay(), color.red, color.green, color.blue);
+    this.backgroundColor = new Color(grid.getGrid().getDisplay(), color.red, color.green,
+        color.blue);
   }
 
   /**
@@ -92,8 +93,8 @@ public class GridCellColored extends AbstractGridCell {
       gc.setBackground(this.backgroundColor);
     }
 
-    gc.fillRectangle(renderer.getDrawBounds().x, renderer.getDrawBounds().y, renderer.getDrawBounds().width,
-        renderer.getDrawBounds().height);
+    gc.fillRectangle(renderer.getDrawBounds().x, renderer.getDrawBounds().y,
+        renderer.getDrawBounds().width, renderer.getDrawBounds().height);
 
     // restore bg color
     gc.setBackground(oldBgColor);

@@ -95,14 +95,14 @@ public interface IGridCell {
    *          the row in which the cell is.
    */
   void setGridRow(GridRow gridRow);
-  
+
   /**
    * get the row in the grid, the cell is in.
    * 
    * @author Lukas Balzer
    * 
-   * return   
-   *      the row in which the cell is.
+   *         return
+   *         the row in which the cell is.
    */
   GridRow getGridRow();
 

@@ -26,7 +26,8 @@ class ContentProposalProvider implements IContentProposalProvider {
   private IContentProposal[] contentProposals;
   private boolean filterProposals = false;
 
-  public ContentProposalProvider(final String[] proposals, final String[] labels, final String[] descriptions) {
+  public ContentProposalProvider(final String[] proposals, final String[] labels,
+      final String[] descriptions) {
     super();
     this.proposals = proposals.clone();
     this.labels = labels.clone();
@@ -39,7 +40,8 @@ class ContentProposalProvider implements IContentProposalProvider {
       ArrayList<IContentProposal> list = new ArrayList<IContentProposal>();
       for (int i = 0; i < this.proposals.length; i++) {
         if (this.matches(this.proposals[i], this.labels[i], contents)) {
-          list.add(this.makeContentProposal(this.proposals[i], this.labels[i], this.descriptions[i]));
+          list.add(
+              this.makeContentProposal(this.proposals[i], this.labels[i], this.descriptions[i]));
         }
       }
       return list.toArray(new IContentProposal[list.size()]);
@@ -47,7 +49,8 @@ class ContentProposalProvider implements IContentProposalProvider {
     if (this.contentProposals == null) {
       this.contentProposals = new IContentProposal[this.proposals.length];
       for (int i = 0; i < this.proposals.length; i++) {
-        this.contentProposals[i] = this.makeContentProposal(this.proposals[i], this.labels[i], this.descriptions[i]);
+        this.contentProposals[i] = this.makeContentProposal(this.proposals[i], this.labels[i],
+            this.descriptions[i]);
       }
     }
     return this.contentProposals;
@@ -81,7 +84,8 @@ class ContentProposalProvider implements IContentProposalProvider {
     return matches;
   }
 
-  private IContentProposal makeContentProposal(final String proposal, final String label, final String description) {
+  private IContentProposal makeContentProposal(final String proposal, final String label,
+      final String description) {
     return new IContentProposal() {
 
       @Override

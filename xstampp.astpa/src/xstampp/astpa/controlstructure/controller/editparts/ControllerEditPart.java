@@ -37,46 +37,46 @@ import xstampp.preferences.IControlStructureConstants;
  */
 public class ControllerEditPart extends CSAbstractEditPart {
 
-	/**
-	 * this constuctor sets the unique ID of this EditPart which is the same in
-	 * its model and figure
-	 * 
-	 * @author Lukas Balzer
-	 * 
-	 * @param model
-	 *            The DataModel which contains all model classes
-	 * @param stepId
-	 *            this steps id
-	 */
-	public ControllerEditPart(IControlStructureEditorDataModel model,
-			String stepId) {
-		super(model, stepId, 1);
-	}
+  /**
+   * this constuctor sets the unique ID of this EditPart which is the same in
+   * its model and figure
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param model
+   *          The DataModel which contains all model classes
+   * @param stepId
+   *          this steps id
+   */
+  public ControllerEditPart(IControlStructureEditorDataModel model,
+      String stepId) {
+    super(model, stepId, 1);
+  }
 
-	@Override
-	protected IFigure createFigure() {
-		ImageDescriptor imgDesc = Activator
-				.getImageDescriptor("/icons/buttons/controlstructure/controller_80.png"); //$NON-NLS-1$
-		Image img = imgDesc.createImage(null);
-		ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
-				IControlStructureConstants.CONTROLSTRUCTURE_CONTROLLER_COLOR);
-		tmpFigure.setPreferenceStore(getStore());
-		tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
-		tmpFigure.setToolTip(new Label(Messages.Controller));
-		return tmpFigure;
-	}
+  @Override
+  protected IFigure createFigure() {
+    ImageDescriptor imgDesc = Activator
+        .getImageDescriptor("/icons/buttons/controlstructure/controller_80.png"); //$NON-NLS-1$
+    Image img = imgDesc.createImage(null);
+    ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
+        IControlStructureConstants.CONTROLSTRUCTURE_CONTROLLER_COLOR);
+    tmpFigure.setPreferenceStore(getStore());
+    tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
+    tmpFigure.setToolTip(new Label(Messages.Controller));
+    return tmpFigure;
+  }
 
-	@Override
-	protected void createEditPolicies() {
-		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
-		this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-				new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
-		this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
-				this.getDataModel(), this.getStepId()));
-		this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
-				this.getDataModel(), this.getStepId()));
-		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
-	}
+  @Override
+  protected void createEditPolicies() {
+    this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
+    this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+        new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
+    this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
+        this.getDataModel(), this.getStepId()));
+    this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
+        this.getDataModel(), this.getStepId()));
+    this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
+        new CSConnectionPolicy(this.getDataModel(), this.getStepId()));
+  }
 
 }

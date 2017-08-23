@@ -443,7 +443,8 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
   /**
    * This method allows children of this to add default {@link LinkSupport}'s to the table view.
-   * Implementors should call the {@link CommonTableView#addLinkSupport(LinkSupport))} to add the required link
+   * Implementors should call the {@link CommonTableView#addLinkSupport(LinkSupport))} to add the
+   * required link
    * widgets,<br>
    * <p>
    * NOTE: The links are displayed in an extra column if at least one {@link LinkSupport} is added

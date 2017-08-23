@@ -27,74 +27,74 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public class ProcessValueFigure extends CSFigure {
 
-	/**
-	 * the offset of the process variables and values
-	 * 
-	 * @author Lukas Balzer
-	 */
-	private static final int PROCESS_MODEL_COLUMN = 10;
-	private static final int ROW_OFFSET = 4;
-	private final int topOffset;
-	private boolean autoPositioning;
+  /**
+   * the offset of the process variables and values
+   * 
+   * @author Lukas Balzer
+   */
+  private static final int PROCESS_MODEL_COLUMN = 10;
+  private static final int ROW_OFFSET = 4;
+  private final int topOffset;
+  private boolean autoPositioning;
 
-	/**
-	 * @author Lukas Balzer
-	 * @param id
-	 *            the id which the figure inherits from its model
-	 * @param top
-	 *            the offset from the parent models text Label
-	 */
-	public ProcessValueFigure(UUID id, int top) {
-		super(id, false);
+  /**
+   * @author Lukas Balzer
+   * @param id
+   *          the id which the figure inherits from its model
+   * @param top
+   *          the offset from the parent models text Label
+   */
+  public ProcessValueFigure(UUID id, int top) {
+    super(id, false);
     this.setAutoPositioning(true);
-		this.setOpaque(false);
-		this.topOffset = top;
-	}
+    this.setOpaque(false);
+    this.topOffset = top;
+  }
 
-	@Override
-	public void refresh() {
-	  
-		this.getTextField().setLocation(new Point(0,0));
-		this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width,-1));
-		this.getTextField().revalidate();
-		this.setConstraint(this.getTextField(),this.getTextField().getBounds());
-		Rectangle size = new Rectangle(rect.getLocation(), getTextField().getSize());
-		for (Object child : getChildren()) {
-      if(child instanceof IControlStructureFigure) {
+  @Override
+  public void refresh() {
+
+    this.getTextField().setLocation(new Point(0, 0));
+    this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width, -1));
+    this.getTextField().revalidate();
+    this.setConstraint(this.getTextField(), this.getTextField().getBounds());
+    Rectangle size = new Rectangle(rect.getLocation(), getTextField().getSize());
+    for (Object child : getChildren()) {
+      if (child instanceof IControlStructureFigure) {
         Rectangle dimension = ((IControlStructureFigure) child).getBounds();
         int diff = size.height - (dimension.height + topOffset + dimension.y);
-        if(diff < 0 ) {
+        if (diff < 0) {
           size.height -= diff;
         }
       }
     }
     rect.setSize(rect.union(size).getSize());
-		// the component is drawn right below its previous child
-    if(this.isAutoPositioning()) {
+    // the component is drawn right below its previous child
+    if (this.isAutoPositioning()) {
       rect.setX(ProcessValueFigure.PROCESS_MODEL_COLUMN);
-  		int previousIndex = this.getParent().getChildren().indexOf(this) - 1;
-  		if (previousIndex < 0) {
-  			rect.setY(((IControlStructureFigure) this.getParent())
-  					.getTextField().getBounds().height + this.topOffset);
-  		} else {
-  			IFigure previousChild = (IFigure) this.getParent().getChildren()
-  					.get(previousIndex);
-  			rect.setY(previousChild.getBounds().y
-  					+ previousChild.getBounds().height
-  					+ ProcessValueFigure.ROW_OFFSET);
-  			
-  		}
+      int previousIndex = this.getParent().getChildren().indexOf(this) - 1;
+      if (previousIndex < 0) {
+        rect.setY(((IControlStructureFigure) this.getParent())
+            .getTextField().getBounds().height + this.topOffset);
+      } else {
+        IFigure previousChild = (IFigure) this.getParent().getChildren()
+            .get(previousIndex);
+        rect.setY(previousChild.getBounds().y
+            + previousChild.getBounds().height
+            + ProcessValueFigure.ROW_OFFSET);
+
+      }
     }
 
-		this.getParent().setConstraint(this, rect);
-		setBounds(rect);
-		this.getTextField().repaint();
-	}
+    this.getParent().setConstraint(this, rect);
+    setBounds(rect);
+    this.getTextField().repaint();
+  }
 
-	@Override
-	public void setDeco(boolean deco) {
-		// there's no decoration on process components
-	}
+  @Override
+  public void setDeco(boolean deco) {
+    // there's no decoration on process components
+  }
 
   /**
    * @return the autoPositioning
@@ -104,7 +104,8 @@ public class ProcessValueFigure extends CSFigure {
   }
 
   /**
-   * @param autoPositioning the autoPositioning to set
+   * @param autoPositioning
+   *          the autoPositioning to set
    */
   public void setAutoPositioning(boolean autoPositioning) {
     this.autoPositioning = autoPositioning;
