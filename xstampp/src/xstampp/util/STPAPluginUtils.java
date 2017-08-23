@@ -49,6 +49,15 @@ public final class STPAPluginUtils {
     unfinishedJobs = new ArrayList<>();
   }
 
+  /**
+   * This static method adds the given {@link Job} to the list of jobs that need to be executed
+   * before the application can be closed.
+   * The method also calls {@link Job#schedule()} to prevent that the job is listed without beeing
+   * executed.
+   * 
+   * @param job
+   *          a {@link Job} that is be added to the list of jobs.
+   */
   public static void listJob(Job job) {
     if (unfinishedJobs == null) {
       unfinishedJobs = new ArrayList<>();
@@ -61,8 +70,14 @@ public final class STPAPluginUtils {
         unfinishedJobs.remove(event.getJob());
       }
     });
+    job.schedule();
   }
 
+  /**
+   * 
+   * @return all {@link Job}'s that where added using {@link STPAPluginUtils#listJob(Job)} and are
+   *         still running.
+   */
   public static List<Job> getUnfinishedJobs() {
     if (unfinishedJobs == null) {
       return new ArrayList<>();
