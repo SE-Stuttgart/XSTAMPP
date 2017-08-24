@@ -44,6 +44,7 @@ import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.contentassist.LabelWithAssist;
 import xstampp.ui.navigation.IProjectSelection;
+import xstampp.ui.wizards.AbstractWizardPage.PathComposite;
 import xstampp.util.JAXBExportJob;
 
 import java.io.File;
@@ -230,8 +231,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
 
   /**
    * adds a drop down list to the wizard page where the user can choose between all open projects
-   * <br>
-   * <i>the parent must have a FormLayout</i>
+   * <br> <i>the parent must have a FormLayout</i>
    * 
    * @author Lukas Balzer
    * @param parent

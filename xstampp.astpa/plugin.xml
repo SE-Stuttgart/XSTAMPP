@@ -713,6 +713,11 @@
          </commandParameter>
       </command>
       <command
+            defaultHandler="xstampp.astpa.util.commands.ExportStatisticsCommand"
+            id="xstampp.astpa.command.exportStatistics"
+            name="open Statistics">
+      </command>
+      <command
             defaultHandler="xstampp.astpa.util.commands.STPAProjectStateExportCommand"
             id="xstampp.astpa.command.projectState.export"
             name="Project State Export">
@@ -1012,9 +1017,14 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
-               id="Project Export">
+               id="toolbar.statistics">
+            <command
+                  commandId="xstampp.astpa.command.exportStatistics"
+                  icon="icons/buttons/export/exportStatistics_16x16.png"
+                  style="push">
+            </command>
             <command
                   commandId="xstampp.astpa.command.projectState.export"
                   style="push">
