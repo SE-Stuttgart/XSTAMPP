@@ -157,8 +157,8 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
   public void execute() {
     super.execute();
     this.deleteFeedback();
-
-    this.componentId = this.getDataModel().addComponent(this.parentModel.getId(), this.layout,
+    UUID link = compModel.getControlActionLink();
+    this.componentId = this.getDataModel().addComponent(link, this.parentModel.getId(), this.layout,
         this.compModel.getText(), this.compModel.getComponentType(), -1);
     // the following branch adds the functionality if inheriting the relation from a container
     // component

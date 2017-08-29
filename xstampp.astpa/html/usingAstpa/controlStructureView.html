@@ -6,25 +6,74 @@
 		<title>Control Structure </title>
 	</head>
 	<body>
-		<h1>Creating a Control Structure</h1>
-		<h3>Control Structure Nodes </h3>
+	<ul>
+		<li><a href="#csCreating">Creating a Control Structure</a><br>
+		<li><a href="#csGeneral">Handling the Palette</a><br>
+		<li><a href="#csNodes">Control Structure Nodes </a><br>
+		<li><a href="#csControlActions">Control Actions</a><br>
+		<ul>
+		<li><a href="#csCaRelations">A Control Action Relation</a><br>
+		<li><a href="#csAddingExistingCA">Adding existing Control Actions</h5><br>
+		</ul>
+		<li><a href="#csConnections">Connections</a><br>
+		<ul>
+			<li><a href="#csSnapToConnection">Snap-To Connection Mode</a>
+			<li><a href="#csManualConnection">Manual Connection Mode</a>
+		</ul>
+		<li><a href="#csTextBoxes">Text Boxes</a><br>
+		<li><a href="#csDeleting&Editing">Deleting and Editing Control Structure Elements </a><br>
+		</ul>
+		
+		<h1 id="csCreating">Creating a Control Structure</h1>
+		<h3 id="csGeneral">Handling the Palette</h3>
+		The Control Structure of the system can be modelled using the components provided in the Palette
+		 sections <b>3</b>,<b>4</b> and <b>5</b> seen in the image on the right. <img src="../images/controlstructure/palette.png" style="float: right;">
+		 A component can be created by selecting an entry from the Palette and clicking on the dedicated place in the drawing area
+		 or by Drag&Dorp. 
+		 By clicking on the arrow button<b>1</b> on the top-left of the Palette it can be collapsed/expanded to increase the available 
+		 space in the drawing area.
+		 
+		<h3 id="csNodes">Control Structure Nodes </h3>
 			Controllers, actuators, controlled processes and sensors are defined as control structure 
 			nodes.  They are used for modeling control structures. In order to add a node to control 
 			structure, simply drag it from the palette in the right section of the window and drop it 
 			to the modeling area in the middle.  Another way of adding nodes is clicking the node in 
 			the palette and then clicking on the part of the modeling area where the node should be 
-			drawn.  
-		<h3>Connections</h3>
+			drawn. 
+		<h3 id="csControlActions">Control Actions</h3>
+			The Process can be further modeled by adding control actions. If a 
+			<ul>
+			<li><h5 id="csCaRelations">A Control Action Relation</h5><div>
+			 A control action is always attached to a connection given that at least one has been created.
+			 This relation is created when the Control Action is created from the palette and is displayed
+			 as a grey highlight of the connection that is nearest to the mouse pointer.
+			 Once created the relation is visible as a green highlight.<img src="../images/controlstructure/controlActionRelation.PNG">
+			 Or as Source&Destination in the Control Actions Table </div>
+			 <li><h5 id="csAddingExistingCA">Adding existing Control Actions</h5><img src="../images/controlstructure/controlActionsDialg.png">
+			 If Control Actions have already been defined in STPA step 1 or have been created&removed form the Control Structure they can 
+			 also be (re-)added to the structure. If Control Actions exist in the analysis that are not part of the Control Structure,
+			  thus have no Source or Destination displayed in the Control Action Table a dialog will show up each time the palette entry is clicked.
+			 </ul> 
+		<h3 id="csConnections">Connections</h3>
 			Arrows and dashed arrows are defined as connections. They are used to model 
 			relationships between control structure nodes. These nodes have to be added to the 
 			modeling area before connections between these nodes can be drawn. In order to draw 
-			a connections, click on arrow or dashed arrow and available anchor points will appear 
-			<img src="../images/componentAnchors.png"> as blue squares on the nodes edges. Every connections starts and ends 
-			with an anchor point. They have to be clicked to connect the corresponding nodes.  
-		<h3>Text Boxes v</h3>
+			a connections, click on arrow or dashed arrow and available anchor points depending on the Connection Mode will appear.
+			The Connection Mode can be changed by right clicking in the drawing area and selecting <i>Connection Mode: Snap-To/Manual</i>
+			in the context menu.
+			<ul>
+				<li><h5 id="csSnapToConnection">Snap-To Connection Mode</h5>
+				<img src="../images/controlstructure/snapToConnectionMode.png"> as blue squares on the nodes edges.
+				 Every connections starts and ends 
+				with an anchor point. They have to be clicked to connect the corresponding components.  
+				<li><h5 id="csManualConnection">Manual Connection Mode</h5>
+				<img src="../images/controlstructure/manualConnectionMode.png"> In the manual connection mode
+				 the connection can be placed anywhere on the components' border. 
+			 </ul>
+		<h3 id="csTextBoxes">Text Boxes</h3>
 			Text boxes can be used to describe control structures, especially their connections. Text 
 			boxes can be added the same way a control structure node is added. 
-		<h3>Deleting and Editing Control Structure Elements </h3>
+		<h3 id="csDeleting&Editing">Deleting and Editing Control Structure Elements </h3>
 			Nodes, connections and text boxes are defined as control structure elements. A selected 
 			element can be deleted by pressing Del (on Windows) or Backspace (on Macintosh) on 
 			the Keyboard. Elements can be edited by doubleTclick. 

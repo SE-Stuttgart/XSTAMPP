@@ -13,17 +13,25 @@
 
 package xstampp.astpa.controlstructure.controller.factorys;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import messages.Messages;
+import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.requests.CreationFactory;
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalListener;
+import org.eclipse.swt.widgets.Display;
 
+import messages.Messages;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.ui.common.contentassist.AutoCompleteField;
+import xstampp.ui.common.contentassist.LinkProposal;
 
 /**
  *
@@ -39,6 +47,7 @@ public class CSModelCreationFactory implements CreationFactory {
 	private ComponentType type;
 	private static Map<ComponentType, Integer> countMap;
 	private final IRectangleComponent dataModel;
+	private UUID chosenUUID = null;
 
 	/**
 	 *
@@ -56,6 +65,10 @@ public class CSModelCreationFactory implements CreationFactory {
 
 	}
 
+	public void setChosenUUID(UUID chosenUUID) {
+    this.chosenUUID = chosenUUID;
+  }
+	
 	/**
 	 * @return the requested component object
 	 * @see Component
@@ -75,8 +88,8 @@ public class CSModelCreationFactory implements CreationFactory {
 		switch (this.type) {
 		case CONTROLACTION: {
 			text = Messages.ControlAction + " " + count; //$NON-NLS-1$
-			
-			return new Component(null, text, new Rectangle(), this.type);
+
+			return new Component(chosenUUID, text, new Rectangle(), this.type);
 		}
 		case ACTUATOR: {
 			text = Messages.Actuator + " " + count; //$NON-NLS-1$
@@ -97,18 +110,18 @@ public class CSModelCreationFactory implements CreationFactory {
 			}
 			break;
 		}
-    case CONTAINER: {
+		case CONTAINER: {
 
-      text = "?";
-      break;
+			text = "?";
+			break;
 
-    }
-    case UNDEFINED: {
+		}
+		case UNDEFINED: {
 
-      text = "Component";
-      break;
+			text = "Component";
+			break;
 
-    }
+		}
 		case CONTROLLER: {
 			text = Messages.Controller + " " + count; //$NON-NLS-1$
 			for (IRectangleComponent x : this.dataModel.getChildren()) {
@@ -149,24 +162,24 @@ public class CSModelCreationFactory implements CreationFactory {
 			text = Messages.ProcessValue + " " + count; //$NON-NLS-1$
 			break;
 		}
-    case SENSOR: {
-      text = Messages.Sensor + " " + count; //$NON-NLS-1$
-      for (IRectangleComponent x : this.dataModel.getChildren()) {
-        if (x.getText().equals(text)) {
-          text = text + " (2)";
-        }
-      }
-      break;
-    }
-    case FEEDBACK: {
-      text = "Feedback" + " " + count; //$NON-NLS-1$
-      for (IRectangleComponent x : this.dataModel.getChildren()) {
-        if (x.getText().equals(text)) {
-          text = text + " (2)";
-        }
-      }
-      break;
-    }
+		case SENSOR: {
+			text = Messages.Sensor + " " + count; //$NON-NLS-1$
+			for (IRectangleComponent x : this.dataModel.getChildren()) {
+				if (x.getText().equals(text)) {
+					text = text + " (2)";
+				}
+			}
+			break;
+		}
+		case FEEDBACK: {
+			text = "Feedback" + " " + count; //$NON-NLS-1$
+			for (IRectangleComponent x : this.dataModel.getChildren()) {
+				if (x.getText().equals(text)) {
+					text = text + " (2)";
+				}
+			}
+			break;
+		}
 		case TEXTFIELD: {
 			text = Messages.TextBox + " " + count; //$NON-NLS-1$
 			for (IRectangleComponent x : this.dataModel.getChildren()) {

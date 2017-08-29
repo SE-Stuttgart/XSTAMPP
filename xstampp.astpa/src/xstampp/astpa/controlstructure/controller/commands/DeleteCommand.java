@@ -56,8 +56,7 @@ public class DeleteCommand extends ControlStructureAbstractCommand {
 		if(isDeleteAllowed ||  MessageDialog.openConfirm(null, "Delete not step related component", "Do you really want to delete"+
 															"\nthe component created in the control structure of step 0?")){
 			this.getDataModel().removeComponent(this.model.getId());
-			this.getDataModel().removeControlAction(
-					this.model.getControlActionLink());
+			
 		}
 	}
 

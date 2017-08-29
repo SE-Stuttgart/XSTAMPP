@@ -614,4 +614,9 @@ public class ControlAction extends ATableModel implements IControlAction {
     }
     return false;
   }
+  
+  @Override
+  public String getIdString() {
+    return "CA-" + super.getIdString();
+  }
 }
