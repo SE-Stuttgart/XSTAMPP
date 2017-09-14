@@ -23,8 +23,10 @@ import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteDrawer;
+import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
+import org.eclipse.gef.palette.PaletteToolbar;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.gef.tools.MarqueeSelectionTool;
@@ -37,8 +39,10 @@ import org.eclipse.ui.contexts.IContextService;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
+import xstampp.astpa.controlstructure.controller.factorys.CSPaletteEditPartFactory.ToolProperty;
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
 import xstampp.astpa.controlstructure.utilities.DragSelectionToolEntry;
+import xstampp.astpa.controlstructure.utilities.EditableTemplateCreationEntry;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
 import xstampp.ui.common.ProjectManager;
@@ -164,7 +168,8 @@ public class CSEditor extends CSAbstractEditor {
         ComponentType.CONTROLACTION,
         new CSModelCreationFactory(ComponentType.CONTROLACTION, this.getRoot()), imgDesc,
         imgDescLarge);
-    componentElements.add(entry);
+		entry.setToolProperty(ToolProperty.CHOOSE_ID_FROM, ComponentType.CONTROLACTION);
+		componentElements.add(entry);
     this.toolEntryToComponentType.put(ComponentType.CONTROLACTION, entry);
 
     imgDesc = Activator

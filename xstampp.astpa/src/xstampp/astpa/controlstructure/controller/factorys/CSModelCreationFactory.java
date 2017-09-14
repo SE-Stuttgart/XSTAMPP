@@ -15,6 +15,7 @@ package xstampp.astpa.controlstructure.controller.factorys;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import messages.Messages;
 
@@ -39,6 +40,7 @@ public class CSModelCreationFactory implements CreationFactory {
   private ComponentType type;
   private static Map<ComponentType, Integer> countMap;
   private final IRectangleComponent dataModel;
+	private UUID chosenUUID = null;
 
   /**
    *
@@ -53,9 +55,12 @@ public class CSModelCreationFactory implements CreationFactory {
   public CSModelCreationFactory(ComponentType type, IRectangleComponent model) {
     this.type = type;
     this.dataModel = model;
-
   }
 
+	public void setChosenUUID(UUID chosenUUID) {
+    this.chosenUUID = chosenUUID;
+  }
+	
   /**
    * @return the requested component object
    * @see Component
@@ -76,7 +81,7 @@ public class CSModelCreationFactory implements CreationFactory {
     case CONTROLACTION: {
       text = Messages.ControlAction + " " + count; //$NON-NLS-1$
 
-      return new Component(null, text, new Rectangle(), this.type);
+      return new Component(chosenUUID, text, new Rectangle(), this.type);
     }
     case ACTUATOR: {
       text = Messages.Actuator + " " + count; //$NON-NLS-1$

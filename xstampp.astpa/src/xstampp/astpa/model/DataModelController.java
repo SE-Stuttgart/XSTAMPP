@@ -393,19 +393,27 @@ public class DataModelController extends AbstractDataModel
   @Override
   public UUID addComponent(UUID parentId, Rectangle layout, String text, ComponentType type,
       Integer index) {
+    return addComponent(null, parentId, layout, text, type, index);
+  }
+
+  @Override
+  public UUID addComponent(UUID controlActionId, UUID parentId, Rectangle layout, String text,
+      ComponentType type, Integer index) {
     if ((parentId == null) || (layout == null) || (text == null) || (type == null)) {
       return null;
     }
     if (!(this.getComponent(parentId) instanceof Component)) {
       return null;
     }
-    UUID caLink = null;
     UUID result;
-    if (type.equals(ComponentType.CONTROLACTION)) {
-      caLink = addControlAction(text, Messages.DescriptionOfThisControlAction);
-      result = this.controlStructureController.addComponent(caLink, parentId, layout, text, type,
+    if (controlActionId == null && type.equals(ComponentType.CONTROLACTION)) {
+      controlActionId = addControlAction(text, Messages.DescriptionOfThisControlAction);
+    }
+    if(type.equals(ComponentType.CONTROLACTION)) {
+      String caTitle = getControlAction(controlActionId).getText();
+      result = this.controlStructureController.addComponent(controlActionId, parentId, layout, caTitle, type,
           index);
-      this.getControlActionController().setComponentLink(result, caLink);
+      this.getControlActionController().setComponentLink(result, controlActionId);
     } else {
       result = this.controlStructureController.addComponent(parentId, layout, text, type, index);
     }
@@ -413,12 +421,6 @@ public class DataModelController extends AbstractDataModel
       this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
     }
     return result;
-  }
-
-  @Override
-  public UUID addComponent(UUID controlActionId, UUID parentId, Rectangle layout, String text,
-      ComponentType type, Integer index) {
-    return addComponent(parentId, layout, text, type, index);
   }
 
   @Override
@@ -1471,9 +1473,7 @@ public class DataModelController extends AbstractDataModel
     for (IRectangleComponent child : comp.getChildren()) {
       removeComponent(child.getId());
     }
-    if (comp.getControlActionLink() != null) {
-      removeControlAction(comp.getControlActionLink());
-    } else if (this.controlStructureController.removeComponent(componentId)) {
+    if (this.controlStructureController.removeComponent(componentId)) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
       return true;
     }

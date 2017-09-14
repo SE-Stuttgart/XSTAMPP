@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 class LinkingShell {
 
@@ -55,7 +56,6 @@ class LinkingShell {
   private java.util.List<Label> descChildren;
 
   public LinkingShell() {
-
     this.mouseLoc = Display.getDefault().getCursorLocation();
     descShellSize = new Point(300, 300);
     labelShellSize = new Point(200, 300);
@@ -84,7 +84,12 @@ class LinkingShell {
     if (this.shell != null && !this.shell.isDisposed()) {
       this.shell.close();
     }
-
+    
+    if (mouseLoc == null) {
+      Point location = Display.getDefault().getCursorLocation();
+      setMousePosition(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
+          .toControl(location));
+    }
     if (this.proposals.length == 0) {
       MessageDialog.openError(null, "No entrys available",
           "There are no entrys available for linking!");
@@ -114,7 +119,8 @@ class LinkingShell {
     // calculate the correct position of the shell, so that it's not displayed beyond the
     // display bounds
     Point descShellLocation = new Point(
-        shell.getBounds().x + shell.getBounds().width + shellsOffset, shell.getBounds().y);
+        shell.getBounds().x + shell.getBounds().width + shellsOffset,
+        shell.getBounds().y);
     if (Display.getDefault().getBounds().width - (descShellLocation.x + descShellSize.x) < 0) {
       descShellLocation.x = shell.getBounds().x - descShellSize.x - shellsOffset;
     }

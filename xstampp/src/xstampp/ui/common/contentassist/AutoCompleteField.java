@@ -45,6 +45,7 @@ public class AutoCompleteField {
   public AutoCompleteField(LinkProposal[] proposals, Control control) {
     this.control = control;
     this.listeners = new ArrayList<>();
+    shell.setMousePosition(null);
     shell.setNextProposal(proposals);
 
   }
