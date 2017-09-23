@@ -1,4 +1,43 @@
 Change Log:
+XSTAMPP 2.5.0:
+Features:
+   - Add STPA Glossary for clearification of STPA terms/terminology
+   - Add posibillity to add Control Actions to the Control Structure from the Control Action Table (Step 1)
+   
+XSTAMPP 2.4.1:
+Bugfixes
+
+    - Fixed NullPointerException when selecting hazard or accident entries
+    - Fixed NullPointerException when opening the Results View by null check #524
+    - Fixed In STPASec/Priv the Unsafe Unsecure Editor won't show up when opening from the Project Explorer
+    - Changed Context Table/Unsafe Unsecure Editor/Privacy Relation Editor views in xstpa/stpasec and stpaprov to inline views
+    - Fixed a bug that enabled a user to drag a component in the Control Structure in a Prozess Variable and thereby deleting all connections without the abillity to undo
+
+
+XSTAMPP 2.4.0:
+Features:
+
+    - Move Components in the control structure Up and Down from the context menu (right clicking on them)
+    - Added a Feedback component to the control structure that is linked (via a visible connection) to a component connection#497
+    - Added new Typeless component for definition of a unkown component, clarified Dached box Tooltip #517
+    - Added Severity analysis for Hazards, Accidents and Unsafe Control Actions which can be added/removed from a project in the Project Settings
+    - Added new Editors for Creating Design Requirements in Step 1 and 2
+    - Introduced new Linking Widgets for the linking between Accidents-Hazards, Accidents-SafetyConstraints, SafetyConstraints-DesignRequirements(for each step)
+    - Created new Grid Editor for the Unsafe Control Action and Causal Factors Table with Save/Cancel Button
+    - Added settings dialog to customize the table headers in the unsafe control actions table per project #521
+
+Bugfixes:
+
+    - Fixed a bug that would produce a null pointer when drag&dropping a component in the control structure #506
+
+Others:
+
+    - Control Structure Components are now added in the front level/ at the bottom of a list
+    - Added checkbox to login dialog to enable read only access without login credentials #520
+    - Included new icons for the Control Structure (- with Process Modell)
+    - Included STPAPriv and STPASec
+
+
 XSTAMPP 2.3.1:
 	Features:
 		- Move Components in the control structure Up and Down by right clicking on them

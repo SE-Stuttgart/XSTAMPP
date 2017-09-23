@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="2.4.1" useFeatures="true" includeLaunchers="true">
+<product name="STAMP Platform" uid="xstampp_product" id="xstampp.xstampp_product" application="xstampp.application" version="2.5.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/xstampp/icons/xstampp/logox128.png"/>
