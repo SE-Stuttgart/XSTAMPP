@@ -28,6 +28,7 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.ObserverValue;
 
@@ -243,20 +244,25 @@ public class HazAccController extends Observable implements IHazAccController {
    * LinkController)
    */
   @Override
-  public void prepareForExport(LinkController linkController) {
+  public void prepareForExport(LinkController linkController, ISDSController sdsController) {
     for (Accident accident : this.getAccidents()) {
+      accident.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, accident.getId())) {
-        linkString += getHazard(id).getNumber() + ", "; //$NON-NLS-1$
+        linkString += getHazard(id).getIdString() + ", "; //$NON-NLS-1$
+      }
+      for (UUID id : linkController.getLinksFor(ObserverValue.ACC_S0_LINK, accident.getId())) {
+        linkString += sdsController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
       }
       if (linkString.length() > 2) {
         accident.setLinks(linkString.substring(0, linkString.length() - 2));
       }
     }
     for (Hazard hazard : this.getHazards()) {
+      hazard.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, hazard.getId())) {
-        linkString += getAccident(id).getNumber() + ", "; //$NON-NLS-1$
+        linkString += getAccident(id).getIdString() + ", "; //$NON-NLS-1$
       }
       if (linkString.length() > 2) {
         hazard.setLinks(linkString.substring(0, linkString.length() - 2));
@@ -273,14 +279,14 @@ public class HazAccController extends Observable implements IHazAccController {
   public boolean prepareForSave(LinkController linkController) {
     boolean isUsed = false;
     for (Accident accident : this.getAccidents()) {
-      accident.setLinks(null);
+      accident.prepareForSave();
     }
     if (accidents != null && accidents.isEmpty()) {
       accidents = null;
     }
     isUsed |= accidents != null;
     for (Hazard hazard : this.getHazards()) {
-      hazard.setLinks(null);
+      hazard.prepareForSave();
     }
     if (hazards != null && hazards.isEmpty()) {
       hazards = null;
@@ -294,26 +300,6 @@ public class HazAccController extends Observable implements IHazAccController {
       links = null;
     }
     return isUsed;
-  }
-
-  /**
-   * Deletes all links that are associated to this id
-   *
-   * @param id
-   *          the id of the hazard or accident
-   *
-   * @author Fabian Toth
-   */
-  private void deleteAllLinks(UUID id) {
-    List<HazAccLink> toDelete = new ArrayList<>();
-    if (this.links != null) {
-      for (HazAccLink link : this.links) {
-        if (link.containsId(id)) {
-          toDelete.add(link);
-        }
-      }
-    }
-    this.links.removeAll(toDelete);
   }
 
   /*

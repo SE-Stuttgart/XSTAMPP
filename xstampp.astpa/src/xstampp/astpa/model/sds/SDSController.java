@@ -21,7 +21,13 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.NumberedArrayList;
+import xstampp.astpa.model.causalfactor.ICausalController;
+import xstampp.astpa.model.controlaction.IControlActionController;
+import xstampp.astpa.model.hazacc.Accident;
+import xstampp.astpa.model.hazacc.Hazard;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
 import xstampp.model.ObserverValue;
 
@@ -424,6 +430,21 @@ public class SDSController extends Observable implements ISDSController {
   @Override
   public boolean prepareForSave() {
     boolean isUsed = false;
+    for (SafetyConstraint safetyConstraint : this.getSafetyConstraints()) {
+      safetyConstraint.prepareForSave();
+    }
+    for (DesignRequirement designRequirement : this.getDesignRequirements()) {
+      designRequirement.prepareForSave();
+    }
+    for (DesignRequirementStep1 designRequirement1 : this.getDesignRequirementsStep1()) {
+      designRequirement1.prepareForSave();
+    }
+    for (DesignRequirementStep2 designRequirement2 : this.getDesignRequirementsStep2()) {
+      designRequirement2.prepareForSave();
+    }
+    for (SystemGoal systemGoal : systemGoals) {
+      systemGoal.prepareForSave();
+    }
     if (designRequirements != null && designRequirements.isEmpty()) {
       designRequirements = null;
     }
@@ -445,6 +466,62 @@ public class SDSController extends Observable implements ISDSController {
     }
     isUsed |= systemGoals != null;
     return isUsed;
+  }
+
+  @Override
+  public void prepareForExport(LinkController linkController, IHazAccController hazacc,
+      IControlActionController caController, ICausalController causalController) {
+    for (SafetyConstraint safetyConstraint : this.getSafetyConstraints()) {
+      safetyConstraint.prepareForExport();
+      String linkString = ""; //$NON-NLS-1$
+      for (UUID id : linkController.getLinksFor(ObserverValue.ACC_S0_LINK,
+          safetyConstraint.getId())) {
+        linkString += hazacc.getAccident(id).getIdString() + ", "; //$NON-NLS-1$
+      }
+      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT,
+          safetyConstraint.getId())) {
+        linkString += getDesignRequirement(id).getIdString() + ", "; //$NON-NLS-1$
+      }
+      if (linkString.length() > 2) {
+        safetyConstraint.setLinks(linkString.substring(0, linkString.length() - 2));
+      }
+    }
+    for (DesignRequirement designRequirement : this.getDesignRequirements()) {
+      designRequirement.prepareForExport();
+      String linkString = ""; //$NON-NLS-1$
+      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT,
+          designRequirement.getId())) {
+        linkString += getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
+      }
+      if (linkString.length() > 2) {
+        designRequirement.setLinks(linkString.substring(0, linkString.length() - 2));
+      }
+    }
+    for (DesignRequirementStep1 designRequirement1 : this.getDesignRequirementsStep1()) {
+      designRequirement1.prepareForExport();
+      String linkString = ""; //$NON-NLS-1$
+      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT_STEP1,
+          designRequirement1.getId())) {
+        linkString += caController.getCorrespondingSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
+      }
+      if (linkString.length() > 2) {
+        designRequirement1.setLinks(linkString.substring(0, linkString.length() - 2));
+      }
+    }
+    for (DesignRequirementStep2 designRequirement2 : this.getDesignRequirementsStep2()) {
+      designRequirement2.prepareForExport();
+      String linkString = ""; //$NON-NLS-1$
+      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT_STEP2,
+          designRequirement2.getId())) {
+        linkString += causalController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
+      }
+      if (linkString.length() > 2) {
+        designRequirement2.setLinks(linkString.substring(0, linkString.length() - 2));
+      }
+    }
+    for (SystemGoal systemGoal : systemGoals) {
+      systemGoal.prepareForExport();
+    }
   }
 
   private List<SafetyConstraint> getSafetyConstraints() {

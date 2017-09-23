@@ -253,10 +253,11 @@ public class DataModelController extends AbstractDataModel
   public boolean prepareForExport() {
 
     this.exportInformation = null;
-    this.getHazAccController().prepareForExport(linkController);
+    this.getHazAccController().prepareForExport(getLinkController(),this.getSdsController());
+    getSdsController().prepareForExport(getLinkController(), getHazAccController(), getControlActionController(), getCausalFactorController());
     this.extendedDataController.prepareForExport();
-    this.getControlActionController().prepareForExport(linkController, this.getHazAccController(),
-        this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController);
+    this.getControlActionController().prepareForExport(getLinkController(), this.getHazAccController(),
+        this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController,getSdsController());
     this.causalFactorController.prepareForExport(this.getHazAccController(),
         getRoot().getChildren(), getAllScenarios(true, true, true), getAllUnsafeControlActions());
     this.projectDataManager.prepareForExport();

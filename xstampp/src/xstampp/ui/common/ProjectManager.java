@@ -544,7 +544,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    */
   public boolean checkCloseApplication() {
     if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
-      MessageDialog.openError(null,
+      MessageDialog.openConfirm(null,
           Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
           Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
               + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);

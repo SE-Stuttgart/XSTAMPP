@@ -493,7 +493,7 @@ public class ControlAction extends ATableModel implements IControlAction {
    */
   public void prepareForExport(IExtendedDataController extendedData,
       ControlStructureController csController, String defaultLabel) {
-
+    prepareForExport();
     rules = new ArrayList<>();
     for (AbstractLTLProvider refinedRule : extendedData.getAllScenarios(true, false, false)) {
       if (refinedRule.getRelatedControlActionID().equals(getId())) {
@@ -575,6 +575,7 @@ public class ControlAction extends ATableModel implements IControlAction {
    * 
    */
   public void prepareForSave(ExtendedDataController extendedData) {
+    prepareForSave();
     notProvidedVariableNames = null;
     providedVariableNames = null;
 
@@ -602,6 +603,23 @@ public class ControlAction extends ATableModel implements IControlAction {
     rules = null;
   }
 
+
+  @Override
+  public void prepareForSave() {
+    super.prepareForSave();
+    for (UnsafeControlAction unsafeControlAction : unsafeControlActions) {
+      unsafeControlAction.prepareForSave();
+    }
+  }
+
+  @Override
+  public void prepareForExport() {
+    super.prepareForExport();
+    for (UnsafeControlAction unsafeControlAction : unsafeControlActions) {
+      unsafeControlAction.prepareForExport();
+    }
+  }
+  
   public boolean intern_addRefinedRule(RefinedSafetyRule rule) {
     if (rule.getRelatedControlActionID().equals(getId())) {
       if (this.rules == null) {

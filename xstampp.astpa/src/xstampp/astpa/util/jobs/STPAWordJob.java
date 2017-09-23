@@ -302,7 +302,7 @@ public class STPAWordJob extends XstamppJob {
       List<IUnsafeControlAction> list, int index, int colNr) {
 
     if (index < list.size()) {
-      String identifier = ((UnsafeControlAction) list.get(index)).identifier;
+      String identifier = String.valueOf(((UnsafeControlAction) list.get(index)).getNumber());
       if (identifier != null && !identifier.isEmpty()) {
         identifier = "UCA1." + identifier;
       }

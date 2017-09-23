@@ -306,6 +306,26 @@
 						<xsl:call-template name="correspondingSafetyConstraintsTable" />
 					</fo:block>
 
+					<!-- *************** Design Requirements Step 1 *************** -->
+					<fo:block page-break-after="always">
+						<fo:block font-size="24pt" space-after="5pt"
+							page-break-after="avoid">
+							Design Requirements Step 1
+						</fo:block>
+						<!-- Unsafe Control Actions-Table-Template -->
+						<xsl:call-template name="designRequirementsStep1Table" />
+					</fo:block>
+
+					<!-- *************** Design Requirements Step 2 *************** -->
+					<fo:block page-break-after="always">
+						<fo:block font-size="24pt" space-after="5pt"
+							page-break-after="avoid">
+							Design Requirements Step 2
+						</fo:block>
+						<!-- Unsafe Control Actions-Table-Template -->
+						<xsl:call-template name="designRequirementsStep2Table" />
+					</fo:block>
+
 
 					<!-- *************** Control Structure Diagram with Process Model *************** -->
 					<fo:block page-break-after="always">

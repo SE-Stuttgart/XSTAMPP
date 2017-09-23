@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -35,29 +36,14 @@ import xstampp.model.ITableEntry;
  */
 @XmlRootElement(name = "unsafecontrolaction")
 @XmlAccessorType(XmlAccessType.NONE)
-public class UnsafeControlAction extends EntryWithSeverity
+public class UnsafeControlAction extends ATableModel
     implements IUnsafeControlAction, ICorrespondingUnsafeControlAction, IEntryWithNameId {
-
-  @XmlElement(name = "description")
-  private String description;
-
-  @XmlElement(name = "id")
-  private UUID id;
-
-  @XmlElement(name = "number")
-  private int number;
 
   @XmlElement(name = "type")
   private UnsafeControlActionType type;
 
   @XmlElement(name = "correspondingSafetyConstraint")
   private CorrespondingSafetyConstraint correspondingSafetyConstraint;
-
-  @XmlElement(name = "links")
-  private String links;
-
-  @XmlElement(name = "identifier")
-  public String identifier;
 
   /**
    * Constructs a new unsafe control action with the given values
@@ -70,11 +56,9 @@ public class UnsafeControlAction extends EntryWithSeverity
    * @author Fabian Toth
    */
   public UnsafeControlAction(String description, UnsafeControlActionType type) {
-    this.description = description;
+    super("", description);
     this.type = type;
     this.correspondingSafetyConstraint = null; // $NON-NLS-1$
-    this.id = UUID.randomUUID();
-    this.number = 0;
     setSeverity(Severity.S0);
   }
 
@@ -84,38 +68,8 @@ public class UnsafeControlAction extends EntryWithSeverity
    * @author Fabian Toth
    */
   public UnsafeControlAction() {
+    super();
     setSeverity(Severity.S0);
-  }
-
-  @Override
-  public String getDescription() {
-    return this.description;
-  }
-
-  /**
-   * @param description
-   *          the description to set
-   */
-  public String setDescription(String description) {
-    String result = null;
-    if (!description.equals(this.description)) {
-      result = this.description;
-      this.description = description;
-    }
-    return result;
-  }
-
-  @Override
-  public UUID getId() {
-    return this.id;
-  }
-
-  /**
-   * @param id
-   *          the id to set
-   */
-  public void setId(UUID id) {
-    this.id = id;
   }
 
   @Override
@@ -151,43 +105,14 @@ public class UnsafeControlAction extends EntryWithSeverity
   }
 
   @Override
-  public String getLinks() {
-    return this.links;
-  }
-
-  /**
-   * @param links
-   *          the links to set
-   */
-  public void setLinks(String links) {
-    this.links = links;
-  }
-
   public boolean setNumber(int number) {
-    this.number = number;
-    if (this.correspondingSafetyConstraint != null) {
-      this.correspondingSafetyConstraint.setNumber(number);
-    }
-    return true;
-  }
-
-  @Override
-  public int compareTo(ITableEntry o) {
-    try {
-      if (o.getNumber() < this.getNumber()) {
-        return 1;
-      } else if (o.getNumber() > this.getNumber()) {
-        return -1;
+    if (super.setNumber(number)) {
+      if (this.correspondingSafetyConstraint != null) {
+        this.correspondingSafetyConstraint.setNumber(number);
       }
-      return 0;
-    } catch (NullPointerException exc) {
-      return 0;
+      return true;
     }
-  }
-
-  @Override
-  public int getNumber() {
-    return number;
+    return false;
   }
 
   @Override
@@ -205,9 +130,15 @@ public class UnsafeControlAction extends EntryWithSeverity
     return getTitle();
   }
 
+  @Override
   public void prepareForSave() {
-    identifier = null;
-    setLinks(null);
+    super.prepareForSave();
     correspondingSafetyConstraint.prepareForSave();
+  }
+
+  @Override
+  public void prepareForExport() {
+    super.prepareForExport();
+    correspondingSafetyConstraint.prepareForExport();
   }
 }

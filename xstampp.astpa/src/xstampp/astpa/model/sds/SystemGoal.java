@@ -55,4 +55,10 @@ public class SystemGoal extends ATableModel {
   public SystemGoal() {
     // empty constructor for JAXB
   }
+  
+  @Override
+  public String getIdString() {
+    // TODO Auto-generated method stub
+    return "SG-" + super.getIdString();
+  }
 }

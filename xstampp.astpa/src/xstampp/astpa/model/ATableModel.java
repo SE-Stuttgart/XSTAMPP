@@ -50,6 +50,9 @@ public abstract class ATableModel extends EntryWithSeverity
   private int number;
 
   @XmlElement
+  private String idString;
+
+  @XmlElement
   private String links;
 
   /**
@@ -253,5 +256,14 @@ public abstract class ATableModel extends EntryWithSeverity
 
   public UUID getCreatedBy() {
     return createdBy;
+  }
+  
+  public void prepareForExport() {
+    this.idString = this.getIdString();
+  }
+
+  public void prepareForSave() {
+    this.idString = null;
+    this.links = null;
   }
 }

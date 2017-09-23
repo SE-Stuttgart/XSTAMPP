@@ -42,6 +42,8 @@ import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.sds.DesignRequirement;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.ObserverValue;
@@ -383,6 +385,16 @@ public class ControlActionController extends Observable implements IControlActio
     return result;
   }
 
+  @Override
+  public ITableModel getCorrespondingSafetyConstraint(UUID id) {
+    for (ICorrespondingUnsafeControlAction unsafeControlAction : this.getUCAList(null)) {
+      if(unsafeControlAction.getCorrespondingSafetyConstraint().getId().equals(id)) {
+        return unsafeControlAction.getCorrespondingSafetyConstraint();
+      }
+    }
+    return null;
+  }
+
   private void moveRulesInCA() {
     if (rules != null) {
       for (ControlAction controlAction : this.getControlActions()) {
@@ -400,7 +412,7 @@ public class ControlActionController extends Observable implements IControlActio
   @Override
   public void prepareForExport(LinkController linkController, IHazAccController hazAccController,
       ControlStructureController csController, String defaultLabel,
-      IExtendedDataController extendedData) {
+      IExtendedDataController extendedData, ISDSController sdsController) {
     moveRulesInCA();
     for (ControlAction controlAction : this.getControlActions()) {
       controlAction.prepareForExport(extendedData, csController, defaultLabel);
@@ -413,21 +425,28 @@ public class ControlActionController extends Observable implements IControlActio
         }
         Collections.sort(linkedHazards);
         StringBuffer linkString = new StringBuffer();
-        String id = "";
         if (linkedHazards.size() == 0) {
           linkString.append(Messages.ControlActionController_NotHazardous);
         } else {
-
-          id = Integer.toString(getUCANumber(unsafeControlAction.getId()));
           for (int i = 0; i < linkedHazards.size(); i++) {
             if (i != 0) {
               linkString.append(", "); //$NON-NLS-1$
             }
-            linkString.append("H-" + linkedHazards.get(i).getNumber());
+            linkString.append(linkedHazards.get(i).getIdString());
           }
         }
-        unsafeControlAction.identifier = id;
         unsafeControlAction.setLinks(linkString.toString());
+
+        String links = ""; //$NON-NLS-1$
+        for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT_STEP1,
+            unsafeControlAction.getCorrespondingSafetyConstraint().getId())) {
+          links += sdsController.getDesignRequirement(id, ObserverValue.DESIGN_REQUIREMENT_STEP1)
+              .getIdString() + ", "; //$NON-NLS-1$
+        }
+        if (links.length() > 2) {
+          unsafeControlAction.getCorrespondingSafetyConstraint()
+              .setLinks(links.substring(0, links.length() - 2));
+        }
       }
 
       for (AbstractLTLProvider rule : controlAction.getAllRefinedRules()) {
@@ -717,13 +736,6 @@ public class ControlActionController extends Observable implements IControlActio
   @Override
   public void setNextUcaIndext(int nextUcaIndext) {
     this.nextUcaIndex = nextUcaIndext;
-  }
-
-  private int getCANumber() {
-    if (this.nextCAIndex == null) {
-      this.nextCAIndex = this.getControlActions().size() + 1;
-    }
-    return this.nextCAIndex++;
   }
 
   private Map<UUID, ControlAction> getControlActionMap() {

@@ -26,6 +26,7 @@ import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
@@ -298,7 +299,7 @@ public interface IControlActionController {
    */
   void prepareForExport(LinkController linkController, IHazAccController hazAccController,
       ControlStructureController csController, String defaultLabel,
-      IExtendedDataController extendedData);
+      IExtendedDataController extendedData, ISDSController sdsController);
 
   /**
    * Prepares the control actions for save
@@ -551,5 +552,15 @@ public interface IControlActionController {
   void setUCACustomHeaders(String[] ucaHeaders);
 
   String[] getUCAHeaders();
+
+  /**
+   * 
+   * @param id
+   *          the id of an corresponding safety constraint created for a uca, if <b>null</b> is
+   *          given than the return value will also be null.
+   * @return the {@link ITableModel} of a safety constraint corresponding to a unsafe control action
+   *         or null if there is no corresponding safety constraint stored under the given id.
+   */
+  ITableModel getCorrespondingSafetyConstraint(UUID id);
 
 }

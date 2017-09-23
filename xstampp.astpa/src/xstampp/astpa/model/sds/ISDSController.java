@@ -14,7 +14,11 @@ package xstampp.astpa.model.sds;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.causalfactor.ICausalController;
+import xstampp.astpa.model.controlaction.IControlActionController;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.ObserverValue;
 
 /**
@@ -239,5 +243,8 @@ public interface ISDSController {
   boolean setDesignRequirementTitle(ObserverValue type, UUID designRequirementId, String title);
 
   boolean prepareForSave();
+
+  void prepareForExport(LinkController linkController, IHazAccController hazacc,
+      IControlActionController caController, ICausalController causalController);
 
 }

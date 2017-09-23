@@ -145,7 +145,9 @@
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="30%"
 				border-style="none" />
-			<fo:table-column column-number="3" column-width="50%"
+			<fo:table-column column-number="3" column-width="43%"
+				border-style="none" />
+			<fo:table-column column-number="3" column-width="7%"
 				border-style="none" />
 			<fo:table-column column-number="4" column-width="13%"
 				border-style="none" />
@@ -165,7 +167,10 @@
 						<fo:block font-weight="bold">Description</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Related Hazards</fo:block>
+						<fo:block font-weight="bold">Severity</fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding="3px">
+						<fo:block font-weight="bold">Links</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 			</fo:table-header>
@@ -182,7 +187,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block >
-										A-<xsl:value-of select="number" />
+										<xsl:value-of select="idString" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -193,6 +198,11 @@
 								<fo:table-cell padding="3px">
 									<fo:block >
 										<xsl:value-of select="description" />
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block >
+										<xsl:value-of select="@severityType" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -207,6 +217,10 @@
 					<!-- should be filled with strokes -->
 					<xsl:otherwise>
 						<fo:table-row>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									&#x2014; </fo:block>
+							</fo:table-cell>
 							<fo:table-cell padding="3px">
 								<fo:block>
 									&#x2014; </fo:block>
@@ -239,10 +253,12 @@
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
 			border-style="none" />
-		<fo:table-column column-number="2" column-width="30%"
+		<fo:table-column column-number="2" column-width="25%"
 			border-style="none" />
-		<fo:table-column column-number="3" column-width="50%"
-			border-style="none" />
+			<fo:table-column column-number="3" column-width="40%"
+				border-style="none" />
+			<fo:table-column column-number="3" column-width="15%"
+				border-style="none" />
 		<fo:table-column column-number="4" column-width="13%"
 			border-style="none" />
 		
@@ -263,7 +279,10 @@
 						<fo:block font-weight="bold">Description</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Related Accidents</fo:block>
+						<fo:block font-weight="bold">Severity</fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding="3px">
+						<fo:block font-weight="bold">Links</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 			</fo:table-header>
@@ -282,7 +301,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block>
-										H-<xsl:value-of select="number" />
+										<xsl:value-of select="idString" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -293,6 +312,11 @@
 								<fo:table-cell padding="3px">
 									<fo:block >
 										<xsl:value-of select="description" />
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block >
+										<xsl:value-of select="@severityType" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -341,7 +365,9 @@
 			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
 			border-style="none" />
-		<fo:table-column column-number="3" column-width="63%"
+		<fo:table-column column-number="3" column-width="50%"
+			border-style="none" />
+		<fo:table-column column-number="3" column-width="13%"
 			border-style="none" />
 		
 		<fo:table-header border="none" background-color="#1A277A"
@@ -360,6 +386,9 @@
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Description</fo:block>
 					</fo:table-cell>
+					<fo:table-cell padding="3px">
+						<fo:block font-weight="bold">Links</fo:block>
+					</fo:table-cell>
 				</fo:table-row>
 			</fo:table-header>
 		
@@ -377,7 +406,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block>
-										SC0.<xsl:value-of select="number" />
+										<xsl:value-of select="idString" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -390,6 +419,11 @@
 										<xsl:value-of select="description" />
 									</fo:block>
 								</fo:table-cell>
+								<fo:table-cell padding="3px">
+									<fo:block>
+										<xsl:value-of select="links" />
+									</fo:block>
+								</fo:table-cell>
 							</fo:table-row>
 						</xsl:for-each>
 					</xsl:when>
@@ -397,6 +431,10 @@
 					<!-- should be filled with strokes -->
 					<xsl:otherwise>
 						<fo:table-row>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									&#x2014; </fo:block>
+							</fo:table-cell>
 							<fo:table-cell padding="3px">
 								<fo:block>
 									&#x2014; </fo:block>
@@ -463,7 +501,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block>
-										<xsl:value-of select="number" />
+										<xsl:value-of select="idString" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -509,11 +547,13 @@
       <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
-		<fo:table-column column-number="1" column-width="5%"
-		border-style="none" />
+		<fo:table-column column-number="1" column-width="7%"
+			border-style="none" />
 		<fo:table-column column-number="2" column-width="30%"
 			border-style="none" />
-		<fo:table-column column-number="3" column-width="65%"
+		<fo:table-column column-number="3" column-width="50%"
+			border-style="none" />
+		<fo:table-column column-number="3" column-width="13%"
 			border-style="none" />
 	
 		<fo:table-header border="none" background-color="#1A277A"
@@ -532,6 +572,9 @@
 				<fo:table-cell padding="3px">
 					<fo:block font-weight="bold">Description</fo:block>
 				</fo:table-cell>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">Links</fo:block>
+				</fo:table-cell>
 			</fo:table-row>
 		</fo:table-header>
 	
@@ -549,7 +592,7 @@
 							</xsl:if>
 							<fo:table-cell padding="3px">
 								<fo:block>
-									<xsl:value-of select="number" />
+										<xsl:value-of select="idString" />
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell padding="3px">
@@ -562,6 +605,11 @@
 									<xsl:value-of select="description" />
 								</fo:block>
 							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									<xsl:value-of select="links" />
+								</fo:block>
+							</fo:table-cell>
 						</fo:table-row>
 					</xsl:for-each>
 				</xsl:when>
@@ -569,6 +617,210 @@
 				<!-- should be filled with strokes -->
 				<xsl:otherwise>
 					<fo:table-row>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	<!-- ################### Design Requirements Step 1 Table ################### -->
+	<xsl:template name="designRequirementsStep1Table">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
+		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
+		<fo:table-column column-number="1" column-width="7%"
+			border-style="none" />
+		<fo:table-column column-number="2" column-width="30%"
+			border-style="none" />
+		<fo:table-column column-number="3" column-width="50%"
+			border-style="none" />
+		<fo:table-column column-number="3" column-width="13%"
+			border-style="none" />
+	
+		<fo:table-header border="none" background-color="#1A277A"
+			color="#FFFFFF">
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+			<!-- Sets the PDF-Theme-Color -->
+			<xsl:call-template name="headTheme" />
+			<xsl:call-template name="fontTheme" />
+			<fo:table-row>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">No.</fo:block>
+				</fo:table-cell>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">Design Requirement</fo:block>
+				</fo:table-cell>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">Description</fo:block>
+				</fo:table-cell>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">Links</fo:block>
+				</fo:table-cell>
+			</fo:table-row>
+		</fo:table-header>
+	
+		<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
+			<xsl:choose>
+				<!-- Checks whether some Design Requirements are defined -->
+				<xsl:when test="sds/designRequirementsStep1/designRequirement">
+					<xsl:for-each select="sds/designRequirementsStep1/designRequirement">
+						<fo:table-row border="none">
+							<xsl:if test="position() mod 2 = 0">
+								<xsl:attribute name="background-color">
+					#D9D9D9
+					</xsl:attribute>
+							</xsl:if>
+							<fo:table-cell padding="3px">
+								<fo:block>
+										<xsl:value-of select="idString" />
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									<xsl:value-of select="title" />
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									<xsl:value-of select="description" />
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									<xsl:value-of select="links" />
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</xsl:for-each>
+				</xsl:when>
+				<!-- If there are no Design Requirements defined the first row -->
+				<!-- should be filled with strokes -->
+				<xsl:otherwise>
+					<fo:table-row>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	<!-- ################### Design Requirements Step 2 Table ################### -->
+	<xsl:template name="designRequirementsStep2Table">
+      <xsl:param name="varSize" select="12"/> 
+      <xsl:param name="headSize" select="14"/> 
+      <xsl:param name="omitHeader" select="false"/> 
+		<fo:table border="none" space-after="30pt">
+           <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
+		<fo:table-column column-number="1" column-width="7%"
+			border-style="none" />
+		<fo:table-column column-number="2" column-width="30%"
+			border-style="none" />
+		<fo:table-column column-number="3" column-width="50%"
+			border-style="none" />
+		<fo:table-column column-number="3" column-width="13%"
+			border-style="none" />
+	
+		<fo:table-header border="none" background-color="#1A277A"
+			color="#FFFFFF">
+           <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+			<!-- Sets the PDF-Theme-Color -->
+			<xsl:call-template name="headTheme" />
+			<xsl:call-template name="fontTheme" />
+			<fo:table-row>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">No.</fo:block>
+				</fo:table-cell>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">Design Requirement</fo:block>
+				</fo:table-cell>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">Description</fo:block>
+				</fo:table-cell>
+				<fo:table-cell padding="3px">
+					<fo:block font-weight="bold">Links</fo:block>
+				</fo:table-cell>
+			</fo:table-row>
+		</fo:table-header>
+	
+		<fo:table-body>
+           <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
+			<xsl:choose>
+				<!-- Checks whether some Design Requirements are defined -->
+				<xsl:when test="sds/designRequirementsStep2/designRequirement">
+					<xsl:for-each select="sds/designRequirementsStep2/designRequirement">
+						<fo:table-row border="none">
+							<xsl:if test="position() mod 2 = 0">
+								<xsl:attribute name="background-color">
+					#D9D9D9
+					</xsl:attribute>
+							</xsl:if>
+							<fo:table-cell padding="3px">
+								<fo:block>
+										<xsl:value-of select="idString" />
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									<xsl:value-of select="title" />
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									<xsl:value-of select="description" />
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									<xsl:value-of select="links" />
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</xsl:for-each>
+				</xsl:when>
+				<!-- If there are no Design Requirements defined the first row -->
+				<!-- should be filled with strokes -->
+				<xsl:otherwise>
+					<fo:table-row>
+						<fo:table-cell padding="3px">
+							<fo:block>
+								&#x2014; </fo:block>
+						</fo:table-cell>
 						<fo:table-cell padding="3px">
 							<fo:block>
 								&#x2014; </fo:block>
@@ -595,11 +847,11 @@
       <xsl:param name="omitHeader" select="false"/> 
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
-			<fo:table-column column-number="1" column-width="5%"
+			<fo:table-column column-number="1" column-width="7%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="30%"
 				border-style="none" />
-			<fo:table-column column-number="3" column-width="65%"
+			<fo:table-column column-number="3" column-width="63%"
 				border-style="none" />
 			<fo:table-header border="none" background-color="#1A277A"
 				color="#FFFFFF">
@@ -609,7 +861,7 @@
            <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 				<fo:table-row>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">No.</fo:block>
+						<fo:block font-weight="bold">Id</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Control Action</fo:block>
@@ -635,7 +887,7 @@
 								</xsl:if>
 								<fo:table-cell padding="3px">
 									<fo:block>
-										<xsl:value-of select="number" />
+										<xsl:value-of select="idString" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell padding="3px">
@@ -686,11 +938,13 @@
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="10%"
 				border-style="none" />
-			<fo:table-column column-number="2" column-width="40%"
+			<fo:table-column column-number="2" column-width="30%"
 				border-style="none" />
 			<fo:table-column column-number="1" column-width="10%"
 				border-style="none" />
-			<fo:table-column column-number="2" column-width="40%"
+			<fo:table-column column-number="2" column-width="35%"
+				border-style="none" />
+			<fo:table-column column-number="1" column-width="15%"
 				border-style="none" />
 			<fo:table-header border="none" background-color="#1A277A"
 				color="#FFFFFF">
@@ -722,6 +976,12 @@
 						Corresponding Safety Constraints
 						</fo:block>
 					</fo:table-cell>
+					<fo:table-cell padding="3px">
+						<fo:block font-weight="bold">
+                                 <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+						Design Requirements
+						</fo:block>
+					</fo:table-cell>
 				</fo:table-row>
 			</fo:table-header>
 			
@@ -740,7 +1000,7 @@
 									<fo:table-cell padding="3px">
 										<fo:block>
 										   <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
-											UCA1.<xsl:value-of select="identifier" />
+											<xsl:value-of select="idString" />
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell padding="3px">
@@ -752,13 +1012,19 @@
 									<fo:table-cell padding="3px">
 										<fo:block>
 										   <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
-											SC1.<xsl:value-of select="identifier" />
+											<xsl:value-of select="correspondingSafetyConstraint/idString" />
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell padding="3px">
 										<fo:block >
                                  <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 											<xsl:value-of select="correspondingSafetyConstraint/text" />
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell padding="3px">
+										<fo:block >
+                                 <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
+											<xsl:value-of select="correspondingSafetyConstraint/links" />
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>						
@@ -768,6 +1034,18 @@
 					<!-- should be filled with strokes -->
 					<xsl:otherwise>
 						<fo:table-row>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									&#x2014; </fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									&#x2014; </fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									&#x2014; </fo:block>
+							</fo:table-cell>
 							<fo:table-cell padding="3px">
 								<fo:block>
 									&#x2014; </fo:block>
@@ -922,33 +1200,29 @@
            <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 				<!-- Checks if there are some components for the CausalFactors-Table -->
-					<xsl:when test="causalfactor/causalComponents">
+					<xsl:when test="causalfactor/causalComponents/entry/value/causalFactors">
 						<xsl:for-each select="causalfactor/causalComponents/entry/value">
-							
-							<fo:table-row border-bottom="2pt solid black"
-								border-top="2pt solid black">
-								<fo:table-cell padding="4px" background-color="#FFFFFF"
-									color="#000000" border-right="2pt solid black">
-									<fo:block  font-weight="bold">
-										<xsl:value-of select="title" />
-									</fo:block>
-								</fo:table-cell>
-								<fo:table-cell>
-									<xsl:choose>
-										<xsl:when test="causalFactors">
-											<!-- ***** CausalFactors with its relatives ***** -->
-											<fo:block >
-											<xsl:call-template name="causalFactorSubTable"> 
-				                            	<xsl:with-param name="useScenarios" select="$useScenarios" />
-				                           	</xsl:call-template>
+							<xsl:choose>
+								<xsl:when test="causalFactors">
+									<fo:table-row border-bottom="2pt solid black"
+										border-top="2pt solid black">
+										<fo:table-cell padding="4px" background-color="#FFFFFF"
+											color="#000000" border-right="2pt solid black">
+											<fo:block  font-weight="bold">
+												<xsl:value-of select="title" />
 											</fo:block>
-										</xsl:when>
-										<xsl:otherwise>
-											<fo:block/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</fo:table-cell>
-							</fo:table-row>
+										</fo:table-cell>
+										<fo:table-cell>
+													<!-- ***** CausalFactors with its relatives ***** -->
+													<fo:block >
+													<xsl:call-template name="causalFactorSubTable"> 
+						                            	<xsl:with-param name="useScenarios" select="$useScenarios" />
+						                           	</xsl:call-template>
+													</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</xsl:when>
+							</xsl:choose>
 						</xsl:for-each>
 					</xsl:when>
 					<!-- If there are no CausalFactor-Components defined the first row -->
@@ -1197,20 +1471,87 @@
 				<fo:table-row>
            <xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Control Action</fo:block>
+										<fo:block font-weight="bold">Control Action</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Not providing causes hazard </fo:block>
+						<fo:table>
+							<fo:table-column column-number="1" column-width="90%"
+								border-style="none" />
+							<fo:table-column column-number="2" column-width="10%"
+								border-style="none" />
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell>
+										<fo:block font-weight="bold">Not providing causes hazard </fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+							            <fo:block-container reference-orientation="270" font-size="8pt">
+							              <fo:block>Severity</fo:block>
+							            </fo:block-container>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Providing causes hazard </fo:block>
+						<fo:table>
+							<fo:table-column column-number="1" column-width="90%"
+								border-style="none" />
+							<fo:table-column column-number="2" column-width="10%"
+								border-style="none" />
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell>
+										<fo:block font-weight="bold">Providing causes hazard</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+							            <fo:block-container reference-orientation="270" font-size="8pt">
+							              <fo:block>Severity</fo:block>
+							            </fo:block-container>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Wrong timing or order causes hazard </fo:block>
+						<fo:table>
+							<fo:table-column column-number="1" column-width="90%"
+								border-style="none" />
+							<fo:table-column column-number="2" column-width="10%"
+								border-style="none" />
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell>
+										<fo:block font-weight="bold">Wrong timing or order causes hazard</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+							            <fo:block-container reference-orientation="270" font-size="8pt">
+							              <fo:block>Severity</fo:block>
+							            </fo:block-container>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Stopped too soon or applied too long
-						</fo:block>
+						<fo:table>
+							<fo:table-column column-number="1" column-width="90%"
+								border-style="none" />
+							<fo:table-column column-number="2" column-width="10%"
+								border-style="none" />
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell>
+										<fo:block font-weight="bold">Stopped too soon or applied too long</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+							            <fo:block-container reference-orientation="270" font-size="8pt">
+							              <fo:block>Severity</fo:block>
+							            </fo:block-container>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
 					</fo:table-cell>
 				</fo:table-row>
 			</fo:table-header>
@@ -1420,45 +1761,57 @@
 	
 		<fo:block page-break-inside="avoid">
 			<fo:table>
-				<fo:table-column column-width="100%" />
+				<fo:table-column column-width="90%" />
+				<fo:table-column column-width="10%"  background-color="#fcfcfc"/>
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell>
-							
-							<fo:block color="#820000">
-								<xsl:if test="identifier!=''">
-								UCA1.<xsl:value-of select="identifier" />
-								</xsl:if>
-								
-							</fo:block>
+							<fo:table>
+								<fo:table-column column-width="100%" />
+								<fo:table-body>
+									<fo:table-row>
+										<fo:table-cell>
+											<fo:block color="#820000">
+												<xsl:value-of select="idString" />
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									<fo:table-row>
+										<fo:table-cell padding="3px">
+											<fo:block>
+												<xsl:value-of select="description" />
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									<fo:table-row>
+										<fo:table-cell>
+											<xsl:choose>
+												<xsl:when test="links = 'Not Hazardous'">
+													<fo:block color="#2D7500">
+														&#x005B;
+														<xsl:value-of select="links" />
+														&#x005D;
+													</fo:block>
+												</xsl:when>
+												<xsl:otherwise>
+													<fo:block color="#820000">
+														&#x005B;
+														<xsl:value-of select="links" />
+														&#x005D;
+													</fo:block>
+												</xsl:otherwise>
+											</xsl:choose>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
 						</fo:table-cell>
-					</fo:table-row>
-					<fo:table-row>
-						<fo:table-cell padding="3px">
-							<fo:block>
-								<xsl:value-of select="description" />
-							</fo:block>
-						</fo:table-cell>
-					</fo:table-row>
-					<fo:table-row>
 						<fo:table-cell>
-							<xsl:choose>
-								<xsl:when test="links = 'Not Hazardous'">
-									<fo:block color="#2D7500">
-										&#x005B;
-										<xsl:value-of select="links" />
-										&#x005D;
-									</fo:block>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:block color="#820000">
-										&#x005B;
-										<xsl:value-of select="links" />
-										&#x005D;
-									</fo:block>
-								</xsl:otherwise>
-							</xsl:choose>
+							<fo:block color="#820000">
+								<xsl:value-of select="@severityType" />
+							</fo:block>
 						</fo:table-cell>
+					
 					</fo:table-row>
 				</fo:table-body>
 			</fo:table>

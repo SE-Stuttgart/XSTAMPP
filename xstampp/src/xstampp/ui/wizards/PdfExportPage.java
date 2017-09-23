@@ -279,7 +279,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 
       Combo textCombo = new Combo(fontComposite, SWT.None);
       textCombo.setItems(new String[] { "6", "8", "10", "12", "14", "16", "18", "20", "24" });
-      textCombo.setText("14");
+      textCombo.setText("12");
       textCombo.setLayoutData(gData);
       textCombo.addSelectionListener(new SelectionAdapter() {
 
@@ -294,7 +294,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       text.setLayoutData(textData);
       textCombo = new Combo(fontComposite, SWT.None);
       textCombo.setItems(new String[] { "6", "8", "10", "12", "14", "16", "18" });
-      textCombo.setText("12");
+      textCombo.setText("10");
       textCombo.setLayoutData(gData);
       textCombo.addSelectionListener(new SelectionAdapter() {
 
@@ -309,7 +309,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       text.setLayoutData(textData);
       textCombo = new Combo(fontComposite, SWT.DROP_DOWN);
       textCombo.setItems(new String[] { "6", "8", "10", "12", "14" });
-      textCombo.setText("10");
+      textCombo.setText("8");
       textCombo.setLayoutData(gData);
       textCombo.addSelectionListener(new SelectionAdapter() {
 
@@ -326,9 +326,9 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
     // projectname with the chosen fore-/background colors
     if (showPreviewCanvas) {
       this.sampleComp = new DemoCanvas(this.container, SWT.NONE);
-      this.sampleComp.setTitleSize(14);
-      this.sampleComp.setContentSize(10);
-      this.sampleComp.setContentSize(12);
+      this.sampleComp.setTitleSize(12);
+      this.sampleComp.setHeadSize(10);
+      this.sampleComp.setContentSize(8);
       if (getProjectID() != null) {
         this.sampleComp.setProjectID(getProjectID());
       }

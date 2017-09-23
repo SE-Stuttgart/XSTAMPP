@@ -552,7 +552,7 @@ public abstract class AbstractWizardPage extends WizardPage {
       data.left = new FormAttachment(path, COMPONENT_OFFSET);
       this.pathButton.setLayoutData(data);
       this.pathButton.setText("..."); //$NON-NLS-1$
-
+      this.pathButton.setFocus();
       this.path.setText(""); //$NON-NLS-1$
       this.path.setEditable(false);
 

@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.ObserverValue;
 
 public interface IHazAccController {
@@ -172,7 +172,7 @@ public interface IHazAccController {
    * @param linkController
    *
    */
-  void prepareForExport(LinkController linkController);
+  void prepareForExport(LinkController linkController,ISDSController sdsController);
 
   /**
    * Removes the preparations that were made for the export
