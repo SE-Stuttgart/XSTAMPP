@@ -712,6 +712,11 @@
                optional="false">
          </commandParameter>
       </command>
+      <command
+            defaultHandler="xstampp.astpa.util.commands.STPAProjectStateExportCommand"
+            id="xstampp.astpa.command.projectState.export"
+            name="Project State Export">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -1004,6 +1009,17 @@
                   value="xstampp.astpa.preferencepage.cs">
             </parameter>
          </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
+         <toolbar
+               id="Project Export">
+            <command
+                  commandId="xstampp.astpa.command.projectState.export"
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension
