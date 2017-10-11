@@ -22,7 +22,6 @@ public class StatisticsExportPage extends AbstractExportPage {
 	public void createControl(Composite parent) {
 		parent.setLayout(new FormLayout());
 		Composite projectChooser = addProjectChooser(parent, new FormAttachment());
-		addPathComposite(new FormAttachment(projectChooser), null, parent, PathComposite.DIR_DIALOG);
 		
 	}
 

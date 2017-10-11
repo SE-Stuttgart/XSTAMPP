@@ -16,7 +16,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.util.jobs.STPAStatisticsJob;
+import xstampp.astpa.util.jobs.statistics.STPAStatisticsJob;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
 
