@@ -78,11 +78,11 @@ public class LinkController extends Observable {
     return links;
   }
 
-  public Map<UUID, UUID> getLinksFor(ObserverValue linkType) {
-    Map<UUID, UUID> links = new HashMap<>();
+  public List<Link> getLinksFor(ObserverValue linkType) {
+    List<Link> links = new ArrayList<>();
     if (this.linkMap.containsKey(linkType)) {
       for (Link link : getLinkObjectsFor(linkType)) {
-        links.put(link.getLinkA(), link.getLinkB());
+        links.add(new Link(link.getLinkA(), link.getLinkB()));
       }
     }
     return links;
@@ -118,6 +118,9 @@ public class LinkController extends Observable {
           return true;
         }
       }
+      if (this.linkMap.get(linkType).isEmpty()) {
+        this.linkMap.remove(linkType);
+      }
     }
     return false;
   }
@@ -134,11 +137,19 @@ public class LinkController extends Observable {
     return false;
   }
 
+  /**
+   * 
+   * @param linkType
+   *          the {@link ObserverValue} of the link
+   * @param part
+   *          the part that should be included in all links that are to to be deleted,<br> or
+   *          <b><i>null</i></b> if all links for the given <b>type</b> should be deleted
+   */
   public void deleteAllFor(ObserverValue linkType, UUID part) {
     List<Link> links = new ArrayList<>();
     if (this.linkMap.containsKey(linkType)) {
       for (Link link : this.linkMap.get(linkType)) {
-        if (link.links(part)) {
+        if (part == null || link.links(part)) {
           links.add(link);
         }
       }
@@ -149,6 +160,7 @@ public class LinkController extends Observable {
   void deleteLinks(ObserverValue linkType, List<Link> links) {
     if (this.linkMap.containsKey(linkType)) {
       this.linkMap.get(linkType).removeAll(links);
+      this.linkMap.remove(linkType);
     }
     setChanged();
     notifyObservers(new UndoRemoveLinkingCallback(this, linkType, links));

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -41,8 +42,8 @@ import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
-import xstampp.astpa.model.sds.DesignRequirement;
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
@@ -388,7 +389,7 @@ public class ControlActionController extends Observable implements IControlActio
   @Override
   public ITableModel getCorrespondingSafetyConstraint(UUID id) {
     for (ICorrespondingUnsafeControlAction unsafeControlAction : this.getUCAList(null)) {
-      if(unsafeControlAction.getCorrespondingSafetyConstraint().getId().equals(id)) {
+      if (unsafeControlAction.getCorrespondingSafetyConstraint().getId().equals(id)) {
         return unsafeControlAction.getCorrespondingSafetyConstraint();
       }
     }
@@ -485,13 +486,15 @@ public class ControlActionController extends Observable implements IControlActio
       controlAction.prepareForSave(extendedData);
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
-
         unsafeControlAction.prepareForSave();
       }
     }
-
+    for (Link link : linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION)) {
+      linkController.addLink(ObserverValue.UCA_HAZ_LINK, link.getLinkA(), link.getLinkB());
+    }
+    linkController.deleteAllFor(ObserverValue.UNSAFE_CONTROL_ACTION,null);
     for (UCAHazLink ucaHazLink : getAllUCALinks()) {
-      linkController.addLink(ObserverValue.UNSAFE_CONTROL_ACTION, ucaHazLink.getHazardId(),
+      linkController.addLink(ObserverValue.UCA_HAZ_LINK, ucaHazLink.getHazardId(),
           ucaHazLink.getUnsafeControlActionId());
     }
     this.links = null;

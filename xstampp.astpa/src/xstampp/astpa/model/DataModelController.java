@@ -268,10 +268,10 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public void prepareForSave() {
-
+    lockUpdate();
     this.extendedDataController.prepareForSave();
     if (!this.getControlActionController().prepareForSave(this.extendedDataController,
-        linkController)) {
+        getLinkController())) {
       this.controlActionController = null;
     }
     this.causalFactorController.prepareForSave(this.getHazAccController(),
@@ -285,6 +285,7 @@ public class DataModelController extends AbstractDataModel
       this.sdsController = null;
     }
     this.exportInformation = null;
+    releaseLockAndUpdate(null);
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
   }
 
@@ -580,7 +581,6 @@ public class DataModelController extends AbstractDataModel
 
     if (this.getLinkController().addLink(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId,
         hazardId)) {
-      this.setUnsavedAndChanged();
       return true;
     }
     return false;
@@ -803,12 +803,7 @@ public class DataModelController extends AbstractDataModel
   }
 
   public List<Link> getAllHazAccLinks() {
-    List<Link> links = new ArrayList<>();
-    Map<UUID, UUID> linksFor = this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK);
-    for (Entry<UUID, UUID> link : linksFor.entrySet()) {
-      links.add(new Link(link.getKey(), link.getValue()));
-    }
-    return links;
+    return this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK);
   }
 
   @Override
@@ -840,9 +835,9 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<UCAHazLink> getAllUCALinks() {
     List<UCAHazLink> links = new ArrayList<>();
-    Map<UUID, UUID> linksFor = this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK);
-    for (Entry<UUID, UUID> link : linksFor.entrySet()) {
-      links.add(new UCAHazLink(link.getKey(), link.getValue()));
+    List<Link> linksFor = this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK);
+    for (Link link : linksFor) {
+      links.add(new UCAHazLink(link.getLinkA(), link.getLinkB()));
     }
     return links;
   }
@@ -853,7 +848,7 @@ public class DataModelController extends AbstractDataModel
 
       @Override
       public boolean check(IUnsafeControlAction model) {
-        return getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK, model.getId());
+        return getLinkController().isLinked(ObserverValue.UNSAFE_CONTROL_ACTION, model.getId());
       }
     });
   }
