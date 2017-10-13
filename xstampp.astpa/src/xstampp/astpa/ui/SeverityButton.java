@@ -66,7 +66,6 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
       } else {
         setText("-");
       }
-      control.redraw();
     }
   }
 
@@ -120,5 +119,9 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
   @Override
   public void paintControl(PaintEvent e) {
     onPaint(e.gc, new Rectangle(e.x, e.y, e.width, e.height), entry != null);
+  }
+  
+  public Control getControl() {
+    return control;
   }
 }

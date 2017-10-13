@@ -181,6 +181,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
           if (severityButton != null) {
             severityButton.setEntry(selectedEntry);
+            severityButton.getControl().redraw();
           }
           getDescriptionWidget().setEnabled(canEdit(selectedEntry, AccessRights.WRITE));
           for (LinkSupport<?> linkSupport : linkFields) {
