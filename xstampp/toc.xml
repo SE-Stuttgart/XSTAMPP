@@ -14,6 +14,8 @@
 
 <toc label="XSTAMPP User Guide" topic="html/toc.html">
    <topic label="Getting Started">
-      <anchor id="gettingstarted"/>
+   <topic label="Managing a project"  href="html/gettingstarted/managingprojects.html"/>
+   </topic>
+   <topic href="html/readme.html" label="Version History">
    </topic>
 </toc>

@@ -26,12 +26,23 @@ a{
 .header {
 	font-size: 30px;
 	text-align: left;
-	padding-top: 200px;
+	vertical-align : baseline;
+	bottom: 10px;
+	min-height: 205px;
 	padding-left: 250px;
+	margin-bottom: 20px;
 	background-image: url('../icons/Logo.png');
-	height: 40px;
 	background-repeat:no-repeat;
 	background-color:white;
+	border-bottom: 1px grey solid;
+	position: relative;
+}
+
+.headerContent {
+	font-size: 30px;
+	text-align: left;
+	position: absolute;
+	bottom: 5px;
 }
 
 body{
