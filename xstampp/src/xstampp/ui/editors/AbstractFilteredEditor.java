@@ -9,11 +9,9 @@
 
 package xstampp.ui.editors;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import messages.Messages;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -31,6 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import messages.Messages;
+
 /**
  * Parts derived from this class are provided an optional filter bar, containing a Combo and a
  * Textfield which filter for categories given in {@link AbstractFilteredEditor#getCategories()} and
@@ -41,11 +41,46 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class AbstractFilteredEditor extends StandartEditorPart {
 
+  protected class Category {
+
+    private String name;
+    private Object[] filterValues;
+    private String[] comboChoices;
+
+    public Category(String name) {
+      this.name = name;
+    }
+
+    public Object[] getFilterValues() {
+      return filterValues;
+    }
+
+    public void setFilterValues(Object[] values) {
+      this.filterValues = values;
+    }
+
+    public String[] getComboChoices() {
+      return comboChoices;
+    }
+
+    public void setComboChoices(String[] comboChoices) {
+      this.comboChoices = comboChoices;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return obj instanceof String && ((String) obj).equals(this.name);
+    }
+  }
+
   private boolean useFilter;
-  private Map<String, String[]> comboChoicesToEntrys;
-  private Map<String, Object[]> filterValuesToCategories;
   private Composite filter;
-  protected String activeCategory;
+  private Category activeCategory;
+  private List<Category> categories;
   private String globalCategory;
   private Object filterValue;
 
@@ -81,13 +116,14 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
       final Combo categoryCombo = new Combo(filter, SWT.READ_ONLY | SWT.None);
       categoryCombo.setToolTipText(Messages.AbstractFilteredEditor_CategoryToolTip);
       int initialCategory = 0;
+      this.categories = new ArrayList<>();
       for (int i = 0; i < getCategoryArray().length; i++) {
         categoryCombo.add(getCategoryArray()[i]);
+        this.categories.add(new Category(getCategoryArray()[i]));
         if (getCategoryArray()[i].equals(category)) {
           initialCategory = i;
         }
       }
-      activeCategory = categoryCombo.getText();
       Composite filterInput = new Composite(filter, SWT.None);
       filterInput.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       filterInput.setLayout(new FormLayout());
@@ -125,9 +161,9 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
       categoryCombo.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent event) {
-          activeCategory = categoryCombo.getText();
-          if (comboChoicesToEntrys != null && comboChoicesToEntrys.get(activeCategory) != null) {
-            filterCombo.setItems(comboChoicesToEntrys.get(activeCategory));
+          activeCategory = categories.get(categoryCombo.getSelectionIndex());
+          if (activeCategory != null && activeCategory.getComboChoices() != null) {
+            filterCombo.setItems(activeCategory.getComboChoices());
             filterCombo.setVisible(true);
             filterText.setVisible(false);
           } else {
@@ -145,9 +181,8 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
         public void widgetSelected(SelectionEvent e) {
           // if the there is an extra filter value stored for the selected entry
           // than this values is assigned as filter
-          if (filterValuesToCategories.containsKey(categoryCombo.getText())) {
-            Object[] values = filterValuesToCategories.get(categoryCombo.getText());
-            filterValue = values[filterCombo.getSelectionIndex()];
+          if (activeCategory != null && activeCategory.getFilterValues() != null) {
+            filterValue = activeCategory.getFilterValues()[filterCombo.getSelectionIndex()];
             updateFilter();
           }
 
@@ -163,12 +198,12 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
       });
       // Initialize the filter widget by selecting the initial category and adding the
       // initial values to the filterText
-      if (comboChoicesToEntrys != null && comboChoicesToEntrys.get(category) != null) {
-        filterCombo.setItems(comboChoicesToEntrys.get(category));
+      if (activeCategory != null && activeCategory.getComboChoices() != null) {
+        filterCombo.setItems(activeCategory.getComboChoices());
         filterCombo.select(0);
       }
       categoryCombo.select(initialCategory);
-      activeCategory = getCategoryArray()[initialCategory];
+      activeCategory = this.categories.get(initialCategory);
       return true;
     }
 
@@ -187,10 +222,11 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
    *          a String array of entries(or selectors for values)
    */
   protected final void addChoices(String id, String[] choices) {
-    if (comboChoicesToEntrys == null) {
-      comboChoicesToEntrys = new HashMap<>();
-    }
-    comboChoicesToEntrys.put(id, choices);
+    categories.forEach(data -> {
+      if (data.getName().equals(id)) {
+        data.setComboChoices(choices);
+      }
+    });
   }
 
   /**
@@ -207,10 +243,11 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
    *          {@link #addChoices(String, String[])}</i>
    */
   protected final void addChoiceValues(String id, Object[] values) {
-    if (filterValuesToCategories == null) {
-      filterValuesToCategories = new HashMap<>();
-    }
-    filterValuesToCategories.put(id, values);
+    categories.forEach(data -> {
+      if (data.getName().equals(id)) {
+        data.setFilterValues(values);
+      }
+    });
   }
 
   protected void updateFilter() {
@@ -256,7 +293,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
 
       // if the global category is active any value is tested
       // if not than the candidate is only tested if the category given is active
-      if (!activeCategory.equals(globalCategory)) {
+      if (!activeCategory.getName().equals(globalCategory)) {
         // if the active category is explicit then all other explicit categories
         // are filtered
         // if the active category is explicit and unequal
@@ -264,7 +301,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
           if (activeCategory != null && !activeCategory.equals(testCategory)) {
             // if the test category is not active the return value is whether or not the
             // active category is explicit
-            return getCategories().get(activeCategory);
+            return getCategories().get(activeCategory.name);
           }
         } else {
           return false;
@@ -379,7 +416,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
     if (this.activeCategory == null) {
       return null;
     }
-    return this.activeCategory;
+    return this.activeCategory.getName();
   }
 
   protected void setUseFilter(boolean useFilter) {

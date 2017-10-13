@@ -337,39 +337,42 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
    * @return true if the uca is filtered out and should not be used
    */
   private boolean isUCAFiltered(IUnsafeControlAction uca) {
-    switch (getActiveCategory()) {
-    case UCAID_FILTER:
-      return isFiltered(this.getDataModel().getUCANumber(uca.getId()), UCAID_FILTER);
-    case UCA_FILTER:
-      return isFiltered(uca.getDescription(), UCA_FILTER);
-    case HAZ_FILTER:
-      if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
-        return true;
-      }
-      for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
-        if (!isFiltered(model.getTitle(), HAZ_FILTER)
-            || !isFiltered(model.getDescription(), HAZ_FILTER)) {
-          return false;
+    if(getActiveCategory() != null) {
+      switch (getActiveCategory()) {
+      case UCAID_FILTER:
+        return isFiltered(this.getDataModel().getUCANumber(uca.getId()), UCAID_FILTER);
+      case UCA_FILTER:
+        return isFiltered(uca.getDescription(), UCA_FILTER);
+      case HAZ_FILTER:
+        if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
+          return true;
+        }
+        for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
+          if (!isFiltered(model.getTitle(), HAZ_FILTER)
+              || !isFiltered(model.getDescription(), HAZ_FILTER)) {
+            return false;
+          }
+          return true;
+        }
+      case NOHAZ_FILTER:
+        if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() != 0) {
+          return true;
+        }
+      case HAZID_FILTER:
+        if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
+          return true;
+        }
+        for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
+          if (!isFiltered(model.getNumber(), HAZID_FILTER)) {
+            return false;
+          }
         }
         return true;
+      default:
+        return isFiltered(uca.getDescription(), UCA_FILTER);
       }
-    case NOHAZ_FILTER:
-      if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() != 0) {
-        return true;
-      }
-    case HAZID_FILTER:
-      if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
-        return true;
-      }
-      for (ITableModel model : this.getDataModel().getLinkedHazardsOfUCA(uca.getId())) {
-        if (!isFiltered(model.getNumber(), HAZID_FILTER)) {
-          return false;
-        }
-      }
-      return true;
-    default:
-      return isFiltered(uca.getDescription(), UCA_FILTER);
     }
+    return false;
   }
 
   private void updateHazards() {
