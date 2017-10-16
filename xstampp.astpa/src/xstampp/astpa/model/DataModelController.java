@@ -539,11 +539,16 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean addStyleRange(StyleRange styleRange) {
-    if (styleRange == null) {
-      return false;
+    if (styleRange != null && this.projectDataManager.addStyleRange(styleRange)) {
+      this.setUnsavedAndChanged(ObserverValue.PROJECT_DESCRIPTION);
+      return true;
     }
-    boolean result = this.projectDataManager.addStyleRange(styleRange);
-    return result;
+    return false;
+  }
+
+  @Override
+  public boolean putStyleRanges(StyleRange[] styleRanges) {
+    return getProjectDataManager().putStyleRanges(styleRanges);
   }
 
   @Override
@@ -2263,6 +2268,14 @@ public class DataModelController extends AbstractDataModel
     }
     this.causalFactorController.addObserver(this);
     return this.causalFactorController;
+  }
+
+  public ProjectDataController getProjectDataManager() {
+    if (this.projectDataManager == null) {
+      this.projectDataManager = new ProjectDataController();
+    }
+    this.projectDataManager.addObserver(this);
+    return projectDataManager;
   }
 
   @SuppressWarnings("unchecked")

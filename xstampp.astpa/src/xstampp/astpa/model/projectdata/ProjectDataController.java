@@ -15,12 +15,14 @@ package xstampp.astpa.model.projectdata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import messages.Messages;
+import xstampp.model.ObserverValue;
 
 import org.eclipse.swt.custom.StyleRange;
 
@@ -30,7 +32,7 @@ import org.eclipse.swt.custom.StyleRange;
  * @author Jaqueline Patzek, Fabian Toth
  * 
  */
-public class ProjectDataController {
+public class ProjectDataController extends Observable {
 
   private String projectName = Messages.NewProject;
   private String projectDescription = ""; //$NON-NLS-1$
@@ -133,6 +135,18 @@ public class ProjectDataController {
     return this.styleRanges.add(styleRange);
   }
 
+  public boolean putStyleRanges(StyleRange[] styleRanges) {
+    getStyleRanges().clear();
+    for (StyleRange range : styleRanges) {
+      if (range.font == null || !range.font.isDisposed()) {
+        addStyleRange(range);
+        setChanged();
+      }
+    }
+    notifyObservers(ObserverValue.PROJECT_DESCRIPTION);
+    return true;
+  }
+
   /**
    * Getter for the style ranges
    * 
@@ -149,11 +163,13 @@ public class ProjectDataController {
     this.rangeObjects = new ArrayList<>();
     int next = 0;
 
-    StyleRange[] ranges = this.styleRanges.toArray(new StyleRange[0]);
+    StyleRange[] ranges = this.styleRanges == null ? null
+        : this.styleRanges.toArray(new StyleRange[0]);
+
     this.styleRanges.clear();
     int i = 0;
     while (i < projectDescription.length()) {
-
+      // if i is the start index of the next StyleRange than this range is added
       if (ranges.length > next && ranges[next].start == i) {
         StyleRange range = ranges[next];
         this.styleRanges.add(range);
@@ -170,12 +186,19 @@ public class ProjectDataController {
         } catch (IndexOutOfBoundsException e) {
           e.fillInStackTrace();
         }
-      } else if (ranges.length > next && ranges[next].start < projectDescription.length()) {
+      }
+      else if (ranges.length > next && ranges[next].start > i) {
         StyleRange range = ranges[next];
         DescriptionObject obj = new DescriptionObject();
         obj.addRanges(null, projectDescription.substring(i, range.start));
         this.rangeObjects.add(obj);
-
+        i = range.start;
+      }
+      // if there is a StyleRange but it starts at an index smaller than the current position
+      // i is reset to the start of the next StyleRange
+      else if (ranges.length > next && ranges[next].start < i) {
+        StyleRange range = ranges[next];
+        i = range.start - 1;
       } else {
         DescriptionObject obj = new DescriptionObject();
         obj.addRanges(null, projectDescription.substring(i));

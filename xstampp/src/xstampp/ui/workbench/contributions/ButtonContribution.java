@@ -16,7 +16,6 @@ import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -134,6 +133,7 @@ public class ButtonContribution extends ControlContribution {
 
   public void setSelection(boolean selection) {
     this.selection = selection;
+    listener.handleEvent(null);
   }
 
   public boolean getSelection() {

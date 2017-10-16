@@ -9,6 +9,10 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
+ * Contributer:
+ *    Sebastian Sieber - Initial Code
+ *    Lukas Balzer - Refactored methods 
+ * 
  *******************************************************************************/
 
 package xstampp.astpa.model.interfaces;
@@ -81,6 +85,17 @@ public interface ISystemDescriptionViewDataModel extends IDataModel {
    * @return true, if the style range has been added
    */
   boolean addStyleRange(StyleRange styleRange);
+  
+  /**
+   * Adds a style range
+   * 
+   * @author Lukas Balzer
+   * 
+   * @param styleRange
+   *          the new style range array
+   * @return true, if the style ranges have been updated
+   */
+  boolean putStyleRanges(StyleRange[] styleRange);
 
   /**
    * Getter for style ranges.

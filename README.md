@@ -1,3 +1,9 @@
+## XSTAMPP 2.5.1:
+
+#### Bugfixes
+
+*  Fix that changing the style of the System Description doesn't enable save
+
 ## XSTAMPP 2.5.0:
 
 ##### Features:

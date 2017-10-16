@@ -283,15 +283,9 @@ public class SystemDescriptionView extends StandartEditorPart
    * 
    */
   private void applyProjectDescriptionToDataModel(boolean stylesChanged) {
-    // if (stylesChanged) {
-    this.dataInterface.getStyleRanges().clear();
-    for (StyleRange styleRange : this.descriptionText.getStyleRanges()) {
-      if (styleRange.font == null || !styleRange.font.isDisposed()) {
-        this.dataInterface.addStyleRange((StyleRange) styleRange);
-      }
+    if (stylesChanged) {
+     this.dataInterface.putStyleRanges(descriptionText.getStyleRanges());
     }
-    // dataInterface.setUnsavedAndChanged();
-    // }
     String projectDesc = descriptionText.getText();
     if (projectDesc.contains(System.lineSeparator())) {
       projectDesc = projectDesc.replaceAll(System.lineSeparator(), "\n");
