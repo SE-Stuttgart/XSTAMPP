@@ -56,9 +56,4 @@ public class CausalSafetyConstraint extends ATableModel {
     return null;
   }
 
-  @Override
-  public int getNumber() {
-    return 0;
-  }
-
 }

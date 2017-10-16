@@ -2,6 +2,7 @@
 
 #### Bugfixes
 
+*  Fix loading error that when creating Causal Safety Constraints in version 2.5 the file can't be loaded anymore
 *  Fix that changing the style of the System Description doesn't enable save
 *  Fix that the System descriptions style is not included correctly in the export
 *  Fix bad link in A-STPA User Guide for managing projects and styling of pages

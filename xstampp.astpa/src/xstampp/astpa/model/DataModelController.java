@@ -18,7 +18,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
@@ -253,11 +252,14 @@ public class DataModelController extends AbstractDataModel
   public boolean prepareForExport() {
 
     this.exportInformation = null;
-    this.getHazAccController().prepareForExport(getLinkController(),this.getSdsController());
-    getSdsController().prepareForExport(getLinkController(), getHazAccController(), getControlActionController(), getCausalFactorController());
+    this.getHazAccController().prepareForExport(getLinkController(), this.getSdsController());
+    getSdsController().prepareForExport(getLinkController(), getHazAccController(),
+        getControlActionController(), getCausalFactorController());
     this.extendedDataController.prepareForExport();
-    this.getControlActionController().prepareForExport(getLinkController(), this.getHazAccController(),
-        this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController,getSdsController());
+    this.getControlActionController().prepareForExport(getLinkController(),
+        this.getHazAccController(),
+        this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController,
+        getSdsController());
     this.causalFactorController.prepareForExport(this.getHazAccController(),
         getRoot().getChildren(), getAllScenarios(true, true, true), getAllUnsafeControlActions());
     this.projectDataManager.prepareForExport();
@@ -411,9 +413,10 @@ public class DataModelController extends AbstractDataModel
     if (controlActionId == null && type.equals(ComponentType.CONTROLACTION)) {
       controlActionId = addControlAction(text, Messages.DescriptionOfThisControlAction);
     }
-    if(type.equals(ComponentType.CONTROLACTION)) {
+    if (type.equals(ComponentType.CONTROLACTION)) {
       String caTitle = getControlAction(controlActionId).getText();
-      result = this.controlStructureController.addComponent(controlActionId, parentId, layout, caTitle, type,
+      result = this.controlStructureController.addComponent(controlActionId, parentId, layout,
+          caTitle, type,
           index);
       this.getControlActionController().setComponentLink(result, controlActionId);
     } else {
