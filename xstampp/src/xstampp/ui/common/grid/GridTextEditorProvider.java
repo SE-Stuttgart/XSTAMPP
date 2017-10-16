@@ -53,7 +53,11 @@ public class GridTextEditorProvider {
     shell.setLocation(size.x - (layout.marginWidth + layout.horizontalSpacing), size.y);
     final Text textField = new Text(shell, SWT.WRAP | SWT.V_SCROLL);
     textField.setLocation(new Point(0, 0));
-    textField.setText(text);
+    if(text == null) {
+      textField.setText("");
+    } else {
+      textField.setText(text);
+    }
     final GridData layoutData = new GridData(size.width, size.height);
     layoutData.horizontalAlignment = SWT.FILL;
     layoutData.verticalAlignment = SWT.FILL;

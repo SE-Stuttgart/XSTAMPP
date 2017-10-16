@@ -178,7 +178,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     }
     Point textBounds = new Point(0, 0);
     currentText = getCurrentText();
-    if (this.currentText.trim().isEmpty() && !isReadOnly) {
+    if ((this.currentText == null || this.currentText.trim().isEmpty()) && !isReadOnly) {
       textBounds = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum);
     } else {
       textBounds = wrapText(bounds, gc, this.currentText, 2, buttonCollum);
@@ -243,7 +243,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
           public void modifyText(ModifyEvent error) {
             if (error.getSource() instanceof Text
                 && !currentText.equals(((Text) error.widget).getText())) {
-              GridCellTextEditor.this.currentText = ((Text) error.widget).getText();
+              GridCellTextEditor.this.currentText = ((Text) error.widget).getText() != null ? ((Text) error.widget).getText() : "";
               Rectangle rect = GridCellTextEditor.this.editField;
               Text text = (Text) error.getSource();
               updateDataModel(currentText);
