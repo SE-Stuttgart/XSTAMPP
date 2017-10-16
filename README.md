@@ -3,6 +3,7 @@
 #### Bugfixes
 
 *  Fix that changing the style of the System Description doesn't enable save
+*  Fix that the System descriptions style is not included correctly in the export
 
 ## XSTAMPP 2.5.0:
 

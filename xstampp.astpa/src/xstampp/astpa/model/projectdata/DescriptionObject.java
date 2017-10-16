@@ -10,11 +10,7 @@
  *******************************************************************************/
 package xstampp.astpa.model.projectdata;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -46,6 +42,9 @@ public class DescriptionObject {
   @XmlElement(name = "linebreak")
   private boolean linebreak;
 
+  @XmlElement(name = "decoration")
+  private String decoration;
+
   public DescriptionObject() {
     this.linebreak = true;
   }
@@ -65,10 +64,10 @@ public class DescriptionObject {
         for (FontData fontData : range.font.getFontData()) {
           fontFamily = fontData.getName();
           this.fontSize = fontData.getHeight() + "pt";
-          if (fontData.getStyle() == SWT.BOLD) {
+          if ((fontData.getStyle() & SWT.BOLD) != 0) {
             this.weight = "bold";
           }
-          if (fontData.getStyle() == SWT.ITALIC) {
+          if ((fontData.getStyle() & SWT.ITALIC) != 0) {
             this.style = "italic";
           }
         }
@@ -80,8 +79,7 @@ public class DescriptionObject {
         int green = range.background.getRGB().green;
         int blue = range.background.getRGB().blue;
 
-        this.background = "#" + Integer.toHexString(red) + Integer.toHexString(green)
-            + Integer.toHexString(blue);
+        this.background = String.format("#%02x%02x%02x", red, green, blue);
         if (this.background.length() != 7) {
           this.background = null;
         }
@@ -93,11 +91,17 @@ public class DescriptionObject {
         int green = range.foreground.getRGB().green;
         int blue = range.foreground.getRGB().blue;
 
-        this.foreground = "#" + Integer.toHexString(red) + Integer.toHexString(green)
-            + Integer.toHexString(blue);
+        this.foreground = String.format("#%02x%02x%02x", red, green, blue);
         if (this.foreground.length() != 7) {
           this.foreground = null;
         }
+      }
+
+      if (range.underline) {
+        this.decoration = "underline";
+      }
+      if (range.strikeout) {
+        this.decoration = "line-through";
       }
 
     } catch (Exception e) {
