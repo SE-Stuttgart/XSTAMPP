@@ -2,30 +2,30 @@
 
 \subsection{Setting up the environment}
 \begin{itemize}
-\item Eclipse for RCP and RAP Developers (Plug-in Developement)\footnote{http://eclipse.org/downloads} ($> Lunar$)
+\item \href{http://eclipse.org/downloads}{Eclipse for RCP and RAP Developers (Plug-in Developement)}\footnote{\url{http://eclipse.org/downloads}} ($> Lunar$)
 \item at least JavaSE 1.7
-\item to install gef $( help\rightarrow install new software\rightarrow http://download.eclipse.org/tools/gef/updates/releases/)$
-\item to install nebula grid from eclipse.org\footnote{http://download.eclipse.org/technology/nebula/snapshot/}
-\item to install maven\footnote{https://maven.apache.org/download.cgi}
+\item to install gef ( \textit{help}$\rightarrow$\textit{install new software}$\rightarrow$\textit{http://download.eclipse.org/tools/gef/updates/releases/})
+\item to install nebula grid from eclipse.org\footnote{\url{http://download.eclipse.org/technology/nebula/snapshot/}}
+\item to install maven\footnote{\url{https://maven.apache.org/download.cgi}}
 \item import/clone xstampp projects using the included git
 	\begin{enumerate}
-	\item Open the $Import$ Dialog selecting $File\rightarrow Import$
-	\item in the Import menu click $Git\rightarrow Projects from Git$ and follow the steps of the import wizard
+	\item Open the \textit{Import} Dialog selecting \textit{File}$\rightarrow$\textit{Import}
+	\item in the Import menu click \textit{Git}$\rightarrow$\textit{Projects from Git} and follow the steps of the import wizard
 	\end{enumerate}
 \item to resolve upcoming error messages refer to Known Issues Section \ref{chap:issues}
 \end{itemize}
 
 \subsection{Running XSTAMPP from Eclipse}
 \begin{enumerate}
-\item Go to $astpa.repository\rightarrow xstampp.product$
-\item In the product editor click on $ Testing\rightarrow Launch an Eclipse application$
+\item Go to \textit{xstampp.repository}$\rightarrow$\textit{xstampp.product}
+\item In the product editor click on  \textit{Testing}$\rightarrow$ \textit{Launch an Eclipse Application}
 \item The run fails on the first try, which is normal because we haven't included the required plugins yet
-\item in the last step Eclipse has created a $Run configuration$ for us which we are going to use now
+\item in the last step Eclipse has created a \textit{Run configuration} for us which we are going to use now
 	\begin{enumerate}
-	\item Right click on the $xstampp$ project and select $Run As\rightarrow Run Configurations..$
+	\item Right click on the \textit{xstampp} project and select \textit{Run As}$\rightarrow$ \textit{Run Configurations..}
 	\item in the opening dialog search for the Plug-ins Tab (see figure \ref{fig:runConfig})(you may need to adjust the size of the window)
 	\item you can now include/exclude the xstampp plug-ins included in your runtime
-	\item Finally find/press the button $Add Required Plug-ins$ and Apply/Run the run configuration
+	\item Finally find/press the button \textit{Add Required Plug-ins} and Apply/Run the run configuration
 	\end{enumerate}
 \end{enumerate}
 \begin{figure}[H]
@@ -33,10 +33,28 @@
 \caption{Before eclipse can successfully run xstampp the required plug-ins must be included in the runtime}
 \label{fig:runConfig}
 \end{figure}
-\subsection{Create a new plugin:}
+
+\subsection{Contribute}
+\begin{itemize}
+\item Setting up Eclipse Preferences (open \textit{Eclipse}$\rightarrow$\textit{Window}$\rightarrow$\textit{Preferences}):
+\begin{enumerate}
+	\item Go to \textit{XML}$\rightarrow$\textit{XML Files}$\rightarrow$\textit{Editor}
+	\begin{enumerate}
+		\item set the \textit{Line width} to \textbf{120}
+		\item check the radio box \textit{Indent using spaces}
+		\item set \textit{Indentation size} to \textbf{4}
+	\end{enumerate}
+	\item Go to \textit{Java}$\rightarrow$\textit{Code Style}$\rightarrow$\textit{Formatter}
+	\begin{enumerate}
+		\item Press \textit{Import...}
+		\item Import the $java\_formatter.xml$ in $<repo>$\textit{/xstampp/misc/java}$\_$\textit{formatter.xml}
+	\end{enumerate}
+\end{enumerate}
+\end{itemize}
+\subsubsection{Create a new plugin:}
 \begin{itemize}
 \item contributing plugins should be named as \textit{xstampp.}$<your Plugin>$
-\item create a new plugin by clicking $New\rightarrow Others..\rightarrow Plug-in Developement\rightarrow Plug-in Project$
+\item create a new plugin by clicking \textit{New}$\rightarrow$\textit{Others..}$\rightarrow$\textit{Plug-in Developement}$\rightarrow$\textit{Plug-in Project}
 \item add dependencies xstampp and xstampp.extension
 \item add the extension xstampp.extension.steppedProcess to your plugin
 \item create a class implementing IDataModel
@@ -48,5 +66,5 @@
 	\item a load Handler extending AbstractHandler which is registered as default handler for the load command 
 	\item let your handler.execute() return a new instance of your load job
 	\end{itemize}
-\item XSTAMPP uses Eclipse Tycho as build tool, to include a  plugin into its build process it need to be configured as Maven plugin\footnote{http://www.vogella.com/tutorials/EclipseTycho/article.html}
+\item XSTAMPP uses Eclipse Tycho as build tool, to include a  plugin into its build process it need to be configured as Maven plugin\footnote{\url{http://www.vogella.com/tutorials/EclipseTycho/article.html}}
 \end{itemize}
