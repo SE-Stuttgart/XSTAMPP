@@ -8,6 +8,7 @@
 *  Fix that Save As command is only enabled if project is changed
 *  Fix that XSTAMPP cannot be closed with unfinished jobs
 *  Fix several typos in XSTAMPP
+*  Fix bug in System Description Export Wizard that the export path cannot be chosen
 
 ## XSTAMPP 2.5.0:
 

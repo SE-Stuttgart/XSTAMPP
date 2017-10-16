@@ -34,6 +34,25 @@ public class TableExportPage extends PdfExportPage implements ModifyListener {
    * @param pluginID
    *          TODO
    */
+  public TableExportPage(String[] filters, PDFExportConfiguration config, String pluginID) {
+    super(config, pluginID);
+    setFilterExtensions(filters, filters);
+    setShowCompanyFields(false);
+    setShowDecorateCSButton(false);
+    this.setDescription(Messages.SetValuesForTheExportFile);
+  }
+
+  /**
+   * 
+   * @author Lukas Balzer
+   * @param filters
+   *          the file extensions, which shall be excepted by in the dialog
+   * @param pageName
+   *          the Name of this page, that is displayed in the header of the
+   *          wizard
+   * @param pluginID
+   *          TODO
+   */
   public TableExportPage(String[] filters, String pageName, String pluginID) {
     super(pageName, pageName, pluginID);
     setFilterExtensions(filters, filters);

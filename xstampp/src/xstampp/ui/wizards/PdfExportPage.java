@@ -13,9 +13,8 @@
 
 package xstampp.ui.wizards;
 
+import java.io.NotActiveException;
 import java.util.UUID;
-
-import messages.Messages;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -28,8 +27,6 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -37,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import messages.Messages;
 import xstampp.preferences.IPreferenceConstants;
 
 /**
@@ -47,7 +45,6 @@ import xstampp.preferences.IPreferenceConstants;
  */
 public class PdfExportPage extends AbstractExportPage implements ModifyListener {
 
-  private static final int ENTRY_HEIGTH = 25;
   private Composite container;
   private Text textCompany;
   private ColorChooser bgChooser, fontChooser;
@@ -55,11 +52,10 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
   private final IPreferenceStore store = xstampp.Activator.getDefault().getPreferenceStore();
   private Button decoSwitch;
   private PathComposite logoComposite;
-  private int pathConstant;
   private boolean showCompanyFields;
   private boolean showDecorateCSButton;
   private boolean showPreviewCanvas;
-
+  private boolean showColorChooser;
   private boolean showTextConfig;
   private boolean showFormatChooser;
   private String[] filterExtensions;
@@ -75,11 +71,12 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
    *          the name of the page
    * @param projectName
    *          the name of the project
-   * @param pathConstant
-   *          TODO
+   * @param pluginID
+   *          the id of the calling plugin, used to resolve the projects suitable to the export
+   * @deprecated Use {@link #PdfExportPage(String,String)} instead
    */
   public PdfExportPage(String pageName, String projectName, String pluginID) {
-    this(pageName, projectName, PathComposite.PATH_DIALOG, pluginID);
+    this(new PDFExportConfiguration(pageName, projectName), PathComposite.PATH_DIALOG, pluginID);
   }
 
   /**
@@ -92,20 +89,41 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
    * @param projectName
    *          the name of the project
    * @param pathConstant
-   *          TODO
-   * @param PluginID
-   *          TODO
+   *          this is not longer been used
+   * @param pluginID
+   *          the id of the calling plugin, used to resolve the projects suitable to the export
+   * @deprecated Use {@link #PdfExportPage(String,int,String)} instead
    */
   public PdfExportPage(String pageName, String projectName, int pathConstant, String pluginID) {
-    super(pageName, pluginID);
-    this.setTitle(pageName);
+    this(new PDFExportConfiguration(pageName, projectName), pathConstant, pluginID);
+  }
+  
+  public PdfExportPage(PDFExportConfiguration config, String pluginID) {
+    this(config, PathComposite.PATH_DIALOG, pluginID);
+  }
+
+  /**
+   * Constructor.
+   * 
+   * @author Sebastian Sieber,Lukas Balzer
+   * 
+   * @param config
+   *          the configuration object contains the description of the export page
+   * @param pathConstant
+   *          this is not longer been used
+   * @param pluginID
+   *          the id of the calling plugin, used to resolve the projects suitable to the export
+   */
+  public PdfExportPage(PDFExportConfiguration config, int pathConstant, String pluginID) {
+    super(config.pageName, pluginID);
+    this.setTitle(config.projectName);
     this.setDescription(Messages.SetValuesForTheExportFile);
-    this.pathConstant = pathConstant;
-    showCompanyFields = true;
-    showDecorateCSButton = true;
-    showFormatChooser = true;
-    showTextConfig = true;
-    setShowPreviewCanvas(true);
+    showCompanyFields = config.isShowCompanyFields();
+    showDecorateCSButton = config.isShowDecorateCSButton();
+    showFormatChooser = config.isShowFormatChooser();
+    showTextConfig = config.isShowTextConfig();
+    showPreviewCanvas = config.isShowPreviewCanvas();
+    showColorChooser = config.isShowColorChooser();
     this.filterExtensions = new String[] { "*.pdf" };
     this.filterNames = new String[] { "A-STPA Report *.pdf" };
   }
@@ -190,36 +208,37 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
     }
     // ----Create the background color chooser
     // composite---------------------------
-    this.bgChooser = new ColorChooser(this.container, SWT.NONE, Messages.BackgroundColor,
-        IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
-    data = new FormData();
-    data.top = new FormAttachment(topElement, AbstractWizardPage.COMPONENT_OFFSET);
-    topElement = this.bgChooser;
-    data.height = SWT.DEFAULT;
-    data.right = new FormAttachment(100);
-    data.left = new FormAttachment(0);
-    this.bgChooser.setLayoutData(data);
-    this.bgChooser.setVisible(true);
-    this.bgChooser.addColorChangeListener(this);
-
-    // ----Create the foreground color chooser
-    // composite---------------------------
-    this.fontChooser = new ColorChooser(this.container, SWT.NONE, Messages.FontColor,
-        IPreferenceConstants.COMPANY_FONT_COLOR);
-    data = new FormData();
-    data.top = new FormAttachment(this.bgChooser, AbstractWizardPage.COMPONENT_OFFSET);
-    topElement = this.fontChooser;
-    data.height = SWT.DEFAULT;
-    data.right = new FormAttachment(100);
-    data.left = new FormAttachment(0);
-    this.fontChooser.setLayoutData(data);
-    this.fontChooser.setVisible(true);
-    this.fontChooser.addColorChangeListener(this);
-
+    if(isShowColorChooser()) {
+      this.bgChooser = new ColorChooser(this.container, SWT.NONE, Messages.BackgroundColor,
+          IPreferenceConstants.COMPANY_BACKGROUND_COLOR);
+      data = new FormData();
+      data.top = new FormAttachment(topElement, AbstractWizardPage.COMPONENT_OFFSET);
+      topElement = this.bgChooser;
+      data.height = SWT.DEFAULT;
+      data.right = new FormAttachment(100);
+      data.left = new FormAttachment(0);
+      this.bgChooser.setLayoutData(data);
+      this.bgChooser.setVisible(true);
+      this.bgChooser.addColorChangeListener(this);
+  
+      // ----Create the foreground color chooser
+      // composite---------------------------
+      this.fontChooser = new ColorChooser(this.container, SWT.NONE, Messages.FontColor,
+          IPreferenceConstants.COMPANY_FONT_COLOR);
+      data = new FormData();
+      data.top = new FormAttachment(this.bgChooser, AbstractWizardPage.COMPONENT_OFFSET);
+      topElement = this.fontChooser;
+      data.height = SWT.DEFAULT;
+      data.right = new FormAttachment(100);
+      data.left = new FormAttachment(0);
+      this.fontChooser.setLayoutData(data);
+      this.fontChooser.setVisible(true);
+      this.fontChooser.addColorChangeListener(this);
+    }
     // ----Create the path chooser composite---------------------------
     this.pathChooser = new PathComposite(filterExtensions, // $NON-NLS-1$
         filterNames, // $NON-NLS-1$
-        this.container, this.pathConstant);
+        this.container, PathComposite.PATH_DIALOG);
     data = new FormData();
     data.top = new FormAttachment(topElement, AbstractWizardPage.COMPONENT_OFFSET);
     topElement = this.pathChooser;
@@ -515,5 +534,13 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
    */
   public void setShowPreviewCanvas(boolean showPreviewCanvas) {
     this.showPreviewCanvas = showPreviewCanvas;
+  }
+
+  public boolean isShowColorChooser() {
+    return showColorChooser;
+  }
+
+  public void setShowColorChooser(boolean showColorChooser) {
+    this.showColorChooser = showColorChooser;
   }
 }

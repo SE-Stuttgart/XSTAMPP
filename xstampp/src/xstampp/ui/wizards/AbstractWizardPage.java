@@ -364,7 +364,7 @@ public abstract class AbstractWizardPage extends WizardPage {
         SWT.OPEN);
     fileDialog.setFilterExtensions(filters);
     fileDialog.setFilterNames(names);
-    fileDialog.setFileName(this.getProjectName());
+    fileDialog.setFileName(this.getProjectName() + " - " + getTitle());
     String filePath = fileDialog.open();
     if (filePath != null) {
       return filePath;

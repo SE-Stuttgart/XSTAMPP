@@ -11,9 +11,10 @@
 package xstampp.astpa.wizards.pdf;
 
 import messages.Messages;
+import xstampp.astpa.Activator;
 import xstampp.astpa.ui.systemdescription.SystemDescriptionView;
 import xstampp.astpa.wizards.AbstractExportWizard;
-import xstampp.astpa.wizards.pages.SystemDescriptionExportPage;
+import xstampp.ui.wizards.TableExportPage;
 
 /**
  * 
@@ -30,8 +31,15 @@ public class SystemDecriptionPDFWizard extends AbstractExportWizard {
   public SystemDecriptionPDFWizard() {
     super(SystemDescriptionView.ID);
     String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$
-    this.setExportPage(new SystemDescriptionExportPage(filters,
-        Messages.SystemDescription + Messages.AsPDF));
+    TableExportPage exportPage = new TableExportPage(filters,
+        Messages.SystemDescription + Messages.AsPDF, Activator.PLUGIN_ID);
+    exportPage.setShowFormatChooser(false);
+    exportPage.setShowCompanyFields(false);
+    exportPage.setShowTextConfig(false);
+    exportPage.setShowPreviewCanvas(false);
+    exportPage.setShowDecorateCSButton(false);
+    exportPage.setShowColorChooser(false);
+    this.setExportPage(exportPage);
   }
 
   @Override

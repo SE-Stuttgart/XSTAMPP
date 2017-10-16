@@ -217,7 +217,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     if (this.nameSuggestion != null) {
       fileDialog.setFileName(nameSuggestion);
     } else {
-      fileDialog.setFileName(this.getProjectName());
+      fileDialog.setFileName(this.getProjectName() + " - " + getTitle());
     }
     String filePath = fileDialog.open();
     if (filePath != null) {
