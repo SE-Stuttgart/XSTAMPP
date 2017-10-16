@@ -17,7 +17,6 @@ package xstampp.astpa.util.jobs.statistics;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -35,8 +34,6 @@ public class Step0Progress extends AbstractProgressSheetCreator{
   private static final String[] titles = new String[] { "HazId", "Hazard", "Severity", "AccId",
       "Accident", "Severity",
       "SCId", "Safety Constraint", "Completion[%]" };
-  private StyleFactory defaultFactory;
-  private DataModelController controller;
   
   public Step0Progress(Workbook wb, DataModelController controller) {
     super(wb, controller);
@@ -52,11 +49,11 @@ public class Step0Progress extends AbstractProgressSheetCreator{
     for (int i = 0; i < titles.length; i++) {
       Cell cell = headerRow.createCell(i);
       cell.setCellValue(titles[i]);
-      cell.setCellStyle(this.defaultFactory.getStyle(Styles.HEADER_STYLE));
+      cell.setCellStyle(this.getFactory().getStyle(Styles.HEADER_STYLE));
     }
 
     Row hazRow;
-    for (ITableModel hazModel : controller.getAllHazards()) {
+    for (ITableModel hazModel : getController().getAllHazards()) {
       hazRow = createRow(sheet, ++rowIndex);
       createCell(hazRow, 0, hazModel.getIdString());
       createCell(hazRow, 1, hazModel.getTitle());
@@ -86,7 +83,7 @@ public class Step0Progress extends AbstractProgressSheetCreator{
   private int addAccidents(Sheet sheet, Row hazRow, int rowIndex, ITableModel hazModel) {
     int index = rowIndex;
     Row accRow = hazRow;
-    for (UUID accId : controller.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK,
+    for (UUID accId : getController().getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK,
         hazModel.getId())) {
       if (accRow == null) {
         accRow = createRow(sheet, ++index);
@@ -94,7 +91,7 @@ public class Step0Progress extends AbstractProgressSheetCreator{
         createCell(accRow, 1, null);
         createCell(accRow, 2, null);
       }
-      ITableModel accModel = controller.getAccident(accId);
+      ITableModel accModel = getController().getAccident(accId);
       createCell(accRow, 3, accModel.getIdString());
       createCell(accRow, 4, accModel.getTitle());
       if(hazModel instanceof ATableModel && ((ATableModel) hazModel).getSeverity() != null) {
@@ -130,7 +127,7 @@ public class Step0Progress extends AbstractProgressSheetCreator{
   private int addSafetyConstraints(Sheet sheet, Row accRow, int rowIndex, UUID accId) {
     int index = rowIndex;
     Row scRow = accRow;
-    for (UUID s0Id : controller.getLinkController().getLinksFor(ObserverValue.ACC_S0_LINK,
+    for (UUID s0Id : getController().getLinkController().getLinksFor(ObserverValue.ACC_S0_LINK,
         accId)) {
       if (scRow == null) {
         scRow = createRow(sheet, ++index);
@@ -141,7 +138,7 @@ public class Step0Progress extends AbstractProgressSheetCreator{
         createCell(scRow, 4, null);
         createCell(scRow, 5, null);
       }
-      ITableModel s0Model = controller.getSafetyConstraint(s0Id);
+      ITableModel s0Model = getController().getSafetyConstraint(s0Id);
       createCell(scRow, 6, s0Model.getIdString());
       createCell(scRow, 7, s0Model.getTitle());
       createCell(scRow, 8, null);
