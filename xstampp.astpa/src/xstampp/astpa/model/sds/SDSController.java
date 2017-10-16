@@ -442,7 +442,7 @@ public class SDSController extends Observable implements ISDSController {
     for (DesignRequirementStep2 designRequirement2 : this.getDesignRequirementsStep2()) {
       designRequirement2.prepareForSave();
     }
-    for (SystemGoal systemGoal : systemGoals) {
+    for (SystemGoal systemGoal : getSystemGoals()) {
       systemGoal.prepareForSave();
     }
     if (designRequirements != null && designRequirements.isEmpty()) {
@@ -519,7 +519,7 @@ public class SDSController extends Observable implements ISDSController {
         designRequirement2.setLinks(linkString.substring(0, linkString.length() - 2));
       }
     }
-    for (SystemGoal systemGoal : systemGoals) {
+    for (SystemGoal systemGoal : getSystemGoals()) {
       systemGoal.prepareForExport();
     }
   }
