@@ -2,12 +2,14 @@ target/
 bin/
 !.project
 .settings/
-astpa/ExportTest/foppdf.pdf
 *.exe
 *.synctex.gz
 *.aux
 *.toc
 *.out
-misc/docu/Readme.pdf
+misc/docu/README.pdf
+misc/docu/README.md
+misc/docu/README.html
 misc/docu/*.log
 *.log
+/CHANGELOG.html

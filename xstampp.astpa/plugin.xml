@@ -1015,7 +1015,7 @@
             </parameter>
          </command>
       </menuContribution>
-      <menuContribution
+<!--      <menuContribution
             allPopups="false"
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
@@ -1030,7 +1030,7 @@
                   style="push">
             </command>
          </toolbar>
-      </menuContribution>
+      </menuContribution>-->
    </extension>
    <extension
          point="org.eclipse.help.toc">

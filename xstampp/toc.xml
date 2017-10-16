@@ -16,6 +16,8 @@
    <topic label="Getting Started">
    <topic label="Managing a project"  href="html/gettingstarted/managingprojects.html"/>
    </topic>
-   <topic href="html/readme.html" label="Version History">
+   <topic href="html/CHANGELOG.html" label="Version History">
+   </topic>
+   <topic href="html/README.html" label="Contributers Guide(Readme)">
    </topic>
 </toc>

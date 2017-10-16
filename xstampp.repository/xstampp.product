@@ -165,7 +165,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </configurations>
 
    <repositories>
-      <repository location="https://github.com/asimabdulkhaleq/XSTAMPP/raw/updatesite" enabled="true" />
+      <repository location="https://github.com/SE-Stuttgart/XSTAMPP/raw/updatesite" enabled="true" />
    </repositories>
 
    <preferencesInfo>
