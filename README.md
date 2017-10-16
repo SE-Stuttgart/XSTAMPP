@@ -5,6 +5,7 @@
 *  Fix that changing the style of the System Description doesn't enable save
 *  Fix that the System descriptions style is not included correctly in the export
 *  Fix bad link in A-STPA User Guide for managing projects and styling of pages
+*  Fix that Save As command is only enabled if project is changed
 
 ## XSTAMPP 2.5.0:
 

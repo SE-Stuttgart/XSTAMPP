@@ -42,6 +42,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
@@ -49,6 +50,8 @@ import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
+import xstampp.ui.editors.STPAEditorInput;
+import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUserProject;
@@ -319,6 +322,31 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     updateProjectTree();
     return this.saveDataModel(projectId, false, false);
 
+  }
+
+  public UUID getActiveProject() {
+    IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .findView(ProjectExplorer.ID);
+    UUID projectId = null;
+
+    IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+        .getActiveEditor();
+
+    if (part != null
+        && part.getViewSite().getSelectionProvider().getSelection() instanceof IProjectSelection) {
+      Object selection = part.getViewSite().getSelectionProvider().getSelection();
+      // if there is any project or step selected in the explorer, this project
+      // is stored
+      projectId = ((IProjectSelection) selection).getProjectId();
+    }
+    // if the focus is currectly not on the explorer and the selection is not
+    // project related,
+    // the project related to the active editor is stored
+    else if (editor != null && editor.getEditorInput() instanceof STPAEditorInput) {
+      projectId = ((STPAEditorInput) editor.getEditorInput()).getProjectID();
+    }
+    // if none of the above cases are true the active project id is null
+    return projectId;
   }
 
   /**

@@ -134,13 +134,9 @@
                   style="push">
             </command>
             <command
-                  commandId="astpa.save"
+                  commandId="astpa.saveas"
                   label="%command.name.saveas"
                   style="push">
-               <parameter
-                     name="xstampp.commands.params.doSaveAs"
-                     value="TRUE">
-               </parameter>
             </command>
             <command
                   commandId="org.eclipse.ui.file.import"
@@ -597,18 +593,6 @@
          </enabledWhen>
       </handler>
       <handler
-            class="xstampp.ui.menu.file.commands.SaveAs"
-            commandId="astpa.saveas">
-         <enabledWhen>
-            <with
-                  variable="xstampp.ui.menu.file.commands.savestate">
-               <equals
-                     value="ENABLED">
-               </equals>
-            </with>
-         </enabledWhen>
-      </handler>
-      <handler
             class="xstampp.ui.menu.file.commands.SaveAll"
             commandId="xstampp.saveall">
          <enabledWhen>
@@ -689,6 +673,7 @@
             name="%command.name.exitPlatform">
       </command>
       <command
+            defaultHandler="xstampp.ui.menu.file.commands.SaveAs"
             id="astpa.saveas"
             name="%command.name.saveas">
          <commandParameter
