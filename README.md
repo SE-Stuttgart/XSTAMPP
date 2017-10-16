@@ -6,6 +6,7 @@
 *  Fix that the System descriptions style is not included correctly in the export
 *  Fix bad link in A-STPA User Guide for managing projects and styling of pages
 *  Fix that Save As command is only enabled if project is changed
+*  Fix that XSTAMPP cannot be closed with unfinished jobs
 
 ## XSTAMPP 2.5.0:
 

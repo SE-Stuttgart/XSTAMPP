@@ -363,6 +363,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * @return whether the operation was successful or not
    */
   public boolean saveDataModel(UUID projectId, boolean isUIcall, boolean saveAs) {
+
     if (this.projectContainerToUuid.get(projectId) == null || saveAs) {
       return this.saveDataModelAs(projectId);
     }
@@ -571,11 +572,11 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * @return if the application can be safely closed
    */
   public boolean checkCloseApplication() {
-    if (!STPAPluginUtils.getUnfinishedJobs().isEmpty()) {
-      MessageDialog.openConfirm(null,
-          Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
-          Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
-              + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message);
+    if (!STPAPluginUtils.getUnfinishedJobs().isEmpty() &&
+        !MessageDialog.openConfirm(null,
+            Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Title,
+            Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Short
+                + Messages.ApplicationWorkbenchWindowAdvisor_Unfinished_Jobs_Message)) {
       return false;
     }
     if (ProjectManager.getContainerInstance().getUnsavedChanges()) {
