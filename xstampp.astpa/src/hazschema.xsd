@@ -452,23 +452,23 @@
 
     <xs:complexType name="layoutType">
         <xs:sequence>
-            <xs:element type="xs:nonNegativeInteger" name="height" />
-            <xs:element type="xs:nonNegativeInteger" name="width" />
-            <xs:element type="xs:nonNegativeInteger" name="x" />
-            <xs:element type="xs:nonNegativeInteger" name="y" />
+            <xs:element type="xs:int" name="height" />
+            <xs:element type="xs:int" name="width" />
+            <xs:element type="xs:int" name="x" />
+            <xs:element type="xs:int" name="y" />
             <xs:element name="location">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element type="xs:nonNegativeInteger" name="x" />
-                        <xs:element type="xs:nonNegativeInteger" name="y" />
+                        <xs:element type="xs:int" name="x" />
+                        <xs:element type="xs:int" name="y" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="size">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element type="xs:nonNegativeInteger" name="width" />
-                        <xs:element type="xs:nonNegativeInteger" name="height" />
+                        <xs:element type="xs:int" name="width" />
+                        <xs:element type="xs:int" name="height" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -584,7 +584,7 @@
 
     <xs:complexType name="caType">
         <xs:all>
-            <xs:element type="xs:nonNegativeInteger" name="number" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:int" name="number" maxOccurs="1" minOccurs="1" />
             <xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="1" />
             <xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="1" />
             <xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="1" />
