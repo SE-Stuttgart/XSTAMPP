@@ -7,3 +7,4 @@ xcopy /f /y /g /k README.pdf ..\..\
 xcopy /f /y /g /k README.md ..\..\
 cd ../..
 pandoc -s CHANGELOG.md -o CHANGELOG.html
+xcopy /f /y /g /k CHANGELOG.md xstampp\html\

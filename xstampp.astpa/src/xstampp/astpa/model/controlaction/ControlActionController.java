@@ -306,7 +306,7 @@ public class ControlActionController extends Observable implements IControlActio
           .getInternalUnsafeControlActions()) {
         boolean isSearched = unsafeControlAction.getId().equals(ucaID);
         if (isSearched) {
-          if (unsafeControlAction.getNumber() == 0) {
+          if (unsafeControlAction.getNumber() <= 0) {
             assignUCANumbers();
           }
           return unsafeControlAction.getNumber();
