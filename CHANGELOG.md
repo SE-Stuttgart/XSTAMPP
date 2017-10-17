@@ -15,6 +15,10 @@
 *  Fix several typos in XSTAMPP
 *  Fix bug in System Description Export Wizard that the export path cannot be chosen
 
+#### Others
+
+*  Change that a UCA's severity increases when linked to more severe hazard
+
 ## XSTAMPP 2.5.0:
 
 ##### Features:

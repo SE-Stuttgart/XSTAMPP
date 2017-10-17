@@ -67,11 +67,6 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
   private String[] columns = null;
 
   /**
-   * Interfaces to communicate with the data model.
-   */
-  private UcaContentProvider ucaContentProvider = null;
-
-  /**
    * Constructs an UnsafeControlActionsView with a filter and the default set of column names
    * defined in the STPA
    */
@@ -206,7 +201,6 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
         columns[i + 1] = getDataModel().getControlActionController().getUCAHeaders()[i];
       }
     }
-    this.ucaContentProvider = new UcaContentProvider(getDataModel());
   }
 
   @Override
@@ -289,6 +283,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
     if (ucaList.size() > i) {
       IUnsafeControlAction uca = ucaList.get(i);
 
+      UcaContentProvider ucaContentProvider = new UcaContentProvider(uca, getDataModel());
       GridCellText idCell = new UcaIdCell(ucaContentProvider, uca, getDataModel());
       if (getDataModel().isUseSeverity()) {
         SeverityButton button = new SeverityButton((ISeverityEntry) uca, getDataModel(), getGrid());
@@ -299,7 +294,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
           uca.getDescription(), uca.getId(), canWrite);
       ucaRow.addCell(columnIndex, editor);
       linkRow.addCell(columnIndex, new GridCellLinking<UcaContentProvider>(uca.getId(),
-          this.ucaContentProvider, getGridWrapper(), canWrite));
+          ucaContentProvider, getGridWrapper(), canWrite));
       return true;
     }
 

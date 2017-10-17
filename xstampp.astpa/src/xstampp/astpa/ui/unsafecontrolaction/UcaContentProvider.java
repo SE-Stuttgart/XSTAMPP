@@ -17,8 +17,11 @@ import java.util.List;
 import java.util.UUID;
 
 import messages.Messages;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**
@@ -29,16 +32,19 @@ import xstampp.ui.common.contentassist.ITableContentProvider;
 public class UcaContentProvider implements ITableContentProvider<ITableModel> {
   private static final String HAZARD_ID_PREFIX = "H-"; //$NON-NLS-1$
   private final transient IUnsafeControlActionDataModel ucaInterface;
+  private IUnsafeControlAction uca;
 
   /**
    * 
    * @author Benedikt Markt
+   * @param uca 
    * 
    * @param ucaInterface
    *          the interface to the datamodel
    * 
    */
-  public UcaContentProvider(final IUnsafeControlActionDataModel ucaInterface) {
+  public UcaContentProvider(IUnsafeControlAction uca, final IUnsafeControlActionDataModel ucaInterface) {
+    this.uca = uca;
     this.ucaInterface = ucaInterface;
   }
 
@@ -55,6 +61,14 @@ public class UcaContentProvider implements ITableContentProvider<ITableModel> {
   @Override
   public void addLink(final UUID item1, final UUID item2) {
     this.ucaInterface.addUCAHazardLink(item1, item2);
+    ITableModel hazard = this.ucaInterface.getHazard(item1);
+    if(hazard == null) {
+      hazard = this.ucaInterface.getHazard(item2);
+    }
+    Severity severity = ((ISeverityEntry) hazard).getSeverity();
+     if(uca.getSeverity().compareTo(severity) < 1) {
+      this.ucaInterface.setSeverity(this.uca, severity);
+    }
   }
 
   @Override

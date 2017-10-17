@@ -13,7 +13,9 @@ package xstampp.astpa.model.controlaction.interfaces;
 
 import java.util.UUID;
 
-public interface IUnsafeControlAction {
+import xstampp.astpa.model.interfaces.ISeverityEntry;
+
+public interface IUnsafeControlAction extends ISeverityEntry{
 
   UnsafeControlActionType getType();
 

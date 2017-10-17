@@ -120,6 +120,9 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     return dataInterface;
   }
 
+  /**
+   * @return The id of the entry that is currently active and whose links are shown in the widget
+   */
   public UUID getCurrentId() {
     return currentLinkedId;
   }
@@ -138,8 +141,19 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     if (indexOf >= 0) {
       UUID uuid = available.get(indexOf);
       getDataInterface().getLinkController().addLink(getLinkType(), getCurrentId(), uuid);
+      linkAdditions(uuid);
       notifyChangeListeners();
     }
+  }
+
+  /**
+   * This method is called whenever a link proposal is accepted right after a link has been added to
+   * the {@link ILinkModel}. The default implementation does nothing.
+   * 
+   * @param linkId
+   *          the id of the entry that is linked to the {@link LinkSupport#getCurrentId()}
+   */
+  private void linkAdditions(UUID linkId) {
   }
 
   /**
