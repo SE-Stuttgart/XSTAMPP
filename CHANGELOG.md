@@ -2,6 +2,7 @@
 
 #### Bugfixes
 
+*  Fix Null Pointer Exception during storage in Unsafe Control Actions
 *  Fix Value '-1' is not facet-valid with respect to minInclusive '0' for type 'nonNegativeInteger'
 *  Fix that in old projects a UCA's id is always UCA1.-1 
 *  Fix Null Pointer Exception when saving a project without System Goals

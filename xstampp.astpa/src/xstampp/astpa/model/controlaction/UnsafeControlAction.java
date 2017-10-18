@@ -11,22 +11,18 @@
 
 package xstampp.astpa.model.controlaction;
 
-import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.Severity;
-import xstampp.model.ITableEntry;
 
 /**
  * Class for unsafe control action objects.
@@ -133,7 +129,9 @@ public class UnsafeControlAction extends ATableModel
   @Override
   public void prepareForSave() {
     super.prepareForSave();
-    correspondingSafetyConstraint.prepareForSave();
+    if(correspondingSafetyConstraint !=null) {
+    	correspondingSafetyConstraint.prepareForSave();
+    }
   }
 
   @Override

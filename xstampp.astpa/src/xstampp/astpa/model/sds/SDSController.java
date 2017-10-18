@@ -23,8 +23,6 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.controlaction.IControlActionController;
-import xstampp.astpa.model.hazacc.Accident;
-import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
