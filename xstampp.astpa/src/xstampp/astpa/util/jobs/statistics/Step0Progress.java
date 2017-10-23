@@ -16,7 +16,6 @@ package xstampp.astpa.util.jobs.statistics;
 
 import java.util.UUID;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -27,31 +26,26 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.util.jobs.statistics.AbstractProgressSheetCreator.STEP;
 import xstampp.model.ObserverValue;
 
-public class Step0Progress extends AbstractProgressSheetCreator{
+public class Step0Progress extends AbstractProgressSheetCreator {
 
   private static final String[] titles = new String[] { "HazId", "Hazard", "Severity", "AccId",
       "Accident", "Severity",
       "SCId", "Safety Constraint", "Completion[%]" };
-  
+
   public Step0Progress(Workbook wb, DataModelController controller) {
     super(wb, controller);
   }
 
-  public void createStep1Sheet() {
-    Sheet sheet = createSheet();
+  public void createWorkSheet(Sheet sheet) {
     int rowIndex = 0;
     // the header row: centered text in 48pt font
     Row headerRow = sheet.createRow(rowIndex);
     headerRow.setHeightInPoints(12.75f);
 
-    for (int i = 0; i < titles.length; i++) {
-      Cell cell = headerRow.createCell(i);
-      cell.setCellValue(titles[i]);
-      cell.setCellStyle(this.getFactory().getStyle(Styles.HEADER_STYLE));
-    }
-
+    createCells(headerRow, rowIndex, titles, Styles.HEADER_STYLE);
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
       hazRow = createRow(sheet, ++rowIndex);
@@ -60,8 +54,9 @@ public class Step0Progress extends AbstractProgressSheetCreator{
       createCell(hazRow, 2, ((EntryWithSeverity) hazModel).getSeverity().name());
       int hazGroupStart = rowIndex;
       rowIndex = addAccidents(sheet, hazRow, rowIndex, hazModel);
-      Float progress = getProgress(STEP.STEP_1, hazModel.getId(), 1);
+      Float progress = getProgress(STEP.STEP_0, hazModel.getId(), 1);
       createCell(hazRow, 8, String.format("%.1f", progress) + "%");
+      addProgress(STEP.STEP_0, getController().getProjectId(), progress);
       if (rowIndex > hazGroupStart) {
         sheet.addMergedRegion(new CellRangeAddress(hazGroupStart, rowIndex, 0, 0));
         sheet.addMergedRegion(new CellRangeAddress(hazGroupStart, rowIndex, 1, 1));
@@ -70,7 +65,10 @@ public class Step0Progress extends AbstractProgressSheetCreator{
       }
     }
 
-    for(int i = 0; i < titles.length;i++) {
+    Row footer = createRow(sheet, ++rowIndex);
+    Float progress = getProgress(STEP.STEP_1, getController().getProjectId(), 1);
+    createCell(footer, 8, String.format("%.1f", progress) + "%");
+    for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }
   }
@@ -87,19 +85,17 @@ public class Step0Progress extends AbstractProgressSheetCreator{
         hazModel.getId())) {
       if (accRow == null) {
         accRow = createRow(sheet, ++index);
-        createCell(accRow, 0, null);
-        createCell(accRow, 1, null);
-        createCell(accRow, 2, null);
+        createCells(accRow, 0, null, 3);
       }
       ITableModel accModel = getController().getAccident(accId);
       createCell(accRow, 3, accModel.getIdString());
       createCell(accRow, 4, accModel.getTitle());
-      if(hazModel instanceof ATableModel && ((ATableModel) hazModel).getSeverity() != null) {
+      if (hazModel instanceof ATableModel && ((ATableModel) hazModel).getSeverity() != null) {
         createCell(accRow, 5, ((ATableModel) accModel).getSeverity().name());
       }
       int accGroupStart = index;
       index = addSafetyConstraints(sheet, accRow, index, accId);
-      addProgress(STEP.STEP_1, hazModel.getId(), getProgress(STEP.STEP_1, accId, 1));
+      addProgress(STEP.STEP_0, hazModel.getId(), getProgress(STEP.STEP_0, accId, 1));
       if (index > accGroupStart) {
         sheet.addMergedRegion(new CellRangeAddress(accGroupStart, index, 3, 3));
         sheet.addMergedRegion(new CellRangeAddress(accGroupStart, index, 4, 4));
@@ -109,12 +105,7 @@ public class Step0Progress extends AbstractProgressSheetCreator{
     // if the index didn't change than no accidents have been added and empty cells need to be
     // inserted
     if (accRow != null) {
-      createCell(accRow, 3, null);
-      createCell(accRow, 4, null);
-      createCell(accRow, 5, null);
-      createCell(accRow, 6, null);
-      createCell(accRow, 7, null);
-      createCell(accRow, 8, null);
+      createCells(accRow, 3, null, 6);
     }
     return index;
   }
@@ -131,26 +122,19 @@ public class Step0Progress extends AbstractProgressSheetCreator{
         accId)) {
       if (scRow == null) {
         scRow = createRow(sheet, ++index);
-        createCell(scRow, 0, null);
-        createCell(scRow, 1, null);
-        createCell(scRow, 2, null);
-        createCell(scRow, 3, null);
-        createCell(scRow, 4, null);
-        createCell(scRow, 5, null);
+        createCells(scRow, 0, null, 6);
       }
       ITableModel s0Model = getController().getSafetyConstraint(s0Id);
       createCell(scRow, 6, s0Model.getIdString());
       createCell(scRow, 7, s0Model.getTitle());
       createCell(scRow, 8, null);
-      addProgress(STEP.STEP_1, accId, 100f);
+      addProgress(STEP.STEP_0, accId, 100f);
       scRow = null;
     }
     // if the index didn't change than no accidents have been added and empty cells need to be
     // inserted
     if (scRow != null) {
-      createCell(scRow, 6, null);
-      createCell(scRow, 7, null);
-      createCell(scRow, 8, null);
+      createCells(scRow, 6, null, 3);
     }
     return index;
   }

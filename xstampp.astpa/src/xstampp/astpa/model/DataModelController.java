@@ -856,7 +856,6 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions() {
     return this.getControlActionController().getUCAList(new IEntryFilter<IUnsafeControlAction>() {
-
       @Override
       public boolean check(IUnsafeControlAction model) {
         return getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK, model.getId());

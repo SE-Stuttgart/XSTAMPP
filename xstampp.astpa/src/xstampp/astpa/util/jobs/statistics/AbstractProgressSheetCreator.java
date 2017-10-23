@@ -40,46 +40,64 @@ abstract class AbstractProgressSheetCreator {
   enum Styles {
     HEADER_STYLE, DEFAULT_STYLE
   }
-  
+
   private DataModelController controller;
 
   enum STEP {
-    STEP_1, STEP_2, STEP_3
+    STEP_0, STEP_1, STEP_2
   }
 
-  private Map<STEP, Map<UUID, List<Float>>> progressMap;
+  private static Map<STEP, Map<UUID, List<Float>>> progressMap;
 
   public AbstractProgressSheetCreator(Workbook wb, DataModelController controller) {
     this.controller = controller;
     this.factory = new StyleFactory(wb);
-    this.progressMap = new HashMap<>();
-    this.progressMap.put(STEP.STEP_1, new HashMap<>());
-    this.progressMap.put(STEP.STEP_2, new HashMap<>());
-    this.progressMap.put(STEP.STEP_3, new HashMap<>());
   }
 
-
-
-  void addProgress(STEP step, UUID entryId, Float progress) {
-    if (!this.progressMap.get(step).containsKey(entryId)) {
-      this.progressMap.get(step).put(entryId, new ArrayList<>());
-    } 
-    this.progressMap.get(step).get(entryId).add(progress);
+  static void initMap() {
+    if(progressMap == null) {
+      progressMap = new HashMap<>();
+      progressMap.put(STEP.STEP_0, new HashMap<>());
+      progressMap.put(STEP.STEP_1, new HashMap<>());
+      progressMap.put(STEP.STEP_2, new HashMap<>());
+    }
   }
-  
   /**
    * 
    * @param step
+   *          one of the enum values stored in {@link STEP}
    * @param entryId
-   * @param constraint must be > 0
-   * @return
+   *          the id for which this progress value should be added
+   * @param progress
+   *          a {@link Float} in <code>[0,100]</code>
+   */
+  void addProgress(STEP step, UUID entryId, Float progress) {
+    assert progress >= 0 && progress <= 100;
+    if (!progressMap.get(step).containsKey(entryId)) {
+      progressMap.get(step).put(entryId, new ArrayList<>());
+    }
+    progressMap.get(step).get(entryId).add(progress);
+  }
+
+  /**
+   * 
+   * @param step
+   *          one of the enum values stored in {@link STEP}
+   * @param entryId
+   *          the id for which the total stored progress should be calculated
+   * @param constraint
+   *          defines the minimum number of progress values that must be stored for the given
+   *          entryId if the constraint isn't reached by the stored lists length a zero value is
+   *          assumed, must be >= 0
+   * @return the progress that is a {@link Float} in <code>[0,100]</code>
    */
   Float getProgress(STEP step, UUID entryId, int constraint) {
-    if(this.progressMap.get(step).containsKey(entryId)) {
-      int size = this.progressMap.get(step).get(entryId).size();
-      float factor = 1/(float) Math.max(constraint, size);
+    assert constraint >= 0;
+    if (progressMap.get(step).containsKey(entryId)) {
+      int size = progressMap.get(step).get(entryId).size();
+      float factor = 1 / (float) Math.max(constraint, size);
       Float total = 0f;
-      for (Float progress : this.progressMap.get(step).get(entryId)) {
+      for (Float progress : progressMap.get(step).get(entryId)) {
         total += factor * progress;
       }
       return total;
@@ -98,6 +116,18 @@ abstract class AbstractProgressSheetCreator {
     return createCell(hazRow, i, content, Styles.DEFAULT_STYLE);
   }
 
+  void createCells(Row hazRow, int colIndex, String content, int count) {
+    for (int i = 0; i < count; i++) {
+      createCell(hazRow, i + colIndex, content);
+    }
+  }
+
+  void createCells(Row row, int rowIndex, String[] titles, Styles style) {
+    for (int i = 0; i < titles.length; i++) {
+      createCell(row, i, titles[i], style);
+    }
+  }
+
   Row createRow(Sheet sheet, int rowIndex) {
     Row hazRow = sheet.createRow(rowIndex);
     hazRow.setHeightInPoints(10f);
@@ -105,9 +135,9 @@ abstract class AbstractProgressSheetCreator {
     return hazRow;
   }
 
-  Sheet createSheet() {
-    Sheet sheet = getFactory().wb.createSheet("STPA Analysis Progress");
-    
+  public final Sheet createSheet(String name) {
+    Sheet sheet = getFactory().wb.createSheet(name);
+
     // turn off gridlines
     sheet.setDisplayGridlines(false);
     sheet.setPrintGridlines(false);
@@ -120,6 +150,8 @@ abstract class AbstractProgressSheetCreator {
     sheet.setAutobreaks(true);
     printSetup.setFitHeight((short) 1);
     printSetup.setFitWidth((short) 1);
+
+    createWorkSheet(sheet);
     return sheet;
   }
 
@@ -155,16 +187,18 @@ abstract class AbstractProgressSheetCreator {
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setWrapText(true);
         this.styles.put(Styles.DEFAULT_STYLE, style);
-        return getStyle(styleConstant);
+        return this.styles.get(styleConstant);
       }
     }
   }
-  
+
   DataModelController getController() {
     return controller;
   }
-  
+
   StyleFactory getFactory() {
     return factory;
   }
+
+  protected abstract void createWorkSheet(Sheet sheet);
 }

@@ -15,6 +15,7 @@ package xstampp.astpa.model.controlaction.safetyconstraint;
 
 import java.util.UUID;
 
+import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
@@ -24,7 +25,7 @@ import xstampp.astpa.model.interfaces.ITableModel;
  * @author Fabian Toth
  * 
  */
-public interface ICorrespondingUnsafeControlAction extends ITableModel {
+public interface ICorrespondingUnsafeControlAction extends ITableModel, ISeverityEntry {
 
   /**
    * @return the description

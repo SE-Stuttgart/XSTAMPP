@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -112,9 +113,13 @@ public class LinkController extends Observable {
    * @return whether the {@link LinkController} contains a link for the given id or not
    */
   public boolean isLinked(ObserverValue linkType, UUID part) {
+    return isLinked(linkType, part, Optional.empty());
+  }
+
+  public boolean isLinked(ObserverValue linkType, UUID part, Optional<UUID> rightPart) {
     if (this.linkMap.containsKey(linkType)) {
       for (Link link : this.linkMap.get(linkType)) {
-        if (link.links(part)) {
+        if (link.links(part) && (!rightPart.isPresent() || link.links(rightPart.get()))) {
           return true;
         }
       }
@@ -123,6 +128,7 @@ public class LinkController extends Observable {
       }
     }
     return false;
+
   }
 
   public boolean deleteLink(ObserverValue linkType, UUID a, UUID b) {
@@ -142,7 +148,8 @@ public class LinkController extends Observable {
    * @param linkType
    *          the {@link ObserverValue} of the link
    * @param part
-   *          the part that should be included in all links that are to to be deleted,<br> or
+   *          the part that should be included in all links that are to to be deleted,<br>
+   *          or
    *          <b><i>null</i></b> if all links for the given <b>type</b> should be deleted
    */
   public void deleteAllFor(ObserverValue linkType, UUID part) {
@@ -160,8 +167,8 @@ public class LinkController extends Observable {
   void deleteLinks(ObserverValue linkType, List<Link> links) {
     if (this.linkMap.containsKey(linkType)) {
       this.linkMap.get(linkType).removeAll(links);
-      if(this.linkMap.get(linkType).isEmpty()) {
-    	  this.linkMap.remove(linkType);
+      if (this.linkMap.get(linkType).isEmpty()) {
+        this.linkMap.remove(linkType);
       }
     }
     setChanged();
