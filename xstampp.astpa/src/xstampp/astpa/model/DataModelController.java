@@ -586,7 +586,7 @@ public class DataModelController extends AbstractDataModel
         break;
       }
     }
-    if (ucaExists) {
+    if (!ucaExists) {
       return false;
     }
 
@@ -2182,7 +2182,7 @@ public class DataModelController extends AbstractDataModel
       case UCA_HAZ_LINK:
       case SEVERITY: {
         PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-          
+
           @Override
           public void run() {
             controlActionController.fetchUCASeverity(linkController, hazAccController);

@@ -1,3 +1,13 @@
+## XSTAMPP x.x.x:
+
+#### A-STPA Features:
+
+*  Add auto increase of UCA Severity to the highest Severity of itself and the linked Hazards
+
+#### A-STPA Bugfixes:
+
+*  Fix bug in A-STPA 2.5.1 that corresponding safety constraints are not loaded in Step 1
+
 ## XSTAMPP 2.5.1:
 
 #### Bugfixes

@@ -50,6 +50,8 @@ public class Messages extends NLS {
   public static String UnsafeControlActions;
   public static String UnsafeControlActionsTable;
   public static String UnsafeControlActionsView_HeaderToolTip;
+  public static String UnsafeControlActionsView_InvalidSeverityMsg;
+  public static String UnsafeControlActionsView_InvalidSeverityTitle;
   public static String WrongTiming;
   static {
     // initialize resource bundle

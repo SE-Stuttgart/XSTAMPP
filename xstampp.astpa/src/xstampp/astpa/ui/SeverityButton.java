@@ -36,6 +36,7 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
   private ISeverityDataModel model;
   private ISeverityEntry entry;
   private Severity currentSeverity;
+  private SeverityCheck check;
   private Control control;
   private static final Image hoveredImage = Activator
       .getImageDescriptor("/icons/buttons/dropDownCanvas.png").createImage();
@@ -51,6 +52,13 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
   public SeverityButton(ISeverityEntry entry, IDataModel model, Control control) {
 
     super(hoveredImage.getBounds(), hoveredImage);
+    this.check = new SeverityCheck() {
+
+      @Override
+      public boolean checkSeverity(Severity serverity) {
+        return true;
+      }
+    };
     this.control = control;
     this.entry = entry;
     this.model = (ISeverityDataModel) model;
@@ -67,6 +75,17 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
         setText("-");
       }
     }
+  }
+
+  /**
+   * with this method a check can be applied that decides whether or not a selected Severity
+   * can be applied to the entry
+   * 
+   * @param check
+   *          a {@link SeverityCheck} that is called when the user selects a severity
+   */
+  public void setCheck(SeverityCheck check) {
+    this.check = check;
   }
 
   @Override
@@ -89,7 +108,7 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
         @Override
         public void proposalAccepted(IContentProposal proposal) {
           Severity severity = Severity.valueOf(proposal.getLabel());
-          if (severity != null) {
+          if (severity != null && check.checkSeverity(severity)) {
             currentSeverity = severity;
             model.setSeverity(entry, severity);
             setText(severity.toString());
@@ -120,8 +139,12 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
   public void paintControl(PaintEvent e) {
     onPaint(e.gc, new Rectangle(e.x, e.y, e.width, e.height), entry != null);
   }
-  
+
   public Control getControl() {
     return control;
+  }
+
+  public interface SeverityCheck {
+    boolean checkSeverity(Severity serverity);
   }
 }

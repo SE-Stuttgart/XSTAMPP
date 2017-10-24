@@ -227,12 +227,14 @@ public interface IControlActionController {
 
   /**
    * creates a new list with all entries according to the given {@link IEntryFilter} or with all
-   * uca's defined if the filter is given as <b>null</b> <p> Note that modifications of the returned
+   * uca's defined if the filter is given as <b>null</b>
+   * <p>
+   * Note that modifications of the returned
    * list will not affect the list stored in the dataModel
    * 
    * @param filter
    *          an implementation of {@link IEntryFilter} which checks {@link IUnsafeControlAction}'s
-   *          or <b>null</b> if there shouldn't be a check
+   *          this should not be <b>null</b>
    * @return a new list with all suiting uca entries, or an empty list if either all entries have
    *         been filtered or there are no etries
    */
@@ -310,7 +312,6 @@ public interface IControlActionController {
   boolean prepareForSave(ExtendedDataController extendedData, LinkController linkController);
 
   List<UCAHazLink> getAllUCALinks();
-  
 
   /**
    * @param componentLink
@@ -528,7 +529,8 @@ public interface IControlActionController {
    * This method removes a safety rule if it is stored as general rule or as rule in control action
    * 
    * @param removeAll
-   *          whether all currently stored RefinedSafetyRule objects should be deleted<br> when this
+   *          whether all currently stored RefinedSafetyRule objects should be deleted<br>
+   *          when this
    *          is true than the ruleId will be ignored
    * @param ruleId
    *          an id of a RefinedSafetyRule object stored in a controlAction

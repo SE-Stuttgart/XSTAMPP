@@ -13,12 +13,18 @@ package xstampp.astpa.ui.unsafecontrolaction;
 
 import java.util.UUID;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.ui.PlatformUI;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.ui.SeverityButton;
+import xstampp.astpa.ui.SeverityButton.SeverityCheck;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellRenderer;
 import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
@@ -49,6 +55,32 @@ public class UcaIdCell extends GridCellText {
       if (ucaDataModel.isUseSeverity()) {
         SeverityButton button = new SeverityButton((ISeverityEntry) unsafeControlAction,
             ucaDataModel, item.getParent());
+        button.setCheck(new SeverityCheck() {
+
+          @Override
+          public boolean checkSeverity(Severity serverity) {
+            for (UUID uuid : ucaDataModel.getLinkController()
+                .getLinksFor(ObserverValue.UCA_HAZ_LINK, ucaId)) {
+              Severity hazardSeverity = ((ATableModel) ucaDataModel.getHazard(uuid))
+                  .getSeverity();
+              if (serverity.compareTo(hazardSeverity) < 0) {
+                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+                  @Override
+                  public void run() {
+
+                    MessageDialog.openWarning(
+                        PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                        xstampp.astpa.messages.Messages.UnsafeControlActionsView_InvalidSeverityTitle,
+                        xstampp.astpa.messages.Messages.UnsafeControlActionsView_InvalidSeverityMsg);
+                  }
+                });
+                return false;
+              }
+            }
+            return true;
+          }
+        });
         addCellButton(button);
       }
       super.paint(renderer, gc, item);

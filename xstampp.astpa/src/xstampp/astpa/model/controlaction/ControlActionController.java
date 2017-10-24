@@ -41,7 +41,6 @@ import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.IHazAccController;
-import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
@@ -280,7 +279,7 @@ public class ControlActionController extends Observable implements IControlActio
 
       @Override
       public boolean check(IUnsafeControlAction model) {
-        return !getLinksOfUCA(model.getId()).isEmpty();
+        return true;
       }
     });
   }
@@ -490,6 +489,7 @@ public class ControlActionController extends Observable implements IControlActio
       }
     }
   }
+
   @Override
   public boolean prepareForSave(ExtendedDataController extendedData,
       LinkController linkController) {
@@ -640,7 +640,6 @@ public class ControlActionController extends Observable implements IControlActio
 
   /*
    * (non-Javadoc)
-   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#
    * getProvidedVariables(java.util.UUID)
    */
