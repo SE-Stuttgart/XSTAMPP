@@ -61,14 +61,6 @@ public class UcaContentProvider implements ITableContentProvider<ITableModel> {
   @Override
   public void addLink(final UUID item1, final UUID item2) {
     this.ucaInterface.addUCAHazardLink(item1, item2);
-    ITableModel hazard = this.ucaInterface.getHazard(item1);
-    if(hazard == null) {
-      hazard = this.ucaInterface.getHazard(item2);
-    }
-    Severity severity = ((ISeverityEntry) hazard).getSeverity();
-     if(uca.getSeverity().compareTo(severity) < 1) {
-      this.ucaInterface.setSeverity(this.uca, severity);
-    }
   }
 
   @Override

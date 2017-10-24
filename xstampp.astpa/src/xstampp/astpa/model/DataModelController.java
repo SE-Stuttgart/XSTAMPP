@@ -275,7 +275,10 @@ public class DataModelController extends AbstractDataModel
     if (!this.getControlActionController().prepareForSave(this.extendedDataController,
         getLinkController())) {
       this.controlActionController = null;
+    } else {
+      this.controlActionController.fetchUCASeverity(getLinkController(), hazAccController);
     }
+
     this.causalFactorController.prepareForSave(this.getHazAccController(),
         controlStructureController.getInternalComponents(), getAllScenarios(true, true, true),
         getAllUnsafeControlActions());
@@ -2175,6 +2178,21 @@ public class DataModelController extends AbstractDataModel
     this.setChanged();
     if (!refreshLock) {
       DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
+      switch (value) {
+      case UCA_HAZ_LINK:
+      case SEVERITY: {
+        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+          
+          @Override
+          public void run() {
+            controlActionController.fetchUCASeverity(linkController, hazAccController);
+          }
+        });
+        break;
+      }
+      default:
+        break;
+      }
       super.updateValue(value);
     } else if (!value.equals(ObserverValue.UNSAVED_CHANGES)) {
       if (blockedUpdates == null) {

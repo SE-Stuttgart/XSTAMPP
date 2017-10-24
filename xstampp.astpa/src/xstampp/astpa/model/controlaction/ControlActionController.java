@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -40,8 +39,11 @@ import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
+import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.IHazAccController;
+import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.sds.ISDSController;
@@ -305,10 +307,10 @@ public class ControlActionController extends Observable implements IControlActio
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         boolean isSearched = unsafeControlAction.getId().equals(ucaID);
+        if (unsafeControlAction.getNumber() <= 0) {
+          assignUCANumbers();
+        }
         if (isSearched) {
-          if (unsafeControlAction.getNumber() <= 0) {
-            assignUCANumbers();
-          }
           return unsafeControlAction.getNumber();
         }
       }
@@ -478,10 +480,21 @@ public class ControlActionController extends Observable implements IControlActio
     }
   }
 
+  public void fetchUCASeverity(LinkController linkController, HazAccController hazController) {
+    for (ICorrespondingUnsafeControlAction uca : getAllUnsafeControlActions()) {
+      for (UUID hazLink : linkController.getLinksFor(ObserverValue.UCA_HAZ_LINK, uca.getId())) {
+        Severity severity = hazController.getHazard(hazLink).getSeverity();
+        if (severity.compareTo(((UnsafeControlAction) uca).getSeverity()) > 0) {
+          ((UnsafeControlAction) uca).setSeverity(severity);
+        }
+      }
+    }
+  }
   @Override
   public boolean prepareForSave(ExtendedDataController extendedData,
       LinkController linkController) {
     moveRulesInCA();
+    getUCANumber(null);
     for (ControlAction controlAction : this.getControlActions()) {
       controlAction.prepareForSave(extendedData);
       for (UnsafeControlAction unsafeControlAction : controlAction
@@ -492,7 +505,7 @@ public class ControlActionController extends Observable implements IControlActio
     for (Link link : linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION)) {
       linkController.addLink(ObserverValue.UCA_HAZ_LINK, link.getLinkA(), link.getLinkB());
     }
-    linkController.deleteAllFor(ObserverValue.UNSAFE_CONTROL_ACTION,null);
+    linkController.deleteAllFor(ObserverValue.UNSAFE_CONTROL_ACTION, null);
     for (UCAHazLink ucaHazLink : getAllUCALinks()) {
       linkController.addLink(ObserverValue.UCA_HAZ_LINK, ucaHazLink.getHazardId(),
           ucaHazLink.getUnsafeControlActionId());
@@ -627,6 +640,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   /*
    * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#
    * getProvidedVariables(java.util.UUID)
    */
