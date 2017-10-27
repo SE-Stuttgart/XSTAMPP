@@ -11,13 +11,10 @@
 package xstampp.util;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import messages.Messages;
 
 import org.apache.log4j.Logger;
 
+import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 
@@ -33,7 +30,6 @@ public abstract class AbstractLoadJob extends XstamppJob {
   private final Logger log = ProjectManager.getLOGGER();
   private IDataModel controller;
   private File saveFile;
-  private List<String> errors;
 
   /**
    *
@@ -42,7 +38,6 @@ public abstract class AbstractLoadJob extends XstamppJob {
    */
   public AbstractLoadJob() {
     super(Messages.loadHaz);
-    this.errors = new ArrayList<>();
   }
 
   /**
@@ -85,16 +80,6 @@ public abstract class AbstractLoadJob extends XstamppJob {
    *
    * @author Lukas Balzer
    *
-   * @return a list of errors which occured during the job
-   */
-  public List<String> getErrors() {
-    return this.errors;
-  }
-
-  /**
-   *
-   * @author Lukas Balzer
-   *
    * @param saveFile
    *          the FIle in which the loaded file should than be saved
    */
@@ -111,10 +96,6 @@ public abstract class AbstractLoadJob extends XstamppJob {
    */
   public void setFile(String file) {
     this.file = new File(file);
-  }
-
-  protected void addErrorMsg(String msg) {
-    this.errors.add(msg);
   }
 
 }

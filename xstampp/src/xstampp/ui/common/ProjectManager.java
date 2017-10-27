@@ -25,12 +25,9 @@ import java.util.Observable;
 import java.util.Set;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -46,6 +43,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
 import xstampp.Activator;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -106,21 +104,6 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     @Override
     public void done(IJobChangeEvent event) {
       final AbstractLoadJob job = (AbstractLoadJob) event.getJob();
-      if (event.getResult() == Status.CANCEL_STATUS) {
-        final String name = job.getFile().getName();
-        Display.getDefault().syncExec(new Runnable() {
-
-          @Override
-          public void run() {
-            StringBuffer msg = new StringBuffer(Messages.LoadFailed + name);
-            for (String error : job.getErrors()) {
-              msg.append("\n" + error); //$NON-NLS-1$
-            }
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-                Messages.Information, msg.toString());
-          }
-        });
-      }
       if (event.getResult().isOK()) {
 
         Display.getDefault().syncExec(new LoadRunnable(job.getSaveFile(), job.getController()));
@@ -446,12 +429,12 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     fileDialog.setFilterExtensions(extensions.toArray(new String[] {}));
 
     String file = fileDialog.open();
-    if (file != null && this.projectContainerToUuid.containsValue(new File(file))) {
-      MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-          Messages.ProjectManager_ProjectIsAlreadyOpen,
-          Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
-      return null;
-    }
+//    if (file != null && this.projectContainerToUuid.containsValue(new File(file))) {
+//      MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+//          Messages.ProjectManager_ProjectIsAlreadyOpen,
+//          Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
+//      return null;
+//    }
     // if the file is not null but also not located in the workspace the project
     // is loaded from the choosen file
     // but later stored in the workspace

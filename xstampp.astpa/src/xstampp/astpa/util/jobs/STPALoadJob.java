@@ -104,16 +104,16 @@ public class STPALoadJob extends AbstractLoadJob {
     } catch (SAXException e) {
       this.getLog().error(e.getMessage(), e);
       addErrorMsg(String.format(Messages.InvalidSchemaFile, "hazschema.xsd"));
-      addErrorMsg(e.getMessage());
+      setError(e);
       return Status.CANCEL_STATUS;
     } catch (IOException e) {
       this.getLog().error(e.getMessage(), e);
-      addErrorMsg(e.getMessage());
+      setError(e);
       return Status.CANCEL_STATUS;
     } catch (JAXBException e) {
       e.printStackTrace();
       addErrorMsg(String.format(Messages.ThisHazFileIsInvalid, getFile().getName()));
-      addErrorMsg(e.getMessage());
+      setError(e);
       return Status.CANCEL_STATUS;
 
     }
