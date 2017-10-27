@@ -594,7 +594,7 @@
                         <xs:element name="unsafecontrolaction" maxOccurs="unbounded" minOccurs="0">
                             <xs:complexType>
                                 <xs:all>
-                                    <xs:element name="correspondingSafetyConstraint" maxOccurs="1" minOccurs="1">
+                                    <xs:element name="correspondingSafetyConstraint" maxOccurs="1" minOccurs="0">
                                         <xs:complexType>
                                             <xs:all>
                                                 <xs:element type="xs:int" name="number" maxOccurs="1"
@@ -618,6 +618,8 @@
                                     <xs:element type="xs:string" name="id" />
                                     <xs:element type="xs:string" name="links" maxOccurs="1" minOccurs="0" />
                                     <xs:element type="xs:string" name="type" />
+                                    <xs:element name="title" type="xs:string" maxOccurs="1" minOccurs="0">
+                                    </xs:element>
                                 </xs:all>
 
                                 <xs:attribute name="severityType" type="xs:string" use="optional">

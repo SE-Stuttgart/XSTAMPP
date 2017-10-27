@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -52,10 +52,10 @@ public class UnsafeControlAction extends ATableModel
    * @author Fabian Toth
    */
   public UnsafeControlAction(String description, UnsafeControlActionType type) {
-    super("", description);
+    this();
+    setDescription(description);
+    setTitle("");
     this.type = type;
-    this.correspondingSafetyConstraint = null; // $NON-NLS-1$
-    setSeverity(Severity.S0);
   }
 
   /**
@@ -65,6 +65,7 @@ public class UnsafeControlAction extends ATableModel
    */
   public UnsafeControlAction() {
     super();
+    this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint();
     setSeverity(Severity.S0);
   }
 
@@ -83,11 +84,7 @@ public class UnsafeControlAction extends ATableModel
 
   @Override
   public CorrespondingSafetyConstraint getCorrespondingSafetyConstraint() {
-    if (this.correspondingSafetyConstraint == null) {
-      this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(new String());
-      correspondingSafetyConstraint.setNumber(getNumber());
-
-    }
+    correspondingSafetyConstraint.setNumber(getNumber());
     return this.correspondingSafetyConstraint;
   }
 
@@ -103,9 +100,7 @@ public class UnsafeControlAction extends ATableModel
   @Override
   public boolean setNumber(int number) {
     if (super.setNumber(number)) {
-      if (this.correspondingSafetyConstraint != null) {
-        this.correspondingSafetyConstraint.setNumber(number);
-      }
+      this.correspondingSafetyConstraint.setNumber(number);
       return true;
     }
     return false;
@@ -129,9 +124,8 @@ public class UnsafeControlAction extends ATableModel
   @Override
   public void prepareForSave() {
     super.prepareForSave();
-    if(correspondingSafetyConstraint !=null) {
-    	correspondingSafetyConstraint.prepareForSave();
-    }
+    this.correspondingSafetyConstraint.setNumber(getNumber());
+    correspondingSafetyConstraint.prepareForSave();
   }
 
   @Override

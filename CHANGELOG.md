@@ -6,6 +6,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix loading bug when creating UCA without Corresponding Safety Constraint
 *  Fix bug in A-STPA 2.5.1 that corresponding safety constraints are not loaded in Step 1
 
 ## XSTAMPP 2.5.1:

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -135,8 +135,8 @@ public class CSCView extends AbstractFilteredTableView {
       return new CSCLabelProvider() {
         @Override
         public String getText(Object element) {
-          return "SC1." + CSCView.this.getDataInterface()
-              .getUCANumber(((ICorrespondingUnsafeControlAction) element).getId());
+          return ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint()
+              .getIdString();
         }
       };
     case 3:
