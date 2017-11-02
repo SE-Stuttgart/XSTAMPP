@@ -11,6 +11,7 @@
 
 package xstampp.ui.common.contentassist;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -45,7 +46,17 @@ import org.eclipse.ui.PlatformUI;
 
 class LinkingShell {
 
+  /**
+   * An array containing all {@link LinkProposal}s that are available for linking.
+   */
   private LinkProposal[] proposals;
+
+  /**
+   * The current content is a subset of the proposals {@link Array} and contans only the
+   * {@link LinkProposal}s that are currently displayed.
+   * 
+   * <p>the currentContent array equals the proposals array if no search term has been entered
+   */
   private LinkProposal[] currentContent;
   private IContentProposalListener listener;
   private Point mouseLoc;
@@ -55,6 +66,10 @@ class LinkingShell {
   private int shellsOffset = 10;
   private java.util.List<Label> descChildren;
 
+  /**
+   * Constructs two shells for displaying the {@link LinkProposal#getLabel()}s as list and the
+   * {@link LinkProposal#getDescription()} for the selected {@link LinkProposal} in this list.
+   */
   public LinkingShell() {
     this.mouseLoc = Display.getDefault().getCursorLocation();
     descShellSize = new Point(300, 300);
@@ -84,11 +99,11 @@ class LinkingShell {
     if (this.shell != null && !this.shell.isDisposed()) {
       this.shell.close();
     }
-    
+
     if (mouseLoc == null) {
       Point location = Display.getDefault().getCursorLocation();
-      setMousePosition(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
-          .toControl(location));
+      setMousePosition(
+          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().toControl(location));
     }
     if (this.proposals.length == 0) {
       MessageDialog.openError(null, "No entrys available",
@@ -119,8 +134,7 @@ class LinkingShell {
     // calculate the correct position of the shell, so that it's not displayed beyond the
     // display bounds
     Point descShellLocation = new Point(
-        shell.getBounds().x + shell.getBounds().width + shellsOffset,
-        shell.getBounds().y);
+        shell.getBounds().x + shell.getBounds().width + shellsOffset, shell.getBounds().y);
     if (Display.getDefault().getBounds().width - (descShellLocation.x + descShellSize.x) < 0) {
       descShellLocation.x = shell.getBounds().x - descShellSize.x - shellsOffset;
     }
@@ -161,9 +175,9 @@ class LinkingShell {
             descChildren.get(i).dispose();
           }
           Label label = null;
-          if (LinkingShell.this.proposals[proposalList.getSelectionIndex()]
+          if (LinkingShell.this.currentContent[proposalList.getSelectionIndex()]
               .getDescription() != null) {
-            for (String s : LinkingShell.this.proposals[proposalList.getSelectionIndex()]
+            for (String s : LinkingShell.this.currentContent[proposalList.getSelectionIndex()]
                 .getDescription().split("\n")) {
               FormData data = new FormData();
               data.top = new FormAttachment(label);
@@ -243,8 +257,7 @@ class LinkingShell {
 
       @Override
       public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
-
+        // key events should only be listened to if the key is released
       }
     });
     proposalList.forceFocus();
