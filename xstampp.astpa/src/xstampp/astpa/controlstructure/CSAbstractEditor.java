@@ -844,7 +844,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
 		@Override
 		public PaletteViewer createPaletteViewer(Composite parent) {
 			PaletteViewer viewer = super.createPaletteViewer(parent);
-      viewer.getPaletteViewerPreferences().setAutoCollapseSetting(PaletteViewerPreferences.COLLAPSE_NEVER);
+			//TODO Fix Null Pointer Exeption when initializing the control structure
+      //viewer.getPaletteViewerPreferences().setAutoCollapseSetting(PaletteViewerPreferences.COLLAPSE_NEVER);
       return viewer;
 		}
 

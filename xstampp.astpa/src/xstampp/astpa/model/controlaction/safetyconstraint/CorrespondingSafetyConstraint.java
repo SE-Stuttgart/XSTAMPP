@@ -76,4 +76,9 @@ public class CorrespondingSafetyConstraint extends ATableModel {
   public String getIdString() {
     return "SC1." + super.getIdString();
   }
+  
+  @Override
+  public String getDescription() {
+    return getText();
+  }
 }

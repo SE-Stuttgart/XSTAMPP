@@ -6,6 +6,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix bug in Step 1.3 that description of Safety Constraints in the Linking Dialog is empty
 *  Fix bug since 2.3.0 that a Table entry description is not Wrapped
 *  Fix loading bug when creating UCA without Corresponding Safety Constraint
 *  Fix bug in A-STPA 2.5.1 that corresponding safety constraints are not loaded in Step 1
