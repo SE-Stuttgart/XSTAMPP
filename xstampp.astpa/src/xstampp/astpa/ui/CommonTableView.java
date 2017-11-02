@@ -544,9 +544,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
     // the textfield for the description of the selected item
     this.descriptionWidget = new Text(leftSash,
-        SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP | SWT.SEARCH);
+        SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
 
-    this.descriptionWidget.setMessage(Messages.DoubleClickToEditTitle);
+    this.descriptionWidget.setToolTipText(Messages.DoubleClickToEditTitle);
     this.descriptionWidget.setEnabled(false);
     this.descriptionWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
