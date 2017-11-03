@@ -25,6 +25,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.IHazAccController;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 
 @XmlRootElement(name = "causalComponent")
@@ -162,10 +163,10 @@ public class CausalCSComponent implements ICausalComponent {
     }
   }
 
-  void moveSafetyConstraints(List<CausalSafetyConstraint> list) {
+  void moveSafetyConstraints(List<CausalSafetyConstraint> list, LinkController linkController) {
     if (factors != null) {
       for (CausalFactor factor : factors) {
-        factor.moveSafetyConstraints(list);
+        factor.moveSafetyConstraints(list, linkController);
       }
     }
   }

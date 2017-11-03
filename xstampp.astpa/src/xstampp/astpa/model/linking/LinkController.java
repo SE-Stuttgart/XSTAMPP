@@ -65,20 +65,28 @@ public class LinkController extends Observable {
    */
   public List<UUID> getLinksFor(ObserverValue linkType, UUID part) {
     List<UUID> links = new ArrayList<>();
+    for (Link link : getRawLinksFor(linkType, part)) {
+      links.add(link.getLinkFor(part));
+    }
+    return links;
+  }
+
+  public List<Link> getRawLinksFor(ObserverValue linkType, UUID part) {
+    List<Link> links = new ArrayList<>();
     if (linkType == null) {
       for (ObserverValue value : this.linkMap.keySet()) {
-        links.addAll(getLinksFor(value, part));
+        links.addAll(getRawLinksFor(value, part));
       }
     } else {
       for (Link link : getLinkObjectsFor(linkType)) {
         if (link.links(part)) {
-          links.add(link.getLinkFor(part));
+          links.add(link);
         }
       }
     }
     return links;
   }
-
+  
   public List<Link> getLinksFor(ObserverValue linkType) {
     List<Link> links = new ArrayList<>();
     if (this.linkMap.containsKey(linkType)) {

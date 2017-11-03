@@ -27,6 +27,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 
 /**
@@ -265,7 +266,7 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
     return list;
   }
 
-  void moveSafetyConstraints(List<CausalSafetyConstraint> list) {
+  void moveSafetyConstraints(List<CausalSafetyConstraint> list, LinkController linkController) {
     if (safetyConstraint != null) {
       CausalSafetyConstraint newConstraint = new CausalSafetyConstraint(
           safetyConstraint.getDescription());
@@ -275,7 +276,7 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
     }
     if (entries != null) {
       for (CausalFactorEntry factorEntry : entries) {
-        factorEntry.moveSafetyConstraints(list);
+        factorEntry.moveSafetyConstraints(list, linkController);
       }
     }
   }

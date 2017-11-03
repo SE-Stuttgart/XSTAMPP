@@ -48,14 +48,14 @@ public class GridRow {
   private int[] rowSpanningCells;
 
   /**
-   * Ctor.
+   * Constructs a row which defines the amount of cells given by columnCount
    * 
    * @author Patrick Wickenhaeuser, Lukas Balzer
+   * @param columnCount
+   *          the total amount of columns in the parent gird
    * @param colorDivide
    *          The amount of rows that should be colored in the same color to
    *          mark multiple rows that are related
-   * @param columnCount
-   *          the total amount of columns in the parent gird
    * @param rowSpanningCells
    *          the absolute indices of the cells that should span the child rows of this row
    * 

@@ -25,7 +25,10 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
+import xstampp.model.ObserverValue;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactorEntry implements ICausalFactorEntry {
@@ -130,13 +133,21 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     return note;
   }
 
-  void moveSafetyConstraints(List<CausalSafetyConstraint> list) {
+  void moveSafetyConstraints(List<CausalSafetyConstraint> list, LinkController linkController) {
     if (constraintText != null) {
       CausalSafetyConstraint safetyConstraint = new CausalSafetyConstraint(constraintText);
-      constraintText = null;
-      constraintId = safetyConstraint.getId();
+      this.constraintText = null;
+      this.constraintId = safetyConstraint.getId();
       list.add(safetyConstraint);
     }
+    if (this.constraintId != null) {
+      Link ucaHazLink = linkController.getRawLinksFor(ObserverValue.UCA_HAZ_LINK , ucaLink).stream().findFirst().orElse(null);
+      if (ucaHazLink != null) {
+        linkController.addLink(ObserverValue.UcaHazLink_SC2_LINK, ucaHazLink.getId(), this.constraintId);
+      }
+      this.constraintId = null;
+    }
+    
   }
 
   /**

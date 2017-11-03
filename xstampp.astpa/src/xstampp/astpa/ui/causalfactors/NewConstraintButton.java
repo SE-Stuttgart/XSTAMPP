@@ -45,6 +45,8 @@ public class NewConstraintButton extends CellButton {
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     CausalFactorEntryData data = new CausalFactorEntryData(entryId);
     data.setConstraint(new String());
+    UUID randomUUID = UUID.randomUUID();
+    
     datamodel.lockUpdate();
     datamodel.changeCausalEntry(componentId, factorId, data);
     datamodel.releaseLockAndUpdate(null);

@@ -22,6 +22,7 @@ import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
@@ -102,6 +103,11 @@ public interface ICausalFactorDataModel extends IDataModel, ICausalFactorControl
   List<ITableModel> getAllHazards();
 
   /**
+   * {@link IHazardViewDataModel#getHazard(UUID)}
+   */
+  ITableModel getHazard(UUID id);
+
+  /**
    * {@link IExtendedDataModel#getAllRefinedRules(IEntryFilter)}
    */
   List<AbstractLTLProvider> getAllRefinedRules(IEntryFilter<AbstractLTLProvider> filter);
@@ -144,4 +150,6 @@ public interface ICausalFactorDataModel extends IDataModel, ICausalFactorControl
   ITableModel getControlActionForUca(UUID ucaId);
 
   ICausalController getCausalFactorController();
+
+  LinkController getLinkController();
 }

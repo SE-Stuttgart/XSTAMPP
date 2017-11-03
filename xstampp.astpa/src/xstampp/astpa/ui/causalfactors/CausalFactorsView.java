@@ -30,6 +30,7 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.ui.CommonGridView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -264,7 +265,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       ICausalComponent component, Map<UUID, ICorrespondingUnsafeControlAction> ucaMap,
       int cellNumber) {
     GridRow entryRow = new GridRow(this.getGridWrapper().getColumnLabels().length, 1,
-        new int[] { 2, 3, 6 });
+        new int[] { 2 });
     // add the uca id + description in a read only cell with an delete button
     String ucaDescription = ucaMap.get(entry.getUcaLink()).getTitle() + "\n"
         + ucaMap.get(entry.getUcaLink()).getDescription();
@@ -294,6 +295,17 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     entryRow.addCell(++cellNumber, new CellEditorFactorNote(getGridWrapper(), getDataModel(),
         component.getId(), factor.getId(), entry));
     return entryRow;
+  }
+
+  private GridRow createHazardRow(Link ucaHazLink, int cellNumber) {
+    GridRow row = new GridRow(this.getGridWrapper().getColumnLabels().length, 1);
+    ITableModel hazard = getDataModel().getHazard(ucaHazLink.getLinkB());
+    if(hazard != null) {
+      row.addCell(++cellNumber, new GridCellText(hazard.getIdString()));
+    }
+
+    return null;
+    
   }
 
   private int createConstraints(GridRow entryRow, int cellNumber, ICausalFactorEntry entry,

@@ -35,6 +35,7 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.AbstractLTLProvider;
 
@@ -236,9 +237,10 @@ public class CausalFactorController extends Observable
   }
 
   @Override
-  public void prepareForSave(IHazAccController hazAccController, List<Component> list,
+  public void prepareForSave(IHazAccController hazAccController,
+      List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, LinkController linkController) {
     Map<UUID, List<UUID>> hazardLinksMap = new HashMap<>();
     if (links != null) {
       links.clear();
@@ -253,7 +255,7 @@ public class CausalFactorController extends Observable
       if (getCausalComponent(child) != null) {
         this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap, hazAccController,
             child, allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints());
-        this.causalComponents.get(child.getId()).moveSafetyConstraints(causalSafetyConstraints);
+        this.causalComponents.get(child.getId()).moveSafetyConstraints(causalSafetyConstraints, linkController);
       }
     }
     if (causalComponents != null) {

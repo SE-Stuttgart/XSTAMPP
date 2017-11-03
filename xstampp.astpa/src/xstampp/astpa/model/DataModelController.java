@@ -281,7 +281,7 @@ public class DataModelController extends AbstractDataModel
 
     this.causalFactorController.prepareForSave(this.getHazAccController(),
         controlStructureController.getInternalComponents(), getAllScenarios(true, true, true),
-        getAllUnsafeControlActions());
+        getAllUnsafeControlActions(), getLinkController());
     if (!this.getHazAccController().prepareForSave(linkController)) {
       this.hazAccController = null;
     }

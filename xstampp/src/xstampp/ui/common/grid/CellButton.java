@@ -29,6 +29,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public class CellButton implements ICellButton {
 
+  @FunctionalInterface
+  public interface ButtonAction {
+    void clickAction();
+  }
+
   private Rectangle rect;
   private String text;
   private Image image;

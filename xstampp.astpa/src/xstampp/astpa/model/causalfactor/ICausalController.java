@@ -22,6 +22,7 @@ import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 
 public interface ICausalController {
@@ -53,7 +54,7 @@ public interface ICausalController {
 
   void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions);
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, LinkController linkController);
 
   List<ITableModel> getSafetyConstraints();
 

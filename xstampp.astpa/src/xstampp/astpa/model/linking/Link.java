@@ -18,20 +18,28 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "idLink")
 public final class Link {
+
   @XmlAttribute
   private UUID linkA;
 
   @XmlAttribute
   private UUID linkB;
 
+  @XmlAttribute
+  private UUID id;
+
   public Link(UUID a, UUID b) {
     linkA = a;
     linkB = b;
+    this.id = UUID.randomUUID();
   }
 
   Link() {
-    linkA = null;
-    linkB = null;
+    this(null, null);
+  }
+
+  public UUID getId() {
+    return id;
   }
 
   public UUID getLinkA() {

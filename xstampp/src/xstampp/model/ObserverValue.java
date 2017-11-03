@@ -179,6 +179,8 @@ public enum ObserverValue {
 
   /**
    */
-  UCA_HAZ_LINK;
+  UCA_HAZ_LINK,
+  
+  UcaHazLink_SC2_LINK;
 
 }

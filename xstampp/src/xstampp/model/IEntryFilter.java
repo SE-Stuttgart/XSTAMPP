@@ -10,6 +10,7 @@
  *******************************************************************************/
 package xstampp.model;
 
+@FunctionalInterface
 public interface IEntryFilter<T> {
 
   /**

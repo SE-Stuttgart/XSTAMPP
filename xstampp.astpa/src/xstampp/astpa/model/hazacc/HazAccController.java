@@ -111,12 +111,8 @@ public class HazAccController extends Observable implements IHazAccController {
    */
   @Override
   public ITableModel getAccident(UUID accidentID) {
-    for (ITableModel accident : this.getAccidents()) {
-      if (accident.getId().equals(accidentID)) {
-        return accident;
-      }
-    }
-    return null;
+    return getAccidents().stream().filter(x -> x.getId().equals(accidentID)).findFirst()
+        .orElse(null);
   }
 
   /*
@@ -224,12 +220,8 @@ public class HazAccController extends Observable implements IHazAccController {
    */
   @Override
   public Hazard getHazard(UUID hazardId) {
-    for (Hazard hazard : this.getHazards()) {
-      if (hazard.getId().equals(hazardId)) {
-        return hazard;
-      }
-    }
-    return null;
+    return getHazards().stream().filter(x -> x.getId().equals(hazardId)).findFirst()
+        .orElse(null);
   }
 
   /*
