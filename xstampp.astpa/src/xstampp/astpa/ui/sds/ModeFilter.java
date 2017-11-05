@@ -14,7 +14,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.xerces.impl.xpath.regex.ParseException;
+import org.apache.xerces.impl.xpath.regex.RegularExpression;
 import org.eclipse.jface.viewers.ViewerFilter;
+
+import xstampp.ui.common.ProjectManager;
 
 /**
  * A ViewerFilter which contains a category array which can be empty
@@ -56,8 +60,14 @@ public abstract class ModeFilter extends ViewerFilter {
    *          the string for the filter
    */
   public void setSearchText(String s) {
-    // ensure that the value can be used for matching
-    this.searchString = ".*" + s.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
+    try {
+      // ensure that the value can be used for matching
+      RegularExpression regex = new RegularExpression(".*" + s.toLowerCase() + ".*"); //$NON-NLS-1$ //$NON-NLS-2$
+      this.searchString = regex.getPattern();
+    } catch (ParseException exc) {
+      exc.fillInStackTrace();
+      ProjectManager.getLOGGER().debug("Exception in the CSC Table filter",exc);
+    }
   }
 
   /**

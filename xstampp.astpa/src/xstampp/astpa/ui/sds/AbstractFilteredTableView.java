@@ -227,11 +227,12 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
     Label filterLabel = new Label(filterComposite, SWT.TRAIL);
     filterLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
     filterLabel.setText(Messages.Filter);
-
+    boolean first = true;
     for (String category : filter.getCategorys()) {
       Button bothButton = new Button(filterComposite, SWT.RADIO);
       bothButton.setText(category);
-      bothButton.setSelection(false);
+      bothButton.setSelection(first);
+      first = false;
       final String fin_category = category;
       bothButton.addSelectionListener(new SelectionListener() {
 

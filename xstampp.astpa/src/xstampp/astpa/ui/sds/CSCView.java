@@ -43,7 +43,7 @@ public class CSCView extends AbstractFilteredTableView {
    * 
    */
   public CSCView() {
-    super(new ATableFilter(), new String[] { Messages.ID, Messages.UnsafeControlActions,
+    super(new CSCTableFilter(), new String[] { Messages.ID, Messages.UnsafeControlActions,
         Messages.ID, Messages.CorrespondingSafetyConstraints });
     setColumnWeights(new int[] { -1, 5, -1, 5 });
     addEditingSupport(3, new EditSupportProvider() {
@@ -168,4 +168,5 @@ public class CSCView extends AbstractFilteredTableView {
     return true;
   }
 
+  
 }

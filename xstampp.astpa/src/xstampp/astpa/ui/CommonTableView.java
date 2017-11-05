@@ -641,7 +641,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.idColumn = new TableViewerColumn(this.getTableViewer(), SWT.NONE);
     this.idColumn.getColumn().setText(Messages.ID);
     final int idWeight = 5;
-    final int idMinWidth = 39;
+    final int idMinWidth = 45;
     tableColumnLayout.setColumnData(this.idColumn.getColumn(),
         new ColumnWeightData(idWeight, idMinWidth, true));
     this.idColumn.setLabelProvider(new ColumnLabelProvider() {
