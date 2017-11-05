@@ -34,7 +34,7 @@ public class UserSystemLoader {
 
   public IUserSystem loadSystem(File file) throws Exception {
 
-    IUserSystem system = new EmptyUserSystem();
+    IUserSystem system = new EmptyUserSystem(false);
     try (StringWriter writer = new StringWriter();
         FileInputStream inputStream = new FileInputStream(file);) {
 

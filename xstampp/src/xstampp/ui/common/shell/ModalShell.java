@@ -203,7 +203,9 @@ public abstract class ModalShell {
       applyButton.setLayoutData(gridData);
       applyButton.setEnabled(false);
     }
-
+    gridData = new GridData(SWT.RIGHT, SWT.BOTTOM, false, false);
+    gridData.widthHint = SWT.DEFAULT;
+    gridData.heightHint = SWT.DEFAULT;
     okButton = new Button(footer, SWT.PUSH);
     okButton.setText(acceptLabel);
     okButton.addSelectionListener(new SelectionAdapter() {
@@ -217,7 +219,9 @@ public abstract class ModalShell {
     });
     okButton.setLayoutData(gridData);
     okButton.setEnabled(false);
-
+    gridData = new GridData(SWT.RIGHT, SWT.BOTTOM, false, false);
+    gridData.widthHint = SWT.DEFAULT;
+    gridData.heightHint = SWT.DEFAULT;
     Button cancelButton = new Button(footer, SWT.PUSH);
     cancelButton.setText("Cancel");
     cancelButton.addSelectionListener(new SelectionAdapter() {

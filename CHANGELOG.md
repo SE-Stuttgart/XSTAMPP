@@ -6,6 +6,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix bug in user management that would create a deadlock when trying to log in
 *  Fix bug in the Linking Shells that the description won't fit the seleted entrie when the list is fitlered
 *  Fix bug in Step 1.3 that description of Safety Constraints in the Linking Dialog is empty
 *  Fix bug since 2.3.0 that a Table entry description is not Wrapped

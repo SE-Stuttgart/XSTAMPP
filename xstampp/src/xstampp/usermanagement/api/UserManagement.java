@@ -12,19 +12,7 @@
 package xstampp.usermanagement.api;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.StringWriter;
-import java.net.URL;
 import java.util.UUID;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -126,15 +114,13 @@ public class UserManagement {
         file = new File(filePath);
       }
     }
-    IUserSystem system = new EmptyUserSystem();
-    ;
+    IUserSystem system = new EmptyUserSystem(false);
     try {
       system = loader.loadSystem(file);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    if (system.getSystemId().equals(systemId) && system instanceof UserSystem) {
+    if (systemId.equals(system.getSystemId()) && system instanceof UserSystem) {
       ((UserSystem) system).setSystemName(file.getName());
       ((UserSystem) system).setExclusiveUser(exclusiveUser);
       RefreshRunner runner = new RefreshRunner(file, ((UserSystem) system));

@@ -1241,7 +1241,8 @@ public class DataModelController extends AbstractDataModel
       try {
         this.userSystem = UserManagement.getInstance().loadSystem(userSystemName, userSystemId,
             exclusiveUserId);
-        this.userSystemName = userSystem.getSystemName();
+        this.userSystemName = !(userSystem instanceof EmptyUserSystem) ? userSystem.getSystemName()
+            : this.userSystemName;
       } catch (Exception e) {
         e.printStackTrace();
       }

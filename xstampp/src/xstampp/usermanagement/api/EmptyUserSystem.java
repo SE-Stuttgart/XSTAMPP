@@ -25,6 +25,26 @@ import java.util.UUID;
  */
 public class EmptyUserSystem implements IUserSystem {
 
+  private boolean defaultAccess;
+
+  /**
+   * calls {@link EmptyUserSystem#EmptyUserSystem(boolean)} with <b style="color:blue;">true</b>
+   */
+  public EmptyUserSystem() {
+    this(true);
+  }
+
+  /**
+   * Constructs an {@link EmptyUserSystem} which can be accessed by everyone or by no one depending
+   * on the given boolean value
+   * 
+   * @param defaultAccess
+   *          whether this user system grants access to its content or not
+   */
+  public EmptyUserSystem(boolean defaultAccess) {
+    this.defaultAccess = defaultAccess;
+  }
+
   @Override
   public boolean createUser() {
     return false;
@@ -45,12 +65,12 @@ public class EmptyUserSystem implements IUserSystem {
    */
   @Override
   public boolean checkAccess(UUID entryId, AccessRights accessRight) {
-    return true;
+    return defaultAccess;
   }
 
   @Override
   public boolean checkAccess(AccessRights accessRight) {
-    return true;
+    return defaultAccess;
   }
 
   @Override
@@ -65,55 +85,46 @@ public class EmptyUserSystem implements IUserSystem {
 
   @Override
   public boolean canDeleteUser(UUID userId) {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean canCreateUser() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public UUID getCurrentUserId() {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public IUser getCurrentUser() {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public boolean assignResponsibility(IUser user, UUID responsibility) {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap) {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean createAdmin() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public String getSystemName() {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public List<UUID> getResponsibilities(UUID userId) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -129,7 +140,6 @@ public class EmptyUserSystem implements IUserSystem {
 
   @Override
   public boolean assignResponsibility(UUID responsibility) {
-    // TODO Auto-generated method stub
     return false;
   }
 
