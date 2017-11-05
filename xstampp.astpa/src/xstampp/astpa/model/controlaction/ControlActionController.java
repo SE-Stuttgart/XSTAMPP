@@ -117,9 +117,6 @@ public class ControlActionController extends Observable implements IControlActio
     int index = this.getControlActions().indexOf(controlAction);
     this.getControlActions().remove(index);
     this.trash.put(controlActionId, controlAction);
-    for (; index < this.getControlActions().size(); index++) {
-      this.getControlActions().get(index).setNumber(index + 1);
-    }
     return true;
   }
 

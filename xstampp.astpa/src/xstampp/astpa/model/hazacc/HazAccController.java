@@ -87,9 +87,6 @@ public class HazAccController extends Observable implements IHazAccController {
     ITableModel accident = this.getAccident(id);
     int index = this.getAccidents().indexOf(accident);
     this.getAccidents().remove(index);
-    for (; index < this.getAccidents().size(); index++) {
-      this.getAccidents().get(index).setNumber(index + 1);
-    }
     return true;
   }
 
@@ -171,9 +168,6 @@ public class HazAccController extends Observable implements IHazAccController {
     ITableModel hazard = this.getHazard(id);
     int index = this.getHazards().indexOf(hazard);
     this.getHazards().remove(index);
-    for (; index < this.getHazards().size(); index++) {
-      this.getHazards().get(index).setNumber(index + 1);
-    }
     return true;
   }
 

@@ -6,6 +6,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix bug when deleting a hazard/accident all ids are changed
 *  Fix bug in user management that would create a deadlock when trying to log in
 *  Fix bug in the Linking Shells that the description won't fit the seleted entrie when the list is fitlered
 *  Fix bug in Step 1.3 that description of Safety Constraints in the Linking Dialog is empty
