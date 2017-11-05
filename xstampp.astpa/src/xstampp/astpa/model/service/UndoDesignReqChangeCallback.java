@@ -13,7 +13,6 @@ package xstampp.astpa.model.service;
 
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.sds.ISDSController;
-import xstampp.astpa.model.sds.SDSController;
 import xstampp.model.ObserverValue;
 
 public class UndoDesignReqChangeCallback extends UndoTableModelChangeCallback<ISDSController> {
@@ -38,7 +37,7 @@ public class UndoDesignReqChangeCallback extends UndoTableModelChangeCallback<IS
 
   @Override
   public ObserverValue getChangeConstant() {
-    return ObserverValue.DESIGN_REQUIREMENT;
+    return this.type;
   }
 
 }

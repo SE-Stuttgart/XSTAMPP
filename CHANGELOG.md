@@ -6,6 +6,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix that when changing the title of a design requirement in step1/2 the title is not changed in the table
 *  Fix bug in the step 1.3 Table filter won't filter by safety constraints and added filter by uca's
 *  Fix bug when deleting a hazard/accident all ids are changed
 *  Fix bug in user management that would create a deadlock when trying to log in
