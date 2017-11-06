@@ -317,6 +317,9 @@
                                                                         </xs:attribute>
                                                                         <xs:attribute name="linkB" type="xs:string">
                                                                         </xs:attribute>
+                                                                        <xs:attribute name="id" use="optional"
+                                                                            type="xs:string">
+                                                                        </xs:attribute>
                                                                     </xs:complexType>
                                                                 </xs:element>
                                                             </xs:sequence>

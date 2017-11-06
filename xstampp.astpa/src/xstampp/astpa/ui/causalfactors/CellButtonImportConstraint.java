@@ -61,7 +61,7 @@ public class CellButtonImportConstraint extends CellButton {
       tmp = safetyConstraints.get(i).getText();
       if (tmp != null && tmp.length() >= 1) {
         LinkProposal proposal = new LinkProposal();
-        proposal.setLabel(tmp.substring(0, Math.min(tmp.length(), 40)) + "...");
+        proposal.setLabel(safetyConstraints.get(i).getIdString() + " - " + tmp.substring(0, Math.min(tmp.length(), 20)) + "...");
         proposal.setDescription(tmp);
         proposals.add(proposal);
       }
