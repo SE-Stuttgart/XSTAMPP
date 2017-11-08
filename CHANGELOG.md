@@ -1,4 +1,4 @@
-## XSTAMPP x.x.x:
+## XSTAMPP 2.5.2:
 
 #### A-STPA Features:
 
