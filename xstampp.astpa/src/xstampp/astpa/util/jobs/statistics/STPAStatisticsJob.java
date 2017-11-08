@@ -52,8 +52,8 @@ public class STPAStatisticsJob extends XstamppJob {
     Workbook wb = new XSSFWorkbook();
     AbstractProgressSheetCreator.initMap();
     new Step0Progress(wb, controller).createSheet("STPA Step 0");
-    new Step1Progress(wb, controller).createSheet("STPA Step 1");
-    new Step2Progress(wb, controller).createSheet("STPA Step 2");
+    new Step1HazardProgress(wb, controller).createSheet("STPA Step 1");
+    new Step2HazardProgress(wb, controller).createSheet("STPA Step 2");
     // Write the output to a file
     
     PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {

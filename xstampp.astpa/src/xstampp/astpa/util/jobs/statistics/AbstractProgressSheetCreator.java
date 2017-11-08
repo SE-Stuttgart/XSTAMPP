@@ -1,15 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributor:
- * Lukas Balzer - initial code contribution
+ * Contributor: Lukas Balzer - initial code contribution
  *******************************************************************************/
 
 package xstampp.astpa.util.jobs.statistics;
@@ -31,6 +28,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import xstampp.astpa.model.DataModelController;
 
@@ -55,13 +53,14 @@ abstract class AbstractProgressSheetCreator {
   }
 
   static void initMap() {
-    if(progressMap == null) {
+    if (progressMap == null) {
       progressMap = new HashMap<>();
       progressMap.put(STEP.STEP_0, new HashMap<>());
       progressMap.put(STEP.STEP_1, new HashMap<>());
       progressMap.put(STEP.STEP_2, new HashMap<>());
     }
   }
+
   /**
    * 
    * @param step
@@ -198,6 +197,14 @@ abstract class AbstractProgressSheetCreator {
 
   StyleFactory getFactory() {
     return factory;
+  }
+
+  protected void mergeRows(Sheet sheet, int start, int end, int[] cells) {
+    if (end > start) {
+      for (int i : cells) {
+        sheet.addMergedRegion(new CellRangeAddress(start, end, i, i));
+      }
+    }
   }
 
   protected abstract void createWorkSheet(Sheet sheet);
