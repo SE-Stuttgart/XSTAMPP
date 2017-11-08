@@ -85,6 +85,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
     editingSupport = new ResponsibilityEditingSupport(viewer, getDataModel());
     respColumn.setEditingSupport(editingSupport);
     List<T> entryList = new ArrayList<>();
+    //if the current user is has Administrator rights he can see all entries, where as normal user he can only see his responsibilities 
     if (getDataModel().getUserSystem().checkAccess(AccessRights.ADMIN)) {
       entryList = getEntryList(modelId);
     } else {

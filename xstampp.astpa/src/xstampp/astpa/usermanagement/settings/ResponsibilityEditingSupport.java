@@ -38,7 +38,11 @@ public class ResponsibilityEditingSupport extends EditingSupport {
   private Map<UUID, IUser> userToResponibilitiesMap;
   private List<String> userList;
   private IUserSystem userSystem;
+  /**
+   * This lists contains the indexes
+   */
   private List<Integer> registryIndexList;
+  private List<IUser> userRegister;
 
   /**
    * 
@@ -53,10 +57,12 @@ public class ResponsibilityEditingSupport extends EditingSupport {
     userSystem = project.getUserSystem();
     List<IUser> registry = userSystem.getRegistry();
     this.userList = new ArrayList<>();
+    this.userRegister = new ArrayList<>();
     this.registryIndexList = new ArrayList<>();
     for (int i = 0; i < registry.size(); i++) {
       if (registry.get(i).checkAccess(AccessRights.ACCESS)) {
         this.userList.add(registry.get(i).getUsername());
+        this.userRegister.add(registry.get(i));
         this.registryIndexList.add(i);
       }
     }
@@ -96,8 +102,7 @@ public class ResponsibilityEditingSupport extends EditingSupport {
   @Override
   protected void setValue(Object element, Object value) {
     try {
-      Integer registryIndex = this.registryIndexList.get((int) value);
-      IUser user = userSystem.getRegistry().get(registryIndex);
+      IUser user = this.userRegister.get((int) value);
       userToResponibilitiesMap.put(((IEntryWithNameId) element).getId(), user);
       getViewer().refresh(true);
     } catch (Exception exc) {
