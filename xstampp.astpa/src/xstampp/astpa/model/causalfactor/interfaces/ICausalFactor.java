@@ -46,6 +46,4 @@ public interface ICausalFactor {
    */
   String getNote();
 
-  List<ICausalFactorEntry> getAllEntries();
-
 }

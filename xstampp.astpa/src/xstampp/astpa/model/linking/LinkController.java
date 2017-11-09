@@ -35,20 +35,24 @@ public class LinkController extends Observable {
     this.linkMap = new HashMap<>();
   }
 
-  public boolean addLink(ObserverValue linkType, UUID a, UUID b) {
+  public UUID addLink(ObserverValue linkType, UUID a, UUID b) {
     if (linkType != null) {
       if (!this.linkMap.containsKey(linkType)) {
         this.linkMap.put(linkType, new ArrayList<Link>());
       }
       Link o = new Link(a, b);
+      int index = this.linkMap.get(linkType).indexOf(o);
+      if (index > 0) {
+        return this.linkMap.get(linkType).get(index).getId();
+      }
       if (this.linkMap.get(linkType).add(o)) {
         setChanged();
         notifyObservers(new UndoAddLinkingCallback(this, linkType, o));
 
-        return true;
+        return o.getId();
       }
     }
-    return false;
+    return null;
   }
 
   /**
@@ -86,7 +90,7 @@ public class LinkController extends Observable {
     }
     return links;
   }
-  
+
   public List<Link> getLinksFor(ObserverValue linkType) {
     List<Link> links = new ArrayList<>();
     if (this.linkMap.containsKey(linkType)) {

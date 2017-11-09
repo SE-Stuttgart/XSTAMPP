@@ -27,26 +27,11 @@ import xstampp.model.AbstractLTLProvider;
 
 public interface ICausalController {
 
-  UUID addCausalFactor(IRectangleComponent csComp);
+  UUID addCausalFactor();
 
-  List<UUID> getLinkedUCAList(UUID factorId);
+  boolean setCausalFactorText(UUID causalFactorId, String causalFactorText);
 
-  boolean setCausalFactorText(UUID componentId, UUID causalFactorId, String causalFactorText);
-
-  UUID addCausalUCAEntry(UUID componentId, UUID causalFactorId, UUID ucaID);
-
-  UUID addCausalUCAEntry(UUID componentId, UUID causalFactorId, ICausalFactorEntry entry);
-
-  UUID addCausalHazardEntry(UUID componentId, UUID causalFactorId);
-
-  CausalFactorEntryData changeCausalEntry(UUID componentId, UUID causalFactorId,
-      CausalFactorEntryData entryData);
-
-  boolean removeCausalFactor(UUID componentId, UUID causalFactor);
-
-  boolean removeCausalEntry(UUID componentId, UUID causalFactorId, UUID entryId);
-
-  ICausalComponent getCausalComponent(IRectangleComponent csComp);
+  boolean removeCausalFactor(UUID causalFactor);
 
   void prepareForExport(IHazAccController hazAccController, List<IRectangleComponent> children,
       List<AbstractLTLProvider> allRefinedRules,
@@ -54,13 +39,16 @@ public interface ICausalController {
 
   void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, LinkController linkController);
-
-  List<ITableModel> getSafetyConstraints();
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      LinkController linkController);
 
   boolean isUseScenarios();
 
   void setUseScenarios(boolean useScenarios);
+
+  List<ITableModel> getSafetyConstraints();
+
+  UUID addSafetyConstraint();
 
   /**
    * 

@@ -11,9 +11,6 @@ package xstampp.astpa.model.causalfactor.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.linking.LinkController;
-import xstampp.model.ObserverValue;
-
 public interface ICausalFactorEntry {
 
   /**
@@ -29,13 +26,6 @@ public interface ICausalFactorEntry {
   public UUID getConstraintId();
 
   public UUID getId();
-
-  /**
-   * @return the ucaLink
-   * @deprecated uca-causalFactor links should be stored in the {@link LinkController} with the
-   *             {@link ObserverValue#UCA_CausalFactor_LINK}
-   */
-  public UUID getUcaLink();
 
   /**
    * @return the scenarioLinks

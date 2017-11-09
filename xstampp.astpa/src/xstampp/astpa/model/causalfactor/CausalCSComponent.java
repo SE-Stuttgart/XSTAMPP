@@ -62,15 +62,6 @@ public class CausalCSComponent implements ICausalComponent {
     return id;
   }
 
-  public List<UUID> getLinkedUCAList(UUID factorId) {
-    List<UUID> list = new ArrayList<>();
-    for (CausalFactor factor : internal_getFactors()) {
-      if (factor.getId().equals(factorId))
-        list.addAll(factor.getLinkedUCAList());
-    }
-    return list;
-  }
-
   /**
    * @param factors
    *          the factors to set
@@ -145,29 +136,13 @@ public class CausalCSComponent implements ICausalComponent {
     }
   }
 
-  public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
-      IHazAccController hazAccController, ICausalComponent child,
-      List<AbstractLTLProvider> allRefinedRules,
+  public List<CausalFactor> prepareForSave(IHazAccController hazAccController, List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
-    List<ICausalFactor> causalFactors = child.getCausalFactors();
-    if (causalFactors != null) {
-      for (ICausalFactor legacyEntry : causalFactors) {
-        intern_addCausalFactor((CausalFactor) legacyEntry);
-
-      }
-    }
     for (CausalFactor causalFactor : internal_getFactors()) {
-      causalFactor.prepareForSave(hazardLinksMap, hazAccController, allRefinedRules,
+      causalFactor.prepareForSave( hazAccController, allRefinedRules,
           allUnsafeControlActions, safetyConstraints, linkController);
     }
-  }
-
-  void moveSafetyConstraints(List<CausalSafetyConstraint> list, LinkController linkController) {
-    if (factors != null) {
-      for (CausalFactor factor : factors) {
-        factor.moveSafetyConstraints(list, linkController);
-      }
-    }
+    return internal_getFactors();
   }
 }

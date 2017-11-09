@@ -25,10 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.NumberedArrayList;
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -49,10 +47,6 @@ import xstampp.model.AbstractLTLProvider;
 public class CausalFactorController extends Observable
     implements ICausalFactorController, ICausalController {
 
-  @XmlElementWrapper(name = "causalFactorHazardLinks")
-  @XmlElement(name = "causalFactorHazardLink")
-  private List<Object> links;
-
   @XmlElementWrapper(name = "causalComponents")
   @XmlElement(name = "causalComponent")
   private Map<UUID, CausalCSComponent> causalComponents;
@@ -64,6 +58,8 @@ public class CausalFactorController extends Observable
   @XmlElement(name = "causalSafetyConstraint")
   private NumberedArrayList<CausalSafetyConstraint> causalSafetyConstraints;
 
+  private NumberedArrayList<CausalFactor> causalFactors;
+
   /**
    * Constructor of the causal factor controller
    * 
@@ -71,118 +67,35 @@ public class CausalFactorController extends Observable
    * 
    */
   public CausalFactorController() {
-    this.links = new ArrayList<>();
     this.causalSafetyConstraints = new NumberedArrayList<>();
+    this.causalFactors = new NumberedArrayList<>();
     this.setUseScenarios(ASTPADefaultConfig.getInstance().USE_CAUSAL_SCENARIO_ANALYSIS);
   }
 
   @Override
-  public UUID addCausalFactor(IRectangleComponent csComp) {
-    UUID factorId = null;
-    if (validateCausalComponent(csComp.getComponentType())) {
-      if (causalComponents == null) {
-        this.causalComponents = new HashMap<>();
-      }
-      if (!this.causalComponents.containsKey(csComp.getId())) {
-        this.causalComponents.put(csComp.getId(), new CausalCSComponent());
-      }
-      factorId = this.causalComponents.get(csComp.getId()).addCausalFactor();
+  public UUID addCausalFactor() {
+    CausalFactor factor = new CausalFactor();
+    if (this.causalFactors.add(factor)) {
+      return factor.getId();
     }
-    return factorId;
 
+    return null;
   }
 
   @Override
-  public List<UUID> getLinkedUCAList(UUID factorId) {
-    List<UUID> list = new ArrayList<>();
-    if (causalComponents != null) {
-      for (CausalCSComponent comp : causalComponents.values()) {
-        list.addAll(comp.getLinkedUCAList(factorId));
-      }
-    }
-    return list;
-  }
-
-  @Override
-  public boolean setCausalFactorText(UUID componentId, UUID causalFactorId,
-      String causalFactorText) {
-    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    if (factor != null) {
-      factor.setText(causalFactorText);
-      return true;
+  public boolean setCausalFactorText(UUID causalFactorId, String causalFactorText) {
+    CausalFactor causalFactor = this.causalFactors.get(causalFactorId);
+    if (causalFactor != null) {
+      return causalFactor.setText(causalFactorText);
     }
     return false;
   }
 
   @Override
-  public UUID addCausalUCAEntry(UUID componentId, UUID causalFactorId, UUID ucaID) {
-    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    if (factor != null) {
-      return factor.addUCAEntry(ucaID);
-    }
-    return null;
+  public boolean removeCausalFactor(UUID causalFactor) {
+    return this.causalFactors.removeIf(factor -> factor.getId().equals(causalFactor));
   }
 
-  @Override
-  public UUID addCausalUCAEntry(UUID componentId, UUID causalFactorId, ICausalFactorEntry entry) {
-    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    if (factor != null) {
-      return factor.addUCAEntry(entry);
-    }
-    return null;
-  }
-
-  @Override
-  public UUID addCausalHazardEntry(UUID componentId, UUID causalFactorId) {
-    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-    if (factor != null) {
-      return factor.addHazardEntry();
-    }
-    return null;
-  }
-
-  @Override
-  public CausalFactorEntryData changeCausalEntry(UUID componentId, UUID causalFactorId,
-      CausalFactorEntryData entryData) {
-    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-
-    if (factor != null) {
-      CausalFactorEntry entry = (CausalFactorEntry) factor.getEntry(entryData.getId());
-      if (entry != null) {
-        return entry.changeCausalEntry(entryData, causalSafetyConstraints);
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public boolean removeCausalFactor(UUID componentId, UUID causalFactor) {
-    if (causalComponents != null) {
-      if (componentId == null) {
-        for (CausalCSComponent comp : causalComponents.values()) {
-          if (comp.removeCausalFactor(causalFactor)) {
-            return true;
-          }
-        }
-      } else if (causalComponents.containsKey(componentId)) {
-        CausalCSComponent comp = this.causalComponents.get(componentId);
-        return comp.removeCausalFactor(causalFactor);
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public boolean removeCausalEntry(UUID componentId, UUID causalFactorId, UUID entryId) {
-    CausalFactor factor = internal_getCausalFactor(componentId, causalFactorId);
-
-    if (factor != null) {
-      return factor.removeEntry(entryId);
-    }
-    return false;
-  }
-
-  @Override
   public ICausalComponent getCausalComponent(IRectangleComponent csComp) {
     CausalCSComponent component = null;
     if (csComp != null && validateCausalComponent(csComp.getComponentType())) {
@@ -199,13 +112,6 @@ public class CausalFactorController extends Observable
       component.setType(csComp.getComponentType());
     }
     return component;
-  }
-
-  private CausalFactor internal_getCausalFactor(UUID componentId, UUID causalFactorId) {
-    if (causalComponents != null && this.causalComponents.containsKey(componentId)) {
-      return causalComponents.get(componentId).getCausalFactor(causalFactorId);
-    }
-    return null;
   }
 
   private boolean validateCausalComponent(ComponentType type) {
@@ -233,31 +139,22 @@ public class CausalFactorController extends Observable
             allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints());
       }
     }
-    System.out.println();
   }
 
   @Override
   public void prepareForSave(IHazAccController hazAccController,
       List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions, LinkController linkController) {
-    Map<UUID, List<UUID>> hazardLinksMap = new HashMap<>();
-    if (links != null) {
-      links.clear();
-      links = null;
-    }
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      LinkController linkController) {
     ArrayList<UUID> removeList = new ArrayList<>();
     if (causalComponents != null) {
       removeList.addAll(causalComponents.keySet());
     }
-    for (Component child : list) {
-      removeList.remove(child.getId());
-      if (getCausalComponent(child) != null) {
-        this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap, hazAccController,
-            child, allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints(), linkController);
-        this.causalComponents.get(child.getId()).moveSafetyConstraints(causalSafetyConstraints, linkController);
-      }
-    }
+    this.causalComponents.values().forEach((comp) -> {
+      comp.prepareForSave(hazAccController, allRefinedRules, allUnsafeControlActions,
+          getCausalSafetyConstraints(), linkController);
+    });
     if (causalComponents != null) {
       for (UUID id : removeList) {
         this.causalComponents.remove(id);
@@ -266,6 +163,15 @@ public class CausalFactorController extends Observable
         causalComponents = null;
       }
     }
+  }
+
+  @Override
+  public UUID addSafetyConstraint() {
+    CausalSafetyConstraint constraint = new CausalSafetyConstraint();
+    if (this.causalSafetyConstraints.add(constraint)) {
+      return constraint.getId();
+    }
+    return null;
   }
 
   @Override

@@ -377,6 +377,8 @@ public class DataModelController extends AbstractDataModel
         getControlActionController().getControlActionFor(ucaId).getId(), AccessRights.ACCESS)) {
       return null;
     }
+    UUID linkId = getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, ucaId, causalFactorId);
+    getLinkController().addLink(ObserverValue.UCA, a, b)
     UUID result = this.causalFactorController.addCausalUCAEntry(component, causalFactorId, ucaId);
     if (result != null) {
       this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
