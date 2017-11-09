@@ -45,7 +45,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
     Row headerRow = sheet.createRow(rowIndex);
     headerRow.setHeightInPoints(12.75f);
 
-    createCells(headerRow, rowIndex, titles, Styles.HEADER_STYLE);
+    createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
       hazRow = createRow(sheet, ++rowIndex);

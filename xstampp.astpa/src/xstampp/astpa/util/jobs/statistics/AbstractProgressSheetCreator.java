@@ -121,9 +121,13 @@ abstract class AbstractProgressSheetCreator {
     }
   }
 
-  void createCells(Row row, int rowIndex, String[] titles, Styles style) {
+  void createCells(Row row, String[] titles, Styles style, Sheet sheet) {
     for (int i = 0; i < titles.length; i++) {
       createCell(row, i, titles[i], style);
+      if (titles[i].isEmpty() && i > 0) {
+        int rowNum = row.getRowNum();
+        sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, i - 1, i));
+      }
     }
   }
 

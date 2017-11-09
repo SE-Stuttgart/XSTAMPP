@@ -49,9 +49,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
     Row headerRow = sheet.createRow(rowIndex);
     headerRow.setHeightInPoints(12.75f);
 
-    createCells(headerRow, rowIndex, titles, Styles.HEADER_STYLE);
-    sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 1));
-    sheet.addMergedRegion(new CellRangeAddress(0, 0, 3, 4));
+    createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
       hazRow = createRow(sheet, ++rowIndex);

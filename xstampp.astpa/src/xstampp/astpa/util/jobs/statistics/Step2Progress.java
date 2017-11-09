@@ -25,13 +25,13 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
-public class Step1Progress extends AbstractProgressSheetCreator {
+public class Step2Progress extends AbstractProgressSheetCreator {
 
   private static final String[] titles = new String[] { "Control Actions", "",
       "Unsafe Control Actions", "Severity", "Correcponding Safety Constraint", "Design Requirement",
       "Completion[%]" };
 
-  public Step1Progress(Workbook wb, DataModelController controller) {
+  public Step2Progress(Workbook wb, DataModelController controller) {
     super(wb, controller);
   }
 
@@ -42,6 +42,8 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     headerRow.setHeightInPoints(12.75f);
 
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
+    sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 1));
+    sheet.addMergedRegion(new CellRangeAddress(0, 0, 3, 4));
     rowIndex = createCAs(sheet, rowIndex);
     Row footer = createRow(sheet, ++rowIndex);
     Float progress = getProgress(STEP.STEP_1, getController().getProjectId(), 1);
