@@ -162,25 +162,59 @@ public enum ObserverValue {
   SEVERITY,
 
   /**
+   * <ol>
+   * <li> A should be the UUID of an Accident in STPA Step 1
+   * <LI> B should be the UUID of a Safety Constraint in STPA Step 1
+   * </ol>
    */
   ACC_S0_LINK,
 
   /**
+   * <ol>
+   * <li> A should be the UUID of a Design Requirement in STPA Step 0
+   * <LI> B should be the UUID of a Safety Constraint in STPA Step 0
+   * </ol>
    */
   DR0_SC_LINK,
 
   /**
+   * <ol>
+   * <li> A should be the UUID of a Design Requirement in STPA Step 1
+   * <LI> B should be the UUID of a Safety Constraint in STPA Step 1
+   * </ol>
    */
   DR1_CSC_LINK,
 
   /**
+   * <ol>
+   * <li> A should be the UUID of a Design Requirement in STPA Step 2
+   * <LI> B should be the UUID of a Safety Constraint in STPA Step 2
+   * </ol>
    */
   DR2_CausalSC_LINK,
 
   /**
+   * <ol>
+   * <li> A should be the UUID of a UCA
+   * <LI> B should be the UUID of a Hazard
+   * </ol>
    */
   UCA_HAZ_LINK,
-  
-  UcaHazLink_SC2_LINK;
 
+  /**
+   * <ol>
+   * <li> A should be the UUID of a {@link ObserverValue#UCA_HAZ_LINK}
+   * <LI> B should be the UUID of a Corresponding Safety Constraint in STPA Step 1
+   * </ol>
+   */
+  UcaHazLink_SC2_LINK,
+
+  /**
+   * enum for a link<A,B> between a unsafe control action and a causal factor in a stpa analysis.
+   * <ol>
+   * <li> A should be the UUID of a UCA
+   * <li> B should be the UUID of a CF
+   * </ol>
+   */
+  UCA_CausalFactor_LINK;
 }

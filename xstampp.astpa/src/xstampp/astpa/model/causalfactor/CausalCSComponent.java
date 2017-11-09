@@ -149,7 +149,7 @@ public class CausalCSComponent implements ICausalComponent {
       IHazAccController hazAccController, ICausalComponent child,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
-      List<CausalSafetyConstraint> safetyConstraints) {
+      List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
     List<ICausalFactor> causalFactors = child.getCausalFactors();
     if (causalFactors != null) {
       for (ICausalFactor legacyEntry : causalFactors) {
@@ -159,7 +159,7 @@ public class CausalCSComponent implements ICausalComponent {
     }
     for (CausalFactor causalFactor : internal_getFactors()) {
       causalFactor.prepareForSave(hazardLinksMap, hazAccController, allRefinedRules,
-          allUnsafeControlActions, safetyConstraints);
+          allUnsafeControlActions, safetyConstraints, linkController);
     }
   }
 

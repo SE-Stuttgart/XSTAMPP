@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.swt.graphics.RGB;
@@ -240,38 +241,39 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
      * Depending on whether the entry is linked to a uca or not the uca column is filled and the
      * hazards are either based on the uca or linkable
      */
-    if (entry.getUcaLink() != null && ucaMap.containsKey(entry.getUcaLink())
-        && !isFiltered(entry.getUcaLink(), "UCA")) {
-      entryRow = createUCAEntry(entry, factor, component, ucaMap, cellNumber);
 
-    } else if (entry.getUcaLink() == null) {
+    Optional<UUID> findFirst = getDataModel().getLinkController()
+        .getLinksFor(ObserverValue.UCA_CausalFactor_LINK, entry.getId()).stream().findFirst();
+    if (findFirst.isPresent()) {
+      ICorrespondingUnsafeControlAction uca = ucaMap.get(findFirst.get());
+
+      if (!(uca == null || isFiltered(uca.getId(), "UCA"))) {
+        entryRow = createUCAEntry(entry, factor, component, uca, cellNumber);
+      }
+
+    } else {
       entryRow = createHazardEntry(entry, factor, component, cellNumber);
     }
     return entryRow;
   }
 
   /**
-   * adds the:</br>
-   * <h5>uca row with</h5>
-   * <ul>
-   * <li>uca text (read only)
-   * <li>hazard links (read only)
-   * <li>a row for each scenario
-   * </ul>
+   * adds the:</br> <h5>uca row with</h5> <ul> <li>uca text (read only) <li>hazard links (read only)
+   * <li>a row for each scenario </ul>
    * 
    * @param cellNumber
    */
   private GridRow createUCAEntry(ICausalFactorEntry entry, ICausalFactor factor,
-      ICausalComponent component, Map<UUID, ICorrespondingUnsafeControlAction> ucaMap,
-      int cellNumber) {
+      ICausalComponent component, ICorrespondingUnsafeControlAction uca, int cellNumber) {
+
     GridRow entryRow = new GridRow(this.getGridWrapper().getColumnLabels().length, 1,
         new int[] { 2 });
     // add the uca id + description in a read only cell with an delete button
-    String ucaDescription = ucaMap.get(entry.getUcaLink()).getTitle() + "\n"
-        + ucaMap.get(entry.getUcaLink()).getDescription();
+    String ucaDescription = uca.getTitle() + "\n"
+        + uca.getDescription();
     CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(),
         ucaDescription, component.getId(), factor.getId(), entry.getId());
-    UUID controlAction = getDataModel().getControlActionForUca(entry.getUcaLink()).getId();
+    UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
     if (!checkAccess(controlAction, AccessRights.WRITE)) {
       cell.setReadOnly(true);
       cell.setShowDelete(false);
@@ -279,7 +281,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     entryRow.addCell(++cellNumber, cell);
 
     // add the hazard links of the uca, as read only string
-    List<UUID> hazIds = getDataModel().getLinksOfUCA(entry.getUcaLink());
+    List<UUID> hazIds = getDataModel().getLinksOfUCA(uca.getId());
     String linkingString = new String();
     List<ITableModel> hazards = getDataModel().getHazards(hazIds);
     if (!hazards.isEmpty()) {
@@ -300,12 +302,12 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   private GridRow createHazardRow(Link ucaHazLink, int cellNumber) {
     GridRow row = new GridRow(this.getGridWrapper().getColumnLabels().length, 1);
     ITableModel hazard = getDataModel().getHazard(ucaHazLink.getLinkB());
-    if(hazard != null) {
+    if (hazard != null) {
       row.addCell(++cellNumber, new GridCellText(hazard.getIdString()));
     }
 
     return null;
-    
+
   }
 
   private int createConstraints(GridRow entryRow, int cellNumber, ICausalFactorEntry entry,
@@ -367,15 +369,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   }
 
   /**
-   * adds the:</br>
-   * <h5>uca row with</h5>
-   * <ul>
-   * <li>an empty cell with a delete (read only)
-   * <li>hazard linking cell
-   * <li>an empty scenario cell
-   * <li>a cell for importing or creating a new
-   * safety constraint
-   * </ul>
+   * adds the:</br> <h5>uca row with</h5> <ul> <li>an empty cell with a delete (read only)
+   * <li>hazard linking cell <li>an empty scenario cell <li>a cell for importing or creating a new
+   * safety constraint </ul>
    * 
    * @param cellNumber
    */

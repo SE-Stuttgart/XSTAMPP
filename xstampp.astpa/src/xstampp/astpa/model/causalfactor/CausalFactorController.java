@@ -254,7 +254,7 @@ public class CausalFactorController extends Observable
       removeList.remove(child.getId());
       if (getCausalComponent(child) != null) {
         this.causalComponents.get(child.getId()).prepareForSave(hazardLinksMap, hazAccController,
-            child, allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints());
+            child, allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints(), linkController);
         this.causalComponents.get(child.getId()).moveSafetyConstraints(causalSafetyConstraints, linkController);
       }
     }

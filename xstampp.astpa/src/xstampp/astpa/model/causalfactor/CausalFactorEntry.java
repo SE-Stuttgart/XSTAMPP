@@ -315,8 +315,14 @@ public class CausalFactorEntry implements ICausalFactorEntry {
   }
 
   public boolean prepareForSave(IHazAccController hazAccController,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
+      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
+      LinkController linkController, List<CausalSafetyConstraint> list) {
     // get rid of redundant entries which should not be stored
+    moveSafetyConstraints(list, linkController);
+    if(ucaLink != null) {
+      linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, ucaLink, id);
+      ucaLink = null;
+    }
     setHazardLinks(null);
     setUcaDescription(null);
     if (getNote().equals("")) {

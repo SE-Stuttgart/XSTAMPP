@@ -234,7 +234,7 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
   public void prepareForSave(Map<UUID, List<UUID>> hazardLinksMap,
       IHazAccController hazAccController, List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
-      List<CausalSafetyConstraint> safetyConstraints) {
+      List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
     if (hazardLinksMap.containsKey(getId()) || note != null || safetyConstraint != null) {
       CausalFactorEntry entry = int_addHazardEntry();
       if (entry != null) {
@@ -249,7 +249,7 @@ public class CausalFactor implements ICausalFactor, IEntryWithNameId {
 
     if (entries != null) {
       for (CausalFactorEntry entry : entries) {
-        entry.prepareForSave(hazAccController, allUnsafeControlActions);
+        entry.prepareForSave(hazAccController, allUnsafeControlActions, linkController, safetyConstraints);
       }
     }
   }
