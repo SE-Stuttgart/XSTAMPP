@@ -100,11 +100,14 @@ public class AutoCompleteField {
    * 
    */
   public void openPopup() {
-    shell.createControl(control);
+    shell.createControl(control, false);
   }
 
   public void openShell() {
-    shell.createControl(control);
+    shell.createControl(control, false);
+  }
+  public void openShell(boolean hideDescription) {
+    shell.createControl(control,hideDescription);
   }
 
   /**

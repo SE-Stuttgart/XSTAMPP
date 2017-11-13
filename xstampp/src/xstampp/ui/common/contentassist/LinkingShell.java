@@ -55,7 +55,8 @@ class LinkingShell {
    * The current content is a subset of the proposals {@link Array} and contans only the
    * {@link LinkProposal}s that are currently displayed.
    * 
-   * <p>the currentContent array equals the proposals array if no search term has been entered
+   * <p>
+   * the currentContent array equals the proposals array if no search term has been entered
    */
   private LinkProposal[] currentContent;
   private IContentProposalListener listener;
@@ -95,7 +96,7 @@ class LinkingShell {
    *          the {@link Control} used for calculating the optimal position of the two proposal
    *          {@link Shell}'s
    */
-  public void createControl(Control control) {
+  public void createControl(Control control, boolean hideDescription) {
     if (this.shell != null && !this.shell.isDisposed()) {
       this.shell.close();
     }
@@ -157,7 +158,7 @@ class LinkingShell {
     searchField.setMessage("search..");
 
     final List proposalList = new List(shell,
-        SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.WRAP | SWT.BORDER_SOLID);
+        SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.BORDER_SOLID);
     proposalList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     int selected = 0;
     for (int i = 0; i < this.proposals.length; i++) {
@@ -263,7 +264,9 @@ class LinkingShell {
     proposalList.forceFocus();
     proposalList.setSelection(selected);
     proposalList.notifyListeners(SWT.Selection, null);
-    descShell.open();
+    if (!hideDescription) {
+      descShell.open();
+    }
     this.shell.open();
   }
 

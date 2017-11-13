@@ -10,6 +10,7 @@
 package xstampp.usermanagement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,25 +100,26 @@ public class UserSystem extends Observable implements IUserSystem {
 
   @Override
   public boolean assignResponsibility(UUID responsibility) {
-    return assignResponsibility(currentUser, responsibility);
+    return assignResponsibility(currentUser.getUserId(), responsibility);
   }
 
   @Override
-  public boolean assignResponsibility(IUser user, UUID responsibility) {
-    Map<UUID, IUser> responsibilityMap = new HashMap<>();
-    responsibilityMap.put(responsibility, user);
+  public boolean assignResponsibility(UUID user, UUID responsibility) {
+    Map<UUID, List<UUID>> responsibilityMap = new HashMap<>();
+    responsibilityMap.put(responsibility, Arrays.asList(user));
     return assignResponsibilities(responsibilityMap);
   }
 
   @Override
-  public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap) {
+  public boolean assignResponsibilities(Map<UUID, List<UUID>> responsibilityMap) {
     boolean changed = false;
     if (checkAccess(AccessRights.ADMIN)) {
-      for (Entry<UUID, IUser> entry : responsibilityMap.entrySet()) {
+      for (Entry<UUID, List<UUID>> entry : responsibilityMap.entrySet()) {
         UUID entryId = entry.getKey();
-        UUID userId = entry.getValue().getUserId();
-        if (entry.getValue() instanceof AbstractUser) {
-          changed |= this.responsibilities.add(userId, entryId);
+        for (UUID userId : entry.getValue()) {
+          if (entry.getValue() instanceof AbstractUser) {
+            changed |= this.responsibilities.add(userId, entryId);
+          }
         }
       }
       if (changed) {

@@ -104,12 +104,12 @@ public class EmptyUserSystem implements IUserSystem {
   }
 
   @Override
-  public boolean assignResponsibility(IUser user, UUID responsibility) {
+  public boolean assignResponsibility(UUID user, UUID responsibility) {
     return false;
   }
 
   @Override
-  public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap) {
+  public boolean assignResponsibilities(Map<UUID, List<UUID>> responsibilityMap) {
     return false;
   }
 

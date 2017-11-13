@@ -82,7 +82,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
         return editingSupport.getStringValue(element);
       }
     });
-    editingSupport = new ResponsibilityEditingSupport(viewer, getDataModel());
+    editingSupport = new ResponsibilityEditingSupport(viewer, getDataModel(), parent);
     respColumn.setEditingSupport(editingSupport);
     List<T> entryList = new ArrayList<>();
     //if the current user is has Administrator rights he can see all entries, where as normal user he can only see his responsibilities 
@@ -120,7 +120,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
     return true;
   }
 
-  public Map<UUID, IUser> getResult() {
+  public Map<UUID, List<UUID>> getResult() {
     return this.editingSupport.save();
   }
 

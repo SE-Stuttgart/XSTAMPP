@@ -48,9 +48,9 @@ public interface IUserSystem {
 
   public boolean assignResponsibility(UUID responsibility);
 
-  public boolean assignResponsibility(IUser user, UUID responsibility);
-
-  public boolean assignResponsibilities(Map<UUID, IUser> responsibilityMap);
+  public boolean assignResponsibility(UUID user, UUID responsibility);
+  
+  public boolean assignResponsibilities(Map<UUID, List<UUID>> responsibilityMap);
 
   List<IUser> getRegistry();
 
