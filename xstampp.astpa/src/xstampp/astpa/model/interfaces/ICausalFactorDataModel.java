@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.model.causalfactor.ICausalController;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorController;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -34,19 +33,7 @@ import xstampp.model.IEntryFilter;
  * @author Fabian Toth, Benedikt Markt
  * 
  */
-public interface ICausalFactorDataModel extends IDataModel, ICausalFactorController {
-
-  /**
-   * Get all causal components {@link ICausalComponent}
-   * 
-   * @param a
-   *          filter object which can also be null if given as not null all entries in the returned
-   *          list are checked true
-   * @author Fabian Toth
-   * 
-   * @return all causal components as causalFactor containers
-   */
-  List<ICausalComponent> getCausalComponents(IEntryFilter<IRectangleComponent> filter);
+public interface ICausalFactorDataModel extends IDataModel {
 
   /**
    * {@link IExtendedDataModel#getRefinedScenario(UUID)}
@@ -62,15 +49,6 @@ public interface ICausalFactorDataModel extends IDataModel, ICausalFactorControl
    * @return a list of {@link xstampp.astpa.model.controlaction.UCAHazLink}
    */
   List<UCAHazLink> getAllUCALinks();
-
-  /**
-   * 
-   * @param compId1
-   *          The id of a control structure component stored in the dataModel
-   * @return a causal component {@link ICausalComponent} for the control structure component or null
-   *         if the type of the component can not be causal
-   */
-  ICausalComponent getCausalComponent(UUID compId1);
 
   /**
    * Adds a causal factor to the causal component with the given id. <br>
@@ -152,4 +130,30 @@ public interface ICausalFactorDataModel extends IDataModel, ICausalFactorControl
   ICausalController getCausalFactorController();
 
   LinkController getLinkController();
+
+  /**
+* {@link ICausalController#setUseScenarios(boolean)}
+   */
+  void setUseScenarios(boolean useScenarios);
+
+  /**
+* {@link ICausalController#setCausalFactorText(UUID, String)}
+   */
+  boolean setCausalFactorText(UUID causalFactorId, String causalFactorText);
+
+  /**
+* {@link ICausalController#isUseScenarios()}
+   */
+  boolean isUseScenarios();
+
+  /**
+* {@link ICausalController#addCausalFactor()}
+   */
+  UUID addCausalFactor();
+
+  List<IRectangleComponent> getCausalComponents();
+  
+  IControlActionController getControlActionController();
+  
+  
 }

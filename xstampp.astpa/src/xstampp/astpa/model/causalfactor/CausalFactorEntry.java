@@ -8,7 +8,6 @@
  *******************************************************************************/
 package xstampp.astpa.model.causalfactor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,16 +17,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.controlstructure.components.Component;
-import xstampp.astpa.model.hazacc.IHazAccController;
-import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
-import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -165,18 +157,6 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     this.ucaDescription = ucaDescription;
   }
 
-  /**
-   * @param scenarioLinks
-   *          the scenarioLinks to set
-   */
-  public boolean setScenarioLinks(List<UUID> scenarioLinks) {
-    if (this.scenarioLinks == null || !this.scenarioLinks.equals(scenarioLinks)) {
-      this.scenarioLinks = scenarioLinks;
-      return true;
-    }
-    return false;
-  }
-
   @Override
   public List<UUID> getScenarioLinks() {
     return scenarioLinks;
@@ -190,109 +170,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     return constraintId;
   }
 
-  public CausalFactorEntryData changeCausalEntry(CausalFactorEntryData entryData,
-      NumberedArrayList<CausalSafetyConstraint> causalSafetyConstraints) {
-    CausalFactorUCAEntryData resultData = new CausalFactorUCAEntryData(id);
-    boolean res = false;
-    if (entryData.noteChanged() && !entryData.getNote().equals(getNote())) {
-      resultData.setNote(note);
-      res |= setNote(entryData.getNote());
-    }
-
-    if (entryData.hazardsChanged()) {
-      resultData.setHazardIds(hazardIds);
-      res |= setHazardIds(entryData.getHazardIds());
-    }
-
-    if (entryData.constraintChanged()) {
-      CausalSafetyConstraint safetyConstraint = causalSafetyConstraints.get(getConstraintId());
-
-      if (safetyConstraint != null) {
-        String title = safetyConstraint.setTitle(entryData.getSafetyConstraint());
-        resultData.setConstraint(title);
-        res |= true;
-      } else {
-        resultData.setConstraint("");
-        safetyConstraint = new CausalSafetyConstraint(
-            entryData.getSafetyConstraint());
-        setConstraintId(safetyConstraint.getId());
-        res |= causalSafetyConstraints.add(safetyConstraint);
-      }
-    }
-
-    if (entryData instanceof CausalFactorUCAEntryData
-        && ((CausalFactorUCAEntryData) entryData).scenariosChanged()) {
-      resultData.setScenarioLinks(scenarioLinks);
-      res |= setScenarioLinks(((CausalFactorUCAEntryData) entryData).getScenarioLinks());
-    }
-    if (res) {
-      return resultData;
-    }
-    return null;
-  }
-
-  /**
-   * this must be executed after the controlActionController has been prepared for export so that
-   * the given uca list already has all needed entries
-   * 
-   * @param hazAccController
-   * @param allRefinedRules
-   * @param allUnsafeControlActions
-   */
-  public void prepareForExport(IHazAccController hazAccController,
-      List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
-      List<CausalSafetyConstraint> safetyConstraints) {
-
-    // if there is a link to a uca then sync the respective description and hazard links
-    if (this.ucaLink != null) {
-      for (ICorrespondingUnsafeControlAction uca : allUnsafeControlActions) {
-        if (uca.getId().equals(this.ucaLink)) {
-          setUcaDescription("UCA1." + uca.getNumber() + "\n" + uca.getDescription());
-          setHazardLinks(uca.getLinks());
-        }
-      }
-    } else if (getHazardIds() != null) {
-      // create the hazard Link String by adding a label for each hazard
-      hazardLinks = new String();
-      for (ITableModel hazard : hazAccController.getAllHazards()) {
-        if (this.hazardIds.contains(hazard.getId())) {
-          if (!hazardLinks.isEmpty()) {
-            hazardLinks += ", ";//$NON-NLS-1$
-          }
-          hazardLinks += "H-" + hazard.getNumber();//$NON-NLS-1$
-        }
-      }
-    }
-
-    scenarioEntries = new ArrayList<>();
-    if (getScenarioLinks() != null) {
-      for (AbstractLTLProvider ltlProvider : allRefinedRules) {
-        if (getScenarioLinks().contains(ltlProvider.getRuleId())) {
-          scenarioEntries.add(new CausalScenarioEntry(ltlProvider.getSafetyRule(),
-              ltlProvider.getRefinedSafetyConstraint()));
-        }
-      }
-    }
-
-    constraintText = "";
-    for (CausalSafetyConstraint constraint : safetyConstraints) {
-      if (constraint.getId().equals(constraintId)) {
-        constraintText = constraint.getTitle();
-      }
-    }
-    if (getHazardLinks() == null) {
-      setHazardLinks("");
-    }
-    if (getNote() == null) {
-      setNote("");
-    }
-    if (getUcaDescription() == null) {
-      setUcaDescription("");
-    }
-  }
-
-  boolean prepareForSave(Component component, CausalFactor causalFactor,
+  boolean prepareForSave(UUID componentId, CausalFactor causalFactor,
       LinkController linkController, List<CausalSafetyConstraint> list) {
     // get rid of redundant entries which should not be stored
     if (constraintText != null) {
@@ -305,7 +183,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
       UUID ucaCfLink = linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, ucaLink,
           causalFactor.getId());
       UUID UcaCfCompLink = linkController.addLink(ObserverValue.UcaCfLink_Component_LINK, ucaCfLink,
-          component.getId());
+          componentId);
       ucaLink = null;
       // if a constraint is already linked to this entry than the link is re-added as
       // UcaHazLink_SC2_LINK to the LinkController
@@ -314,10 +192,10 @@ public class CausalFactorEntry implements ICausalFactorEntry {
             UUID hazEntryId = linkController.addLink(ObserverValue.UCAEntryLink_HAZ_LINK,
                 UcaCfCompLink, link.getLinkB());
             if (this.constraintId != null) {
-              linkController.addLink(ObserverValue.CausalHazLink_SC2_LINK, hazEntryId, this.constraintId);
+              linkController.addLink(ObserverValue.CausalHazLink_SC2_LINK, hazEntryId,
+                  this.constraintId);
             }
           });
-      this.constraintId = null;
     }
     constraintText = null;
     scenarioEntries = null;

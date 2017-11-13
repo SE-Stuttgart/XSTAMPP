@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
@@ -21,26 +22,34 @@ import xstampp.ui.common.grid.GridWrapper;
 
 public class CellEditorCausalEntry extends GridCellTextEditor {
 
-  private UUID componentId;
-  private UUID factorId;
   private ICausalFactorDataModel dataInterface;
   private UUID entryId;
 
+  /**
+   * 
+   * @param gridWrapper
+   * @param dataInterface
+   * @param uca
+   * @param entryId the id of a Link of type {@link ObserverValue#UcaCfLink_Component_LINK}
+   */
   public CellEditorCausalEntry(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      String initialText, UUID componentId, UUID factorId, UUID entryId) {
-    super(gridWrapper, initialText, factorId);
+      IUnsafeControlAction uca, UUID entryId) {
+    super(gridWrapper, getUcaText(uca), entryId);
     setReadOnly(true);
     setShowDelete(true);
     this.dataInterface = dataInterface;
-    this.componentId = componentId;
-    this.factorId = factorId;
     this.entryId = entryId;
+  }
+
+  private static String getUcaText(IUnsafeControlAction uca) {
+    // add the uca id + description in a read only cell with an delete button
+    return uca.getTitle() + "\n"
+        + uca.getDescription();
   }
 
   @Override
   public void updateDataModel(String newText) {
-    dataInterface.setCausalFactorText(componentId, factorId, newText);
-
+    // Cannot be modified
   }
 
   @Override
@@ -59,7 +68,7 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
         "Do you really want to delete this Unsafe Control Action entry?\n"
             + "Note that this will delete the UCA entry and all stored scenarios.\n"
             + "\nThe Unsafe Control Action itself however will not be deleted")) {
-      dataInterface.removeCausalEntry(componentId, factorId, entryId);
+      this.dataInterface.getLinkController().deleteLink(ObserverValue.UcaCfLink_Component_LINK, entryId);
     }
   }
 

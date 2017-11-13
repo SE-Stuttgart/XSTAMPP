@@ -109,7 +109,7 @@ public interface IExtendedDataController {
    * 
    * @param ruleId
    *          a valid rule id
-   * @return the {@link ScenarioType} of the rule or null if the id is invalid
+   * @return the {@link ScenarioType} of the rule or {@link ScenarioType#NO_SCENARIO} if the id is invalid
    */
   ScenarioType getScenarioType(UUID ruleId);
 

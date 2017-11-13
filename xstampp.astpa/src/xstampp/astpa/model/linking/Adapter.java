@@ -25,6 +25,7 @@ class Adapter extends XmlAdapter<ListOfLinks, Map<ObserverValue, List<Link>>> {
   public Map<ObserverValue, List<Link>> unmarshal(ListOfLinks loe) throws Exception {
     Map<ObserverValue, List<Link>> map = new HashMap<>();
     for (Entry entry : loe.getList()) {
+      entry.getList().forEach((link) -> link.setLinkType(entry.getKey()));
       map.put(entry.getKey(), entry.getList());
     }
     return map;

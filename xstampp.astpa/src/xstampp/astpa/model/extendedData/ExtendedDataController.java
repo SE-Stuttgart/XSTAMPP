@@ -279,14 +279,7 @@ public class ExtendedDataController implements IExtendedDataController {
     return null;
   }
 
-  /**
-   * this calculates the type of rule of the ltl provider stored for that
-   * id
-   * 
-   * @param ruleId
-   *          a valid rule id
-   * @return the {@link ScenarioType} of the rule or null if the id is invalid
-   */
+  @Override
   public ScenarioType getScenarioType(UUID ruleId) {
     if (getMap(ScenarioType.BASIC_SCENARIO).containsKey(ruleId)) {
       return ScenarioType.BASIC_SCENARIO;
@@ -297,7 +290,7 @@ public class ExtendedDataController implements IExtendedDataController {
     if (getMap(ScenarioType.CUSTOM_LTL).containsKey(ruleId)) {
       return ScenarioType.CUSTOM_LTL;
     }
-    return null;
+    return ScenarioType.NO_SCENARIO;
   }
 
   /*

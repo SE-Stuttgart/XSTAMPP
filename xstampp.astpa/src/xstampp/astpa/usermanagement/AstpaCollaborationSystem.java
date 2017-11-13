@@ -20,10 +20,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.UnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -133,27 +129,9 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
             ucaHazLink.getHazardId());
       }
     }
-
-    for (ICausalComponent component : userController.getCausalComponents()) {
-      for (ICausalFactor factor : component.getCausalFactors()) {
-        for (ICausalFactorEntry entry : factor.getAllEntries()) {
-          try {
-            if (responsibilities
-                .contains(userController.getControlActionForUca(entry.getUcaLink()).getId())) {
-              controller.addCausalUCAEntry(component.getId(), factor.getId(), entry);
-              CausalFactorUCAEntryData entryData = new CausalFactorUCAEntryData(entry.getId());
-              entryData.setConstraint(
-                  userController.getCausalFactorController().getConstraintTextFor(entry.getId()));
-              entryData.setNote(entry.getNote());
-              entryData.setScenarioLinks(entry.getScenarioLinks());
-              controller.changeCausalEntry(component.getId(), factor.getId(), entryData);
-            }
-          } catch (NullPointerException exc) {
-
-          }
-        }
-      }
-    }
+    
+    
+    
     event.data = 100;
     listener.handleEvent(event);
     List<IUndoCallback> record = provider.getRecord();

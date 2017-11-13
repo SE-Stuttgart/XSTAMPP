@@ -261,8 +261,8 @@ public class ControlActionController extends Observable implements IControlActio
 
   @Override
   public String setUcaDescription(UUID unsafeControlActionId, String description) {
-    UnsafeControlAction unsafeControlAction = this
-        .getInternalUnsafeControlAction(unsafeControlActionId);
+    UnsafeControlAction unsafeControlAction = (UnsafeControlAction) this
+        .getUnsafeControlAction(unsafeControlActionId);
     if (unsafeControlAction != null) {
       return unsafeControlAction.setDescription(description);
     }
@@ -335,8 +335,8 @@ public class ControlActionController extends Observable implements IControlActio
   @Override
   public String setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
       String safetyConstraintDescription) {
-    UnsafeControlAction unsafeControlAction = this
-        .getInternalUnsafeControlAction(unsafeControlActionId);
+    UnsafeControlAction unsafeControlAction = (UnsafeControlAction) this
+        .getUnsafeControlAction(unsafeControlActionId);
     if (unsafeControlAction == null) {
       return null;
     }
@@ -345,16 +345,8 @@ public class ControlActionController extends Observable implements IControlActio
     return oldTitle;
   }
 
-  /**
-   * Gets the unsafe control action in an internal type. Do not use outside the data model
-   * 
-   * @author Fabian Toth
-   * 
-   * @param unsafeControlActionId
-   *          the id of the unsafe control action
-   * @return the unsafe control action with the given id
-   */
-  public UnsafeControlAction getInternalUnsafeControlAction(UUID unsafeControlActionId) {
+  @Override
+  public IUnsafeControlAction getUnsafeControlAction(UUID unsafeControlActionId) {
     for (ControlAction controlAction : this.getControlActions()) {
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {

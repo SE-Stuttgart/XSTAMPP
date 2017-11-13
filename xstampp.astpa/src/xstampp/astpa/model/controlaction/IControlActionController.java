@@ -562,4 +562,6 @@ public interface IControlActionController {
    */
   ITableModel getCorrespondingSafetyConstraint(UUID id);
 
+  IUnsafeControlAction getUnsafeControlAction(UUID unsafeControlActionId);
+
 }

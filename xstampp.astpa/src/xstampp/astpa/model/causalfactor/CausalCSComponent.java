@@ -10,7 +10,6 @@ package xstampp.astpa.model.causalfactor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -136,11 +135,11 @@ public class CausalCSComponent implements ICausalComponent {
     }
   }
 
-  public List<CausalFactor> prepareForSave(IHazAccController hazAccController, List<AbstractLTLProvider> allRefinedRules,
+  public List<CausalFactor> prepareForSave(UUID componentId, IHazAccController hazAccController, List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
     for (CausalFactor causalFactor : internal_getFactors()) {
-      causalFactor.prepareForSave( hazAccController, allRefinedRules,
+      causalFactor.prepareForSave( componentId, hazAccController, allRefinedRules,
           allUnsafeControlActions, safetyConstraints, linkController);
     }
     return internal_getFactors();

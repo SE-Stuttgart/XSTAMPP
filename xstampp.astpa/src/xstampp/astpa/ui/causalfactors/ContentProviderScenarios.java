@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.ITableContentProvider;
 
 /**
@@ -31,33 +32,27 @@ import xstampp.ui.common.contentassist.ITableContentProvider;
  */
 public class ContentProviderScenarios implements ITableContentProvider<AbstractLTLProvider> {
 
-  private static final String HAZARD_ID_PREFIX = "SC-"; //$NON-NLS-1$
-  private final transient ICausalFactorDataModel caInterface;
-  private ICausalFactorEntry entry;
-  private UUID componentId;
-  private UUID factorId;
+  private final transient ICausalFactorDataModel dataModel;
   private UUID ucaId;
+  private Link causalEntryLink;
+
 
   /**
    * 
-   * @author Benedikt Markt
-   * 
-   * @param caInterface
-   *          The data model interface
-   * 
+   * @param dataModel
+   * @param causalEntryLink
+   *          a Link of type {@link ObserverValue#UcaCfLink_Component_LINK}
+   * @param uca
    */
-  public ContentProviderScenarios(final ICausalFactorDataModel caInterface, UUID componentId,
-      UUID factorId, ICausalFactorEntry entry) {
-    this.caInterface = caInterface;
-    this.componentId = componentId;
-    this.factorId = factorId;
-    this.entry = entry;
-    this.ucaId = entry.getUcaLink();
+  public ContentProviderScenarios(ICausalFactorDataModel dataModel, Link causalEntryLink, IUnsafeControlAction uca) {
+    this.dataModel = dataModel;
+    this.causalEntryLink = causalEntryLink;
+    this.ucaId = uca.getId();
   }
 
   @Override
   public List<AbstractLTLProvider> getAllItems() {
-    return this.caInterface.getAllRefinedRules(new IEntryFilter<AbstractLTLProvider>() {
+    return this.dataModel.getAllRefinedRules(new IEntryFilter<AbstractLTLProvider>() {
 
       @Override
       public boolean check(AbstractLTLProvider model) {
@@ -71,37 +66,22 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 
   @Override
   public List<AbstractLTLProvider> getLinkedItems(final UUID itemId) {
-    List<AbstractLTLProvider> linkedScenarios = new ArrayList<>();
-    if (entry.getScenarioLinks() != null) {
-      for (UUID scenarios : entry.getScenarioLinks()) {
-        linkedScenarios.add(caInterface.getRefinedScenario(scenarios));
-      }
+    List<AbstractLTLProvider> linkedScenarios= new ArrayList<>();
+    for (UUID uuid : this.dataModel.getLinkController().getLinksFor(ObserverValue.UCAEntryLink_Scenario_LINK, causalEntryLink.getId())) {
+      linkedScenarios.add(this.dataModel.getRefinedScenario(uuid));
     }
     return linkedScenarios;
   }
 
   @Override
   public void addLink(final UUID item1, final UUID item2) {
-    CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-    List<UUID> ids = new ArrayList<>();
-    if (entry.getScenarioLinks() != null) {
-      ids.addAll(entry.getScenarioLinks());
-    }
-    ids.add(item2);
-    data.setScenarioLinks(ids);
-    this.caInterface.changeCausalEntry(componentId, factorId, data);
+    this.dataModel.getLinkController().addLink(ObserverValue.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), item2);
   }
 
   @Override
   public void removeLink(final UUID item, final UUID removeItem) {
-    CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-    List<UUID> ids = new ArrayList<>();
-    if (entry.getScenarioLinks() != null) {
-      ids.addAll(entry.getScenarioLinks());
-    }
-    ids.remove(removeItem);
-    data.setScenarioLinks(ids);
-    this.caInterface.changeCausalEntry(componentId, factorId, data);
+
+    this.dataModel.getLinkController().deleteLink(ObserverValue.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), removeItem);
   }
 
   @Override

@@ -42,7 +42,7 @@ public class UndoAddLinkingCallback implements IUndoCallback {
 
   @Override
   public void redo() {
-    this.linkController.addLinks(linkType, links);
+    this.linkController.addLinks(links);
   }
 
   @Override

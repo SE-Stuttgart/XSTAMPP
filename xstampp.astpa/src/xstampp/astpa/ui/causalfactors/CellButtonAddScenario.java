@@ -17,54 +17,49 @@ import java.util.UUID;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.linking.Link;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.CellButton;
 import xstampp.ui.common.grid.GridWrapper;
 
 public class CellButtonAddScenario extends CellButton {
 
-  private ICausalFactorEntry entry = null;
-  private UUID componentId;
-  private UUID factorId;
   private ICausalFactorDataModel dataModel;
+  private Link causalEntryLink;
 
-  public CellButtonAddScenario(ICausalFactorEntry entry, UUID componentId, UUID factorId,
-      ICausalFactorDataModel dataInterface) {
+  /**
+   * 
+   * @param dataModel
+   * @param causalEntryLink
+   *          a Link of type {@link ObserverValue#UcaCfLink_Component_LINK}
+   * @param uca
+   */
+  public CellButtonAddScenario(ICausalFactorDataModel dataModel, Link causalEntryLink, IUnsafeControlAction uca) {
     super(new Rectangle(-1, -1,
         GridWrapper.getAddButton16().getBounds().width,
         GridWrapper.getAddButton16().getBounds().height),
         GridWrapper.getAddButton16());
-
-    this.entry = entry;
-    this.componentId = componentId;
-    this.factorId = factorId;
-    dataModel = dataInterface;
+    this.causalEntryLink = causalEntryLink;
+    this.dataModel = dataModel;
   }
 
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
-    if (entry.getUcaLink() != null) {
-      AbstractLtlProviderData data = new AbstractLtlProviderData();
-      List<UUID> ids = new ArrayList<>();
-      ids.add(entry.getUcaLink());
-      data.setRelatedUcas(ids);
-      UUID id = dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null,
-          IValueCombie.TYPE_ANYTIME);
-      if (id != null) {
-        CausalFactorUCAEntryData entryData = new CausalFactorUCAEntryData(entry.getId());
-        List<UUID> scenarioLinks = new ArrayList<>();
-        if (entry.getScenarioLinks() != null) {
-          scenarioLinks.addAll(entry.getScenarioLinks());
-        }
-        scenarioLinks.add(id);
-        entryData.setScenarioLinks(scenarioLinks);
-        dataModel.changeCausalEntry(componentId, factorId, entryData);
-      }
+    AbstractLtlProviderData data = new AbstractLtlProviderData();
+    List<UUID> ids = new ArrayList<>();
+    Link link = this.dataModel.getLinkController().getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+        this.causalEntryLink.getLinkA());
+    ids.add(link.getLinkA());
+    data.setRelatedUcas(ids);
+    UUID id = dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null,
+        IValueCombie.TYPE_ANYTIME);
+    if (id != null) {
+      this.dataModel.getLinkController().addLink(ObserverValue.UCAEntryLink_Scenario_LINK, this.causalEntryLink.getId(), id);
     }
 
   }

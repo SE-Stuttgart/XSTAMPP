@@ -473,7 +473,7 @@ public class GridWrapper {
 
   private List<NebulaGridRowWrapper> nebulaRows;
 
-  private String[] columnLabels = null;
+  private List<String> columnLabels = null;
 
   private GridCellRenderer cellRenderer;
 
@@ -810,7 +810,7 @@ public class GridWrapper {
   }
 
   public void setHeaderToolTip(String headerToolTip) {
-    this.headerToolTips = new String[columnLabels.length];
+    this.headerToolTips = new String[columnLabels.size()];
     Arrays.fill(this.headerToolTips, headerToolTip);
     refreshColumns();
 
@@ -898,9 +898,9 @@ public class GridWrapper {
     for (GridColumn col : this.actualGrid.getColumns()) {
       col.dispose();
     }
-    for (int i = 0; i < this.columnLabels.length; i++) {
+    for (int i = 0; i < this.columnLabels.size(); i++) {
       GridColumn childColumn = new GridColumn(this.actualGrid, SWT.NONE);
-      childColumn.setText(this.columnLabels[i]);
+      childColumn.setText(this.columnLabels.get(i));
       childColumn.setWordWrap(true);
       childColumn.setHeaderWordWrap(true);
       childColumn.setWidth(GridWrapper.DEFAULT_COLUMN_WIDTH);
@@ -945,7 +945,7 @@ public class GridWrapper {
    */
   public void setColumnLabels(String[] columnLabels) {
     if (this.columnLabels == null || !columnLabels.equals(this.columnLabels)) {
-      this.columnLabels = columnLabels.clone();
+      this.columnLabels = Arrays.asList(columnLabels);
       this.columnratios = new float[columnLabels.length];
       Arrays.fill(columnratios, 1.0f / columnLabels.length);
       refreshColumns();
@@ -953,6 +953,10 @@ public class GridWrapper {
   }
 
   public String[] getColumnLabels() {
+    return this.columnLabels.toArray(new String[0]);
+  }
+
+  public List<String> getColumnList() {
     return this.columnLabels;
   }
 

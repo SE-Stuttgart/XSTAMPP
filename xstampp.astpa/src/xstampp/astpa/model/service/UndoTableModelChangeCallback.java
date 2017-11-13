@@ -14,60 +14,46 @@ package xstampp.astpa.model.service;
 import java.util.UUID;
 
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.model.IDataModel;
 import xstampp.util.IUndoCallback;
 
 public abstract class UndoTableModelChangeCallback<T> implements IUndoCallback {
 
   private T dataModel;
-  private String oldDescription;
-  private String newDescription;
-  private boolean descriptionDirty;
-  private String oldTitle;
-  private String newTitle;
-  private boolean titleDirty;
   private UUID entryId;
+  private UndoTextChange descriptionChange;
+  private UndoTextChange titleChange;
 
   public UndoTableModelChangeCallback(T dataModel, ITableModel model) {
-    this.dataModel = dataModel;
-    this.entryId = model.getId();
+    this(dataModel, model.getId());
   }
 
   public UndoTableModelChangeCallback(T dataModel, UUID modelId) {
     this.dataModel = dataModel;
     this.entryId = modelId;
+    this.descriptionChange = new UndoTextChange();
+    this.titleChange = new UndoTextChange();
   }
 
   public void setDescriptionChange(String oldDescription, String newDescription) {
-    this.oldDescription = oldDescription;
-    this.newDescription = newDescription;
-    this.descriptionDirty = true;
+    this.descriptionChange = new UndoTextChange(oldDescription, newDescription, getChangeConstant());
+    this.descriptionChange.setConsumer((text) -> undoDescription(text));
   }
 
   public void setTitleChange(String oldTitle, String newTitle) {
-    this.oldTitle = oldTitle;
-    this.newTitle = newTitle;
-    this.titleDirty = true;
+    this.titleChange = new UndoTextChange(oldTitle, newTitle, getChangeConstant());
+    this.titleChange.setConsumer((text) -> undoTitle(text));
   }
 
   @Override
   public void undo() {
-    if (descriptionDirty) {
-      undoDescription(this.oldDescription);
-    }
-    if (titleDirty) {
-      undoTitle(this.oldTitle);
-    }
+    this.descriptionChange.undo();
+    this.titleChange.undo();
   }
 
   @Override
   public void redo() {
-    if (descriptionDirty) {
-      undoDescription(this.newDescription);
-    }
-    if (titleDirty) {
-      undoTitle(this.newTitle);
-    }
+    this.descriptionChange.redo();
+    this.titleChange.redo();
   }
 
   public UUID getEntryId() {

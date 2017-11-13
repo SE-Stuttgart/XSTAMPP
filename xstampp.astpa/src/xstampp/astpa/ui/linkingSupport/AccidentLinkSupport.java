@@ -14,7 +14,6 @@ package xstampp.astpa.ui.linkingSupport;
 import java.util.List;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.interfaces.IAccidentModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 

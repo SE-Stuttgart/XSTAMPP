@@ -22,6 +22,7 @@ import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.linking.Link;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
@@ -32,21 +33,14 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
   private UUID ruleId;
   private ICausalFactorDataModel dataInterface;
   private ScenarioType type;
-  private ICausalFactorEntry entry;
-  private UUID componentId;
-  private UUID factorId;
+  private Link scenarioLink;
 
   public CellEditorCausalScenario(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      ICausalFactorEntry entry, ICausalComponent component, ICausalFactor factor, UUID ruleId,
-      ScenarioType type) {
+      Link scenarioLink, UUID ruleId, ScenarioType type) {
     super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getSafetyRule(), ruleId);
-    this.entry = entry;
+    this.scenarioLink = scenarioLink;
     this.type = type;
-    this.componentId = component.getId();
-    this.factorId = factor.getId();
-    if (type != ScenarioType.CAUSAL_SCENARIO) {
-      setReadOnly(true);
-    }
+    setReadOnly(type != ScenarioType.CAUSAL_SCENARIO);
     setShowDelete(true);
     this.dataInterface = dataInterface;
     this.ruleId = ruleId;
@@ -68,14 +62,7 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
       if (type == ScenarioType.CAUSAL_SCENARIO) {
         dataInterface.removeRefinedSafetyRule(type, false, ruleId);
       }
-      CausalFactorUCAEntryData data = new CausalFactorUCAEntryData(entry.getId());
-      List<UUID> ids = new ArrayList<>();
-      if (entry.getScenarioLinks() != null) {
-        ids.addAll(entry.getScenarioLinks());
-      }
-      ids.remove(ruleId);
-      data.setScenarioLinks(ids);
-      this.dataInterface.changeCausalEntry(componentId, factorId, data);
+    this.dataInterface.getLinkController().deleteLink(this.scenarioLink.getLinkType(), this.scenarioLink.getId());
     }
   }
 
@@ -86,6 +73,6 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
 
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.Extended_DATA });
+    dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR });
   }
 }

@@ -13,7 +13,6 @@
 
 package xstampp.astpa.model.causalfactor.interfaces;
 
-import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.model.interfaces.ITableModel;

@@ -10,44 +10,31 @@
  *******************************************************************************/
 package xstampp.astpa.ui.causalfactors;
 
-import java.util.UUID;
-
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridWrapper;
 
 public class CellEditorFactorNote extends GridCellTextEditor {
 
-  private UUID componentId;
-  private UUID factorId;
-  private UUID entryId;
   private ICausalFactorDataModel dataInterface;
+  private Link link;
 
-  public CellEditorFactorNote(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      UUID componentId, UUID factorId, ICausalFactorEntry entry) {
-    super(gridWrapper, entry.getNote(), factorId);
+  public CellEditorFactorNote(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface, Link link) {
+    super(gridWrapper, link.getNote(), link.getId());
     this.dataInterface = dataInterface;
-    this.componentId = componentId;
-    this.factorId = factorId;
-    this.entryId = entry.getId();
+    this.link = link;
   }
 
   @Override
   public void updateDataModel(String newText) {
-    CausalFactorEntryData data = new CausalFactorEntryData(entryId);
-    data.setNote(newText);
-    dataInterface.changeCausalEntry(componentId, factorId, data);
-
+    this.dataInterface.getLinkController().changeLinkNote(link, newText);
   }
 
   @Override
   public void delete() {
-    CausalFactorEntryData data = new CausalFactorEntryData(entryId);
-    data.setNote(null);
-    dataInterface.changeCausalEntry(componentId, factorId, data);
+    updateDataModel("");
   }
 
   @Override

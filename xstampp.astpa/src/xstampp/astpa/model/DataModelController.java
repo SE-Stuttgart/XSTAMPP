@@ -45,9 +45,6 @@ import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.ICausalController;
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -95,7 +92,6 @@ import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
-import xstampp.astpa.model.service.CausalDataUndoCallback;
 import xstampp.astpa.model.service.UndoAccidentChangeCallback;
 import xstampp.astpa.model.service.UndoCSCChangeCallback;
 import xstampp.astpa.model.service.UndoControlActionChangeCallback;
@@ -295,12 +291,6 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public synchronized void addObserver(Observer o) {
-    // TODO Auto-generated method stub
-    super.addObserver(o);
-  }
-
-  @Override
   public UUID getProjectId() {
     if (this.projectId == null) {
       this.projectId = UUID.randomUUID();
@@ -343,60 +333,16 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public UUID addCausalFactor(IRectangleComponent csComp) {
-    if (csComp == null) {
-      return null;
-    }
-
-    UUID id = this.causalFactorController.addCausalFactor(csComp);
-    if (id != null) {
-      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-    }
-    return id;
+  public UUID addCausalFactor() {
+    return this.getCausalFactorController().addCausalFactor();
   }
 
   @Override
-  public UUID addCausalFactor(UUID id) {
-    IRectangleComponent component = getComponent(id);
-    UUID newFactorId = addCausalFactor(component);
-    return newFactorId;
-  }
-
-  @Override
-  public UUID addCausalHazardEntry(UUID component, UUID causalFactor) {
-    UUID newFactorId = causalFactorController.addCausalHazardEntry(component, causalFactor);
-    if (newFactorId != null) {
-      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-    }
-    return newFactorId;
-  }
-
-  @Override
-  public UUID addCausalUCAEntry(UUID component, UUID causalFactorId, UUID ucaId) {
-    if (!getUserSystem().checkAccess(
-        getControlActionController().getControlActionFor(ucaId).getId(), AccessRights.ACCESS)) {
-      return null;
-    }
-    UUID linkId = getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, ucaId, causalFactorId);
-    getLinkController().addLink(ObserverValue.UCA, a, b)
-    UUID result = this.causalFactorController.addCausalUCAEntry(component, causalFactorId, ucaId);
-    if (result != null) {
-      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-    }
-    return result;
-  }
-
-  public UUID addCausalUCAEntry(UUID component, UUID causalFactorId, ICausalFactorEntry entry) {
-    if (!getUserSystem().checkAccess(
-        getControlActionController().getControlActionFor(entry.getUcaLink()).getId(),
-        AccessRights.ACCESS)) {
-      return null;
-    }
-    UUID result = this.causalFactorController.addCausalUCAEntry(component, causalFactorId, entry);
-    if (result != null) {
-      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-    }
-    return result;
+  public UUID addCausalFactor(UUID componentId) {
+    UUID factorId = addCausalFactor();
+    UUID linkId = getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, null, factorId);
+    getLinkController().addLink(ObserverValue.UcaCfLink_Component_LINK, linkId, componentId);
+    return factorId;
   }
 
   @Override
@@ -501,7 +447,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (getLinkController().addLink(ObserverValue.HAZ_ACC_LINK, accidentId, hazardId)) {
+    if (getLinkController().addLink(ObserverValue.HAZ_ACC_LINK, accidentId, hazardId) != null) {
       return true;
     }
     return false;
@@ -593,7 +539,7 @@ public class DataModelController extends AbstractDataModel
     }
 
     if (this.getLinkController().addLink(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId,
-        hazardId)) {
+        hazardId) != null) {
       return true;
     }
     return false;
@@ -669,18 +615,6 @@ public class DataModelController extends AbstractDataModel
       return true;
     }
     return false;
-  }
-
-  @Override
-  public CausalFactorEntryData changeCausalEntry(UUID component, UUID causalFactor,
-      CausalFactorEntryData entryData) {
-    CausalFactorEntryData result = causalFactorController.changeCausalEntry(component, causalFactor,
-        entryData);
-    if (result != null) {
-      pushToUndo(new CausalDataUndoCallback(this, component, causalFactor, result, entryData));
-      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-    }
-    return null;
   }
 
   @Override
@@ -900,33 +834,6 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public ICausalComponent getCausalComponent(IRectangleComponent csComp) {
-    return causalFactorController.getCausalComponent(csComp);
-  }
-
-  @Override
-  public ICausalComponent getCausalComponent(UUID compId1) {
-    return getCausalComponent(getComponent(compId1));
-  }
-
-  @Override
-  public List<ICausalComponent> getCausalComponents() {
-    return getCausalComponents(null);
-  }
-
-  @Override
-  public List<ICausalComponent> getCausalComponents(IEntryFilter<IRectangleComponent> filter) {
-    List<ICausalComponent> list = new ArrayList<>();
-    for (IRectangleComponent component : getRoot().getChildren()) {
-      ICausalComponent causalComp = causalFactorController.getCausalComponent(component);
-      if (causalComp != null && (filter == null || filter.check(component))) {
-        list.add(causalComp);
-      }
-    }
-    return list;
-  }
-
-  @Override
   public IRectangleComponent getComponent(UUID componentId) {
     if ((componentId == null)) {
       return null;
@@ -935,6 +842,17 @@ public class DataModelController extends AbstractDataModel
       return ignoreLtlValue;
     }
     return this.controlStructureController.getComponent(componentId);
+  }
+
+  @Override
+  public List<IRectangleComponent> getCausalComponents() {
+    ArrayList<IRectangleComponent> causalComponents = new ArrayList<>();
+    getControlStructureController().getRoot().getChildren().forEach((comp) -> {
+      if(getCausalFactorController().validateCausalComponent(comp.getComponentType())) {
+        causalComponents.add(comp);
+      }
+    });
+    return causalComponents;
   }
 
   @Override
@@ -1117,11 +1035,6 @@ public class DataModelController extends AbstractDataModel
       result.add(this.getHazard(link));
     }
     return result;
-  }
-
-  @Override
-  public List<UUID> getLinkedUCAList(UUID factorId) {
-    return this.getLinkController().getLinksFor(ObserverValue.CAUSAL_FACTOR, factorId);
   }
 
   @Override
@@ -1315,11 +1228,6 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public boolean isUseScenarios() {
-    return this.causalFactorController.isUseScenarios();
-  }
-
-  @Override
   public boolean linkControlAction(UUID caId, UUID componentId) {
     if (this.getControlActionController().setComponentLink(componentId, caId)) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
@@ -1453,24 +1361,6 @@ public class DataModelController extends AbstractDataModel
       return true;
     }
     return false;
-  }
-
-  @Override
-  public boolean removeCausalEntry(UUID component, UUID causalFactor, UUID entryId) {
-    boolean result = causalFactorController.removeCausalEntry(component, causalFactor, entryId);
-    if (result) {
-      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-    }
-    return result;
-  }
-
-  @Override
-  public boolean removeCausalFactor(UUID component, UUID causalFactor) {
-    boolean result = causalFactorController.removeCausalFactor(component, causalFactor);
-    if (result) {
-      this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
-    }
-    return result;
   }
 
   @Override
@@ -1758,7 +1648,7 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public boolean setCausalFactorText(UUID componentId, UUID causalFactorId,
+  public boolean setCausalFactorText(UUID causalFactorId,
       String causalFactorText) {
     if ((causalFactorId == null) || (causalFactorText == null)) {
       return false;
@@ -1767,7 +1657,7 @@ public class DataModelController extends AbstractDataModel
     if (components == null) {
       return false;
     }
-    if (this.causalFactorController.setCausalFactorText(componentId, causalFactorId,
+    if (this.causalFactorController.setCausalFactorText(causalFactorId,
         causalFactorText)) {
       this.setUnsavedAndChanged(ObserverValue.CAUSAL_FACTOR);
       return true;
@@ -2135,6 +2025,11 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
+  public boolean isUseScenarios() {
+    return this.getCausalFactorController().isUseScenarios();
+  }
+
+  @Override
   public void setValuesWhenCANotProvided(UUID caID,
       List<NotProvidedValuesCombi> valuesWhenNotProvided) {
     this.getControlActionController().setValuesWhenNotProvided(caID, valuesWhenNotProvided);
@@ -2290,6 +2185,7 @@ public class DataModelController extends AbstractDataModel
       this.causalFactorController = new CausalFactorController();
     }
     this.causalFactorController.addObserver(this);
+    this.causalFactorController.setLinkController(getLinkController());
     return this.causalFactorController;
   }
 

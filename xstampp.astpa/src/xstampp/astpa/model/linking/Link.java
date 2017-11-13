@@ -16,6 +16,8 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+import xstampp.model.ObserverValue;
+
 @XmlType(name = "idLink")
 public final class Link {
 
@@ -28,14 +30,21 @@ public final class Link {
   @XmlAttribute
   private UUID id;
 
-  public Link(UUID a, UUID b) {
+  @XmlAttribute
+  private String note;
+
+  private ObserverValue linkType;
+
+  public Link(UUID a, UUID b, ObserverValue linkType) {
     linkA = a;
     linkB = b;
+    this.linkType = linkType;
+    this.note = "";
     this.id = UUID.randomUUID();
   }
 
   Link() {
-    this(null, null);
+    this(null, null, null);
   }
 
   public UUID getId() {
@@ -48,6 +57,34 @@ public final class Link {
 
   public UUID getLinkB() {
     return linkB;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  boolean setLinkA(UUID linkA) {
+    boolean different = this.linkA == null || !this.linkA.equals(linkA);
+    if (different) {
+      this.linkA = linkA;
+    }
+    return different;
+  }
+
+  boolean setLinkB(UUID linkB) {
+    boolean different = !this.linkB.equals(linkB);
+    if (different) {
+      this.linkB = linkB;
+    }
+    return different;
+  }
+
+  boolean setNote(String note) {
+    boolean different = !this.note.equals(note);
+    if (different) {
+      this.note = note;
+    }
+    return different;
   }
 
   public boolean links(UUID part) {
@@ -70,14 +107,22 @@ public final class Link {
       return this.links((UUID) obj);
     }
     if (obj instanceof Link) {
-      if (((Link) obj).getLinkA() == null && getLinkA() == null) {
+      if (((Link) obj).getLinkA() == null && getLinkA() == null && ((Link) obj).getLinkB().equals(linkB)) {
         return true;
       }
-      if (((Link) obj).getLinkB() == null && getLinkB() == null) {
+      if (((Link) obj).getLinkB() == null && getLinkB() == null && ((Link) obj).getLinkA().equals(linkA)) {
         return true;
       }
       return ((Link) obj).links(this.linkA) && ((Link) obj).links(this.linkB);
     }
     return super.equals(obj);
+  }
+
+  public ObserverValue getLinkType() {
+    return linkType;
+  }
+
+  void setLinkType(ObserverValue linkType) {
+    this.linkType = linkType;
   }
 }

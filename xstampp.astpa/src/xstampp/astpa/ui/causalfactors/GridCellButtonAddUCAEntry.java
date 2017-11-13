@@ -20,11 +20,12 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.model.IEntryFilter;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.GridCellButton;
@@ -39,11 +40,11 @@ import xstampp.usermanagement.api.IUserProject;
  */
 public class GridCellButtonAddUCAEntry extends GridCellButton {
 
-  private static String HAZARD_ENTRY = "hazard based entry"; //$NON-NLS-1$
-  private ICausalComponent component;
+  private IRectangleComponent component;
   private ICausalFactorDataModel dataInterface;
   private UUID factorId;
   private Grid grid;
+  private List<IUnsafeControlAction> ucas;
 
   /**
    * Ctor.
@@ -52,21 +53,22 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
    * 
    * @param component
    *          the component the add buttons adds causal factors to.
+   * 
    */
-  public GridCellButtonAddUCAEntry(ICausalComponent component, UUID factorId,
-      ICausalFactorDataModel dataInterface, Grid grid) {
+  public GridCellButtonAddUCAEntry(IRectangleComponent component, UUID factorId,
+      ICausalFactorDataModel dataInterface, Grid grid, List<IUnsafeControlAction> ucas) {
     super("Add Unsafe Control Action");
 
     this.component = component;
     this.factorId = factorId;
     this.dataInterface = dataInterface;
     this.grid = grid;
+    this.ucas = ucas;
   }
 
   @Override
   public void onMouseDown(MouseEvent e, Point relativeMouse,
       Rectangle cellBounds) {
-    final List<UUID> linkedIds = dataInterface.getLinkedUCAList(factorId);
     List<ICorrespondingUnsafeControlAction> ucaList = dataInterface
         .getUCAList(new IEntryFilter<IUnsafeControlAction>() {
 
@@ -77,7 +79,7 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
               canWrite = ((IUserProject) dataInterface).getUserSystem().checkAccess(
                   dataInterface.getControlActionForUca(model.getId()).getId(), AccessRights.WRITE);
             }
-            return canWrite && !linkedIds.contains(model.getId())
+            return canWrite && !ucas.contains(model)
                 && !dataInterface.getLinksOfUCA(model.getId()).isEmpty();
           }
         });
@@ -100,10 +102,11 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
       @Override
       public void proposalAccepted(IContentProposal proposal) {
         UUID id = ((LinkProposal) proposal).getProposalId();
-        if (id == null) {
-          dataInterface.addCausalHazardEntry(component.getId(), factorId);
-        } else {
-          dataInterface.addCausalUCAEntry(component.getId(), factorId, id);
+        UUID ucaCFLinkId = dataInterface.getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, id, factorId);
+        UUID linkId = dataInterface.getLinkController().addLink(ObserverValue.UcaCfLink_Component_LINK, ucaCFLinkId,
+            component.getId());
+        for (UUID hazId : dataInterface.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK, id)) {
+          dataInterface.getLinkController().addLink(ObserverValue.UCAEntryLink_HAZ_LINK, linkId, hazId);
         }
         grid.redraw();
       }

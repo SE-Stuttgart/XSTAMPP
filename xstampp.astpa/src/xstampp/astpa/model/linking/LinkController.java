@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.model.ObserverValue;
 
 public class LinkController extends Observable {
@@ -35,24 +35,70 @@ public class LinkController extends Observable {
     this.linkMap = new HashMap<>();
   }
 
-  public UUID addLink(ObserverValue linkType, UUID a, UUID b) {
-    if (linkType != null) {
-      if (!this.linkMap.containsKey(linkType)) {
-        this.linkMap.put(linkType, new ArrayList<Link>());
+  /**
+   * Constructor for testing
+   * 
+   * @param asList
+   */
+  LinkController(List<Link> asList) {
+    this();
+    for (Link link : asList) {
+      if (!this.linkMap.containsKey(link.getLinkType())) {
+        this.linkMap.put(link.getLinkType(), new ArrayList<>());
       }
-      Link o = new Link(a, b);
-      int index = this.linkMap.get(linkType).indexOf(o);
-      if (index > 0) {
-        return this.linkMap.get(linkType).get(index).getId();
-      }
-      if (this.linkMap.get(linkType).add(o)) {
-        setChanged();
-        notifyObservers(new UndoAddLinkingCallback(this, linkType, o));
+      this.linkMap.get(link.getLinkType()).add(link);
+    }
+  }
 
-        return o.getId();
-      }
+  /**
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
+   * 
+   * @param linkType
+   *          an {@link ObserverValue} for which links have been created in the
+   *          {@link LinkController}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @return
+   */
+  public UUID addLink(ObserverValue linkType, UUID linkA, UUID linkB) {
+    if (!this.linkMap.containsKey(linkType)) {
+      this.linkMap.put(linkType, new ArrayList<Link>());
+    }
+    Link o = new Link(linkA, linkB, linkType);
+
+    int index = this.linkMap.get(linkType).indexOf(new Link(null, linkB, linkType));
+    if (index > 0 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
+      return this.linkMap.get(linkType).get(index).getId();
+    }
+    index = this.linkMap.get(linkType).indexOf(new Link(linkA, null, linkType));
+    if (index > 0 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
+      return this.linkMap.get(linkType).get(index).getId();
+    }
+    index = this.linkMap.get(linkType).indexOf(o);
+    if (index > 0) {
+      return this.linkMap.get(linkType).get(index).getId();
+    }
+    if (this.linkMap.get(linkType).add(o)) {
+      setChanged();
+      notifyObservers(new UndoAddLinkingCallback(this, linkType, o));
+
+      return o.getId();
     }
     return null;
+  }
+
+  void addLinks(List<Link> links) {
+    for (Link link : links) {
+      addLink(link);
+    }
+  }
+
+  void addLink(Link link) {
+    if (this.linkMap.containsKey(link.getLinkType())) {
+      this.linkMap.get(link.getLinkType()).add(link);
+    }
   }
 
   /**
@@ -75,41 +121,153 @@ public class LinkController extends Observable {
     return links;
   }
 
-  public List<Link> getRawLinksFor(ObserverValue linkType, UUID part) {
+  /**
+   * Returns all matching {@link Link} stored under the given linkType that contain the given partId
+   * as link
+   * 
+   * @param linkType
+   *          one of the LINK constants in {@link ObserverValue} <b>must not be <i>null</i></b>
+   * @param partId
+   *          the {@link UUID} of a {@link Link}
+   * @return a {@link List} of {@link Link}'s stored under the given linkType with the given linkId
+   */
+  public List<Link> getRawLinksFor(ObserverValue linkType, UUID partId) {
     List<Link> links = new ArrayList<>();
-    if (linkType == null) {
-      for (ObserverValue value : this.linkMap.keySet()) {
-        links.addAll(getRawLinksFor(value, part));
-      }
-    } else {
-      for (Link link : getLinkObjectsFor(linkType)) {
-        if (link.links(part)) {
-          links.add(link);
-        }
+    for (Link link : getLinkObjectsFor(linkType)) {
+      if (link.links(partId)) {
+        links.add(link);
       }
     }
     return links;
   }
 
-  public List<Link> getLinksFor(ObserverValue linkType) {
+  /**
+   * Returns and removes all matching {@link Link} that contain the given partId as link component.
+   * <p>
+   * <b>This method does not trigger an update and thus is not part of the API</b>
+   * 
+   * @param partId
+   *          the {@link UUID} of a {@link Link}
+   * @param depth
+   *          the amount of recursions that are used to find {@link Link} Objects,<br>
+   *          e.g. if depth is 2 than also the links are included that contain a {@link UUID} of a
+   *          Link found in the first recursion
+   * @return a {@link List} of {@link Link}'s that contain the given partId as link component.
+   */
+  List<Link> deleteLinksFor(UUID partId, int depth) {
     List<Link> links = new ArrayList<>();
-    if (this.linkMap.containsKey(linkType)) {
-      for (Link link : getLinkObjectsFor(linkType)) {
-        links.add(new Link(link.getLinkA(), link.getLinkB()));
+    for (ObserverValue linkType : this.linkMap.keySet()) {
+      List<Link> list = getRawLinksFor(linkType, partId);
+      deleteLinks(linkType, list);
+      links.addAll(list);
+    }
+    if (depth > 1) {
+      List<Link> deepLinks = new ArrayList<>();
+      for (Link link : links) {
+        deepLinks.addAll(deleteLinksFor(link.getId(), depth - 1));
       }
+      links.addAll(deepLinks);
     }
     return links;
+  }
+
+  /**
+   * Changes the two link components of the {@link Link} with the given linkId.
+   * 
+   * @param linkType
+   *          one of the LINK constants in {@link ObserverValue}
+   * @param linkId
+   *          the {@link UUID} of a {@link Link}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * 
+   * @return the first matching {@link Link} stored under the given linkType with the given linkId
+   */
+  public boolean changeLink(ObserverValue linkType, UUID linkId, UUID linkA, UUID linkB) {
+    Link link = getLinkObjectFor(linkType, linkId);
+    return changeLink(link, linkA, linkB);
+  }
+
+  /**
+   * Returns the first matching {@link Link} stored under the given linkType with the given linkId
+   * 
+   * @param link
+   *          a {@link Link}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @return the first matching {@link Link} stored under the given linkType with the given linkId
+   */
+  public boolean changeLink(Link link, UUID linkA, UUID linkB) {
+    UUID oldA = link.getLinkA();
+    UUID oldB = link.getLinkB();
+    if (link.setLinkA(linkA) || link.setLinkB(linkB)) {
+      setChanged();
+      notifyObservers(new UndoChangeLinkingCallback(this, link.getLinkType(), link.getId(), oldA, oldB, linkA, linkB));
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns the first matching {@link Link} stored under the given linkType with the given linkId
+   * 
+   * @param link
+   *          the {@link Link} whose note should be changed
+   * @param note
+   *          a String containing the new notes for the link
+   * @return the first matching {@link Link} stored under the given linkType with the given linkId
+   */
+  public boolean changeLinkNote(Link link, String note) {
+    String oldNote = link.getNote();
+    boolean isSet = link.setNote(note);
+    if (isSet) {
+      UndoTextChange textChange = new UndoTextChange(oldNote, note, link.getLinkType());
+      textChange.setConsumer((text) -> changeLinkNote(link, text));
+      setChanged();
+      notifyObservers(textChange);
+    }
+    return isSet;
+  }
+
+  /**
+   * Returns the first matching {@link Link} stored under the given linkType with the given linkId
+   * 
+   * @param linkType
+   *          one of the LINK constants in {@link ObserverValue}
+   * @param linkId
+   *          the {@link UUID} of a {@link Link}
+   * @return the first matching {@link Link} stored under the given linkType with the given linkId
+   */
+  public Link getLinkObjectFor(ObserverValue linkType, UUID linkId) {
+    if (this.linkMap.containsKey(linkType)) {
+      this.linkMap.get(linkType).removeIf((t) -> {
+        return t.getLinkA() == null && t.getLinkB() == null;
+      });
+      return this.linkMap.get(linkType).stream().filter((link) -> link.getId().equals(linkId)).findFirst().orElse(null);
+    }
+    return null;
+  }
+
+  /**
+   * Returns all {@link Link}'s stored under the given linkType
+   * 
+   * @param linkType
+   *          one of the LINK constants in {@link ObserverValue}
+   * @return a {@link List} containing all {@link Link}'s for the given linkType
+   */
+  public List<Link> getLinksFor(ObserverValue linkType) {
+    return getLinkObjectsFor(linkType);
   }
 
   private List<Link> getLinkObjectsFor(ObserverValue linkType) {
     if (this.linkMap.containsKey(linkType)) {
-      this.linkMap.get(linkType).removeIf(new Predicate<Link>() {
-
-        @Override
-        public boolean test(Link t) {
-          return t.getLinkA() == null || t.getLinkB() == null;
-        }
-
+      this.linkMap.get(linkType).removeIf((t) -> {
+        return t.getLinkA() == null || t.getLinkB() == null;
       });
       return this.linkMap.get(linkType);
     }
@@ -143,9 +301,39 @@ public class LinkController extends Observable {
 
   }
 
-  public boolean deleteLink(ObserverValue linkType, UUID a, UUID b) {
+  /**
+   * Finds and removes the first matching {@link Link} stored under the given linkType with the
+   * given linkId
+   * 
+   * @param linkType
+   *          one of the LINK constants in {@link ObserverValue}
+   * @param linkId
+   *          the {@link UUID} of a {@link Link}
+   * @return whether something has been deleted or not
+   */
+  public boolean deleteLink(ObserverValue linkType, UUID linkId) {
     if (this.linkMap.containsKey(linkType)) {
-      Link o = new Link(a, b);
+      return this.linkMap.get(linkType).removeIf((t) -> {
+        return t.getId().equals(linkId);
+      });
+    }
+    return false;
+  }
+
+  /**
+   * Finds and deletes a {@link Link} based on the two parts of the link
+   * 
+   * @param linkType
+   *          one of the LINK constants in {@link ObserverValue}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @return
+   */
+  public boolean deleteLink(ObserverValue linkType, UUID linkA, UUID linkB) {
+    if (this.linkMap.containsKey(linkType)) {
+      Link o = new Link(linkA, linkB, linkType);
       if (this.linkMap.get(linkType).remove(o)) {
         setChanged();
         notifyObservers(new UndoRemoveLinkingCallback(this, linkType, o));
@@ -173,6 +361,8 @@ public class LinkController extends Observable {
         }
       }
       deleteLinks(linkType, links);
+      setChanged();
+      notifyObservers(new UndoRemoveLinkingCallback(this, linkType, links));
     }
   }
 
@@ -183,15 +373,9 @@ public class LinkController extends Observable {
         this.linkMap.remove(linkType);
       }
     }
-    setChanged();
-    notifyObservers(new UndoRemoveLinkingCallback(this, linkType, links));
   }
 
-  void addLinks(ObserverValue linkType, List<Link> links) {
-    if (this.linkMap.containsKey(linkType)) {
-      this.linkMap.get(linkType).addAll(links);
-    }
-    setChanged();
-    notifyObservers(new UndoAddLinkingCallback(this, linkType, links));
+  public int getLinkMapSize() {
+    return this.linkMap.size();
   }
 }

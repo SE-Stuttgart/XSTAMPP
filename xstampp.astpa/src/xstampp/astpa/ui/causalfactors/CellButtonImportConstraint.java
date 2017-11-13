@@ -20,10 +20,10 @@ import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.CellButton;
@@ -31,23 +31,25 @@ import xstampp.ui.common.grid.GridWrapper;
 
 public class CellButtonImportConstraint extends CellButton {
 
-  private ICausalFactorEntry entry = null;
-  private UUID componentId;
-  private UUID factorId;
   private Grid grid;
   private ICausalFactorDataModel dataModel;
+  private Link ucaHazLink;
 
-  public CellButtonImportConstraint(Grid grid, ICausalFactorEntry entry, UUID componentId,
-      UUID factorId, ICausalFactorDataModel dataInterface) {
+  /**
+   * 
+   * @param grid
+   * @param ucaHazLink
+   *          a Link of type {@link ObserverValue#UCAEntryLink_HAZ_LINK}
+   * @param dataInterface
+   */
+  public CellButtonImportConstraint(Grid grid, Link ucaHazLink, ICausalFactorDataModel dataInterface) {
     super(new Rectangle(-1, -1,
         GridWrapper.getLinkButton16().getBounds().width,
         GridWrapper.getLinkButton16().getBounds().height),
         GridWrapper.getLinkButton16());
 
     this.grid = grid;
-    this.entry = entry;
-    this.componentId = componentId;
-    this.factorId = factorId;
+    this.ucaHazLink = ucaHazLink;
     dataModel = dataInterface;
   }
 
@@ -61,7 +63,8 @@ public class CellButtonImportConstraint extends CellButton {
       tmp = safetyConstraints.get(i).getText();
       if (tmp != null && tmp.length() >= 1) {
         LinkProposal proposal = new LinkProposal();
-        proposal.setLabel(safetyConstraints.get(i).getIdString() + " - " + tmp.substring(0, Math.min(tmp.length(), 20)) + "...");
+        proposal.setLabel(
+            safetyConstraints.get(i).getIdString() + " - " + tmp.substring(0, Math.min(tmp.length(), 20)) + "...");
         proposal.setDescription(tmp);
         proposals.add(proposal);
       }
@@ -74,11 +77,9 @@ public class CellButtonImportConstraint extends CellButton {
 
           @Override
           public void proposalAccepted(IContentProposal proposal) {
-            CausalFactorEntryData entryData = new CausalFactorEntryData(entry.getId());
-            entryData.setConstraint(proposal.getContent());
-            dataModel.lockUpdate();
-            dataModel.changeCausalEntry(componentId, factorId, entryData);
-            dataModel.releaseLockAndUpdate(null);
+            UUID constraintId = dataModel.getCausalFactorController().addSafetyConstraint(proposal.getDescription());
+            dataModel.getLinkController().addLink(ObserverValue.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
+                constraintId);
             grid.redraw();
           }
         });

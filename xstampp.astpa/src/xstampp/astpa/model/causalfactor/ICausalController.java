@@ -14,11 +14,10 @@ package xstampp.astpa.model.causalfactor;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
+import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -29,6 +28,15 @@ public interface ICausalController {
 
   UUID addCausalFactor();
 
+  /**
+   * 
+   * @param causalFactorId
+   *          the {@link UUID} of a {@link ICausalFactor}
+   * @param causalFactorText
+   *          the text that should be set as the {@link ICausalFactor#getText()}
+   * @return <b style="color:blue">true</b> if the given id is valid and the text is different to
+   *         the current <br><b style="color:blue">false</b> otherwise
+   */
   boolean setCausalFactorText(UUID causalFactorId, String causalFactorText);
 
   boolean removeCausalFactor(UUID causalFactor);
@@ -48,7 +56,7 @@ public interface ICausalController {
 
   List<ITableModel> getSafetyConstraints();
 
-  UUID addSafetyConstraint();
+  UUID addSafetyConstraint(String text);
 
   /**
    * 
@@ -64,8 +72,29 @@ public interface ICausalController {
    * 
    * @param id
    *          the {@link UUID} which was assigned to an {@link CausalFactorEntry}
-   * @return the title of the {@link CausalSafetyConstraint}, or an empty String if no constraint
+   * @return the description of the {@link ICausalSafetyConstraint}, or an empty String if no
+   *         constraint
    *         was found for the given id.
    */
   String getConstraintTextFor(UUID id);
+
+  /**
+   * 
+   * @param type
+   *          One of {@link ComponentType}
+   * @return true if the type is a valid component for the causal analysis
+   */
+  boolean validateCausalComponent(ComponentType type);
+
+  /**
+   * getter for a causal factor stored in the causal factor controller
+   * 
+   * @param causalFactorId
+   *          the {@link UUID} that was given to a causal factor by creation
+   * @return the {@link ICausalFactor} for the given id or <b>null</b> if no {@link ICausalFactor}
+   *         was found with the given id
+   */
+  ICausalFactor getCausalFactor(UUID causalFactorId);
+
+  boolean setSafetyConstraintText(UUID linkB, String newText);
 }

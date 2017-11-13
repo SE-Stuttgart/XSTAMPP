@@ -14,7 +14,6 @@
 package xstampp.astpa.model.causalfactor;
 
 import xstampp.astpa.model.ATableModel;
-import xstampp.model.ITableEntry;
 
 /**
  * A corresponding safety constraint
@@ -22,7 +21,7 @@ import xstampp.model.ITableEntry;
  * @author Fabian Toth
  * 
  */
-public class CausalSafetyConstraint extends ATableModel {
+class CausalSafetyConstraint extends ATableModel {
 
   /**
    * Constructor of a causal factor safety constraint
@@ -46,14 +45,8 @@ public class CausalSafetyConstraint extends ATableModel {
   }
 
   @Override
-  public int compareTo(ITableEntry o) {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
   public String getDescription() {
-    return null;
+    return super.getDescription();
   }
 
 }

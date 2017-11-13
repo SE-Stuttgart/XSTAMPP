@@ -16,39 +16,36 @@ import java.util.UUID;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.linking.Link;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.CellButton;
 import xstampp.ui.common.grid.GridWrapper;
 
 public class NewConstraintButton extends CellButton {
 
-  private UUID componentId;
-  private UUID factorId;
-  private UUID entryId;
   private ICausalFactorDataModel datamodel;
+  private Link ucaHazLink;
 
-  public NewConstraintButton(UUID componentId, UUID factorId, UUID entryId,
-      ICausalFactorDataModel datamodel) {
+  /**
+   * @param ucaHazLink
+   *          a Link of type {@link ObserverValue#UCAEntryLink_HAZ_LINK}
+   * @param datamodel
+   */
+  public NewConstraintButton(Link ucaHazLink, ICausalFactorDataModel datamodel) {
     super(new Rectangle(
         -1, -1,
         GridWrapper.getAddButton16().getBounds().width,
         GridWrapper.getAddButton16().getBounds().height),
         GridWrapper.getAddButton16());
-    this.componentId = componentId;
-    this.factorId = factorId;
-    this.entryId = entryId;
+    this.ucaHazLink = ucaHazLink;
     this.datamodel = datamodel;
   }
 
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
-    CausalFactorEntryData data = new CausalFactorEntryData(entryId);
-    data.setConstraint(new String());
-    UUID randomUUID = UUID.randomUUID();
-    
-    datamodel.lockUpdate();
-    datamodel.changeCausalEntry(componentId, factorId, data);
-    datamodel.releaseLockAndUpdate(null);
+    UUID constraintId = this.datamodel.getCausalFactorController().addSafetyConstraint("");
+    this.datamodel.getLinkController().addLink(ObserverValue.CausalHazLink_SC2_LINK, this.ucaHazLink.getId(),
+        constraintId);
   }
 }

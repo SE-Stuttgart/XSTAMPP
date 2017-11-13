@@ -14,7 +14,6 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
@@ -36,7 +35,7 @@ public interface IExtendedDataModel extends IDataModel, IExtendedDataController 
    *
    */
   public static enum ScenarioType {
-    BASIC_SCENARIO, CAUSAL_SCENARIO, CUSTOM_LTL
+    BASIC_SCENARIO, CAUSAL_SCENARIO, CUSTOM_LTL, NO_SCENARIO;
   }
 
   List<AbstractLTLProvider> getLTLPropertys();
@@ -56,8 +55,6 @@ public interface IExtendedDataModel extends IDataModel, IExtendedDataController 
    * @return a value Component with the label '(don't care)'
    */
   IRectangleComponent getIgnoreLTLValue();
-
-  List<ICausalComponent> getCausalComponents();
 
   boolean setCASafetyCritical(UUID id, boolean safetyCritical);
 

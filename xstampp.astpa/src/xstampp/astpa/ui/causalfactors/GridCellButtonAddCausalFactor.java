@@ -10,13 +10,11 @@
  *******************************************************************************/
 package xstampp.astpa.ui.causalfactors;
 
-import java.util.UUID;
-
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Rectangle;
 
 import messages.Messages;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.grid.GridCellButton;
@@ -29,7 +27,7 @@ import xstampp.ui.common.grid.GridCellButton;
  */
 public class GridCellButtonAddCausalFactor extends GridCellButton {
 
-  private ICausalComponent component;
+  private IRectangleComponent component;
   private ICausalFactorDataModel dataInterface;
 
   /**
@@ -40,7 +38,7 @@ public class GridCellButtonAddCausalFactor extends GridCellButton {
    * @param component
    *          the component the add buttons adds causal factors to.
    */
-  public GridCellButtonAddCausalFactor(ICausalComponent component,
+  public GridCellButtonAddCausalFactor(IRectangleComponent component,
       ICausalFactorDataModel dataInterface) {
     super(Messages.AddNewCausalFactor);
 
@@ -53,7 +51,6 @@ public class GridCellButtonAddCausalFactor extends GridCellButton {
       org.eclipse.swt.graphics.Point relativeMouse,
       Rectangle cellBounds) {
     ProjectManager.getLOGGER().info(Messages.AddingNewCausalFactor);
-    UUID factorId = dataInterface
-        .addCausalFactor(component.getId());
+    dataInterface.addCausalFactor(component.getId());
   }
 }

@@ -218,57 +218,57 @@ public class StpaCSVExport extends Job {
     writer.write(Messages.NotesSlashRationale);
     writer.newLine();
 
-    for (ICausalComponent component : this.model.getCausalComponents()) {
-      // this loop writes two lines
-      for (ICausalFactor factor : component.getCausalFactors()) {
-        Map<UUID, String> ucaDescMap = new HashMap<>();
-        for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
-          ucaDescMap.put(uca.getId(), "UCA1." + uca.getNumber() + ": " + uca.getDescription());
-        }
-        for (ICausalFactorEntry entry : factor.getAllEntries()) {
-          String ucaCell = ""; //$NON-NLS-1$
-          String hazCell = ""; //$NON-NLS-1$
-          String scenarioCell = ""; //$NON-NLS-1$
-          String safetyCell = ""; //$NON-NLS-1$
-
-          if (entry.getUcaLink() != null) {
-            ucaCell = ucaDescMap.get(entry.getUcaLink());
-            for (ITableModel haz : model.getLinkedHazardsOfUCA(entry.getUcaLink())) {
-              hazCell += "H-" + haz.getNumber() + ",";
-            }
-          } else {
-            String hazString = new String();
-            if (entry.getHazardIds() != null) {
-              for (UUID hazardId : entry.getHazardIds()) {
-                hazString += "H-" + model.getHazard(hazardId).getNumber() + ",";
-              }
-            }
-          }
-          hazCell = hazCell.substring(0, hazCell.length() - 1);
-
-          writer.writeCell(component.getText());
-          writer.writeCell(factor.getText());
-          writer.writeCell(ucaCell);
-          writer.writeCell(hazCell);
-          writer.writeCell();
-          writer.writeCell(model.getCausalFactorController().getConstraintTextFor(entry.getId()));
-          writer.writeCell(factor.getNote());
-          writer.newLine();
-
-          for (UUID provider : entry.getScenarioLinks()) {
-
-            writer.writeCell(component.getText());
-            writer.writeCell(factor.getText());
-            writer.writeCell(ucaCell);
-            writer.writeCell(hazCell);
-            writer.writeCell(model.getRefinedScenario(provider).getSafetyRule());
-            writer.writeCell(model.getRefinedScenario(provider).getRefinedSafetyConstraint());
-            writer.writeCell(factor.getNote());
-            writer.newLine();
-          }
-        }
-      }
-    }
+//    for (ICausalComponent component : this.model.getCausalComponents()) {
+//      // this loop writes two lines
+//      for (ICausalFactor factor : component.getCausalFactors()) {
+//        Map<UUID, String> ucaDescMap = new HashMap<>();
+//        for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
+//          ucaDescMap.put(uca.getId(), "UCA1." + uca.getNumber() + ": " + uca.getDescription());
+//        }
+//        for (ICausalFactorEntry entry : factor.getAllEntries()) {
+//          String ucaCell = ""; //$NON-NLS-1$
+//          String hazCell = ""; //$NON-NLS-1$
+//          String scenarioCell = ""; //$NON-NLS-1$
+//          String safetyCell = ""; //$NON-NLS-1$
+//
+//          if (entry.getUcaLink() != null) {
+//            ucaCell = ucaDescMap.get(entry.getUcaLink());
+//            for (ITableModel haz : model.getLinkedHazardsOfUCA(entry.getUcaLink())) {
+//              hazCell += "H-" + haz.getNumber() + ",";
+//            }
+//          } else {
+//            String hazString = new String();
+//            if (entry.getHazardIds() != null) {
+//              for (UUID hazardId : entry.getHazardIds()) {
+//                hazString += "H-" + model.getHazard(hazardId).getNumber() + ",";
+//              }
+//            }
+//          }
+//          hazCell = hazCell.substring(0, hazCell.length() - 1);
+//
+//          writer.writeCell(component.getText());
+//          writer.writeCell(factor.getText());
+//          writer.writeCell(ucaCell);
+//          writer.writeCell(hazCell);
+//          writer.writeCell();
+//          writer.writeCell(model.getCausalFactorController().getConstraintTextFor(entry.getId()));
+//          writer.writeCell(factor.getNote());
+//          writer.newLine();
+//
+//          for (UUID provider : entry.getScenarioLinks()) {
+//
+//            writer.writeCell(component.getText());
+//            writer.writeCell(factor.getText());
+//            writer.writeCell(ucaCell);
+//            writer.writeCell(hazCell);
+//            writer.writeCell(model.getRefinedScenario(provider).getSafetyRule());
+//            writer.writeCell(model.getRefinedScenario(provider).getRefinedSafetyConstraint());
+//            writer.writeCell(factor.getNote());
+//            writer.newLine();
+//          }
+//        }
+//      }
+//    }
   }
 
   private void writeSystemDescCSV(BufferedCSVWriter writer, String title)

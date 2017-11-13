@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import xstampp.astpa.model.AbstractNumberedEntry;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -101,18 +100,17 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints) {
-    getEntries().forEach(
-        entry -> entry.prepareForExport(hazAccController, allRefinedRules, allUnsafeControlActions,
-            safetyConstraints));
   }
 
-  public void prepareForSave(Component component, IHazAccController hazAccController,
+  public void prepareForSave(UUID componentId, IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
+    UUID link = linkController.addLink(ObserverValue.UCA_CausalFactor_LINK,null, id);
+    linkController.addLink(ObserverValue.UcaCfLink_Component_LINK, link, componentId);
+    
     getEntries().forEach(entry -> {
-      linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, entry.get, b)
-      entry.prepareForSave(component, this, linkController, safetyConstraints);
+      entry.prepareForSave(componentId, this, linkController, safetyConstraints);
     });
     this.entries = null;
 

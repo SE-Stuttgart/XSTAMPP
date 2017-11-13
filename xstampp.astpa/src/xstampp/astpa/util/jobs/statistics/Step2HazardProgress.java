@@ -81,31 +81,30 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
     TreeMap<ICorrespondingUnsafeControlAction, Map<ICausalFactorEntry, ICausalFactor>> cftoCfEntryToUCAMap = new TreeMap<>();
     // In the below block a map containing the causal factors mapped to the uca entries for
     // every occurring uca
-    // TODO maybe simplify/reduce complexity, think about refactoring of the data model
-    for (IRectangleComponent controlStructureComponent : getController()
-        .getControlStructureController().getRoot().getChildren()) {
-      ICausalComponent causalComponent = getController().getCausalFactorController()
-          .getCausalComponent(controlStructureComponent);
-      // if a component is registered in the causalFactorController for the given control structure
-      // component than this can contain a list of causal factors
-      if (causalComponent != null) {
-        for (ICausalFactor factor : causalComponent.getCausalFactors()) {
-          for (ICausalFactorEntry entry : factor.getAllEntries()) {
-            if (entry.getUcaLink() != null) {
-              ICorrespondingUnsafeControlAction uca = ucaMap.get(entry.getUcaLink());
-              Optional<UUID> of = Optional.of(hazModel.getId());
-              if (getController().getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK,
-                  uca.getId(), of)) {
-                if (!cftoCfEntryToUCAMap.containsKey(uca)) {
-                  cftoCfEntryToUCAMap.put(uca, new HashMap<>());
-                }
-                cftoCfEntryToUCAMap.get(uca).put(entry, factor);
-              }
-            }
-          }
-        }
-      }
-    }
+//    for (IRectangleComponent controlStructureComponent : getController()
+//        .getControlStructureController().getRoot().getChildren()) {
+//      ICausalComponent causalComponent = getController().getCausalFactorController()
+//          .getCausalComponent(controlStructureComponent);
+//      // if a component is registered in the causalFactorController for the given control structure
+//      // component than this can contain a list of causal factors
+//      if (causalComponent != null) {
+//        for (ICausalFactor factor : causalComponent.getCausalFactors()) {
+//          for (ICausalFactorEntry entry : factor.getAllEntries()) {
+//            if (entry.getUcaLink() != null) {
+//              ICorrespondingUnsafeControlAction uca = ucaMap.get(entry.getUcaLink());
+//              Optional<UUID> of = Optional.of(hazModel.getId());
+//              if (getController().getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK,
+//                  uca.getId(), of)) {
+//                if (!cftoCfEntryToUCAMap.containsKey(uca)) {
+//                  cftoCfEntryToUCAMap.put(uca, new HashMap<>());
+//                }
+//                cftoCfEntryToUCAMap.get(uca).put(entry, factor);
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
 
     Row row = hazRow;
     int index = rowIndex;

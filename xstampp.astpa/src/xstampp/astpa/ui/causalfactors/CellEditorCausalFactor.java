@@ -21,23 +21,21 @@ import xstampp.ui.common.grid.GridWrapper;
 
 public class CellEditorCausalFactor extends GridCellTextEditor {
 
-  private UUID componentId;
   private UUID factorId;
   private ICausalFactorDataModel dataInterface;
 
   public CellEditorCausalFactor(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      String initialText, UUID componentId, UUID factorId) {
+      String initialText, UUID factorId) {
     super(gridWrapper, initialText, factorId);
     setReadOnly(false);
     setShowDelete(true);
     this.dataInterface = dataInterface;
-    this.componentId = componentId;
     this.factorId = factorId;
   }
 
   @Override
   public void updateDataModel(String newText) {
-    dataInterface.setCausalFactorText(componentId, factorId, newText);
+    dataInterface.getCausalFactorController().setCausalFactorText(factorId, newText);
 
   }
 
@@ -56,7 +54,7 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
     if (MessageDialog.openConfirm(null, "Delete Causal Factor?",
         "Do you really want to delete this Causal Factor\n"
             + "and all its child entries?")) {
-      dataInterface.removeCausalFactor(componentId, factorId);
+      dataInterface.getCausalFactorController().removeCausalFactor(factorId);
     }
   }
 

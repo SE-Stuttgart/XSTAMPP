@@ -30,7 +30,7 @@ public class DeleteCFAction extends DeleteGridEntryAction<ICausalFactorDataModel
 
   @Override
   protected void removeEntry(UUID id) {
-    getDataModel().removeCausalFactor(null, id);
+    getDataModel().getCausalFactorController().removeCausalFactor(id);
   }
 
 }
