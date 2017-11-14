@@ -52,8 +52,11 @@ public class DefaultUser implements IUser {
 
   @Override
   public List<UUID> getResponsibilities() {
-    // TODO Auto-generated method stub
     return new ArrayList<>();
   }
 
+  @Override
+  public boolean isResponsible(UUID componentId) {
+    return false;
+  }
 }

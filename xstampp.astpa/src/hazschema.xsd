@@ -19,10 +19,10 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="projectDescription" type="xs:string" maxOccurs="1" minOccurs="1" />
+                            <xs:element name="projectDescription" type="xs:string" maxOccurs="1" minOccurs="0" />
                             <xs:element name="projectId" type="xs:string" maxOccurs="1" minOccurs="0">
                             </xs:element>
-                            <xs:element name="projectName" type="xs:string" maxOccurs="1" minOccurs="1" />
+                            <xs:element name="projectName" type="xs:string" maxOccurs="1" minOccurs="0" />
                         </xs:all>
                     </xs:complexType>
                 </xs:element>
@@ -257,17 +257,17 @@
                                                                     <xs:complexType>
                                                                         <xs:sequence>
                                                                             <xs:element name="factor"
-                                                                                type="Q1:causalFactorType" maxOccurs="unbounded"
-                                                                                minOccurs="0">
+                                                                                type="Q1:causalFactorType"
+                                                                                maxOccurs="unbounded" minOccurs="0">
                                                                             </xs:element>
                                                                         </xs:sequence>
                                                                     </xs:complexType>
                                                                 </xs:element>
-                                                                <xs:element name="title" type="xs:string"
-                                                                    maxOccurs="1" minOccurs="0">
+                                                                <xs:element name="title" type="xs:string" maxOccurs="1"
+                                                                    minOccurs="0">
                                                                 </xs:element>
-                                                                <xs:element name="type" type="xs:string"
-                                                                    maxOccurs="1" minOccurs="0">
+                                                                <xs:element name="type" type="xs:string" maxOccurs="1"
+                                                                    minOccurs="0">
                                                                 </xs:element>
                                                             </xs:all>
 
@@ -285,6 +285,15 @@
                                     <xs:sequence>
                                         <xs:element name="causalSafetyConstraint" type="Q1:sdsType"
                                             maxOccurs="unbounded" minOccurs="0">
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="causalFactors" maxOccurs="1" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="causalFactor" type="Q1:causalFactorType" maxOccurs="unbounded"
+                                            minOccurs="0">
                                         </xs:element>
                                     </xs:sequence>
                                 </xs:complexType>
@@ -316,6 +325,8 @@
                                                                         <xs:attribute name="linkA" type="xs:string">
                                                                         </xs:attribute>
                                                                         <xs:attribute name="linkB" type="xs:string">
+                                                                        </xs:attribute>
+                                                                        <xs:attribute name="note" type="xs:string">
                                                                         </xs:attribute>
                                                                         <xs:attribute name="id" use="optional" 
                                                                             type="xs:string">
@@ -406,7 +417,7 @@
             <xs:element type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
             <xs:element type="xs:string" name="isSafetyCritical" minOccurs="0" maxOccurs="1" />
             <xs:element type="xs:string" name="comment" minOccurs="0" maxOccurs="1" />
-            <xs:element type="xs:string" name="componentType" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:string" name="componentType" maxOccurs="1" minOccurs="0" />
             <xs:element type="xs:string" name="controlActionId" minOccurs="0" maxOccurs="1" />
             <xs:element name="layout" type="Q1:layoutType" maxOccurs="1" minOccurs="0" />
             <xs:element name="layoutPM" type="Q1:layoutType" minOccurs="0" maxOccurs="1" />

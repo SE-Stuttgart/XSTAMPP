@@ -117,9 +117,7 @@ public class UserSystem extends Observable implements IUserSystem {
       for (Entry<UUID, List<UUID>> entry : responsibilityMap.entrySet()) {
         UUID entryId = entry.getKey();
         for (UUID userId : entry.getValue()) {
-          if (entry.getValue() instanceof AbstractUser) {
-            changed |= this.responsibilities.add(userId, entryId);
-          }
+          changed |= this.responsibilities.add(userId, entryId);
         }
       }
       if (changed) {

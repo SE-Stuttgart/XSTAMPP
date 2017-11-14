@@ -12,25 +12,22 @@
 package xstampp.astpa.usermanagement.settings;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.usermanagement.Messages;
-import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
-import xstampp.ui.common.shell.ModalShell;
+import xstampp.ui.common.contentassist.MultiSelectionCellEditor;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
@@ -39,23 +36,22 @@ import xstampp.usermanagement.api.IUserSystem;
 public class ResponsibilityEditingSupport extends EditingSupport {
 
   private Map<UUID, List<UUID>> userToResponibilitiesMap;
+  private Map<UUID, List<UUID>> localResponibilitiesMap;
   private List<String> userList;
   private IUserSystem userSystem;
   private List<IUser> userRegister;
-  private ModalShell parent;
 
   /**
    * 
    * @param viewer
    *          must be a {@link TableViewer}
-   * @param project
-   * @param parent 
+   * @param parent
    */
-  public ResponsibilityEditingSupport(ColumnViewer viewer, IUserProject project, ModalShell parent) {
+  public ResponsibilityEditingSupport(ColumnViewer viewer, IUserProject project) {
     super(viewer);
-    this.parent = parent;
     Assert.isTrue(viewer instanceof TableViewer);
     this.userToResponibilitiesMap = new HashMap<>();
+    this.localResponibilitiesMap = new HashMap<>();
     userSystem = project.getUserSystem();
     this.userList = new ArrayList<>();
     this.userRegister = new ArrayList<>();
@@ -64,56 +60,80 @@ public class ResponsibilityEditingSupport extends EditingSupport {
         this.userList.add(user.getUsername());
         this.userRegister.add(user);
         for (UUID entryId : this.userSystem.getResponsibilities(user.getUserId())) {
-          mapResp(user.getUserId(), entryId);
+          if (!this.userToResponibilitiesMap.containsKey(entryId)) {
+            this.userToResponibilitiesMap.put(entryId, new ArrayList<>());
+          }
+          this.userToResponibilitiesMap.get(entryId).add(user.getUserId());
         }
       }
     }
   }
 
-  private void mapResp(UUID userId, UUID entryId) {
-    if (!this.userToResponibilitiesMap.containsKey(entryId)) {
-      this.userToResponibilitiesMap.put(entryId, new ArrayList<>());
+  private void mapResp(UUID entryId, UUID userId, boolean remove) {
+    if (remove && this.localResponibilitiesMap.containsKey(entryId)) {
+      this.localResponibilitiesMap.get(entryId).remove(userId);
+    } else if (!this.localResponibilitiesMap.containsKey(entryId)) {
+      List<UUID> list = this.userToResponibilitiesMap.getOrDefault(entryId, new ArrayList<>());
+      this.localResponibilitiesMap.put(entryId, list);
     }
-    this.userToResponibilitiesMap.get(entryId).add(userId);
+    if (!(remove || this.localResponibilitiesMap.get(entryId).contains(userId))) {
+      this.localResponibilitiesMap.get(entryId).add(userId);
+    }
   }
 
   @Override
   protected CellEditor getCellEditor(Object element) {
-    return null;
+    List<LinkProposal> proposals = new ArrayList<>();
+    for (IUser user : this.userRegister) {
+      LinkProposal prop = new LinkProposal();
+      prop.setLabel(user.getUsername());
+      prop.setProposalId(user.getUserId());
+      prop.setSelected(user.isResponsible(((ATableModel) element).getId()));
+      proposals.add(prop);
+    }
+    return new MultiSelectionCellEditor(((TableViewer) getViewer()).getTable(),
+        proposals, SWT.BORDER | SWT.READ_ONLY);
   }
 
   @Override
   protected boolean canEdit(Object element) {
-    if (userSystem.checkAccess(AccessRights.ADMIN)) {
-
-      List<LinkProposal> proposals = new ArrayList<>();
-      for (IUser user : this.userRegister) {
-        LinkProposal prop = new LinkProposal();
-        prop.setLabel(user.getUsername());
-        prop.setProposalId(user.getUserId());
-        proposals.add(prop);
-      }
-      AutoCompleteField field = new AutoCompleteField(proposals.toArray(new LinkProposal[0]), getViewer().getControl());
-      field.setProposalListener((proposal) -> {
-        mapResp(((LinkProposal) proposal).getProposalId(), ((ATableModel) element).getId());
-      });
-      if (getViewer().getControl().getDisplay() != null) {
-        field.openShell();
-      }
-    }
-    return false;
+    return true;
   }
 
   @Override
   protected Object getValue(Object element) {
-    return userList.indexOf(getStringValue(element));
+
+    this.userRegister.clear();
+    for (IUser user : this.userSystem.getRegistry()) {
+      if (user.checkAccess(AccessRights.ACCESS)) {
+        this.userList.add(user.getUsername());
+        this.userRegister.add(user);
+      }
+    }
+    List<LinkProposal> proposals = new ArrayList<>();
+    for (IUser user : this.userRegister) {
+      LinkProposal prop = new LinkProposal();
+      prop.setLabel(user.getUsername());
+      prop.setProposalId(user.getUserId());
+      prop.setSelected(isMapped(((ATableModel) element).getId(), user));
+      proposals.add(prop);
+    }
+    return proposals;
+  }
+
+  private boolean isMapped(UUID id, IUser user) {
+    boolean result = false;
+    if (this.userToResponibilitiesMap.containsKey(id)) {
+      result = this.userToResponibilitiesMap.get(id).contains(user.getUserId());
+    }
+    return result;
   }
 
   protected String getStringValue(Object element) {
     if (userToResponibilitiesMap.containsKey(((ATableModel) element).getId())) {
       String value = "";
       for (IUser user : userRegister) {
-        if(userToResponibilitiesMap.get(((ATableModel) element).getId()).contains(user.getUserId())) {
+        if (isMapped(((ATableModel) element).getId(), user)) {
           value += user.getUsername() + ", ";
         }
       }
@@ -122,11 +142,17 @@ public class ResponsibilityEditingSupport extends EditingSupport {
     return Messages.ResponsibilityEditingSupport_0;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected void setValue(Object element, Object value) {
+    assert (value instanceof List<?>);
+    ((List<LinkProposal>) value).stream()
+        .forEach((prop) -> mapResp(((ATableModel) element).getId(), prop.getProposalId(), !prop.isSelected()));
+
+    getViewer().refresh();
   }
 
   public Map<UUID, List<UUID>> save() {
-    return userToResponibilitiesMap;
+    return localResponibilitiesMap;
   }
 }

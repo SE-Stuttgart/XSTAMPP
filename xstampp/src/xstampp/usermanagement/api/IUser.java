@@ -50,6 +50,8 @@ public interface IUser {
   public boolean checkAccess(AccessRights accessRight);
 
   List<UUID> getResponsibilities();
+  
+  boolean isResponsible(UUID componentId);
 
   /**
    * 

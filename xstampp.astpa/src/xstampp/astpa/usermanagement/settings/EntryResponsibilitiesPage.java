@@ -33,7 +33,6 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.AccessRights;
-import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 
 public abstract class EntryResponsibilitiesPage<T extends ATableModel> implements ISettingsPage {
@@ -82,7 +81,7 @@ public abstract class EntryResponsibilitiesPage<T extends ATableModel> implement
         return editingSupport.getStringValue(element);
       }
     });
-    editingSupport = new ResponsibilityEditingSupport(viewer, getDataModel(), parent);
+    editingSupport = new ResponsibilityEditingSupport(viewer, getDataModel());
     respColumn.setEditingSupport(editingSupport);
     List<T> entryList = new ArrayList<>();
     //if the current user is has Administrator rights he can see all entries, where as normal user he can only see his responsibilities 

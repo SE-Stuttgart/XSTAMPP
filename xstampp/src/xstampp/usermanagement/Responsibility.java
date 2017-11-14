@@ -49,20 +49,17 @@ public class Responsibility {
   public boolean equals(Object obj) {
     if (obj instanceof Responsibility) {
       Responsibility resp = (Responsibility) obj;
-      boolean equalUser = false;
-      boolean userNull = true;
-      boolean equalEntry = false;
-      if (resp.userId != null && userId != null) {
-        userNull = false;
-        equalUser = resp.userId != null && userId.equals(resp.userId);
-      }
-      if (resp.entryId != null && entryId != null) {
-        equalEntry = resp.entryId != null && entryId.equals(resp.entryId);
-      }
+      boolean userNull = resp.userId == null && userId == null;
+      boolean equalUser = userId != null && userId.equals(resp.userId);
+      boolean entryNull = resp.entryId == null && entryId == null;
+      boolean equalEntry = entryId != null && entryId.equals(resp.entryId);
       if (equalUser && equalEntry) {
         return true;
       }
       if (userNull && equalEntry) {
+        return true;
+      }
+      if (userNull && entryNull) {
         return true;
       }
     }

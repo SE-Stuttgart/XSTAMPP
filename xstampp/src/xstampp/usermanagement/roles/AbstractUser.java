@@ -118,6 +118,11 @@ public abstract class AbstractUser implements IUser {
   }
 
   @Override
+  public boolean isResponsible(UUID componentId) {
+    return responsibilities.contains(componentId);
+  }
+
+  @Override
   public UUID getWorkingProjectId() {
     return workingProjectId;
   }
