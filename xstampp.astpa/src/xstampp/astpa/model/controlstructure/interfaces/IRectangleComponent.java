@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 
 /**
@@ -23,7 +24,7 @@ import xstampp.astpa.model.controlstructure.components.ComponentType;
  * 
  * @author Fabian Toth
  */
-public interface IRectangleComponent extends IComponent {
+public interface IRectangleComponent extends IComponent, ICausalComponent {
 
   ComponentType getComponentType();
 

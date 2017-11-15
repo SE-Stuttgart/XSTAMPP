@@ -1,13 +1,11 @@
 /*******************************************************************************
  * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
- * Software Engineering Group University of Stuttgart, Germany.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Software Engineering Group University of Stuttgart, Germany. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
- * Lukas Balzer - initial API and implementation
+ * Contributors: Lukas Balzer - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.model.linking;
 
@@ -143,15 +141,14 @@ public class LinkController extends Observable {
 
   /**
    * Returns and removes all matching {@link Link} that contain the given partId as link component.
-   * <p>
-   * <b>This method does not trigger an update and thus is not part of the API</b>
+   * <p> <b>This method does not trigger an update and thus is not part of the API</b>
    * 
    * @param partId
    *          the {@link UUID} of a {@link Link}
    * @param depth
-   *          the amount of recursions that are used to find {@link Link} Objects,<br>
-   *          e.g. if depth is 2 than also the links are included that contain a {@link UUID} of a
-   *          Link found in the first recursion
+   *          the amount of recursions that are used to find {@link Link} Objects,<br> e.g. if depth
+   *          is 2 than also the links are included that contain a {@link UUID} of a Link found in
+   *          the first recursion
    * @return a {@link List} of {@link Link}'s that contain the given partId as link component.
    */
   List<Link> deleteLinksFor(UUID partId, int depth) {
@@ -206,7 +203,8 @@ public class LinkController extends Observable {
     UUID oldB = link.getLinkB();
     if (link.setLinkA(linkA) || link.setLinkB(linkB)) {
       setChanged();
-      notifyObservers(new UndoChangeLinkingCallback(this, link.getLinkType(), link.getId(), oldA, oldB, linkA, linkB));
+      notifyObservers(new UndoChangeLinkingCallback(this, link.getLinkType(), link.getId(), oldA,
+          oldB, linkA, linkB));
       return true;
     }
 
@@ -248,7 +246,8 @@ public class LinkController extends Observable {
       this.linkMap.get(linkType).removeIf((t) -> {
         return t.getLinkA() == null && t.getLinkB() == null;
       });
-      return this.linkMap.get(linkType).stream().filter((link) -> link.getId().equals(linkId)).findFirst().orElse(null);
+      return this.linkMap.get(linkType).stream().filter((link) -> link.getId().equals(linkId))
+          .findFirst().orElse(null);
     }
     return null;
   }
@@ -283,7 +282,14 @@ public class LinkController extends Observable {
    * @return whether the {@link LinkController} contains a link for the given id or not
    */
   public boolean isLinked(ObserverValue linkType, UUID part) {
-    return isLinked(linkType, part, Optional.empty());
+    if (!isLinked(linkType, part, Optional.empty())) {
+      //if the part itself is not part of a link stored under that type than maybe it is part of a link that itself is linked
+      Optional<Link> optional = this.linkMap.getOrDefault(linkType, new ArrayList<>()).parallelStream().filter((link)->  {
+        return link.links(part) && isLinked(linkType, link.getId());
+      }).findFirst();
+      return optional.isPresent();
+    }
+    return true;
   }
 
   public boolean isLinked(ObserverValue linkType, UUID part, Optional<UUID> rightPart) {
@@ -348,8 +354,7 @@ public class LinkController extends Observable {
    * @param linkType
    *          the {@link ObserverValue} of the link
    * @param part
-   *          the part that should be included in all links that are to to be deleted,<br>
-   *          or
+   *          the part that should be included in all links that are to to be deleted,<br> or
    *          <b><i>null</i></b> if all links for the given <b>type</b> should be deleted
    */
   public void deleteAllFor(ObserverValue linkType, UUID part) {

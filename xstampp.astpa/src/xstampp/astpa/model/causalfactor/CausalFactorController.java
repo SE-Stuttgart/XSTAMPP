@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -12,11 +12,12 @@
 package xstampp.astpa.model.causalfactor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,12 +30,15 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.controlaction.IControlActionController;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
@@ -48,8 +52,7 @@ import xstampp.model.ObserverValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class CausalFactorController extends Observable
-    implements ICausalController {
+public class CausalFactorController extends Observable implements ICausalController {
 
   @XmlElementWrapper(name = "causalComponents")
   @XmlElement(name = "causalComponent")
@@ -68,6 +71,7 @@ public class CausalFactorController extends Observable
 
   private LinkController linkController;
 
+  private List<CausalCSComponent> componentsList;
   /**
    * Constructor of the causal factor controller
    * 
@@ -110,7 +114,8 @@ public class CausalFactorController extends Observable
 
       String oldText = causalFactor.getText();
       if (causalFactor.setText(causalFactorText)) {
-        UndoTextChange textChange = new UndoTextChange(oldText, causalFactorText, ObserverValue.CAUSAL_FACTOR);
+        UndoTextChange textChange = new UndoTextChange(oldText, causalFactorText,
+            ObserverValue.CAUSAL_FACTOR);
         textChange.setConsumer((text) -> setCausalFactorText(causalFactorId, text));
         notifyObservers(textChange);
         return true;
@@ -133,19 +138,9 @@ public class CausalFactorController extends Observable
   }
 
   public ICausalComponent getCausalComponent(IRectangleComponent csComp) {
-    CausalCSComponent component = null;
+    ICausalComponent component = null;
     if (csComp != null && validateCausalComponent(csComp.getComponentType())) {
-      if (causalComponents == null) {
-        causalComponents = new HashMap<>();
-      }
-      if (!causalComponents.containsKey(csComp.getId())) {
-        causalComponents.put(csComp.getId(), new CausalCSComponent());
-      }
-
-      component = causalComponents.get(csComp.getId());
-      component.setText(csComp.getText());
-      component.setId(csComp.getId());
-      component.setType(csComp.getComponentType());
+      component = csComp;
     }
     return component;
   }
@@ -168,19 +163,57 @@ public class CausalFactorController extends Observable
   @Override
   public void prepareForExport(IHazAccController hazAccController,
       List<IRectangleComponent> children, List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions) {
-
+      IControlActionController caController,
+      LinkController linkController) {
+    this.componentsList = new ArrayList<>();
     for (IRectangleComponent child : children) {
-      if (getCausalComponent(child) != null) {
-        this.causalComponents.get(child.getId()).prepareForExport(hazAccController, child,
-            allRefinedRules, allUnsafeControlActions, getCausalSafetyConstraints());
+      if (linkController.isLinked(ObserverValue.UcaCfLink_Component_LINK, child.getId())) {
+        CausalCSComponent comp = new CausalCSComponent();
+        comp.prepareForExport(this, hazAccController, child, allRefinedRules,
+            caController, linkController);
+        this.componentsList.add(comp);
       }
     }
   }
 
   @Override
-  public void prepareForSave(IHazAccController hazAccController,
-      List<Component> list,
+  public SortedMap<ICausalFactor, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
+      LinkController linkController) {
+    SortedMap<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
+    linkController.getRawLinksFor(ObserverValue.UcaCfLink_Component_LINK, component.getId())
+        .forEach((link) -> {
+          Link ucaCFLink = linkController.getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+              link.getLinkA());
+          ICausalFactor factor = getCausalFactor(ucaCFLink.getLinkB());
+
+          if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
+            ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
+          }
+          ucaCfLink_Component_ToCFmap.get(factor).add(link);
+        });
+    return ucaCfLink_Component_ToCFmap;
+  }
+
+  @Override
+  public SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
+      LinkController linkController, IControlActionController caController) {
+    SortedMap<IUnsafeControlAction, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
+    linkController.getRawLinksFor(ObserverValue.UcaCfLink_Component_LINK, component.getId())
+        .forEach((link) -> {
+          Link ucaCFLink = linkController.getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+              link.getLinkA());
+          IUnsafeControlAction factor = caController.getUnsafeControlAction(ucaCFLink.getLinkA());
+
+          if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
+            ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
+          }
+          ucaCfLink_Component_ToCFmap.get(factor).add(link);
+        });
+    return ucaCfLink_Component_ToCFmap;
+  }
+
+  @Override
+  public void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       LinkController linkController) {
@@ -188,12 +221,13 @@ public class CausalFactorController extends Observable
     if (this.causalComponents != null) {
       removeList.addAll(causalComponents.keySet());
       this.causalComponents.entrySet().forEach((comp) -> {
-        this.causalFactors.addAll(comp.getValue().prepareForSave(comp.getKey(), hazAccController, allRefinedRules,
-            allUnsafeControlActions,
-            getCausalSafetyConstraints(), linkController));
+        this.causalFactors
+            .addAll(comp.getValue().prepareForSave(comp.getKey(), hazAccController, allRefinedRules,
+                allUnsafeControlActions, getCausalSafetyConstraints(), linkController));
       });
     }
     this.causalComponents = null;
+    this.componentsList = null;
   }
 
   @Override
@@ -231,7 +265,8 @@ public class CausalFactorController extends Observable
 
     String description = ((ATableModel) getSafetyConstraint(linkB)).setDescription(newText);
     if (!newText.equals(description)) {
-      UndoTextChange textChange = new UndoTextChange(description, newText, ObserverValue.CAUSAL_FACTOR);
+      UndoTextChange textChange = new UndoTextChange(description, newText,
+          ObserverValue.CAUSAL_FACTOR);
       textChange.setConsumer((text) -> setSafetyConstraintText(linkB, text));
       notifyObservers(textChange);
       return true;

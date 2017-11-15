@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -22,10 +22,12 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.AbstractNumberedEntry;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
@@ -98,17 +100,24 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
 
   public void prepareForExport(IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
-      List<CausalSafetyConstraint> safetyConstraints) {
+      IControlActionController caController,
+      CausalFactorController controller, List<Link> causalEntryList,
+      LinkController linkController) {
+    for (Link link : causalEntryList) {
+      CausalFactorEntry entry = new CausalFactorEntry();
+      entry.prepareForExport(hazAccController, allRefinedRules, caController,
+          controller, link, linkController);
+    }
   }
 
   public void prepareForSave(UUID componentId, IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
-    UUID link = linkController.addLink(ObserverValue.UCA_CausalFactor_LINK,null, id);
-    linkController.addLink(ObserverValue.UcaCfLink_Component_LINK, link, componentId);
     
+    UUID link = linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, null, id);
+    linkController.addLink(ObserverValue.UcaCfLink_Component_LINK, link, componentId);
+
     getEntries().forEach(entry -> {
       entry.prepareForSave(componentId, this, linkController, safetyConstraints);
     });
@@ -124,14 +133,7 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
   }
 
   @Override
-  public ITableModel getSafetyConstraint() {
-    // Not supported
-    return null;
-  }
-
-  @Override
   public String getNote() {
-    // Notes are not supported by Causal Factors
     return null;
   }
 

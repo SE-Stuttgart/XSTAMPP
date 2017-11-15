@@ -1,28 +1,32 @@
 /*******************************************************************************
  * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
- * Software Engineering Group University of Stuttgart, Germany.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Software Engineering Group University of Stuttgart, Germany. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
- * Lukas Balzer - initial API and implementation
+ * Contributors: Lukas Balzer - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.model.causalfactor;
 
 import java.util.List;
+import java.util.SortedMap;
 import java.util.UUID;
 
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.controlaction.IControlActionController;
+import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
+import xstampp.model.ObserverValue;
 
 public interface ICausalController {
 
@@ -43,7 +47,8 @@ public interface ICausalController {
 
   void prepareForExport(IHazAccController hazAccController, List<IRectangleComponent> children,
       List<AbstractLTLProvider> allRefinedRules,
-      List<ICorrespondingUnsafeControlAction> allUnsafeControlActions);
+      IControlActionController caController,
+      LinkController linkController);
 
   void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
@@ -73,8 +78,7 @@ public interface ICausalController {
    * @param id
    *          the {@link UUID} which was assigned to an {@link CausalFactorEntry}
    * @return the description of the {@link ICausalSafetyConstraint}, or an empty String if no
-   *         constraint
-   *         was found for the given id.
+   *         constraint was found for the given id.
    */
   String getConstraintTextFor(UUID id);
 
@@ -97,4 +101,38 @@ public interface ICausalController {
   ICausalFactor getCausalFactor(UUID causalFactorId);
 
   boolean setSafetyConstraintText(UUID linkB, String newText);
+
+  /**
+   * Creates a sorted mapping of a Listof {@link Link}s to a {@link ICausalFactor}. The list set as
+   * value contains all {@link ObserverValue#UcaCfLink_Component_LINK}s between a
+   * {@link ObserverValue#UCA_CausalFactor_LINK} of a <b>specific {@link ICausalFactor}</b> and the
+   * id of a {@link ICausalComponent}.<br>
+   * The {@link List} is mapped to the <b>specific {@link ICausalFactor}</b> of that list.
+   * 
+   * @param component
+   *          a component that appears in the causal analysis
+   * @param linkController
+   *          the {@link LinkController} that contains the {@link Link}s
+   * @return A {@link SortedMap} that links a {@link List} of {@link Link}s of type
+   *         {@link ObserverValue#UcaCfLink_Component_LINK} to a {@link ICausalFactor}s.
+   */
+  SortedMap<ICausalFactor, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
+      LinkController linkController);
+
+  /**
+   * Creates a sorted mapping of a Listof {@link Link}s to a {@link IUnsafeControlAction}. The list set as
+   * value contains all {@link ObserverValue#UcaCfLink_Component_LINK}s between a
+   * {@link ObserverValue#UCA_CausalFactor_LINK} of a <b>specific {@link IUnsafeControlAction}</b> and the
+   * id of a {@link ICausalComponent}.<br>
+   * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
+   * 
+   * @param component
+   *          a component that appears in the causal analysis
+   * @param linkController
+   *          the {@link LinkController} that contains the {@link Link}s
+   * @return A {@link SortedMap} that links a {@link List} of {@link Link}s of type
+   *         {@link ObserverValue#UcaCfLink_Component_LINK} to a {@link IUnsafeControlAction}s.
+   */
+  SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
+      LinkController linkController, IControlActionController caController);
 }

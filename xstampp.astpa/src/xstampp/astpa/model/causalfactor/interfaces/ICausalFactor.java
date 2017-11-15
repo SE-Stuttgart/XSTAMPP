@@ -15,8 +15,6 @@ package xstampp.astpa.model.causalfactor.interfaces;
 
 import java.util.UUID;
 
-import xstampp.astpa.model.interfaces.ITableModel;
-
 /**
  * Interface for a causal factor
  * 
@@ -34,11 +32,6 @@ public interface ICausalFactor {
    * @return the text
    */
   String getText();
-
-  /**
-   * @return the safetyConstraint
-   */
-  ITableModel getSafetyConstraint();
 
   /**
    * @return the note

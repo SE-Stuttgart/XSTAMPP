@@ -257,7 +257,7 @@ public class DataModelController extends AbstractDataModel
         this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController,
         getSdsController());
     this.causalFactorController.prepareForExport(this.getHazAccController(),
-        getRoot().getChildren(), getAllScenarios(true, true, true), getAllUnsafeControlActions());
+        getRoot().getChildren(), getAllScenarios(true, true, true), getControlActionController(), null);
     this.projectDataManager.prepareForExport();
     this.exportInformation = new ExportInformation();
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");

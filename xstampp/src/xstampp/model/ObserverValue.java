@@ -249,6 +249,14 @@ public enum ObserverValue {
    * <li>B should be the UUID of a Hazardous Scenario that is linked to the UCA
    * </ol>
    */
-  UCAEntryLink_Scenario_LINK;
+  UCAEntryLink_Scenario_LINK,
+
+  /**
+   * <ol>
+   * <li>B should be the UUID of a Safety Constraint in STPA Step 2
+   * <li>B should be the UUID of a Safety Constraint in STPA Step 1
+   * </ol>
+   */
+  SC2_SC1_LINK;
   
 }

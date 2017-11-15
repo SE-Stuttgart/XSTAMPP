@@ -29,7 +29,6 @@ import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.causalfactor.CausalFactor;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
@@ -343,18 +342,6 @@ public class Component
    */
   public void setComponentType(ComponentType componentType) {
     this.componentType = componentType;
-  }
-
-  @Override
-  public List<ICausalFactor> getCausalFactors() {
-    List<ICausalFactor> result = new ArrayList<>();
-    if (this.causalFactors != null) {
-      for (CausalFactor causalFactor : this.causalFactors) {
-        result.add(causalFactor);
-      }
-      this.causalFactors = null;
-    }
-    return result;
   }
 
   /**

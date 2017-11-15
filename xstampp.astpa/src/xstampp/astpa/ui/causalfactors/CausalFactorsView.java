@@ -14,7 +14,6 @@ package xstampp.astpa.ui.causalfactors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +53,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   private final class UcaEntryComparator implements Comparator<Link> {
     @Override
     public int compare(Link o1, Link o2) {
-      Link ucaCFLink1 = getDataModel().getLinkController().getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
-          o1.getLinkA());
+      Link ucaCFLink1 = getDataModel().getLinkController()
+          .getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK, o1.getLinkA());
       IUnsafeControlAction uca1 = getDataModel().getControlActionController()
           .getUnsafeControlAction(ucaCFLink1.getLinkA());
       Link ucaCFLink2 = getDataModel().getLinkController()
@@ -176,30 +175,16 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       getGridWrapper().addRow(componentRow);
       boolean first = this.includeFirstChildRow;
 
-      Map<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = new HashMap<>();
-      getDataModel().getLinkController().getRawLinksFor(ObserverValue.UcaCfLink_Component_LINK, component.getId())
-          .forEach((link) -> {
-            Link ucaCFLink = getDataModel().getLinkController()
-                .getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK, link.getLinkA());
-            ICausalFactor factor = getDataModel().getCausalFactorController()
-                .getCausalFactor(ucaCFLink.getLinkB());
-
-            if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
-              ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
-            }
-            ucaCfLink_Component_ToCFmap.get(factor).add(link);
-          });
-      List<ICausalFactor> keys = new ArrayList<ICausalFactor>(ucaCfLink_Component_ToCFmap.keySet());
-      keys.remove(null);
-      Collections.sort(keys, (o1, o2) -> o1.getText().compareTo(o2.getText()));
-      for (ICausalFactor factor : keys) {
-        Collections.sort(ucaCfLink_Component_ToCFmap.get(factor), new UcaEntryComparator());
+      Map<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = getDataModel()
+          .getCausalFactorController()
+          .getCausalFactorBasedMap(component, getDataModel().getLinkController());
+      for (ICausalFactor factor : ucaCfLink_Component_ToCFmap.keySet()) {
         if (factor != null && !isFiltered(factor.getText(), CAUSALFACTORS)) {
           GridRow causalFactorRow;
           causalFactorRow = (first) ? componentRow
-              : new GridRow(this.getGridWrapper().getColumnLabels().length, 1,
-                  new int[] { 1 });
-          createCausalFactorRow(causalFactorRow, ucaCfLink_Component_ToCFmap.get(factor), component, factor);
+              : new GridRow(this.getGridWrapper().getColumnLabels().length, 1, new int[] { 1 });
+          createCausalFactorRow(causalFactorRow, ucaCfLink_Component_ToCFmap.get(factor), component,
+              factor);
           if (!first) {
             componentRow.addChildRow(causalFactorRow);
           }
@@ -224,8 +209,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @param factor
    * @return
    */
-  private boolean createCausalFactorRow(GridRow factorRow, List<Link> causalEntryLinks, IRectangleComponent component,
-      ICausalFactor factor) {
+  private boolean createCausalFactorRow(GridRow factorRow, List<Link> causalEntryLinks,
+      IRectangleComponent component, ICausalFactor factor) {
     CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(),
         factor.getText(), factor.getId());
     if (!checkAccess(AccessRights.ADMIN)) {
@@ -240,8 +225,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     List<IUnsafeControlAction> ucaList = new ArrayList<>();
     for (Link link : causalEntryLinks) {
       GridRow entryRow = (first) ? factorRow
-          : new GridRow(this.getGridWrapper().getColumnLabels().length, 1,
-              new int[] { 2 });
+          : new GridRow(this.getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
       /*
        * Depending on whether the entry is linked to a uca or not the uca column is filled and the
        * hazards are either based on the uca or linkable
@@ -264,12 +248,11 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     // A new row is added to the factorRow for adding additional entries
     GridRow addEntriesRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
     if (checkAccess(AccessRights.WRITE)) {
-      addEntriesRow.addCell(2,
-          new GridCellButtonAddUCAEntry(component, factor.getId(), getDataModel(), getGrid(), ucaList));
+      addEntriesRow.addCell(2, new GridCellButtonAddUCAEntry(component, factor.getId(),
+          getDataModel(), getGrid(), ucaList));
     }
 
-    addEntriesRow.setColumnSpan(2,
-        getGridWrapper().getColumnLabels().length - 3);
+    addEntriesRow.setColumnSpan(2, getGridWrapper().getColumnLabels().length - 3);
     factorRow.addChildRow(addEntriesRow);
     return true;
   }
@@ -283,10 +266,11 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @param uca
    *          a model of type {@link IUnsafeControlAction}
    */
-  private void createUCAEntry(GridRow entryRow, Link causalEntryLink, Link ucaCFLink, IUnsafeControlAction uca) {
+  private void createUCAEntry(GridRow entryRow, Link causalEntryLink, Link ucaCFLink,
+      IUnsafeControlAction uca) {
 
-    CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(),
-        uca, causalEntryLink.getId());
+    CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(), uca,
+        causalEntryLink.getId());
     UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
     if (!checkAccess(controlAction, AccessRights.WRITE)) {
       cell.setReadOnly(true);
@@ -295,7 +279,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     entryRow.addCell(2, cell);
 
     boolean first = this.includeFirstChildRow;
-    ObserverValue entryType = getDataModel().isUseScenarios() ? ObserverValue.UCAEntryLink_Scenario_LINK
+    ObserverValue entryType = getDataModel().isUseScenarios()
+        ? ObserverValue.UCAEntryLink_Scenario_LINK
         : ObserverValue.UCAEntryLink_HAZ_LINK;
     // iterate all UCAEntryLink_HAZ_LINK's stored for the causalEntryLink
     for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
@@ -318,8 +303,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       GridCellText scenarioCell = new GridCellText("Add a new scenario");
       scenarioCell.addCellButton(new CellButtonLinking<ContentProviderScenarios>(getGridWrapper(),
           new ContentProviderScenarios(getDataModel(), causalEntryLink, uca), ucaCFLink.getId()));
-      scenarioCell.addCellButton(
-          new CellButtonAddScenario(getDataModel(), causalEntryLink, uca));
+      scenarioCell.addCellButton(new CellButtonAddScenario(getDataModel(), causalEntryLink, uca));
       scenarioRow.setColumnSpan(4, 1);
       scenarioRow.addCell(4, scenarioCell);
       if (!first) {
@@ -370,10 +354,10 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   private void createScenarioRow(GridRow entryRow, Link scenarioLink, IUnsafeControlAction uca) {
 
     ScenarioType type = getDataModel().getScenarioType(scenarioLink.getLinkB());
-    entryRow.addCell(6, new CellEditorCausalScenario(getGridWrapper(),
-        getDataModel(), scenarioLink, scenarioLink.getLinkB(), type));
-    entryRow.addCell(7, new CellEditorCausalScenarioConstraint(
-        getGridWrapper(), getDataModel(), scenarioLink.getLinkB(), type));
+    entryRow.addCell(6, new CellEditorCausalScenario(getGridWrapper(), getDataModel(), scenarioLink,
+        scenarioLink.getLinkB(), type));
+    entryRow.addCell(7, new CellEditorCausalScenarioConstraint(getGridWrapper(), getDataModel(),
+        scenarioLink.getLinkB(), type));
 
     entryRow.addCell(5, new CellEditorFactorNote(getGridWrapper(), getDataModel(), scenarioLink));
 
