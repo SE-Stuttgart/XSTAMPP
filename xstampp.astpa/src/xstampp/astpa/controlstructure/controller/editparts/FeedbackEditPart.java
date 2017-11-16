@@ -19,9 +19,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 import xstampp.astpa.Activator;
-import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSSelectionEditPolicy;
-import xstampp.astpa.controlstructure.figure.ComponentFigure;
+import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
@@ -52,7 +51,7 @@ public class FeedbackEditPart extends AbstractMemberEditPart {
     ImageDescriptor imgDesc = Activator
         .getImageDescriptor("/icons/buttons/controlstructure/Feedback_80.png"); //$NON-NLS-1$
     Image img = imgDesc.createImage(null);
-    ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img);
+    CSFigure tmpFigure = new CSFigure(this.getId(), img, "");
     tmpFigure.hideBorder();
     tmpFigure.setPreferenceStore(getStore());
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());

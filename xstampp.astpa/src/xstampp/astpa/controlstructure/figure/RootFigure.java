@@ -52,7 +52,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
   private List<IFigure> componentList = new ArrayList<>();
   private boolean generalEnable = false;
-  private boolean hasDeco;
 
   /**
    * Constructs the RootFigure which is used as the basis of the
@@ -66,7 +65,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
   public RootFigure(UUID id) {
     super(id, false);
     this.useLocalCoordinates();
-    this.hasDeco = true;
     this.addMouseMotionListener(this);
   }
 
@@ -203,23 +201,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
   @Override
   public IFigure findFigureAt(int x, int y, TreeSearch search) {
-    if (true) {
-      return super.findFigureAt(x, y, search);
-    }
-    int[] xNet = new int[] { 0, -1, 1, -1, 1 };
-    int[] yNet = new int[] { 0, -1, -1, 1, 1 };
-    IFigure tmpDescendant;
-    for (int i = 0; i < xNet.length; i++) {
-      for (int delta = 0; delta < ((2 * RootFigure.COMP_OFFSET) + 1); delta++) {
-        int tmpX = x + xNet[i] * delta;
-        int tmpY = y + yNet[i] * delta;
-        tmpDescendant = super.findFigureAt(tmpX,
-            tmpY, search);
-        if (tmpDescendant instanceof CSFigure && ((CSFigure) tmpDescendant).isCanConnect()) {
-          return tmpDescendant;
-        }
-      }
-    }
     return super.findFigureAt(x, y, search);
   }
 
@@ -295,21 +276,6 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
   @Override
   public void mouseMoved(MouseEvent me) {
     // // Does nothing by default
-  }
-
-  @Override
-  public void setDeco(boolean deco) {
-    this.hasDeco = deco;
-    for (Object child : this.getChildren()) {
-      if (child instanceof IControlStructureFigure) {
-        ((IControlStructureFigure) child).setDeco(deco);
-      }
-    }
-  }
-
-  @Override
-  public boolean hasDeco() {
-    return this.hasDeco;
   }
 
   @Override

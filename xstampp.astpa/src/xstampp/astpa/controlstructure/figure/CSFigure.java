@@ -27,9 +27,13 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
 
@@ -42,27 +46,37 @@ import xstampp.astpa.controlstructure.utilities.CSTextLabel;
  * @author Lukas Balzer
  * 
  */
-public abstract class CSFigure extends Figure implements IControlStructureFigure {
+public class CSFigure extends Figure implements IControlStructureFigure, IPropertyChangeListener {
 
-  private final CSTextLabel textLabel;
-  protected boolean isDirty = true;
-  private final Image image;
-  private boolean canConnect = false;
-  private final UUID componentID;
-  private int leftMargin = 0;
-  protected static final int CENTER_COMPENSATION = 2;
+  /**
+   * COMPONENT_FIGURE_DEFWIDTH is the default width to which the layout is set when the user sets
+   * the Component from the palate without defining actual bounds
+   */
+  public static final Dimension COMPONENT_FIGURE_DEFSIZE = new Dimension(120, 40);
+
   /**
    * The border which is normally shown as decoration
    * 
    * @author Lukas Balzer
    */
   public static final Color STANDARD_BORDER_COLOR = ColorConstants.black;
-  private boolean withIcon;
+
+  protected static final int CENTER_COMPENSATION = 2;
+
+  private final CSTextLabel textLabel;
+  private final Image image;
+  private final UUID componentID;
+  private boolean canConnect = false;
+  private boolean hasDeco;
+  private boolean hideBorder = false;
+  private int leftMargin = 0;
+  private Color decoBorderColor;
   private LineBorder border;
   private IPreferenceStore store;
-  protected Rectangle rect;
+  private String colorPreference;
   private String text;
-  private boolean hideBorder = false;
+  protected Rectangle rect;
+  protected boolean isDirty = true;
 
   /**
    * the xOrientations array which stores the locations on the x-axis as
@@ -83,11 +97,34 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
    * 
    * @author Lukas Balzer
    * @param isDashed
-   *          TODO
+   *          whether the border of the figure should be dashed
    * 
    */
-  protected CSFigure(UUID id, Boolean isDashed) {
+  public CSFigure(UUID id, Boolean isDashed) {
     this(id, null, isDashed);
+  }
+
+  /**
+   * 
+   * 
+   * @author Lukas Balzer
+   * @param id
+   *          the id which the figure inherits from its model
+   * @param img
+   *          his Image will be displayed in the upper left corner of the component
+   * @param color
+   *          the Color of the Border
+   * 
+   */
+  public CSFigure(UUID id, Image img, String colorPreference) {
+
+    this(id, img, false);
+    setCanConnect(true);
+    this.setForegroundColor(ColorConstants.black);
+    this.colorPreference = colorPreference;
+    this.decoBorderColor = CSFigure.STANDARD_BORDER_COLOR;
+    this.setDeco(true);
+    setBackgroundColor(ColorConstants.white);
   }
 
   /**
@@ -96,11 +133,17 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
    * 
    * 
    * @author Lukas Balzer
+   * @param id
+   *          the id which the figure inherits from its model
+   * @param img
+   *          his Image will be displayed in the upper left corner of the component
    * @param isDashed
-   *          TODO
+   *          whether the border of the figure should be dashed
    * 
    */
-  protected CSFigure(UUID id, Image img, boolean isDashed) {
+  public CSFigure(UUID id, Image img, boolean isDashed) {
+
+    this.decoBorderColor = CSFigure.STANDARD_BORDER_COLOR;
     this.componentID = id;
     this.setLayoutManager(new XYLayout());
     this.image = img;
@@ -115,12 +158,13 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
     this.setConstraint(this.textLabel, new Rectangle(1, 1, -1, -1));
     this.setOpaque(true);
     this.setBackgroundColor(ColorConstants.white);
+    setDeco(true);
   }
 
   @Override
   public void paintChildren(Graphics graphics) {
     super.paintChildren(graphics);
-    if ((this.image != null) && this.withIcon) {
+    if ((this.image != null) && this.hasDeco) {
       double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
       Rectangle rect = this.textLabel.getBounds();
       this.setConstraint(this.textLabel,
@@ -201,24 +245,16 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
     if (isDirty) {
       isDirty = false;
       setBounds(rect);
-
       for (Object child : getChildren()) {
         if (child instanceof IControlStructureFigure) {
           ((IControlStructureFigure) child).refresh();
         }
       }
-      if (this.getChildren().size() > 1) {
-        // the height of the rectangle is set to the ideal height for
-        // the
-        // given width
-        this.textLabel.setSize(this.getBounds().width - this.leftMargin - 4, -1);
-        this.setConstraint(this.textLabel, this.textLabel.getBounds());
-      } else {
+      this.textLabel.setLocation(new Point(-this.leftMargin, 0));
+      int height = this.getChildren().size() > 1 ? -1 : rect.height;
+      this.textLabel.setSize(rect.width - this.leftMargin - 4, height);
 
-        this.getTextField().setSize(new Dimension(rect.width - this.leftMargin - 4, rect.height));
-        this.setConstraint(this.textLabel,
-            new Rectangle(this.leftMargin, 1, rect.width - this.leftMargin - 4, rect.height));
-      }
+      this.setConstraint(this.textLabel, this.textLabel.getBounds());
       this.textLabel.setText(text);
       this.textLabel.repaint();
       this.getParent().setConstraint(this, rect);
@@ -353,18 +389,34 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
     return ((IControlStructureFigure) this.getParent()).useOffset();
   }
 
-  protected void setDecoration(boolean withDeco) {
-    this.withIcon = withDeco;
-    if (withDeco) {
-      this.leftMargin = CSFigure.IMG_WIDTH;
+  @Override
+  public void setDeco(boolean deco) {
+    this.hasDeco = deco;
+    if (deco) {
+      this.border.setColor(this.decoBorderColor);
+      setMargin(CSFigure.IMG_WIDTH);
     } else {
-      this.leftMargin = 0;
+      this.border.setColor(STANDARD_BORDER_COLOR);
+      setMargin(0);
+    }
+    setBorder(this.border);
+    for (Object child : this.getChildren()) {
+      if (child instanceof IControlStructureFigure) {
+        ((IControlStructureFigure) child).setDeco(deco);
+      }
+    }
+  }
+
+  private void setMargin(int margin) {
+    if (this.leftMargin != margin) {
+      this.leftMargin = margin;
+      setDirty();
     }
   }
 
   @Override
   public boolean hasDeco() {
-    return this.withIcon;
+    return this.hasDeco;
   }
 
   @Override
@@ -378,14 +430,29 @@ public abstract class CSFigure extends Figure implements IControlStructureFigure
 
   }
 
-  @Override
-  public void setPreferenceStore(IPreferenceStore store) {
-    getTextField().setPreferenceStore(store);
-    this.store = store;
-  }
-
   protected IPreferenceStore getPreferenceStore() {
     return this.store;
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent arg0) {
+    if (arg0.getProperty().equals(this.colorPreference) && getPreferenceStore() != null) {
+      this.decoBorderColor = new Color(Display.getCurrent(),
+          PreferenceConverter.getColor(getPreferenceStore(), this.colorPreference));
+      this.repaint();
+    }
+  }
+
+  @Override
+  public void setPreferenceStore(IPreferenceStore store) {
+    store.addPropertyChangeListener(this);
+    if (this.colorPreference != null) {
+      this.decoBorderColor = new Color(Display.getCurrent(),
+          PreferenceConverter.getColor(store, colorPreference));
+    }
+    getTextField().setPreferenceStore(store);
+    this.store = store;
+    setDeco(hasDeco());
   }
 
   /**

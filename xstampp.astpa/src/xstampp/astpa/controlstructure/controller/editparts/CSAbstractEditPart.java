@@ -45,7 +45,6 @@ import xstampp.astpa.controlstructure.controller.policys.CSDirectEditManager;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
 import xstampp.astpa.controlstructure.figure.CSFigure;
-import xstampp.astpa.controlstructure.figure.ComponentFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.utilities.CSCellEditorLocator;
 import xstampp.astpa.controlstructure.utilities.CSTextLabel;
@@ -98,7 +97,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
   @Override
   protected IFigure createFigure() {
-    ComponentFigure tmpFigure = new ComponentFigure(this.getId(), false);
+    CSFigure tmpFigure = new CSFigure(this.getId(), false);
     tmpFigure.setPreferenceStore(store);
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getFigure());
     return tmpFigure;

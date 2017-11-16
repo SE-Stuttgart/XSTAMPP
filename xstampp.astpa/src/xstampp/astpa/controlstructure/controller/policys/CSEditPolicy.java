@@ -47,7 +47,7 @@ import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEdit
 import xstampp.astpa.controlstructure.controller.editparts.IMemberEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IRelativePart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
-import xstampp.astpa.controlstructure.figure.ComponentFigure;
+import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.controlstructure.figure.ConnectionFigure;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.TextFieldFigure;
@@ -269,8 +269,8 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
       return dim;
     default:
 
-      dim.setWidth(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.width, rect.width));
-      dim.setHeight(Math.max(ComponentFigure.COMPONENT_FIGURE_DEFSIZE.height, rect.height));
+      dim.setWidth(Math.max(CSFigure.COMPONENT_FIGURE_DEFSIZE.width, rect.width));
+      dim.setHeight(Math.max(CSFigure.COMPONENT_FIGURE_DEFSIZE.height, rect.height));
       return dim;
     }
   }

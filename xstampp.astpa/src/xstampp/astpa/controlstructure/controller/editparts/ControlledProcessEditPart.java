@@ -13,17 +13,16 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
-import messages.Messages;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
-import xstampp.astpa.controlstructure.figure.ComponentFigure;
+import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.preferences.IControlStructureConstants;
 
@@ -56,7 +55,7 @@ public class ControlledProcessEditPart extends CSAbstractEditPart {
     ImageDescriptor imgDesc = Activator
         .getImageDescriptor("/icons/buttons/controlstructure/process_80.png"); //$NON-NLS-1$
     Image img = imgDesc.createImage(null);
-    ComponentFigure tmpFigure = new ComponentFigure(this.getId(), img,
+    CSFigure tmpFigure = new CSFigure(this.getId(), img,
         IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_COLOR);
     tmpFigure.setPreferenceStore(getStore());
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());

@@ -13,12 +13,11 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
-import messages.Messages;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Translatable;
 
+import messages.Messages;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.figure.ProcessValueFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
