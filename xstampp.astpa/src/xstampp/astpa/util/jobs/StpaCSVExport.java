@@ -15,9 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,9 +25,6 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import messages.Messages;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -202,7 +197,6 @@ public class StpaCSVExport extends Job {
 
   private void writeCausalFactorsCSV(BufferedCSVWriter writer, String title)
       throws IOException {
-    DataModelController model = this.model;
 
     // the First two Rows are filled with the view- and the Column-titles
     writer.newLine();

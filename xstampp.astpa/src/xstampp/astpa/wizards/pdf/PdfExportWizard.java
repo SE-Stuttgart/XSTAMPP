@@ -13,18 +13,18 @@
 
 package xstampp.astpa.wizards.pdf;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.util.jobs.STPAWordJob;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.wizards.PDFExportConfiguration;
 import xstampp.ui.wizards.PdfExportPage;
 
 /**
@@ -46,7 +46,7 @@ public class PdfExportWizard extends AbstractExportWizard {
     super();
     String projectName = this.getStore().getString(
         IPreferenceConstants.PROJECT_NAME);
-    this.page = new PdfExportPage("PDF Report", projectName, Activator.PLUGIN_ID);
+    this.page = new PdfExportPage(new PDFExportConfiguration("PDF Report", projectName), Activator.PLUGIN_ID);
     this.page.setFilterExtensions(new String[] { "*.pdf", "*.docx" },
         new String[] { "PDF", "Word Document" });
     this.setExportPage(this.page);

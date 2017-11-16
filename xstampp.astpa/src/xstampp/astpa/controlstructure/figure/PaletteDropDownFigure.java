@@ -6,7 +6,6 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
@@ -54,7 +53,7 @@ public class PaletteDropDownFigure extends Figure {
     Rectangle bounds = getBounds();
     graphics.setBackgroundColor(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
     graphics.setAntialias(SWT.ON);
-    List children = getParent().getChildren();
+    List<?> children = getParent().getChildren();
     Rectangle parentBnds = ((IFigure) children.get(0)).getClientArea();
     graphics.fillOval(bounds.x + parentBnds.width - 20, bounds.y + (bounds.height / 2) - 10, 20,
         20);

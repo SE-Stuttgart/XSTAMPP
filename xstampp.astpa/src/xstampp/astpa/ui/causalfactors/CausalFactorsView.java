@@ -14,7 +14,6 @@ package xstampp.astpa.ui.causalfactors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,24 +48,6 @@ import xstampp.usermanagement.api.AccessRights;
  * @author Benedikt Markt, Patrick Wickenhaeuser, Lukas Balzer
  */
 public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
-
-  private final class UcaEntryComparator implements Comparator<Link> {
-    @Override
-    public int compare(Link o1, Link o2) {
-      Link ucaCFLink1 = getDataModel().getLinkController()
-          .getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK, o1.getLinkA());
-      IUnsafeControlAction uca1 = getDataModel().getControlActionController()
-          .getUnsafeControlAction(ucaCFLink1.getLinkA());
-      Link ucaCFLink2 = getDataModel().getLinkController()
-          .getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK, o2.getLinkA());
-      IUnsafeControlAction uca2 = getDataModel().getControlActionController()
-          .getUnsafeControlAction(ucaCFLink2.getLinkA());
-      if (uca1 == null || uca2 == null) {
-        return 0;
-      }
-      return uca1.compareTo(uca2);
-    }
-  }
 
   private static final String CAUSALFACTORS = "Text filter for Causal Factors";
   private static List<String> _withScenarioColumns = Arrays.asList(Messages.Component,

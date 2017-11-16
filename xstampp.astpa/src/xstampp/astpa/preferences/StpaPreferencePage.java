@@ -15,10 +15,8 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.ui.CommonTableView;
-import xstampp.preferences.IPreferenceConstants;
 
 /**
  *

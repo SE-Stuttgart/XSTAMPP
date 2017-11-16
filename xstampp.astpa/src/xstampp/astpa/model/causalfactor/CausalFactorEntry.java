@@ -22,7 +22,6 @@ import xstampp.astpa.model.causalfactor.interfaces.CausalFactorEntryData;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;

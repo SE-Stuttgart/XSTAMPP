@@ -13,7 +13,6 @@ package xstampp.astpa.model.controlstructure.components;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +43,7 @@ import xstampp.astpa.model.interfaces.IEntryWithNameId;
 @XmlRootElement(name = "component")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Component
-    implements IRectangleComponent, ICausalComponent, Comparable, IEntryWithNameId {
+    implements IRectangleComponent, ICausalComponent, Comparable<Component>, IEntryWithNameId {
 
   @XmlElement(name = "id")
   private UUID id;
@@ -88,31 +87,6 @@ public class Component
   @XmlElementWrapper(name = "connections")
   @XmlElement(name = "connection")
   private List<CSConnection> connections;
-
-  /**
-   * this comparator compares two Objects from the type IRectangleComponent. a component of the
-   * ComponentType DashedBox is always considered smaller and is therefor set below any other
-   * component(in any paint job)
-   *
-   * @author Lukas Balzer
-   *
-   */
-  private class CSComparator
-      implements Comparator<xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent> {
-    @Override
-    public int compare(xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg0,
-        xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent arg1) {
-      if (arg0.getComponentType() == ComponentType.DASHEDBOX) {
-        if (arg1.getComponentType() == ComponentType.DASHEDBOX) {
-          return 0;
-        }
-        return -1;
-      } else if (arg1.getComponentType() == ComponentType.DASHEDBOX) {
-        return 1;
-      }
-      return 0;
-    }
-  }
 
   /**
    * Constructs a new component with the given text and layout
@@ -500,8 +474,7 @@ public class Component
   }
 
   @Override
-  public int compareTo(Object arg0) {
-    Component other = (Component) arg0;
+  public int compareTo(Component other) {
     if (other.getComponentType() == ComponentType.DASHEDBOX) {
       if (this.getComponentType() == ComponentType.DASHEDBOX) {
         return 0;

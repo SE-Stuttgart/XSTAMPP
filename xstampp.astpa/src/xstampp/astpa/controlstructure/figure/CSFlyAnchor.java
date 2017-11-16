@@ -35,8 +35,6 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
   private Dimension offset;
   private CSAnchor relatedAnchor;
 
-  private IPreferenceStore store;
-
   /**
    * 
    * @author Lukas Balzer
@@ -152,6 +150,5 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
 
   @Override
   public void setPreferenceStore(IPreferenceStore store) {
-    this.store = store;
   }
 }

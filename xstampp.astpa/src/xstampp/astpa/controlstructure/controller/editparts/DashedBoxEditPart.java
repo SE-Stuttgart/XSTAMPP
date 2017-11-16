@@ -31,11 +31,9 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 public class DashedBoxEditPart extends CSAbstractEditPart {
 
   /**
-   *
-   * @author Lukas Balzer
-   *
-   * @param model
-   * @param stepId
+   * calls
+   * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+   * with 2
    */
   public DashedBoxEditPart(IControlStructureEditorDataModel model,
       String stepId) {
@@ -60,11 +58,8 @@ public class DashedBoxEditPart extends CSAbstractEditPart {
      * to use in what situation when performed,
      * performRequest(EditPolicy.constant) is called
      */
-    // this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
     this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-        new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
-    // this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
-    // this.getDataModel(), this.getStepId()));
+        new CSDirectEditPolicy(this.getDataModel()));
     this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
         this.getDataModel(), this.getStepId()));
     this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,

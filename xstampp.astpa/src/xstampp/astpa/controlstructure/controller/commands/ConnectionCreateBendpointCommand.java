@@ -34,7 +34,6 @@ public final class ConnectionCreateBendpointCommand extends ControlStructureAbst
 
   private IConnection link;
   private Point location;
-  private int index;
 
   /**
    * Only execute is link is not null and index is valid.
@@ -80,15 +79,5 @@ public final class ConnectionCreateBendpointCommand extends ControlStructureAbst
    */
   public void setLocation(final Point location) {
     this.location = location;
-  }
-
-  /**
-   * Set the new location of the bendpoint.
-   * 
-   * @param location
-   *          the new location of the bendpoint.
-   */
-  public void setIndex(int index) {
-    this.index = index;
   }
 }

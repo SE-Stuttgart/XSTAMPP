@@ -71,9 +71,9 @@ public class STPAResultsTable extends StandartEditorPart {
       if (element instanceof Entry<?, ?>) {
         switch (columnIndex) {
         case 0:
-          return (String) ((Entry) element).getKey();
+          return (String) ((Entry<?, ?>) element).getKey();
         case 1:
-          return (String) ((Entry) element).getValue();
+          return (String) ((Entry<?, ?>) element).getValue();
         }
 
       }

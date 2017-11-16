@@ -114,7 +114,6 @@ public class XCSVExportJob extends Job {
       e.printStackTrace();
       return Status.CANCEL_STATUS;
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return Status.OK_STATUS;
@@ -129,7 +128,9 @@ public class XCSVExportJob extends Job {
           "Context Table of control action " + controlAction.getTitle() + "in context provided");
 
       writer.print(Messages.ControlAction + seperator);
-      for (UUID variableID : controller.getCAProvidedVariables(controlAction.getId())) {
+      int i = controller.getCAProvidedVariables(controlAction.getId()).size();
+      while(i > 0) {
+        i--;
         writer.print(seperator);
       }
       writer.print("Hazardous " + seperator);

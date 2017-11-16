@@ -10,16 +10,10 @@
  *******************************************************************************/
 package xstampp.astpa.ui.causalfactors;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 
-import xstampp.astpa.model.causalfactor.interfaces.CausalFactorUCAEntryData;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.astpa.model.linking.Link;

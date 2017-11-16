@@ -13,8 +13,6 @@ package xstampp.astpa.wizards;
 import java.io.File;
 import java.io.IOException;
 
-import messages.Messages;
-
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,6 +24,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.util.jobs.ExportJob;
@@ -49,7 +48,6 @@ public abstract class AbstractExportWizard extends Wizard implements
       .getPreferenceStore();
   private IExportPage exportPage;
   private String[] viewId;
-  private Object exportAddition;
 
   private enum Error {
     OK, CANT_OVERWRITE, EXIT, CANT_FIND;
@@ -85,7 +83,6 @@ public abstract class AbstractExportWizard extends Wizard implements
     super();
     this.setHelpAvailable(true);
     this.viewId = viewId;
-    this.exportAddition = null;
   }
 
   protected boolean performCSVExport(int data) {
@@ -158,7 +155,6 @@ public abstract class AbstractExportWizard extends Wizard implements
       if (buildCSImage) {
         exportJob.setCSDirty();
       }
-      exportJob.setExportAddition(exportAddition);
       ProjectManager.getContainerInstance().getDataModel(this.getExportPage().getProjectID())
           .prepareForExport();
       exportJob.schedule();
@@ -280,17 +276,8 @@ public abstract class AbstractExportWizard extends Wizard implements
     return this.viewId;
   }
 
-  /**
-   * @param exportAddition
-   *          the exportAddition to set
-   */
-  public void setExportAddition(Object exportAddition) {
-    this.exportAddition = exportAddition;
-  }
-
   protected class ExportJobChangeAdapter extends JobChangeAdapter {
     public ExportJobChangeAdapter() {
-      // TODO Auto-generated constructor stub
     }
 
     @Override

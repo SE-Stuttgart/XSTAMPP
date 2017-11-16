@@ -33,7 +33,6 @@ public final class ConnectionDeleteBendpointCommand extends ControlStructureAbst
 
   private IConnection link;
   private Point location;
-  private int index;
 
   /**
    * Only execute is link is not null and index is valid.
@@ -78,7 +77,6 @@ public final class ConnectionDeleteBendpointCommand extends ControlStructureAbst
    *          the new location of the bendpoint.
    */
   public void setIndex(int index) {
-    this.index = index;
     this.location = link.getBendPoints().get(index);
   }
 }

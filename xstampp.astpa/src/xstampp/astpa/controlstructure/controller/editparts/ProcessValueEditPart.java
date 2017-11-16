@@ -32,12 +32,10 @@ public class ProcessValueEditPart extends CSAbstractEditPart {
   private static final int TOP_OFFSET = 4;
 
   /**
-   * @author Lukas Balzer
-   * 
-   * @param model
-   *          The DataModel which contains all model classes
-   * @param stepId
-   *          TODO
+   * <p>
+   * calls
+   * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+   * with 1
    */
   public ProcessValueEditPart(IControlStructureEditorDataModel model,
       String stepId) {

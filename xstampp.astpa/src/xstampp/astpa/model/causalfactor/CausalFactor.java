@@ -26,7 +26,6 @@ import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
-import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;

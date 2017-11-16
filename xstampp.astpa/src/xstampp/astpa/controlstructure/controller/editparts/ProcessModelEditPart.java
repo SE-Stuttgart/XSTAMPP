@@ -31,17 +31,12 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
  */
 public class ProcessModelEditPart extends CSAbstractEditPart {
 
-  private static final int TOP_OFFSET = 10;
-
   /**
    * Constructor sets the unique ID of {@link ProcessModelEditPart}
-   * 
-   * @author Aliaksei Babkovich
-   * 
-   * @param model
-   *          The DataModel which contains all model classes
-   * @param stepId
-   *          TODO
+   * <p>
+   * calls
+   * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+   * with 1
    */
   public ProcessModelEditPart(IControlStructureEditorDataModel model,
       String stepId) {

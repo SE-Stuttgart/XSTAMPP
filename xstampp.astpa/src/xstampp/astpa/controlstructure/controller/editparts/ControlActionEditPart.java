@@ -78,7 +78,7 @@ public class ControlActionEditPart extends AbstractMemberEditPart {
   protected void createEditPolicies() {
     this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
     this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-        new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
+        new CSDirectEditPolicy(this.getDataModel()));
     this.installEditPolicy(EditPolicy.COMPONENT_ROLE,
         new CSDeletePolicy(this.getDataModel(), this.getStepId()));
     // this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,

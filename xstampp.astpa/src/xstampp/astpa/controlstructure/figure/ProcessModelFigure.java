@@ -22,7 +22,6 @@ import java.util.UUID;
  */
 public class ProcessModelFigure extends CSFigure {
 
-  private final int topOffset;
 
   /**
    * @author Lukas Balzer
@@ -34,7 +33,6 @@ public class ProcessModelFigure extends CSFigure {
   public ProcessModelFigure(UUID id, int top) {
     super(id, false);
     this.setOpaque(false);
-    this.topOffset = top;
   }
 
   @Override

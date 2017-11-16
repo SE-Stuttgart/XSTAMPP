@@ -15,11 +15,9 @@ package xstampp.astpa.controlstructure.controller.commands;
 
 import java.util.UUID;
 
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
-import xstampp.astpa.controlstructure.figure.TextFieldFigure;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -36,8 +34,6 @@ public class ComponentChangeLayoutCommand extends
   private IRectangleComponent model;
   private Rectangle layout;
   private Rectangle oldLayout;
-  private int heightConstraint;
-  private int widthConstraint;
 
   /**
    *
@@ -50,7 +46,6 @@ public class ComponentChangeLayoutCommand extends
   public ComponentChangeLayoutCommand(UUID rootId,
       IControlStructureEditorDataModel model, String stepID) {
     super(rootId, model, stepID);
-    setMinConstraint(TextFieldFigure.TEXTBOX_FIGURE_DEFSIZE);
   }
 
   @Override
@@ -59,20 +54,6 @@ public class ComponentChangeLayoutCommand extends
     this.getDataModel().changeComponentLayout(this.model.getId(),
         this.layout, this.getStepID().equals(CSEditor.ID));
 
-  }
-
-  /**
-   * set the minimum width/height for the component
-   *
-   * @author Lukas Balzer
-   *
-   * @param constraint
-   *          the minimum width and height to which the component can be
-   *          scaled
-   */
-  public void setMinConstraint(Dimension constraint) {
-    this.widthConstraint = constraint.width;
-    this.heightConstraint = constraint.height;
   }
 
   /**

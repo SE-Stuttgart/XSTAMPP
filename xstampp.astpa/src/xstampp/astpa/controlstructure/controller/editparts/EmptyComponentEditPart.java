@@ -32,13 +32,10 @@ public class EmptyComponentEditPart extends CSAbstractEditPart {
    * this constuctor sets the unique ID of the
    * {@link EmptyComponentEditPart} which is the same in its model and
    * figure
-   * 
-   * @author Lukas Balzer
-   * 
-   * @param model
-   *          The DataModel which contains all model classes
-   * @param stepId
-   *          this steps id
+   * <p>
+   * calls
+   * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+   * with 1
    */
   public EmptyComponentEditPart(IControlStructureEditorDataModel model,
       String stepId) {

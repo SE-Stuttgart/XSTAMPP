@@ -40,7 +40,6 @@ public class ConnectionBendpointEditPolicy extends BendpointEditPolicy {
   public ConnectionBendpointEditPolicy(IControlStructureEditorDataModel model, String stepId) {
     this.dataInterface = model;
     this.stepId = stepId;
-    // TODO Auto-generated constructor stub
   }
 
   @Override
@@ -52,7 +51,6 @@ public class ConnectionBendpointEditPolicy extends BendpointEditPolicy {
     getHostFigure().translateToRelative(p);
     command.setLink((IConnection) request.getSource().getModel());
     command.setLocation(p);
-    command.setIndex(request.getIndex());
 
     return command;
   }
@@ -66,7 +64,6 @@ public class ConnectionBendpointEditPolicy extends BendpointEditPolicy {
     getHostFigure().translateToRelative(p);
     command.setLink((IConnection) request.getSource().getModel());
     command.setLocation(p);
-    command.setIndex(request.getIndex());
 
     return command;
   }

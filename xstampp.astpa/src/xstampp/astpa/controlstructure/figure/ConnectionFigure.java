@@ -36,12 +36,8 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
   private PolylineConnection feedback;
   private UUID currentFeedbackId;
   private UUID id;
-  private IPreferenceStore store;
-  private IAnchorFigure targetAnchor;
-  private IAnchorFigure sourceAnchor;
   float alpha;
   private Rectangle rect;
-  private Point oldPoint;
   private boolean fixed;
 
   public ConnectionFigure(UUID id) {
@@ -58,8 +54,6 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
     return true;
   }
 
-  private static final int ARROW_WIDTH = 6;
-  private static final int ARROW_HEIGHT = 6;
 
   @Override
   public void paintFigure(Graphics graphics) {
@@ -93,7 +87,6 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
       graphics.fillPolygon(arrowHead);
       graphics.rotate(-alpha);
       graphics.translate(-_point.x, -_point.y);
-      this.oldPoint = _point;
       // graphics.restoreState();
     }
 
@@ -111,14 +104,13 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 
   @Override
   public String getText() {
-    // TODO Auto-generated method stub
+    // A Connection has no text, all description is added as children
     return null;
   }
 
   @Override
   public void setText(String text) {
     // TODO Auto-generated method stub
-
   }
 
   @Override
@@ -249,11 +241,6 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
       this.router = new ManhattanConnectionRouter();
     }
 
-    public FeedbackRouter(Rectangle rect) {
-      this.router = new ManhattanConnectionRouter();
-
-    }
-
     @Override
     public void route(Connection connection) {
       connection.setSourceAnchor(getSourceAnchor());
@@ -300,12 +287,10 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
 
   @Override
   public void setPreferenceStore(IPreferenceStore store) {
-    this.store = store;
   }
 
   @Override
   public void setDirty() {
-    // TODO Auto-generated method stub
   }
 
   @Override

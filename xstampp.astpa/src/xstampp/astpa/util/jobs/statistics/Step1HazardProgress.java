@@ -22,14 +22,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
-import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.hazacc.Accident;
-import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 

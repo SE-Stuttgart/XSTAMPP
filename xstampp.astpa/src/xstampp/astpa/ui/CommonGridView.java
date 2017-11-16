@@ -32,7 +32,6 @@ import xstampp.usermanagement.api.IUserProject;
 
 public abstract class CommonGridView<T extends IDataModel> extends AbstractFilteredEditor {
 
-  private boolean lockreload;
   private GridWrapper grid;
   private T dataInterface;
   private IAction deleteAction;
@@ -73,13 +72,11 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
    */
   protected final void reloadTable() {
     if (!this.grid.fetchUpdateLock()) {
-      this.lockreload = true;
       int tmp = this.grid.getGrid().getVerticalBar().getSelection();
       this.grid.persistedScrollIndex = tmp;
       this.grid.clearRows();
       this.fillTable();
       this.grid.reloadTable();
-      this.lockreload = false;
       this.grid.getGrid().getVerticalBar().setSelection(tmp);
     }
   }
@@ -92,6 +89,7 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
    * @param dataInterface
    *          the data model object
    */
+  @SuppressWarnings("unchecked")
   public void setDataModelInterface(IDataModel dataInterface) {
     this.dataInterface = (T) dataInterface;
     this.dataInterface.addObserver(this);

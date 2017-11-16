@@ -13,6 +13,10 @@
 
 package xstampp.astpa.controlstructure.figure;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
@@ -27,10 +31,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.preferences.IControlStructureConstants;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * 
@@ -112,6 +112,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
    *          a list of all children model classes
    * 
    */
+  @SuppressWarnings("unchecked")
   public void addAnchorsGrid(List<IRectangleComponent> childrenList) {
 
     if (getPreferenceStore()
@@ -123,7 +124,8 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
     List<Point> childrenAnchorsPoints = new ArrayList<>();
     Rectangle childLayout;
     Figure anchorHighlighter = null;
-    List<Figure> childFigures = new ArrayList<>(getChildren());
+    List<?> childFigures = new ArrayList<>();
+    childFigures.addAll(getChildren());
     for (Object child : childFigures) {
       if (child instanceof CSFigure && ((CSFigure) child).isCanConnect()) {
         childLayout = new Rectangle(((CSFigure) child).getBounds());

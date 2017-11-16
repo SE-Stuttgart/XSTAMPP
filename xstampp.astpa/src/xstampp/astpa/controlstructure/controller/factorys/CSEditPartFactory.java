@@ -196,16 +196,7 @@ public class CSEditPartFactory implements EditPartFactory {
       return null;
     }
 
-    if (source == null) {
-      sourceModel.setIsFlying(true);
-      source = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
-    }
     IFigure sourceFigure = source.getFigure();
-
-    if (target == null) {
-      targetModel.setIsFlying(true);
-      target = (CSAbstractEditPart) this.editPartMap.get(this.dataModel.getRoot().getId());
-    }
 
     IFigure targetFigure = target.getFigure();
 

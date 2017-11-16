@@ -45,13 +45,10 @@ public class RootEditPart extends CSAbstractEditPart {
   /**
    * this constuctor sets the unique ID of this EditPart which is the same in
    * its model and figure
-   * 
-   * @author Lukas Balzer
-   * 
-   * @param model
-   *          The DataModel which contains all model classes
-   * @param stepId
-   *          TODO
+   * <p>
+   * calls
+   * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+   * with 1
    */
   public RootEditPart(IControlStructureEditorDataModel model, String stepId) {
     super(model, stepId, 1);

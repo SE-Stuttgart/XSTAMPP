@@ -150,19 +150,16 @@ public class CSConnection implements IConnection {
 
   @Override
   public List<IRectangleComponent> getChildren() {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public int getChildCount() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
   @Override
   public List<IRectangleComponent> getChildren(boolean step0) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -174,7 +171,6 @@ public class CSConnection implements IConnection {
   }
 
   public boolean removeBendPoint(int x, int y) {
-    boolean contains = this.bendPoints.contains(new Point(x, y));
     boolean result = this.bendPoints.remove(new Point(x, y));
     if (this.bendPoints.isEmpty()) {
       this.bendPoints = null;

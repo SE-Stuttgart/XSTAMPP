@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 
 import messages.Messages;
 import xstampp.astpa.Activator;
+import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSConnectionPolicy;
 import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -36,13 +37,10 @@ public class SensorEditPart extends CSAbstractEditPart {
   /**
    * this constuctor sets the unique ID of this EditPart which is the same in
    * its model and figure
-   * 
-   * @author Lukas Balzer
-   * 
-   * @param model
-   *          The DataModel which contains all model classes
-   * @param stepId
-   *          this steps id
+   * <p>
+   * calls
+   * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+   * with 1
    */
   public SensorEditPart(IControlStructureEditorDataModel model, String stepId) {
     super(model, stepId, 1);
@@ -55,6 +53,7 @@ public class SensorEditPart extends CSAbstractEditPart {
     Image img = imgDesc.createImage(null);
     CSFigure tmpFigure = new CSFigure(this.getId(), img,
         IControlStructureConstants.CONTROLSTRUCTURE_SENSOR_COLOR);
+    tmpFigure.setDeco((boolean) getViewer().getProperty(CSAbstractEditor.IS_DECORATED));
     tmpFigure.setPreferenceStore(getStore());
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
     tmpFigure.setToolTip(new Label(Messages.Sensor));

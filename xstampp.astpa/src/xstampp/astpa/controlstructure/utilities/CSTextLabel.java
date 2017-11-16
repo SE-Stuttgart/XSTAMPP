@@ -159,11 +159,11 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener {
    */
   public Rectangle getTextBounds() {
     Rectangle rect = this.getParent().getBounds().getCopy();
-    List<FlowBox> fragments = this.content.getFragments();
+    List<?> fragments = this.content.getFragments();
     int minHeight = 0;
 
     if (fragments.size() != 0) {
-      minHeight = fragments.get(fragments.size() - 1).getBaseline();
+      minHeight = ((FlowBox) fragments.get(fragments.size() - 1)).getBaseline();
     }
     rect.setLocation(CSTextLabel.CENTER_COMPENSATION,
         CSTextLabel.CENTER_COMPENSATION);

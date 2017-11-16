@@ -33,7 +33,6 @@ public final class ConnectionMoveBendpointCommand extends ControlStructureAbstra
   private Point oldLocation;
   private Point newLocation;
   private IConnection link;
-  private int index;
 
   @Override
   public void execute() {
@@ -65,10 +64,5 @@ public final class ConnectionMoveBendpointCommand extends ControlStructureAbstra
    */
   public void setLocation(final Point newLocation) {
     this.newLocation = newLocation;
-  }
-
-  public void setIndex(int index) {
-    this.index = index;
-    this.oldLocation = link.getBendPoints().get(index);
   }
 }

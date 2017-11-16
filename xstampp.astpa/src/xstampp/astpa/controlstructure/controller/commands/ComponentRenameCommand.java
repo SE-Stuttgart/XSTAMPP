@@ -35,7 +35,7 @@ public class ComponentRenameCommand extends ControlStructureAbstractCommand {
 
   private String oldName, newName;
   private IRectangleComponent model;
-  private Rectangle oldLayout, newLayout;
+  private Rectangle oldLayout;
 
   /**
    * This constructor creates a Command which provides methods to manipulate a
@@ -98,11 +98,6 @@ public class ComponentRenameCommand extends ControlStructureAbstractCommand {
 
     newLayout.x = this.oldLayout.x;
     newLayout.y = this.oldLayout.y;
-    if (this.oldLayout.height >= newLayout.height) {
-      this.newLayout = this.oldLayout;
-    } else {
-      this.newLayout = newLayout;
-    }
   }
 
   /**

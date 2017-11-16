@@ -42,6 +42,7 @@ import xstampp.astpa.model.controlstructure.components.CSConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.astpa.model.controlstructure.interfaces.IComponent;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUserProject;
@@ -140,7 +141,7 @@ public class CSConnectionEditPart extends AbstractConnectionEditPart implements 
   }
 
   @Override
-  protected List getModelChildren() {
+  protected List<IRectangleComponent> getModelChildren() {
     return new ArrayList<>();
   }
 

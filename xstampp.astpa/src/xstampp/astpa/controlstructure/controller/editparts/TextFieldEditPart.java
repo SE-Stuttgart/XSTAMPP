@@ -17,6 +17,8 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 
+import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditPolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
@@ -27,10 +29,10 @@ import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 /**
  * 
  * TextFieldEditPart
- * 
- * @version 1.0
- * @author Lukas Balzer
- * 
+ * <p>
+ * calls
+ * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+ * with 1
  */
 public class TextFieldEditPart extends CSAbstractEditPart {
 
@@ -43,7 +45,8 @@ public class TextFieldEditPart extends CSAbstractEditPart {
    * @param model
    *          The DataModel which contains all model classes
    * @param stepId
-   *          TODO
+   *          The Id of the editor which is by default either {@link CSEditor#ID} or
+   *          {@link CSEditorWithPM#ID}
    */
   public TextFieldEditPart(IControlStructureEditorDataModel model,
       String stepId) {
@@ -67,7 +70,7 @@ public class TextFieldEditPart extends CSAbstractEditPart {
      */
     this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
     this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-        new CSDirectEditPolicy(this.getDataModel(), this.getStepId()));
+        new CSDirectEditPolicy(this.getDataModel()));
     this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
         this.getDataModel(), this.getStepId()));
     this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(

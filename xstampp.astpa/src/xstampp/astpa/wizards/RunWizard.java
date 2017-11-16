@@ -30,6 +30,7 @@ import xstampp.astpa.util.jobs.Run;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.navigation.IProjectSelection;
 import xstampp.ui.navigation.ProjectExplorer;
+import xstampp.ui.wizards.PDFExportConfiguration;
 import xstampp.ui.wizards.PdfExportPage;
 
 public class RunWizard extends AbstractExportWizard {
@@ -100,7 +101,7 @@ public class RunWizard extends AbstractExportWizard {
     private Label pdfCheckbox, imgCheckbox, reportCheckbox, xstpaPDFCheckbox, xstpaIMGCheckbox;
 
     public RunPage(String pageName, String projectName) {
-      super(pageName, projectName, PathComposite.DIR_DIALOG, Activator.PLUGIN_ID);
+      super(new PDFExportConfiguration(pageName, projectName), Activator.PLUGIN_ID);
       setShowFormatChooser(false);
       setShowTextConfig(false);
     }

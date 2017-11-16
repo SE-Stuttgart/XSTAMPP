@@ -44,7 +44,6 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
   private String oldName = null;
   private String value = null;
   private IControlStructureEditorDataModel dataModel;
-  private final String stepID;
   private UUID rootId;
 
   /**
@@ -53,13 +52,9 @@ public class CSDirectEditPolicy extends DirectEditPolicy {
    * 
    * @param model
    *          The DataModel which contains all model classes
-   * @param stepId
-   *          TODO
    */
-  public CSDirectEditPolicy(IControlStructureEditorDataModel model,
-      String stepId) {
+  public CSDirectEditPolicy(IControlStructureEditorDataModel model) {
     super();
-    this.stepID = stepId;
     this.dataModel = model;
   }
 

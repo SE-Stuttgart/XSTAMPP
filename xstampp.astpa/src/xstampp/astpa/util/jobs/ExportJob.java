@@ -9,17 +9,11 @@
 package xstampp.astpa.util.jobs;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -56,7 +50,6 @@ public class ExportJob extends JAXBExportJob {
   private File csPath;
   private File csPmPath;
   private UUID projectId;
-  private Object exportAddition;
 
   /**
    * the xslfoTransormer is beeing related to the xsl which describes the pdf export
@@ -150,44 +143,6 @@ public class ExportJob extends JAXBExportJob {
 
   public UUID getProjectId() {
     return this.projectId;
-  }
-
-  /**
-   * @deprecated Use {@link #getxslTransformer(String,ClassLoader)} instead
-   */
-  @Override
-  protected Transformer getxslTransformer(String resource) {
-    return getxslTransformer(resource, null);
-  }
-
-  @Override
-  protected Transformer getxslTransformer(String resource, final Class clazz) {
-    URL xslUrl = clazz.getResource(resource);
-
-    if (xslUrl == null) {
-      return null;
-    }
-    try {
-      StreamSource transformXSLSource = new StreamSource(xslUrl.openStream());
-      TransformerFactory transfact = TransformerFactory.newInstance();
-      transfact.setURIResolver(new URIResolver() {
-        @Override
-        public Source resolve(String href, String base) {
-          return new StreamSource(clazz.getResourceAsStream("/" + href)); //$NON-NLS-1$
-        }
-      });
-      return transfact.newTransformer(transformXSLSource);
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
-  /**
-   * @param exportAddition
-   *          the exportAddition to set
-   */
-  public void setExportAddition(Object exportAddition) {
-    this.exportAddition = exportAddition;
   }
 
   @Override

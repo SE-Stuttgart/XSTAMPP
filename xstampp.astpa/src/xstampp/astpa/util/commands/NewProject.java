@@ -18,11 +18,9 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.menu.file.commands.CommandState;
 
 /**
  * Handler which starts the new Analysis Wizards

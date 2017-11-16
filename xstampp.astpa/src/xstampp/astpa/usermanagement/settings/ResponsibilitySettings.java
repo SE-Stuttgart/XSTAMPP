@@ -29,7 +29,6 @@ import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.EmptyUserSystem;
-import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 
 /**

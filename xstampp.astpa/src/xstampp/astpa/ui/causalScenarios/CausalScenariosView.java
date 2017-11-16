@@ -19,8 +19,6 @@ import java.util.UUID;
 
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -29,14 +27,11 @@ import org.eclipse.swt.widgets.Menu;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
-import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.common.grid.GridCellButton;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.GridWrapper;
@@ -66,30 +61,6 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 
   public CausalScenariosView() {
     this(false, true, false);
-  }
-
-  private class AddCSButton extends GridCellButton {
-
-    private UUID parentId;
-
-    public AddCSButton(UUID parentID, String text) {
-      super(text);
-      this.parentId = parentID;
-    }
-
-    @Override
-    public void onMouseDown(MouseEvent e,
-        org.eclipse.swt.graphics.Point relativeMouse,
-        Rectangle cellBounds) {
-      if (e.button == 1) {
-        AbstractLtlProviderData data = new AbstractLtlProviderData();
-        data.addRelatedUcas(parentId);
-        UUID newUCA = dataInterface
-            .addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null, IValueCombie.TYPE_ANYTIME);
-        grid.activateCell(newUCA);
-      }
-
-    }
   }
 
   private abstract class ScenarioEditor extends GridCellTextEditor {

@@ -38,7 +38,9 @@ import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSDeletePolicy;
 import xstampp.astpa.controlstructure.controller.policys.CSDirectEditManager;
@@ -83,7 +85,8 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
    * @param model
    *          The DataModel which contains all model classes
    * @param stepId
-   *          this steps id
+   *          The Id of the editor which is by default either {@link CSEditor#ID} or
+   *          {@link CSEditorWithPM#ID}
    * @param layer
    *          The layer on which this component is drawn
    */
@@ -98,6 +101,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
   @Override
   protected IFigure createFigure() {
     CSFigure tmpFigure = new CSFigure(this.getId(), false);
+    tmpFigure.setDeco((boolean) getViewer().getProperty(CSAbstractEditor.IS_DECORATED));
     tmpFigure.setPreferenceStore(store);
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getFigure());
     return tmpFigure;
@@ -125,7 +129,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
        */
       this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
       this.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-          new CSDirectEditPolicy(this.dataModel, this.stepId));
+          new CSDirectEditPolicy(this.dataModel));
       this.installEditPolicy(EditPolicy.LAYOUT_ROLE, new CSEditPolicy(
           this.dataModel, this.stepId));
       this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(

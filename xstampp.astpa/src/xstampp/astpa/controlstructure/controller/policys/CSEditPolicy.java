@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
@@ -39,6 +38,7 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.controller.commands.ComponentChangeLayoutCommand;
 import xstampp.astpa.controlstructure.controller.commands.ComponentChangeParentCommand;
 import xstampp.astpa.controlstructure.controller.commands.ComponentCreateCommand;
@@ -70,7 +70,6 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
   private IControlStructureEditorDataModel dataModel;
   private Figure parentFeedback;
   private final String stepID;
-  private Border tmpBorder;
   private ConnectionFigure relative;
   private List<IFigure> feedback = new ArrayList<>();
   private UUID rootId;
@@ -89,14 +88,14 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
    * @param model
    *          The DataModel which contains all model classes
    * @param stepId
-   *          TODO
+   *          The Id of the editor which is by default either {@link CSEditor#ID} or
+   *          {@link CSEditorWithPM#ID}
    */
   public CSEditPolicy(IControlStructureEditorDataModel model, String stepId) {
     super();
     this.stepID = stepId;
-    this.addCompCursor = new Cursor(
-        Display.getDefault(), Activator
-            .getImageDescriptor("/icons/buttons/controlstructure/add_curser.png").getImageData(),
+    this.addCompCursor = new Cursor(Display.getDefault(),
+        Activator.getImageDescriptor("/icons/buttons/controlstructure/add_curser.png").getImageData(100),
         0, 0);
     this.dataModel = model;
   }
@@ -127,7 +126,6 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
     if (getHost().canEdit()) {
       command = new ComponentChangeLayoutCommand(getRootId(), this.dataModel, this.stepID);
 
-      IFigure childFigure = ((IControlStructureEditPart) child).getFigure();
       getHost().getRoot();
       command.setModel(child.getModel());
       command.setConstraint((Rectangle) constraint);
@@ -237,25 +235,12 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
   }
 
   @Override
-  public void eraseSourceFeedback(Request request) {
-    // TODO Auto-generated method stub
-    super.eraseSourceFeedback(request);
-  }
-
-  @Override
-  public void eraseTargetFeedback(Request request) {
-    // TODO Auto-generated method stub
-    super.eraseTargetFeedback(request);
-  }
-
-  @Override
   public IControlStructureEditPart getHost() {
     return (IControlStructureEditPart) super.getHost();
   }
 
   @Override
   protected IControlStructureFigure getHostFigure() {
-    // TODO Auto-generated method stub
     return (IControlStructureFigure) super.getHostFigure();
   }
 
@@ -275,6 +260,7 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
     }
   }
 
+  @SuppressWarnings("unused")
   private Rectangle addProcessModelConstraint(Rectangle constraint, IRectangleComponent rootModel,
       IRectangleComponent compModel) {
     constraint.y = ((IControlStructureFigure) this.getHost().getFigure()).getTextField()

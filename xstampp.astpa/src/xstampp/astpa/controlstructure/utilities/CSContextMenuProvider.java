@@ -77,9 +77,9 @@ public class CSContextMenuProvider extends ContextMenuProvider {
       menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
           createMoveMenu(id, false, Messages.CSContextMenuProvider_MoveDOWN));
     }
-    Iterator<IAction> iter = this.getActionRegistry().getActions();
-    while (iter.hasNext()) {
-      IAction action = iter.next();
+    Iterator<?> actions = this.getActionRegistry().getActions();
+    while (actions.hasNext()) {
+      IAction action = (IAction) actions.next();
       if (action.getClass().equals(DirectEditAction.class)) {
         menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
       }

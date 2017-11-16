@@ -10,7 +10,6 @@ public class StatisticsExportPage extends AbstractExportPage {
 
 	public StatisticsExportPage(String pageName, String pluginID) {
 		super(pageName, pluginID);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -21,7 +20,7 @@ public class StatisticsExportPage extends AbstractExportPage {
 	@Override
 	public void createControl(Composite parent) {
 		parent.setLayout(new FormLayout());
-		Composite projectChooser = addProjectChooser(parent, new FormAttachment());
+		addProjectChooser(parent, new FormAttachment());
 		
 	}
 

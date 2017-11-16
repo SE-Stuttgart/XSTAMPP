@@ -13,7 +13,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.util.jobs.ExportStatisticsJob;
-import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.STPAEditorInput;
 import xstampp.ui.navigation.IProjectSelection;
@@ -47,6 +46,7 @@ public class ExportStatisticsCommand extends AbstractHandler {
 			if ( !file.exists() || forceGeneration) {
 				file.mkdirs();
 				ExportStatisticsJob job = new ExportStatisticsJob("Export Statistics", dataModel, file);
+				job.schedule();
 			}
 			STPAPluginUtils.OpenInFileBrowser(file.getAbsolutePath());
 

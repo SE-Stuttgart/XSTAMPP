@@ -5,27 +5,17 @@ import java.util.List;
 
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
-import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
-import org.eclipse.gef.palette.CreationToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.tools.CreationTool;
 import org.eclipse.gef.ui.palette.PaletteEditPartFactory;
 import org.eclipse.gef.ui.palette.PaletteViewer;
-import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
-import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;

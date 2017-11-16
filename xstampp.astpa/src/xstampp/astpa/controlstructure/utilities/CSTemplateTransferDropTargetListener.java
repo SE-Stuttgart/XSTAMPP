@@ -20,7 +20,6 @@ import org.eclipse.gef.requests.CreationFactory;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
 /**
  * 

@@ -26,7 +26,6 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.astpa.util.jobs.statistics.AbstractProgressSheetCreator.STEP;
 import xstampp.model.ObserverValue;
 
 public class Step0Progress extends AbstractProgressSheetCreator {

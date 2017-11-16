@@ -43,7 +43,7 @@ public class CSConnectionModeProvider extends AbstractSourceProvider
   }
 
   @Override
-  public Map getCurrentState() {
+  public Map<String, Object> getCurrentState() {
 
     Map<String, Object> map = new HashMap<>();
     boolean f = Activator.getDefault().getPreferenceStore()

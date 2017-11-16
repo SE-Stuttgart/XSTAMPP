@@ -23,6 +23,9 @@ public abstract class AbstractMemberEditPart extends CSAbstractEditPart implemen
   private IRelativePart relativePart;
   private Color feedbackColor;
 
+  /**
+   * {@link CSAbstractEditPart#CSAbstractEditPart(IControlStructureEditorDataModel, String, Integer)}
+   */
   public AbstractMemberEditPart(IControlStructureEditorDataModel model, String stepId,
       Integer layer) {
     super(model, stepId, layer);
