@@ -1166,6 +1166,17 @@ public class SecControlActionController implements IControlActionController {
 
   @Override
   public ITableModel getCorrespondingSafetyConstraint(UUID id) {
+    for(ControlAction action : this.controlActions) {
+      IUnsafeControlAction uca = action.getUnsafeControlAction(id);
+      if(uca != null) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public IUnsafeControlAction getUnsafeControlAction(UUID unsafeControlActionId) {
     // TODO Auto-generated method stub
     return null;
   }

@@ -11,10 +11,8 @@
 package xstampp.stpasec.wizards.pdf;
 
 import messages.Messages;
-import xstampp.stpapriv.model.PrivacyController;
 import xstampp.stpasec.Activator;
 import xstampp.stpasec.wizards.AbstractPrivacyExportWizard;
-import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.TableExportPage;
 
 public class ContextTablePDFWizard extends AbstractPrivacyExportWizard {
@@ -29,16 +27,7 @@ public class ContextTablePDFWizard extends AbstractPrivacyExportWizard {
 
 	@Override
 	public boolean performFinish() {
-		setExportAddition(calculateContextSize());
 		return this.performXSLExport(				
 				"/fopContextTable.xsl",  false, Messages.ContextTables, false); ////$NON-NLS-1$ //$NON-NLS-3$
-	}
-	
-	private String calculateContextSize(){
-		PrivacyController controller = (PrivacyController) ProjectManager.getContainerInstance().
-																				getDataModel(getExportPage().
-																						getProjectID());
-		return "8";
-	
 	}
 }

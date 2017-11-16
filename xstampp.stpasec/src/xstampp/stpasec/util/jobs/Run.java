@@ -30,6 +30,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.util.jobs.ExportJob;
 import xstampp.model.ObserverValue;
 import xstampp.stpapriv.model.PrivacyController;
+import xstampp.stpapriv.util.jobs.StpaCSVExport;
 import xstampp.stpasec.messages.SecMessages;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.AbstractExportPage;
