@@ -16,12 +16,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -99,9 +103,26 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
         new ByteArrayInputStream(this.outStream.toByteArray()));
 
     try {
+      Class<?> dataModelClazz = getResourceLoader();
+      URL xslUrl = dataModelClazz.getResource(exportData.getXslName());
 
-      this.xslfoTransformer = getxslTransformer(exportData.getXslName(),
-          exportData.getDataModelClazz());
+      if (xslUrl == null) {
+        return null;
+      }
+      try {
+        StreamSource transformXSLSource = new StreamSource(xslUrl.openStream());
+        TransformerFactory transfact = TransformerFactory.newInstance();
+        transfact.setURIResolver(new URIResolver() {
+          @Override
+          public Source resolve(String href, String base) {
+            return new StreamSource(dataModelClazz.getResourceAsStream("/" + href)); //$NON-NLS-1$
+          }
+        });
+
+        this.xslfoTransformer = transfact.newTransformer(transformXSLSource);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
       if (xslfoTransformer == null) {
         JAXBExportJob.LOGGER.error("Fop xsl: " + exportData.getXslName() + " not found"); //$NON-NLS-1$
         return Status.CANCEL_STATUS;
@@ -177,6 +198,11 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
     return Status.OK_STATUS;
   }
 
+  protected Class<?> getResourceLoader() {
+    Class<?> dataModelClazz = exportData.getDataModelClazz();
+    return dataModelClazz;
+  }
+
   @Override
   protected void canceling() {
     if (this.xslfoTransformer != null) {
@@ -227,13 +253,6 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
   public ExportPackage getExportData() {
     return exportData;
   }
-
-  /**
-   * @deprecated Use {@link #getxslTransformer(String,ClassLoader)} instead
-   */
-  protected abstract Transformer getxslTransformer(String resource);
-
-  protected abstract Transformer getxslTransformer(String resource, Class clazz);
 
   /**
    * @return the filePath

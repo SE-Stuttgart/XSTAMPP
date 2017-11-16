@@ -54,7 +54,7 @@ public class TableExportPage extends PdfExportPage implements ModifyListener {
    *          TODO
    */
   public TableExportPage(String[] filters, String pageName, String pluginID) {
-    super(pageName, pageName, pluginID);
+    super(new PDFExportConfiguration(pageName, pageName), pluginID);
     setFilterExtensions(filters, filters);
     setShowCompanyFields(false);
     this.setDescription(Messages.SetValuesForTheExportFile);

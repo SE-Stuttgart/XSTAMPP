@@ -67,54 +67,12 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
    * 
    * @author Sebastian Sieber,Lukas Balzer
    * 
-   * @param pageName
-   *          the name of the page
-   * @param projectName
-   *          the name of the project
-   * @param pluginID
-   *          the id of the calling plugin, used to resolve the projects suitable to the export
-   * @deprecated Use {@link #PdfExportPage(String,String)} instead
-   */
-  public PdfExportPage(String pageName, String projectName, String pluginID) {
-    this(new PDFExportConfiguration(pageName, projectName), PathComposite.PATH_DIALOG, pluginID);
-  }
-
-  /**
-   * Constructor.
-   * 
-   * @author Sebastian Sieber,Lukas Balzer
-   * 
-   * @param pageName
-   *          the name of the page
-   * @param projectName
-   *          the name of the project
-   * @param pathConstant
-   *          this is not longer been used
-   * @param pluginID
-   *          the id of the calling plugin, used to resolve the projects suitable to the export
-   * @deprecated Use {@link #PdfExportPage(String,int,String)} instead
-   */
-  public PdfExportPage(String pageName, String projectName, int pathConstant, String pluginID) {
-    this(new PDFExportConfiguration(pageName, projectName), pathConstant, pluginID);
-  }
-  
-  public PdfExportPage(PDFExportConfiguration config, String pluginID) {
-    this(config, PathComposite.PATH_DIALOG, pluginID);
-  }
-
-  /**
-   * Constructor.
-   * 
-   * @author Sebastian Sieber,Lukas Balzer
-   * 
    * @param config
    *          the configuration object contains the description of the export page
-   * @param pathConstant
-   *          this is not longer been used
    * @param pluginID
    *          the id of the calling plugin, used to resolve the projects suitable to the export
    */
-  public PdfExportPage(PDFExportConfiguration config, int pathConstant, String pluginID) {
+  public PdfExportPage(PDFExportConfiguration config, String pluginID) {
     super(config.pageName, pluginID);
     this.setTitle(config.projectName);
     this.setDescription(Messages.SetValuesForTheExportFile);
