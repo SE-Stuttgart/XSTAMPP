@@ -8,7 +8,6 @@
  *******************************************************************************/
 package xstampp.util.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class UndoRedoService extends AbstractSourceProvider {
   private boolean canUndo;
   private boolean canRedo;
   private boolean lock;
-  private List<IUndoCallback> recordList;
+  private UndoStackedCommands recordList;
   private boolean recording;
 
   public UndoRedoService() {
@@ -54,12 +53,16 @@ public class UndoRedoService extends AbstractSourceProvider {
 
   /**
    * this initializes a new record list in which all following {@link IUndoCallback}'s will be
-   * included.
-   * 
+   * included in one {@link IUndoCallback}.
+   * <br>
+   * The {@link IUndoCallback}s that are pushed onto the stack with
+   * {@link UndoRedoService#push(IUndoCallback)} are recorded until either
+   * {@link UndoRedoService#getRecord()} or {@link UndoRedoService#pushRecord()} is called.
    */
   public void startRecord() {
+
     this.recording = true;
-    this.recordList = new ArrayList<>();
+    this.recordList = new UndoStackedCommands();
   }
 
   /**
@@ -71,14 +74,35 @@ public class UndoRedoService extends AbstractSourceProvider {
    *         last call of this method
    */
   public List<IUndoCallback> getRecord() {
+    
     List<IUndoCallback> recordList = null;
     if (recording) {
-      recordList = new ArrayList<>(this.recordList);
+      recordList = this.recordList.getRecordList();
       this.recording = false;
       this.recordList = null;
       this.undoStack.removeAll(recordList);
     }
     return recordList;
+  }
+
+  /**
+   * If this method is called after a call to {@link UndoRedoService#startRecord()} but before a
+   * {@link UndoRedoService#getRecord()} call than a {@link IUndoCallback} containing all
+   * {@link IUndoCallback}s pushed since the call of startRecord is pushed onto the undo stack.
+   * <p>
+   * The callback will undo/redo all included callbacks which enables undo of group commands
+   * 
+   * @return <b style="color:blue">true</b> if the service was recording and a callback has been
+   *         pushed<br>
+   *         <b style="color:blue">false</b> otherwise
+   */
+  public boolean pushRecord() {
+    if (recording) {
+      push(this.recordList);
+      this.recording = false;
+      this.recordList = null;
+    }
+    return recording;
   }
 
   public IUndoCallback push(IUndoCallback callback) {
@@ -88,6 +112,7 @@ public class UndoRedoService extends AbstractSourceProvider {
       this.canUndo = true;
       fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, true);
       if (this.undoStack.size() + 1 > LIMIT) {
+        
         this.undoStack.removeElementAt(0);
       }
       return this.undoStack.push(callback);
