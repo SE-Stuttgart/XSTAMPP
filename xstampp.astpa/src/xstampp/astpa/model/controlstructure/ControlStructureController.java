@@ -84,7 +84,13 @@ public class ControlStructureController extends Observable {
    * @author Fabian Toth
    */
   public ControlStructureController() {
-    useMultiRoots = ASTPADefaultConfig.getInstance().USE_MULTI_CONTROL_STRUCTURES;
+    this(false);
+  }
+
+  public ControlStructureController(boolean testable) {
+    if (!testable) {
+      useMultiRoots = ASTPADefaultConfig.getInstance().USE_MULTI_CONTROL_STRUCTURES;
+    }
     this.connections = new ArrayList<>();
     this.rootComponents = new ArrayList<>();
     this.rootComponents.add(new Component("level 0", new Rectangle(), ComponentType.ROOT));

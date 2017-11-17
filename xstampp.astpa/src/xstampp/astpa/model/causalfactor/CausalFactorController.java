@@ -72,6 +72,7 @@ public class CausalFactorController extends Observable implements ICausalControl
   private LinkController linkController;
 
   private List<CausalCSComponent> componentsList;
+
   /**
    * Constructor of the causal factor controller
    * 
@@ -79,15 +80,22 @@ public class CausalFactorController extends Observable implements ICausalControl
    * 
    */
   public CausalFactorController() {
+    this(false);
+  }
+
+  public CausalFactorController(boolean testable) {
     this.causalSafetyConstraints = new NumberedArrayList<>();
     this.causalFactors = new NumberedArrayList<>();
-    this.setUseScenarios(ASTPADefaultConfig.getInstance().USE_CAUSAL_SCENARIO_ANALYSIS);
+    if (!testable) {
+      this.setUseScenarios(ASTPADefaultConfig.getInstance().USE_CAUSAL_SCENARIO_ANALYSIS);
+    }
   }
 
   @Override
   public UUID addCausalFactor() {
     CausalFactor factor = new CausalFactor("");
     if (this.causalFactors.add(factor)) {
+      setChanged();
       notifyObservers(ObserverValue.CAUSAL_FACTOR);
       return factor.getId();
     }
@@ -96,7 +104,6 @@ public class CausalFactorController extends Observable implements ICausalControl
 
   UUID addCausalFactor(CausalFactor factor) {
     if (this.causalFactors.add(factor)) {
-      notifyObservers(ObserverValue.CAUSAL_FACTOR);
       return factor.getId();
     }
     return null;
@@ -117,11 +124,24 @@ public class CausalFactorController extends Observable implements ICausalControl
         UndoTextChange textChange = new UndoTextChange(oldText, causalFactorText,
             ObserverValue.CAUSAL_FACTOR);
         textChange.setConsumer((text) -> setCausalFactorText(causalFactorId, text));
+        setChanged();
         notifyObservers(textChange);
         return true;
       }
     }
 
+    return false;
+  }
+
+  @Override
+  public boolean removeCausalFactor(UUID causalFactor) {
+    Optional<CausalFactor> removeOptional = this.causalFactors.stream()
+        .filter(factor -> factor.getId().equals(causalFactor)).findFirst();
+    if (removeOptional.isPresent() && this.causalFactors.remove(removeOptional.get())) {
+      setChanged();
+      notifyObservers(new UndoRemoveCausalFactor(this, removeOptional.get(), this.linkController));
+      return true;
+    }
     return false;
   }
 
@@ -268,6 +288,7 @@ public class CausalFactorController extends Observable implements ICausalControl
       UndoTextChange textChange = new UndoTextChange(description, newText,
           ObserverValue.CAUSAL_FACTOR);
       textChange.setConsumer((text) -> setSafetyConstraintText(linkB, text));
+      setChanged();
       notifyObservers(textChange);
       return true;
     }

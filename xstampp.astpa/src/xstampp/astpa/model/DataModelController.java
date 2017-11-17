@@ -45,6 +45,7 @@ import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
 import xstampp.astpa.model.causalfactor.ICausalController;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -136,7 +137,6 @@ public class DataModelController extends AbstractDataModel
     IUnsafeControlActionDataModel, ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel,
     IExtendedDataModel, IUserProject, Observer {
 
-  private static final Logger LOGGER = ProjectManager.getLOGGER();
   private static final String HAZ = "haz";
   private static final String HAZX = "hazx";
 
@@ -205,22 +205,27 @@ public class DataModelController extends AbstractDataModel
    * 
    */
   public DataModelController() {
-    super();
+    this(false);
+  }
+
+  public DataModelController(boolean testable) {
+    super(testable);
     this.linkController = new LinkController();
     this.projectDataManager = new ProjectDataController();
-    this.controlStructureController = new ControlStructureController();
-    this.causalFactorController = new CausalFactorController();
+    this.controlStructureController = new ControlStructureController(testable);
+    this.causalFactorController = new CausalFactorController(testable);
     this.extendedDataController = new ExtendedDataController();
     getIgnoreLTLValue();
     refreshLock = false;
     this.userSystem = new EmptyUserSystem();
-    Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-    if (bundle != null) {
-      Dictionary<?, ?> dictionary = bundle.getHeaders();
-      String versionWithQualifier = (String) dictionary.get(Messages.BundleVersion);
-      this.setVersion(versionWithQualifier.substring(0, versionWithQualifier.lastIndexOf('.')));
+    if (!testable) {
+      Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+      if (bundle != null) {
+        Dictionary<?, ?> dictionary = bundle.getHeaders();
+        String versionWithQualifier = (String) dictionary.get(Messages.BundleVersion);
+        this.setVersion(versionWithQualifier.substring(0, versionWithQualifier.lastIndexOf('.')));
+      }
     }
-
   }
 
   @Override
@@ -316,8 +321,8 @@ public class DataModelController extends AbstractDataModel
     if (this.controlStructureController.getComponent(notProvidedVariable) != null) {
       this.getControlActionController().addNotProvidedVariable(caID, notProvidedVariable);
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
-    } else {
-      LOGGER.debug("given provided id is not related to a valid component");
+    } else if (!isTestable()) {
+      ProjectManager.getLOGGER().debug("given provided id is not related to a valid component");
     }
   }
 
@@ -327,8 +332,8 @@ public class DataModelController extends AbstractDataModel
     if (this.controlStructureController.getComponent(providedVariable) != null) {
       this.getControlActionController().addProvidedVariable(caID, providedVariable);
       setUnsavedAndChanged(ObserverValue.Extended_DATA);
-    } else {
-      LOGGER.debug("given provided id is not related to a valid component");
+    } else if (!isTestable()) {
+      ProjectManager.getLOGGER().debug("given provided id is not related to a valid component");
     }
   }
 
@@ -339,10 +344,16 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public UUID addCausalFactor(UUID componentId) {
-    UUID factorId = addCausalFactor();
-    UUID linkId = getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, null, factorId);
-    getLinkController().addLink(ObserverValue.UcaCfLink_Component_LINK, linkId, componentId);
+    IRectangleComponent component = getControlStructureController().getComponent(componentId);
+    ICausalComponent causalComponent = getCausalFactorController().getCausalComponent(component);
+    UUID factorId = null;
+    if (causalComponent != null) {
+      factorId = addCausalFactor();
+      UUID linkId = getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, null, factorId);
+      getLinkController().addLink(ObserverValue.UcaCfLink_Component_LINK, linkId, componentId);
+    }
     return factorId;
+
   }
 
   @Override
@@ -848,7 +859,7 @@ public class DataModelController extends AbstractDataModel
   public List<IRectangleComponent> getCausalComponents() {
     ArrayList<IRectangleComponent> causalComponents = new ArrayList<>();
     getControlStructureController().getRoot().getChildren().forEach((comp) -> {
-      if(getCausalFactorController().validateCausalComponent(comp.getComponentType())) {
+      if (getCausalFactorController().validateCausalComponent(comp.getComponentType())) {
         causalComponents.add(comp);
       }
     });
@@ -1239,7 +1250,9 @@ public class DataModelController extends AbstractDataModel
   @Override
   public void lockUpdate() {
     this.refreshLock = true;
-    DataModelController.LOGGER.debug("set data update lock to prevent system lacks");
+    if (!isTestable()) {
+      ProjectManager.getLOGGER().debug("set data update lock to prevent system lacks");
+    }
   }
 
   public boolean moveEntry(boolean allWay, boolean moveUp, UUID id, ObserverValue value) {
@@ -1271,11 +1284,13 @@ public class DataModelController extends AbstractDataModel
   }
 
   protected void pushToUndo(IUndoCallback callback) {
-    ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
-        .getService(ISourceProviderService.class);
-    UndoRedoService provider = (UndoRedoService) service
-        .getSourceProvider(UndoRedoService.CAN_REDO);
-    provider.push(callback);
+    if (!isTestable()) {
+      ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
+          .getService(ISourceProviderService.class);
+      UndoRedoService provider = (UndoRedoService) service
+          .getSourceProvider(UndoRedoService.CAN_REDO);
+      provider.push(callback);
+    }
   }
 
   @Override
@@ -1319,7 +1334,9 @@ public class DataModelController extends AbstractDataModel
         }
       }
     }
-    DataModelController.LOGGER.debug("released update lock");
+    if (!isTestable()) {
+      ProjectManager.getLOGGER().debug("released update lock");
+    }
     if (hasChanged()) {
       setUnsavedAndChanged();
       for (int i = 0; i < blockedUpdates.size(); i++) {
@@ -2074,7 +2091,9 @@ public class DataModelController extends AbstractDataModel
   public void updateValue(ObserverValue value) {
     this.setChanged();
     if (!refreshLock) {
-      DataModelController.LOGGER.debug("Trigger update for " + value.name()); //$NON-NLS-1$
+      if (!isTestable()) {
+        ProjectManager.getLOGGER().debug("Trigger update for " + value.name()); //$NON-NLS-1$
+      }
       switch (value) {
       case UCA_HAZ_LINK:
       case SEVERITY: {
@@ -2151,6 +2170,9 @@ public class DataModelController extends AbstractDataModel
   }
 
   public ControlStructureController getControlStructureController() {
+    if (this.controlStructureController == null) {
+      this.controlStructureController = new ControlStructureController(isTestable());
+    }
     this.controlStructureController.addObserver(this);
     return controlStructureController;
   }

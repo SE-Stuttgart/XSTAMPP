@@ -90,7 +90,7 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
    *          the text to set
    */
   boolean setText(String text) {
-    if (this.text.equals(text)) {
+    if (!this.text.equals(text)) {
       this.text = text;
       return true;
     }

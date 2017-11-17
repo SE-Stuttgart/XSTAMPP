@@ -25,9 +25,16 @@ public class TestObserver implements Observer {
     return this.updatedValues.containsAll(updates);
   }
 
+  public boolean hasNoUpdates(ObserverValue update) {
+    return !this.updatedValues.contains(update);
+  }
+  public boolean hasNoUpdates() {
+    return this.updatedValues.isEmpty();
+  }
+
   @Override
   public void update(Observable o, Object arg) {
-    if(arg instanceof ObserverValue) {
+    if (arg instanceof ObserverValue) {
       this.updatedValues.add((ObserverValue) arg);
     } else if (arg instanceof IUndoCallback) {
       this.updatedValues.add(((IUndoCallback) arg).getChangeConstant());

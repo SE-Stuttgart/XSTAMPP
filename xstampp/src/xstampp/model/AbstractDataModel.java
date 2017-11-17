@@ -20,16 +20,27 @@ public abstract class AbstractDataModel extends Observable implements IDataModel
    * Shows if there are unsaved changes or not
    */
   private boolean unsavedChanges;
+  private boolean testable;
 
   public AbstractDataModel() {
+    this(false);
+  }
 
-    // Enable the save entries in the menu
-    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
-        .getWorkbench().getService(ISourceProviderService.class);
-    CommandState saveStateService = (CommandState) sourceProviderService
-        .getSourceProvider(CommandState.SAVE_STATE);
-    addObserver(saveStateService);
-    this.unsavedChanges = false;
+  protected AbstractDataModel(boolean testable) {
+    this.testable = testable;
+    if (!testable) {
+      // Enable the save entries in the menu
+      ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+          .getWorkbench().getService(ISourceProviderService.class);
+      CommandState saveStateService = (CommandState) sourceProviderService
+          .getSourceProvider(CommandState.SAVE_STATE);
+      addObserver(saveStateService);
+      this.unsavedChanges = false;
+    }
+  }
+
+  public boolean isTestable() {
+    return testable;
   }
 
   @Override

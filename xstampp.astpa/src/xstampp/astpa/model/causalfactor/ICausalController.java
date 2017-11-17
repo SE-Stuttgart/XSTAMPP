@@ -30,6 +30,13 @@ import xstampp.model.ObserverValue;
 
 public interface ICausalController {
 
+  /**
+   * Adds a simple {@link ICausalFactor} that is not linked to a {@link ICausalComponent} but which
+   * is can be used to create a Entry in the causal analysis.
+   * Notifies all observers with {@link ObserverValue#CAUSAL_FACTOR}.
+   * 
+   * @return the {@link UUID} of the {@link ICausalFactor}
+   */
   UUID addCausalFactor();
 
   /**
@@ -39,7 +46,8 @@ public interface ICausalController {
    * @param causalFactorText
    *          the text that should be set as the {@link ICausalFactor#getText()}
    * @return <b style="color:blue">true</b> if the given id is valid and the text is different to
-   *         the current <br><b style="color:blue">false</b> otherwise
+   *         the current <br>
+   *         <b style="color:blue">false</b> otherwise
    */
   boolean setCausalFactorText(UUID causalFactorId, String causalFactorText);
 
@@ -100,6 +108,16 @@ public interface ICausalController {
    */
   ICausalFactor getCausalFactor(UUID causalFactorId);
 
+  /**
+   * 
+   * @param csComp
+   *          an {@link IRectangleComponent} that is stored with a valid {@link ComponentType} in
+   *          the Control Structure
+   * @return an instance of {@link ICausalComponent} if the given {@link IRectangleComponent} is
+   *         valid for the causal analysis or null
+   */
+  ICausalComponent getCausalComponent(IRectangleComponent csComp);
+
   boolean setSafetyConstraintText(UUID linkB, String newText);
 
   /**
@@ -120,9 +138,11 @@ public interface ICausalController {
       LinkController linkController);
 
   /**
-   * Creates a sorted mapping of a Listof {@link Link}s to a {@link IUnsafeControlAction}. The list set as
+   * Creates a sorted mapping of a Listof {@link Link}s to a {@link IUnsafeControlAction}. The list
+   * set as
    * value contains all {@link ObserverValue#UcaCfLink_Component_LINK}s between a
-   * {@link ObserverValue#UCA_CausalFactor_LINK} of a <b>specific {@link IUnsafeControlAction}</b> and the
+   * {@link ObserverValue#UCA_CausalFactor_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
+   * and the
    * id of a {@link ICausalComponent}.<br>
    * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
    * 
