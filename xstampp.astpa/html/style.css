@@ -20,7 +20,13 @@ a{
 
 .footer {
 	margin-top: 50px;
-	font-size: 9px; 
+	font-size: 9px;
+}
+
+img {
+    max-width: 70%;
+    height: auto;
+    width: auto\9; /* ie8 */
 }
 
 .header {
