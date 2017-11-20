@@ -359,10 +359,8 @@
 
     <xs:complexType name="causalFactorType">
         <xs:all>
-            <xs:element name="note" type="xs:string" maxOccurs="1" minOccurs="0">
-            </xs:element>
-            <xs:element name="hazardLinks" type="xs:string" maxOccurs="1" minOccurs="0">
-            </xs:element>
+            <xs:element name="note" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+            <xs:element name="hazardLinks" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
             <xs:element name="causalEntries" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
@@ -372,11 +370,9 @@
                                     <xs:element name="hazardIds" maxOccurs="1" minOccurs="0" type="Q1:idList">
 
                                     </xs:element>
-                                    <xs:element name="constraintText" type="xs:string" maxOccurs="1"
-                                        minOccurs="0">
+                                    <xs:element name="constraintText" type="xs:string" maxOccurs="1" minOccurs="0">
                                     </xs:element>
-                                    <xs:element name="note" type="xs:string" maxOccurs="1" minOccurs="0">
-                                    </xs:element>
+                                    <xs:element name="note" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
                                     <xs:element name="ucaLink" type="xs:string" maxOccurs="1" minOccurs="0">
                                     </xs:element>
                                     <xs:element name="scenarioLinks" maxOccurs="1" minOccurs="0" type="Q1:idList">
@@ -384,20 +380,19 @@
                                     <xs:element name="constraintId" type="xs:string" maxOccurs="1" minOccurs="0">
                                     </xs:element>
                                 </xs:all>
-                                <xs:attribute name="id" type="xs:string" use="required">
-                                </xs:attribute>
+                                <xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
 
-            <xs:element name="id" type="xs:string" maxOccurs="1" minOccurs="1">
-            </xs:element>
+            <xs:element name="id" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
             <xs:element name="text" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
         </xs:all>
 
 
+        <xs:attribute name="number" use="optional" type="xs:int"></xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="sdsType">

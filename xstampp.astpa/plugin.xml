@@ -1021,12 +1021,8 @@
          <toolbar
                id="toolbar.statistics">
             <command
-                  commandId="xstampp.astpa.command.exportStatistics"
-                  icon="icons/buttons/export/exportStatistics_16x16.png"
-                  style="push">
-            </command>
-            <command
                   commandId="xstampp.astpa.command.projectState.export"
+                  icon="icons/buttons/export/exportStatistics_16x16.png"
                   style="push">
             </command>
          </toolbar>
