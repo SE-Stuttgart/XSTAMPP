@@ -40,7 +40,7 @@ public class CellButtonImportConstraint extends CellButton {
    * 
    * @param grid
    * @param ucaHazLink
-   *          a Link of type {@link ObserverValue#UCAEntryLink_HAZ_LINK}
+   *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
    * @param dataInterface
    */
   public CellButtonImportConstraint(Grid grid, Link ucaHazLink, ICausalFactorDataModel dataInterface) {

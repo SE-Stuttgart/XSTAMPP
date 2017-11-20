@@ -25,18 +25,18 @@ import xstampp.ui.common.grid.GridWrapper;
 public class CellEditorCausalScenario extends GridCellTextEditor {
 
   private UUID ruleId;
-  private ICausalFactorDataModel dataInterface;
+  private ICausalFactorDataModel dataModel;
   private ScenarioType type;
   private Link scenarioLink;
 
-  public CellEditorCausalScenario(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
+  public CellEditorCausalScenario(GridWrapper gridWrapper, ICausalFactorDataModel dataModel,
       Link scenarioLink, UUID ruleId, ScenarioType type) {
-    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getSafetyRule(), ruleId);
+    super(gridWrapper, dataModel.getExtendedDataController().getRefinedScenario(ruleId).getSafetyRule(), ruleId);
     this.scenarioLink = scenarioLink;
     this.type = type;
     setReadOnly(type != ScenarioType.CAUSAL_SCENARIO);
     setShowDelete(true);
-    this.dataInterface = dataInterface;
+    this.dataModel = dataModel;
     this.ruleId = ruleId;
   }
 
@@ -44,7 +44,7 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
   public void updateDataModel(String newText) {
     AbstractLtlProviderData data = new AbstractLtlProviderData();
     data.setRule(newText);
-    dataInterface.updateRefinedRule(ruleId, data, null);
+    dataModel.getExtendedDataController().updateRefinedRule(ruleId, data, null);
 
   }
 
@@ -53,20 +53,18 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
     if (MessageDialog.openConfirm(null, "Delete Causal Scenario?",
         "Do you really want to delete this Scenario?\n"
             + "Note that all references will be deleted as well")) {
-      if (type == ScenarioType.CAUSAL_SCENARIO) {
-        dataInterface.removeRefinedSafetyRule(type, false, ruleId);
-      }
-    this.dataInterface.getLinkController().deleteLink(this.scenarioLink.getLinkType(), this.scenarioLink.getId());
+      dataModel.getExtendedDataController().removeRefinedSafetyRule(type, false, ruleId,
+          this.dataModel.getLinkController());
     }
   }
 
   @Override
   protected void editorOpening() {
-    dataInterface.lockUpdate();
+    dataModel.lockUpdate();
   }
 
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR });
+    dataModel.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR });
   }
 }

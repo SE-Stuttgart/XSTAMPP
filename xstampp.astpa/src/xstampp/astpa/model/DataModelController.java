@@ -65,6 +65,7 @@ import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.export.ExportInformation;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.Hazard;
@@ -105,7 +106,6 @@ import xstampp.astpa.usermanagement.AstpaCollaborationSystem;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
 import xstampp.model.AbstractLTLProvider;
-import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IEntryFilter;
 import xstampp.model.ISafetyDataModel;
@@ -273,13 +273,14 @@ public class DataModelController extends AbstractDataModel
     this.getHazAccController().prepareForExport(getLinkController(), this.getSdsController());
     getSdsController().prepareForExport(getLinkController(), getHazAccController(),
         getControlActionController(), getCausalFactorController());
-    this.extendedDataController.prepareForExport();
+    this.extendedDataController.prepareForExport(getControlActionController(), getLinkController());
     this.getControlActionController().prepareForExport(getLinkController(),
         this.getHazAccController(),
         this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController,
         getSdsController());
     this.causalFactorController.prepareForExport(this.getHazAccController(),
-        getRoot().getChildren(), getAllScenarios(true, true, true), getControlActionController(), null);
+        getRoot().getChildren(), extendedDataController.getAllScenarios(true, true, true), getControlActionController(),
+        null);
     this.projectDataManager.prepareForExport();
     this.exportInformation = new ExportInformation();
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");
@@ -289,7 +290,7 @@ public class DataModelController extends AbstractDataModel
   @Override
   public void prepareForSave() {
     lockUpdate();
-    this.extendedDataController.prepareForSave();
+    this.extendedDataController.prepareForSave(getControlActionController(), getLinkController());
     if (!this.getControlActionController().prepareForSave(this.extendedDataController,
         getLinkController())) {
       this.controlActionController = null;
@@ -298,7 +299,8 @@ public class DataModelController extends AbstractDataModel
     }
 
     this.causalFactorController.prepareForSave(this.getHazAccController(),
-        controlStructureController.getInternalComponents(), getAllScenarios(true, true, true),
+        controlStructureController.getInternalComponents(),
+        this.extendedDataController.getAllScenarios(true, true, true),
         getAllUnsafeControlActions(), getLinkController());
     if (!this.getHazAccController().prepareForSave(linkController)) {
       this.hazAccController = null;
@@ -481,19 +483,6 @@ public class DataModelController extends AbstractDataModel
       return true;
     }
     return false;
-  }
-
-  /**
-   * Triggers an update to {@link ObserverValue#Extended_DATA} if a new rule was created
-   */
-  @Override
-  public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
-      UUID caID, String type) {
-    UUID newRuleId = this.extendedDataController.addRuleEntry(ruleType, data, caID, type);
-    if (newRuleId != null) {
-      setUnsavedAndChanged(ObserverValue.Extended_DATA);
-    }
-    return newRuleId;
   }
 
   @Override
@@ -789,19 +778,8 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public List<AbstractLTLProvider> getAllRefinedRules(IEntryFilter<AbstractLTLProvider> filter) {
-    return extendedDataController.getAllRefinedRules(filter);
-  }
-
-  @Override
   public List<ITableModel> getAllSafetyConstraints() {
     return this.getSdsController().getAllSafetyConstraints();
-  }
-
-  @Override
-  public List<AbstractLTLProvider> getAllScenarios(boolean includeRules, boolean includeScenarios,
-      boolean includeLTL) {
-    return this.extendedDataController.getAllScenarios(includeRules, includeScenarios, includeLTL);
   }
 
   @Override
@@ -1074,7 +1052,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<AbstractLTLProvider> getLTLPropertys() {
-    return getAllScenarios(true, false, false);
+    return getExtendedDataController().getAllScenarios(true, false, false);
   }
 
   @Override
@@ -1113,11 +1091,6 @@ public class DataModelController extends AbstractDataModel
     }
 
     return this.getSdsController().getSafetyConstraint(safetyConstraintId);
-  }
-
-  @Override
-  public ScenarioType getScenarioType(UUID ruleId) {
-    return this.extendedDataController.getScenarioType(ruleId);
   }
 
   @Override
@@ -1487,15 +1460,6 @@ public class DataModelController extends AbstractDataModel
       return true;
     }
     return false;
-  }
-
-  @Override
-  public boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId) {
-    boolean result = this.extendedDataController.removeRefinedSafetyRule(type, removeAll, ruleId);
-    if (result) {
-      setUnsavedAndChanged(ObserverValue.Extended_DATA);
-    }
-    return result;
   }
 
   @Override
@@ -2088,21 +2052,6 @@ public class DataModelController extends AbstractDataModel
     return false;
   }
 
-  /**
-   * a value that is given with null/-1 is not updated
-   */
-  @Override
-  public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,
-      UUID linkedControlActionID) {
-    boolean result = this.extendedDataController.updateRefinedRule(ruleId, data,
-        linkedControlActionID);
-    if (result) {
-      setUnsavedAndChanged(ObserverValue.Extended_DATA);
-    }
-    return result;
-
-  }
-
   @Override
   public void updateValue(ObserverValue value) {
     this.setChanged();
@@ -2225,6 +2174,14 @@ public class DataModelController extends AbstractDataModel
     this.causalFactorController.addObserver(this);
     this.causalFactorController.setLinkController(getLinkController());
     return this.causalFactorController;
+  }
+
+  public IExtendedDataController getExtendedDataController() {
+    if (this.extendedDataController == null) {
+      this.extendedDataController = new ExtendedDataController();
+    }
+    this.extendedDataController.addObserver(this);
+    return this.extendedDataController;
   }
 
   public ProjectDataController getProjectDataManager() {

@@ -112,7 +112,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
   private void reloadTable() {
     if (this.grid != null) {
       this.grid.clearRows();
-      List<AbstractLTLProvider> rulesList = dataInterface.getAllScenarios(includeBasicScenarios,
+      List<AbstractLTLProvider> rulesList = dataInterface.getExtendedDataController().getAllScenarios(includeBasicScenarios,
           includeCausalScenarios, false);
       for (AbstractLTLProvider rule : rulesList) {
         if (!isFiltered(rule.getUCALinks(), UCA)) {
@@ -124,7 +124,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
               data.setRule(newValue);
-              dataInterface.updateRefinedRule(getUUID(), data, null);
+              dataInterface.getExtendedDataController().updateRefinedRule(getUUID(), data, null);
             }
           };
           ruleRow.addCell(0, cell);
@@ -135,7 +135,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
               data.setRule(newValue);
-              dataInterface.updateRefinedRule(getUUID(), data, null);
+              dataInterface.getExtendedDataController().updateRefinedRule(getUUID(), data, null);
             }
           });
           ruleRow.addCell(2, new ScenarioEditor(this.grid, rule.getRefinedSafetyConstraint(), false,
@@ -144,7 +144,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
               data.setRefinedConstraint(newValue);
-              dataInterface.updateRefinedRule(getUUID(), data, null);
+              dataInterface.getExtendedDataController().updateRefinedRule(getUUID(), data, null);
             }
           });
           grid.addRow(ruleRow);

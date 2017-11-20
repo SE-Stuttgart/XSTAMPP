@@ -32,7 +32,7 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
    * @param gridWrapper
    * @param dataInterface
    * @param ucaHazLink
-   *          a Link of type {@link ObserverValue#UCAEntryLink_HAZ_LINK}
+   *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
    */
   public CellEditorSafetyConstraint(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
       Link ucaHazLink) {

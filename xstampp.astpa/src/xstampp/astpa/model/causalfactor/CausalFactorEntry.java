@@ -200,7 +200,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
       // if a constraint is already linked to this entry than the link is re-added as
       // UcaHazLink_SC2_LINK to the LinkController
       linkController.getRawLinksFor(LinkingType.UCA_HAZ_LINK, ucaLink).forEach(link -> {
-        UUID hazEntryId = linkController.addLink(LinkingType.UCAEntryLink_HAZ_LINK, UcaCfCompLink,
+        UUID hazEntryId = linkController.addLink(LinkingType.CausalEntryLink_HAZ_LINK, UcaCfCompLink,
             link.getLinkB());
         if (this.constraintId != null) {
           linkController.addLink(LinkingType.CausalHazLink_SC2_LINK, hazEntryId,
@@ -230,7 +230,7 @@ public class CausalFactorEntry implements ICausalFactorEntry {
     IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
     ucaDescription = uca.getDescription();
     hazardLinks = "";
-    for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.UCAEntryLink_HAZ_LINK,
+    for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
         causalEntryList.getId())) {
 
       Hazard hazard = hazAccController.getHazard(causalHazLink.getLinkB());

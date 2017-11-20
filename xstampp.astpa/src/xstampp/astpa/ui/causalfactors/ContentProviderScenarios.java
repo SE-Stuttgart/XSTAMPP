@@ -53,7 +53,7 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 
   @Override
   public List<AbstractLTLProvider> getAllItems() {
-    return this.dataModel.getAllRefinedRules(new IEntryFilter<AbstractLTLProvider>() {
+    return this.dataModel.getExtendedDataController().getAllRefinedRules(new IEntryFilter<AbstractLTLProvider>() {
 
       @Override
       public boolean check(AbstractLTLProvider model) {
@@ -68,21 +68,21 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
   @Override
   public List<AbstractLTLProvider> getLinkedItems(final UUID itemId) {
     List<AbstractLTLProvider> linkedScenarios= new ArrayList<>();
-    for (UUID uuid : this.dataModel.getLinkController().getLinksFor(LinkingType.UCAEntryLink_Scenario_LINK, causalEntryLink.getId())) {
-      linkedScenarios.add(this.dataModel.getRefinedScenario(uuid));
+    for (UUID uuid : this.dataModel.getLinkController().getLinksFor(LinkingType.CausalEntryLink_Scenario_LINK, causalEntryLink.getId())) {
+      linkedScenarios.add(this.dataModel.getExtendedDataController().getRefinedScenario(uuid));
     }
     return linkedScenarios;
   }
 
   @Override
   public void addLink(final UUID item1, final UUID item2) {
-    this.dataModel.getLinkController().addLink(LinkingType.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), item2);
+    this.dataModel.getLinkController().addLink(LinkingType.CausalEntryLink_Scenario_LINK, causalEntryLink.getId(), item2);
   }
 
   @Override
   public void removeLink(final UUID item, final UUID removeItem) {
 
-    this.dataModel.getLinkController().deleteLink(LinkingType.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), removeItem);
+    this.dataModel.getLinkController().deleteLink(LinkingType.CausalEntryLink_Scenario_LINK, causalEntryLink.getId(), removeItem);
   }
 
   @Override

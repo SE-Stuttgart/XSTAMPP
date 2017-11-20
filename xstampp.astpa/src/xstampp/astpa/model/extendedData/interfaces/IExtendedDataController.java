@@ -17,6 +17,7 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
@@ -28,13 +29,14 @@ public interface IExtendedDataController {
    * adds a rule of the given ruleType and type
    * 
    * @param ruleType
-   * 
    * @param data
    *          {@link AbstractLtlProviderData}
    * @param caID
    *          {@link AbstractLTLProvider#getRelatedControlActionID()}
    * @param type
    *          {@link AbstractLTLProvider#getType()}
+   * @param linkController
+   *          TODO
    * 
    * @see IValueCombie
    * @return the id of rule which has been added, or null if any of the parameters is given as null
@@ -47,7 +49,10 @@ public interface IExtendedDataController {
    *         <li>{@link IValueCombie#TYPE_TOO_LATE}
    */
   UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
-      UUID caID, String type);
+      UUID caID, String type, LinkController linkController);
+
+  UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data, String type,
+      LinkController linkController);
 
   /**
    * 
@@ -94,12 +99,13 @@ public interface IExtendedDataController {
    *          when this is true than the ruleId will be ignored
    * @param ruleId
    *          an id of a RefinedSafetyRule object stored in a controlAction
-   * 
+   * @param linkController
+   *          TODO
    * @return whether the delete was successful or not, also returns false if the rule could not be
    *         found or the
    *         id was illegal
    */
-  boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId);
+  boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId, LinkController linkController);
 
   AbstractLTLProvider getRefinedScenario(UUID randomUUID);
 
@@ -109,7 +115,8 @@ public interface IExtendedDataController {
    * 
    * @param ruleId
    *          a valid rule id
-   * @return the {@link ScenarioType} of the rule or {@link ScenarioType#NO_SCENARIO} if the id is invalid
+   * @return the {@link ScenarioType} of the rule or {@link ScenarioType#NO_SCENARIO} if the id is
+   *         invalid
    */
   ScenarioType getScenarioType(UUID ruleId);
 

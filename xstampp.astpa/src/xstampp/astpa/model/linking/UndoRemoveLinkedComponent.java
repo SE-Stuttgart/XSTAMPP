@@ -30,4 +30,7 @@ public abstract class UndoRemoveLinkedComponent implements IUndoCallback {
     return ObserverValue.CAUSAL_FACTOR;
   }
 
+  public LinkController getLinkController() {
+    return linkController;
+  }
 }

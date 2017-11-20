@@ -30,7 +30,7 @@ public class NewConstraintButton extends CellButton {
 
   /**
    * @param ucaHazLink
-   *          a Link of type {@link ObserverValue#UCAEntryLink_HAZ_LINK}
+   *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
    * @param datamodel
    */
   public NewConstraintButton(Link ucaHazLink, ICausalFactorDataModel datamodel) {

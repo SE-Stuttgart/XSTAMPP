@@ -20,10 +20,8 @@ import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.linking.LinkController;
-import xstampp.model.AbstractLTLProvider;
-import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IEntryFilter;
 
@@ -34,16 +32,6 @@ import xstampp.model.IEntryFilter;
  * 
  */
 public interface ICausalFactorDataModel extends IDataModel {
-
-  /**
-   * {@link IExtendedDataModel#getRefinedScenario(UUID)}
-   */
-  AbstractLTLProvider getRefinedScenario(UUID randomUUID);
-
-  /**
-   * {@link IExtendedDataModel#getScenarioType(UUID)}
-   */
-  ScenarioType getScenarioType(UUID ruleId);
 
   /**
    * @return a list of {@link xstampp.astpa.model.controlaction.UCAHazLink}
@@ -86,27 +74,6 @@ public interface ICausalFactorDataModel extends IDataModel {
   ITableModel getHazard(UUID id);
 
   /**
-   * {@link IExtendedDataModel#getAllRefinedRules(IEntryFilter)}
-   */
-  List<AbstractLTLProvider> getAllRefinedRules(IEntryFilter<AbstractLTLProvider> filter);
-
-  /**
-   * {@link IExtendedDataModel#addRuleEntry(IExtendedDataModel.ScenarioType, AbstractLtlProviderData, UUID, String)}
-   */
-  UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
-      UUID caID, String type);
-
-  /**
-   * {@link IExtendedDataModel#updateRefinedRule(UUID, AbstractLtlProviderData, UUID)}
-   */
-  boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data, UUID linkedControlActionID);
-
-  /**
-   * {@link IExtendedDataModel#updateRefinedRule(UUID, AbstractLtlProviderData, UUID)}
-   */
-  boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId);
-
-  /**
    * {@link IUnsafeControlActionDataModel#getUCAList(IEntryFilter)}
    */
   List<ICorrespondingUnsafeControlAction> getUCAList(IEntryFilter<IUnsafeControlAction> filter);
@@ -129,31 +96,32 @@ public interface ICausalFactorDataModel extends IDataModel {
 
   ICausalController getCausalFactorController();
 
+  IExtendedDataController getExtendedDataController();
+
   LinkController getLinkController();
 
   /**
-* {@link ICausalController#setUseScenarios(boolean)}
+   * {@link ICausalController#setUseScenarios(boolean)}
    */
   void setUseScenarios(boolean useScenarios);
 
   /**
-* {@link ICausalController#setCausalFactorText(UUID, String)}
+   * {@link ICausalController#setCausalFactorText(UUID, String)}
    */
   boolean setCausalFactorText(UUID causalFactorId, String causalFactorText);
 
   /**
-* {@link ICausalController#isUseScenarios()}
+   * {@link ICausalController#isUseScenarios()}
    */
   boolean isUseScenarios();
 
   /**
-* {@link ICausalController#addCausalFactor()}
+   * {@link ICausalController#addCausalFactor()}
    */
   UUID addCausalFactor();
 
   List<IRectangleComponent> getCausalComponents();
-  
+
   IControlActionController getControlActionController();
-  
-  
+
 }

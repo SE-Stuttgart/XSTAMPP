@@ -411,7 +411,7 @@ public class ControlActionController extends Observable implements IControlActio
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         List<ITableModel> linkedHazards = new ArrayList<>();
-        for (UUID link : linkController.getLinksFor(LinkingType.UNSAFE_CONTROL_ACTION,
+        for (UUID link : linkController.getLinksFor(LinkingType.UCA_HAZ_LINK,
             unsafeControlAction.getId())) {
           linkedHazards.add(hazAccController.getHazard(link));
         }
@@ -480,6 +480,7 @@ public class ControlActionController extends Observable implements IControlActio
     }
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public boolean prepareForSave(ExtendedDataController extendedData,
       LinkController linkController) {

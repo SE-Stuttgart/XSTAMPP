@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.model.controlaction.ControlAction;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.UCAHazLink;
@@ -22,11 +23,12 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
 
-public interface IExtendedDataModel extends IDataModel, IExtendedDataController {
+public interface IExtendedDataModel extends IDataModel {
 
   /**
    * an enum that defines three rule types that can be stored deperately in the dataModelController
@@ -45,6 +47,12 @@ public interface IExtendedDataModel extends IDataModel, IExtendedDataController 
   IRectangleComponent getRoot();
 
   void setCSComponentComment(UUID id, String value);
+
+  IExtendedDataController getExtendedDataController();
+
+  LinkController getLinkController();
+
+  IControlActionController getControlActionController();
 
   /**
    * this function returns or creates (if null is stored)

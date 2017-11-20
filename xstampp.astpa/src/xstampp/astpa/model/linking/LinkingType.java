@@ -86,7 +86,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Hazard that is linked to the UCA
    * </ol>
    */
-  UCAEntryLink_HAZ_LINK,
+  CausalEntryLink_HAZ_LINK,
 
   /**
    * <ol>
@@ -102,7 +102,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Hazardous Scenario that is linked to the UCA
    * </ol>
    */
-  UCAEntryLink_Scenario_LINK,
+  CausalEntryLink_Scenario_LINK,
 
   /**
    * <ol>

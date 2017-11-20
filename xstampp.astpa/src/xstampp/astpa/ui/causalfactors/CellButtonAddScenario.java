@@ -57,10 +57,10 @@ public class CellButtonAddScenario extends CellButton {
         this.causalEntryLink.getLinkA());
     ids.add(link.getLinkA());
     data.setRelatedUcas(ids);
-    UUID id = dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null,
-        IValueCombie.TYPE_ANYTIME);
+    UUID id = dataModel.getExtendedDataController().addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, 
+        IValueCombie.TYPE_ANYTIME, this.dataModel.getLinkController());
     if (id != null) {
-      this.dataModel.getLinkController().addLink(LinkingType.UCAEntryLink_Scenario_LINK, this.causalEntryLink.getId(), id);
+      this.dataModel.getLinkController().addLink(LinkingType.CausalEntryLink_Scenario_LINK, this.causalEntryLink.getId(), id);
     }
 
   }

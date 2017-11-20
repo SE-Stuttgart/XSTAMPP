@@ -106,7 +106,7 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
         UUID linkId = dataInterface.getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, ucaCFLinkId,
             component.getId());
         for (UUID hazId : dataInterface.getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, id)) {
-          dataInterface.getLinkController().addLink(LinkingType.UCAEntryLink_HAZ_LINK, linkId, hazId);
+          dataInterface.getLinkController().addLink(LinkingType.CausalEntryLink_HAZ_LINK, linkId, hazId);
         }
         grid.redraw();
       }

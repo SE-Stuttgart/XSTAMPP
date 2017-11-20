@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,16 +26,18 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.core.runtime.Assert;
 
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class ExtendedDataController implements IExtendedDataController {
+public class ExtendedDataController extends Observable implements IExtendedDataController {
 
   @XmlElementWrapper(name = "rules")
   @XmlElement(name = "rule")
@@ -125,6 +128,31 @@ public class ExtendedDataController implements IExtendedDataController {
     list = null;
   }
 
+  /**
+   * 
+   * @param rule
+   * @param linkController
+   * 
+   * @see IValueCombie
+   * @return
+   */
+  UUID addRefinedRule(RefinedSafetyRule rule, IExtendedDataModel.ScenarioType ruleType, LinkController linkController) {
+    if (!getMap(ruleType).containsKey(rule.getId())) {
+      nextScenarioIndex = Math.max(nextScenarioIndex, rule.getNumber());
+      getMap(ruleType).put(rule.getId(), rule);
+      setChanged();
+      notifyObservers(new UndoAddRule(this, rule, ruleType, linkController));
+      return rule.getId();
+    }
+    return null;
+  }
+
+  @Override
+  public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data, String type,
+      LinkController linkController) {
+    return addRuleEntry(ruleType, data, null, type, linkController);
+  }
+
   /*
    * (non-Javadoc)
    * @see xstampp.astpa.model.extendedData.IExtendedDataController#addRuleEntry(xstampp.astpa.model.
@@ -133,7 +161,7 @@ public class ExtendedDataController implements IExtendedDataController {
    */
   @Override
   public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
-      UUID caID, String type) {
+      UUID caID, String type, LinkController linkController) {
 
     if (data != null && validateType(type)) {
       if (ruleType.equals(ScenarioType.BASIC_SCENARIO)) {
@@ -143,13 +171,8 @@ public class ExtendedDataController implements IExtendedDataController {
           return uuid;
         }
       }
-
       RefinedSafetyRule safetyRule = new RefinedSafetyRule(data, caID, type, getNextIndex());
-      getMap(ruleType).put(safetyRule.getId(), safetyRule);
-      if (data.getCombies() != null) {
-        getCombieMap().put(data.getSafetyRule(), safetyRule.getId());
-      }
-      return safetyRule.getRuleId();
+      return addRefinedRule(safetyRule, ruleType, linkController);
 
     }
     return null;
@@ -188,21 +211,6 @@ public class ExtendedDataController implements IExtendedDataController {
       return getCombieMap().get(data.getSafetyRule());
     }
     return null;
-  }
-
-  /**
-   * 
-   * @param rule
-   * 
-   * @see IValueCombie
-   * @return
-   */
-  public boolean addRefinedRule(RefinedSafetyRule rule) {
-    if (!getMap(ScenarioType.BASIC_SCENARIO).containsKey(rule.getId())) {
-      nextScenarioIndex = Math.max(nextScenarioIndex, rule.getNumber());
-      return getMap(ScenarioType.BASIC_SCENARIO).put(rule.getId(), rule) != null;
-    }
-    return false;
   }
 
   /*
@@ -310,30 +318,37 @@ public class ExtendedDataController implements IExtendedDataController {
     return result;
   }
 
-  private boolean removeEntry(Map<UUID, RefinedSafetyRule> entryMap, boolean removeAll, UUID id) {
-    boolean result = false;
-    if (removeAll) {
+  private RefinedSafetyRule removeEntry(Map<UUID, RefinedSafetyRule> entryMap, boolean removeAll, UUID id) {
+    RefinedSafetyRule result = null;
+    if (entryMap == null) {
+    } else if (removeAll) {
       // if removeAll than the rule index is set to 0 so the next rule is added with the index 0
       entryMap.clear();
-      result = true;
+      result = null;
     } else if (entryMap.containsKey(id)) {
       // the rule which should be removed is searched for in both the
       // general rules list and in the control actions
-      result = entryMap.remove(id) != null;
+      result = entryMap.remove(id);
     }
     return result;
   }
 
   @Override
-  public boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId) {
-    return removeEntry(getMap(type), removeAll, ruleId);
+  public boolean removeRefinedSafetyRule(ScenarioType type, boolean removeAll, UUID ruleId,
+      LinkController linkController) {
+    RefinedSafetyRule entry = removeEntry(getMap(type), removeAll, ruleId);
+    if (entry != null) {
+      setChanged();
+      notifyObservers(new UndoRemoveRule(this, entry, type, linkController));
+    }
+    return false;
   }
 
-  public void prepareForExport() {
-    prepareForSave();
+  public void prepareForExport(IControlActionController iControlActionController, LinkController linkController) {
+    prepareForSave(iControlActionController, linkController);
   }
 
-  public void prepareForSave() {
+  public void prepareForSave(IControlActionController iControlActionController, LinkController linkController) {
     combiesMap = null;
     if (ruleMap != null) {
       rules = new ArrayList<>(ruleMap.values());
@@ -347,6 +362,13 @@ public class ExtendedDataController implements IExtendedDataController {
       customLTLs = new ArrayList<>(ltlMap.values());
       ltlMap = null;
     }
+    // prepare the rules list for save by moving all rules to the
+    // ExtendedDataModel and storing a list of uuids
+    for (AbstractLTLProvider refinedRule : iControlActionController.getAllRefinedRules(false)) {
+      ((RefinedSafetyRule) refinedRule).setLinks(null);
+      addRefinedRule((RefinedSafetyRule) refinedRule, ScenarioType.BASIC_SCENARIO, linkController);
+    }
+
   }
 
 }

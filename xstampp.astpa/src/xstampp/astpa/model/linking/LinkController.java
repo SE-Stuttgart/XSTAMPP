@@ -42,6 +42,7 @@ public class LinkController extends Observable {
     this();
     for (Link link : asList) {
       if (!this.linkMap.containsKey(link.getLinkType())) {
+        assert(link.getLinkType() != null);
         this.linkMap.put(link.getLinkType(), new ArrayList<>());
       }
       this.linkMap.get(link.getLinkType()).add(link);
@@ -62,6 +63,8 @@ public class LinkController extends Observable {
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB) {
     if (!this.linkMap.containsKey(linkType)) {
+
+      assert(linkType != null);
       this.linkMap.put(linkType, new ArrayList<Link>());
     }
     Link o = new Link(linkA, linkB, linkType);

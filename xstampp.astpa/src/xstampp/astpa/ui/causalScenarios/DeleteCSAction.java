@@ -28,7 +28,7 @@ public class DeleteCSAction extends DeleteGridEntryAction<IExtendedDataModel> {
   @Override
   protected String getIdString(UUID id) {
     String idString = null;
-    AbstractLTLProvider refinedRule = getDataModel().getRefinedScenario(id);
+    AbstractLTLProvider refinedRule = getDataModel().getExtendedDataController().getRefinedScenario(id);
     if (refinedRule != null) {
       idString = getPrefix() + refinedRule.getNumber();
     }
@@ -37,7 +37,7 @@ public class DeleteCSAction extends DeleteGridEntryAction<IExtendedDataModel> {
 
   @Override
   protected void removeEntry(UUID id) {
-    getDataModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.CAUSAL_SCENARIO, false,
-        id);
+    getDataModel().getExtendedDataController().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.CAUSAL_SCENARIO, false,
+        id, getDataModel().getLinkController());
   }
 }

@@ -260,11 +260,20 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     entryRow.addCell(2, cell);
 
+    if(getDataModel().isUseScenarios()) {
+      String hazString = "";
+      for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())) {
+        hazString += hazString.isEmpty() ? "" : ", ";
+        hazString += getDataModel().getHazard(hazId).getIdString();
+      }
+      entryRow.setRowSpanningCells(new int[] {2,3});
+      entryRow.addCell(3, new GridCellText(hazString));
+    }
     boolean first = this.includeFirstChildRow;
     LinkingType entryType = getDataModel().isUseScenarios()
-        ? LinkingType.UCAEntryLink_Scenario_LINK
-        : LinkingType.UCAEntryLink_HAZ_LINK;
-    // iterate all UCAEntryLink_HAZ_LINK's stored for the causalEntryLink
+        ? LinkingType.CausalEntryLink_Scenario_LINK
+        : LinkingType.CausalEntryLink_HAZ_LINK;
+    // iterate all CausalEntryLink_HAZ_LINK's stored for the causalEntryLink
     for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
         causalEntryLink.getId())) {
       GridRow row = (first) ? entryRow
@@ -280,12 +289,11 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       first = false;
     }
     if (getDataModel().isUseScenarios()) {
-      GridRow scenarioRow = (first) ? entryRow
-          : new GridRow(this.getGridWrapper().getColumnLabels().length);
+      GridRow scenarioRow = (first) ? entryRow : new GridRow(this.getGridWrapper().getColumnLabels().length);
       GridCellText scenarioCell = new GridCellText("Add a new scenario");
+      scenarioCell.addCellButton(new CellButtonAddScenario(getDataModel(), causalEntryLink, uca));
       scenarioCell.addCellButton(new CellButtonLinking<ContentProviderScenarios>(getGridWrapper(),
           new ContentProviderScenarios(getDataModel(), causalEntryLink, uca), ucaCFLink.getId()));
-      scenarioCell.addCellButton(new CellButtonAddScenario(getDataModel(), causalEntryLink, uca));
       scenarioRow.setColumnSpan(4, 1);
       scenarioRow.addCell(4, scenarioCell);
       if (!first) {
@@ -299,7 +307,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @param entryRow
    *          the row in which the cells will be added
    * @param ucaHazLink
-   *          a Link of type {@link ObserverValue#UCAEntryLink_HAZ_LINK}
+   *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
    * @param uca
    *          the {@link IUnsafeControlAction} to which this is linked
    * @return
@@ -328,20 +336,19 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @param entryRow
    *          the row in which the cells will be added
    * @param scenarioLink
-   *          a Link of type {@link ObserverValue#UCAEntryLink_Scenario_LINK}
+   *          a Link of type {@link ObserverValue#CausalEntryLink_Scenario_LINK}
    * @param uca
    *          the {@link IUnsafeControlAction} to which this is linked
    * @return
    */
   private void createScenarioRow(GridRow entryRow, Link scenarioLink, IUnsafeControlAction uca) {
-
-    ScenarioType type = getDataModel().getScenarioType(scenarioLink.getLinkB());
-    entryRow.addCell(6, new CellEditorCausalScenario(getGridWrapper(), getDataModel(), scenarioLink,
+    ScenarioType type = getDataModel().getExtendedDataController().getScenarioType(scenarioLink.getLinkB());
+    entryRow.addCell(4, new CellEditorCausalScenario(getGridWrapper(), getDataModel(), scenarioLink,
         scenarioLink.getLinkB(), type));
-    entryRow.addCell(7, new CellEditorCausalScenarioConstraint(getGridWrapper(), getDataModel(),
+    entryRow.addCell(5, new CellEditorCausalScenarioConstraint(getGridWrapper(), getDataModel(),
         scenarioLink.getLinkB(), type));
 
-    entryRow.addCell(5, new CellEditorFactorNote(getGridWrapper(), getDataModel(), scenarioLink));
+    entryRow.addCell(6, new CellEditorFactorNote(getGridWrapper(), getDataModel(), scenarioLink));
 
   }
 

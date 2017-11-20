@@ -22,17 +22,17 @@ import xstampp.ui.common.grid.GridWrapper;
 public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
 
   private UUID ruleId;
-  private ICausalFactorDataModel dataInterface;
+  private ICausalFactorDataModel dataModel;
 
   public CellEditorCausalScenarioConstraint(GridWrapper gridWrapper,
-      ICausalFactorDataModel dataInterface,
+      ICausalFactorDataModel dataModel,
       UUID ruleId, ScenarioType type) {
-    super(gridWrapper, dataInterface.getRefinedScenario(ruleId).getRefinedSafetyConstraint(),
+    super(gridWrapper, dataModel.getExtendedDataController().getRefinedScenario(ruleId).getRefinedSafetyConstraint(),
         ruleId);
     if (type != ScenarioType.CAUSAL_SCENARIO) {
       setReadOnly(true);
     }
-    this.dataInterface = dataInterface;
+    this.dataModel = dataModel;
     this.ruleId = ruleId;
   }
 
@@ -40,7 +40,7 @@ public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
   public void updateDataModel(String newText) {
     AbstractLtlProviderData data = new AbstractLtlProviderData();
     data.setRefinedConstraint(newText);
-    dataInterface.updateRefinedRule(ruleId, data, null);
+    dataModel.getExtendedDataController().updateRefinedRule(ruleId, data, null);
 
   }
 
@@ -51,11 +51,11 @@ public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
 
   @Override
   protected void editorOpening() {
-    dataInterface.lockUpdate();
+    dataModel.lockUpdate();
   }
 
   @Override
   protected void editorClosing() {
-    dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.Extended_DATA });
+    dataModel.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.Extended_DATA });
   }
 }
