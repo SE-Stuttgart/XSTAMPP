@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
-import xstpapriv.model.XSTPADataController;
+import xstpa.model.XSTPADataController;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -76,6 +76,9 @@ public class Activator extends AbstractUIPlugin {
 			XSTPADataController data = xstpaDataToIDataModel.get(model);
 			if(data == null && model instanceof IExtendedDataModel){
 				data = new XSTPADataController((IExtendedDataModel) model);
+				data.setConstraintPrefix("SPR1.");
+				data.setRefinedCaPrefix("RPCA1.");
+				data.setRuleLiteral("PR");
 				ProjectManager.getContainerInstance().addProjectAdditionForUUID(ProjectManager.getContainerInstance().
 						getProjectID((Observable) model), data);
 				model.addObserver(data);

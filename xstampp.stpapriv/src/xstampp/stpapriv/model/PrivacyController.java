@@ -131,7 +131,7 @@ public class PrivacyController extends DataModelController {
   public void setRefinedSecurityConstraint(UUID refinedRuleId, String text) {
 
     Map<UUID, RefinedSafetyRule> ltlMap = new HashMap<>();
-    for (AbstractLTLProvider ltl : this.getAllScenarios(false, true, false)) {
+    for (AbstractLTLProvider ltl : getExtendedDataController().getAllScenarios(false, true, false)) {
       ltlMap.put(ltl.getId(), (RefinedSafetyRule) ltl);
     }
     if (ltlMap.containsKey(refinedRuleId)) {

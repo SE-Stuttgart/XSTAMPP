@@ -26,17 +26,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.interfaces.IExtendedDataModel;
+import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.ui.causalScenarios.ActionMenuListener;
+import xstampp.astpa.ui.causalScenarios.DeleteCSAction;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IDataModel;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
 import xstampp.stpapriv.model.PrivacyController;
-import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
-import xstampp.astpa.ui.causalScenarios.ActionMenuListener;
-import xstampp.astpa.ui.causalScenarios.DeleteCSAction;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.grid.GridCellButton;
 import xstampp.ui.common.grid.GridCellTextEditor;
@@ -85,8 +85,8 @@ public class CausalScenariosView extends AbstractFilteredEditor {
       if(e.button == 1){
         AbstractLtlProviderData data = new AbstractLtlProviderData();
         data.addRelatedUcas(parentId);
-        UUID newUCA = dataInterface
-            .addRuleEntry(ScenarioType.CAUSAL_SCENARIO,data , null, IValueCombie.TYPE_ANYTIME);
+        UUID newUCA = dataInterface.getExtendedDataController()
+            .addRuleEntry(ScenarioType.CAUSAL_SCENARIO,data , null, IValueCombie.TYPE_ANYTIME, dataInterface.getLinkController());
         grid.activateCell(newUCA); 
       }
       
@@ -140,7 +140,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
 	private void reloadTable() {
 	  if(this.grid != null){
       this.grid.clearRows();
-      List<AbstractLTLProvider> rulesList = dataInterface.getAllScenarios(includeBasicScenarios,includeCausalScenarios,false);
+      List<AbstractLTLProvider> rulesList = dataInterface.getExtendedDataController().getAllScenarios(includeBasicScenarios,includeCausalScenarios,false);
       for (AbstractLTLProvider rule  : rulesList) {
         if(!isFiltered(rule.getUCALinks(),UCA)){
           GridRow ruleRow = new GridRow(columns.length);
@@ -150,7 +150,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
               data.setRule(newValue);
-              dataInterface.updateRefinedRule(getUUID(),data, null);
+              dataInterface.getExtendedDataController().updateRefinedRule(getUUID(),data, null);
             }
           };
           ruleRow.addCell(0,cell);
@@ -160,7 +160,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
               data.setRule(newValue);
-              dataInterface.updateRefinedRule(getUUID(),data, null);
+              dataInterface.getExtendedDataController().updateRefinedRule(getUUID(),data, null);
             }
           });
           ruleRow.addCell(2,new ScenarioEditor(this.grid,rule.getRefinedSafetyConstraint(),false,readOnly, rule.getRuleId()){
@@ -168,7 +168,7 @@ public class CausalScenariosView extends AbstractFilteredEditor {
             public void updateDataModel(String newValue) {
               AbstractLtlProviderData data = new AbstractLtlProviderData();
               data.setRefinedConstraint(newValue);
-              dataInterface.updateRefinedRule(getUUID(),data, null);
+              dataInterface.getExtendedDataController().updateRefinedRule(getUUID(),data, null);
             }
           });
           grid.addRow(ruleRow);

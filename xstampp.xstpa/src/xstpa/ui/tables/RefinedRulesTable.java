@@ -2,7 +2,7 @@
  * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
- *  
+ * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
@@ -51,257 +51,261 @@ import xstpa.ui.dialogs.EditRelatedUcaWizard;
 import xstpa.ui.tables.utils.MainViewContentProvider;
 
 public class RefinedRulesTable extends AbstractTableComposite {
-	
-	private class RefinedSafetyViewLabelProvider extends LabelProvider implements
-	ITableLabelProvider{
-		
-		@Override
-		public Image getColumnImage(Object element, int columnIndex) {
-			String columnName = columns[columnIndex];
-			if(columnName.equals(View.UCA)){
-				return View.ADD;
-			}
-			return null;
-		}
 
-		@Override
-		public String getColumnText(Object element, int columnIndex) {
-			String columnName = columns[columnIndex];
-			RefinedSafetyEntry entry = (RefinedSafetyEntry) element;
-			switch (columnName) {
-			case View.ENTRY_ID:
-				return RefinedSafetyEntry.Literal + String.valueOf(refinedSafetyContent.indexOf(entry)+1);
-			case View.CONTROL_ACTIONS:
-				return entry.getCombination().getLinkedControlActionName();
-			case View.CONTEXT:
-				return entry.getContext();
-			case View.CONTEXT_TYPE:
-				if(!entry.getType().equals(IValueCombie.TYPE_NOT_PROVIDED)){
-					return entry.getType();
-				}else{
-					return null;
-				}
-			case View.CRITICAL_COMBI:	
-				return entry.getCriticalCombinations(" == ", ",", false, false, true); //$NON-NLS-1$ //$NON-NLS-2$
-				
-			case View.UCA:
-				String tempUcas =entry.getUCALinks();
-				if (tempUcas.isEmpty()) {
-					return Messages.RefinedRulesTable_EditUCALinks;
-				}
-				return tempUcas;
-			case View.REL_HAZ:
-				return entry.getRelatedHazards();
-			case View.REFINED_RULES:
+  private class RefinedSafetyViewLabelProvider extends LabelProvider implements
+      ITableLabelProvider {
 
-				return entry.getRefinedRule();
-			}
+    @Override
+    public Image getColumnImage(Object element, int columnIndex) {
+      String columnName = columns[columnIndex];
+      if (columnName.equals(View.UCA)) {
+        return View.ADD;
+      }
+      return null;
+    }
 
-				
-			return null;
-		}
+    @Override
+    public String getColumnText(Object element, int columnIndex) {
+      String columnName = columns[columnIndex];
+      RefinedSafetyEntry entry = (RefinedSafetyEntry) element;
+      switch (columnName) {
+      case View.ENTRY_ID:
+        return entry.getLiteral() + String.valueOf(refinedSafetyContent.indexOf(entry) + 1);
+      case View.CONTROL_ACTIONS:
+        return entry.getCombination().getLinkedControlActionName();
+      case View.CONTEXT:
+        return entry.getContext();
+      case View.CONTEXT_TYPE:
+        if (!entry.getType().equals(IValueCombie.TYPE_NOT_PROVIDED)) {
+          return entry.getType();
+        } else {
+          return null;
+        }
+      case View.CRITICAL_COMBI:
+        return entry.getCriticalCombinations(" == ", ",", false, false, true); //$NON-NLS-1$ //$NON-NLS-2$
 
-	}
+      case View.UCA:
+        String tempUcas = entry.getUCALinks();
+        if (tempUcas.isEmpty()) {
+          return Messages.RefinedRulesTable_EditUCALinks;
+        }
+        return tempUcas;
+      case View.REL_HAZ:
+        return entry.getRelatedHazards();
+      case View.REFINED_RULES:
 
-	private TableViewer refinedSafetyViewer;
-	private List<RefinedSafetyEntry> refinedSafetyContent;
-	private Table refinedSafetyTable;
-	private String[] columns = new String[]{
-			View.ENTRY_ID,View.CONTROL_ACTIONS,View.CONTEXT,Messages.RefinedRulesTable_Type,
-			View.UCA,View.REL_HAZ,View.REFINED_RULES
-	};
-	
-	public RefinedRulesTable(Composite parent) {
-		super(parent);
-		this.refinedSafetyContent = new ArrayList<>();
-	    setLayout( new GridLayout(2, false));	
-	    Composite tableComp = new Composite(this, SWT.None);
-	    tableComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		TableColumnLayout tLayout = new TableColumnLayout();
-		tableComp.setLayout(tLayout);
-		
-	    refinedSafetyViewer = new TableViewer(tableComp,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
-		refinedSafetyViewer.setContentProvider(new MainViewContentProvider());
-		refinedSafetyViewer.setLabelProvider(new RefinedSafetyViewLabelProvider());
-		refinedSafetyTable = refinedSafetyViewer.getTable();
-	    
-	    refinedSafetyTable.setHeaderVisible(true);
-	    refinedSafetyTable.setLinesVisible(true);
-	    
-	    // add columns for ltl tables	
-	    for(int i= 0;i<columns.length;i++){
-	    	TableColumn col = new TableColumn(refinedSafetyTable, SWT.LEFT);
-	    	col.setText(columns[i]);
-		    tLayout.setColumnData(col, new ColumnWeightData(1, 30, false));
-	    }
-	    
-	    /*
-	     * Functionality to recognize if the user selectes the uca linking cell
-	     */
-	    refinedSafetyTable.addListener(SWT.MouseDown, new Listener() {
-	        public void handleEvent(Event event) {
-	    		
-	    		Point pt = new Point(event.x, event.y);
-	    		
-	    		int index = refinedSafetyTable.getTopIndex();
-	    		while (index < refinedSafetyTable.getItemCount()) {
-	    			TableItem item = refinedSafetyTable.getItem(index);
-	    			for (int i = 0; i < refinedSafetyTable.getColumnCount(); i++) {
-	    				Rectangle rect = item.getBounds(i);
-	              
-	    				if (rect.contains(pt)) {	                
-	    					int refinedSafetyTableCellX = i;	
-		  		    	  	if ((refinedSafetyTableCellX == refinedSafetyTable.getColumnCount()-3)& (refinedSafetyTable.getSelectionIndex() != -1)) {	  		    	  		
-		  		    	  		RefinedSafetyEntry entry = (RefinedSafetyEntry) refinedSafetyTable.getSelection()[0].getData();
-		  		    	  		
-		  		    	  		EditRelatedUcaWizard editUCALinks = new EditRelatedUcaWizard(dataController.getModel(),
-		  		    	  																	 entry.getCombination().getUcaLinks(entry.getType()));
-		  		    	  		if(editUCALinks.open()){
-		  		    	  			entry.getCombination().setUcaLinks(editUCALinks.getUcaLinks(),entry.getType());
-		  		    	  			storeRefinedSafety();
-		  		    	  		}
-		  		    	  		refinedSafetyViewer.setInput(refinedSafetyContent);
-		  		    	  		refinedSafetyTable.getColumn(4).pack();
-		  		    	  	}
-	    				}
-	    			}
-	    			index++;
-	    	   }
-	    	}
-	    });
-	    
-	    refinedSafetyViewer.setColumnProperties(View.RS_PROPS_COLUMS);
-	    
-		// Add a Composite which contains tools to edit refinedSafetyTable
-	    Composite editRefinedSafetyTableComposite = new Composite( this, SWT.NONE);
-	    editRefinedSafetyTableComposite.setLayout( new GridLayout(1, false) );
-	    GridData data = new GridData(SWT.RIGHT, SWT.TOP, false, true); 
-//	    data.verticalIndent = 5;
-	    editRefinedSafetyTableComposite.setLayoutData(data);
-	    
-		
-	    
-	    // Add a button to switch tables (LTL Button)
-	    final Button bRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
-	    bRemoveEntry.setToolTipText(Messages.RefinedRulesTable_Remove);
-	    bRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
-	    bRemoveEntry.pack();
-	    
-	    // Add a button to switch tables (LTL Button)
-	    final Button bAllRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
-	    bAllRemoveEntry.setToolTipText(Messages.RefinedRulesTable_RemoveAll);
-	    bAllRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVEALL));
-	    bAllRemoveEntry.pack();
-	    
-	   
-	    bRemoveEntry.addSelectionListener(new SelectionAdapter() {
-	    	@Override
-	    	public void widgetSelected(SelectionEvent e) {
-	    		if (refinedSafetyTable.getSelectionIndex() != -1) {
-	    			RefinedSafetyEntry entry = (RefinedSafetyEntry) refinedSafetyTable.getSelection()[0].getData();
-	    			if(MessageDialog.openConfirm(getShell(), Messages.RefinedRulesTable_ConfirmDelete, 
-	    										String.format(Messages.RefinedRulesTable_ReallyDeleteRefinedSafety,
-	    										RefinedSafetyEntry.Literal + entry.getNumber()))){
-			    		removeEntry(entry);
-						refreshTable();
-	    				
-	    			}
-				}
-	    	}
-		});
-	    bAllRemoveEntry.addSelectionListener(new SelectionAdapter() {
-	    	@Override
-	    	public void widgetSelected(SelectionEvent e) {
-	    		if(MessageDialog.openConfirm(getShell(), Messages.RefinedRulesTable_ConfirmDelete, 
-	    				Messages.RefinedRulesTable_DeleteAll)){
-		    		ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
-		      	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
-		      	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
-		      	    
-		    	    for (ControlActionEntry caEntry : allCAEntrys) {
-		    	    	for(ContextTableCombination variable: caEntry.getContextTableCombinations(false)){
-		    	    		variable.setGlobalHazardous(false);
-		    	    	}
-		    	    }
-              dataController.storeBooleans(allCAEntrys, ObserverValue.CONTROL_ACTION);
-					dataController.getModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,true, null);
-					refreshTable();
-	    		}
-	    	}
-		});
-	    setVisible(false);
-	}
+        return entry.getRefinedRule();
+      }
 
-	private void removeEntry(RefinedSafetyEntry entry){
-		List<ContextTableCombination> combinations = dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getCombination().getLinkedControlActionID()).getContextTableCombinations(false);
-		switch(entry.getType()){
-			case IValueCombie.TYPE_ANYTIME: 
-				entry.getCombination().setHAnytime(false);
-				break;
-			case IValueCombie.TYPE_TOO_EARLY:  
-				entry.getCombination().setHEarly(false);
-				break;
-			case IValueCombie.TYPE_TOO_LATE:  
-				entry.getCombination().setHLate(false);
-				break;
-			case IValueCombie.TYPE_NOT_PROVIDED:  
-				entry.getCombination().setHazardous(false);
-				break;
-			default:
-				return;
-		}
-		if (entry.getCombination().isArchived() && !entry.getCombination().getGlobalHazardous()) {
-			combinations.remove(entry.getCombination());
-		}
-		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getCombination().getLinkedControlActionID()), ObserverValue.CONTROL_ACTION);
-		dataController.getModel().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO,false, entry.getDataRef());
-		dataController.storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
-				 entry.getCombination().getLinkedControlActionID()), null);
-	}
-	
-	@Override
-	public void activate() {
-		refreshTable();
-		setVisible(true);  
-	}
+      return null;
+    }
 
-	@Override
-	public boolean refreshTable() {
-		if(refinedSafetyViewer.getControl() == null || refinedSafetyViewer.getControl().isDisposed()){
-			return false;
-		}
-		refinedSafetyContent.clear();
-		Map<String, ArrayList<RefinedSafetyEntry>> refinedEntrys = dataController.getHazardousCombinations(null); 
-  	    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_PROVIDED));
-  	    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_WRONG_PROVIDED));
-  	    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_NOT_PROVIDED));
+  }
 
-  	    Collections.sort(refinedSafetyContent);
-  	    if (refinedSafetyContent.isEmpty()) {
-  	    	writeStatus(Messages.RefinedRulesTable_NoHazardousCombies);
-  	    }else{
-  	    	writeStatus(null);
-  	    }
-  
-  	    refinedSafetyViewer.setInput(refinedSafetyContent);
-  	    for (int i = 0, n = refinedSafetyTable.getColumnCount(); i < n; i++) {
-  	    	refinedSafetyTable.getColumn(i).pack();
-  	    }
-		return true;
-	}
+  private TableViewer refinedSafetyViewer;
+  private List<RefinedSafetyEntry> refinedSafetyContent;
+  private Table refinedSafetyTable;
+  private String[] columns = new String[] {
+      View.ENTRY_ID, View.CONTROL_ACTIONS, View.CONTEXT, Messages.RefinedRulesTable_Type,
+      View.UCA, View.REL_HAZ, View.REFINED_RULES
+  };
 
-	/**
-	 * Store the Boolean Data (from the Context Table) in the Datamodel
-	 */
-	public void storeRefinedSafety() {
-		
-  	    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
-  	    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
-  	    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
-  	    
-	    	dataController.storeBooleans(allCAEntrys, ObserverValue.CONTROL_ACTION);	
-	}
+  public RefinedRulesTable(Composite parent) {
+    super(parent);
+    this.refinedSafetyContent = new ArrayList<>();
+    setLayout(new GridLayout(2, false));
+    Composite tableComp = new Composite(this, SWT.None);
+    tableComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    TableColumnLayout tLayout = new TableColumnLayout();
+    tableComp.setLayout(tLayout);
+
+    refinedSafetyViewer = new TableViewer(tableComp, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL);
+    refinedSafetyViewer.setContentProvider(new MainViewContentProvider());
+    refinedSafetyViewer.setLabelProvider(new RefinedSafetyViewLabelProvider());
+    refinedSafetyTable = refinedSafetyViewer.getTable();
+
+    refinedSafetyTable.setHeaderVisible(true);
+    refinedSafetyTable.setLinesVisible(true);
+
+    // add columns for ltl tables
+    for (int i = 0; i < columns.length; i++) {
+      TableColumn col = new TableColumn(refinedSafetyTable, SWT.LEFT);
+      col.setText(columns[i]);
+      tLayout.setColumnData(col, new ColumnWeightData(1, 30, false));
+    }
+
+    /*
+     * Functionality to recognize if the user selectes the uca linking cell
+     */
+    refinedSafetyTable.addListener(SWT.MouseDown, new Listener() {
+      public void handleEvent(Event event) {
+
+        Point pt = new Point(event.x, event.y);
+
+        int index = refinedSafetyTable.getTopIndex();
+        while (index < refinedSafetyTable.getItemCount()) {
+          TableItem item = refinedSafetyTable.getItem(index);
+          for (int i = 0; i < refinedSafetyTable.getColumnCount(); i++) {
+            Rectangle rect = item.getBounds(i);
+
+            if (rect.contains(pt)) {
+              int refinedSafetyTableCellX = i;
+              if ((refinedSafetyTableCellX == refinedSafetyTable.getColumnCount() - 3)
+                  & (refinedSafetyTable.getSelectionIndex() != -1)) {
+                RefinedSafetyEntry entry = (RefinedSafetyEntry) refinedSafetyTable.getSelection()[0].getData();
+
+                EditRelatedUcaWizard editUCALinks = new EditRelatedUcaWizard(dataController.getModel(),
+                    entry.getCombination().getUcaLinks(entry.getType()));
+                if (editUCALinks.open()) {
+                  entry.getCombination().setUcaLinks(editUCALinks.getUcaLinks(), entry.getType());
+                  storeRefinedSafety();
+                }
+                refinedSafetyViewer.setInput(refinedSafetyContent);
+                refinedSafetyTable.getColumn(4).pack();
+              }
+            }
+          }
+          index++;
+        }
+      }
+    });
+
+    refinedSafetyViewer.setColumnProperties(View.RS_PROPS_COLUMS);
+
+    // Add a Composite which contains tools to edit refinedSafetyTable
+    Composite editRefinedSafetyTableComposite = new Composite(this, SWT.NONE);
+    editRefinedSafetyTableComposite.setLayout(new GridLayout(1, false));
+    GridData data = new GridData(SWT.RIGHT, SWT.TOP, false, true);
+    // data.verticalIndent = 5;
+    editRefinedSafetyTableComposite.setLayoutData(data);
+
+    // Add a button to switch tables (LTL Button)
+    final Button bRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
+    bRemoveEntry.setToolTipText(Messages.RefinedRulesTable_Remove);
+    bRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
+    bRemoveEntry.pack();
+
+    // Add a button to switch tables (LTL Button)
+    final Button bAllRemoveEntry = new Button(editRefinedSafetyTableComposite, SWT.PUSH);
+    bAllRemoveEntry.setToolTipText(Messages.RefinedRulesTable_RemoveAll);
+    bAllRemoveEntry.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVEALL));
+    bAllRemoveEntry.pack();
+
+    bRemoveEntry.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        if (refinedSafetyTable.getSelectionIndex() != -1) {
+          RefinedSafetyEntry entry = (RefinedSafetyEntry) refinedSafetyTable.getSelection()[0].getData();
+          if (MessageDialog.openConfirm(getShell(), Messages.RefinedRulesTable_ConfirmDelete,
+              String.format(Messages.RefinedRulesTable_ReallyDeleteRefinedSafety,
+                  entry.getLiteral() + entry.getNumber()))) {
+            removeEntry(entry);
+            refreshTable();
+
+          }
+        }
+      }
+    });
+    bAllRemoveEntry.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        if (MessageDialog.openConfirm(getShell(), Messages.RefinedRulesTable_ConfirmDelete,
+            Messages.RefinedRulesTable_DeleteAll)) {
+          ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
+          allCAEntrys.addAll(dataController.getDependenciesIFProvided());
+          allCAEntrys.addAll(dataController.getDependenciesNotProvided());
+
+          for (ControlActionEntry caEntry : allCAEntrys) {
+            for (ContextTableCombination variable : caEntry.getContextTableCombinations(false)) {
+              variable.setGlobalHazardous(false);
+            }
+          }
+          dataController.storeBooleans(allCAEntrys, ObserverValue.CONTROL_ACTION);
+          dataController.getModel().getExtendedDataController().removeRefinedSafetyRule(
+              IExtendedDataModel.ScenarioType.BASIC_SCENARIO, true, null,
+              dataController.getModel().getLinkController());
+          refreshTable();
+        }
+      }
+    });
+    setVisible(false);
+  }
+
+  private void removeEntry(RefinedSafetyEntry entry) {
+    List<ContextTableCombination> combinations = dataController
+        .getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
+            entry.getCombination().getLinkedControlActionID())
+        .getContextTableCombinations(false);
+    switch (entry.getType()) {
+    case IValueCombie.TYPE_ANYTIME:
+      entry.getCombination().setHAnytime(false);
+      break;
+    case IValueCombie.TYPE_TOO_EARLY:
+      entry.getCombination().setHEarly(false);
+      break;
+    case IValueCombie.TYPE_TOO_LATE:
+      entry.getCombination().setHLate(false);
+      break;
+    case IValueCombie.TYPE_NOT_PROVIDED:
+      entry.getCombination().setHazardous(false);
+      break;
+    default:
+      return;
+    }
+    if (entry.getCombination().isArchived() && !entry.getCombination().getGlobalHazardous()) {
+      combinations.remove(entry.getCombination());
+    }
+    dataController
+        .storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
+            entry.getCombination().getLinkedControlActionID()), ObserverValue.CONTROL_ACTION);
+    dataController.getModel().getExtendedDataController().removeRefinedSafetyRule(IExtendedDataModel.ScenarioType.BASIC_SCENARIO, false,
+        entry.getDataRef(), dataController.getModel().getLinkController());
+    dataController
+        .storeBooleans(dataController.getControlActionEntry(entry.getContext().equals(IValueCombie.CONTEXT_PROVIDED),
+            entry.getCombination().getLinkedControlActionID()), null);
+  }
+
+  @Override
+  public void activate() {
+    refreshTable();
+    setVisible(true);
+  }
+
+  @Override
+  public boolean refreshTable() {
+    if (refinedSafetyViewer.getControl() == null || refinedSafetyViewer.getControl().isDisposed()) {
+      return false;
+    }
+    refinedSafetyContent.clear();
+    Map<String, ArrayList<RefinedSafetyEntry>> refinedEntrys = dataController.getHazardousCombinations(null);
+    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_PROVIDED));
+    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_WRONG_PROVIDED));
+    refinedSafetyContent.addAll(refinedEntrys.get(IValueCombie.HAZ_IF_NOT_PROVIDED));
+
+    Collections.sort(refinedSafetyContent);
+    if (refinedSafetyContent.isEmpty()) {
+      writeStatus(Messages.RefinedRulesTable_NoHazardousCombies);
+    } else {
+      writeStatus(null);
+    }
+
+    refinedSafetyViewer.setInput(refinedSafetyContent);
+    for (int i = 0, n = refinedSafetyTable.getColumnCount(); i < n; i++) {
+      refinedSafetyTable.getColumn(i).pack();
+    }
+    return true;
+  }
+
+  /**
+   * Store the Boolean Data (from the Context Table) in the Datamodel
+   */
+  public void storeRefinedSafety() {
+
+    ArrayList<ControlActionEntry> allCAEntrys = new ArrayList<>();
+    allCAEntrys.addAll(dataController.getDependenciesIFProvided());
+    allCAEntrys.addAll(dataController.getDependenciesNotProvided());
+
+    dataController.storeBooleans(allCAEntrys, ObserverValue.CONTROL_ACTION);
+  }
 
 }

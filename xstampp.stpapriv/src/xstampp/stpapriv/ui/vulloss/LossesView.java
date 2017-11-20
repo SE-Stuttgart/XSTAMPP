@@ -14,9 +14,9 @@ package xstampp.stpapriv.ui.vulloss;
 import java.util.EnumSet;
 
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.acchaz.AccidentsView;
 import xstampp.astpa.ui.linkingSupport.Step0ConstraintsLinkSupport;
-import xstampp.model.ObserverValue;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.ui.linkSuppport.VulnerabilityLinkSupport;
 
@@ -58,9 +58,9 @@ public class LossesView extends AccidentsView {
   @Override
   protected void addLinkSupports() {
     addLinkSupport(new VulnerabilityLinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.HAZ_ACC_LINK));
+        LinkingType.HAZ_ACC_LINK));
     addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.ACC_S0_LINK));
+        LinkingType.ACC_S0_LINK));
   }
 
 }

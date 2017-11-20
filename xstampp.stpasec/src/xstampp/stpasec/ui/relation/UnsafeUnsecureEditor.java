@@ -19,7 +19,7 @@ public class UnsafeUnsecureEditor extends CSEditor {
   public void createPartControl(Composite parent) {
     SashForm form = new SashForm(parent, SWT.VERTICAL);
     super.createPartControl(form);
-    addUpdateValue(ObserverValue.UCA_HAZ_LINK);
+    addUpdateValue(ObserverValue.LINKING);
     addUpdateValue(ObserverValue.UNSAFE_CONTROL_ACTION);
     addUpdateValue(ObserverValue.CONTROL_ACTION);
     new SecView(getModelInterface()).createPartControl(form);

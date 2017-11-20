@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: xstampp.xstpa;singleton:=true
-Bundle-Version: 1.1.3
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: xstpa.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -31,3 +31,8 @@ Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  xstampp.astpa.wizards,
  xstampp.ui.common.grid
 Bundle-ActivationPolicy: lazy
+Export-Package: xstpa.model,
+ xstpa.settings,
+ xstpa.ui.ltl,
+ xstpa.ui.tables,
+ xstpa.ui.tables.contexttables

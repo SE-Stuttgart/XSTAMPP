@@ -22,6 +22,7 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 import xstampp.stpapriv.model.PrivacyController;
@@ -239,7 +240,7 @@ public class ConstraintResultController extends Observable implements Observer {
     for (ICorrespondingUnsafeControlAction uca : getModel().getUCAList(null)) {
       ucaMap.put(uca.getId(), uca);
     }
-    for (AbstractLTLProvider ltl : getModel().getAllScenarios(false, true, false)) {
+    for (AbstractLTLProvider ltl : getModel().getExtendedDataController().getAllScenarios(false, true, false)) {
       ltlMap.put(ltl.getId(), ltl);
     }
     for (ICausalComponent entry : getModel().getCausalComponents()) {
@@ -249,7 +250,7 @@ public class ConstraintResultController extends Observable implements Observer {
 
         for (Link entryLink : factorBasedMap.get(causalFactor)) {
           List<UUID> scenarioIds = getModel().getLinkController()
-              .getLinksFor(ObserverValue.UCAEntryLink_Scenario_LINK, entryLink.getId());
+              .getLinksFor(LinkingType.CausalEntryLink_Scenario_LINK, entryLink.getId());
           for (UUID templtl : scenarioIds) {
             if (ltlMap.containsKey(templtl) && ltlMap.get(templtl).getRefinedSafetyConstraint() != null) {
               if (ltlMap.containsKey(templtl)
@@ -260,7 +261,7 @@ public class ConstraintResultController extends Observable implements Observer {
                     ltlMap.get(templtl).getRefinedSafetyConstraint());
                 tempResult.setScId("SC2." + ltlMap.get(templtl).getNumber());
                 tempResult.setStpastep("");
-                Link ucaCfLink = getModel().getLinkController().getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+                Link ucaCfLink = getModel().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
                     entryLink.getLinkA());
 
                 if (ucaMap.containsKey(ucaCfLink.getLinkA())) {

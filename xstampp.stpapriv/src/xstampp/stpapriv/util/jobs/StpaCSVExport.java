@@ -29,15 +29,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import messages.Messages;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactorEntry;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.IDataModel;
-import xstampp.model.ObserverValue;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.PrivacyController;
 import xstampp.stpapriv.model.results.ConstraintResult;
@@ -288,7 +287,7 @@ public class StpaCSVExport extends Job {
           String scenarioCell = ""; //$NON-NLS-1$
           String safetyCell = ""; //$NON-NLS-1$
 
-          Link ucaCfLink = model.getLinkController().getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+          Link ucaCfLink = model.getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
               entryLink.getLinkA());
 
           if (ucaDescMap.containsKey(ucaCfLink.getLinkA())) {

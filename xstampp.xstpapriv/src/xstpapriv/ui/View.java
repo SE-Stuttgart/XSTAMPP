@@ -34,14 +34,14 @@ import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
+import xstpa.model.XSTPADataController;
+import xstpa.ui.tables.AbstractTableComposite;
+import xstpa.ui.tables.CADependenciesTable;
+import xstpa.ui.tables.ControlActionTable;
+import xstpa.ui.tables.ProcessValuesTable;
+import xstpa.ui.tables.RefinedRulesTable;
+import xstpa.ui.tables.contexttables.ProcessContextTable;
 import xstpapriv.Activator;
-import xstpapriv.model.XSTPADataController;
-import xstpapriv.ui.tables.AbstractTableComposite;
-import xstpapriv.ui.tables.CADependenciesTable;
-import xstpapriv.ui.tables.ControlActionTable;
-import xstpapriv.ui.tables.ProcessValuesTable;
-import xstpapriv.ui.tables.RefinedRulesTable;
-import xstpapriv.ui.tables.contexttables.ProcessContextTable;
 
 public class View extends ViewPart {
   public static final String ID = "xstpapriv.view.contextTables";

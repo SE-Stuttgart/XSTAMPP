@@ -26,9 +26,7 @@ import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
-import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
-import xstampp.model.ITableEntry;
 
 /**
  * Class for unsafe control action objects.
@@ -205,20 +203,6 @@ implements IUnsafeControlAction, ICorrespondingUnsafeControlAction, IEntryWithNa
 		this.number = number;
     return true;
 	}
-
-	@Override
-	public int compareTo(ITableEntry o) {
-    try {
-		if (o.getNumber() < this.getNumber()) {
-			return 1;
-      } else if (o.getNumber() > this.getNumber()) {
-        return -1;
-		}
-		return 0;
-    } catch (NullPointerException exc) {
-      return 0;
-	}
-  }
 
 	@Override
 	public int getNumber() {

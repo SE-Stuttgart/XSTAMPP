@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XSTPAPriv
 Bundle-SymbolicName: xstampp.xstpapriv;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: xstpapriv.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.junit,
  org.eclipse.gef,
  org.eclipse.nebula.widgets.grid,
- xstampp.astpa;bundle-version="2.1.0"
+ xstampp.astpa;bundle-version="2.1.0",
+ xstampp.xstpa;bundle-version="1.1.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  org.apache.commons.io,
@@ -28,6 +29,4 @@ Import-Package: org.apache.batik.css.engine.value;version="1.7.0",
  xstampp.stpapriv.wizards,
  xstampp.ui.common.grid
 Bundle-ActivationPolicy: lazy
-Export-Package: xstpapriv,
- xstpapriv.model,
- xstpapriv.ui.tables
+Export-Package: xstpapriv

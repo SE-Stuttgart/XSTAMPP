@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
-import xstpapriv.model.ContextTableCombination;
+import xstpa.model.ContextTableCombination;
 
 
 public class AddEntryShell {

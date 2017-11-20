@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.model.IDataModel;
 import xstampp.ui.common.ProjectManager;
-import xstpasec.model.XSTPADataController;
+import xstpa.model.XSTPADataController;
 
 /**
  * The activator class controls the plug-in life cycle

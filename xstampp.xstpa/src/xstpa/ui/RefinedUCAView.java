@@ -76,7 +76,7 @@ public class RefinedUCAView extends CommonGridView<IExtendedDataModel> {
 		ArrayList<AbstractLTLProvider> allNotProvidedRUCA = new ArrayList<>();
     ArrayList<AbstractLTLProvider> allProvidedRUCA = new ArrayList<>();
     ArrayList<AbstractLTLProvider> allWrongTimedRUCA = new ArrayList<>();
-    List<AbstractLTLProvider> refinedEntrys = getDataModel().getAllScenarios(true,false,false);
+    List<AbstractLTLProvider> refinedEntrys = getDataModel().getExtendedDataController().getAllScenarios(true,false,false);
     
     for (IControlAction ca : getDataModel().getAllControlActionsU()) {
     	if(isFiltered(ca.getTitle(), CA)){

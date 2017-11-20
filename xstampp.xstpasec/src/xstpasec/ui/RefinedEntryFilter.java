@@ -10,10 +10,9 @@
  *******************************************************************************/
 package xstpasec.ui;
 
-import messages.Messages;
-
 import org.eclipse.jface.viewers.Viewer;
 
+import messages.Messages;
 import xstampp.astpa.ui.sds.ModeFilter;
 import xstampp.model.AbstractLTLProvider;
 

@@ -1,12 +1,12 @@
 package xstampp.stpapriv.ui.linkSuppport;
 
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.linkingSupport.AccidentLinkSupport;
-import xstampp.model.ObserverValue;
 
 public class LossesLinkSupport extends AccidentLinkSupport {
 
-  public LossesLinkSupport(DataModelController dataInterface, ObserverValue type) {
+  public LossesLinkSupport(DataModelController dataInterface, LinkingType type) {
     super(dataInterface, type);
   }
 

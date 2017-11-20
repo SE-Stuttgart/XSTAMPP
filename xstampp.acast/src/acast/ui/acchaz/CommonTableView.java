@@ -15,8 +15,6 @@ package acast.ui.acchaz;
 
 import java.util.Observable;
 
-import messages.Messages;
-
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -47,6 +45,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 
+import messages.Messages;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.preferences.IPreferenceConstants;
@@ -589,7 +588,7 @@ public abstract class CommonTableView extends StandartEditorPart {
 		switch (type) {
 		case ACCIDENT:
 		case HAZARD:
-		case HAZ_ACC_LINK:
+		case LINKING:
 		case DESIGN_REQUIREMENT:
 		case SAFETY_CONSTRAINT:
 		case SYSTEM_GOAL:

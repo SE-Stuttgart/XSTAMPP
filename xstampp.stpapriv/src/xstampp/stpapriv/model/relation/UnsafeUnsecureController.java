@@ -217,7 +217,7 @@ public class UnsafeUnsecureController extends Observable implements Observer{
 		public void update(Observable arg0, Object updatedValue) {
 			final ObserverValue value= (ObserverValue) updatedValue; 
 			switch(value){
-      case UCA_HAZ_LINK:
+      case LINKING:
       case UNSAFE_CONTROL_ACTION:
       case CONTROL_ACTION:
 				  
