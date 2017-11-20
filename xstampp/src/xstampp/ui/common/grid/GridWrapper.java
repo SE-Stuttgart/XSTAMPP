@@ -13,7 +13,6 @@ package xstampp.ui.common.grid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +21,7 @@ import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
+import org.eclipse.nebula.widgets.grid.internal.IScrollBarProxy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -522,10 +522,8 @@ public class GridWrapper {
       @Override
       public void paintControl(PaintEvent paintEvent) {
         // setToolTip(null);
-        int maximum = actualGrid.getVerticalBar().getMaximum();
-        if (persistedScrollIndex != null && persistedScrollIndex < maximum) {
-          actualGrid.getVerticalBar().setSelection(Math.min(persistedScrollIndex + 1, maximum));
-          actualGrid.redraw();
+        if (persistedScrollIndex != null ) {
+          actualGrid.setTopIndex(persistedScrollIndex + 1);
           persistedScrollIndex = null;
         }
       }
