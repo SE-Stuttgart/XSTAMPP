@@ -64,4 +64,9 @@ public class UndoChangeLinkingCallback implements IUndoCallback {
     return ObserverValue.LINKING;
   }
 
+  @Override
+  public String getChangeMessage() {
+    return "Change a " + this.linkType.name();
+  }
+
 }

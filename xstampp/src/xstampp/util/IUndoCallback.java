@@ -38,4 +38,8 @@ public interface IUndoCallback {
    *         changes in the data model.
    */
   ObserverValue getChangeConstant();
+  
+  default String getChangeMessage() {
+    return getChangeConstant().name();
+  }
 }

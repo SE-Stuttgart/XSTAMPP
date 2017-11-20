@@ -65,4 +65,9 @@ public class UndoChangeParentCallback implements IUndoCallback {
     return ObserverValue.CONTROL_STRUCTURE;
   }
 
+  @Override
+  public String getChangeMessage() {
+    return "Change parent of a Control Structure component";
+  }
+
 }

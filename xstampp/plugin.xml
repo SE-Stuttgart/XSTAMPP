@@ -81,6 +81,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
+            category="xstampp.category.views"
             class="xstampp.ui.welcome.WelcomeView"
             id="astpa.Welcome"
             name="%view.name.welcome"
@@ -88,12 +89,24 @@
       </view>
       <view
             allowMultiple="false"
+            category="xstampp.category.views"
             class="xstampp.ui.navigation.ProjectExplorer"
             fastViewWidthRatio="0.2f"
             id="astpa.explorer"
             name="%view.name.explorer"
             restorable="true">
       </view>
+      <view
+            category="xstampp.category.views"
+            class="xstampp.ui.HistoryView"
+            id="xstampp.view.history"
+            name="Undo/Redo history"
+            restorable="true">
+      </view>
+      <category
+            id="xstampp.category.views"
+            name="XSTAMPP">
+      </category>
    </extension>
    <extension
          name="window"

@@ -35,4 +35,9 @@ public class UndoAddRule extends UndoAddLinkedComponent {
     return ObserverValue.Extended_DATA;
   }
 
+  @Override
+  public String getChangeMessage() {
+    return "Add a " + this.type.name();
+  }
+
 }

@@ -4,12 +4,13 @@ import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.UndoAddLinkedComponent;
 import xstampp.model.ObserverValue;
 
-public class UndoAddCausalFactor extends UndoAddLinkedComponent{
+public class UndoAddCausalFactor extends UndoAddLinkedComponent {
 
   private CausalFactor factor;
   private CausalFactorController causalController;
 
-  public UndoAddCausalFactor(CausalFactorController causalController, CausalFactor factor, LinkController linkController) {
+  public UndoAddCausalFactor(CausalFactorController causalController, CausalFactor factor,
+      LinkController linkController) {
     super(linkController, factor.getId(), 2);
     this.causalController = causalController;
     this.factor = factor;
@@ -31,4 +32,8 @@ public class UndoAddCausalFactor extends UndoAddLinkedComponent{
     return ObserverValue.CAUSAL_FACTOR;
   }
 
+  @Override
+  public String getChangeMessage() {
+    return "Add a Causal Factor";
+  }
 }

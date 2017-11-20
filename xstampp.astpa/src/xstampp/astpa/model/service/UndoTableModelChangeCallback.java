@@ -70,4 +70,15 @@ public abstract class UndoTableModelChangeCallback<T> implements IUndoCallback {
   protected abstract void undoDescription(String description);
 
   protected abstract void undoTitle(String title);
+
+  @Override
+  public String getChangeMessage() {
+    if (this.titleChange.isChanged()) {
+      return "Change title";
+    }
+    if (this.descriptionChange.isChanged()) {
+      return "Change Description";
+    }
+    return IUndoCallback.super.getChangeMessage();
+  }
 }

@@ -32,4 +32,9 @@ public class UndoRemoveCausalFactor extends UndoRemoveLinkedComponent {
     return ObserverValue.CAUSAL_FACTOR;
   }
 
+  @Override
+  public String getChangeMessage() {
+    return "Remove Causal Factor";
+  }
+
 }

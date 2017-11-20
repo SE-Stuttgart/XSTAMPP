@@ -50,4 +50,13 @@ public class UndoAddLinkingCallback implements IUndoCallback {
     return ObserverValue.LINKING;
   }
 
+  public LinkingType getLinkType() {
+    return linkType;
+  }
+
+  @Override
+  public String getChangeMessage() {
+    return "Add a " + this.linkType.name();
+  }
+
 }

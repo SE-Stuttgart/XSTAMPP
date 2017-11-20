@@ -9,6 +9,7 @@ public class UndoTextChange implements IUndoCallback {
   private String newText;
   private IApplicator applicator;
   private ObserverValue changeValue;
+  private boolean changed;
 
   @FunctionalInterface
   public interface IApplicator {
@@ -16,9 +17,10 @@ public class UndoTextChange implements IUndoCallback {
   }
 
   public UndoTextChange() {
-    setConsumer((text) -> {});
+    this.applicator = (text) -> {
+    };
   }
-  
+
   public UndoTextChange(String oldText, String newText, ObserverValue changeValue) {
     this();
     this.oldText = oldText;
@@ -28,6 +30,11 @@ public class UndoTextChange implements IUndoCallback {
 
   public void setConsumer(IApplicator applicator) {
     this.applicator = applicator;
+    this.changed = true;
+  }
+
+  public boolean isChanged() {
+    return changed;
   }
 
   @Override
@@ -43,6 +50,11 @@ public class UndoTextChange implements IUndoCallback {
   @Override
   public ObserverValue getChangeConstant() {
     return this.changeValue;
+  }
+
+  @Override
+  public String getChangeMessage() {
+    return "Text change";
   }
 
 }

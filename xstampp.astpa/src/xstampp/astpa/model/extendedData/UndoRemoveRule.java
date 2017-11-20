@@ -34,4 +34,9 @@ public class UndoRemoveRule extends UndoRemoveLinkedComponent {
   public ObserverValue getChangeConstant() {
     return ObserverValue.Extended_DATA;
   }
+
+  @Override
+  public String getChangeMessage() {
+    return "Remove " + this.type.name();
+  }
 }

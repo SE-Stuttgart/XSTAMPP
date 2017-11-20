@@ -19,11 +19,14 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.framework.BundleContext;
 
 import xstampp.ui.common.ProjectManager;
 import xstampp.util.STPAPluginUtils;
+import xstampp.util.service.UndoRedoService;
 
 /**
  * The activator class controls the plug-in life cycle

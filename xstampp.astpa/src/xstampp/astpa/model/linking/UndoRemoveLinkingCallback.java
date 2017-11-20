@@ -35,4 +35,9 @@ public class UndoRemoveLinkingCallback extends UndoAddLinkingCallback {
     super.undo();
   }
 
+  @Override
+  public String getChangeMessage() {
+    return "Remove a " + getLinkType().name();
+  }
+
 }

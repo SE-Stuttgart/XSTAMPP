@@ -56,4 +56,9 @@ public class UndoUCAChangesCallback implements IUndoCallback {
     return ObserverValue.UNSAFE_CONTROL_ACTION;
   }
 
+  @Override
+  public String getChangeMessage() {
+    return "Change description of Unsafe Control Action";
+  }
+
 }

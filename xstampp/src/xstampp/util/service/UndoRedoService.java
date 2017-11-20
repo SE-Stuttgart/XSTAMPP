@@ -14,11 +14,15 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.ui.AbstractSourceProvider;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISources;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
+import xstampp.ui.editors.StandartEditorPart;
 import xstampp.util.IUndoCallback;
 
-public class UndoRedoService extends AbstractSourceProvider {
+public class UndoRedoService extends AbstractSourceProvider implements IPartListener {
 
   /**
    * The variable id of the canUndo
@@ -34,6 +38,8 @@ public class UndoRedoService extends AbstractSourceProvider {
    */
   public static final String CAN_REDO = "xstampp.util.service.canRedo"; //$NON-NLS-1$
 
+  private Map<String, Stack<IUndoCallback>> undoStacksToEditorIds;
+  private Map<String, Stack<IUndoCallback>> redoStacksToEditorIds;
   private static final int LIMIT = 50;
   private Stack<IUndoCallback> undoStack;
   private Stack<IUndoCallback> redoStack;
@@ -44,6 +50,8 @@ public class UndoRedoService extends AbstractSourceProvider {
   private boolean recording;
 
   public UndoRedoService() {
+    this.undoStacksToEditorIds = new HashMap<>();
+    this.redoStacksToEditorIds = new HashMap<>();
     this.undoStack = new Stack<>();
     this.redoStack = new Stack<>();
     this.canRedo = false;
@@ -111,23 +119,25 @@ public class UndoRedoService extends AbstractSourceProvider {
       this.recordList.add(callback);
     } else if (!this.lock) {
       this.canUndo = true;
-      fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, true);
       if (this.undoStack.size() + 1 > LIMIT) {
-
         this.undoStack.removeElementAt(0);
       }
-      return this.undoStack.push(callback);
+      
+      IUndoCallback push = this.undoStack.push(callback);
+      fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, true);
+      return push;
     }
     return null;
   }
 
   private IUndoCallback _pushRedo(IUndoCallback callback) {
     this.canRedo = true;
-    fireSourceChanged(ISources.WORKBENCH, CAN_REDO, this.canRedo);
     if (this.undoStack.size() + 1 > LIMIT) {
       this.redoStack.removeElementAt(0);
     }
-    return this.redoStack.push(callback);
+    IUndoCallback push = this.redoStack.push(callback);
+    fireSourceChanged(ISources.WORKBENCH, CAN_REDO, this.canRedo);
+    return push;
   }
 
   /**
@@ -174,6 +184,14 @@ public class UndoRedoService extends AbstractSourceProvider {
     return result;
   }
 
+  public IUndoCallback[] getUndoStack() {
+    return undoStack.toArray(new IUndoCallback[0]);
+  }
+
+  public IUndoCallback[] getRedoStack() {
+    return redoStack.toArray(new IUndoCallback[0]);
+  }
+
   @Override
   public void dispose() {
     this.undoStack.clear();
@@ -191,5 +209,43 @@ public class UndoRedoService extends AbstractSourceProvider {
   @Override
   public String[] getProvidedSourceNames() {
     return new String[] { CAN_UNDO, CAN_REDO };
+  }
+
+  @Override
+  public void partActivated(IWorkbenchPart part) {
+    if (part instanceof StandartEditorPart) {
+      String editorId = ((StandartEditorPart) part).getId();
+      this.undoStacksToEditorIds.putIfAbsent(editorId, new Stack<>());
+      this.redoStacksToEditorIds.putIfAbsent(editorId, new Stack<>());
+      this.undoStack = this.undoStacksToEditorIds.get(editorId);
+      this.redoStack = this.redoStacksToEditorIds.get(editorId);
+
+      fireSourceChanged(ISources.WORKBENCH, CAN_REDO, !this.redoStack.isEmpty());
+      fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, !this.undoStack.isEmpty());
+    }
+  }
+
+  @Override
+  public void partBroughtToTop(IWorkbenchPart part) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void partClosed(IWorkbenchPart part) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void partDeactivated(IWorkbenchPart part) {
+    fireSourceChanged(ISources.WORKBENCH, CAN_REDO, false);
+    fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, false);
+  }
+
+  @Override
+  public void partOpened(IWorkbenchPart part) {
+    // TODO Auto-generated method stub
+
   }
 }
