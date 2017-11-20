@@ -18,6 +18,7 @@ import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.AccidentLinkSupport;
 import xstampp.astpa.ui.linkingSupport.DesignReq0LinkSupport;
@@ -51,16 +52,15 @@ public class SafetyConstraintView extends CommonTableView<ISafetyConstraintViewD
    */
   public SafetyConstraintView(String tableHeader) {
     super(null, tableHeader);
-    setUpdateValues(EnumSet.of(ObserverValue.SAFETY_CONSTRAINT, ObserverValue.ACC_S0_LINK,
-        ObserverValue.DR0_SC_LINK));
+    setUpdateValues(EnumSet.of(ObserverValue.SAFETY_CONSTRAINT, ObserverValue.LINKING));
   }
 
   @Override
   protected void addLinkSupports() {
     addLinkSupport(new DesignReq0LinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.DR0_SC_LINK));
+        LinkingType.DR0_SC_LINK));
     addLinkSupport(new AccidentLinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.ACC_S0_LINK));
+        LinkingType.ACC_S0_LINK));
   }
 
   @Override

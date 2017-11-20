@@ -23,6 +23,7 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 
 public class Step2Progress extends AbstractProgressSheetCreator {
@@ -102,7 +103,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
   private int createDesignRows(Sheet sheet, Row ucaRow, int rowIndex, UUID scId) {
     Row row = ucaRow;
     int index = rowIndex;
-    for (UUID dr1Id : getController().getLinkController().getLinksFor(ObserverValue.DR1_CSC_LINK,
+    for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
         scId)) {
       if (row == null) {
         row = createRow(sheet, ++index);

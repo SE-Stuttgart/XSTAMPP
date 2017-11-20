@@ -18,6 +18,7 @@ import org.eclipse.swt.graphics.Rectangle;
 
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.CellButton;
 import xstampp.ui.common.grid.GridWrapper;
@@ -45,7 +46,7 @@ public class NewConstraintButton extends CellButton {
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     UUID constraintId = this.datamodel.getCausalFactorController().addSafetyConstraint("");
-    this.datamodel.getLinkController().addLink(ObserverValue.CausalHazLink_SC2_LINK, this.ucaHazLink.getId(),
+    this.datamodel.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK, this.ucaHazLink.getId(),
         constraintId);
   }
 }

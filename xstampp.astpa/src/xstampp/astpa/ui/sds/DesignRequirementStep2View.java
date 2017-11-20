@@ -18,6 +18,7 @@ import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.Step2ConstraintsLinkSupport;
 import xstampp.model.ObserverValue;
@@ -41,13 +42,13 @@ public class DesignRequirementStep2View extends CommonTableView<IDesignRequireme
   public DesignRequirementStep2View() {
     super(EnumSet.of(TableStyle.RESTRICTED), Messages.DesignRequirements);
     setUpdateValues(
-        EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP2, ObserverValue.DR2_CausalSC_LINK));
+        EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP2, ObserverValue.LINKING));
   }
 
   @Override
   protected void addLinkSupports() {
     addLinkSupport(new Step2ConstraintsLinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.DR2_CausalSC_LINK));
+        LinkingType.DR2_CausalSC_LINK));
   }
 
   @Override

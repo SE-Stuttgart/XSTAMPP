@@ -27,8 +27,8 @@ import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.AbstractLTLProvider;
-import xstampp.model.ObserverValue;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactorEntry implements ICausalFactorEntry {
@@ -192,18 +192,18 @@ public class CausalFactorEntry implements ICausalFactorEntry {
       list.add(safetyConstraint);
     }
     if (ucaLink != null) {
-      UUID ucaCfLink = linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, ucaLink,
+      UUID ucaCfLink = linkController.addLink(LinkingType.UCA_CausalFactor_LINK, ucaLink,
           causalFactor.getId());
-      UUID UcaCfCompLink = linkController.addLink(ObserverValue.UcaCfLink_Component_LINK, ucaCfLink,
+      UUID UcaCfCompLink = linkController.addLink(LinkingType.UcaCfLink_Component_LINK, ucaCfLink,
           componentId);
       ucaLink = null;
       // if a constraint is already linked to this entry than the link is re-added as
       // UcaHazLink_SC2_LINK to the LinkController
-      linkController.getRawLinksFor(ObserverValue.UCA_HAZ_LINK, ucaLink).forEach(link -> {
-        UUID hazEntryId = linkController.addLink(ObserverValue.UCAEntryLink_HAZ_LINK, UcaCfCompLink,
+      linkController.getRawLinksFor(LinkingType.UCA_HAZ_LINK, ucaLink).forEach(link -> {
+        UUID hazEntryId = linkController.addLink(LinkingType.UCAEntryLink_HAZ_LINK, UcaCfCompLink,
             link.getLinkB());
         if (this.constraintId != null) {
-          linkController.addLink(ObserverValue.CausalHazLink_SC2_LINK, hazEntryId,
+          linkController.addLink(LinkingType.CausalHazLink_SC2_LINK, hazEntryId,
               this.constraintId);
         }
       });
@@ -225,22 +225,22 @@ public class CausalFactorEntry implements ICausalFactorEntry {
   public void prepareForExport(IHazAccController hazAccController,
       List<AbstractLTLProvider> allRefinedRules, IControlActionController caController,
       CausalFactorController controller, Link causalEntryList, LinkController linkController) {
-    Link ucaCfLink = linkController.getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+    Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
         causalEntryList.getLinkA());
     IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
     ucaDescription = uca.getDescription();
     hazardLinks = "";
-    for (Link causalHazLink : linkController.getRawLinksFor(ObserverValue.UCAEntryLink_HAZ_LINK,
+    for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.UCAEntryLink_HAZ_LINK,
         causalEntryList.getId())) {
 
       Hazard hazard = hazAccController.getHazard(causalHazLink.getLinkB());
       Optional<UUID> causalSCoption = linkController
-          .getLinksFor(ObserverValue.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream()
+          .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream()
           .findFirst();
 
       String constraintText = controller.getSafetyConstraint(causalSCoption.orElse(null)).getText();
       Optional<UUID> sc1Option = linkController
-          .getLinksFor(ObserverValue.SC2_SC1_LINK, causalSCoption.orElse(null)).stream()
+          .getLinksFor(LinkingType.SC2_SC1_LINK, causalSCoption.orElse(null)).stream()
           .findFirst();
       ITableModel sc1Model = caController
           .getCorrespondingSafetyConstraint(sc1Option.orElse(null));

@@ -27,7 +27,7 @@ public class LinkController extends Observable {
 
   @XmlElement
   @XmlJavaTypeAdapter(Adapter.class)
-  private Map<ObserverValue, List<Link>> linkMap;
+  private Map<LinkingType, List<Link>> linkMap;
 
   public LinkController() {
     this.linkMap = new HashMap<>();
@@ -52,7 +52,7 @@ public class LinkController extends Observable {
    * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
    * 
    * @param linkType
-   *          an {@link ObserverValue} for which links have been created in the
+   *          an {@link LinkingType} for which links have been created in the
    *          {@link LinkController}
    * @param linkA
    *          the part whose {@link UUID} is the first part of the {@link Link}
@@ -60,7 +60,7 @@ public class LinkController extends Observable {
    *          the part whose {@link UUID} is the second part of the {@link Link}
    * @return
    */
-  public UUID addLink(ObserverValue linkType, UUID linkA, UUID linkB) {
+  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB) {
     if (!this.linkMap.containsKey(linkType)) {
       this.linkMap.put(linkType, new ArrayList<Link>());
     }
@@ -95,23 +95,26 @@ public class LinkController extends Observable {
 
   void addLink(Link link) {
     if (this.linkMap.containsKey(link.getLinkType())) {
-      this.linkMap.get(link.getLinkType()).add(link);
+      if (this.linkMap.get(link.getLinkType()).add(link)) {
+        setChanged();
+        notifyObservers(new UndoAddLinkingCallback(this, link.getLinkType(), link));
+      }
     }
   }
 
   /**
-   * this method returns a list of all UUID links stored under the given {@link ObserverValue}. If
+   * this method returns a list of all UUID links stored under the given {@link LinkingType}. If
    * <b>null</b> is given as linkType than the returned list is filled with all linked ids.
    * 
    * @param linkType
-   *          an {@link ObserverValue} for which links have been created in the
+   *          an {@link LinkingType} for which links have been created in the
    *          {@link LinkController}
    * @param part
    *          the ID of the part for which all available links are returned
    * @return a {@link List} of {@link UUID}'s of all linked items, or an empty {@link List} if part
    *         is given as <b>null</b>
    */
-  public List<UUID> getLinksFor(ObserverValue linkType, UUID part) {
+  public List<UUID> getLinksFor(LinkingType linkType, UUID part) {
     List<UUID> links = new ArrayList<>();
     for (Link link : getRawLinksFor(linkType, part)) {
       links.add(link.getLinkFor(part));
@@ -124,12 +127,12 @@ public class LinkController extends Observable {
    * as link
    * 
    * @param linkType
-   *          one of the LINK constants in {@link ObserverValue} <b>must not be <i>null</i></b>
+   *          one of the LINK constants in {@link LinkingType} <b>must not be <i>null</i></b>
    * @param partId
    *          the {@link UUID} of a {@link Link}
    * @return a {@link List} of {@link Link}'s stored under the given linkType with the given linkId
    */
-  public List<Link> getRawLinksFor(ObserverValue linkType, UUID partId) {
+  public List<Link> getRawLinksFor(LinkingType linkType, UUID partId) {
     List<Link> links = new ArrayList<>();
     for (Link link : getLinkObjectsFor(linkType)) {
       if (link.links(partId)) {
@@ -141,19 +144,23 @@ public class LinkController extends Observable {
 
   /**
    * Returns and removes all matching {@link Link} that contain the given partId as link component.
-   * <p> <b>This method does not trigger an update and thus is not part of the API</b>
+   * <p>
+   * <b>This method does not trigger an update and thus is not part of the API</b>
    * 
    * @param partId
    *          the {@link UUID} of a {@link Link}
    * @param depth
-   *          the amount of recursions that are used to find {@link Link} Objects,<br> e.g. if depth
+   *          the amount of recursions that are used to find {@link Link} Objects,<br>
+   *          e.g. if depth
    *          is 2 than also the links are included that contain a {@link UUID} of a Link found in
    *          the first recursion
    * @return a {@link List} of {@link Link}'s that contain the given partId as link component.
    */
   List<Link> deleteLinksFor(UUID partId, int depth) {
     List<Link> links = new ArrayList<>();
-    for (ObserverValue linkType : this.linkMap.keySet()) {
+    List<LinkingType> keySet = new ArrayList<>();
+    keySet.addAll(this.linkMap.keySet());
+    for (LinkingType linkType : keySet) {
       List<Link> list = getRawLinksFor(linkType, partId);
       deleteLinks(linkType, list);
       links.addAll(list);
@@ -172,7 +179,7 @@ public class LinkController extends Observable {
    * Changes the two link components of the {@link Link} with the given linkId.
    * 
    * @param linkType
-   *          one of the LINK constants in {@link ObserverValue}
+   *          one of the LINK constants in {@link LinkingType}
    * @param linkId
    *          the {@link UUID} of a {@link Link}
    * @param linkA
@@ -182,7 +189,7 @@ public class LinkController extends Observable {
    * 
    * @return the first matching {@link Link} stored under the given linkType with the given linkId
    */
-  public boolean changeLink(ObserverValue linkType, UUID linkId, UUID linkA, UUID linkB) {
+  public boolean changeLink(LinkingType linkType, UUID linkId, UUID linkA, UUID linkB) {
     Link link = getLinkObjectFor(linkType, linkId);
     return changeLink(link, linkA, linkB);
   }
@@ -224,7 +231,7 @@ public class LinkController extends Observable {
     String oldNote = link.getNote();
     boolean isSet = link.setNote(note);
     if (isSet) {
-      UndoTextChange textChange = new UndoTextChange(oldNote, note, link.getLinkType());
+      UndoTextChange textChange = new UndoTextChange(oldNote, note, ObserverValue.LINKING);
       textChange.setConsumer((text) -> changeLinkNote(link, text));
       setChanged();
       notifyObservers(textChange);
@@ -236,12 +243,12 @@ public class LinkController extends Observable {
    * Returns the first matching {@link Link} stored under the given linkType with the given linkId
    * 
    * @param linkType
-   *          one of the LINK constants in {@link ObserverValue}
+   *          one of the LINK constants in {@link LinkingType}
    * @param linkId
    *          the {@link UUID} of a {@link Link}
    * @return the first matching {@link Link} stored under the given linkType with the given linkId
    */
-  public Link getLinkObjectFor(ObserverValue linkType, UUID linkId) {
+  public Link getLinkObjectFor(LinkingType linkType, UUID linkId) {
     if (this.linkMap.containsKey(linkType)) {
       this.linkMap.get(linkType).removeIf((t) -> {
         return t.getLinkA() == null && t.getLinkB() == null;
@@ -256,17 +263,17 @@ public class LinkController extends Observable {
    * Returns all {@link Link}'s stored under the given linkType
    * 
    * @param linkType
-   *          one of the LINK constants in {@link ObserverValue}
+   *          one of the LINK constants in {@link LinkingType}
    * @return a {@link List} containing all {@link Link}'s for the given linkType
    */
-  public List<Link> getLinksFor(ObserverValue linkType) {
+  public List<Link> getLinksFor(LinkingType linkType) {
     return getLinkObjectsFor(linkType);
   }
 
-  private List<Link> getLinkObjectsFor(ObserverValue linkType) {
+  private List<Link> getLinkObjectsFor(LinkingType linkType) {
     if (this.linkMap.containsKey(linkType)) {
       this.linkMap.get(linkType).removeIf((t) -> {
-        return t.getLinkA() == null || t.getLinkB() == null;
+        return t.getLinkA() == null && t.getLinkB() == null;
       });
       return this.linkMap.get(linkType);
     }
@@ -276,23 +283,25 @@ public class LinkController extends Observable {
   /**
    * 
    * @param linkType
-   *          the {@link ObserverValue} of the link
+   *          the {@link LinkingType} of the link
    * @param part
    *          the id of the element
    * @return whether the {@link LinkController} contains a link for the given id or not
    */
-  public boolean isLinked(ObserverValue linkType, UUID part) {
+  public boolean isLinked(LinkingType linkType, UUID part) {
     if (!isLinked(linkType, part, Optional.empty())) {
-      //if the part itself is not part of a link stored under that type than maybe it is part of a link that itself is linked
-      Optional<Link> optional = this.linkMap.getOrDefault(linkType, new ArrayList<>()).parallelStream().filter((link)->  {
-        return link.links(part) && isLinked(linkType, link.getId());
-      }).findFirst();
+      // if the part itself is not part of a link stored under that type than maybe it is part of a
+      // link that itself is linked
+      Optional<Link> optional = this.linkMap.getOrDefault(linkType, new ArrayList<>()).parallelStream()
+          .filter((link) -> {
+            return link.links(part) && isLinked(linkType, link.getId());
+          }).findFirst();
       return optional.isPresent();
     }
     return true;
   }
 
-  public boolean isLinked(ObserverValue linkType, UUID part, Optional<UUID> rightPart) {
+  public boolean isLinked(LinkingType linkType, UUID part, Optional<UUID> rightPart) {
     if (this.linkMap.containsKey(linkType)) {
       for (Link link : this.linkMap.get(linkType)) {
         if (link.links(part) && (!rightPart.isPresent() || link.links(rightPart.get()))) {
@@ -312,12 +321,12 @@ public class LinkController extends Observable {
    * given linkId
    * 
    * @param linkType
-   *          one of the LINK constants in {@link ObserverValue}
+   *          one of the LINK constants in {@link LinkingType}
    * @param linkId
    *          the {@link UUID} of a {@link Link}
    * @return whether something has been deleted or not
    */
-  public boolean deleteLink(ObserverValue linkType, UUID linkId) {
+  public boolean deleteLink(LinkingType linkType, UUID linkId) {
     if (this.linkMap.containsKey(linkType)) {
       return this.linkMap.get(linkType).removeIf((t) -> {
         return t.getId().equals(linkId);
@@ -330,14 +339,14 @@ public class LinkController extends Observable {
    * Finds and deletes a {@link Link} based on the two parts of the link
    * 
    * @param linkType
-   *          one of the LINK constants in {@link ObserverValue}
+   *          one of the LINK constants in {@link LinkingType}
    * @param linkA
    *          the part whose {@link UUID} is the first part of the {@link Link}
    * @param linkB
    *          the part whose {@link UUID} is the second part of the {@link Link}
    * @return
    */
-  public boolean deleteLink(ObserverValue linkType, UUID linkA, UUID linkB) {
+  public boolean deleteLink(LinkingType linkType, UUID linkA, UUID linkB) {
     if (this.linkMap.containsKey(linkType)) {
       Link o = new Link(linkA, linkB, linkType);
       if (this.linkMap.get(linkType).remove(o)) {
@@ -352,12 +361,13 @@ public class LinkController extends Observable {
   /**
    * 
    * @param linkType
-   *          the {@link ObserverValue} of the link
+   *          the {@link LinkingType} of the link
    * @param part
-   *          the part that should be included in all links that are to to be deleted,<br> or
+   *          the part that should be included in all links that are to to be deleted,<br>
+   *          or
    *          <b><i>null</i></b> if all links for the given <b>type</b> should be deleted
    */
-  public void deleteAllFor(ObserverValue linkType, UUID part) {
+  public void deleteAllFor(LinkingType linkType, UUID part) {
     List<Link> links = new ArrayList<>();
     if (this.linkMap.containsKey(linkType)) {
       for (Link link : this.linkMap.get(linkType)) {
@@ -371,7 +381,7 @@ public class LinkController extends Observable {
     }
   }
 
-  void deleteLinks(ObserverValue linkType, List<Link> links) {
+  void deleteLinks(LinkingType linkType, List<Link> links) {
     if (this.linkMap.containsKey(linkType)) {
       this.linkMap.get(linkType).removeAll(links);
       if (this.linkMap.get(linkType).isEmpty()) {

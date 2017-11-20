@@ -85,8 +85,7 @@ public class ControlActionTest {
 		Assert.assertEquals(error,"b", controller.getControlAction(caID).getTitle());
 		controller.setControlActionTitle(caID, "c");
 		Assert.assertEquals(error,"c", controller.getComponent(compID).getText());
-		
-		UUID listID = controller.addComponent(rootID, new Rectangle(), "list", ComponentType.CONTAINER, -1);
+		controller.addComponent(rootID, new Rectangle(), "list", ComponentType.CONTAINER, -1);
 		compID = controller.addComponent(rootID, new Rectangle(), "a", ComponentType.CONTROLACTION, -1);
 		caID = controller.getComponent(compID).getControlActionLink();
 		controller.changeComponentText(compID, "b");
@@ -105,13 +104,13 @@ public class ControlActionTest {
 		
 		UUID comp1ID= controller.addComponent(null, rootID, new Rectangle(), new String(), ComponentType.CONTROLACTION, -1);
 		controller.setRelativeOfComponent(comp1ID, connID);
-		UUID caID = controller.getComponent(comp1ID).getControlActionLink();
+		controller.getComponent(comp1ID).getControlActionLink();
 		
 
 		//test whether creating a control action component as a child creates a control action 
 		//which is than also deleted when the component parent is deleted
 		UUID listID = controller.addComponent(rootID, new Rectangle(), new String(), ComponentType.CONTAINER, -1);
 		comp1ID= controller.addComponent(null, listID, new Rectangle(), new String(), ComponentType.CONTROLACTION, -1);
-		caID = controller.getComponent(comp1ID).getControlActionLink();
+		controller.getComponent(comp1ID).getControlActionLink();
 	}
 }

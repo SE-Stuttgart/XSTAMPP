@@ -782,7 +782,7 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
       this.updateAll();
       break;
 
-    case HAZ_ACC_LINK:
+    case LINKING:
       this.updateAll();
       break;
 

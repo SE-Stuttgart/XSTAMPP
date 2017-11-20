@@ -11,15 +11,9 @@
  ******************************************************************************/
 package xstampp.model;
 
-import java.util.UUID;
-
-public interface ITableEntry extends Comparable<ITableEntry> {
-
-  UUID getId();
+public interface ITableEntry  extends NumberedEntry{
 
   String getTitle();
 
   String getDescription();
-
-  int getNumber();
 }

@@ -90,7 +90,7 @@ public class CSCView extends AbstractFilteredTableView {
     super.update(dataModelController, updatedValue);
     ObserverValue type = (ObserverValue) updatedValue;
     switch (type) {
-    case UCA_HAZ_LINK:
+    case LINKING:
     case UNSAFE_CONTROL_ACTION:
       packColumns();
       break;

@@ -32,6 +32,7 @@ import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonGridView;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -212,7 +213,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
        * hazards are either based on the uca or linkable
        */
       Link ucaCFLink = getDataModel().getLinkController()
-          .getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK, link.getLinkA());
+          .getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, link.getLinkA());
       IUnsafeControlAction uca = getDataModel().getControlActionController()
           .getUnsafeControlAction(ucaCFLink.getLinkA());
       ucaList.add(uca);
@@ -260,9 +261,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     entryRow.addCell(2, cell);
 
     boolean first = this.includeFirstChildRow;
-    ObserverValue entryType = getDataModel().isUseScenarios()
-        ? ObserverValue.UCAEntryLink_Scenario_LINK
-        : ObserverValue.UCAEntryLink_HAZ_LINK;
+    LinkingType entryType = getDataModel().isUseScenarios()
+        ? LinkingType.UCAEntryLink_Scenario_LINK
+        : LinkingType.UCAEntryLink_HAZ_LINK;
     // iterate all UCAEntryLink_HAZ_LINK's stored for the causalEntryLink
     for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
         causalEntryLink.getId())) {
@@ -362,11 +363,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
         addChoiceValues("UCA", values);
       }
       case CONTROL_STRUCTURE:
-      case UCA_CausalFactor_LINK:
-      case UcaCfLink_Component_LINK:
-      case CausalHazLink_SC2_LINK:
-      case UCAEntryLink_HAZ_LINK:
-      case UCAEntryLink_Scenario_LINK:
+      case LINKING:
       case HAZARD:
       case Extended_DATA:
       case CAUSAL_FACTOR:

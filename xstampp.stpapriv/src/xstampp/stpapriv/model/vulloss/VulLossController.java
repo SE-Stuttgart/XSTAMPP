@@ -19,9 +19,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.hazacc.HazAccLink;
 import xstampp.astpa.model.interfaces.ITableModel;

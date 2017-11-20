@@ -20,6 +20,7 @@ import java.util.UUID;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.ObserverValue;
@@ -67,7 +68,7 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
   @Override
   public List<AbstractLTLProvider> getLinkedItems(final UUID itemId) {
     List<AbstractLTLProvider> linkedScenarios= new ArrayList<>();
-    for (UUID uuid : this.dataModel.getLinkController().getLinksFor(ObserverValue.UCAEntryLink_Scenario_LINK, causalEntryLink.getId())) {
+    for (UUID uuid : this.dataModel.getLinkController().getLinksFor(LinkingType.UCAEntryLink_Scenario_LINK, causalEntryLink.getId())) {
       linkedScenarios.add(this.dataModel.getRefinedScenario(uuid));
     }
     return linkedScenarios;
@@ -75,13 +76,13 @@ public class ContentProviderScenarios implements ITableContentProvider<AbstractL
 
   @Override
   public void addLink(final UUID item1, final UUID item2) {
-    this.dataModel.getLinkController().addLink(ObserverValue.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), item2);
+    this.dataModel.getLinkController().addLink(LinkingType.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), item2);
   }
 
   @Override
   public void removeLink(final UUID item, final UUID removeItem) {
 
-    this.dataModel.getLinkController().deleteLink(ObserverValue.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), removeItem);
+    this.dataModel.getLinkController().deleteLink(LinkingType.UCAEntryLink_Scenario_LINK, causalEntryLink.getId(), removeItem);
   }
 
   @Override

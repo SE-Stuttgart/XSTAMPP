@@ -13,16 +13,14 @@ package xstampp.astpa.model.linking;
 
 import java.util.List;
 
-import xstampp.model.ObserverValue;
-
 public class UndoRemoveLinkingCallback extends UndoAddLinkingCallback {
 
-  public UndoRemoveLinkingCallback(LinkController linkController, ObserverValue linkType,
+  public UndoRemoveLinkingCallback(LinkController linkController, LinkingType linkType,
       List<Link> links) {
     super(linkController, linkType, links);
   }
 
-  public UndoRemoveLinkingCallback(LinkController linkController, ObserverValue linkType,
+  public UndoRemoveLinkingCallback(LinkController linkController, LinkingType linkType,
       Link link) {
     super(linkController, linkType, link);
   }

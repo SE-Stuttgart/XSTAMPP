@@ -60,9 +60,10 @@ public class UndoRedoService extends AbstractSourceProvider {
    * {@link UndoRedoService#getRecord()} or {@link UndoRedoService#pushRecord()} is called.
    */
   public void startRecord() {
-
-    this.recording = true;
-    this.recordList = new UndoStackedCommands();
+    if (!this.recording) {
+      this.recording = true;
+      this.recordList = new UndoStackedCommands(this);
+    }
   }
 
   /**
@@ -74,7 +75,7 @@ public class UndoRedoService extends AbstractSourceProvider {
    *         last call of this method
    */
   public List<IUndoCallback> getRecord() {
-    
+
     List<IUndoCallback> recordList = null;
     if (recording) {
       recordList = this.recordList.getRecordList();
@@ -98,8 +99,8 @@ public class UndoRedoService extends AbstractSourceProvider {
    */
   public boolean pushRecord() {
     if (recording) {
-      push(this.recordList);
       this.recording = false;
+      push(this.recordList);
       this.recordList = null;
     }
     return recording;
@@ -112,7 +113,7 @@ public class UndoRedoService extends AbstractSourceProvider {
       this.canUndo = true;
       fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, true);
       if (this.undoStack.size() + 1 > LIMIT) {
-        
+
         this.undoStack.removeElementAt(0);
       }
       return this.undoStack.push(callback);

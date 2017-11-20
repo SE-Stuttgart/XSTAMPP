@@ -20,13 +20,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
+import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 
 /**
@@ -472,11 +473,11 @@ public class SDSController extends Observable implements ISDSController {
     for (SafetyConstraint safetyConstraint : this.getSafetyConstraints()) {
       safetyConstraint.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
-      for (UUID id : linkController.getLinksFor(ObserverValue.ACC_S0_LINK,
+      for (UUID id : linkController.getLinksFor(LinkingType.ACC_S0_LINK,
           safetyConstraint.getId())) {
         linkString += hazacc.getAccident(id).getIdString() + ", "; //$NON-NLS-1$
       }
-      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT,
+      for (UUID id : linkController.getLinksFor(LinkingType.DR0_SC_LINK,
           safetyConstraint.getId())) {
         linkString += getDesignRequirement(id).getIdString() + ", "; //$NON-NLS-1$
       }
@@ -487,7 +488,7 @@ public class SDSController extends Observable implements ISDSController {
     for (DesignRequirement designRequirement : this.getDesignRequirements()) {
       designRequirement.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
-      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT,
+      for (UUID id : linkController.getLinksFor(LinkingType.DR0_SC_LINK,
           designRequirement.getId())) {
         linkString += getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
       }
@@ -498,7 +499,7 @@ public class SDSController extends Observable implements ISDSController {
     for (DesignRequirementStep1 designRequirement1 : this.getDesignRequirementsStep1()) {
       designRequirement1.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
-      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT_STEP1,
+      for (UUID id : linkController.getLinksFor(LinkingType.DR1_CSC_LINK,
           designRequirement1.getId())) {
         linkString += caController.getCorrespondingSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
       }
@@ -509,7 +510,7 @@ public class SDSController extends Observable implements ISDSController {
     for (DesignRequirementStep2 designRequirement2 : this.getDesignRequirementsStep2()) {
       designRequirement2.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
-      for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT_STEP2,
+      for (UUID id : linkController.getLinksFor(LinkingType.DR2_CausalSC_LINK,
           designRequirement2.getId())) {
         linkString += causalController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
       }

@@ -1,7 +1,5 @@
 package xstampp.astpa.model;
 
-import static org.junit.Assert.*;
-
 import java.util.UUID;
 
 import org.junit.After;
@@ -9,9 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
-import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;

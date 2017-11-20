@@ -17,13 +17,11 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import xstampp.model.ObserverValue;
-
-class Adapter extends XmlAdapter<ListOfLinks, Map<ObserverValue, List<Link>>> {
+class Adapter extends XmlAdapter<ListOfLinks, Map<LinkingType, List<Link>>> {
 
   @Override
-  public Map<ObserverValue, List<Link>> unmarshal(ListOfLinks loe) throws Exception {
-    Map<ObserverValue, List<Link>> map = new HashMap<>();
+  public Map<LinkingType, List<Link>> unmarshal(ListOfLinks loe) throws Exception {
+    Map<LinkingType, List<Link>> map = new HashMap<>();
     for (Entry entry : loe.getList()) {
       entry.getList().forEach((link) -> link.setLinkType(entry.getKey()));
       map.put(entry.getKey(), entry.getList());
@@ -32,9 +30,9 @@ class Adapter extends XmlAdapter<ListOfLinks, Map<ObserverValue, List<Link>>> {
   }
 
   @Override
-  public ListOfLinks marshal(Map<ObserverValue, List<Link>> map) throws Exception {
+  public ListOfLinks marshal(Map<LinkingType, List<Link>> map) throws Exception {
     ListOfLinks loe = new ListOfLinks();
-    for (Map.Entry<ObserverValue, List<Link>> mapEntry : map.entrySet()) {
+    for (Map.Entry<LinkingType, List<Link>> mapEntry : map.entrySet()) {
       Entry entry = new Entry();
       entry.setKey(mapEntry.getKey());
       entry.getList().addAll(mapEntry.getValue());

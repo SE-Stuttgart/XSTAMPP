@@ -24,8 +24,8 @@ import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.IEntryFilter;
-import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.GridCellButton;
@@ -102,11 +102,11 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
       @Override
       public void proposalAccepted(IContentProposal proposal) {
         UUID id = ((LinkProposal) proposal).getProposalId();
-        UUID ucaCFLinkId = dataInterface.getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, id, factorId);
-        UUID linkId = dataInterface.getLinkController().addLink(ObserverValue.UcaCfLink_Component_LINK, ucaCFLinkId,
+        UUID ucaCFLinkId = dataInterface.getLinkController().addLink(LinkingType.UCA_CausalFactor_LINK, id, factorId);
+        UUID linkId = dataInterface.getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, ucaCFLinkId,
             component.getId());
-        for (UUID hazId : dataInterface.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK, id)) {
-          dataInterface.getLinkController().addLink(ObserverValue.UCAEntryLink_HAZ_LINK, linkId, hazId);
+        for (UUID hazId : dataInterface.getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, id)) {
+          dataInterface.getLinkController().addLink(LinkingType.UCAEntryLink_HAZ_LINK, linkId, hazId);
         }
         grid.redraw();
       }

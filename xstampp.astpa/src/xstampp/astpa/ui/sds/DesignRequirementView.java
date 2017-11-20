@@ -18,6 +18,7 @@ import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.Step0ConstraintsLinkSupport;
 import xstampp.model.ObserverValue;
@@ -44,7 +45,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
   }
 
   protected void initialize() {
-    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT, ObserverValue.DR0_SC_LINK));
+    setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT, ObserverValue.LINKING));
   }
 
   @Override
@@ -56,7 +57,7 @@ public class DesignRequirementView extends CommonTableView<IDesignRequirementVie
   @Override
   protected void addLinkSupports() {
     addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.DR0_SC_LINK));
+        LinkingType.DR0_SC_LINK));
   }
 
   /**

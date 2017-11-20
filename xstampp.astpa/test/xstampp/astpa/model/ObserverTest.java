@@ -285,13 +285,13 @@ public class ObserverTest implements Observer {
 		UUID hazard = this.dataModel.addHazard("", "");
 		this.addToNominal(ObserverValue.HAZARD);
 		this.dataModel.addLink(accident, hazard);
-		this.addToNominal(ObserverValue.HAZ_ACC_LINK);
+		this.addToNominal(ObserverValue.LINKING);
 		this.dataModel.getAllAccidents();
 		this.dataModel.getAllHazards();
 		this.dataModel.getLinkedAccidents(hazard);
 		this.dataModel.getLinkedHazards(accident);
 		this.dataModel.deleteLink(accident, hazard);
-		this.addToNominal(ObserverValue.HAZ_ACC_LINK);
+		this.addToNominal(ObserverValue.LINKING);
 		Assert.assertEquals(this.nominal, this.actual);
 		
 		Assert.assertTrue(this.dataModel.hasUnsavedChanges());

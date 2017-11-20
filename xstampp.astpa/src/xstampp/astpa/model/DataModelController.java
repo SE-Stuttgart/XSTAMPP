@@ -88,6 +88,7 @@ import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.projectdata.ProjectDataController;
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.model.sds.SDSController;
@@ -186,6 +187,20 @@ public class DataModelController extends AbstractDataModel
 
   private String projectExtension;
   private boolean refreshLock;
+
+  /**
+   * When this boolean is true than all {@link IUndoCallback}s that are pushed to the
+   * {@link UndoRedoService} are recorded and added as one {@link IUndoCallback} when pushRecord is
+   * set to
+   * false.
+   */
+  private boolean recordCallbacks;
+  /**
+   * When this boolean is true and the {@link UndoRedoService} is currently recording than
+   * {@link UndoRedoService#pushRecord()} is called when
+   * {@link DataModelController#pushToUndo(IUndoCallback)} is called the next time.
+   */
+  private boolean pushRecord;
   private List<ObserverValue> blockedUpdates;
   private IUserSystem userSystem;
 
@@ -217,6 +232,8 @@ public class DataModelController extends AbstractDataModel
     this.extendedDataController = new ExtendedDataController();
     getIgnoreLTLValue();
     refreshLock = false;
+    this.recordCallbacks = false;
+    this.pushRecord = false;
     this.userSystem = new EmptyUserSystem();
     if (!testable) {
       Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
@@ -348,9 +365,11 @@ public class DataModelController extends AbstractDataModel
     ICausalComponent causalComponent = getCausalFactorController().getCausalComponent(component);
     UUID factorId = null;
     if (causalComponent != null) {
+      this.recordCallbacks = true;
       factorId = addCausalFactor();
-      UUID linkId = getLinkController().addLink(ObserverValue.UCA_CausalFactor_LINK, null, factorId);
-      getLinkController().addLink(ObserverValue.UcaCfLink_Component_LINK, linkId, componentId);
+      UUID linkId = getLinkController().addLink(LinkingType.UCA_CausalFactor_LINK, null, factorId);
+      this.pushRecord = true;
+      getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, linkId, componentId);
     }
     return factorId;
 
@@ -458,7 +477,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (getLinkController().addLink(ObserverValue.HAZ_ACC_LINK, accidentId, hazardId) != null) {
+    if (getLinkController().addLink(LinkingType.HAZ_ACC_LINK, accidentId, hazardId) != null) {
       return true;
     }
     return false;
@@ -549,7 +568,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (this.getLinkController().addLink(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId,
+    if (this.getLinkController().addLink(LinkingType.UCA_HAZ_LINK, unsafeControlActionId,
         hazardId) != null) {
       return true;
     }
@@ -700,7 +719,7 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (this.getLinkController().deleteLink(ObserverValue.HAZ_ACC_LINK, accidentId, hazardId)) {
+    if (this.getLinkController().deleteLink(LinkingType.HAZ_ACC_LINK, accidentId, hazardId)) {
       return false;
     }
     return true;
@@ -761,7 +780,7 @@ public class DataModelController extends AbstractDataModel
   }
 
   public List<Link> getAllHazAccLinks() {
-    return this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK);
+    return this.getLinkController().getLinksFor(LinkingType.HAZ_ACC_LINK);
   }
 
   @Override
@@ -793,7 +812,7 @@ public class DataModelController extends AbstractDataModel
   @Override
   public List<UCAHazLink> getAllUCALinks() {
     List<UCAHazLink> links = new ArrayList<>();
-    List<Link> linksFor = this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK);
+    List<Link> linksFor = this.getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK);
     for (Link link : linksFor) {
       links.add(new UCAHazLink(link.getLinkA(), link.getLinkB()));
     }
@@ -805,7 +824,7 @@ public class DataModelController extends AbstractDataModel
     return this.getControlActionController().getUCAList(new IEntryFilter<IUnsafeControlAction>() {
       @Override
       public boolean check(IUnsafeControlAction model) {
-        return getLinkController().isLinked(ObserverValue.UCA_HAZ_LINK, model.getId());
+        return getLinkController().isLinked(LinkingType.UCA_HAZ_LINK, model.getId());
       }
     });
   }
@@ -1010,7 +1029,7 @@ public class DataModelController extends AbstractDataModel
     if (hazardId == null) {
       return null;
     }
-    List<UUID> links = this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK, hazardId);
+    List<UUID> links = this.getLinkController().getLinksFor(LinkingType.HAZ_ACC_LINK, hazardId);
     List<ITableModel> result = new ArrayList<>();
     for (UUID link : links) {
       ITableModel accident = this.getAccident(link);
@@ -1026,7 +1045,7 @@ public class DataModelController extends AbstractDataModel
     if (accidentId == null) {
       return null;
     }
-    List<UUID> links = this.getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK, accidentId);
+    List<UUID> links = this.getLinkController().getLinksFor(LinkingType.HAZ_ACC_LINK, accidentId);
     List<ITableModel> result = new ArrayList<>();
     for (UUID link : links) {
       result.add(this.getHazard(link));
@@ -1050,7 +1069,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public List<UUID> getLinksOfUCA(UUID unsafeControlActionId) {
-    return this.getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
+    return this.getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, unsafeControlActionId);
   }
 
   @Override
@@ -1289,7 +1308,15 @@ public class DataModelController extends AbstractDataModel
           .getService(ISourceProviderService.class);
       UndoRedoService provider = (UndoRedoService) service
           .getSourceProvider(UndoRedoService.CAN_REDO);
+      if (this.recordCallbacks) {
+        this.recordCallbacks = false;
+        provider.startRecord();
+      }
       provider.push(callback);
+      if (this.pushRecord) {
+        this.pushRecord = false;
+        provider.pushRecord();
+      }
     }
   }
 
@@ -1354,7 +1381,7 @@ public class DataModelController extends AbstractDataModel
     if (!(this.getHazAccController().getAccident(accidentId) instanceof Accident)) {
       return false;
     }
-    getLinkController().deleteAllFor(ObserverValue.HAZ_ACC_LINK, accidentId);
+    getLinkController().deleteAllFor(LinkingType.HAZ_ACC_LINK, accidentId);
     boolean result = this.getHazAccController().removeAccident(accidentId);
     if (result) {
       this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
@@ -1454,7 +1481,7 @@ public class DataModelController extends AbstractDataModel
     if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
       return false;
     }
-    getLinkController().deleteAllFor(ObserverValue.HAZ_ACC_LINK, hazardId);
+    getLinkController().deleteAllFor(LinkingType.HAZ_ACC_LINK, hazardId);
     if (this.getHazAccController().removeHazard(hazardId)) {
       this.setUnsavedAndChanged(ObserverValue.HAZARD);
       return true;
@@ -1509,7 +1536,7 @@ public class DataModelController extends AbstractDataModel
     if ((unsafeControlActionId == null) || (hazardId == null)) {
       return false;
     }
-    if (this.getLinkController().deleteLink(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId,
+    if (this.getLinkController().deleteLink(LinkingType.UCA_HAZ_LINK, unsafeControlActionId,
         hazardId)) {
       this.setUnsavedAndChanged();
       return true;
@@ -1523,10 +1550,10 @@ public class DataModelController extends AbstractDataModel
     if (unsafeControlActionId == null) {
       return false;
     }
-    this.getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
+    this.getLinkController().deleteAllFor(LinkingType.UCA_HAZ_LINK, unsafeControlActionId);
 
     if (result) {
-      this.setUnsavedAndChanged(ObserverValue.UCA_HAZ_LINK);
+      this.setUnsavedAndChanged(ObserverValue.LINKING);
     }
     return result;
   }
@@ -1547,12 +1574,12 @@ public class DataModelController extends AbstractDataModel
           }
         });
     if (this.getControlActionController().removeUnsafeControlAction(unsafeControlActionId)) {
-      getLinkController().deleteAllFor(ObserverValue.UCA_HAZ_LINK, unsafeControlActionId);
+      getLinkController().deleteAllFor(LinkingType.UCA_HAZ_LINK, unsafeControlActionId);
       for (ITableModel model : constraints) {
-        getLinkController().deleteAllFor(ObserverValue.DR1_CSC_LINK, model.getId());
+        getLinkController().deleteAllFor(LinkingType.DR1_CSC_LINK, model.getId());
       }
       this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
-      this.setUnsavedAndChanged(ObserverValue.UCA_HAZ_LINK);
+      this.setUnsavedAndChanged(ObserverValue.LINKING);
       return true;
     }
     return false;
@@ -1619,8 +1646,7 @@ public class DataModelController extends AbstractDataModel
     if (oldDescription != null) {
       UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
       changeCallback.setDescriptionChange(oldDescription, description);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -1643,8 +1669,7 @@ public class DataModelController extends AbstractDataModel
     if (oldTitle != null) {
       UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
       changeCallback.setTitleChange(oldTitle, title);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -1696,8 +1721,7 @@ public class DataModelController extends AbstractDataModel
       UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
           controlAction);
       changeCallback.setDescriptionChange(oldDescription, description);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -1720,8 +1744,7 @@ public class DataModelController extends AbstractDataModel
       UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
           controlAction);
       changeCallback.setTitleChange(oldTitle, title);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
+      update(this, changeCallback);
       return true;
     }
     if (changeComponentText(((ControlAction) controlAction).getComponentLink(), title)) {
@@ -1804,8 +1827,7 @@ public class DataModelController extends AbstractDataModel
     if (oldDescription != null) {
       UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
       changeCallback.setDescriptionChange(oldDescription, description);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.HAZARD);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -1824,8 +1846,7 @@ public class DataModelController extends AbstractDataModel
     if (oldTitle != null) {
       UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
       changeCallback.setTitleChange(oldTitle, title);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.HAZARD);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -1935,8 +1956,7 @@ public class DataModelController extends AbstractDataModel
       UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
           this, safetyConstraint);
       changeCallback.setDescriptionChange(oldDescription, description);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -1956,8 +1976,7 @@ public class DataModelController extends AbstractDataModel
       UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
           this, safetyConstraint);
       changeCallback.setTitleChange(oldTitle, title);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -1987,8 +2006,7 @@ public class DataModelController extends AbstractDataModel
     if (oldDescription != null) {
       UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoal);
       changeCallback.setDescriptionChange(oldDescription, description);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -2007,8 +2025,7 @@ public class DataModelController extends AbstractDataModel
     if (oldTitle != null) {
       UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoal);
       changeCallback.setTitleChange(oldTitle, title);
-      pushToUndo(changeCallback);
-      this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
+      update(this, changeCallback);
       return true;
     }
     return false;
@@ -2025,8 +2042,7 @@ public class DataModelController extends AbstractDataModel
       UndoUCAChangesCallback callback = new UndoUCAChangesCallback(this, unsafeControlActionId);
       callback.setDescriptionChange(oldDescription, description);
 
-      pushToUndo(callback);
-      this.setUnsavedAndChanged(ObserverValue.UNSAFE_CONTROL_ACTION);
+      update(this, callback);
       return true;
     }
     return false;
@@ -2095,7 +2111,7 @@ public class DataModelController extends AbstractDataModel
         ProjectManager.getLOGGER().debug("Trigger update for " + value.name()); //$NON-NLS-1$
       }
       switch (value) {
-      case UCA_HAZ_LINK:
+      case LINKING:
       case SEVERITY: {
         PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 

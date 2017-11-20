@@ -16,8 +16,6 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import xstampp.model.ObserverValue;
-
 @XmlType(name = "idLink")
 public final class Link {
 
@@ -33,9 +31,9 @@ public final class Link {
   @XmlAttribute
   private String note;
 
-  private ObserverValue linkType;
+  private LinkingType linkType;
 
-  public Link(UUID a, UUID b, ObserverValue linkType) {
+  public Link(UUID a, UUID b, LinkingType linkType) {
     linkA = a;
     linkB = b;
     this.linkType = linkType;
@@ -118,11 +116,11 @@ public final class Link {
     return super.equals(obj);
   }
 
-  public ObserverValue getLinkType() {
+  public LinkingType getLinkType() {
     return linkType;
   }
 
-  void setLinkType(ObserverValue linkType) {
+  void setLinkType(LinkingType linkType) {
     this.linkType = linkType;
   }
 }

@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
@@ -78,7 +79,7 @@ public class CellButtonImportConstraint extends CellButton {
           @Override
           public void proposalAccepted(IContentProposal proposal) {
             UUID constraintId = dataModel.getCausalFactorController().addSafetyConstraint(proposal.getDescription());
-            dataModel.getLinkController().addLink(ObserverValue.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
+            dataModel.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
                 constraintId);
             grid.redraw();
           }

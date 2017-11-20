@@ -22,9 +22,9 @@ import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.model.interfaces.Severity;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.SeverityButton;
 import xstampp.astpa.ui.SeverityButton.SeverityCheck;
-import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellRenderer;
 import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
@@ -60,7 +60,7 @@ public class UcaIdCell extends GridCellText {
           @Override
           public boolean checkSeverity(Severity serverity) {
             for (UUID uuid : ucaDataModel.getLinkController()
-                .getLinksFor(ObserverValue.UCA_HAZ_LINK, ucaId)) {
+                .getLinksFor(LinkingType.UCA_HAZ_LINK, ucaId)) {
               Severity hazardSeverity = ((ATableModel) ucaDataModel.getHazard(uuid))
                   .getSeverity();
               if (serverity.compareTo(hazardSeverity) < 0) {

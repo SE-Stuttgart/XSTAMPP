@@ -18,6 +18,7 @@ import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.HazardLinkSupport;
 import xstampp.astpa.ui.linkingSupport.Step0ConstraintsLinkSupport;
@@ -46,34 +47,33 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
   /**
    * @author Jarkko Heidenwag
    * @param tableHeader
-   *          TODO
+   *          The caption of the view
    * 
    */
   public AccidentsView(String tableHeader) {
     super(EnumSet.of(TableStyle.RESTRICTED, TableStyle.WITH_SEVERITY), tableHeader);
-    setUpdateValues(EnumSet.of(ObserverValue.ACCIDENT, ObserverValue.SEVERITY,
-        ObserverValue.HAZ_ACC_LINK, ObserverValue.ACC_S0_LINK));
+    setUpdateValues(EnumSet.of(ObserverValue.ACCIDENT, ObserverValue.SEVERITY, ObserverValue.LINKING));
   }
 
   /**
    * @author Jarkko Heidenwag
    * @param tableHeader
-   *          TODO
+   *          The caption of the view
    * @param style
    * 
    */
   public AccidentsView(String tableHeader, EnumSet<TableStyle> style) {
     super(style, tableHeader);
     setUpdateValues(EnumSet.of(ObserverValue.ACCIDENT, ObserverValue.SEVERITY,
-        ObserverValue.HAZ_ACC_LINK, ObserverValue.ACC_S0_LINK));
+        ObserverValue.LINKING));
   }
 
   @Override
   protected void addLinkSupports() {
     addLinkSupport(new HazardLinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.HAZ_ACC_LINK));
+        LinkingType.HAZ_ACC_LINK));
     addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
-        ObserverValue.ACC_S0_LINK));
+        LinkingType.ACC_S0_LINK));
   }
 
   @Override

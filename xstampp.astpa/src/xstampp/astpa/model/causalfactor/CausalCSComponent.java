@@ -10,8 +10,8 @@ package xstampp.astpa.model.causalfactor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -50,7 +50,7 @@ public class CausalCSComponent {
       IControlActionController caController,
       LinkController linkController) {
     this.text = child.getText();
-    SortedMap<ICausalFactor, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child, linkController);
+    Map<ICausalFactor, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child, linkController);
     for (Entry<ICausalFactor, List<Link>> entry : factorBasedMap.entrySet()) {
       ((CausalFactor) entry.getKey()).prepareForExport(hazAccController, allRefinedRules, caController,
           controller, entry.getValue(), linkController);

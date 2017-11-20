@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.GC;
 
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellRenderer;
 import xstampp.ui.common.grid.GridCellTextEditor;
@@ -46,7 +47,7 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   @Override
   public String getCurrentText() {
     Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(ObserverValue.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
+        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
     UUID constraintId = safetyOption.orElse(null);
     return causalDataInterface.getCausalFactorController().getConstraintTextFor(constraintId);
   }
@@ -55,7 +56,7 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     clearCellButtons();
     Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(ObserverValue.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
+        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
     if (!safetyOption.isPresent()) {
       addCellButton(
           new NewConstraintButton(ucaHazLink, causalDataInterface));
@@ -73,7 +74,7 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   @Override
   public void updateDataModel(String newText) {
     Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(ObserverValue.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
+        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
     if (safetyOption.isPresent()) {
       causalDataInterface.getCausalFactorController().setSafetyConstraintText(safetyOption.get(), newText);
     }
@@ -82,9 +83,9 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   @Override
   public void delete() {
     Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(ObserverValue.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
+        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
     if (safetyOption.isPresent()) {
-      causalDataInterface.getLinkController().deleteLink(ObserverValue.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
+      causalDataInterface.getLinkController().deleteLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
           safetyOption.get());
     }
   }

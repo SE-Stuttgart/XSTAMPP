@@ -26,7 +26,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.model.ObserverValue;
+import xstampp.astpa.model.linking.LinkingType;
 
 public class Step0Progress extends AbstractProgressSheetCreator {
 
@@ -80,7 +80,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
   private int addAccidents(Sheet sheet, Row hazRow, int rowIndex, ITableModel hazModel) {
     int index = rowIndex;
     Row accRow = hazRow;
-    for (UUID accId : getController().getLinkController().getLinksFor(ObserverValue.HAZ_ACC_LINK,
+    for (UUID accId : getController().getLinkController().getLinksFor(LinkingType.HAZ_ACC_LINK,
         hazModel.getId())) {
       if (accRow == null) {
         accRow = createRow(sheet, ++index);
@@ -117,7 +117,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
   private int addSafetyConstraints(Sheet sheet, Row accRow, int rowIndex, UUID accId) {
     int index = rowIndex;
     Row scRow = accRow;
-    for (UUID s0Id : getController().getLinkController().getLinksFor(ObserverValue.ACC_S0_LINK,
+    for (UUID s0Id : getController().getLinkController().getLinksFor(LinkingType.ACC_S0_LINK,
         accId)) {
       if (scRow == null) {
         scRow = createRow(sheet, ++index);

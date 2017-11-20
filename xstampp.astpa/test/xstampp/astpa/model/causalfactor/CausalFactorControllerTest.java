@@ -49,8 +49,8 @@ public class CausalFactorControllerTest extends TestObserver {
         ComponentType.CONTROLLER, 1);
     UUID factor = dataModel.addCausalFactor(componentId);
     Assert.assertNotNull(dataModel.getCausalFactorController().getCausalFactor(factor));
-    Assert.assertTrue(hasUpdates(Arrays.asList(ObserverValue.CAUSAL_FACTOR, ObserverValue.UCA_CausalFactor_LINK,
-        ObserverValue.UcaCfLink_Component_LINK)));
+    Assert.assertTrue(hasUpdates(Arrays.asList(ObserverValue.CAUSAL_FACTOR, ObserverValue.LINKING,
+        ObserverValue.LINKING)));
   }
 
   @Test
@@ -96,11 +96,10 @@ public class CausalFactorControllerTest extends TestObserver {
   @Test
   public void testRemoveSafetyConstraint() {
     DataModelController dataModel = new DataModelController(true);
-    dataModel.addObserver(getCleanObserver());
     UUID constraint = dataModel.getCausalFactorController().addSafetyConstraint("Test");
     dataModel.addObserver(getCleanObserver());
     Assert.assertNotNull(constraint);
-    Assert.assertNotNull(dataModel.getCausalFactorController().removeSafetyConstraint(constraint));
+    Assert.assertTrue(dataModel.getCausalFactorController().removeSafetyConstraint(constraint));
     Assert.assertTrue(hasUpdates(Arrays.asList(ObserverValue.CAUSAL_FACTOR)));
   }
 }

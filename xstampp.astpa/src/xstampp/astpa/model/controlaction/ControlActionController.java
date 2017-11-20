@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.Assert;
 
 import messages.Messages;
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -45,9 +44,11 @@ import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
+import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 
@@ -410,7 +411,7 @@ public class ControlActionController extends Observable implements IControlActio
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         List<ITableModel> linkedHazards = new ArrayList<>();
-        for (UUID link : linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION,
+        for (UUID link : linkController.getLinksFor(LinkingType.UNSAFE_CONTROL_ACTION,
             unsafeControlAction.getId())) {
           linkedHazards.add(hazAccController.getHazard(link));
         }
@@ -429,7 +430,7 @@ public class ControlActionController extends Observable implements IControlActio
         unsafeControlAction.setLinks(linkString.toString());
 
         String links = ""; //$NON-NLS-1$
-        for (UUID id : linkController.getLinksFor(ObserverValue.DESIGN_REQUIREMENT_STEP1,
+        for (UUID id : linkController.getLinksFor(LinkingType.DR1_CSC_LINK,
             unsafeControlAction.getCorrespondingSafetyConstraint().getId())) {
           links += sdsController.getDesignRequirement(id, ObserverValue.DESIGN_REQUIREMENT_STEP1)
               .getIdString() + ", "; //$NON-NLS-1$
@@ -470,7 +471,7 @@ public class ControlActionController extends Observable implements IControlActio
 
   public void fetchUCASeverity(LinkController linkController, HazAccController hazController) {
     for (ICorrespondingUnsafeControlAction uca : getAllUnsafeControlActions()) {
-      for (UUID hazLink : linkController.getLinksFor(ObserverValue.UCA_HAZ_LINK, uca.getId())) {
+      for (UUID hazLink : linkController.getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())) {
         Severity severity = hazController.getHazard(hazLink).getSeverity();
         if (severity.compareTo(((UnsafeControlAction) uca).getSeverity()) > 0) {
           ((UnsafeControlAction) uca).setSeverity(severity);
@@ -491,12 +492,12 @@ public class ControlActionController extends Observable implements IControlActio
         unsafeControlAction.prepareForSave();
       }
     }
-    for (Link link : linkController.getLinksFor(ObserverValue.UNSAFE_CONTROL_ACTION)) {
-      linkController.addLink(ObserverValue.UCA_HAZ_LINK, link.getLinkA(), link.getLinkB());
+    for (Link link : linkController.getLinksFor(LinkingType.UNSAFE_CONTROL_ACTION)) {
+      linkController.addLink(LinkingType.UCA_HAZ_LINK, link.getLinkA(), link.getLinkB());
     }
-    linkController.deleteAllFor(ObserverValue.UNSAFE_CONTROL_ACTION, null);
+    linkController.deleteAllFor(LinkingType.UNSAFE_CONTROL_ACTION, null);
     for (UCAHazLink ucaHazLink : getAllUCALinks()) {
-      linkController.addLink(ObserverValue.UCA_HAZ_LINK, ucaHazLink.getHazardId(),
+      linkController.addLink(LinkingType.UCA_HAZ_LINK, ucaHazLink.getHazardId(),
           ucaHazLink.getUnsafeControlActionId());
     }
     this.links = null;

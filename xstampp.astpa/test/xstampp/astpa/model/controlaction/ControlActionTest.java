@@ -5,8 +5,6 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 
 /**
@@ -25,8 +23,6 @@ public class ControlActionTest {
 	 */
 	@Test
 	public void controlActionTest() {
-	  DataModelController controller = new DataModelController();
-	  
 		// check parameterized constructor
 		ControlAction controlAction = new ControlAction("Test", "Test description", 1);
 		Assert.assertEquals("Test", controlAction.getTitle());

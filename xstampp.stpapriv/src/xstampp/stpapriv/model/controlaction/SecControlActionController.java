@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import messages.Messages;
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
@@ -50,6 +49,7 @@ import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
+import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 import xstampp.stpapriv.messages.PrivMessages;
 import xstampp.stpapriv.model.vulloss.VulLossController;

@@ -9,14 +9,19 @@
  * Contributors:
  * Lukas Balzer - initial API and implementation
  ******************************************************************************/
-package xstampp.astpa.model;
+package xstampp.model;
 
 import java.util.UUID;
 
-public interface NumberedEntry {
+public interface NumberedEntry extends Comparable<NumberedEntry> {
   boolean setNumber(int i);
 
   int getNumber();
 
   UUID getId();
+
+  @Override
+  default int compareTo(NumberedEntry o) {
+    return this.getNumber() - o.getNumber();
+  }
 }

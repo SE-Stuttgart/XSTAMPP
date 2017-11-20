@@ -1,4 +1,4 @@
-package xstampp.astpa.model;
+package xstampp.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,5 +28,4 @@ public abstract class AbstractNumberedEntry implements NumberedEntry {
   public int getNumber() {
     return this.number;
   }
-
 }

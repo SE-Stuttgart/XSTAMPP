@@ -26,8 +26,8 @@ public class TestLinkController extends TestObserver {
 
   @Test
   public final void testDeleteLinksForUUID() {
-    Link ucaCfLink = new Link(this.ids.get(0), this.ids.get(1), ObserverValue.UCA_CausalFactor_LINK);
-    Link ucaEntryLink = new Link(ucaCfLink.getId(), this.ids.get(3), ObserverValue.UcaCfLink_Component_LINK);
+    Link ucaCfLink = new Link(this.ids.get(0), this.ids.get(1), LinkingType.UCA_CausalFactor_LINK);
+    Link ucaEntryLink = new Link(ucaCfLink.getId(), this.ids.get(3), LinkingType.UcaCfLink_Component_LINK);
     LinkController linkController = new LinkController(Arrays.asList(ucaCfLink,ucaEntryLink));
     assertTrue(linkController.getLinkMapSize() == 2);
     linkController.deleteLinksFor(this.ids.get(0), 2);
@@ -38,10 +38,10 @@ public class TestLinkController extends TestObserver {
   public final void testAddLinks() {
     LinkController linkController = new LinkController();
     linkController.addObserver(getCleanObserver());
-    linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, this.ids.get(0), null);
-    linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, this.ids.get(0), this.ids.get(2));
-    linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, this.ids.get(1), this.ids.get(2));
-    assertTrue(hasUpdates(Arrays.asList(ObserverValue.UCA_CausalFactor_LINK,ObserverValue.UCA_CausalFactor_LINK,ObserverValue.UCA_CausalFactor_LINK)));
+    linkController.addLink(LinkingType.UCA_CausalFactor_LINK, this.ids.get(0), null);
+    linkController.addLink(LinkingType.UCA_CausalFactor_LINK, this.ids.get(0), this.ids.get(2));
+    linkController.addLink(LinkingType.UCA_CausalFactor_LINK, this.ids.get(1), this.ids.get(2));
+    assertTrue(hasUpdates(Arrays.asList(ObserverValue.LINKING,ObserverValue.LINKING,ObserverValue.LINKING)));
     assertTrue(linkController.getLinkMapSize() == 1);
   }
 }

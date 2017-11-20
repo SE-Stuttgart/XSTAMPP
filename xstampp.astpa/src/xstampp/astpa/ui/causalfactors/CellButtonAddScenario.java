@@ -21,6 +21,7 @@ import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
 import xstampp.astpa.model.linking.Link;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IValueCombie;
 import xstampp.model.ObserverValue;
@@ -52,14 +53,14 @@ public class CellButtonAddScenario extends CellButton {
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     AbstractLtlProviderData data = new AbstractLtlProviderData();
     List<UUID> ids = new ArrayList<>();
-    Link link = this.dataModel.getLinkController().getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+    Link link = this.dataModel.getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
         this.causalEntryLink.getLinkA());
     ids.add(link.getLinkA());
     data.setRelatedUcas(ids);
     UUID id = dataModel.addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, null,
         IValueCombie.TYPE_ANYTIME);
     if (id != null) {
-      this.dataModel.getLinkController().addLink(ObserverValue.UCAEntryLink_Scenario_LINK, this.causalEntryLink.getId(), id);
+      this.dataModel.getLinkController().addLink(LinkingType.UCAEntryLink_Scenario_LINK, this.causalEntryLink.getId(), id);
     }
 
   }

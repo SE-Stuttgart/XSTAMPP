@@ -18,7 +18,7 @@ import xstampp.util.IUndoCallback;
 
 public class UndoChangeLinkingCallback implements IUndoCallback {
 
-  private ObserverValue linkType;
+  private LinkingType linkType;
   private LinkController linkController;
   private UUID oldA;
   private UUID oldB;
@@ -30,7 +30,7 @@ public class UndoChangeLinkingCallback implements IUndoCallback {
    * 
    * @param linkController the {@link LinkController} that contains the linking information
    * @param linkType
-   *          one of the LINK constants in {@link ObserverValue}
+   *          one of the LINK constants in {@link LinkingType}
    * @param linkId
    *          the {@link UUID} of a {@link Link}
    * @param oldA
@@ -38,7 +38,7 @@ public class UndoChangeLinkingCallback implements IUndoCallback {
    * @param newA
    * @param newB
    */
-  public UndoChangeLinkingCallback(LinkController linkController, ObserverValue linkType,
+  public UndoChangeLinkingCallback(LinkController linkController, LinkingType linkType,
       UUID linkId, UUID oldA, UUID oldB,UUID newA, UUID newB) {
     this.linkController = linkController;
     this.linkType = linkType;
@@ -61,7 +61,7 @@ public class UndoChangeLinkingCallback implements IUndoCallback {
 
   @Override
   public ObserverValue getChangeConstant() {
-    return linkType;
+    return ObserverValue.LINKING;
   }
 
 }

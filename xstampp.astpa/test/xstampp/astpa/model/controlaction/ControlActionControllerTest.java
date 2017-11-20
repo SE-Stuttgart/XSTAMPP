@@ -162,11 +162,6 @@ public class ControlActionControllerTest {
 		Assert.assertEquals("New corresponding safety constraint", dataModel.getCorrespondingSafetyConstraints().get(0)
 			.getText());
 		
-		// try to set the corresponding safety constraint where the
-		// unsafe control action does not exist
-		Assert.assertNull(dataModel.setCorrespondingSafetyConstraint(UUID.randomUUID(), ""));
-		
-		// get the links
 		Assert.assertEquals(hazId1, dataModel.getLinkedHazardsOfUCA(ucaId1).get(0).getId());
 		
 		// check what happens when the links of a unsafe control action that not
@@ -190,6 +185,10 @@ public class ControlActionControllerTest {
 		// try to remove a unsafe control action that does not exist in the
 		// model
 		Assert.assertFalse(dataModel.removeUnsafeControlAction(UUID.randomUUID()));
+
+    // try to set the corresponding safety constraint where the
+    // unsafe control action does not exist
+    Assert.assertNull(dataModel.setCorrespondingSafetyConstraint(UUID.randomUUID(), ""));
 	}
 	
 	/**
@@ -230,7 +229,6 @@ public class ControlActionControllerTest {
 		Assert.assertFalse(dataModel.removeUCAHazardLink(UUID.randomUUID(), null));
 		Assert.assertFalse(dataModel.setUcaDescription(null, null));
 		Assert.assertFalse(dataModel.setUcaDescription(UUID.randomUUID(), null));
-		Assert.assertNull(dataModel.setCorrespondingSafetyConstraint(null, null));
 		Assert.assertNull(dataModel.setCorrespondingSafetyConstraint(UUID.randomUUID(), null));
 	}
 }

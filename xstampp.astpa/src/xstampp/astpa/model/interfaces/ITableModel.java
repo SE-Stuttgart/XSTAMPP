@@ -9,8 +9,8 @@
 
 package xstampp.astpa.model.interfaces;
 
-import xstampp.astpa.model.NumberedEntry;
 import xstampp.model.ITableEntry;
+import xstampp.model.NumberedEntry;
 
 /**
  * @author Lukas Balzer

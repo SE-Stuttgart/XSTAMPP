@@ -28,7 +28,7 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.model.ObserverValue;
+import xstampp.astpa.model.linking.LinkingType;
 
 public class Step1HazardProgress extends AbstractProgressSheetCreator {
 
@@ -74,7 +74,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
 
   private int createCAs(Sheet sheet, Row hazRow, int rowIndex, ITableModel hazModel) {
     TreeMap<ITableModel, List<UUID>> caMap = new TreeMap<>();
-    for (UUID uuid : getController().getLinkController().getLinksFor(ObserverValue.UCA_HAZ_LINK,
+    for (UUID uuid : getController().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
         hazModel.getId())) {
       ITableModel actionForUca = getController().getControlActionForUca(uuid);
       if (!caMap.containsKey(actionForUca)) {

@@ -155,4 +155,6 @@ public interface ICausalController {
    */
   SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
       LinkController linkController, IControlActionController caController);
+
+  boolean removeSafetyConstraint(UUID constraintId);
 }

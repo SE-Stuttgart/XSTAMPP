@@ -394,7 +394,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
       ObserverValue type = (ObserverValue) updatedValue;
       switch (type) {
       case UNSAFE_CONTROL_ACTION:
-      case UCA_HAZ_LINK:
+      case LINKING:
       case HAZARD:
         updateHazards();
       case CONTROL_ACTION:

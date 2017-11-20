@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlElement;
 
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.model.ITableEntry;
 
 /**
  * Abstract class for everything that can be shown in a table
@@ -243,11 +242,6 @@ public abstract class ATableModel extends EntryWithSeverity
       return true;
     }
     return false;
-  }
-
-  @Override
-  public int compareTo(ITableEntry o) {
-    return this.getNumber() - o.getNumber();
   }
 
   public void setCreatedBy(UUID createdBy) {

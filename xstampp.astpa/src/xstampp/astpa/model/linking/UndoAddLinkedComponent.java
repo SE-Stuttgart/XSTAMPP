@@ -6,7 +6,7 @@ import java.util.UUID;
 import xstampp.model.ObserverValue;
 import xstampp.util.IUndoCallback;
 
-public class UndoAddLinkedComponent implements IUndoCallback {
+public abstract class UndoAddLinkedComponent implements IUndoCallback {
 
   private LinkController linkController;
   private UUID componentId;
@@ -18,11 +18,6 @@ public class UndoAddLinkedComponent implements IUndoCallback {
     this.linkDepth = linkDepth;
     deleteLinksFor = linkController.deleteLinksFor(this.componentId, this.linkDepth);
     this.linkController = linkController;
-  }
-
-  @Override
-  public void undo() {
-    this.deleteLinksFor = this.linkController.deleteLinksFor(this.componentId, this.linkDepth);
   }
 
   @Override

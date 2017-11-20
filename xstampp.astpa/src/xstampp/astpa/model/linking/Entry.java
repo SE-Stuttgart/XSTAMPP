@@ -20,12 +20,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.model.ObserverValue;
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Entry {
   @XmlAttribute
-  private ObserverValue key;
+  private LinkingType key;
   @XmlElementWrapper(name = "links")
   @XmlElement(name = "link")
   private List<Link> list;
@@ -34,11 +32,11 @@ public class Entry {
     this.list = new ArrayList<>();
   }
 
-  public ObserverValue getKey() {
+  public LinkingType getKey() {
     return key;
   }
 
-  public void setKey(ObserverValue value) {
+  public void setKey(LinkingType value) {
     key = value;
   }
 

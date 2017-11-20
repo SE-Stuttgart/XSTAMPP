@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.AbstractNumberedEntry;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -28,8 +27,9 @@ import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.AbstractLTLProvider;
-import xstampp.model.ObserverValue;
+import xstampp.model.AbstractNumberedEntry;
 
 /**
  * A causal factor
@@ -114,8 +114,8 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
     
-    UUID link = linkController.addLink(ObserverValue.UCA_CausalFactor_LINK, null, id);
-    linkController.addLink(ObserverValue.UcaCfLink_Component_LINK, link, componentId);
+    UUID link = linkController.addLink(LinkingType.UCA_CausalFactor_LINK, null, id);
+    linkController.addLink(LinkingType.UcaCfLink_Component_LINK, link, componentId);
 
     getEntries().forEach(entry -> {
       entry.prepareForSave(componentId, this, linkController, safetyConstraints);

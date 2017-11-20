@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -40,9 +39,11 @@ import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.AbstractLTLProvider;
+import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 
 /**
@@ -93,17 +94,13 @@ public class CausalFactorController extends Observable implements ICausalControl
 
   @Override
   public UUID addCausalFactor() {
-    CausalFactor factor = new CausalFactor("");
-    if (this.causalFactors.add(factor)) {
-      setChanged();
-      notifyObservers(ObserverValue.CAUSAL_FACTOR);
-      return factor.getId();
-    }
-    return null;
+    return this.addCausalFactor(new CausalFactor(""));
   }
 
   UUID addCausalFactor(CausalFactor factor) {
     if (this.causalFactors.add(factor)) {
+      setChanged();
+      notifyObservers(new UndoAddCausalFactor(this, factor, linkController));
       return factor.getId();
     }
     return null;
@@ -146,12 +143,12 @@ public class CausalFactorController extends Observable implements ICausalControl
   }
 
   @Override
-  public boolean removeCausalFactor(UUID causalFactor) {
-    Optional<CausalFactor> removeOptional = this.causalFactors.stream()
-        .filter(factor -> factor.getId().equals(causalFactor)).findFirst();
-    if (removeOptional.isPresent() && this.causalFactors.remove(removeOptional.get())) {
+  public boolean removeSafetyConstraint(UUID constraintId) {
+    Optional<CausalSafetyConstraint> removeOptional = this.causalSafetyConstraints.stream()
+        .filter(factor -> factor.getId().equals(constraintId)).findFirst();
+    if (removeOptional.isPresent() && this.causalSafetyConstraints.remove(removeOptional.get())) {
       setChanged();
-      notifyObservers(new UndoRemoveCausalFactor(this, removeOptional.get(), this.linkController));
+      notifyObservers(ObserverValue.CAUSAL_FACTOR);
       return true;
     }
     return false;
@@ -187,7 +184,7 @@ public class CausalFactorController extends Observable implements ICausalControl
       LinkController linkController) {
     this.componentsList = new ArrayList<>();
     for (IRectangleComponent child : children) {
-      if (linkController.isLinked(ObserverValue.UcaCfLink_Component_LINK, child.getId())) {
+      if (linkController.isLinked(LinkingType.UcaCfLink_Component_LINK, child.getId())) {
         CausalCSComponent comp = new CausalCSComponent();
         comp.prepareForExport(this, hazAccController, child, allRefinedRules,
             caController, linkController);
@@ -200,9 +197,9 @@ public class CausalFactorController extends Observable implements ICausalControl
   public SortedMap<ICausalFactor, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
       LinkController linkController) {
     SortedMap<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
-    linkController.getRawLinksFor(ObserverValue.UcaCfLink_Component_LINK, component.getId())
+    linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())
         .forEach((link) -> {
-          Link ucaCFLink = linkController.getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+          Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
               link.getLinkA());
           ICausalFactor factor = getCausalFactor(ucaCFLink.getLinkB());
 
@@ -218,9 +215,9 @@ public class CausalFactorController extends Observable implements ICausalControl
   public SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
       LinkController linkController, IControlActionController caController) {
     SortedMap<IUnsafeControlAction, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
-    linkController.getRawLinksFor(ObserverValue.UcaCfLink_Component_LINK, component.getId())
+    linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())
         .forEach((link) -> {
-          Link ucaCFLink = linkController.getLinkObjectFor(ObserverValue.UCA_CausalFactor_LINK,
+          Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
               link.getLinkA());
           IUnsafeControlAction factor = caController.getUnsafeControlAction(ucaCFLink.getLinkA());
 

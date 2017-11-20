@@ -42,8 +42,8 @@ import org.eclipse.ui.PlatformUI;
 import messages.Messages;
 import xstampp.astpa.model.interfaces.ILinkModel;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
-import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 
@@ -55,11 +55,11 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   private M dataInterface;
   private java.util.List<UUID> available;
   private List<Listener> changeListeners;
-  private ObserverValue type;
+  private LinkingType type;
   private List<ITableModel> modelList;
   private Composite linkComp;
 
-  public LinkSupport(M dataInterface, ObserverValue type) {
+  public LinkSupport(M dataInterface, LinkingType type) {
     this.dataInterface = dataInterface;
     this.type = type;
     this.changeListeners = new ArrayList<>();
@@ -239,7 +239,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
 
   protected abstract String getTitle();
 
-  public ObserverValue getLinkType() {
+  public LinkingType getLinkType() {
     return type;
   }
 

@@ -25,11 +25,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.NumberedArrayList;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
+import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 
 /**
@@ -234,10 +235,10 @@ public class HazAccController extends Observable implements IHazAccController {
     for (Accident accident : this.getAccidents()) {
       accident.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
-      for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, accident.getId())) {
+      for (UUID id : linkController.getLinksFor(LinkingType.HAZ_ACC_LINK, accident.getId())) {
         linkString += getHazard(id).getIdString() + ", "; //$NON-NLS-1$
       }
-      for (UUID id : linkController.getLinksFor(ObserverValue.ACC_S0_LINK, accident.getId())) {
+      for (UUID id : linkController.getLinksFor(LinkingType.ACC_S0_LINK, accident.getId())) {
         linkString += sdsController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
       }
       if (linkString.length() > 2) {
@@ -247,7 +248,7 @@ public class HazAccController extends Observable implements IHazAccController {
     for (Hazard hazard : this.getHazards()) {
       hazard.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
-      for (UUID id : linkController.getLinksFor(ObserverValue.HAZ_ACC_LINK, hazard.getId())) {
+      for (UUID id : linkController.getLinksFor(LinkingType.HAZ_ACC_LINK, hazard.getId())) {
         linkString += getAccident(id).getIdString() + ", "; //$NON-NLS-1$
       }
       if (linkString.length() > 2) {
@@ -280,7 +281,7 @@ public class HazAccController extends Observable implements IHazAccController {
     isUsed |= hazards != null;
     if (this.links != null) {
       for (HazAccLink link : this.links) {
-        linkController.addLink(ObserverValue.HAZ_ACC_LINK, link.getAccidentId(),
+        linkController.addLink(LinkingType.HAZ_ACC_LINK, link.getAccidentId(),
             link.getHazardId());
       }
       links = null;

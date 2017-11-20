@@ -17,7 +17,6 @@ public class UndoAddCausalFactor extends UndoAddLinkedComponent{
 
   @Override
   public void undo() {
-    super.undo();
     this.causalController.removeCausalFactor(this.factor.getId());
   }
 

@@ -15,11 +15,11 @@ import java.util.List;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.model.ObserverValue;
+import xstampp.astpa.model.linking.LinkingType;
 
 public class AccidentLinkSupport extends LinkSupport<DataModelController> {
 
-  public AccidentLinkSupport(DataModelController dataInterface, ObserverValue type) {
+  public AccidentLinkSupport(DataModelController dataInterface, LinkingType type) {
     super(dataInterface, type);
   }
 

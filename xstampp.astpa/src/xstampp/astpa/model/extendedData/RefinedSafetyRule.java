@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
-import xstampp.model.ITableEntry;
 import xstampp.model.IValueCombie;
 
 @XmlRootElement(name = "rule")
@@ -136,12 +135,6 @@ public class RefinedSafetyRule extends AbstractLTLProvider {
     }
     this.ltl = ltlProperty;
     return true;
-  }
-
-  @Override
-  public int compareTo(ITableEntry sibling) {
-    int sign = (int) Math.signum(getNumber() - sibling.getNumber());
-    return sign;
   }
 
   /**

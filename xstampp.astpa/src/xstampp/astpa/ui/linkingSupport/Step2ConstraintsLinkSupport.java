@@ -16,11 +16,11 @@ import java.util.UUID;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.model.ObserverValue;
+import xstampp.astpa.model.linking.LinkingType;
 
 public class Step2ConstraintsLinkSupport extends LinkSupport<DataModelController> {
 
-  public Step2ConstraintsLinkSupport(DataModelController dataInterface, ObserverValue type) {
+  public Step2ConstraintsLinkSupport(DataModelController dataInterface, LinkingType type) {
     super(dataInterface, type);
   }
 

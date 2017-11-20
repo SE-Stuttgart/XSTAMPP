@@ -9,7 +9,7 @@
  * Contributors:
  * Lukas Balzer - initial API and implementation
  ******************************************************************************/
-package xstampp.astpa.model;
+package xstampp.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,8 +38,7 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
   @Override
   public boolean add(E e) {
     if (trash.containsKey(e.getId())) {
-      add(trash.remove(e.getId()), e);
-      return true;
+      e.setNumber(trash.remove(e.getId()));
     }
     if (e.getNumber() < 0) {
       e.setNumber(this.getNextNumber());
