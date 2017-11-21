@@ -16,26 +16,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.UUID;
-import java.util.function.Predicate;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
-import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
-import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.ui.CommonGridView;
 import xstampp.astpa.ui.SeverityButton;
-import xstampp.astpa.ui.SeverityButton.SeverityCheck;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;

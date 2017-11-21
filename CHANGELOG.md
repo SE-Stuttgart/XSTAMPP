@@ -1,3 +1,9 @@
+##XSTAMPP 2.5.3
+
+#### A-STPA Bugfixes:
+
+*  Fix bug that adding a new UCA is not poossible in the Unsafe Control Actions Table
+
 ## XSTAMPP 2.5.2:
 
 #### A-STPA Features:
