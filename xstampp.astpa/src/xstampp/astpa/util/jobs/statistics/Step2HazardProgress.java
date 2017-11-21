@@ -47,6 +47,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
+      triggerDefaultStyle();
       hazRow = createRow(sheet, ++rowIndex);
       createCell(hazRow, 0, hazModel.getIdString());
       createCell(hazRow, 1, hazModel.getTitle());
@@ -60,7 +61,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
     }
     Row footer = createRow(sheet, ++rowIndex);
     Float progress = getProgress(STEP.STEP_2, getController().getProjectId(), 1);
-    createCell(footer, 7, String.format("%.1f", progress) + "%");
+    createCell(footer, 7, String.format("%.1f", progress) + "%", Styles.TOTAL_STYLE);
 
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);

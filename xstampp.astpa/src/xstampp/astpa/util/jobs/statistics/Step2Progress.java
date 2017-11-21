@@ -16,7 +16,6 @@ import java.util.UUID;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -43,8 +42,6 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     headerRow.setHeightInPoints(12.75f);
 
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
-    sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 1));
-    sheet.addMergedRegion(new CellRangeAddress(0, 0, 3, 4));
     rowIndex = createCAs(sheet, rowIndex);
     Row footer = createRow(sheet, ++rowIndex);
     Float progress = getProgress(STEP.STEP_1, getController().getProjectId(), 1);
@@ -68,8 +65,8 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       index = createUCARows(sheet, row, index, action);
       Float progress = getProgress(STEP.STEP_1, action.getId(), 1);
       addProgress(STEP.STEP_1, getController().getProjectId(), progress);
-      createCell(row, 6, String.format("%.1f", progress) + "%");
-      mergeRows(sheet, caGroupStart, index, new int[] { 1, 2, 6 });
+      createCell(row, 6, String.format("%.1f", progress) + "%", Styles.TOTAL_STYLE);
+      mergeRows(sheet, caGroupStart, index, new int[] { 0, 1, 6 });
       row = null;
     }
 

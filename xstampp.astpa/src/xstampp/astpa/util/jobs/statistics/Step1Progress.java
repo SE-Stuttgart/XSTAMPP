@@ -28,7 +28,7 @@ import xstampp.model.ObserverValue;
 public class Step1Progress extends AbstractProgressSheetCreator {
 
   private static final String[] titles = new String[] { "Control Actions", "",
-      "Unsafe Control Actions", "Severity", "Correcponding Safety Constraint", "Design Requirement",
+      "Unsafe Control Actions", "Severity", "Corresponding Safety Constraint", "", "Design Requirement", "",
       "Completion[%]" };
 
   public Step1Progress(Workbook wb, DataModelController controller) {
@@ -40,13 +40,10 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     // the header row: centered text in 48pt font
     Row headerRow = sheet.createRow(rowIndex);
     headerRow.setHeightInPoints(12.75f);
-
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
-    rowIndex = createCAs(sheet, rowIndex);
-    Row footer = createRow(sheet, ++rowIndex);
-    Float progress = getProgress(STEP.STEP_1, getController().getProjectId(), 1);
-    createCell(footer, 8, String.format("%.1f", progress) + "%");
+    rowIndex = createCAs(sheet, ++rowIndex);
 
+    createTotalRow(sheet, rowIndex, STEP.STEP_1);
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }
@@ -58,15 +55,16 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     Row row;
     int index = rowIndex;
     for (IControlAction action : getController().getAllControlActions()) {
-      row = sheet.createRow(rowIndex);
+      triggerDefaultStyle();
+      row = createRow(sheet, ++rowIndex, titles.length);
       createCell(row, 0, action.getIdString());
       createCell(row, 1, action.getTitle());
       int caGroupStart = index;
       index = createUCARows(sheet, row, index, action);
       Float progress = getProgress(STEP.STEP_1, action.getId(), 1);
       addProgress(STEP.STEP_1, getController().getProjectId(), progress);
-      createCell(row, 6, String.format("%.1f", progress) + "%");
-      mergeRows(sheet, caGroupStart, index, new int[] { 1, 2, 6 });
+      createCell(row, 8, String.format("%.1f", progress) + "%");
+      mergeRows(sheet, caGroupStart, index, new int[] { 0, 1, 8 });
       row = null;
     }
 
@@ -78,20 +76,18 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     Row row = caRow;
     int index = rowIndex;
     for (IUnsafeControlAction ucaModel : action.getUnsafeControlActions()) {
-      if (row == null) {
-        row = createRow(sheet, ++index);
-        createCells(row, 0, null, 5);
-      }
+      row = row == null ? createRow(sheet, ++index, titles.length) : row;
       ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
           .getCorrespondingSafetyConstraint();
       createCell(row, 2, ucaModel.getIdString());
       createCell(row, 3, ucaModel.getSeverity().name());
-      createCell(row, 4, safetyModel.getText());
+      createCell(row, 4, safetyModel.getIdString());
+      createCell(row, 5, safetyModel.getText());
       int caGroupStart = index;
       index = createDesignRows(sheet, row, index, safetyModel.getId());
       Float progress = getProgress(STEP.STEP_1, safetyModel.getId(), 1);
       addProgress(STEP.STEP_1, action.getId(), progress);
-      mergeRows(sheet, caGroupStart, index, new int[] { 2,3,4 });
+      mergeRows(sheet, caGroupStart, index, new int[] { 2, 3, 4, 5 });
       row = null;
     }
     return index;
@@ -102,14 +98,12 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     int index = rowIndex;
     for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
         scId)) {
-      if (row == null) {
-        row = createRow(sheet, ++index);
-        createCells(row, 0, null, 5);
-      }
+      row = row == null ? createRow(sheet, ++index, titles.length) : row;
       ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
           ObserverValue.DESIGN_REQUIREMENT_STEP1);
-      createCell(row, 5, designReq.getTitle());
-      if(designReq.getTitle().isEmpty()) {
+      createCell(row, 6, designReq.getIdString());
+      createCell(row, 7, designReq.getTitle());
+      if (designReq.getTitle().isEmpty()) {
         addProgress(STEP.STEP_1, scId, 0f);
       } else {
         addProgress(STEP.STEP_1, scId, 100f);

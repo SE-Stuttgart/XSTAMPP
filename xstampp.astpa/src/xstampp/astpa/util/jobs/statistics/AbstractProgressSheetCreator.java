@@ -36,13 +36,15 @@ abstract class AbstractProgressSheetCreator {
   private StyleFactory factory;
 
   enum Styles {
-    HEADER_STYLE, DEFAULT_STYLE
+    HEADER_STYLE, DEFAULT_EVEN, DEFAULT_UNEVEN, TOTAL_STYLE
   }
 
   private DataModelController controller;
 
+  private Styles defaultStyle = Styles.DEFAULT_UNEVEN;
+
   enum STEP {
-    STEP_0, STEP_1, STEP_2
+    STEP_0, STEP_1, STEP_1_HAZARD_CENTERED, STEP_2, STEP_2_HAZARD_CENTERED
   }
 
   private static Map<STEP, Map<UUID, List<Float>>> progressMap;
@@ -53,12 +55,23 @@ abstract class AbstractProgressSheetCreator {
   }
 
   static void initMap() {
-    if (progressMap == null) {
-      progressMap = new HashMap<>();
-      progressMap.put(STEP.STEP_0, new HashMap<>());
-      progressMap.put(STEP.STEP_1, new HashMap<>());
-      progressMap.put(STEP.STEP_2, new HashMap<>());
-    }
+    progressMap = new HashMap<>();
+    progressMap.put(STEP.STEP_0, new HashMap<>());
+    progressMap.put(STEP.STEP_1, new HashMap<>());
+    progressMap.put(STEP.STEP_2, new HashMap<>());
+    progressMap.put(STEP.STEP_1_HAZARD_CENTERED, new HashMap<>());
+    progressMap.put(STEP.STEP_2_HAZARD_CENTERED, new HashMap<>());
+
+  }
+
+  protected void createTotalRow(Sheet sheet, int rowIndex, STEP step) {
+    Row footer = createRow(sheet, rowIndex + 1);
+    Float progress = getProgress(step, getController().getProjectId(), 1);
+    createCell(footer, 10, String.format("%.1f", progress) + "%", Styles.TOTAL_STYLE);
+  }
+
+  public void triggerDefaultStyle() {
+    this.defaultStyle = defaultStyle == Styles.DEFAULT_EVEN ? Styles.DEFAULT_UNEVEN : Styles.DEFAULT_EVEN;
   }
 
   /**
@@ -112,7 +125,7 @@ abstract class AbstractProgressSheetCreator {
   }
 
   Cell createCell(Row hazRow, int i, String content) {
-    return createCell(hazRow, i, content, Styles.DEFAULT_STYLE);
+    return createCell(hazRow, i, content, this.defaultStyle);
   }
 
   void createCells(Row hazRow, int colIndex, String content, int count) {
@@ -136,6 +149,14 @@ abstract class AbstractProgressSheetCreator {
     hazRow.setHeightInPoints(10f);
     hazRow.setHeight((short) -1);
     return hazRow;
+  }
+
+  Row createRow(Sheet sheet, int rowIndex, int columns) {
+    Row row = sheet.createRow(rowIndex);
+    row.setHeightInPoints(10f);
+    row.setHeight((short) -1);
+    createCells(row, 0, null, columns);
+    return row;
   }
 
   public final Sheet createSheet(String name) {
@@ -189,7 +210,20 @@ abstract class AbstractProgressSheetCreator {
         style.setAlignment(HorizontalAlignment.LEFT);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setWrapText(true);
-        this.styles.put(Styles.DEFAULT_STYLE, style);
+        this.styles.put(Styles.DEFAULT_EVEN, style);
+
+        CellStyle unevenStyle = this.wb.createCellStyle();
+        unevenStyle.cloneStyleFrom(style);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        this.styles.put(Styles.DEFAULT_UNEVEN, unevenStyle);
+
+        CellStyle total = this.wb.createCellStyle();
+        total.setBorderBottom(BorderStyle.DOUBLE);
+        total.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        total.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        total.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        this.styles.put(Styles.TOTAL_STYLE, total);
         return this.styles.get(styleConstant);
       }
     }
