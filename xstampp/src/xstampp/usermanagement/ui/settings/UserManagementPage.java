@@ -91,14 +91,14 @@ public class UserManagementPage implements ISettingsPage {
       refreshUsers();
 
       final Button addButton = new Button(hasUserComp, SWT.PUSH);
-      String imagePath = "/icons/usermanagement/addUser.png"; //$NON-NLS-1$
+      String imagePath = "/icons/usermanagement/addUserx16.png"; //$NON-NLS-1$
       addButton.setToolTipText(Messages.CreateUserShell_CreateUser);
       addButton.setImage(Activator.getImageDescriptor(imagePath).createImage());
       addButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
       addButton.setVisible(userSystem.canCreateUser());
 
       final Button addAdminButton = new Button(hasUserComp, SWT.PUSH);
-      imagePath = "/icons/usermanagement/addAdmin.png"; //$NON-NLS-1$
+      imagePath = "/icons/usermanagement/addAdminx16.png"; //$NON-NLS-1$
       addAdminButton.setToolTipText(Messages.CreateAdminShell_CreateAdmin);
       addAdminButton.setImage(Activator.getImageDescriptor(imagePath).createImage());
       addAdminButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
@@ -112,7 +112,7 @@ public class UserManagementPage implements ISettingsPage {
       deleteButton.setEnabled(false);
 
       final Button editButton = new Button(hasUserComp, SWT.PUSH);
-      String editImgPath = "/icons/buttons/edit.png"; //$NON-NLS-1$
+      String editImgPath = "/icons/buttons/editx16.png"; //$NON-NLS-1$
       editButton.setImage(Activator.getImageDescriptor(editImgPath).createImage());
       editButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
       editButton.setVisible(userSystem.canCreateUser());

@@ -2,6 +2,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix visibility issues on macOS of UI Elements in the user system
 *  Fix on macOS the button labels of the text editor in the UCA/Causal Factor Table are not visible
 *  Fix bug that adding a new UCA is not poossible in the Unsafe Control Actions Table
 
