@@ -14,8 +14,6 @@ package xstampp.ui.common.grid;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -68,14 +66,12 @@ public class GridTextEditorProvider {
     Composite buttonComp = new Composite(shell, SWT.None);
     buttonComp.setLayout(new GridLayout(2, true));
     buttonComp.setLayoutData(new GridData(SWT.END, SWT.BOTTOM, false, false));
-    GridData data = new GridData(70, 30);
+    GridData data = new GridData();
     data.horizontalAlignment = SWT.RIGHT;
     data.grabExcessHorizontalSpace = false;
     data.grabExcessVerticalSpace = false;
     data.horizontalAlignment = SWT.RIGHT;
     Button okButton = new Button(buttonComp, SWT.PUSH);
-    okButton.setForeground(ColorManager.COLOR_WHITE);
-    okButton.setBackground(ColorManager.COLOR_GREEN);
     okButton.setText("Save");
     okButton.addSelectionListener(new SelectionAdapter() {
       @Override
@@ -88,9 +84,6 @@ public class GridTextEditorProvider {
 
     Button cancelButton = new Button(buttonComp, SWT.PUSH);
     cancelButton.setText("Cancel");
-    cancelButton.setSize(20, 70);
-    cancelButton.setForeground(ColorManager.COLOR_WHITE);
-    cancelButton.setBackground(ColorManager.COLOR_RED);
     cancelButton.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent ev) {
