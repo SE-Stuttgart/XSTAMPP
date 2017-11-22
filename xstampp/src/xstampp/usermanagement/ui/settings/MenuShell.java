@@ -82,6 +82,7 @@ public class MenuShell extends MouseTrackAdapter {
     logout.setBackground(
         PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
     shell.pack();
+    shell.setLocation(location.x - shell.getBounds().width,location.y);
     shell.open();
   }
 

@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -91,9 +92,12 @@ public class UserContribution extends WorkbenchWindowControlContribution
     FormData data = new FormData();
     data.left = new FormAttachment(0);
     data.right = new FormAttachment(100);
-    data.width = 100;
-    data.height = 20;
-
+    data.top = new FormAttachment(0);
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.startsWith("win")) {
+      data.width = 100;
+      data.height = 20;
+    }
     getWorkbenchWindow().getSelectionService().addSelectionListener(ProjectExplorer.ID, this);
 
     final Button newBtn = new Button(control, SWT.PUSH);
@@ -135,7 +139,7 @@ public class UserContribution extends WorkbenchWindowControlContribution
       public void widgetSelected(SelectionEvent event) {
         if (userSystem != null) {
           Point p = label.toDisplay(label.getLocation());
-          new MenuShell(selection, userSystem, new Point(p.x, p.y + 20));
+          new MenuShell(selection, userSystem, new Point(p.x +  + control.getBounds().width, p.y + control.getBounds().height));
         }
       }
     });
