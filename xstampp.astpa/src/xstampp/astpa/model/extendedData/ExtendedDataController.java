@@ -147,12 +147,6 @@ public class ExtendedDataController extends Observable implements IExtendedDataC
     return null;
   }
 
-  @Override
-  public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data, String type,
-      LinkController linkController) {
-    return addRuleEntry(ruleType, data, null, type, linkController);
-  }
-
   /*
    * (non-Javadoc)
    * @see xstampp.astpa.model.extendedData.IExtendedDataController#addRuleEntry(xstampp.astpa.model.
@@ -162,7 +156,7 @@ public class ExtendedDataController extends Observable implements IExtendedDataC
   @Override
   public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
       UUID caID, String type, LinkController linkController) {
-
+    assert(caID != null);
     if (data != null && validateType(type)) {
       if (ruleType.equals(ScenarioType.BASIC_SCENARIO)) {
         UUID uuid = getCombie(data);

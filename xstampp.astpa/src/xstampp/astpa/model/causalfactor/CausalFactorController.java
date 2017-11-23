@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -72,6 +73,8 @@ public class CausalFactorController extends Observable implements ICausalControl
 
   private LinkController linkController;
 
+  @XmlElementWrapper(name = "componentsList")
+  @XmlElement(name = "component")
   private List<CausalCSComponent> componentsList;
 
   /**
@@ -178,16 +181,12 @@ public class CausalFactorController extends Observable implements ICausalControl
   }
 
   @Override
-  public void prepareForExport(IHazAccController hazAccController,
-      List<IRectangleComponent> children, List<AbstractLTLProvider> allRefinedRules,
-      IControlActionController caController,
-      LinkController linkController) {
+  public void prepareForExport(DataModelController controller) {
     this.componentsList = new ArrayList<>();
-    for (IRectangleComponent child : children) {
+    for (IRectangleComponent child : controller.getRoot().getChildren()) {
       if (linkController.isLinked(LinkingType.UcaCfLink_Component_LINK, child.getId())) {
         CausalCSComponent comp = new CausalCSComponent();
-        comp.prepareForExport(this, hazAccController, child, allRefinedRules,
-            caController, linkController);
+        comp.prepareForExport(controller, child);
         this.componentsList.add(comp);
       }
     }

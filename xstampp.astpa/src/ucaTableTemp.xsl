@@ -1116,10 +1116,12 @@
 													</xsl:when>
 													<xsl:otherwise>
 														<fo:table-column column-number="1" column-width="25%"/>
-														<fo:table-column column-number="2" column-width="25%"/>
-														<fo:table-column column-number="3" column-width="25%"/>
-														<fo:table-column column-number="4" column-width="25%"
-															border-style="none" />
+														<fo:table-column column-number="2" column-width="10%"/>
+														<fo:table-column column-number="3" column-width="20%"/>
+                                                        <fo:table-column column-number="4" column-width="20%"/>
+                                                        <fo:table-column column-number="5" column-width="5%"/>
+                                                        <fo:table-column column-number="6" column-width="5%"/>
+														<fo:table-column column-number="7" column-width="15%" border-style="none" />
 													</xsl:otherwise>
 													</xsl:choose>
 						
@@ -1145,6 +1147,19 @@
 															<fo:table-cell>
 																<fo:block font-weight="bold">Safety Constraint</fo:block>
 															</fo:table-cell>
+                                                            <xsl:choose>
+                                                                <xsl:when test="$useScenarios = 'false'">
+                                                                    <fo:table-cell>
+                                                                        <fo:block font-weight="bold">Design hints</fo:block>
+                                                                    </fo:table-cell>
+                                                                    <fo:table-cell>
+                                                                        <fo:block font-weight="bold">Step 1 Links</fo:block>
+                                                                    </fo:table-cell>
+                                                                    <fo:table-cell>
+                                                                        <fo:block font-weight="bold">Design Requirements</fo:block>
+                                                                    </fo:table-cell>
+                                                                </xsl:when>
+                                                            </xsl:choose>
 															<fo:table-cell>
 																<fo:block font-weight="bold">Notes</fo:block>
 															</fo:table-cell>
@@ -1200,8 +1215,8 @@
            <xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 				<xsl:choose>
 				<!-- Checks if there are some components for the CausalFactors-Table -->
-					<xsl:when test="causalfactor/causalComponents/entry/value/causalFactors">
-						<xsl:for-each select="causalfactor/causalComponents/entry/value">
+					<xsl:when test="causalfactor/componentsList/component/causalFactors">
+						<xsl:for-each select="causalfactor/componentsList/component">
 							<xsl:choose>
 								<xsl:when test="causalFactors">
 									<fo:table-row border-bottom="2pt solid black"
@@ -1299,15 +1314,12 @@
 			<fo:table-column column-number="1" column-width="20%"/>
 			<fo:table-column column-number="2" column-width="20%"/>
 			<fo:table-column column-number="3" column-width="40%"/>
-			<fo:table-column column-number="4" column-width="20%"
-				border-style="none" />
+			<fo:table-column column-number="4" column-width="20%" border-style="none" />
 		</xsl:when>
 		<xsl:otherwise>
 			<fo:table-column column-number="1" column-width="25%"/>
-			<fo:table-column column-number="2" column-width="25%"/>
-			<fo:table-column column-number="3" column-width="25%"/>
-			<fo:table-column column-number="4" column-width="25%"
-				border-style="none" />
+			<fo:table-column column-number="2" column-width="60%"/>
+			<fo:table-column column-number="3" column-width="15%" border-style="none" />
 		</xsl:otherwise>
 		</xsl:choose>
 			<fo:table-body>
@@ -1321,36 +1333,31 @@
 							<xsl:if test="position() mod 2 = 0">
 								<xsl:attribute name="background-color">#D9D9D9</xsl:attribute>
 							</xsl:if>
-							
 							<!-- Causal Factor -->
 							<fo:table-cell padding="3px">
 								<fo:block>
 									<xsl:value-of select="ucaDescription" />
 								</fo:block>
 							</fo:table-cell>
-							
-							<!-- Hazard Links -->
-							<fo:table-cell padding="4px">
-								<fo:block>
-								<xsl:value-of select="hazardLinks"/>
-								</fo:block>
-							</fo:table-cell>
-							
 							<!-- Safety Constraint -->
-							<fo:table-cell padding="3px">
 							<xsl:choose>
 								<xsl:when test="$useScenarios = 'true'">
-									<xsl:call-template name="causalFactorScenarioTable">
-	                            		<xsl:with-param name="useScenarios" select="$useScenarios" />
-		                           	</xsl:call-template>
+                                <!-- Hazard Links -->
+                                    <fo:table-cell padding="4px">
+                                        <fo:block>
+                                        <xsl:value-of select="hazardLinks"/>
+                                        </fo:block>
+                                    </fo:table-cell>
+                                    <fo:table-cell padding="3px">
+									   <xsl:call-template name="causalFactorScenarioTable"/>
+                                    </fo:table-cell>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:block>
-									<xsl:value-of select="constraintText"/>
-									</fo:block>
+                                    <fo:table-cell padding="3px">
+								    	<xsl:call-template name="causalFactorHazardEntries"/>
+                                    </fo:table-cell>
 								</xsl:otherwise>
 							</xsl:choose>
-							</fo:table-cell>
 							
 							<!-- Notes or Rationale -->
 							<fo:table-cell padding="3px">
@@ -1401,9 +1408,7 @@
 	</xsl:template>
 	
 	<xsl:template name="causalFactorScenarioTable">
-      <xsl:param name="useScenarios" select="false"/> 
 		<fo:table>
-			
 			<fo:table-column column-number="1" column-width="50%"
 				border-style="none" />
 			<fo:table-column column-number="2" column-width="50%"
@@ -1444,6 +1449,85 @@
 			</fo:table-body>
 		</fo:table>
 	</xsl:template>
+
+    <xsl:template name="causalFactorHazardEntries">
+        <fo:table>
+            <fo:table-column column-number="1" column-width="17%"
+                border-style="none" />
+            <fo:table-column column-number="2" column-width="33%"
+                border-style="none" />
+            <fo:table-column column-number="2" column-width="33%"
+                border-style="none" />
+            <fo:table-column column-number="2" column-width="8%"
+                border-style="none" />
+            <fo:table-column column-number="2" column-width="8%"
+                border-style="none" />
+            <fo:table-body>
+                <xsl:choose>
+                    <xsl:when test="hazardEntries/hazardEntry">
+                        <xsl:for-each select="hazardEntries/hazardEntry">
+                            <fo:table-row border-bottom="1px solid black">
+                                <fo:table-cell  padding="3px">
+                                    <fo:block >
+                                        <xsl:value-of select="text" />
+                                    </fo:block>
+                                </fo:table-cell>    
+                                <fo:table-cell padding="3px">
+                                    <fo:block >
+                                        <xsl:value-of select="constraint"/>
+                                    </fo:block>
+                                </fo:table-cell>        
+                                <fo:table-cell padding="3px">
+                                    <fo:block >
+                                        <xsl:value-of select="designHint"/>
+                                    </fo:block>
+                                </fo:table-cell>             
+                                <fo:table-cell padding="3px">
+                                    <fo:block >
+                                        <xsl:value-of select="designRequirementLink"/>
+                                    </fo:block>
+                                </fo:table-cell>             
+                                <fo:table-cell padding="3px">
+                                    <fo:block >
+                                        <xsl:value-of select="cscReference"/>
+                                    </fo:block>
+                                </fo:table-cell>                
+                            </fo:table-row>
+                        </xsl:for-each>
+                    </xsl:when>
+					<xsl:otherwise>
+						<fo:table-row>
+							<fo:table-cell padding="3px">
+								<fo:block>
+									&#x2014;
+								</fo:block>
+							</fo:table-cell>
+                            <fo:table-cell padding="3px">
+                                <fo:block>
+                                    &#x2014;
+                                </fo:block>
+                            </fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+								&#x2014;
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+								&#x2014;
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell padding="3px">
+								<fo:block>
+								&#x2014;
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</xsl:otherwise>
+                </xsl:choose>
+            </fo:table-body>
+        </fo:table>
+    </xsl:template>
 	
 <!-- ################### Unsafe Control Actions Table (UCA) ################### -->
 	<xsl:template name="ucaTable">

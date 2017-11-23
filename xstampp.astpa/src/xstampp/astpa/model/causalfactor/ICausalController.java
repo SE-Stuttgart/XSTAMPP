@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.UUID;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -53,10 +54,7 @@ public interface ICausalController {
 
   boolean removeCausalFactor(UUID causalFactor);
 
-  void prepareForExport(IHazAccController hazAccController, List<IRectangleComponent> children,
-      List<AbstractLTLProvider> allRefinedRules,
-      IControlActionController caController,
-      LinkController linkController);
+  void prepareForExport(DataModelController controller);
 
   void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,

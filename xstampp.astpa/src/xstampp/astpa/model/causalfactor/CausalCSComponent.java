@@ -20,8 +20,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -44,23 +44,19 @@ public class CausalCSComponent {
   @XmlElement(name = "type")
   private ComponentType type;
 
-  public void prepareForExport(CausalFactorController controller,
-      IHazAccController hazAccController, IRectangleComponent child,
-      List<AbstractLTLProvider> allRefinedRules,
-      IControlActionController caController,
-      LinkController linkController) {
+  public void prepareForExport(DataModelController controller, IRectangleComponent child) {
     this.text = child.getText();
-    Map<ICausalFactor, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child, linkController);
+    Map<ICausalFactor, List<Link>> factorBasedMap = controller.getCausalFactorController()
+        .getCausalFactorBasedMap(child, controller.getLinkController());
     for (Entry<ICausalFactor, List<Link>> entry : factorBasedMap.entrySet()) {
-      ((CausalFactor) entry.getKey()).prepareForExport(hazAccController, allRefinedRules, caController,
-          controller, entry.getValue(), linkController);
+      ((CausalFactor) entry.getKey()).prepareForExport(controller, entry.getValue());
       getFactors().add(((CausalFactor) entry.getKey()));
     }
 
   }
 
   private List<CausalFactor> getFactors() {
-    if(factors == null) {
+    if (factors == null) {
       this.factors = new ArrayList<>();
     }
     return factors;

@@ -20,8 +20,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
-import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
@@ -97,15 +97,12 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
     return false;
   }
 
-  public void prepareForExport(IHazAccController hazAccController,
-      List<AbstractLTLProvider> allRefinedRules,
-      IControlActionController caController,
-      CausalFactorController controller, List<Link> causalEntryList,
-      LinkController linkController) {
+  public void prepareForExport(DataModelController controller, List<Link> causalEntryList) {
+    this.entries = new ArrayList<>();
     for (Link link : causalEntryList) {
       CausalFactorEntry entry = new CausalFactorEntry();
-      entry.prepareForExport(hazAccController, allRefinedRules, caController,
-          controller, link, linkController);
+      entry.prepareForExport(controller, link);
+      this.entries.add(entry);
     }
   }
 
@@ -113,7 +110,7 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,
       List<CausalSafetyConstraint> safetyConstraints, LinkController linkController) {
-    
+
     UUID link = linkController.addLink(LinkingType.UCA_CausalFactor_LINK, null, id);
     linkController.addLink(LinkingType.UcaCfLink_Component_LINK, link, componentId);
 

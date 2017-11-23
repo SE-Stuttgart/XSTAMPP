@@ -51,9 +51,6 @@ public interface IExtendedDataController {
   UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
       UUID caID, String type, LinkController linkController);
 
-  UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data, String type,
-      LinkController linkController);
-
   /**
    * 
    * @param data
