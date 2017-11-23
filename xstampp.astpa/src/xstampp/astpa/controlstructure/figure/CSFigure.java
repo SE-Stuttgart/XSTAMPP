@@ -163,7 +163,6 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
 
   @Override
   public void paintChildren(Graphics graphics) {
-    super.paintChildren(graphics);
     if ((this.image != null) && this.hasDeco) {
       double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
       Rectangle rect = this.textLabel.getBounds();
@@ -174,6 +173,8 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
       graphics.drawImage(this.image, 1, 1);
       graphics.scale(4);
     }
+    super.paintChildren(graphics);
+
   }
 
   @Override
@@ -250,7 +251,7 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
           ((IControlStructureFigure) child).refresh();
         }
       }
-      this.textLabel.setLocation(new Point(-this.leftMargin, 0));
+      this.textLabel.setLocation(new Point(this.leftMargin, 0));
       int height = this.getChildren().size() > 1 ? -1 : rect.height;
       this.textLabel.setSize(rect.width - this.leftMargin - 4, height);
 

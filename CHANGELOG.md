@@ -1,4 +1,10 @@
-##XSTAMPP 2.5.3
+## XSTAMPP 2.x.x
+
+#### A-STPA Bugfixes:
+
+*  Fix bug in control structure export that image and text would overlap
+
+## XSTAMPP 2.5.3
 
 #### A-STPA Bugfixes:
 

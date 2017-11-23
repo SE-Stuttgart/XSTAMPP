@@ -11,7 +11,6 @@
 
 package xstampp.astpa.controlstructure;
 
-import java.awt.Event;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -686,7 +685,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart
 
     if (this.getCommandStack().canUndo()) {
       this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK));
-      if (!this.undo.isListening(Event.MOUSE_UP)) {
+      if (!this.undo.isListening(SWT.MouseUp)) {
         this.undo.addMouseListener(this);
       }
     } else {

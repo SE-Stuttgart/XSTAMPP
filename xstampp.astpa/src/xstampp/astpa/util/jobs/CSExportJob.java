@@ -39,10 +39,10 @@ import org.eclipse.swt.widgets.Shell;
 
 import messages.Messages;
 import xstampp.astpa.Activator;
+import xstampp.astpa.controlstructure.CSAbstractEditor;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.IControlStructureEditor;
-import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
 import xstampp.astpa.controlstructure.figure.RootFigure;
 import xstampp.astpa.model.DataModelController;
@@ -303,7 +303,7 @@ public class CSExportJob extends XstamppJob {
           Activator.getDefault().getPreferenceStore()));
       viewer.setProperty(IControlStructureEditor.STEP_EDITOR,
           CSExportJob.this.editorId);
-
+      viewer.setProperty(CSAbstractEditor.IS_DECORATED, deco);
       ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
       viewer.setRootEditPart(rootEditPart);
       IRectangleComponent root = CSExportJob.this.model.getRoot();
@@ -314,10 +314,6 @@ public class CSExportJob extends XstamppJob {
         root = CSExportJob.this.model.getRoot();
       }
       viewer.setContents(root);
-      viewer.getContents().refresh();
-      ((RootEditPart) rootEditPart.getContents()).getFigure()
-          .setDeco(CSExportJob.this.deco);
-
       viewer.getContents().refresh();
 
       IFigure tmpFigure = rootEditPart
