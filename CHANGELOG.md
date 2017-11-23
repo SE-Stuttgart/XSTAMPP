@@ -1,5 +1,9 @@
 ## XSTAMPP 2.x.x
 
+#### A-STPA Features:
+
+*  Add editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis
+
 #### A-STPA Bugfixes:
 
 *  Fix bug in control structure export that image and text would overlap

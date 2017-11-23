@@ -27,12 +27,10 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
   private UUID ruleId;
   private ICausalFactorDataModel dataModel;
   private ScenarioType type;
-  private Link scenarioLink;
 
   public CellEditorCausalScenario(GridWrapper gridWrapper, ICausalFactorDataModel dataModel,
       Link scenarioLink, UUID ruleId, ScenarioType type) {
     super(gridWrapper, dataModel.getExtendedDataController().getRefinedScenario(ruleId).getSafetyRule(), ruleId);
-    this.scenarioLink = scenarioLink;
     this.type = type;
     setReadOnly(type != ScenarioType.CAUSAL_SCENARIO);
     setShowDelete(true);

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.swt.widgets.Composite;
@@ -40,6 +41,7 @@ import xstampp.ui.common.grid.CellButtonLinking;
 import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridCellText;
 import xstampp.ui.common.grid.GridRow;
+import xstampp.ui.common.grid.IGridCell;
 import xstampp.usermanagement.api.AccessRights;
 
 /**
@@ -54,9 +56,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   private static List<String> _withScenarioColumns = Arrays.asList(Messages.Component,
       Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks, "Causal Scenarios",
       Messages.SafetyConstraint, Messages.NotesSlashRationale);
-  private static List<String> _withoutColumns = Arrays.asList(Messages.Component,
+  private static List<String> _withoutScenarioColumns = Arrays.asList(Messages.Component,
       Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks,
-      Messages.SafetyConstraint, Messages.NotesSlashRationale);
+      Messages.SafetyConstraint, "Design Hint", Messages.NotesSlashRationale);
   /**
    * ViewPart ID.
    */
@@ -93,7 +95,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   @Override
   public void createPartControl(Composite parent) {
-    super.createPartControl(parent, _withoutColumns.toArray(new String[0]));
+    super.createPartControl(parent, _withoutScenarioColumns.toArray(new String[0]));
     List<ICorrespondingUnsafeControlAction> ucaList = this.getDataModel().getUCAList(null);
     String[] names = new String[ucaList.size()];
     UUID[] values = new UUID[ucaList.size()];
@@ -136,7 +138,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   }
 
   public String[] getColumns() {
-    return _withoutColumns.toArray(new String[0]);
+    return _withoutScenarioColumns.toArray(new String[0]);
   }
 
   @Override
@@ -326,7 +328,15 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     entryRow.addCell(4, cell);
 
-    entryRow.addCell(5, new CellEditorFactorNote(getGridWrapper(), getDataModel(), ucaHazLink));
+    Optional<Link> safetyOption = getDataModel().getLinkController()
+        .getRawLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
+
+    IGridCell hintCell = new GridCellText("");
+    if(safetyOption.isPresent()) {
+      hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), safetyOption.get());
+    }
+    entryRow.addCell(5, hintCell);
+    entryRow.addCell(6, new CellEditorFactorNote(getGridWrapper(), getDataModel(), ucaHazLink));
     return null;
 
   }

@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.AbstractLtlProviderData;
@@ -32,6 +33,7 @@ public class CellButtonAddScenario extends CellButton {
 
   private ICausalFactorDataModel dataModel;
   private Link causalEntryLink;
+  private IUnsafeControlAction uca;
 
   /**
    * 
@@ -47,6 +49,7 @@ public class CellButtonAddScenario extends CellButton {
         GridWrapper.getAddButton16());
     this.causalEntryLink = causalEntryLink;
     this.dataModel = dataModel;
+    this.uca = uca;
   }
 
   @Override
@@ -57,7 +60,8 @@ public class CellButtonAddScenario extends CellButton {
         this.causalEntryLink.getLinkA());
     ids.add(link.getLinkA());
     data.setRelatedUcas(ids);
-    UUID id = dataModel.getExtendedDataController().addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, 
+    ITableModel controlAction = dataModel.getControlActionForUca(uca.getId());
+    UUID id = dataModel.getExtendedDataController().addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, controlAction.getId(),
         IValueCombie.TYPE_ANYTIME, this.dataModel.getLinkController());
     if (id != null) {
       this.dataModel.getLinkController().addLink(LinkingType.CausalEntryLink_Scenario_LINK, this.causalEntryLink.getId(), id);
