@@ -89,6 +89,10 @@ public final class Link {
     return this.linkA != null;
   }
 
+  public boolean isLinkBPresent() {
+    return this.linkB != null;
+  }
+
   public boolean links(UUID part) {
     return part != null && (part.equals(this.linkA) || part.equals(this.linkB));
   }

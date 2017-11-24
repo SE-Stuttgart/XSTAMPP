@@ -36,11 +36,13 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.AbstractLTLProvider;
@@ -181,12 +183,16 @@ public class CausalFactorController extends Observable implements ICausalControl
   }
 
   @Override
-  public void prepareForExport(DataModelController controller) {
+  public void prepareForExport(IHazAccController hazAccController, IRectangleComponent root,
+      IExtendedDataController extendedDataController,
+      IControlActionController caController,
+      LinkController linkController, ISDSController sdsController) {
     this.componentsList = new ArrayList<>();
-    for (IRectangleComponent child : controller.getRoot().getChildren()) {
+    for (IRectangleComponent child : root.getChildren()) {
       if (linkController.isLinked(LinkingType.UcaCfLink_Component_LINK, child.getId())) {
         CausalCSComponent comp = new CausalCSComponent();
-        comp.prepareForExport(controller, child);
+        comp.prepareForExport(this, hazAccController, child, extendedDataController, caController, linkController,
+            sdsController);
         this.componentsList.add(comp);
       }
     }
@@ -241,6 +247,14 @@ public class CausalFactorController extends Observable implements ICausalControl
             .addAll(comp.getValue().prepareForSave(comp.getKey(), hazAccController, allRefinedRules,
                 allUnsafeControlActions, getCausalSafetyConstraints(), linkController));
       });
+    }
+    for (Link link : linkController.getLinksFor(LinkingType.UcaCfLink_Component_LINK)) {
+      Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, link.getLinkA());
+      if (ucaCFLink != null) {
+        for (UUID uuid : linkController.getLinksFor(LinkingType.UCA_HAZ_LINK, ucaCFLink.getLinkA())) {
+          linkController.addLink(LinkingType.CausalEntryLink_HAZ_LINK, link.getId(), uuid);
+        }
+      }
     }
     this.causalComponents = null;
     this.componentsList = null;

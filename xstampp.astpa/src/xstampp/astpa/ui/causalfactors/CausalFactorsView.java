@@ -253,7 +253,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   private void createUCAEntry(GridRow entryRow, Link causalEntryLink, Link ucaCFLink,
       IUnsafeControlAction uca) {
 
-    CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(), uca,
+    CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(), ucaCFLink, uca,
         causalEntryLink.getId());
     UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
     if (!checkAccess(controlAction, AccessRights.WRITE)) {

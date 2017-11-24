@@ -16,7 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
-import xstampp.astpa.model.linking.LinkingType;
+import xstampp.astpa.model.linking.Link;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridWrapper;
@@ -25,17 +25,21 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
 
   private ICausalFactorDataModel dataInterface;
   private UUID entryId;
+  private Link ucaCFLink;
 
   /**
    * 
    * @param gridWrapper
    * @param dataInterface
+   * @param ucaCFLink 
+   *          a Link of type {@link ObserverValue#UCA_CausalFactor_LINK}
    * @param uca
    * @param entryId the id of a Link of type {@link ObserverValue#UcaCfLink_Component_LINK}
    */
   public CellEditorCausalEntry(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      IUnsafeControlAction uca, UUID entryId) {
+      Link ucaCFLink, IUnsafeControlAction uca, UUID entryId) {
     super(gridWrapper, getUcaText(uca), entryId);
+    this.ucaCFLink = ucaCFLink;
     setReadOnly(true);
     setShowDelete(true);
     this.dataInterface = dataInterface;
@@ -69,7 +73,7 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
         "Do you really want to delete this Unsafe Control Action entry?\n"
             + "Note that this will delete the UCA entry and all stored scenarios.\n"
             + "\nThe Unsafe Control Action itself however will not be deleted")) {
-      this.dataInterface.getLinkController().deleteLink(LinkingType.UcaCfLink_Component_LINK, entryId);
+      this.dataInterface.getLinkController().changeLink(this.ucaCFLink, null, this.ucaCFLink.getLinkB());
     }
   }
 

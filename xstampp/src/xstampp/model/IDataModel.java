@@ -187,6 +187,10 @@ public interface IDataModel {
    */
   void releaseLockAndUpdate(ObserverValue[] values);
 
+  default void releaseLockAndUpdate() {
+    releaseLockAndUpdate(new ObserverValue[0]);
+  }
+
   void setUnsavedAndChanged();
 
   <T> T getAdapter(Class<T> clazz);

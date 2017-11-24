@@ -22,10 +22,12 @@ import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeCo
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
 
@@ -54,7 +56,10 @@ public interface ICausalController {
 
   boolean removeCausalFactor(UUID causalFactor);
 
-  void prepareForExport(DataModelController controller);
+  void prepareForExport(IHazAccController hazAccController, IRectangleComponent root,
+      IExtendedDataController extendedDataController,
+      IControlActionController caController,
+      LinkController linkController, ISDSController sdsController);
 
   void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,

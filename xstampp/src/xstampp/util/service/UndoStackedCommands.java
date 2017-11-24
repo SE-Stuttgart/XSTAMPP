@@ -10,9 +10,9 @@ public class UndoStackedCommands implements IUndoCallback {
 
   private List<IUndoCallback> recordList;
   private ObserverValue updateValue;
-  private UndoRedoService undoRedoService;
+  private IUndoRedoProvider undoRedoService;
 
-  public UndoStackedCommands(UndoRedoService undoRedoService) {
+  public UndoStackedCommands(IUndoRedoProvider undoRedoService) {
     this.undoRedoService = undoRedoService;
     this.recordList = new ArrayList<>();
     this.updateValue = ObserverValue.UNSAVED_CHANGES;

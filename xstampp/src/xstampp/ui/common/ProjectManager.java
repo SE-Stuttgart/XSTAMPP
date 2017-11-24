@@ -92,26 +92,6 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   private Map<String, IConfigurationElement> elementsToExtensions;
   private final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
-  /**
-   * when the plugin dependent load job is done, this change adapter promts out all error messages
-   * returned by the job in case of failure or calls {@link LoadRunnable} in case of success.
-   *
-   * @author Lukas Balzer
-   *
-   */
-  private class LoadJobChangeAdapter extends JobChangeAdapter {
-
-    @Override
-    public void done(IJobChangeEvent event) {
-      final AbstractLoadJob job = (AbstractLoadJob) event.getJob();
-      if (event.getResult().isOK()) {
-
-        Display.getDefault().syncExec(new LoadRunnable(job.getSaveFile(), job.getController()));
-        super.done(event);
-      }
-    }
-  }
-
   private class LoadRunnable implements Runnable {
     private File saveFile;
     private IDataModel controller;
@@ -429,12 +409,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     fileDialog.setFilterExtensions(extensions.toArray(new String[] {}));
 
     String file = fileDialog.open();
-//    if (file != null && this.projectContainerToUuid.containsValue(new File(file))) {
-//      MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-//          Messages.ProjectManager_ProjectIsAlreadyOpen,
-//          Messages.ProjectManager_ProjectAlreadyExistsInWorkspace);
-//      return null;
-//    }
+
     // if the file is not null but also not located in the workspace the project
     // is loaded from the choosen file
     // but later stored in the workspace
@@ -506,7 +481,17 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
       ((AbstractLoadJob) jobObject).setFile(loadFile);
       ((AbstractLoadJob) jobObject).setSaveFile(saveFile);
       ((AbstractLoadJob) jobObject).schedule();
-      ((AbstractLoadJob) jobObject).addJobChangeListener(new LoadJobChangeAdapter());
+      ((AbstractLoadJob) jobObject).addJobChangeListener(new JobChangeAdapter() {
+
+        @Override
+        public void done(IJobChangeEvent event) {
+          final AbstractLoadJob job = (AbstractLoadJob) event.getJob();
+          if (event.getResult().isOK()) {
+            Display.getDefault().syncExec(new LoadRunnable(job.getSaveFile(), job.getController()));
+            super.done(event);
+          }
+        }
+      });
       return ((AbstractLoadJob) jobObject);
     } else if (jobObject == null) {
       LOGGER.error(Messages.FileFormatNotSupported + ": " + loadFile); //$NON-NLS-1$

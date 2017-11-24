@@ -278,7 +278,8 @@ public class DataModelController extends AbstractDataModel
         this.getHazAccController(),
         this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController,
         getSdsController());
-    this.causalFactorController.prepareForExport(this);
+    this.causalFactorController.prepareForExport(getHazAccController(), getRoot(), getExtendedDataController(),
+        getControlActionController(), getLinkController(), getSdsController());
     this.projectDataManager.prepareForExport();
     this.exportInformation = new ExportInformation();
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");
@@ -308,7 +309,8 @@ public class DataModelController extends AbstractDataModel
       this.sdsController = null;
     }
     this.exportInformation = null;
-    releaseLockAndUpdate(null);
+    getLinkController().prepareForSave();
+    releaseLockAndUpdate();
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for save");
   }
 
@@ -365,11 +367,11 @@ public class DataModelController extends AbstractDataModel
     ICausalComponent causalComponent = getCausalFactorController().getCausalComponent(component);
     UUID factorId = null;
     if (causalComponent != null) {
-      this.recordCallbacks = true;
+      lockUpdate();
       factorId = addCausalFactor();
       UUID linkId = getLinkController().addLink(LinkingType.UCA_CausalFactor_LINK, null, factorId);
-      this.pushRecord = true;
       getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, linkId, componentId);
+      releaseLockAndUpdate();
     }
     return factorId;
 
@@ -1239,6 +1241,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public void lockUpdate() {
+    this.recordCallbacks = true;
     this.refreshLock = true;
     if (!isTestable()) {
       ProjectManager.getLOGGER().debug("set data update lock to prevent system lacks");
@@ -1284,10 +1287,6 @@ public class DataModelController extends AbstractDataModel
         provider.startRecord();
       }
       provider.push(callback);
-      if (this.pushRecord) {
-        this.pushRecord = false;
-        provider.pushRecord();
-      }
     }
   }
 
@@ -1323,6 +1322,12 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public void releaseLockAndUpdate(ObserverValue[] values) {
+    ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
+        .getService(ISourceProviderService.class);
+    UndoRedoService provider = (UndoRedoService) service
+        .getSourceProvider(UndoRedoService.CAN_REDO);
+    this.pushRecord = false;
+    provider.pushRecord();
     this.refreshLock = false;
     blockedUpdates = new ArrayList<>();
     if (values != null) {

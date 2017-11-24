@@ -43,10 +43,7 @@ public class CellButtonAddScenario extends CellButton {
    * @param uca
    */
   public CellButtonAddScenario(ICausalFactorDataModel dataModel, Link causalEntryLink, IUnsafeControlAction uca) {
-    super(new Rectangle(-1, -1,
-        GridWrapper.getAddButton16().getBounds().width,
-        GridWrapper.getAddButton16().getBounds().height),
-        GridWrapper.getAddButton16());
+    super(GridWrapper.getAddButton16());
     this.causalEntryLink = causalEntryLink;
     this.dataModel = dataModel;
     this.uca = uca;

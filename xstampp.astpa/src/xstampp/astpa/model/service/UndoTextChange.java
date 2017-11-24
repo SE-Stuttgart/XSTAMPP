@@ -23,8 +23,8 @@ public class UndoTextChange implements IUndoCallback {
 
   public UndoTextChange(String oldText, String newText, ObserverValue changeValue) {
     this();
-    this.oldText = oldText;
-    this.newText = newText;
+    this.oldText = oldText == null ? "" : oldText;
+    this.newText = newText == null ? "" : newText;
     this.changeValue = changeValue;
   }
 

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class LinkController extends Observable {
     this();
     for (Link link : asList) {
       if (!this.linkMap.containsKey(link.getLinkType())) {
-        assert(link.getLinkType() != null);
+        assert (link.getLinkType() != null);
         this.linkMap.put(link.getLinkType(), new ArrayList<>());
       }
       this.linkMap.get(link.getLinkType()).add(link);
@@ -51,6 +52,13 @@ public class LinkController extends Observable {
 
   /**
    * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
+   * <p>
+   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
+   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
+   * <code>linkA</code>
+   * <p>
+   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * exists, than its' id is returned and nothing is added.
    * 
    * @param linkType
    *          an {@link LinkingType} for which links have been created in the
@@ -60,16 +68,17 @@ public class LinkController extends Observable {
    * @param linkB
    *          the part whose {@link UUID} is the second part of the {@link Link}
    * @return
+   *      The id of the Link which was either added, updated or which already existed
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB) {
     if (!this.linkMap.containsKey(linkType)) {
-
-      assert(linkType != null);
+      assert (linkType != null);
       this.linkMap.put(linkType, new ArrayList<Link>());
     }
     Link o = new Link(linkA, linkB, linkType);
 
     int index = this.linkMap.get(linkType).indexOf(new Link(null, linkB, linkType));
+
     if (index > 0 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
       return this.linkMap.get(linkType).get(index).getId();
     }
@@ -391,6 +400,21 @@ public class LinkController extends Observable {
         this.linkMap.remove(linkType);
       }
     }
+  }
+
+  public void prepareForSave() {
+    for (Entry<LinkingType, List<Link>> entry : linkMap.entrySet()) {
+      ArrayList<Link> links = new ArrayList<>();
+      for (Link link : entry.getValue()) {
+        if ((link.isLinkAPresent() || link.isLinkBPresent()) && !links.contains(link)) {
+          links.add(link);
+        }
+      }
+      entry.setValue(links);
+    }
+    linkMap.entrySet().removeIf((entry) -> {
+      return entry.getValue().isEmpty();
+    });
   }
 
   public int getLinkMapSize() {

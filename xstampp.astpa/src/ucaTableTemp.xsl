@@ -1153,10 +1153,14 @@
                                                                         <fo:block font-weight="bold">Design hints</fo:block>
                                                                     </fo:table-cell>
                                                                     <fo:table-cell>
-                                                                        <fo:block font-weight="bold">Step 1 Links</fo:block>
+                                                                        <fo:block-container reference-orientation="270" font-size="8pt">
+                                                                          <fo:block>SC1 Links</fo:block>
+                                                                        </fo:block-container>
                                                                     </fo:table-cell>
                                                                     <fo:table-cell>
-                                                                        <fo:block font-weight="bold">Design Requirements</fo:block>
+                                                                        <fo:block-container reference-orientation="270" font-size="8pt">
+                                                                        <fo:block>Design Req.</fo:block>
+                                                                        </fo:block-container>
                                                                     </fo:table-cell>
                                                                 </xsl:when>
                                                             </xsl:choose>
@@ -1464,8 +1468,8 @@
                 border-style="none" />
             <fo:table-body>
                 <xsl:choose>
-                    <xsl:when test="hazardEntries/hazardEntry">
-                        <xsl:for-each select="hazardEntries/hazardEntry">
+                    <xsl:when test="hazardEntries/entry">
+                        <xsl:for-each select="hazardEntries/entry">
                             <fo:table-row border-bottom="1px solid black">
                                 <fo:table-cell  padding="3px">
                                     <fo:block >

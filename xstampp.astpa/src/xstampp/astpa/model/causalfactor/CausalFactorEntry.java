@@ -18,12 +18,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.Hazard;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -98,39 +101,42 @@ public class CausalFactorEntry {
     constraintText = null;
     ucaLink = null;
     scenarioEntries = null;
+    ucaDescription = null;
     hazardEntries = null;
     hazardIds = null;
     hazardLinks = null;
     return true;
   }
 
-  public void prepareForExport(DataModelController controller, Link causalEntryList) {
-    Link ucaCfLink = controller.getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+  public void prepareForExport(IHazAccController hazAccController,
+      IExtendedDataController extendedDataController, IControlActionController caController,
+      CausalFactorController controller, Link causalEntryList, LinkController linkController, ISDSController sdsController) {
+    Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
         causalEntryList.getLinkA());
     if (ucaCfLink.isLinkAPresent()) {
-      IUnsafeControlAction uca = controller.getControlActionController().getUnsafeControlAction(ucaCfLink.getLinkA());
+      IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
       ucaDescription = uca.getDescription();
       hazardLinks = "";
       if (!controller.isUseScenarios()) {
         hazardEntries = new ArrayList<>();
-        for (Link causalHazLink : controller.getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+        for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
             causalEntryList.getId())) {
-          CausalHazardEntry hazEntry = new CausalHazardEntry(controller, causalHazLink);
+          CausalHazardEntry hazEntry = new CausalHazardEntry(controller,linkController,sdsController,caController, causalHazLink,hazAccController);
           hazardEntries.add(hazEntry);
         }
       } else {
         scenarioEntries = new ArrayList<>();
         hazardLinks = "";
-        for (Link causalHazLink : controller.getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+        for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
             causalEntryList.getId())) {
-          Hazard hazard = controller.getHazAccController().getHazard(causalHazLink.getLinkB());
+          Hazard hazard = hazAccController.getHazard(causalHazLink.getLinkB());
           hazardLinks += hazardLinks.isEmpty() ? "" : ",";
           hazardLinks += hazard.getIdString();
         }
-        for (Link causalHazLink : controller.getLinkController().getRawLinksFor(
+        for (Link causalHazLink : linkController.getRawLinksFor(
             LinkingType.CausalEntryLink_Scenario_LINK,
             causalEntryList.getId())) {
-          AbstractLTLProvider refinedScenario = controller.getExtendedDataController()
+          AbstractLTLProvider refinedScenario = extendedDataController
               .getRefinedScenario(causalHazLink.getLinkB());
 
           String constraintText = refinedScenario.getRefinedSafetyConstraint();

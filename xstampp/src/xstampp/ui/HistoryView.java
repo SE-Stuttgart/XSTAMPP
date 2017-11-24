@@ -37,7 +37,6 @@ public class HistoryView extends ViewPart implements ISourceProviderListener {
   public void createPartControl(Composite parent) {
     content = new Composite(parent, SWT.None);
     content.setLayout(new GridLayout());
-    content.setBackground(ColorManager.COLOR_GREEN);
     Composite redoComposite = new Composite(content, SWT.NONE);
     redoComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
     TableColumnLayout tableColumnLayout = new TableColumnLayout();

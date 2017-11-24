@@ -20,14 +20,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractNumberedEntry;
 
@@ -97,12 +99,17 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
     return false;
   }
 
-  public void prepareForExport(DataModelController controller, List<Link> causalEntryList) {
+  public void prepareForExport(IHazAccController hazAccController,
+      IExtendedDataController extendedDataController,
+      IControlActionController caController,
+      CausalFactorController controller, List<Link> causalEntryList,
+      LinkController linkController, ISDSController sdsController) {
     this.entries = new ArrayList<>();
     for (Link link : causalEntryList) {
       CausalFactorEntry entry = new CausalFactorEntry();
-      entry.prepareForExport(controller, link);
-      this.entries.add(entry);
+      entry.prepareForExport(hazAccController, extendedDataController, caController,
+          controller, link, linkController, sdsController);
+      this.entries .add(entry);
     }
   }
 

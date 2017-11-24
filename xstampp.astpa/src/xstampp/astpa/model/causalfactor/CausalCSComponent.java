@@ -20,14 +20,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
+import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 
 @XmlRootElement(name = "causalComponent")
@@ -44,16 +46,21 @@ public class CausalCSComponent {
   @XmlElement(name = "type")
   private ComponentType type;
 
-  public void prepareForExport(DataModelController controller, IRectangleComponent child) {
+  public void prepareForExport(CausalFactorController controller,
+      IHazAccController hazAccController, IRectangleComponent child,
+      IExtendedDataController extendedDataController,
+      IControlActionController caController,
+      LinkController linkController, ISDSController sdsController) {
     this.text = child.getText();
-    Map<ICausalFactor, List<Link>> factorBasedMap = controller.getCausalFactorController()
-        .getCausalFactorBasedMap(child, controller.getLinkController());
+    Map<ICausalFactor, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child, linkController);
     for (Entry<ICausalFactor, List<Link>> entry : factorBasedMap.entrySet()) {
-      ((CausalFactor) entry.getKey()).prepareForExport(controller, entry.getValue());
+      ((CausalFactor) entry.getKey()).prepareForExport(hazAccController, extendedDataController, caController,
+          controller, entry.getValue(), linkController, sdsController);
       getFactors().add(((CausalFactor) entry.getKey()));
     }
 
   }
+
 
   private List<CausalFactor> getFactors() {
     if (factors == null) {

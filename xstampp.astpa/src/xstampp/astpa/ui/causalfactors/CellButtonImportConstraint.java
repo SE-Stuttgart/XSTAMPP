@@ -44,10 +44,7 @@ public class CellButtonImportConstraint extends CellButton {
    * @param dataInterface
    */
   public CellButtonImportConstraint(Grid grid, Link ucaHazLink, ICausalFactorDataModel dataInterface) {
-    super(new Rectangle(-1, -1,
-        GridWrapper.getLinkButton16().getBounds().width,
-        GridWrapper.getLinkButton16().getBounds().height),
-        GridWrapper.getLinkButton16());
+    super(GridWrapper.getLinkButton16());
 
     this.grid = grid;
     this.ucaHazLink = ucaHazLink;
@@ -67,6 +64,7 @@ public class CellButtonImportConstraint extends CellButton {
         proposal.setLabel(
             safetyConstraints.get(i).getIdString() + " - " + tmp.substring(0, Math.min(tmp.length(), 20)) + "...");
         proposal.setDescription(tmp);
+        proposal.setProposalId(safetyConstraints.get(i).getId());
         proposals.add(proposal);
       }
     }
@@ -79,8 +77,12 @@ public class CellButtonImportConstraint extends CellButton {
           @Override
           public void proposalAccepted(IContentProposal proposal) {
             UUID constraintId = dataModel.getCausalFactorController().addSafetyConstraint(proposal.getDescription());
+            dataModel.lockUpdate();
             dataModel.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
                 constraintId);
+            dataModel.releaseLockAndUpdate(new ObserverValue[0]);
+            dataModel.getLinkController().addLink(LinkingType.SC2_SC1_LINK, constraintId,
+                ((LinkProposal) proposal).getProposalId());
             grid.redraw();
           }
         });

@@ -53,6 +53,22 @@ public class CellButton implements ICellButton {
   }
 
   /**
+   * Ctor.
+   * 
+   * 
+   * @param rect
+   *          the bounds of the button, relative to the top left of the cell.
+   * @param image
+   *          the image drawn in the rectangle.
+   */
+  public CellButton(Image image) {
+    Rectangle bounds = image.getBounds();
+    this.rect = new Rectangle(-1, -1,bounds.width,
+        bounds.height);
+    this.image = image;
+  }
+
+  /**
    * constructs a button with that contains a string
    * 
    * @param rect
