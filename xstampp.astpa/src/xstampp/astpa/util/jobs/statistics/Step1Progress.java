@@ -32,7 +32,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
       "Completion[%]" };
 
   public Step1Progress(Workbook wb, DataModelController controller) {
-    super(wb, controller);
+    super(wb, controller,STEP.STEP_1);
   }
 
   public void createWorkSheet(Sheet sheet) {
@@ -43,7 +43,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
     rowIndex = createCAs(sheet, ++rowIndex);
 
-    createTotalRow(sheet, rowIndex, STEP.STEP_1);
+    createTotalRow(sheet, titles.length - 1);
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }
@@ -56,15 +56,15 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     int index = rowIndex;
     for (IControlAction action : getController().getAllControlActions()) {
       triggerDefaultStyle();
-      row = createRow(sheet, ++rowIndex, titles.length);
+      row = createRow(sheet, titles.length);
       createCell(row, 0, action.getIdString());
       createCell(row, 1, action.getTitle());
-      int caGroupStart = index;
-      index = createUCARows(sheet, row, index, action);
-      Float progress = getProgress(STEP.STEP_1, action.getId(), 1);
-      addProgress(STEP.STEP_1, getController().getProjectId(), progress);
+      index = createSubRows(sheet, row, new int[] { 0, 1, 8 }, (parentRow) -> {
+        return createUCARows(sheet, parentRow, action);
+      });
+      Float progress = getProgress(action.getId(), 1);
+      addProgress(getController().getProjectId(), progress);
       createCell(row, 8, String.format("%.1f", progress) + "%");
-      mergeRows(sheet, caGroupStart, index, new int[] { 0, 1, 8 });
       row = null;
     }
 
@@ -72,41 +72,41 @@ public class Step1Progress extends AbstractProgressSheetCreator {
 
   }
 
-  private int createUCARows(Sheet sheet, Row caRow, int rowIndex, IControlAction action) {
+  private int createUCARows(Sheet sheet, Row caRow, IControlAction action) {
     Row row = caRow;
-    int index = rowIndex;
+    int index = caRow.getRowNum();
     for (IUnsafeControlAction ucaModel : action.getUnsafeControlActions()) {
-      row = row == null ? createRow(sheet, ++index, titles.length) : row;
+      row = row == null ? createRow(sheet, titles.length) : row;
       ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
           .getCorrespondingSafetyConstraint();
       createCell(row, 2, ucaModel.getIdString());
       createCell(row, 3, ucaModel.getSeverity().name());
       createCell(row, 4, safetyModel.getIdString());
       createCell(row, 5, safetyModel.getText());
-      int caGroupStart = index;
-      index = createDesignRows(sheet, row, index, safetyModel.getId());
-      Float progress = getProgress(STEP.STEP_1, safetyModel.getId(), 1);
-      addProgress(STEP.STEP_1, action.getId(), progress);
-      mergeRows(sheet, caGroupStart, index, new int[] { 2, 3, 4, 5 });
+      index = createSubRows(sheet, row, new int[] { 4, 5 }, (parentRow) -> {
+        return createDesignRows(sheet, parentRow, safetyModel.getId());
+      });
+      Float progress = getProgress(safetyModel.getId(), 1);
+      addProgress(action.getId(), progress);
       row = null;
     }
     return index;
   }
 
-  private int createDesignRows(Sheet sheet, Row ucaRow, int rowIndex, UUID scId) {
+  private int createDesignRows(Sheet sheet, Row ucaRow, UUID scId) {
     Row row = ucaRow;
-    int index = rowIndex;
+    int index = ucaRow.getRowNum();
     for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
         scId)) {
-      row = row == null ? createRow(sheet, ++index, titles.length) : row;
+      row = row == null ? createRow(sheet, titles.length) : row;
       ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
           ObserverValue.DESIGN_REQUIREMENT_STEP1);
       createCell(row, 6, designReq.getIdString());
       createCell(row, 7, designReq.getTitle());
       if (designReq.getTitle().isEmpty()) {
-        addProgress(STEP.STEP_1, scId, 0f);
+        addProgress(scId, 0f);
       } else {
-        addProgress(STEP.STEP_1, scId, 100f);
+        addProgress(scId, 100f);
       }
       row = null;
     }

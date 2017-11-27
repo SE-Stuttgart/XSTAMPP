@@ -41,17 +41,24 @@ abstract class AbstractProgressSheetCreator {
 
   private DataModelController controller;
 
+  private STEP defaultStep;
   private Styles defaultStyle = Styles.DEFAULT_UNEVEN;
 
   enum STEP {
     STEP_0, STEP_1, STEP_1_HAZARD_CENTERED, STEP_2, STEP_2_HAZARD_CENTERED
   }
 
+  @FunctionalInterface
+  interface SubRowCreator {
+    int createSubRows(Row row);
+  }
+
   private static Map<STEP, Map<UUID, List<Float>>> progressMap;
 
-  public AbstractProgressSheetCreator(Workbook wb, DataModelController controller) {
+  public AbstractProgressSheetCreator(Workbook wb, DataModelController controller, STEP step) {
     this.controller = controller;
     this.factory = new StyleFactory(wb);
+    this.defaultStep = step;
   }
 
   static void initMap() {
@@ -64,10 +71,10 @@ abstract class AbstractProgressSheetCreator {
 
   }
 
-  protected void createTotalRow(Sheet sheet, int rowIndex, STEP step) {
-    Row footer = createRow(sheet, rowIndex + 1);
-    Float progress = getProgress(step, getController().getProjectId(), 1);
-    createCell(footer, 10, String.format("%.1f", progress) + "%", Styles.TOTAL_STYLE);
+  protected void createTotalRow(Sheet sheet, int cellIndex) {
+    Row footer = createRow(sheet);
+    Float progress = getProgress(getController().getProjectId(), 1);
+    createCell(footer, cellIndex, String.format("%.1f", progress) + "%", Styles.TOTAL_STYLE);
   }
 
   public void triggerDefaultStyle() {
@@ -75,21 +82,19 @@ abstract class AbstractProgressSheetCreator {
   }
 
   /**
-   * 
-   * @param step
-   *          one of the enum values stored in {@link STEP}
    * @param entryId
    *          the id for which this progress value should be added
    * @param progress
    *          a {@link Float} in <code>[0,100]</code>
    */
-  void addProgress(STEP step, UUID entryId, Float progress) {
+  void addProgress(UUID entryId, Float progress) {
     assert progress >= 0 && progress <= 100;
-    if (!progressMap.get(step).containsKey(entryId)) {
-      progressMap.get(step).put(entryId, new ArrayList<>());
+    if (!progressMap.get(this.defaultStep).containsKey(entryId)) {
+      progressMap.get(this.defaultStep).put(entryId, new ArrayList<>());
     }
-    progressMap.get(step).get(entryId).add(progress);
+    progressMap.get(this.defaultStep).get(entryId).add(progress);
   }
+
 
   /**
    * 
@@ -103,13 +108,13 @@ abstract class AbstractProgressSheetCreator {
    *          assumed, must be >= 0
    * @return the progress that is a {@link Float} in <code>[0,100]</code>
    */
-  Float getProgress(STEP step, UUID entryId, int constraint) {
+  Float getProgress(UUID entryId, int constraint) {
     assert constraint >= 0;
-    if (progressMap.get(step).containsKey(entryId)) {
-      int size = progressMap.get(step).get(entryId).size();
+    if (progressMap.get(this.defaultStep).containsKey(entryId)) {
+      int size = progressMap.get(this.defaultStep).get(entryId).size();
       float factor = 1 / (float) Math.max(constraint, size);
       Float total = 0f;
-      for (Float progress : progressMap.get(step).get(entryId)) {
+      for (Float progress : progressMap.get(this.defaultStep).get(entryId)) {
         total += factor * progress;
       }
       return total;
@@ -144,19 +149,25 @@ abstract class AbstractProgressSheetCreator {
     }
   }
 
-  Row createRow(Sheet sheet, int rowIndex) {
-    Row hazRow = sheet.createRow(rowIndex);
+  Row createRow(Sheet sheet) {
+    Row hazRow = sheet.createRow(sheet.getLastRowNum() + 1);
+    System.out.println(hazRow.getRowNum());
     hazRow.setHeightInPoints(10f);
     hazRow.setHeight((short) -1);
     return hazRow;
   }
 
-  Row createRow(Sheet sheet, int rowIndex, int columns) {
-    Row row = sheet.createRow(rowIndex);
-    row.setHeightInPoints(10f);
-    row.setHeight((short) -1);
+  Row createRow(Sheet sheet, int columns) {
+    Row row = createRow(sheet);
     createCells(row, 0, null, columns);
     return row;
+  }
+
+  int createSubRows(Sheet sheet, Row row, int[] parentCells, SubRowCreator creator) {
+    int start = row.getRowNum();
+    int index = creator.createSubRows(row);
+    mergeRows(sheet, start, index, parentCells);
+    return index;
   }
 
   public final Sheet createSheet(String name) {

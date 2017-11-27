@@ -235,6 +235,25 @@ public class CausalFactorController extends Observable implements ICausalControl
   }
 
   @Override
+  public SortedMap<IUnsafeControlAction, List<Link>> getHazardBasedMap(ITableModel hazModel,
+      LinkController linkController, IControlActionController caController) {
+    SortedMap<IUnsafeControlAction, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
+    linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK, hazModel.getId())
+        .forEach((link) -> {
+          Link entryLink = linkController.getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK,
+              link.getLinkA());
+          Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+              entryLink.getLinkA());
+          IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
+          if (!ucaCfLink_Component_ToCFmap.containsKey(uca)) {
+            ucaCfLink_Component_ToCFmap.put(uca, new ArrayList<>());
+          }
+          ucaCfLink_Component_ToCFmap.get(uca).add(link);
+        });
+    return ucaCfLink_Component_ToCFmap;
+  }
+
+  @Override
   public void prepareForSave(IHazAccController hazAccController, List<Component> list,
       List<AbstractLTLProvider> allRefinedRules,
       List<ICorrespondingUnsafeControlAction> allUnsafeControlActions,

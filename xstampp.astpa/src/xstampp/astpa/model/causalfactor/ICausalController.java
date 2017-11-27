@@ -27,6 +27,7 @@ import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.ObserverValue;
@@ -124,9 +125,9 @@ public interface ICausalController {
   boolean setSafetyConstraintText(UUID linkB, String newText);
 
   /**
-   * Creates a sorted mapping of a Listof {@link Link}s to a {@link ICausalFactor}. The list set as
-   * value contains all {@link ObserverValue#UcaCfLink_Component_LINK}s between a
-   * {@link ObserverValue#UCA_CausalFactor_LINK} of a <b>specific {@link ICausalFactor}</b> and the
+   * Creates a sorted mapping of a List of {@link Link}s to a {@link ICausalFactor}. The list set as
+   * value contains all {@link LinkingType#UcaCfLink_Component_LINK}s between a
+   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link ICausalFactor}</b> and the
    * id of a {@link ICausalComponent}.<br>
    * The {@link List} is mapped to the <b>specific {@link ICausalFactor}</b> of that list.
    * 
@@ -135,16 +136,16 @@ public interface ICausalController {
    * @param linkController
    *          the {@link LinkController} that contains the {@link Link}s
    * @return A {@link SortedMap} that links a {@link List} of {@link Link}s of type
-   *         {@link ObserverValue#UcaCfLink_Component_LINK} to a {@link ICausalFactor}s.
+   *         {@link LinkingType#UcaCfLink_Component_LINK} to a {@link ICausalFactor}s.
    */
   SortedMap<ICausalFactor, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
       LinkController linkController);
 
   /**
-   * Creates a sorted mapping of a Listof {@link Link}s to a {@link IUnsafeControlAction}. The list
+   * Creates a sorted mapping of a List of {@link Link}s to a {@link IUnsafeControlAction}. The list
    * set as
-   * value contains all {@link ObserverValue#UcaCfLink_Component_LINK}s between a
-   * {@link ObserverValue#UCA_CausalFactor_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
+   * value contains all {@link LinkingType#UcaCfLink_Component_LINK}s between a
+   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
    * and the
    * id of a {@link ICausalComponent}.<br>
    * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
@@ -154,10 +155,29 @@ public interface ICausalController {
    * @param linkController
    *          the {@link LinkController} that contains the {@link Link}s
    * @return A {@link SortedMap} that links a {@link List} of {@link Link}s of type
-   *         {@link ObserverValue#UcaCfLink_Component_LINK} to a {@link IUnsafeControlAction}s.
+   *         {@link LinkingType#UcaCfLink_Component_LINK} to a {@link IUnsafeControlAction}s.
    */
   SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
       LinkController linkController, IControlActionController caController);
 
   boolean removeSafetyConstraint(UUID constraintId);
+
+  /**
+   * Creates a sorted mapping of a List of {@link Link}s to a {@link IUnsafeControlAction}. The list
+   * set as
+   * value contains all {@link LinkingType#CausalEntryLink_HAZ_LINK}s between a
+   * {@link LinkingType#UcaCfLink_Component_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
+   * and the
+   * id of the {@link ITableModel}.<br>
+   * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
+   * 
+   * @param hazModel
+   *          a hazard model given as {@link ITableModel}
+   * @param linkController
+   *          the {@link LinkController} that contains the {@link Link}s
+   * @return A {@link SortedMap} that links a {@link List} of {@link Link}s of type
+   *         {@link LinkingType#CausalEntryLink_HAZ_LINK} to a {@link IUnsafeControlAction}s.
+   */
+  SortedMap<IUnsafeControlAction, List<Link>> getHazardBasedMap(ITableModel hazModel, LinkController linkController,
+      IControlActionController caController);
 }

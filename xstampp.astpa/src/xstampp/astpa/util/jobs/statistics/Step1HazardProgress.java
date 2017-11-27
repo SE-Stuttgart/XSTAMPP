@@ -28,7 +28,6 @@ import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkingType;
-import xstampp.astpa.util.jobs.statistics.AbstractProgressSheetCreator.STEP;
 import xstampp.model.ObserverValue;
 
 public class Step1HazardProgress extends AbstractProgressSheetCreator {
@@ -39,7 +38,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
       "Correcponding Safety Constraint", "Design Requirements", "", "Completion[%]" };
 
   public Step1HazardProgress(Workbook wb, DataModelController controller) {
-    super(wb, controller);
+    super(wb, controller, STEP.STEP_1_HAZARD_CENTERED);
   }
 
   public void createWorkSheet(Sheet sheet) {
@@ -52,26 +51,26 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
       triggerDefaultStyle();
-      hazRow = createRow(sheet, ++rowIndex, titles.length);
+      hazRow = createRow(sheet, titles.length);
       createCell(hazRow, 0, hazModel.getIdString());
       createCell(hazRow, 1, hazModel.getTitle());
       createCell(hazRow, 2, ((EntryWithSeverity) hazModel).getSeverity().name());
-      int hazGroupStart = rowIndex;
-      rowIndex = createCAs(sheet, hazRow, rowIndex, hazModel);
-      Float progress = getProgress(STEP.STEP_1_HAZARD_CENTERED, hazModel.getId(), 1);
+      rowIndex = createSubRows(sheet, hazRow, new int[] { 0, 1, 2, 10 }, (parentRow) -> {
+        return createCAs(sheet, parentRow, hazModel);
+      });
+      Float progress = getProgress(hazModel.getId(), 1);
       createCell(hazRow, 10, String.format("%.1f", progress) + "%");
-      addProgress(STEP.STEP_1_HAZARD_CENTERED, getController().getProjectId(), progress);
-      mergeRows(sheet, hazGroupStart, rowIndex, new int[] { 0, 1, 2, 10 });
+      addProgress(getController().getProjectId(), progress);
     }
 
-    createTotalRow(sheet, rowIndex, STEP.STEP_1_HAZARD_CENTERED);
+    createTotalRow(sheet, titles.length - 1);
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }
     sheet.setColumnWidth(7, 100 * 255);
   }
 
-  private int createCAs(Sheet sheet, Row hazRow, int rowIndex, ITableModel hazModel) {
+  private int createCAs(Sheet sheet, Row hazRow, ITableModel hazModel) {
     TreeMap<ITableModel, List<UUID>> caMap = new TreeMap<>();
     for (UUID uuid : getController().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
         hazModel.getId())) {
@@ -83,17 +82,17 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
     }
 
     Row row = hazRow;
-    int index = rowIndex;
+    int index = hazRow.getRowNum();
     for (Entry<ITableModel, List<UUID>> entry : caMap.entrySet()) {
-      row = row == null ? createRow(sheet, ++index, titles.length) : row;
+      row = row == null ? createRow(sheet, titles.length) : row;
       ITableModel caModel = entry.getKey();
       createCell(row, 3, caModel.getIdString());
       createCell(row, 4, caModel.getTitle());
-      int caGroupStart = index;
-      index = createUCARows(sheet, row, index, caModel, entry.getValue());
-      Float progress = getProgress(STEP.STEP_1_HAZARD_CENTERED, caModel.getId(), 1);
-      addProgress(STEP.STEP_1_HAZARD_CENTERED, hazModel.getId(), progress);
-      mergeRows(sheet, caGroupStart, index, new int[] { 3, 4 });
+      index = createSubRows(sheet, row, new int[] { 3, 4 }, (parentRow) -> {
+        return createUCARows(sheet, parentRow, caModel, entry.getValue());
+      });
+      Float progress = getProgress(caModel.getId(), 1);
+      addProgress(hazModel.getId(), progress);
       row = null;
     }
 
@@ -101,41 +100,41 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
 
   }
 
-  private int createUCARows(Sheet sheet, Row caRow, int rowIndex, ITableModel caModel,
+  private int createUCARows(Sheet sheet, Row caRow, ITableModel caModel,
       List<UUID> value) {
     Row row = caRow;
-    int index = rowIndex;
+    int index = caRow.getRowNum();
     for (UUID ucaId : value) {
-      row = row == null ? createRow(sheet, ++index, titles.length) : row;
+      row = row == null ? createRow(sheet, titles.length) : row;
       IUnsafeControlAction ucaModel = ((IControlAction) caModel).getUnsafeControlAction(ucaId);
       ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
           .getCorrespondingSafetyConstraint();
       createCell(row, 5, ucaModel.getIdString());
       createCell(row, 6, ucaModel.getSeverity().name());
       createCell(row, 7, safetyModel.getText());
-      int groupStart = index;
-      index = createDesignRows(sheet, row, index, safetyModel.getId());
-      addProgress(STEP.STEP_1_HAZARD_CENTERED, caModel.getId(), getProgress(STEP.STEP_1_HAZARD_CENTERED, safetyModel.getId(), 1));
-      mergeRows(sheet, groupStart, rowIndex, new int[] { 3, 4 });
+      index = createSubRows(sheet, row, new int[] { 3, 4 }, (parentRow) -> {
+        return createDesignRows(sheet, parentRow, safetyModel.getId());
+      });
+      addProgress(caModel.getId(), getProgress(safetyModel.getId(), 1));
       row = null;
     }
     return index;
   }
 
-  private int createDesignRows(Sheet sheet, Row ucaRow, int rowIndex, UUID scId) {
+  private int createDesignRows(Sheet sheet, Row ucaRow, UUID scId) {
     Row row = ucaRow;
-    int index = rowIndex;
+    int index = ucaRow.getRowNum();
     for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
         scId)) {
-      row = row == null ? createRow(sheet, ++index, titles.length) : row;
+      row = row == null ? createRow(sheet, titles.length) : row;
       ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
           ObserverValue.DESIGN_REQUIREMENT);
       createCell(row, 8, designReq.getIdString());
       createCell(row, 8, designReq.getTitle());
       if (designReq.getTitle().isEmpty()) {
-        addProgress(STEP.STEP_1_HAZARD_CENTERED, scId, 0f);
+        addProgress(scId, 0f);
       } else {
-        addProgress(STEP.STEP_1_HAZARD_CENTERED, scId, 100f);
+        addProgress(scId, 100f);
       }
       row = null;
     }

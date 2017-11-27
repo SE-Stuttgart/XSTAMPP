@@ -11,6 +11,7 @@
 
 package xstampp.astpa.util.jobs.statistics;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -18,21 +19,21 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 
 public class Step2Progress extends AbstractProgressSheetCreator {
 
-  private static final String[] titles = new String[] { "Control Actions", "",
-      "Unsafe Control Actions", "Severity", "Correcponding Safety Constraint", "Design Requirement",
-      "Completion[%]" };
+  private static final String[] titles = new String[] {
+      "Unsafe Control Actions", "Severity", "Causal Factors", "Hazard", "Safety Constraint",
+      "Design Requirements", "Completion[%]" };
 
   public Step2Progress(Workbook wb, DataModelController controller) {
-    super(wb, controller);
+    super(wb, controller, STEP.STEP_2);
   }
 
   public void createWorkSheet(Sheet sheet) {
@@ -42,81 +43,82 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     headerRow.setHeightInPoints(12.75f);
 
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
-    rowIndex = createCAs(sheet, rowIndex);
-    Row footer = createRow(sheet, ++rowIndex);
-    Float progress = getProgress(STEP.STEP_1, getController().getProjectId(), 1);
-    createCell(footer, 8, String.format("%.1f", progress) + "%");
+    Row ucaRow;
+    for (ICorrespondingUnsafeControlAction uca : getController().getControlActionController()
+        .getAllUnsafeControlActions()) {
+      ucaRow = createRow(sheet, titles.length);
+      createCell(ucaRow, 0, uca.getIdString());
+      createCell(ucaRow, 1, uca.getSeverity().name());
+      rowIndex = createSubRows(sheet, ucaRow, new int[] { 0, 1 }, (parentRow) -> {
+        return createRows(uca, parentRow, sheet);
+      });
+      // TODO create constant to constraint causal factors per uca
+      Float progress = getProgress(uca.getId(), 1);
+      addProgress(getController().getProjectId(), progress);
+      createCell(ucaRow, titles.length - 1, String.format("%.1f", progress) + "%");
+    }
+    createTotalRow(sheet, titles.length - 1);
 
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }
-    sheet.setColumnWidth(7, 100 * 255);
   }
 
-  private int createCAs(Sheet sheet, int rowIndex) {
-
-    Row row;
-    int index = rowIndex;
-    for (IControlAction action : getController().getAllControlActions()) {
-      row = sheet.createRow(rowIndex);
-      createCell(row, 0, action.getIdString());
-      createCell(row, 1, action.getTitle());
-      int caGroupStart = index;
-      index = createUCARows(sheet, row, index, action);
-      Float progress = getProgress(STEP.STEP_1, action.getId(), 1);
-      addProgress(STEP.STEP_1, getController().getProjectId(), progress);
-      createCell(row, 6, String.format("%.1f", progress) + "%", Styles.TOTAL_STYLE);
-      mergeRows(sheet, caGroupStart, index, new int[] { 0, 1, 6 });
-      row = null;
-    }
-
-    return index;
-
-  }
-
-  private int createUCARows(Sheet sheet, Row caRow, int rowIndex, IControlAction action) {
-    Row row = caRow;
-    int index = rowIndex;
-    for (IUnsafeControlAction ucaModel : action.getUnsafeControlActions()) {
-      if (row == null) {
-        row = createRow(sheet, ++index);
-        createCells(row, 0, null, 5);
+  private int createRows(ICorrespondingUnsafeControlAction uca, Row parentRow, Sheet sheet) {
+    Row row = parentRow;
+    int index = parentRow.getRowNum();
+    for (Link ucaCfLink : getController().getLinkController().getRawLinksFor(LinkingType.UCA_CausalFactor_LINK,
+        uca.getId())) {
+      row = row == null ? createRow(sheet, titles.length) : row;
+      ICausalFactor factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
+      Optional<Link> causalEntryOpt = getController().getLinkController()
+          .getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, ucaCfLink.getId()).stream().findFirst();
+      if (factor != null && causalEntryOpt.isPresent()) {
+        createCell(row, 2, factor.getText());
+        index = createSubRows(sheet, row, new int[] { 2 }, (parent) -> {
+          return createCFs(sheet, parent, factor, causalEntryOpt.get());
+        });
       }
-      ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
-          .getCorrespondingSafetyConstraint();
-      createCell(row, 2, ucaModel.getIdString());
-      createCell(row, 3, ucaModel.getSeverity().name());
-      createCell(row, 4, safetyModel.getText());
-      int caGroupStart = index;
-      index = createDesignRows(sheet, row, index, safetyModel.getId());
-      Float progress = getProgress(STEP.STEP_1, safetyModel.getId(), 1);
-      addProgress(STEP.STEP_1, action.getId(), progress);
-      mergeRows(sheet, caGroupStart, index, new int[] { 2,3,4 });
       row = null;
     }
     return index;
+
   }
 
-  private int createDesignRows(Sheet sheet, Row ucaRow, int rowIndex, UUID scId) {
-    Row row = ucaRow;
-    int index = rowIndex;
-    for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
-        scId)) {
-      if (row == null) {
-        row = createRow(sheet, ++index);
-        createCells(row, 0, null, 5);
-      }
-      ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
-          ObserverValue.DESIGN_REQUIREMENT_STEP1);
-      createCell(row, 5, designReq.getTitle());
-      if(designReq.getTitle().isEmpty()) {
-        addProgress(STEP.STEP_1, scId, 0f);
+  private int createCFs(Sheet sheet, Row parentRow, ICausalFactor factor, Link causalEntryLin) {
+    Row row = parentRow;
+    int index = parentRow.getRowNum();
+    for (Link link : getController().getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+        causalEntryLin.getId())) {
+      row = row == null ? createRow(sheet, titles.length) : row;
+      createHazardRow(link, row);
+      addProgress(factor.getId(), getProgress(factor.getId(), 1));
+      row = null;
+    }
+    return index;
+
+  }
+
+  private void createHazardRow(Link link, Row hazRow) {
+    ITableModel hazard = getController().getHazard(link.getLinkB());
+    if (hazard != null) {
+      Optional<UUID> constraintOpt = getController().getLinkController()
+          .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, link.getId()).stream().findFirst();
+      String constraint = getController().getCausalFactorController()
+          .getConstraintTextFor(constraintOpt.orElse(null));
+
+      createCell(hazRow, 5, hazard.getIdString());
+      createCell(hazRow, 6, constraint);
+      Optional<UUID> designOpt = getController().getLinkController()
+          .getLinksFor(LinkingType.DR2_CausalSC_LINK, constraintOpt.orElse(null)).stream().findFirst();
+      ITableModel requirement = getController().getSdsController().getDesignRequirement(designOpt.orElse(null),
+          ObserverValue.DESIGN_REQUIREMENT_STEP2);
+      if (requirement != null) {
+        addProgress(hazard.getId(), 100f);
+        createCell(hazRow, 7, requirement.getIdString());
       } else {
-        addProgress(STEP.STEP_1, scId, 100f);
+        addProgress(hazard.getId(), 0f);
       }
-      row = null;
     }
-    return index;
   }
-
 }
