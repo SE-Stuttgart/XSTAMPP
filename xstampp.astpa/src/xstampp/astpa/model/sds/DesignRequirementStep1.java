@@ -14,6 +14,7 @@
 package xstampp.astpa.model.sds;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * Class representing the design requirement objects.
@@ -35,6 +36,10 @@ public class DesignRequirementStep1 extends ATableModel {
    */
   public DesignRequirementStep1(String title, String description) {
     super(title, description);
+  }
+
+  public DesignRequirementStep1(ITableModel model) {
+    super(model, model.getNumber());
   }
 
   /**

@@ -195,12 +195,6 @@ public class DataModelController extends AbstractDataModel
    * false.
    */
   private boolean recordCallbacks;
-  /**
-   * When this boolean is true and the {@link UndoRedoService} is currently recording than
-   * {@link UndoRedoService#pushRecord()} is called when
-   * {@link DataModelController#pushToUndo(IUndoCallback)} is called the next time.
-   */
-  private boolean pushRecord;
   private List<ObserverValue> blockedUpdates;
   private IUserSystem userSystem;
 
@@ -233,7 +227,6 @@ public class DataModelController extends AbstractDataModel
     getIgnoreLTLValue();
     refreshLock = false;
     this.recordCallbacks = false;
-    this.pushRecord = false;
     this.userSystem = new EmptyUserSystem();
     if (!testable) {
       Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
@@ -328,10 +321,7 @@ public class DataModelController extends AbstractDataModel
         || ((title == null) || (description == null))) {
       return null;
     }
-
-    UUID id = this.getHazAccController().addAccident(title, description);
-    this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
-    return id;
+    return this.getHazAccController().addAccident(title, description);
   }
 
   @Override
@@ -444,13 +434,8 @@ public class DataModelController extends AbstractDataModel
     if ((title == null) || (description == null)) {
       return null;
     }
-
-    UUID id = this.getSdsController().addDesignRequirement(title, description,
+    return this.getSdsController().addDesignRequirement(title, description,
         ObserverValue.DESIGN_REQUIREMENT);
-    if (id != null) {
-      this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-    }
-    return id;
   }
 
   @Override
@@ -459,12 +444,7 @@ public class DataModelController extends AbstractDataModel
         || (description == null)) {
       return null;
     }
-
-    UUID id = this.getHazAccController().addHazard(title, description);
-    if (id != null) {
-      this.setUnsavedAndChanged(ObserverValue.HAZARD);
-    }
-    return id;
+    return this.getHazAccController().addHazard(title, description);
   }
 
   @Override
@@ -490,24 +470,15 @@ public class DataModelController extends AbstractDataModel
     if ((title == null) || (description == null)) {
       return null;
     }
-
-    UUID id = this.getSdsController().addSafetyConstraint(title, description,
+    return this.getSdsController().addSafetyConstraint(title, description,
         getUserSystem().getCurrentUserId());
-    if (id != null) {
-      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-    }
-    return id;
   }
 
   public UUID addSafetyConstraint(ITableModel model) {
     if (model == null) {
       return null;
     }
-    UUID id = this.getSdsController().addSafetyConstraint(model);
-    if (id != null) {
-      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-    }
-    return id;
+    return this.getSdsController().addSafetyConstraint(model);
   }
 
   @Override
@@ -529,12 +500,7 @@ public class DataModelController extends AbstractDataModel
     if ((title == null) || (description == null)) {
       return null;
     }
-
-    UUID id = this.getSdsController().addSystemGoal(title, description);
-    if (id != null) {
-      this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
-    }
-    return id;
+    return this.getSdsController().addSystemGoal(title, description);
   }
 
   @Override
@@ -1326,7 +1292,6 @@ public class DataModelController extends AbstractDataModel
         .getService(ISourceProviderService.class);
     UndoRedoService provider = (UndoRedoService) service
         .getSourceProvider(UndoRedoService.CAN_REDO);
-    this.pushRecord = false;
     provider.pushRecord();
     this.refreshLock = false;
     blockedUpdates = new ArrayList<>();
@@ -1351,18 +1316,10 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean removeAccident(UUID accidentId) {
-    if (getUserSystem().checkAccess(accidentId, AccessRights.CREATE) && accidentId == null) {
-      return false;
+    if (getUserSystem().checkAccess(accidentId, AccessRights.CREATE)) {
+      return this.getHazAccController().removeAccident(accidentId);
     }
-    if (!(this.getHazAccController().getAccident(accidentId) instanceof Accident)) {
-      return false;
-    }
-    getLinkController().deleteAllFor(LinkingType.HAZ_ACC_LINK, accidentId);
-    boolean result = this.getHazAccController().removeAccident(accidentId);
-    if (result) {
-      this.setUnsavedAndChanged(ObserverValue.ACCIDENT);
-    }
-    return result;
+    return false;
   }
 
   @Override
@@ -1441,12 +1398,8 @@ public class DataModelController extends AbstractDataModel
     if (designRequirementId == null) {
       return false;
     }
-    if (this.getSdsController().removeDesignRequirement(designRequirementId,
-        ObserverValue.DESIGN_REQUIREMENT)) {
-      this.setUnsavedAndChanged(ObserverValue.DESIGN_REQUIREMENT);
-      return true;
-    }
-    return false;
+    return this.getSdsController().removeDesignRequirement(designRequirementId,
+        ObserverValue.DESIGN_REQUIREMENT);
   }
 
   @Override
@@ -1454,15 +1407,7 @@ public class DataModelController extends AbstractDataModel
     if (getUserSystem().checkAccess(hazardId, AccessRights.CREATE) && hazardId == null) {
       return false;
     }
-    if (!(this.getHazAccController().getHazard(hazardId) instanceof Hazard)) {
-      return false;
-    }
-    getLinkController().deleteAllFor(LinkingType.HAZ_ACC_LINK, hazardId);
-    if (this.getHazAccController().removeHazard(hazardId)) {
-      this.setUnsavedAndChanged(ObserverValue.HAZARD);
-      return true;
-    }
-    return false;
+    return this.getHazAccController().removeHazard(hazardId);
   }
 
   @Override
@@ -1470,45 +1415,18 @@ public class DataModelController extends AbstractDataModel
     if (safetyConstraintId == null) {
       return false;
     }
-    if (!(this.getSdsController()
-        .getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
-      return false;
-    }
-
-    if (this.getSdsController().removeSafetyConstraint(safetyConstraintId)) {
-      this.setUnsavedAndChanged(ObserverValue.SAFETY_CONSTRAINT);
-      return true;
-    }
-    return false;
+    return this.getSdsController().removeSafetyConstraint(safetyConstraintId);
   }
 
   @Override
   public boolean removeSystemGoal(UUID systemGoalId) {
-    if (systemGoalId == null) {
-      return false;
-    }
-    if (!(this.getSdsController().getSystemGoal(systemGoalId) instanceof SystemGoal)) {
-      return false;
-    }
-
-    if (this.getSdsController().removeSystemGoal(systemGoalId)) {
-      this.setUnsavedAndChanged(ObserverValue.SYSTEM_GOAL);
-      return true;
-    }
-    return false;
+    return this.getSdsController().removeSystemGoal(systemGoalId);
   }
 
   @Override
   public boolean removeUCAHazardLink(UUID unsafeControlActionId, UUID hazardId) {
-    if ((unsafeControlActionId == null) || (hazardId == null)) {
-      return false;
-    }
-    if (this.getLinkController().deleteLink(LinkingType.UCA_HAZ_LINK, unsafeControlActionId,
-        hazardId)) {
-      this.setUnsavedAndChanged();
-      return true;
-    }
-    return false;
+    return this.getLinkController().deleteLink(LinkingType.UCA_HAZ_LINK, unsafeControlActionId,
+        hazardId);
   }
 
   @Override
@@ -2158,6 +2076,7 @@ public class DataModelController extends AbstractDataModel
     if (this.hazAccController == null) {
       this.hazAccController = new HazAccController();
     }
+    this.hazAccController.setLinkController(getLinkController());
     this.hazAccController.addObserver(this);
     return hazAccController;
   }
@@ -2166,6 +2085,7 @@ public class DataModelController extends AbstractDataModel
     if (this.sdsController == null) {
       this.sdsController = new SDSController();
     }
+    this.sdsController.setLinkController(getLinkController());
     this.sdsController.addObserver(this);
     return sdsController;
   }

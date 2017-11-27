@@ -59,6 +59,8 @@ public class SDSController extends Observable implements ISDSController {
   @XmlElement(name = "designRequirement")
   private NumberedArrayList<DesignRequirementStep2> designRequirementsStep2;
 
+  private LinkController linkController;
+
   /**
    * 
    * Constructor of the SDSCotnroller
@@ -74,6 +76,10 @@ public class SDSController extends Observable implements ISDSController {
     this.designRequirementsStep2 = new NumberedArrayList<>();
   }
 
+  public void setLinkController(LinkController linkController) {
+    this.linkController = linkController;
+  }
+
   /*
    * (non-Javadoc)
    * @see xstampp.astpa.model.sds.ISDSController#addSafetyConstraint(java.lang.String,
@@ -83,8 +89,7 @@ public class SDSController extends Observable implements ISDSController {
   public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
     SafetyConstraint safetyConstraint = new SafetyConstraint(title, description);
     safetyConstraint.setCreatedBy(createdBy);
-    this.getSafetyConstraints().add(safetyConstraint);
-    return safetyConstraint.getId();
+    return addSafetyConstraint(safetyConstraint);
   }
 
   /*
@@ -95,7 +100,10 @@ public class SDSController extends Observable implements ISDSController {
   @Override
   public UUID addSafetyConstraint(ITableModel model) {
     SafetyConstraint safetyConstraint = new SafetyConstraint(model, -1);
-    this.getSafetyConstraints().add(safetyConstraint);
+    if(this.getSafetyConstraints().add(safetyConstraint)) {
+      setChanged();
+      notifyObservers(new UndoAddSC(this, safetyConstraint, linkController));
+    }
     return safetyConstraint.getId();
   }
 
@@ -157,7 +165,7 @@ public class SDSController extends Observable implements ISDSController {
     int index = this.getSafetyConstraints().indexOf(safetyConstraint);
     this.getSafetyConstraints().remove(index);
     setChanged();
-    notifyObservers(ObserverValue.SAFETY_CONSTRAINT);
+    notifyObservers(new UndoRemoveSC(this, safetyConstraint, linkController));
     return true;
   }
 
@@ -168,7 +176,15 @@ public class SDSController extends Observable implements ISDSController {
   @Override
   public UUID addSystemGoal(String title, String description) {
     SystemGoal systemGoal = new SystemGoal(title, description);
-    this.getSystemGoals().add(systemGoal);
+    return addSystemGoal(systemGoal);
+  }
+
+  UUID addSystemGoal(ITableModel model) {
+    SystemGoal systemGoal = new SystemGoal(model);
+    if (this.getSystemGoals().add(systemGoal)) {
+      setChanged();
+      notifyObservers(new UndoAddSystemGoals(this, systemGoal, linkController));
+    }
     return systemGoal.getId();
   }
 
@@ -205,10 +221,21 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public boolean removeSystemGoal(UUID systemGoalId) {
+    if (systemGoalId == null) {
+      return false;
+    }
+    if (!(getSystemGoal(systemGoalId) instanceof SystemGoal)) {
+      return false;
+    }
+
     ITableModel systemGoal = this.getSystemGoal(systemGoalId);
     int index = this.getSystemGoals().indexOf(systemGoal);
-    this.getSystemGoals().remove(index);
-    return true;
+    if (this.getSystemGoals().remove(index) != null) {
+      setChanged();
+      notifyObservers(new UndoRemoveSystemGoals(this, systemGoal, linkController));
+      return true;
+    }
+    return false;
   }
 
   /*
@@ -228,6 +255,7 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public UUID addDesignRequirement(String title, String description, ObserverValue type) {
+
     switch (type) {
     case DESIGN_REQUIREMENT: {
       return addDesignRequirementStep0(title, description);
@@ -243,27 +271,59 @@ public class SDSController extends Observable implements ISDSController {
     }
   }
 
+  UUID addDesignRequirement(ITableModel model, ObserverValue type) {
+
+    switch (type) {
+    case DESIGN_REQUIREMENT: {
+      return addDesignRequirementStep0(model);
+    }
+    case DESIGN_REQUIREMENT_STEP1: {
+      return addDesignRequirementStep1(model);
+    }
+    case DESIGN_REQUIREMENT_STEP2: {
+      return addDesignRequirementStep2(model);
+    }
+    default:
+      return null;
+    }
+  }
+
   private UUID addDesignRequirementStep0(String title, String description) {
     DesignRequirement designRequirement = new DesignRequirement(title, description);
+    return addDesignRequirementStep0(designRequirement);
+  }
+
+  private UUID addDesignRequirementStep0(ITableModel model) {
+    DesignRequirement designRequirement = new DesignRequirement(model);
     getDesignRequirements().add(designRequirement);
     setChanged();
-    notifyObservers(ObserverValue.DESIGN_REQUIREMENT);
+    notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT));
     return designRequirement.getId();
   }
 
   private UUID addDesignRequirementStep1(String title, String description) {
     DesignRequirementStep1 designRequirement = new DesignRequirementStep1(title, description);
-    getDesignRequirementsStep1().add(designRequirement);
+    return addDesignRequirementStep1(designRequirement);
+  }
+
+  private UUID addDesignRequirementStep1(ITableModel model) {
+    DesignRequirement designRequirement = new DesignRequirement(model);
+    getDesignRequirements().add(designRequirement);
     setChanged();
-    notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP1);
+    notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT_STEP1));
     return designRequirement.getId();
   }
 
   private UUID addDesignRequirementStep2(String title, String description) {
     DesignRequirementStep2 designRequirement = new DesignRequirementStep2(title, description);
-    getDesignRequirementsStep2().add(designRequirement);
+    return addDesignRequirementStep2(designRequirement);
+  }
+
+  private UUID addDesignRequirementStep2(ITableModel model) {
+    DesignRequirement designRequirement = new DesignRequirement(model);
+    getDesignRequirements().add(designRequirement);
     setChanged();
-    notifyObservers(ObserverValue.DESIGN_REQUIREMENT_STEP2);
+    notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT_STEP2));
     return designRequirement.getId();
   }
 
@@ -365,7 +425,7 @@ public class SDSController extends Observable implements ISDSController {
     ITableModel designRequirement = this.getDesignRequirement(designRequirementId, type);
     if (this.designRequirements.remove(designRequirement)) {
       setChanged();
-      notifyObservers(type);
+      notifyObservers(new UndoRemoveDR(this, designRequirement, linkController, type));
       return true;
     }
     return false;

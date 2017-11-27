@@ -106,9 +106,11 @@ public final class STPAPluginUtils {
     if (command != null) {
       try {
         return command.executeWithChecks(new ExecutionEvent());
-      } catch (ExecutionException | NotDefinedException | NullPointerException | NotEnabledException
+      } catch (ExecutionException | NotDefinedException | NullPointerException
           | NotHandledException e) {
         ProjectManager.getLOGGER().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$
+      } catch (NotEnabledException exc) {
+        ProjectManager.getLOGGER().debug(exc.getMessage());
       }
     } else {
       ProjectManager.getLOGGER().error("Command " + commandId + " does not exist"); //$NON-NLS-1$ //$NON-NLS-2$

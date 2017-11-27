@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 
 /**
@@ -54,6 +55,10 @@ public class Hazard extends ATableModel {
   public Hazard() {
     this("", "", -1); //$NON-NLS-1$ //$NON-NLS-2$
     // empty constructor for JAXB
+  }
+
+  Hazard(ITableModel model) {
+    super(model, model.getNumber());
   }
 
   public Hazard(String title, String description) {

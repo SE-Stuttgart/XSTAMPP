@@ -16,6 +16,7 @@ package xstampp.astpa.model.hazacc;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 
 /**
@@ -56,6 +57,10 @@ public class Accident extends ATableModel {
 
   public Accident(String title, String description) {
     this(title, description, -1);
+  }
+
+  Accident(ITableModel model) {
+    super(model, model.getNumber());
   }
 
   @Override

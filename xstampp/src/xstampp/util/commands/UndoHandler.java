@@ -32,6 +32,6 @@ public class UndoHandler extends AbstractHandler {
     UndoRedoService provider = (UndoRedoService) service
         .getSourceProvider(UndoRedoService.CAN_REDO);
     provider.undo();
-    return null;
+    return false;
   }
 }

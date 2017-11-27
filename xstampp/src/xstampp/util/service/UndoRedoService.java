@@ -91,6 +91,14 @@ public class UndoRedoService extends AbstractSourceProvider implements IPartList
 
   @Override
   public void partActivated(IWorkbenchPart part) {
+  }
+
+  @Override
+  public void partDeactivated(IWorkbenchPart part) {
+  }
+
+  @Override
+  public void partBroughtToTop(IWorkbenchPart part) {
     if (part instanceof StandartEditorPart) {
       String editorId = ((StandartEditorPart) part).getId();
       this.providerToEditorIds.putIfAbsent(editorId, new UndoRedoInstance(this));
@@ -100,18 +108,10 @@ public class UndoRedoService extends AbstractSourceProvider implements IPartList
   }
 
   @Override
-  public void partDeactivated(IWorkbenchPart part) {
+  public void partClosed(IWorkbenchPart part) {
     fireSourceChanged(ISources.WORKBENCH, CAN_REDO, false);
     fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, false);
     this.currentProvider = new DummyUndoRedoProvider();
-  }
-
-  @Override
-  public void partBroughtToTop(IWorkbenchPart part) {
-  }
-
-  @Override
-  public void partClosed(IWorkbenchPart part) {
   }
 
   @Override

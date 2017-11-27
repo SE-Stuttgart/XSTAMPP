@@ -58,6 +58,8 @@ public class HazAccController extends Observable implements IHazAccController {
   @XmlAttribute(name = "useSeverity")
   private Boolean useSeverity;
 
+  private LinkController linkController;
+
   /**
    * Constructor for the controller
    *
@@ -75,7 +77,14 @@ public class HazAccController extends Observable implements IHazAccController {
   @Override
   public UUID addAccident(String title, String description) {
     Accident newAccident = new Accident(title, description);
+    return addAccident(newAccident);
+  }
+
+  UUID addAccident(ITableModel model) {
+    Accident newAccident = new Accident(model);
     this.getAccidents().add(newAccident);
+    setChanged();
+    notifyObservers(new UndoAddAccident(this, newAccident, getLinkController()));
     return newAccident.getId();
   }
 
@@ -84,11 +93,14 @@ public class HazAccController extends Observable implements IHazAccController {
    * @see xstampp.astpa.model.hazacc.IHazAccController#removeAccident(java.util.UUID)
    */
   @Override
-  public boolean removeAccident(UUID id) {
-    ITableModel accident = this.getAccident(id);
-    int index = this.getAccidents().indexOf(accident);
-    this.getAccidents().remove(index);
-    return true;
+  public boolean removeAccident(UUID accidentId) {
+    ITableModel accident = this.getAccident(accidentId);
+    if (this.getAccidents().remove(accident)) {
+      setChanged();
+      notifyObservers(new UndoRemoveAccidents(this, accident, getLinkController()));
+      return true;
+    }
+    return false;
   }
 
   /*
@@ -151,9 +163,17 @@ public class HazAccController extends Observable implements IHazAccController {
    */
   @Override
   public UUID addHazard(String title, String description) {
-    Hazard newHazard = new Hazard(title, description);
-    this.getHazards().add(newHazard);
-    return newHazard.getId();
+    return addHazard(new Hazard(title, description));
+  }
+
+  UUID addHazard(ITableModel model) {
+    Hazard newHazard = new Hazard(model);
+    if(this.getHazards().add(newHazard)) {
+      setChanged();
+      notifyObservers(new UndoAddHazard(this, newHazard, getLinkController()));
+      return newHazard.getId();
+    }
+    return null;
   }
 
   /*
@@ -162,10 +182,13 @@ public class HazAccController extends Observable implements IHazAccController {
    */
   @Override
   public boolean removeHazard(UUID id) {
-    ITableModel hazard = this.getHazard(id);
-    int index = this.getHazards().indexOf(hazard);
-    this.getHazards().remove(index);
-    return true;
+    Hazard hazard = this.getHazard(id);
+    if(this.getHazards().remove(hazard)) {
+      setChanged();
+      notifyObservers(new UndoRemoveHazard(this, hazard, getLinkController()));
+      return true;
+    }
+    return false;
   }
 
   /*
@@ -335,5 +358,13 @@ public class HazAccController extends Observable implements IHazAccController {
       this.hazards = new NumberedArrayList<>();
     }
     return hazards;
+  }
+
+  public LinkController getLinkController() {
+    return linkController;
+  }
+
+  public void setLinkController(LinkController linkController) {
+    this.linkController = linkController;
   }
 }

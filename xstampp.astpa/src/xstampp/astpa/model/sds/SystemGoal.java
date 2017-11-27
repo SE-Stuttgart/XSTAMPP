@@ -14,6 +14,7 @@
 package xstampp.astpa.model.sds;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * Class for system goals
@@ -45,6 +46,10 @@ public class SystemGoal extends ATableModel {
    */
   public SystemGoal(String title, String description) {
     super(title, description);
+  }
+  
+  SystemGoal(ITableModel model) {
+    super(model, model.getNumber());
   }
 
   /**
