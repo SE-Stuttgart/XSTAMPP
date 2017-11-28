@@ -99,6 +99,7 @@
       <view
             category="xstampp.category.views"
             class="xstampp.ui.HistoryView"
+            icon="icons/buttons/historyView.png"
             id="xstampp.view.history"
             name="Undo/Redo history"
             restorable="true">
@@ -534,6 +535,15 @@
                   commandId="xstampp.command.redo"
                   icon="icons/eclipse/redo_edit.gif"
                   style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  icon="icons/buttons/historyView.png"
+                  style="push">
+               <parameter
+                     name="org.eclipse.ui.views.showView.viewId"
+                     value="xstampp.view.history">
+               </parameter>
             </command>
          </toolbar>
       </menuContribution>
