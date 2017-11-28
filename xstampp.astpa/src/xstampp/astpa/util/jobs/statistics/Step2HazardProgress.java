@@ -40,6 +40,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
   }
 
   public void createWorkSheet(Sheet sheet) {
+    setColumns(titles.length);
     // the header row: centered text in 48pt font
     Row headerRow = sheet.createRow(0);
     headerRow.setHeightInPoints(12.75f);
@@ -47,7 +48,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
       triggerDefaultStyle();
-      hazRow = createRow(sheet, titles.length);
+      hazRow = createRow(sheet);
       createCell(hazRow, 0, hazModel.getIdString());
       createCell(hazRow, 1, hazModel.getTitle());
       createCell(hazRow, 2, ((EntryWithSeverity) hazModel).getSeverity().name());
@@ -71,7 +72,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
     SortedMap<IUnsafeControlAction, List<Link>> hazardBasedMap = getController().getCausalFactorController()
         .getHazardBasedMap(hazModel, getController().getLinkController(), getController().getControlActionController());
     for (IUnsafeControlAction uca : hazardBasedMap.keySet()) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       createCell(row, 3, uca.getIdString());
       createCell(row, 4, uca.getSeverity().name());
       rowIndex = createSubRows(sheet, row, new int[] { 3, 4 }, (parentRow) -> {
@@ -95,7 +96,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
       Link ucaCfLink = getController().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
           causalEntryLink.getLinkA());
       ICausalFactor factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       Optional<UUID> sc2Optional = getController().getLinkController()
           .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream().findFirst();
       String constraint = getController().getCausalFactorController().getConstraintTextFor(sc2Optional.orElse(null));

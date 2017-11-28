@@ -42,6 +42,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
   }
 
   public void createWorkSheet(Sheet sheet) {
+    setColumns(titles.length);
     int rowIndex = 0;
     // the header row: centered text in 48pt font
     Row headerRow = sheet.createRow(rowIndex);
@@ -51,7 +52,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
       triggerDefaultStyle();
-      hazRow = createRow(sheet, titles.length);
+      hazRow = createRow(sheet);
       createCell(hazRow, 0, hazModel.getIdString());
       createCell(hazRow, 1, hazModel.getTitle());
       createCell(hazRow, 2, ((EntryWithSeverity) hazModel).getSeverity().name());
@@ -84,7 +85,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
     Row row = hazRow;
     int index = hazRow.getRowNum();
     for (Entry<ITableModel, List<UUID>> entry : caMap.entrySet()) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ITableModel caModel = entry.getKey();
       createCell(row, 3, caModel.getIdString());
       createCell(row, 4, caModel.getTitle());
@@ -105,7 +106,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
     Row row = caRow;
     int index = caRow.getRowNum();
     for (UUID ucaId : value) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       IUnsafeControlAction ucaModel = ((IControlAction) caModel).getUnsafeControlAction(ucaId);
       ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
           .getCorrespondingSafetyConstraint();
@@ -126,7 +127,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
     int index = ucaRow.getRowNum();
     for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
         scId)) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
           ObserverValue.DESIGN_REQUIREMENT);
       createCell(row, 8, designReq.getIdString());

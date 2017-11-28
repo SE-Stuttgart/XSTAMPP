@@ -55,6 +55,8 @@ abstract class AbstractProgressSheetCreator {
 
   private static Map<STEP, Map<UUID, List<Float>>> progressMap;
 
+  private Integer columns;
+
   public AbstractProgressSheetCreator(Workbook wb, DataModelController controller, STEP step) {
     this.controller = controller;
     this.factory = new StyleFactory(wb);
@@ -94,7 +96,6 @@ abstract class AbstractProgressSheetCreator {
     }
     progressMap.get(this.defaultStep).get(entryId).add(progress);
   }
-
 
   /**
    * 
@@ -150,17 +151,16 @@ abstract class AbstractProgressSheetCreator {
   }
 
   Row createRow(Sheet sheet) {
-    Row hazRow = sheet.createRow(sheet.getLastRowNum() + 1);
-    System.out.println(hazRow.getRowNum());
-    hazRow.setHeightInPoints(10f);
-    hazRow.setHeight((short) -1);
-    return hazRow;
-  }
-
-  Row createRow(Sheet sheet, int columns) {
-    Row row = createRow(sheet);
+    assert columns != null;
+    Row row = sheet.createRow(sheet.getLastRowNum() + 1);
+    row.setHeightInPoints(10f);
+    row.setHeight((short) -1);
     createCells(row, 0, null, columns);
     return row;
+  }
+
+  public void setColumns(int columns) {
+    this.columns = columns;
   }
 
   int createSubRows(Sheet sheet, Row row, int[] parentCells, SubRowCreator creator) {
@@ -206,7 +206,7 @@ abstract class AbstractProgressSheetCreator {
       } else {
         CellStyle style = this.wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
-        style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+        style.setFillBackgroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setWrapText(true);
@@ -225,14 +225,14 @@ abstract class AbstractProgressSheetCreator {
 
         CellStyle unevenStyle = this.wb.createCellStyle();
         unevenStyle.cloneStyleFrom(style);
-        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         this.styles.put(Styles.DEFAULT_UNEVEN, unevenStyle);
 
         CellStyle total = this.wb.createCellStyle();
         total.setBorderBottom(BorderStyle.DOUBLE);
         total.setTopBorderColor(IndexedColors.BLACK.getIndex());
-        total.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        total.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
         total.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         this.styles.put(Styles.TOTAL_STYLE, total);
         return this.styles.get(styleConstant);

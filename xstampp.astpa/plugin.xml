@@ -713,11 +713,6 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="xstampp.astpa.util.commands.ExportStatisticsCommand"
-            id="xstampp.astpa.command.exportStatistics"
-            name="open Statistics">
-      </command>
-      <command
             defaultHandler="xstampp.astpa.util.commands.STPAProjectStateExportCommand"
             id="xstampp.astpa.command.projectState.export"
             name="Project State Export">
@@ -1197,6 +1192,13 @@
             class="xstampp.astpa.controlstructure.utilities.GraphicalViewerOutline"
             id="xstampp.astpa.controlstructure.outline"
             name="%view.name.outline"
+            restorable="true">
+      </view>
+      <view
+            category="xstampp.category.views"
+            class="xstampp.astpa.ui.StatisticsView"
+            id="xstampp.astpa.view.statistics"
+            name="STPA Progress Indicators"
             restorable="true">
       </view>
    </extension>

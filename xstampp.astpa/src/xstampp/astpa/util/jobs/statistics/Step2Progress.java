@@ -37,6 +37,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
   }
 
   public void createWorkSheet(Sheet sheet) {
+    setColumns(titles.length);
     int rowIndex = 0;
     // the header row: centered text in 48pt font
     Row headerRow = sheet.createRow(rowIndex);
@@ -46,7 +47,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     Row ucaRow;
     for (ICorrespondingUnsafeControlAction uca : getController().getControlActionController()
         .getAllUnsafeControlActions()) {
-      ucaRow = createRow(sheet, titles.length);
+      ucaRow = createRow(sheet);
       createCell(ucaRow, 0, uca.getIdString());
       createCell(ucaRow, 1, uca.getSeverity().name());
       rowIndex = createSubRows(sheet, ucaRow, new int[] { 0, 1 }, (parentRow) -> {
@@ -69,7 +70,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     int index = parentRow.getRowNum();
     for (Link ucaCfLink : getController().getLinkController().getRawLinksFor(LinkingType.UCA_CausalFactor_LINK,
         uca.getId())) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ICausalFactor factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
       Optional<Link> causalEntryOpt = getController().getLinkController()
           .getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, ucaCfLink.getId()).stream().findFirst();
@@ -90,7 +91,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     int index = parentRow.getRowNum();
     for (Link link : getController().getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
         causalEntryLin.getId())) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       createHazardRow(link, row);
       addProgress(factor.getId(), getProgress(factor.getId(), 1));
       row = null;

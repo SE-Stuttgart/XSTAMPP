@@ -32,10 +32,11 @@ public class Step1Progress extends AbstractProgressSheetCreator {
       "Completion[%]" };
 
   public Step1Progress(Workbook wb, DataModelController controller) {
-    super(wb, controller,STEP.STEP_1);
+    super(wb, controller, STEP.STEP_1);
   }
 
   public void createWorkSheet(Sheet sheet) {
+    setColumns(titles.length);
     int rowIndex = 0;
     // the header row: centered text in 48pt font
     Row headerRow = sheet.createRow(rowIndex);
@@ -56,7 +57,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     int index = rowIndex;
     for (IControlAction action : getController().getAllControlActions()) {
       triggerDefaultStyle();
-      row = createRow(sheet, titles.length);
+      row = createRow(sheet);
       createCell(row, 0, action.getIdString());
       createCell(row, 1, action.getTitle());
       index = createSubRows(sheet, row, new int[] { 0, 1, 8 }, (parentRow) -> {
@@ -76,7 +77,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     Row row = caRow;
     int index = caRow.getRowNum();
     for (IUnsafeControlAction ucaModel : action.getUnsafeControlActions()) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
           .getCorrespondingSafetyConstraint();
       createCell(row, 2, ucaModel.getIdString());
@@ -98,7 +99,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     int index = ucaRow.getRowNum();
     for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
         scId)) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
           ObserverValue.DESIGN_REQUIREMENT_STEP1);
       createCell(row, 6, designReq.getIdString());

@@ -40,6 +40,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
   }
 
   public void createWorkSheet(Sheet sheet) {
+    setColumns(titles.length);
     int rowIndex = 0;
     // the header row: centered text in 48pt font
     Row headerRow = sheet.createRow(rowIndex);
@@ -49,11 +50,11 @@ public class Step0Progress extends AbstractProgressSheetCreator {
     Row hazRow;
     for (ITableModel hazModel : getController().getAllHazards()) {
       triggerDefaultStyle();
-      hazRow = createRow(sheet, titles.length);
+      hazRow = createRow(sheet);
       createCell(hazRow, 0, hazModel.getIdString());
       createCell(hazRow, 1, hazModel.getTitle());
       createCell(hazRow, 2, ((EntryWithSeverity) hazModel).getSeverity().name());
-      createSubRows(sheet, hazRow, new int[] { 0, 1, 2, 9 }, (row) -> {
+      createSubRows(sheet, hazRow, new int[] { 0, 1, 2, 10 }, (row) -> {
         return addAccidents(sheet, row, hazModel);
       });
       Float progress = getProgress(hazModel.getId(), 1);
@@ -77,7 +78,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
     Row row = hazRow;
     for (UUID accId : getController().getLinkController().getLinksFor(LinkingType.HAZ_ACC_LINK,
         hazModel.getId())) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ITableModel accModel = getController().getAccident(accId);
       createCell(row, 3, accModel.getIdString());
       createCell(row, 4, accModel.getTitle());
@@ -104,7 +105,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
     Row row = accRow;
     for (UUID s0Id : getController().getLinkController().getLinksFor(LinkingType.ACC_S0_LINK,
         accId)) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ITableModel s0Model = getController().getSafetyConstraint(s0Id);
       createCell(row, 6, s0Model.getIdString());
       createCell(row, 7, s0Model.getTitle());
@@ -122,7 +123,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
     int index = ucaRow.getRowNum();
     for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR0_SC_LINK,
         scId)) {
-      row = row == null ? createRow(sheet, titles.length) : row;
+      row = row == null ? createRow(sheet) : row;
       ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
           ObserverValue.DESIGN_REQUIREMENT);
       createCell(row, 8, designReq.getIdString());

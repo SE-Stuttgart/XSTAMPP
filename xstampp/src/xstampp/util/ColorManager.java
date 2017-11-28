@@ -13,6 +13,7 @@ package xstampp.util;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -43,6 +44,16 @@ public class ColorManager {
       fColorTable.put(titel, color);
     }
     return color;
+  }
+
+  public static Color registerColor(RGB rgb) {
+    for (Color color : fColorTable.values()) {
+      if (color.getRGB().equals(rgb)) {
+        return color;
+      }
+    }
+    fColorTable.put(rgb.toString(), new Color(null, rgb));
+    return fColorTable.get(rgb.toString());
   }
 
   public void dispose() {
