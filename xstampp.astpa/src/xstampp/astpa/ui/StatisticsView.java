@@ -119,7 +119,7 @@ public class StatisticsView extends ViewPart {
               }
               cellComp.setLayoutData(layoutData);
               cellComp.setText(cell.getStringCellValue());
-              cellComp.setBackground(this.colorMap.get(cell.getCellStyle().getFillBackgroundColor()));
+              cellComp.setBackground(this.colorMap.get(cell.getCellStyle().getFillForegroundColor()));
             }
           });
         }

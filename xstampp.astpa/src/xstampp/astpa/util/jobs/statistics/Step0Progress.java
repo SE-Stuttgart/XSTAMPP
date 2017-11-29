@@ -14,6 +14,7 @@
 
 package xstampp.astpa.util.jobs.statistics;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -25,6 +26,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.hazacc.Accident;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 
@@ -34,9 +36,11 @@ public class Step0Progress extends AbstractProgressSheetCreator {
       "Hazard", "", "Severity",
       "Accident", "", "Severity",
       "Safety Constraint", "", "Design Requirements", "", "Completion[%]" };
+  private Map<Severity, Integer> sc_per_acc;
 
-  public Step0Progress(Workbook wb, DataModelController controller) {
+  public Step0Progress(Workbook wb, DataModelController controller, Map<Severity, Integer> sc_per_acc) {
     super(wb, controller, STEP.STEP_0);
+    this.sc_per_acc = sc_per_acc;
   }
 
   public void createWorkSheet(Sheet sheet) {
@@ -88,7 +92,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
       createSubRows(sheet, row, new int[] { 3, 4 }, (parentRow) -> {
         return addSafetyConstraints(sheet, parentRow, accId);
       });
-      addProgress(hazModel.getId(), getProgress(accId, 1));
+      addProgress(hazModel.getId(), getProgress(accId, this.sc_per_acc.get(((ATableModel) accModel).getSeverity())));
       index = row.getRowNum();
       row = null;
     }

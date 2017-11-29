@@ -66,7 +66,7 @@ public class CSVExportPage extends AbstractExportPage {
     Control projectChooser = null;
     if (needsAProject()) {
       projectChooser = this.addProjectChooser(control,
-          new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+          new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET), 0, 0);
     }
     Group seperatorGroup = new Group(control, SWT.SHADOW_NONE);
     seperatorGroup.setLayout(new RowLayout(SWT.VERTICAL));

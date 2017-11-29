@@ -95,7 +95,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
     Composite projectChooser = null;
     if (needsAProject()) {
       projectChooser = this.addProjectChooser(this.container,
-          new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+          new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET), 0, 0);
       topElement = projectChooser;
       // -----Create the Company Name input Composite-------------------------
     }

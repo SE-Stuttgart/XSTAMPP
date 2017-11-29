@@ -11,6 +11,7 @@
 
 package xstampp.astpa.util.jobs.statistics;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
@@ -31,9 +33,11 @@ public class Step2Progress extends AbstractProgressSheetCreator {
   private static final String[] titles = new String[] {
       "Unsafe Control Actions", "Severity", "Causal Factors", "Hazard", "Safety Constraint",
       "Design Requirements", "Completion[%]" };
+  private Map<Severity, Integer> cf_per_uca;
 
-  public Step2Progress(Workbook wb, DataModelController controller) {
+  public Step2Progress(Workbook wb, DataModelController controller, Map<Severity, Integer> cf_per_uca) {
     super(wb, controller, STEP.STEP_2);
+    this.cf_per_uca = cf_per_uca;
   }
 
   public void createWorkSheet(Sheet sheet) {
@@ -53,8 +57,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       rowIndex = createSubRows(sheet, ucaRow, new int[] { 0, 1 }, (parentRow) -> {
         return createRows(uca, parentRow, sheet);
       });
-      // TODO create constant to constraint causal factors per uca
-      Float progress = getProgress(uca.getId(), 1);
+      Float progress = getProgress(uca.getId(), this.cf_per_uca.get(uca.getSeverity()));
       addProgress(getController().getProjectId(), progress);
       createCell(ucaRow, titles.length - 1, String.format("%.1f", progress) + "%");
     }
@@ -77,8 +80,11 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       if (factor != null && causalEntryOpt.isPresent()) {
         createCell(row, 2, factor.getText());
         index = createSubRows(sheet, row, new int[] { 2 }, (parent) -> {
-          return createCFs(sheet, parent, factor, causalEntryOpt.get());
+          return createCausalEntries(sheet, parent, factor, causalEntryOpt.get());
         });
+        int requiredEntries = getController().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())
+            .size();
+        addProgress(uca.getId(), getProgress(factor.getId(), requiredEntries));
       }
       row = null;
     }
@@ -86,14 +92,14 @@ public class Step2Progress extends AbstractProgressSheetCreator {
 
   }
 
-  private int createCFs(Sheet sheet, Row parentRow, ICausalFactor factor, Link causalEntryLin) {
+  private int createCausalEntries(Sheet sheet, Row parentRow, ICausalFactor factor, Link causalEntryLin) {
     Row row = parentRow;
     int index = parentRow.getRowNum();
     for (Link link : getController().getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
         causalEntryLin.getId())) {
       row = row == null ? createRow(sheet) : row;
       createHazardRow(link, row);
-      addProgress(factor.getId(), getProgress(factor.getId(), 1));
+      addProgress(factor.getId(), getProgress(link.getLinkB(), 1));
       row = null;
     }
     return index;

@@ -48,7 +48,7 @@ public class CSVExportPage extends AbstractExportPage {
 		Composite control = new Composite(parent, SWT.NONE);
 		control.setLayout(new FormLayout());
 		Composite projectChooser = this.addProjectChooser(control,
-				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET), 0, 0);
 		Group seperatorGroup = new Group(control, SWT.SHADOW_NONE);
 		seperatorGroup.setLayout(new RowLayout(SWT.VERTICAL));
 		seperatorGroup.setText(Messages.SeperatorCharacter);

@@ -206,7 +206,7 @@ abstract class AbstractProgressSheetCreator {
       } else {
         CellStyle style = this.wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
-        style.setFillBackgroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+        style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setWrapText(true);
@@ -225,14 +225,14 @@ abstract class AbstractProgressSheetCreator {
 
         CellStyle unevenStyle = this.wb.createCellStyle();
         unevenStyle.cloneStyleFrom(style);
-        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         this.styles.put(Styles.DEFAULT_UNEVEN, unevenStyle);
 
         CellStyle total = this.wb.createCellStyle();
         total.setBorderBottom(BorderStyle.DOUBLE);
         total.setTopBorderColor(IndexedColors.BLACK.getIndex());
-        total.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+        total.setFillForegroundColor(IndexedColors.WHITE.getIndex());
         total.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         this.styles.put(Styles.TOTAL_STYLE, total);
         return this.styles.get(styleConstant);

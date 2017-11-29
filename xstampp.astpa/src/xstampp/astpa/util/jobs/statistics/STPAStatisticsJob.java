@@ -19,6 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Observable;
 
 import javax.imageio.ImageIO;
@@ -35,16 +36,32 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.util.XstamppJob;
 
 public class STPAStatisticsJob extends XstamppJob {
 
   private DataModelController controller;
   private Workbook workbook;
+  private Map<Severity, Integer> sc_per_acc;
+  private Map<Severity, Integer> cf_per_uca;
+  private int uca_per_ca;
 
   public STPAStatisticsJob(DataModelController controller) {
     super("Exporting Statistics of " + controller.getProjectName());
     this.controller = controller;
+  }
+
+  public void setSc_per_acc(Map<Severity, Integer> sc_per_acc) {
+    this.sc_per_acc = sc_per_acc;
+  }
+
+  public void setUca_per_ca(int uca_per_ca) {
+    this.uca_per_ca = uca_per_ca;
+  }
+
+  public void setCf_per_uca(Map<Severity, Integer> cf_per_uca) {
+    this.cf_per_uca = cf_per_uca;
   }
 
   @Override
@@ -57,11 +74,11 @@ public class STPAStatisticsJob extends XstamppJob {
     Workbook wb = new XSSFWorkbook();
     Sheet ws = wb.createSheet("sheet0");
     AbstractProgressSheetCreator.initMap();
-    new Step0Progress(wb, controller).createSheet("STPA Step 0");
-    new Step1Progress(wb, controller).createSheet("STPA Step 1");
+    new Step0Progress(wb, controller, sc_per_acc).createSheet("STPA Step 0");
+    new Step1Progress(wb, controller, uca_per_ca).createSheet("STPA Step 1");
     new Step1HazardProgress(wb, controller).createSheet("STPA Step 1 Hazard Centered");
-    new Step2Progress(wb, controller).createSheet("STPA Step 2");
-    new Step2HazardProgress(wb, controller).createSheet("STPA Step 2 Hazard Centered");
+    new Step2Progress(wb, controller, cf_per_uca).createSheet("STPA Step 2");
+    new Step2HazardProgress(wb, controller, cf_per_uca).createSheet("STPA Step 2 Hazard Centered");
     // PaletteData palette = new PaletteData(1, 1, 1);
     // ImageData data = new ImageData(600, 400, 8, palette);
     // Image img = new Image(null, data);

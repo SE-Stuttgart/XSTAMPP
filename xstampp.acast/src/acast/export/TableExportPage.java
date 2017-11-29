@@ -52,7 +52,7 @@ public class TableExportPage extends AbstractExportPage implements ModifyListene
 		this.control.setLayout(new FormLayout());
 
 		Composite projectChooser = this.addProjectChooser(this.control,
-				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET), 0, 0);
 		FormData data;
 
 		ColorChooser bgChooser = new ColorChooser(this.control, SWT.NONE, Messages.BackgroundColor,

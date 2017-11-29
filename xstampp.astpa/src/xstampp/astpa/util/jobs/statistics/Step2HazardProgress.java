@@ -12,6 +12,7 @@
 package xstampp.astpa.util.jobs.statistics;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
@@ -34,9 +36,11 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
   private static final String[] titles = new String[] { "Hazards", "", "Severity",
       "Unsafe Control Actions", "Severity", "Causal Factors", "Safety Constraints",
       "Design Requirements", "Completion[%]" };
+  private Map<Severity, Integer> cf_per_uca;
 
-  public Step2HazardProgress(Workbook wb, DataModelController controller) {
+  public Step2HazardProgress(Workbook wb, DataModelController controller, Map<Severity, Integer> cf_per_uca) {
     super(wb, controller, STEP.STEP_2_HAZARD_CENTERED);
+    this.cf_per_uca = cf_per_uca;
   }
 
   public void createWorkSheet(Sheet sheet) {
@@ -79,7 +83,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
         return createCFs(sheet, parentRow, hazardBasedMap.get(uca));
       });
 
-      Float progress = getProgress(uca.getId(), 1);
+      Float progress = getProgress(uca.getId(), this.cf_per_uca.get(uca.getSeverity()));
       addProgress(hazModel.getId(), progress);
       row = null;
     }

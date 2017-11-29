@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.UUID;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -168,7 +167,7 @@ public interface ICausalController {
    * value contains all {@link LinkingType#CausalEntryLink_HAZ_LINK}s between a
    * {@link LinkingType#UcaCfLink_Component_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
    * and the
-   * id of the {@link ITableModel}.<br>
+   * id of the hazModel.<br>
    * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
    * 
    * @param hazModel

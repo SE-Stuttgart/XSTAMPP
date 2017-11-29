@@ -64,7 +64,7 @@ public class ControlStructureExportPage extends AbstractExportPage {
 		this.control.setLayout(new FormLayout());
 
 		Composite projectChooser = this.addProjectChooser(this.control,
-				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET), 0, 0);
 		Composite offsetComposite = new Composite(this.control, SWT.NONE);
 		FormData data = new FormData();
 		data.top = new FormAttachment(projectChooser,

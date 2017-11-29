@@ -507,6 +507,7 @@ public abstract class AbstractWizardPage extends WizardPage {
     public static final int DIR_DIALOG = 3;
     private Button pathButton;
     private final Text path;
+    private String pathText;
     private final Label labelExport;
     private String[] filter;
     private String[] filterNames;
@@ -554,6 +555,7 @@ public abstract class AbstractWizardPage extends WizardPage {
       this.pathButton.setText("..."); //$NON-NLS-1$
       this.pathButton.setFocus();
       this.path.setText(""); //$NON-NLS-1$
+      this.path.addModifyListener(e -> pathText = path.getText());
       this.path.setEditable(false);
 
     }
@@ -630,7 +632,7 @@ public abstract class AbstractWizardPage extends WizardPage {
     }
 
     public String getText() {
-      return this.path.getText();
+      return this.pathText;
     }
 
     public Text getTextWidget() {

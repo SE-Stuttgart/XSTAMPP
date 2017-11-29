@@ -79,7 +79,7 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
 		this.container.setLayout(new FormLayout());
 
 		Composite projectChooser = this.addProjectChooser(this.container,
-				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET));
+				new FormAttachment(null, AbstractWizardPage.COMPONENT_OFFSET), 0, 0);
 		// -----Create the Company Name input Composite-------------------------
 		Composite labelComposite = new Composite(this.container, SWT.NONE);
 		data = new FormData();

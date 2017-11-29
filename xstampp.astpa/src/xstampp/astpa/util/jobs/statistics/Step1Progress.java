@@ -30,9 +30,11 @@ public class Step1Progress extends AbstractProgressSheetCreator {
   private static final String[] titles = new String[] { "Control Actions", "",
       "Unsafe Control Actions", "Severity", "Corresponding Safety Constraint", "", "Design Requirement", "",
       "Completion[%]" };
+  private int uca_per_ca;
 
-  public Step1Progress(Workbook wb, DataModelController controller) {
+  public Step1Progress(Workbook wb, DataModelController controller, int uca_per_ca) {
     super(wb, controller, STEP.STEP_1);
+    this.uca_per_ca = uca_per_ca;
   }
 
   public void createWorkSheet(Sheet sheet) {
@@ -63,7 +65,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
       index = createSubRows(sheet, row, new int[] { 0, 1, 8 }, (parentRow) -> {
         return createUCARows(sheet, parentRow, action);
       });
-      Float progress = getProgress(action.getId(), 1);
+      Float progress = getProgress(action.getId(), this.uca_per_ca);
       addProgress(getController().getProjectId(), progress);
       createCell(row, 8, String.format("%.1f", progress) + "%");
       row = null;

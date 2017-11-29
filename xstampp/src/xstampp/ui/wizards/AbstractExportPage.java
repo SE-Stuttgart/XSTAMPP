@@ -8,7 +8,11 @@
  *******************************************************************************/
 package xstampp.ui.wizards;
 
-import messages.Messages;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -39,19 +43,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
 import xstampp.Activator;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.contentassist.LabelWithAssist;
 import xstampp.ui.navigation.IProjectSelection;
-import xstampp.ui.wizards.AbstractWizardPage.PathComposite;
 import xstampp.util.JAXBExportJob;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 
 /**
  * a class to prevent code cloning in the export Pages
@@ -67,7 +65,6 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     private Font normalFont = new Font(null, "normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
     private Font headerFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
     private Font titleFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
-    private Font previewFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
     private Color fontColor;
     private Color bgColor;
     private UUID projectId;
@@ -175,6 +172,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
   private int headSize;
   private int titleSize;
 
+  private boolean needsPath;
+
   /**
    * 
    *
@@ -187,6 +186,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
    */
   protected AbstractExportPage(String pageName, String pluginID) {
     super(pageName);
+    this.setTitle(pageName);
     this.projects = new HashMap<>();
     this.pluginID = pluginID;
     this.pageFormat = A4_LANDSCAPE;
@@ -194,6 +194,11 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     contentSize = 10;
     headSize = 12;
     titleSize = 14;
+    this.needsPath = true;
+  }
+
+  public void setNeedsPath(boolean needsPath) {
+    this.needsPath = needsPath;
   }
 
   /**
@@ -231,7 +236,8 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
 
   /**
    * adds a drop down list to the wizard page where the user can choose between all open projects
-   * <br> <i>the parent must have a FormLayout</i>
+   * <br>
+   * <i>the parent must have a FormLayout</i>
    * 
    * @author Lukas Balzer
    * @param parent
@@ -242,10 +248,33 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
    * 
    */
   public Composite addProjectChooser(Composite parent, FormAttachment attachment) {
+    return addProjectChooser(parent, attachment, 0, 0);
+  }
+
+  /**
+   * adds a drop down list to the wizard page where the user can choose between all open
+   * projects,<br>
+   * this alternates the result of {@link AbstractExportPage#getProjectID()}
+   * <br>
+   * <i>the parent must have a FormLayout</i>
+   * 
+   * @author Lukas Balzer
+   * @param parent
+   *          the parent composite
+   * @param attachment
+   *          the {@link FormAttachment} for the top of the {@link FormData}
+   * @param left
+   *          the left margin
+   * @param right
+   *          the right margin
+   * @return the composite containing the project drop down list
+   * 
+   */
+  public Composite addProjectChooser(Composite parent, FormAttachment attachment, int left, int right) {
     FormData data = new FormData();
     data.top = attachment;
-    data.left = new FormAttachment(0);
-    data.right = new FormAttachment(100);
+    data.left = new FormAttachment(left);
+    data.right = new FormAttachment(100 - right);
     final Composite projectChooser = new Composite(parent, SWT.NONE);
     projectChooser.setToolTipText(Messages.ChooseProjectForExport);
     projectChooser.setLayoutData(data);
@@ -363,7 +392,7 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
   /**
    * @param composite
    * @param minimal
-   *          TODO
+   *          If the widget should be displayed with minimal space requirements
    */
   protected Control addFormatChooser(Composite composite, Object layoutData, boolean minimal) {
     if (minimal) {
@@ -423,6 +452,14 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     return this.pathChooser.getText();
   }
 
+  public FormData getDefaultFormData(Control top, int offset) {
+    FormData data = new FormData();
+    data.top = new FormAttachment(top, offset);
+    data.left = new FormAttachment(0);
+    data.right = new FormAttachment(100);
+    return data;
+  }
+
   public void setNeedProject(boolean needProjectID) {
     this.needProjectID = needProjectID;
 
@@ -439,15 +476,17 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
       this.setErrorMessage(Messages.NoProjectSelected);
       return false;
     }
-    if ((this.getExportPath() == null) || this.getExportPath().equals("")) { //$NON-NLS-1$
+    if (((this.getExportPath() == null) || this.getExportPath().equals("")) && this.needsPath) { //$NON-NLS-1$
       this.setErrorMessage(Messages.IlegalPath);
       return false;
     }
-    File fileTmp = new File(this.getExportPath());
-    if (fileTmp.exists()) {
-      this.setMessage(
-          String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, getExportPath()),
-          IMessageProvider.WARNING);
+    if (this.getExportPath() != null) {
+      File fileTmp = new File(this.getExportPath());
+      if (fileTmp.exists()) {
+        this.setMessage(
+            String.format(Messages.DoYouReallyWantToOverwriteTheContentAt, getExportPath()),
+            IMessageProvider.WARNING);
+      }
     }
     return true;
   }
