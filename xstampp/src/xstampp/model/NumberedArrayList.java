@@ -17,8 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
 
   /**
@@ -26,13 +24,32 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
    */
   private static final long serialVersionUID = 1066462696186297605L;
 
-  @XmlAttribute
   private Integer nextNumber;
-
   private Map<UUID, Integer> trash;
+  private boolean useNextNumber;
 
   public NumberedArrayList() {
+    this.useNextNumber = false;
     trash = new HashMap<>();
+  }
+
+  /**
+   * Setter for the boolean value that decides whether the nextNumber attribute to determine the
+   * number for the next added element. If useNextNumber is set to true than every element gets a
+   * unique number which will never be given to an other element in this list even if the element is
+   * removed.
+   * 
+   * @param useNextNumber
+   *          if <b style="color:blue">true</b> than each new element gets the number that is
+   *          currently the nextNumber and
+   *          nextNumber is increased. Since nextNumber is never decreased one number can never be
+   *          reassigned.
+   *          <br>
+   *          If <b style="color:blue">false</b> each new element gets the number of the last
+   *          element in the list plus one.
+   */
+  public void setUseNextNumber(boolean useNextNumber) {
+    this.useNextNumber = useNextNumber;
   }
 
   @Override
@@ -42,7 +59,7 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
     }
     if (e.getNumber() < 0) {
       e.setNumber(this.getNextNumber());
-    } else {
+    } else if (useNextNumber) {
       this.nextNumber = this.nextNumber == null ? e.getNumber() + 1
           : Math.max(this.nextNumber, e.getNumber() + 1);
     }
@@ -58,15 +75,19 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
   }
 
   private Integer getNextNumber() {
-    if (this.nextNumber == null) {
-      Iterator<E> iterator = iterator();
-      int i = 0;
-      while (iterator.hasNext()) {
-        iterator.next().setNumber(++i);
+    if (useNextNumber) {
+      if (this.nextNumber == null) {
+        Iterator<E> iterator = iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+          iterator.next().setNumber(++i);
+        }
+        this.nextNumber = size() + 1;
       }
-      this.nextNumber = size() + 1;
+      return nextNumber++;
+    } else {
+      return get(size() - 1).getNumber() + 1;
     }
-    return nextNumber++;
   }
 
   public E get(UUID id) {
