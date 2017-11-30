@@ -1,26 +1,62 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 	<head>
+	<link href="../../../xstampp/html/style.css" rel="stylesheet" type="text/css">
 		<link href="../style.css" rel="stylesheet" type="text/css">
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<title>Start Working</title>
 	</head>
 	<body>
-		<div class="header">
+		<div class="header astpa">
 			<div class="headerContent">Common Table View</div>
 		</div>
-		<h1>Working with Accidents, Hazards, Safety Constraints, Design 
-		Requirements and Control Actions </h1>
-		<h3>Adding and Deleting </h3>
-			Select one of the mentioned views in the navigation bar. The navigation bar is the left 
-			section of the ATSTPA window, it splits the views into the three steps Analysis 
-			Fundamentals, Unsafe Control Actions and Causal Analysis. After selecting the desired 
-			view, click on <img src="../images/commonAdd.png">  to add an item to the list.<img src="../images/commonRemove.png">   can be used to delete an item or 
-			multiple items by selecting more than one item by holding the shift button. You will be 
-			prompted to confirm the deletion of the selected items. 
-		<h3>Editing the Title and Description </h3>
-			The title of a selected item can be edited by doubleTclicking on the existing item title or 
-			pressing enter. The item description of the selected item is shown in the right section of 
-			the ATSTPA window. It can be edited by simply clicking on the description text.  
+		<img class="full" src="../images/commonTables.png">
+		<table>
+		<tr>
+			<td><div class="number">1</div></td>
+			<td>All entries currently existing in the project are listed here, except when the filter (<b>5</b>) is used.
+			The entries title can also be edited directly in the table by double-clicking the title cell.
+			</td>
+		</tr>
+		<tr>
+			<td><div class="number">2</div></td>
+			<td>In this editor a detailed description of or additional notes to the entry can be inserted.<br></td>
+		</tr>
+		<tr>
+			<td><div class="number">3</div></td>
+			<td>This section is optional and only available if the respective STPA entry can be linked to another one e.g. an Accident to a Hazard.
+			In the link section all possible links are displayed as editable lists <b>(e.g. Design Requirement Links and Accident Links)</b>.<br>
+			By clicking on the <b><i>+</i></b> a dialog displaying all entries available for linking can be opened to insert new linkings.
+			To <b>remove</b> a linking simply select the id of the linked entry from the list and click on <b>-</b>.
+		</tr>
+		<tr>
+			<td><div class="number">4</div></td>
+			<td>
+			<table>
+				<tr class="clear">
+				<td><img src="../../icons/buttons/commontables/add.png"></td>
+				<td>Adds a new entry to the project which is assigned the next available id<br><i>e.g. in the example Safety Constraints Editor a new Safety Constraint SC0.4 would be added</i><br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a></b></td>
+				</tr>
+				<tr class="clear">
+				<td><img src="../../icons/buttons/commontables/remove.png"></td>
+				<td>If one or more entries are selected in <b>1</b> and this button is pressed a the user is prompted with a dialog to cofirm the deletion of the selected entry.
+				Removing an entry also removes all links with it.<br><i>e.g. In the example Safety Constraints Editor SC0.1 would be deleted as well as the link with DR0.1</i><br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a>, doing so also re-adds all previously removed links</b></td>
+				</tr>
+				<tr class="clear">
+				<td><img src="../../icons/buttons/commontables/removeAll.png"></td>
+				<td>This works just like the normal remove if all entries are selected.<br><i>e.g. In the example Editor SC0.1,SC0.2 and SC0.3 as well as the linking between SC0.1 and DR0.1 would be deleted</i></br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a></b>, doing so will also re-add all removed links</td>
+				</tr>
+				<tr class="clear">
+				<td><img src="../../icons/buttons/commontables/down.png">/<img src="../../icons/buttons/commontables/up.png"></td>
+				<td>With these buttons a selected entry can be moved up/down in the list <b>(1)</b>. However this <b>doesn't influence the id</b> of the entry but only the order in which the entries are displayed and exported</td>
+				</tr>
+			</table>
+			</td>
+		</tr>
+		<tr>
+			<td><div class="number">5</div></td>
+			<td>The list <b>(1)</b> can be filtered by typing in a word in the Filter, this will remove all entries from the list that <b>dont't contain the filter</b> word. This has no impact on the project data but only affects the current opened Editor view.</td>
+		</tr>
+		</table>
 	</body>
 </html>	

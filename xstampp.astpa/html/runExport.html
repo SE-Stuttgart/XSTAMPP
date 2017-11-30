@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+	<link href="../../xstampp/html/style.css" rel="stylesheet" type="text/css">
+		<link href="style.css" rel="stylesheet" type="text/css">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>A-STPA Project Export</title>
+	</head>
+	<body>
+		<div class="header astpa">
+			<div class="headerContent">A-STPA Project Export</div>
+		</div>
+		<img class="full" src="images/export/projectExport.PNG">
+		
+		<table>
+		<tr>
+			<td>Project</td>
+			<td>Provides a drop down list of all A-STPA projects in the current workspace. This is <b>mandatory</b> since the export is created for the selected project.
+		</tr>
+		<tr>
+			<td>Company</td>
+			<td>This is an <b>optinal</b> field to include the name of a company. This name will be included in the "Final PDF Report" and can be ignored if it is set to be not included. The Company field can also be set globally for the current workspace in the in the Export preferences (edit -> Preferences -> Export).</td>
+		</tr>
+		<tr>
+			<td>Logo</td>
+			<td>This is an <b>optinal</b> field to include a logo in the "Final PDF Report" and can be ignored if it is set to be not included. The Logo can also be set globally for the current workspace in the in the Export preferences (edit -> Preferences -> Export).</td>
+		</tr>
+		<tr>
+			<td>Background Color</td>
+			<td>This sets the color used for the background of all headers and footers in the PDF or image exports and can be ignored if those are set to be not included. The Background Color can also be set globally for the current workspace in the in the Export preferences (edit -> Preferences -> Export).</td>
+		</tr>
+		<tr>
+			<td>Foreground Color</td>
+			<td>This sets the color used for the font color of all headers and footers in the PDF or image exports and can be ignored if those are set to be not included. The Background Color can also be set globally for the current workspace in the in the Export preferences (edit -> Preferences -> Export).</td>
+		</tr>
+		<tr>
+			<td>Destination</td>
+			<td>This is a <b>mandatory</b> field to choose the file directory in which all exports choosen in the "Exported content" are exported into</td>
+		</tr>
+		<tr>
+			<td>Control Structure Decoration</td>
+			<td>When checked the control structure images are exported using colored component borders and icons</td>
+		</tr>
+		</table>
+		<p>In the bottom part of this wizard the user can choose which of the available exports should be included in the destination directory. The small icons near pdf/image/csv or Final PDF Report can be <b>toggled by left-clicking</b> them, between 2-4 of the following modes:
+		<table style="padding-left:15px;">
+		<tr>
+		<td><img src="../icons/exportLandscape.png"></td>
+		<td>Landscape</td>
+		<td>Exports of the category are exported in landscape format(in tipped A4)</td>
+		</tr>
+		<tr>
+		<td><img src="../icons/exportPortrait.png"></td>
+		<td>Portrait Mode</td>
+		<td>Exports of the category are exported in portrait format(in normal A4)</td>
+		</tr>
+		<tr>
+		<td><img src="../../xstampp/icons/eclipse/add_obj.png"></td>
+		<td>Include in Export</td>
+		<td>Exports of the categoroy are added to the export</td>
+		</tr>
+		<tr>
+		<td><img src="../../xstampp/icons/eclipse/remove.png"></td>
+		<td>Remove from Export</td>
+		<td>Exports of the categoroy are not included to the export</td>
+		</tr>
+		
+		</table>
+	</body>
+</html>
