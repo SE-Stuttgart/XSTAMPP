@@ -14,17 +14,17 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import messages.Messages;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.util.jobs.Run;
 import xstampp.ui.common.ProjectManager;
@@ -110,7 +110,7 @@ public class RunWizard extends AbstractExportWizard {
     public void createControl(Composite parent) {
       setShowPreviewCanvas(false);
       super.createControl(parent);
-
+      pathChooser.setDialogStyle(PathComposite.DIR_DIALOG);
       this.pathChooser.setText(
           ProjectManager.getContainerInstance().getOutputDir(getProjectID()).getAbsolutePath());
       FormData data = new FormData();
@@ -121,8 +121,8 @@ public class RunWizard extends AbstractExportWizard {
 
       GridData checkBoxData = new GridData(SWT.FILL, SWT.FILL, true, true);
 
-      final Composite exportScope = new Composite((Composite) getControl(), SWT.SHADOW_ETCHED_IN);
-
+      final Group exportScope = new Group((Composite) getControl(), SWT.SHADOW_ETCHED_IN);
+      exportScope.setText("Exported content");
       exportScope.setLayoutData(data);
       exportScope.setLayout(new GridLayout(5, true));
 

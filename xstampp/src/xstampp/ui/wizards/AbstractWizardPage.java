@@ -631,6 +631,10 @@ public abstract class AbstractWizardPage extends WizardPage {
       this.pathButton.addSelectionListener(listener);
     }
 
+    public void setDialogStyle(int dialogStyle) {
+      this.dialogStyle = dialogStyle;
+    }
+
     public String getText() {
       return this.pathText;
     }
