@@ -29,6 +29,10 @@ td {
 	padding-bottom: 13px;
 }
 
+:target {
+	background-color: yellow;
+}
+
 .number {
 	border:3px solid red;
 	background-color:white;
