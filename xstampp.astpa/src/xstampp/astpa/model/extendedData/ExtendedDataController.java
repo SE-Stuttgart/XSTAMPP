@@ -26,10 +26,12 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.core.runtime.Assert;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
@@ -39,6 +41,7 @@ import xstampp.model.IValueCombie;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ExtendedDataController extends Observable implements IExtendedDataController {
 
+  public static final String CONSTRAINT_ID = "SSC2.";
   @XmlElementWrapper(name = "rules")
   @XmlElement(name = "rule")
   private List<RefinedSafetyRule> rules;
@@ -156,7 +159,7 @@ public class ExtendedDataController extends Observable implements IExtendedDataC
   @Override
   public UUID addRuleEntry(IExtendedDataModel.ScenarioType ruleType, AbstractLtlProviderData data,
       UUID caID, String type, LinkController linkController) {
-    assert(caID != null);
+    assert (caID != null);
     if (data != null && validateType(type)) {
       if (ruleType.equals(ScenarioType.BASIC_SCENARIO)) {
         UUID uuid = getCombie(data);
@@ -260,6 +263,29 @@ public class ExtendedDataController extends Observable implements IExtendedDataC
     }
     Collections.sort(tmp);
     return tmp;
+  }
+
+  @Override
+  public List<ITableModel> getSafetyConstraints(boolean includeRules,
+      boolean includeScenarios,
+      boolean includeLTL) {
+    List<ITableModel> list = new ArrayList<>();
+    for (AbstractLTLProvider ltlProvider : getAllScenarios(includeRules, includeScenarios, includeLTL)) {
+      ITableModel model = new ATableModel(ltlProvider.getTitle(), ltlProvider.getRefinedSafetyConstraint(),
+          ltlProvider.getNumber()) {
+        @Override
+        public UUID getId() {
+          return ltlProvider.getId();
+        }
+
+        @Override
+        public String getIdString() {
+          return CONSTRAINT_ID + getNumber();
+        }
+      };
+      list.add(model);
+    }
+    return list;
   }
 
   /*

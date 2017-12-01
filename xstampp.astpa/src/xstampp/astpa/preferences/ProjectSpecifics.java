@@ -63,7 +63,7 @@ public class ProjectSpecifics implements ISettingsPage {
     String description = Messages.ProjectSpecifics_UseCausalScenariosTip;
     this.useScenariosSetting = new BooleanSetting(container, title, description,
         this.controller.isUseScenarios());
-
+    this.useScenariosSetting.setMessage(Messages.ProjectSpecifics_ReopenDesignRequirements);
     title = Messages.ProjectSpecifics_UseSeverity;
     description = Messages.ProjectSpecifics_UseSeverityTip;
     this.useHazardSeverity = new BooleanSetting(container, title, description,

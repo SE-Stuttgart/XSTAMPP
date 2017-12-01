@@ -21,6 +21,7 @@ import xstampp.astpa.model.interfaces.IDesignRequirementViewDataModel;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.Step2ConstraintsLinkSupport;
+import xstampp.astpa.ui.linkingSupport.Step2ScenarioConstraintsLinkSupport;
 import xstampp.model.ObserverValue;
 
 /**
@@ -42,13 +43,18 @@ public class DesignRequirementStep2View extends CommonTableView<IDesignRequireme
   public DesignRequirementStep2View() {
     super(EnumSet.of(TableStyle.RESTRICTED), Messages.DesignRequirements);
     setUpdateValues(
-        EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP2, ObserverValue.LINKING));
+        EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP2, ObserverValue.LINKING, ObserverValue.CAUSAL_FACTOR));
   }
 
   @Override
   protected void addLinkSupports() {
-    addLinkSupport(new Step2ConstraintsLinkSupport((DataModelController) getDataInterface(),
-        LinkingType.DR2_CausalSC_LINK));
+    if (getDataInterface().isUseScenarios()) {
+      addLinkSupport(new Step2ScenarioConstraintsLinkSupport((DataModelController) getDataInterface(),
+          LinkingType.DR2_CausalScenarioSC_LINK));
+    } else {
+      addLinkSupport(new Step2ConstraintsLinkSupport((DataModelController) getDataInterface(),
+          LinkingType.DR2_CausalSC_LINK));
+    }
   }
 
   @Override

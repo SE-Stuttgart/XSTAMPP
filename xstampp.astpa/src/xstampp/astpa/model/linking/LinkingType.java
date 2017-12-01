@@ -3,7 +3,7 @@ package xstampp.astpa.model.linking;
 import xstampp.model.ObserverValue;
 
 public enum LinkingType {
-  
+
   /**
    * @deprecated This is a legacy entry UCA_HAZ_LINK
    */
@@ -45,6 +45,14 @@ public enum LinkingType {
    * </ol>
    */
   DR2_CausalSC_LINK,
+
+  /**
+   * <ol>
+   * <li>A should be the UUID of a Design Requirement in STPA Step 2
+   * <li>B should be the UUID of a Causal Scenario in STPA Step 2
+   * </ol>
+   */
+  DR2_CausalScenarioSC_LINK,
 
   /**
    * <ol>

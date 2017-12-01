@@ -17,6 +17,7 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
@@ -116,5 +117,24 @@ public interface IExtendedDataController {
    *         invalid
    */
   ScenarioType getScenarioType(UUID ruleId);
+
+  /**
+   * returns a list which contains all safety constraints for the scenario objects of the type
+   * Basic, causal and/or only ltl depending on the given booleans
+   * 
+   * @param includeBasic
+   *          include all Basic Scenarios, Basic Scenarios are the ones automatically created in the
+   *          XSTPA plugin which is optional so this maybe results in an empty list
+   * @param includeCausal
+   *          include all scenarios created in the causal factors step
+   * @param includeLTL
+   *          include those scenarios that were created in the ltl table and contain only
+   *          an ltl property
+   * @return a list containing the safety constraints as {@link ITableModel} form the chosen
+   *         scenarios or an empty list if all
+   *         values are false or the respective lists are empty
+   */
+  List<ITableModel> getSafetyConstraints(boolean includeBasic, boolean includeCausal,
+      boolean includeLTL);
 
 }

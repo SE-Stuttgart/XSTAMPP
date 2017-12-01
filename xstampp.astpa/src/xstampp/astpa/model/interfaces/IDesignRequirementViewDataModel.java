@@ -108,4 +108,6 @@ public interface IDesignRequirementViewDataModel extends IDataModel, ICommonTabl
    */
   ITableModel getDesignRequirement(UUID designRequirementId);
 
+  boolean isUseScenarios();
+
 }

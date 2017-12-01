@@ -23,6 +23,8 @@ import xstampp.astpa.model.ATableModel;
  */
 class CausalSafetyConstraint extends ATableModel {
 
+  private static final String ID = "SC2.";
+
   /**
    * Constructor of a causal factor safety constraint
    * 
@@ -49,4 +51,8 @@ class CausalSafetyConstraint extends ATableModel {
     return super.getDescription();
   }
 
+  @Override
+  public String getIdString() {
+    return ID + getNumber();
+  }
 }
