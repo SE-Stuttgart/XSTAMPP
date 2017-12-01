@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 
 /**
  * Interface to the Data Model for the Accident View
@@ -107,6 +108,8 @@ public interface IDesignRequirementViewDataModel extends IDataModel, ICommonTabl
    * @return the design requirement.
    */
   ITableModel getDesignRequirement(UUID designRequirementId);
+
+  boolean removeDesignRequirement(UUID id, ObserverValue designRequirementStep1);
 
   boolean isUseScenarios();
 

@@ -1395,11 +1395,17 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean removeDesignRequirement(UUID designRequirementId) {
+    return removeDesignRequirement(designRequirementId,
+        ObserverValue.DESIGN_REQUIREMENT);
+  }
+
+  @Override
+  public boolean removeDesignRequirement(UUID designRequirementId, ObserverValue type) {
     if (designRequirementId == null) {
       return false;
     }
     return this.getSdsController().removeDesignRequirement(designRequirementId,
-        ObserverValue.DESIGN_REQUIREMENT);
+        type);
   }
 
   @Override

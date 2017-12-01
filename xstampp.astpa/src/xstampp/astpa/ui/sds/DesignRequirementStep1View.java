@@ -47,7 +47,7 @@ public class DesignRequirementStep1View extends CommonTableView<IDesignRequireme
   @Override
   protected void deleteEntry(ATableModel model) {
     resetCurrentSelection();
-    this.getDataInterface().removeDesignRequirement(model.getId());
+    this.getDataInterface().removeDesignRequirement(model.getId(), ObserverValue.DESIGN_REQUIREMENT_STEP1);
   }
 
   @Override

@@ -6,6 +6,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix bug that Design requirements of step1&2 can't be removed/added
 *  Fix bug in control structure export that image and text would overlap
 
 ## XSTAMPP 2.5.3

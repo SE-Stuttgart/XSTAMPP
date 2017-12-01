@@ -100,7 +100,7 @@ public class SDSController extends Observable implements ISDSController {
   @Override
   public UUID addSafetyConstraint(ITableModel model) {
     SafetyConstraint safetyConstraint = new SafetyConstraint(model, -1);
-    if(this.getSafetyConstraints().add(safetyConstraint)) {
+    if (this.getSafetyConstraints().add(safetyConstraint)) {
       setChanged();
       notifyObservers(new UndoAddSC(this, safetyConstraint, linkController));
     }
@@ -307,8 +307,8 @@ public class SDSController extends Observable implements ISDSController {
   }
 
   private UUID addDesignRequirementStep1(ITableModel model) {
-    DesignRequirement designRequirement = new DesignRequirement(model);
-    getDesignRequirements().add(designRequirement);
+    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(model);
+    getDesignRequirementsStep1().add(designRequirement);
     setChanged();
     notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT_STEP1));
     return designRequirement.getId();
@@ -320,8 +320,8 @@ public class SDSController extends Observable implements ISDSController {
   }
 
   private UUID addDesignRequirementStep2(ITableModel model) {
-    DesignRequirement designRequirement = new DesignRequirement(model);
-    getDesignRequirements().add(designRequirement);
+    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(model);
+    getDesignRequirementsStep2().add(designRequirement);
     setChanged();
     notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT_STEP2));
     return designRequirement.getId();
@@ -343,24 +343,7 @@ public class SDSController extends Observable implements ISDSController {
   }
 
   public List<ITableModel> getAllDesignRequirements(ObserverValue type) {
-    List<ITableModel> result = new ArrayList<>();
-    switch (type) {
-    case DESIGN_REQUIREMENT: {
-      result.addAll(getDesignRequirements());
-      break;
-    }
-    case DESIGN_REQUIREMENT_STEP1: {
-      result.addAll(getDesignRequirementsStep1());
-      break;
-    }
-    case DESIGN_REQUIREMENT_STEP2: {
-      result.addAll(getDesignRequirementsStep2());
-      break;
-    }
-    default:
-      break;
-    }
-    return result;
+    return new ArrayList<>(getDesignReqList(type));
   }
 
   /*
@@ -379,30 +362,29 @@ public class SDSController extends Observable implements ISDSController {
    */
   @Override
   public ITableModel getDesignRequirement(UUID designRequirementId, ObserverValue type) {
-    List<? extends ITableModel> list;
-    switch (type) {
-    case DESIGN_REQUIREMENT: {
-      list = getDesignRequirements();
-      break;
-    }
-    case DESIGN_REQUIREMENT_STEP1: {
-      list = getDesignRequirementsStep1();
-      break;
-    }
-    case DESIGN_REQUIREMENT_STEP2: {
-      list = getDesignRequirementsStep2();
-      break;
-    }
-    default:
-      return null;
-    }
-    for (ITableModel d : list) {
+    for (ITableModel d : getDesignReqList(type)) {
       if (d.getId().equals(designRequirementId)) {
         return d;
       }
     }
 
     return null;
+  }
+
+  private List<? extends ITableModel> getDesignReqList(ObserverValue type) {
+    switch (type) {
+    case DESIGN_REQUIREMENT: {
+      return getDesignRequirements();
+    }
+    case DESIGN_REQUIREMENT_STEP1: {
+      return getDesignRequirementsStep1();
+    }
+    case DESIGN_REQUIREMENT_STEP2: {
+      return getDesignRequirementsStep2();
+    }
+    default:
+      return new ArrayList<>();
+    }
   }
 
   /*
@@ -423,7 +405,7 @@ public class SDSController extends Observable implements ISDSController {
   public boolean removeDesignRequirement(UUID designRequirementId, ObserverValue type) {
 
     ITableModel designRequirement = this.getDesignRequirement(designRequirementId, type);
-    if (this.designRequirements.remove(designRequirement)) {
+    if (getDesignReqList(type).remove(designRequirement)) {
       setChanged();
       notifyObservers(new UndoRemoveDR(this, designRequirement, linkController, type));
       return true;
