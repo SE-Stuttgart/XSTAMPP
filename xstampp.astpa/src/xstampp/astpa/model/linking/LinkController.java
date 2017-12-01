@@ -68,7 +68,7 @@ public class LinkController extends Observable {
    * @param linkB
    *          the part whose {@link UUID} is the second part of the {@link Link}
    * @return
-   *      The id of the Link which was either added, updated or which already existed
+   *         The id of the Link which was either added, updated or which already existed
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB) {
     if (!this.linkMap.containsKey(linkType)) {
@@ -106,11 +106,10 @@ public class LinkController extends Observable {
   }
 
   void addLink(Link link) {
-    if (this.linkMap.containsKey(link.getLinkType())) {
-      if (this.linkMap.get(link.getLinkType()).add(link)) {
-        setChanged();
-        notifyObservers(new UndoAddLinkingCallback(this, link.getLinkType(), link));
-      }
+    this.linkMap.putIfAbsent(link.getLinkType(), new ArrayList<>());
+    if (this.linkMap.get(link.getLinkType()).add(link)) {
+      setChanged();
+      notifyObservers(new UndoAddLinkingCallback(this, link.getLinkType(), link));
     }
   }
 

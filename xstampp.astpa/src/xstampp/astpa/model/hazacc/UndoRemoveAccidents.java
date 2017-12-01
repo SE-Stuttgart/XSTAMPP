@@ -10,11 +10,11 @@ public class UndoRemoveAccidents extends UndoRemoveLinkedComponent {
   private ITableModel model;
   private HazAccController controller;
 
-  public UndoRemoveAccidents(HazAccController controller, ITableModel factor,
+  public UndoRemoveAccidents(HazAccController controller, ITableModel model,
       LinkController linkController) {
-    super(linkController, factor.getId(), 2);
+    super(linkController, model.getId(), 2);
     this.controller = controller;
-    this.model = factor;
+    this.model = model;
   }
 
   @Override

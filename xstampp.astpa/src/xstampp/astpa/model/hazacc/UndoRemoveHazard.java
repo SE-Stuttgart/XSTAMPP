@@ -10,32 +10,32 @@ public class UndoRemoveHazard extends UndoRemoveLinkedComponent {
   private ITableModel model;
   private HazAccController controller;
 
-  public UndoRemoveHazard(HazAccController controller, ITableModel factor,
+  public UndoRemoveHazard(HazAccController controller, ITableModel model,
       LinkController linkController) {
-    super(linkController, factor.getId(), 2);
+    super(linkController, model.getId(), 2);
     this.controller = controller;
-    this.model = factor;
+    this.model = model;
   }
 
   @Override
   public void undo() {
     super.undo();
-    this.controller.addAccident(this.model);
+    this.controller.addHazard(this.model);
   }
 
   @Override
   public void redo() {
-    this.controller.removeAccident(this.model.getId());
+    this.controller.removeHazard(this.model.getId());
   }
 
   @Override
   public ObserverValue getChangeConstant() {
-    return ObserverValue.ACCIDENT;
+    return ObserverValue.HAZARD;
   }
 
   @Override
   public String getChangeMessage() {
-    return "Remove Accident";
+    return "Remove Hazard";
   }
 
 }

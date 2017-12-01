@@ -16,13 +16,11 @@ public abstract class UndoAddLinkedComponent implements IUndoCallback {
   public UndoAddLinkedComponent(LinkController linkController, UUID componentId, int linkDepth) {
     this.componentId = componentId;
     this.linkDepth = linkDepth;
-    deleteLinksFor = linkController.deleteLinksFor(this.componentId, this.linkDepth);
     this.linkController = linkController;
   }
 
   @Override
   public void redo() {
-    this.linkController.addLinks(this.deleteLinksFor);
   }
 
   @Override

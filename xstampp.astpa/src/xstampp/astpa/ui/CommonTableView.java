@@ -693,9 +693,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     if (style.contains(TableStyle.WITH_SEVERITY)) {
       addSeverityColumn();
     }
-    // if (!linkFields.isEmpty()) {
-    // addLinkColumn();
-    // }
+    if (!linkFields.isEmpty()) {
+      addLinkColumn();
+    }
     // detecting a double click
     ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
         this.getTableViewer()) {

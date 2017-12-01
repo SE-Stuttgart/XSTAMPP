@@ -10,11 +10,11 @@ public class UndoAddHazard extends UndoAddLinkedComponent {
   private ITableModel model;
   private HazAccController controller;
 
-  public UndoAddHazard(HazAccController controller, ITableModel factor,
+  public UndoAddHazard(HazAccController controller, ITableModel model,
       LinkController linkController) {
-    super(linkController, factor.getId(), 2);
+    super(linkController, model.getId(), 2);
     this.controller = controller;
-    this.model = factor;
+    this.model = model;
   }
 
   @Override

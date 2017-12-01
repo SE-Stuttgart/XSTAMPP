@@ -85,8 +85,10 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
         this.nextNumber = size() + 1;
       }
       return nextNumber++;
-    } else {
+    } else if (size() > 0) {
       return get(size() - 1).getNumber() + 1;
+    } else {
+      return 1;
     }
   }
 
