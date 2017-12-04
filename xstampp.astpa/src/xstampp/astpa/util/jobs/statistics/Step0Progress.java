@@ -66,7 +66,7 @@ public class Step0Progress extends AbstractProgressSheetCreator {
       addProgress(getController().getProjectId(), progress);
     }
 
-    createTotalRow(sheet, titles.length - 1);
+    createTotalRow(sheet, titles.length - 1, true);
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }

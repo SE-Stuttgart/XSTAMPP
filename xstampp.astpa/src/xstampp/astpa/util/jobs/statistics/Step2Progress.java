@@ -31,7 +31,7 @@ import xstampp.model.ObserverValue;
 public class Step2Progress extends AbstractProgressSheetCreator {
 
   private static final String[] titles = new String[] {
-      "Unsafe Control Actions", "Severity", "Causal Factors", "Hazard", "Safety Constraint",
+      "Unsafe Control Actions", "Severity", "Causal Factors", "Hazard", "Safety Constraint", "",
       "Design Requirements", "Completion[%]" };
   private Map<Severity, Integer> cf_per_uca;
 
@@ -51,6 +51,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     Row ucaRow;
     for (ICorrespondingUnsafeControlAction uca : getController().getControlActionController()
         .getAllUnsafeControlActions()) {
+      triggerDefaultStyle();
       ucaRow = createRow(sheet);
       createCell(ucaRow, 0, uca.getIdString());
       createCell(ucaRow, 1, uca.getSeverity().name());
@@ -61,7 +62,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       addProgress(getController().getProjectId(), progress);
       createCell(ucaRow, titles.length - 1, String.format("%.1f", progress) + "%");
     }
-    createTotalRow(sheet, titles.length - 1);
+    createTotalRow(sheet, titles.length - 1, true);
 
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
@@ -71,9 +72,12 @@ public class Step2Progress extends AbstractProgressSheetCreator {
   private int createRows(ICorrespondingUnsafeControlAction uca, Row parentRow, Sheet sheet) {
     Row row = parentRow;
     int index = parentRow.getRowNum();
+    // each unsafe control action is linked to n causal factors, but only once to each one
     for (Link ucaCfLink : getController().getLinkController().getRawLinksFor(LinkingType.UCA_CausalFactor_LINK,
         uca.getId())) {
       row = row == null ? createRow(sheet) : row;
+      // The causal entry is defined as link between the linking between uca and causal factor and a
+      // component
       ICausalFactor factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
       Optional<Link> causalEntryOpt = getController().getLinkController()
           .getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, ucaCfLink.getId()).stream().findFirst();
@@ -95,6 +99,8 @@ public class Step2Progress extends AbstractProgressSheetCreator {
   private int createCausalEntries(Sheet sheet, Row parentRow, ICausalFactor factor, Link causalEntryLin) {
     Row row = parentRow;
     int index = parentRow.getRowNum();
+    // each entry (link between uca-cf and a component is used to get the hazard linking for this
+    // causal factor
     for (Link link : getController().getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
         causalEntryLin.getId())) {
       row = row == null ? createRow(sheet) : row;
@@ -111,18 +117,21 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     if (hazard != null) {
       Optional<UUID> constraintOpt = getController().getLinkController()
           .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, link.getId()).stream().findFirst();
-      String constraint = getController().getCausalFactorController()
-          .getConstraintTextFor(constraintOpt.orElse(null));
+      ITableModel constraint = getController().getCausalFactorController()
+          .getSafetyConstraint(constraintOpt.orElse(null));
 
-      createCell(hazRow, 5, hazard.getIdString());
-      createCell(hazRow, 6, constraint);
+      createCell(hazRow, 3, hazard.getIdString());
+      if (constraint != null) {
+        createCell(hazRow, 4, constraint.getIdString());
+        createCell(hazRow, 5, constraint.getTitle());
+      }
       Optional<UUID> designOpt = getController().getLinkController()
           .getLinksFor(LinkingType.DR2_CausalSC_LINK, constraintOpt.orElse(null)).stream().findFirst();
       ITableModel requirement = getController().getSdsController().getDesignRequirement(designOpt.orElse(null),
           ObserverValue.DESIGN_REQUIREMENT_STEP2);
       if (requirement != null) {
         addProgress(hazard.getId(), 100f);
-        createCell(hazRow, 7, requirement.getIdString());
+        createCell(hazRow, 6, requirement.getIdString());
       } else {
         addProgress(hazard.getId(), 0f);
       }

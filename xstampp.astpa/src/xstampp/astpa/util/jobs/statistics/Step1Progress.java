@@ -46,7 +46,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
     rowIndex = createCAs(sheet, ++rowIndex);
 
-    createTotalRow(sheet, titles.length - 1);
+    createTotalRow(sheet, titles.length - 1, true);
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }

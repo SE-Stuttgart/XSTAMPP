@@ -64,7 +64,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
       addProgress(getController().getProjectId(), progress);
     }
 
-    createTotalRow(sheet, titles.length - 1);
+    createTotalRow(sheet, titles.length - 1, false);
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);
     }
@@ -125,11 +125,10 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
   private int createDesignRows(Sheet sheet, Row ucaRow, UUID scId) {
     Row row = ucaRow;
     int index = ucaRow.getRowNum();
-    for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
-        scId)) {
+    for (UUID dr1Id : getController().getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK, scId)) {
       row = row == null ? createRow(sheet) : row;
       ITableModel designReq = getController().getSdsController().getDesignRequirement(dr1Id,
-          ObserverValue.DESIGN_REQUIREMENT);
+          ObserverValue.DESIGN_REQUIREMENT_STEP1);
       createCell(row, 8, designReq.getIdString());
       createCell(row, 8, designReq.getTitle());
       if (designReq.getTitle().isEmpty()) {

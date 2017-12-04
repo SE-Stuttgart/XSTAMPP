@@ -63,7 +63,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
       createCell(hazRow, 8, String.format("%.1f", progress) + "%");
       addProgress(getController().getProjectId(), progress);
     }
-    createTotalRow(sheet, titles.length - 1);
+    createTotalRow(sheet, titles.length - 1, false);
 
     for (int i = 0; i < titles.length; i++) {
       sheet.autoSizeColumn(i);

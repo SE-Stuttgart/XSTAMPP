@@ -45,7 +45,19 @@ abstract class AbstractProgressSheetCreator {
   private Styles defaultStyle = Styles.DEFAULT_UNEVEN;
 
   enum STEP {
-    STEP_0, STEP_1, STEP_1_HAZARD_CENTERED, STEP_2, STEP_2_HAZARD_CENTERED
+    TOTAL("Total"), STEP_0("Step 0"), STEP_1("Step 1"), STEP_1_HAZARD_CENTERED("Step 1"), STEP_2(
+        "Step 2"), STEP_2_HAZARD_CENTERED(
+            "Step 2");
+
+    private String label;
+
+    STEP(String name) {
+      label = name;
+    }
+
+    public String getLabel() {
+      return label;
+    }
   }
 
   @FunctionalInterface
@@ -65,6 +77,7 @@ abstract class AbstractProgressSheetCreator {
 
   static void initMap() {
     progressMap = new HashMap<>();
+    progressMap.put(STEP.TOTAL, new HashMap<>());
     progressMap.put(STEP.STEP_0, new HashMap<>());
     progressMap.put(STEP.STEP_1, new HashMap<>());
     progressMap.put(STEP.STEP_2, new HashMap<>());
@@ -73,9 +86,16 @@ abstract class AbstractProgressSheetCreator {
 
   }
 
-  protected void createTotalRow(Sheet sheet, int cellIndex) {
+  public static Map<STEP, Map<UUID, List<Float>>> getProgressMap() {
+    return progressMap;
+  }
+
+  protected void createTotalRow(Sheet sheet, int cellIndex, boolean addToTotal) {
     Row footer = createRow(sheet);
     Float progress = getProgress(getController().getProjectId(), 1);
+    if (addToTotal) {
+      addProgress(getController().getProjectId(), progress, STEP.TOTAL);
+    }
     createCell(footer, cellIndex, String.format("%.1f", progress) + "%", Styles.TOTAL_STYLE);
   }
 
@@ -90,17 +110,25 @@ abstract class AbstractProgressSheetCreator {
    *          a {@link Float} in <code>[0,100]</code>
    */
   void addProgress(UUID entryId, Float progress) {
+    addProgress(entryId, progress, defaultStep);
+  }
+
+  /**
+   * @param entryId
+   *          the id for which this progress value should be added
+   * @param progress
+   *          a {@link Float} in <code>[0,100]</code>
+   */
+  static void addProgress(UUID entryId, Float progress, STEP step) {
     assert progress >= 0 && progress <= 100;
-    if (!progressMap.get(this.defaultStep).containsKey(entryId)) {
-      progressMap.get(this.defaultStep).put(entryId, new ArrayList<>());
+    if (!progressMap.get(step).containsKey(entryId)) {
+      progressMap.get(step).put(entryId, new ArrayList<>());
     }
-    progressMap.get(this.defaultStep).get(entryId).add(progress);
+    progressMap.get(step).get(entryId).add(progress);
   }
 
   /**
    * 
-   * @param step
-   *          one of the enum values stored in {@link STEP}
    * @param entryId
    *          the id for which the total stored progress should be calculated
    * @param constraint
@@ -110,12 +138,28 @@ abstract class AbstractProgressSheetCreator {
    * @return the progress that is a {@link Float} in <code>[0,100]</code>
    */
   Float getProgress(UUID entryId, int constraint) {
+    return getProgress(entryId, constraint, defaultStep);
+  }
+
+  /**
+   * 
+   * @param entryId
+   *          the id for which the total stored progress should be calculated
+   * @param constraint
+   *          defines the minimum number of progress values that must be stored for the given
+   *          entryId if the constraint isn't reached by the stored lists length a zero value is
+   *          assumed, must be >= 0
+   * @param step
+   *          one of the enum values stored in {@link STEP}
+   * @return the progress that is a {@link Float} in <code>[0,100]</code>
+   */
+  static Float getProgress(UUID entryId, int constraint, STEP step) {
     assert constraint >= 0;
-    if (progressMap.get(this.defaultStep).containsKey(entryId)) {
-      int size = progressMap.get(this.defaultStep).get(entryId).size();
+    if (progressMap.get(step).containsKey(entryId)) {
+      int size = progressMap.get(step).get(entryId).size();
       float factor = 1 / (float) Math.max(constraint, size);
       Float total = 0f;
-      for (Float progress : progressMap.get(this.defaultStep).get(entryId)) {
+      for (Float progress : progressMap.get(step).get(entryId)) {
         total += factor * progress;
       }
       return total;
