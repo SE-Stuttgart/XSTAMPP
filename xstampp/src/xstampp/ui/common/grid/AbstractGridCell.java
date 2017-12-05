@@ -204,10 +204,12 @@ public abstract class AbstractGridCell implements IGridCell {
    *          the offset from the bounds left end in points
    * @param right_space
    *          the offset from the right side of the bounds
+   * @param item
+   *          TODO
    * @return the height of the written text sequence
    */
   protected final Point wrapText(Rectangle bounds, GC gc, String text, int left_space,
-      int right_space) {
+      int right_space, NebulaGridRowWrapper item) {
     Point textBounds = new Point(bounds.width - left_space - right_space, 0);
     FontMetrics metrics = gc.getFontMetrics();
     if (text.isEmpty() || bounds.width < 0) {

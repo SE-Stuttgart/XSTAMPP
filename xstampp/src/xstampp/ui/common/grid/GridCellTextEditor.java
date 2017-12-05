@@ -178,10 +178,10 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     }
     Point textBounds = new Point(0, 0);
     currentText = getCurrentText();
-    if (this.currentText == null || this.currentText.trim().isEmpty()) {
-      textBounds = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum);
+    if ((this.currentText == null || this.currentText.trim().isEmpty()) && !isReadOnly()) {
+      textBounds = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum, item);
     } else if (this.currentText != null) {
-      textBounds = wrapText(bounds, gc, this.currentText, 2, buttonCollum);
+      textBounds = wrapText(bounds, gc, this.currentText, 2, buttonCollum, item);
     }
     if (isReadOnly) {
       textBounds.y = Math.max(textBounds.y, AbstractGridCell.DEFAULT_CELL_HEIGHT);

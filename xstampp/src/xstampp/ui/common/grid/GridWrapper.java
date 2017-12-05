@@ -21,13 +21,9 @@ import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
-import org.eclipse.nebula.widgets.grid.internal.IScrollBarProxy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -200,6 +196,7 @@ public class GridWrapper {
     private GridRow gridRow;
     private GridRow parentRow;
     private NebulaGridRowWrapper parent;
+    private int index;
 
     @Override
     public boolean isVisible() {
@@ -309,6 +306,14 @@ public class GridWrapper {
 
     public void setParentWrapper(NebulaGridRowWrapper parent) {
       this.parent = parent;
+    }
+
+    public int getIndex() {
+      return index;
+    }
+
+    public void setIndex(int index) {
+      this.index = index;
     }
 
   }
@@ -481,6 +486,8 @@ public class GridWrapper {
 
   private String toolTip = null;
 
+  private int gridItemIndex;
+
   /**
    * Ctor.
    * 
@@ -496,7 +503,7 @@ public class GridWrapper {
     this.nebulaRows = new ArrayList<NebulaGridRowWrapper>();
     this.hoveredCell = null;
     this.mousePosition = new Point(0, 0);
-    this.actualGrid = new Grid(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.VIRTUAL);
+    this.actualGrid = new Grid(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.VIRTUAL | SWT.DOUBLE_BUFFERED);
     this.actualGrid.setHeaderVisible(true);
     this.actualGrid.getHeaderHeight();
     this.actualGrid.setCellSelectionEnabled(true);
@@ -518,31 +525,23 @@ public class GridWrapper {
       }
     };
     this.actualGrid.addPaintListener(new PaintListener() {
+      private int indexAdaptionTrys = 0;
 
       @Override
       public void paintControl(PaintEvent paintEvent) {
-        // setToolTip(null);
-        if (persistedScrollIndex != null ) {
-          actualGrid.setTopIndex(persistedScrollIndex + 1);
-          persistedScrollIndex = null;
+        if (persistedScrollIndex != null) {
+          actualGrid.setTopIndex(persistedScrollIndex);
+          if (Math.abs(actualGrid.getTopIndex() - persistedScrollIndex) < 1 || this.indexAdaptionTrys > 6) {
+            persistedScrollIndex = null;
+            this.indexAdaptionTrys = 0;
+          } else {
+            this.indexAdaptionTrys++;
+          }
         }
       }
     });
     this.setColumnLabels(columnLabels);
-    this.actualGrid.addDisposeListener(new DisposeListener() {
-
-      @Override
-      public void widgetDisposed(DisposeEvent e) {
-        // TODO Auto-generated method stub
-
-      }
-    });
-    this.actualGrid.addControlListener(new ControlListener() {
-
-      @Override
-      public void controlMoved(ControlEvent e) {
-        // intentionally empty
-      }
+    this.actualGrid.addControlListener(new ControlAdapter() {
 
       @Override
       public void controlResized(ControlEvent e) {
@@ -634,6 +633,7 @@ public class GridWrapper {
    */
   public void fillTable() {
     this.nebulaRows.clear();
+    gridItemIndex = 0;
     for (int i = 0; i < this.rows.size(); i++) {
       addChildRows(null, this.rows.get(i), i, 0);
     }
@@ -646,7 +646,7 @@ public class GridWrapper {
       parentrow = parent.getGridRow();
     }
     NebulaGridRowWrapper item = new NebulaGridRowWrapper(this.getGrid(), SWT.NONE, row, parentrow);
-
+    item.setIndex(gridItemIndex++);
     if (row.getColumnSpan() != null) {
       item.setColumnSpan(row.getColumnSpan().x, row.getColumnSpan().y);
     }

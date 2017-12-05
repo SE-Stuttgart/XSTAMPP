@@ -73,8 +73,7 @@ public class GridCellText extends AbstractGridCell {
 
     final Color fgColor = gc.getForeground();
     gc.setForeground(GridCellText.TEXT_COLOR);
-
-    Point textBounds = wrapText(renderer.getDrawBounds(), gc, this.text.trim(), 2, 0);
+    Point textBounds = wrapText(renderer.getDrawBounds(), gc, this.text.trim(), 2, 0, item);
     boolean needRefresh = textBounds.y > AbstractGridCell.DEFAULT_CELL_HEIGHT
         && textBounds.y != getPreferredHeight();
     item.getGridRow().setDirty(needRefresh);

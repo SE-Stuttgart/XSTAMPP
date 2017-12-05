@@ -361,7 +361,7 @@ public class DataModelController extends AbstractDataModel
       factorId = addCausalFactor();
       UUID linkId = getLinkController().addLink(LinkingType.UCA_CausalFactor_LINK, null, factorId);
       getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, linkId, componentId);
-      releaseLockAndUpdate();
+      releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR, ObserverValue.LINKING });
     }
     return factorId;
 

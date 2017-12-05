@@ -15,8 +15,6 @@ package xstampp;
 
 import java.net.URL;
 
-import messages.Messages;
-
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -29,6 +27,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
 import xstampp.util.ChooseWorkLocation;
 
 /**
@@ -58,6 +57,7 @@ public class Application implements IApplication {
     }
     Display display = PlatformUI.createDisplay();
     Logger logger = Logger.getRootLogger();
+    logger.debug("Running on Java Version " + System.getProperty("java.version"));
     try {
 
       // Choose a reasonable workspace Location
