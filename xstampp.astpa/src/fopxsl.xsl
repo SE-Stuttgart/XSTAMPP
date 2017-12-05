@@ -228,17 +228,6 @@
 						<xsl:call-template name="designRequirementsStep1Table" />
 					</fo:block>
 
-					<!-- *************** Design Requirements Step 2 *************** -->
-					<fo:block page-break-after="always">
-						<fo:block font-size="24pt" space-after="5pt"
-							page-break-after="avoid">
-							Design Requirements Step 2
-						</fo:block>
-						<!-- Unsafe Control Actions-Table-Template -->
-						<xsl:call-template name="designRequirementsStep2Table" />
-					</fo:block>
-
-
 					<!-- *************** Control Structure Diagram with Process Model *************** -->
 					<fo:block page-break-after="always">
 
@@ -282,6 +271,16 @@
 						<!-- Causal Factors-Table-Template -->
 						<xsl:call-template name="causalFactorsTable" />
 					</fo:block>
+
+                    <!-- *************** Design Requirements Step 2 *************** -->
+                    <fo:block page-break-after="always">
+                        <fo:block font-size="24pt" space-after="5pt"
+                            page-break-after="avoid">
+                            Design Requirements Step 2
+                        </fo:block>
+                        <!-- Unsafe Control Actions-Table-Template -->
+                        <xsl:call-template name="designRequirementsStep2Table" />
+                    </fo:block>
 				</fo:flow>
 			</fo:page-sequence>
 
