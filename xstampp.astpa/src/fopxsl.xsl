@@ -281,6 +281,14 @@
                         <!-- Unsafe Control Actions-Table-Template -->
                         <xsl:call-template name="designRequirementsStep2Table" />
                     </fo:block>
+
+                    <fo:block page-break-after="always">
+                        <fo:block font-size="24pt" space-after="5pt"
+                            page-break-after="avoid">
+                            Glossary
+                        </fo:block>
+                        <xsl:call-template name="glossary" />
+                    </fo:block>
 				</fo:flow>
 			</fo:page-sequence>
 

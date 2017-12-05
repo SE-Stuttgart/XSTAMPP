@@ -1905,4 +1905,113 @@
 			</fo:table>
 		</fo:block>
 	</xsl:template>
+    
+    <xsl:template name="glossary">
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+        ACCIDENT
+    </fo:block>
+    <fo:block>
+    undesired or unplanned event that results in a loss, including loss or injury to
+    human life, property damage, environmental pollution, mission loss etc.
+    </fo:block>
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    ACTUATOR
+    </fo:block>
+    a human operator or mechanical device tasked with directly acting upon a process
+    and changing its physical state. Valve systems (valve + the motor associated to it), doors,
+    magnets (their electronic controller and power source included) or a nurse are actuators that
+    respectively implement control on the following processes: "fluid flow", "egress availability",
+    "beam position", "patient position". Actuators, like sensors, can be smart in that they can be
+    programmable; they may therefore need to be studied with the same concepts as the controllers
+    are.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">    CAUSAL FACTOR
+    </fo:block>
+    cause of a (hazardous) scenario (STPA Step 2).
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    COMMAND
+    </fo:block>
+    a signal providing a set of instructions (goals, set points, order) issued by a
+    controller with the intent of acting upon a process by activation of a device or implementation of
+    a procedure. Communication and Control, along with Hierarchy and Emergence, are
+    fundamental systems theory concepts at the foundation of STAMP. Commands are issued by
+    Controllers, with the intent that they be implemented by Actuators to act on the Controlled
+    Process
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    CONTROL ACTION
+    </fo:block>
+    the bringing about of an alteration in the system's state through activation
+    of a device or implementation of a procedure with the intent of regulating or guiding the
+    operation of a human being, machine, apparatus, or system. They are the result of an Actuator
+    implementing a control Command issued by a Controller, and aim at controlling the state of the
+    Controlled Process
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    CONTROL STRUCTURE
+    </fo:block>
+    hierarchy of process loops created to steer a system's operations and
+    control its states. In the context of a hazard analysis, we are most concerned with the control of
+    hazardous states aimed at eliminating, reducing or mitigating them.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    CONTROLLED PROCESS
+    </fo:block>
+    although at times reducible to the state of a physical element (e.g.
+    framing a "door" as a controlled process whose values can be "open" or "shut"), it appears
+    fruitful to rather consider the controlled process identified in STAMP process loops to be the
+    system's attribute or state variable that the controller aims to control (e.g. thinking of the door
+    not as the controlled process but, together with its motor, as an actuator that implements control
+    on the possibility of egress).
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    CONTROLLER
+    </fo:block>
+    a human or automated system that is responsible for controlling the system's
+    processes by issuing commands to be implemented by system actuators.
+    FEEDBACK
+    
+    evaluative or corrective information about an action, event, or process that is
+    transmitted to the original or controlling source.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    HAZARD
+    </fo:block>
+    system state of set or conditions that, together with a particular set of worst-case
+    environmental conditions, will lead to an accident.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    LOSS
+    </fo:block>
+    decrease in amount, magnitude or degree including destruction or ruin.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    SAFETY
+    </fo:block>
+    freedom from loss.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    SAFETY CONSTRAINT
+    </fo:block>
+    bound set on system design options and operations to restrict, compel
+    to avoid or forbid the performance of actions that would lead to a hazard.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    SAFETY/DESIGN REQUIREMENT
+    </fo:block>
+    design requirement formulated to include the enforcement of safety
+    constraints as a design objective.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    (HAZARDOUS) SCENARIO
+    </fo:block>
+    an account or synopsis of a possible course of action or events
+    resulting in a hazard. See Causal Factor.
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    SENSOR
+    </fo:block>
+    human or mechanical device tasked with measuring a process variable by responding
+    to a physical stimulus (as heat, light, sound, pressure, magnetism, or a particular motion) and
+    transmit a resulting impulse (as for measurement or operating a control).
+    <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
+    UNSAFE CONTROL ACTION
+    </fo:block>
+    control action that leads to a hazard (STPA Step 1).
+    <fo:block space-before="15pt" font-size="8pt" page-break-after="avoid">
+    Definitions from:
+    </fo:block>
+    <fo:block>
+        <xsl:attribute name="font-size">9pt</xsl:attribute>
+    Antoine, B. (2013). Systems Theoretic Hazard Analysis (STPA) applied to the risk review of complex systems: an example from the medical device industry (Doctoral dissertation, Massachusetts Institute of Technology).
+    </fo:block>
+    </xsl:template>
 </xsl:stylesheet>

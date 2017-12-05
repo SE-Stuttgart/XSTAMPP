@@ -48,7 +48,7 @@ public class HistoryView extends ViewPart implements ISourceProviderListener {
     TableColumnLayout tableColumnLayout = new TableColumnLayout();
     redoComposite.setLayout(tableColumnLayout);
 
-    redoListViewer = new TableViewer(redoComposite, SWT.V_SCROLL);
+    redoListViewer = new TableViewer(redoComposite, SWT.H_SCROLL);
     redoListViewer.setContentProvider(new ArrayContentProvider());
 
     redoListViewer.getTable().setLinesVisible(false);
@@ -82,7 +82,7 @@ public class HistoryView extends ViewPart implements ISourceProviderListener {
     tableColumnLayout = new TableColumnLayout();
     tableComposite.setLayout(tableColumnLayout);
 
-    listViewer = new TableViewer(tableComposite, SWT.V_SCROLL);
+    listViewer = new TableViewer(tableComposite, SWT.H_SCROLL);
     listViewer.setContentProvider(new ArrayContentProvider());
 
     listViewer.getTable().setLinesVisible(false);
