@@ -19,7 +19,6 @@ import org.eclipse.ui.PlatformUI;
 
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.ui.StatisticsView;
 import xstampp.astpa.util.jobs.statistics.STPAStatisticsJob;
 import xstampp.astpa.wizards.pages.StatisticsExportPage;
 import xstampp.model.IDataModel;

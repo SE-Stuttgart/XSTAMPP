@@ -1196,7 +1196,7 @@
       </view>
       <view
             category="xstampp.category.views"
-            class="xstampp.astpa.ui.StatisticsView"
+            class="xstampp.astpa.wizards.StatisticsView"
             id="xstampp.astpa.view.statistics"
             name="STPA Progress Indicators"
             restorable="true">
