@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -301,22 +300,29 @@ public class CausalFactorController extends Observable implements ICausalControl
   public ITableModel getSafetyConstraint(UUID id) {
     return getCausalSafetyConstraints().stream().filter((constraint) -> {
       return constraint.getId().equals(id);
-    }).findFirst().orElse(new CausalSafetyConstraint(""));
+    }).findFirst().orElse(null);
   }
 
   @Override
   public String getConstraintTextFor(UUID id) {
+    ITableModel safetyConstraint = getSafetyConstraint(id);
+    if (safetyConstraint == null) {
+      return "";
+    }
     return getSafetyConstraint(id).getDescription();
   }
 
   @Override
-  public boolean setSafetyConstraintText(UUID linkB, String newText) {
-
-    String description = ((ATableModel) getSafetyConstraint(linkB)).setDescription(newText);
+  public boolean setSafetyConstraintText(UUID constraintId, String newText) {
+    ITableModel safetyConstraint = getSafetyConstraint(constraintId);
+    if (safetyConstraint == null) {
+      return false;
+    }
+    String description = ((ATableModel) safetyConstraint).setDescription(newText);
     if (!newText.equals(description)) {
       UndoTextChange textChange = new UndoTextChange(description, newText,
           ObserverValue.CAUSAL_FACTOR);
-      textChange.setConsumer((text) -> setSafetyConstraintText(linkB, text));
+      textChange.setConsumer((text) -> setSafetyConstraintText(constraintId, text));
       setChanged();
       notifyObservers(textChange);
       return true;

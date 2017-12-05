@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.eclipse.swt.graphics.GC;
 
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
@@ -26,37 +27,41 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   private ICausalFactorDataModel causalDataInterface;
   private Link ucaHazLink;
+  private Optional<ITableModel> safetyOption;
 
   /**
    * 
    * @param gridWrapper
    * @param dataInterface
-   * @param ucaHazLink
+   * @param causalHazLink
    *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
    */
   public CellEditorSafetyConstraint(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      Link ucaHazLink) {
+      Link causalHazLink) {
     super(gridWrapper,
-        dataInterface.getCausalFactorController().getConstraintTextFor(ucaHazLink.getLinkB()),
-        ucaHazLink.getId());
-    this.ucaHazLink = ucaHazLink;
+        dataInterface.getCausalFactorController().getConstraintTextFor(causalHazLink.getLinkB()),
+        causalHazLink.getId());
     setShowDelete(true);
     this.causalDataInterface = dataInterface;
+    this.ucaHazLink = causalHazLink;
+    Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
+        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream().findFirst();
+    this.safetyOption = Optional
+        .ofNullable(causalDataInterface.getCausalFactorController().getSafetyConstraint(safetyOption.orElse(null)));
+    if (safetyOption.isPresent() && !this.safetyOption.isPresent()) {
+      dataInterface.getLinkController().deleteLink(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId(),
+          safetyOption.get());
+    }
   }
 
   @Override
   public String getCurrentText() {
-    Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
-    UUID constraintId = safetyOption.orElse(null);
-    return causalDataInterface.getCausalFactorController().getConstraintTextFor(constraintId);
+    return safetyOption.isPresent() ? safetyOption.get().getText() : "";
   }
 
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     clearCellButtons();
-    Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
     if (!safetyOption.isPresent()) {
       addCellButton(
           new NewConstraintButton(ucaHazLink, causalDataInterface));
@@ -82,11 +87,12 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   @Override
   public void delete() {
-    Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
     if (safetyOption.isPresent()) {
-      causalDataInterface.getLinkController().deleteLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
-          safetyOption.get());
+      if (this.causalDataInterface.getCausalFactorController().removeSafetyConstraint(safetyOption.get().getId())) {
+        causalDataInterface.getLinkController().deleteLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
+            safetyOption.get().getId());
+        this.safetyOption = Optional.empty();
+      }
     }
   }
 

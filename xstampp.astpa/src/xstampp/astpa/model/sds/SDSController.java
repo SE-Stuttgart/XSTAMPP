@@ -554,7 +554,8 @@ public class SDSController extends Observable implements ISDSController {
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(LinkingType.DR2_CausalSC_LINK,
           designRequirement2.getId())) {
-        linkString += causalController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
+        ITableModel constraint = causalController.getSafetyConstraint(id);
+        linkString += constraint != null ? constraint.getIdString() + ", " : ""; //$NON-NLS-1$
       }
       if (linkString.length() > 2) {
         designRequirement2.setLinks(linkString.substring(0, linkString.length() - 2));
