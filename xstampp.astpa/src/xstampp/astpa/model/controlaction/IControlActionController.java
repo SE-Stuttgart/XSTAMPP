@@ -16,15 +16,12 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
-import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
-import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
-import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
@@ -289,16 +286,11 @@ public interface IControlActionController {
    * Prepares the control actions for the export
    * 
    * @author Fabian Toth
-   * @param linkController
-   * 
-   * @param hazAccController
-   *          the hazAccController to get the Accidents as objects
-   * @param extendedData
+   * @param dataModel TODO
+   * @param defaultLabel TODO
    * 
    */
-  void prepareForExport(LinkController linkController, IHazAccController hazAccController,
-      ControlStructureController csController, String defaultLabel,
-      IExtendedDataController extendedData, ISDSController sdsController);
+  void prepareForExport(ISTPADataModel dataModel, String defaultLabel);
 
   /**
    * Prepares the control actions for save

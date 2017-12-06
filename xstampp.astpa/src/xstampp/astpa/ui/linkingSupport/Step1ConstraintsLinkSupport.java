@@ -23,6 +23,10 @@ public class Step1ConstraintsLinkSupport extends LinkSupport<DataModelController
     super(dataInterface, type);
   }
 
+  public Step1ConstraintsLinkSupport(DataModelController dataInterface, LinkingType type, boolean readOnly) {
+    super(dataInterface, type, readOnly);
+  }
+
   @Override
   protected List<ITableModel> getModels() {
     return getDataInterface().getCorrespondingSafetyConstraints();

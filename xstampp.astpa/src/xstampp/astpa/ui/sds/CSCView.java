@@ -19,6 +19,9 @@ import messages.Messages;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.astpa.model.interfaces.ISTPADataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.ATableFilter;
 import xstampp.model.ObserverValue;
 import xstampp.usermanagement.api.AccessRights;
@@ -44,8 +47,8 @@ public class CSCView extends AbstractFilteredTableView {
    */
   public CSCView() {
     super(new CSCTableFilter(), new String[] { Messages.ID, Messages.UnsafeControlActions,
-        Messages.ID, Messages.CorrespondingSafetyConstraints });
-    setColumnWeights(new int[] { -1, 5, -1, 5 });
+        Messages.ID, Messages.CorrespondingSafetyConstraints, "Links" });
+    setColumnWeights(new int[] { -1, 5, -1, 5, -1 });
     addEditingSupport(3, new EditSupportProvider() {
       @Override
       protected boolean canEdit(Object element) {
@@ -147,7 +150,23 @@ public class CSCView extends AbstractFilteredTableView {
               .getText();
         }
       };
-
+    case 4:
+      return new CSCLabelProvider() {
+        @Override
+        public String getText(Object element) {
+          String links = "";
+          ISTPADataModel dataModel = (ISTPADataModel) getDataInterface();
+          for (UUID uuid : dataModel.getLinkController().getLinksFor(LinkingType.SC2_SC1_LINK,
+              ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint().getId())) {
+            ITableModel constraint = dataModel.getCausalFactorController().getSafetyConstraint(uuid);
+            if (constraint != null) {
+              links += links.isEmpty() ? "" : ", ";
+              links += constraint.getIdString();
+            }
+          }
+          return links;
+        }
+      };
     }
     return null;
   }
@@ -168,5 +187,4 @@ public class CSCView extends AbstractFilteredTableView {
     return true;
   }
 
-  
 }

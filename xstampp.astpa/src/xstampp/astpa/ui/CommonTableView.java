@@ -128,7 +128,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private EnumSet<TableStyle> style;
 
   protected enum TableStyle {
-    RESTRICTED, WITH_SEVERITY
+    RESTRICTED, WITH_SEVERITY, WITHOUT_CONTROLS
   }
 
   private static final Image DELETE = Activator
@@ -178,7 +178,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           selectedEntry = ((ATableModel) selection.getFirstElement());
           getDescriptionWidget()
               .setText(((ATableModel) selection.getFirstElement()).getDescription());
-          deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
+          if (deleteItemsButton != null) {
+            deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
+          }
           if (severityButton != null) {
             severityButton.setEntry(selectedEntry);
             severityButton.getControl().redraw();
@@ -506,7 +508,11 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     Composite tableComposite = new Composite(this.tableContainer, SWT.NONE);
     tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-    createButtonBar();
+    this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
+    this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    if (!this.style.contains(TableStyle.WITHOUT_CONTROLS)) {
+      createButtonBar();
+    }
 
     // START of the creation of the right side of the view
 
@@ -749,8 +755,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         refreshView();
       }
     };
-
-    this.getAddNewItemButton().addListener(SWT.Selection, addListener);
+    if (!style.contains(TableStyle.WITHOUT_CONTROLS)) {
+      this.getAddNewItemButton().addListener(SWT.Selection, addListener);
+    }
 
     this.getTableViewer().getTable().addListener(SWT.KeyDown, addListener);
     // Listener for editing a title by pressing return
@@ -815,8 +822,6 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
   private void createButtonBar() {
     // the add and delete buttons are arranged in a composite with a 2x1
     // GridLayout
-    this.buttonComposite = new Composite(this.tableContainer, SWT.NONE);
-    this.buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
     this.buttonComposite.setLayout(new GridLayout(6, true));
     GridData gridData = new GridData(SWT.NONE, SWT.NONE, false, false);
     final int buttonSize = 46;
@@ -1147,11 +1152,14 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         UUID partId = ((ITableModel) element).getId();
         for (LinkSupport<?> support : linkFields) {
           for (UUID uuid : linkController.getLinksFor(support.getLinkType(), partId)) {
-            linkString += support.getText(uuid) + ", "; //$NON-NLS-1$
+            String text = support.getText(uuid);
+            if (text != null) {
+              linkString += linkString.isEmpty() ? "" : ", "; //$NON-NLS-1$ //$NON-NLS-2$
+              linkString += text;
+            }
           }
         }
-
-        return linkString.substring(0, Math.max(0, linkString.length() - 2));
+        return linkString;
       }
     });
 

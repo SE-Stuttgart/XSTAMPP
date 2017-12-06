@@ -309,7 +309,7 @@ public class CausalFactorController extends Observable implements ICausalControl
     if (safetyConstraint == null) {
       return "";
     }
-    return getSafetyConstraint(id).getDescription();
+    return getSafetyConstraint(id).getTitle();
   }
 
   @Override
@@ -318,11 +318,29 @@ public class CausalFactorController extends Observable implements ICausalControl
     if (safetyConstraint == null) {
       return false;
     }
-    String description = ((ATableModel) safetyConstraint).setDescription(newText);
+    String description = ((ATableModel) safetyConstraint).setTitle(newText);
     if (!newText.equals(description)) {
       UndoTextChange textChange = new UndoTextChange(description, newText,
           ObserverValue.CAUSAL_FACTOR);
       textChange.setConsumer((text) -> setSafetyConstraintText(constraintId, text));
+      setChanged();
+      notifyObservers(textChange);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setSafetyConstraintDescription(UUID constraintId, String newText) {
+    ITableModel safetyConstraint = getSafetyConstraint(constraintId);
+    if (safetyConstraint == null) {
+      return false;
+    }
+    String description = ((ATableModel) safetyConstraint).setDescription(newText);
+    if (!newText.equals(description)) {
+      UndoTextChange textChange = new UndoTextChange(description, newText,
+          ObserverValue.CAUSAL_FACTOR);
+      textChange.setConsumer((text) -> setSafetyConstraintDescription(constraintId, text));
       setChanged();
       notifyObservers(textChange);
       return true;

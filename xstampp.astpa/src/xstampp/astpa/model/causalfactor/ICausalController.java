@@ -124,6 +124,19 @@ public interface ICausalController {
   boolean setSafetyConstraintText(UUID linkB, String newText);
 
   /**
+   * 
+   * @param causalFactorId
+   *          the {@link UUID} of a {@link ICausalFactor}
+   * @param description
+   *          the description that should be set as the {@link ITableModel#getDescription()}
+   * @return <b style="color:blue">true</b> if the given id is valid and the description is
+   *         different to
+   *         the current <br>
+   *         <b style="color:blue">false</b> otherwise
+   */
+  boolean setSafetyConstraintDescription(UUID causalFactorId, String description);
+
+  /**
    * Creates a sorted mapping of a List of {@link Link}s to a {@link ICausalFactor}. The list set as
    * value contains all {@link LinkingType#UcaCfLink_Component_LINK}s between a
    * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link ICausalFactor}</b> and the

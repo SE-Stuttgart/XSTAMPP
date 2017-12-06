@@ -34,18 +34,15 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
-import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
 import xstampp.astpa.model.hazacc.HazAccController;
-import xstampp.astpa.model.hazacc.IHazAccController;
+import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
-import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.NumberedArrayList;
@@ -402,18 +399,16 @@ public class ControlActionController extends Observable implements IControlActio
   }
 
   @Override
-  public void prepareForExport(LinkController linkController, IHazAccController hazAccController,
-      ControlStructureController csController, String defaultLabel,
-      IExtendedDataController extendedData, ISDSController sdsController) {
+  public void prepareForExport(ISTPADataModel dataModel, String defaultLabel) {
     moveRulesInCA();
     for (ControlAction controlAction : this.getControlActions()) {
-      controlAction.prepareForExport(extendedData, csController, defaultLabel);
+      controlAction.prepareForExport(dataModel, defaultLabel);
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         List<ITableModel> linkedHazards = new ArrayList<>();
-        for (UUID link : linkController.getLinksFor(LinkingType.UCA_HAZ_LINK,
+        for (UUID link : dataModel.getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
             unsafeControlAction.getId())) {
-          linkedHazards.add(hazAccController.getHazard(link));
+          linkedHazards.add(dataModel.getHazAccController().getHazard(link));
         }
         Collections.sort(linkedHazards);
         StringBuffer linkString = new StringBuffer();
@@ -430,9 +425,9 @@ public class ControlActionController extends Observable implements IControlActio
         unsafeControlAction.setLinks(linkString.toString());
 
         String links = ""; //$NON-NLS-1$
-        for (UUID id : linkController.getLinksFor(LinkingType.DR1_CSC_LINK,
+        for (UUID id : dataModel.getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
             unsafeControlAction.getCorrespondingSafetyConstraint().getId())) {
-          links += sdsController.getDesignRequirement(id, ObserverValue.DESIGN_REQUIREMENT_STEP1)
+          links += dataModel.getSdsController().getDesignRequirement(id, ObserverValue.DESIGN_REQUIREMENT_STEP1)
               .getIdString() + ", "; //$NON-NLS-1$
         }
         if (links.length() > 2) {
@@ -448,7 +443,7 @@ public class ControlActionController extends Observable implements IControlActio
           for (UUID id : rule.getUCALinks()) {
             List<ITableModel> linkedHazards = new ArrayList<>();
             for (UUID link : this.getLinksOfUCA(id)) {
-              linkedHazards.add(hazAccController.getHazard(link));
+              linkedHazards.add(dataModel.getHazAccController().getHazard(link));
             }
             Collections.sort(linkedHazards);
             if (linkedHazards.size() == 0) {

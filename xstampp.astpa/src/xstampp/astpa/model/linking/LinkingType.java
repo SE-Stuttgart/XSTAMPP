@@ -63,14 +63,6 @@ public enum LinkingType {
   UCA_HAZ_LINK,
 
   /**
-   * <ol>
-   * <li>B should be the UUID of a Corresponding Safety Constraint in STPA Step 1
-   * <li>B should be the UUID of a Safety Constraint in STPA Step 2
-   * </ol>
-   */
-  CSC_SC2_LINK,
-
-  /**
    * enum for a link<A,B> between a unsafe control action and a causal factor in a stpa analysis.
    * <ol>
    * <li>A should be the UUID of a UCA

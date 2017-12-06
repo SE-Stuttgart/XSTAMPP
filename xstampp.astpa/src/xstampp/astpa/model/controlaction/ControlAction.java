@@ -24,10 +24,9 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
-import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
-import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
+import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IValueCombie;
 
@@ -486,16 +485,19 @@ public class ControlAction extends ATableModel implements IControlAction {
    * Prepares the control actions for the export
    * 
    * @author Fabian Toth, Lukas Balzer
-   * 
+   * @param defaultLabel
+   *          TODO
    * @param hazAccController
    *          the hazAccController to get the Accidents as objects
    * 
    */
-  public void prepareForExport(IExtendedDataController extendedData,
-      ControlStructureController csController, String defaultLabel) {
-    prepareForExport();
+  public void prepareForExport(ISTPADataModel dataModel, String defaultLabel) {
+    super.prepareForExport();
+    for (UnsafeControlAction unsafeControlAction : unsafeControlActions) {
+      unsafeControlAction.prepareForExport(dataModel);
+    }
     rules = new ArrayList<>();
-    for (AbstractLTLProvider refinedRule : extendedData.getAllScenarios(true, false, false)) {
+    for (AbstractLTLProvider refinedRule : dataModel.getExtendedDataController().getAllScenarios(true, false, false)) {
       if (refinedRule.getRelatedControlActionID().equals(getId())) {
         rules.add((RefinedSafetyRule) refinedRule);
       }
@@ -504,8 +506,8 @@ public class ControlAction extends ATableModel implements IControlAction {
     if (notProvidedVariables != null) {
       notProvidedVariableNames = new ArrayList<>();
       for (UUID id : notProvidedVariables) {
-        if (csController.getComponent(id) != null) {
-          notProvidedVariableNames.add(csController.getComponent(id).getText());
+        if (dataModel.getControlStructureController().getComponent(id) != null) {
+          notProvidedVariableNames.add(dataModel.getControlStructureController().getComponent(id).getText());
         } else {
           trash.add(id);
         }
@@ -516,8 +518,8 @@ public class ControlAction extends ATableModel implements IControlAction {
       trash.clear();
       providedVariableNames = new ArrayList<>();
       for (UUID id : providedVariables) {
-        if (csController.getComponent(id) != null) {
-          providedVariableNames.add(csController.getComponent(id).getText());
+        if (dataModel.getControlStructureController().getComponent(id) != null) {
+          providedVariableNames.add(dataModel.getControlStructureController().getComponent(id).getText());
         } else {
           trash.add(id);
         }
@@ -531,8 +533,8 @@ public class ControlAction extends ATableModel implements IControlAction {
             && combie.getValueList().size() == notProvidedVariableNames.size()) {
           ArrayList<String> list = new ArrayList<>();
           for (UUID id : combie.getValueList()) {
-            if (csController.getComponent(id) != null) {
-              list.add(csController.getComponent(id).getText());
+            if (dataModel.getControlStructureController().getComponent(id) != null) {
+              list.add(dataModel.getControlStructureController().getComponent(id).getText());
             } else {
               list.add(defaultLabel);
             }
@@ -554,8 +556,8 @@ public class ControlAction extends ATableModel implements IControlAction {
             && combie.getValueList().size() == providedVariableNames.size()) {
           ArrayList<String> list = new ArrayList<>();
           for (UUID id : combie.getValueList()) {
-            if (csController.getComponent(id) != null) {
-              list.add(csController.getComponent(id).getText());
+            if (dataModel.getControlStructureController().getComponent(id) != null) {
+              list.add(dataModel.getControlStructureController().getComponent(id).getText());
             } else {
               list.add(defaultLabel);
             }
@@ -592,7 +594,6 @@ public class ControlAction extends ATableModel implements IControlAction {
     rules = null;
   }
 
-
   @Override
   public void prepareForSave() {
     super.prepareForSave();
@@ -601,14 +602,6 @@ public class ControlAction extends ATableModel implements IControlAction {
     }
   }
 
-  @Override
-  public void prepareForExport() {
-    super.prepareForExport();
-    for (UnsafeControlAction unsafeControlAction : unsafeControlActions) {
-      unsafeControlAction.prepareForExport();
-    }
-  }
-  
   public boolean intern_addRefinedRule(RefinedSafetyRule rule) {
     if (rule.getRelatedControlActionID().equals(getId())) {
       if (this.rules == null) {
@@ -619,7 +612,7 @@ public class ControlAction extends ATableModel implements IControlAction {
     }
     return false;
   }
-  
+
   @Override
   public String getIdString() {
     return "CA-" + super.getIdString();

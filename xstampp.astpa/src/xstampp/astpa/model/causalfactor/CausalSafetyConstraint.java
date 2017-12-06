@@ -28,13 +28,13 @@ class CausalSafetyConstraint extends ATableModel {
   /**
    * Constructor of a causal factor safety constraint
    * 
-   * @param description
+   * @param title
    *          the description of the new safety constraint
    * 
    * @author Fabian Toth
    */
-  public CausalSafetyConstraint(String description) {
-    super(description, null, -1);
+  public CausalSafetyConstraint(String title) {
+    super(title, "", -1);
   }
 
   /**

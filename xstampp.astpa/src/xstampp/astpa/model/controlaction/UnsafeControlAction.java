@@ -11,6 +11,8 @@
 
 package xstampp.astpa.model.controlaction;
 
+import java.util.UUID;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,7 +24,10 @@ import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.CorrespondingSafetyConstraint;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.IEntryWithNameId;
+import xstampp.astpa.model.interfaces.ISTPADataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
+import xstampp.astpa.model.linking.LinkingType;
 
 /**
  * Class for unsafe control action objects.
@@ -128,9 +133,18 @@ public class UnsafeControlAction extends ATableModel
     correspondingSafetyConstraint.prepareForSave();
   }
 
-  @Override
-  public void prepareForExport() {
+  public void prepareForExport(ISTPADataModel dataModel) {
     super.prepareForExport();
     correspondingSafetyConstraint.prepareForExport();
+    String links = "";
+    for (UUID uuid : dataModel.getLinkController().getLinksFor(LinkingType.SC2_SC1_LINK,
+        correspondingSafetyConstraint.getId())) {
+      ITableModel constraint = dataModel.getControlActionController().getCorrespondingSafetyConstraint(uuid);
+      if (constraint != null) {
+        links += links.isEmpty() ? "" : ", ";
+        links += constraint.getIdString();
+      }
+    }
+    correspondingSafetyConstraint.setLinks(links);
   }
 }

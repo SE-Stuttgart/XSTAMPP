@@ -134,6 +134,13 @@
             </step>
             <step
                   default_editor="true"
+                  editorId="astpa.steps.step3_4"
+                  icon="icons/buttons/navigation/STEP1_5(16).png"
+                  id="xstampp.astpa.step3_4"
+                  name="Safety Constraints Step 2">
+            </step>
+            <step
+                  default_editor="true"
                   editorId="astpa.steps.step3_3"
                   icon="icons/buttons/navigation/STEP1_7(16).png"
                   id="astpa.navigation.step3_3"
@@ -613,6 +620,13 @@
             icon="icons/buttons/navigation/STEP1_7(16).png"
             id="astpa.steps.step2_4"
             name="%editor.name.DesignRequirenment">
+      </editor>
+      <editor
+            class="xstampp.astpa.ui.causalfactors.SafetyConstraintViewStep2"
+            default="false"
+            icon="icons/buttons/navigation/STEP1_5(16).png"
+            id="astpa.steps.step3_4"
+            name="Safety Constraints Step 2">
       </editor>
    </extension>
    <extension

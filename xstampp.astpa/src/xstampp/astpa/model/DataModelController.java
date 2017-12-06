@@ -80,6 +80,7 @@ import xstampp.astpa.model.interfaces.IExtendedDataModel;
 import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.model.interfaces.ILinkingViewDataModel;
 import xstampp.astpa.model.interfaces.INavigationViewDataModel;
+import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
 import xstampp.astpa.model.interfaces.IStatusLineDataModel;
 import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
@@ -136,7 +137,7 @@ public class DataModelController extends AbstractDataModel
     IStatusLineDataModel, IDesignRequirementViewDataModel, ISafetyConstraintViewDataModel,
     ISystemGoalViewDataModel, IControlActionViewDataModel, IControlStructureEditorDataModel,
     IUnsafeControlActionDataModel, ICausalFactorDataModel, ICorrespondingSafetyConstraintDataModel,
-    IExtendedDataModel, IUserProject, Observer {
+    IExtendedDataModel, IUserProject, Observer, ISTPADataModel {
 
   private static final String HAZ = "haz";
   private static final String HAZX = "hazx";
@@ -267,10 +268,7 @@ public class DataModelController extends AbstractDataModel
     getSdsController().prepareForExport(getLinkController(), getHazAccController(),
         getControlActionController(), getCausalFactorController());
     this.extendedDataController.prepareForExport(getControlActionController(), getLinkController());
-    this.getControlActionController().prepareForExport(getLinkController(),
-        this.getHazAccController(),
-        this.controlStructureController, ignoreLtlValue.getText(), this.extendedDataController,
-        getSdsController());
+    this.getControlActionController().prepareForExport(this, ignoreLtlValue.getText());
     this.causalFactorController.prepareForExport(getHazAccController(), getRoot(), getExtendedDataController(),
         getControlActionController(), getLinkController(), getSdsController());
     this.projectDataManager.prepareForExport();
@@ -2061,6 +2059,7 @@ public class DataModelController extends AbstractDataModel
     return linkController;
   }
 
+  @Override
   public ControlStructureController getControlStructureController() {
     if (this.controlStructureController == null) {
       this.controlStructureController = new ControlStructureController(isTestable());
@@ -2069,6 +2068,7 @@ public class DataModelController extends AbstractDataModel
     return controlStructureController;
   }
 
+  @Override
   public IControlActionController getControlActionController() {
     if (this.controlActionController == null) {
       this.controlActionController = new ControlActionController();
@@ -2078,6 +2078,7 @@ public class DataModelController extends AbstractDataModel
 
   }
 
+  @Override
   public IHazAccController getHazAccController() {
     if (this.hazAccController == null) {
       this.hazAccController = new HazAccController();
@@ -2087,6 +2088,7 @@ public class DataModelController extends AbstractDataModel
     return hazAccController;
   }
 
+  @Override
   public ISDSController getSdsController() {
     if (this.sdsController == null) {
       this.sdsController = new SDSController();
@@ -2096,6 +2098,7 @@ public class DataModelController extends AbstractDataModel
     return sdsController;
   }
 
+  @Override
   public ICausalController getCausalFactorController() {
     if (this.causalFactorController == null) {
       this.causalFactorController = new CausalFactorController();
@@ -2105,6 +2108,7 @@ public class DataModelController extends AbstractDataModel
     return this.causalFactorController;
   }
 
+  @Override
   public IExtendedDataController getExtendedDataController() {
     if (this.extendedDataController == null) {
       this.extendedDataController = new ExtendedDataController();
@@ -2113,6 +2117,7 @@ public class DataModelController extends AbstractDataModel
     return this.extendedDataController;
   }
 
+  @Override
   public ProjectDataController getProjectDataManager() {
     if (this.projectDataManager == null) {
       this.projectDataManager = new ProjectDataController();

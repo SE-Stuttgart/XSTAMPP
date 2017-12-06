@@ -58,10 +58,16 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   private LinkingType type;
   private List<ITableModel> modelList;
   private Composite linkComp;
+  private boolean readOnly;
 
   public LinkSupport(M dataInterface, LinkingType type) {
+    this(dataInterface, type, false);
+  }
+
+  public LinkSupport(M dataInterface, LinkingType type, boolean readOnly) {
     this.dataInterface = dataInterface;
     this.type = type;
+    this.readOnly = readOnly;
     this.changeListeners = new ArrayList<>();
   }
 
@@ -161,8 +167,14 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    * 
    * @return a {@link List} of {@link UUID}'s
    */
-  List<UUID> fetch() {
-    return getDataInterface().getLinkController().getLinksFor(getLinkType(), getCurrentId());
+  public List<UUID> fetch() {
+    List<UUID> list = new ArrayList<>();
+    for (UUID uuid : getDataInterface().getLinkController().getLinksFor(getLinkType(), getCurrentId())) {
+      if (getText(uuid) != null) {
+        list.add(uuid);
+      }
+    }
+    return list;
   }
 
   /**
@@ -288,10 +300,12 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     linkButton.addSelectionListener(this);
     linkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
     linkButton.setEnabled(false);
+    linkButton.setVisible(!readOnly);
 
     Button unlinkButton = new Button(linkComp, SWT.PUSH);
     unlinkButton.setImage(CommonTableView.DELETE_SMALL);
     unlinkButton.setEnabled(false);
+    unlinkButton.setVisible(!readOnly);
     unlinkButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false));
 
     Composite linkTable = new Composite(linkComp, SWT.NONE);
