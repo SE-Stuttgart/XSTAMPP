@@ -1,5 +1,6 @@
 package xstampp.astpa.model.linking;
 
+import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.model.ObserverValue;
 
 public enum LinkingType {
@@ -87,6 +88,26 @@ public enum LinkingType {
    * </ol>
    */
   CausalEntryLink_HAZ_LINK,
+
+  /**
+   * A link of this type is set instead of multiple {@link LinkingType#CausalEntryLink_HAZ_LINK}'s
+   * for each {@link Hazard} linked to an UCA.
+   * <ol>
+   * <li>A should be the UUID of a {@link LinkingType#CausalEntryLink_ANCHOR}
+   * <li>B should be the UUID of a Safety Constraint in STPA Step 2
+   * </ol>
+   */
+  CausalEntryLink_SC2_LINK,
+
+  /**
+   * A link of this type is set instead of multiple {@link LinkingType#CausalEntryLink_HAZ_LINK}'s
+   * for each {@link Hazard} linked to an UCA.
+   * <ol>
+   * <li>A should be the UUID of a {@link ObserverValue#UcaCfLink_Component_LINK}
+   * <li>B is not used by this
+   * </ol>
+   */
+  CausalEntryLink_ANCHOR,
 
   /**
    * <ol>

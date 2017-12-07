@@ -165,7 +165,7 @@ public abstract class ModalShell {
    * {@link #createCenter(Shell)} plus has a cancel and a ok/accept (defined by {@link #acceptLabel}
    * button.
    */
-  public void open() {
+  public boolean open() {
     final Shell shell = new Shell(Display.getCurrent().getActiveShell(),
         SWT.APPLICATION_MODAL | SWT.SHEET);
     GridLayout gridLayout = new GridLayout(2, false);
@@ -241,7 +241,7 @@ public abstract class ModalShell {
         Display.getDefault().sleep();
       }
     }
-
+    return isAccepted;
   }
 
   /**

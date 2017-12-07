@@ -43,11 +43,12 @@ public class ChangeUserShell extends AbstractUserShell {
   }
 
   @Override
-  public void open() {
+  public boolean open() {
     if (getUserSystem().getCurrentUserId().equals(user.getUserId())
         || getUserSystem().checkAccess(AccessRights.ADMIN)) {
-      super.open();
+      return super.open();
     }
+    return false;
   }
 
   @Override

@@ -263,28 +263,30 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     entryRow.addCell(2, cell);
 
-    if (getDataModel().isUseScenarios()) {
-      String hazString = "";
-      for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())) {
-        hazString += hazString.isEmpty() ? "" : ", ";
-        hazString += getDataModel().getHazard(hazId).getIdString();
-      }
-      entryRow.setRowSpanningCells(new int[] { 2, 3 });
-      entryRow.addCell(3, new GridCellText(hazString));
-    }
     boolean first = this.includeFirstChildRow;
     LinkingType entryType = getDataModel().isUseScenarios()
         ? LinkingType.CausalEntryLink_Scenario_LINK
         : LinkingType.CausalEntryLink_HAZ_LINK;
+    if (getDataModel().getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId())) {
+      entryType = getDataModel().isUseScenarios() ? entryType : LinkingType.CausalEntryLink_SC2_LINK;
+    }
     // iterate all CausalEntryLink_HAZ_LINK's stored for the causalEntryLink
     for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
         causalEntryLink.getId())) {
       GridRow row = (first) ? entryRow
           : new GridRow(this.getGridWrapper().getColumnLabels().length, 1);
-      if (getDataModel().isUseScenarios()) {
+      switch (entryType) {
+      case CausalEntryLink_Scenario_LINK: {
         createScenarioRow(row, link, uca);
-      } else {
+        break;
+      }
+      case CausalEntryLink_HAZ_LINK: {
         createHazardRow(row, link, uca);
+        break;
+      }
+      case CausalEntryLink_SC2_LINK: {
+        createSingleConstraintRow(entryRow, link, uca);
+      }
       }
       if (!first) {
         entryRow.addChildRow(row);
@@ -347,6 +349,52 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * 
    * @param entryRow
    *          the row in which the cells will be added
+   * @param causalEntryLink
+   *          a Link of type {@link ObserverValue#CausalEntryLink_SC2_LINK}
+   * @param uca
+   *          the {@link IUnsafeControlAction} to which this is linked
+   * @return
+   */
+  private GridRow createSingleConstraintRow(GridRow entryRow, Link causalEntryLink, IUnsafeControlAction uca) {
+    addHazardCell(entryRow, uca);
+
+    CellEditorSingleSafetyConstraint cell = new CellEditorSingleSafetyConstraint(getGridWrapper(),
+        getDataModel(), causalEntryLink);
+    ITableModel actionForUca = getDataModel().getControlActionForUca(uca.getId());
+    if (actionForUca != null && !checkAccess(actionForUca.getId(), AccessRights.WRITE)) {
+      cell.setReadOnly(true);
+      cell.setShowDelete(false);
+    }
+    entryRow.addCell(4, cell);
+
+    Optional<Link> safetyOption = getDataModel().getLinkController()
+        .getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId()).stream().findFirst();
+
+    IGridCell hintCell = new GridCellText("");
+    if (safetyOption.isPresent()) {
+      hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), safetyOption.get());
+      ((GridCellTextEditor) hintCell).setDefaultText("Design hint...");
+    }
+    entryRow.addCell(5, hintCell);
+    entryRow.addCell(6, new CellEditorFactorNote(getGridWrapper(), getDataModel(), causalEntryLink));
+    return null;
+
+  }
+
+  private void addHazardCell(GridRow entryRow, ITableModel uca) {
+    String hazString = "";
+    for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())) {
+      hazString += hazString.isEmpty() ? "" : ", ";
+      hazString += getDataModel().getHazard(hazId).getIdString();
+    }
+    entryRow.setRowSpanningCells(new int[] { 2, 3 });
+    entryRow.addCell(3, new GridCellText(hazString));
+  }
+
+  /**
+   * 
+   * @param entryRow
+   *          the row in which the cells will be added
    * @param scenarioLink
    *          a Link of type {@link ObserverValue#CausalEntryLink_Scenario_LINK}
    * @param uca
@@ -354,6 +402,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @return
    */
   private void createScenarioRow(GridRow entryRow, Link scenarioLink, IUnsafeControlAction uca) {
+    addHazardCell(entryRow, uca);
     ScenarioType type = getDataModel().getExtendedDataController().getScenarioType(scenarioLink.getLinkB());
     entryRow.addCell(4, new CellEditorCausalScenario(getGridWrapper(), getDataModel(), scenarioLink,
         scenarioLink.getLinkB(), type));

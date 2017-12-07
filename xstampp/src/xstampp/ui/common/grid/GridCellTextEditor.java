@@ -99,7 +99,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     this.showDelete = showDelete;
     clearCellButtons();
     this.isReadOnly = readOnly;
-    this.entryId = entryId;
+    this.setEntryId(entryId);
     this.grid = grid;
 
     if (initialText == null || initialText.trim().isEmpty()) {
@@ -228,7 +228,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
   @Override
   public UUID getUUID() {
-    return entryId;
+    return getEntryId();
   }
 
   public void onTextChange(String newValue) {
@@ -300,5 +300,13 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
   public void setDefaultText(String defaultText) {
     this.defaultText = defaultText;
+  }
+
+  public UUID getEntryId() {
+    return entryId;
+  }
+
+  public void setEntryId(UUID entryId) {
+    this.entryId = entryId;
   }
 }

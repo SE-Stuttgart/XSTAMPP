@@ -76,6 +76,11 @@ public class CellButton implements ICellButton {
     this.action = action;
   }
 
+  public CellButton(Image image, ButtonAction action, String toolTip) {
+    this(image, action);
+    this.toolTip = toolTip;
+  }
+
   /**
    * constructs a button with that contains a string
    * 

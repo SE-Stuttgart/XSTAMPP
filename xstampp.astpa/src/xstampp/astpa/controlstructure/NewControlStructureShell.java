@@ -35,14 +35,15 @@ public class NewControlStructureShell extends ModalShell {
   }
 
   @Override
-  public void open() {
+  public boolean open() {
     if (!(dataModel instanceof IUserProject)
         || ((IUserProject) dataModel).getUserSystem().checkAccess(AccessRights.ADMIN)) {
-      super.open();
+      return super.open();
     } else {
       MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
           xstampp.astpa.usermanagement.Messages.NoAccessRights_title,
           xstampp.astpa.usermanagement.Messages.NoAccessRights_AdminNeeded);
+      return false;
     }
   }
 

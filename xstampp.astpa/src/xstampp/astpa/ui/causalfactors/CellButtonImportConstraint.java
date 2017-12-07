@@ -13,6 +13,7 @@ package xstampp.astpa.ui.causalfactors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -36,6 +37,7 @@ public class CellButtonImportConstraint extends CellButton {
   private Grid grid;
   private ICausalFactorDataModel dataModel;
   private Link ucaHazLink;
+  private Consumer<UUID> linkAction;
 
   /**
    * 
@@ -44,12 +46,12 @@ public class CellButtonImportConstraint extends CellButton {
    *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
    * @param dataInterface
    */
-  public CellButtonImportConstraint(Grid grid, Link ucaHazLink, ICausalFactorDataModel dataInterface) {
+  public CellButtonImportConstraint(Grid grid, ICausalFactorDataModel dataInterface, Consumer<UUID> linkAction) {
     super(GridWrapper.getLinkButton16());
 
     this.grid = grid;
-    this.ucaHazLink = ucaHazLink;
     dataModel = dataInterface;
+    this.linkAction = linkAction;
   }
 
   @Override
@@ -79,8 +81,7 @@ public class CellButtonImportConstraint extends CellButton {
           public void proposalAccepted(IContentProposal proposal) {
             UUID constraintId = dataModel.getCausalFactorController().addSafetyConstraint(proposal.getDescription());
             dataModel.lockUpdate();
-            dataModel.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
-                constraintId);
+            linkAction.accept(constraintId);
             dataModel.releaseLockAndUpdate(new ObserverValue[0]);
             dataModel.getLinkController().addLink(LinkingType.SC2_SC1_LINK, constraintId,
                 ((LinkProposal) proposal).getProposalId());

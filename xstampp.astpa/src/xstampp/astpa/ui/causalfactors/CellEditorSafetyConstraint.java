@@ -18,6 +18,7 @@ import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
+import xstampp.ui.common.grid.CellButtonAdd;
 import xstampp.ui.common.grid.GridCellRenderer;
 import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridWrapper;
@@ -65,9 +66,16 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
     if (!safetyOption.isPresent()) {
       setReadOnly(true);
       setShowDelete(false);
-      addCellButton(
-          new NewConstraintButton(ucaHazLink, causalDataInterface));
-      addCellButton(new CellButtonImportConstraint(getGridWrapper().getGrid(), ucaHazLink, causalDataInterface));
+      CellButtonAdd addButton = new CellButtonAdd(() -> {
+        UUID constraintId = causalDataInterface.getCausalFactorController().addSafetyConstraint("");
+        causalDataInterface.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK, this.ucaHazLink.getId(),
+            constraintId);
+      });
+      addButton.setToolTip("Add a new Safety Constraint");
+      addCellButton(addButton);
+      addCellButton(new CellButtonImportConstraint(getGridWrapper().getGrid(), causalDataInterface,
+          (id) -> causalDataInterface.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK,
+              ucaHazLink.getId(), id)));
     } else {
       setReadOnly(false);
       setShowDelete(true);

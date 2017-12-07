@@ -24,6 +24,13 @@ public class Messages extends NLS {
   public static String AddWrongTimingUCA;
   public static String CellButtonAddScenario_ToolTip;
   public static String CellButtonImportConstraint_ToolTip;
+  public static String CellEditorCausalEntry_ConfirmDeleteUCA;
+  public static String CellEditorCausalEntry_ConfirmDeleteUCAMsg;
+  public static String CellEditorCausalEntry_None;
+  public static String CellEditorCausalEntry_UseMultipleSCToolTip;
+  public static String CellEditorCausalEntry_UseOneSCShellMsg;
+  public static String CellEditorCausalEntry_UseOneSCShellTitle;
+  public static String CellEditorCausalEntry_UseOneSCToolTip;
   public static String ControlAction;
   public static String ControlStructure_NameMustBeUnique;
   public static String ControlStructure_New;

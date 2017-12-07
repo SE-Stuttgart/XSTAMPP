@@ -128,7 +128,10 @@ public class LinkController extends Observable {
   public List<UUID> getLinksFor(LinkingType linkType, UUID part) {
     List<UUID> links = new ArrayList<>();
     for (Link link : getRawLinksFor(linkType, part)) {
-      links.add(link.getLinkFor(part));
+      UUID linkFor = link.getLinkFor(part);
+      if (linkFor != null) {
+        links.add(linkFor);
+      }
     }
     return links;
   }
