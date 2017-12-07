@@ -25,6 +25,7 @@ public class CellEditorFactorNote extends GridCellTextEditor {
     super(gridWrapper, link.getNote(), link.getId());
     this.dataInterface = dataInterface;
     this.link = link;
+    setDefaultText("Note/Rational...");
   }
 
   @Override

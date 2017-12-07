@@ -169,15 +169,9 @@ public class GridWrapper {
     public void mouseMove(MouseEvent e) {
 
       IGridCell cell = getCellFromMouse(e);
-      Point mousePoint = new Point(e.x, e.y);
-      Point cellCoord = this.grid.getGrid().getCell(mousePoint);
+      this.grid.mousePosition = new Point(e.x, e.y);
 
       if (cell != null) {
-        GridItem item = this.grid.getGrid().getItem(cellCoord.y);
-        Rectangle itemBounds = item.getBounds(cellCoord.x);
-
-        this.grid.mousePosition = new Point(mousePoint.x - itemBounds.x,
-            mousePoint.y - itemBounds.y);
         String toolTip = cell.getToolTip(this.grid.mousePosition);
         this.grid.setToolTip(toolTip);
       }

@@ -41,6 +41,7 @@ public class NewConstraintButton extends CellButton {
         GridWrapper.getAddButton16());
     this.ucaHazLink = ucaHazLink;
     this.datamodel = datamodel;
+    setToolTip("Add a new Safety Constraint");
   }
 
   @Override

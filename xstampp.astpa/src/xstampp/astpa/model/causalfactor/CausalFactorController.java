@@ -51,8 +51,8 @@ import xstampp.model.ObserverValue;
 /**
  * Manager class for the causal factors
  * 
- * @author Fabian Toth, Benedikt Markt
- * 
+ * for reference of the causal factor model during runtime refere to
+ * xstampp.astpa/docs/architecture
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactorController extends Observable implements ICausalController {

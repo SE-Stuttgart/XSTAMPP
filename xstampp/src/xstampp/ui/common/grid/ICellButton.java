@@ -34,6 +34,25 @@ public interface ICellButton {
   Rectangle getBounds();
 
   /**
+   * Sets the bounds of the button, relative to the top left of the cell.
+   * 
+   * @param bounds
+   *          the cell relative bounds of this button
+   * 
+   * @return whether or not the bounds of the button have been updated.
+   */
+  boolean setBounds(Rectangle bounds);
+
+  /**
+   * Get the bounds of the button, relative to the parent Grid.
+   * 
+   * @author Lukas Balzer
+   * 
+   * @return the bounds of the button, relative to the parent Grid.
+   */
+  Rectangle getAbsoluteBounds();
+
+  /**
    * Paints the button within the given cell bounds.
    * 
    * @author Patrick Wickenhaeuser
@@ -58,7 +77,11 @@ public interface ICellButton {
    */
   void onButtonDown(Point relativeMouse, Rectangle cellBounds);
 
-  String setToolTip(Point point);
+  /**
+   * Setter for the toolTip of this cell button
+   * @param toolTip TODO
+   */
+  void setToolTip(String toolTip);
 
   String getToolTip();
 }

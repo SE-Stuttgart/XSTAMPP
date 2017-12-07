@@ -387,6 +387,7 @@ public final class Messages extends NLS {
   public static String GivenIncorrectly;
   @SuppressWarnings("javadoc")
   public static String GridCellButton_None;
+  public static String GridCellTextEditor_DeleteButtonToolTip;
   @SuppressWarnings("javadoc")
   public static String GridWrapper_Column;
   // *-------H-------------------------------------------------------------------*

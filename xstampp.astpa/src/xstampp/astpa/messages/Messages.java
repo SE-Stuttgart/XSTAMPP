@@ -16,10 +16,14 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
   private static final String BUNDLE_NAME = "xstampp.astpa.messages.messages"; //$NON-NLS-1$
   public static String AddGivenIncorrectlyUCA;
+  public static String AddingNewCausalFactor;
   public static String AddingNewUCA;
+  public static String AddNewCausalFactor;
   public static String AddNotGivenUCA;
   public static String AddStoppedTooSoonUCA;
   public static String AddWrongTimingUCA;
+  public static String CellButtonAddScenario_ToolTip;
+  public static String CellButtonImportConstraint_ToolTip;
   public static String ControlAction;
   public static String ControlStructure_NameMustBeUnique;
   public static String ControlStructure_New;
@@ -30,6 +34,9 @@ public class Messages extends NLS {
   public static String DeleteControlStructureQuestion;
   public static String DeleteControlStructureTitle;
   public static String GivenIncorrectly;
+  public static String GridCellButtonAddCausalFactor_ToolTip;
+  public static String GridCellButtonAddUCAEntry_Text;
+  public static String GridCellButtonAddUCAEntry_ToolTip;
   public static String ListOfCAEditPart_ToolTip0;
   public static String NotGiven;
   public static String ProjectSpecifics_GeneralSettings;

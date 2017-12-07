@@ -14,13 +14,6 @@ package xstampp.ui.common.grid;
 import java.util.UUID;
 
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.gef.tools.CellEditorLocator;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Color;
@@ -28,12 +21,10 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 import messages.Messages;
 import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
+import xstampp.util.ColorManager;
 import xstampp.util.DirectEditor;
 
 /**
@@ -45,45 +36,16 @@ import xstampp.util.DirectEditor;
 public abstract class GridCellTextEditor extends AbstractGridCell {
 
   private Rectangle editField;
-  /**
-   * The default Text.
-   * 
-   * @author Benedikt Markt
-   */
-  public static final String EMPTY_CELL_TEXT = Messages.ClickToEdit;
 
   private GridWrapper grid = null;
   private String currentText = ""; //$NON-NLS-1$
   private Color bgColor;
   private DirectEditor editor;
-  private Rectangle deleteSpace;
   private boolean showDelete;
   private boolean isReadOnly;
   private UUID entryId;
-  private boolean useInlineEditor;
   private GridTextEditorProvider editorProvider;
-
-  private class TextLocator implements CellEditorLocator {
-
-    private Rectangle bounds;
-
-    public TextLocator(Rectangle bounds) {
-      this.bounds = bounds;
-    }
-
-    @Override
-    public void relocate(CellEditor celleditor) {
-      getPreferredHeight();
-      Text text = (Text) celleditor.getControl();
-      text.setSize(text.computeSize(bounds.width + 5, -1));
-      // if the size is determined to be larger than the text lines itself
-      // this the original size, will be displayed as long as it not
-      // overwritten by text
-      int editorHeight = Math.max(bounds.height, text.getLineHeight() * text.getLineCount());
-      text.setBounds(bounds.x, bounds.y, bounds.width + 5, editorHeight);
-    }
-
-  }
+  private String defaultText;
 
   /**
    * creates a Text editor which is <b>editable</b> and <b>doesn't contain a delete button</b>. When
@@ -133,11 +95,11 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   public GridCellTextEditor(GridWrapper grid, String initialText, Boolean showDelete,
       Boolean readOnly, UUID entryId) {
     editorProvider = new GridTextEditorProvider();
-    this.useInlineEditor = false;
+    this.defaultText = Messages.ClickToEdit;
     this.showDelete = showDelete;
+    clearCellButtons();
     this.isReadOnly = readOnly;
     this.entryId = entryId;
-    this.deleteSpace = new Rectangle(0, 0, 0, 0);
     this.grid = grid;
 
     if (initialText == null || initialText.trim().isEmpty()) {
@@ -171,15 +133,13 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     int buttonCollum = 0;
     // calculate the avaiable space and performe a wrap
     if (this.showDelete) {
-      this.deleteSpace = new Rectangle(bounds.x + bounds.width - 16,
-          bounds.y + bounds.height / 2 - 8, 16, 16);
-      buttonCollum = this.deleteSpace.width;
-      gc.drawImage(GridWrapper.getDeleteButton16(), this.deleteSpace.x, this.deleteSpace.y);
+      buttonCollum = 16;
     }
     Point textBounds = new Point(0, 0);
     currentText = getCurrentText();
     if ((this.currentText == null || this.currentText.trim().isEmpty()) && !isReadOnly()) {
-      textBounds = wrapText(bounds, gc, EMPTY_CELL_TEXT, 2, buttonCollum, item);
+      gc.setForeground(ColorManager.COLOR_grey);
+      textBounds = wrapText(bounds, gc, defaultText, 2, buttonCollum, item);
     } else if (this.currentText != null) {
       textBounds = wrapText(bounds, gc, this.currentText, 2, buttonCollum, item);
     }
@@ -203,76 +163,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
   @Override
   public void onMouseDown(MouseEvent error, Point relativeMouse, Rectangle cellBounds) {
-    if (!getButtonContainer().isEmpty()) {
-      getButtonContainer().onMouseDown(relativeMouse, cellBounds);
-    } else if (this.showDelete && GridCellTextEditor.this.deleteSpace.contains(error.x, error.y)
-        && error.button == 1) {
-      delete();
-    } else if (!isReadOnly && useInlineEditor) {
-      if (editor == null || editor.getControl().isDisposed()) {
-        editor = new DirectEditor(this.grid.getGrid(), SWT.WRAP);
-        grid.getGrid().getVerticalBar().addListener(SWT.Selection, new Listener() {
-
-          @Override
-          public void handleEvent(Event event) {
-            editor.deactivate();
-          }
-        });
-        grid.getGrid().addMouseWheelListener(new MouseWheelListener() {
-
-          @Override
-          public void mouseScrolled(MouseEvent error) {
-            editor.deactivate();
-          }
-        });
-        editor.getControl().addFocusListener(new FocusAdapter() {
-          @Override
-          public void focusLost(FocusEvent error) {
-            editor.deactivate();
-            editorClosing();
-          }
-
-          @Override
-          public void focusGained(FocusEvent error) {
-            editorOpening();
-          }
-        });
-        editor.addModifyListener(new ModifyListener() {
-
-          @Override
-          public void modifyText(ModifyEvent error) {
-            if (error.getSource() instanceof Text
-                && !currentText.equals(((Text) error.widget).getText())) {
-              GridCellTextEditor.this.currentText = ((Text) error.widget).getText() != null
-                  ? ((Text) error.widget).getText()
-                  : "";
-              Rectangle rect = GridCellTextEditor.this.editField;
-              Text text = (Text) error.getSource();
-              updateDataModel(currentText);
-              onTextChange(GridCellTextEditor.this.currentText);
-              // if the size is determined to be larger than the text lines
-              // itself
-              // this the original size, will be displayed as long as it not
-              // overwritten by text
-              if (text.isDisposed()) {
-                editor.deactivate();
-              } else {
-                int editorHeight = text.getLineHeight() * text.getLineCount();
-                text.setBounds(rect.x, rect.y, rect.width, editorHeight);
-              }
-              grid.getGrid().redraw();
-            }
-          }
-        });
-      }
-
-      editor.activate(new TextLocator(editField));
-      editor.setTextColor(ColorConstants.black);
-      editor.getControl().setBackground(HOVER_COLOR);
-      editor.setTextFont(Display.getDefault().getSystemFont());
-      editor.setValue(this.currentText);
-      editor.setFocus();
-    } else if (!isReadOnly && !useInlineEditor) {
+    if (!getButtonContainer().onMouseDown(relativeMouse, cellBounds) && !isReadOnly) {
       Point point = grid.getGrid().toDisplay(editField.x, editField.y);
       point = Display.getDefault().map(grid.getGrid(), null, editField.x, editField.y);
       Rectangle rectangle = new Rectangle(point.x, point.y, editField.width, cellBounds.height);
@@ -314,7 +205,6 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
   @Override
   public void onFocusLost() {
-    // TODO Auto-generated method stub
     super.onFocusLost();
   }
 
@@ -324,6 +214,16 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
       this.editor.getControl().dispose();
     }
 
+  }
+
+  @Override
+  public void clearCellButtons() {
+    super.clearCellButtons();
+    if (this.showDelete) {
+      CellButton button = new CellButton(GridWrapper.getDeleteButton16(), () -> delete());
+      button.setToolTip(Messages.GridCellTextEditor_DeleteButtonToolTip);
+      addCellButton(button);
+    }
   }
 
   @Override
@@ -367,6 +267,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
    */
   public void setShowDelete(boolean showDelete) {
     this.showDelete = showDelete;
+    clearCellButtons();
   }
 
   /**
@@ -374,6 +275,15 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
    */
   public boolean isReadOnly() {
     return isReadOnly;
+  }
+
+  @Override
+  public String getToolTip(Point point) {
+    String toolTip = super.getToolTip(point);
+    if (toolTip == null && !isReadOnly) {
+      toolTip = Messages.ClickToEdit;
+    }
+    return toolTip;
   }
 
   /**
@@ -386,5 +296,9 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
 
   public GridWrapper getGridWrapper() {
     return grid;
+  }
+
+  public void setDefaultText(String defaultText) {
+    this.defaultText = defaultText;
   }
 }

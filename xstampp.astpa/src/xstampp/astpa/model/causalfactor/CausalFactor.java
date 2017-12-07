@@ -48,6 +48,11 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
   @XmlElement(name = "text")
   private String text;
 
+  /**
+   * This is only for representing the data in the export,
+   * for reference of the causal factor model during runtime refere to
+   * xstampp.astpa/docs/architecture
+   */
   @XmlElementWrapper(name = "causalEntries")
   @XmlElement(name = "causalEntry")
   private List<CausalFactorEntry> entries;
@@ -109,7 +114,7 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
       CausalFactorEntry entry = new CausalFactorEntry();
       entry.prepareForExport(hazAccController, extendedDataController, caController,
           controller, link, linkController, sdsController);
-      this.entries .add(entry);
+      this.entries.add(entry);
     }
   }
 

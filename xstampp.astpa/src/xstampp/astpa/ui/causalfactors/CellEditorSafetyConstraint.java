@@ -63,11 +63,11 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     clearCellButtons();
     if (!safetyOption.isPresent()) {
+      setReadOnly(true);
+      setShowDelete(false);
       addCellButton(
           new NewConstraintButton(ucaHazLink, causalDataInterface));
       addCellButton(new CellButtonImportConstraint(getGridWrapper().getGrid(), ucaHazLink, causalDataInterface));
-      setReadOnly(true);
-      setShowDelete(false);
     } else {
       setReadOnly(false);
       setShowDelete(true);

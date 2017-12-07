@@ -16,7 +16,6 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public class CellButtonAdd extends CellButton {
 
-
   private ButtonAction action;
 
   public CellButtonAdd(ButtonAction action) {

@@ -2,6 +2,7 @@
 
 #### A-STPA Features:
 
+*  Add ToolTips Support for UCA and Causal Factors Table
 *  Add editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis
 
 #### A-STPA Bugfixes:

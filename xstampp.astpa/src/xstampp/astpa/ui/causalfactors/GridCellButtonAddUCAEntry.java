@@ -20,6 +20,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
+import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -57,13 +58,18 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
    */
   public GridCellButtonAddUCAEntry(IRectangleComponent component, UUID factorId,
       ICausalFactorDataModel dataInterface, Grid grid, List<IUnsafeControlAction> ucas) {
-    super("Add Unsafe Control Action");
+    super(Messages.GridCellButtonAddUCAEntry_Text);
 
     this.component = component;
     this.factorId = factorId;
     this.dataInterface = dataInterface;
     this.grid = grid;
     this.ucas = ucas;
+  }
+
+  @Override
+  public String getToolTip(Point point) {
+    return Messages.GridCellButtonAddUCAEntry_ToolTip;
   }
 
   @Override

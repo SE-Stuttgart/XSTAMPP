@@ -11,6 +11,7 @@
 package xstampp.astpa.ui.causalfactors;
 
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 import messages.Messages;
@@ -44,6 +45,11 @@ public class GridCellButtonAddCausalFactor extends GridCellButton {
 
     this.component = component;
     this.dataInterface = dataInterface;
+  }
+
+  @Override
+  public String getToolTip(Point point) {
+    return xstampp.astpa.messages.Messages.GridCellButtonAddCausalFactor_ToolTip;
   }
 
   @Override

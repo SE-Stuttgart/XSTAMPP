@@ -43,7 +43,7 @@ public class CellButtonContainer {
   }
 
   /**
-   * Paint the buttons.
+   * Paint the buttons and updates the buttons' bounds relative to the cells bounds.
    * 
    * @author Patrick Wickenhaeuser
    * 
@@ -55,12 +55,14 @@ public class CellButtonContainer {
   public void paintButtons(GridCellRenderer renderer, GC gc) {
     Rectangle cellBounds = renderer.getBounds();
     if (buttonColumn.size() > 0) {
-      int columnTopY = bounds.y;
+      int columnTopY = bounds.y + (cellBounds.height - getBounds().height) / 2;
       int columnX = cellBounds.width - this.bounds.width;
       for (ICellButton button : buttonColumn) {
-        button.getBounds().x = columnX;
-        button.getBounds().y = columnTopY;
-        columnTopY += button.getBounds().height + bounds.y;
+        Rectangle rectangle = button.getBounds();
+        rectangle.x = columnX;
+        rectangle.y = columnTopY;
+        button.setBounds(rectangle);
+        columnTopY += rectangle.height + bounds.y;
       }
     }
     for (int i = 0; i < this.buttons.size(); i++) {
@@ -147,7 +149,7 @@ public class CellButtonContainer {
   public String getToolTip(Point point) {
     if (buttons != null) {
       for (ICellButton button : buttons) {
-        if (button.getBounds().contains(point)) {
+        if (button.getAbsoluteBounds().contains(point)) {
           return button.getToolTip();
         }
       }

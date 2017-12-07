@@ -35,8 +35,13 @@ public class CellButton implements ICellButton {
   }
 
   private Rectangle rect;
+  private Rectangle absoluteBounds;
   private String text;
+  private String toolTip;
   private Image image;
+
+  private ButtonAction action = () -> {
+  };
 
   /**
    * Ctor.
@@ -49,6 +54,7 @@ public class CellButton implements ICellButton {
    */
   public CellButton(Rectangle rect, Image image) {
     this.rect = rect;
+    this.absoluteBounds = rect;
     this.image = image;
   }
 
@@ -62,10 +68,12 @@ public class CellButton implements ICellButton {
    *          the image drawn in the rectangle.
    */
   public CellButton(Image image) {
-    Rectangle bounds = image.getBounds();
-    this.rect = new Rectangle(-1, -1,bounds.width,
-        bounds.height);
-    this.image = image;
+    this(image.getBounds(), image);
+  }
+
+  public CellButton(Image image, ButtonAction action) {
+    this(image.getBounds(), image);
+    this.action = action;
   }
 
   /**
@@ -77,13 +85,27 @@ public class CellButton implements ICellButton {
    *          the string that should be displayed in the bounds of this button.
    */
   public CellButton(Rectangle rect, String text) {
-    this.rect = rect;
+    this(rect, (Image) null);
     this.text = text;
   }
 
   @Override
   public Rectangle getBounds() {
-    return this.rect;
+    return new Rectangle(rect.x, rect.y, rect.width, rect.height);
+  }
+
+  @Override
+  public boolean setBounds(Rectangle bounds) {
+    if (!rect.equals(bounds)) {
+      this.rect = bounds;
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public Rectangle getAbsoluteBounds() {
+    return this.absoluteBounds;
   }
 
   @Override
@@ -92,23 +114,25 @@ public class CellButton implements ICellButton {
   }
 
   public void onPaint(GC gc, Rectangle cellBounds, boolean enabled) {
+    this.absoluteBounds.x = cellBounds.x + getBounds().x;
+    this.absoluteBounds.y = cellBounds.y + getBounds().y;
     if (enabled) {
       if (image != null) {
         gc.drawImage(this.image, 0, 0, this.image.getBounds().width, this.image.getBounds().height,
-            cellBounds.x + this.getBounds().x, cellBounds.y + this.getBounds().y,
+            this.absoluteBounds.x, this.absoluteBounds.y,
             this.getBounds().width, this.getBounds().height);
       }
       if (text != null) {
         int height = gc.getFont().getFontData()[0].getHeight();
         int topOffset = (getBounds().height / 2 - height / 2) / 2;
         gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
-        gc.drawString(text, cellBounds.x + this.getBounds().x + 3,
-            cellBounds.y + this.getBounds().y + topOffset, true);
+        gc.drawString(text, this.absoluteBounds.x + 3,
+            this.absoluteBounds.y + topOffset, true);
       }
     } else {
       Color background = gc.getBackground();
       gc.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-      gc.fillRectangle(0, 0, getBounds().width, getBounds().height);
+      gc.fillRectangle(this.absoluteBounds.x, this.absoluteBounds.y, getBounds().width, getBounds().height);
       gc.setBackground(background);
     }
   }
@@ -131,15 +155,16 @@ public class CellButton implements ICellButton {
   @Override
   public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
     Logger.getRootLogger().debug("Button pressed onButtonDown"); //$NON-NLS-1$
+    action.clickAction();
   }
 
   @Override
-  public String setToolTip(Point point) {
-    return null;
+  public void setToolTip(String toolTip) {
+    this.toolTip = toolTip;
   }
 
   public String getToolTip() {
-    return null;
+    return this.toolTip;
   }
 
   public void setText(String text) {

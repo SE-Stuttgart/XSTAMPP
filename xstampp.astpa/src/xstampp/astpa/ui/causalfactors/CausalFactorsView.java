@@ -40,6 +40,7 @@ import xstampp.model.ObserverValue;
 import xstampp.ui.common.grid.CellButtonLinking;
 import xstampp.ui.common.grid.DeleteGridEntryAction;
 import xstampp.ui.common.grid.GridCellText;
+import xstampp.ui.common.grid.GridCellTextEditor;
 import xstampp.ui.common.grid.GridRow;
 import xstampp.ui.common.grid.IGridCell;
 import xstampp.usermanagement.api.AccessRights;
@@ -262,13 +263,13 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     entryRow.addCell(2, cell);
 
-    if(getDataModel().isUseScenarios()) {
+    if (getDataModel().isUseScenarios()) {
       String hazString = "";
       for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())) {
         hazString += hazString.isEmpty() ? "" : ", ";
         hazString += getDataModel().getHazard(hazId).getIdString();
       }
-      entryRow.setRowSpanningCells(new int[] {2,3});
+      entryRow.setRowSpanningCells(new int[] { 2, 3 });
       entryRow.addCell(3, new GridCellText(hazString));
     }
     boolean first = this.includeFirstChildRow;
@@ -332,8 +333,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
         .getRawLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
 
     IGridCell hintCell = new GridCellText("");
-    if(safetyOption.isPresent()) {
+    if (safetyOption.isPresent()) {
       hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), safetyOption.get());
+      ((GridCellTextEditor) hintCell).setDefaultText("Design hint...");
     }
     entryRow.addCell(5, hintCell);
     entryRow.addCell(6, new CellEditorFactorNote(getGridWrapper(), getDataModel(), ucaHazLink));

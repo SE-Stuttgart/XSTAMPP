@@ -20,6 +20,7 @@ import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
+import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
@@ -62,7 +63,7 @@ public class CellButtonImportConstraint extends CellButton {
       if (tmp != null && tmp.length() >= 1) {
         LinkProposal proposal = new LinkProposal();
         proposal.setLabel(
-            safetyConstraints.get(i).getIdString() + " - " + tmp.substring(0, Math.min(tmp.length(), 20)) + "...");
+            safetyConstraints.get(i).getIdString() + " - " + tmp.substring(0, Math.min(tmp.length(), 20)) + "..."); //$NON-NLS-1$ //$NON-NLS-2$
         proposal.setDescription(tmp);
         proposal.setProposalId(safetyConstraints.get(i).getId());
         proposals.add(proposal);
@@ -93,4 +94,8 @@ public class CellButtonImportConstraint extends CellButton {
 
   }
 
+  @Override
+  public String getToolTip() {
+    return Messages.CellButtonImportConstraint_ToolTip;
+  }
 }

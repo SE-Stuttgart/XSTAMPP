@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
+import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.IExtendedDataModel.ScenarioType;
@@ -47,6 +48,7 @@ public class CellButtonAddScenario extends CellButton {
     this.causalEntryLink = causalEntryLink;
     this.dataModel = dataModel;
     this.uca = uca;
+    setToolTip(Messages.CellButtonAddScenario_ToolTip);
   }
 
   @Override
@@ -58,16 +60,13 @@ public class CellButtonAddScenario extends CellButton {
     ids.add(link.getLinkA());
     data.setRelatedUcas(ids);
     ITableModel controlAction = dataModel.getControlActionForUca(uca.getId());
-    UUID id = dataModel.getExtendedDataController().addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data, controlAction.getId(),
+    UUID id = dataModel.getExtendedDataController().addRuleEntry(ScenarioType.CAUSAL_SCENARIO, data,
+        controlAction.getId(),
         IValueCombie.TYPE_ANYTIME, this.dataModel.getLinkController());
     if (id != null) {
-      this.dataModel.getLinkController().addLink(LinkingType.CausalEntryLink_Scenario_LINK, this.causalEntryLink.getId(), id);
+      this.dataModel.getLinkController().addLink(LinkingType.CausalEntryLink_Scenario_LINK,
+          this.causalEntryLink.getId(), id);
     }
 
-  }
-
-  @Override
-  public String setToolTip(Point point) {
-    return "Import the text of an existing, not empty Safety Constraint";
   }
 }

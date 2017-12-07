@@ -15,15 +15,15 @@ package xstampp.ui.common.grid;
 
 import java.util.UUID;
 
-import messages.Messages;
-import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
-
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
+
+import messages.Messages;
+import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
+import xstampp.util.ColorManager;
 
 /**
  * Cell that contains a button and text.
@@ -34,8 +34,6 @@ import org.eclipse.swt.widgets.Display;
 public class GridCellButton extends AbstractGridCell {
 
   private String text;
-
-  private static final Color TEXT_COLOR = new Color(Display.getCurrent(), 0, 0, 0);
 
   /**
    * Ctor.
@@ -70,16 +68,10 @@ public class GridCellButton extends AbstractGridCell {
     Rectangle bounds = renderer.getDrawBounds();
 
     gc.setBackground(this.getBackgroundColor(renderer, gc));
-    gc.setForeground(GridCellButton.TEXT_COLOR);
+    gc.setForeground(ColorManager.COLOR_grey);
     gc.drawString(this.text, bounds.x + 2, bounds.y);
 
     gc.drawImage(GridWrapper.getAddButton16(), (bounds.x + bounds.width) - 22, bounds.y + 1);
-
-    // gc.drawImage(GridWrapper.getAddButton32(), 0, 0, GridWrapper
-    // .getAddButton32().getBounds().width, GridWrapper
-    // .getAddButton32().getBounds().height,
-    // (bounds.x + bounds.width) - 18, bounds.y, 18, 18);
-
     // restore bg color
     gc.setBackground(bgColor);
     // restore fg color
