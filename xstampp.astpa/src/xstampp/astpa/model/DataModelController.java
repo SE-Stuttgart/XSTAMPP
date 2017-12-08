@@ -1297,6 +1297,7 @@ public class DataModelController extends AbstractDataModel
     if (values != null) {
       for (int i = 0; i < values.length; i++) {
         if (!blockedUpdates.contains(values[i])) {
+          setChanged();
           blockedUpdates.add(values[i]);
         }
       }

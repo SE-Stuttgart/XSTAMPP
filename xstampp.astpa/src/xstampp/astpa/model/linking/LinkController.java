@@ -85,9 +85,9 @@ public class LinkController extends Observable {
     index = this.linkMap.get(linkType).indexOf(new Link(linkA, null, linkType));
     if (index > 0 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
       return this.linkMap.get(linkType).get(index).getId();
-    }
+    }    
     index = this.linkMap.get(linkType).indexOf(o);
-    if (index > 0) {
+    if (index!= -1) {
       return this.linkMap.get(linkType).get(index).getId();
     }
     if (this.linkMap.get(linkType).add(o)) {
