@@ -17,13 +17,16 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbenchPart;
 
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.util.IUndoCallback;
 
-public class UndoRedoService extends AbstractSourceProvider implements IPartListener, IUndoRedoProvider {
+public class UndoRedoService extends AbstractSourceProvider
+    implements IPartListener, IUndoRedoProvider {
 
   private Map<String, IUndoRedoProvider> providerToEditorIds;
   private IUndoRedoProvider currentProvider;
+  private String editorId;
 
   public UndoRedoService() {
     this.currentProvider = new DummyUndoRedoProvider();
@@ -100,18 +103,23 @@ public class UndoRedoService extends AbstractSourceProvider implements IPartList
   @Override
   public void partBroughtToTop(IWorkbenchPart part) {
     if (part instanceof StandartEditorPart) {
-      String editorId = ((StandartEditorPart) part).getId();
+      editorId = ((StandartEditorPart) part).getId();
       this.providerToEditorIds.putIfAbsent(editorId, new UndoRedoInstance(this));
       this.currentProvider = this.providerToEditorIds.get(editorId);
+      ProjectManager.getLOGGER().debug("Undo Provider activated for " + editorId);
       this.currentProvider.activate();
     }
   }
 
   @Override
   public void partClosed(IWorkbenchPart part) {
-    fireSourceChanged(ISources.WORKBENCH, CAN_REDO, false);
-    fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, false);
-    this.currentProvider = new DummyUndoRedoProvider();
+    if (part instanceof StandartEditorPart
+        && ((StandartEditorPart) part).getId().equals(editorId)) {
+      fireSourceChanged(ISources.WORKBENCH, CAN_REDO, false);
+      fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, false);
+      ProjectManager.getLOGGER().debug("Undo provider disabled");
+      this.currentProvider = new DummyUndoRedoProvider();
+    }
   }
 
   @Override

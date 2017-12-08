@@ -15,6 +15,7 @@ import java.util.Stack;
 
 import org.eclipse.ui.ISources;
 
+import xstampp.ui.common.ProjectManager;
 import xstampp.util.IUndoCallback;
 
 public class UndoRedoInstance implements IUndoRedoProvider {
@@ -103,6 +104,7 @@ public class UndoRedoInstance implements IUndoRedoProvider {
       }
       
       IUndoCallback push = this.undoStack.push(callback);
+      ProjectManager.getLOGGER().debug("Callback pushed to Undo provider");
       undoRedoService.triggerSourceChanged(ISources.WORKBENCH, CAN_UNDO, true);
       return push;
     }

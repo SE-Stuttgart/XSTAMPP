@@ -1292,6 +1292,7 @@ public class DataModelController extends AbstractDataModel
         .getSourceProvider(UndoRedoService.CAN_REDO);
     provider.pushRecord();
     this.refreshLock = false;
+    this.recordCallbacks = false;
     blockedUpdates = new ArrayList<>();
     if (values != null) {
       for (int i = 0; i < values.length; i++) {
