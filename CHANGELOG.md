@@ -8,6 +8,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix unexpected behaviour in control structure of undo/redo of parent changes
 *  Fix scrolling informations are lost when manipulating grid views
 *  Fix bug that Design requirements of step1&2 can't be removed/added
 *  Fix bug in control structure export that image and text would overlap

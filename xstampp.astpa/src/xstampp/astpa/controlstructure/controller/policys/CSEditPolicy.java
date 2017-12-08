@@ -302,7 +302,11 @@ public class CSEditPolicy extends XYLayoutEditPolicy {
     command.setComp((IRectangleComponent) childPart.getModel());
     command.setOldParent((IRectangleComponent) childPart.getParent().getModel());
     Point location = request.getLocation().getCopy();
-    getHost().getFigure().translateFromParent(location);
+    if(constraint instanceof Rectangle) {
+      location = ((Rectangle) constraint).getLocation();
+    } else {
+      getHost().getFigure().translateFromParent(location);
+    }
     command.setNewLocation(location);
     command.setNewParent((IRectangleComponent) getHost().getModel());
     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setCursor(addCompCursor);

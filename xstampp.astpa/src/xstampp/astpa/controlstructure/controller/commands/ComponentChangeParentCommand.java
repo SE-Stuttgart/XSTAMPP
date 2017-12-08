@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
+import xstampp.ui.common.ProjectManager;
 
 /**
  *
@@ -56,13 +57,15 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
 
   @Override
   public void execute() {
+    ProjectManager.getLOGGER().debug("changed parent with : " + newLayoutStep0.toString());
     controller.changeComponentParent(comp.getId(), oldParent.getId(), newParent.getId(),
         newLayoutStep0, newLayoutStep2);
   }
 
   public void setNewLocation(Point p) {
-    this.newLayoutStep0 = oldLayoutStep0.setLocation(Math.max(0, p.x()), Math.max(0, p.y()));
-    this.newLayoutStep2 = oldLayoutStep2.setLocation(Math.max(0, p.x()), Math.max(0, p.y()));
+    
+    this.newLayoutStep0 = new Rectangle(p.x(), p.y(),oldLayoutStep0.width, oldLayoutStep0.height);
+    this.newLayoutStep2 =  new Rectangle(p.x(), p.y(),oldLayoutStep2.width, oldLayoutStep2.height);
   }
 
   @Override
@@ -101,6 +104,7 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
 
   @Override
   public void undo() {
+    ProjectManager.getLOGGER().debug("changed parent with : " + oldLayoutStep0.toString());
     controller.changeComponentParent(comp.getId(), newParent.getId(), oldParent.getId(),
         oldLayoutStep0, oldLayoutStep2);
   }
@@ -113,6 +117,7 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
     this.comp = comp;
     this.oldLayoutStep0 = comp.getLayout(true);
     this.oldLayoutStep2 = comp.getLayout(false);
+    ProjectManager.getLOGGER().debug("create change parent with : " + oldLayoutStep0.toString());
   }
 
   public void setOldParent(IRectangleComponent oldParent) {
