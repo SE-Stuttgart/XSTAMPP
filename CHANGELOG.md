@@ -4,7 +4,7 @@
 
 *  Add Option to change between using one or multiple safety constraint in the Causal Analysis
 *  Add ToolTips Support for UCA and Causal Factors Table
-*  Add editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis
+*  Add Editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis
 
 #### A-STPA Bugfixes:
 
@@ -12,6 +12,10 @@
 *  Fix scrolling informations are lost when manipulating grid views
 *  Fix bug that Design requirements of step1&2 can't be removed/added
 *  Fix bug in control structure export that image and text would overlap
+
+#### Other Changes:
+
+*  In the Control Structure Undo/Redo is now handled by the global Undo/Redo service which is accessible on the XSTAMPP toolbar and over CTRL+Z/CTRL+Y
 
 ## XSTAMPP 2.5.3
 

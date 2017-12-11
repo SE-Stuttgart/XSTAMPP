@@ -738,6 +738,14 @@
             allPopups="false"
             locationURI="popup:astpa.steps.step1_8">
          <command
+               commandId="xstampp.command.undo"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.command.redo"
+               style="push">
+         </command>
+         <command
                commandId="xstampp.ui.commands.selectAll"
                style="push">
          </command>
@@ -957,6 +965,14 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:astpa.steps.step3_1">
+         <command
+               commandId="xstampp.command.undo"
+               style="push">
+         </command>
+         <command
+               commandId="xstampp.command.redo"
+               style="push">
+         </command>
          <command
                commandId="xstampp.ui.commands.selectAll"
                style="push">

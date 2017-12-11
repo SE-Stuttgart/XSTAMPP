@@ -528,12 +528,10 @@
                id="xstampp.toolbar.undoRedo">
             <command
                   commandId="xstampp.command.undo"
-                  icon="icons/eclipse/undo_edit.gif"
                   style="push">
             </command>
             <command
                   commandId="xstampp.command.redo"
-                  icon="icons/eclipse/redo_edit.gif"
                   style="push">
             </command>
             <command
@@ -1068,6 +1066,14 @@
    <image
          commandId="astpa.commands.rename"
          icon="icons/eclipse/rename.png">
+   </image>
+   <image
+         commandId="xstampp.command.undo"
+         icon="icons/eclipse/undo_edit.gif">
+   </image>
+   <image
+         commandId="xstampp.command.redo"
+         icon="icons/eclipse/redo_edit.gif">
    </image>
 </extension>
 <extension
