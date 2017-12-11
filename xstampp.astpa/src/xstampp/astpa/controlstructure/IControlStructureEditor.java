@@ -25,6 +25,8 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.ui.ISelectionListener;
 
+import xstampp.ui.editors.IGraphicalEditor;
+
 /**
  * 
  * @author Lukas Balzer
@@ -33,7 +35,7 @@ import org.eclipse.ui.ISelectionListener;
 public interface IControlStructureEditor extends CommandStackEventListener,
     ISelectionListener, MouseListener, PaletteListener,
     SelectionListener, ZoomListener, PropertyChangeListener,
-    ISelectionChangedListener {
+    ISelectionChangedListener, IGraphicalEditor {
 
   /**
    * this property stores the active step editor the value is always expectedf

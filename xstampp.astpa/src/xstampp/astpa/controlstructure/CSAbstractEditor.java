@@ -102,7 +102,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
@@ -138,6 +137,7 @@ import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.menu.file.commands.CommandState;
 import xstampp.ui.workbench.contributions.IZoomContributor;
 import xstampp.util.STPAPluginUtils;
+import xstampp.util.service.UndoRedoService;
 
 /**
  * 
@@ -191,8 +191,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   private ZoomManager zoomManager;
   private Label label;
   private Slider scale;
-  private Button redo;
-  private Button undo;
   // this bool can be set if a decoration in the next Image is wished
   private int timeOfLastChange = 0;
 
@@ -381,11 +379,16 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.DEL, CSAbstractEditor.DEL_KEY, 0),
         this.getActionRegistry().getAction(ActionFactory.DELETE.getId()));
 
-    viewer.getKeyHandler().put(KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0),
+    viewer.getKeyHandler().put(KeyStroke.getPressed('+', 0),
         this.getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
 
-    viewer.getKeyHandler().put(KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0),
+    viewer.getKeyHandler().put(KeyStroke.getPressed('-', 0),
         this.getActionRegistry().getAction(GEFActionConstants.ZOOM_OUT));
+
+    viewer.getKeyHandler().put(KeyStroke.getPressed('z', SWT.CONTROL),
+        this.getActionRegistry().getAction(ActionFactory.UNDO.getId()));
+    viewer.getKeyHandler().put(KeyStroke.getPressed('Y', SWT.CONTROL),
+        this.getActionRegistry().getAction(ActionFactory.REDO.getId()));
 
     viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.CONTROL), MouseWheelZoomHandler.SINGLETON);
 
@@ -428,24 +431,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     this.toolBar.setLayoutData(toolbarData);
 
     FormData data = new FormData();
-    ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-
-    // adding the undo/redo Buttons
-    this.undo = new Button(this.toolBar, SWT.BUTTON_MASK);
-    data = new FormData(CSAbstractEditor.TOOL_HEIGHT, CSAbstractEditor.TOOL_HEIGHT);
-    data.left = new FormAttachment(0);
-    this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
-    this.undo.setLayoutData(data);
-    this.redo = new Button(this.toolBar, SWT.BUTTON1);
-    data = new FormData(CSAbstractEditor.TOOL_HEIGHT, CSAbstractEditor.TOOL_HEIGHT);
-    data.left = new FormAttachment(this.undo);
-    this.redo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
-    this.redo.setLayoutData(data);
 
     this.decoSwitch = new Button(this.toolBar, SWT.TOGGLE);
     data = new FormData();
     data.height = CSAbstractEditor.TOOL_HEIGHT;
-    data.left = new FormAttachment(this.redo, 30);
+    data.left = new FormAttachment();
     this.decoSwitch.setLayoutData(data);
     setDecoration(true);
     this.decoSwitch.addSelectionListener(new SelectionAdapter() {
@@ -665,32 +655,13 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   @Override
   public void stackChanged(CommandStackEvent event) {
     this.firePropertyChange(IEditorPart.PROP_DIRTY);
-    ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-
-    // the undo/redo buttons in the toolbar are either activated or
-    // deactivated
-    // depending on the change
-    if (this.getCommandStack().canRedo()) {
-      this.redo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_FORWARD));
-      this.redo.setGrayed(false);
-      this.redo.setEnabled(true);
-      this.redo.addMouseListener(this);
-
-    } else {
-      this.redo.setGrayed(true);
-      this.redo.setEnabled(false);
-      this.redo.removeMouseListener(this);
-
-    }
-
-    if (this.getCommandStack().canUndo()) {
-      this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK));
-      if (!this.undo.isListening(SWT.MouseUp)) {
-        this.undo.addMouseListener(this);
-      }
-    } else {
-      this.undo.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_BACK_DISABLED));
-      this.undo.removeMouseListener(this);
+    if (event.isPostChangeEvent()) {
+      ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
+          .getService(ISourceProviderService.class);
+      UndoRedoService provider = (UndoRedoService) service
+          .getSourceProvider(UndoRedoService.CAN_REDO);
+      provider.activate();
+      ProjectManager.getLOGGER().debug("Undo/Redo activated");
     }
     this.updateActions(this.stackActions);
     this.updateActions(this.propertyActions);
@@ -728,12 +699,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     return this.graphicalViewer;
   }
 
-  /**
-   * 
-   * @author Lukas Balzer
-   * 
-   * @return The DefaultEditDomain referring to this instance
-   */
+  @Override
   public DefaultEditDomain getEditDomain() {
     return this.editDomain;
   }
@@ -825,7 +791,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * @return a newly-created {@link CustomPalettePage}
+   * @return a newly-created {@link CSPalettePage}
    */
   protected CSPalettePage createPalettePage() {
     return new CSPalettePage(this.getPaletteViewerProvider());
@@ -1038,12 +1004,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     if (e.time != this.timeOfLastChange) {
       // makes sure that the method is called only one time with one
       // trigger
-
-      if (e.getSource().equals(this.undo) && this.getCommandStack().canUndo()) {
-        this.getCommandStack().undo();
-      } else if (e.getSource().equals(this.redo) && this.getCommandStack().canRedo()) {
-        this.getCommandStack().redo();
-      }
       this.timeOfLastChange = e.time;
     }
   }

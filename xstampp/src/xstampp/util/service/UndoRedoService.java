@@ -18,6 +18,7 @@ import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbenchPart;
 
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.editors.IGraphicalEditor;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.util.IUndoCallback;
 
@@ -102,7 +103,15 @@ public class UndoRedoService extends AbstractSourceProvider
 
   @Override
   public void partBroughtToTop(IWorkbenchPart part) {
-    if (part instanceof StandartEditorPart) {
+    if (part instanceof IGraphicalEditor) {
+      editorId = ((StandartEditorPart) part).getId();
+      this.providerToEditorIds.putIfAbsent(editorId, new GraphicalEditorUndoProvider(this, (IGraphicalEditor) part));
+      this.currentProvider = this.providerToEditorIds.get(editorId);
+      ((GraphicalEditorUndoProvider) this.currentProvider)
+          .setCommandStack(((IGraphicalEditor) part).getEditDomain().getCommandStack());
+      ProjectManager.getLOGGER().debug("Undo Provider activated for " + editorId);
+      this.currentProvider.activate();
+    } else if (part instanceof StandartEditorPart) {
       editorId = ((StandartEditorPart) part).getId();
       this.providerToEditorIds.putIfAbsent(editorId, new UndoRedoInstance(this));
       this.currentProvider = this.providerToEditorIds.get(editorId);
@@ -129,5 +138,6 @@ public class UndoRedoService extends AbstractSourceProvider
 
   @Override
   public void activate() {
+    this.currentProvider.activate();
   }
 }

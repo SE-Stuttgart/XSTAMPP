@@ -1023,6 +1023,16 @@
          schemeId="bindingscheme"
          sequence="M1+A">
    </key>
+   <key
+         commandId="xstampp.command.undo"
+         schemeId="bindingscheme"
+         sequence="M1+Z">
+   </key>
+   <key
+         commandId="xstampp.command.redo"
+         schemeId="bindingscheme"
+         sequence="M1+Y">
+   </key>
 </extension>
 <extension point="org.eclipse.ui.preferencePages">
    <page
