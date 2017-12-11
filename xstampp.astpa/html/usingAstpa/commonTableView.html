@@ -4,7 +4,7 @@
 	<link href="../../../xstampp/html/style.css" rel="stylesheet" type="text/css">
 		<link href="../style.css" rel="stylesheet" type="text/css">
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<title>Start Working</title>
+		<title>Common Table View</title>
 	</head>
 	<body>
 		<div class="header astpa">
@@ -15,17 +15,20 @@
 		<tr>
 			<td><div class="number">1</div></td>
 			<td>All entries currently existing in the project are listed here, except when the filter (<b>5</b>) is used.
-			The entries title can also be edited directly in the table by double-clicking the title cell.
+			<ul>
+			<li>The entry's title can be edited directly in the table by double-clicking the title cell.
+			<li>In the Severity column the severity of each entry is displayed. By double-clicking the cell the severity can be directly editted in the <a href="Severity.html">Severity Settings</a> dialog.
+			<li>The links column contains the an ID representation of all STPA entries currently linked to the table entry.
 			</td>
 		</tr>
 		<tr>
 			<td><div class="number">2</div></td>
-			<td>In this editor a detailed description of or additional notes to the entry can be inserted.<br></td>
+			<td>In this editor a detailed description of, or additional notes to the entry can be inserted.<br></td>
 		</tr>
 		<tr>
 			<td><div class="number">3</div></td>
 			<td>This section is optional and only available if the respective STPA entry can be linked to another one e.g. an Accident to a Hazard.
-			In the link section all possible links are displayed as editable lists <b>(e.g. Design Requirement Links and Accident Links)</b>.<br>
+			In the link section all possible links are displayed as editable lists <b>(e.g. Hazard Links and Safety Constraint Links)</b>.<br>
 			By clicking on the <b><i>+</i></b> a dialog displaying all entries available for linking can be opened to insert new linkings.
 			To <b>remove</b> a linking simply select the id of the linked entry from the list and click on <b>-</b>.
 		</tr>
@@ -35,16 +38,16 @@
 			<table>
 				<tr class="clear">
 				<td><img src="../../icons/buttons/commontables/add.png"></td>
-				<td>Adds a new entry to the project which is assigned the next available id<br><i>e.g. in the example Safety Constraints Editor a new Safety Constraint SC0.4 would be added</i><br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a></b></td>
+				<td>Adds a new entry to the project which is assigned the next available id<br><i>e.g. in the example Accidents Editor a new Accident A-3 would be added</i><br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a></b></td>
 				</tr>
 				<tr class="clear">
 				<td><img src="../../icons/buttons/commontables/remove.png"></td>
 				<td>If one or more entries are selected in <b>1</b> and this button is pressed a the user is prompted with a dialog to cofirm the deletion of the selected entry.
-				Removing an entry also removes all links with it.<br><i>e.g. In the example Safety Constraints Editor SC0.1 would be deleted as well as the link with DR0.1</i><br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a>, doing so also re-adds all previously removed links</b></td>
+				Removing an entry also removes all links with it.<br><i>e.g. In the example Accidents Editor A-1 would be deleted as well as the link with H-1, H-2 and H-4</i><br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a>, doing so also re-adds all previously removed links</b></td>
 				</tr>
 				<tr class="clear">
 				<td><img src="../../icons/buttons/commontables/removeAll.png"></td>
-				<td>This works just like the normal remove if all entries are selected.<br><i>e.g. In the example Editor SC0.1,SC0.2 and SC0.3 as well as the linking between SC0.1 and DR0.1 would be deleted</i></br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a></b>, doing so will also re-add all removed links</td>
+				<td>This works just like the normal remove if all entries are selected.<br><i>e.g. In the example Editor A-1 and A-2 as well as all Hazard Links would be deleted</i></br><b>This can be <a href="../../../xstampp/html/gettingstarted/generell.html#undo">undone</a></b>, doing so will also re-add all removed links</td>
 				</tr>
 				<tr class="clear">
 				<td><img src="../../icons/buttons/commontables/down.png">/<img src="../../icons/buttons/commontables/up.png"></td>
@@ -56,6 +59,10 @@
 		<tr>
 			<td><div class="number">5</div></td>
 			<td>The list <b>(1)</b> can be filtered by typing in a word in the Filter, this will remove all entries from the list that <b>dont't contain the filter</b> word. This has no impact on the project data but only affects the current opened Editor view.</td>
+		</tr>
+		<tr>
+			<td><div class="number">6</div></td>
+			<td>This widget is only visible when an entry in <b>1</b> has been selected, by clicking on the <img src="../images/severity_widget.PNG"> the <a href="Severity.html">Severity Settings</a> can be opened</td>
 		</tr>
 		</table>
 	</body>
