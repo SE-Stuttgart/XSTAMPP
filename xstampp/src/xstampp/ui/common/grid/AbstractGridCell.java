@@ -43,6 +43,7 @@ public abstract class AbstractGridCell implements IGridCell {
   private boolean hasChildren;
   private int preferredHeight;
   private CellButtonContainer buttonContainer = null;
+  private String toolTip = null;
 
   private boolean showSelection;
 
@@ -334,10 +335,15 @@ public abstract class AbstractGridCell implements IGridCell {
 
   @Override
   public String getToolTip(Point point) {
-    if (buttonContainer != null) {
-      return buttonContainer.getToolTip(point);
+    String toolTip2 = buttonContainer.getToolTip(point);
+    if (toolTip2 != null) {
+      return toolTip2;
     }
-    return null;
+    return this.toolTip;
+  }
+
+  public void setToolTip(String toolTip) {
+    this.toolTip = toolTip;
   }
 
   @Override

@@ -133,7 +133,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     int buttonCollum = 0;
     // calculate the avaiable space and performe a wrap
     if (this.showDelete) {
-      buttonCollum = 16;
+      buttonCollum = 20;
     }
     Point textBounds = new Point(0, 0);
     currentText = getCurrentText();

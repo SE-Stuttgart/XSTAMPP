@@ -190,7 +190,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * 
    * @param componentRow
    * @param causalEntryLinks
-   *          a List with Links of type {@link ObserverValue#UcaCfLink_Component_LINK}
+   *          a List with Links of type {@link LinkingType#UcaCfLink_Component_LINK}
    * @param component
    * @param factor
    * @return
@@ -246,9 +246,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   /**
    * 
    * @param causalEntryLink
-   *          a Link of type {@link ObserverValue#UcaCfLink_Component_LINK}
+   *          a Link of type {@link LinkingType#UcaCfLink_Component_LINK}
    * @param ucaCFLink
-   *          a Link of type {@link ObserverValue#UCA_CausalFactor_LINK}
+   *          a Link of type {@link LinkingType#UCA_CausalFactor_LINK}
    * @param uca
    *          a model of type {@link IUnsafeControlAction}
    */
@@ -278,7 +278,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       ITableModel hazard = getDataModel().getHazard(hazId);
       if (hazard != null) {
         getDataModel().getLinkController().addLink(LinkingType.CausalEntryLink_HAZ_LINK,
-            causalEntryLink.getId(), hazId);
+            causalEntryLink.getId(), hazId, false);
       }
     }
     // iterate all CausalEntryLink_HAZ_LINK's stored for the causalEntryLink
@@ -296,7 +296,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
         break;
       }
       case CausalEntryLink_SC2_LINK: {
-        createSingleConstraintRow(entryRow, link, uca);
+        createSingleConstraintRow(row, link, uca);
         break;
       }
       default:
@@ -336,8 +336,20 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    */
   private GridRow createHazardRow(GridRow entryRow, Link ucaHazLink, IUnsafeControlAction uca) {
     ITableModel hazard = getDataModel().getHazard(ucaHazLink.getLinkB());
-    String hazText = hazard != null ? hazard.getIdString() : "no hazard";
-    entryRow.addCell(3, new GridCellText(hazText));
+    String hazText = hazard != null ? hazard.getIdString() + " - " + hazard.getTitle() : "no hazard";
+    GridCellText hazCell = new GridCellText(hazText);
+    String toolTip = hazard != null ? hazard.getDescription() : null;
+    int maxLength = 70;
+    String wrappedToolTip = "";
+    int nextIndex = 0;
+    while (nextIndex < toolTip.length()) {
+      int indexOf = toolTip.indexOf(' ', nextIndex + maxLength);
+      int endIndex = indexOf < 0 ? toolTip.length() : indexOf + 1;
+      wrappedToolTip += toolTip.substring(nextIndex, endIndex) + "\n";
+      nextIndex = endIndex;
+    }
+    hazCell.setToolTip(wrappedToolTip);
+    entryRow.addCell(3, hazCell);
 
     CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(),
         getDataModel(), ucaHazLink);

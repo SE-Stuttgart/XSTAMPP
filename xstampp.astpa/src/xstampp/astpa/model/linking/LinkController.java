@@ -71,6 +71,32 @@ public class LinkController extends Observable {
    *         The id of the Link which was either added, updated or which already existed
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB) {
+    return addLink(linkType, linkA, linkB, true);
+  }
+
+  /**
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
+   * <p>
+   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
+   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
+   * <code>linkA</code>
+   * <p>
+   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * exists, than its' id is returned and nothing is added.
+   * 
+   * @param linkType
+   *          an {@link LinkingType} for which links have been created in the
+   *          {@link LinkController}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @param canUndo
+   *          TODO
+   * @return
+   *         The id of the Link which was either added, updated or which already existed
+   */
+  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo) {
     if (!this.linkMap.containsKey(linkType)) {
       assert (linkType != null);
       this.linkMap.put(linkType, new ArrayList<Link>());
@@ -85,14 +111,18 @@ public class LinkController extends Observable {
     index = this.linkMap.get(linkType).indexOf(new Link(linkA, null, linkType));
     if (index > 0 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
       return this.linkMap.get(linkType).get(index).getId();
-    }    
+    }
     index = this.linkMap.get(linkType).indexOf(o);
-    if (index!= -1) {
+    if (index != -1) {
       return this.linkMap.get(linkType).get(index).getId();
     }
     if (this.linkMap.get(linkType).add(o)) {
       setChanged();
-      notifyObservers(new UndoAddLinkingCallback(this, linkType, o));
+      if (canUndo) {
+        notifyObservers(new UndoAddLinkingCallback(this, linkType, o));
+      } else {
+        notifyObservers(ObserverValue.LINKING);
+      }
 
       return o.getId();
     }
@@ -107,7 +137,7 @@ public class LinkController extends Observable {
 
   void addLink(Link link) {
     this.linkMap.putIfAbsent(link.getLinkType(), new ArrayList<>());
-    addLink(link.getLinkType(), link.getLinkA(), link.getLinkB());
+    addLink(link.getLinkType(), link.getLinkA(), link.getLinkB(), true);
   }
 
   /**
@@ -398,6 +428,8 @@ public class LinkController extends Observable {
       if (this.linkMap.get(linkType).isEmpty()) {
         this.linkMap.remove(linkType);
       }
+      setChanged();
+      notifyObservers(ObserverValue.LINKING);
     }
   }
 
