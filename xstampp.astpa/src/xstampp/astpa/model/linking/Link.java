@@ -70,7 +70,7 @@ public final class Link {
   }
 
   boolean setLinkB(UUID linkB) {
-    boolean different = !this.linkB.equals(linkB);
+    boolean different = this.linkB == null || !this.linkB.equals(linkB);
     if (different) {
       this.linkB = linkB;
     }

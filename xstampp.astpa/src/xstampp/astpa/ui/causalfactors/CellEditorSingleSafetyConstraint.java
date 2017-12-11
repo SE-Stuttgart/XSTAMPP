@@ -64,7 +64,7 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
       CellButtonAdd addButton = new CellButtonAdd(() -> {
         UUID constraintId = causalDataInterface.getCausalFactorController().addSafetyConstraint("");
         causalDataInterface.getLinkController().addLink(LinkingType.CausalEntryLink_SC2_LINK,
-            causalEntrySc2Link.getId(),
+            causalEntrySc2Link.getLinkA(),
             constraintId);
       });
       addButton.setToolTip("Add a new Safety Constraint");
@@ -89,7 +89,7 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
   public void delete() {
     if (safetyOption.isPresent()) {
       if (this.causalDataInterface.getCausalFactorController().removeSafetyConstraint(safetyOption.get().getId())) {
-        causalDataInterface.getLinkController().changeLink(this.causalEntrySc2Link, this.causalEntrySc2Link.getLinkB(),
+        causalDataInterface.getLinkController().changeLink(this.causalEntrySc2Link, this.causalEntrySc2Link.getLinkA(),
             null);
         this.safetyOption = Optional.empty();
       }

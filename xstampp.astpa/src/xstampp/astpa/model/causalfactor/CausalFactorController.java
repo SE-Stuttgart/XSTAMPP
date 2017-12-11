@@ -243,11 +243,16 @@ public class CausalFactorController extends Observable implements ICausalControl
               link.getLinkA());
           Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
               entryLink.getLinkA());
+          Optional<Link> sc2Option = linkController
+              .getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK, entryLink.getId()).stream().findFirst();
           IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
-          if (!ucaCfLink_Component_ToCFmap.containsKey(uca)) {
+          if (sc2Option.isPresent()) {
             ucaCfLink_Component_ToCFmap.put(uca, new ArrayList<>());
+            ucaCfLink_Component_ToCFmap.get(uca).add(sc2Option.get());
+          } else {
+            ucaCfLink_Component_ToCFmap.putIfAbsent(uca, new ArrayList<>());
+            ucaCfLink_Component_ToCFmap.get(uca).add(link);
           }
-          ucaCfLink_Component_ToCFmap.get(uca).add(link);
         });
     return ucaCfLink_Component_ToCFmap;
   }

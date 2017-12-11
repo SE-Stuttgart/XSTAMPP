@@ -105,11 +105,11 @@ public class LinkController extends Observable {
 
     int index = this.linkMap.get(linkType).indexOf(new Link(null, linkB, linkType));
 
-    if (index > 0 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
+    if (index != -1 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
       return this.linkMap.get(linkType).get(index).getId();
     }
     index = this.linkMap.get(linkType).indexOf(new Link(linkA, null, linkType));
-    if (index > 0 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
+    if (index != -1 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
       return this.linkMap.get(linkType).get(index).getId();
     }
     index = this.linkMap.get(linkType).indexOf(o);
@@ -296,6 +296,27 @@ public class LinkController extends Observable {
       });
       return this.linkMap.get(linkType).stream().filter((link) -> link.getId().equals(linkId))
           .findFirst().orElse(null);
+    }
+    return null;
+  }
+
+  /**
+   * Returns the first matching {@link Link} stored under the given linkType which links the given
+   * components
+   * 
+   * @param linkType
+   *          one of the LINK constants in {@link LinkingType}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @return the first matching {@link Link} stored under the given linkType with the given linkId
+   */
+  public Link getLinkObjectFor(LinkingType linkType, UUID linkA, UUID linkB) {
+    if (this.linkMap.containsKey(linkType)) {
+      return this.linkMap.get(linkType).stream().filter((link) -> {
+        return link.links(linkA) && link.links(linkB);
+      }).findFirst().orElse(null);
     }
     return null;
   }

@@ -55,7 +55,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       ucaRow = createRow(sheet);
       createCell(ucaRow, 0, uca.getIdString());
       createCell(ucaRow, 1, uca.getSeverity().name());
-      rowIndex = createSubRows(sheet, ucaRow, new int[] { 0, 1 }, (parentRow) -> {
+      rowIndex = createSubRows(sheet, ucaRow, new int[] { 0, 1, titles.length - 1 }, (parentRow) -> {
         return createRows(uca, parentRow, sheet);
       });
       Float progress = getProgress(uca.getId(), this.cf_per_uca.get(uca.getSeverity()));
@@ -86,9 +86,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
         index = createSubRows(sheet, row, new int[] { 2 }, (parent) -> {
           return createCausalEntries(sheet, parent, factor, causalEntryOpt.get());
         });
-        int requiredEntries = getController().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())
-            .size();
-        addProgress(uca.getId(), getProgress(factor.getId(), requiredEntries));
+        addProgress(uca.getId(), getProgress(causalEntryOpt.get().getId(), 1));
       }
       row = null;
     }
@@ -96,27 +94,62 @@ public class Step2Progress extends AbstractProgressSheetCreator {
 
   }
 
-  private int createCausalEntries(Sheet sheet, Row parentRow, ICausalFactor factor, Link causalEntryLin) {
+  private int createCausalEntries(Sheet sheet, Row parentRow, ICausalFactor factor, Link causalEntryLink) {
     Row row = parentRow;
     int index = parentRow.getRowNum();
     // each entry (link between uca-cf and a component is used to get the hazard linking for this
     // causal factor
-    for (Link link : getController().getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
-        causalEntryLin.getId())) {
-      row = row == null ? createRow(sheet) : row;
-      createHazardRow(link, row);
-      addProgress(factor.getId(), getProgress(link.getLinkB(), 1));
-      row = null;
+    if (getController().getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId())) {
+      createSC(factor, row, causalEntryLink);
+    } else {
+      for (Link causalHazLink : getController().getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+          causalEntryLink.getId())) {
+        row = row == null ? createRow(sheet) : row;
+        createHazardRow(causalHazLink, row);
+        addProgress(causalEntryLink.getId(), getProgress(causalHazLink.getId(), 1));
+        index = row.getRowNum();
+        row = null;
+      }
     }
     return index;
 
   }
 
-  private void createHazardRow(Link link, Row hazRow) {
-    ITableModel hazard = getController().getHazard(link.getLinkB());
+  private void createSC(ICausalFactor factor, Row hazRow, Link causalEntryLink) {
+    String idString = "";
+    for (UUID hazId : getController().getLinkController().getLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+        causalEntryLink.getId())) {
+      ITableModel hazard = getController().getHazard(hazId);
+      idString += idString.isEmpty() ? "" : ", ";
+      if (hazard != null) {
+        idString += hazard.getIdString();
+      }
+    }
+    Optional<UUID> sc2Optional = getController().getLinkController()
+        .getLinksFor(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId()).stream().findFirst();
+    ITableModel constraint = getController().getCausalFactorController().getSafetyConstraint(sc2Optional.orElse(null));
+    Optional<UUID> designOptional = getController().getLinkController()
+        .getLinksFor(LinkingType.DR2_CausalSC_LINK, sc2Optional.orElse(null)).stream().findFirst();
+    ITableModel requirement = getController().getSdsController().getDesignRequirement(designOptional.orElse(null),
+        ObserverValue.DESIGN_REQUIREMENT_STEP2);
+    String designRequirement = "";
+    if (requirement != null) {
+      designRequirement = requirement.getIdString();
+      addProgress(causalEntryLink.getId(), 100f);
+    } else {
+      addProgress(causalEntryLink.getId(), 0f);
+    }
+    createCell(hazRow, 3, idString);
+    createCell(hazRow, 4, constraint.getIdString());
+    createCell(hazRow, 5, constraint.getTitle());
+    createCell(hazRow, 6, designRequirement);
+  }
+
+  private void createHazardRow(Link causalHazLink, Row hazRow) {
+    ITableModel hazard = getController().getHazard(causalHazLink.getLinkB());
     if (hazard != null) {
       Optional<UUID> constraintOpt = getController().getLinkController()
-          .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, link.getId()).stream().findFirst();
+          .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream().findFirst();
       ITableModel constraint = getController().getCausalFactorController()
           .getSafetyConstraint(constraintOpt.orElse(null));
 
@@ -130,10 +163,10 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       ITableModel requirement = getController().getSdsController().getDesignRequirement(designOpt.orElse(null),
           ObserverValue.DESIGN_REQUIREMENT_STEP2);
       if (requirement != null) {
-        addProgress(hazard.getId(), 100f);
+        addProgress(causalHazLink.getId(), 100f);
         createCell(hazRow, 6, requirement.getIdString());
       } else {
-        addProgress(hazard.getId(), 0f);
+        addProgress(causalHazLink.getId(), 0f);
       }
     }
   }

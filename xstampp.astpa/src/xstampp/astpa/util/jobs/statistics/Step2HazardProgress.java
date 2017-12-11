@@ -11,6 +11,8 @@
 
 package xstampp.astpa.util.jobs.statistics;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +32,7 @@ import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
+import xstampp.ui.common.ProjectManager;
 
 public class Step2HazardProgress extends AbstractProgressSheetCreator {
 
@@ -79,49 +82,91 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
       row = row == null ? createRow(sheet) : row;
       createCell(row, 3, uca.getIdString());
       createCell(row, 4, uca.getSeverity().name());
+      Link ucaHazLink = getController().getLinkController().getLinkObjectFor(LinkingType.UCA_HAZ_LINK, uca.getId(),
+          hazModel.getId());
       rowIndex = createSubRows(sheet, row, new int[] { 3, 4 }, (parentRow) -> {
-        return createCFs(sheet, parentRow, hazardBasedMap.get(uca));
+        return createCFs(sheet, parentRow, hazardBasedMap.get(uca), ucaHazLink);
       });
-
-      Float progress = getProgress(uca.getId(), this.cf_per_uca.get(uca.getSeverity()));
-      addProgress(hazModel.getId(), progress);
+      try {
+        Float progress = getProgress(ucaHazLink.getId(), this.cf_per_uca.get(uca.getSeverity()));
+        addProgress(hazModel.getId(), progress);
+      } catch (NullPointerException exc) {
+        ProjectManager.getLOGGER().debug("no UCA_HAZ link could be found for the given ids");
+      }
       row = null;
     }
     return rowIndex;
   }
 
-  private int createCFs(Sheet sheet, Row hazRow, List<Link> list) {
+  private int createCFs(Sheet sheet, Row hazRow, List<Link> list, Link ucaHazLink) {
     Row row = hazRow;
     int index = hazRow.getRowNum();
+    Map<Link, List<Link>> causalFactorMap = new HashMap<>();
     // iterate over all LinkingType.CausalEntryLink_HAZ_LINK
     for (Link causalHazLink : list) {
+
       Link causalEntryLink = getController().getLinkController().getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK,
           causalHazLink.getLinkA());
+
+      causalFactorMap.putIfAbsent(causalEntryLink, new ArrayList<>());
+      causalFactorMap.get(causalEntryLink).add(causalHazLink);
+    }
+    for (Link causalEntryLink : causalFactorMap.keySet()) {
+      row = row == null ? createRow(sheet) : row;
       Link ucaCfLink = getController().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
           causalEntryLink.getLinkA());
       ICausalFactor factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
-      row = row == null ? createRow(sheet) : row;
-      Optional<UUID> sc2Optional = getController().getLinkController()
-          .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream().findFirst();
-      String constraint = getController().getCausalFactorController().getConstraintTextFor(sc2Optional.orElse(null));
-      Optional<UUID> designOptional = getController().getLinkController()
-          .getLinksFor(LinkingType.DR2_CausalSC_LINK, sc2Optional.orElse(null)).stream().findFirst();
-      ITableModel requirement = getController().getSdsController().getDesignRequirement(designOptional.orElse(null),
-          ObserverValue.DESIGN_REQUIREMENT_STEP2);
-      String designRequirement = "";
-      if (requirement != null) {
-        designRequirement = requirement.getIdString();
-        addProgress(ucaCfLink.getLinkA(), 100f);
-      } else {
-        addProgress(ucaCfLink.getLinkA(), 0f);
-      }
       createCell(row, 5, factor.getText());
-      createCell(row, 6, constraint);
-      createCell(row, 7, designRequirement);
+
+      index = createSubRows(sheet, row, new int[] { 5 }, (parentRow) -> {
+        return createHazRow(sheet, parentRow, causalFactorMap.get(causalEntryLink), causalEntryLink);
+      });
+
+      Float progress = getProgress(causalEntryLink.getId(), causalFactorMap.get(causalEntryLink).size());
+      try {
+        addProgress(ucaHazLink.getId(), progress);
+      } catch (NullPointerException exc) {
+        ProjectManager.getLOGGER().debug("no UCA_HAZ link could be found for the given ids");
+      }
       index = row.getRowNum();
       row = null;
     }
     return index;
+  }
+
+  private int createHazRow(Sheet sheet, Row row, List<Link> list, Link causalEntryLink) {
+    Row hazRow = row;
+    int index = row.getRowNum();
+    if (list.get(0).getLinkType().equals(LinkingType.CausalEntryLink_SC2_LINK)) {
+      createSC(causalEntryLink, hazRow, list.get(0).getLinkB(), list.get(0));
+    } else {
+      for (Link causalHazLink : list) {
+        hazRow = hazRow == null ? createRow(sheet) : hazRow;
+        Optional<UUID> sc2Optional = getController().getLinkController()
+            .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream().findFirst();
+        createSC(causalEntryLink, hazRow, sc2Optional.orElse(null), causalHazLink);
+        index = row.getRowNum();
+        row = null;
+      }
+    }
+    return index;
+  }
+
+  private void createSC(Link causalEntryLink, Row hazRow, UUID sc2Optional, Link link) {
+    String constraint = getController().getCausalFactorController().getConstraintTextFor(sc2Optional);
+    Optional<UUID> designOptional = getController().getLinkController()
+        .getLinksFor(LinkingType.DR2_CausalSC_LINK, sc2Optional).stream().findFirst();
+    ITableModel requirement = getController().getSdsController().getDesignRequirement(designOptional.orElse(null),
+        ObserverValue.DESIGN_REQUIREMENT_STEP2);
+    String designRequirement = "";
+    if (requirement != null) {
+      designRequirement = requirement.getIdString();
+      addProgress(causalEntryLink.getId(), 100f);
+    } else {
+      addProgress(causalEntryLink.getId(), 0f);
+    }
+    createCell(hazRow, 6, constraint);
+    createCell(hazRow, 7, designRequirement);
   }
 
 }

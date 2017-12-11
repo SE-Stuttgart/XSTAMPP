@@ -77,6 +77,11 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     }
 
     @Override
+    public boolean setBounds(Rectangle bounds) {
+      return false;
+    }
+
+    @Override
     public void onButtonDown(Point relativeMouse, Rectangle cellBounds) {
       GridCellLinking.LOGGER.debug("Delete link"); //$NON-NLS-1$
       this.provider.removeLink(GridCellLinking.this.assignedId, this.tableModel.getId());

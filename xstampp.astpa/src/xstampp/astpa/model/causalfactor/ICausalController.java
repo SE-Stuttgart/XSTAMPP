@@ -177,10 +177,16 @@ public interface ICausalController {
   /**
    * Creates a sorted mapping of a List of {@link Link}s to a {@link IUnsafeControlAction}. The list
    * set as
-   * value contains all {@link LinkingType#CausalEntryLink_HAZ_LINK}s between a
+   * The value is a {@link List} containing:
+   * <ul>
+   * <li>{@link LinkingType#CausalEntryLink_SC2_LINK}'s between an
+   * {@link LinkingType#UcaCfLink_Component_LINK} and the {@link UUID} of a Safety Constraint if one
+   * is defined for the respective {@link LinkingType#UcaCfLink_Component_LINK}
+   * <li>all {@link LinkingType#CausalEntryLink_HAZ_LINK}s between a
    * {@link LinkingType#UcaCfLink_Component_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
-   * and the
-   * id of the hazModel.<br>
+   * and the id of the hazModel.
+   * </ul>
+   * for each {@link LinkingType#UcaCfLink_Component_LINK} defined for the given hazard.<br>
    * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
    * 
    * @param hazModel
@@ -188,7 +194,8 @@ public interface ICausalController {
    * @param linkController
    *          the {@link LinkController} that contains the {@link Link}s
    * @return A {@link SortedMap} that links a {@link List} of {@link Link}s of type
-   *         {@link LinkingType#CausalEntryLink_HAZ_LINK} to a {@link IUnsafeControlAction}s.
+   *         {@link LinkingType#CausalEntryLink_HAZ_LINK} or
+   *         {@link LinkingType#CausalEntryLink_SC2_LINK} to a {@link IUnsafeControlAction}s.
    */
   SortedMap<IUnsafeControlAction, List<Link>> getHazardBasedMap(ITableModel hazModel, LinkController linkController,
       IControlActionController caController);

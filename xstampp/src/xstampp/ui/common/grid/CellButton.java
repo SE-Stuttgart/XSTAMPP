@@ -53,8 +53,9 @@ public class CellButton implements ICellButton {
    *          the image drawn in the rectangle.
    */
   public CellButton(Rectangle rect, Image image) {
-    this.rect = rect;
-    this.absoluteBounds = rect;
+    this.rect = new Rectangle(rect.x, rect.y, rect.width, rect.height);
+    ;
+    this.absoluteBounds = new Rectangle(rect.x, rect.y, rect.width, rect.height);
     this.image = image;
   }
 
