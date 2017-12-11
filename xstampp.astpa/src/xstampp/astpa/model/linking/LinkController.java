@@ -107,10 +107,7 @@ public class LinkController extends Observable {
 
   void addLink(Link link) {
     this.linkMap.putIfAbsent(link.getLinkType(), new ArrayList<>());
-    if (this.linkMap.get(link.getLinkType()).add(link)) {
-      setChanged();
-      notifyObservers(new UndoAddLinkingCallback(this, link.getLinkType(), link));
-    }
+    addLink(link.getLinkType(), link.getLinkA(), link.getLinkB());
   }
 
   /**

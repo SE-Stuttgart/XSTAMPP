@@ -427,24 +427,10 @@
             <xs:element name="causalFactors" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="causalFactor" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:all>
-                                    <xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="0" />
-                                    <xs:element type="xs:string" name="note" maxOccurs="1" minOccurs="0" />
-                                    <xs:element name="safetyConstraint" maxOccurs="1" minOccurs="0">
-                                        <xs:complexType>
-                                            <xs:all>
-                                                <xs:element type="xs:string" name="text" maxOccurs="1"
-                                                    minOccurs="0" />
-                                                <xs:element type="xs:string" name="id" maxOccurs="1"
-                                                    minOccurs="1" />
-                                            </xs:all>
-                                        </xs:complexType>
-                                    </xs:element>
-                                    <xs:element type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
-                                </xs:all>
-                            </xs:complexType>
+                        <xs:element name="causalFactor" minOccurs="0"
+                        	maxOccurs="unbounded"
+                        	type="Q1:causalFactorType">
+
                         </xs:element>
                     </xs:sequence>
                 </xs:complexType>

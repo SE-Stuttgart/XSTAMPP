@@ -78,7 +78,7 @@ public abstract class AbstractSelector implements IProjectSelection {
   @Override
   public void cleanUp() {
     if (activeSelection == this) {
-      activeSelection = null;
+      activeSelection = new HeadSelector();
     }
   }
 

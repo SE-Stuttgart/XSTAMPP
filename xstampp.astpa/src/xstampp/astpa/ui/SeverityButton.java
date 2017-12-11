@@ -1,13 +1,11 @@
 /*******************************************************************************
  * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
- * Software Engineering Group University of Stuttgart, Germany.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Software Engineering Group University of Stuttgart, Germany. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
- * Lukas Balzer - initial API and implementation
+ * Contributors: Lukas Balzer - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.ui;
 
@@ -50,7 +48,6 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
    *          linking shell
    */
   public SeverityButton(ISeverityEntry entry, IDataModel model, Control control) {
-
     super(hoveredImage.getBounds(), hoveredImage);
     this.check = new SeverityCheck() {
 
@@ -78,8 +75,8 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
   }
 
   /**
-   * with this method a check can be applied that decides whether or not a selected Severity
-   * can be applied to the entry
+   * with this method a check can be applied that decides whether or not a selected Severity can be
+   * applied to the entry
    * 
    * @param check
    *          a {@link SeverityCheck} that is called when the user selects a severity
@@ -137,7 +134,7 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
 
   @Override
   public void paintControl(PaintEvent e) {
-    onPaint(e.gc, new Rectangle(e.x, e.y, e.width, e.height), entry != null);
+    onPaint(e.gc, new Rectangle(0, 0, getBounds().width, getBounds().height), entry != null);
   }
 
   public Control getControl() {
