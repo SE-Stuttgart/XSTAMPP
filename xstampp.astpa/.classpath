@@ -14,7 +14,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis-1.3.04.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis-ext-1.3.04.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlgraphics-commons-1.5.jar"/>
-	<classpathentry kind="src" path="src/"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry exported="true" kind="lib" path="lib/curvesapi-1.03.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.17.jar" sourcepath="D:/Lukas/Eclipse/poi-3.17/src/ooxml"/>

@@ -20,12 +20,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.controlaction.UCAHazLink;
 import xstampp.astpa.model.controlaction.UnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.astpa.model.linking.Link;
 import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.api.CollaborationSystem;
 import xstampp.usermanagement.api.IUser;
@@ -75,18 +73,6 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
       }
     }
 
-    // sync the accident-hazard links
-    for (Link ucaHazLink : controller.getAllHazAccLinks()) {
-      if (!userController.getAllHazAccLinks().contains(ucaHazLink)) {
-        controller.deleteLink(ucaHazLink.getLinkA(), ucaHazLink.getLinkB());
-      }
-    }
-    for (Link ucaHazLink : userController.getAllHazAccLinks()) {
-      if (!controller.getAllHazAccLinks().contains(ucaHazLink)) {
-        controller.addLink(ucaHazLink.getLinkA(), ucaHazLink.getLinkB());
-      }
-    }
-
     event.data = 60;
     listener.handleEvent(event);
 
@@ -116,22 +102,8 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
       }
     }
 
-    // Also sync
-    for (UCAHazLink ucaHazLink : controller.getAllUCALinks()) {
-      if (!userController.getAllUCALinks().contains(ucaHazLink)) {
-        controller.removeUCAHazardLink(ucaHazLink.getUnsafeControlActionId(),
-            ucaHazLink.getHazardId());
-      }
-    }
-    for (UCAHazLink ucaHazLink : userController.getAllUCALinks()) {
-      if (!controller.getAllUCALinks().contains(ucaHazLink)) {
-        controller.addUCAHazardLink(ucaHazLink.getUnsafeControlActionId(),
-            ucaHazLink.getHazardId());
-      }
-    }
-    
-    
-    
+    controller.getLinkController().syncContent(userController.getLinkController());
+
     event.data = 100;
     listener.handleEvent(event);
     List<IUndoCallback> record = provider.getRecord();

@@ -1150,6 +1150,14 @@
             name="startupProgressRect"
             value="2,275,445,15">
       </property>
+      <property
+            name="appName"
+            value="STAMP For STPA Platform">
+      </property>
+      <property
+            name="preferenceCustomization"
+            value="plugin_customization.ini">
+      </property>
    </product>
 </extension>
 

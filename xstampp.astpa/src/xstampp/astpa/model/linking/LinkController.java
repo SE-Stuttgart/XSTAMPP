@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.model.ObserverValue;
+import xstampp.util.IUndoCallback;
 
 public class LinkController extends Observable {
 
@@ -92,39 +93,67 @@ public class LinkController extends Observable {
    * @param linkB
    *          the part whose {@link UUID} is the second part of the {@link Link}
    * @param canUndo
-   *          TODO
+   *          if this call should push a {@link IUndoCallback} to the Undo Stack or not
    * @return
    *         The id of the Link which was either added, updated or which already existed
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo) {
+    return this.addLink(linkType, linkA, linkB, canUndo, UUID.randomUUID());
+  }
+
+  /**
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
+   * <p>
+   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
+   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
+   * <code>linkA</code>
+   * <p>
+   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * exists, than its' id is returned and nothing is added.
+   * 
+   * @param linkType
+   *          an {@link LinkingType} for which links have been created in the
+   *          {@link LinkController}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @param canUndo
+   *          if this call should push a {@link IUndoCallback} to the Undo Stack or not
+   * @return
+   *         The id of the Link which was either added, updated or which already existed
+   */
+  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo, UUID id) {
     if (!this.linkMap.containsKey(linkType)) {
       assert (linkType != null);
       this.linkMap.put(linkType, new ArrayList<Link>());
     }
-    Link o = new Link(linkA, linkB, linkType);
+    Link newLink = new Link(linkA, linkB, linkType, id);
 
-    int index = this.linkMap.get(linkType).indexOf(new Link(null, linkB, linkType));
-
-    if (index != -1 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
-      return this.linkMap.get(linkType).get(index).getId();
-    }
-    index = this.linkMap.get(linkType).indexOf(new Link(linkA, null, linkType));
-    if (index != -1 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
-      return this.linkMap.get(linkType).get(index).getId();
-    }
-    index = this.linkMap.get(linkType).indexOf(o);
+    // if the link already exists it is just returned
+    int index = this.linkMap.get(linkType).indexOf(newLink);
     if (index != -1) {
       return this.linkMap.get(linkType).get(index).getId();
     }
-    if (this.linkMap.get(linkType).add(o)) {
+    // if a link exists that links one of A and B to null than null is just replaced with the B or A
+    // and the existing link id is returned
+    index = this.linkMap.get(linkType).indexOf(new Link(null, linkB, linkType, id));
+    if (index != -1 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
+      return this.linkMap.get(linkType).get(index).getId();
+    }
+    index = this.linkMap.get(linkType).indexOf(new Link(linkA, null, linkType, id));
+    if (index != -1 && changeLink(this.linkMap.get(linkType).get(index), linkA, linkB)) {
+      return this.linkMap.get(linkType).get(index).getId();
+    }
+    if (this.linkMap.get(linkType).add(newLink)) {
       setChanged();
       if (canUndo) {
-        notifyObservers(new UndoAddLinkingCallback(this, linkType, o));
+        notifyObservers(new UndoAddLinkingCallback(this, linkType, newLink));
       } else {
         notifyObservers(ObserverValue.LINKING);
       }
 
-      return o.getId();
+      return newLink.getId();
     }
     return null;
   }
@@ -137,7 +166,7 @@ public class LinkController extends Observable {
 
   void addLink(Link link) {
     this.linkMap.putIfAbsent(link.getLinkType(), new ArrayList<>());
-    addLink(link.getLinkType(), link.getLinkA(), link.getLinkB(), true);
+    addLink(link.getLinkType(), link.getLinkA(), link.getLinkB(), true, link.getId());
   }
 
   /**
@@ -363,6 +392,10 @@ public class LinkController extends Observable {
     return true;
   }
 
+  public boolean isLinked(LinkingType linkType, UUID part, UUID rightPart) {
+    return isLinked(linkType, rightPart, Optional.of(rightPart));
+  }
+
   public boolean isLinked(LinkingType linkType, UUID part, Optional<UUID> rightPart) {
     if (this.linkMap.containsKey(linkType)) {
       for (Link link : this.linkMap.get(linkType)) {
@@ -410,7 +443,7 @@ public class LinkController extends Observable {
    */
   public boolean deleteLink(LinkingType linkType, UUID linkA, UUID linkB) {
     if (this.linkMap.containsKey(linkType)) {
-      Link o = new Link(linkA, linkB, linkType);
+      Link o = new Link(linkA, linkB, linkType, null);
       if (this.linkMap.get(linkType).remove(o)) {
         setChanged();
         notifyObservers(new UndoRemoveLinkingCallback(this, linkType, o));
@@ -467,6 +500,23 @@ public class LinkController extends Observable {
     linkMap.entrySet().removeIf((entry) -> {
       return entry.getValue().isEmpty();
     });
+  }
+
+  public List<LinkingType> getLinkKeys() {
+    return new ArrayList<>(this.linkMap.keySet());
+  }
+
+  public void syncContent(LinkController controller) {
+    for (Entry<LinkingType, List<Link>> ownEntry : linkMap.entrySet()) {
+      for (Link ownLink : ownEntry.getValue()) {
+        if (!controller.isLinked(ownEntry.getKey(), ownLink.getLinkA(), ownLink.getLinkB())) {
+          deleteLink(ownEntry.getKey(), ownLink.getLinkA(), ownLink.getLinkB());
+        }
+      }
+    }
+    for (Entry<LinkingType, List<Link>> foraignEntry : controller.linkMap.entrySet()) {
+      addLinks(foraignEntry.getValue());
+    }
   }
 
   public int getLinkMapSize() {

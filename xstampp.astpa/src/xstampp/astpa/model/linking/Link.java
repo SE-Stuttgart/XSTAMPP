@@ -34,15 +34,19 @@ public final class Link {
   private LinkingType linkType;
 
   public Link(UUID a, UUID b, LinkingType linkType) {
+    this(a, b, linkType, UUID.randomUUID());
+  }
+
+  public Link(UUID a, UUID b, LinkingType linkType, UUID linkId) {
     linkA = a;
     linkB = b;
     this.linkType = linkType;
+    id = linkId;
     this.note = "";
-    this.id = UUID.randomUUID();
   }
 
   Link() {
-    this(null, null, null);
+    this(null, null, null, UUID.randomUUID());
   }
 
   public UUID getId() {
