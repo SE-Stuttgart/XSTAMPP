@@ -373,4 +373,25 @@ public class CausalFactorController extends Observable implements ICausalControl
   public void setLinkController(LinkController linkController) {
     this.linkController = linkController;
   }
+
+  void setCausalFactors(ArrayList<CausalFactor> causalFactors) {
+    this.causalFactors.clear();
+    this.causalFactors.addAll(causalFactors);
+  }
+  
+  void setCausalSafetyConstraints(
+     ArrayList<CausalSafetyConstraint> causalSafetyConstraints) {
+    this.causalSafetyConstraints.clear();
+    this.causalSafetyConstraints.addAll(causalSafetyConstraints);
+  }
+
+  public void syncContent(CausalFactorController controller) {
+    UndoCausalSync callback = new UndoCausalSync(this);
+    callback.setOldValues(new ArrayList<>(causalFactors), new ArrayList<>(causalSafetyConstraints));
+    this.causalFactors.clear();
+    this.causalFactors.addAll(controller.causalFactors);
+    this.causalSafetyConstraints.clear();
+    this.causalSafetyConstraints.addAll(controller.causalSafetyConstraints);
+    callback.setNewValues(new ArrayList<>(causalFactors), new ArrayList<>(causalSafetyConstraints));
+  }
 }
