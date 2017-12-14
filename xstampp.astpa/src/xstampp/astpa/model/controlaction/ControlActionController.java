@@ -109,6 +109,12 @@ public class ControlActionController extends Observable implements IControlActio
     return controlAction.getId();
   }
 
+  UUID addControlAction(ControlAction action) {
+    ControlAction controlAction = new ControlAction(action);
+    this.getControlActions().add(controlAction);
+    return controlAction.getId();
+  }
+
   @Override
   public boolean removeControlAction(UUID controlActionId) {
     ControlAction controlAction = this.getInternalControlAction(controlActionId);
@@ -118,6 +124,8 @@ public class ControlActionController extends Observable implements IControlActio
     int index = this.getControlActions().indexOf(controlAction);
     this.getControlActions().remove(index);
     this.trash.put(controlActionId, controlAction);
+    setChanged();
+    notifyObservers(ObserverValue.CONTROL_ACTION);
     return true;
   }
 
@@ -873,4 +881,44 @@ public class ControlActionController extends Observable implements IControlActio
     }
     return controlActions;
   }
+
+  public void syncContent(ControlActionController userController, List<UUID> responsibilities) {
+    for (ControlAction userCa : userController.getControlActions()) {
+
+      ControlAction originalCa = getInternalControlAction(userCa.getId());
+      if (originalCa == null && responsibilities.contains(userCa.getId())) {
+        addControlAction(userCa);
+        originalCa = getInternalControlAction(userCa.getId());
+      }
+      if (originalCa != null && responsibilities.contains(userCa.getId())) {
+        setControlActionTitle(userCa.getId(), userCa.getTitle());
+        setControlActionDescription(userCa.getId(), userCa.getDescription());
+        // get all changes in the unsafe control actions defined for the current control action
+        for (IUnsafeControlAction uca : userCa.getUnsafeControlActions()) {
+          // check whether the uca must be created in the original model
+          UnsafeControlAction originalUca = (UnsafeControlAction) originalCa
+              .getUnsafeControlAction(uca.getId());
+          if (originalUca == null) {
+            addUnsafeControlAction(userCa.getId(), uca.getDescription(), uca.getType(),
+                uca.getId());
+          }
+          setUcaDescription(uca.getId(), uca.getDescription());
+          setCorrespondingSafetyConstraint(uca.getId(),
+              ((UnsafeControlAction) uca).getCorrespondingSafetyConstraint().getText());
+
+        }
+      }
+    }
+    List<UUID> obsoleteCAs = new ArrayList<>();
+    for (ControlAction ownCa : getControlActions()) {
+      if (userController.getControlAction(ownCa.getId()) == null && responsibilities.contains(ownCa.getId())) {
+        obsoleteCAs.add(ownCa.getId());
+      }
+    }
+    for (UUID actionId : obsoleteCAs) {
+      removeControlAction(actionId);
+    }
+    getControlActions().removeAll(obsoleteCAs);
+  }
+
 }

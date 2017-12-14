@@ -20,9 +20,8 @@ import org.eclipse.ui.services.ISourceProviderService;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.CausalFactorController;
-import xstampp.astpa.model.controlaction.UnsafeControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IControlAction;
-import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
+import xstampp.astpa.model.controlaction.ControlActionController;
+import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.hazacc.HazAccController;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.ui.common.ProjectManager;
@@ -92,35 +91,16 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
         .syncContent((HazAccController) userController.getHazAccController());
 
     ((SDSController) controller.getSdsController()).syncContent((SDSController) userController.getSdsController());
-
+    ((ControlStructureController) controller.getControlStructureController())
+        .sync(((ControlStructureController) userController.getControlStructureController()));
     event.data = 60;
     listener.handleEvent(event);
 
     // Synchronize all Control actions the given user is responsible for
     // furthermore all unsafe control actions and corresponding safety constraints for
     // this control action are synchronized
-    for (IControlAction userCa : userController.getAllControlActionsU()) {
-
-      IControlAction originalCa = controller.getControlActionU(userCa.getId());
-      if (originalCa != null && responsibilities.contains(userCa.getId())) {
-        controller.setControlActionTitle(userCa.getId(), userCa.getTitle());
-        controller.setControlActionDescription(userCa.getId(), userCa.getDescription());
-        // get all changes in the unsafe control actions defined for the current control action
-        for (IUnsafeControlAction uca : userCa.getUnsafeControlActions()) {
-          // check whether the uca must be created in the original model
-          UnsafeControlAction originalUca = (UnsafeControlAction) originalCa
-              .getUnsafeControlAction(uca.getId());
-          if (originalUca == null) {
-            controller.addUnsafeControlAction(userCa.getId(), uca.getDescription(), uca.getType(),
-                uca.getId());
-          } else {
-            controller.setUcaDescription(uca.getId(), uca.getDescription());
-            controller.setCorrespondingSafetyConstraint(uca.getId(),
-                ((UnsafeControlAction) uca).getCorrespondingSafetyConstraint().getText());
-          }
-        }
-      }
-    }
+    ((ControlActionController) controller.getControlActionController())
+        .syncContent((ControlActionController) userController.getControlActionController(), responsibilities);
 
     ((CausalFactorController) controller.getCausalFactorController())
         .syncContent((CausalFactorController) userController.getCausalFactorController());

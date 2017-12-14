@@ -507,13 +507,15 @@ public class LinkController extends Observable {
   }
 
   public void syncContent(LinkController controller) {
+    List<Link> removeList = new ArrayList<>();
     for (Entry<LinkingType, List<Link>> ownEntry : linkMap.entrySet()) {
       for (Link ownLink : ownEntry.getValue()) {
         if (!controller.isLinked(ownEntry.getKey(), ownLink.getLinkA(), ownLink.getLinkB())) {
-          deleteLink(ownEntry.getKey(), ownLink.getLinkA(), ownLink.getLinkB());
+          removeList.add(ownLink);
         }
       }
     }
+    removeList.forEach((link) -> deleteLink(link.getLinkType(), link.getLinkA(), link.getLinkB()));
     for (Entry<LinkingType, List<Link>> foraignEntry : controller.linkMap.entrySet()) {
       addLinks(foraignEntry.getValue());
     }

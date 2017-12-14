@@ -27,6 +27,7 @@ import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.interfaces.ISTPADataModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IValueCombie;
 
@@ -140,6 +141,11 @@ public class ControlAction extends ATableModel implements IControlAction {
   public ControlAction() {
     this.unsafeControlActions = new ArrayList<>();
     // empty constructor for JAXB
+  }
+
+  public ControlAction(ITableModel model) {
+    super(model, -1);
+    this.unsafeControlActions = new ArrayList<>();
   }
 
   @Override

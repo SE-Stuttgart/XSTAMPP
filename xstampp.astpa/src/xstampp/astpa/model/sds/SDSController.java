@@ -12,7 +12,6 @@
 package xstampp.astpa.model.sds;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
@@ -92,7 +91,11 @@ public class SDSController extends Observable implements ISDSController {
   public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
     SafetyConstraint safetyConstraint = new SafetyConstraint(title, description);
     safetyConstraint.setCreatedBy(createdBy);
-    return addSafetyConstraint(safetyConstraint);
+    if (this.getSafetyConstraints().add(safetyConstraint)) {
+      setChanged();
+      notifyObservers(new UndoAddSC(this, safetyConstraint, linkController));
+    }
+    return safetyConstraint.getId();
   }
 
   /*
@@ -707,16 +710,33 @@ public class SDSController extends Observable implements ISDSController {
         setSafetyConstraintDescription(other.getId(), other.getDescription());
       }
     }
-    for (ObserverValue observerValue : Arrays.asList(ObserverValue.DESIGN_REQUIREMENT,
-        ObserverValue.DESIGN_REQUIREMENT_STEP1, ObserverValue.DESIGN_REQUIREMENT_STEP2)) {
-      for (DesignRequirement otherReq : controller.designRequirements) {
-        ITableModel ownReq = getDesignRequirement(otherReq.getId(), observerValue);
-        if (ownReq == null) {
-          addDesignRequirement(otherReq, observerValue);
-        } else {
-          setDesignRequirementTitle(observerValue, otherReq.getId(), otherReq.getTitle());
-          setDesignRequirementDescription(observerValue, otherReq.getId(), otherReq.getDescription());
-        }
+    for (DesignRequirement otherReq : controller.getDesignRequirements()) {
+      ITableModel ownReq = getDesignRequirement(otherReq.getId(), ObserverValue.DESIGN_REQUIREMENT);
+      if (ownReq == null) {
+        addDesignRequirement(otherReq, ObserverValue.DESIGN_REQUIREMENT);
+      } else {
+        setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT, otherReq.getId(), otherReq.getTitle());
+        setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT, otherReq.getId(), otherReq.getDescription());
+      }
+    }
+    for (DesignRequirementStep1 otherReq : controller.getDesignRequirementsStep1()) {
+      ITableModel ownReq = getDesignRequirement(otherReq.getId(), ObserverValue.DESIGN_REQUIREMENT_STEP1);
+      if (ownReq == null) {
+        addDesignRequirement(otherReq, ObserverValue.DESIGN_REQUIREMENT_STEP1);
+      } else {
+        setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT_STEP1, otherReq.getId(), otherReq.getTitle());
+        setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT_STEP1, otherReq.getId(),
+            otherReq.getDescription());
+      }
+    }
+    for (DesignRequirementStep2 otherReq : controller.getDesignRequirementsStep2()) {
+      ITableModel ownReq = getDesignRequirement(otherReq.getId(), ObserverValue.DESIGN_REQUIREMENT_STEP2);
+      if (ownReq == null) {
+        addDesignRequirement(otherReq, ObserverValue.DESIGN_REQUIREMENT_STEP2);
+      } else {
+        setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT_STEP2, otherReq.getId(), otherReq.getTitle());
+        setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT_STEP2, otherReq.getId(),
+            otherReq.getDescription());
       }
     }
   }

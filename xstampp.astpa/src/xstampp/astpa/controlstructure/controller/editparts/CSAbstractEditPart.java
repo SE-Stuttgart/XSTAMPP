@@ -174,7 +174,11 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
       figureTemp.setLayout(modelTemp.getLayout(stepID
           .equals(CSEditor.ID)));
-      figureTemp.setText(modelTemp.getText());
+      if (modelTemp.getControlActionLink() == null) {
+        figureTemp.setText(modelTemp.getText());
+      } else {
+        figureTemp.setText(dataModel.getControlAction(modelTemp.getControlActionLink()).getTitle());
+      }
 
       for (Object child : this.getChildren()) {
         ((IControlStructureEditPart) child).refreshModel();

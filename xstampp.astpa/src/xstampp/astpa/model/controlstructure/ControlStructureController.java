@@ -868,4 +868,15 @@ public class ControlStructureController extends Observable {
     return this.rootComponents;
   }
 
+  public void sync(ControlStructureController controller) {
+    if (controller.rootComponents != null) {
+      this.rootComponents = new ArrayList<>();
+      this.rootComponents.add(controller.rootComponents.get(0).clone());
+      connections.clear();
+      for (CSConnection child : controller.connections) {
+        connections.add(child.clone());
+      }
+    }
+  }
+
 }

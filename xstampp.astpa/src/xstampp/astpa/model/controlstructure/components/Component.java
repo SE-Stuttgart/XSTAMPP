@@ -150,6 +150,38 @@ public class Component
     // empty constructor for JAXB
   }
 
+  List<CSConnection> getConnections() {
+    if (connections != null) {
+      return this.connections;
+    }
+    return new ArrayList<>();
+  }
+
+  public Component clone() {
+    Component component = new Component();
+    for (Component child : getChildList()) {
+      component.children.add(child.clone());
+    }
+    for (UUID variable : getUnsafeProcessVariables()) {
+      component.addUnsafeProcessVariable(variable);
+    }
+    component.comment = this.comment;
+    component.componentType = this.componentType;
+    component.controlActionId = this.controlActionId;
+    component.id = this.id;
+    component.isSafetyCritical = this.isSafetyCritical;
+    component.layout = new Rectangle(layout);
+    component.layoutPM = new Rectangle(layoutPM);
+    component.relative = this.relative;
+    component.text = this.text;
+    return component;
+
+  }
+
+  List<UUID> getUnsafeVariables() {
+    return unsafeVariables == null ? new ArrayList<>() : unsafeVariables;
+  }
+
   @Override
   public UUID getId() {
     return this.id;
@@ -205,6 +237,10 @@ public class Component
     } else {
       this.layoutPM = layout;
     }
+  }
+
+  List<Component> getChildList() {
+    return children == null ? new ArrayList<>() : children;
   }
 
   @Override

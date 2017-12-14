@@ -58,6 +58,12 @@ public class Anchor implements IAnchor {
     this.id = UUID.randomUUID();
   }
 
+  public Anchor clone() {
+    Anchor anchor = new Anchor(isFlying, xOrientation, yOrientation, ownerId);
+    anchor.id = this.id;
+    return anchor;
+  }
+
   /**
    * Empty constructor for JAXB. Do not use it!
    * 

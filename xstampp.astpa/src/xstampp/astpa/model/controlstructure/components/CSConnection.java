@@ -69,6 +69,13 @@ public class CSConnection implements IConnection {
     this.bendPoints = null;
   }
 
+  public CSConnection clone() {
+    CSConnection connection = new CSConnection(sourceAnchor.clone(), targetAnchor.clone(), connectionType);
+    connection.id = this.id;
+    connection.bendPoints = this.bendPoints;
+    return connection;
+  }
+
   /**
    * Empty constructor used for JAXB. Do not use it!
    * 

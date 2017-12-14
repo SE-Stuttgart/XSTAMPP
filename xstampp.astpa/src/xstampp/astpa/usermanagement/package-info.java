@@ -38,17 +38,17 @@
  * <li>darf Safety Constraints anlegen/bearbeiten
  * <li>darf Control Structure einsehen und editieren <b>TODO</b> <i>(user kann control structure
  * momentan nur einsehen)</i>
- * <li>darf ControlActions bearbeiten *�
- * <li>darf UnsafeControlActions f�r ControlActions erstellen/bearbeiten *� <b>TODO</b>
- * <li>darf Hazard Links hinzuf�gen/entfernen
- * <li>darf Corresponding Safety Constraints schreiben *� <b>TODO</b>
- * <li>darf CausalFactors f�r UnsafeControlActions erstellen und bearbeiten *� <b>TODO</b>
+ * <li>darf ControlActions bearbeiten *1
+ * <li>darf UnsafeControlActions für ControlActions erstellen/bearbeiten *1<b>TODO</b>
+ * <li>darf Hazard Links hinzufügen/entfernen
+ * <li>darf Corresponding Safety Constraints schreiben *2<b>TODO</b>
+ * <li>darf CausalFactors für UnsafeControlActions erstellen und bearbeiten *2 <b>TODO</b>
  * </ul>
  * 
  * <i>
- * * eintr�ge k�nnen f�r alle/bestimmte user gesperrt werden<br>
- * *� nur f�r ControlActions die f�r ihn vom admin freigegeben wurden <br>
- * *� nur f�r zugriffsberechtigte UnsafeControlActions
+ * * einträge können für alle/bestimmte user gesperrt werden<br>
+ * *1 nur für ControlActions die für ihn vom admin freigegeben wurden <br>
+ * *2 nur für zugriffsberechtigte UnsafeControlActions
  * <p>
  * </i>
  * nur ein Admin Mode, aber es kann mehrere Admins geben

@@ -59,6 +59,7 @@ public class Hazard extends ATableModel {
 
   Hazard(ITableModel model) {
     super(model, model.getNumber());
+    setSeverity(Severity.S0);
   }
 
   public Hazard(String title, String description) {

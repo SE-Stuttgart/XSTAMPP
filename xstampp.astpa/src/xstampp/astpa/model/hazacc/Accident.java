@@ -52,6 +52,7 @@ public class Accident extends ATableModel {
    */
   public Accident() {
     this("", "", -1); //$NON-NLS-1$ //$NON-NLS-2$
+    setSeverity(Severity.S0);
     // empty constructor for JAXB
   }
 
@@ -61,6 +62,7 @@ public class Accident extends ATableModel {
 
   Accident(ITableModel model) {
     super(model, model.getNumber());
+    setSeverity(Severity.S0);
   }
 
   @Override
