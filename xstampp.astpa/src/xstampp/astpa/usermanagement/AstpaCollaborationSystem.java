@@ -23,6 +23,7 @@ import xstampp.astpa.model.controlaction.UnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.sds.SDSController;
 import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.api.CollaborationSystem;
 import xstampp.usermanagement.api.IUser;
@@ -66,16 +67,12 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
         controller.setHazardDescription(entry.getId(), userEntry.getDescription());
       }
     }
-    for (ITableModel model : userController.getAllSafetyConstraints()) {
-      if (controller.getSafetyConstraint(model.getId()) == null) {
-        controller.addSafetyConstraint(model);
-      }
-    }
+    ((SDSController) controller.getSdsController()).syncContent((SDSController) userController.getSdsController());
 
     event.data = 60;
     listener.handleEvent(event);
 
-    // Synchronize all COntrol actions the given user is responsible for
+    // Synchronize all Control actions the given user is responsible for
     // furthermore all unsafe control actions and corresponding safety constraints for
     // this control action are synchronized
     for (IControlAction userCa : userController.getAllControlActionsU()) {

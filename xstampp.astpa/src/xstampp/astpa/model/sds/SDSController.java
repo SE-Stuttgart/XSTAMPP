@@ -12,6 +12,7 @@
 package xstampp.astpa.model.sds;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
@@ -685,5 +686,38 @@ public class SDSController extends Observable implements ISDSController {
       this.designRequirementsStep2 = new NumberedArrayList<>();
     }
     return designRequirementsStep2;
+  }
+
+  public void syncContent(SDSController controller) {
+    for (SystemGoal other : controller.systemGoals) {
+      ITableModel own = getSystemGoal(other.getId());
+      if (own == null) {
+        addSystemGoal(other);
+      } else {
+        setSystemGoalTitle(other.getId(), other.getTitle());
+        setSystemGoalDescription(other.getId(), other.getDescription());
+      }
+    }
+    for (SafetyConstraint other : controller.safetyConstraints) {
+      ITableModel own = getSafetyConstraint(other.getId());
+      if (own == null) {
+        addSafetyConstraint(other);
+      } else {
+        setSafetyConstraintTitle(other.getId(), other.getTitle());
+        setSafetyConstraintDescription(other.getId(), other.getDescription());
+      }
+    }
+    for (ObserverValue observerValue : Arrays.asList(ObserverValue.DESIGN_REQUIREMENT,
+        ObserverValue.DESIGN_REQUIREMENT_STEP1, ObserverValue.DESIGN_REQUIREMENT_STEP2)) {
+      for (DesignRequirement otherReq : controller.designRequirements) {
+        ITableModel ownReq = getDesignRequirement(otherReq.getId(), observerValue);
+        if (ownReq == null) {
+          addDesignRequirement(otherReq, observerValue);
+        } else {
+          setDesignRequirementTitle(observerValue, otherReq.getId(), otherReq.getTitle());
+          setDesignRequirementDescription(observerValue, otherReq.getId(), otherReq.getDescription());
+        }
+      }
+    }
   }
 }
