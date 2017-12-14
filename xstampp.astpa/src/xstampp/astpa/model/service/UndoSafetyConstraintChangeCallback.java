@@ -11,14 +11,14 @@
  ******************************************************************************/
 package xstampp.astpa.model.service;
 
-import xstampp.astpa.model.interfaces.ISafetyConstraintViewDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.ObserverValue;
 
 public class UndoSafetyConstraintChangeCallback
-    extends UndoTableModelChangeCallback<ISafetyConstraintViewDataModel> {
+    extends UndoTableModelChangeCallback<ISDSController> {
 
-  public UndoSafetyConstraintChangeCallback(ISafetyConstraintViewDataModel dataModel,
+  public UndoSafetyConstraintChangeCallback(ISDSController dataModel,
       ITableModel model) {
     super(dataModel, model);
   }

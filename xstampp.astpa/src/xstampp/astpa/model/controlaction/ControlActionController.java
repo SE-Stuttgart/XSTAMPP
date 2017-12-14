@@ -43,6 +43,9 @@ import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
+import xstampp.astpa.model.service.UndoCSCChangeCallback;
+import xstampp.astpa.model.service.UndoControlActionChangeCallback;
+import xstampp.astpa.model.service.UndoUCAChangesCallback;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.NumberedArrayList;
@@ -258,13 +261,25 @@ public class ControlActionController extends Observable implements IControlActio
   }
 
   @Override
-  public String setUcaDescription(UUID unsafeControlActionId, String description) {
+  public boolean setUcaDescription(UUID unsafeControlActionId, String description) {
+    if ((unsafeControlActionId == null) || (description == null)) {
+      return false;
+    }
+    String oldDescription = null;
     UnsafeControlAction unsafeControlAction = (UnsafeControlAction) this
         .getUnsafeControlAction(unsafeControlActionId);
     if (unsafeControlAction != null) {
-      return unsafeControlAction.setDescription(description);
+      oldDescription = unsafeControlAction.setDescription(description);
     }
-    return null;
+    if (oldDescription != null) {
+      setChanged();
+      UndoUCAChangesCallback callback = new UndoUCAChangesCallback(this, unsafeControlActionId);
+      callback.setDescriptionChange(oldDescription, description);
+
+      notifyObservers(callback);
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -331,16 +346,71 @@ public class ControlActionController extends Observable implements IControlActio
   }
 
   @Override
-  public String setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
-      String safetyConstraintDescription) {
-    UnsafeControlAction unsafeControlAction = (UnsafeControlAction) this
-        .getUnsafeControlAction(unsafeControlActionId);
-    if (unsafeControlAction == null) {
-      return null;
+  public boolean setControlActionDescription(UUID controlActionId, String description) {
+    if ((controlActionId == null) || (description == null)) {
+      return false;
     }
-    String oldTitle = unsafeControlAction.getCorrespondingSafetyConstraint()
-        .setTitle(safetyConstraintDescription);
-    return oldTitle;
+    ITableModel controlAction = getControlAction(controlActionId);
+    if (!(controlAction instanceof ControlAction)) {
+      return false;
+    }
+    String oldDescription = ((ControlAction) controlAction).setDescription(description);
+    if (oldDescription != null) {
+      setChanged();
+      UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
+          controlAction);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setControlActionTitle(UUID controlActionId, String title) {
+    if ((controlActionId == null) || (title == null)) {
+      return false;
+    }
+    ITableModel controlAction = getControlAction(controlActionId);
+    if (!(controlAction instanceof ControlAction)) {
+      return false;
+    }
+    boolean result = false;
+
+    String oldTitle = ((ControlAction) getControlAction(controlActionId)).setTitle(title);
+    if (oldTitle != null) {
+      setChanged();
+      UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
+          controlAction);
+      changeCallback.setTitleChange(oldTitle, title);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return result;
+  }
+
+  @Override
+  public boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+      String safetyConstraintDescription) {
+    try {
+      UnsafeControlAction unsafeControlAction = (UnsafeControlAction) this
+          .getUnsafeControlAction(unsafeControlActionId);
+      if (unsafeControlAction == null) {
+        return false;
+      }
+      String oldTitle = unsafeControlAction.getCorrespondingSafetyConstraint()
+          .setTitle(safetyConstraintDescription);
+      if (oldTitle != null) {
+        setChanged();
+        UndoCSCChangeCallback callback = new UndoCSCChangeCallback(this, unsafeControlActionId);
+        callback.setDescriptionChange(oldTitle, safetyConstraintDescription);
+        notifyObservers(callback);
+        return true;
+      }
+      return false;
+    } catch (Exception exc) {
+      return false;
+    }
   }
 
   @Override
@@ -493,8 +563,7 @@ public class ControlActionController extends Observable implements IControlActio
     }
     linkController.deleteAllFor(LinkingType.UNSAFE_CONTROL_ACTION, null);
     for (UCAHazLink ucaHazLink : getAllUCALinks()) {
-      linkController.addLink(LinkingType.UCA_HAZ_LINK, ucaHazLink.getHazardId(),
-          ucaHazLink.getUnsafeControlActionId());
+      linkController.addLink(LinkingType.UCA_HAZ_LINK, ucaHazLink.getUnsafeControlActionId(), ucaHazLink.getHazardId());
     }
     this.links = null;
     boolean isUsed = nextCAIndex != null || nextUcaIndex != null;

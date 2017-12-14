@@ -13,19 +13,19 @@ package xstampp.astpa.model.service;
 
 import java.util.UUID;
 
-import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.model.ObserverValue;
 import xstampp.util.IUndoCallback;
 
 public class UndoUCAChangesCallback implements IUndoCallback {
 
-  private IUnsafeControlActionDataModel dataModel;
+  private IControlActionController dataModel;
   private String newDescription;
   private String oldDescription;
   private boolean descriptionDirty;
   private UUID ucaID;
 
-  public UndoUCAChangesCallback(IUnsafeControlActionDataModel dataModel, UUID ucaID) {
+  public UndoUCAChangesCallback(IControlActionController dataModel, UUID ucaID) {
     this.dataModel = dataModel;
     this.ucaID = ucaID;
     this.descriptionDirty = false;

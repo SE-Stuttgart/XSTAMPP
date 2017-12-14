@@ -11,13 +11,13 @@
  ******************************************************************************/
 package xstampp.astpa.model.service;
 
-import xstampp.astpa.model.interfaces.ISystemGoalViewDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.sds.ISDSController;
 import xstampp.model.ObserverValue;
 
-public class UndoGoalChangeCallback extends UndoTableModelChangeCallback<ISystemGoalViewDataModel> {
+public class UndoGoalChangeCallback extends UndoTableModelChangeCallback<ISDSController> {
 
-  public UndoGoalChangeCallback(ISystemGoalViewDataModel dataModel, ITableModel model) {
+  public UndoGoalChangeCallback(ISDSController dataModel, ITableModel model) {
     super(dataModel, model);
   }
 

@@ -11,14 +11,14 @@
  ******************************************************************************/
 package xstampp.astpa.model.service;
 
-import xstampp.astpa.model.interfaces.IControlActionViewDataModel;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 public class UndoControlActionChangeCallback
-    extends UndoTableModelChangeCallback<IControlActionViewDataModel> {
+    extends UndoTableModelChangeCallback<IControlActionController> {
 
-  public UndoControlActionChangeCallback(IControlActionViewDataModel dataModel, ITableModel model) {
+  public UndoControlActionChangeCallback(IControlActionController dataModel, ITableModel model) {
     super(dataModel, model);
   }
 

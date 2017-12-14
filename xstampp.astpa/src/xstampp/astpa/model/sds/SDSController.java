@@ -27,6 +27,8 @@ import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
+import xstampp.astpa.model.service.UndoGoalChangeCallback;
+import xstampp.astpa.model.service.UndoSafetyConstraintChangeCallback;
 import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 
@@ -458,6 +460,90 @@ public class SDSController extends Observable implements ISDSController {
           requirement);
       changeCallback.setTitleChange(oldTitle, title);
       setChanged();
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setSafetyConstraintTitle(UUID safetyConstraintId, String title) {
+    if ((title == null) || (safetyConstraintId == null)) {
+      return false;
+    }
+    ITableModel safetyConstraint = getSafetyConstraint(safetyConstraintId);
+    if (!(safetyConstraint instanceof SafetyConstraint)) {
+      return false;
+    }
+    String oldTitle = ((SafetyConstraint) safetyConstraint).setTitle(title);
+    if (oldTitle != null) {
+      setChanged();
+      UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
+          this, safetyConstraint);
+      changeCallback.setTitleChange(oldTitle, title);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setSafetyConstraintDescription(UUID safetyConstraintId, String description) {
+    if ((description == null) || (safetyConstraintId == null)) {
+      return false;
+    }
+    ITableModel safetyConstraint = getSafetyConstraint(safetyConstraintId);
+    if (!(safetyConstraint instanceof SafetyConstraint)) {
+      return false;
+    }
+
+    String oldDescription = ((SafetyConstraint) safetyConstraint).setDescription(description);
+    if (oldDescription != null) {
+      setChanged();
+      UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
+          this, safetyConstraint);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setSystemGoalDescription(UUID systemGoalId, String description) {
+    if ((systemGoalId == null) || (description == null)) {
+      return false;
+    }
+    ITableModel systemGoal = getSystemGoal(systemGoalId);
+    if (!(systemGoal instanceof SystemGoal)) {
+      return false;
+    }
+
+    String oldDescription = ((SystemGoal) systemGoal).setDescription(description);
+    if (oldDescription != null) {
+      setChanged();
+      UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoal);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setSystemGoalTitle(UUID systemGoalId, String title) {
+    if ((systemGoalId == null) || (title == null)) {
+      return false;
+    }
+    ITableModel systemGoal = getSystemGoal(systemGoalId);
+    if (!(systemGoal instanceof SystemGoal)) {
+      return false;
+    }
+    String oldTitle = ((SystemGoal) systemGoal).setTitle(title);
+    if (oldTitle != null) {
+      setChanged();
+      UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoal);
+      changeCallback.setTitleChange(oldTitle, title);
       notifyObservers(changeCallback);
       return true;
     }

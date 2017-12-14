@@ -13,19 +13,19 @@ package xstampp.astpa.model.service;
 
 import java.util.UUID;
 
-import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 public class UndoCSCChangeCallback
-    extends UndoTableModelChangeCallback<ICorrespondingSafetyConstraintDataModel> {
+    extends UndoTableModelChangeCallback<IControlActionController> {
 
-  public UndoCSCChangeCallback(ICorrespondingSafetyConstraintDataModel dataModel,
+  public UndoCSCChangeCallback(IControlActionController dataModel,
       ITableModel model) {
     super(dataModel, model);
   }
 
-  public UndoCSCChangeCallback(ICorrespondingSafetyConstraintDataModel dataModel, UUID model) {
+  public UndoCSCChangeCallback(IControlActionController dataModel, UUID model) {
     super(dataModel, model);
   }
 

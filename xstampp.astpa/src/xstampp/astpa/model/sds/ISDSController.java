@@ -247,4 +247,12 @@ public interface ISDSController {
   void prepareForExport(LinkController linkController, IHazAccController hazacc,
       IControlActionController caController, ICausalController causalController);
 
+  boolean setSafetyConstraintTitle(UUID safetyConstraintId, String title);
+
+  boolean setSafetyConstraintDescription(UUID entryId, String description);
+
+  boolean setSystemGoalDescription(UUID systemGoalId, String description);
+
+  boolean setSystemGoalTitle(UUID systemGoalId, String title);
+
 }

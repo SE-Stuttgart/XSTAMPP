@@ -210,7 +210,7 @@ public interface IControlActionController {
    * @author Patrick Wickenhaeuser, Fabian Toth
    * @return true, if the description has been set
    */
-  String setUcaDescription(UUID unsafeControlActionId, String description);
+  boolean setUcaDescription(UUID unsafeControlActionId, String description);
 
   /**
    * gets all uca entries that are marked as hazardous means that they are linked to at least one
@@ -258,7 +258,7 @@ public interface IControlActionController {
    *          the text of the corresponding safety constraint
    * @return the id of the corresponding safety constraint. null if the action fails
    */
-  String setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+  boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
       String safetyConstraintDescription);
 
   /**
@@ -286,8 +286,10 @@ public interface IControlActionController {
    * Prepares the control actions for the export
    * 
    * @author Fabian Toth
-   * @param dataModel TODO
-   * @param defaultLabel TODO
+   * @param dataModel
+   *          TODO
+   * @param defaultLabel
+   *          TODO
    * 
    */
   void prepareForExport(ISTPADataModel dataModel, String defaultLabel);
@@ -555,5 +557,9 @@ public interface IControlActionController {
   ITableModel getCorrespondingSafetyConstraint(UUID id);
 
   IUnsafeControlAction getUnsafeControlAction(UUID unsafeControlActionId);
+
+  boolean setControlActionTitle(UUID controlActionId, String title);
+
+  boolean setControlActionDescription(UUID entryId, String description);
 
 }
