@@ -11,14 +11,14 @@
  ******************************************************************************/
 package xstampp.astpa.model.service;
 
-import xstampp.astpa.model.interfaces.IAccidentViewDataModel;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.model.ObserverValue;
 
 public class UndoAccidentChangeCallback
-    extends UndoTableModelChangeCallback<IAccidentViewDataModel> {
+    extends UndoTableModelChangeCallback<IHazAccController> {
 
-  public UndoAccidentChangeCallback(IAccidentViewDataModel dataModel, ITableModel model) {
+  public UndoAccidentChangeCallback(IHazAccController dataModel, ITableModel model) {
     super(dataModel, model);
   }
 

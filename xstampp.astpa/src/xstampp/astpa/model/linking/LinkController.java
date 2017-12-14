@@ -477,8 +477,8 @@ public class LinkController extends Observable {
   }
 
   void deleteLinks(LinkingType linkType, List<Link> links) {
-    if (this.linkMap.containsKey(linkType)) {
-      this.linkMap.get(linkType).removeAll(links);
+    if (this.linkMap.containsKey(linkType) &&
+        this.linkMap.get(linkType).removeAll(links)) {
       if (this.linkMap.get(linkType).isEmpty()) {
         this.linkMap.remove(linkType);
       }

@@ -89,14 +89,9 @@ public class CausalFactorEntry {
           componentId);
       // if a constraint is already linked to this entry than the link is re-added as
       // UcaHazLink_SC2_LINK to the LinkController
-      linkController.getRawLinksFor(LinkingType.UCA_HAZ_LINK, ucaLink).forEach(link -> {
-        UUID hazEntryId = linkController.addLink(LinkingType.CausalEntryLink_HAZ_LINK, UcaCfCompLink,
-            link.getLinkB());
-        if (this.constraintId != null) {
-          linkController.addLink(LinkingType.CausalHazLink_SC2_LINK, hazEntryId,
-              this.constraintId);
-        }
-      });
+
+      linkController.addLink(LinkingType.CausalEntryLink_SC2_LINK, UcaCfCompLink,
+          this.constraintId);
     }
     constraintText = null;
     ucaLink = null;
@@ -110,7 +105,8 @@ public class CausalFactorEntry {
 
   public void prepareForExport(IHazAccController hazAccController,
       IExtendedDataController extendedDataController, IControlActionController caController,
-      CausalFactorController controller, Link causalEntryList, LinkController linkController, ISDSController sdsController) {
+      CausalFactorController controller, Link causalEntryList, LinkController linkController,
+      ISDSController sdsController) {
     Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
         causalEntryList.getLinkA());
     if (ucaCfLink.isLinkAPresent()) {
@@ -121,7 +117,8 @@ public class CausalFactorEntry {
         hazardEntries = new ArrayList<>();
         for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
             causalEntryList.getId())) {
-          CausalHazardEntry hazEntry = new CausalHazardEntry(controller,linkController,sdsController,caController, causalHazLink,hazAccController);
+          CausalHazardEntry hazEntry = new CausalHazardEntry(controller, linkController, sdsController, caController,
+              causalHazLink, hazAccController);
           hazardEntries.add(hazEntry);
         }
       } else {

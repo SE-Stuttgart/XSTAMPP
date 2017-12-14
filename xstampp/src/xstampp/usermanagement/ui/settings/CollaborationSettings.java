@@ -159,7 +159,7 @@ public class CollaborationSettings implements ISettingsPage, Observer {
         tableComposite.layout();
         content.setMinHeight(tableComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
         content.layout();
-        content.changed(new Control[] { tableComposite });
+        content.layout(new Control[] { tableComposite });
       }
     };
     listener.handleEvent(null);

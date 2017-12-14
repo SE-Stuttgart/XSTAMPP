@@ -57,13 +57,25 @@ public class NumberedArrayList<E extends NumberedEntry> extends ArrayList<E> {
     if (trash.containsKey(e.getId())) {
       e.setNumber(trash.remove(e.getId()));
     }
-    if (e.getNumber() < 0) {
+    if (!checkNumber(e.getNumber())) {
       e.setNumber(this.getNextNumber());
     } else if (useNextNumber) {
       this.nextNumber = this.nextNumber == null ? e.getNumber() + 1
           : Math.max(this.nextNumber, e.getNumber() + 1);
     }
     return super.add(e);
+  }
+
+  private boolean checkNumber(int number) {
+    if (number < 0) {
+      return false;
+    }
+    for (int i = 0; i < size(); i++) {
+      if (get(i).getNumber() == number) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override

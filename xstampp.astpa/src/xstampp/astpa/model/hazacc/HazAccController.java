@@ -29,6 +29,8 @@ import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.sds.ISDSController;
+import xstampp.astpa.model.service.UndoAccidentChangeCallback;
+import xstampp.astpa.model.service.UndoHazardChangeCallback;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
@@ -86,6 +88,49 @@ public class HazAccController extends Observable implements IHazAccController {
     setChanged();
     notifyObservers(new UndoAddAccident(this, newAccident, getLinkController()));
     return newAccident.getId();
+  }
+
+  @Override
+  public boolean setAccidentDescription(UUID accidentId, String description) {
+    if ((accidentId == null) || (description == null)) {
+      return false;
+    }
+
+    ITableModel accident = getAccident(accidentId);
+    if (!(accident instanceof Accident)) {
+      return false;
+    }
+
+    String oldDescription = ((ATableModel) accident).setDescription(description);
+    if (oldDescription != null) {
+      setChanged();
+      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setAccidentTitle(UUID accidentId, String title) {
+    if ((accidentId == null) || (title == null)) {
+      return false;
+    }
+    ITableModel accident = getAccident(accidentId);
+    if (!(accident instanceof Accident)) {
+      return false;
+    }
+
+    String oldTitle = ((ATableModel) accident).setTitle(title);
+    if (oldTitle != null) {
+      setChanged();
+      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
+      changeCallback.setTitleChange(oldTitle, title);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
   }
 
   /*
@@ -168,7 +213,7 @@ public class HazAccController extends Observable implements IHazAccController {
 
   UUID addHazard(ITableModel model) {
     Hazard newHazard = new Hazard(model);
-    if(this.getHazards().add(newHazard)) {
+    if (this.getHazards().add(newHazard)) {
       setChanged();
       notifyObservers(new UndoAddHazard(this, newHazard, getLinkController()));
       return newHazard.getId();
@@ -183,9 +228,49 @@ public class HazAccController extends Observable implements IHazAccController {
   @Override
   public boolean removeHazard(UUID id) {
     Hazard hazard = this.getHazard(id);
-    if(this.getHazards().remove(hazard)) {
+    if (this.getHazards().remove(hazard)) {
       setChanged();
       notifyObservers(new UndoRemoveHazard(this, hazard, getLinkController()));
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setHazardDescription(UUID hazardId, String description) {
+    if ((description == null) || (hazardId == null)) {
+      return false;
+    }
+    Hazard hazard = getHazard(hazardId);
+    if (!(hazard instanceof Hazard)) {
+      return false;
+    }
+    String oldDescription = ((Hazard) hazard).setDescription(description);
+    if (oldDescription != null) {
+      setChanged();
+      UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      notifyObservers(changeCallback);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setHazardTitle(UUID hazardId, String title) {
+    if ((title == null) || (hazardId == null)) {
+      return false;
+    }
+    Hazard hazard = getHazard(hazardId);
+    if (!(hazard instanceof Hazard)) {
+      return false;
+    }
+    String oldTitle = ((Hazard) hazard).setTitle(title);
+    if (oldTitle != null) {
+      setChanged();
+      UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
+      changeCallback.setTitleChange(oldTitle, title);
+      notifyObservers(changeCallback);
       return true;
     }
     return false;
@@ -366,5 +451,28 @@ public class HazAccController extends Observable implements IHazAccController {
 
   public void setLinkController(LinkController linkController) {
     this.linkController = linkController;
+  }
+
+  public void syncContent(HazAccController controller) {
+    for (Accident other : controller.accidents) {
+      ITableModel own = getAccident(other.getId());
+      if (own == null) {
+        addAccident(other);
+      } else {
+        setAccidentTitle(other.getId(), other.getTitle());
+        setAccidentDescription(other.getId(), other.getDescription());
+        ((Accident) own).setSeverity(other.getSeverity());
+      }
+    }
+    for (Hazard other : controller.hazards) {
+      ITableModel own = getHazard(other.getId());
+      if (own == null) {
+        addHazard(other);
+      } else {
+        setHazardTitle(other.getId(), other.getTitle());
+        setHazardDescription(other.getId(), other.getDescription());
+        ((Hazard) own).setSeverity(other.getSeverity());
+      }
+    }
   }
 }

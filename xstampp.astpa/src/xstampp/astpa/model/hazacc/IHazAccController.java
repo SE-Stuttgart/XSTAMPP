@@ -172,7 +172,7 @@ public interface IHazAccController {
    * @param linkController
    *
    */
-  void prepareForExport(LinkController linkController,ISDSController sdsController);
+  void prepareForExport(LinkController linkController, ISDSController sdsController);
 
   /**
    * Removes the preparations that were made for the export
@@ -197,5 +197,13 @@ public interface IHazAccController {
   boolean setUseSeverity(boolean useSeverity);
 
   void addObserver(Observer obs);
+
+  boolean setHazardDescription(UUID hazardId, String description);
+
+  boolean setHazardTitle(UUID hazardId, String title);
+
+  boolean setAccidentTitle(UUID accidentId, String title);
+
+  boolean setAccidentDescription(UUID accidentId, String description);
 
 }

@@ -292,6 +292,14 @@ public class CausalFactorController extends Observable implements ICausalControl
     return null;
   }
 
+  UUID addSafetyConstraint(ITableModel model) {
+    CausalSafetyConstraint constraint = new CausalSafetyConstraint(model);
+    if (this.causalSafetyConstraints.add(constraint)) {
+      return constraint.getId();
+    }
+    return null;
+  }
+
   @Override
   public List<ITableModel> getSafetyConstraints() {
     List<ITableModel> list = new ArrayList<>();
@@ -378,20 +386,30 @@ public class CausalFactorController extends Observable implements ICausalControl
     this.causalFactors.clear();
     this.causalFactors.addAll(causalFactors);
   }
-  
+
   void setCausalSafetyConstraints(
-     ArrayList<CausalSafetyConstraint> causalSafetyConstraints) {
+      ArrayList<CausalSafetyConstraint> causalSafetyConstraints) {
     this.causalSafetyConstraints.clear();
     this.causalSafetyConstraints.addAll(causalSafetyConstraints);
   }
 
   public void syncContent(CausalFactorController controller) {
-    UndoCausalSync callback = new UndoCausalSync(this);
-    callback.setOldValues(new ArrayList<>(causalFactors), new ArrayList<>(causalSafetyConstraints));
-    this.causalFactors.clear();
-    this.causalFactors.addAll(controller.causalFactors);
-    this.causalSafetyConstraints.clear();
-    this.causalSafetyConstraints.addAll(controller.causalSafetyConstraints);
-    callback.setNewValues(new ArrayList<>(causalFactors), new ArrayList<>(causalSafetyConstraints));
+    for (CausalFactor other : controller.causalFactors) {
+      ICausalFactor own = getCausalFactor(other.getId());
+      if (own == null) {
+        addCausalFactor(other);
+      } else {
+        setCausalFactorText(other.getId(), other.getText());
+      }
+    }
+    for (CausalSafetyConstraint otherReq : controller.causalSafetyConstraints) {
+      ITableModel ownReq = getSafetyConstraint(otherReq.getId());
+      if (ownReq == null) {
+        addSafetyConstraint(otherReq);
+      } else {
+        setSafetyConstraintText(otherReq.getId(), otherReq.getTitle());
+        setSafetyConstraintDescription(otherReq.getId(), otherReq.getDescription());
+      }
+    }
   }
 }

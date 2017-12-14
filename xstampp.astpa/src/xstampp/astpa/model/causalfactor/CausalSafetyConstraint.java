@@ -14,6 +14,7 @@
 package xstampp.astpa.model.causalfactor;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * A corresponding safety constraint
@@ -35,6 +36,10 @@ class CausalSafetyConstraint extends ATableModel {
    */
   public CausalSafetyConstraint(String title) {
     super(title, "", -1);
+  }
+
+  public CausalSafetyConstraint(ITableModel model) {
+    super(model, -1);
   }
 
   /**

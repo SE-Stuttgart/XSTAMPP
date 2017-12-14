@@ -177,12 +177,11 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
           first = false;
         }
       }
-      if (checkAccess(AccessRights.ADMIN)) {
-        GridRow buttonRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
-        buttonRow.addCell(1, new GridCellButtonAddCausalFactor(component, getDataModel()));
-        buttonRow.setColumnSpan(1, getGridWrapper().getColumnLabels().length - 2);
-        componentRow.addChildRow(buttonRow);
-      }
+      GridRow buttonRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
+      buttonRow.addCell(1, new GridCellButtonAddCausalFactor(component, getDataModel()));
+      buttonRow.setColumnSpan(1, getGridWrapper().getColumnLabels().length - 2);
+      componentRow.addChildRow(buttonRow);
+
     }
   }
 
@@ -288,7 +287,11 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
           : new GridRow(this.getGridWrapper().getColumnLabels().length, 1);
       switch (entryType) {
       case CausalEntryLink_Scenario_LINK: {
-        createScenarioRow(row, link, uca);
+        if (getDataModel().getExtendedDataController().getRefinedScenario(link.getLinkB()) == null) {
+          ProjectManager.getLOGGER().error("Causal Factor Scenario link with illegal Scenario id!");
+        } else {
+          createScenarioRow(row, link, uca);
+        }
         break;
       }
       case CausalEntryLink_HAZ_LINK: {
@@ -338,17 +341,19 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     ITableModel hazard = getDataModel().getHazard(ucaHazLink.getLinkB());
     String hazText = hazard != null ? hazard.getIdString() + " - " + hazard.getTitle() : "no hazard";
     GridCellText hazCell = new GridCellText(hazText);
-    String toolTip = hazard != null ? hazard.getDescription() : null;
-    int maxLength = 70;
-    String wrappedToolTip = "";
-    int nextIndex = 0;
-    while (nextIndex < toolTip.length()) {
-      int indexOf = toolTip.indexOf(' ', nextIndex + maxLength);
-      int endIndex = indexOf < 0 ? toolTip.length() : indexOf + 1;
-      wrappedToolTip += toolTip.substring(nextIndex, endIndex) + "\n";
-      nextIndex = endIndex;
+    if (hazard != null && hazard.getDescription() != null) {
+      String toolTip = hazard.getDescription();
+      int maxLength = 70;
+      String wrappedToolTip = "";
+      int nextIndex = 0;
+      while (nextIndex < toolTip.length()) {
+        int indexOf = toolTip.indexOf(' ', nextIndex + maxLength);
+        int endIndex = indexOf < 0 ? toolTip.length() : indexOf + 1;
+        wrappedToolTip += toolTip.substring(nextIndex, endIndex) + "\n";
+        nextIndex = endIndex;
+      }
+      hazCell.setToolTip(wrappedToolTip);
     }
-    hazCell.setToolTip(wrappedToolTip);
     entryRow.addCell(3, hazCell);
 
     CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(),
@@ -398,11 +403,10 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     entryRow.addCell(4, cell);
 
-    Optional<Link> safetyOption = getDataModel().getLinkController()
-        .getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId()).stream()
-        .findFirst();
+    Optional<Link> safetyOption = Optional.ofNullable(getDataModel().getLinkController()
+        .getLinkObjectFor(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId()));
 
-    IGridCell hintCell = new GridCellText("");
+    IGridCell hintCell = new GridCellText("-");
     if (safetyOption.isPresent()) {
       hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), safetyOption.get());
       ((GridCellTextEditor) hintCell).setDefaultText("Design hint...");

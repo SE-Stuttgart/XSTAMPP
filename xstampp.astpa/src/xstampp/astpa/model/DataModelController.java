@@ -96,8 +96,6 @@ import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
-import xstampp.astpa.model.service.UndoAccidentChangeCallback;
-import xstampp.astpa.model.service.UndoHazardChangeCallback;
 import xstampp.astpa.usermanagement.AstpaCollaborationSystem;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
@@ -243,14 +241,10 @@ public class DataModelController extends AbstractDataModel
   public void initializeProject(IDataModel original) {
     initializeProject();
     if (original instanceof DataModelController) {
+      AstpaCollaborationSystem system = new AstpaCollaborationSystem(this);
+      system.syncData(((DataModelController) original));
       this.userSystemId = ((DataModelController) original).userSystemId;
       this.userSystemName = ((DataModelController) original).userSystemName;
-      this.causalFactorController = ((DataModelController) original).causalFactorController;
-      this.controlActionController = ((DataModelController) original).controlActionController;
-      this.controlStructureController = ((DataModelController) original).controlStructureController;
-      this.hazAccController = ((DataModelController) original).hazAccController;
-      this.sdsController = ((DataModelController) original).sdsController;
-      this.extendedDataController = ((DataModelController) original).extendedDataController;
     }
 
   }
@@ -1519,23 +1513,7 @@ public class DataModelController extends AbstractDataModel
     if (!getUserSystem().checkAccess(accidentId, AccessRights.WRITE)) {
       return false;
     }
-    if ((accidentId == null) || (description == null)) {
-      return false;
-    }
-
-    ITableModel accident = this.getHazAccController().getAccident(accidentId);
-    if (!(accident instanceof Accident)) {
-      return false;
-    }
-
-    String oldDescription = ((ATableModel) accident).setDescription(description);
-    if (oldDescription != null) {
-      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      update(this, changeCallback);
-      return true;
-    }
-    return false;
+    return getHazAccController().setAccidentDescription(accidentId, description);
   }
 
   @Override
@@ -1543,22 +1521,7 @@ public class DataModelController extends AbstractDataModel
     if (!getUserSystem().checkAccess(accidentId, AccessRights.WRITE)) {
       return false;
     }
-    if ((accidentId == null) || (title == null)) {
-      return false;
-    }
-    ITableModel accident = this.getHazAccController().getAccident(accidentId);
-    if (!(accident instanceof Accident)) {
-      return false;
-    }
-
-    String oldTitle = ((ATableModel) accident).setTitle(title);
-    if (oldTitle != null) {
-      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
-      changeCallback.setTitleChange(oldTitle, title);
-      update(this, changeCallback);
-      return true;
-    }
-    return false;
+    return getHazAccController().setAccidentTitle(accidentId, title);
   }
 
   /**
@@ -1657,40 +1620,12 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean setHazardDescription(UUID hazardId, String description) {
-    if ((description == null) || (hazardId == null)) {
-      return false;
-    }
-    Hazard hazard = this.getHazAccController().getHazard(hazardId);
-    if (!(hazard instanceof Hazard)) {
-      return false;
-    }
-    String oldDescription = ((Hazard) hazard).setDescription(description);
-    if (oldDescription != null) {
-      UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      update(this, changeCallback);
-      return true;
-    }
-    return false;
+    return getHazAccController().setHazardDescription(hazardId, description);
   }
 
   @Override
   public boolean setHazardTitle(UUID hazardId, String title) {
-    if ((title == null) || (hazardId == null)) {
-      return false;
-    }
-    Hazard hazard = this.getHazAccController().getHazard(hazardId);
-    if (!(hazard instanceof Hazard)) {
-      return false;
-    }
-    String oldTitle = ((Hazard) hazard).setTitle(title);
-    if (oldTitle != null) {
-      UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
-      changeCallback.setTitleChange(oldTitle, title);
-      update(this, changeCallback);
-      return true;
-    }
-    return false;
+    return getHazAccController().setHazardTitle(hazardId, title);
   }
 
   public boolean setSeverity(Object entry, Severity severity) {
