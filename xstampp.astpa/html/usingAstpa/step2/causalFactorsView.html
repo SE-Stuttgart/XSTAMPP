@@ -13,23 +13,75 @@
 			Causal Factors Table
 			<a href="designReq.html">&#8594; Design Reqirements of Step 2</a></div>
 		</div>
-		There are two way of analysing the <a href="../../glossary/glossary.html#causal-factor">causal factors</a> leading to the unsafe control actions:
+		In the Causal Factors Table the <a href="../../glossary/glossary.html#causal-factor">Causal Factors</a> can be analyzed and linked to all resulting <a href="../../glossary/glossary.html#uca">Unsafe Control Actions</a>. A-STPA supports two ways of analysing the <a href="../../glossary/glossary.html#causal-factor">causal factors</a> leading to the <a href="../../glossary/glossary.html#uca">Unsafe Control Actions</a>:
 		<ul>
 		<li><a href="#usingScenarios">Using Scenarios to define critical situations</a>
-		<li><a href="classicAnalysis">Defining safety constraints directly for each hazard</a>
+		<li><a href="#classicAnalysis">Defining safety constraints directly for each hazard</a>
 		</ul>
-		<table style="width:100%">
+		The prefered way of analyzing the <a href="../../glossary/glossary.html#causal-factor">causal factors</a> can be chosen in the <a href="../projectSettings.html">Project Settings</a>.<br>
+		<p>This editor also provides a filter widget to customize the Table and to enhance the readability. Therefore the table can be filtered by seven categories:
+		<table>
+			<tr class="head">
+				<td>Filter Category</td>
+				<td>Type</td>
+				<td>Description</td>
+			</tr>
+			<tr>
+				<td>ALL</td>
+				<td>Text Filter</td>
+				<td>In this filter mode the all Component entries can be filtered by typing in a filter word. By typing in a filter those Component entries are hidden whose text defined in the <a href="../step0/controlStructureView.html">control structure</a> don't match the filter</td>
+			</tr>
+			<tr>
+				<td>ACTUATOR</td>
+				<td>Text Filter</td>
+				<td>In this filter mode all component entries for components that are not Actuators are hidden. Further a filter word can be given to filter by the text defined in the <a href="../step0/controlStructureView.html">control structure</a></td>
+			</tr>
+			<tr>
+				<td>CONTROLLER</td>
+				<td>Text Filter</td>
+				<td>In this filter mode all component entries for components that are not Controllers are hidden. Further a filter word can be given to filter by the text defined in the <a href="../step0/controlStructureView.html">control structure</a></td>
+			</tr>
+			<tr>
+				<td>CONTROLLED_PROCESS</td>
+				<td>Text Filter</td>
+				<td>In this filter mode all component entries for components that are not Controlled Process components are hidden. Further a filter word can be given to filter by the text defined in the <a href="../step0/controlStructureView.html">control structure</a></td>
+			</tr>
+			<tr>
+				<td>SENSOR</td>
+				<td>Text Filter</td>
+				<td>In this filter mode all component entries for components that are not Sensors are hidden. Further a filter word can be given to filter by the text defined in the <a href="../step0/controlStructureView.html">control structure</a></td>
+			</tr>
+			<tr>
+				<td>Text filter for Causal Factors</td>
+				<td>Text Filter</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>UCA</td>
+				<td>Filter by choice</td>
+				<td></td>
+			</tr>
+		</table>
+		<h3 style="width:100%; margin-top:40px; padding-bottom: 5px; border-bottom: 1px solid grey" >Causal Factors Table</h3>
+		<table style="width:100%; margin-top:40px;">
+		<tr class="clear">
+			<td style="vertical-align:top">The Causal Factors Table provides seven columns which allow to define Causal Factors in each Actuator, Controller, Controlled Process or Sensor defined in the <a href="../step0/controlStructureView.html">control structure</a>.<br>
+			By clicking on <span class="number">2</span> a Causal Factor can be added to one of the components.<br>
+			In both of the below approaches a Causal Factor can be linked to any of the defined Unsafe Control Actions. By clicking in the Add UCA Row <span class="number">3</span> a dialog ill be opened from which one of the available UCAs can be chosen and a new UCA entry <span class="number">6</span> be created.
+			</td>
+			<td><img class="full" src="../../images/step2/causalFactors_empty.PNG"/></td>
+		</tr>
 		<tr class="clear" id="usingScenarios">
 			<td style="vertical-align:top">
 			<h3>Using Scenarios</h3>
 			</td>
-			<td><img class="full" src="../../images/step2/causalFactors_Full.PNG"/></td>
+			<td><img class="full" src="../../images/step2/causalFactorScenarios_Hints.PNG"/></td>
 		</tr>
 		<tr class="clear" id="classicAnalysis">
 			<td style="vertical-align:top; padding-top:25px; border-top:1px solid grey;">
-			<h3>Classic approach</h3>
+			<h3>Classic Approach</h3>
 			</td>
-			<td><img class="full" src="../../images/step2/causalFactorScenarios_Full.PNG"/></td>
+			<td><img class="full" src="../../images/step2/causalFactors_Full.PNG"/></td>
 		</tr>
 		</table>
 	</body>

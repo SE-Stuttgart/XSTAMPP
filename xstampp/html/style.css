@@ -46,13 +46,18 @@ tr:nth-child(2n -1) {
 tr.clear {
 	background-color: white;
 }
+tr.head {
+	background-color: blue;
+	color: white;
+	font-weight: bold;
+}
 img {
     height: auto;
     width: auto\9; /* ie8 */
 }
 
 img.full {
-    max-width: 70%;
+    max-width: 50%;
 	float:right;
 	padding-bottom: 10px;
 	padding-left: 10px;
@@ -89,5 +94,5 @@ body{
 }
 
 a {
-	color: black;
+	color: blue;
 }

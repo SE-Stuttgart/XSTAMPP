@@ -14,16 +14,89 @@
 			<a href="correspSafetyConstView.html">&#8594; Corresponding Safety Constraints</a></div>
 		</div>
 		<img class="full" src="../../images/step1/UCA_Full.PNG"/>
-			Control Actions, added in the view labeled &quotControl Actions&quot, can be marked as unsafe in 
-			the Unsafe Control Actions Table. 
-		<h3>Adding, Deleting and Editing an Unsafe Control Action </h3>
+			Control Actions, added in the view labeled &quot Control Actions&quot, can have multiple <a href="../../glossary/glosssary.html#uca">Unsafe Control Action(UCA)</a> that can be marked as <b>hazardous</b> by linking it to one or more <a href="../../glossary/glosssary.html#hazard">Hazards</a>.<br> A Control Action can have UCA's in <a href="ucaSettings.html"><b>four(customizable) categorys</b></a>, which are each represented by one column in the table:
+			<table>
+				<tr class="clear">
+					<td>1</td><td>Not providing causes hazard</td>
+				</tr>
+				<tr class="clear">
+					<td>2</td><td>Providing incorrect causes hazard</td>
+				</tr>
+				<tr class="clear">
+					<td>3</td><td>Wrong timing or order causes hazard</td>
+				</tr>
+				<tr class="clear">
+					<td>4</td><td>Stoped too soon or applied to long causes hazard</td>
+				</tr>
+			</table>
+			<p>This view does contain three major components:
+			<table>
+				<tr>
+					<td><a href="#filtering"><span class="number">1</span></a></td> 
+					<td>Filtering</td>
+					<td>At the top of the page multiple widgets for filtering the view are available</td>
+				</tr>
+				<tr>
+					<td><a href="#editing"><span class="number">2</span></a></td>
+					<td>Editing Unsafe Control Actions</td>
+					<td>Each Control Action can contain an abitrary number of UCA entries which are represented as a block of three table cells</td>
+				</tr>
+				<tr>
+					<td><a href="#adding"><span class="number">3</span></a></td>
+					<td>Adding new Unsafe Control Actions</td>
+					<td>Each Control Action row in the Table has four <b>Add</b> cells for which are displayed</td>
+				</tr>
+			</table>
+			<p><h3 id="filtering" style="margin-top:40px">Filtering</h3>
+			<table>
+				<tr class="head">
+					<td>Filter Category</td>
+					<td>Type</td>
+					<td>Description</td>
+				</tr>
+				<tr>
+					<td>Control Action</td>
+					<td>Text Filter</td>
+					<td>The Table can be filtered by hiding all Control Action rows whose respective <b>Control Actions' title does not contain</b> the typed in text snippet</td>
+				</tr>
+				<tr>
+					<td>Unsafe Control Action</td>
+					<td>Text Filter</td>
+					<td>The Table can be filtered by hiding all Unsafe Control Action entrys whose respective <b>Unsafe Control Actions' description does not contain</b> the typed in text snippet</td>
+				</tr>
+				<tr>
+					<td>UCA ID</td>
+					<td>Filter by choice</td>
+					<td>The user can choose form a drop-down list of all Unsafe Control Action IDs to show and edit only a single UCA entry</td>
+				</tr>
+				<tr>
+					<td>Hazard ID</td>
+					<td>Filter by choice</td>
+					<td>The user can choose form a drop-down list of all Hazard IDs to show and edit only UCA entries that are linked to the chosen Hazard</td>
+				</tr>
+				<tr>
+					<td>not hazardous</td>
+					<td>Only by Category</td>
+					<td>If this category is chosen than the all UCA entrys that are linked to a Hazard are hidden from the table. in this filter mode no text input or filter choice is required.</td>
+				</tr>
+			</table>
+			<p><h3 id="editing">Editing Unsafe Control Actions</h3>
+				<h4>Setting the Severity</h4>
+					The severity of an UCA can only be defined if the severity analysis has been activated in the <a href="../projectSettings.html">Project Settings</a>.<br>
+					The current severity of an UCA can be seen and edited in the <img src="../../images/severity_widget.PNG">. By clicking on the widget a severity can be chosen form the <a href="../Severity.html">Severity dialog</a>.<br>
+					If an UCA is linked to one or more Hazards than its' severity is automatically set to be higher or equal to the highest severity of the linked Hazards.
+				<h4>Editing and Deleting an Unsafe Control Action </h4>
+					In the center part of an UCA entry a description can be added to the UCA or it the UCA can be deleted from the project.<br>
+					To edit the description simply click on the gray are in the center to open a text editor, all changes applied can also be <a href="../../../../xstampp/html/gettingstarted/generell.html#undo">undone</a>.<br>
+					To delete an entry click on <img src="../../../icons/buttons/grid/DeleteButton_InCell_16.png"> which will open a pop-up asking to confirm the deletion <b>Note that this can not be undone</b>
+				<h4>Link a Hazard to an Unsafe Control Action </h4>
+					When linked to a Hazard, the corresponding Control Action is marked unsafe and will 
+					appear in the Corresponding Safety Constraints Table. <img src="../../images/ucaLinking.png">  is used to link a Control 
+					Action to a Hazard. Press <img src="../../images/ucaLinking.png">  and a list of available Hazards will pop up. Link a Hazard 
+					by doubleTclicking on it.
+			<p><h3 id="adding">Adding new Unsafe Control Actions</h3>
 			<img src="../../images/ucaAdd.png"> can be used to describe the status of the system when the Control Actions is not 
-			given,  was given incorrectly,  had wrong timing or was stopped too soon. This status can 
-			be linked to a Hazard. 
-		<h3>Link a Hazard to an Unsafe Control Action </h3>
-		 	When linked to a Hazard, the corresponding Control Action is marked unsafe and will 
-			appear in the Corresponding Safety Constraints Table. <img src="../../images/ucaLinking.png">  is used to link a Control 
-			Action to a Hazard. Press <img src="../../images/ucaLinking.png">  and a list of available Hazards will pop up. Link a Hazard 
-			by doubleTclicking on it. 
+					given,  was given incorrectly,  had wrong timing or was stopped too soon. This status can 
+					be linked to a Hazard. 
 	</body>
 </html>
