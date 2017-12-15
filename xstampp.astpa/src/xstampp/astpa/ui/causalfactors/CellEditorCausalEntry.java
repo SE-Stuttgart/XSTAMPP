@@ -121,12 +121,14 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     setReadOnly(true);
     setShowDelete(true);
-    if (!dataInterface.getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK, getEntryId())) {
-      addCellButton(new CellButton(ONE_MANY_TOOGLE, () -> switchToSingleConstraint(),
-          Messages.CellEditorCausalEntry_UseOneSCToolTip));
-    } else {
-      addCellButton(new CellButton(MANY_ONE_TOOGLE, () -> switchToHazardConstraints(),
-          Messages.CellEditorCausalEntry_UseMultipleSCToolTip));
+    if (!dataInterface.isUseScenarios()) {
+      if (!dataInterface.getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK, getEntryId())) {
+        addCellButton(new CellButton(ONE_MANY_TOOGLE, () -> switchToSingleConstraint(),
+            Messages.CellEditorCausalEntry_UseOneSCToolTip));
+      } else {
+        addCellButton(new CellButton(MANY_ONE_TOOGLE, () -> switchToHazardConstraints(),
+            Messages.CellEditorCausalEntry_UseMultipleSCToolTip));
+      }
     }
     super.paint(renderer, gc, item);
   }

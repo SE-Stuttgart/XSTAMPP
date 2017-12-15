@@ -8,6 +8,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix bug that filter in Causal Factors Table is not working for Component Type filters
 *  Fix unexpected behaviour in control structure of undo/redo of parent changes
 *  Fix scrolling informations are lost when manipulating grid views
 *  Fix bug that Design requirements of step1&2 can't be removed/added

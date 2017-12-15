@@ -75,7 +75,6 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    */
   public CausalFactorsView() {
     setUseFilter(true);
-    setGlobalCategory("ALL");
     this.includeFirstChildRow = false;
   }
 
@@ -122,7 +121,6 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     categories.put(ComponentType.CONTROLLER.name(), true);
     categories.put(ComponentType.CONTROLLED_PROCESS.name(), true);
     categories.put(ComponentType.SENSOR.name(), true);
-    categories.put(ComponentType.UNDEFINED.name(), true);
     categories.put(CAUSALFACTORS, false);
     categories.put("UCA", false);
     return categories;
@@ -131,8 +129,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   @Override
   protected String[] getCategoryArray() {
     return new String[] { "ALL", ComponentType.ACTUATOR.name(), ComponentType.CONTROLLER.name(),
-        ComponentType.CONTROLLED_PROCESS.name(), ComponentType.SENSOR.name(),
-        ComponentType.UNDEFINED.name(), CAUSALFACTORS, "UCA" };
+        ComponentType.CONTROLLED_PROCESS.name(), ComponentType.SENSOR.name(), CAUSALFACTORS, "UCA" };
   }
 
   public String[] getScenarioColumns() {
@@ -141,6 +138,30 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   public String[] getColumns() {
     return _withoutScenarioColumns.toArray(new String[0]);
+  }
+
+  /**
+   * @return true if the component is filtered out and should not be used
+   */
+  private boolean isCFFiltered(IRectangleComponent comp) {
+    boolean isTypeFiltered = false;
+    if (getActiveCategory() != null) {
+      isTypeFiltered = getActiveCategory().equals("ALL");
+      if (!isTypeFiltered && (getActiveCategory().equals(ComponentType.ACTUATOR.name())
+          || getActiveCategory().equals(ComponentType.CONTROLLER.name())
+          || getActiveCategory().equals(ComponentType.CONTROLLED_PROCESS.name())
+          || getActiveCategory().equals(ComponentType.SENSOR.name()))) {
+        isTypeFiltered = true;
+        if (!getActiveCategory().equals(comp.getComponentType().name())) {
+          return true;
+        }
+      }
+
+    }
+    if (!isTypeFiltered) {
+      return false;
+    }
+    return isFiltered(comp.getText());
   }
 
   @Override
@@ -153,11 +174,13 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     List<IRectangleComponent> components = this.getDataModel().getCausalComponents();
     for (IRectangleComponent component : components) {
-      if (isFiltered(component)) {
+      if (isCFFiltered(component)) {
         continue;
       }
       GridRow componentRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
-      componentRow.addCell(0, new GridCellText(component.getText()));
+      GridCellText cell = new GridCellText(component.getText());
+      cell.setToolTip(component.getText());
+      componentRow.addCell(0, cell);
       getGridWrapper().addRow(componentRow);
       boolean first = this.includeFirstChildRow;
 
@@ -256,6 +279,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
     CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(),
         ucaCFLink, uca, causalEntryLink.getId());
+    cell.setToolTip(uca.getIdString());
     UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
     if (!checkAccess(controlAction, AccessRights.WRITE)) {
       cell.setReadOnly(true);

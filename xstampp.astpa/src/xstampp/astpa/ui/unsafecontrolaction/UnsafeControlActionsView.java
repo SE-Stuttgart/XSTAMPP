@@ -11,6 +11,7 @@
 
 package xstampp.astpa.ui.unsafecontrolaction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import messages.Messages;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
@@ -111,7 +113,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
 
   @Override
   protected String[] getCategoryArray() {
-    return new String[] { CA_FILTER, UCA_FILTER, UCAID_FILTER, HAZ_FILTER, HAZID_FILTER,
+    return new String[] { CA_FILTER, UCA_FILTER, UCAID_FILTER, HAZID_FILTER,
         NOHAZ_FILTER };
   }
 
@@ -325,8 +327,6 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
   }
 
   /**
-   * !isFiltered(this.getDataModel().getUCANumber(allWrongTiming.get(i).getId()),UCAID) &&
-   * !isFiltered(allWrongTiming.get(i).getDescription(),UCA)
    * 
    * @param uca
    * @return true if the uca is filtered out and should not be used
@@ -353,6 +353,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
         if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() != 0) {
           return true;
         }
+        return false;
       case HAZID_FILTER:
         if (this.getDataModel().getLinkedHazardsOfUCA(uca.getId()).size() == 0) {
           return true;
@@ -385,6 +386,18 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
     this.addChoiceValues(HAZID_FILTER, choiceIDs);
     this.addChoices(HAZ_FILTER, choices);
     this.addChoiceValues(HAZ_FILTER, choiceValues);
+
+    ArrayList<String> ucaChoices = new ArrayList<>();
+    ArrayList<String> ucaValues = new ArrayList<>();
+    for (ICorrespondingUnsafeControlAction uca : getDataModel().getControlActionController()
+        .getAllUnsafeControlActions()) {
+      ucaChoices.add(uca.getIdString() + " - " + uca.getDescription());
+      ucaValues.add("" + uca.getNumber());
+    }
+
+    this.addChoices(UCAID_FILTER, ucaChoices.toArray(new String[0]));
+    this.addChoiceValues(UCAID_FILTER, ucaValues.toArray(new String[0]));
+    this.setUseFilter(NOHAZ_FILTER, false);
   }
 
   @Override

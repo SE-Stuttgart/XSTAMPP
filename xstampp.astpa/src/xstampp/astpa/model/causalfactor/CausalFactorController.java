@@ -205,12 +205,16 @@ public class CausalFactorController extends Observable implements ICausalControl
         .forEach((link) -> {
           Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
               link.getLinkA());
-          ICausalFactor factor = getCausalFactor(ucaCFLink.getLinkB());
+          try {
+            ICausalFactor factor = getCausalFactor(ucaCFLink.getLinkB());
 
-          if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
-            ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
+            if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
+              ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
+            }
+            ucaCfLink_Component_ToCFmap.get(factor).add(link);
+          } catch (NullPointerException exc) {
+
           }
-          ucaCfLink_Component_ToCFmap.get(factor).add(link);
         });
     return ucaCfLink_Component_ToCFmap;
   }

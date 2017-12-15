@@ -36,183 +36,183 @@ import xstampp.astpa.model.interfaces.Severity;
  */
 @XmlRootElement(name = "unsecurecontrolaction")
 @XmlAccessorType(XmlAccessType.NONE)
-public class UnsecureControlAction 
-extends EntryWithSeverity 
-implements IUnsafeControlAction, ICorrespondingUnsafeControlAction, IEntryWithNameId {
+public class UnsecureControlAction
+    extends EntryWithSeverity
+    implements IUnsafeControlAction, ICorrespondingUnsafeControlAction, IEntryWithNameId {
 
-	@XmlElement(name = "description")
-	private String description;
+  @XmlElement(name = "description")
+  private String description;
 
-	@XmlElement(name = "id")
-	private UUID id;
+  @XmlElement(name = "id")
+  private UUID id;
 
-	@XmlElement(name = "number")
-	private int number;
+  @XmlElement(name = "number")
+  private int number;
 
-	@XmlElement(name = "type")
-	private UnsafeControlActionType type;
+  @XmlElement(name = "type")
+  private UnsafeControlActionType type;
 
-	@XmlElement(name = "correspondingSecurityConstraint")
-	private CorrespondingSafetyConstraint correspondingSafetyConstraint;
+  @XmlElement(name = "correspondingSecurityConstraint")
+  private CorrespondingSafetyConstraint correspondingSafetyConstraint;
 
-	@XmlElement(name = "links")
-	private String links;
+  @XmlElement(name = "links")
+  private String links;
 
-	@XmlElement(name = "identifier")
-	public String identifier;
+  @XmlElement(name = "identifier")
+  public String identifier;
 
-	@XmlElement(name = "safetyCritical")
-	public boolean isSafetyCritical;
+  @XmlElement(name = "safetyCritical")
+  public boolean isSafetyCritical;
 
-	@XmlElement(name = "securityCritical")
-	public boolean isSecurityCritical;
-	
-	  @XmlElement(name="privacyCritical")
-		public boolean isPrivacyCritical;
-		
-		public boolean isPrivacyCritical() {
-		return isPrivacyCritical;
-	}
+  @XmlElement(name = "securityCritical")
+  public boolean isSecurityCritical;
 
-	public void setPrivacyCritical(boolean isPrivacyCritical) {
-		this.isPrivacyCritical = isPrivacyCritical;
-	}
+  @XmlElement(name = "privacyCritical")
+  public boolean isPrivacyCritical;
 
-	/**
-	 * Constructs a new unsafe control action with the given values
-	 * 
-	 * @param description
-	 *            the description of the new unsafe control action
-	 * @param type
-	 *            the type of the new unsafe control action
-	 * 
-	 * @author Fabian Toth
-	 */
-	public UnsecureControlAction(String description, UnsafeControlActionType type) {
-		this.description = description;
-		this.type = type;
-		this.isSafetyCritical = false;
-		this.isSecurityCritical = false;
-		this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(""); //$NON-NLS-1$
-		this.id = UUID.randomUUID();
-	    this.number = 0;
-	    setSeverity(Severity.S0);
-	}
+  public boolean isPrivacyCritical() {
+    return isPrivacyCritical;
+  }
 
-	public boolean isSafetyCritical() {
-		return isSafetyCritical;
-	}
+  public void setPrivacyCritical(boolean isPrivacyCritical) {
+    this.isPrivacyCritical = isPrivacyCritical;
+  }
 
-	public void setSafetyCritical(boolean isSafetyCritical) {
-		this.isSafetyCritical = isSafetyCritical;
-	}
+  /**
+   * Constructs a new unsafe control action with the given values
+   * 
+   * @param description
+   *          the description of the new unsafe control action
+   * @param type
+   *          the type of the new unsafe control action
+   * 
+   * @author Fabian Toth
+   */
+  public UnsecureControlAction(String description, UnsafeControlActionType type) {
+    this.description = description;
+    this.type = type;
+    this.isSafetyCritical = false;
+    this.isSecurityCritical = false;
+    this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(""); //$NON-NLS-1$
+    this.id = UUID.randomUUID();
+    this.number = 0;
+    setSeverity(Severity.S0);
+  }
 
-	public boolean isSecurityCritical() {
-		return isSecurityCritical;
-	}
+  public boolean isSafetyCritical() {
+    return isSafetyCritical;
+  }
 
-	public void setSecurityCritical(boolean isSecurityCritical) {
-		this.isSecurityCritical = isSecurityCritical;
-	}
+  public void setSafetyCritical(boolean isSafetyCritical) {
+    this.isSafetyCritical = isSafetyCritical;
+  }
 
-	/**
-	 * Empty constructor for JAXB. Do not use it!
-	 * 
-	 * @author Fabian Toth
-	 */
-	public UnsecureControlAction() {
-	    setSeverity(Severity.S0);
-		// empty constructor for JAXB
-	}
+  public boolean isSecurityCritical() {
+    return isSecurityCritical;
+  }
 
-	@Override
-	public String getDescription() {
-		return this.description;
-	}
+  public void setSecurityCritical(boolean isSecurityCritical) {
+    this.isSecurityCritical = isSecurityCritical;
+  }
 
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public String setDescription(String description) {
-		String result = null;
-		if (!description.equals(this.description)) {
-			result = this.description;
-			this.description = description;
-		}
-		return result;
-	}
+  /**
+   * Empty constructor for JAXB. Do not use it!
+   * 
+   * @author Fabian Toth
+   */
+  public UnsecureControlAction() {
+    setSeverity(Severity.S0);
+    // empty constructor for JAXB
+  }
 
-	@Override
-	public UUID getId() {
-		return this.id;
-	}
+  @Override
+  public String getDescription() {
+    return this.description;
+  }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(UUID id) {
-		this.id = id;
-	}
+  /**
+   * @param description
+   *          the description to set
+   */
+  public boolean setDescription(String description) {
+    boolean result = false;
+    if (!description.equals(this.description)) {
+      result = true;
+      this.description = description;
+    }
+    return result;
+  }
 
-	@Override
-	public UnsafeControlActionType getType() {
-		return this.type;
-	}
+  @Override
+  public UUID getId() {
+    return this.id;
+  }
 
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(UnsafeControlActionType type) {
-		this.type = type;
-	}
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-	@Override
-	public CorrespondingSafetyConstraint getCorrespondingSafetyConstraint() {
-		if (this.correspondingSafetyConstraint == null) {
-			this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(new String());
+  @Override
+  public UnsafeControlActionType getType() {
+    return this.type;
+  }
 
-		}
-		return this.correspondingSafetyConstraint;
-	}
+  /**
+   * @param type
+   *          the type to set
+   */
+  public void setType(UnsafeControlActionType type) {
+    this.type = type;
+  }
 
-	/**
-	 * @param correspondingSafetyConstraint
-	 *            the correspondingSafetyConstraint to set
-	 */
-	public void setCorrespondingSafetyConstraint(CorrespondingSafetyConstraint correspondingSafetyConstraint) {
-		this.correspondingSafetyConstraint = correspondingSafetyConstraint;
-	}
+  @Override
+  public CorrespondingSafetyConstraint getCorrespondingSafetyConstraint() {
+    if (this.correspondingSafetyConstraint == null) {
+      this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(new String());
 
-	@Override
-	public String getLinks() {
-		return this.links;
-	}
+    }
+    return this.correspondingSafetyConstraint;
+  }
 
-	/**
-	 * @param links
-	 *            the links to set
-	 */
-	public void setLinks(String links) {
-		this.links = links;
-	}
+  /**
+   * @param correspondingSafetyConstraint
+   *          the correspondingSafetyConstraint to set
+   */
+  public void setCorrespondingSafetyConstraint(CorrespondingSafetyConstraint correspondingSafetyConstraint) {
+    this.correspondingSafetyConstraint = correspondingSafetyConstraint;
+  }
 
-	public boolean setNumber(int number) {
-		this.number = number;
+  @Override
+  public String getLinks() {
+    return this.links;
+  }
+
+  /**
+   * @param links
+   *          the links to set
+   */
+  public void setLinks(String links) {
+    this.links = links;
+  }
+
+  public boolean setNumber(int number) {
+    this.number = number;
     return true;
-	}
+  }
 
-	@Override
-	public int getNumber() {
-		return number;
-	}
+  @Override
+  public int getNumber() {
+    return number;
+  }
 
-	@Override
-	public String getTitle() {
-		return "PCA1." + getNumber();
-	}
+  @Override
+  public String getTitle() {
+    return "PCA1." + getNumber();
+  }
 
   @Override
   public String getText() {

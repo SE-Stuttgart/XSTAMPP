@@ -44,6 +44,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
   protected class Category {
 
     private String name;
+    private boolean useFilter = true;
     private Object[] filterValues;
     private String[] comboChoices;
 
@@ -74,6 +75,14 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
     @Override
     public boolean equals(Object obj) {
       return obj instanceof String && ((String) obj).equals(this.name);
+    }
+
+    public boolean isUseFilter() {
+      return useFilter;
+    }
+
+    public void setUseFilter(boolean useFilter) {
+      this.useFilter = useFilter;
     }
   }
 
@@ -165,10 +174,12 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
           if (activeCategory != null && activeCategory.getComboChoices() != null) {
             filterCombo.setItems(activeCategory.getComboChoices());
             filterCombo.setVisible(true);
+            filterCombo.setEnabled(activeCategory.useFilter);
             filterText.setVisible(false);
           } else {
             filterCombo.setVisible(false);
             filterText.setVisible(true);
+            filterText.setEnabled(activeCategory.useFilter);
             filterText.setText(""); //$NON-NLS-1$
           }
           filterValue = ""; //$NON-NLS-1$
@@ -250,6 +261,26 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
     });
   }
 
+  /**
+   * @param id
+   *          the id of the category , must be one of the category id's given in
+   *          {@link #getCategories()}
+   * @param useFilter
+   *          <ul>
+   *          <li>when true is given than the category will use the text/combo box filter widget to
+   *          further define the filter
+   *          <li>when false than the filter will be determined soley by the category and the
+   *          text/combo box filter will be disabled
+   *          </ul>
+   */
+  protected final void setUseFilter(String id, boolean useFilter) {
+    categories.forEach(data -> {
+      if (data.getName().equals(id)) {
+        data.setUseFilter(useFilter);
+      }
+    });
+  }
+
   protected void updateFilter() {
 
   }
@@ -289,22 +320,19 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
    */
   private boolean int_isFiltered(Object candidate, boolean checkMatch, String testCategory) {
 
-    if (useFilter && filterValue != null && activeCategory != null && testCategory != null) {
-
-      // if the global category is active any value is tested
-      // if not than the candidate is only tested if the category given is active
-      if (!activeCategory.getName().equals(globalCategory)) {
-        // if the active category is explicit then all other explicit categories
-        // are filtered
-        // if the active category is explicit and unequal
-        if (getCategories().get(testCategory) == getCategories().get(getActiveCategory())) {
-          if (activeCategory != null && !activeCategory.equals(testCategory)) {
+    if (useFilter && filterValue != null) {
+      if (activeCategory != null && testCategory != null) {
+        // if the global category is active any value is tested
+        // if not than the candidate is only tested if the category given is active
+        if (!activeCategory.getName().equals(globalCategory)) {
+          // if the active category is explicit then all other explicit categories
+          // are filtered
+          // if the active category is explicit and unequal
+          if (!testCategory.equals(getActiveCategory())) {
             // if the test category is not active the return value is whether or not the
             // active category is explicit
-            return getCategories().get(activeCategory.name);
+            return false;
           }
-        } else {
-          return false;
         }
       }
       if (candidate == null) {
@@ -419,6 +447,18 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
     return this.activeCategory.getName();
   }
 
+  /**
+   * This enables or disables the whole filter widget, if useFilter is false than the filter widgets
+   * will not be drawn
+   * <p>
+   * NOTE: the view must be redrawn manually if this option is changed after the first call of
+   * {@link AbstractFilteredEditor#createPartControl(Composite)}
+   * 
+   * @param useFilter
+   *          <ul>
+   *          <li>when true is given than the filter widget will not be displayed/used at all
+   *          <li>when false than the filter will be enabled
+   */
   protected void setUseFilter(boolean useFilter) {
     this.useFilter = useFilter;
   }

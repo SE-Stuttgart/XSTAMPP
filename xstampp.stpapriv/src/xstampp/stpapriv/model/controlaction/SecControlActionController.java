@@ -45,6 +45,7 @@ import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
+import xstampp.astpa.model.service.UndoControlActionChangeCallback;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
@@ -389,13 +390,13 @@ public class SecControlActionController implements IControlActionController {
    * @author Patrick Wickenhaeuser, Fabian Toth
    * @return true, if the description has been set
    */
-  public String setUcaDescription(UUID unsafeControlActionId, String description) {
+  public boolean setUcaDescription(UUID unsafeControlActionId, String description) {
     UnsecureControlAction unsafeControlAction = this
         .getInternalUnsafeControlAction(unsafeControlActionId);
     if (unsafeControlAction != null) {
       return unsafeControlAction.setDescription(description);
     }
-    return null;
+    return false;
   }
 
   /**
@@ -499,19 +500,18 @@ public class SecControlActionController implements IControlActionController {
    * @return the id of the corresponding safety constraint. null if the action fails
    */
 
-  public String setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
+  public boolean setCorrespondingSafetyConstraint(UUID unsafeControlActionId,
       String safetyConstraintDescription) {
     UnsecureControlAction unsafeControlAction = this
         .getInternalUnsafeControlAction(unsafeControlActionId);
     if (unsafeControlAction == null) {
-      return null;
+      return false;
     }
-    String oldTitle = unsafeControlAction.getCorrespondingSafetyConstraint().getText();
     if (unsafeControlAction.getCorrespondingSafetyConstraint()
         .setTitle(safetyConstraintDescription) != null) {
-      return oldTitle;
+      return true;
     }
-    return null;
+    return false;
   }
 
   /**
@@ -1163,9 +1163,9 @@ public class SecControlActionController implements IControlActionController {
 
   @Override
   public ITableModel getCorrespondingSafetyConstraint(UUID id) {
-    for(ControlAction action : this.controlActions) {
+    for (ControlAction action : this.controlActions) {
       IUnsafeControlAction uca = action.getUnsafeControlAction(id);
-      if(uca != null) {
+      if (uca != null) {
         return null;
       }
     }
@@ -1176,6 +1176,46 @@ public class SecControlActionController implements IControlActionController {
   public IUnsafeControlAction getUnsafeControlAction(UUID unsafeControlActionId) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public boolean setControlActionDescription(UUID controlActionId, String description) {
+    if ((controlActionId == null) || (description == null)) {
+      return false;
+    }
+    ITableModel controlAction = getControlAction(controlActionId);
+    if (!(controlAction instanceof ControlAction)) {
+      return false;
+    }
+    String oldDescription = ((ControlAction) controlAction).setDescription(description);
+    if (oldDescription != null) {
+      UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
+          controlAction);
+      changeCallback.setDescriptionChange(oldDescription, description);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setControlActionTitle(UUID controlActionId, String title) {
+    if ((controlActionId == null) || (title == null)) {
+      return false;
+    }
+    ITableModel controlAction = getControlAction(controlActionId);
+    if (!(controlAction instanceof ControlAction)) {
+      return false;
+    }
+    boolean result = false;
+
+    String oldTitle = ((ControlAction) getControlAction(controlActionId)).setTitle(title);
+    if (oldTitle != null) {
+      UndoControlActionChangeCallback changeCallback = new UndoControlActionChangeCallback(this,
+          controlAction);
+      changeCallback.setTitleChange(oldTitle, title);
+      return true;
+    }
+    return result;
   }
 
 }

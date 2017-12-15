@@ -11,7 +11,7 @@ public class UndoRemoveCausalFactor extends UndoRemoveLinkedComponent {
 
   public UndoRemoveCausalFactor(CausalFactorController causalController, CausalFactor factor,
       LinkController linkController) {
-    super(linkController, factor.getId(), 2);
+    super(linkController, factor.getId(), 4);
     this.causalController = causalController;
     this.factor = factor;
   }
