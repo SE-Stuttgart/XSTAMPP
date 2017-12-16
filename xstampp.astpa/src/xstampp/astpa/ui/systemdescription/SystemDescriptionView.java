@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import messages.Messages;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.FontDescriptor;
@@ -63,6 +61,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
+import messages.Messages;
 import xstampp.Activator;
 import xstampp.astpa.model.interfaces.ISystemDescriptionViewDataModel;
 import xstampp.model.IDataModel;
@@ -175,6 +174,7 @@ public class SystemDescriptionView extends StandartEditorPart
    */
   @Override
   public void createPartControl(Composite parent) {
+    PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "astpa1_1Context");
     this.fontHandles = new ArrayList<>();
     if (this.toolContributor == null) {
       this.toolContributor = new EmptyTextContributor();
@@ -220,6 +220,8 @@ public class SystemDescriptionView extends StandartEditorPart
     // this.setDefaultFontName();
     // this.setDefaultFontSize();
     this.resetFromDataModel();
+    PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, "astpa1_1Context");
+    PlatformUI.getWorkbench().getHelpSystem().setHelp(descriptionText, "astpa1_1Context");
     this.descriptionText.addSelectionListener(new SelectionAdapter() {
 
       @Override
@@ -284,7 +286,7 @@ public class SystemDescriptionView extends StandartEditorPart
    */
   private void applyProjectDescriptionToDataModel(boolean stylesChanged) {
     if (stylesChanged) {
-     this.dataInterface.putStyleRanges(descriptionText.getStyleRanges());
+      this.dataInterface.putStyleRanges(descriptionText.getStyleRanges());
     }
     String projectDesc = descriptionText.getText();
     if (projectDesc.contains(System.lineSeparator())) {

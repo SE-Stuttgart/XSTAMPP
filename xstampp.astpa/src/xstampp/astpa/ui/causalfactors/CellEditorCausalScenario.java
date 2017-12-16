@@ -34,6 +34,7 @@ public class CellEditorCausalScenario extends GridCellTextEditor {
     this.type = type;
     setReadOnly(type != ScenarioType.CAUSAL_SCENARIO);
     setShowDelete(true);
+    setDefaultText("Scenario description...");
     this.dataModel = dataModel;
     this.ruleId = ruleId;
   }

@@ -32,6 +32,7 @@ public class CellEditorCausalScenarioConstraint extends GridCellTextEditor {
     if (type != ScenarioType.CAUSAL_SCENARIO) {
       setReadOnly(true);
     }
+    setDefaultText("safety constraint...");
     this.dataModel = dataModel;
     this.ruleId = ruleId;
   }

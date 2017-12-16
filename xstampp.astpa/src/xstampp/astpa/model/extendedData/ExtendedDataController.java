@@ -271,7 +271,7 @@ public class ExtendedDataController extends Observable implements IExtendedDataC
       boolean includeLTL) {
     List<ITableModel> list = new ArrayList<>();
     for (AbstractLTLProvider ltlProvider : getAllScenarios(includeRules, includeScenarios, includeLTL)) {
-      ITableModel model = new ATableModel(ltlProvider.getTitle(), ltlProvider.getRefinedSafetyConstraint(),
+      ITableModel model = new ATableModel(ltlProvider.getRefinedSafetyConstraint(), "",
           ltlProvider.getNumber()) {
         @Override
         public UUID getId() {

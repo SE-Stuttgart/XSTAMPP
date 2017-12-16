@@ -57,8 +57,10 @@ public class SafetyConstraintViewStep2 extends CommonTableView<ICausalFactorData
 
   @Override
   protected void addLinkSupports() {
-    addLinkSupport(
-        new Step1ConstraintsLinkSupport((DataModelController) getDataInterface(), LinkingType.SC2_SC1_LINK, true));
+    if (!getDataInterface().isUseScenarios()) {
+      addLinkSupport(
+          new Step1ConstraintsLinkSupport((DataModelController) getDataInterface(), LinkingType.SC2_SC1_LINK, true));
+    }
     addLinkSupport(new DesignReq2LinkSupport((DataModelController) getDataInterface(), LinkingType.DR2_CausalSC_LINK));
   }
 
@@ -73,8 +75,15 @@ public class SafetyConstraintViewStep2 extends CommonTableView<ICausalFactorData
    */
   @Override
   public void updateTable() {
-    SafetyConstraintViewStep2.this.getTableViewer()
-        .setInput(this.getDataInterface().getCausalFactorController().getSafetyConstraints());
+    if (getDataInterface().isUseScenarios()) {
+      SafetyConstraintViewStep2.this.getTableViewer()
+          .setInput(getDataInterface().getExtendedDataController().getSafetyConstraints(false, true, false));
+      getDescriptionWidget().setEditable(false);
+    } else {
+      SafetyConstraintViewStep2.this.getTableViewer()
+          .setInput(this.getDataInterface().getCausalFactorController().getSafetyConstraints());
+      getDescriptionWidget().setEditable(true);
+    }
   }
 
   @Override
