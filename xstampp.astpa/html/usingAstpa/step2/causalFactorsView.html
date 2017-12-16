@@ -11,14 +11,14 @@
 			<div class="headerContent">
 			<a href="csWithPmView.html">Control Structure with Process Model &#8592;</a>
 			Causal Factors Table
-			<a href="designReq.html">&#8594; Design Reqirements of Step 2</a></div>
+			<a href="constraints.html">&#8594; Safety Constraints of Step 2</a></div>
 		</div>
 		In the Causal Factors Table the <a href="../../glossary/glossary.html#causal-factor">Causal Factors</a> can be analyzed and linked to all resulting <a href="../../glossary/glossary.html#uca">Unsafe Control Actions</a>. A-STPA supports two ways of analysing the <a href="../../glossary/glossary.html#causal-factor">causal factors</a> leading to the <a href="../../glossary/glossary.html#uca">Unsafe Control Actions</a>:
 		<ul>
 		<li><a href="#usingScenarios">Using Scenarios to define critical situations</a>
 		<li><a href="#classicAnalysis">Defining safety constraints directly for each hazard</a>
 		</ul>
-		The prefered way of analyzing the <a href="../../glossary/glossary.html#causal-factor">causal factors</a> can be chosen in the <a href="../projectSettings.html">Project Settings</a>.<br>
+		The preferd way of analyzing the <a href="../../glossary/glossary.html#causal-factor">causal factors</a> can be chosen in the <a href="../projectSettings.html">Project Settings</a>.<br>
 		<p>This editor also provides a filter widget to customize the Table and to enhance the readability. Therefore the table can be filtered by seven categories:
 		<table>
 			<tr class="head">
@@ -65,23 +65,51 @@
 		<h3 style="width:100%; margin-top:40px; padding-bottom: 5px; border-bottom: 1px solid grey" >Causal Factors Table</h3>
 		<table style="width:100%; margin-top:40px;">
 		<tr class="clear">
-			<td style="vertical-align:top">The Causal Factors Table provides seven columns which allow to define Causal Factors in each Actuator, Controller, Controlled Process or Sensor defined in the <a href="../step0/controlStructureView.html">control structure</a>.<br>
-			By clicking on <span class="number">2</span> a Causal Factor can be added to one of the components.<br>
-			In both of the below approaches a Causal Factor can be linked to any of the defined Unsafe Control Actions. By clicking in the Add UCA Row <span class="number">3</span> a dialog ill be opened from which one of the available UCAs can be chosen and a new UCA entry <span class="number">6</span> be created.
+			<td style="vertical-align:top;">The Causal Factors Table provides seven columns which allow to define Causal Factors in each Actuator, Controller, Controlled Process or Sensor defined in the <a href="../step0/controlStructureView.html">control structure</a>.<br>
+			By clicking on <span class="number"><b>2</b></span> a Causal Factor can be added to one of the components.<br>
+			In both of the below approaches a Causal Factor can be linked to any of the defined Unsafe Control Actions. By clicking in the Add UCA Row <span class="number"><b>3</b></span> a dialog ill be opened from which one of the available UCAs can be chosen and a new UCA entry <span class="number"><b>6</b></span> be created.
 			</td>
-			<td><img class="full" src="../../images/step2/causalFactors_empty.PNG"/></td>
+			<td><img class="full" style="max-width:550px;" src="../../images/step2/causalFactors_empty.PNG"/></td>
 		</tr>
 		<tr class="clear" id="usingScenarios">
-			<td style="vertical-align:top">
+			<td style="vertical-align:top; padding-top:25px; border-top:1px solid grey;">
 			<h3>Using Scenarios</h3>
+			<table>
+				<tr>
+					<td><h3 class="number">4</h3></td>
+					<td>A Scenario can either be imported from the Basic Scenarios created in the XSTPA Plug-in (if installed) by clicking on <img src="../../../icons/buttons/grid/LinkButton_InCell_16.png">,<br>or newly created by clicking on <img src="../../../icons/buttons/grid/AddButton_InCell_16.png">.</td>
+				</tr>
+				<tr>
+					<td><h3 class="number">5</h3></td>
+					<td>A new/existing scenario is added as a collection of four cells in which the user can provide a description of the scenario and a resulting safety constraint  along with some notes that can be used for example to give some hints to the context of the scenario</td>
+				</tr>
+			</table>
 			</td>
-			<td><img class="full" src="../../images/step2/causalFactorScenarios_Hints.PNG"/></td>
+			<td><img class="full" style="max-width:550px;" src="../../images/step2/causalFactorScenarios_Hints.PNG"/></td>
 		</tr>
 		<tr class="clear" id="classicAnalysis">
 			<td style="vertical-align:top; padding-top:25px; border-top:1px solid grey;">
 			<h3>Classic Approach</h3>
+			<table>
+				<tr>
+					<td><span class="number"><b>7</b></span></td>
+					<td>By clicking the <img src="../../../icons/buttons/grid/ToggleOne_ManySCs.png"> the view can be changed to displaying one safety constraint row for all Hazards linked to the UCA <span class="number"><b>10</b></span></td>
+				</tr>
+				<tr>
+					<td><span class="number"><b>8</b></span></td>
+					<td>By clicking the <img src="../../../icons/buttons/grid/ToggleMany_OneSCs.png"> the view can be changed to displaying one safety constraint row for every Hazard linked to the UCA <span class="number"><b>9</b></span></td>
+				</tr>
+				<tr>
+					<td><span class="number"><b>9</b></span>/<span class="number"><b>10</b></span></td>
+					<td>Depending on the choice made for the respective UCA row in <span class="number"><b>7</b></span>/<span class="number"><b>8</b></span> the one or more Safety Constraints can be defined by pressing one of:<br>
+					<p><img src="../../../icons/buttons/grid/AddButton_InCell_16.png"> - To create a new Safety Constraint which will be added to the <a href="constraints.html">Safety Constraints of step 2</a>.<br>
+					<p><img src="../../../icons/buttons/grid/LinkButton_InCell_16.png"> - To create a Safety Constraint with a link to <a href="../step1/correspSafetyConstView.html">Safety Constraint from step 1</a> and whose description is initially copied from its' original constraint.
+					<p>A Safety Constraint can be added with a <b>Design hint</b> and some <b>notes</b>. 
+					</td>
+				</tr>
+			</table>
 			</td>
-			<td><img class="full" src="../../images/step2/causalFactors_Full.PNG"/></td>
+			<td><img class="full" style="max-width:550px;" src="../../images/step2/causalFactors_Hints.PNG"/></td>
 		</tr>
 		</table>
 	</body>

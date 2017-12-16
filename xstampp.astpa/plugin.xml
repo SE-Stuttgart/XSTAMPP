@@ -1059,10 +1059,6 @@
             file="toc.xml"
             primary="true">
       </toc>
-      <toc
-            file="tocusingastpa.xml"
-            primary="false">
-      </toc>
    </extension>
    <extension
          point="org.eclipse.ui.importWizards">
@@ -1385,6 +1381,13 @@
             commandId="xstampp.astpa.command.cs.deleteRoot"
             icon="icons/eclipse/delete_obj.gif">
       </image>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="html/contexts/astpa1_1Context.xml"
+            plugin="xstampp.astpa">
+      </contexts>
    </extension>
 
 </plugin>

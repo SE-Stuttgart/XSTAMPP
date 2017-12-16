@@ -5,27 +5,41 @@
   	<topic href="html/gettingStarted.html" label="Getting Started">
       <topic href="../xstampp/html/gettingstarted/managingprojects.html" label="Managing a Project">
       </topic>
-      <topic href="html/usingAstpa/steps.html" label="Conduct a STPA Analysis">
-         <topic href="html/usingAstpa/step0/step0.html" label="Establish Fundamentals">
-            <topic href="html/usingAstpa/step0/linkingacchaz.html" label="Linking Accidents and Hazards">
-            </topic>
-         </topic>
-         <topic href="html/usingAstpa/step1/step1.html" label="Step 1">
-            <topic href="html/usingAstpa/step1/ucaView.html" label="Unsafe Control Actions Table">
-            </topic>
-            <topic href="html/usingAstpa/step1/correspSafetyConstView.html" label="Corresponding Safety Constraints">
-            </topic>
-         </topic>
-         <topic href="html/usingAstpa/step2/step2.html" label="Step 2">
-            <topic href="html/usingAstpa/step2/csWithPmView.html" label="Control Structure with Process Model">
-            </topic>
-            <topic href="html/usingAstpa/step2/causalFactorsView.html" label="Causal Factors Table">
-            </topic>
-         </topic>
+      <topic href="html/usingAstpa/generell.html" label="Project View">
       </topic>
    </topic>  
    <topic href="html/glossary/glossary.html" label="Glossary">
    </topic>
    <topic href="../xstampp/html/CHANGELOG.html" label="Version History">
+   </topic>
+   <topic href="html/usingAstpa/steps.html" label="Conducting a STPA">
+      <topic href="html/usingAstpa/step0/step0.html" label="Establish Fundamentals">
+         <topic href="html/usingAstpa/step0/systemDescription.html" label="System Description">
+         </topic>
+         <topic href="html/usingAstpa/step0/systemGoals.html" label="System Goals">
+         </topic>
+         <topic href="html/usingAstpa/step0/accidents.html" label="Accidents">
+         </topic>
+         <topic href="html/usingAstpa/step0/hazards.html" label="Hazards">
+         </topic>
+         <topic href="html/usingAstpa/step0/accidents.html" label="Accidents">
+         </topic>
+		 <topic href="html/usingAstpa/step0/linkingacchaz.html" label="Linking View"></topic>
+		 <topic href="html/usingAstpa/step0/constraints.html" label="Safety Constraints"></topic>
+		 <topic href="html/usingAstpa/step0/designReq.html" label="Design Requirements"></topic>
+		 <topic href="html/usingAstpa/step0/controlStructureView.html" label="Control Structure"></topic>
+      </topic>
+		<topic href="html/usingAstpa/step1/step1.html" label="Identifying Unsafe Control Actions">
+			<topic href="html/usingAstpa/step1/controlActions.html" label="Control Actions"></topic>
+			<topic href="html/usingAstpa/step1/ucaView.html" label="Unsafe Control Actions"></topic>
+			<topic href="html/usingAstpa/step1/correspSafetyConstView.html" label="Corresponding Safety Constraints"></topic>
+			<topic href="html/usingAstpa/step1/designReq.html" label="Design Requirements of Step 1"></topic>
+		</topic>
+		<topic href="html/usingAstpa/step2/step2.html" label="Identifying the Causal Factors">
+			<topic href="html/usingAstpa/step2/csWithPmView.html" label="Control Structure with Process Model"></topic>
+			<topic href="html/usingAstpa/step2/causalFactorsView.html" label="Causal Factors Table"></topic>
+			<topic href="html/usingAstpa/step2/constraints.html" label="Safety Constraints of Step 2"></topic>
+			<topic href="html/usingAstpa/step2/designReq.html" label="Design Requirements of Step 2"></topic>
+		</topic>
    </topic>
 </toc>

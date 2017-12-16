@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.jobs,
  org.eclipse.swt,
  org.eclipse.nebula.widgets.grid;bundle-version="1.0.0",
- org.junit
+ org.junit,
+ org.eclipse.help
 Bundle-ActivationPolicy: lazy
 Export-Package: xstampp.astpa;uses:="org.osgi.framework,org.eclipse.jface.resource,org.eclipse.ui.plugin",
  xstampp.astpa.controlstructure;

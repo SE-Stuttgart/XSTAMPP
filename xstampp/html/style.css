@@ -29,6 +29,13 @@ td {
 	padding-bottom: 13px;
 }
 
+table.toc td {
+	padding: 5px;
+}
+table.toc tr:hover td{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
 :target {
 	background-color: yellow;
 }

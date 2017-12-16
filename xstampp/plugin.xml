@@ -1082,9 +1082,6 @@
          file="toc.xml"
          primary="true">
    </toc>
-   <toc
-         file="tocgettingstarted.xml">
-   </toc>
 </extension>
 <extension
       point="org.eclipse.ui.perspectiveExtensions">
