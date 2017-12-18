@@ -48,10 +48,10 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
   private Link ucaCFLink;
 
   private static final Image ONE_MANY_TOOGLE = Activator
-      .getImageDescriptor("/icons/buttons/grid/ToggleOne_ManySCs.png").createImage(); //$NON-NLS-1$
+      .getImageDescriptor("/icons/buttons/grid/ToggleOne_ManySCs_2.png").createImage(); //$NON-NLS-1$
 
   private static final Image MANY_ONE_TOOGLE = Activator
-      .getImageDescriptor("/icons/buttons/grid/ToggleMany_OneSCs.png").createImage(); //$NON-NLS-1$
+      .getImageDescriptor("/icons/buttons/grid/ToggleMany_OneSCs_2.png").createImage(); //$NON-NLS-1$
 
   /**
    * 

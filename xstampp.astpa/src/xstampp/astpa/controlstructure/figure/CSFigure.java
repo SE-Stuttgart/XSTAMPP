@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
@@ -219,6 +220,7 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
   }
 
   public void hideBorder() {
+    setBorder((Border) null);
     this.hideBorder = true;
   }
 
@@ -400,7 +402,9 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
       this.border.setColor(STANDARD_BORDER_COLOR);
       setMargin(0);
     }
-    setBorder(this.border);
+    if (!hideBorder) {
+      setBorder(this.border);
+    }
     for (Object child : this.getChildren()) {
       if (child instanceof IControlStructureFigure) {
         ((IControlStructureFigure) child).setDeco(deco);
