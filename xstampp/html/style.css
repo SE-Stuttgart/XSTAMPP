@@ -53,6 +53,11 @@ tr:nth-child(2n -1) {
 tr.clear {
 	background-color: white;
 }
+
+table.clear tr {
+	background-color: white;
+}
+	
 tr.head {
 	background-color: blue;
 	color: white;

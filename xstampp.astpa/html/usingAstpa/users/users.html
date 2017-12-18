@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+	<link href="../../../../xstampp/html/style.css" rel="stylesheet" type="text/css">
+		<link href="../../style.css" rel="stylesheet" type="text/css">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>User Management</title>
+	</head>
+	<body>
+		<div class="header astpa">
+			<div class="headerContent">User Management</div>
+		</div>
+	<p><a href="../projectSettings.html">General</a> | <a href="../step1/ucaSettings.html">Unsafe Control Actions Table</a> | <b><b>Users</b></b></p>
+		<ul style="margin-bottom:20px">
+			<li><a href="#initial">Empty User System</a>
+			<li><a href="#users">User settings</a>
+			<li><a href="#collaboration">Collaboration settings</a>
+			<li><a href="#responsibility">Responsibility settings</a>
+		</ul>
+		<table style="width:100%; border-top:2px solid gray; padding-top: 15px;">
+		<tr id="initial" style="background-color:White">
+			<td>
+			<img class="full" src="../../../../xstampp/html/images/users/userSettings_init.PNG">
+			<table>
+			<tr>
+				<td>Create User database</td>
+				<td>Prompts the user with a login dialog for creating a new administrator account. This is than used as first user in a new user system associated with the current project. After the initial administrator has been created the user system can be edited and new users/administrators can be added.</td>
+			</tr>
+			<tr>
+				<td>Use existing Userdata</td>
+				<td>If a user system has been previously created with XSTAMPP than it can be reused by clicking on <br><b>Use existing Userdata</b> which will open a file dialog to choose án existing <i>*.user</i> file</td>
+			</tr>
+			</table>
+			</td>
+		</tr>
+		<tr style="background-color:White">
+			<td style="border-top:2px solid gray; padding-top: 15px;">
+			<h2 id="users">User settings</h2>
+			<img class="full" src="../../../../xstampp/html/images/users/userSettings_users.PNG">
+			<table>
+			<tr>
+				<td><img src="../../../../xstampp/icons/usermanagement/addUserx16.png"></td>
+				<td><img class="full" src="../../../../xstampp/html/images/users/userSettings_users_createUser.PNG">
+				Prompts the user with a user creation dialog for creating a new user account. The User name and password are mandatory to create the user additionally a user can get a <b>read only</b> status to permanently prevent this user from making any changes on in project.</td>
+			</tr>
+			<tr>
+				<td><img src="../../../../xstampp/icons/usermanagement/addAdminx16.png"></td>
+				<td><img class="full" src="../../../../xstampp/html/images/users/userSettings_users_createAdmin.PNG">
+				Prompts the user with a administrator creation dialog for creating a new administrator account.</td>
+			</tr>
+			<tr>
+				<td><img src="../../../../xstampp/icons/buttons/editx16.png"></td>
+				<td><img class="full" src="../../../../xstampp/html/images/users/userSettings_users_edit.PNG">
+				Prompts the user with an edit dialog in which the password of a user can be reseted.</td>
+			</tr>
+			</table>
+			</td>
+		</tr>
+		<tr style="background-color:White">
+			<td style="border-top:2px solid gray; padding-top: 15px;">
+			<h2 id="collaboration">Collaboration settings</h2>
+			<img class="full" src="../../../../xstampp/html/images/users/userSettings_collaboration.PNG">
+			On this page an administrator can create <b>user copies</b> of the project for each user registered with write permissions.<br>
+			A <b>user copy</b> is a project file named <i>projectName_userName</i>.<br>
+			Every user copy can only be accessed by the respective user for which it has been created.
+			</td>
+		</tr>
+		<tr style="background-color:White">
+			<td>
+			<img class="full" src="../../../../xstampp/html/images/users/userSettings_collaboration_ready.PNG">
+			After a <b>user copy</b> has been created the administrator can synchronize the changes of each user based on the <a href="#responsibility">responsibility settings</a>.<br>
+			<p><i>e.g. assume user Peter has been given the responsibility for Hazard-1 and changed it in his user copy. If the administrator clicks on <b>Get changes form...</b> than the changes Peter applied to Hazard-1 are synchronized with the main project.</i></p>
+			</td>
+		</tr>
+		<tr style="background-color:White">
+			<td style="border-top:2px solid gray; padding-top: 15px;">
+			<h2 id="responsibility">Responsibility settings</h2>
+			<img class="full" src="../../../../xstampp/html/images/users/userSettings_resp.PNG">
+			On this page an administrator can give and take responsibilities to/from users based on four categories.
+			<table>
+				<tr>
+					<td>Accidents</td>
+					<td>if a users is responsible for an Accident he can edit the title and description of it as well as add new hazard or safety constraint links</td>
+				</tr>
+				<tr>
+					<td>Hazards</td>
+					<td>if a users is responsible for a Hazard he can edit the title and description of it as well as add new accident links</td>
+				</tr>
+				<tr>
+					<td>Safety Constraint</td>
+					<td>if a users is responsible for a Safety Constraint he can edit the title and description of it as well as add new design requirement links</td>
+				</tr>
+				<tr>
+					<td>Control Action</td>
+					<td>if a users is responsible for a Control Action he can edit the title and description.<br>
+					The Responsibility for a Control Action also means that the user can add/edit Unsafe Control Actions for that Control Action as well as edit the corresponding safety constraint of the created UCAs.</td>
+				</tr>
+			</table>
+			<img class="full" src="../../../../xstampp/html/images/users/userSettings_resp_setting.PNG">
+			Every entry (Hazard, Accident, Safety Constraint or Control Action) can be assigned to one or more users by clicking on the User column in the respective table row.
+			
+			</td>
+		</tr>
+	</body>
+</html>

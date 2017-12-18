@@ -544,6 +544,17 @@
                </parameter>
             </command>
          </toolbar>
+         <toolbar
+               id="xstampp.toolbar1">
+            <command
+                  commandId="org.eclipse.ui.help.helpContents"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.help.helpSearch"
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
       <menuContribution
             allPopups="false"
