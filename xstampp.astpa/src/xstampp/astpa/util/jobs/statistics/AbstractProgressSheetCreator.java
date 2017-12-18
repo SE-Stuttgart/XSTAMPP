@@ -185,21 +185,26 @@ abstract class AbstractProgressSheetCreator {
   }
 
   void createCells(Row row, String[] titles, Styles style, Sheet sheet) {
+    int regionStart = -1;
     for (int i = 0; i < titles.length; i++) {
       createCell(row, i, titles[i], style);
-      if (titles[i].isEmpty() && i > 0) {
+      if (titles[i].isEmpty() && regionStart == -1) {
+        regionStart = i - 1;
+      } else if (!titles[i].isEmpty() && regionStart != -1) {
         int rowNum = row.getRowNum();
-        sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, i - 1, i));
+        sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, regionStart, i - 1));
+        regionStart = -1;
       }
     }
   }
 
   Row createRow(Sheet sheet) {
-    assert columns != null;
     Row row = sheet.createRow(sheet.getLastRowNum() + 1);
     row.setHeightInPoints(10f);
     row.setHeight((short) -1);
-    createCells(row, 0, null, columns);
+    if (columns != null) {
+      createCells(row, 0, null, columns);
+    }
     return row;
   }
 

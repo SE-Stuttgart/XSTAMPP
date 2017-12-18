@@ -147,10 +147,12 @@ public class ImageProvider {
     color = progress < 0.25 ? Color.red : color;
     Color colorBefore = graphics.getColor();
     graphics.setColor(color);
-    graphics.fillRect(stepBarPosition - barWidth / 2, rect.y + heightOffset, barWidth,
+    Rectangle barBounds = new Rectangle(stepBarPosition - barWidth / 2, rect.y + heightOffset, barWidth,
         rect.height - heightOffset);
+    graphics.fillRect(barBounds.x, barBounds.y, barBounds.width, barBounds.height);
     graphics.setColor(colorBefore);
-
+    String progressString = String.format("%.1f", progress * 100) + "%";
+    graphics.drawString(progressString, barBounds.x, barBounds.y + 5);
     int fontHeight = graphics.getFontMetrics().getHeight();
     int labelWidth = graphics.getFontMetrics().stringWidth(step.getLabel());
     graphics.drawString(step.getLabel(), stepBarPosition - labelWidth / 2,

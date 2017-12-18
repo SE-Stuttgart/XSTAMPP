@@ -74,6 +74,8 @@ public class STPAStatisticsJob extends XstamppJob {
     new Step2Progress(wb, controller, cf_per_uca).createSheet("STPA Step 2");
     new Step1HazardProgress(wb, controller).createSheet("STPA Step 1 Hazard Centered");
     new Step2HazardProgress(wb, controller, cf_per_uca).createSheet("STPA Step 2 Hazard Centered");
+    new NumbersSheet(wb, controller, sc_per_acc, uca_per_ca, cf_per_uca).createSheet("Definitions");
+    new SeveritySheet(wb, controller, null).createSheet("Severity Definitions");
     insertImage(wb, ws, imageProvider.createStepBars(600, 400), 1, 1);
     insertImage(wb, ws, imageProvider.createTotalBar(600, 200), 11, 10);
     insertImage(wb, hazardTotalSheet, imageProvider.createHazardBars(600, 400, 5), 1, 10);

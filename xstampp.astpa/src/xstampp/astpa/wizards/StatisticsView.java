@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellAddress;
@@ -20,10 +21,10 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -45,6 +46,7 @@ public class StatisticsView extends ViewPart {
   @Override
   public void createPartControl(Composite parent) {
     folder = new TabFolder(parent, SWT.BOTTOM);
+    folder.setLayout(new FillLayout());
 
   }
 
@@ -78,10 +80,10 @@ public class StatisticsView extends ViewPart {
         createTable(sheet, sheetComposite);
       }
       scrollContent.setContent(sheetComposite);
-
-      scrollContent.setMinHeight(folder.getBounds().height);
-      scrollContent.layout();
-      scrollContent.layout(new Control[] { sheetComposite });
+      scrollContent.setMinHeight(scrollContent.getBounds().height);
+      scrollContent.setMinWidth(scrollContent.getBounds().width);
+      // scrollContent.layout();
+      // scrollContent.layout(new Control[] { sheetComposite });
       tab.setControl(scrollContent);
     });
   }
@@ -124,15 +126,17 @@ public class StatisticsView extends ViewPart {
     sheetComposite.setLayout(layout);
     activeRegion = null;
     for (int i = firstRowNum; i <= lastRowNum; i++) {
-      sheet.getRow(i).cellIterator().forEachRemaining((cell) -> {
+      final Row row = sheet.getRow(i);
+      row.cellIterator().forEachRemaining((cell) -> {
         boolean isMergeCell = mergeRegionsMap.containsKey(cell.getAddress());
         boolean inRange = sheet.getMergedRegions().stream().anyMatch((range) -> {
           return range.isInRange(cell);
         });
         if (isMergeCell || !inRange) {
           Label cellComp = new Label(sheetComposite, SWT.BORDER | SWT.WRAP);
-          GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+          GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
           layoutData.minimumWidth = 50;
+          layoutData.widthHint = sheet.getColumnWidth(cell.getAddress().getColumn());
           if (isMergeCell) {
             activeRegion = mergeRegionsMap.get(cell.getAddress());
             layoutData.horizontalSpan = (activeRegion.getLastColumn() - activeRegion.getFirstColumn()) + 1;
