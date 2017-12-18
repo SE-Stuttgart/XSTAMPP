@@ -2,8 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Using StpaSec" topic="html/toc.html">
-  	<topic label="Getting Started">
-      <anchor id="usingstpasec"/>
-   </topic>  
-   <topic label="Version History" href="html/history.html"/>
+   <topic href="html/toc.html" label="STPA for Security">
+   </topic>
 </toc>

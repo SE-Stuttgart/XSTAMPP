@@ -951,10 +951,6 @@
             file="toc.xml"
             primary="true">
       </toc>
-      <toc
-            file="tocusingstpapriv.xml"
-            primary="false">
-      </toc>
    </extension>
    <extension
          point="org.eclipse.ui.importWizards">

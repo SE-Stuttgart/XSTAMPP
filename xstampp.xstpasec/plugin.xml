@@ -62,21 +62,6 @@
             file="toc.xml"
             primary="true">
       </toc>
-      <toc
-            file="tocconcepts.xml">
-      </toc>
-      <toc
-            file="tocgettingstarted.xml">
-      </toc>
-      <toc
-            file="tocreference.xml">
-      </toc>
-      <toc
-            file="tocsamples.xml">
-      </toc>
-      <toc
-            file="toctasks.xml">
-      </toc>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -95,7 +80,7 @@
             name="%editor.name.Refined_Safety_Constraints">
       </editor>
       <editor
-            class="xstpasec.ui.CSContextEditor"
+            class="xstpa.ui.CSContextEditor"
             default="false"
             id="xstpasec.editor.context"
             name="%editor.name.contextTables">

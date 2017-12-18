@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="XSTPA User Guide" topic="html/toc.html">
-   <topic href="html/gettingstarted/gettingStarted.html" label="Getting Started">
-      <topic href="html/gettingstarted/processmodel_view.html" label="Processmodel View">
-      </topic>
-      <topic href="html/gettingstarted/controlaction_view.html" label="Control Action View">
-      </topic>
-      <topic href="html/gettingstarted/dependencies_view.html" label="Dependencies View">
-      </topic>
-      <topic href="html/gettingstarted/contexttable_view.html" label="Context Table View">
-      </topic>
-      <topic href="html/gettingstarted/refinedsafety_view.html" label="Refined Security View">
-      </topic>
-   </topic>
-   <topic href="html/history.html" label="Version History">
+<toc label="XSTPA For Security User Guide" topic="html/toc.html">
+   <topic href="html/toc.html" label="XSTPA for Security">
    </topic>
 </toc>
