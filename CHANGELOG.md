@@ -2,6 +2,7 @@
 
 #### A-STPA Features:
 
+*  Add STPA Progress Indicator Export for creating a status report based on editable measures
 *  Add A-STPA User Manual with stepwise guidance through the analysis and glossary with STPA definitions
 *  Add Option to change between using one or multiple safety constraint in the Causal Analysis
 *  Add ToolTips Support for UCA and Causal Factors Table

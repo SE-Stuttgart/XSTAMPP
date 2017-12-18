@@ -257,6 +257,13 @@
             id="xstampp.astpa.export.main"
             name="%category.name.stpaExport">
       </category>
+      <wizard
+            category="xstampp.astpa.export.main"
+            class="xstampp.astpa.wizards.StatisticsExportWizard"
+            icon="icons/buttons/export/exportStatistics_16x16.png"
+            id="xstampp.astpa.wizard.stpaStatistics"
+            name="Progress Indicators">
+      </wizard>
    </extension>
    <extension
          id="astpa.export"
