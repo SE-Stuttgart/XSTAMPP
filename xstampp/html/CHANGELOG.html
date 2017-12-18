@@ -8,19 +8,44 @@
   <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
-<h2 id="xstampp-2.5.3">XSTAMPP 2.5.3</h2>
+<h2 id="xstampp-2.6.0">XSTAMPP 2.6.0</h2>
+<h4 id="a-stpa-features">A-STPA Features:</h4>
+<ul>
+<li>Add STPA Progress Indicator Export for creating a status report based on editable measures</li>
+<li>Add A-STPA User Manual with stepwise guidance through the analysis and glossary with STPA definitions</li>
+<li>Add Option to change between using one or multiple safety constraint in the Causal Analysis</li>
+<li>Add ToolTips Support for UCA and Causal Factors Table</li>
+<li>Add Editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis</li>
+</ul>
 <h4 id="a-stpa-bugfixes">A-STPA Bugfixes:</h4>
+<ul>
+<li>Fix bug that filter in Causal Factors Table is not working for Component Type filters</li>
+<li>Fix unexpected behaviour in control structure of undo/redo of parent changes</li>
+<li>Fix scrolling informations are lost when manipulating grid views</li>
+<li>Fix bug that Design requirements of step1&amp;2 can't be removed/added</li>
+<li>Fix bug in control structure export that image and text would overlap</li>
+</ul>
+<h4 id="bugfixes">Bugfixes:</h4>
+<ul>
+<li>Fix Nullpointer when creating a new CAST/StpaPriv/STPASec project</li>
+</ul>
+<h4 id="other-changes">Other Changes:</h4>
+<ul>
+<li>In the Control Structure Undo/Redo is now handled by the global Undo/Redo service which is accessible on the XSTAMPP toolbar and over CTRL+Z/CTRL+Y</li>
+</ul>
+<h2 id="xstampp-2.5.3">XSTAMPP 2.5.3</h2>
+<h4 id="a-stpa-bugfixes-1">A-STPA Bugfixes:</h4>
 <ul>
 <li>Fix visibility issues on macOS of UI Elements in the user system</li>
 <li>Fix on macOS the button labels of the text editor in the UCA/Causal Factor Table are not visible</li>
 <li>Fix bug that adding a new UCA is not poossible in the Unsafe Control Actions Table</li>
 </ul>
 <h2 id="xstampp-2.5.2">XSTAMPP 2.5.2:</h2>
-<h4 id="a-stpa-features">A-STPA Features:</h4>
+<h4 id="a-stpa-features-1">A-STPA Features:</h4>
 <ul>
 <li>Add auto increase of UCA Severity to the highest Severity of itself and the linked Hazards</li>
 </ul>
-<h4 id="a-stpa-bugfixes-1">A-STPA Bugfixes:</h4>
+<h4 id="a-stpa-bugfixes-2">A-STPA Bugfixes:</h4>
 <ul>
 <li>Fix that when changing the title of a design requirement in step1/2 the title is not changed in the table</li>
 <li>Fix bug in the step 1.3 Table filter won't filter by safety constraints and added filter by uca's</li>
@@ -33,7 +58,7 @@
 <li>Fix bug in A-STPA 2.5.1 that corresponding safety constraints are not loaded in Step 1</li>
 </ul>
 <h2 id="xstampp-2.5.1">XSTAMPP 2.5.1:</h2>
-<h4 id="bugfixes">Bugfixes</h4>
+<h4 id="bugfixes-1">Bugfixes</h4>
 <ul>
 <li>Fix all UCA-Hazard-Links are removed when one is deleted by the user</li>
 <li>Fix Null Pointer Exception during storage in Unsafe Control Actions</li>
@@ -63,7 +88,7 @@
 <li>Add posibillity to add Control Actions to the Control Structure from the Control Action Table (Step 1)</li>
 </ul>
 <h2 id="xstampp-2.4.1">XSTAMPP 2.4.1:</h2>
-<h5 id="bugfixes-1">Bugfixes:</h5>
+<h5 id="bugfixes-2">Bugfixes:</h5>
 <ul>
 <li>Fixed NullPointerException when selecting hazard or accident entries</li>
 <li>Fixed NullPointerException when opening the Results View by null check #524</li>
@@ -83,7 +108,7 @@
 <li>Created new Grid Editor for the Unsafe Control Action and Causal Factors Table with Save/Cancel Button</li>
 <li>Added settings dialog to customize the table headers in the unsafe control actions table per project #521</li>
 </ul>
-<h5 id="bugfixes-2">Bugfixes:</h5>
+<h5 id="bugfixes-3">Bugfixes:</h5>
 <ul>
 <li>Fixed a bug that would produce a null pointer when drag&amp;dropping a component in the control structure #506</li>
 </ul>
@@ -133,7 +158,7 @@
 <li>Added project specific option to safe preferences to hide/show hazard severity analysis</li>
 </ul></li>
 </ul>
-<h5 id="bugfixes-3">Bugfixes:</h5>
+<h5 id="bugfixes-4">Bugfixes:</h5>
 <ul>
 <li>Fixed bug where XSTAMPP would sometimes create 'null.ext' files</li>
 <li>Fixed Bug that caused unsafed changes to be dismissed without promt when the user clicked on 'File-&gt;Switch Workspace'</li>
@@ -178,7 +203,7 @@
 <li>Added Acts algorithm in the installation folder so that it not longer has to be added manually</li>
 </ul></li>
 </ul>
-<h5 id="bugfixes-4">Bugfixes:</h5>
+<h5 id="bugfixes-5">Bugfixes:</h5>
 <pre><code>*   Fixed errors when shutting down XSTAMPP with jobs still running
 *   enhanced error dialogs of load/save
 *   **A-STPA 2.0.4**
@@ -204,7 +229,7 @@
 *   Automatically generate the context tables and LTL formal specification and apply different coverages criteria on the context table to reduce the number of combinations.
 *   Choose between “fixed” or flexible connection points on each component in the control structure diagram.
 *   Copy &amp; Paste feature in the control structure diagram.</code></pre>
-<h5 id="bugfixes-5">Bugfixes:</h5>
+<h5 id="bugfixes-6">Bugfixes:</h5>
 <pre><code>*   The toolbar does not appear correctly with large screen resolutions
 *   In the control structure Dashed Boxes should always be drawn behind other objects
 *   I cannot create a new project with STPA wizard
@@ -227,7 +252,7 @@
 <ul>
 <li>Font in Control Structure (Step 1.8/3.1) now changable in Preferences</li>
 </ul>
-<h5 id="bugfixes-6">Bugfixes:</h5>
+<h5 id="bugfixes-7">Bugfixes:</h5>
 <ul>
 <li>fixed bug that caused special characters to be stored in a wrong format</li>
 <li>added compability mode for disabeling the above bugfix to guaranty compabillity with older versions (in this mode the bug still exists so its not recommended to store special characters with it!!)</li>
@@ -243,7 +268,7 @@
 <li>Renaming Projects directly in the project explorer</li>
 <li>Preference Option to highlight selected step in Edit/Preferences/Color and Fonts</li>
 </ul>
-<h5 id="bugfixes-7">Bugfixes:</h5>
+<h5 id="bugfixes-8">Bugfixes:</h5>
 <ul>
 <li>controlstructure images are now exported in higher quality</li>
 <li>Fixed Bug that links between causal factors and hazards were not stored</li>
@@ -254,7 +279,7 @@
 <li>added Help Content with contact link</li>
 <li>added Version History and quickstartguide as in Help-&gt;Help Content</li>
 </ul>
-<h5 id="bugfixes-8">Bugfixes:</h5>
+<h5 id="bugfixes-9">Bugfixes:</h5>
 <ul>
 <li>final bugfix of the control structure image resolution bug in the PDF Export #64</li>
 <li>added save and load status monitor #38</li>
@@ -265,7 +290,7 @@
 <ul>
 <li>added decoration mode in the Control Structure, which adds icons and Colored borders for a better distinguishability for the components</li>
 </ul>
-<h5 id="bugfixes-9">Bugfixes:</h5>
+<h5 id="bugfixes-10">Bugfixes:</h5>
 <ul>
 <li>fixed wrong scaling of the control structure image in the pdf Export</li>
 <li>Components which are created in the Control Structure are not longer removeable in the Control Structure with process model</li>
@@ -288,7 +313,7 @@
 <li>improved popup for safety Constraint linking in the Causal analysis</li>
 <li>added Version History and quickstartguide as in Help-&gt;Help Content</li>
 </ul>
-<h5 id="bugfixes-10">Bugfixes:</h5>
+<h5 id="bugfixes-11">Bugfixes:</h5>
 <ul>
 <li>final bugfix of the control structure image resolution bug in the PDF Export #64</li>
 <li>added save and load status monitor #38</li>
