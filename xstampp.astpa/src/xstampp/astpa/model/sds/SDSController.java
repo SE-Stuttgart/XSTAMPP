@@ -692,7 +692,7 @@ public class SDSController extends Observable implements ISDSController {
   }
 
   public void syncContent(SDSController controller) {
-    for (SystemGoal other : controller.systemGoals) {
+    for (SystemGoal other : controller.getSystemGoals()) {
       ITableModel own = getSystemGoal(other.getId());
       if (own == null) {
         addSystemGoal(other);
@@ -701,7 +701,7 @@ public class SDSController extends Observable implements ISDSController {
         setSystemGoalDescription(other.getId(), other.getDescription());
       }
     }
-    for (SafetyConstraint other : controller.safetyConstraints) {
+    for (SafetyConstraint other : controller.getSafetyConstraints()) {
       ITableModel own = getSafetyConstraint(other.getId());
       if (own == null) {
         addSafetyConstraint(other);

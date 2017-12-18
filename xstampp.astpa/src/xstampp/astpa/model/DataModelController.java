@@ -270,11 +270,9 @@ public class DataModelController extends AbstractDataModel
   public void prepareForSave() {
     lockUpdate();
     this.extendedDataController.prepareForSave(getControlActionController(), getLinkController());
-    if (!this.getControlActionController().prepareForSave(this.extendedDataController,
-        getLinkController())) {
+    if (!this.getControlActionController().prepareForSave(getLinkController(),
+        hazAccController)) {
       this.controlActionController = null;
-    } else {
-      this.controlActionController.fetchUCASeverity(getLinkController(), hazAccController);
     }
 
     this.causalFactorController.prepareForSave(this.getHazAccController(),
@@ -1806,7 +1804,9 @@ public class DataModelController extends AbstractDataModel
 
           @Override
           public void run() {
-            controlActionController.fetchUCASeverity(linkController, hazAccController);
+            if (controlActionController != null) {
+              controlActionController.fetchUCASeverity(linkController, hazAccController);
+            }
           }
         });
         break;

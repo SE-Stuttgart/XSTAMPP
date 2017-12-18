@@ -24,7 +24,6 @@ import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
-import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -576,14 +575,9 @@ public class ControlAction extends ATableModel implements IControlAction {
     }
   }
 
-  /**
-   * Prepares the control actions for save
-   * 
-   * @author Fabian Toth, Lukas Balzer
-   * 
-   */
-  public void prepareForSave(ExtendedDataController extendedData) {
-    prepareForSave();
+  @Override
+  public void prepareForSave() {
+    super.prepareForSave();
     notProvidedVariableNames = null;
     providedVariableNames = null;
 
@@ -598,11 +592,6 @@ public class ControlAction extends ATableModel implements IControlAction {
       }
     }
     rules = null;
-  }
-
-  @Override
-  public void prepareForSave() {
-    super.prepareForSave();
     for (UnsafeControlAction unsafeControlAction : unsafeControlActions) {
       unsafeControlAction.prepareForSave();
     }

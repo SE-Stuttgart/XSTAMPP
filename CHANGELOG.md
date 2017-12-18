@@ -14,6 +14,10 @@
 *  Fix bug that Design requirements of step1&2 can't be removed/added
 *  Fix bug in control structure export that image and text would overlap
 
+#### Bugfixes:
+
+*  Fix Nullpointer when creating a new CAST/StpaPriv/STPASec project
+
 #### Other Changes:
 
 *  In the Control Structure Undo/Redo is now handled by the global Undo/Redo service which is accessible on the XSTAMPP toolbar and over CTRL+Z/CTRL+Y

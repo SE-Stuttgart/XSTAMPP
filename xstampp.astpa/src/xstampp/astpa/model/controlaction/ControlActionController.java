@@ -34,9 +34,8 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
-import xstampp.astpa.model.hazacc.HazAccController;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
@@ -542,7 +541,7 @@ public class ControlActionController extends Observable implements IControlActio
     }
   }
 
-  public void fetchUCASeverity(LinkController linkController, HazAccController hazController) {
+  public void fetchUCASeverity(LinkController linkController, IHazAccController hazController) {
     for (ICorrespondingUnsafeControlAction uca : getAllUnsafeControlActions()) {
       for (UUID hazLink : linkController.getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId())) {
         Severity severity = hazController.getHazard(hazLink).getSeverity();
@@ -555,12 +554,12 @@ public class ControlActionController extends Observable implements IControlActio
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean prepareForSave(ExtendedDataController extendedData,
-      LinkController linkController) {
+  public boolean prepareForSave(LinkController linkController,
+      IHazAccController hazAccController) {
     moveRulesInCA();
     getUCANumber(null);
     for (ControlAction controlAction : this.getControlActions()) {
-      controlAction.prepareForSave(extendedData);
+      controlAction.prepareForSave();
       for (UnsafeControlAction unsafeControlAction : controlAction
           .getInternalUnsafeControlActions()) {
         unsafeControlAction.prepareForSave();
@@ -584,6 +583,7 @@ public class ControlActionController extends Observable implements IControlActio
     if (this.controlActions != null && controlActions.isEmpty()) {
       controlActions = null;
     }
+    fetchUCASeverity(linkController, hazAccController);
     return isUsed || this.controlActions != null;
   }
 
@@ -918,7 +918,6 @@ public class ControlActionController extends Observable implements IControlActio
     for (UUID actionId : obsoleteCAs) {
       removeControlAction(actionId);
     }
-    getControlActions().removeAll(obsoleteCAs);
   }
 
 }

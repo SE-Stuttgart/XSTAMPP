@@ -41,6 +41,7 @@ import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -1134,8 +1135,7 @@ public class SecControlActionController implements IControlActionController {
   }
 
   @Override
-  public boolean prepareForSave(ExtendedDataController extendedData,
-      LinkController linkController) {
+  public boolean prepareForSave(LinkController linkController, IHazAccController hazController) {
     return true;
     // TODO Auto-generated method stub
 

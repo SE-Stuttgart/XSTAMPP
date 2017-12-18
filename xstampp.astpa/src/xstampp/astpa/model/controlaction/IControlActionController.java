@@ -16,8 +16,8 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.extendedData.ExtendedDataController;
 import xstampp.astpa.model.extendedData.RefinedSafetyRule;
+import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.ISTPADataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -298,12 +298,12 @@ public interface IControlActionController {
    * Prepares the control actions for save
    * 
    * @author Fabian Toth
-   * @param extendedData
    * @param linkController
+   * @param hazAccController
    * @return whether the controller is used or not, and can therefore be deleted
    * 
    */
-  boolean prepareForSave(ExtendedDataController extendedData, LinkController linkController);
+  boolean prepareForSave(LinkController linkController, IHazAccController hazAccController);
 
   List<UCAHazLink> getAllUCALinks();
 
