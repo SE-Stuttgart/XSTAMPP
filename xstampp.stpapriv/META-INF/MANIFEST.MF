@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: STPAPriiv
 Bundle-SymbolicName: xstampp.stpapriv;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.1.0
 Bundle-Activator: xstampp.stpapriv.Activator
 Require-Bundle: org.eclipse.ui,
  xstampp.extension;bundle-version="1.0.0",

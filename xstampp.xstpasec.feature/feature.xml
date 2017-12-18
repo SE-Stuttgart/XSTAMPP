@@ -2,7 +2,7 @@
 <feature
       id="xstampp.xstpasec.feature"
       label="XSTPASec Feature"
-      version="1.1.0.qualifier"
+      version="1.1.0"
       plugin="xstampp.xstpasec">
 
    <description url="http://www.example.com/description">

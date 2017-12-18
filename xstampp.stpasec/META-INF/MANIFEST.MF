@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: STPASec
 Bundle-SymbolicName: xstampp.stpasec;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.1.0
 Bundle-Activator: xstampp.stpasec.Activator
 Require-Bundle: org.eclipse.ui,
  xstampp,

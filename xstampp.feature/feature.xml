@@ -2,7 +2,7 @@
 <feature
       id="xstampp.feature"
       label="A-STPA feature"
-      version="2.6.0.qualifier"
+      version="2.6.0"
       plugin="xstampp.astpa">
 
    <description>
