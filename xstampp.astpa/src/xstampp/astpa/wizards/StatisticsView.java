@@ -21,10 +21,12 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -74,21 +76,23 @@ public class StatisticsView extends ViewPart {
       scrollContent.setExpandVertical(true);
       scrollContent.setExpandHorizontal(true);
       Drawing<?> drawing = sheet.getDrawingPatriarch();
+      Point size;
       if (drawing != null) {
-        createDrawings(sheet, sheetComposite, drawing);
+        size = createDrawings(sheet, sheetComposite, drawing);
       } else {
-        createTable(sheet, sheetComposite);
+        size = createTable(sheet, sheetComposite);
       }
       scrollContent.setContent(sheetComposite);
-      scrollContent.setMinHeight(scrollContent.getBounds().height);
-      scrollContent.setMinWidth(scrollContent.getBounds().width);
-      // scrollContent.layout();
-      // scrollContent.layout(new Control[] { sheetComposite });
+      scrollContent.layout();
+      scrollContent.layout(new Control[] { sheetComposite });
+      scrollContent.setMinHeight(size.y);
+      scrollContent.setMinWidth(size.x);
       tab.setControl(scrollContent);
     });
   }
 
-  private void createDrawings(Sheet sheet, final Composite sheetComposite, Drawing<?> drawing) {
+  private Point createDrawings(Sheet sheet, final Composite sheetComposite, Drawing<?> drawing) {
+    Rectangle rect = new Rectangle(0, 0, 0, 0);
     drawing.forEach((obj) -> {
       XSSFPicture pict = (XSSFPicture) obj;
       byte[] data = pict.getPictureData().getData();
@@ -108,12 +112,16 @@ public class StatisticsView extends ViewPart {
       final Point pos = new Point(x, y);
       ImageData imgData = imageLoader.load(stream)[0];
       Image img = new Image(null, imgData);
-      sheetComposite.addPaintListener(e -> e.gc.drawImage(img, pos.x, pos.y));
+      sheetComposite.addPaintListener(e -> {
+        e.gc.drawImage(img, pos.x, pos.y);
 
+      });
+      rect.add(new Rectangle(pos.x, pos.y, img.getBounds().width, img.getBounds().height));
     });
+    return new Point(rect.width, rect.height);
   }
 
-  private void createTable(Sheet sheet, final Composite sheetComposite) {
+  private Point createTable(Sheet sheet, final Composite sheetComposite) {
     final Map<CellAddress, CellRangeAddress> mergeRegionsMap = new HashMap<>();
     for (CellRangeAddress range : sheet.getMergedRegions()) {
       mergeRegionsMap.put(new CellAddress(range.getFirstRow(), range.getFirstColumn()), range);
@@ -125,8 +133,10 @@ public class StatisticsView extends ViewPart {
     layout.verticalSpacing = 1;
     sheetComposite.setLayout(layout);
     activeRegion = null;
+    final Point size = new Point(0, 0);
     for (int i = firstRowNum; i <= lastRowNum; i++) {
       final Row row = sheet.getRow(i);
+      size.y += row.getHeight();
       row.cellIterator().forEachRemaining((cell) -> {
         boolean isMergeCell = mergeRegionsMap.containsKey(cell.getAddress());
         boolean inRange = sheet.getMergedRegions().stream().anyMatch((range) -> {
@@ -137,6 +147,7 @@ public class StatisticsView extends ViewPart {
           GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
           layoutData.minimumWidth = 50;
           layoutData.widthHint = sheet.getColumnWidth(cell.getAddress().getColumn());
+
           if (isMergeCell) {
             activeRegion = mergeRegionsMap.get(cell.getAddress());
             layoutData.horizontalSpan = (activeRegion.getLastColumn() - activeRegion.getFirstColumn()) + 1;
@@ -147,8 +158,11 @@ public class StatisticsView extends ViewPart {
           cellComp.setBackground(this.colorMap.get(cell.getCellStyle().getFillForegroundColor()));
         }
       });
-      sheetComposite.layout();
     }
+    Point point = sheetComposite.computeSize(size.x, SWT.DEFAULT);
+    size.y = point.y;
+    sheetComposite.layout(true, true);
+    return size;
   }
 
 }

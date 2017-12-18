@@ -42,7 +42,8 @@ public class ImageProvider {
     return getBytes(width, height, (graphics) -> {
       drawHeading(graphics, "Hazard Progress", width);
       List<ITableModel> hazards = controller.getAllHazards();
-      int rectHeight = (height - 55) / hazards.size() - horizontalMargin;
+      
+      int rectHeight = hazards.size() == 0 ? 0 : (height - 55) / hazards.size() - horizontalMargin;
       int rectWidth = width - 150;
       int segmY = 50 + horizontalMargin;
       int fontHeight = graphics.getFontMetrics().getHeight();
