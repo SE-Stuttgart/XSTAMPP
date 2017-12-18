@@ -29,10 +29,12 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html
 
    <launcherArgs>
       <programArgsLin>-vm
-jre1.8.0_152/bin
+jre/bin
       </programArgsLin>
+      <programArgsMac>-vm
+      </programArgsMac>
       <programArgsWin>-vm
-jre1.8.0_152/bin
+jre/bin
       </programArgsWin>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>

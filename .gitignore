@@ -1,5 +1,6 @@
 target/
-bin/
+*/bin/
+!**/jre/bin/
 !.project
 .settings/
 *.exe
