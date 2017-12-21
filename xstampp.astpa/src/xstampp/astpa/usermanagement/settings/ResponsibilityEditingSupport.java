@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.usermanagement.Messages;
+import xstampp.model.IEntryWithId;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.contentassist.MultiSelectionCellEditor;
 import xstampp.usermanagement.api.AccessRights;
@@ -35,8 +36,7 @@ import xstampp.usermanagement.api.IUserSystem;
 
 public class ResponsibilityEditingSupport extends EditingSupport {
 
-  private Map<UUID, List<UUID>> userToResponibilitiesMap;
-  private Map<UUID, List<UUID>> localResponibilitiesMap;
+  private Map<IEntryWithId, List<IUser>> localResponibilitiesMap;
   private List<String> userList;
   private IUserSystem userSystem;
   private List<IUser> userRegister;
@@ -50,7 +50,6 @@ public class ResponsibilityEditingSupport extends EditingSupport {
   public ResponsibilityEditingSupport(ColumnViewer viewer, IUserProject project) {
     super(viewer);
     Assert.isTrue(viewer instanceof TableViewer);
-    this.userToResponibilitiesMap = new HashMap<>();
     this.localResponibilitiesMap = new HashMap<>();
     userSystem = project.getUserSystem();
     this.userList = new ArrayList<>();
@@ -59,25 +58,22 @@ public class ResponsibilityEditingSupport extends EditingSupport {
       if (user.checkAccess(AccessRights.ACCESS)) {
         this.userList.add(user.getUsername());
         this.userRegister.add(user);
-        for (UUID entryId : this.userSystem.getResponsibilities(user.getUserId())) {
-          if (!this.userToResponibilitiesMap.containsKey(entryId)) {
-            this.userToResponibilitiesMap.put(entryId, new ArrayList<>());
-          }
-          this.userToResponibilitiesMap.get(entryId).add(user.getUserId());
-        }
       }
     }
   }
 
-  private void mapResp(UUID entryId, UUID userId, boolean remove) {
-    if (remove && this.localResponibilitiesMap.containsKey(entryId)) {
-      this.localResponibilitiesMap.get(entryId).remove(userId);
-    } else if (!this.localResponibilitiesMap.containsKey(entryId)) {
-      List<UUID> list = this.userToResponibilitiesMap.getOrDefault(entryId, new ArrayList<>());
-      this.localResponibilitiesMap.put(entryId, list);
+  private void mapResp(IEntryWithId entry, UUID uiserId, boolean remove) {
+    IUser user = userRegister.stream().filter((userEntry) -> {
+      return userEntry.getUserId().equals(uiserId);
+    }).findFirst().orElse(null);
+    if (remove && this.localResponibilitiesMap.containsKey(entry)) {
+      this.localResponibilitiesMap.get(entry).remove(user);
+    } else if (!this.localResponibilitiesMap.containsKey(entry)) {
+      List<IUser> list = this.userSystem.getResponsibilities(entry);
+      this.localResponibilitiesMap.put(entry, list);
     }
-    if (!(remove || this.localResponibilitiesMap.get(entryId).contains(userId))) {
-      this.localResponibilitiesMap.get(entryId).add(userId);
+    if (!(remove || this.localResponibilitiesMap.get(entry).contains(user))) {
+      this.localResponibilitiesMap.get(entry).add(user);
     }
   }
 
@@ -115,29 +111,28 @@ public class ResponsibilityEditingSupport extends EditingSupport {
       LinkProposal prop = new LinkProposal();
       prop.setLabel(user.getUsername());
       prop.setProposalId(user.getUserId());
-      prop.setSelected(isMapped(((ATableModel) element).getId(), user));
+      prop.setSelected(isMapped(((ATableModel) element), user));
       proposals.add(prop);
     }
     return proposals;
   }
 
-  private boolean isMapped(UUID id, IUser user) {
-    boolean result = false;
-    if (this.userToResponibilitiesMap.containsKey(id)) {
-      result = this.userToResponibilitiesMap.get(id).contains(user.getUserId());
-    }
-    return result;
+  private boolean isMapped(ATableModel element, IUser user) {
+    List<IUser> responsibilities = this.userSystem.getResponsibilities(((ATableModel) element));
+    localResponibilitiesMap.putIfAbsent(((ATableModel) element), responsibilities);
+    return localResponibilitiesMap.get(element).contains(user);
   }
 
   protected String getStringValue(Object element) {
-    if (userToResponibilitiesMap.containsKey(((ATableModel) element).getId())) {
+    List<IUser> responsibilities = this.userSystem.getResponsibilities(((ATableModel) element));
+    localResponibilitiesMap.putIfAbsent(((ATableModel) element), responsibilities);
+    if (!localResponibilitiesMap.get(element).isEmpty()) {
       String value = "";
-      for (IUser user : userRegister) {
-        if (isMapped(((ATableModel) element).getId(), user)) {
-          value += user.getUsername() + ", ";
-        }
+      for (IUser user : localResponibilitiesMap.get(element)) {
+        value += value.isEmpty() ? "" : ", ";
+        value += user.getUsername();
       }
-      return value.substring(0, value.length() - 2);
+      return value;
     }
     return Messages.ResponsibilityEditingSupport_0;
   }
@@ -146,13 +141,15 @@ public class ResponsibilityEditingSupport extends EditingSupport {
   @Override
   protected void setValue(Object element, Object value) {
     assert (value instanceof List<?>);
+    localResponibilitiesMap.putIfAbsent(((ATableModel) element), new ArrayList<>());
+    localResponibilitiesMap.get(((ATableModel) element)).clear();
     ((List<LinkProposal>) value).stream()
-        .forEach((prop) -> mapResp(((ATableModel) element).getId(), prop.getProposalId(), !prop.isSelected()));
+        .forEach((prop) -> mapResp(((ATableModel) element), prop.getProposalId(), !prop.isSelected()));
 
     getViewer().refresh();
   }
 
-  public Map<UUID, List<UUID>> save() {
+  public Map<IEntryWithId, List<IUser>> save() {
     return localResponibilitiesMap;
   }
 }

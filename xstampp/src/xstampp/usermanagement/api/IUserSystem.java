@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import xstampp.model.IEntryWithId;
+
 /**
  * The API to access he user system and create one on the platform.
  * 
@@ -49,8 +51,10 @@ public interface IUserSystem {
   public boolean assignResponsibility(UUID responsibility);
 
   public boolean assignResponsibility(UUID user, UUID responsibility);
-  
-  public boolean assignResponsibilities(Map<UUID, List<UUID>> responsibilityMap);
+
+  public boolean assignResponsibility(IUser user, IEntryWithId responsibility);
+
+  public boolean assignResponsibilities(Map<IEntryWithId, List<IUser>> map);
 
   List<IUser> getRegistry();
 
@@ -79,6 +83,8 @@ public interface IUserSystem {
   public boolean checkAccess(AccessRights accessRight);
 
   List<UUID> getResponsibilities(UUID userId);
+
+  List<IUser> getResponsibilities(IEntryWithId entry);
 
   boolean isResponsible(UUID userId, UUID entryId);
 

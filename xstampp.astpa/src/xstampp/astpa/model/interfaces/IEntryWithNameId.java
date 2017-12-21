@@ -11,11 +11,9 @@
  ******************************************************************************/
 package xstampp.astpa.model.interfaces;
 
-import java.util.UUID;
+import xstampp.model.IEntryWithId;
 
-public interface IEntryWithNameId {
-
-  UUID getId();
+public interface IEntryWithNameId extends IEntryWithId {
 
   String getText();
 }

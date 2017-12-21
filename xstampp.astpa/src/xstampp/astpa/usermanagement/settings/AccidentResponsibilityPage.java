@@ -31,7 +31,6 @@ public class AccidentResponsibilityPage extends EntryResponsibilitiesPage<ATable
     for (ITableModel model : allAccidents) {
       list.add((ATableModel) model);
     }
-    // TODO Auto-generated method stub
     return list;
   }
 

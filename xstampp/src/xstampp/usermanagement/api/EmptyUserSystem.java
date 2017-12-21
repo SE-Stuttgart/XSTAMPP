@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import xstampp.model.IEntryWithId;
+
 /**
  * Every {@link IUserProject} can by default assign this as its user system so
  * that Unnecessary null checks are prevented.
@@ -105,11 +107,16 @@ public class EmptyUserSystem implements IUserSystem {
 
   @Override
   public boolean assignResponsibility(UUID user, UUID responsibility) {
+    return assignResponsibility(user, responsibility);
+  }
+
+  @Override
+  public boolean assignResponsibility(IUser user, IEntryWithId responsibility) {
     return false;
   }
 
   @Override
-  public boolean assignResponsibilities(Map<UUID, List<UUID>> responsibilityMap) {
+  public boolean assignResponsibilities(Map<IEntryWithId, List<IUser>> responsibilityMap) {
     return false;
   }
 
@@ -125,7 +132,12 @@ public class EmptyUserSystem implements IUserSystem {
 
   @Override
   public List<UUID> getResponsibilities(UUID userId) {
-    return null;
+    return new ArrayList<>();
+  }
+
+  @Override
+  public List<IUser> getResponsibilities(IEntryWithId entry) {
+    return new ArrayList<>();
   }
 
   @Override

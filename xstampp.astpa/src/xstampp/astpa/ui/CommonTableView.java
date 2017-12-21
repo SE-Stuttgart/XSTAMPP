@@ -185,7 +185,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
             severityButton.setEntry(selectedEntry);
             severityButton.getControl().redraw();
           }
-          getDescriptionWidget().setEnabled(canEdit(selectedEntry, AccessRights.WRITE));
+          boolean canEdit = canEdit(selectedEntry, AccessRights.WRITE);
+          severityButton.setEnabled(canEdit);
+          getDescriptionWidget().setEnabled(canEdit);
           for (LinkSupport<?> linkSupport : linkFields) {
             linkSupport.update(getCurrentSelection());
           }
@@ -1124,14 +1126,17 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
         @Override
         protected boolean canEdit(Object element) {
-          SeverityButton button = new SeverityButton(((ISeverityEntry) element), getDataInterface(),
-              getViewer().getControl());
-          Point location = getTableViewer().getTable().getDisplay().getCursorLocation();
-          getTableViewer().getTable().toDisplay(location);
-          Point point = new Point(0, 0);
-          point.x = idColumn.getColumn().getWidth() + titleColumn.getColumn().getWidth();
-          button.onButtonDown(point, new Rectangle(0, 0, 0, 0));
-          return true;
+          if (CommonTableView.this.canEdit(selectedEntry, AccessRights.WRITE)) {
+            SeverityButton button = new SeverityButton(((ISeverityEntry) element), getDataInterface(),
+                getViewer().getControl());
+            Point location = getTableViewer().getTable().getDisplay().getCursorLocation();
+            getTableViewer().getTable().toDisplay(location);
+            Point point = new Point(0, 0);
+            point.x = idColumn.getColumn().getWidth() + titleColumn.getColumn().getWidth();
+            button.onButtonDown(point, new Rectangle(0, 0, 0, 0));
+            return true;
+          }
+          return false;
         }
       });
       this.getTableColumnLayout().setColumnData(severityColumn.getColumn(),

@@ -38,6 +38,7 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
   private Control control;
   private static final Image hoveredImage = Activator
       .getImageDescriptor("/icons/buttons/dropDownCanvas.png").createImage();
+  private boolean enabled;
 
   /**
    * 
@@ -56,6 +57,7 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
         return true;
       }
     };
+    this.enabled = true;
     this.control = control;
     this.entry = entry;
     this.model = (ISeverityDataModel) model;
@@ -113,7 +115,10 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
           }
         }
       });
-      assist.openPopup();
+
+      if (enabled) {
+        assist.openPopup();
+      }
     } else {
       MessageDialog.openError(null, "Widget is disposed",
           "for some reason the Platform can't find a suficient display!");
@@ -135,6 +140,11 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
   @Override
   public void paintControl(PaintEvent e) {
     onPaint(e.gc, new Rectangle(0, 0, getBounds().width, getBounds().height), entry != null);
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+
   }
 
   public Control getControl() {

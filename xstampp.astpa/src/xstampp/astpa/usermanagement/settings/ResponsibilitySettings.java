@@ -25,10 +25,12 @@ import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
 import xstampp.model.IDataModel;
+import xstampp.model.IEntryWithId;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.common.projectsettings.ISettingsPage;
 import xstampp.ui.common.shell.ModalShell;
 import xstampp.usermanagement.api.EmptyUserSystem;
+import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 
 /**
@@ -56,7 +58,7 @@ public class ResponsibilitySettings implements ISettingsPage {
   @Override
   public boolean doAccept() {
     if (getDataModel() != null) {
-      Map<UUID, List<UUID>> map = new HashMap<>();
+      Map<IEntryWithId, List<IUser>> map = new HashMap<>();
       for (EntryResponsibilitiesPage<?> page : pages) {
         map.putAll(page.getResult());
       }

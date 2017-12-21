@@ -28,12 +28,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
+import xstampp.model.IEntryWithId;
 import xstampp.ui.common.ProjectManager;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserSystem;
 import xstampp.usermanagement.io.SaveUserJob;
-import xstampp.usermanagement.roles.AbstractUser;
 import xstampp.usermanagement.roles.Admin;
 import xstampp.usermanagement.roles.User;
 import xstampp.usermanagement.ui.ChangeUserShell;
@@ -105,19 +105,30 @@ public class UserSystem extends Observable implements IUserSystem {
 
   @Override
   public boolean assignResponsibility(UUID user, UUID responsibility) {
-    Map<UUID, List<UUID>> responsibilityMap = new HashMap<>();
+    return assignResponsibility(user, responsibility);
+  }
+
+  @Override
+  public boolean assignResponsibility(IUser user, IEntryWithId responsibility) {
+    Map<IEntryWithId, List<IUser>> responsibilityMap = new HashMap<>();
     responsibilityMap.put(responsibility, Arrays.asList(user));
     return assignResponsibilities(responsibilityMap);
   }
 
   @Override
-  public boolean assignResponsibilities(Map<UUID, List<UUID>> responsibilityMap) {
+  public boolean assignResponsibilities(Map<IEntryWithId, List<IUser>> responsibilityMap) {
     boolean changed = false;
     if (checkAccess(AccessRights.ADMIN)) {
-      for (Entry<UUID, List<UUID>> entry : responsibilityMap.entrySet()) {
-        UUID entryId = entry.getKey();
-        for (UUID userId : entry.getValue()) {
-          changed |= this.responsibilities.add(userId, entryId);
+      for (Entry<IEntryWithId, List<IUser>> entry : responsibilityMap.entrySet()) {
+        UUID entryId = entry.getKey().getId();
+        // remove all responsibilities that are not included in the given mapping
+        List<IUser> currentResp = getResponsibilities(entry.getKey());
+        currentResp.removeAll(entry.getValue());
+        for (IUser user : currentResp) {
+          changed |= this.responsibilities.remove(new Responsibility(user.getUserId(), entry.getKey().getId()));
+        }
+        for (IUser userId : entry.getValue()) {
+          changed |= this.responsibilities.add(userId.getUserId(), entryId);
         }
       }
       if (changed) {
@@ -133,6 +144,23 @@ public class UserSystem extends Observable implements IUserSystem {
     for (Responsibility entry : responsibilities) {
       if (entry.getUserId().equals(userId)) {
         returnList.add(entry.getEntryId());
+      }
+    }
+    return returnList;
+  }
+
+  @Override
+  public List<IUser> getResponsibilities(IEntryWithId entry) {
+    List<UUID> idList = new ArrayList<>();
+    for (Responsibility resp : responsibilities) {
+      if (resp.getEntryId().equals(entry.getId())) {
+        idList.add(resp.getUserId());
+      }
+    }
+    List<IUser> returnList = new ArrayList<>();
+    for (User user : userRegistry) {
+      if (idList.contains(user.getUserId())) {
+        returnList.add(user);
       }
     }
     return returnList;
