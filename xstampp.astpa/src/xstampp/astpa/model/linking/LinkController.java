@@ -309,6 +309,11 @@ public class LinkController extends Observable {
     return isSet;
   }
 
+  public boolean changeLinkNote(UUID linkId, LinkingType type, String note) {
+    Link link = getLinkObjectFor(type, linkId);
+    return changeLinkNote(link, note);
+  }
+
   /**
    * Returns the first matching {@link Link} stored under the given linkType with the given linkId
    * 

@@ -92,6 +92,7 @@ public class CausalFactorEntry {
 
       linkController.addLink(LinkingType.CausalEntryLink_SC2_LINK, UcaCfCompLink,
           this.constraintId);
+      linkController.changeLinkNote(UcaCfCompLink, LinkingType.UcaCfLink_Component_LINK, note);
     }
     constraintText = null;
     ucaLink = null;

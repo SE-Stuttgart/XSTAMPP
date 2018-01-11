@@ -291,6 +291,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     LinkingType entryType = getDataModel().isUseScenarios()
         ? LinkingType.CausalEntryLink_Scenario_LINK
         : LinkingType.CausalEntryLink_HAZ_LINK;
+    // If a CausalEntryLink_SC2_LINK exists for the given UcaCfLink_Component_LINK than and
+    // scenarios are not used than a single row containing only that safety constraint is created
     if (getDataModel().getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK,
         causalEntryLink.getId())) {
       entryType = getDataModel().isUseScenarios() ? entryType
@@ -304,7 +306,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
             causalEntryLink.getId(), hazId, false);
       }
     }
-    // iterate all CausalEntryLink_HAZ_LINK's stored for the causalEntryLink
+    // depending on the choice of entryType a set of links is iterated to create the scenarios or
+    // dafetyConstaint row/s
     for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
         causalEntryLink.getId())) {
       GridRow row = (first) ? entryRow
@@ -324,6 +327,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       }
       case CausalEntryLink_SC2_LINK: {
         createSingleConstraintRow(row, link, uca);
+        // In column 6 the Note/Rational cell for the UCACfLink_Component_LINK is created
+        row.addCell(6,
+            new CellEditorFactorNote(getGridWrapper(), getDataModel(), causalEntryLink));
         break;
       }
       default:
@@ -362,6 +368,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @return
    */
   private GridRow createHazardRow(GridRow entryRow, Link ucaHazLink, IUnsafeControlAction uca) {
+    System.out.println("create hazard rows");
     ITableModel hazard = getDataModel().getHazard(ucaHazLink.getLinkB());
     String hazText = hazard != null ? hazard.getIdString() + " - " + hazard.getTitle() : "no hazard";
     GridCellText hazCell = new GridCellText(hazText);
@@ -398,7 +405,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), safetyOption.get());
       ((GridCellTextEditor) hintCell).setDefaultText("Design hint...");
     }
+    // in column 5 the Design Hint cell for the CausalHazLink_SC2_LINK is added
     entryRow.addCell(5, hintCell);
+    // In column 6 the Note/Rational cell for the CausalEntryLink_HAZ_LINK is created
     entryRow.addCell(6, new CellEditorFactorNote(getGridWrapper(), getDataModel(), ucaHazLink));
     return null;
 
@@ -416,6 +425,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    */
   private GridRow createSingleConstraintRow(GridRow entryRow, Link causalEntryLink,
       IUnsafeControlAction uca) {
+    System.out.println("single constraint row");
     addHazardCell(entryRow, uca);
 
     CellEditorSingleSafetyConstraint cell = new CellEditorSingleSafetyConstraint(getGridWrapper(),
@@ -435,9 +445,8 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), safetyOption.get());
       ((GridCellTextEditor) hintCell).setDefaultText("Design hint...");
     }
+    // in column 5 the Design Hint cell for the CausalEntryLink_SC2_LINK is added
     entryRow.addCell(5, hintCell);
-    entryRow.addCell(6,
-        new CellEditorFactorNote(getGridWrapper(), getDataModel(), causalEntryLink));
     return null;
 
   }
