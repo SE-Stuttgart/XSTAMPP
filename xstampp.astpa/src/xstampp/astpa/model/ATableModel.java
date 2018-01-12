@@ -143,7 +143,7 @@ public abstract class ATableModel extends EntryWithSeverity
 
   @Override
   public String getDescription() {
-    return this.description;
+    return this.description == null ? "" : this.description;
   }
 
   /**
@@ -167,7 +167,7 @@ public abstract class ATableModel extends EntryWithSeverity
 
   @Override
   public String getTitle() {
-    return this.title;
+    return this.title == null ? "" : this.title;
   }
 
   @Override

@@ -14,7 +14,6 @@ package xstampp.astpa.model.causalfactor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -26,7 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.ATableModelController;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -55,7 +54,7 @@ import xstampp.model.ObserverValue;
  * xstampp.astpa/docs/architecture
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class CausalFactorController extends Observable implements ICausalController {
+public class CausalFactorController extends ATableModelController implements ICausalController {
 
   @XmlElementWrapper(name = "causalComponents")
   @XmlElement(name = "causalComponent")
@@ -331,38 +330,12 @@ public class CausalFactorController extends Observable implements ICausalControl
 
   @Override
   public boolean setSafetyConstraintText(UUID constraintId, String newText) {
-    ITableModel safetyConstraint = getSafetyConstraint(constraintId);
-    if (safetyConstraint == null) {
-      return false;
-    }
-    String description = ((ATableModel) safetyConstraint).setTitle(newText);
-    if (!newText.equals(description)) {
-      UndoTextChange textChange = new UndoTextChange(description, newText,
-          ObserverValue.CAUSAL_FACTOR);
-      textChange.setConsumer((text) -> setSafetyConstraintText(constraintId, text));
-      setChanged();
-      notifyObservers(textChange);
-      return true;
-    }
-    return false;
+    return setModelTitle(getSafetyConstraint(constraintId), newText, ObserverValue.CAUSAL_FACTOR);
   }
 
   @Override
   public boolean setSafetyConstraintDescription(UUID constraintId, String newText) {
-    ITableModel safetyConstraint = getSafetyConstraint(constraintId);
-    if (safetyConstraint == null) {
-      return false;
-    }
-    String description = ((ATableModel) safetyConstraint).setDescription(newText);
-    if (!newText.equals(description)) {
-      UndoTextChange textChange = new UndoTextChange(description, newText,
-          ObserverValue.CAUSAL_FACTOR);
-      textChange.setConsumer((text) -> setSafetyConstraintDescription(constraintId, text));
-      setChanged();
-      notifyObservers(textChange);
-      return true;
-    }
-    return false;
+    return setModelDescription(getSafetyConstraint(constraintId), newText, ObserverValue.CAUSAL_FACTOR);
   }
 
   private NumberedArrayList<CausalSafetyConstraint> getCausalSafetyConstraints() {

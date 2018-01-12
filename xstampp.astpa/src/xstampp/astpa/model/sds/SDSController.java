@@ -13,22 +13,19 @@ package xstampp.astpa.model.sds;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.ATableModelController;
 import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
-import xstampp.astpa.model.service.UndoDesignReqChangeCallback;
-import xstampp.astpa.model.service.UndoGoalChangeCallback;
-import xstampp.astpa.model.service.UndoSafetyConstraintChangeCallback;
 import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
 
@@ -39,7 +36,7 @@ import xstampp.model.ObserverValue;
  * @since 2.0
  * 
  */
-public class SDSController extends Observable implements ISDSController {
+public class SDSController extends ATableModelController implements ISDSController {
 
   @XmlElementWrapper(name = "safetyConstraints")
   @XmlElement(name = "safetyConstraint")
@@ -427,21 +424,7 @@ public class SDSController extends Observable implements ISDSController {
   @Override
   public boolean setDesignRequirementDescription(ObserverValue type, UUID designRequirementId,
       String description) {
-    if ((description == null) || (designRequirementId == null)) {
-      return false;
-    }
-    ITableModel requirement = getDesignRequirement(designRequirementId, type);
-
-    String oldDescription = ((ATableModel) requirement).setDescription(description);
-    if (oldDescription != null) {
-      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this, type,
-          requirement);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      setChanged();
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelDescription(getDesignRequirement(designRequirementId, type), description, type);
   }
 
   /*
@@ -453,105 +436,27 @@ public class SDSController extends Observable implements ISDSController {
   @Override
   public boolean setDesignRequirementTitle(ObserverValue type, UUID designRequirementId,
       String title) {
-    if ((title == null) || (designRequirementId == null)) {
-      return false;
-    }
-    ITableModel requirement = getDesignRequirement(designRequirementId, type);
-
-    String oldTitle = ((ATableModel) requirement).setTitle(title);
-    if (oldTitle != null) {
-      UndoDesignReqChangeCallback changeCallback = new UndoDesignReqChangeCallback(this, type,
-          requirement);
-      changeCallback.setTitleChange(oldTitle, title);
-      setChanged();
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelTitle(getDesignRequirement(designRequirementId, type), title, type);
   }
 
   @Override
   public boolean setSafetyConstraintTitle(UUID safetyConstraintId, String title) {
-    if ((title == null) || (safetyConstraintId == null)) {
-      return false;
-    }
-    ITableModel safetyConstraint = getSafetyConstraint(safetyConstraintId);
-    if (!(safetyConstraint instanceof SafetyConstraint)) {
-      return false;
-    }
-    String oldTitle = ((SafetyConstraint) safetyConstraint).setTitle(title);
-    if (oldTitle != null) {
-      setChanged();
-      UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
-          this, safetyConstraint);
-      changeCallback.setTitleChange(oldTitle, title);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelTitle(getSafetyConstraint(safetyConstraintId), title, ObserverValue.SAFETY_CONSTRAINT);
   }
 
   @Override
   public boolean setSafetyConstraintDescription(UUID safetyConstraintId, String description) {
-    if ((description == null) || (safetyConstraintId == null)) {
-      return false;
-    }
-    ITableModel safetyConstraint = getSafetyConstraint(safetyConstraintId);
-    if (!(safetyConstraint instanceof SafetyConstraint)) {
-      return false;
-    }
-
-    String oldDescription = ((SafetyConstraint) safetyConstraint).setDescription(description);
-    if (oldDescription != null) {
-      setChanged();
-      UndoSafetyConstraintChangeCallback changeCallback = new UndoSafetyConstraintChangeCallback(
-          this, safetyConstraint);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelDescription(getSafetyConstraint(safetyConstraintId), description, ObserverValue.SAFETY_CONSTRAINT);
   }
 
   @Override
   public boolean setSystemGoalDescription(UUID systemGoalId, String description) {
-    if ((systemGoalId == null) || (description == null)) {
-      return false;
-    }
-    ITableModel systemGoal = getSystemGoal(systemGoalId);
-    if (!(systemGoal instanceof SystemGoal)) {
-      return false;
-    }
-
-    String oldDescription = ((SystemGoal) systemGoal).setDescription(description);
-    if (oldDescription != null) {
-      setChanged();
-      UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoal);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelDescription(getSystemGoal(systemGoalId), description, ObserverValue.SYSTEM_GOAL);
   }
 
   @Override
   public boolean setSystemGoalTitle(UUID systemGoalId, String title) {
-    if ((systemGoalId == null) || (title == null)) {
-      return false;
-    }
-    ITableModel systemGoal = getSystemGoal(systemGoalId);
-    if (!(systemGoal instanceof SystemGoal)) {
-      return false;
-    }
-    String oldTitle = ((SystemGoal) systemGoal).setTitle(title);
-    if (oldTitle != null) {
-      setChanged();
-      UndoGoalChangeCallback changeCallback = new UndoGoalChangeCallback(this, systemGoal);
-      changeCallback.setTitleChange(oldTitle, title);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelTitle(getSystemGoal(systemGoalId), title, ObserverValue.SYSTEM_GOAL);
   }
 
   /*

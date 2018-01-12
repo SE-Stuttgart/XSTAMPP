@@ -181,12 +181,12 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           if (deleteItemsButton != null) {
             deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
           }
+          boolean canEdit = canEdit(selectedEntry, AccessRights.WRITE);
           if (severityButton != null) {
             severityButton.setEntry(selectedEntry);
             severityButton.getControl().redraw();
+            severityButton.setEnabled(canEdit);
           }
-          boolean canEdit = canEdit(selectedEntry, AccessRights.WRITE);
-          severityButton.setEnabled(canEdit);
           getDescriptionWidget().setEnabled(canEdit);
           for (LinkSupport<?> linkSupport : linkFields) {
             linkSupport.update(getCurrentSelection());

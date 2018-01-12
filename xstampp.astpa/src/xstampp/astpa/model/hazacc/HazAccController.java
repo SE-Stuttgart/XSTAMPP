@@ -15,7 +15,6 @@ package xstampp.astpa.model.hazacc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,12 +24,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.ATableModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.sds.ISDSController;
-import xstampp.astpa.model.service.UndoAccidentChangeCallback;
-import xstampp.astpa.model.service.UndoHazardChangeCallback;
 import xstampp.astpa.preferences.ASTPADefaultConfig;
 import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
@@ -43,7 +41,7 @@ import xstampp.model.ObserverValue;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class HazAccController extends Observable implements IHazAccController {
+public class HazAccController extends ATableModelController implements IHazAccController {
 
   @XmlElementWrapper(name = "accidents")
   @XmlElement(name = "accident")
@@ -92,45 +90,12 @@ public class HazAccController extends Observable implements IHazAccController {
 
   @Override
   public boolean setAccidentDescription(UUID accidentId, String description) {
-    if ((accidentId == null) || (description == null)) {
-      return false;
-    }
-
-    ITableModel accident = getAccident(accidentId);
-    if (!(accident instanceof Accident)) {
-      return false;
-    }
-
-    String oldDescription = ((ATableModel) accident).setDescription(description);
-    if (oldDescription != null) {
-      setChanged();
-      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelDescription(getAccident(accidentId), description, ObserverValue.ACCIDENT);
   }
 
   @Override
   public boolean setAccidentTitle(UUID accidentId, String title) {
-    if ((accidentId == null) || (title == null)) {
-      return false;
-    }
-    ITableModel accident = getAccident(accidentId);
-    if (!(accident instanceof Accident)) {
-      return false;
-    }
-
-    String oldTitle = ((ATableModel) accident).setTitle(title);
-    if (oldTitle != null) {
-      setChanged();
-      UndoAccidentChangeCallback changeCallback = new UndoAccidentChangeCallback(this, accident);
-      changeCallback.setTitleChange(oldTitle, title);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelTitle(getAccident(accidentId), title, ObserverValue.ACCIDENT);
   }
 
   /*
@@ -238,42 +203,12 @@ public class HazAccController extends Observable implements IHazAccController {
 
   @Override
   public boolean setHazardDescription(UUID hazardId, String description) {
-    if ((description == null) || (hazardId == null)) {
-      return false;
-    }
-    Hazard hazard = getHazard(hazardId);
-    if (!(hazard instanceof Hazard)) {
-      return false;
-    }
-    String oldDescription = ((Hazard) hazard).setDescription(description);
-    if (oldDescription != null) {
-      setChanged();
-      UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
-      changeCallback.setDescriptionChange(oldDescription, description);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelDescription(getHazard(hazardId), description, ObserverValue.HAZARD);
   }
 
   @Override
   public boolean setHazardTitle(UUID hazardId, String title) {
-    if ((title == null) || (hazardId == null)) {
-      return false;
-    }
-    Hazard hazard = getHazard(hazardId);
-    if (!(hazard instanceof Hazard)) {
-      return false;
-    }
-    String oldTitle = ((Hazard) hazard).setTitle(title);
-    if (oldTitle != null) {
-      setChanged();
-      UndoHazardChangeCallback changeCallback = new UndoHazardChangeCallback(this, hazard);
-      changeCallback.setTitleChange(oldTitle, title);
-      notifyObservers(changeCallback);
-      return true;
-    }
-    return false;
+    return setModelTitle(getHazard(hazardId), title, ObserverValue.HAZARD);
   }
 
   /*

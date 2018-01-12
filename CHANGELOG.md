@@ -2,6 +2,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix collaboration System always displays a wrong number of changes after a merge
 *  Fix multiple User responsibilities not working when more than one user is selected
 *  Fix in Causal Factors table the Notes / Rationale is not imported in v2.6
 *  Fix in Causal Factors table the design hints for single safety constraint rows overwrite the notes

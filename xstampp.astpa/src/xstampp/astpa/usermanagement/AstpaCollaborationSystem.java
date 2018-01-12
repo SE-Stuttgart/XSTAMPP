@@ -82,7 +82,7 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
         .getService(ISourceProviderService.class);
     UndoRedoService provider = (UndoRedoService) service
         .getSourceProvider(UndoRedoService.CAN_REDO);
-    provider.startRecord();
+    provider.startRecord(true);
     Event event = new Event();
     event.data = 0;
     listener.handleEvent(event);

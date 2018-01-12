@@ -10,12 +10,12 @@
 package xstampp.astpa.model.linking;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -32,7 +32,7 @@ public class LinkController extends Observable {
   private Map<LinkingType, List<Link>> linkMap;
 
   public LinkController() {
-    this.linkMap = new HashMap<>();
+    this.linkMap = new TreeMap<>();
   }
 
   /**

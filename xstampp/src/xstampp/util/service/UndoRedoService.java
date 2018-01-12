@@ -28,10 +28,19 @@ public class UndoRedoService extends AbstractSourceProvider
   private Map<String, IUndoRedoProvider> providerToEditorIds;
   private IUndoRedoProvider currentProvider;
   private String editorId;
+  private boolean hasRecordDummy = false;
 
   public UndoRedoService() {
     this.currentProvider = new DummyUndoRedoProvider();
     this.providerToEditorIds = new HashMap<>();
+  }
+
+  public void startRecord(boolean useDummyProvider) {
+    if (useDummyProvider) {
+      this.currentProvider = new UndoRedoInstance(this);
+      this.hasRecordDummy = true;
+    }
+    startRecord();
   }
 
   @Override
@@ -41,12 +50,22 @@ public class UndoRedoService extends AbstractSourceProvider
 
   @Override
   public List<IUndoCallback> getRecord() {
-    return this.currentProvider.getRecord();
+    List<IUndoCallback> record = this.currentProvider.getRecord();
+    if (hasRecordDummy) {
+      this.currentProvider = new DummyUndoRedoProvider();
+      this.hasRecordDummy = false;
+    }
+    return record;
   }
 
   @Override
   public boolean pushRecord() {
-    return this.currentProvider.pushRecord();
+    boolean pushRecord = this.currentProvider.pushRecord();
+    if (hasRecordDummy) {
+      this.currentProvider = new DummyUndoRedoProvider();
+      this.hasRecordDummy = false;
+    }
+    return pushRecord;
   }
 
   @Override
