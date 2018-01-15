@@ -168,8 +168,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
     else if (this.relativeId != null) {
       this.getDataModel().setRelativeOfComponent(this.componentId, this.relativeId);
     }
-    this.updateParentConstraint();
-
   }
 
   @Override
@@ -192,28 +190,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
   @Override
   public void redo() {
     this.getDataModel().recoverComponent(this.parentId, this.compModel.getId());
-    // updateParentConstraint();
-
-  }
-
-  private void updateParentConstraint() {
-    this.getDataModel().changeComponentLayout(this.parentId, this.parentLayout,
-        this.getStepID().equals(CSEditor.ID));
-    this.compModel = this.getDataModel().getComponent(this.componentId);
-
-    Rectangle conflict = this.parentLayout;
-    // this loop updates all children of the constraint component
-    for (IRectangleComponent child : this.constraintModel.getChildren()) {
-      Rectangle constrainRect = child.getLayout(this.getStepID().equals(CSEditor.ID)).getCopy();
-      // if the conflict intersects the child than the layout is moved
-      // down
-      if (conflict.intersects(constrainRect) && !child.equals(this.parentModel)) {
-        constrainRect.y += conflict.getIntersection(constrainRect).height;
-        this.getDataModel().changeComponentLayout(child.getId(), constrainRect,
-            this.getStepID().equals(CSEditor.ID));
-        conflict = constrainRect;
-      }
-    }
   }
 
   /**
