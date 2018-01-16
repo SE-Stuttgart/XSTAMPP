@@ -138,7 +138,7 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
       // this.xslfoTransformer.setParameter("page.layout", pageFormat);
       this.xslfoTransformer.setParameter("page.title", pdfTitle);
       try (OutputStream out = new BufferedOutputStream(new FileOutputStream(pdfFile));
-          FileOutputStream str = new FileOutputStream(pdfFile);) {
+          FileOutputStream pdfStream = new FileOutputStream(pdfFile);) {
         if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {
           exportData.setTitleSize(exportData.getTitleSize() * 2);
           exportData.setTextSize(exportData.getTextSize() * 2);
@@ -180,8 +180,8 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
 
         this.xslfoTransformer.transform(informationSource, res);
 
-        str.write(pdfoutStream.toByteArray());
-        str.close();
+        pdfStream.write(pdfoutStream.toByteArray());
+        pdfStream.close();
 
         // monitor.worked(5);
         if (pdfFile.exists() && this.enablePreview) {

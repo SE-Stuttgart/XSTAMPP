@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
@@ -106,10 +107,12 @@ public class STPAWordJob extends XstamppJob {
         textColorStr = controller.getExportInfo().getFontColor().replace("#", "");
       }
       UUID projectID = ProjectManager.getContainerInstance().getProjectID(controller);
+
+      // prepare the control structure images as Byte streams rather than as image files so there
+      // are no temporary files stored
       ByteArrayOutputStream controlStructureStream = new ByteArrayOutputStream();
       CSExportJob csExport = new CSExportJob(controlStructureStream, 10, CSEditor.ID, projectID,
           this.decorate);
-
       csExport.getPrintableRoot();
       byte[] normalCSArray = controlStructureStream.toByteArray();
       controlStructureStream.close();
@@ -130,11 +133,10 @@ public class STPAWordJob extends XstamppJob {
       FileOutputStream out;
       out = new FileOutputStream(new File(path));
       // The first run object draws the Title banner on the Word Doc
-      addNewTitle(title, document);
+      addNewTitle(title, document, false);
 
       /*
-       * ******************************************************************
-       * form here on the run funktion will call all the neccessary functions to create the
+       * form here on the run function will call all the necessary functions to create the
        * desired output document
        */
       addDescription(document);
@@ -149,7 +151,9 @@ public class STPAWordJob extends XstamppJob {
       addUCATable(document, controller.getAllControlActionsU());
       document.write(out);
       out.close();
-
+      /*
+       ****************************************************************************************************************
+       */
       File docFile = new File(path);
       if (docFile.exists() && this.enablePreview) {
         if (Desktop.isDesktopSupported()) {
@@ -197,6 +201,10 @@ public class STPAWordJob extends XstamppJob {
   }
 
   private void addNewTitle(String text, XWPFDocument document) {
+    addNewTitle(text, document, false);
+  }
+
+  private void addNewTitle(String text, XWPFDocument document, boolean pageBreak) {
     XWPFParagraph paragraph = document.createParagraph();
 
     XWPFRun run = paragraph.createRun();
@@ -205,6 +213,9 @@ public class STPAWordJob extends XstamppJob {
     cTShd.setColor("auto");
     cTShd.setFill(backgoundColorStr);
 
+    if (pageBreak) {
+      run.addBreak(BreakType.PAGE);
+    }
     run.setFontSize(titleSize);
     run.setEmbossed(true);
     run.setColor(textColorStr);
@@ -218,7 +229,7 @@ public class STPAWordJob extends XstamppJob {
       float ratio) {
 
     try {
-      addNewTitle(controlStructure, document);
+      addNewTitle(controlStructure, document, false);
       ByteArrayInputStream pic = new ByteArrayInputStream(array);
       document.createParagraph().createRun().addPicture(pic, Document.PICTURE_TYPE_PNG, "my pic",
           Units.toEMU(400), Units.toEMU(400 / ratio));
@@ -237,7 +248,7 @@ public class STPAWordJob extends XstamppJob {
    * @param paragraph
    */
   private void addUCATable(XWPFDocument document, List<IControlAction> list) {
-    addNewTitle(Messages.UnsafeControlActionsTable, document);
+    addNewTitle(Messages.UnsafeControlActionsTable, document, false);
     XWPFTable ucaTable = document.createTable(1, 5);
     XWPFTableRow row = ucaTable.getRow(0);
     row.getCell(0);
@@ -259,7 +270,6 @@ public class STPAWordJob extends XstamppJob {
     XWPFTableCell caCell;
     for (IControlAction cAction : list) {
       row = ucaTable.createRow();
-
       caCell = row.getCell(0);
       caCell.setText(cAction.getTitle());
       // The first merged cell is set with RESTART merge value
@@ -280,40 +290,42 @@ public class STPAWordJob extends XstamppJob {
       maxNr = Math.max(maxNr, allWrongTiming.size());
       // This loop runs form 0 to the size of the largest ucaList
       for (int i = 0; i < maxNr; i++) {
-        XWPFTableRow idRow = ucaTable.createRow();
-        XWPFTableRow descRow = ucaTable.createRow();
-        XWPFTableRow linkRow = ucaTable.createRow();
+        row = row == null ? ucaTable.createRow() : row;
+        row.setCantSplitRow(true);
 
         // Cells which join (merge) the first one, are set with CONTINUE
-        idRow.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
-        descRow.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
-        linkRow.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
-
-        addUCAEntry(idRow, descRow, linkRow, allNotGiven, i, 1);
-        addUCAEntry(idRow, descRow, linkRow, allIncorrect, i, 2);
-        addUCAEntry(idRow, descRow, linkRow, allWrongTiming, i, 3);
-        addUCAEntry(idRow, descRow, linkRow, allTooSoon, i, 4);
-
+        row.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+        addUCAEntry(row, allNotGiven, i, 1, document);
+        addUCAEntry(row, allIncorrect, i, 2, document);
+        addUCAEntry(row, allWrongTiming, i, 3, document);
+        addUCAEntry(row, allTooSoon, i, 4, document);
+        row = null;
       }
     }
   }
 
-  private void addUCAEntry(XWPFTableRow idRow, XWPFTableRow descRow, XWPFTableRow linkRow,
-      List<IUnsafeControlAction> list, int index, int colNr) {
+  private void addUCAEntry(XWPFTableRow ucaRow,
+      List<IUnsafeControlAction> list, int index, int colNr, XWPFDocument document) {
 
+    XWPFParagraph paragraph = ucaRow.getCell(colNr).addParagraph();
+    XWPFTable ucaTable = ucaRow.getCell(colNr).insertNewTbl(paragraph.getCTP().newCursor());
+    XWPFTableRow idRow = ucaTable.createRow();
+    idRow.setCantSplitRow(false);
+    XWPFTableRow descRow = ucaTable.createRow();
+    XWPFTableRow linkRow = ucaTable.createRow();
     if (index < list.size()) {
       String identifier = String.valueOf(((UnsafeControlAction) list.get(index)).getNumber());
       if (identifier != null && !identifier.isEmpty()) {
         identifier = "UCA1." + identifier;
       }
-      addCell(idRow.getCell(colNr), index, identifier, ParagraphAlignment.CENTER);
-      addCell(descRow.getCell(colNr), index,
+      addCell(idRow.createCell(), index, identifier, ParagraphAlignment.CENTER);
+      addCell(descRow.createCell(), index,
           ((UnsafeControlAction) list.get(index)).getDescription());
-      addCell(linkRow.getCell(colNr), index, ((UnsafeControlAction) list.get(index)).getLinks());
+      addCell(linkRow.createCell(), index, ((UnsafeControlAction) list.get(index)).getLinks());
     } else {
-      addCell(idRow.getCell(colNr), index, "");
-      addCell(descRow.getCell(colNr), index, "");
-      addCell(linkRow.getCell(colNr), index, "");
+      addCell(idRow.createCell(), index, "");
+      addCell(descRow.createCell(), index, "");
+      addCell(linkRow.createCell(), index, "");
     }
   }
 
@@ -456,7 +468,7 @@ public class STPAWordJob extends XstamppJob {
   private void addTableModel(List<ITableModel> models, String literals, String text,
       XWPFDocument document) {
 
-    addNewTitle(text, document);
+    addNewTitle(text, document, false);
 
     XWPFTable table = document.createTable(1, 3);
     XWPFTableRow headRow = table.getRow(0);
