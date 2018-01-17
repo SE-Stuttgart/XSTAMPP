@@ -251,7 +251,6 @@ public class STPAWordJob extends XstamppJob {
     addNewTitle(Messages.UnsafeControlActionsTable, document, false);
     XWPFTable ucaTable = document.createTable(1, 5);
     XWPFTableRow row = ucaTable.getRow(0);
-    row.getCell(0);
 
     String[] heads = new String[] {
         Messages.ControlAction, Messages.NotGiven,
@@ -273,7 +272,7 @@ public class STPAWordJob extends XstamppJob {
       caCell = row.getCell(0);
       caCell.setText(cAction.getTitle());
       // The first merged cell is set with RESTART merge value
-      caCell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
+      startMergeRegion(caCell);
 
       // all related unsafe control actions are fetched and stored in multiple list one for each
       // column
@@ -294,7 +293,7 @@ public class STPAWordJob extends XstamppJob {
         row.setCantSplitRow(true);
 
         // Cells which join (merge) the first one, are set with CONTINUE
-        row.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+        addToMergeRegion(row.getCell(0));
         addUCAEntry(row, allNotGiven, i, 1, document);
         addUCAEntry(row, allIncorrect, i, 2, document);
         addUCAEntry(row, allWrongTiming, i, 3, document);
@@ -304,13 +303,20 @@ public class STPAWordJob extends XstamppJob {
     }
   }
 
+  private void startMergeRegion(XWPFTableCell caCell) {
+    caCell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
+  }
+
+  private void addToMergeRegion(XWPFTableCell caCell) {
+    caCell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+  }
+
   private void addUCAEntry(XWPFTableRow ucaRow,
       List<IUnsafeControlAction> list, int index, int colNr, XWPFDocument document) {
-
+    setCellColor(ucaRow.getCell(colNr), index);
     XWPFParagraph paragraph = ucaRow.getCell(colNr).addParagraph();
     XWPFTable ucaTable = ucaRow.getCell(colNr).insertNewTbl(paragraph.getCTP().newCursor());
     XWPFTableRow idRow = ucaTable.createRow();
-    idRow.setCantSplitRow(false);
     XWPFTableRow descRow = ucaTable.createRow();
     XWPFTableRow linkRow = ucaTable.createRow();
     if (index < list.size()) {
@@ -329,6 +335,46 @@ public class STPAWordJob extends XstamppJob {
     }
   }
 
+  private void addCausalFactorTable(XWPFDocument document, List<IControlAction> list) {
+    addNewTitle(Messages.CausalFactorsTable, document, false);
+    XWPFTable ucaTable = document.createTable(1, 5);
+    XWPFTableRow row = ucaTable.getRow(0);
+
+    String[] heads;
+    if(controller.isUseScenarios()) {
+      heads = new String[] {Messages.Component,
+          Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks, "Causal Scenarios",
+          Messages.SafetyConstraint, Messages.NotesSlashRationale};
+    } else {
+      heads = new String[] {Messages.Component,
+          Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks,
+          Messages.SafetyConstraint, "Design Hint", Messages.NotesSlashRationale};
+    }
+    XWPFRun run;
+    XWPFParagraph paragraph;
+    for (int i = 0; i < heads.length; i++) {
+      row.getCell(i).setColor(backgoundColorStr);
+      paragraph = row.getCell(i).addParagraph();
+      run = paragraph.createRun();
+      run.setColor(textColorStr);
+      run.setBold(true);
+      run.setText(heads[i]);
+    }
+    row = ucaTable.createRow();
+    XWPFTableCell componentCell = row.createCell();
+    
+    
+  }
+  private void setCellColor(XWPFTableCell cell, int index) {
+    String color;
+    if (index % 2 == 0) {
+      color = "dd" + "dd" + "dd";
+    } else {
+      color = "ff" + "ff" + "ff";
+    }
+    cell.setColor(color);
+  }
+
   private void addCell(XWPFTableCell cell, int index, String text) {
     addCell(cell, index, text, ParagraphAlignment.LEFT);
   }
@@ -338,18 +384,13 @@ public class STPAWordJob extends XstamppJob {
     XWPFParagraph paragraph = cell.addParagraph();
     paragraph.setAlignment(alignment);
     XWPFRun run = paragraph.createRun();
-    if (index % 2 == 0) {
-      color = "dd" + "dd" + "dd";
-    } else {
-      color = "ff" + "ff" + "ff";
-    }
-    cell.setColor(color);
+    setCellColor(cell, index);
     run.setBold(false);
     run.setText(text);
   }
 
   /**
-   * This internal method adds and formats the system description as defined in the
+   * This internal method adds and formats the system descripgtion as defined in the
    * system description editor
    * 
    * @param paragraph
