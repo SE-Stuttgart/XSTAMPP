@@ -359,6 +359,7 @@
 
     <xs:complexType name="causalFactorType">
         <xs:all>
+            <xs:element name="safetyConstraint" type="Q1:sdsType" maxOccurs="1" minOccurs="0"></xs:element>
             <xs:element name="note" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
             <xs:element name="hazardLinks" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
             <xs:element name="causalEntries" maxOccurs="1" minOccurs="0">
@@ -398,6 +399,7 @@
     <xs:complexType name="sdsType">
         <xs:all>
             <xs:element type="xs:int" name="number" maxOccurs="1" minOccurs="0" />
+            <xs:element type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
             <xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="0" />
             <xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="0" />
             <xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="0" />
