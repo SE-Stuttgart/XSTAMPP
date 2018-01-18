@@ -34,7 +34,7 @@ import xstampp.model.AbstractLTLProvider;
 
 @XmlRootElement(name = "causalComponent")
 @XmlAccessorType(XmlAccessType.NONE)
-public class CausalCSComponent {
+public class CausalCSComponent implements Comparable<CausalCSComponent> {
 
   @XmlElement(name = "title")
   private String text;
@@ -61,8 +61,7 @@ public class CausalCSComponent {
 
   }
 
-
-  private List<CausalFactor> getFactors() {
+  public List<CausalFactor> getFactors() {
     if (factors == null) {
       this.factors = new ArrayList<>();
     }
@@ -78,5 +77,18 @@ public class CausalCSComponent {
           allUnsafeControlActions, safetyConstraints, linkController);
     }
     return getFactors();
+  }
+
+  @Override
+  public int compareTo(CausalCSComponent o) {
+    return this.text.compareTo(o.text);
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public ComponentType getType() {
+    return type;
   }
 }

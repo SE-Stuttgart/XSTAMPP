@@ -133,7 +133,7 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
 
   }
 
-  private List<CausalFactorEntry> getEntries() {
+  public List<CausalFactorEntry> getEntries() {
     if (this.entries == null) {
       this.entries = new ArrayList<>();
     }

@@ -77,6 +77,9 @@ public class PdfExportWizard extends AbstractExportWizard {
       exportJob.setTableHeadSize(getExportPage().getHeadSize());
       exportJob.setTitleSize(getExportPage().getTitleSize());
       exportJob.setDecorate(page.getDecoChoice());
+      if (getExportPage().getPageFormat() != null) {
+        exportJob.setPageFormat(getExportPage().getPageFormat());
+      }
       controller.prepareForExport();
       exportJob.schedule();
       return true;

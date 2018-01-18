@@ -12,6 +12,7 @@
 package xstampp.astpa.model.causalfactor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -310,6 +311,14 @@ public class CausalFactorController extends ATableModelController implements ICa
       list.addAll(causalSafetyConstraints);
     }
     return list;
+  }
+
+  public List<CausalCSComponent> getCausalComponents() {
+    if (this.componentsList == null) {
+      return new ArrayList<>();
+    }
+    Collections.sort(componentsList);
+    return componentsList;
   }
 
   @Override

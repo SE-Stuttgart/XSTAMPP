@@ -25,6 +25,9 @@ public class CausalScenarioEntry {
   private String constraint;
 
   @XmlElement
+  private String note;
+
+  @XmlElement
   private UUID constraintId;
 
   public CausalScenarioEntry(String description, String constraint) {
@@ -67,5 +70,21 @@ public class CausalScenarioEntry {
    */
   public void setConstraint(String constraint) {
     this.constraint = constraint;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getConstraint() {
+    return constraint;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 }

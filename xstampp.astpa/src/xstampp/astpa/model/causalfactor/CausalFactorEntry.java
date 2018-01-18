@@ -9,7 +9,9 @@
 package xstampp.astpa.model.causalfactor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -71,7 +73,6 @@ public class CausalFactorEntry {
 
   public CausalFactorEntry() {
     id = UUID.randomUUID();
-
   }
 
   boolean prepareForSave(UUID componentId, CausalFactor causalFactor, LinkController linkController,
@@ -106,34 +107,53 @@ public class CausalFactorEntry {
 
   public void prepareForExport(IHazAccController hazAccController,
       IExtendedDataController extendedDataController, IControlActionController caController,
-      CausalFactorController controller, Link causalEntryList, LinkController linkController,
+      CausalFactorController controller, Link causalEntryLink, LinkController linkController,
       ISDSController sdsController) {
     Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
-        causalEntryList.getLinkA());
+        causalEntryLink.getLinkA());
     if (ucaCfLink.isLinkAPresent()) {
       IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
       ucaDescription = uca.getDescription();
       hazardLinks = "";
       if (!controller.isUseScenarios()) {
+        // If scenarios are not used than either the CausalEntryLink_HAZ_LINK
         hazardEntries = new ArrayList<>();
-        for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
-            causalEntryList.getId())) {
+        Optional<Link> singleConstraintLink = linkController.getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK,
+            causalEntryLink.getId()).stream().findFirst();
+        if (singleConstraintLink.isPresent()) {
+
+          Optional<UUID> sCoption = Optional.ofNullable(singleConstraintLink.get().getLinkB());
+          List<UUID> hazIds = linkController.getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId());
           CausalHazardEntry hazEntry = new CausalHazardEntry(controller, linkController, sdsController, caController,
-              causalHazLink, hazAccController);
-          hazardEntries.add(hazEntry);
+              hazIds, sCoption, hazAccController);
+          hazEntry.setNote(causalEntryLink.getNote());
+          hazEntry.setDesignHint(singleConstraintLink.get().getNote());
+        } else {
+          for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+              causalEntryLink.getId())) {
+            Hazard hazard = hazAccController.getHazard(causalHazLink.getLinkB());
+            Optional<UUID> causalSCoption = linkController
+                .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream()
+                .findFirst();
+            CausalHazardEntry hazEntry = new CausalHazardEntry(controller, linkController, sdsController, caController,
+                Arrays.asList(hazard.getId()), causalSCoption, hazAccController);
+            hazEntry.setDesignHint(causalHazLink.getNote());
+            hazEntry.setNote(causalHazLink.getNote());
+            hazardEntries.add(hazEntry);
+          }
         }
       } else {
         scenarioEntries = new ArrayList<>();
         hazardLinks = "";
         for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
-            causalEntryList.getId())) {
+            causalEntryLink.getId())) {
           Hazard hazard = hazAccController.getHazard(causalHazLink.getLinkB());
           hazardLinks += hazardLinks.isEmpty() ? "" : ",";
           hazardLinks += hazard.getIdString();
         }
         for (Link causalHazLink : linkController.getRawLinksFor(
             LinkingType.CausalEntryLink_Scenario_LINK,
-            causalEntryList.getId())) {
+            causalEntryLink.getId())) {
           AbstractLTLProvider refinedScenario = extendedDataController
               .getRefinedScenario(causalHazLink.getLinkB());
 
@@ -143,6 +163,30 @@ public class CausalFactorEntry {
         }
       }
     }
+  }
+
+  public String getHazardLinks() {
+    return hazardLinks;
+  }
+
+  public String getConstraintText() {
+    return constraintText;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public String getUcaDescription() {
+    return ucaDescription;
+  }
+
+  public List<CausalScenarioEntry> getScenarioEntries() {
+    return scenarioEntries;
+  }
+
+  public List<CausalHazardEntry> getHazardEntries() {
+    return hazardEntries;
   }
 
 }
