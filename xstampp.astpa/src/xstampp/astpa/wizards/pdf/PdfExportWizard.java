@@ -20,7 +20,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.util.jobs.STPAWordJob;
+import xstampp.astpa.util.jobs.word.ReportConfiguration;
+import xstampp.astpa.util.jobs.word.ReportConfiguration.ReportType;
+import xstampp.astpa.util.jobs.word.STPAWordJob;
 import xstampp.astpa.wizards.AbstractExportWizard;
 import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
@@ -63,22 +65,21 @@ public class PdfExportWizard extends AbstractExportWizard {
     if (getExportPage().getExportPath().endsWith("docx")) {
       final DataModelController controller = (DataModelController) ProjectManager
           .getContainerInstance().getDataModel(page.getProjectID());
-
-      STPAWordJob exportJob = new STPAWordJob("STPA Word Report", getExportPage().getExportPath(),
-          controller, true);
+      ReportConfiguration config = new ReportConfiguration("Final STPA Report", ReportType.FINAL,
+          getExportPage().getExportPath());
+      config.setTextSize(getExportPage().getContentSize());
+      config.setTableHeadSize(getExportPage().getHeadSize());
+      config.setTitleSize(getExportPage().getTitleSize());
+      config.setDecorate(page.getDecoChoice());
+      STPAWordJob exportJob = new STPAWordJob(config, controller, true);
       exportJob.addJobChangeListener(new JobChangeAdapter() {
         @Override
         public void done(IJobChangeEvent event) {
           controller.prepareForSave();
         }
       });
-      exportJob.setPdfTitle("A-STPA Final Report");
-      exportJob.setTextSize(getExportPage().getContentSize());
-      exportJob.setTableHeadSize(getExportPage().getHeadSize());
-      exportJob.setTitleSize(getExportPage().getTitleSize());
-      exportJob.setDecorate(page.getDecoChoice());
       if (getExportPage().getPageFormat() != null) {
-        exportJob.setPageFormat(getExportPage().getPageFormat());
+        config.setPageFormat(getExportPage().getPageFormat());
       }
       controller.prepareForExport();
       exportJob.schedule();

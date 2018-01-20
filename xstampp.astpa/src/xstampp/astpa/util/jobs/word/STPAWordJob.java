@@ -8,20 +8,26 @@
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package xstampp.astpa.util.jobs;
+package xstampp.astpa.util.jobs.word;
 
 import java.awt.Desktop;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
@@ -61,6 +67,7 @@ import messages.Messages;
 import xstampp.Activator;
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.CSEditorWithPM;
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.CausalCSComponent;
 import xstampp.astpa.model.causalfactor.CausalFactor;
@@ -72,7 +79,12 @@ import xstampp.astpa.model.controlaction.UnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
+import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.linking.LinkingType;
+import xstampp.astpa.util.jobs.CSExportJob;
+import xstampp.astpa.util.jobs.word.ReportConfiguration.ReportType;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.AbstractExportPage;
 import xstampp.util.XstamppJob;
@@ -90,24 +102,18 @@ public class STPAWordJob extends XstamppJob {
   private BigInteger shortEdge = BigInteger.valueOf(11900);
   private BigInteger longEdge = BigInteger.valueOf(16840);
   private int contentWidth;
-  private String path;
   private DataModelController controller;
-  private int titleSize;
-  private String title;
-  private boolean enablePreview;
   private String backgoundColorStr;
   private String textColorStr;
-  private boolean decorate;
   private float csRatio = 1;
   private float csPmRatio = 1;
-  private String pageFormat;
   private CTPageSz pageSize;
+  private ReportConfiguration config;
 
-  public STPAWordJob(String name, String path, DataModelController controller, boolean preview) {
-    super(name);
-    this.path = path;
+  public STPAWordJob(ReportConfiguration config, DataModelController controller, boolean preview) {
+    super(config.getReportName());
+    this.config = config;
     this.controller = controller;
-    this.enablePreview = preview;
   }
 
   @Override
@@ -138,7 +144,7 @@ public class STPAWordJob extends XstamppJob {
       // are no temporary files stored
       ByteArrayOutputStream controlStructureStream = new ByteArrayOutputStream();
       CSExportJob csExport = new CSExportJob(controlStructureStream, 10, CSEditor.ID, projectID,
-          this.decorate);
+          config.getDecoChoice());
       csExport.getPrintableRoot();
       byte[] normalCSArray = controlStructureStream.toByteArray();
       controlStructureStream.close();
@@ -146,7 +152,7 @@ public class STPAWordJob extends XstamppJob {
 
       controlStructureStream = new ByteArrayOutputStream();
       csExport = new CSExportJob(controlStructureStream, 10, CSEditorWithPM.ID, projectID,
-          this.decorate);
+          config.getDecoChoice());
 
       csExport.getPrintableRoot();
       byte[] pmCSArray = controlStructureStream.toByteArray();
@@ -167,7 +173,7 @@ public class STPAWordJob extends XstamppJob {
       sect.addNewTitlePg();
       pageSize = section.getPgSz();
 
-      if (pageFormat.equals(AbstractExportPage.A4_LANDSCAPE)) {
+      if (config.getPageFormat().equals(AbstractExportPage.A4_LANDSCAPE)) {
         pageSize.setOrient(STPageOrientation.LANDSCAPE);
         pageSize.setW(longEdge);
         pageSize.setH(shortEdge);
@@ -180,30 +186,95 @@ public class STPAWordJob extends XstamppJob {
       }
       // Write the Document in file system
       FileOutputStream out;
-      File file = new File(path);
+      File file = new File(config.getPath());
       if (!file.exists()) {
         file.createNewFile();
       }
       out = new FileOutputStream(file);
-      // The first run object draws the Title banner on the Word Doc
-      addNewTitle(title, document, false, ParagraphAlignment.CENTER);
+      if (config.exports(ReportType.FINAL)) {
+        addNewTitle(config.getReportName(), document, false, ParagraphAlignment.CENTER, false);
+        addNewTitle(controller.getProjectName(), document, false, ParagraphAlignment.CENTER, true);
+        if (controller.getExportInfo().getLogoPath() != null) {
+          URL url = new URL(controller.getExportInfo().getLogoPath());
+          File logo = new File(url.getFile());
+          try (FileInputStream stream = new FileInputStream(url.getFile());) {
+            BufferedImage bufferedImage = ImageIO.read(logo);
+            int height = bufferedImage.getHeight();
+            int width = bufferedImage.getWidth();
+            XWPFParagraph paragraph = document.createParagraph();
+            XWPFRun run = paragraph.createRun();
+            paragraph.setAlignment(ParagraphAlignment.CENTER);
+            run.addPicture(stream, Document.PICTURE_TYPE_PNG, "my pic",
+                Units.toEMU(width), Units.toEMU(height));
+          } catch (InvalidFormatException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+        XWPFTable table = addTable(document, 2, 2);
+        setCellText(table.getRow(1).getCell(0), "Date");
+        setCellText(table.getRow(1).getCell(1), java.time.LocalDateTime.now().toString());
+        setCellText(table.getRow(0).getCell(0), "Company");
+        setCellText(table.getRow(0).getCell(1), controller.getExportInfo().getCompany());
+
+      }
 
       /*
        * form here on the run function will call all the necessary functions to create the
        * desired output document
        */
-      addDescription(document);
+      if (config.exports(ReportType.SYSTEM_DESCRIPTION)) {
+        addDescription(document);
+      }
 
-      addTableModel(controller.getAllSystemGoals(), "", Messages.SystemGoals, document);
-      addTableModel(controller.getAllAccidents(), "", Messages.Accidents, document);
-      addTableModel(controller.getAllHazards(), "", Messages.Hazards, document);
-      addTableModel(controller.getAllDesignRequirements(), "", Messages.DesignRequirements,
-          document);
-      addPicture(document, Messages.ControlStructure, normalCSArray, csRatio);
-      addPicture(document, Messages.ControlStructureDiagramWithProcessModel, pmCSArray, csPmRatio);
-      addUCATable(document, controller.getAllControlActionsU());
-      addCausalFactorTable(document);
+      if (config.exports(ReportType.FINAL)) {
+        addTableModel(controller.getAllSystemGoals(), Messages.SystemGoals, document, false, false);
+      }
+      if (config.exports(ReportType.ACCIDENTS)) {
+        addTableModel(controller.getAllAccidents(), Messages.Accidents, document, true, true);
+      }
+      if (config.exports(ReportType.HAZARDS)) {
+        addTableModel(controller.getAllHazards(), Messages.Hazards, document, true, true);
+      }
+      if (config.exports(ReportType.SAFETY_CONSTRAINTS)) {
+        addTableModel(controller.getAllSafetyConstraints(), Messages.SafetyConstraints, document, false, true);
+      }
+      if (config.exports(ReportType.DESIGN_REQUIREMENTS)) {
+        addTableModel(controller.getAllDesignRequirements(), Messages.DesignRequirements, document, false, true);
+      }
+      if (config.exports(ReportType.FINAL)) {
+        addPicture(document, Messages.ControlStructure, normalCSArray, csRatio);
+      }
 
+      if (config.exports(ReportType.CONTROL_ACTIONS)) {
+        addTableModel(controller.getAllControlActions(), Messages.ControlActions, document, false, false);
+      }
+      if (config.exports(ReportType.UCA_TABLE)) {
+        addUCATable(document, controller.getAllControlActionsU());
+      }
+      if (config.exports(ReportType.SAFETY_CONSTRAINTS)) {
+        addCSCModel(document);
+      }
+      if (config.exports(ReportType.DESIGN_REQUIREMENTS)) {
+        addTableModel(controller.getSdsController().getAllDesignRequirements(ObserverValue.DESIGN_REQUIREMENT_STEP1),
+            Messages.DesignRequirements + " of Step 1", document, false, true);
+      }
+      if (config.exports(ReportType.FINAL)) {
+        addPicture(document, Messages.ControlStructureDiagramWithProcessModel, pmCSArray, csPmRatio);
+      }
+      if (config.exports(ReportType.CAUSAL_FACTORS)) {
+        addCausalFactorTable(document);
+      }
+
+      if (config.exports(ReportType.SAFETY_CONSTRAINTS)) {
+        addTableModel(controller.getCausalFactorController().getSafetyConstraints(),
+            Messages.SafetyConstraints + " of Step 2", document, false, true);
+      }
+      if (config.exports(ReportType.DESIGN_REQUIREMENTS)) {
+        addTableModel(controller.getSdsController().getAllDesignRequirements(ObserverValue.DESIGN_REQUIREMENT_STEP2),
+            Messages.DesignRequirements + " of Step 2",
+            document, false, true);
+      }
       addHeaderFooter(document);
       document.write(out);
       out.close();
@@ -211,7 +282,7 @@ public class STPAWordJob extends XstamppJob {
        ****************************************************************************************************************
        */
       File docFile = file;
-      if (docFile.exists() && this.enablePreview) {
+      if (docFile.exists() && config.isShowPreview()) {
         if (Desktop.isDesktopSupported()) {
           Desktop.getDesktop().open(docFile);
         }
@@ -231,7 +302,6 @@ public class STPAWordJob extends XstamppJob {
 
     CTSectPr sectPr = docx.getDocument().getBody().addNewSectPr();
     XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
-
     // write footer content
     XWPFFooter footer = policy.createFooter(XWPFHeaderFooterPolicy.DEFAULT);
     XWPFTable footerTable = addTable(footer, 1, 3);
@@ -272,7 +342,7 @@ public class STPAWordJob extends XstamppJob {
     paragraph = headerTable.getRow(0).getCell(0).getParagraphArray(0);
     paragraph.setAlignment(ParagraphAlignment.LEFT);
     paragraph.setVerticalAlignment(TextAlignment.CENTER);
-    paragraph.createRun().setText("Final Report");
+    paragraph.createRun().setText(config.getReportName());
 
     headerTable.getRow(0).getCell(1).setColor(rgbStr);
     paragraph = headerTable.getRow(0).getCell(1).getParagraphArray(0);
@@ -288,51 +358,28 @@ public class STPAWordJob extends XstamppJob {
     policy.createHeader(XWPFHeaderFooterPolicy.FIRST);
   }
 
-  /**
-   * @param textSize
-   *          the textSize to set
-   */
-  public void setTextSize(int textSize) {
-  }
-
-  /**
-   * @param titleSize
-   *          the titleSize to set
-   */
-  public void setTitleSize(int titleSize) {
-    this.titleSize = titleSize;
-  }
-
-  /**
-   * @param tableHeadSize
-   *          the tableHeadSize to set
-   */
-  public void setTableHeadSize(int tableHeadSize) {
-  }
-
-  public void setPdfTitle(String title) {
-    this.title = title;
-
-  }
-
   private void addNewTitle(String text, XWPFDocument document, boolean pageBreak) {
-    addNewTitle(text, document, pageBreak, ParagraphAlignment.LEFT);
+    addNewTitle(text, document, pageBreak, ParagraphAlignment.LEFT, false);
   }
 
-  private void addNewTitle(String text, XWPFDocument document, boolean pageBreak, ParagraphAlignment align) {
+  private void addNewTitle(String text, XWPFDocument document, boolean pageBreak, ParagraphAlignment align,
+      boolean colored) {
     XWPFParagraph paragraph = document.createParagraph();
     paragraph.setAlignment(align);
     XWPFRun run = paragraph.createRun();
-    // CTShd cTShd = run.getCTR().addNewRPr().addNewShd();
-    // cTShd.setVal(STShd.CLEAR);
-    // cTShd.setColor("auto");
-    // cTShd.setFill(backgoundColorStr);
-
+    if (colored) {
+      CTShd cTShd = run.getCTR().addNewRPr().addNewShd();
+      cTShd.setVal(STShd.CLEAR);
+      cTShd.setColor("auto");
+      cTShd.setFill(backgoundColorStr);
+    }
     if (pageBreak) {
       run.addBreak(BreakType.PAGE);
     }
-    run.setFontSize(titleSize);
-    // run.setColor(textColorStr);
+    run.setFontSize(config.getTitleSize());
+    if (colored) {
+      run.setColor(textColorStr);
+    }
     run.addCarriageReturn();
     run.setText(text);
     run.addCarriageReturn();
@@ -342,7 +389,7 @@ public class STPAWordJob extends XstamppJob {
       float ratio) {
 
     try {
-      addNewTitle(controlStructure, document, true);
+      addNewTitle(controlStructure, document, false);
       ByteArrayInputStream pic = new ByteArrayInputStream(array);
       document.createParagraph().createRun().addPicture(pic, Document.PICTURE_TYPE_PNG, "my pic",
           Units.toEMU(400), Units.toEMU(400 / ratio));
@@ -360,28 +407,16 @@ public class STPAWordJob extends XstamppJob {
    */
   private void addUCATable(XWPFDocument document, List<IControlAction> list) {
     addNewTitle(Messages.UnsafeControlActionsTable, document, true);
-    XWPFTable ucaTable = addTable(document, 1, 5);
-    XWPFTableRow row = ucaTable.getRow(0);
-
-    String[] heads = new String[] {
+    List<String> heads = Arrays.asList(
         Messages.ControlAction, Messages.NotGiven,
         Messages.GivenIncorrectly, Messages.WrongTiming,
-        Messages.StoppedTooSoon };
-    XWPFRun run;
-    XWPFParagraph paragraph;
-    for (int i = 0; i < heads.length; i++) {
-      row.getCell(i).setColor(backgoundColorStr);
-      paragraph = row.getCell(i).addParagraph();
-      run = paragraph.createRun();
-      run.setColor(textColorStr);
-      run.setBold(true);
-      run.setText(heads[i]);
-    }
+        Messages.StoppedTooSoon);
+    XWPFTable ucaTable = addTable(document, heads);
     XWPFTableCell caCell;
     for (IControlAction cAction : list) {
-      row = ucaTable.createRow();
+      XWPFTableRow row = ucaTable.createRow();
       caCell = row.getCell(0);
-      caCell.setText(cAction.getTitle());
+      setCellText(caCell, cAction.getTitle());
       // The first merged cell is set with RESTART merge value
       startMergeRegion(caCell);
 
@@ -448,29 +483,18 @@ public class STPAWordJob extends XstamppJob {
 
   private void addCausalFactorTable(XWPFDocument document) {
     addNewTitle(Messages.CausalFactorsTable, document, true);
-    XWPFTable table = addTable(document, 1, 8);
-    XWPFTableRow row = table.getRow(0);
 
-    String[] heads;
+    List<String> heads;
     if (controller.isUseScenarios()) {
-      heads = new String[] { Messages.Component,
+      heads = Arrays.asList(Messages.Component,
           Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks, "Causal Scenarios",
-          Messages.SafetyConstraint, "Links", Messages.NotesSlashRationale };
+          Messages.SafetyConstraint, "Links", Messages.NotesSlashRationale);
     } else {
-      heads = new String[] { Messages.Component,
+      heads = Arrays.asList(Messages.Component,
           Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks,
-          Messages.SafetyConstraint, "Design Hint", "Links", Messages.NotesSlashRationale };
+          Messages.SafetyConstraint, "Design Hint", "Links", Messages.NotesSlashRationale);
     }
-    XWPFRun run;
-    XWPFParagraph paragraph;
-    for (int i = 0; i < heads.length; i++) {
-      row.getCell(i).setColor(backgoundColorStr);
-      paragraph = row.getCell(i).addParagraph();
-      run = paragraph.createRun();
-      run.setColor(textColorStr);
-      run.setBold(true);
-      run.setText(heads[i]);
-    }
+    XWPFTable table = addTable(document, heads);
     for (CausalCSComponent component : ((CausalFactorController) controller.getCausalFactorController())
         .getCausalComponents()) {
       createCausalComponent(table, component);
@@ -482,17 +506,17 @@ public class STPAWordJob extends XstamppJob {
     row.setCantSplitRow(true);
     XWPFTableCell componentCell = row.getCell(0);
     startMergeRegion(componentCell);
-    componentCell.setText(((CausalCSComponent) component).getText());
+    setCellText(componentCell, ((CausalCSComponent) component).getText());
     boolean isEven = false;
     for (CausalFactor factor : ((CausalCSComponent) component).getFactors()) {
       row = row == null ? createColoredRow(table, isEven, Arrays.asList(0)) : row;
-      row.getCell(1).setText(factor.getText());
+      setCellText(row.getCell(1), factor.getText());
       for (CausalFactorEntry entry : factor.getEntries()) {
         row = row == null ? table.createRow() : row;
-        row.getCell(2).setText(entry.getUcaDescription());
+        setCellText(row.getCell(2), entry.getUcaDescription());
         startMergeRegion(row.getCell(2));
         if (controller.isUseScenarios() && entry.getScenarioEntries() != null) {
-          row.getCell(3).setText(entry.getHazardLinks());
+          setCellText(row.getCell(3), entry.getHazardLinks());
           createScenarioRows(table, row, entry.getScenarioEntries(), isEven);
         } else if (entry.getHazardEntries() != null) {
           createHazardRows(table, row, entry.getHazardEntries(), isEven);
@@ -507,11 +531,11 @@ public class STPAWordJob extends XstamppJob {
       boolean isEven) {
     for (CausalHazardEntry hazEntry : hazardEntries) {
       row = row == null ? createColoredRow(table, isEven, Arrays.asList(0, 2)) : row;
-      row.getCell(3).setText(hazEntry.getText());
-      row.getCell(4).setText(hazEntry.getConstraint());
-      row.getCell(5).setText(hazEntry.getDesignHint());
-      row.getCell(6).setText(hazEntry.getLinks());
-      row.getCell(7).setText(hazEntry.getNote());
+      setCellText(row.getCell(3), hazEntry.getText());
+      setCellText(row.getCell(4), hazEntry.getConstraint());
+      setCellText(row.getCell(5), hazEntry.getDesignHint());
+      setCellText(row.getCell(6), hazEntry.getLinks());
+      setCellText(row.getCell(7), hazEntry.getNote());
       row = null;
     }
   }
@@ -520,10 +544,9 @@ public class STPAWordJob extends XstamppJob {
       boolean isEven) {
     for (CausalScenarioEntry scenarioEntry : list) {
       row = row == null ? createColoredRow(table, isEven, Arrays.asList(0, 2)) : row;
-      row.getCell(4).setText(scenarioEntry.getDescription());
-      row.getCell(5).setText(scenarioEntry.getConstraint());
-      row.getCell(6).setText("");
-      row.getCell(7).setText(scenarioEntry.getNote());
+      setCellText(row.getCell(4), scenarioEntry.getDescription());
+      setCellText(row.getCell(5), scenarioEntry.getConstraint());
+      setCellText(row.getCell(7), scenarioEntry.getNote());
     }
   }
 
@@ -559,7 +582,12 @@ public class STPAWordJob extends XstamppJob {
     XWPFRun run = paragraph.createRun();
     setCellColor(cell, index);
     run.setBold(false);
+    run.setFontSize(config.getContentSize());
     run.setText(text);
+  }
+
+  private void setCellText(XWPFTableCell cell, String text) {
+    addCell(cell, 0, text);
   }
 
   /**
@@ -678,33 +706,60 @@ public class STPAWordJob extends XstamppJob {
     }
   }
 
-  private void addTableModel(List<ITableModel> models, String literals, String text,
-      XWPFDocument document) {
+  private void addTableModel(List<? extends ITableModel> models, String text, XWPFDocument document,
+      boolean hasSeverity, boolean hasLinks) {
 
-    addNewTitle(text, document, true);
-    XWPFTable table = addTable(document, 1, 3);
-    XWPFTableRow headRow = table.getRow(0);
-
-    String[] heads = new String[] { "ID", "Name", "Description" };
-    XWPFRun run;
-    XWPFParagraph paragraph;
-    for (int i = 0; i < heads.length; i++) {
-      headRow.getCell(i).setColor(backgoundColorStr);
-      paragraph = headRow.getCell(i).addParagraph();
-      run = paragraph.createRun();
-      run.setColor(textColorStr);
-      run.setBold(true);
-      run.setText(heads[i]);
+    List<String> heads = new ArrayList<>();
+    heads.add("ID");
+    heads.add("Name");
+    heads.add("Description");
+    if (hasSeverity) {
+      heads.add("Severity");
     }
+    if (hasLinks) {
+      heads.add("Links");
+    }
+    addNewTitle(text, document, true);
+    XWPFTable table = addTable(document, heads);
 
     XWPFTableRow tableRowTwo;
-    int i = 0;
     for (ITableModel data : models) {
       tableRowTwo = table.createRow();
-      tableRowTwo.getCell(0).setText(literals + Integer.toString(i));
-      tableRowTwo.getCell(1).setText(data.getTitle());
-      tableRowTwo.getCell(2).setText(data.getDescription());
-      i++;
+      XWPFTableCell cell = tableRowTwo.getCell(0);
+      setCellText(cell, data.getIdString());
+      cell = tableRowTwo.getCell(1);
+      setCellText(cell, data.getTitle());
+      cell = tableRowTwo.getCell(2);
+      setCellText(cell, data.getDescription());
+      cell = tableRowTwo.getCell(3);
+      if (hasSeverity) {
+        setCellText(cell, ((ATableModel) data).getSeverity().name());
+        cell = tableRowTwo.getCell(4);
+      }
+      if (hasLinks) {
+        setCellText(cell, ((ATableModel) data).getLinks());
+      }
+    }
+  }
+
+  private void addCSCModel(XWPFDocument document) {
+
+    List<String> heads = Arrays.asList("ID", "UnsafeControlActions", "ID", "Corresponding Safety Constraints", "Links");
+    addNewTitle("Corresponding Safety Constraints", document, true);
+    XWPFTable table = addTable(document, heads);
+
+    XWPFTableRow tableRowTwo;
+    for (ICorrespondingUnsafeControlAction data : controller.getAllUnsafeControlActions()) {
+      if (controller.getLinkController().isLinked(LinkingType.UCA_HAZ_LINK, data.getId())) {
+        tableRowTwo = table.createRow();
+        setCellText(tableRowTwo.getCell(0), data.getIdString());
+        setCellText(tableRowTwo.getCell(1), data.getDescription());
+        if (data.getCorrespondingSafetyConstraint() != null) {
+          setCellText(tableRowTwo.getCell(2), data.getCorrespondingSafetyConstraint().getIdString());
+          setCellText(tableRowTwo.getCell(3), data.getCorrespondingSafetyConstraint().getDescription());
+          setCellText(tableRowTwo.getCell(4), ((ATableModel) data.getCorrespondingSafetyConstraint()).getLinks());
+        }
+      }
 
     }
   }
@@ -719,6 +774,23 @@ public class STPAWordJob extends XstamppJob {
     return table;
   }
 
+  private XWPFTable addTable(XWPFDocument document, List<String> heads) {
+    XWPFTable table = addTable(document, 1, heads.size());
+    XWPFTableRow headRow = table.getRow(0);
+    XWPFRun run;
+    XWPFParagraph paragraph;
+    for (int i = 0; i < heads.size(); i++) {
+      headRow.getCell(i).setColor(backgoundColorStr);
+      paragraph = headRow.getCell(i).addParagraph();
+      run = paragraph.createRun();
+      run.setColor(textColorStr);
+      run.setBold(true);
+      run.setFontSize(config.getHeadSize());
+      run.setText(heads.get(i));
+    }
+    return table;
+  }
+
   private XWPFTable addTable(XWPFDocument document, int rows, int columns) {
     XWPFTable table = document.createTable(rows, columns);
     return addTable(table);
@@ -727,25 +799,6 @@ public class STPAWordJob extends XstamppJob {
   private XWPFTable addTable(XWPFHeaderFooter part, int rows, int columns) {
     XWPFTable table = part.createTable(rows, columns);
     return addTable(table);
-  }
-
-  /**
-   * @return the decorate
-   */
-  public boolean isDecorate() {
-    return this.decorate;
-  }
-
-  /**
-   * @param decorate
-   *          the decorate to set
-   */
-  public void setDecorate(boolean decorate) {
-    this.decorate = decorate;
-  }
-
-  public void setPageFormat(String pageFormat) {
-    this.pageFormat = pageFormat;
   }
 
 }
