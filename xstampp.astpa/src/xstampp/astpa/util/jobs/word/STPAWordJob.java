@@ -212,10 +212,10 @@ public class STPAWordJob extends XstamppJob {
           }
         }
         XWPFTable table = addTable(document, 2, 2);
-        setCellText(table.getRow(1).getCell(0), "Date");
-        setCellText(table.getRow(1).getCell(1), java.time.LocalDateTime.now().toString());
-        setCellText(table.getRow(0).getCell(0), "Company");
-        setCellText(table.getRow(0).getCell(1), controller.getExportInfo().getCompany());
+        setCellText(table.getRow(1).getCell(0), "Date", true);
+        setCellText(table.getRow(1).getCell(1), java.time.LocalDateTime.now().toString(), true);
+        setCellText(table.getRow(0).getCell(0), "Company", true);
+        setCellText(table.getRow(0).getCell(1), controller.getExportInfo().getCompany(), true);
 
       }
 
@@ -416,7 +416,7 @@ public class STPAWordJob extends XstamppJob {
     for (IControlAction cAction : list) {
       XWPFTableRow row = ucaTable.createRow();
       caCell = row.getCell(0);
-      setCellText(caCell, cAction.getTitle());
+      setCellText(caCell, cAction.getTitle(), true);
       // The first merged cell is set with RESTART merge value
       startMergeRegion(caCell);
 
@@ -470,14 +470,14 @@ public class STPAWordJob extends XstamppJob {
       if (identifier != null && !identifier.isEmpty()) {
         identifier = "UCA1." + identifier;
       }
-      addCell(idRow.createCell(), index, identifier, ParagraphAlignment.CENTER);
+      addCell(idRow.createCell(), index, identifier, ParagraphAlignment.CENTER, true);
       addCell(descRow.createCell(), index,
-          ((UnsafeControlAction) list.get(index)).getDescription());
-      addCell(linkRow.createCell(), index, ((UnsafeControlAction) list.get(index)).getLinks());
+          ((UnsafeControlAction) list.get(index)).getDescription(), true);
+      addCell(linkRow.createCell(), index, ((UnsafeControlAction) list.get(index)).getLinks(), true);
     } else {
-      addCell(idRow.createCell(), index, "");
-      addCell(descRow.createCell(), index, "");
-      addCell(linkRow.createCell(), index, "");
+      addCell(idRow.createCell(), index, "", true);
+      addCell(descRow.createCell(), index, "", true);
+      addCell(linkRow.createCell(), index, "", true);
     }
   }
 
@@ -506,17 +506,17 @@ public class STPAWordJob extends XstamppJob {
     row.setCantSplitRow(true);
     XWPFTableCell componentCell = row.getCell(0);
     startMergeRegion(componentCell);
-    setCellText(componentCell, ((CausalCSComponent) component).getText());
+    setCellText(componentCell, ((CausalCSComponent) component).getText(), true);
     boolean isEven = false;
     for (CausalFactor factor : ((CausalCSComponent) component).getFactors()) {
       row = row == null ? createColoredRow(table, isEven, Arrays.asList(0)) : row;
-      setCellText(row.getCell(1), factor.getText());
+      setCellText(row.getCell(1), factor.getText(), true);
       for (CausalFactorEntry entry : factor.getEntries()) {
         row = row == null ? table.createRow() : row;
-        setCellText(row.getCell(2), entry.getUcaDescription());
+        setCellText(row.getCell(2), entry.getUcaDescription(), true);
         startMergeRegion(row.getCell(2));
         if (controller.isUseScenarios() && entry.getScenarioEntries() != null) {
-          setCellText(row.getCell(3), entry.getHazardLinks());
+          setCellText(row.getCell(3), entry.getHazardLinks(), true);
           createScenarioRows(table, row, entry.getScenarioEntries(), isEven);
         } else if (entry.getHazardEntries() != null) {
           createHazardRows(table, row, entry.getHazardEntries(), isEven);
@@ -531,11 +531,11 @@ public class STPAWordJob extends XstamppJob {
       boolean isEven) {
     for (CausalHazardEntry hazEntry : hazardEntries) {
       row = row == null ? createColoredRow(table, isEven, Arrays.asList(0, 2)) : row;
-      setCellText(row.getCell(3), hazEntry.getText());
-      setCellText(row.getCell(4), hazEntry.getConstraint());
-      setCellText(row.getCell(5), hazEntry.getDesignHint());
-      setCellText(row.getCell(6), hazEntry.getLinks());
-      setCellText(row.getCell(7), hazEntry.getNote());
+      setCellText(row.getCell(3), hazEntry.getText(), true);
+      setCellText(row.getCell(4), hazEntry.getConstraint(), true);
+      setCellText(row.getCell(5), hazEntry.getDesignHint(), true);
+      setCellText(row.getCell(6), hazEntry.getLinks(), true);
+      setCellText(row.getCell(7), hazEntry.getNote(), true);
       row = null;
     }
   }
@@ -544,9 +544,9 @@ public class STPAWordJob extends XstamppJob {
       boolean isEven) {
     for (CausalScenarioEntry scenarioEntry : list) {
       row = row == null ? createColoredRow(table, isEven, Arrays.asList(0, 2)) : row;
-      setCellText(row.getCell(4), scenarioEntry.getDescription());
-      setCellText(row.getCell(5), scenarioEntry.getConstraint());
-      setCellText(row.getCell(7), scenarioEntry.getNote());
+      setCellText(row.getCell(4), scenarioEntry.getDescription(), true);
+      setCellText(row.getCell(5), scenarioEntry.getConstraint(), true);
+      setCellText(row.getCell(7), scenarioEntry.getNote(), true);
     }
   }
 
@@ -572,22 +572,22 @@ public class STPAWordJob extends XstamppJob {
     cell.setColor(color);
   }
 
-  private void addCell(XWPFTableCell cell, int index, String text) {
-    addCell(cell, index, text, ParagraphAlignment.LEFT);
+  private void addCell(XWPFTableCell cell, int index, String text, boolean wrap) {
+    addCell(cell, index, text, ParagraphAlignment.LEFT, wrap);
   }
 
-  private void addCell(XWPFTableCell cell, int index, String text, ParagraphAlignment alignment) {
+  private void addCell(XWPFTableCell cell, int index, String text, ParagraphAlignment alignment, boolean wrap) {
     XWPFParagraph paragraph = cell.addParagraph();
     paragraph.setAlignment(alignment);
+
     XWPFRun run = paragraph.createRun();
     setCellColor(cell, index);
-    run.setBold(false);
     run.setFontSize(config.getContentSize());
-    run.setText(text);
+    run.setText(text != null ? text.replace('-', '.') : "");
   }
 
-  private void setCellText(XWPFTableCell cell, String text) {
-    addCell(cell, 0, text);
+  private void setCellText(XWPFTableCell cell, String text, boolean wrap) {
+    addCell(cell, 0, text, wrap);
   }
 
   /**
@@ -726,18 +726,18 @@ public class STPAWordJob extends XstamppJob {
     for (ITableModel data : models) {
       tableRowTwo = table.createRow();
       XWPFTableCell cell = tableRowTwo.getCell(0);
-      setCellText(cell, data.getIdString());
+      setCellText(cell, data.getIdString(), false);
       cell = tableRowTwo.getCell(1);
-      setCellText(cell, data.getTitle());
+      setCellText(cell, data.getTitle(), true);
       cell = tableRowTwo.getCell(2);
-      setCellText(cell, data.getDescription());
+      setCellText(cell, data.getDescription(), true);
       cell = tableRowTwo.getCell(3);
       if (hasSeverity) {
-        setCellText(cell, ((ATableModel) data).getSeverity().name());
+        setCellText(cell, ((ATableModel) data).getSeverity().name(), true);
         cell = tableRowTwo.getCell(4);
       }
       if (hasLinks) {
-        setCellText(cell, ((ATableModel) data).getLinks());
+        setCellText(cell, ((ATableModel) data).getLinks(), true);
       }
     }
   }
@@ -752,12 +752,12 @@ public class STPAWordJob extends XstamppJob {
     for (ICorrespondingUnsafeControlAction data : controller.getAllUnsafeControlActions()) {
       if (controller.getLinkController().isLinked(LinkingType.UCA_HAZ_LINK, data.getId())) {
         tableRowTwo = table.createRow();
-        setCellText(tableRowTwo.getCell(0), data.getIdString());
-        setCellText(tableRowTwo.getCell(1), data.getDescription());
+        setCellText(tableRowTwo.getCell(0), data.getIdString(), true);
+        setCellText(tableRowTwo.getCell(1), data.getDescription(), true);
         if (data.getCorrespondingSafetyConstraint() != null) {
-          setCellText(tableRowTwo.getCell(2), data.getCorrespondingSafetyConstraint().getIdString());
-          setCellText(tableRowTwo.getCell(3), data.getCorrespondingSafetyConstraint().getDescription());
-          setCellText(tableRowTwo.getCell(4), ((ATableModel) data.getCorrespondingSafetyConstraint()).getLinks());
+          setCellText(tableRowTwo.getCell(2), data.getCorrespondingSafetyConstraint().getIdString(), true);
+          setCellText(tableRowTwo.getCell(3), data.getCorrespondingSafetyConstraint().getDescription(), true);
+          setCellText(tableRowTwo.getCell(4), ((ATableModel) data.getCorrespondingSafetyConstraint()).getLinks(), true);
         }
       }
 

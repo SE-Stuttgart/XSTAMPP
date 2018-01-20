@@ -264,6 +264,21 @@
             id="xstampp.astpa.wizard.stpaStatistics"
             name="Progress Indicators">
       </wizard>
+      <category
+            id="astpa.word.mainCategory"
+            name="%category.name.stpaWordExport"
+            parentCategory="xstampp.astpa.export.main">
+      </category>
+      <wizard
+            category="xstampp.astpa.export.main"
+            class="xstampp.astpa.wizards.word.WordExportWizard"
+            icon="icons/Logo_small.png"
+            id="xstampp.astpa.export.word"
+            name="%wizard.name.finalWordReport">
+         <description>
+            %wizard.description
+         </description>
+      </wizard>
    </extension>
    <extension
          id="astpa.export"
