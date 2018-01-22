@@ -12,6 +12,10 @@
 *  Fix in Causal Factors table the Notes / Rationale is not imported in v2.6
 *  Fix in Causal Factors table the design hints for single safety constraint rows overwrite the notes
 
+#### Others
+
+* Increase heap space reserved for XSTAMPP
+
 ## XSTAMPP 2.6.0
 
 #### A-STPA Features:

@@ -30,11 +30,20 @@ http://www.iste.uni-stuttgart.de/se/werkzeuge/a-cast.html
    <launcherArgs>
       <programArgsLin>-vm
 jre/bin
+-vmargs
+-Xms1024m
+-Xmx2048m
       </programArgsLin>
       <programArgsWin>-vm
 jre/bin
+-vmargs
+-Xms1024m
+-Xmx2048m
       </programArgsWin>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      <vmArgsMac>-XstartOnFirstThread
+-Dorg.eclipse.swt.internal.carbon.smallFonts
+-Xms1024m
+-Xmx2048m
       </vmArgsMac>
    </launcherArgs>
 
