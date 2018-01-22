@@ -7,6 +7,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix bug when deleting a list from a Linking Widget, always the first one entry is removed
 *  Fix collaboration System always displays a wrong number of changes after a merge
 *  Fix multiple User responsibilities not working when more than one user is selected
 *  Fix in Causal Factors table the Notes / Rationale is not imported in v2.6

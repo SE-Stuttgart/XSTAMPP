@@ -347,8 +347,8 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
       @Override
       public void widgetSelected(SelectionEvent e) {
         int[] indices = tableViewer.getTable().getSelectionIndices();
-        for (int i = indices.length; i > 0; --i) {
-          UUID uuid = currentContent[i - 1];
+        for (int i : indices) {
+          UUID uuid = currentContent[i];
           getDataInterface().getLinkController().deleteLink(getLinkType(), getCurrentId(), uuid);
           notifyChangeListeners();
         }
