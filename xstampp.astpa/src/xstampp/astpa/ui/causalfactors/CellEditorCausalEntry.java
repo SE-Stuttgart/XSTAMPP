@@ -76,43 +76,114 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
         + uca.getDescription();
   }
 
+  /**
+   * This function changes the definition of one safety constraint for each hazard linked to the uca
+   * entry to one single safety constraint for the uca.
+   * <p>
+   * calling this opens a popup asking the user to select one of the linked hazards<br>
+   * the safety constraint, design hint and note/rational is than used as new single constraint
+   */
   private void switchToSingleConstraint() {
     if (!dataInterface.getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK, getEntryId())) {
       List<String> choiceList = new ArrayList<>();
-      List<UUID> causalHazLinkIds = new ArrayList<>();
-      for (Link uuid : dataInterface.getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+      List<Link> causalHazLinks = new ArrayList<>();
+      for (Link entryHazLink : dataInterface.getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
           getEntryId())) {
-        ITableModel hazard = dataInterface.getHazard(uuid.getLinkB());
+        ITableModel hazard = dataInterface.getHazard(entryHazLink.getLinkB());
         if (hazard != null) {
           choiceList.add(hazard.getIdString());
-          causalHazLinkIds.add(uuid.getId());
+          causalHazLinks.add(entryHazLink);
         }
       }
       choiceList.add(Messages.CellEditorCausalEntry_None);
-      causalHazLinkIds.add(null);
       SwitchToSingleSCModal modal = new SwitchToSingleSCModal(choiceList);
       if (modal.open()) {
-        Optional<UUID> sc2Option = dataInterface.getLinkController()
-            .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLinkIds.get(modal.choice)).stream().findFirst();
         UUID constraint = null;
-        if (sc2Option.isPresent()) {
-          String initialText = dataInterface.getCausalFactorController().getConstraintTextFor(sc2Option.get());
-          constraint = dataInterface.getCausalFactorController().addSafetyConstraint(initialText);
+        String note = null;
+        if (modal.choice < causalHazLinks.size()) {
+          Optional<UUID> sc2Option = dataInterface.getLinkController()
+              .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLinks.get(modal.choice).getId()).stream()
+              .findFirst();
+          // The note of the LinkingType.CausalEntryLink_HAZ_LINK is set as new note/rational for
+          // the ucaCfLink
+          dataInterface.getLinkController().changeLinkNote(ucaCFLink, causalHazLinks.get(modal.choice).getNote());
+
+          if (sc2Option.isPresent()) {
+            // the LinkingType.CausalHazLink_SC2_LINK's note is the design hint which is copied to
+            // the new LinkingType.CausalEntryLink_SC2_LINK
+            Link linkObjectFor = dataInterface.getLinkController()
+                .getLinkObjectFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLinks.get(modal.choice).getId(),
+                    sc2Option.get());
+            note = linkObjectFor.getNote();
+            String initialText = dataInterface.getCausalFactorController().getConstraintTextFor(sc2Option.get());
+            constraint = dataInterface.getCausalFactorController().addSafetyConstraint(initialText);
+          }
         }
         dataInterface.getLinkController().addLink(LinkingType.CausalEntryLink_SC2_LINK, getEntryId(),
-            constraint);
+            constraint, note);
+
+        for (Link entryHazLink : dataInterface.getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
+            getEntryId())) {
+          for (Link link : dataInterface.getLinkController().getRawLinksFor(LinkingType.CausalHazLink_SC2_LINK,
+              entryHazLink.getId())) {
+            dataInterface.lockUpdate();
+            dataInterface.getLinkController().deleteLink(link.getLinkType(), link.getId());
+            dataInterface.getCausalFactorController().removeSafetyConstraint(link.getLinkB());
+            dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR });
+
+          }
+        }
       }
     }
   }
 
+  /**
+   * This function changes the definition from one single safety constraint for the uca entry to one
+   * safety constraint for each hazard linked to the uca
+   * <p>
+   * calling this opens a popup asking the user to select all linked hazards for which the existing
+   * safety constraint, design hint and note/rational should be used as safety constraint
+   */
   private void switchToHazardConstraints() {
-    if (dataInterface.getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK, getEntryId())) {
-      for (Link link : dataInterface.getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK,
-          getEntryId())) {
-        dataInterface.lockUpdate();
-        dataInterface.getLinkController().deleteLink(link.getLinkType(), link.getId());
-        dataInterface.getCausalFactorController().removeSafetyConstraint(link.getLinkB());
-        dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR });
+    Optional<Link> causalEntryS2Optional = dataInterface.getLinkController()
+        .getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK, getEntryId()).stream().findFirst();
+    if (causalEntryS2Optional.isPresent()) {
+      List<String> choiceList = new ArrayList<>();
+      List<UUID> hazardIds = new ArrayList<>();
+      for (Link entryHazLink : dataInterface.getLinkController().getRawLinksFor(LinkingType.UCA_HAZ_LINK,
+          ucaCFLink.getLinkA())) {
+        ITableModel hazard = dataInterface.getHazard(entryHazLink.getLinkB());
+        if (hazard != null) {
+          choiceList.add(hazard.getIdString());
+          hazardIds.add(hazard.getId());
+        }
+      }
+      SwitchToHazardSCModal modal = new SwitchToHazardSCModal(choiceList);
+      if (modal.open()) {
+        for (Integer index : modal.choice) {
+          Optional<UUID> sc2Option = dataInterface.getLinkController()
+              .getLinksFor(LinkingType.CausalEntryLink_SC2_LINK, getEntryId()).stream().findFirst();
+          UUID constraint = null;
+          if (sc2Option.isPresent()) {
+            String initialText = dataInterface.getCausalFactorController().getConstraintTextFor(sc2Option.get());
+            constraint = dataInterface.getCausalFactorController().addSafetyConstraint(initialText);
+          }
+          String note = dataInterface.getLinkController()
+              .getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK, getEntryId()).getNote();
+          UUID causalHazLink = dataInterface.getLinkController().addLink(LinkingType.CausalEntryLink_HAZ_LINK,
+              getEntryId(), hazardIds.get(index), note);
+          dataInterface.getLinkController().changeLinkNote(causalHazLink, LinkingType.CausalEntryLink_HAZ_LINK, note);
+          dataInterface.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK, causalHazLink,
+              constraint, causalEntryS2Optional.get().getNote());
+
+        }
+        for (Link link : dataInterface.getLinkController().getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK,
+            getEntryId())) {
+          dataInterface.lockUpdate();
+          dataInterface.getLinkController().deleteLink(link.getLinkType(), link.getId());
+          dataInterface.getCausalFactorController().removeSafetyConstraint(link.getLinkB());
+          dataInterface.releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR });
+        }
       }
     }
   }
@@ -164,6 +235,7 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
     public SwitchToSingleSCModal(List<String> choiceList) {
       super(Messages.CellEditorCausalEntry_UseOneSCShellTitle);
       this.choiceList = choiceList;
+      choice = choiceList.size() - 1;
       setSize(500, 200);
     }
 
@@ -194,6 +266,54 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
         button.addSelectionListener(new DefaultSelectionAdapter((e) -> choice = index));
       }
       button.setSelection(true);
+    }
+
+  }
+
+  private class SwitchToHazardSCModal extends ModalShell {
+
+    private List<String> choiceList;
+    private List<Integer> choice;
+
+    public SwitchToHazardSCModal(List<String> choiceList) {
+      super("Switch to use one safety constraint for each hazard linked to the respective UCA");
+      this.choiceList = choiceList;
+      this.choice = new ArrayList<>();
+      setSize(500, 200);
+    }
+
+    @Override
+    protected boolean validate() {
+      return true;
+    }
+
+    @Override
+    protected boolean doAccept() {
+      return true;
+    }
+
+    @Override
+    protected void createCenter(Shell parent) {
+      Label label = new Label(parent, SWT.WRAP);
+      label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+      label.setText("Switch to use one safety constraint for each hazard linked to the respective UCA");
+      Group group = new Group(parent, SWT.NONE);
+      group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+      group.setLayout(new GridLayout());
+      Button button = null;
+      for (int i = 0; i < choiceList.size(); i++) {
+        button = new Button(group, SWT.CHECK);
+        button.setText(choiceList.get(i));
+        final int index = i;
+        button.addSelectionListener(new DefaultSelectionAdapter((e) -> {
+          if (((Button) e.getSource()).getSelection()) {
+            choice.add(index);
+          } else {
+            choice.remove((Integer) index);
+          }
+        }));
+      }
+      button.setSelection(false);
     }
 
   }

@@ -113,7 +113,7 @@ public class CausalFactorEntry {
         causalEntryLink.getLinkA());
     if (ucaCfLink.isLinkAPresent()) {
       IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
-      ucaDescription = uca.getDescription();
+      ucaDescription = uca.getIdString() + "\n" + uca.getDescription();
       hazardLinks = "";
       if (!controller.isUseScenarios()) {
         // If scenarios are not used than either the CausalEntryLink_HAZ_LINK
@@ -128,6 +128,7 @@ public class CausalFactorEntry {
               hazIds, sCoption, hazAccController);
           hazEntry.setNote(causalEntryLink.getNote());
           hazEntry.setDesignHint(singleConstraintLink.get().getNote());
+          hazardEntries.add(hazEntry);
         } else {
           for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
               causalEntryLink.getId())) {
@@ -137,7 +138,11 @@ public class CausalFactorEntry {
                 .findFirst();
             CausalHazardEntry hazEntry = new CausalHazardEntry(controller, linkController, sdsController, caController,
                 Arrays.asList(hazard.getId()), causalSCoption, hazAccController);
-            hazEntry.setDesignHint(causalHazLink.getNote());
+
+            Link scLink = linkController
+                .getLinkObjectFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId(),
+                    causalSCoption.isPresent() ? causalSCoption.get() : null);
+            hazEntry.setDesignHint(scLink == null ? "" : scLink.getNote());
             hazEntry.setNote(causalHazLink.getNote());
             hazardEntries.add(hazEntry);
           }

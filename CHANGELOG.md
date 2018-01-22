@@ -3,6 +3,8 @@
 #### A-STPA Features:
 
 *  Add MS Word Export for the Final STPA Report
+*  Add support for carrying a single UCA constraint in the Causal Factors Table over to one or more single constraints for each hazard
+
 #### A-STPA Bugfixes:
 
 *  Fix collaboration System always displays a wrong number of changes after a merge

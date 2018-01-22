@@ -84,7 +84,7 @@ public final class Link {
   boolean setNote(String note) {
     boolean different = !this.note.equals(note);
     if (different) {
-      this.note = note;
+      this.note = note == null ? "" : note;
     }
     return different;
   }

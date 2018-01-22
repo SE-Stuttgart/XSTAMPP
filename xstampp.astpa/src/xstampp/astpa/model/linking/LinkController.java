@@ -25,6 +25,10 @@ import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.model.ObserverValue;
 import xstampp.util.IUndoCallback;
 
+/**
+ * see <i>xstampp.astpa/docs/architecture/causalFactors.png</i> for more details
+ *
+ */
 public class LinkController extends Observable {
 
   @XmlElement
@@ -76,29 +80,12 @@ public class LinkController extends Observable {
   }
 
   /**
-   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
-   * <p>
-   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
-   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
-   * <code>linkA</code>
-   * <p>
-   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
-   * exists, than its' id is returned and nothing is added.
+   * calls {@link LinkController#addLink(LinkingType, UUID, UUID, boolean, UUID, String)} with
+   * canUndo set to <b>true</b> and with id as {@link UUID#randomUUID()}
    * 
-   * @param linkType
-   *          an {@link LinkingType} for which links have been created in the
-   *          {@link LinkController}
-   * @param linkA
-   *          the part whose {@link UUID} is the first part of the {@link Link}
-   * @param linkB
-   *          the part whose {@link UUID} is the second part of the {@link Link}
-   * @param canUndo
-   *          if this call should push a {@link IUndoCallback} to the Undo Stack or not
-   * @return
-   *         The id of the Link which was either added, updated or which already existed
    */
-  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo) {
-    return this.addLink(linkType, linkA, linkB, canUndo, UUID.randomUUID());
+  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, String note) {
+    return addLink(linkType, linkA, linkB, true, UUID.randomUUID(), note);
   }
 
   /**
@@ -123,13 +110,74 @@ public class LinkController extends Observable {
    * @return
    *         The id of the Link which was either added, updated or which already existed
    */
+  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo) {
+    return this.addLink(linkType, linkA, linkB, canUndo, UUID.randomUUID(), "");
+  }
+
+  /**
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
+   * <p>
+   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
+   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
+   * <code>linkA</code>
+   * <p>
+   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * exists, than its' id is returned and nothing is added.
+   * 
+   * @param linkType
+   *          an {@link LinkingType} for which links have been created in the
+   *          {@link LinkController}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @param canUndo
+   *          if this call should push a {@link IUndoCallback} to the Undo Stack or not
+   * @param id
+   *          the {@link UUID} that should be assigned to a new link, if one is created
+   * @return
+   *         The id of the Link which was either added, updated or which already existed
+   */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo, UUID id) {
+    return addLink(linkType, linkA, linkB, canUndo, id, "");
+  }
+
+  /**
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
+   * <p>
+   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
+   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
+   * <code>linkA</code>
+   * <p>
+   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * exists, than its' id is returned and nothing is added.
+   * 
+   * @param linkType
+   *          an {@link LinkingType} for which links have been created in the
+   *          {@link LinkController}
+   * @param linkA
+   *          the part whose {@link UUID} is the first part of the {@link Link}
+   * @param linkB
+   *          the part whose {@link UUID} is the second part of the {@link Link}
+   * @param canUndo
+   *          if this call should push a {@link IUndoCallback} to the Undo Stack or not
+   * @param id
+   *          the {@link UUID} that should be assigned to a new link, if one is created
+   * @param note
+   *          n optional note that can be added to the link, can be a design hint or a rational for
+   *          the relationship this link represents
+   *          <p>
+   *          see <i>xstampp.astpa/docs/architecture/causalFactors.png</i> for more details
+   * @return
+   *         The id of the Link which was either added, updated or which already existed
+   */
+  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo, UUID id, String note) {
     if (!this.linkMap.containsKey(linkType)) {
       assert (linkType != null);
       this.linkMap.put(linkType, new ArrayList<Link>());
     }
     Link newLink = new Link(linkA, linkB, linkType, id);
-
+    newLink.setNote(note);
     // if the link already exists it is just returned
     int index = this.linkMap.get(linkType).indexOf(newLink);
     if (index != -1) {
@@ -166,7 +214,7 @@ public class LinkController extends Observable {
 
   void addLink(Link link) {
     this.linkMap.putIfAbsent(link.getLinkType(), new ArrayList<>());
-    addLink(link.getLinkType(), link.getLinkA(), link.getLinkB(), true, link.getId());
+    addLink(link.getLinkType(), link.getLinkA(), link.getLinkB(), true, link.getId(), "");
   }
 
   /**

@@ -1,7 +1,6 @@
 package xstampp.astpa.model.linking;
 
 import xstampp.astpa.model.hazacc.Hazard;
-import xstampp.model.ObserverValue;
 
 public enum LinkingType {
 
@@ -75,7 +74,7 @@ public enum LinkingType {
   /**
    * A Link that is Labeled with this constant should describe an entry in the causal factors table.
    * <ol>
-   * <li>A should be the UUID of a {@link ObserverValue#UCA_CausalFactor_LINK}
+   * <li>A should be the UUID of a {@link LinkingType#UCA_CausalFactor_LINK}
    * <li>B should be the UUID of a Control Structure Component
    * </ol>
    */
@@ -83,7 +82,7 @@ public enum LinkingType {
 
   /**
    * <ol>
-   * <li>A should be the UUID of a {@link ObserverValue#UcaCfLink_Component_LINK}
+   * <li>A should be the UUID of a {@link LinkingType#UcaCfLink_Component_LINK}
    * <li>B should be the UUID of a Hazard that is linked to the UCA
    * </ol>
    */
@@ -93,7 +92,7 @@ public enum LinkingType {
    * A link of this type is set instead of multiple {@link LinkingType#CausalEntryLink_HAZ_LINK}'s
    * for each {@link Hazard} linked to an UCA.
    * <ol>
-   * <li>A should be the UUID of a {@link LinkingType#CausalEntryLink_ANCHOR}
+   * <li>A should be the UUID of a {@link LinkingType#UcaCfLink_Component_LINK}
    * <li>B should be the UUID of a Safety Constraint in STPA Step 2
    * </ol>
    */
@@ -103,7 +102,7 @@ public enum LinkingType {
    * A link of this type is set instead of multiple {@link LinkingType#CausalEntryLink_HAZ_LINK}'s
    * for each {@link Hazard} linked to an UCA.
    * <ol>
-   * <li>A should be the UUID of a {@link ObserverValue#UcaCfLink_Component_LINK}
+   * <li>A should be the UUID of a {@link LinkingType#UcaCfLink_Component_LINK}
    * <li>B is not used by this
    * </ol>
    */
@@ -111,7 +110,7 @@ public enum LinkingType {
 
   /**
    * <ol>
-   * <li>A should be the UUID of a {@link ObserverValue#UCAEntryLink_HAZ_LINK}
+   * <li>A should be the UUID of a {@link LinkingType#CausalEntryLink_HAZ_LINK}
    * <li>B should be the UUID of a Safety Constraint in STPA Step 2
    * </ol>
    */
@@ -119,7 +118,7 @@ public enum LinkingType {
 
   /**
    * <ol>
-   * <li>A should be the UUID of a {@link ObserverValue#UcaCfLink_Component_LINK}
+   * <li>A should be the UUID of a {@link LinkingType#UcaCfLink_Component_LINK}
    * <li>B should be the UUID of a Hazardous Scenario that is linked to the UCA
    * </ol>
    */

@@ -362,7 +362,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @param entryRow
    *          the row in which the cells will be added
    * @param ucaHazLink
-   *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
+   *          a Link of type {@link LinkingType#CausalEntryLink_HAZ_LINK}
    * @param uca
    *          the {@link IUnsafeControlAction} to which this is linked
    * @return
