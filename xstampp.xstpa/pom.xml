@@ -7,7 +7,7 @@
    <name>XSTPA Plugin</name>
 
    <parent>
-      <version>2.6.0</version>
+      <version>3.0.0</version>
       <groupId>xstampp.group</groupId>
       <artifactId>parent</artifactId>
       <relativePath>../xstampp.parent</relativePath>
