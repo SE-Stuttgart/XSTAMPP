@@ -129,8 +129,11 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
     getEntries().forEach(entry -> {
       entry.prepareForSave(componentId, this, linkController, safetyConstraints);
     });
-    this.entries = null;
+    prepareForSave();
+  }
 
+  void prepareForSave() {
+    this.entries = null;
   }
 
   public List<CausalFactorEntry> getEntries() {

@@ -283,6 +283,7 @@ public class CausalFactorController extends ATableModelController implements ICa
         }
       }
     }
+    causalFactors.forEach(factor -> factor.prepareForSave());
     this.causalComponents = null;
     this.componentsList = null;
   }
