@@ -1,5 +1,8 @@
 ## XSTAMPP 3.0.0
 
+#### A-STPA Features:
+
+*  Add MS Word Export for the Final STPA Report
 #### A-STPA Bugfixes:
 
 *  Fix collaboration System always displays a wrong number of changes after a merge

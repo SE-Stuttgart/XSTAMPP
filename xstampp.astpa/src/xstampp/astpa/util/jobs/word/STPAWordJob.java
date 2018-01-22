@@ -145,6 +145,7 @@ public class STPAWordJob extends XstamppJob {
       ByteArrayOutputStream controlStructureStream = new ByteArrayOutputStream();
       CSExportJob csExport = new CSExportJob(controlStructureStream, 10, CSEditor.ID, projectID,
           config.getDecoChoice());
+      csExport.setConstraint(config.getPageFormat());
       csExport.getPrintableRoot();
       byte[] normalCSArray = controlStructureStream.toByteArray();
       controlStructureStream.close();
@@ -153,7 +154,7 @@ public class STPAWordJob extends XstamppJob {
       controlStructureStream = new ByteArrayOutputStream();
       csExport = new CSExportJob(controlStructureStream, 10, CSEditorWithPM.ID, projectID,
           config.getDecoChoice());
-
+      csExport.setConstraint(config.getPageFormat());
       csExport.getPrintableRoot();
       byte[] pmCSArray = controlStructureStream.toByteArray();
       csPmRatio = csExport.getRatio();
@@ -511,9 +512,11 @@ public class STPAWordJob extends XstamppJob {
     for (CausalFactor factor : ((CausalCSComponent) component).getFactors()) {
       row = row == null ? createColoredRow(table, isEven, Arrays.asList(0)) : row;
       setCellText(row.getCell(1), factor.getText(), true);
+      startMergeRegion(row.getCell(1));
       for (CausalFactorEntry entry : factor.getEntries()) {
         row = row == null ? table.createRow() : row;
         setCellText(row.getCell(2), entry.getUcaDescription(), true);
+        addToMergeRegion(row.getCell(1));
         startMergeRegion(row.getCell(2));
         if (controller.isUseScenarios() && entry.getScenarioEntries() != null) {
           setCellText(row.getCell(3), entry.getHazardLinks(), true);
@@ -530,7 +533,7 @@ public class STPAWordJob extends XstamppJob {
   private void createHazardRows(XWPFTable table, XWPFTableRow row, List<CausalHazardEntry> hazardEntries,
       boolean isEven) {
     for (CausalHazardEntry hazEntry : hazardEntries) {
-      row = row == null ? createColoredRow(table, isEven, Arrays.asList(0, 2)) : row;
+      row = row == null ? createColoredRow(table, isEven, Arrays.asList(0, 1, 2)) : row;
       setCellText(row.getCell(3), hazEntry.getText(), true);
       setCellText(row.getCell(4), hazEntry.getConstraint(), true);
       setCellText(row.getCell(5), hazEntry.getDesignHint(), true);

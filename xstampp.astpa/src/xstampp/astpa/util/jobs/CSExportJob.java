@@ -49,6 +49,7 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
+import xstampp.ui.wizards.AbstractExportPage;
 import xstampp.util.XstamppJob;
 
 /**
@@ -59,6 +60,28 @@ import xstampp.util.XstamppJob;
  */
 public class CSExportJob extends XstamppJob {
 
+  public enum ImageConstraint {
+    A4_LANDSCAPE(29.4f, 16), A4_PORTRAIT(16, 29.4f), DEFAULT(30, 30);
+
+    private float cmToPixel = 1 / 2.54f * 72;
+    private float width;
+    private float height;
+
+    /**
+     * 
+     * @param width
+     *          the width in centimeters
+     * @param height
+     *          the height in centimeters
+     */
+    private ImageConstraint(float width, float height) {
+
+      this.width = width * cmToPixel;
+      this.height = height * cmToPixel;
+
+    }
+  }
+
   private String path;
   private String editorId;
   private int imageType;
@@ -68,10 +91,11 @@ public class CSExportJob extends XstamppJob {
   private IFigure printableFigure;
   private Image srcImage;
   private IControlStructureEditorDataModel model;
-  private final double factor = 5.0;
+  private double factor = 5.0;
   private UUID projectID;
   private ByteArrayOutputStream outputStream;
   private float ratio;
+  private ImageConstraint constraint = ImageConstraint.DEFAULT;
 
   /**
    * this constructor creates a new Job to print the current Control Structure
@@ -305,6 +329,7 @@ public class CSExportJob extends XstamppJob {
           CSExportJob.this.editorId);
       viewer.setProperty(CSAbstractEditor.IS_DECORATED, deco);
       ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
+
       viewer.setRootEditPart(rootEditPart);
       IRectangleComponent root = CSExportJob.this.model.getRoot();
 
@@ -315,26 +340,19 @@ public class CSExportJob extends XstamppJob {
       }
       viewer.setContents(root);
       viewer.getContents().refresh();
-
       IFigure tmpFigure = rootEditPart
           .getLayer(LayerConstants.PRINTABLE_LAYERS);
-      // create a rectangle to guarantee that the src image
-      Rectangle srcRectangle = tmpFigure.getBounds();
-      for (Object layers : tmpFigure.getChildren()) {
-        // Layer&ConnectionLayer
-        for (Object part : ((IFigure) layers).getChildren()) {
-          srcRectangle.union(((IFigure) part).getBounds());
-        }
-
-      }
 
       // a plain Image is created on which we can draw any graphics
-      CSExportJob.this.srcImage = new Image(null, (int) Math.max(
-          CSExportJob.this.factor * tmpFigure.getBounds().width,
-          1),
-          (int) Math.max(
-              CSExportJob.this.factor * tmpFigure.getBounds().height,
-              1));
+      double width;
+      double height;
+      factor++;
+      do {
+        factor--;
+        width = CSExportJob.this.factor * tmpFigure.getBounds().width;
+        height = CSExportJob.this.factor * tmpFigure.getBounds().height;
+      } while (width > 20000 || height > 20000);
+      CSExportJob.this.srcImage = new Image(null, (int) width, (int) height);
       GC imageGC = new GC(CSExportJob.this.srcImage);
       Graphics graphics = new SWTGraphics(imageGC);
       graphics.scale(CSExportJob.this.factor);
@@ -342,6 +360,14 @@ public class CSExportJob extends XstamppJob {
       CSExportJob.this.printableFigure = tmpFigure;
     }
 
+  }
+
+  public void setConstraint(String type) {
+    if (type.equals(AbstractExportPage.A4_LANDSCAPE)) {
+      this.constraint = ImageConstraint.A4_LANDSCAPE;
+    } else {
+      this.constraint = ImageConstraint.A4_PORTRAIT;
+    }
   }
 
   @Override

@@ -226,6 +226,10 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
     this.pageFormat = pageFormat;
   }
 
+  public String getPageFormat() {
+    return pageFormat;
+  }
+
   /**
    * Sets the PDF Title, to the given value.
    * 

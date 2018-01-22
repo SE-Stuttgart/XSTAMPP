@@ -222,6 +222,7 @@ public class Run extends XstamppJob {
           + Messages.ControlStructureDiagramWithProcessModel + ".png";
       CSExportJob job = new CSExportJob(csPath, 5, CSEditor.ID, getProjectID(), false,
           this.decorateCS);
+      job.setConstraint(exportPDFsFormat);
       CSExportJob pmJob = new CSExportJob(csPMPath, 5, CSEditorWithPM.ID, getProjectID(), false,
           this.decorateCS);
 
