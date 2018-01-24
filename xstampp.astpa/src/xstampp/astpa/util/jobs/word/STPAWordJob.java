@@ -23,7 +23,10 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -276,6 +279,10 @@ public class STPAWordJob extends XstamppJob {
             Messages.DesignRequirements + " of Step 2",
             document, false, true);
       }
+
+      if (config.exports(ReportType.FINAL)) {
+        addGlossary(document);
+      }
       addHeaderFooter(document);
       document.write(out);
       out.close();
@@ -390,10 +397,25 @@ public class STPAWordJob extends XstamppJob {
       float ratio) {
 
     try {
-      addNewTitle(controlStructure, document, false);
+      addNewTitle(controlStructure, document, true);
       ByteArrayInputStream pic = new ByteArrayInputStream(array);
+      float width;
+      float height;
+      if (config.getPageFormat().equals(AbstractExportPage.A4_LANDSCAPE)) {
+        height = 400;
+        while (700f - height * ratio < 0) {
+          height--;
+        }
+        width = height * ratio;
+      } else {
+        width = 450;
+        while (700f - width / ratio < 0) {
+          width--;
+        }
+        height = width / ratio;
+      }
       document.createParagraph().createRun().addPicture(pic, Document.PICTURE_TYPE_PNG, "my pic",
-          Units.toEMU(400), Units.toEMU(400 / ratio));
+          Units.toEMU(width), Units.toEMU(height));
     } catch (InvalidFormatException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -594,7 +616,7 @@ public class STPAWordJob extends XstamppJob {
   }
 
   /**
-   * This internal method adds and formats the system descripgtion as defined in the
+   * This internal method adds and formats the system description as defined in the
    * system description editor
    * 
    * @param paragraph
@@ -765,6 +787,83 @@ public class STPAWordJob extends XstamppJob {
       }
 
     }
+  }
+
+  private void addGlossary(XWPFDocument document) {
+    Map<String, String> glossary = new HashMap<>();
+    glossary.put("ACCIDENT",
+        "undesired or unplanned event that results in a loss, including loss or injury to human life, property damage, environmental pollution, mission loss etc.");
+    glossary.put("ACTUATOR",
+        "a human operator or mechanical device tasked with directly acting upon a process and changing its physical state. Valve systems (valve + the motor associated to it), doors,"
+            + " magnets (their electronic controller and power source included) or a nurse are actuators that"
+            + " respectively implement control on the following processes: \"fluid flow\", \"egress availability\","
+            + " \"beam position\", \"patient position\". Actuators, like sensors, can be smart in that they can be programmable;"
+            + " they may therefore need to be studied with the same concepts as the controllers are.");
+    glossary.put("CAUSAL FACTOR", "cause of a (hazardous) scenario (STPA Step 2).");
+    glossary.put("COMMAND", "a signal providing a set of instructions (goals, set points, order) issued by a"
+        + " controller with the intent of acting upon a process by activation of a device or"
+        + " implementation of"
+        + " a procedure. Communication and Control, along with Hierarchy and Emergence, are"
+        + " fundamental systems theory concepts at the foundation of STAMP. Commands are issued by"
+        + " Controllers, with the intent that they be implemented by Actuators to act on the Controlled"
+        + " Process");
+    glossary.put("CONTROL ACTION", "the bringing about of an alteration in the system's state through activation"
+        + " of a device or implementation of a procedure with the intent of regulating or guiding the"
+        + " operation of a human being, machine, apparatus, or system. They are the result of an Actuator"
+        + " implementing a control Command issued by a Controller, and aim at controlling the state of"
+        + " the Controlled Process");
+    glossary.put("CONTROL STRUCTURE", "hierarchy of process loops created to steer a system's operations and"
+        + " control its states. In the context of a hazard analysis, we are most concerned with the"
+        + " control of"
+        + " hazardous states aimed at eliminating, reducing or mitigating them.");
+    glossary.put("CONTROLLED PROCESS", "although at times reducible to the state of a physical element (e.g."
+        + " framing a \"door\" as a controlled process whose values can be \"open\" or \"shut\"), it appears"
+        + " fruitful to rather consider the controlled process identified in STAMP process loops to be"
+        + " the"
+        + " system's attribute or state variable that the controller aims to control (e.g. thinking of"
+        + " the door"
+        + " not as the controlled process but, together with its motor, as an actuator that implements"
+        + " control"
+        + " on the possibility of egress).");
+    glossary.put("CONTROLLER", "a human or automated system that is responsible for controlling the system's"
+        + " processes by issuing commands to be implemented by system actuators."
+        + " FEEDBACK"
+        + " evaluative or corrective information about an action, event, or process that is"
+        + " transmitted to the original or controlling source.");
+    glossary.put("HAZARD", "system state of set or conditions that, together with a particular set of worst-case"
+        + " environmental conditions, will lead to an accident.");
+    glossary.put("LOSS", "decrease in amount, magnitude or degree including destruction or ruin.");
+    glossary.put("SAFETY", "freedom from loss.");
+    glossary.put("SAFETY CONSTRAINT", "bound set on system design options and operations to restrict, compel"
+        + " to avoid or forbid the performance of actions that would lead to a hazard.");
+    glossary.put("SAFETY/DESIGN REQUIREMENT", "design requirement formulated to include the enforcement of safety"
+        + " constraints as a design objective.");
+    glossary.put("(HAZARDOUS) SCENARIO", "an account or synopsis of a possible course of action or events"
+        + " resulting in a hazard. See Causal Factor.");
+    glossary.put("SENSOR", "human or mechanical device tasked with measuring a process variable by responding"
+        + " to a physical stimulus (as heat, light, sound, pressure, magnetism, or a particular motion)"
+        + " and"
+        + " transmit a resulting impulse (as for measurement or operating a control).");
+    glossary.put("UNSAFE CONTROL ACTION", "control action that leads to a hazard (STPA Step 1).");
+
+    addNewTitle("Glossary", document, true);
+    XWPFTable table = document.createTable(1, 2);
+    XWPFTableRow row = table.getRow(0);
+    for (Entry<String, String> entry : glossary.entrySet()) {
+
+      row.setCantSplitRow(true);
+      row.getCell(0).setText(entry.getKey());
+      row.getCell(1).setText(entry.getValue());
+      row = table.createRow();
+    }
+
+    row.setCantSplitRow(true);
+    row.getCell(0).getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.RESTART);
+    row.getCell(0).setText(
+        "Definitions from: Antoine, B. (2013). Systems Theoretic Hazard Analysis (STPA) applied to the risk review of"
+            + " complex systems: an example from the medical device industry (Doctoral dissertation,"
+            + " Massachusetts Institute of Technology).");
+    row.getCell(1).getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.CONTINUE);
   }
 
   private XWPFTable addTable(XWPFTable table) {

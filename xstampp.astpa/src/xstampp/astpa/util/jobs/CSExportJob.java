@@ -382,7 +382,7 @@ public class CSExportJob extends XstamppJob {
   }
 
   /**
-   * @return the ratio
+   * @return the ratio which is calculated as width/height
    */
   public float getRatio() {
     return this.ratio;
