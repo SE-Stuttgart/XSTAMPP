@@ -1,9 +1,7 @@
 target/
 */bin/
-!**/jre/bin/
 !.project
 .settings/
-*.exe
 *.synctex.gz
 *.aux
 *.toc
