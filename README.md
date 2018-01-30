@@ -29,13 +29,23 @@ How to build XSTAMPP
 Working on XSTAMPP
 ==================
 
+Language skills
+---------------
+
+1.  XSTAMPP is written in **Java 8** (depending on the Plugin)
+
+2.  The documentation (help contents in xstampp.\[plugin\]/html) is
+    provided in **html 4.0** and styled with **CSS 3**
+
+3.  The hazx schema is given in **XMLSchema 1**
+
 Setting up the environment
 --------------------------
 
 -   [Eclipse for RCP and RAP Developers (Plug-in
     Developement)](http://eclipse.org/downloads)[^1] ($> Lunar$)
 
--   At least JavaSE 1.7
+-   At least JavaSE 1.8
 
 -   To install gef ( *help*$\rightarrow$*install new
     software*$\rightarrow$*http://download.eclipse.org/tools/gef/updates/releases/*)
