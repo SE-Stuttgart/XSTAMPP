@@ -11,9 +11,31 @@
 			<div class="headerContent">Progress Indicators</div>
 		</div>
 		<img class="full" src="../../images/export/progressIndicators_wizard.PNG">
-		To gain an overview of the current progress of a project the A-STPA can create a configurable Progress Report.
+		<img class="full" style="max-width:50%" src="../../images/export/progressIndicators_view.PNG">
+		To gain an overview of the current progress of a project A-STPA can create a configurable Progress Report.
 		The Report can either be viewen directly in XSTAMPP or exported as a Excel sheet in the .xlsx format.
-		<p>As can be seen in the Progress Indicators Wizard the report can be further refined with setting parameters to set the definition-of-done to adapt the Progress Indicators to the project requirements. </p>
-		<img style="max-width:50%" src="../../images/export/progressIndicators_view.PNG">
+		<p>As can be seen in the Progress Indicators Wizard the report can be further refined with setting parameters
+		 to set the definition-of-done to adapt the Progress Indicators to the project requirements.</p>
+		 <table>
+		 	<tr>
+		 		<td>Safety Constaints per Accident</td>
+		 		<td>The amount of Safety Constraints that need to be defined and analysed in order for an accident to be considered done.
+		 		 A Safety Constraint is considered analysed when a <a href="../step0/designReq.html">Design Requirement</a> was created and linked to it
+		 	</tr>
+		 	<tr>
+		 		<td>UCAs per Control Action</td>
+		 		<td>The amount of Unsafe Control Actions(UCA) that need to be created and analysed for a Control Action(CA) in order for the CA to be considert done.
+		 		 A UCA can either be hazardous if it is linked to more than one hazards or not hazardous.
+		 		 <br>If a UCA is hazardous then it is only considert to be analysed once the analysis of all hazards has been
+		 		  completed (The hazard must be linked to an analysed accident).
+		 		  <br>If the UCA is not hazardous than it is automatically considered analysed. 
+		 		 </td>
+		 	</tr>
+		 	<tr>
+		 		<td>Causal Factors per UCA</td>
+		 		<td>The amount of causal factors that need to be analysed in order for a UCA to be considered done in step 2.
+		 		A Causal Factor is considered analysed for a UCA if Safety Constraints and Design Requirements have been defined for the UCA entry.
+		 		</td>
+		 </table>
 	</body>
 </html>

@@ -14,7 +14,6 @@
 package xstampp;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -22,6 +21,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import messages.Messages;
+import xstampp.ui.common.ProjectManager;
 import xstampp.util.LoadWorkspace;
 import xstampp.util.service.UndoRedoService;
 
@@ -56,8 +56,13 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
     ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench()
         .getService(ISourceProviderService.class);
-    UndoRedoService sourceProvider = (UndoRedoService) service.getSourceProvider(UndoRedoService.CAN_REDO);
-    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(sourceProvider);
+    if (service == null) {
+      ProjectManager.getLOGGER().error(
+          "Undo Redo Service could not be started please restart XSTAMPP for a proper functionallity of this service");
+    } else {
+      UndoRedoService sourceProvider = (UndoRedoService) service.getSourceProvider(UndoRedoService.CAN_REDO);
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(sourceProvider);
+    }
   }
 
 }

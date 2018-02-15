@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
+import org.xml.sax.SAXParseException;
 
 import xstampp.Activator;
 import xstampp.model.ObserverValue;
@@ -67,12 +68,16 @@ public abstract class XstamppJob extends Job implements Observer, IJobChangeList
           Display.getDefault().beep();
           final String PID = Activator.PLUGIN_ID;
           String errorMsg = "";
-          if (!XstamppJob.this.errors.isEmpty()) {
-            errorMsg += XstamppJob.this.errors.get(0) + "\n";
+          for (String error : XstamppJob.this.errors) {
+            errorMsg += error + "\n";
           }
           errorMsg += error.getMessage();
+          if (error instanceof SAXParseException) {
+            errorMsg += "line number:" + ((SAXParseException) error).getLineNumber();
+            errorMsg += " column number:" + ((SAXParseException) error).getColumnNumber();
+          }
           MultiStatus info = new MultiStatus(PID, 1, errorMsg, null);
-          for( int i = 1; i < XstamppJob.this.errors.size(); i++) {
+          for (int i = 1; i < XstamppJob.this.errors.size(); i++) {
             info.add(new Status(IStatus.ERROR, PID, 1, XstamppJob.this.errors.get(i), null));
           }
           for (StackTraceElement traceElement : XstamppJob.this.error.getStackTrace()) {

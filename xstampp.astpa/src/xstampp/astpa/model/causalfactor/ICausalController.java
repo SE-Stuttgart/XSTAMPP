@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.UUID;
 
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -78,7 +79,8 @@ public interface ICausalController {
    * 
    * @param id
    *          the id of a constraint that has been created in the causal analysis
-   * @return the {@link ITableModel} or null if the {@link UUID} doesn't exist
+   * @return the {@link ITableModel} or a {@link BadReferenceModel} if the {@link UUID} doesn't
+   *         exist
    */
   public ITableModel getSafetyConstraint(UUID id);
 

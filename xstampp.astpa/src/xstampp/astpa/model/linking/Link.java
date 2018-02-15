@@ -14,6 +14,7 @@ package xstampp.astpa.model.linking;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "idLink")
@@ -31,6 +32,9 @@ public final class Link {
   @XmlAttribute
   private String note;
 
+  @XmlElement
+  private String linkNote;
+
   private LinkingType linkType;
 
   public Link(UUID a, UUID b, LinkingType linkType) {
@@ -42,7 +46,8 @@ public final class Link {
     linkB = b;
     this.linkType = linkType;
     id = linkId;
-    this.note = "";
+    this.linkNote = "";
+    this.note = null;
   }
 
   Link() {
@@ -62,7 +67,11 @@ public final class Link {
   }
 
   public String getNote() {
-    return note;
+    if (note != null) {
+      this.linkNote = this.note;
+      // this.note = null;
+    }
+    return this.linkNote;
   }
 
   boolean setLinkA(UUID linkA) {
@@ -82,9 +91,10 @@ public final class Link {
   }
 
   boolean setNote(String note) {
-    boolean different = !this.note.equals(note);
+    boolean different = !this.linkNote.equals(note);
     if (different) {
-      this.note = note == null ? "" : note;
+      this.linkNote = note == null ? "" : note.replaceAll("\r", "");
+      this.note = linkNote;
     }
     return different;
   }

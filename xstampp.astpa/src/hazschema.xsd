@@ -322,14 +322,18 @@
                                                                 <xs:element name="link" maxOccurs="unbounded"
                                                                     minOccurs="0">
                                                                     <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="linkNote"
+                                                                                type="xs:string" maxOccurs="1" minOccurs="0">
+                                                                            </xs:element>
+                                                                        </xs:sequence>
                                                                         <xs:attribute name="linkA" type="xs:string">
                                                                         </xs:attribute>
-                                                                        <xs:attribute name="linkB" type="xs:string">
+                                                                        <xs:attribute name="linkB" type="xs:string" use="optional">
                                                                         </xs:attribute>
-                                                                        <xs:attribute name="note" type="xs:string">
+                                                                        <xs:attribute name="note" type="xs:string" use="optional">
                                                                         </xs:attribute>
-                                                                        <xs:attribute name="id" use="optional" 
-                                                                            type="xs:string">
+                                                                        <xs:attribute name="id" type="xs:string">
                                                                         </xs:attribute>
                                                                     </xs:complexType>
                                                                 </xs:element>

@@ -11,20 +11,23 @@
 <h2 id="xstampp-3.0.0">XSTAMPP 3.0.0</h2>
 <h4 id="a-stpa-features">A-STPA Features:</h4>
 <ul>
+<li>Add Tooltips for Safety Constraint IDs in the Causal Factors table</li>
 <li>Add MS Word Export for the Final STPA Report</li>
 <li>Add support for carrying a single UCA constraint in the Causal Factors Table over to one or more single constraints for each hazard</li>
 </ul>
 <h4 id="a-stpa-bugfixes">A-STPA Bugfixes:</h4>
 <ul>
+<li>Fix bug that projects could sometimes not be loaded in XSTAMPP due to special characters in the causal factor notes</li>
+<li>Fix bug in the calculation of the project progress that UCAs marked as not hazardous lead to no progress in the respective Control Action</li>
 <li>Fix bug when deleting a list from a Linking Widget, always the first one entry is removed</li>
 <li>Fix collaboration System always displays a wrong number of changes after a merge</li>
 <li>Fix multiple User responsibilities not working when more than one user is selected</li>
+<li>Fix bug in Causal Factos and UCA table the buttons of a cell editor are sometimes outside of the screenspace</li>
+<li>In the UCA table when filtering for a UCA or Hazard ID only the result entry is shown(the add rows are also omitted)</li>
 <li>Fix in Causal Factors table the Notes / Rationale is not imported in v2.6</li>
 <li>Fix in Causal Factors table the design hints for single safety constraint rows overwrite the notes</li>
-</ul>
-<h4 id="others">Others</h4>
-<ul>
-<li>Increase heap space reserved for XSTAMPP</li>
+<li>Increase heap space reserved for XSTAMPP to prevent errors that occur during the pdf export of huge projects</li>
+<li>Fix bug that XSTAMPP dialogs cannot be resized</li>
 </ul>
 <h2 id="xstampp-2.6.0">XSTAMPP 2.6.0</h2>
 <h4 id="a-stpa-features-1">A-STPA Features:</h4>
@@ -95,7 +98,7 @@
 <li>Fix several typos in XSTAMPP</li>
 <li>Fix bug in System Description Export Wizard that the export path cannot be chosen</li>
 </ul>
-<h4 id="others-1">Others</h4>
+<h4 id="others">Others</h4>
 <ul>
 <li>Change that a UCA's severity increases when linked to more severe hazard</li>
 </ul>
@@ -130,7 +133,7 @@
 <ul>
 <li>Fixed a bug that would produce a null pointer when drag&amp;dropping a component in the control structure #506</li>
 </ul>
-<h5 id="others-2">Others:</h5>
+<h5 id="others-1">Others:</h5>
 <ul>
 <li>Control Structure Components are now added in the front level/ at the bottom of a list</li>
 <li>Added checkbox to login dialog to enable read only access without login credentials #520</li>
@@ -143,7 +146,7 @@
 <ul>
 <li>Move Components in the control structure Up and Down by right clicking on them</li>
 </ul>
-<h5 id="others-3">Others:</h5>
+<h5 id="others-2">Others:</h5>
 <ul>
 <li>Control Structure Components are now added in the front level/ at the bottom of a list</li>
 </ul>
@@ -194,7 +197,7 @@
 <li>Fixed Bug that would prevent storage of the responsibilities</li>
 </ul></li>
 </ul>
-<h5 id="others-4">Others:</h5>
+<h5 id="others-3">Others:</h5>
 <ul>
 <li>Changed second column of Unsafe Control Actions Table from 'Providing causes hazard' to 'Providing incorrect causes hazard'</li>
 <li>Removed 'unused' toolbar items form the main toolbar</li>
@@ -234,7 +237,7 @@
     *   Fixed a bug that led to loss of changes in the Context Tables configuration dialog
     *   enhanced the performance of the xstpa view
     *   fixed the bug that sometimes the Scrollbars are not displayed when needed</code></pre>
-<h5 id="others-5">Others:</h5>
+<h5 id="others-4">Others:</h5>
 <pre><code>*   Enhanced Load and Save Funktion to prevent data loss
 *   Enhanced preference function of the project explorer to sort projects and change fonts</code></pre>
 <h2 id="xstampp-2.0.0">XSTAMPP 2.0.0:</h2>

@@ -163,6 +163,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     try {
       newController = (IDataModel) controller.newInstance();
       newController.setProjectName(projectName);
+      UUID projectId = this.addProjectData(newController, path);
       if (this.projectContainerToUuid.containsKey(originalId)) {
         IDataModel originalModel = this.projectContainerToUuid.get(originalId).getController();
         newController.initializeProject(originalModel);
@@ -170,7 +171,7 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
         newController.initializeProject();
       }
       newController.updateValue(ObserverValue.PROJECT_NAME);
-      UUID projectId = this.addProjectData(newController, path);
+      updateProjectTree();
 
       this.saveDataModel(projectId, false, false);
       this.setChanged();
@@ -249,14 +250,16 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
     IConfigurationElement extElement = getConfigurationFor(projectId);
     String[] filterNames = new String[] {};
 
-    String description = "extensionDescriptions"; //$NON-NLS-1$
-    if (extElement.getAttribute(description) != null) {
-      filterNames = extElement.getAttribute(description).split(";");//$NON-NLS-1$
-    }
+    if (extElement != null) {
+      String description = "extensionDescriptions"; //$NON-NLS-1$
+      if (extElement.getAttribute(description) != null) {
+        filterNames = extElement.getAttribute(description).split(";");//$NON-NLS-1$
+      }
 
-    String extension = "extension";//$NON-NLS-1$
-    for (String ext : extElement.getAttribute(extension).split(";")) { //$NON-NLS-1$
-      extensions.add("*." + ext); //$NON-NLS-1$
+      String extension = "extension";//$NON-NLS-1$
+      for (String ext : extElement.getAttribute(extension).split(";")) { //$NON-NLS-1$
+        extensions.add("*." + ext); //$NON-NLS-1$
+      }
     }
     FileDialog fileDialog = new FileDialog(
         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
@@ -322,12 +325,13 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    * @param isUIcall
    *          informs the runtime if the call is initiated by the user or the system
    * @param saveAs
-   *          TODO
+   *          whether the saveAs dialog should be opened or not
    * @return whether the operation was successful or not
    */
   public boolean saveDataModel(UUID projectId, boolean isUIcall, boolean saveAs) {
+    assert (this.projectContainerToUuid.get(projectId) != null);
 
-    if (this.projectContainerToUuid.get(projectId) == null || saveAs) {
+    if (saveAs) {
       return this.saveDataModelAs(projectId);
     }
     final ProjectFileContainer projectFileContainer = this.projectContainerToUuid.get(projectId);
@@ -693,7 +697,6 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
   public UUID addProjectData(IDataModel controller, String path) {
     UUID id = controller.getProjectId();
     this.projectContainerToUuid.put(id, new ProjectFileContainer(controller, path));
-    updateProjectTree();
     return id;
 
   }

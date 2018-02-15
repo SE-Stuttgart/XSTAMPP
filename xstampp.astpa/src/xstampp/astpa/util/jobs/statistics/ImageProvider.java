@@ -42,7 +42,7 @@ public class ImageProvider {
     return getBytes(width, height, (graphics) -> {
       drawHeading(graphics, "Hazard Progress", width);
       List<ITableModel> hazards = controller.getAllHazards();
-      
+
       int rectHeight = hazards.size() == 0 ? 0 : (height - 55) / hazards.size() - horizontalMargin;
       int rectWidth = width - 150;
       int segmY = 50 + horizontalMargin;
@@ -124,7 +124,7 @@ public class ImageProvider {
       progress += segmentProgress;
     }
 
-    String progressString = String.format("%.1f", progress * 100) + "%";
+    String progressString = String.format("%.3f", progress * 100) + "%";
     int stringWidth = graphics.getFontMetrics().stringWidth(progressString);
     int stringY = (int) (barY + barHeight * 0.5 + graphics.getFontMetrics().getHeight() / 2);
     int stringX = rect.x + barWidth;
@@ -152,7 +152,7 @@ public class ImageProvider {
         rect.height - heightOffset);
     graphics.fillRect(barBounds.x, barBounds.y, barBounds.width, barBounds.height);
     graphics.setColor(colorBefore);
-    String progressString = String.format("%.1f", progress * 100) + "%";
+    String progressString = String.format("%.3f", progress * 100) + "%";
 
     graphics.drawString(progressString, barBounds.x, barBounds.y - 5);
     int fontHeight = graphics.getFontMetrics().getHeight();

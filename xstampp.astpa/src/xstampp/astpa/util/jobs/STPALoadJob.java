@@ -10,6 +10,7 @@
  *******************************************************************************/
 package xstampp.astpa.util.jobs;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
@@ -29,11 +30,11 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import messages.Messages;
 import xstampp.astpa.model.DataModelController;
@@ -70,19 +71,7 @@ public class STPALoadJob extends AbstractLoadJob {
       IOUtils.copy(inputStream, writer, "UTF-8");
       String line = writer.toString();
       // gt and lt are replaced by null chars for the time of unescaping
-      line = line.replace("\0", "\0\0\0\0"); //$NON-NLS-1$ //$NON-NLS-2$
-      line = line.replace(">", "\0\0"); //$NON-NLS-1$ //$NON-NLS-2$
-      line = line.replace("<", "\0"); //$NON-NLS-1$ //$NON-NLS-2$
-      line = StringEscapeUtils.unescapeHtml4(line);
-      // now all gt/lt signs left after the unescaping are not part of the xml
-      // syntax and get back escaped to assure the correct xml parsing
-      line = line.replace("&", "&amp;"); //$NON-NLS-1$ //$NON-NLS-2$
-      line = line.replace(">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
-      line = line.replace("<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
-
-      line = line.replace("\0\0\0\0", "\0"); //$NON-NLS-1$ //$NON-NLS-2$
-      line = line.replace("\0\0", ">"); //$NON-NLS-1$ //$NON-NLS-2$
-      line = line.replace("\0", "<"); //$NON-NLS-1$ //$NON-NLS-2$
+      line = line.replace("&#xA;", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
       Reader stream = new StringReader(line);
       Source xmlFile = new StreamSource(stream, getFile().toURI().toString());
       SchemaFactory schemaFactory = SchemaFactory
@@ -90,7 +79,26 @@ public class STPALoadJob extends AbstractLoadJob {
       Schema schema = schemaFactory.newSchema(schemaFile);
 
       Validator validator = schema.newValidator();
-      validator.validate(xmlFile);
+      try {
+        validator.validate(xmlFile);
+      } catch (SAXException exc) {
+        this.getLog().error(exc.getMessage(), exc);
+        addErrorMsg("Parse Error in file " + getFile().getName() + " invalid content");
+        if (exc instanceof SAXParseException) {
+          SAXParseException parseExc = (SAXParseException) exc;
+          StringReader lineReader = new StringReader(line);
+          BufferedReader re = new BufferedReader(lineReader);
+          for (int i = 0; i < parseExc.getLineNumber() - 1; i++) {
+            re.readLine();
+          }
+          String excLine = re.readLine();
+          re.close();
+          lineReader.close();
+          addErrorMsg(excLine);
+        }
+        setError(exc);
+        return Status.CANCEL_STATUS;
+      }
       System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"); //$NON-NLS-1$ //$NON-NLS-2$
       JAXBContext context = JAXBContext.newInstance(DataModelController.class);
 

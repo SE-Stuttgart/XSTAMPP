@@ -145,7 +145,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    */
   private boolean isCFFiltered(IRectangleComponent comp) {
     boolean isTypeFiltered = false;
-    if (getActiveCategory() != null) {
+    if (!getActiveCategory().isEmpty()) {
       isTypeFiltered = getActiveCategory().equals("ALL");
       if (!isTypeFiltered && (getActiveCategory().equals(ComponentType.ACTUATOR.name())
           || getActiveCategory().equals(ComponentType.CONTROLLER.name())
@@ -368,7 +368,6 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @return
    */
   private GridRow createHazardRow(GridRow entryRow, Link ucaHazLink, IUnsafeControlAction uca) {
-    System.out.println("create hazard rows");
     ITableModel hazard = getDataModel().getHazard(ucaHazLink.getLinkB());
     String hazText = hazard != null ? hazard.getIdString() + " - " + hazard.getTitle() : "no hazard";
     GridCellText hazCell = new GridCellText(hazText);
@@ -425,7 +424,6 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    */
   private GridRow createSingleConstraintRow(GridRow entryRow, Link causalEntryLink,
       IUnsafeControlAction uca) {
-    System.out.println("single constraint row");
     addHazardCell(entryRow, uca);
 
     CellEditorSingleSafetyConstraint cell = new CellEditorSingleSafetyConstraint(getGridWrapper(),

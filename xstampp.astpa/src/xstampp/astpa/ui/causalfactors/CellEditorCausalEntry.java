@@ -153,6 +153,9 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
       for (Link entryHazLink : dataInterface.getLinkController().getRawLinksFor(LinkingType.UCA_HAZ_LINK,
           ucaCFLink.getLinkA())) {
         ITableModel hazard = dataInterface.getHazard(entryHazLink.getLinkB());
+        if (hazard == null) {
+          hazard = dataInterface.getHazard(entryHazLink.getLinkA());
+        }
         if (hazard != null) {
           choiceList.add(hazard.getIdString());
           hazardIds.add(hazard.getId());
@@ -224,6 +227,10 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
     if (MessageDialog.openConfirm(null, Messages.CellEditorCausalEntry_ConfirmDeleteUCA,
         Messages.CellEditorCausalEntry_ConfirmDeleteUCAMsg)) {
       this.dataInterface.getLinkController().changeLink(this.ucaCFLink, null, this.ucaCFLink.getLinkB());
+      for (Link link : this.dataInterface.getLinkController().getRawLinksFor(LinkingType.UcaCfLink_Component_LINK,
+          this.ucaCFLink.getId())) {
+        this.dataInterface.getLinkController().deleteAllFor(LinkingType.CausalEntryLink_HAZ_LINK, link.getId());
+      }
     }
   }
 
@@ -265,7 +272,9 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
         final int index = i;
         button.addSelectionListener(new DefaultSelectionAdapter((e) -> choice = index));
       }
-      button.setSelection(true);
+      if (button != null) {
+        button.setSelection(true);
+      }
     }
 
   }
@@ -303,6 +312,7 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
       Button button = null;
       for (int i = 0; i < choiceList.size(); i++) {
         button = new Button(group, SWT.CHECK);
+        button.setSelection(false);
         button.setText(choiceList.get(i));
         final int index = i;
         button.addSelectionListener(new DefaultSelectionAdapter((e) -> {
@@ -313,7 +323,6 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
           }
         }));
       }
-      button.setSelection(false);
     }
 
   }

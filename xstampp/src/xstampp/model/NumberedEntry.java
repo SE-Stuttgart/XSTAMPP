@@ -22,6 +22,11 @@ public interface NumberedEntry extends Comparable<NumberedEntry> {
 
   @Override
   default int compareTo(NumberedEntry o) {
-    return this.getNumber() - o.getNumber();
+
+    int result = this.getNumber() - o.getNumber();
+    if (result == 0) {
+      result = getId().compareTo(o.getId());
+    }
+    return result;
   }
 }

@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
@@ -53,6 +54,14 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
   @Override
   public String getCurrentText() {
     return safetyOption.isPresent() ? safetyOption.get().getText() : "";
+  }
+
+  @Override
+  public String getToolTip(Point point) {
+    if (safetyOption.isPresent()) {
+      return safetyOption.get().getIdString();
+    }
+    return super.getToolTip(point);
   }
 
   @Override

@@ -80,16 +80,21 @@ public class Step1Progress extends AbstractProgressSheetCreator {
     int index = caRow.getRowNum();
     for (IUnsafeControlAction ucaModel : action.getUnsafeControlActions()) {
       row = row == null ? createRow(sheet) : row;
-      ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
-          .getCorrespondingSafetyConstraint();
-      createCell(row, 2, ucaModel.getIdString());
-      createCell(row, 3, ucaModel.getSeverity().name());
-      createCell(row, 4, safetyModel.getIdString());
-      createCell(row, 5, safetyModel.getText());
-      index = createSubRows(sheet, row, new int[] { 4, 5 }, (parentRow) -> {
-        return createDesignRows(sheet, parentRow, safetyModel.getId());
-      });
-      Float progress = getProgress(safetyModel.getId(), 1);
+      Float progress;
+      if (getController().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK, ucaModel.getId()).isEmpty()) {
+        progress = 100f;
+      } else {
+        ITableModel safetyModel = ((ICorrespondingUnsafeControlAction) ucaModel)
+            .getCorrespondingSafetyConstraint();
+        createCell(row, 2, ucaModel.getIdString());
+        createCell(row, 3, ucaModel.getSeverity().name());
+        createCell(row, 4, safetyModel.getIdString());
+        createCell(row, 5, safetyModel.getText());
+        index = createSubRows(sheet, row, new int[] { 4, 5 }, (parentRow) -> {
+          return createDesignRows(sheet, parentRow, safetyModel.getId());
+        });
+        progress = getProgress(safetyModel.getId(), 1);
+      }
       addProgress(action.getId(), progress);
       row = null;
     }

@@ -111,8 +111,9 @@ public class CausalFactorEntry {
       ISDSController sdsController) {
     Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
         causalEntryLink.getLinkA());
-    if (ucaCfLink.isLinkAPresent()) {
-      IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
+    IUnsafeControlAction uca = ucaCfLink.isLinkAPresent() ? caController.getUnsafeControlAction(ucaCfLink.getLinkA())
+        : null;
+    if (uca != null) {
       ucaDescription = uca.getIdString() + "\n" + uca.getDescription();
       hazardLinks = "";
       if (!controller.isUseScenarios()) {

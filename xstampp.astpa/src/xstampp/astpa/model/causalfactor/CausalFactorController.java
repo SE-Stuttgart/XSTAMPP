@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModelController;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
@@ -200,22 +201,20 @@ public class CausalFactorController extends ATableModelController implements ICa
   @Override
   public SortedMap<ICausalFactor, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
       LinkController linkController) {
-    SortedMap<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
-    linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())
-        .forEach((link) -> {
-          Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
-              link.getLinkA());
-          try {
-            ICausalFactor factor = getCausalFactor(ucaCFLink.getLinkB());
+    TreeMap<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
+    for (Link link : linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())) {
+      Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+          link.getLinkA());
+      try {
+        ICausalFactor factor = getCausalFactor(ucaCFLink.getLinkB());
+        if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
+          ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
+        }
+        ucaCfLink_Component_ToCFmap.get(factor).add(link);
+      } catch (NullPointerException exc) {
 
-            if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
-              ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
-            }
-            ucaCfLink_Component_ToCFmap.get(factor).add(link);
-          } catch (NullPointerException exc) {
-
-          }
-        });
+      }
+    }
     return ucaCfLink_Component_ToCFmap;
   }
 
@@ -223,17 +222,16 @@ public class CausalFactorController extends ATableModelController implements ICa
   public SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
       LinkController linkController, IControlActionController caController) {
     SortedMap<IUnsafeControlAction, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
-    linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())
-        .forEach((link) -> {
-          Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
-              link.getLinkA());
-          IUnsafeControlAction factor = caController.getUnsafeControlAction(ucaCFLink.getLinkA());
+    for (Link link : linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())) {
+      Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+          link.getLinkA());
+      IUnsafeControlAction factor = caController.getUnsafeControlAction(ucaCFLink.getLinkA());
 
-          if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
-            ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
-          }
-          ucaCfLink_Component_ToCFmap.get(factor).add(link);
-        });
+      if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
+        ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
+      }
+      ucaCfLink_Component_ToCFmap.get(factor).add(link);
+    }
     return ucaCfLink_Component_ToCFmap;
   }
 
@@ -250,10 +248,10 @@ public class CausalFactorController extends ATableModelController implements ICa
           Optional<Link> sc2Option = linkController
               .getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK, entryLink.getId()).stream().findFirst();
           IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
-          if (sc2Option.isPresent()) {
+          if (sc2Option.isPresent() && uca != null) {
             ucaCfLink_Component_ToCFmap.put(uca, new ArrayList<>());
             ucaCfLink_Component_ToCFmap.get(uca).add(sc2Option.get());
-          } else {
+          } else if (uca != null) {
             ucaCfLink_Component_ToCFmap.putIfAbsent(uca, new ArrayList<>());
             ucaCfLink_Component_ToCFmap.get(uca).add(link);
           }
@@ -324,17 +322,17 @@ public class CausalFactorController extends ATableModelController implements ICa
 
   @Override
   public ITableModel getSafetyConstraint(UUID id) {
-    return getCausalSafetyConstraints().stream().filter((constraint) -> {
+    CausalSafetyConstraint scObject = getCausalSafetyConstraints().stream().filter((constraint) -> {
       return constraint.getId().equals(id);
     }).findFirst().orElse(null);
+    if (scObject == null) {
+      return BadReferenceModel.getBadReference();
+    }
+    return scObject;
   }
 
   @Override
   public String getConstraintTextFor(UUID id) {
-    ITableModel safetyConstraint = getSafetyConstraint(id);
-    if (safetyConstraint == null) {
-      return "";
-    }
     return getSafetyConstraint(id).getTitle();
   }
 

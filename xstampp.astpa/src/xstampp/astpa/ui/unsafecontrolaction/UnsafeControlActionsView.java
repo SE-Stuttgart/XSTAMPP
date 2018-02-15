@@ -300,7 +300,8 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
       return true;
     }
 
-    if (ucaList.size() == i && canWrite) {
+    if (ucaList.size() == i && canWrite
+        && !(getActiveCategory().equals(UCAID_FILTER) || getActiveCategory().equals(HAZID_FILTER))) {
       // add placeholder
       idRow.addCell(columnIndex, new GridCellBlank(true));
       ucaRow.addCell(columnIndex, new AddUcaButton(cAction, message, type));
@@ -332,7 +333,7 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
    * @return true if the uca is filtered out and should not be used
    */
   private boolean isUCAFiltered(IUnsafeControlAction uca) {
-    if (getActiveCategory() != null) {
+    if (!getActiveCategory().isEmpty()) {
       switch (getActiveCategory()) {
       case UCAID_FILTER:
         return isFiltered(this.getDataModel().getUCANumber(uca.getId()), UCAID_FILTER);

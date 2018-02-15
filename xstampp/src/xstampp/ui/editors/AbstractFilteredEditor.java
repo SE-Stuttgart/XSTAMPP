@@ -442,7 +442,7 @@ public abstract class AbstractFilteredEditor extends StandartEditorPart {
    */
   protected String getActiveCategory() {
     if (this.activeCategory == null) {
-      return null;
+      return "";
     }
     return this.activeCategory.getName();
   }

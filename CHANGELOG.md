@@ -2,20 +2,23 @@
 
 #### A-STPA Features:
 
+*  Add Tooltips for Safety Constraint IDs in the Causal Factors table
 *  Add MS Word Export for the Final STPA Report
 *  Add support for carrying a single UCA constraint in the Causal Factors Table over to one or more single constraints for each hazard
 
 #### A-STPA Bugfixes:
 
+*  Fix bug that projects could sometimes not be loaded in XSTAMPP due to special characters in the causal factor notes
+*  Fix bug in the calculation of the project progress that UCAs marked as not hazardous lead to no progress in the respective Control Action
 *  Fix bug when deleting a list from a Linking Widget, always the first one entry is removed
 *  Fix collaboration System always displays a wrong number of changes after a merge
 *  Fix multiple User responsibilities not working when more than one user is selected
+*  Fix bug in Causal Factos and UCA table the buttons of a cell editor are sometimes outside of the screenspace
+*  In the UCA table when filtering for a UCA or Hazard ID only the result entry is shown(the add rows are also omitted)
 *  Fix in Causal Factors table the Notes / Rationale is not imported in v2.6
 *  Fix in Causal Factors table the design hints for single safety constraint rows overwrite the notes
-
-#### Others
-
-* Increase heap space reserved for XSTAMPP
+*  Increase heap space reserved for XSTAMPP to prevent errors that occur  during the pdf export of huge projects
+*  Fix bug that XSTAMPP dialogs cannot be resized
 
 ## XSTAMPP 2.6.0
 

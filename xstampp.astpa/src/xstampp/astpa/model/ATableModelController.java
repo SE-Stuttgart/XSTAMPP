@@ -11,10 +11,11 @@ public abstract class ATableModelController extends Observable {
   public ATableModelController() {
   }
 
-  private boolean setModelText(ITableModel model, String newText, ObserverValue value, boolean changeTitle) {
+  private boolean setModelText(ITableModel model, String input, ObserverValue value, boolean changeTitle) {
     if (model != null) {
       boolean changed;
       String oldText;
+      String newText = input.replaceAll("\r", "");
       if (changeTitle) {
         changed = !newText.equals(((ATableModel) model).getTitle());
         oldText = ((ATableModel) model).setTitle(newText);

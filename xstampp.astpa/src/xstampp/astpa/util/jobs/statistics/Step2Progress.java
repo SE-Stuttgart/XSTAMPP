@@ -127,7 +127,6 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     }
     Optional<UUID> sc2Optional = getController().getLinkController()
         .getLinksFor(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId()).stream().findFirst();
-    ITableModel constraint = getController().getCausalFactorController().getSafetyConstraint(sc2Optional.orElse(null));
     Optional<UUID> designOptional = getController().getLinkController()
         .getLinksFor(LinkingType.DR2_CausalSC_LINK, sc2Optional.orElse(null)).stream().findFirst();
     ITableModel requirement = getController().getSdsController().getDesignRequirement(designOptional.orElse(null),
@@ -140,8 +139,12 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       addProgress(causalEntryLink.getId(), 0f);
     }
     createCell(hazRow, 3, idString);
-    createCell(hazRow, 4, constraint.getIdString());
-    createCell(hazRow, 5, constraint.getTitle());
+    if (sc2Optional.isPresent()) {
+      ITableModel constraint = getController().getCausalFactorController()
+          .getSafetyConstraint(sc2Optional.orElse(null));
+      createCell(hazRow, 4, constraint.getIdString());
+      createCell(hazRow, 5, constraint.getTitle());
+    }
     createCell(hazRow, 6, designRequirement);
   }
 

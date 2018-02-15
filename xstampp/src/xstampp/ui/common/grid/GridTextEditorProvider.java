@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import xstampp.util.ColorManager;
-
 public class GridTextEditorProvider {
   private String returnString;
 
@@ -47,11 +45,11 @@ public class GridTextEditorProvider {
     returnString = null;
     final GridLayout layout = new GridLayout();
     shell.setLayout(layout);
-
-    shell.setLocation(size.x - (layout.marginWidth + layout.horizontalSpacing), size.y);
+    int y = Math.max(shell.getParent().getLocation().y, size.y);
+    shell.setLocation(size.x - (layout.marginWidth + layout.horizontalSpacing), y);
     final Text textField = new Text(shell, SWT.WRAP | SWT.V_SCROLL);
     textField.setLocation(new Point(0, 0));
-    if(text == null) {
+    if (text == null) {
       textField.setText("");
     } else {
       textField.setText(text);
@@ -92,6 +90,8 @@ public class GridTextEditorProvider {
     });
     cancelButton.setLayoutData(data);
     shell.pack();
+    int height = Math.min(shell.getParent().getBounds().height - size.y, shell.getSize().y);
+    shell.setSize(shell.getSize().x, height);
     shell.addControlListener(new ControlAdapter() {
       @Override
       public void controlResized(ControlEvent e) {

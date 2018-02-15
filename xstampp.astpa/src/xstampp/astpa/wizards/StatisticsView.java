@@ -3,18 +3,24 @@ package xstampp.astpa.wizards;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
+import org.eclipse.nebula.widgets.grid.Grid;
+import org.eclipse.nebula.widgets.grid.GridColumn;
+import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -23,13 +29,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import xstampp.util.ColorManager;
@@ -39,7 +43,7 @@ public class StatisticsView extends ViewPart {
   private Workbook workbook;
   private TabFolder folder;
   private Map<Short, Color> colorMap;
-  private CellRangeAddress activeRegion;
+  private Listener redrawListener;
 
   public StatisticsView() {
     this.colorMap = new HashMap<>();
@@ -49,7 +53,11 @@ public class StatisticsView extends ViewPart {
   public void createPartControl(Composite parent) {
     folder = new TabFolder(parent, SWT.BOTTOM);
     folder.setLayout(new FillLayout());
-
+    redrawListener = (event) -> {
+      if (workbook != null) {
+        loadWorkbook();
+      }
+    };
   }
 
   @Override
@@ -61,6 +69,12 @@ public class StatisticsView extends ViewPart {
   }
 
   void setWorkbook(Workbook workbook) {
+    this.workbook = workbook;
+    PlatformUI.getWorkbench().getDisplay().asyncExec(() -> redrawListener.handleEvent(null));
+  }
+
+  private void loadWorkbook() {
+    folder.setVisible(false);
     for (TabItem tabItem : folder.getItems()) {
       tabItem.dispose();
     }
@@ -76,19 +90,76 @@ public class StatisticsView extends ViewPart {
       scrollContent.setExpandVertical(true);
       scrollContent.setExpandHorizontal(true);
       Drawing<?> drawing = sheet.getDrawingPatriarch();
-      Point size;
       if (drawing != null) {
-        size = createDrawings(sheet, sheetComposite, drawing);
+        createDrawings(sheet, sheetComposite, drawing);
       } else {
-        size = createTable(sheet, sheetComposite);
+        provideGrid(sheet, sheetComposite);
       }
       scrollContent.setContent(sheetComposite);
-      scrollContent.layout();
-      scrollContent.layout(new Control[] { sheetComposite });
-      scrollContent.setMinHeight(size.y);
-      scrollContent.setMinWidth(size.x);
       tab.setControl(scrollContent);
     });
+
+    folder.setVisible(true);
+  }
+
+  private Point provideGrid(Sheet sheet, Composite shell) {
+    shell.setLayout(new FillLayout());
+    Grid grid = new Grid(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+    grid.setHeaderVisible(true);
+    final Map<Row, CellRangeAddress> mergeRegionsMap = new HashMap<>();
+    for (CellRangeAddress range : sheet.getMergedRegions()) {
+      mergeRegionsMap.put(sheet.getRow(range.getFirstRow()), range);
+    }
+    int firstRowNum = sheet.getFirstRowNum();
+    int lastRowNum = sheet.getLastRowNum();
+    int nrOfCols = sheet.getRow(sheet.getFirstRowNum()).getPhysicalNumberOfCells();
+    Row row = sheet.getRow(firstRowNum);
+    for (int i = 0; i < nrOfCols; i++) {
+      GridColumn column = new GridColumn(grid, SWT.NONE);
+      column.setResizeable(true);
+      Cell cell = row.getCell(i);
+      if (cell != null) {
+        column.setText(cell.getStringCellValue());
+      }
+      // GridCellRenderer cellRenderer = column.getCellRenderer();
+      // column.setCellRenderer(new MergeCellsRenderer(cellRenderer));
+    }
+    Stack<CellRangeAddress> ranges = new Stack<>();
+    GridItem parent = null;
+
+    for (int i = firstRowNum + 1; i <= lastRowNum; i++) {
+      row = sheet.getRow(i);
+      if (parent != null && !ranges.peek().containsRow(i)) {
+        ranges.pop();
+        parent = parent.getParentItem();
+      }
+      GridItem item = new GridItem(grid, SWT.NONE);
+      if (mergeRegionsMap.containsKey(row)) {
+        parent = item;
+        ranges.push(mergeRegionsMap.get(row));
+      }
+      for (int colNr = 0; colNr < nrOfCols; colNr++) {
+        Cell cell = row.getCell(colNr);
+
+        if (cell != null) {
+          item.setBackground(colNr, this.colorMap.get(cell.getCellStyle().getFillForegroundColor()));
+          item.setText(colNr, cell.getStringCellValue());
+
+        }
+      }
+    }
+    shell.addControlListener(new ControlAdapter() {
+
+      @Override
+      public void controlResized(ControlEvent e) {
+        for (GridColumn gridColumn : grid.getColumns()) {
+          gridColumn.setWidth(shell.getBounds().width / nrOfCols);
+        }
+      }
+    });
+
+    return grid.getSize();
+
   }
 
   private Point createDrawings(Sheet sheet, final Composite sheetComposite, Drawing<?> drawing) {
@@ -119,50 +190,6 @@ public class StatisticsView extends ViewPart {
       rect.add(new Rectangle(pos.x, pos.y, img.getBounds().width, img.getBounds().height));
     });
     return new Point(rect.width, rect.height);
-  }
-
-  private Point createTable(Sheet sheet, final Composite sheetComposite) {
-    final Map<CellAddress, CellRangeAddress> mergeRegionsMap = new HashMap<>();
-    for (CellRangeAddress range : sheet.getMergedRegions()) {
-      mergeRegionsMap.put(new CellAddress(range.getFirstRow(), range.getFirstColumn()), range);
-    }
-    int firstRowNum = sheet.getFirstRowNum();
-    int lastRowNum = sheet.getLastRowNum();
-    GridLayout layout = new GridLayout(sheet.getRow(firstRowNum).getPhysicalNumberOfCells(), false);
-    layout.horizontalSpacing = 0;
-    layout.verticalSpacing = 1;
-    sheetComposite.setLayout(layout);
-    activeRegion = null;
-    final Point size = new Point(0, 0);
-    for (int i = firstRowNum; i <= lastRowNum; i++) {
-      final Row row = sheet.getRow(i);
-      size.y += row.getHeight();
-      row.cellIterator().forEachRemaining((cell) -> {
-        boolean isMergeCell = mergeRegionsMap.containsKey(cell.getAddress());
-        boolean inRange = sheet.getMergedRegions().stream().anyMatch((range) -> {
-          return range.isInRange(cell);
-        });
-        if (isMergeCell || !inRange) {
-          Label cellComp = new Label(sheetComposite, SWT.BORDER | SWT.WRAP);
-          GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
-          layoutData.minimumWidth = 50;
-          layoutData.widthHint = sheet.getColumnWidth(cell.getAddress().getColumn());
-
-          if (isMergeCell) {
-            activeRegion = mergeRegionsMap.get(cell.getAddress());
-            layoutData.horizontalSpan = (activeRegion.getLastColumn() - activeRegion.getFirstColumn()) + 1;
-            layoutData.verticalSpan = (activeRegion.getLastRow() - activeRegion.getFirstRow()) + 1;
-          }
-          cellComp.setLayoutData(layoutData);
-          cellComp.setText(cell.getStringCellValue());
-          cellComp.setBackground(this.colorMap.get(cell.getCellStyle().getFillForegroundColor()));
-        }
-      });
-    }
-    Point point = sheetComposite.computeSize(size.x, SWT.DEFAULT);
-    size.y = point.y;
-    sheetComposite.layout(true, true);
-    return size;
   }
 
 }

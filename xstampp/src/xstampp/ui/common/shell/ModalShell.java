@@ -167,7 +167,7 @@ public abstract class ModalShell {
    */
   public boolean open() {
     final Shell shell = new Shell(Display.getCurrent().getActiveShell(),
-        SWT.APPLICATION_MODAL | SWT.SHEET);
+        SWT.APPLICATION_MODAL | SWT.SHEET | SWT.RESIZE);
     GridLayout gridLayout = new GridLayout(2, false);
     shell.setLayout(gridLayout);
     if (this.size != null) {

@@ -12,7 +12,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
@@ -28,7 +30,7 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   private ICausalFactorDataModel causalDataInterface;
   private Link ucaHazLink;
-  private Optional<ITableModel> safetyOption;
+  private ITableModel safetyOption;
 
   /**
    * 
@@ -47,23 +49,18 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
     this.ucaHazLink = causalHazLink;
     Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
         .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream().findFirst();
-    this.safetyOption = Optional
-        .ofNullable(causalDataInterface.getCausalFactorController().getSafetyConstraint(safetyOption.orElse(null)));
-    if (safetyOption.isPresent() && !this.safetyOption.isPresent()) {
-      dataInterface.getLinkController().deleteLink(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId(),
-          safetyOption.get());
-    }
+    this.safetyOption = causalDataInterface.getCausalFactorController().getSafetyConstraint(safetyOption.orElse(null));
   }
 
   @Override
   public String getCurrentText() {
-    return safetyOption.isPresent() ? safetyOption.get().getText() : "";
+    return this.safetyOption.getText();
   }
 
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     clearCellButtons();
-    if (!safetyOption.isPresent()) {
+    if (this.safetyOption.getId() == BadReferenceModel.getBadReference().getId()) {
       setReadOnly(true);
       setShowDelete(false);
       CellButtonAdd addButton = new CellButtonAdd(() -> {
@@ -85,6 +82,14 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   }
 
   @Override
+  public String getToolTip(Point point) {
+    if (!(safetyOption instanceof BadReferenceModel)) {
+      return safetyOption.getIdString();
+    }
+    return super.getToolTip(point);
+  }
+
+  @Override
   public void updateDataModel(String newText) {
     Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
         .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
@@ -95,11 +100,11 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   @Override
   public void delete() {
-    if (safetyOption.isPresent()) {
-      if (this.causalDataInterface.getCausalFactorController().removeSafetyConstraint(safetyOption.get().getId())) {
+    if (this.safetyOption.getId() != BadReferenceModel.getBadReference().getId()) {
+      if (this.causalDataInterface.getCausalFactorController().removeSafetyConstraint(safetyOption.getId())) {
         causalDataInterface.getLinkController().deleteLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
-            safetyOption.get().getId());
-        this.safetyOption = Optional.empty();
+            safetyOption.getId());
+        this.safetyOption = BadReferenceModel.getBadReference();
       }
     }
   }

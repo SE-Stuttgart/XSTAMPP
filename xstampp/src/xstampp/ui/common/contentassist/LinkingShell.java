@@ -215,8 +215,7 @@ class LinkingShell {
 
       @Override
       public void mouseDoubleClick(MouseEvent e) {
-        if (currentContent != null) {
-
+        if (currentContent != null && proposalList.getSelectionIndex() >= 0) {
           notifyListener(LinkingShell.this.currentContent[proposalList.getSelectionIndex()]);
           LinkingShell.this.shell.close();
           descShell.close();
