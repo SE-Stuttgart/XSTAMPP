@@ -16,7 +16,7 @@
    <extension
          point="xstampp.extension.stepEditors">
       <stepEditor
-            editorId="xstpapriv.editor.context"
+            editorId="xstpa.editor.context"
             icon="icons/logo.png"
             id="xstpapriv.stepEditor1"
             name="%stepEditor.name.contextTables"
@@ -37,7 +37,7 @@
             parentStep="stpapriv.navigation.step3_1">
       </stepEditor>
       <stepEditor
-            editorId="xstpapriv.editor.basicScenarios"
+            editorId="xstpa.editor.basicScenarios"
             id="xstpapriv.stepEditor.basicScenarios"
             name="Basic Scenarios"
             parentStep="stpapriv.navigation.step3_1">
@@ -79,12 +79,6 @@
             icon="icons/rsc_logox16.png"
             id="xstpapriv.editor.refinedSC"
             name="%editor.name.Refined_Safety_Constraints">
-      </editor>
-      <editor
-            class="xstpa.ui.CSContextEditor"
-            default="false"
-            id="xstpapriv.editor.context"
-            name="%editor.name.contextTables">
       </editor>
       <editor
             class="xstpapriv.ui.BasicScenariosTable"

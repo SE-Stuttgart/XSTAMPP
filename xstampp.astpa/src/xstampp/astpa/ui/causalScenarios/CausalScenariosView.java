@@ -93,8 +93,8 @@ public class CausalScenariosView extends AbstractFilteredEditor {
         .getDataModel(this.getProjectID()));
     parent.setLayout(new GridLayout(1, false));
 
-    updateFilter();
     super.createPartControl(parent);
+    updateFilter();
     this.grid = new GridWrapper(parent, columns);
     deleteAction = new DeleteCSAction(grid, dataInterface, "Causal Scenarios", PREFIX);
     this.grid.getGrid().setVisible(true);
@@ -112,7 +112,8 @@ public class CausalScenariosView extends AbstractFilteredEditor {
   private void reloadTable() {
     if (this.grid != null) {
       this.grid.clearRows();
-      List<AbstractLTLProvider> rulesList = dataInterface.getExtendedDataController().getAllScenarios(includeBasicScenarios,
+      List<AbstractLTLProvider> rulesList = dataInterface.getExtendedDataController().getAllScenarios(
+          includeBasicScenarios,
           includeCausalScenarios, false);
       for (AbstractLTLProvider rule : rulesList) {
         if (!isFiltered(rule.getUCALinks(), UCA)) {

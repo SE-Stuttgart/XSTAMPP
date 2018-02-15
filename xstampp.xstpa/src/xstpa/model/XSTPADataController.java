@@ -20,7 +20,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
-import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.NotProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.ProvidedValuesCombi;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
@@ -252,9 +251,9 @@ public class XSTPADataController extends Observable implements Observer {
     tempCAEntry.setSafetyCritical(getModel().isCASafetyCritical(entry.getId()));
     List<UUID> linkedIDs;
     if (context.equals(CONTEXT_PROVIDED)) {
-      linkedIDs = ((ControlAction) entry).getProvidedVariables();
+      linkedIDs = ((IControlAction) entry).getProvidedVariables();
     } else {
-      linkedIDs = ((ControlAction) entry).getNotProvidedVariables();
+      linkedIDs = ((IControlAction) entry).getNotProvidedVariables();
     }
     /*
      * set linkedItems and available items for the control action entry
