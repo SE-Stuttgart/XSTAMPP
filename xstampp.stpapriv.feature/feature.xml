@@ -2,7 +2,7 @@
 <feature
       id="xstampp.stpapriv.feature"
       label="STPAPriv Feature"
-      version="1.1.0"
+      version="1.1.1"
       plugin="xstampp.stpapriv">
 
    <description url="http://www.example.com/description">

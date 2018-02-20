@@ -1,3 +1,10 @@
+## XSTAMPP 3.0.1
+
+#### A-STPA Bugfixes:
+
+*  Fix bug that the user would not be notified if a StpaPriv/STPASec project would fail to load
+*  Fix bug that STPASec/Priv and ACAST files that are manipulated in XSTAMPP 3.0.0
+
 ## XSTAMPP 3.0.0
 
 #### A-STPA Features:

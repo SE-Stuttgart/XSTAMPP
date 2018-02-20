@@ -141,12 +141,16 @@ public class UndoRedoService extends AbstractSourceProvider
 
   @Override
   public void partClosed(IWorkbenchPart part) {
-    if (part instanceof StandartEditorPart
-        && ((StandartEditorPart) part).getId().equals(editorId)) {
-      fireSourceChanged(ISources.WORKBENCH, CAN_REDO, false);
-      fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, false);
-      ProjectManager.getLOGGER().debug("Undo provider disabled");
-      this.currentProvider = new DummyUndoRedoProvider();
+    try {
+      if (part instanceof StandartEditorPart
+          && ((StandartEditorPart) part).getId().equals(editorId)) {
+        fireSourceChanged(ISources.WORKBENCH, CAN_REDO, false);
+        fireSourceChanged(ISources.WORKBENCH, CAN_UNDO, false);
+        ProjectManager.getLOGGER().debug("Undo provider disabled");
+        this.currentProvider = new DummyUndoRedoProvider();
+      }
+    } catch (Exception exc) {
+      exc.fillInStackTrace();
     }
   }
 

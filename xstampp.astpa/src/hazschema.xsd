@@ -8,7 +8,7 @@
     <xs:element name="dataModelController">
         <xs:complexType>
             <xs:all>
-                <xs:element name="projectdata" maxOccurs="1" minOccurs="1" type="Q1:projectDataController"/>
+                <xs:element name="projectdata" maxOccurs="1" minOccurs="1" type="Q1:projectDataController" />
                 <xs:element name="hazacc" maxOccurs="1" minOccurs="0" type="Q1:hazAccController" />
                 <xs:element name="sds" maxOccurs="1" minOccurs="0" type="Q1:sdsController" />
                 <xs:element name="controlstructure" maxOccurs="1" minOccurs="0" type="Q1:controlStructureController" />
@@ -389,24 +389,7 @@
                         <xs:element name="unsafecontrolaction" maxOccurs="unbounded" minOccurs="0">
                             <xs:complexType>
                                 <xs:all>
-                                    <xs:element name="correspondingSafetyConstraint" maxOccurs="1" minOccurs="0">
-                                        <xs:complexType>
-                                            <xs:all>
-                                                <xs:element type="xs:int" name="number" maxOccurs="1"
-                                                    minOccurs="0" />
-                                                <xs:element type="xs:string" name="title" maxOccurs="1"
-                                                    minOccurs="0" />
-                                                <xs:element type="xs:string" name="description" maxOccurs="1"
-                                                    minOccurs="0" />
-                                                <xs:element type="xs:string" name="id" maxOccurs="1"
-                                                    minOccurs="0" />
-                                                <xs:element name="idString" type="xs:string" maxOccurs="1"
-                                                    minOccurs="0" />
-                                                <xs:element name="text" type="xs:string" maxOccurs="1"
-                                                    minOccurs="0" />
-                                            </xs:all>
-                                        </xs:complexType>
-                                    </xs:element>
+                                    <xs:element name="correspondingSafetyConstraint" maxOccurs="1" minOccurs="0" type="Q1:correspondingSafetyConstraintType"/>
                                     <xs:element type="xs:string" name="description" />
                                     <xs:element name="number" type="xs:int" maxOccurs="1" minOccurs="0">
                                     </xs:element>
@@ -489,6 +472,17 @@
         <xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
     </xs:complexType>
 
+
+    <xs:complexType name="correspondingSafetyConstraintType">
+        <xs:all>
+            <xs:element type="xs:int" name="number" maxOccurs="1" minOccurs="0" />
+            <xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="0" />
+            <xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="0" />
+            <xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="0" />
+            <xs:element name="idString" type="xs:string" maxOccurs="1" minOccurs="0" />
+            <xs:element name="text" type="xs:string" maxOccurs="1" minOccurs="0" />
+        </xs:all>
+    </xs:complexType>
     <xs:complexType name="hazAccController">
         <xs:all>
             <xs:element name="accidents" maxOccurs="1" minOccurs="0">

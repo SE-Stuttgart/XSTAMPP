@@ -34,9 +34,11 @@ class Adapter extends XmlAdapter<ListOfLinks, Map<LinkingType, List<Link>>> {
     ListOfLinks loe = new ListOfLinks();
     for (Map.Entry<LinkingType, List<Link>> mapEntry : map.entrySet()) {
       Entry entry = new Entry();
-      entry.setKey(mapEntry.getKey());
-      entry.getList().addAll(mapEntry.getValue());
-      loe.getList().add(entry);
+      if (mapEntry.getKey() != null) {
+        entry.setKey(mapEntry.getKey());
+        entry.getList().addAll(mapEntry.getValue());
+        loe.getList().add(entry);
+      }
     }
     return loe;
   }

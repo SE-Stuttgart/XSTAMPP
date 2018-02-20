@@ -65,18 +65,13 @@ public class STPALoadJob extends AbstractLoadJob {
     try (StringWriter writer = new StringWriter();
         FileInputStream inputStream = new FileInputStream(getFile());) {
       // validate the file
-      URL schemaFile;
-      schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
-
+      Schema schema = getSchema();
       IOUtils.copy(inputStream, writer, "UTF-8");
       String line = writer.toString();
       // gt and lt are replaced by null chars for the time of unescaping
       line = line.replace("&#xA;", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
       Reader stream = new StringReader(line);
       Source xmlFile = new StreamSource(stream, getFile().toURI().toString());
-      SchemaFactory schemaFactory = SchemaFactory
-          .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      Schema schema = schemaFactory.newSchema(schemaFile);
 
       Validator validator = schema.newValidator();
       try {
@@ -100,7 +95,7 @@ public class STPALoadJob extends AbstractLoadJob {
         return Status.CANCEL_STATUS;
       }
       System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-      JAXBContext context = JAXBContext.newInstance(DataModelController.class);
+      JAXBContext context = JAXBContext.newInstance(getLoadModel());
 
       Unmarshaller um = context.createUnmarshaller();
       stream = new StringReader(line);
@@ -126,6 +121,19 @@ public class STPALoadJob extends AbstractLoadJob {
 
     }
     return Status.OK_STATUS;
+  }
+
+  protected Class<?> getLoadModel() {
+    return DataModelController.class;
+  }
+
+  protected Schema getSchema() throws SAXException {
+    URL schemaFile;
+    schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
+    SchemaFactory schemaFactory = SchemaFactory
+        .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    Schema schema = schemaFactory.newSchema(schemaFile);
+    return schema;
   }
 
   @Override

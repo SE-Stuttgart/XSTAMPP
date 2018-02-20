@@ -5,128 +5,128 @@
     <xs:element name="privacyController">
         <xs:complexType>
             <xs:all>
-                <xs:element name="projectdata" maxOccurs="1" minOccurs="1" type="haz:projectDataController"/>
-                    <xs:element name="vulloss" maxOccurs="1" minOccurs="0">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element name="losses">
-                                    <xs:complexType>
-                                        <xs:sequence>
-                                            <xs:element name="loss" minOccurs="0" maxOccurs="unbounded">
-                                            </xs:element>
-                                        </xs:sequence>
-                                    </xs:complexType>
-                                </xs:element>
-                                <xs:element name="vulnerabilities">
-                                    <xs:complexType>
-                                        <xs:sequence>
-                                            <xs:element name="vulnerability" minOccurs="0" maxOccurs="unbounded">
-                                            </xs:element>
-                                        </xs:sequence>
-                                    </xs:complexType>
-                                </xs:element>
-                                <xs:element name="seclinks">
-                                    <xs:complexType>
-                                        <xs:choice maxOccurs="unbounded" minOccurs="0">
-                                            <xs:element name="seclink">
-                                                <xs:complexType>
-                                                    <xs:all>
-                                                        <xs:element name="accidentId" type="xs:string" />
-                                                        <xs:element name="hazardId" type="xs:string" />
-                                                    </xs:all>
-                                                </xs:complexType>
-                                            </xs:element>
-                                        </xs:choice>
-                                    </xs:complexType>
-                                </xs:element>
-                            </xs:all>
-                            <xs:attribute name="nextAccidentNumber" type="xs:int" use="optional">
-                            </xs:attribute>
-                            <xs:attribute name="nextHazardNumber" type="xs:int" use="optional">
-                            </xs:attribute>
-                            <xs:attribute name="useSeverity" type="xs:boolean" use="optional">
-                            </xs:attribute>
-                        </xs:complexType>
-                    </xs:element>
-                    <xs:element name="sds" maxOccurs="1" minOccurs="0" type="haz:sdsController" />
-                    <xs:element name="controlstructure" maxOccurs="1" minOccurs="0" />
-                    <xs:element name="ignoreLTLValue" type="haz:componentType" maxOccurs="1" minOccurs="0" />
-                    <xs:element name="secCac" maxOccurs="1" minOccurs="0">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element name="controlactions">
-                                    <xs:complexType>
-                                        <xs:sequence>
-                                            <xs:element name="controlaction" maxOccurs="unbounded" minOccurs="0"
-                                                type="Q1:caType" />
-                                        </xs:sequence>
-                                    </xs:complexType>
-                                </xs:element>
-                                <xs:element name="seclinks">
-                                    <xs:complexType>
-                                        <xs:sequence>
-                                            <xs:element name="seclink" minOccurs="0" maxOccurs="unbounded">
-                                                <xs:complexType>
-                                                    <xs:all>
-                                                        <xs:element type="xs:string" name="unsafeControlActionId" />
-                                                        <xs:element type="xs:string" name="hazardId" />
-                                                    </xs:all>
-                                                </xs:complexType>
-                                            </xs:element>
-                                        </xs:sequence>
-                                    </xs:complexType>
-                                </xs:element>
-                                <xs:element name="rules" maxOccurs="1" minOccurs="0">
-                                    <xs:complexType>
-                                        <xs:sequence>
-                                            <xs:element name="rule" type="xs:string" maxOccurs="unbounded"
-                                                minOccurs="0">
-                                            </xs:element>
-                                        </xs:sequence>
-                                    </xs:complexType>
-                                </xs:element>
-                            </xs:all>
-                            <xs:attribute name="nextUcaIndex" type="xs:int" use="optional">
-                            </xs:attribute>
-                            <xs:attribute name="nextCAIndex" type="xs:int" use="optional">
-                            </xs:attribute>
-                        </xs:complexType>
-                    </xs:element>
-                    <xs:element name="causalfactor" maxOccurs="1" minOccurs="0" type="haz:causalFactorController" />
-                    <xs:element name="extendedData" type="haz:extendedDataType" maxOccurs="1" minOccurs="0" />
+                <xs:element name="projectdata" maxOccurs="1" minOccurs="1" type="haz:projectDataController" />
+                <xs:element name="vulloss" maxOccurs="1" minOccurs="0">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="losses">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="loss" minOccurs="0" maxOccurs="unbounded">
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="vulnerabilities">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="vulnerability" minOccurs="0" maxOccurs="unbounded">
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="seclinks">
+                                <xs:complexType>
+                                    <xs:choice maxOccurs="unbounded" minOccurs="0">
+                                        <xs:element name="seclink">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element name="accidentId" type="xs:string" />
+                                                    <xs:element name="hazardId" type="xs:string" />
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:choice>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                        <xs:attribute name="nextAccidentNumber" type="xs:int" use="optional">
+                        </xs:attribute>
+                        <xs:attribute name="nextHazardNumber" type="xs:int" use="optional">
+                        </xs:attribute>
+                        <xs:attribute name="useSeverity" type="xs:boolean" use="optional">
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="sds" maxOccurs="1" minOccurs="0" type="haz:sdsController" />
+                <xs:element name="controlstructure" maxOccurs="1" minOccurs="0" type="haz:controlStructureController"/>
+                <xs:element name="ignoreLTLValue" type="haz:componentType" maxOccurs="1" minOccurs="0" />
+                <xs:element name="secCac" maxOccurs="1" minOccurs="0">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="controlactions">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="controlaction" maxOccurs="unbounded" minOccurs="0"
+                                            type="Q1:caType" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="seclinks">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="seclink" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element type="xs:string" name="unsafeControlActionId" />
+                                                    <xs:element type="xs:string" name="hazardId" />
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="rules" maxOccurs="1" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="rule" type="xs:string" maxOccurs="unbounded"
+                                            minOccurs="0">
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                        <xs:attribute name="nextUcaIndex" type="xs:int" use="optional">
+                        </xs:attribute>
+                        <xs:attribute name="nextCAIndex" type="xs:int" use="optional">
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="causalfactor" maxOccurs="1" minOccurs="0" type="haz:causalFactorController" />
+                <xs:element name="extendedData" type="haz:extendedDataType" maxOccurs="1" minOccurs="0" />
 
-                    <xs:element name="crc" maxOccurs="1" minOccurs="0">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element name="constraintResults" maxOccurs="1" minOccurs="0">
-                                    <xs:complexType>
-                                        <xs:sequence>
-                                            <xs:element name="constraintResult" minOccurs="0" maxOccurs="unbounded">
-                                                <xs:complexType>
-                                                    <xs:all>
-                                                        <xs:element name="secstep" type="xs:string"
-                                                            minOccurs="0" maxOccurs="1" />
-                                                        <xs:element name="secConstraint" type="xs:string" />
-                                                        <xs:element name="secid" type="xs:string" />
-                                                        <xs:element name="corrSecConstraint" type="xs:string"
-                                                            minOccurs="0" maxOccurs="1" />
-                                                        <xs:element name="privRelated" type="xs:boolean"
-                                                            minOccurs="0" maxOccurs="1" />
-                                                        <xs:element name="safRelated" type="xs:boolean"
-                                                            minOccurs="0" maxOccurs="1" />
-                                                        <xs:element name="secRelated" type="xs:boolean"
-                                                            minOccurs="0" maxOccurs="1" />
-                                                    </xs:all>
-                                                </xs:complexType>
-                                            </xs:element>
-                                        </xs:sequence>
-                                    </xs:complexType>
-                                </xs:element>
+                <xs:element name="crc" maxOccurs="1" minOccurs="0">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="constraintResults" maxOccurs="1" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="constraintResult" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element name="secstep" type="xs:string" minOccurs="0"
+                                                        maxOccurs="1" />
+                                                    <xs:element name="secConstraint" type="xs:string" />
+                                                    <xs:element name="secid" type="xs:string" />
+                                                    <xs:element name="corrSecConstraint" type="xs:string"
+                                                        minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="privRelated" type="xs:boolean"
+                                                        minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="safRelated" type="xs:boolean"
+                                                        minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="secRelated" type="xs:boolean"
+                                                        minOccurs="0" maxOccurs="1" />
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
 
-                            </xs:all>
-                        </xs:complexType>
-                    </xs:element>
-                    <xs:element name="linkController" maxOccurs="1" minOccurs="0" type="haz:linkController" />
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="linkController" maxOccurs="1" minOccurs="0" type="haz:linkController" />
             </xs:all>
             <xs:attribute name="version" type="xs:string" use="required" />
             <xs:attribute name="userSystemId" type="xs:string" use="optional" />
@@ -139,261 +139,195 @@
 
 
 
-	<xs:complexType name="combieType1">
-		<xs:all>
-			<xs:element name="processModelValueIDs" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="xs:string" name="value" minOccurs="0"
-							maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="processModelVariableIDs" type="haz:processModelVariableIDsType"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="relatedUnsecureCOntrolActionIDs" type="xs:string"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="refinedSafetyConstraint" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="xs:string" name="value" minOccurs="0"
-							maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element type="xs:boolean" name="hazardous" maxOccurs="1"
-				minOccurs="0" />
-			<xs:element type="xs:string" name="safetyConstraint"
-				maxOccurs="1" minOccurs="0" />
-			<xs:element name="id" type="xs:string" maxOccurs="1"
-				minOccurs="0">
-			</xs:element>
-			<xs:element name="refinedRuleId" type="xs:string"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="archived" type="xs:boolean" maxOccurs="1"
-				minOccurs="0">
-			</xs:element>
+    <xs:complexType name="combieType1">
+        <xs:all>
+            <xs:element name="processModelValueIDs" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="processModelVariableIDs" type="haz:processModelVariableIDsType" maxOccurs="1"
+                minOccurs="0">
+            </xs:element>
+            <xs:element name="relatedUnsecureCOntrolActionIDs" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="refinedSafetyConstraint" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element type="xs:boolean" name="hazardous" maxOccurs="1" minOccurs="0" />
+            <xs:element type="xs:string" name="safetyConstraint" maxOccurs="1" minOccurs="0" />
+            <xs:element name="id" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="refinedRuleId" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="archived" type="xs:boolean" maxOccurs="1" minOccurs="0">
+            </xs:element>
 
-			<xs:element name="valueNames" maxOccurs="1" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="name" type="xs:string" maxOccurs="unbounded"
-							minOccurs="0"></xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-		</xs:all>
-	</xs:complexType>
+            <xs:element name="valueNames" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
 
 
-	<xs:complexType name="combieType2">
-		<xs:all>
-			<xs:element name="processModelValueIDs" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="xs:string" name="value" minOccurs="0"
-							maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="processModelVariableIDs" type="haz:processModelVariableIDsType"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="relatedUCAsAnytime" maxOccurs="1"
-				minOccurs="0" type="xs:string">
+    <xs:complexType name="combieType2">
+        <xs:all>
+            <xs:element name="processModelValueIDs" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="processModelVariableIDs" type="haz:processModelVariableIDsType" maxOccurs="1"
+                minOccurs="0">
+            </xs:element>
+            <xs:element name="relatedUCAsAnytime" maxOccurs="1" minOccurs="0" type="xs:string">
 
-			</xs:element>
-			<xs:element name="relatedUCAsTooLate" type="xs:string"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="relatedUCAsTooEarly" type="xs:string"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="refinedSafetyConstraint" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="xs:string" name="value" minOccurs="0"
-							maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+            </xs:element>
+            <xs:element name="relatedUCAsTooLate" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="relatedUCAsTooEarly" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="refinedSafetyConstraint" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="value" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
 
-			<xs:element type="xs:boolean" name="hazardousAnyTime"
-				maxOccurs="1" minOccurs="1" />
-			<xs:element type="xs:boolean" name="hazardousToLate"
-				maxOccurs="1" minOccurs="1" />
-			<xs:element type="xs:boolean" name="hazardousifProvidedToEarly"
-				maxOccurs="1" minOccurs="1" />
-			<xs:element type="xs:string" name="safetyConstraint"
-				maxOccurs="1" minOccurs="0" />
-			<xs:element name="combieId" type="xs:string" maxOccurs="1"
-				minOccurs="0">
-			</xs:element>
-			<xs:element name="anytimeRuleId" type="xs:string"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="tooEarlyRuleId" type="xs:string"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="tooLateRuleId" type="xs:string"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="archived" type="xs:boolean" maxOccurs="1"
-				minOccurs="0">
-			</xs:element>
+            <xs:element type="xs:boolean" name="hazardousAnyTime" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:boolean" name="hazardousToLate" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:boolean" name="hazardousifProvidedToEarly" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:string" name="safetyConstraint" maxOccurs="1" minOccurs="0" />
+            <xs:element name="combieId" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="anytimeRuleId" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="tooEarlyRuleId" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="tooLateRuleId" type="xs:string" maxOccurs="1" minOccurs="0">
+            </xs:element>
+            <xs:element name="archived" type="xs:boolean" maxOccurs="1" minOccurs="0">
+            </xs:element>
 
-			<xs:element name="valueNames" maxOccurs="1" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="name" type="xs:string" maxOccurs="unbounded"
-							minOccurs="0"></xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-		</xs:all>
-	</xs:complexType>
+            <xs:element name="valueNames" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
 
-	<xs:complexType name="caType">
-		<xs:all>
-			<xs:element type="xs:nonNegativeInteger" name="number"
-				maxOccurs="1" minOccurs="1" />
-			<xs:element type="xs:string" name="title" maxOccurs="1"
-				minOccurs="1" />
-			<xs:element type="xs:string" name="description"
-				maxOccurs="1" minOccurs="1" />
-			<xs:element type="xs:string" name="id" maxOccurs="1"
-				minOccurs="1" />
-			<xs:element name="unsecurecontrolactions" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="unsecurecontrolaction" maxOccurs="unbounded"
-							minOccurs="0">
-							<xs:complexType>
-								<xs:all>
-									<xs:element type="xs:boolean" name="privacyCritical"
-										maxOccurs="1" minOccurs="0" />
-									<xs:element type="xs:boolean" name="safetyCritical"
-										maxOccurs="1" minOccurs="0" />
-									<xs:element type="xs:boolean" name="securityCritical"
-										maxOccurs="1" minOccurs="0" />
-									<xs:element name="correspondingSecurityConstraint"
-										maxOccurs="1" minOccurs="0">
-										<xs:complexType>
-											<xs:all>
-											<xs:element
-													type="xs:string" name="id" />
-												<xs:element
-													type="xs:string" name="title" maxOccurs="1" minOccurs="0"/>
-												<xs:element
-													type="xs:string" name="text" maxOccurs="1" minOccurs="0"/>
-												<xs:element
-													type="xs:string" name="number" />
-											</xs:all>
-										</xs:complexType>
-									</xs:element>
-									<xs:element type="xs:string"
-										name="description" />
-									<xs:element name="number"
-										type="xs:int" maxOccurs="1" minOccurs="0">
-									</xs:element>
-									<xs:element type="xs:string" name="id" />
-									<xs:element type="xs:string" name="seclinks"
-										maxOccurs="1" minOccurs="0" />
-									<xs:element type="xs:string" name="type" />
-								</xs:all>
-								<xs:attribute name="severityType" type="xs:string"
-									use="optional">
-								</xs:attribute>
-							</xs:complexType>
-						</xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element type="xs:boolean" name="isSecurityCritical"
-				maxOccurs="1" minOccurs="0" />
-			<xs:element name="notProvidedPMVariables" minOccurs="0"
-				maxOccurs="1">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="xs:string" name="variableID"
-							minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="providedPMVariables" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="xs:string" name="variableID"
-							minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="PMCombisWhenNotProvided" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="Q1:combieType1"
-							name="combinationOfPMValues" maxOccurs="unbounded" minOccurs="0" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="PMCombisWhenProvided" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="Q1:combieType2"
-							name="combinationOfPMValues" maxOccurs="unbounded" minOccurs="0" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+    <xs:complexType name="caType">
+        <xs:all>
+            <xs:element type="xs:nonNegativeInteger" name="number" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="1" />
+            <xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="1" />
+            <xs:element name="unsecurecontrolactions" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="unsecurecontrolaction" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                                <xs:all>
+                                    <xs:element type="xs:boolean" name="privacyCritical" maxOccurs="1"
+                                        minOccurs="0" />
+                                    <xs:element type="xs:boolean" name="safetyCritical" maxOccurs="1"
+                                        minOccurs="0" />
+                                    <xs:element type="xs:boolean" name="securityCritical" maxOccurs="1"
+                                        minOccurs="0" />
+                                    <xs:element name="correspondingSecurityConstraint" maxOccurs="1" minOccurs="0" type="haz:correspondingSafetyConstraintType"/>
+                                    <xs:element type="xs:string" name="description" />
+                                    <xs:element name="number" type="xs:int" maxOccurs="1" minOccurs="0">
+                                    </xs:element>
+                                    <xs:element type="xs:string" name="id" />
+                                    <xs:element type="xs:string" name="seclinks" maxOccurs="1" minOccurs="0" />
+                                    <xs:element type="xs:string" name="type" />
+                                </xs:all>
+                                <xs:attribute name="severityType" type="xs:string" use="optional">
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element type="xs:boolean" name="isSecurityCritical" maxOccurs="1" minOccurs="0" />
+            <xs:element name="notProvidedPMVariables" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="variableID" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="providedPMVariables" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="variableID" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="PMCombisWhenNotProvided" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="Q1:combieType1" name="combinationOfPMValues" maxOccurs="unbounded"
+                            minOccurs="0" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="PMCombisWhenProvided" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="Q1:combieType2" name="combinationOfPMValues" maxOccurs="unbounded"
+                            minOccurs="0" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
 
-			<xs:element name="dependenciesForNotProvided" maxOccurs="1"
-				minOccurs="0">
+            <xs:element name="dependenciesForNotProvided" maxOccurs="1" minOccurs="0">
 
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="variableName" type="xs:string"
-							maxOccurs="unbounded" minOccurs="0">
-						</xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="dependenciesForProvided" maxOccurs="1"
-				minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="variableName" type="xs:string"
-							maxOccurs="unbounded" minOccurs="0">
-						</xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="rules" maxOccurs="1" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="rule" type="xs:string"
-							maxOccurs="unbounded" minOccurs="0">
-						</xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="ruleIds" maxOccurs="1" minOccurs="0"
-				type="xs:string">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="variableName" type="xs:string" maxOccurs="unbounded" minOccurs="0">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="dependenciesForProvided" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="variableName" type="xs:string" maxOccurs="unbounded" minOccurs="0">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="rules" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="rule" type="xs:string" maxOccurs="unbounded" minOccurs="0">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ruleIds" maxOccurs="1" minOccurs="0" type="xs:string">
 
-			</xs:element>
-			<xs:element type="xs:string" name="componentLink"
-				maxOccurs="1" minOccurs="0" />
-		</xs:all>
-		<xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
-	</xs:complexType>
+            </xs:element>
+            <xs:element type="xs:string" name="componentLink" maxOccurs="1" minOccurs="0" />
+        </xs:all>
+        <xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
+    </xs:complexType>
 
 </xs:schema>
