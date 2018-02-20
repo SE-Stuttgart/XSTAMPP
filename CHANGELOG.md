@@ -2,6 +2,7 @@
 
 #### A-STPA Bugfixes:
 
+*  Fix bug in A-STPA collaboration when creating a new user copy its not visible in the Project Explorer and the Causal Factors are empty
 *  Fix bug that the user would not be notified if a StpaPriv/STPASec project would fail to load
 *  Fix bug that STPASec/Priv and ACAST files that are manipulated in XSTAMPP 3.0.0
 
