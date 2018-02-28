@@ -2,7 +2,7 @@
 <feature
       id="xstampp.feature"
       label="A-STPA feature"
-      version="3.0.0"
+      version="3.0.1"
       plugin="xstampp.astpa">
 
    <description>

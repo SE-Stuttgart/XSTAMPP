@@ -4,7 +4,7 @@
     this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: Jaqueline Patzek, Patrick 
     Wickenhäuser,Lukas Balzer - initial API and implementation -->
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="astpa.model"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="3.0.0">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Q1="astpa.model" version="3.0.1">
     <xs:element name="dataModelController">
         <xs:complexType>
             <xs:all>

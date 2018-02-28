@@ -1,13 +1,3 @@
-#-------------------------------------------------------------------------------
-# Copyright (C) 2018 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software Engineering Group University of Stuttgart, Germany.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-# 
-# Contributors:
-#     Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software Engineering Group University of Stuttgart, Germany - initial API and implementation
-#-------------------------------------------------------------------------------
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -18,6 +8,13 @@
   <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
+<h2 id="xstampp-3.0.1">XSTAMPP 3.0.1</h2>
+<h4 id="a-stpa-bugfixes">A-STPA Bugfixes:</h4>
+<ul>
+<li>Fix bug in A-STPA collaboration when creating a new user copy its not visible in the Project Explorer and the Causal Factors are empty</li>
+<li>Fix bug that the user would not be notified if a StpaPriv/STPASec project would fail to load</li>
+<li>Fix bug that STPASec/Priv and ACAST files that are manipulated in XSTAMPP 3.0.0</li>
+</ul>
 <h2 id="xstampp-3.0.0">XSTAMPP 3.0.0</h2>
 <h4 id="a-stpa-features">A-STPA Features:</h4>
 <ul>
@@ -25,7 +22,7 @@
 <li>Add MS Word Export for the Final STPA Report</li>
 <li>Add support for carrying a single UCA constraint in the Causal Factors Table over to one or more single constraints for each hazard</li>
 </ul>
-<h4 id="a-stpa-bugfixes">A-STPA Bugfixes:</h4>
+<h4 id="a-stpa-bugfixes-1">A-STPA Bugfixes:</h4>
 <ul>
 <li>Fix bug that projects could sometimes not be loaded in XSTAMPP due to special characters in the causal factor notes</li>
 <li>Fix bug in the calculation of the project progress that UCAs marked as not hazardous lead to no progress in the respective Control Action</li>
@@ -48,7 +45,7 @@
 <li>Add ToolTips Support for UCA and Causal Factors Table</li>
 <li>Add Editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis</li>
 </ul>
-<h4 id="a-stpa-bugfixes-1">A-STPA Bugfixes:</h4>
+<h4 id="a-stpa-bugfixes-2">A-STPA Bugfixes:</h4>
 <ul>
 <li>Fix bug that filter in Causal Factors Table is not working for Component Type filters</li>
 <li>Fix unexpected behaviour in control structure of undo/redo of parent changes</li>
@@ -65,7 +62,7 @@
 <li>In the Control Structure Undo/Redo is now handled by the global Undo/Redo service which is accessible on the XSTAMPP toolbar and over CTRL+Z/CTRL+Y</li>
 </ul>
 <h2 id="xstampp-2.5.3">XSTAMPP 2.5.3</h2>
-<h4 id="a-stpa-bugfixes-2">A-STPA Bugfixes:</h4>
+<h4 id="a-stpa-bugfixes-3">A-STPA Bugfixes:</h4>
 <ul>
 <li>Fix visibility issues on macOS of UI Elements in the user system</li>
 <li>Fix on macOS the button labels of the text editor in the UCA/Causal Factor Table are not visible</li>
@@ -76,7 +73,7 @@
 <ul>
 <li>Add auto increase of UCA Severity to the highest Severity of itself and the linked Hazards</li>
 </ul>
-<h4 id="a-stpa-bugfixes-3">A-STPA Bugfixes:</h4>
+<h4 id="a-stpa-bugfixes-4">A-STPA Bugfixes:</h4>
 <ul>
 <li>Fix that when changing the title of a design requirement in step1/2 the title is not changed in the table</li>
 <li>Fix bug in the step 1.3 Table filter won't filter by safety constraints and added filter by uca's</li>
