@@ -1,3 +1,9 @@
+## XSTAMPP 3.0.2
+
+#### A-STPA Bugfixes:
+
+*  Fix bug in ControlStructure Export that sometimes connections or components would be drawn in wrong positions
+
 ## XSTAMPP 3.0.1
 
 #### A-STPA Bugfixes:

@@ -535,7 +535,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     this.label.setLayoutData(data);
     IToolBarManager toolManager = new ToolBarManager(this.toolBar);
     ToolBarContributionItem item = new ToolBarContributionItem(toolManager);
-    this.getEditorSite().getActionBars().getToolBarManager().add(item);
+    if (this.getEditorSite() != null) {
+      this.getEditorSite().getActionBars().getToolBarManager().add(item);
+    }
   }
 
   /**

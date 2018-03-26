@@ -338,6 +338,7 @@ public class CSExportJob extends XstamppJob {
             new String());
         root = CSExportJob.this.model.getRoot();
       }
+      viewer.setProperty("ignore_dirty", true);
       viewer.setContents(root);
       viewer.getContents().refresh();
       IFigure tmpFigure = rootEditPart

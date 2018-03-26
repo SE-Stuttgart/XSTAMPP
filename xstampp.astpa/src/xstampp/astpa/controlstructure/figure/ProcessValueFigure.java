@@ -51,7 +51,7 @@ public class ProcessValueFigure extends CSFigure {
   }
 
   @Override
-  public void refresh() {
+  public void refresh(boolean ignoreDirtyCheck) {
 
     this.getTextField().setLocation(new Point(0, 0));
     this.getTextField().setSize(this.getTextField().getPreferredSize(rect.width, -1));

@@ -244,13 +244,13 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
   }
 
   @Override
-  public void refresh() {
-    if (isDirty) {
+  public void refresh(boolean ignoreDirtyCheck) {
+    if (ignoreDirtyCheck || isDirty) {
       isDirty = false;
       setBounds(rect);
       for (Object child : getChildren()) {
         if (child instanceof IControlStructureFigure) {
-          ((IControlStructureFigure) child).refresh();
+          ((IControlStructureFigure) child).refresh(ignoreDirtyCheck);
         }
       }
       this.textLabel.setLocation(new Point(this.leftMargin, 0));

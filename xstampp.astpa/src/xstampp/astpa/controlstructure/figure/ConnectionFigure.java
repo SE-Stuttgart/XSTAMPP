@@ -54,7 +54,6 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
     return true;
   }
 
-
   @Override
   public void paintFigure(Graphics graphics) {
     super.paintFigure(graphics);
@@ -168,7 +167,7 @@ public class ConnectionFigure extends PolylineConnection implements IControlStru
   }
 
   @Override
-  public void refresh() {
+  public void refresh(boolean ignoreDirtyCheck) {
     // TODO Auto-generated method stub
 
   }

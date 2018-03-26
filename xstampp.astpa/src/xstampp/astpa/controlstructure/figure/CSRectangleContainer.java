@@ -111,11 +111,11 @@ public class CSRectangleContainer extends Figure
   }
 
   @Override
-  public void refresh() {
+  public void refresh(boolean ignoreDirtyCheck) {
     Rectangle bounds1 = rect.getCopy();
     for (Object child : getChildren()) {
       if (child instanceof IControlStructureFigure) {
-        ((IControlStructureFigure) child).refresh();
+        ((IControlStructureFigure) child).refresh(ignoreDirtyCheck);
       }
     }
     if (getChildren().isEmpty()) {

@@ -153,7 +153,8 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
 
   @Override
   protected void refreshVisuals() {
-    getFigure().refresh();
+
+    getFigure().refresh(getViewer().getProperty("ignore_dirty") != null);
 
     for (Object child : this.getChildren()) {
       ((IControlStructureEditPart) child).refresh();

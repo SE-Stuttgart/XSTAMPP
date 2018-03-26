@@ -154,8 +154,12 @@ public interface IControlStructureFigure extends IFigure {
 
   /**
    * triggers a refresh of the component
+   * 
+   * @param ignoreDirtyCheck
+   *          if true than a refresh is executed without checking whether the component is marked as
+   *          dirty or not
    */
-  void refresh();
+  void refresh(boolean ignoreDirtyCheck);
 
   void showFeedback();
 

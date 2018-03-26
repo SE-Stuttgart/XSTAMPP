@@ -190,7 +190,7 @@ public class CSTextLabel extends FlowPage implements IPropertyChangeListener {
   public void setText(String text) {
     // this.content.getUpdateManager().performUpdate();
     this.content.setText(text);
-    this.getParent().setBounds(this.content.getBounds());
+    this.getParent().setSize(this.content.getSize());
     this.content.getLayoutManager().invalidate();
     this.content.getUpdateManager().performUpdate();
   }

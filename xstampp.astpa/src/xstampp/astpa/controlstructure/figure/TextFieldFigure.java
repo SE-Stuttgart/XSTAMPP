@@ -60,7 +60,7 @@ public class TextFieldFigure extends CSFigure {
   }
 
   @Override
-  public void refresh() {
+  public void refresh(boolean ignoreDirtyCheck) {
     if (isDirty) {
       this.isDirty = false;
       this.getTextField().setText(getText());
@@ -85,7 +85,7 @@ public class TextFieldFigure extends CSFigure {
       this.setBounds(rect);
       for (Object child : getChildren()) {
         if (child instanceof IControlStructureFigure) {
-          ((IControlStructureFigure) child).refresh();
+          ((IControlStructureFigure) child).refresh(ignoreDirtyCheck);
         }
       }
     }
