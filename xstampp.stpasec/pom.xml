@@ -7,7 +7,7 @@
    <name>STPASec</name>
 
    <parent>
-      <version>3.0.1</version>
+      <version>3.0.2</version>
       <groupId>xstampp.group</groupId>
       <artifactId>parent</artifactId>
       <relativePath>../xstampp.parent</relativePath>
