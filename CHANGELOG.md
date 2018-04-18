@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
-## XSTAMPP [3.0.2] - 2018-04-10
+## [3.0.2] - 2018-04-10
 
 #### A-STPA Bugfixes:
 
@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *  Increase heap space reserved for XSTAMPP to prevent errors that occur  during the pdf export of huge projects
 *  Fix bug that XSTAMPP dialogs cannot be resized
 
-## XSTAMPP [2.6.0] 
+## XSTAMPP 2.6.0
 
 #### A-STPA Features:
 
@@ -162,7 +162,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   with Process Modell)
 *   Included STPAPriv and STPASec
 
-## XSTAMPP [2.3.1]
+## XSTAMPP 2.3.1
 
 ##### Features:
 
@@ -217,7 +217,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   Changed second column of Unsafe Control Actions Table from 'Providing causes hazard' to 'Providing incorrect causes hazard'
 *   Removed 'unused' toolbar items form the main toolbar
 
-## XSTAMPP [2.0.1]
+## XSTAMPP 2.0.1
 
 ##### Features:
 
@@ -256,7 +256,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   Enhanced Load and Save Funktion to prevent data loss
 *   Enhanced preference function of the project explorer to sort projects and change fonts
 
-## XSTAMPP [2.0.0]
+## XSTAMPP 2.0.0
 
 ##### Features:
 
@@ -285,7 +285,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   It is diffcult to move and select the control action list
 *   I cannot generate the reports from the run button with a project which has a file with .haz
 
-## A-STPA [2.0.1]
+## A-STPA 2.0.1
 
 ##### Features:
 
@@ -313,7 +313,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   controlstructure images are now exported in higher quality
 *   Fixed Bug that links between causal factors and hazards were not stored
 
-## [1.0.5]
+## 1.0.5
 
 ##### Features:
 
@@ -326,7 +326,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   added save and load status monitor #38
 *   fixed bug #80 CS-Editor: Control Action not working correctly
 
-## [1.0.4]
+## 1.0.4
 
 ##### Features:
 *   added decoration mode in the Control Structure, which adds icons and Colored borders for a better distinguishability for the components
@@ -336,7 +336,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   fixed wrong scaling of the control structure image in the pdf Export
 *   Components which are created in the Control Structure are not longer removeable in the Control Structure with process model
 
-## [1.0.3]
+## 1.0.3
 
 ##### Features:
 
@@ -344,7 +344,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   added Contact Data in the About Dialog
 *   added ControlAction Component in the ControlStructure,linked with the ControlActionsView
 
-## [1.0.2]
+## 1.0.2
 
 ##### Features:
 
@@ -361,3 +361,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   final bugfix of the control structure image resolution bug in the PDF Export #64
 *   added save and load status monitor #38
 *   fixed bug #80 CS-Editor: Control Action not working correctly
+
+[Unreleased]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.1...HEAD
+[3.0.2]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.1...v3.0.2
+[3.0.1]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.3...v3.0.0
+[2.5.3]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.2...v2.5.3
+[2.5.2]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.1...v2.5.2
+[2.5.1]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.0...v2.5.1
+[2.5.0]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.4.1...v2.5.0
+[2.4.1]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.4.0...v2.4.1
+[2.4.0]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.3.0...v2.4.0
+[2.3.0]: https://github.com/SE-Stuttgart/XSTAMPP/releases/tag/v2.3.0
