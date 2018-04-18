@@ -362,7 +362,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   added save and load status monitor #38
 *   fixed bug #80 CS-Editor: Control Action not working correctly
 
-[Unreleased]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.2...HEAD
 [3.0.2]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.3...v3.0.0
