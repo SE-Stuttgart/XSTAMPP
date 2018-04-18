@@ -1,10 +1,19 @@
-## XSTAMPP 3.0.2
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+
+## XSTAMPP [3.0.2] - 2018-04-10
 
 #### A-STPA Bugfixes:
 
 *  Fix bug in ControlStructure Export that sometimes connections or components would be drawn in wrong positions
 
-## XSTAMPP 3.0.1
+## XSTAMPP [3.0.1] - 2018-02-28
 
 #### A-STPA Bugfixes:
 
@@ -12,7 +21,7 @@
 *  Fix bug that the user would not be notified if a StpaPriv/STPASec project would fail to load
 *  Fix bug that STPASec/Priv and ACAST files that are manipulated in XSTAMPP 3.0.0
 
-## XSTAMPP 3.0.0
+## XSTAMPP [3.0.0] - 2018-02-15
 
 #### A-STPA Features:
 
@@ -34,7 +43,7 @@
 *  Increase heap space reserved for XSTAMPP to prevent errors that occur  during the pdf export of huge projects
 *  Fix bug that XSTAMPP dialogs cannot be resized
 
-## XSTAMPP 2.6.0
+## XSTAMPP [2.6.0] 
 
 #### A-STPA Features:
 
@@ -60,7 +69,7 @@
 
 *  In the Control Structure Undo/Redo is now handled by the global Undo/Redo service which is accessible on the XSTAMPP toolbar and over CTRL+Z/CTRL+Y
 
-## XSTAMPP 2.5.3
+## XSTAMPP [2.5.3] - 2017-11-22
 
 #### A-STPA Bugfixes:
 
@@ -68,7 +77,7 @@
 *  Fix on macOS the button labels of the text editor in the UCA/Causal Factor Table are not visible
 *  Fix bug that adding a new UCA is not poossible in the Unsafe Control Actions Table
 
-## XSTAMPP 2.5.2:
+## XSTAMPP [2.5.2] - 2017-11-08
 
 #### A-STPA Features:
 
@@ -86,7 +95,7 @@
 *  Fix loading bug when creating UCA without Corresponding Safety Constraint
 *  Fix bug in A-STPA 2.5.1 that corresponding safety constraints are not loaded in Step 1
 
-## XSTAMPP 2.5.1:
+## XSTAMPP [2.5.1] - 2017-10-18
 
 #### Bugfixes
 
@@ -111,14 +120,14 @@
 
 *  Change that a UCA's severity increases when linked to more severe hazard
 
-## XSTAMPP 2.5.0:
+## XSTAMPP [2.5.0] - 2017-09-24
 
 ##### Features:
 
 *   Add STPA Glossary for clearification of STPA terms/terminology
 *   Add posibillity to add Control Actions to the Control Structure from the Control Action Table (Step 1)
 
-## XSTAMPP 2.4.1:
+## XSTAMPP [2.4.1] - 2017-08-18
 
 ##### Bugfixes:
 
@@ -128,7 +137,7 @@
 *   Changed Context Table/Unsafe Unsecure Editor/Privacy Relation Editor views in xstpa/stpasec and stpaprov to inline views
 *   Fixed a bug that enabled a user to drag a component in the Control Structure in a Prozess Variable and thereby deleting all connections without the abillity to undo
 
-## XSTAMPP 2.4.0:
+## XSTAMPP [2.4.0] - 2017-08-11
 
 ##### Features:
 
@@ -153,7 +162,7 @@
 *   with Process Modell)
 *   Included STPAPriv and STPASec
 
-## XSTAMPP 2.3.1:
+## XSTAMPP [2.3.1]
 
 ##### Features:
 
@@ -163,7 +172,7 @@
 
 *   Control Structure Components are now added in the front level/ at the bottom of a list
 
-## XSTAMPP 2.3.0:
+## XSTAMPP [2.3.0] - 2017-06-07
 
 ##### Features:
 
@@ -208,7 +217,7 @@
 *   Changed second column of Unsafe Control Actions Table from 'Providing causes hazard' to 'Providing incorrect causes hazard'
 *   Removed 'unused' toolbar items form the main toolbar
 
-## XSTAMPP 2.0.1:
+## XSTAMPP [2.0.1]
 
 ##### Features:
 
@@ -247,7 +256,7 @@
     *   Enhanced Load and Save Funktion to prevent data loss
     *   Enhanced preference function of the project explorer to sort projects and change fonts
 
-## XSTAMPP 2.0.0:
+## XSTAMPP [2.0.0]
 
 ##### Features:
 
@@ -276,7 +285,7 @@
 *   It is diffcult to move and select the control action list
 *   I cannot generate the reports from the run button with a project which has a file with .haz
 
-## A-STPA 2.0.1:
+## A-STPA [2.0.1]
 
 ##### Features:
 
@@ -304,7 +313,7 @@
 *   controlstructure images are now exported in higher quality
 *   Fixed Bug that links between causal factors and hazards were not stored
 
-## 1.0.5:
+## [1.0.5]
 
 ##### Features:
 
@@ -317,7 +326,7 @@
 *   added save and load status monitor #38
 *   fixed bug #80 CS-Editor: Control Action not working correctly
 
-## 1.0.4:
+## [1.0.4]
 
 ##### Features:
 *   added decoration mode in the Control Structure, which adds icons and Colored borders for a better distinguishability for the components
@@ -327,7 +336,7 @@
 *   fixed wrong scaling of the control structure image in the pdf Export
 *   Components which are created in the Control Structure are not longer removeable in the Control Structure with process model
 
-## 1.0.3:
+## [1.0.3]
 
 ##### Features:
 
@@ -335,7 +344,7 @@
 *   added Contact Data in the About Dialog
 *   added ControlAction Component in the ControlStructure,linked with the ControlActionsView
 
-## 1.0.2:
+## [1.0.2]
 
 ##### Features:
 
