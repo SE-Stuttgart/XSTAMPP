@@ -238,44 +238,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ##### Bugfixes:
 
-    *   Fixed errors when shutting down XSTAMPP with jobs still running
-    *   enhanced error dialogs of load/save
-    *   **A-STPA 2.0.4**
-        *   fixed a bug that sometimes xstampp breaks down when performing any changes
-        *   fixed the bug that sometimes the text entered text in the UCA and Causal Factors table deleted when closing the editor
-    *   **XSTPA 1.0.1**
-        *   ACTS algorithm can now be executed for more than 9 variables
-        *   Values that are marked as (don't care) can now be restored to any available value
-        *   Enhanced 'check for conflicts' function in the context table
-        *   Fixed a bug that led to loss of changes in the Context Tables configuration dialog
-        *   enhanced the performance of the xstpa view
-        *   fixed the bug that sometimes the Scrollbars are not displayed when needed
+*   Fixed errors when shutting down XSTAMPP with jobs still running
+*   enhanced error dialogs of load/save
+*   **A-STPA 2.0.4**
+    *   fixed a bug that sometimes xstampp breaks down when performing any changes
+    *   fixed the bug that sometimes the text entered text in the UCA and Causal Factors table deleted when closing the editor
+*   **XSTPA 1.0.1**
+    *   ACTS algorithm can now be executed for more than 9 variables
+    *   Values that are marked as (don't care) can now be restored to any available value
+    *   Enhanced 'check for conflicts' function in the context table
+    *   Fixed a bug that led to loss of changes in the Context Tables configuration dialog
+    *   enhanced the performance of the xstpa view
+    *   fixed the bug that sometimes the Scrollbars are not displayed when needed
 
 ##### Others:
 
-    *   Enhanced Load and Save Funktion to prevent data loss
-    *   Enhanced preference function of the project explorer to sort projects and change fonts
+*   Enhanced Load and Save Funktion to prevent data loss
+*   Enhanced preference function of the project explorer to sort projects and change fonts
 
 ## XSTAMPP [2.0.0]
 
 ##### Features:
 
-    *   Create CAST Project and STPA project in the project explorer.
-    *   “One-Click” generate all reports of your STPA or CAST work in different formats e.g. PDF, image and CSV by clicking one button.
-    *   Edit a large amount of data in the unsafe control actions table, by filtering the entries.
-    *   In the control structure you can merge multiple control action components into one “List of Control Actions” component
-    *   In the control structure you can link between the control action and arrows, to attach source and destination to the control action.
-    *   Automatically generate the context tables and LTL formal specification and apply different coverages criteria on the context table to reduce the number of combinations.
-    *   Choose between “fixed” or flexible connection points on each component in the control structure diagram.
-    *   Copy & Paste feature in the control structure diagram.
+*   Create CAST Project and STPA project in the project explorer.
+*   “One-Click” generate all reports of your STPA or CAST work in different formats e.g. PDF, image and CSV by clicking one button.
+*   Edit a large amount of data in the unsafe control actions table, by filtering the entries.
+*   In the control structure you can merge multiple control action components into one “List of Control Actions” component
+*   In the control structure you can link between the control action and arrows, to attach source and destination to the control action.
+*   Automatically generate the context tables and LTL formal specification and apply different coverages criteria on the context table to reduce the number of combinations.
+*   Choose between “fixed” or flexible connection points on each component in the control structure diagram.
+*   Copy & Paste feature in the control structure diagram.
 
 ##### Bugfixes:
 
-    *   The toolbar does not appear correctly with large screen resolutions
-    *   In the control structure Dashed Boxes should always be drawn behind other objects
-    *   I cannot create a new project with STPA wizard
-    *   change the font in system description by mouse is very hard
-    *   Null Pointer when trying to delete a List of Control Actions
+*   The toolbar does not appear correctly with large screen resolutions
+*   In the control structure Dashed Boxes should always be drawn behind other objects
+*   I cannot create a new project with STPA wizard
+*   change the font in system description by mouse is very hard
+*   Null Pointer when trying to delete a List of Control Actions
 *   the table headers and column names in the cf and ucs table are not displayed correctly
     *   On mac in the UCA Table the dialoge for linking Hazards does not appear
     *   Accidents/hazzards without a long description doesn't show up in the linking view
