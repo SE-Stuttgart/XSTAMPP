@@ -9,13 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP [3.0.2] - 2018-04-10
 
-#### A-STPA Bugfixes:
+### A-STPA Bugfixes:
 
 *  Fix bug in ControlStructure Export that sometimes connections or components would be drawn in wrong positions
 
 ## XSTAMPP [3.0.1] - 2018-02-28
 
-#### A-STPA Bugfixes:
+### A-STPA Bugfixes:
 
 *  Fix bug in A-STPA collaboration when creating a new user copy its not visible in the Project Explorer and the Causal Factors are empty
 *  Fix bug that the user would not be notified if a StpaPriv/STPASec project would fail to load
@@ -23,13 +23,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP [3.0.0] - 2018-02-15
 
-#### A-STPA Features:
+### A-STPA Features:
 
 *  Add Tooltips for Safety Constraint IDs in the Causal Factors table
 *  Add MS Word Export for the Final STPA Report
 *  Add support for carrying a single UCA constraint in the Causal Factors Table over to one or more single constraints for each hazard
 
-#### A-STPA Bugfixes:
+### A-STPA Bugfixes:
 
 *  Fix bug that projects could sometimes not be loaded in XSTAMPP due to special characters in the causal factor notes
 *  Fix bug in the calculation of the project progress that UCAs marked as not hazardous lead to no progress in the respective Control Action
@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP 2.6.0
 
-#### A-STPA Features:
+### A-STPA Features:
 
 *  Add STPA Progress Indicator Export for creating a status report based on editable measures
 *  Add A-STPA User Manual with stepwise guidance through the analysis and glossary with STPA definitions
@@ -53,7 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *  Add ToolTips Support for UCA and Causal Factors Table
 *  Add Editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis
 
-#### A-STPA Bugfixes:
+### A-STPA Bugfixes:
 
 *  Fix bug that filter in Causal Factors Table is not working for Component Type filters
 *  Fix unexpected behaviour in control structure of undo/redo of parent changes
@@ -61,17 +61,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *  Fix bug that Design requirements of step1&2 can't be removed/added
 *  Fix bug in control structure export that image and text would overlap
 
-#### Bugfixes:
+### Bugfixes:
 
 *  Fix Nullpointer when creating a new CAST/StpaPriv/STPASec project
 
-#### Other Changes:
+### Other Changes:
 
 *  In the Control Structure Undo/Redo is now handled by the global Undo/Redo service which is accessible on the XSTAMPP toolbar and over CTRL+Z/CTRL+Y
 
 ## XSTAMPP [2.5.3] - 2017-11-22
 
-#### A-STPA Bugfixes:
+### A-STPA Bugfixes:
 
 *  Fix visibility issues on macOS of UI Elements in the user system
 *  Fix on macOS the button labels of the text editor in the UCA/Causal Factor Table are not visible
@@ -79,11 +79,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP [2.5.2] - 2017-11-08
 
-#### A-STPA Features:
+### A-STPA Features:
 
 *  Add auto increase of UCA Severity to the highest Severity of itself and the linked Hazards
 
-#### A-STPA Bugfixes:
+### A-STPA Bugfixes:
 
 *  Fix that when changing the title of a design requirement in step1/2 the title is not changed in the table
 *  Fix bug in the step 1.3 Table filter won't filter by safety constraints and added filter by uca's
@@ -97,7 +97,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP [2.5.1] - 2017-10-18
 
-#### Bugfixes
+### Bugfixes
 
 *  Fix all UCA-Hazard-Links are removed when one is deleted by the user
 *  Fix Null Pointer Exception during storage in Unsafe Control Actions
@@ -116,20 +116,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *  Fix several typos in XSTAMPP
 *  Fix bug in System Description Export Wizard that the export path cannot be chosen
 
-#### Others
+### Others
 
 *  Change that a UCA's severity increases when linked to more severe hazard
 
 ## XSTAMPP [2.5.0] - 2017-09-24
 
-##### Features:
+### Features:
 
 *   Add STPA Glossary for clearification of STPA terms/terminology
 *   Add posibillity to add Control Actions to the Control Structure from the Control Action Table (Step 1)
 
 ## XSTAMPP [2.4.1] - 2017-08-18
 
-##### Bugfixes:
+### Bugfixes:
 
 *   Fixed NullPointerException when selecting hazard or accident entries
 *   Fixed NullPointerException when opening the Results View by null check #524
@@ -139,7 +139,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP [2.4.0] - 2017-08-11
 
-##### Features:
+### Features:
 
 *   Move Components in the control structure Up and Down from the context menu (right clicking on them)
 *   Added a Feedback component to the control structure that is linked (via a visible connection) to a component connection#497
@@ -150,11 +150,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   Created new Grid Editor for the Unsafe Control Action and Causal Factors Table with Save/Cancel Button
 *   Added settings dialog to customize the table headers in the unsafe control actions table per project #521
 
-##### Bugfixes:
+### Bugfixes:
 
 *   Fixed a bug that would produce a null pointer when drag&dropping a component in the control structure #506
 
-##### Others:
+### Others:
 
 *   Control Structure Components are now added in the front level/ at the bottom of a list
 *   Added checkbox to login dialog to enable read only access without login credentials #520
@@ -164,17 +164,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP 2.3.1
 
-##### Features:
+### Features:
 
 *   Move Components in the control structure Up and Down by right clicking on them
 
-##### Others:
+### Others:
 
 *   Control Structure Components are now added in the front level/ at the bottom of a list
 
 ## XSTAMPP [2.3.0] - 2017-06-07
 
-##### Features:
+### Features:
 
 *   Added Project Settings Dialog in 'Project->Project Settings' and the context menu of the project explorer
 *   Added Project Menu with Project Settings in the main menu bar of XSTAMPP
@@ -198,7 +198,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     *   Added project specific option to safe preferences to hide/show scenarios
     *   Added project specific option to safe preferences to hide/show hazard severity analysis
 
-##### Bugfixes:
+### Bugfixes:
 
 *   Fixed bug where XSTAMPP would sometimes create 'null.ext' files
 *   Fixed Bug that caused unsafed changes to be dismissed without promt when the user clicked on 'File->Switch Workspace'
@@ -212,14 +212,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   **A-CAST 1.0.5**
     *   Fixed Bug that would prevent storage of the responsibilities
 
-##### Others:
+### Others:
 
 *   Changed second column of Unsafe Control Actions Table from 'Providing causes hazard' to 'Providing incorrect causes hazard'
 *   Removed 'unused' toolbar items form the main toolbar
 
 ## XSTAMPP 2.0.1
 
-##### Features:
+### Features:
 
 *   Added 'Install New Software' menu to manually install/deinstall features and plugins for xstampp
 *   Updates are now available over the Edit->Preferences->Install/Update preferences please see adapt these preferences to build your update schedule
@@ -236,7 +236,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     *   Export function for context tables, refined unsafe control actions, rules,safety constraints and ltl properties
     *   Added Acts algorithm in the installation folder so that it not longer has to be added manually
 
-##### Bugfixes:
+### Bugfixes:
 
 *   Fixed errors when shutting down XSTAMPP with jobs still running
 *   enhanced error dialogs of load/save
@@ -251,14 +251,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     *   enhanced the performance of the xstpa view
     *   fixed the bug that sometimes the Scrollbars are not displayed when needed
 
-##### Others:
+### Others:
 
 *   Enhanced Load and Save Funktion to prevent data loss
 *   Enhanced preference function of the project explorer to sort projects and change fonts
 
 ## XSTAMPP 2.0.0
 
-##### Features:
+### Features:
 
 *   Create CAST Project and STPA project in the project explorer.
 *   “One-Click” generate all reports of your STPA or CAST work in different formats e.g. PDF, image and CSV by clicking one button.
@@ -269,7 +269,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   Choose between “fixed” or flexible connection points on each component in the control structure diagram.
 *   Copy & Paste feature in the control structure diagram.
 
-##### Bugfixes:
+### Bugfixes:
 
 *   The toolbar does not appear correctly with large screen resolutions
 *   In the control structure Dashed Boxes should always be drawn behind other objects
@@ -287,11 +287,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## A-STPA 2.0.1
 
-##### Features:
+### Features:
 
 *   Font in Control Structure (Step 1.8/3.1) now changable in Preferences
 
-##### Bugfixes:
+### Bugfixes:
 
 *   fixed bug that caused special characters to be stored in a wrong format
 *   added compability mode for disabeling the above bugfix to guaranty compabillity with older versions (in this mode the bug still exists so its not recommended to store special characters with it!!)
@@ -300,7 +300,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## XSTAMPP 1.0.0/A-STPA 2.0.0
 
-##### Features:
+### Features:
 
 *   Possibility of managing multiple projects at the same time thanks to the XSTAMPP project explorer
 *   Font in Control Structure (Step 1.8/3.1) now changable in Preferences
@@ -308,19 +308,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   Renaming Projects directly in the project explorer
 *   Preference Option to highlight selected step in Edit/Preferences/Color and Fonts
 
-##### Bugfixes:
+### Bugfixes:
 
 *   controlstructure images are now exported in higher quality
 *   Fixed Bug that links between causal factors and hazards were not stored
 
 ## 1.0.5
 
-##### Features:
+### Features:
 
 *   added Help Content with contact link
 *   added Version History and quickstartguide as in Help->Help Content
 
-##### Bugfixes:
+### Bugfixes:
 
 *   final bugfix of the control structure image resolution bug in the PDF Export #64
 *   added save and load status monitor #38
@@ -328,17 +328,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 1.0.4
 
-##### Features:
+### Features:
 *   added decoration mode in the Control Structure, which adds icons and Colored borders for a better distinguishability for the components
 
-##### Bugfixes:
+### Bugfixes:
 
 *   fixed wrong scaling of the control structure image in the pdf Export
 *   Components which are created in the Control Structure are not longer removeable in the Control Structure with process model
 
 ## 1.0.3
 
-##### Features:
+### Features:
 
 *   added Export function of all Data as Data Sheet, Image and PDF Export
 *   added Contact Data in the About Dialog
@@ -346,7 +346,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 1.0.2
 
-##### Features:
+### Features:
 
 *   enhanced the handling of the hazard linking Dialog in the 'Unsafe Control Actions Table'
 *   prevent components from beeing dragged out of sight
@@ -356,7 +356,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *   improved popup for safety Constraint linking in the Causal analysis
 *   added Version History and quickstartguide as in Help->Help Content
 
-##### Bugfixes:
+### Bugfixes:
 
 *   final bugfix of the control structure image resolution bug in the PDF Export #64
 *   added save and load status monitor #38
