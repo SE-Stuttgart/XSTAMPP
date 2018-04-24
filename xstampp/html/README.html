@@ -4,15 +4,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <meta name="author" content="Lukas Balzer" />
-  <title>XSTAMPP Setup Guide</title>
+  <title></title>
   <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
-<div id="header">
-<h1 class="title"><p>XSTAMPP Setup Guide</p></h1>
-<h2 class="author">Lukas Balzer</h2>
-</div>
 <h1 id="how-to-build-xstampp">How to build XSTAMPP</h1>
 <ol style="list-style-type: decimal">
 <li><p>The build requires <a href="https://maven.apache.org/">Maven</a> (&gt;=3.3) and <a href="http://www.oracle.com/technetwork/java/javase/overview/index.html">Java</a> (&gt;1.7) either from https://maven.apache.org/ or from the IDE.</p></li>
@@ -35,9 +30,17 @@
 <ul>
 <li><p><a href="http://eclipse.org/downloads">Eclipse for RCP and RAP Developers (Plug-in Developement)</a> (&gt; Lunar)</p></li>
 <li><p>At least JavaSE 1.8</p></li>
-<li><p>To install gef (<em>help</em> —&gt; <em>install new software</em> —&gt; http://download.eclipse.org/tools/gef/updates/releases/)</p></li>
-<li><p>To install nebula grid from eclipse.org</p></li>
-<li><p>To install maven</p></li>
+<li><p>To install GEF-Legacy (<em>help</em> —&gt; <em>install new software</em> —&gt; http://download.eclipse.org/tools/gef/updates/legacy/releases/)</p>
+<div class="figure">
+<img src="doc/images/eclipseInstallNewSoftwareGefLegacy.png" alt="gef installation" />
+<p class="caption">gef installation</p>
+</div></li>
+<li><p>To install Nebula Grid from eclipse.org (<em>help</em> —&gt; <em>install new software</em> —&gt; http://download.eclipse.org/nebula/releases/latest)</p>
+<div class="figure">
+<img src="doc/images/eclipseInstallNewSoftwareNebula.png" alt="gef installation" />
+<p class="caption">gef installation</p>
+</div></li>
+<li><p>Install Maven (should be included in Eclipse)</p></li>
 <li><p>Import/clone the XSTAMPP projects using the built-in git:</p>
 <ol style="list-style-type: decimal">
 <li><p>Open the <em>Import</em> Dialog selecting <em>File</em> —&gt; <em>Import</em></p></li>
@@ -103,17 +106,16 @@
 <li><p>Download LaTex (<a href="https://miktex.org/">MikTex</a> for Windows or <a href="http://tug.org/mactex/">MacTex</a> for Mac).</p></li>
 <li><p>This should contain an html (for eclipse help), md (for GitHub) and a pdf version of the Readme this can be achived by using <a href="https://pandoc.org">Pandoc</a>.</p>
 <ul>
-<li><p><code>pandoc -s README.md -o README.pdf –-toc</code></p></li>
-<li><p><code>pandoc -s README.tex -o README.html</code></p></li>
-<li><p><code>cp README.html xstampp/html/</code></p></li>
+<li><code>pandoc -s README.md -o README.pdf --toc</code></li>
+<li><code>pandoc -s README.md -o xstampp\html\README.html</code></li>
 </ul></li>
 </ul></li>
 <li><p>Update the <em>xstampp/html/CHANGELOG.html</em> (using Pandoc):</p>
 <ul>
-<li><p><code>pandoc -s CHANGELOG.md -o CHANGELOG.html</code></p></li>
-<li><p><code>cp CHANGELOG.html xstampp/html/</code></p></li>
+<li><code>pandoc -s CHANGELOG.md -o xstampp\html\CHANGELOG.html</code></li>
 </ul></li>
 <li><p><em>createFiles.cmd</em> is a Windows batch script that executes all of the above commands to create the updated documentation files.</p></li>
+<li><p>Update the updatesite: <strong>TODO</strong></p></li>
 </ul>
 <h1 id="chap:issues">Known Issues</h1>
 <h4 id="an-api-baseline-has-not-been-set-for-this-workspace">An API baseline has not been set for this Workspace</h4>
@@ -124,7 +126,7 @@
 <li><p>A Preference Window filtered for the API Baselines opens up.</p></li>
 <li><p>In that dialog find the field <em>Missing API Baseline</em> and set it to <em>Ignore</em> (see figure [fig:APIerror])</p>
 <div class="figure">
-<img src="images/ignoreAPIError.png" alt="The API baseline can be ignored" />
+<img src="doc/images/ignoreAPIError.png" alt="The API baseline can be ignored" />
 <p class="caption">The API baseline can be ignored<span data-label="fig:APIerror"></span></p>
 </div></li>
 </ol>

@@ -39,12 +39,17 @@ Setting up the environment
 
 -   At least JavaSE 1.8
 
--   To install gef (*help* —> *install new
-    software* —> http://download.eclipse.org/tools/gef/updates/releases/)
+-   To install GEF-Legacy (*help* —> *install new
+    software* —> http://download.eclipse.org/tools/gef/updates/legacy/releases/)
 
--   To install nebula grid from eclipse.org
+    ![gef installation](doc/images/eclipseInstallNewSoftwareGefLegacy.png)
 
--   To install maven
+-   To install Nebula Grid from eclipse.org (*help* —> *install new
+    software* —> http://download.eclipse.org/nebula/releases/latest)
+
+    ![gef installation](doc/images/eclipseInstallNewSoftwareNebula.png)
+
+-   Install Maven (should be included in Eclipse)
 
 -   Import/clone the XSTAMPP projects using the built-in git:
 
