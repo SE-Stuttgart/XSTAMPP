@@ -1,11 +1,3 @@
----
-author:
-- Lukas Balzer
-title: |
-    XSTAMPP
-    Setup Guide
----
-
 How to build XSTAMPP
 ====================
 
