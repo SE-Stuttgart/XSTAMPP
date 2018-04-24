@@ -91,7 +91,7 @@ Running XSTAMPP from Eclipse
 
 ![Before eclipse can successfully run xstampp the required plug-ins must
 be included in the
-runtime[]{data-label="fig:runConfig"}](images/runConfig.png)
+runtime[]{data-label="fig:runConfig"}](doc/images/runConfig.png)
 
 Contribute
 ----------
@@ -151,7 +151,7 @@ Contribute
 
 -   All changes must be recorded in the `CHANGELOG.md`.
 
--   If `misc/docu/README.tex` has been changed then:
+-   If `README.md` has been changed then:
 
     -   Download LaTex ([MikTex](https://miktex.org/) for Windows or
         [MacTex](http://tug.org/mactex/) for Mac).
@@ -160,28 +160,18 @@ Contribute
         and a pdf version of the Readme this can be achived by using
         [Pandoc](https://pandoc.org).
 
-        -   `cd misc/docu`
-
-        -   `pandoc -s README.tex -o README.pdf –toc`
-
-        -   `pandoc -s README.tex -o README.html`
-
-        -   `pandoc -s README.tex -o README.md`
-
-        -   `cp README.html ../../README/html/`
-
-        -   `cp README.pdf ../../`
+        - `pandoc -s README.md -o README.pdf --toc`
+        - `pandoc -s README.md -o xstampp\html\README.html`
+        
 
 -   Update the *xstampp/html/CHANGELOG.html* (using Pandoc):
 
-    -   `cd ../..`
-
-    -   `pandoc -s CHANGELOG.md -o CHANGELOG.html`
-
-    -   `cp CHANGELOG.html xstampp/html/`
+    - `pandoc -s CHANGELOG.md -o xstampp\html\CHANGELOG.html`
 
 -   *createFiles.cmd* is a Windows batch script that executes all of the
-    above commands to create the release files.
+    above commands to create the updated documentation files.
+
+- Update the updatesite: **TODO**
 
 Known Issues {#chap:issues}
 ============
@@ -201,7 +191,7 @@ Known Issues {#chap:issues}
     *Ignore* (see figure \[fig:APIerror\])
 
     ![The API baseline can be
-    ignored[]{data-label="fig:APIerror"}](images/ignoreAPIError.png)
+    ignored[]{data-label="fig:APIerror"}](doc/images/ignoreAPIError.png)
 
 #### Plugin Execution not covered by lifecycle configuration
 

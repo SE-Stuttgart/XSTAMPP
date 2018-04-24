@@ -8,26 +8,30 @@
   <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
-<h2 id="xstampp-3.0.2">XSTAMPP 3.0.2</h2>
-<h4 id="a-stpa-bugfixes">A-STPA Bugfixes:</h4>
+<h1 id="changelog">Changelog</h1>
+<p>All notable changes to this project will be documented in this file.</p>
+<p>The format is based on <a href="http://keepachangelog.com/en/1.0.0/">Keep a Changelog</a> and this project adheres to <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<h2 id="unreleased"><a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.2...HEAD">Unreleased</a></h2>
+<h2 id="xstampp-3.0.2---2018-04-10">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.1...v3.0.2">3.0.2</a> - 2018-04-10</h2>
+<h3 id="a-stpa-bugfixes">A-STPA Bugfixes:</h3>
 <ul>
 <li>Fix bug in ControlStructure Export that sometimes connections or components would be drawn in wrong positions</li>
 </ul>
-<h2 id="xstampp-3.0.2">XSTAMPP 3.0.2</h2>
-<h4 id="a-stpa-bugfixes-1">A-STPA Bugfixes:</h4>
+<h2 id="xstampp-3.0.1---2018-02-28">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.0.0...v3.0.1">3.0.1</a> - 2018-02-28</h2>
+<h3 id="a-stpa-bugfixes-1">A-STPA Bugfixes:</h3>
 <ul>
 <li>Fix bug in A-STPA collaboration when creating a new user copy its not visible in the Project Explorer and the Causal Factors are empty</li>
 <li>Fix bug that the user would not be notified if a StpaPriv/STPASec project would fail to load</li>
 <li>Fix bug that STPASec/Priv and ACAST files that are manipulated in XSTAMPP 3.0.0</li>
 </ul>
-<h2 id="xstampp-3.0.0">XSTAMPP 3.0.0</h2>
-<h4 id="a-stpa-features">A-STPA Features:</h4>
+<h2 id="xstampp-3.0.0---2018-02-15">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.3...v3.0.0">3.0.0</a> - 2018-02-15</h2>
+<h3 id="a-stpa-features">A-STPA Features:</h3>
 <ul>
 <li>Add Tooltips for Safety Constraint IDs in the Causal Factors table</li>
 <li>Add MS Word Export for the Final STPA Report</li>
 <li>Add support for carrying a single UCA constraint in the Causal Factors Table over to one or more single constraints for each hazard</li>
 </ul>
-<h4 id="a-stpa-bugfixes-2">A-STPA Bugfixes:</h4>
+<h3 id="a-stpa-bugfixes-2">A-STPA Bugfixes:</h3>
 <ul>
 <li>Fix bug that projects could sometimes not be loaded in XSTAMPP due to special characters in the causal factor notes</li>
 <li>Fix bug in the calculation of the project progress that UCAs marked as not hazardous lead to no progress in the respective Control Action</li>
@@ -42,7 +46,7 @@
 <li>Fix bug that XSTAMPP dialogs cannot be resized</li>
 </ul>
 <h2 id="xstampp-2.6.0">XSTAMPP 2.6.0</h2>
-<h4 id="a-stpa-features-1">A-STPA Features:</h4>
+<h3 id="a-stpa-features-1">A-STPA Features:</h3>
 <ul>
 <li>Add STPA Progress Indicator Export for creating a status report based on editable measures</li>
 <li>Add A-STPA User Manual with stepwise guidance through the analysis and glossary with STPA definitions</li>
@@ -50,7 +54,7 @@
 <li>Add ToolTips Support for UCA and Causal Factors Table</li>
 <li>Add Editor to add a Design Hint for a hazard based safety constraint in the Causal Analysis</li>
 </ul>
-<h4 id="a-stpa-bugfixes-3">A-STPA Bugfixes:</h4>
+<h3 id="a-stpa-bugfixes-3">A-STPA Bugfixes:</h3>
 <ul>
 <li>Fix bug that filter in Causal Factors Table is not working for Component Type filters</li>
 <li>Fix unexpected behaviour in control structure of undo/redo of parent changes</li>
@@ -58,27 +62,27 @@
 <li>Fix bug that Design requirements of step1&amp;2 can't be removed/added</li>
 <li>Fix bug in control structure export that image and text would overlap</li>
 </ul>
-<h4 id="bugfixes">Bugfixes:</h4>
+<h3 id="bugfixes">Bugfixes:</h3>
 <ul>
 <li>Fix Nullpointer when creating a new CAST/StpaPriv/STPASec project</li>
 </ul>
-<h4 id="other-changes">Other Changes:</h4>
+<h3 id="other-changes">Other Changes:</h3>
 <ul>
 <li>In the Control Structure Undo/Redo is now handled by the global Undo/Redo service which is accessible on the XSTAMPP toolbar and over CTRL+Z/CTRL+Y</li>
 </ul>
-<h2 id="xstampp-2.5.3">XSTAMPP 2.5.3</h2>
-<h4 id="a-stpa-bugfixes-4">A-STPA Bugfixes:</h4>
+<h2 id="xstampp-2.5.3---2017-11-22">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.2...v2.5.3">2.5.3</a> - 2017-11-22</h2>
+<h3 id="a-stpa-bugfixes-4">A-STPA Bugfixes:</h3>
 <ul>
 <li>Fix visibility issues on macOS of UI Elements in the user system</li>
 <li>Fix on macOS the button labels of the text editor in the UCA/Causal Factor Table are not visible</li>
 <li>Fix bug that adding a new UCA is not poossible in the Unsafe Control Actions Table</li>
 </ul>
-<h2 id="xstampp-2.5.2">XSTAMPP 2.5.2:</h2>
-<h4 id="a-stpa-features-2">A-STPA Features:</h4>
+<h2 id="xstampp-2.5.2---2017-11-08">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.1...v2.5.2">2.5.2</a> - 2017-11-08</h2>
+<h3 id="a-stpa-features-2">A-STPA Features:</h3>
 <ul>
 <li>Add auto increase of UCA Severity to the highest Severity of itself and the linked Hazards</li>
 </ul>
-<h4 id="a-stpa-bugfixes-5">A-STPA Bugfixes:</h4>
+<h3 id="a-stpa-bugfixes-5">A-STPA Bugfixes:</h3>
 <ul>
 <li>Fix that when changing the title of a design requirement in step1/2 the title is not changed in the table</li>
 <li>Fix bug in the step 1.3 Table filter won't filter by safety constraints and added filter by uca's</li>
@@ -90,8 +94,8 @@
 <li>Fix loading bug when creating UCA without Corresponding Safety Constraint</li>
 <li>Fix bug in A-STPA 2.5.1 that corresponding safety constraints are not loaded in Step 1</li>
 </ul>
-<h2 id="xstampp-2.5.1">XSTAMPP 2.5.1:</h2>
-<h4 id="bugfixes-1">Bugfixes</h4>
+<h2 id="xstampp-2.5.1---2017-10-18">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.5.0...v2.5.1">2.5.1</a> - 2017-10-18</h2>
+<h3 id="bugfixes-1">Bugfixes</h3>
 <ul>
 <li>Fix all UCA-Hazard-Links are removed when one is deleted by the user</li>
 <li>Fix Null Pointer Exception during storage in Unsafe Control Actions</li>
@@ -110,18 +114,18 @@
 <li>Fix several typos in XSTAMPP</li>
 <li>Fix bug in System Description Export Wizard that the export path cannot be chosen</li>
 </ul>
-<h4 id="others">Others</h4>
+<h3 id="others">Others</h3>
 <ul>
 <li>Change that a UCA's severity increases when linked to more severe hazard</li>
 </ul>
-<h2 id="xstampp-2.5.0">XSTAMPP 2.5.0:</h2>
-<h5 id="features">Features:</h5>
+<h2 id="xstampp-2.5.0---2017-09-24">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.4.1...v2.5.0">2.5.0</a> - 2017-09-24</h2>
+<h3 id="features">Features:</h3>
 <ul>
 <li>Add STPA Glossary for clearification of STPA terms/terminology</li>
 <li>Add posibillity to add Control Actions to the Control Structure from the Control Action Table (Step 1)</li>
 </ul>
-<h2 id="xstampp-2.4.1">XSTAMPP 2.4.1:</h2>
-<h5 id="bugfixes-2">Bugfixes:</h5>
+<h2 id="xstampp-2.4.1---2017-08-18">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.4.0...v2.4.1">2.4.1</a> - 2017-08-18</h2>
+<h3 id="bugfixes-2">Bugfixes:</h3>
 <ul>
 <li>Fixed NullPointerException when selecting hazard or accident entries</li>
 <li>Fixed NullPointerException when opening the Results View by null check #524</li>
@@ -129,8 +133,8 @@
 <li>Changed Context Table/Unsafe Unsecure Editor/Privacy Relation Editor views in xstpa/stpasec and stpaprov to inline views</li>
 <li>Fixed a bug that enabled a user to drag a component in the Control Structure in a Prozess Variable and thereby deleting all connections without the abillity to undo</li>
 </ul>
-<h2 id="xstampp-2.4.0">XSTAMPP 2.4.0:</h2>
-<h5 id="features-1">Features:</h5>
+<h2 id="xstampp-2.4.0---2017-08-11">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v2.3.0...v2.4.0">2.4.0</a> - 2017-08-11</h2>
+<h3 id="features-1">Features:</h3>
 <ul>
 <li>Move Components in the control structure Up and Down from the context menu (right clicking on them)</li>
 <li>Added a Feedback component to the control structure that is linked (via a visible connection) to a component connection#497</li>
@@ -141,11 +145,11 @@
 <li>Created new Grid Editor for the Unsafe Control Action and Causal Factors Table with Save/Cancel Button</li>
 <li>Added settings dialog to customize the table headers in the unsafe control actions table per project #521</li>
 </ul>
-<h5 id="bugfixes-3">Bugfixes:</h5>
+<h3 id="bugfixes-3">Bugfixes:</h3>
 <ul>
 <li>Fixed a bug that would produce a null pointer when drag&amp;dropping a component in the control structure #506</li>
 </ul>
-<h5 id="others-1">Others:</h5>
+<h3 id="others-1">Others:</h3>
 <ul>
 <li>Control Structure Components are now added in the front level/ at the bottom of a list</li>
 <li>Added checkbox to login dialog to enable read only access without login credentials #520</li>
@@ -153,17 +157,17 @@
 <li>with Process Modell)</li>
 <li>Included STPAPriv and STPASec</li>
 </ul>
-<h2 id="xstampp-2.3.1">XSTAMPP 2.3.1:</h2>
-<h5 id="features-2">Features:</h5>
+<h2 id="xstampp-2.3.1">XSTAMPP 2.3.1</h2>
+<h3 id="features-2">Features:</h3>
 <ul>
 <li>Move Components in the control structure Up and Down by right clicking on them</li>
 </ul>
-<h5 id="others-2">Others:</h5>
+<h3 id="others-2">Others:</h3>
 <ul>
 <li>Control Structure Components are now added in the front level/ at the bottom of a list</li>
 </ul>
-<h2 id="xstampp-2.3.0">XSTAMPP 2.3.0:</h2>
-<h5 id="features-3">Features:</h5>
+<h2 id="xstampp-2.3.0---2017-06-07">XSTAMPP <a href="https://github.com/SE-Stuttgart/XSTAMPP/releases/tag/v2.3.0">2.3.0</a> - 2017-06-07</h2>
+<h3 id="features-3">Features:</h3>
 <ul>
 <li>Added Project Settings Dialog in 'Project-&gt;Project Settings' and the context menu of the project explorer</li>
 <li>Added Project Menu with Project Settings in the main menu bar of XSTAMPP</li>
@@ -191,7 +195,7 @@
 <li>Added project specific option to safe preferences to hide/show hazard severity analysis</li>
 </ul></li>
 </ul>
-<h5 id="bugfixes-4">Bugfixes:</h5>
+<h3 id="bugfixes-4">Bugfixes:</h3>
 <ul>
 <li>Fixed bug where XSTAMPP would sometimes create 'null.ext' files</li>
 <li>Fixed Bug that caused unsafed changes to be dismissed without promt when the user clicked on 'File-&gt;Switch Workspace'</li>
@@ -209,13 +213,13 @@
 <li>Fixed Bug that would prevent storage of the responsibilities</li>
 </ul></li>
 </ul>
-<h5 id="others-3">Others:</h5>
+<h3 id="others-3">Others:</h3>
 <ul>
 <li>Changed second column of Unsafe Control Actions Table from 'Providing causes hazard' to 'Providing incorrect causes hazard'</li>
 <li>Removed 'unused' toolbar items form the main toolbar</li>
 </ul>
-<h2 id="xstampp-2.0.1">XSTAMPP 2.0.1:</h2>
-<h5 id="features-4">Features:</h5>
+<h2 id="xstampp-2.0.1">XSTAMPP 2.0.1</h2>
+<h3 id="features-4">Features:</h3>
 <ul>
 <li>Added 'Install New Software' menu to manually install/deinstall features and plugins for xstampp</li>
 <li>Updates are now available over the Edit-&gt;Preferences-&gt;Install/Update preferences please see adapt these preferences to build your update schedule</li>
@@ -236,39 +240,49 @@
 <li>Added Acts algorithm in the installation folder so that it not longer has to be added manually</li>
 </ul></li>
 </ul>
-<h5 id="bugfixes-5">Bugfixes:</h5>
-<pre><code>*   Fixed errors when shutting down XSTAMPP with jobs still running
-*   enhanced error dialogs of load/save
-*   **A-STPA 2.0.4**
-    *   fixed a bug that sometimes xstampp breaks down when performing any changes
-    *   fixed the bug that sometimes the text entered text in the UCA and Causal Factors table deleted when closing the editor
-*   **XSTPA 1.0.1**
-    *   ACTS algorithm can now be executed for more than 9 variables
-    *   Values that are marked as (don&#39;t care) can now be restored to any available value
-    *   Enhanced &#39;check for conflicts&#39; function in the context table
-    *   Fixed a bug that led to loss of changes in the Context Tables configuration dialog
-    *   enhanced the performance of the xstpa view
-    *   fixed the bug that sometimes the Scrollbars are not displayed when needed</code></pre>
-<h5 id="others-4">Others:</h5>
-<pre><code>*   Enhanced Load and Save Funktion to prevent data loss
-*   Enhanced preference function of the project explorer to sort projects and change fonts</code></pre>
-<h2 id="xstampp-2.0.0">XSTAMPP 2.0.0:</h2>
-<h5 id="features-5">Features:</h5>
-<pre><code>*   Create CAST Project and STPA project in the project explorer.
-*   “One-Click” generate all reports of your STPA or CAST work in different formats e.g. PDF, image and CSV by clicking one button.
-*   Edit a large amount of data in the unsafe control actions table, by filtering the entries.
-*   In the control structure you can merge multiple control action components into one “List of Control Actions” component
-*   In the control structure you can link between the control action and arrows, to attach source and destination to the control action.
-*   Automatically generate the context tables and LTL formal specification and apply different coverages criteria on the context table to reduce the number of combinations.
-*   Choose between “fixed” or flexible connection points on each component in the control structure diagram.
-*   Copy &amp; Paste feature in the control structure diagram.</code></pre>
-<h5 id="bugfixes-6">Bugfixes:</h5>
-<pre><code>*   The toolbar does not appear correctly with large screen resolutions
-*   In the control structure Dashed Boxes should always be drawn behind other objects
-*   I cannot create a new project with STPA wizard
-*   change the font in system description by mouse is very hard
-*   Null Pointer when trying to delete a List of Control Actions</code></pre>
+<h3 id="bugfixes-5">Bugfixes:</h3>
 <ul>
+<li>Fixed errors when shutting down XSTAMPP with jobs still running</li>
+<li>enhanced error dialogs of load/save</li>
+<li><strong>A-STPA 2.0.4</strong>
+<ul>
+<li>fixed a bug that sometimes xstampp breaks down when performing any changes</li>
+<li>fixed the bug that sometimes the text entered text in the UCA and Causal Factors table deleted when closing the editor</li>
+</ul></li>
+<li><strong>XSTPA 1.0.1</strong>
+<ul>
+<li>ACTS algorithm can now be executed for more than 9 variables</li>
+<li>Values that are marked as (don't care) can now be restored to any available value</li>
+<li>Enhanced 'check for conflicts' function in the context table</li>
+<li>Fixed a bug that led to loss of changes in the Context Tables configuration dialog</li>
+<li>enhanced the performance of the xstpa view</li>
+<li>fixed the bug that sometimes the Scrollbars are not displayed when needed</li>
+</ul></li>
+</ul>
+<h3 id="others-4">Others:</h3>
+<ul>
+<li>Enhanced Load and Save Funktion to prevent data loss</li>
+<li>Enhanced preference function of the project explorer to sort projects and change fonts</li>
+</ul>
+<h2 id="xstampp-2.0.0">XSTAMPP 2.0.0</h2>
+<h3 id="features-5">Features:</h3>
+<ul>
+<li>Create CAST Project and STPA project in the project explorer.</li>
+<li>“One-Click” generate all reports of your STPA or CAST work in different formats e.g. PDF, image and CSV by clicking one button.</li>
+<li>Edit a large amount of data in the unsafe control actions table, by filtering the entries.</li>
+<li>In the control structure you can merge multiple control action components into one “List of Control Actions” component</li>
+<li>In the control structure you can link between the control action and arrows, to attach source and destination to the control action.</li>
+<li>Automatically generate the context tables and LTL formal specification and apply different coverages criteria on the context table to reduce the number of combinations.</li>
+<li>Choose between “fixed” or flexible connection points on each component in the control structure diagram.</li>
+<li>Copy &amp; Paste feature in the control structure diagram.</li>
+</ul>
+<h3 id="bugfixes-6">Bugfixes:</h3>
+<ul>
+<li>The toolbar does not appear correctly with large screen resolutions</li>
+<li>In the control structure Dashed Boxes should always be drawn behind other objects</li>
+<li>I cannot create a new project with STPA wizard</li>
+<li>change the font in system description by mouse is very hard</li>
+<li>Null Pointer when trying to delete a List of Control Actions</li>
 <li>the table headers and column names in the cf and ucs table are not displayed correctly
 <ul>
 <li>On mac in the UCA Table the dialoge for linking Hazards does not appear</li>
@@ -280,12 +294,12 @@
 <li>It is diffcult to move and select the control action list</li>
 <li>I cannot generate the reports from the run button with a project which has a file with .haz</li>
 </ul>
-<h2 id="a-stpa-2.0.1">A-STPA 2.0.1:</h2>
-<h5 id="features-6">Features:</h5>
+<h2 id="a-stpa-2.0.1">A-STPA 2.0.1</h2>
+<h3 id="features-6">Features:</h3>
 <ul>
 <li>Font in Control Structure (Step 1.8/3.1) now changable in Preferences</li>
 </ul>
-<h5 id="bugfixes-7">Bugfixes:</h5>
+<h3 id="bugfixes-7">Bugfixes:</h3>
 <ul>
 <li>fixed bug that caused special characters to be stored in a wrong format</li>
 <li>added compability mode for disabeling the above bugfix to guaranty compabillity with older versions (in this mode the bug still exists so its not recommended to store special characters with it!!)</li>
@@ -293,7 +307,7 @@
 <li>fixed bug with dublicated toolbars</li>
 </ul>
 <h2 id="xstampp-1.0.0a-stpa-2.0.0">XSTAMPP 1.0.0/A-STPA 2.0.0</h2>
-<h5 id="features-7">Features:</h5>
+<h3 id="features-7">Features:</h3>
 <ul>
 <li>Possibility of managing multiple projects at the same time thanks to the XSTAMPP project explorer</li>
 <li>Font in Control Structure (Step 1.8/3.1) now changable in Preferences</li>
@@ -301,42 +315,42 @@
 <li>Renaming Projects directly in the project explorer</li>
 <li>Preference Option to highlight selected step in Edit/Preferences/Color and Fonts</li>
 </ul>
-<h5 id="bugfixes-8">Bugfixes:</h5>
+<h3 id="bugfixes-8">Bugfixes:</h3>
 <ul>
 <li>controlstructure images are now exported in higher quality</li>
 <li>Fixed Bug that links between causal factors and hazards were not stored</li>
 </ul>
-<h2 id="section">1.0.5:</h2>
-<h5 id="features-8">Features:</h5>
+<h2 id="section">1.0.5</h2>
+<h3 id="features-8">Features:</h3>
 <ul>
 <li>added Help Content with contact link</li>
 <li>added Version History and quickstartguide as in Help-&gt;Help Content</li>
 </ul>
-<h5 id="bugfixes-9">Bugfixes:</h5>
+<h3 id="bugfixes-9">Bugfixes:</h3>
 <ul>
 <li>final bugfix of the control structure image resolution bug in the PDF Export #64</li>
 <li>added save and load status monitor #38</li>
 <li>fixed bug #80 CS-Editor: Control Action not working correctly</li>
 </ul>
-<h2 id="section-1">1.0.4:</h2>
-<h5 id="features-9">Features:</h5>
+<h2 id="section-1">1.0.4</h2>
+<h3 id="features-9">Features:</h3>
 <ul>
 <li>added decoration mode in the Control Structure, which adds icons and Colored borders for a better distinguishability for the components</li>
 </ul>
-<h5 id="bugfixes-10">Bugfixes:</h5>
+<h3 id="bugfixes-10">Bugfixes:</h3>
 <ul>
 <li>fixed wrong scaling of the control structure image in the pdf Export</li>
 <li>Components which are created in the Control Structure are not longer removeable in the Control Structure with process model</li>
 </ul>
-<h2 id="section-2">1.0.3:</h2>
-<h5 id="features-10">Features:</h5>
+<h2 id="section-2">1.0.3</h2>
+<h3 id="features-10">Features:</h3>
 <ul>
 <li>added Export function of all Data as Data Sheet, Image and PDF Export</li>
 <li>added Contact Data in the About Dialog</li>
 <li>added ControlAction Component in the ControlStructure,linked with the ControlActionsView</li>
 </ul>
-<h2 id="section-3">1.0.2:</h2>
-<h5 id="features-11">Features:</h5>
+<h2 id="section-3">1.0.2</h2>
+<h3 id="features-11">Features:</h3>
 <ul>
 <li>enhanced the handling of the hazard linking Dialog in the 'Unsafe Control Actions Table'</li>
 <li>prevent components from beeing dragged out of sight</li>
@@ -346,7 +360,7 @@
 <li>improved popup for safety Constraint linking in the Causal analysis</li>
 <li>added Version History and quickstartguide as in Help-&gt;Help Content</li>
 </ul>
-<h5 id="bugfixes-11">Bugfixes:</h5>
+<h3 id="bugfixes-11">Bugfixes:</h3>
 <ul>
 <li>final bugfix of the control structure image resolution bug in the PDF Export #64</li>
 <li>added save and load status monitor #38</li>
