@@ -54,7 +54,7 @@ jre/bin
       startupProgressRect="2,275,445,15" />
    <launcher name="XSTAMPP">
       <win useIco="true">
-         <ico path="/xstampp/icons/logo.ico"/>
+         <ico path="/xstampp/icons/branding/xstampp_icon.ico"/>
          <bmp/>
       </win>
    </launcher>

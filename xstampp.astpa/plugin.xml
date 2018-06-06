@@ -15,7 +15,7 @@
             newWizard="astpa.wizards.NewWizard"
             runCommand="xstampp.astpa.command.run">
          <category
-               icon="icons/branding/step1EstablishFundamentals.png"
+               icon="icons/buttons/navigation/step1DefinePurpose.png"
                id="astpa.navigation.step1"
                name="Establish Fundamentals">
             <step
@@ -61,6 +61,11 @@
                   id="astpa.navigation.step1_7"
                   name="%editor.name.DesignRequirenment">
             </step>
+         </category>
+         <category
+               icon="icons/buttons/navigation/step2ControlStructure.png"
+               id="xstampp.astpa.category1"
+               name="Hirarchical Control Structure">
             <editor_List
                   command="xstampp.astpa.newControlStructure.command"
                   editorId="astpa.steps.step1_8"
@@ -87,7 +92,7 @@
             </step>
          </category>
          <category
-               icon="icons/branding/step2ControlActions.png"
+               icon="icons/buttons/navigation/step3UCAs.png"
                id="astpa.category2"
                name="Unsafe Control Actions">
             <step
@@ -117,7 +122,7 @@
             </step>
          </category>
          <category
-               icon="icons/branding/step3CausalAnalysis.png"
+               icon="icons/buttons/navigation/step4CausalScenarios.png"
                id="astpa.category3"
                name="Causal Analysis">
             <step
@@ -174,7 +179,7 @@
       <wizard
             category="xstampp.astpa.export.main"
             class="xstampp.astpa.wizards.pdf.PdfExportWizard"
-            icon="icons/Logo_small.png"
+            icon="icons/branding/Logo_small.png"
             id="xstampp.astpa.export.pdf"
             name="%wizard.name.finalReport">
          <description>
@@ -272,7 +277,7 @@
       <wizard
             category="xstampp.astpa.export.main"
             class="xstampp.astpa.wizards.word.WordExportWizard"
-            icon="icons/Logo_small.png"
+            icon="icons/branding/Logo_small.png"
             id="xstampp.astpa.export.word"
             name="%wizard.name.finalWordReport">
          <description>
@@ -292,7 +297,7 @@
       <wizard
             category="xstampp.astpa.export.main"
             class="xstampp.astpa.wizards.stepData.STPAdataWizard"
-            icon="icons/Logo_small.png"
+            icon="icons/branding/Logo_small.png"
             id="astpa.datawizard"
             name="%wizard.name.allSTPAdata">
          <description>
@@ -513,7 +518,7 @@
       <wizard
             category="astpa"
             class="xstampp.astpa.wizards.NewProjectWizard"
-            icon="icons/Logo_small.png"
+            icon="icons/branding/Logo_small.png"
             id="astpa.wizards.NewWizard"
             name="%wizard.name.STPAProject">
       </wizard>
@@ -852,7 +857,7 @@
             </command>
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
-                  icon="icons/buttons/controlstructure/actuator_16.png"
+                  icon="icons/buttons/controlstructure/actuator_palette_16.png"
                   label="%command.label.Actuator"
                   style="push">
                <parameter
@@ -862,7 +867,7 @@
             </command>
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
-                  icon="icons/buttons/controlstructure/process_16.png"
+                  icon="icons/buttons/controlstructure/process_palette_16.png"
                   label="%command.label.ControlledProcess"
                   style="push">
                <parameter
@@ -872,7 +877,7 @@
             </command>
             <command
                   commandId="xstampp.astpa.cseditor.changeTool"
-                  icon="icons/buttons/controlstructure/sensor_16.png"
+                  icon="icons/buttons/controlstructure/sensor_palette_16.png"
                   label="%command.label.Sensor"
                   style="push">
                <parameter
@@ -1282,21 +1287,21 @@
       <wizard
             category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.RefinedSCPDFWizard"
-            icon="icons/rsc_logox16.png"
+            icon="icons/buttons/navigation/rsc_logox16.png"
             id="xstpa.wizard.refinedsafetyconstraints"
             name="%exportWizard.name.refinedSafetyConstraints">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.RefinedUCAPDFWizard"
-            icon="icons/ruca_logo2x16.png"
+            icon="icons/buttons/navigation/ruca_logo2x16.png"
             id="xstpa.wizard.ruca"
             name="%exportWizard.name.RefinedUnsafeControlActions">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.pdf"
             class="xstampp.astpa.wizards.pdf.LTLPDFWizard"
-            icon="icons/ltl.png"
+            icon="icons/buttons/navigation/ltl.png"
             id="xstpa.wizard.ltl"
             name="%exportWizard.name.LTLFormulasTable">
       </wizard>
@@ -1320,28 +1325,28 @@
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.LTLCSVWizard"
-            icon="icons/ltl.png"
+            icon="icons/buttons/navigation/ltl.png"
             id="xstpa.wizard.csv.ltl"
             name="%exportWizard.name.LTLFormulasCSV">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RefinedUCACSVWizard"
-            icon="icons/ruca_logo2x16.png"
+            icon="icons/buttons/navigation/ruca_logo2x16.png"
             id="xstpa.wizard.csv.ruca"
             name="%exportWizard.name.RefinedUnsafeControlActionsCSV">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.RefinedSCCSVWizard"
-            icon="icons/rsc_logox16.png"
+            icon="icons/buttons/navigation/rsc_logox16.png"
             id="xstpa.wizard.csv.rsc"
             name="%exportWizard.name.refinedSafetyConstraintsCSV">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.csv"
             class="xstampp.astpa.wizards.stepData.ContextTablesCSVWizard"
-            icon="icons/xstpa_logo.png"
+            icon="icons/branding/xstpa_logo.png"
             id="xstpa.wizard.csv.contextTables"
             name="%exportWizard.name.contextTableCSV">
       </wizard>
@@ -1370,21 +1375,21 @@
       <wizard
             category="xstpa.main.export/xstpa.category.img"
             class="xstampp.astpa.wizards.stepImages.XRefinedSCIMGWizard"
-            icon="icons/rsc_logox16.png"
+            icon="icons/buttons/navigation/rsc_logox16.png"
             id="xstpa.wizard.img.refinedsafetyconstraints"
             name="%exportWizard.name.refinedSafetyConstraintsIMG">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.img"
             class="xstampp.astpa.wizards.stepImages.XRefinedUCAIMGWizard"
-            icon="icons/ruca_logo2x16.png"
+            icon="icons/buttons/navigation/ruca_logo2x16.png"
             id="xstpa.wizard.img.ruca"
             name="%exportWizard.name.RefinedUnsafeControlActionsIMG">
       </wizard>
       <wizard
             category="xstpa.main.export/xstpa.category.img"
             class="xstampp.astpa.wizards.stepImages.XLTLIMGWizard"
-            icon="icons/ltl.png"
+            icon="icons/buttons/navigation/ltl.png"
             id="xstpa.wizard.img.ltl"
             name="%exportWizard.name.LTLFormulasTableIMG">
       </wizard>

@@ -15,8 +15,6 @@ package xstampp.ui.menu.file.commands;
 
 import java.util.Dictionary;
 
-import messages.Messages;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -28,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.framework.Bundle;
 
+import messages.Messages;
 import xstampp.Activator;
 
 /**
@@ -41,7 +40,7 @@ public class AboutHandler extends AbstractHandler {
   /**
    * The A-STPA logo to be displayed on the left of the dialog.
    */
-  private static final Image DIALOG_IMAGE = Activator.getImageDescriptor("icons/Logo.png") //$NON-NLS-1$
+  private static final Image DIALOG_IMAGE = Activator.getImageDescriptor("icons/branding/Logo.png") //$NON-NLS-1$
       .createImage();
   /**
    * The string displayed on the bar of the dialog.

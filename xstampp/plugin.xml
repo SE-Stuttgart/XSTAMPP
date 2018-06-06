@@ -17,7 +17,7 @@
          id="application"
          point="org.eclipse.core.runtime.applications">
       <application
-            icon="icons/xstampp/logo_small.png">
+            icon="icons/branding/logox16.png">
          <run
                class="xstampp.Application">
          </run>
@@ -39,11 +39,11 @@
          </property>
   <property
         name="windowImages"
-        value="icons/xstampp/logox16.png,icons/xstampp/logox32.png,icons/xstampp/logox48.png,icons/xstampp/logox64.png,icons/xstampp/logox128.png">
+        value="icons/branding/logox16.png,icons/branding/logox32.png,icons/branding/logox48.png,icons/branding/logox64.png,icons/branding/logox128.png">
   </property>
   <property
         name="aboutImage"
-        value="icons/xstampp/logox128.png">
+        value="icons/branding/logox128.png">
   </property>
   <property
         name="aboutText"
