@@ -130,11 +130,8 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
     gc.setBackground(this.getBackgroundColor(renderer, gc));
     Color fgColor = gc.getForeground();
     gc.setForeground(ColorConstants.black);
-    int buttonCollum = 0;
-    // calculate the avaiable space and performe a wrap
-    if (this.showDelete) {
-      buttonCollum = 20;
-    }
+    int buttonCollum = getButtonContainer().getBounds().width;
+
     Point textBounds = new Point(0, 0);
     currentText = getCurrentText();
     if ((this.currentText == null || this.currentText.trim().isEmpty()) && !isReadOnly()) {

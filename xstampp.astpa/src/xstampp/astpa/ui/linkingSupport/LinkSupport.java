@@ -230,6 +230,15 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     return null;
   }
 
+  public String getTitle(UUID id) {
+    for (ITableModel model : getModels()) {
+      if (model.getId().equals(id)) {
+        return model.getTitle();
+      }
+    }
+    return null;
+  }
+
   public String getDescription(UUID id) {
     for (ITableModel model : getModels()) {
       if (model.getId().equals(id)) {
@@ -334,7 +343,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     linkColumn.setLabelProvider(new ColumnLabelProvider() {
       @Override
       public String getToolTipText(Object element) {
-        return getDescription((UUID) element);
+        return LinkSupport.this.getTitle((UUID) element) + "\n-\n" + getDescription((UUID) element);
       }
 
       @Override

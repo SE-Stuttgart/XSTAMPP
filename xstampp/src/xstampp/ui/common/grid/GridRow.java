@@ -14,8 +14,6 @@
 package xstampp.ui.common.grid;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
@@ -228,10 +226,21 @@ public class GridRow {
     }
   }
 
+  /**
+   * The row index is used to determine the row color
+   * 
+   * @return a running number >= 0
+   */
   public int getRowIndex() {
     return rowIndex;
   }
 
+  /**
+   * The row index is used to determine the row color
+   * 
+   * @param rowIndex
+   *          a running number >= 0
+   */
   public void setRowIndex(int rowIndex) {
     this.rowIndex = rowIndex;
   }

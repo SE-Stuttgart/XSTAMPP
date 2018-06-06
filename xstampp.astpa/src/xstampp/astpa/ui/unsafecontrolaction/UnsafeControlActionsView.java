@@ -28,11 +28,9 @@ import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.CommonGridView;
-import xstampp.astpa.ui.SeverityButton;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.ProjectManager;
@@ -286,10 +284,9 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
       IUnsafeControlAction uca = ucaList.get(i);
 
       UcaContentProvider ucaContentProvider = new UcaContentProvider(getDataModel());
-      GridCellText idCell = new UcaIdCell(ucaContentProvider, uca, getDataModel());
+      UcaIdCell idCell = new UcaIdCell(ucaContentProvider, uca, getDataModel());
       if (getDataModel().isUseSeverity()) {
-        SeverityButton button = new SeverityButton((ISeverityEntry) uca, getDataModel(), getGrid());
-        idCell.addCellButton(button);
+        idCell.addSeverityButton(getGrid(), canWrite);
       }
       idRow.addCell(columnIndex, idCell);
       UnsafeControlActionCell editor = new UnsafeControlActionCell(getGridWrapper(),

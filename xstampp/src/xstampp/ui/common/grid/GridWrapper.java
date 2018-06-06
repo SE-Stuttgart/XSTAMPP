@@ -628,12 +628,12 @@ public class GridWrapper {
   public void fillTable() {
     this.nebulaRows.clear();
     gridItemIndex = 0;
-    for (int i = 0; i < this.rows.size(); i++) {
-      addChildRows(null, this.rows.get(i), i, 0);
+    for (int i = 0; i < getRows().size(); i++) {
+      addChildRows(null, getRows().get(i), i);
     }
   }
 
-  private int addChildRows(NebulaGridRowWrapper parent, GridRow row, int rowIndex, int startIndex) {
+  private int addChildRows(NebulaGridRowWrapper parent, GridRow row, int rowIndex) {
     row.setRowIndex(rowIndex++);
     GridRow parentrow = null;
     if (parent != null) {
@@ -656,7 +656,7 @@ public class GridWrapper {
     // add cells for children cells
     for (int childI = 0; childI < row.getChildren().size(); childI++) {
       GridRow childRow = row.getChildren().get(childI);
-      childRowCount += addChildRows(item, childRow, childI, startIndex + 1);
+      childRowCount += addChildRows(item, childRow, childI);
     }
     for (int cellIndices : row.getRowSpanningCells()) {
       item.setRowSpan(cellIndices, childRowCount);
@@ -747,7 +747,8 @@ public class GridWrapper {
   }
 
   /**
-   * Get a list of the rows.
+   * Get a list of the rows. That were defined in the fillTable() method of the editor that includes
+   * the grid. These {@link GridRow}'s will be translated into {@link GridItem}'s.
    * 
    * @author Patrick Wickenhaeuser
    * 

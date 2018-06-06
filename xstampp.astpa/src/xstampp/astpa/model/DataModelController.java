@@ -338,14 +338,20 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public UUID addCausalFactor(UUID componentId) {
+    return addCausalFactor(componentId, null);
+  }
+
+  @Override
+  public UUID addCausalFactor(UUID componentId, UUID ucaID) {
     IRectangleComponent component = getControlStructureController().getComponent(componentId);
     ICausalComponent causalComponent = getCausalFactorController().getCausalComponent(component);
     UUID factorId = null;
     if (causalComponent != null) {
       lockUpdate();
       factorId = addCausalFactor();
-      UUID linkId = getLinkController().addLink(LinkingType.UCA_CausalFactor_LINK, null, factorId);
-      getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, linkId, componentId);
+      UUID linkId = getLinkController().addLink(LinkingType.UCA_CausalFactor_LINK, ucaID, factorId);
+      UUID causalEntryLink = getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, linkId, componentId);
+      getLinkController().addLink(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink, null);
       releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR, ObserverValue.LINKING });
     }
     return factorId;
@@ -369,7 +375,7 @@ public class DataModelController extends AbstractDataModel
     }
     UUID result;
     if (controlActionId == null && type.equals(ComponentType.CONTROLACTION)) {
-      controlActionId = addControlAction(text, Messages.DescriptionOfThisControlAction);
+      controlActionId = addControlAction(text, "");
     }
     if (type.equals(ComponentType.CONTROLACTION)) {
       String caTitle = getControlAction(controlActionId).getText();

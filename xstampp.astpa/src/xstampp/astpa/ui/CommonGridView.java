@@ -30,11 +30,25 @@ import xstampp.ui.editors.AbstractFilteredEditor;
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUserProject;
 
+/**
+ * An {@link AbstractFilteredEditor} that contains a {@link Grid}.
+ * The default implementation of the {@link CommonGridView#createPartControl(Composite, String[])}
+ * method sets the dataModel of the currently selected project as the active Data Model available
+ * with {@link CommonGridView#getDataModel()}.
+ * It also registers the delete Action provided by {@link CommonGridView#getDeleteAction()} if not
+ * null.
+ * 
+ * @author Lukas Balzer
+ *
+ * @param <T>
+ *          A class extending {@link IDataModel}
+ */
 public abstract class CommonGridView<T extends IDataModel> extends AbstractFilteredEditor {
 
   private GridWrapper grid;
   private T dataInterface;
   private IAction deleteAction;
+  private int columnCount;
 
   protected abstract void fillTable();
 
@@ -49,6 +63,7 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
     super.createPartControl(parent);
     parent.setLayout(new GridLayout(1, false));
     this.grid = new GridWrapper(parent, columns);
+    this.columnCount = columns.length;
     getGridWrapper().setSelectRow(false);
     getGrid().setVisible(true);
 
@@ -64,6 +79,10 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
     }
   }
 
+  public int getColumnCount() {
+    return columnCount;
+  }
+
   /**
    * Reload the whole table.
    * 
@@ -72,7 +91,7 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
    */
   protected final void reloadTable() {
     if (!this.grid.fetchUpdateLock()) {
-      if(this.grid.persistedScrollIndex == null) {
+      if (this.grid.persistedScrollIndex == null) {
         this.grid.persistedScrollIndex = this.grid.getGrid().getTopIndex();
       }
       this.grid.clearRows();

@@ -137,6 +137,8 @@
         </xs:all>
         <xs:attribute name="useScenarios" type="xs:boolean" use="optional">
         </xs:attribute>
+        <xs:attribute name="switchUCAsPerFactorToFactorsPerUCA" type="xs:boolean" use="optional">
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="linkController">

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package xstampp.astpa.ui.causalfactors;
 
+import java.util.UUID;
+
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -30,6 +32,7 @@ public class GridCellButtonAddCausalFactor extends GridCellButton {
 
   private IRectangleComponent component;
   private ICausalFactorDataModel dataInterface;
+  private UUID ucaID;
 
   /**
    * Ctor.
@@ -38,13 +41,17 @@ public class GridCellButtonAddCausalFactor extends GridCellButton {
    * 
    * @param component
    *          the component the add buttons adds causal factors to.
+   * @param ucaID
+   *          An id of a uca any new causal factor should be linked to, or null if the causal factor
+   *          should initially not be linked to any uca.
    */
   public GridCellButtonAddCausalFactor(IRectangleComponent component,
-      ICausalFactorDataModel dataInterface) {
+      ICausalFactorDataModel dataInterface, UUID ucaID) {
     super(Messages.AddNewCausalFactor);
 
     this.component = component;
     this.dataInterface = dataInterface;
+    this.ucaID = ucaID;
   }
 
   @Override
@@ -57,6 +64,6 @@ public class GridCellButtonAddCausalFactor extends GridCellButton {
       org.eclipse.swt.graphics.Point relativeMouse,
       Rectangle cellBounds) {
     ProjectManager.getLOGGER().info(Messages.AddingNewCausalFactor);
-    dataInterface.addCausalFactor(component.getId());
+    dataInterface.addCausalFactor(component.getId(), ucaID);
   }
 }

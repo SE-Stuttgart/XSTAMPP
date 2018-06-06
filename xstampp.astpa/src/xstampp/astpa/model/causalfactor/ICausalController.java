@@ -201,4 +201,25 @@ public interface ICausalController {
    */
   SortedMap<IUnsafeControlAction, List<Link>> getHazardBasedMap(ITableModel hazModel, LinkController linkController,
       IControlActionController caController);
+
+  /**
+   * this determines if in the causal analysis the causal factor and UCA column are switched,
+   * in A-STPA they are classically ordered CF, UCA but it might be better to change to UCA, CF
+   * which will than list all Causal Factors for one UCA rather than all UCAs for a single Causal
+   * (which might be 1 UCA).
+   * 
+   * @return if the Causal Factor and UCA column in the Causal Factors Table are switched
+   */
+  boolean analyseFactorsPerUCA();
+
+  /**
+   * this determines if in the causal analysis the causal factor and UCA column are switched,
+   * in A-STPA they are classically ordered CF, UCA but it might be better to change to UCA, CF
+   * which will than list all Causal Factors for one UCA rather than all UCAs for a single Causal
+   * (which might be 1 UCA).
+   * 
+   * @param analyseFactorsPerUCA
+   *          if the Causal Factor and UCA column in the Causal Factors Table should be switched
+   */
+  void setAnalyseFactorsPerUCA(boolean analyseFactorsPerUCA);
 }

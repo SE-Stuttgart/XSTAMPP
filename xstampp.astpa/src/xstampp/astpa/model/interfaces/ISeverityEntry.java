@@ -11,8 +11,11 @@
  ******************************************************************************/
 package xstampp.astpa.model.interfaces;
 
+import java.util.UUID;
+
 public interface ISeverityEntry {
 
   Severity getSeverity();
 
+  UUID getId();
 }

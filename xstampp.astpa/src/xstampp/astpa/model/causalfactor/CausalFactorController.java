@@ -65,6 +65,9 @@ public class CausalFactorController extends ATableModelController implements ICa
   @XmlAttribute(name = "useScenarios")
   private boolean useScenarios;
 
+  @XmlAttribute(name = "switchUCAsPerFactorToFactorsPerUCA")
+  private boolean switchUCAsPerFactorToFactorsPerUCA;
+
   @XmlElementWrapper(name = "causalSafetyConstraints")
   @XmlElement(name = "causalSafetyConstraint")
   private NumberedArrayList<CausalSafetyConstraint> causalSafetyConstraints;
@@ -94,6 +97,10 @@ public class CausalFactorController extends ATableModelController implements ICa
     this.causalFactors = new NumberedArrayList<>();
     if (!testable) {
       this.setUseScenarios(ASTPADefaultConfig.getInstance().USE_CAUSAL_SCENARIO_ANALYSIS);
+      this.setAnalyseFactorsPerUCA(ASTPADefaultConfig.getInstance().USE_FACTORS_PER_UCA);
+    } else {
+      this.setUseScenarios(false);
+      this.setAnalyseFactorsPerUCA(true);
     }
   }
 
@@ -221,18 +228,21 @@ public class CausalFactorController extends ATableModelController implements ICa
   @Override
   public SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
       LinkController linkController, IControlActionController caController) {
-    SortedMap<IUnsafeControlAction, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
+    TreeMap<IUnsafeControlAction, List<Link>> ucaCfLink_Component_To_UCA_map = new TreeMap<>();
     for (Link link : linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())) {
       Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
           link.getLinkA());
-      IUnsafeControlAction factor = caController.getUnsafeControlAction(ucaCFLink.getLinkA());
+      try {
+        IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCFLink.getLinkA());
+        if (!ucaCfLink_Component_To_UCA_map.containsKey(uca)) {
+          ucaCfLink_Component_To_UCA_map.put(uca, new ArrayList<>());
+        }
+        ucaCfLink_Component_To_UCA_map.get(uca).add(link);
+      } catch (NullPointerException exc) {
 
-      if (!ucaCfLink_Component_ToCFmap.containsKey(factor)) {
-        ucaCfLink_Component_ToCFmap.put(factor, new ArrayList<>());
       }
-      ucaCfLink_Component_ToCFmap.get(factor).add(link);
     }
-    return ucaCfLink_Component_ToCFmap;
+    return ucaCfLink_Component_To_UCA_map;
   }
 
   @Override
@@ -272,14 +282,6 @@ public class CausalFactorController extends ATableModelController implements ICa
             .addAll(comp.getValue().prepareForSave(comp.getKey(), hazAccController, allRefinedRules,
                 allUnsafeControlActions, getCausalSafetyConstraints(), linkController));
       });
-    }
-    for (Link link : linkController.getLinksFor(LinkingType.UcaCfLink_Component_LINK)) {
-      Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, link.getLinkA());
-      if (ucaCFLink != null) {
-        for (UUID uuid : linkController.getLinksFor(LinkingType.UCA_HAZ_LINK, ucaCFLink.getLinkA())) {
-          linkController.addLink(LinkingType.CausalEntryLink_HAZ_LINK, link.getId(), uuid);
-        }
-      }
     }
     causalFactors.forEach(factor -> factor.prepareForSave());
     this.causalComponents = null;
@@ -356,6 +358,16 @@ public class CausalFactorController extends ATableModelController implements ICa
   @Override
   public boolean isUseScenarios() {
     return useScenarios;
+  }
+
+  @Override
+  public boolean analyseFactorsPerUCA() {
+    return switchUCAsPerFactorToFactorsPerUCA;
+  }
+
+  @Override
+  public void setAnalyseFactorsPerUCA(boolean analyseFactorsPerUCA) {
+    this.switchUCAsPerFactorToFactorsPerUCA = analyseFactorsPerUCA;
   }
 
   @Override

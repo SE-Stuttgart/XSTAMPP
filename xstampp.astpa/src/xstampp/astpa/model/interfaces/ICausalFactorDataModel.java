@@ -50,6 +50,21 @@ public interface ICausalFactorDataModel extends IDataModel {
   UUID addCausalFactor(UUID id);
 
   /**
+   * Adds a causal factor to the causal component with the given id. <br>
+   * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}
+   * 
+   * @author Lukas Balzer
+   * @param id
+   *          the id of the component for which a new factor should be added
+   * @param ucaID
+   *          The id of the uca for which this causal factor should be created, a
+   *          {@link LinkingType#UCA_CausalFactor_LINK} and a
+   *          {@link LinkingType#UcaCfLink_Component_LINK} will be created accordingly.
+   * @return the id of the new causal factor. null if the action fails
+   */
+  UUID addCausalFactor(UUID id, UUID ucaID);
+
+  /**
    * Gets the list of all corresponding safety constraints
    * 
    * @author Fabian Toth

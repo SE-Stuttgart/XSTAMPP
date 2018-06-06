@@ -50,11 +50,17 @@ public class GridCellButtonAddUCAEntry extends GridCellButton {
   /**
    * Ctor.
    * 
-   * @author Patrick Wickenhaeuser
+   * @author Patrick Wickenhaeuser, Lukas Balzer
    * 
    * @param component
    *          the component the add buttons adds causal factors to.
-   * 
+   * @param factorId
+   *          the id of the causal factor any new uca should be linked to or null if the uca
+   *          shouldn't be initially linked.
+   * @param dataInterface
+   * @param grid
+   * @param ucas
+   *          a list of UCAs that are already linked to the component
    */
   public GridCellButtonAddUCAEntry(IRectangleComponent component, UUID factorId,
       ICausalFactorDataModel dataInterface, Grid grid, List<IUnsafeControlAction> ucas) {

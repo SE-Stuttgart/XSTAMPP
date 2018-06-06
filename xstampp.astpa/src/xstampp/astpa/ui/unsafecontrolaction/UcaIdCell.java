@@ -14,6 +14,7 @@ package xstampp.astpa.ui.unsafecontrolaction;
 import java.util.UUID;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.ui.PlatformUI;
 
@@ -35,6 +36,7 @@ public class UcaIdCell extends GridCellText {
   private UUID ucaId;
   private IUnsafeControlActionDataModel ucaDataModel;
   private IUnsafeControlAction unsafeControlAction;
+  private SeverityButton button;
 
   public UcaIdCell(UcaContentProvider provider, IUnsafeControlAction entry,
       IUnsafeControlActionDataModel dataModel) {
@@ -46,6 +48,39 @@ public class UcaIdCell extends GridCellText {
 
   }
 
+  public void addSeverityButton(Grid grid, boolean enabled) {
+
+    button = new SeverityButton((ISeverityEntry) unsafeControlAction,
+        ucaDataModel, grid);
+    button.setEnabled(enabled);
+    button.setCheck(new SeverityCheck() {
+
+      @Override
+      public boolean checkSeverity(Severity serverity) {
+        for (UUID uuid : ucaDataModel.getLinkController()
+            .getLinksFor(LinkingType.UCA_HAZ_LINK, ucaId)) {
+          Severity hazardSeverity = ((ATableModel) ucaDataModel.getHazard(uuid))
+              .getSeverity();
+          if (serverity.compareTo(hazardSeverity) < 0) {
+            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+              @Override
+              public void run() {
+
+                MessageDialog.openWarning(
+                    PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                    xstampp.astpa.messages.Messages.UnsafeControlActionsView_InvalidSeverityTitle,
+                    xstampp.astpa.messages.Messages.UnsafeControlActionsView_InvalidSeverityMsg);
+              }
+            });
+            return false;
+          }
+        }
+        return true;
+      }
+    });
+  }
+
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     clearCellButtons();
@@ -53,34 +88,6 @@ public class UcaIdCell extends GridCellText {
       paintFrame(renderer, gc, item);
     } else {
       if (ucaDataModel.isUseSeverity()) {
-        SeverityButton button = new SeverityButton((ISeverityEntry) unsafeControlAction,
-            ucaDataModel, item.getParent());
-        button.setCheck(new SeverityCheck() {
-
-          @Override
-          public boolean checkSeverity(Severity serverity) {
-            for (UUID uuid : ucaDataModel.getLinkController()
-                .getLinksFor(LinkingType.UCA_HAZ_LINK, ucaId)) {
-              Severity hazardSeverity = ((ATableModel) ucaDataModel.getHazard(uuid))
-                  .getSeverity();
-              if (serverity.compareTo(hazardSeverity) < 0) {
-                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-
-                  @Override
-                  public void run() {
-
-                    MessageDialog.openWarning(
-                        PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-                        xstampp.astpa.messages.Messages.UnsafeControlActionsView_InvalidSeverityTitle,
-                        xstampp.astpa.messages.Messages.UnsafeControlActionsView_InvalidSeverityMsg);
-                  }
-                });
-                return false;
-              }
-            }
-            return true;
-          }
-        });
         addCellButton(button);
       }
       super.paint(renderer, gc, item);

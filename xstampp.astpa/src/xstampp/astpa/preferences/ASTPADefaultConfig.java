@@ -46,11 +46,17 @@ public class ASTPADefaultConfig {
   public final boolean USE_MULTI_CONTROL_STRUCTURES;
 
   /**
-   * Whether or not he causal analysis should include graphical support for defining scenarios
+   * Whether or not the causal analysis should include graphical support for defining scenarios
    * <p>
    * <i><b>Note</b> This can be changed in the project settings menu of the program</i>
    */
   public final boolean USE_CAUSAL_SCENARIO_ANALYSIS;
+  /**
+   * Whether the causal analysis should show all causal factors for a UCA or the other way around
+   * <p>
+   * <i><b>Note</b> This can be changed in the project settings menu of the program</i>
+   */
+  public final boolean USE_FACTORS_PER_UCA;
 
   private ASTPADefaultConfig() {
     USE_CAUSAL_SCENARIO_ANALYSIS = fetchSTPAConfig("stpa.defaults.useCausalScenarioAnalysis",
@@ -58,6 +64,7 @@ public class ASTPADefaultConfig {
     USE_MULTI_CONTROL_STRUCTURES = fetchSTPAConfig("stpa.defaults.useMultiControlStructures",
         false);
     USE_SEVERITY_ANALYSIS = fetchSTPAConfig("stpa.defaults.useSeverityAnalysis", true);
+    USE_FACTORS_PER_UCA = fetchSTPAConfig("stpa.defaults.switchUCAsPerFactorToFactorsPerUCA", true);
   }
 
   public static ASTPADefaultConfig getInstance() {

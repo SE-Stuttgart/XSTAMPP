@@ -35,6 +35,7 @@ public class ProjectSpecifics implements ISettingsPage {
 
   private DataModelController controller;
   private BooleanSetting useScenariosSetting;
+  private BooleanSetting switchCFandUCA;
   private BooleanSetting useHazardSeverity;
   private ModalShell modalShell;
 
@@ -59,11 +60,22 @@ public class ProjectSpecifics implements ISettingsPage {
     Composite container = new Composite(control, SWT.None);
     container.setLayout(new GridLayout(2, false));
     container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
+    // add boolean widget for choosing whether or not to use the scenarios to analyse the causal
+    // factors
     String title = Messages.ProjectSpecifics_UseCausalScenarios;
     String description = Messages.ProjectSpecifics_UseCausalScenariosTip;
     this.useScenariosSetting = new BooleanSetting(container, title, description,
         this.controller.isUseScenarios());
     this.useScenariosSetting.setMessage(Messages.ProjectSpecifics_ReopenDesignRequirements);
+
+    // add boolean widget for choosing whether or not to Switch Causal Factor and UCA columns
+    title = Messages.ProjectSpecifics_SwitchCFandUCATitle;
+    description = Messages.ProjectSpecifics_SwitchCFandUCADesc;
+    this.switchCFandUCA = new BooleanSetting(container, title, description,
+        this.controller.getCausalFactorController().analyseFactorsPerUCA());
+    this.switchCFandUCA.setMessage(Messages.ProjectSpecifics_ReopenCausalFactors);
+
+    // add a boolean widget for whether or not to use the severity analysis
     title = Messages.ProjectSpecifics_UseSeverity;
     description = Messages.ProjectSpecifics_UseSeverityTip;
     this.useHazardSeverity = new BooleanSetting(container, title, description,
@@ -82,6 +94,7 @@ public class ProjectSpecifics implements ISettingsPage {
   public boolean doAccept() {
     this.controller.setUseScenarios(this.useScenariosSetting.selected);
     this.controller.setUseSeverity(this.useHazardSeverity.selected);
+    this.controller.getCausalFactorController().setAnalyseFactorsPerUCA(this.switchCFandUCA.selected);
     return true;
   }
 

@@ -17,11 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import messages.Messages;
-
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.requests.CreationFactory;
 
+import messages.Messages;
 import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -40,7 +39,7 @@ public class CSModelCreationFactory implements CreationFactory {
   private ComponentType type;
   private static Map<ComponentType, Integer> countMap;
   private final IRectangleComponent dataModel;
-	private UUID chosenUUID = null;
+  private UUID chosenUUID = null;
 
   /**
    *
@@ -57,10 +56,10 @@ public class CSModelCreationFactory implements CreationFactory {
     this.dataModel = model;
   }
 
-	public void setChosenUUID(UUID chosenUUID) {
+  public void setChosenUUID(UUID chosenUUID) {
     this.chosenUUID = chosenUUID;
   }
-	
+
   /**
    * @return the requested component object
    * @see Component
@@ -80,8 +79,9 @@ public class CSModelCreationFactory implements CreationFactory {
     switch (this.type) {
     case CONTROLACTION: {
       text = Messages.ControlAction + " " + count; //$NON-NLS-1$
-
-      return new Component(chosenUUID, text, new Rectangle(), this.type);
+      UUID uuid = chosenUUID;
+      setChosenUUID(null);
+      return new Component(uuid, text, new Rectangle(), this.type);
     }
     case ACTUATOR: {
       text = Messages.Actuator + " " + count; //$NON-NLS-1$

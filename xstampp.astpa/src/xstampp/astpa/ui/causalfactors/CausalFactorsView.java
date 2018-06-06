@@ -55,17 +55,13 @@ import xstampp.usermanagement.api.AccessRights;
 public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   private static final String CAUSALFACTORS = "Text filter for Causal Factors";
-  private static List<String> _withScenarioColumns = Arrays.asList(Messages.Component,
-      Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks, "Causal Scenarios",
-      Messages.SafetyConstraint, Messages.NotesSlashRationale);
-  private static List<String> _withoutScenarioColumns = Arrays.asList(Messages.Component,
-      Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks,
-      Messages.SafetyConstraint, "Design Hint", Messages.NotesSlashRationale);
+
   /**
    * ViewPart ID.
    */
   public static final String ID = "astpa.steps.step3_2";
-  private boolean includeFirstChildRow;
+
+  private CausalMethodologySetting setting;
 
   /**
    * Ctor.
@@ -75,7 +71,6 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    */
   public CausalFactorsView() {
     setUseFilter(true);
-    this.includeFirstChildRow = false;
   }
 
   @Override
@@ -96,7 +91,18 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   @Override
   public void createPartControl(Composite parent) {
-    super.createPartControl(parent, _withoutScenarioColumns.toArray(new String[0]));
+    ICausalFactorDataModel dataModel = (ICausalFactorDataModel) ProjectManager.getContainerInstance()
+        .getDataModel(this.getProjectID());
+    if (dataModel.getCausalFactorController().analyseFactorsPerUCA()) {
+      setting = new UCAScenarioSetting();
+    } else {
+      setting = new LegacySetting();
+    }
+    super.createPartControl(parent, setting.getColumns());
+    addUCAFilter();
+  }
+
+  protected void addUCAFilter() {
     List<ICorrespondingUnsafeControlAction> ucaList = this.getDataModel().getUCAList(null);
     String[] names = new String[ucaList.size()];
     UUID[] values = new UUID[ucaList.size()];
@@ -132,18 +138,10 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
         ComponentType.CONTROLLED_PROCESS.name(), ComponentType.SENSOR.name(), CAUSALFACTORS, "UCA" };
   }
 
-  public String[] getScenarioColumns() {
-    return _withScenarioColumns.toArray(new String[0]);
-  }
-
-  public String[] getColumns() {
-    return _withoutScenarioColumns.toArray(new String[0]);
-  }
-
   /**
    * @return true if the component is filtered out and should not be used
    */
-  private boolean isCFFiltered(IRectangleComponent comp) {
+  protected boolean isCFFiltered(IRectangleComponent comp) {
     boolean isTypeFiltered = false;
     if (!getActiveCategory().isEmpty()) {
       isTypeFiltered = getActiveCategory().equals("ALL");
@@ -166,195 +164,50 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
   @Override
   protected void fillTable() {
-
     if (this.getDataModel().isUseScenarios()) {
-      this.getGridWrapper().setColumnLabels(getScenarioColumns());
+      this.getGridWrapper().setColumnLabels(setting.getScenarioColumns());
     } else {
-      this.getGridWrapper().setColumnLabels(getColumns());
+      this.getGridWrapper().setColumnLabels(setting.getColumns());
     }
     List<IRectangleComponent> components = this.getDataModel().getCausalComponents();
     for (IRectangleComponent component : components) {
-      if (isCFFiltered(component)) {
-        continue;
-      }
-      GridRow componentRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
-      GridCellText cell = new GridCellText(component.getText());
-      cell.setToolTip(component.getText());
-      componentRow.addCell(0, cell);
-      getGridWrapper().addRow(componentRow);
-      boolean first = this.includeFirstChildRow;
-
-      Map<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = getDataModel()
-          .getCausalFactorController()
-          .getCausalFactorBasedMap(component, getDataModel().getLinkController());
-      for (ICausalFactor factor : ucaCfLink_Component_ToCFmap.keySet()) {
-        if (factor != null && !isFiltered(factor.getText(), CAUSALFACTORS)) {
-          GridRow causalFactorRow;
-          causalFactorRow = (first) ? componentRow
-              : new GridRow(this.getGridWrapper().getColumnLabels().length, 1, new int[] { 1 });
-          createCausalFactorRow(causalFactorRow, ucaCfLink_Component_ToCFmap.get(factor), component,
-              factor);
-          if (!first) {
-            componentRow.addChildRow(causalFactorRow);
-          }
-          first = false;
+      if (!isCFFiltered(component)) {
+        GridRow componentRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
+        GridCellText cell = new GridCellText(component.getText());
+        cell.setToolTip(component.getText());
+        componentRow.addCell(0, cell);
+        if (createPrimaryFactorRows(component, componentRow)) {
+          getGridWrapper().addRow(componentRow);
         }
       }
-      GridRow buttonRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
-      buttonRow.addCell(1, new GridCellButtonAddCausalFactor(component, getDataModel()));
-      buttonRow.setColumnSpan(1, getGridWrapper().getColumnLabels().length - 2);
-      componentRow.addChildRow(buttonRow);
-
     }
   }
 
   /**
    * 
-   * @param componentRow
-   * @param causalEntryLinks
-   *          a List with Links of type {@link LinkingType#UcaCfLink_Component_LINK}
    * @param component
-   * @param factor
-   * @return
+   *          The {@link IRectangleComponent} for which the Causal Factor should be derived.
+   * @param componentRow
+   *          The parent row that has been added for the Component
+   * @param ucaCfLink_Component_ToCFmap
    */
-  private boolean createCausalFactorRow(GridRow factorRow, List<Link> causalEntryLinks,
-      IRectangleComponent component, ICausalFactor factor) {
-    CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(),
-        factor.getText(), factor.getId());
-    if (!checkAccess(AccessRights.ADMIN)) {
-      cell.setReadOnly(true);
-      cell.setShowDelete(false);
-    }
-    factorRow.addCell(1, cell);
-
-    // the causal factor contains multiple child rows for each causal factor entry
-    boolean first = this.includeFirstChildRow;
-
-    List<IUnsafeControlAction> ucaList = new ArrayList<>();
-    for (Link link : causalEntryLinks) {
-      GridRow entryRow = (first) ? factorRow
-          : new GridRow(this.getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
-      /*
-       * Depending on whether the entry is linked to a uca or not the uca column is filled and the
-       * hazards are either based on the uca or linkable
-       */
-      Link ucaCFLink = getDataModel().getLinkController()
-          .getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, link.getLinkA());
-      IUnsafeControlAction uca = getDataModel().getControlActionController()
-          .getUnsafeControlAction(ucaCFLink.getLinkA());
-      ucaList.add(uca);
-      if (!(uca == null || isFiltered(uca.getId(), "UCA"))) {
-        createUCAEntry(entryRow, link, ucaCFLink, uca);
-        if (!first) {
-          factorRow.addChildRow(entryRow);
-        }
-        first = false;
-      }
-    }
-    ;
-
-    // A new row is added to the factorRow for adding additional entries
-    GridRow addEntriesRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
-    if (checkAccess(AccessRights.WRITE)) {
-      addEntriesRow.addCell(2, new GridCellButtonAddUCAEntry(component, factor.getId(),
-          getDataModel(), getGrid(), ucaList));
-    }
-
-    addEntriesRow.setColumnSpan(2, getGridWrapper().getColumnLabels().length - 3);
-    factorRow.addChildRow(addEntriesRow);
-    return true;
+  private boolean createPrimaryFactorRows(IRectangleComponent component, GridRow componentRow) {
+    return setting.addPrimaryFactor(component, componentRow);
   }
 
-  /**
-   * 
-   * @param causalEntryLink
-   *          a Link of type {@link LinkingType#UcaCfLink_Component_LINK}
-   * @param ucaCFLink
-   *          a Link of type {@link LinkingType#UCA_CausalFactor_LINK}
-   * @param uca
-   *          a model of type {@link IUnsafeControlAction}
-   */
-  private void createUCAEntry(GridRow entryRow, Link causalEntryLink, Link ucaCFLink,
-      IUnsafeControlAction uca) {
-
-    CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(),
-        ucaCFLink, uca, causalEntryLink.getId());
-    cell.setToolTip(uca.getIdString());
-    UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
-    if (!checkAccess(controlAction, AccessRights.WRITE)) {
-      cell.setReadOnly(true);
-      cell.setShowDelete(false);
-    }
-    entryRow.addCell(2, cell);
-
-    boolean first = this.includeFirstChildRow;
-    LinkingType entryType = getDataModel().isUseScenarios()
-        ? LinkingType.CausalEntryLink_Scenario_LINK
-        : LinkingType.CausalEntryLink_HAZ_LINK;
-    // If a CausalEntryLink_SC2_LINK exists for the given UcaCfLink_Component_LINK than and
-    // scenarios are not used than a single row containing only that safety constraint is created
-    if (getDataModel().getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK,
-        causalEntryLink.getId())) {
-      entryType = getDataModel().isUseScenarios() ? entryType
-          : LinkingType.CausalEntryLink_SC2_LINK;
-    }
-    for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
-        uca.getId())) {
-      ITableModel hazard = getDataModel().getHazard(hazId);
-      if (hazard != null) {
-        getDataModel().getLinkController().addLink(LinkingType.CausalEntryLink_HAZ_LINK,
-            causalEntryLink.getId(), hazId, false);
-      }
-    }
-    // depending on the choice of entryType a set of links is iterated to create the scenarios or
-    // dafetyConstaint row/s
-    for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
-        causalEntryLink.getId())) {
-      GridRow row = (first) ? entryRow
-          : new GridRow(this.getGridWrapper().getColumnLabels().length, 1);
-      switch (entryType) {
-      case CausalEntryLink_Scenario_LINK: {
-        if (getDataModel().getExtendedDataController().getRefinedScenario(link.getLinkB()) == null) {
-          ProjectManager.getLOGGER().error("Causal Factor Scenario link with illegal Scenario id!");
-        } else {
-          createScenarioRow(row, link, uca);
-        }
-        break;
-      }
-      case CausalEntryLink_HAZ_LINK: {
-        createHazardRow(row, link, uca);
-        break;
-      }
-      case CausalEntryLink_SC2_LINK: {
-        createSingleConstraintRow(row, link, uca);
-        // In column 6 the Note/Rational cell for the UCACfLink_Component_LINK is created
-        row.addCell(6,
-            new CellEditorFactorNote(getGridWrapper(), getDataModel(), causalEntryLink));
-        break;
-      }
-      default:
-        ProjectManager.getLOGGER().debug(
-            "Constant " + entryType.name() + " is not a valid enum for a causal factor entry");
-        break;
-      }
-      if (!first) {
-        entryRow.addChildRow(row);
-      }
-      first = false;
-    }
-    if (getDataModel().isUseScenarios()) {
-      GridRow scenarioRow = (first) ? entryRow
-          : new GridRow(this.getGridWrapper().getColumnLabels().length);
-      GridCellText scenarioCell = new GridCellText("Add a new scenario");
-      scenarioCell.addCellButton(new CellButtonAddScenario(getDataModel(), causalEntryLink, uca));
-      scenarioCell.addCellButton(new CellButtonLinking<ContentProviderScenarios>(getGridWrapper(),
-          new ContentProviderScenarios(getDataModel(), causalEntryLink, uca), ucaCFLink.getId()));
-      scenarioRow.setColumnSpan(4, 1);
-      scenarioRow.addCell(4, scenarioCell);
-      if (!first) {
-        entryRow.addChildRow(scenarioRow);
-      }
-    }
+  private void createScenarioRow(Link factorComponentLink, GridRow entryRow) {
+    GridRow scenarioRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
+    GridCellText scenarioCell = new GridCellText("Add a new scenario");
+    Link ucaCFLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+        factorComponentLink.getLinkA());
+    IUnsafeControlAction uca = getDataModel().getControlActionController()
+        .getUnsafeControlAction(ucaCFLink.getLinkA());
+    scenarioCell.addCellButton(new CellButtonAddScenario(getDataModel(), factorComponentLink, uca));
+    scenarioCell.addCellButton(new CellButtonLinking<ContentProviderScenarios>(getGridWrapper(),
+        new ContentProviderScenarios(getDataModel(), factorComponentLink, uca), factorComponentLink.getLinkA()));
+    scenarioRow.setColumnSpan(4, 1);
+    scenarioRow.addCell(4, scenarioCell);
+    entryRow.addChildRow(scenarioRow);
   }
 
   /**
@@ -363,11 +216,9 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    *          the row in which the cells will be added
    * @param ucaHazLink
    *          a Link of type {@link LinkingType#CausalEntryLink_HAZ_LINK}
-   * @param uca
-   *          the {@link IUnsafeControlAction} to which this is linked
    * @return
    */
-  private GridRow createHazardRow(GridRow entryRow, Link ucaHazLink, IUnsafeControlAction uca) {
+  private GridRow createHazardRow(GridRow entryRow, Link ucaHazLink) {
     ITableModel hazard = getDataModel().getHazard(ucaHazLink.getLinkB());
     String hazText = hazard != null ? hazard.getIdString() + " - " + hazard.getTitle() : "no hazard";
     GridCellText hazCell = new GridCellText(hazText);
@@ -388,7 +239,11 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
     CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(),
         getDataModel(), ucaHazLink);
-    ITableModel actionForUca = getDataModel().getControlActionForUca(uca.getId());
+    Link factorComponentLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK,
+        ucaHazLink.getLinkA());
+    Link ucaCfLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+        factorComponentLink.getLinkA());
+    ITableModel actionForUca = getDataModel().getControlActionForUca(ucaCfLink.getLinkA());
     if (actionForUca != null && !checkAccess(actionForUca.getId(), AccessRights.WRITE)) {
       cell.setReadOnly(true);
       cell.setShowDelete(false);
@@ -416,43 +271,46 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * 
    * @param entryRow
    *          the row in which the cells will be added
-   * @param causalEntryLink
+   * @param factorConstraintLink
    *          a Link of type {@link ObserverValue#CausalEntryLink_SC2_LINK}
    * @param uca
    *          the {@link IUnsafeControlAction} to which this is linked
    * @return
    */
-  private GridRow createSingleConstraintRow(GridRow entryRow, Link causalEntryLink,
-      IUnsafeControlAction uca) {
-    addHazardCell(entryRow, uca);
-
+  private GridRow createSingleConstraintRow(GridRow entryRow, Link factorConstraintLink) {
+    Link factorComponentLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK,
+        factorConstraintLink.getLinkA());
+    addHazardCell(entryRow, factorComponentLink);
+    Link ucaCfLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+        factorComponentLink.getLinkA());
     CellEditorSingleSafetyConstraint cell = new CellEditorSingleSafetyConstraint(getGridWrapper(),
-        getDataModel(), causalEntryLink);
-    ITableModel actionForUca = getDataModel().getControlActionForUca(uca.getId());
+        getDataModel(), factorConstraintLink);
+    ITableModel actionForUca = getDataModel().getControlActionForUca(ucaCfLink.getLinkA());
     if (actionForUca != null && !checkAccess(actionForUca.getId(), AccessRights.WRITE)) {
       cell.setReadOnly(true);
       cell.setShowDelete(false);
     }
     entryRow.addCell(4, cell);
 
-    Optional<Link> safetyOption = Optional.ofNullable(getDataModel().getLinkController()
-        .getLinkObjectFor(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink.getId()));
-
-    IGridCell hintCell = new GridCellText("-");
-    if (safetyOption.isPresent()) {
-      hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), safetyOption.get());
+    CellEditorFactorNote hintCell = new CellEditorFactorNote(getGridWrapper(), getDataModel(), factorConstraintLink);
+    if (factorConstraintLink.getLinkB() == null) {
+      hintCell.setReadOnly(true);
+    } else {
       ((GridCellTextEditor) hintCell).setDefaultText("Design hint...");
     }
+
     // in column 5 the Design Hint cell for the CausalEntryLink_SC2_LINK is added
     entryRow.addCell(5, hintCell);
     return null;
 
   }
 
-  private void addHazardCell(GridRow entryRow, ITableModel uca) {
+  private void addHazardCell(GridRow entryRow, Link factorComponentLink) {
+    Link ucaCfLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
+        factorComponentLink.getLinkA());
     String hazString = "";
     for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
-        uca.getId())) {
+        ucaCfLink.getLinkA())) {
       hazString += hazString.isEmpty() ? "" : ", ";
       hazString += getDataModel().getHazard(hazId).getIdString();
     }
@@ -465,13 +323,13 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
    * @param entryRow
    *          the row in which the cells will be added
    * @param scenarioLink
-   *          a Link of type {@link ObserverValue#CausalEntryLink_Scenario_LINK}
-   * @param uca
-   *          the {@link IUnsafeControlAction} to which this is linked
+   *          a Link of type {@link LinkingType#CausalEntryLink_Scenario_LINK}
    * @return
    */
-  private void createScenarioRow(GridRow entryRow, Link scenarioLink, IUnsafeControlAction uca) {
-    addHazardCell(entryRow, uca);
+  private void createScenarioRow(GridRow entryRow, Link scenarioLink) {
+    Link factorComponentLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK,
+        scenarioLink.getLinkA());
+    addHazardCell(entryRow, factorComponentLink);
     ScenarioType type = getDataModel().getExtendedDataController()
         .getScenarioType(scenarioLink.getLinkB());
     entryRow.addCell(4, new CellEditorCausalScenario(getGridWrapper(), getDataModel(), scenarioLink,
@@ -490,15 +348,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
       super.update(dataModelController, updatedValue);
       switch ((ObserverValue) updatedValue) {
       case UNSAFE_CONTROL_ACTION: {
-        List<ICorrespondingUnsafeControlAction> ucaList = this.getDataModel().getUCAList(null);
-        String[] names = new String[ucaList.size()];
-        UUID[] values = new UUID[ucaList.size()];
-        for (int i = 0; i < ucaList.size(); i++) {
-          names[i] = ucaList.get(i).getTitle();
-          values[i] = ucaList.get(i).getId();
-        }
-        addChoices("UCA", names);
-        addChoiceValues("UCA", values);
+        addUCAFilter();
       }
       case CONTROL_STRUCTURE:
       case LINKING:
@@ -513,4 +363,326 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
   }
 
+  interface CausalMethodologySetting {
+    /**
+     * 
+     * @param component
+     *          The {@link IRectangleComponent} for which the Causal Factor should be derived.
+     * @param componentRow
+     *          The parent row that has been added for the Component
+     * @param ucaCfLink_Component_ToCFmap
+     */
+    boolean addPrimaryFactor(IRectangleComponent component, GridRow componentRow);
+
+    public String[] getScenarioColumns();
+
+    public String[] getColumns();
+  }
+
+  private class LegacySetting implements CausalMethodologySetting {
+
+    private List<String> _withScenarioColumns = Arrays.asList(Messages.Component,
+        Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks, "Causal Scenarios",
+        Messages.SafetyConstraint, Messages.NotesSlashRationale);
+    private List<String> _withoutScenarioColumns = Arrays.asList(Messages.Component,
+        Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks,
+        Messages.SafetyConstraint, "Design Hint", Messages.NotesSlashRationale);
+
+    public String[] getScenarioColumns() {
+      return _withScenarioColumns.toArray(new String[0]);
+    }
+
+    public String[] getColumns() {
+      return _withoutScenarioColumns.toArray(new String[0]);
+    }
+
+    @Override
+    public boolean addPrimaryFactor(IRectangleComponent component, GridRow componentRow) {
+      Map<ICausalFactor, List<Link>> ucaCfLink_Component_To_CF_map = getDataModel()
+          .getCausalFactorController()
+          .getCausalFactorBasedMap(component, getDataModel().getLinkController());
+      for (ICausalFactor factor : ucaCfLink_Component_To_CF_map.keySet()) {
+        if (factor != null && !isFiltered(factor.getText(), CAUSALFACTORS)) {
+          GridRow causalFactorRow;
+          causalFactorRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 1 });
+          CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(),
+              factor.getId());
+          // If the current user of the project is an Administrator than he/she can delete or edit
+          // causal factors
+          if (!checkAccess(AccessRights.ADMIN)) {
+            cell.setReadOnly(true);
+            cell.setShowDelete(false);
+          }
+          causalFactorRow.addCell(1, cell);
+          List<IUnsafeControlAction> ucaList = new ArrayList<>();
+          List<Link> factorComponentLinkList = ucaCfLink_Component_To_CF_map.get(factor);
+          for (Link factorComponentLink : factorComponentLinkList) {
+            /*
+             * Depending on whether the entry is linked to a uca or not the uca column is filled and
+             * the
+             * hazards are either based on the uca or linkable
+             */
+            Link ucaCFLink = getDataModel().getLinkController()
+                .getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, factorComponentLink.getLinkA());
+            IUnsafeControlAction uca = getDataModel().getControlActionController()
+                .getUnsafeControlAction(ucaCFLink.getLinkA());
+            ucaList.add(uca);
+            if (!(uca == null || isFiltered(uca.getId(), "UCA"))) {
+              addSecondaryFactor(causalFactorRow, factorComponentLink, uca);
+            }
+          }
+
+          // A new row is added to the factorRow for adding additional entries
+          GridRow addEntriesRow = new GridRow(getGridWrapper().getColumnLabels().length);
+          if (checkAccess(AccessRights.WRITE)) {
+            addEntriesRow.addCell(2, new GridCellButtonAddUCAEntry(component, factor.getId(),
+                getDataModel(), getGrid(), ucaList));
+          }
+
+          addEntriesRow.setColumnSpan(2, getGridWrapper().getColumnLabels().length - 3);
+          causalFactorRow.addChildRow(addEntriesRow);
+          componentRow.addChildRow(causalFactorRow);
+        }
+      }
+      GridRow buttonRow = new GridRow(getGridWrapper().getColumnLabels().length);
+      buttonRow.addCell(1, new GridCellButtonAddCausalFactor(component, getDataModel(), null));
+      buttonRow.setColumnSpan(1, getGridWrapper().getColumnLabels().length - 2);
+      componentRow.addChildRow(buttonRow);
+      return true;
+    }
+
+    /**
+     * 
+     * @param uca
+     *          a model of type {@link IUnsafeControlAction}
+     * @param factorComponentLink
+     *          a Link of type {@link LinkingType#UcaCfLink_Component_LINK}
+     */
+    public void addSecondaryFactor(GridRow factorRow, Link factorComponentLink, IUnsafeControlAction uca) {
+
+      GridRow entryRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
+      CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(),
+          factorComponentLink, uca, factorComponentLink.getId());
+      cell.setToolTip(uca.getIdString());
+      UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
+      cell.setReadOnly(checkAccess(controlAction, AccessRights.WRITE));
+      cell.setShowDelete(checkAccess(controlAction, AccessRights.WRITE));
+
+      entryRow.addCell(2, cell);
+
+      LinkingType entryType = getDataModel().isUseScenarios() ? LinkingType.CausalEntryLink_Scenario_LINK
+          : LinkingType.CausalEntryLink_HAZ_LINK;
+      // If a CausalEntryLink_SC2_LINK exists for the given UcaCfLink_Component_LINK than and
+      // scenarios are not used than a single row containing only that safety constraint is created
+      if (getDataModel().getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK,
+          factorComponentLink.getId())) {
+        entryType = getDataModel().isUseScenarios() ? entryType
+            : LinkingType.CausalEntryLink_SC2_LINK;
+      }
+      for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
+          uca.getId())) {
+        ITableModel hazard = getDataModel().getHazard(hazId);
+        if (hazard != null) {
+          getDataModel().getLinkController().addLink(LinkingType.CausalEntryLink_HAZ_LINK,
+              factorComponentLink.getId(), hazId, false);
+        }
+      }
+      // depending on the choice of entryType a set of links is iterated to create the scenarios or
+      // dafetyConstaint row/s
+      for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
+          factorComponentLink.getId())) {
+        GridRow row = new GridRow(getGridWrapper().getColumnLabels().length, 1);
+        switch (entryType) {
+        case CausalEntryLink_Scenario_LINK: {
+          if (getDataModel().getExtendedDataController().getRefinedScenario(link.getLinkB()) == null) {
+            ProjectManager.getLOGGER().error("Causal Factor Scenario link with illegal Scenario id!");
+          } else {
+            createScenarioRow(row, link);
+          }
+          break;
+        }
+        case CausalEntryLink_HAZ_LINK: {
+          createHazardRow(row, link);
+          break;
+        }
+        case CausalEntryLink_SC2_LINK: {
+          createSingleConstraintRow(row, link);
+          // In column 6 the Note/Rational cell for the UCACfLink_Component_LINK is created
+          row.addCell(6,
+              new CellEditorFactorNote(getGridWrapper(), getDataModel(), factorComponentLink));
+          break;
+        }
+        default:
+          ProjectManager.getLOGGER().debug(
+              "Constant " + entryType.name() + " is not a valid enum for a causal factor entry");
+          break;
+        }
+        entryRow.addChildRow(row);
+      }
+      if (getDataModel().isUseScenarios()) {
+        createScenarioRow(factorComponentLink, entryRow);
+      }
+
+      factorRow.addChildRow(entryRow);
+    }
+
+  }
+
+  /**
+   * This setting configures the Causal Factors Table in the way described in the STPA-Handbook by
+   * Leveson et al. 2018
+   * 
+   * @author Lukas Balzer
+   *
+   */
+  private class UCAScenarioSetting implements CausalMethodologySetting {
+
+    private List<String> _withScenarioColumns = Arrays.asList(Messages.Component,
+        "Unsafe Control Action", Messages.CausalFactors, Messages.HazardLinks, "Causal Scenarios",
+        Messages.SafetyConstraint, Messages.NotesSlashRationale);
+    private List<String> _withoutScenarioColumns = Arrays.asList(Messages.Component,
+        "Unsafe Control Action", Messages.CausalFactors, Messages.HazardLinks,
+        Messages.SafetyConstraint, "Design Hint", Messages.NotesSlashRationale);
+
+    public String[] getScenarioColumns() {
+      return _withScenarioColumns.toArray(new String[0]);
+    }
+
+    public String[] getColumns() {
+      return _withoutScenarioColumns.toArray(new String[0]);
+    }
+
+    @Override
+    public boolean addPrimaryFactor(IRectangleComponent component, GridRow componentRow) {
+      boolean addComponentRow = false;
+      Map<IUnsafeControlAction, List<Link>> ucaCfLink_Component_To_UCA_map = getDataModel()
+          .getCausalFactorController()
+          .getUCABasedMap(component, getDataModel().getLinkController(), getDataModel().getControlActionController());
+      List<IUnsafeControlAction> ucaList = new ArrayList<>();
+      for (IUnsafeControlAction uca : ucaCfLink_Component_To_UCA_map.keySet()) {
+        if (uca != null && !isFiltered(uca.getId(), "UCA")) {
+          addComponentRow = true;
+          List<Link> causalEntryLinks = ucaCfLink_Component_To_UCA_map.get(uca);
+          ucaList.add(uca);
+          GridRow ucaFactorRow;
+          ucaFactorRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 1 });
+          CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(),
+              causalEntryLinks, uca, uca.getId());
+          cell.setToolTip(uca.getIdString());
+          // If the current user of the project is an Administrator than he/she can delete or edit
+          // causal factors
+          UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
+
+          cell.setReadOnly(true);
+          if (!checkAccess(controlAction, AccessRights.WRITE)) {
+            cell.setShowDelete(false);
+          }
+          ucaFactorRow.addCell(1, cell);
+          for (Link link : causalEntryLinks) {
+            /*
+             * Depending on whether the entry is linked to a uca or not the uca column is filled and
+             * the
+             * hazards are either based on the uca or linkable
+             */
+            Link ucaCFLink = getDataModel().getLinkController()
+                .getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, link.getLinkA());
+            ICausalFactor factor = getDataModel().getCausalFactorController()
+                .getCausalFactor(ucaCFLink.getLinkB());
+            if (!(factor == null || isFiltered(factor.getId(), CAUSALFACTORS))) {
+              addSecondaryFactor(ucaFactorRow, link, ucaCFLink, factor);
+            }
+          }
+
+          // A new row is added to the factorRow for adding additional entries
+          GridRow addEntriesRow = new GridRow(getGridWrapper().getColumnLabels().length);
+          if (checkAccess(AccessRights.WRITE)) {
+            addEntriesRow.addCell(2, new GridCellButtonAddCausalFactor(component, getDataModel(), uca.getId()));
+          }
+
+          addEntriesRow.setColumnSpan(2, getGridWrapper().getColumnLabels().length - 3);
+          ucaFactorRow.addChildRow(addEntriesRow);
+          componentRow.addChildRow(ucaFactorRow);
+        }
+      }
+      // The Button Bar to add more Unsafe Control Action Entries to the component is only added if
+      // the filter is not set to filter for a specific UCA
+      if (!getActiveCategory().equals("UCA")) {
+        GridRow buttonRow = new GridRow(getGridWrapper().getColumnLabels().length);
+        buttonRow.addCell(1, new GridCellButtonAddUCAEntry(component, null,
+            getDataModel(), getGrid(), ucaList));
+        buttonRow.setColumnSpan(1, getGridWrapper().getColumnLabels().length - 2);
+        componentRow.addChildRow(buttonRow);
+        addComponentRow = true;
+      }
+      return addComponentRow;
+    }
+
+    /**
+     * 
+     * @param factorComponentLink
+     *          a Link of type {@link LinkingType#UcaCfLink_Component_LINK}
+     * @param ucaCFLink
+     *          a Link of type {@link LinkingType#UCA_CausalFactor_LINK}
+     * @param factor
+     *          a model of type {@link IUnsafeControlAction}
+     */
+    public void addSecondaryFactor(GridRow factorRow, Link factorComponentLink, Link ucaCFLink,
+        ICausalFactor factor) {
+
+      GridRow entryRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
+      CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(), factor.getId(),
+          factorComponentLink);
+
+      entryRow.addCell(2, cell);
+
+      LinkingType entryType = getDataModel().isUseScenarios() ? LinkingType.CausalEntryLink_Scenario_LINK
+          : LinkingType.CausalEntryLink_HAZ_LINK;
+      // If a CausalEntryLink_SC2_LINK exists for the given UcaCfLink_Component_LINK than and
+      // scenarios are not used than a single row containing only that safety constraint is created
+      if (getDataModel().getLinkController().isLinked(LinkingType.CausalEntryLink_SC2_LINK,
+          factorComponentLink.getId())) {
+        entryType = getDataModel().isUseScenarios() ? entryType
+            : LinkingType.CausalEntryLink_SC2_LINK;
+      }
+      // depending on the choice of entryType a set of links is iterated to create the scenarios or
+      // safetyConstaint row/s
+      for (Link link : getDataModel().getLinkController().getRawLinksFor(entryType,
+          factorComponentLink.getId())) {
+        GridRow row = new GridRow(getGridWrapper().getColumnLabels().length, 1);
+        switch (entryType) {
+        case CausalEntryLink_Scenario_LINK: {
+          if (getDataModel().getExtendedDataController().getRefinedScenario(link.getLinkB()) == null) {
+            ProjectManager.getLOGGER().error("Causal Factor Scenario link with illegal Scenario id!");
+          } else {
+            createScenarioRow(row, link);
+          }
+          entryRow.addChildRow(row);
+          break;
+        }
+        case CausalEntryLink_HAZ_LINK: {
+          createHazardRow(row, link);
+          entryRow.addChildRow(row);
+          break;
+        }
+        case CausalEntryLink_SC2_LINK: {
+          createSingleConstraintRow(entryRow, link);
+          // In column 6 the Note/Rational cell for the UCACfLink_Component_LINK is created
+          entryRow.addCell(6,
+              new CellEditorFactorNote(getGridWrapper(), getDataModel(), factorComponentLink));
+          break;
+        }
+        default:
+          ProjectManager.getLOGGER().debug(
+              "Constant " + entryType.name() + " is not a valid enum for a causal factor entry");
+          break;
+        }
+      }
+      if (getDataModel().isUseScenarios()) {
+        createScenarioRow(factorComponentLink, entryRow);
+      }
+
+      factorRow.addChildRow(entryRow);
+    }
+
+  }
 }

@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Assert;
 import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.ATableModelController;
+import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -42,6 +43,7 @@ import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
+import xstampp.astpa.model.linking.UndoChangeSeverity;
 import xstampp.astpa.model.service.UndoCSCChangeCallback;
 import xstampp.model.AbstractLTLProvider;
 import xstampp.model.IEntryFilter;
@@ -851,6 +853,13 @@ public class ControlActionController extends ATableModelController implements IC
                 uca.getId());
           }
           setUcaDescription(uca.getId(), uca.getDescription());
+          if (!getUnsafeControlAction(uca.getId()).getSeverity().equals(uca.getSeverity())) {
+            Severity oldSeverity = ((EntryWithSeverity) getUnsafeControlAction(uca.getId())).getSeverity();
+            ((EntryWithSeverity) getUnsafeControlAction(uca.getId())).setSeverity(uca.getSeverity());
+            setChanged();
+            notifyObservers(new UndoChangeSeverity((EntryWithSeverity) getUnsafeControlAction(uca.getId()), oldSeverity,
+                ObserverValue.UNSAFE_CONTROL_ACTION));
+          }
           setCorrespondingSafetyConstraint(uca.getId(),
               ((UnsafeControlAction) uca).getCorrespondingSafetyConstraint().getText());
 

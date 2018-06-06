@@ -69,7 +69,7 @@ public final class Link {
   public String getNote() {
     if (note != null) {
       this.linkNote = this.note;
-      // this.note = null;
+      this.note = null;
     }
     return this.linkNote;
   }
@@ -94,7 +94,6 @@ public final class Link {
     boolean different = !this.linkNote.equals(note);
     if (different) {
       this.linkNote = note == null ? "" : note.replaceAll("\r", "");
-      this.note = linkNote;
     }
     return different;
   }

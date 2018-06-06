@@ -11,6 +11,8 @@
  ******************************************************************************/
 package xstampp.usermanagement.ui.settings;
 
+import java.util.UUID;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -40,8 +42,6 @@ import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
 import xstampp.usermanagement.api.IUserProject;
 import xstampp.usermanagement.api.IUserSystem;
-
-import java.util.UUID;
 
 public class UserManagementPage implements ISettingsPage {
   private static final int REFRESH_USERS = 1;
@@ -105,7 +105,7 @@ public class UserManagementPage implements ISettingsPage {
       addAdminButton.setVisible(userSystem.checkAccess(AccessRights.ADMIN));
 
       final Button deleteButton = new Button(hasUserComp, SWT.PUSH);
-      String deleteImgPath = "/icons/buttons/commontables/remove.png"; //$NON-NLS-1$
+      String deleteImgPath = "/icons/usermanagement/remove.png"; //$NON-NLS-1$
       deleteButton.setImage(Activator.getImageDescriptor(deleteImgPath).createImage());
       deleteButton.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
       deleteButton.setVisible(userSystem.canCreateUser());

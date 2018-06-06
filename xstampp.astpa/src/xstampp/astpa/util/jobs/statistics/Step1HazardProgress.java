@@ -76,10 +76,10 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
     for (UUID uuid : getController().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
         hazModel.getId())) {
       ITableModel actionForUca = getController().getControlActionForUca(uuid);
-      if (!caMap.containsKey(actionForUca)) {
-        caMap.put(actionForUca, new ArrayList<>());
+      if (actionForUca != null) {
+        caMap.putIfAbsent(actionForUca, new ArrayList<>());
+        caMap.get(actionForUca).add(uuid);
       }
-      caMap.get(actionForUca).add(uuid);
     }
 
     Row row = hazRow;
