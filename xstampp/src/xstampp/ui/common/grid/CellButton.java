@@ -59,6 +59,10 @@ public class CellButton implements ICellButton {
     this.image = image;
   }
 
+  public void setImage(Image image) {
+    this.image = image;
+  }
+
   /**
    * Ctor.
    * 

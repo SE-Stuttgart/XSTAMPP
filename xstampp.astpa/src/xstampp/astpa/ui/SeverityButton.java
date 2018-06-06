@@ -144,7 +144,9 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
-
+    if (!enabled) {
+      setImage(null);
+    }
   }
 
   public Control getControl() {

@@ -57,7 +57,8 @@ public class ControlActionEditPart extends AbstractMemberEditPart {
     IControlStructureFigure tmpFigure = new TextFieldFigure(this.getId());
 
     tmpFigure.setPreferenceStore(getStore());
-    tmpFigure.setToolTip(new Label(Messages.ControlAction));
+    Label label = new Label(Messages.ControlAction);
+    tmpFigure.setToolTip(label);
     tmpFigure.addMouseMotionListener(this);
     tmpFigure.getTextField().setFontStyle(SWT.BOLD);
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
@@ -69,7 +70,11 @@ public class ControlActionEditPart extends AbstractMemberEditPart {
     UUID link = getDataModel().getComponent(getId()).getControlActionLink();
     ITableModel controlAction = getDataModel().getControlAction(link);
     if (controlAction != null) {
-      figure.setToolTip(new Label(Messages.ControlAction + "-" + controlAction.getNumber()));
+      String tip = Messages.ControlAction + "-" + controlAction.getNumber();
+      if (!controlAction.getDescription().isEmpty()) {
+        tip += "\n-\n" + controlAction.getDescription();
+      }
+      figure.setToolTip(new Label(tip));
     }
     super.refreshVisuals();
   }
