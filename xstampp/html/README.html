@@ -4,159 +4,144 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <meta name="author" content="Lukas Balzer" />
-  <title>XSTAMPP Setup Guide</title>
+  <title></title>
   <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
-<div id="header">
-<h1 class="title">XSTAMPP<br />
-Setup Guide</h1>
-<h2 class="author">Lukas Balzer</h2>
-</div>
 <h1 id="how-to-build-xstampp">How to build XSTAMPP</h1>
-<ol>
-<li><p>The build requires <a href="https://maven.apache.org/">Maven</a> (<span class="math inline">&gt; = 3.3</span>) and <a href="http://www.oracle.com/technetwork/java/javase/overview/index.html">Java</a> (<span class="math inline">&gt;1.7</span>) either from <span class="math inline"><em>h</em><em>t</em><em>t</em><em>p</em><em>s</em> : //<em>m</em><em>a</em><em>v</em><em>e</em><em>n</em>.<em>a</em><em>p</em><em>a</em><em>c</em><em>h</em><em>e</em>.<em>o</em><em>r</em><em>g</em>/</span> or from the IDE</p></li>
-<li><p>go to the xstampp.parent directory in the root path of the xstampp project (where this file is located)</p></li>
-<li><p>open a command in the xstampp.parent dir and execute</p>
-<ol>
-<li><p>’mvn clean verify’ to build xstampp with xstpa and cast already included</p></li>
-<li><p>’mvn clean install’ as 3.1 but also installs xstampp on <span class="math inline">[<em>u</em><em>s</em><em>e</em><em>r</em>]/.<em>m</em>2</span> for usage as local dependency of other builds</p></li>
+<ol style="list-style-type: decimal">
+<li><p>The build requires <a href="https://maven.apache.org/">Maven</a> (&gt;=3.3) and <a href="http://www.oracle.com/technetwork/java/javase/overview/index.html">Java</a> (&gt;1.7) either from https://maven.apache.org/ or from the IDE.</p></li>
+<li><p>Go to the <code>xstampp.parent</code> directory in the root path of the xstampp project (where this file is located).</p></li>
+<li><p>Open a commandline in the xstampp.parent dir and execute</p>
+<ol style="list-style-type: decimal">
+<li><p><code>mvn clean verify</code> to build xstampp with xstpa and cast already included.</p></li>
+<li><p><code>mvn clean install</code> as 3.1 but also installs xstampp on [user]/.m2 for usage as local dependency of other builds.</p></li>
 </ol></li>
-<li><p>the build artifacts are located in the astpa.repository/target</p></li>
+<li><p>The build artifacts are located in <code>astpa.repository/target</code>.</p></li>
 </ol>
 <h1 id="working-on-xstampp">Working on XSTAMPP</h1>
 <h2 id="language-skills">Language skills</h2>
-<ol>
+<ol style="list-style-type: decimal">
 <li><p>XSTAMPP is written in <strong>Java 8</strong> (depending on the Plugin)</p></li>
 <li><p>The documentation (help contents in xstampp.[plugin]/html) is provided in <strong>html 4.0</strong> and styled with <strong>CSS 3</strong></p></li>
 <li><p>The hazx schema is given in <strong>XMLSchema 1</strong></p></li>
 </ol>
 <h2 id="setting-up-the-environment">Setting up the environment</h2>
 <ul>
-<li><p><a href="http://eclipse.org/downloads">Eclipse for RCP and RAP Developers (Plug-in Developement)</a><a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> (<span class="math inline">&gt;<em>L</em><em>u</em><em>n</em><em>a</em><em>r</em></span>)</p></li>
+<li><p><a href="http://eclipse.org/downloads">Eclipse for RCP and RAP Developers (Plug-in Developement)</a> (&gt; Lunar)</p></li>
 <li><p>At least JavaSE 1.8</p></li>
-<li><p>To install gef ( <em>help</em><span class="math inline">→</span><em>install new software</em><span class="math inline">→</span><em>http://download.eclipse.org/tools/gef/updates/releases/</em>)</p></li>
-<li><p>To install nebula grid from eclipse.org<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p></li>
-<li><p>To install maven<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p></li>
-<li><p>import/clone xstampp projects using the included git</p>
-<ol>
-<li><p>open the <em>Import</em> Dialog selecting <em>File</em><span class="math inline">→</span><em>Import</em></p></li>
-<li><p>in the Import menu click <em>Git</em><span class="math inline">→</span><em>Projects from Git</em> and follow the steps of the import wizard</p></li>
+<li><p>To install GEF-Legacy (<em>help</em> —&gt; <em>install new software</em> —&gt; http://download.eclipse.org/tools/gef/updates/legacy/releases/)</p>
+<div class="figure">
+<img src="doc/images/eclipseInstallNewSoftwareGefLegacy.png" alt="gef installation" />
+<p class="caption">gef installation</p>
+</div></li>
+<li><p>To install Nebula Grid from eclipse.org (<em>help</em> —&gt; <em>install new software</em> —&gt; http://download.eclipse.org/nebula/releases/latest)</p>
+<div class="figure">
+<img src="doc/images/eclipseInstallNewSoftwareNebula.png" alt="gef installation" />
+<p class="caption">gef installation</p>
+</div></li>
+<li><p>Install Maven (should be included in Eclipse)</p></li>
+<li><p>Import/clone the XSTAMPP projects using the built-in git:</p>
+<ol style="list-style-type: decimal">
+<li><p>Open the <em>Import</em> Dialog selecting <em>File</em> —&gt; <em>Import</em></p></li>
+<li><p>In the import menu click <em>Git</em> —&gt; <em>Projects from Git</em> and follow the steps of the import wizard</p></li>
 </ol></li>
-<li><p>To resolve upcoming error messages refer to Known Issues Section [chap:issues]</p></li>
+<li><p>To resolve any error messages refer to Known Issues Section</p></li>
 </ul>
 <h2 id="running-xstampp-from-eclipse">Running XSTAMPP from Eclipse</h2>
-<ol>
-<li><p>Go to <em>xstampp.repository</em><span class="math inline">→</span><em>xstampp.product</em></p></li>
-<li><p>In the product editor click on <em>Testing</em><span class="math inline">→</span> <em>Launch an Eclipse Application</em></p></li>
-<li><p>The run fails on the first try, which is normal because we haven’t included the required plugins yet</p></li>
-<li><p>In the last step Eclipse has created a <em>Run configuration</em> for us which we are going to use now</p>
-<ol>
-<li><p>right click on the <em>xstampp</em> project and select <em>Run As</em><span class="math inline">→</span> <em>Run Configurations..</em></p></li>
-<li><p>in the opening dialog search for the Plug-ins Tab (see figure [fig:runConfig])(you may need to adjust the size of the window)</p></li>
-<li><p>you can now include/exclude the xstampp plug-ins included in your runtime</p></li>
-<li><p>finally find/press the button <em>Add Required Plug-ins</em> and Apply/Run the run configuration</p></li>
+<ol style="list-style-type: decimal">
+<li><p>Go to <em>xstampp.repository</em> —&gt; <em>xstampp.product</em>.</p></li>
+<li><p>In the product editor click on <em>Testing</em> —&gt; <em>Launch an Eclipse Application</em>.</p></li>
+<li><p>The run fails on the first try, which is normal because we haven’t included the required plugins yet.</p></li>
+<li><p>In the last step Eclipse has created a <em>Run configuration</em> for us which we are going to use now:</p>
+<ol style="list-style-type: decimal">
+<li><p>Right click on the <em>xstampp</em> project and select <em>Run As</em> —&gt; <em>Run Configurations..</em>.</p></li>
+<li><p>In the opening dialog search for the Plug-ins Tab (you may need to adjust the size of the window).</p></li>
+<li><p>You can now include/exclude the xstampp plug-ins included in your runtime.</p></li>
+<li><p>Finally, find/press the button <em>Add Required Plug-ins</em> and Apply/Run the run configuration.</p></li>
 </ol></li>
 </ol>
 <div class="figure">
-<img src="images/runConfig.png" alt="Before eclipse can successfully run xstampp the required plug-ins must be included in the runtime" />
+<img src="doc/images/runConfig.png" alt="Before eclipse can successfully run xstampp the required plug-ins must be included in the runtime" />
 <p class="caption">Before eclipse can successfully run xstampp the required plug-ins must be included in the runtime<span data-label="fig:runConfig"></span></p>
 </div>
 <h2 id="contribute">Contribute</h2>
 <ul>
-<li><p>Setting up Eclipse Preferences (open <em>Eclipse</em><span class="math inline">→</span><em>Window</em><span class="math inline">→</span><em>Preferences</em>):</p>
-<ol>
-<li><p>Go to <em>XML</em><span class="math inline">→</span><em>XML Files</em><span class="math inline">→</span><em>Editor</em></p>
-<ol>
-<li><p>set the <em>Line width</em> to <strong>120</strong></p></li>
-<li><p>check the radio box <em>Indent using spaces</em></p></li>
-<li><p>set <em>Indentation size</em> to <strong>4</strong></p></li>
+<li><p>Setting up Eclipse Preferences (open <em>Eclipse</em> —&gt; <em>Window</em> —&gt; <em>Preferences</em>):</p>
+<ol style="list-style-type: decimal">
+<li><p>Go to <em>XML</em> —&gt; <em>XML Files</em> —&gt; <em>Editor</em>:</p>
+<ol style="list-style-type: decimal">
+<li><p>Set the <em>Line width</em> to <strong>120</strong>.</p></li>
+<li><p>Check the radio box <em>Indent using spaces</em>.</p></li>
+<li><p>Set <em>Indentation size</em> to <strong>4</strong>.</p></li>
 </ol></li>
-<li><p>Go to <em>Java</em><span class="math inline">→</span><em>Code Style</em><span class="math inline">→</span><em>Formatter</em></p>
-<ol>
-<li><p>Press <em>Import...</em></p></li>
-<li><p>Import the <span class="math inline"><em>j</em><em>a</em><em>v</em><em>a</em>_<em>f</em><em>o</em><em>r</em><em>m</em><em>a</em><em>t</em><em>t</em><em>e</em><em>r</em>.<em>x</em><em>m</em><em>l</em></span> in <span class="math inline">&lt;<em>r</em><em>e</em><em>p</em><em>o</em>&gt;</span><em>/xstampp/misc/java</em><span class="math inline">_</span><em>formatter.xml</em></p></li>
+<li><p>Go to <em>Java</em> —&gt; <em>Code Style</em> —&gt; <em>Formatter</em>:</p>
+<ol style="list-style-type: decimal">
+<li><p>Press <em>Import...</em>.</p></li>
+<li><p>Import the <code>java\_formatter.xml</code> in <code>&lt;repo&gt;/xstampp/misc/java_formatter.xml</code></p></li>
 </ol></li>
 </ol></li>
 </ul>
 <h3 id="create-a-new-plugin">Create a new plugin:</h3>
 <ul>
-<li><p>Contributing plugins should be named as <em>xstampp.</em><span class="math inline">&lt;<em>y</em><em>o</em><em>u</em><em>r</em><em>P</em><em>l</em><em>u</em><em>g</em><em>i</em><em>n</em>&gt;</span></p></li>
-<li><p>Create a new plugin by clicking <em>New</em><span class="math inline">→</span><em>Others..</em><span class="math inline">→</span><em>Plug-in Developement</em><span class="math inline">→</span><em>Plug-in Project</em></p></li>
-<li><p>Add dependencies xstampp and xstampp.extension</p></li>
-<li><p>Add the extension xstampp.extension.steppedProcess to your plugin</p></li>
-<li><p>Create a class implementing IDataModel</p></li>
-<li><p>Create stepEditors which must extend StandartEditorPart and implement IViewBase</p></li>
-<li><p>Xstampp loads the files which are selected in the load Dialog or already located in the workspace by directly calling a load command registered as command in the steppedProcess extensionPoint herefore it needs:</p>
+<li><p>Contributing plugins should be named as <code>xstampp.&lt;your Plugin&gt;</code>.</p></li>
+<li><p>Create a new plugin by clicking <em>New</em> —&gt; <em>Others..</em> —&gt; <em>Plug-in Developement</em> —&gt; <em>Plug-in Project</em>.</p></li>
+<li><p>Add dependencies <code>xstampp</code> and <code>xstampp.extension</code>.</p></li>
+<li><p>Add the extension <code>xstampp.extension.steppedProcess</code> to your plugin.</p></li>
+<li><p>Create a class implementing <code>IDataModel</code>.</p></li>
+<li><p>Create stepEditors which must extend <code>StandartEditorPart</code> and implement <code>IViewBase</code>.</p></li>
+<li><p>XSTAMPP loads the files which are selected in the load dialog or already located in the workspace by directly calling a load command registered as command in the steppedProcess extensionPoint herefore it needs:</p>
 <ul>
-<li><p>a load job which extends AbstractLoadJob</p></li>
-<li><p>a load Handler extending AbstractHandler which is registered as default handler for the load command</p></li>
-<li><p>let your handler.execute() return a new instance of your load job</p></li>
+<li><p>A load job which extends <code>AbstractLoadJob</code>.</p></li>
+<li><p>A load handler extending <code>AbstractHandler</code> which is registered as default handler for the load command.</p></li>
+<li><p>Let your <code>handler.execute()</code> return a new instance of your load job.</p></li>
 </ul></li>
-<li><p>XSTAMPP uses Eclipse Tycho as build tool, to include a plugin into its build process it need to be configured as Maven plugin<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a></p></li>
+<li><p>XSTAMPP uses Eclipse Tycho as build tool, to include a plugin into its build process it need to be configured as Maven plugin.</p></li>
 </ul>
 <h3 id="create-a-new-version">Create a new Version</h3>
 <ul>
-<li><p>All changes must be recorded in the <span class="math inline"><em>C</em><em>H</em><em>A</em><em>N</em><em>G</em><em>E</em><em>L</em><em>O</em><em>G</em>.<em>m</em><em>d</em></span></p></li>
-<li><p>If <em>misc/docu/README.tex</em> has been changed than:</p>
+<li><p>All changes must be recorded in the <code>CHANGELOG.md</code>.</p></li>
+<li><p>If <code>README.md</code> has been changed then:</p>
 <ul>
-<li><p>Download LaTex(<a href="https://miktex.org/">MikTex</a><a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> for Windows or <a href="http://tug.org/mactex/">MacTex</a><a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a> for Mac)</p></li>
-<li><p>This should contain an html(for eclipse help), md(for GitHub) and a pdf version of the Readme this can be achived by using <a href="https://pandoc.org">Pandoc</a><a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a></p>
+<li><p>Download LaTex (<a href="https://miktex.org/">MikTex</a> for Windows or <a href="http://tug.org/mactex/">MacTex</a> for Mac).</p></li>
+<li><p>This should contain an html (for eclipse help), md (for GitHub) and a pdf version of the Readme this can be achived by using <a href="https://pandoc.org">Pandoc</a>.</p>
 <ul>
-<li><p><code>cd misc/docu</code></p></li>
-<li><p><code>pandoc -s README.tex -o README.pdf –toc</code></p></li>
-<li><p><code>pandoc -s README.tex -o README.html</code></p></li>
-<li><p><code>pandoc -s README.tex -o README.md</code></p></li>
-<li><p><code>cp README.html ../../README/html/</code></p></li>
-<li><p><code>cp README.pdf ../../</code></p></li>
+<li><code>pandoc -s README.md -o README.pdf --toc</code></li>
+<li><code>pandoc -s README.md -o xstampp\html\README.html</code></li>
 </ul></li>
 </ul></li>
 <li><p>Update the <em>xstampp/html/CHANGELOG.html</em> (using Pandoc):</p>
 <ul>
-<li><p><code>cd ../..</code></p></li>
-<li><p><code>pandoc -s CHANGELOG.md -o CHANGELOG.html</code></p></li>
-<li><p><code>cp CHANGELOG.html xstampp/html/</code></p></li>
+<li><code>pandoc -s CHANGELOG.md -o xstampp\html\CHANGELOG.html</code></li>
 </ul></li>
-<li><p><em>createFiles.cmd</em> is a Windows batch script that executes all of the above commands to create the release files</p></li>
+<li><p><em>createFiles.cmd</em> is a Windows batch script that executes all of the above commands to create the updated documentation files.</p></li>
+<li><p>Update the updatesite: <strong>TODO</strong></p></li>
 </ul>
 <h1 id="chap:issues">Known Issues</h1>
 <h4 id="an-api-baseline-has-not-been-set-for-this-workspace">An API baseline has not been set for this Workspace</h4>
-<ol>
-<li><p>Go to the Eclipse Problems View (<span class="math inline"><em>W</em><em>i</em><em>n</em><em>d</em><em>o</em><em>w</em> → <em>S</em><em>h</em><em>o</em><em>w</em><em>V</em><em>i</em><em>e</em><em>w</em> → <em>P</em><em>r</em><em>o</em><em>b</em><em>l</em><em>e</em><em>m</em><em>s</em></span>)</p></li>
-<li><p>Right click the ’API baseline’ error</p></li>
-<li><p>In the context menu select <span class="math inline"><em>Q</em><em>u</em><em>i</em><em>c</em><em>k</em><em>F</em><em>i</em><em>x</em></span></p></li>
-<li><p>A Preference Window filtered for the API Baselines opens up</p></li>
-<li><p>in that Dialog find the field <span class="math inline"><em>M</em><em>i</em><em>s</em><em>s</em><em>i</em><em>n</em><em>g</em><em>A</em><em>P</em><em>I</em><em>B</em><em>a</em><em>s</em><em>e</em><em>l</em><em>i</em><em>n</em><em>e</em></span> and set it to <span class="math inline"><em>I</em><em>g</em><em>n</em><em>o</em><em>r</em><em>e</em></span> (see figure [fig:APIerror])</p>
+<ol style="list-style-type: decimal">
+<li><p>Go to the Eclipse Problems View (Window —&gt; Show View —&gt; Problems).</p></li>
+<li><p>Right click the ’API baseline’ error.</p></li>
+<li><p>In the context menu select <em>Quick Fix</em>.</p></li>
+<li><p>A Preference Window filtered for the API Baselines opens up.</p></li>
+<li><p>In that dialog find the field <em>Missing API Baseline</em> and set it to <em>Ignore</em> (see figure [fig:APIerror])</p>
 <div class="figure">
-<img src="images/ignoreAPIError.png" alt="The API baseline can be ignored" />
+<img src="doc/images/ignoreAPIError.png" alt="The API baseline can be ignored" />
 <p class="caption">The API baseline can be ignored<span data-label="fig:APIerror"></span></p>
 </div></li>
 </ol>
 <h4 id="plugin-execution-not-covered-by-lifecycle-configuration">Plugin Execution not covered by lifecycle configuration</h4>
-<ol>
-<li><p>Go to <span class="math inline"><em>W</em><em>i</em><em>n</em><em>d</em><em>o</em><em>w</em> → <em>P</em><em>r</em><em>e</em><em>f</em><em>e</em><em>r</em><em>e</em><em>n</em><em>c</em><em>e</em><em>s</em> → <em>M</em><em>a</em><em>v</em><em>e</em><em>n</em> → <em>E</em><em>r</em><em>r</em><em>o</em><em>r</em>/<em>W</em><em>a</em><em>r</em><em>n</em><em>i</em><em>n</em><em>g</em><em>s</em></span></p></li>
-<li><p>find the line ’Plugin Execution not covered..’</p></li>
-<li><p>Set the Value to ignore, by choosing selecting ’ignore’ in the combo box</p></li>
-<li><p>Click on Apply/Ok to rebuild the projects</p></li>
+<ol style="list-style-type: decimal">
+<li><p>Go to Window —&gt; Preferences —&gt; Maven —&gt; Error/Warnings.</p></li>
+<li><p>Find the line ’Plugin Execution not covered’.</p></li>
+<li><p>Set the Value to ignore, by choosing selecting ’ignore’ in the combo box.</p></li>
+<li><p>Click on Apply/Ok to rebuild the projects.</p></li>
 </ol>
 <h4 id="when-cloning-into-importing-xstampp-and-its-sub-projects-to-eclipse-the-project-dependencies-must-be-located-sometimes">When cloning into/ importing xstampp and its sub projects to eclipse the project dependencies must be located sometimes</h4>
-<ol>
-<li><p>In the Project Explorer right click on the project ’Build Path-&gt;Configure Build Path’</p></li>
-<li><p>In the ’Java Build Path’ Page click on ’Source’, by doing that java relocates the source folders in the projects andsets the dependencies</p></li>
-<li><p>hit Apply/Ok to store the settings</p></li>
+<ol style="list-style-type: decimal">
+<li><p>In the Project Explorer right click on the project ’Build Path —&gt; Configure Build Path’.</p></li>
+<li><p>In the ’Java Build Path’ Page click on ’Source’, by doing that java relocates the source folders in the projects andsets the dependencies.</p></li>
+<li><p>Hit Apply/Ok to store the settings.</p></li>
 </ol>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p><a href="http://eclipse.org/downloads" class="uri">http://eclipse.org/downloads</a><a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p><a href="http://download.eclipse.org/technology/nebula/snapshot/" class="uri">http://download.eclipse.org/technology/nebula/snapshot/</a><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p><a href="https://maven.apache.org/download.cgi" class="uri">https://maven.apache.org/download.cgi</a><a href="#fnref3">↩</a></p></li>
-<li id="fn4"><p><a href="http://www.vogella.com/tutorials/EclipseTycho/article.html" class="uri">http://www.vogella.com/tutorials/EclipseTycho/article.html</a><a href="#fnref4">↩</a></p></li>
-<li id="fn5"><p>https://miktex.org/<a href="#fnref5">↩</a></p></li>
-<li id="fn6"><p>http://tug.org/mactex/<a href="#fnref6">↩</a></p></li>
-<li id="fn7"><p>https://pandoc.org<a href="#fnref7">↩</a></p></li>
-</ol>
-</div>
 </body>
 </html>
