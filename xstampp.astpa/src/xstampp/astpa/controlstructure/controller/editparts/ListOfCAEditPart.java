@@ -76,6 +76,24 @@ public class ListOfCAEditPart extends AbstractMemberEditPart implements ISelecti
   }
 
   @Override
+  protected void refreshVisuals() {
+    if (!getModelChildren().isEmpty()) {
+      switch (getModelChildren().get(0).getComponentType()) {
+      case CONTROLACTION:
+        setFeedbackColor(ColorConstants.darkGreen);
+        break;
+      case FEEDBACK:
+        setFeedbackColor(ColorConstants.darkBlue);
+        break;
+      default:
+        setFeedbackColor(ColorConstants.gray);
+        break;
+      }
+    }
+    super.refreshVisuals();
+  }
+
+  @Override
   protected IFigure createFigure() {
     CSRectangleContainer tmp = new CSRectangleContainer(getId());
     tmp.setBorder(new LineBorder(ColorConstants.black, 1, SWT.BORDER_DASH) {
@@ -108,14 +126,6 @@ public class ListOfCAEditPart extends AbstractMemberEditPart implements ISelecti
         this.getDataModel(), this.getStepId()));
     this.installEditPolicy(EditPolicy.COMPONENT_ROLE, new CSDeletePolicy(
         this.getDataModel(), this.getStepId()));
-  }
-
-  @Override
-  public boolean understandsRequest(Request req) {
-    // if(req.getType() == RequestConstants.REQ_DIRECT_EDIT){
-    // return false;
-    // }
-    return super.understandsRequest(req);
   }
 
   /**

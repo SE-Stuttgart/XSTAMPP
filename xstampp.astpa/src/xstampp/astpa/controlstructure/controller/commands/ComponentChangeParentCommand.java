@@ -63,9 +63,9 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
   }
 
   public void setNewLocation(Point p) {
-    
-    this.newLayoutStep0 = new Rectangle(p.x(), p.y(),oldLayoutStep0.width, oldLayoutStep0.height);
-    this.newLayoutStep2 =  new Rectangle(p.x(), p.y(),oldLayoutStep2.width, oldLayoutStep2.height);
+
+    this.newLayoutStep0 = new Rectangle(p.x(), p.y(), oldLayoutStep0.width, oldLayoutStep0.height);
+    this.newLayoutStep2 = new Rectangle(p.x(), p.y(), oldLayoutStep2.width, oldLayoutStep2.height);
   }
 
   @Override

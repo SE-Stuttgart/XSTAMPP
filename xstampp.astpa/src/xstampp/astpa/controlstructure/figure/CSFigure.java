@@ -165,10 +165,6 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
   @Override
   public void paintChildren(Graphics graphics) {
     if ((this.image != null) && this.hasDeco) {
-      double newPos = CSFigure.IMG_WIDTH * Math.min(1, graphics.getAbsoluteScale());
-      Rectangle rect = this.textLabel.getBounds();
-      this.setConstraint(this.textLabel,
-          new Rectangle((int) newPos, rect.y, rect.width, rect.height));
       graphics.scale(0.25);
       graphics.setAntialias(SWT.ON);
       graphics.drawImage(this.image, 1, 1);

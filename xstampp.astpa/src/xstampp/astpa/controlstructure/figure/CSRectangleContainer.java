@@ -69,23 +69,24 @@ public class CSRectangleContainer extends Figure
    */
   @Override
   protected void layout() {
+    super.layout();
     int y = TOP_OFFSET;
     int width = 0;
     Point offset = ((XYLayout) getLayoutManager()).getOrigin(this);
-    Rectangle tmp;
     for (Object child : this.getChildren()) {
       if (child instanceof IFigure) {
-        // rect = (Rectangle) ((XYLayout)getLayoutManager()).getConstraint((IFigure) child);
-        tmp = ((IFigure) child).getBounds();
-        tmp.y = y;
-        y += tmp.height + TOP_OFFSET;
-        width = Math.max(width, tmp.width);
-        tmp.x = TOP_OFFSET;
-        tmp = tmp.getTranslated(offset);
-        ((IFigure) child).setBounds(tmp);
+        Rectangle tmp = (Rectangle) ((XYLayout) getLayoutManager()).getConstraint((IFigure) child);
+        if (tmp != null) {
+          tmp.y = y;
+          y += tmp.height + TOP_OFFSET;
+          width = Math.max(width, tmp.width);
+          tmp.x = TOP_OFFSET;
+          tmp = tmp.getTranslated(offset);
+          ((IFigure) child).setLocation(tmp.getLocation());
+        }
       }
     }
-    setPreferredSize(width + 2 + TOP_OFFSET, y + 5);
+    setSize(width + 2 + TOP_OFFSET, y + 5);
   }
 
   @Override
@@ -121,7 +122,6 @@ public class CSRectangleContainer extends Figure
     if (getChildren().isEmpty()) {
       bounds1.setSize(20, 20);
     } else {
-      layout();
       bounds1.setSize(getPreferredSize());
     }
 
