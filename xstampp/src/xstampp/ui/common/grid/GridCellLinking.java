@@ -13,7 +13,10 @@ package xstampp.ui.common.grid;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -53,7 +56,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   private final transient GridWrapper grid;
   private CellButtonContainer buttonContainer;
   private List<CellButton> buttons;
-
+  private Map<Rectangle, String> toolTipsToLinkAreas;
   private int lines;
 
   private boolean canEdit;
@@ -122,7 +125,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
   public GridCellLinking(final UUID assignedId, final T publicInterface, final GridWrapper grid,
       boolean canEdit) {
     super();
-
+    this.toolTipsToLinkAreas = new HashMap<>();
     this.assignedId = assignedId;
     this.publicInterface = publicInterface;
     this.grid = grid;
@@ -153,6 +156,7 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     for (CellButton button : buttons) {
       this.buttonContainer.addColumButton(button);
     }
+    this.toolTipsToLinkAreas.clear();
     if (linkedItems.isEmpty()) {
       gc.drawString(this.publicInterface.getEmptyMessage(), renderX + 2, renderY);
     } else {
@@ -171,11 +175,12 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
           tmpLines++;
           xOff = 0;
           yOff += AbstractGridCell.DEFAULT_CELL_HEIGHT;
-
         }
-
         gc.setForeground(GridCellLinking.HAZARD_LINK_COLOR);
-        gc.drawString(linkText, renderX + 4 + xOff, renderY + yOff);
+        Rectangle linkArea = new Rectangle(renderX + 4 + xOff, renderY + yOff, textWidth,
+            AbstractGridCell.DEFAULT_CELL_HEIGHT);
+        gc.drawString(linkText, linkArea.x, linkArea.y);
+        toolTipsToLinkAreas.put(linkArea, model.getTitle());
         // restore old foreground color
         gc.setForeground(foreground);
 
@@ -198,6 +203,16 @@ public class GridCellLinking<T extends ITableContentProvider<?>> extends Abstrac
     }
     this.buttonContainer.paintButtons(renderer, gc);
     gc.setAntialias(SWT.ON);
+  }
+
+  @Override
+  public String getToolTip(Point point) {
+    for (Entry<Rectangle, String> linkEntry : toolTipsToLinkAreas.entrySet()) {
+      if (linkEntry.getKey().contains(point)) {
+        return linkEntry.getValue();
+      }
+    }
+    return super.getToolTip(point);
   }
 
   @Override

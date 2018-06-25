@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 
 import messages.Messages;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.interfaces.ILinkModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkingType;
@@ -221,13 +222,17 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     return result;
   }
 
-  public String getText(UUID id) {
+  private ITableModel getTableModel(UUID id) {
     for (ITableModel model : getModels()) {
       if (model.getId().equals(id)) {
-        return model.getIdString();
+        return model;
       }
     }
-    return null;
+    return BadReferenceModel.getBadReference();
+  }
+
+  public String getText(UUID id) {
+    return getTableModel(id).getIdString();
   }
 
   public String getTitle(UUID id) {
@@ -271,8 +276,9 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     LinkProposal[] proposals = new LinkProposal[available.size()];
     for (int i = 0; i < proposals.length; i++) {
       LinkProposal proposal = new LinkProposal();
-      proposal.setLabel(getText(available.get(i)));
-      proposal.setDescription(getDescription(available.get(i)));
+      ITableModel model = getTableModel(available.get(i));
+      proposal.setLabel(model.getIdString() + " - " + model.getTitle());
+      proposal.setDescription(model.getDescription());
       proposals[i] = proposal;
     }
 
