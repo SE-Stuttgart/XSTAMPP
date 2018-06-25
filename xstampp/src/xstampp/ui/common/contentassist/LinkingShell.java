@@ -31,6 +31,7 @@ import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -42,7 +43,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 class LinkingShell {
 
@@ -100,12 +100,10 @@ class LinkingShell {
     if (this.shell != null && !this.shell.isDisposed()) {
       this.shell.close();
     }
+    mouseLoc = Display.getDefault().getCursorLocation();
+    // setMousePosition(
+    // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().toControl(location));
 
-    if (mouseLoc == null) {
-      Point location = Display.getDefault().getCursorLocation();
-      setMousePosition(
-          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().toControl(location));
-    }
     if (this.proposals.length == 0) {
       MessageDialog.openError(null, "No entrys available",
           "There are no entrys available for linking!");
@@ -118,17 +116,16 @@ class LinkingShell {
 
     // calculate the correct position of the shell, so that it's not displayed beyond the
     // display bounds
-    Point shellLocation = control.toDisplay(mouseLoc.x, mouseLoc.y);
-
-    if (Display.getDefault().getBounds().width - (labelShellSize.x + shellLocation.x) < 0) {
+    Point shellLocation = control.toControl(mouseLoc.x, mouseLoc.y);
+    Rectangle bounds = control.getBounds();
+    if (bounds.width - (labelShellSize.x + shellLocation.x) < 0) {
       shellLocation.x = shellLocation.x - labelShellSize.x;
     }
-    if (Display.getDefault().getBounds().height - (labelShellSize.y + shellLocation.y) < 0) {
+    if (bounds.height - (labelShellSize.y + shellLocation.y) < 0) {
       shellLocation.y = shellLocation.y - labelShellSize.y;
     }
 
-    this.shell.setLocation(shellLocation);
-
+    this.shell.setLocation(control.toDisplay(shellLocation.x, shellLocation.y));
     final Shell descShell = new Shell(SWT.RESIZE);
     descShell.setLayout(new FormLayout());
     descShell.setSize(descShellSize);
@@ -136,7 +133,7 @@ class LinkingShell {
     // display bounds
     Point descShellLocation = new Point(
         shell.getBounds().x + shell.getBounds().width + shellsOffset, shell.getBounds().y);
-    if (Display.getDefault().getBounds().width - (descShellLocation.x + descShellSize.x) < 0) {
+    if (bounds.width - (descShellLocation.x + descShellSize.x) < 0) {
       descShellLocation.x = shell.getBounds().x - descShellSize.x - shellsOffset;
     }
     descShell.setLocation(descShellLocation);
