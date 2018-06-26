@@ -102,11 +102,11 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    * @return the index of the linked item with the given description, or <b>null</b> if the label
    *         didn't match any current linked item
    */
-  public final int indexOf(String label) {
-    if (label != null && available != null) {
+  private final int indexOf(UUID proposalId) {
+    if (proposalId != null && available != null) {
       int index = 0;
       for (UUID model : available) {
-        if (label.equals(getText(model))) {
+        if (proposalId.equals(model)) {
           return index;
         }
         index++;
@@ -144,7 +144,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   @Override
   public void proposalAccepted(IContentProposal proposal) {
 
-    int indexOf = indexOf(proposal.getLabel());
+    int indexOf = indexOf(((LinkProposal) proposal).getProposalId());
     if (indexOf >= 0) {
       UUID uuid = available.get(indexOf);
       getDataInterface().getLinkController().addLink(getLinkType(), getCurrentId(), uuid);
@@ -244,6 +244,15 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     return null;
   }
 
+  public String getLongTitle(UUID id) {
+    for (ITableModel model : getModels()) {
+      if (model.getId().equals(id)) {
+        return model.getIdString() + " - " + model.getTitle();
+      }
+    }
+    return null;
+  }
+
   public String getDescription(UUID id) {
     for (ITableModel model : getModels()) {
       if (model.getId().equals(id)) {
@@ -277,8 +286,9 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     for (int i = 0; i < proposals.length; i++) {
       LinkProposal proposal = new LinkProposal();
       ITableModel model = getTableModel(available.get(i));
-      proposal.setLabel(model.getIdString() + " - " + model.getTitle());
+      proposal.setLabel(getLongTitle(available.get(i)));
       proposal.setDescription(model.getDescription());
+      proposal.setProposalId(model.getId());
       proposals[i] = proposal;
     }
 
@@ -354,7 +364,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
 
       @Override
       public String getText(Object element) {
-        return LinkSupport.this.getText((UUID) element);
+        return LinkSupport.this.getLongTitle((UUID) element);
       }
     });
 

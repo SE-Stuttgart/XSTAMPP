@@ -127,7 +127,7 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
 
   @Override
   public String getToolTip() {
-    return "Press to edit the severity";
+    return "Press to edit the severity\n-\n" + currentSeverity.getDescription();
   }
 
   @Override

@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -215,6 +216,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
    */
   public void setTableViewer(TableViewer tableViewer) {
     this.tableViewer = tableViewer;
+    ColumnViewerToolTipSupport.enableFor(tableViewer);
   }
 
   /**
@@ -1091,6 +1093,10 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           .setToolTipText(xstampp.astpa.messages.Messages.ProjectSpecifics_UseSeverityTip);
       severityColumn.getColumn().setText("Severity*");
       severityColumn.setLabelProvider(new ColumnLabelProvider() {
+        @Override
+        public String getToolTipText(Object element) {
+          return ((ISeverityEntry) element).getSeverity().getDescription();
+        }
 
         @Override
         public String getText(Object element) {
