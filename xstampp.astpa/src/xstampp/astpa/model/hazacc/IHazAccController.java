@@ -196,6 +196,21 @@ public interface IHazAccController {
    */
   boolean setUseSeverity(boolean useSeverity);
 
+  /**
+   * @return Whether or not the System level Hazards defined in Step 1 should be linked directly to
+   *         system
+   *         level safety constraints as defined by Leveson et al. in the STPA_Handbook.
+   */
+  boolean isUseHazardConstraints();
+
+  /**
+   * @param useHazardConstraints
+   *          the useHazardConstraints to that defines whether or not the System level Hazards
+   *          defined in Step 1 should be linked directly to system
+   *          level safety constraints as defined by Leveson et al. in the STPA_Handbook.
+   */
+  boolean setUseHazardConstraints(boolean useHazardConstraints);
+
   void addObserver(Observer obs);
 
   boolean setHazardDescription(UUID hazardId, String description);

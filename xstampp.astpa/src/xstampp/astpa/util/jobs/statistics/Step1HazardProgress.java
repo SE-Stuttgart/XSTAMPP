@@ -38,7 +38,7 @@ public class Step1HazardProgress extends AbstractProgressSheetCreator {
       "Correcponding Safety Constraint", "Design Requirements", "", "Completion[%]" };
 
   public Step1HazardProgress(Workbook wb, DataModelController controller) {
-    super(wb, controller, STEP.STEP_1_HAZARD_CENTERED);
+    super(wb, controller, STEP.STEP_3_HAZARD_CENTERED);
   }
 
   public void createWorkSheet(Sheet sheet) {

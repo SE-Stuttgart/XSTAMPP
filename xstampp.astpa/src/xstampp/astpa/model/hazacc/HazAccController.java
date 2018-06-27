@@ -58,6 +58,9 @@ public class HazAccController extends ATableModelController implements IHazAccCo
   @XmlAttribute(name = "useSeverity")
   private Boolean useSeverity;
 
+  @XmlAttribute(name = "useHazardConstraints")
+  private Boolean useHazardConstraints;
+
   private LinkController linkController;
 
   /**
@@ -281,8 +284,10 @@ public class HazAccController extends ATableModelController implements IHazAccCo
       for (UUID id : linkController.getLinksFor(LinkingType.HAZ_ACC_LINK, accident.getId())) {
         linkString += getHazard(id).getIdString() + ", "; //$NON-NLS-1$
       }
-      for (UUID id : linkController.getLinksFor(LinkingType.ACC_S0_LINK, accident.getId())) {
-        linkString += sdsController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
+      if (!isUseHazardConstraints()) {
+        for (UUID id : linkController.getLinksFor(LinkingType.ACC_S0_LINK, accident.getId())) {
+          linkString += sdsController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
+        }
       }
       if (linkString.length() > 2) {
         accident.setLinks(linkString.substring(0, linkString.length() - 2));
@@ -293,6 +298,11 @@ public class HazAccController extends ATableModelController implements IHazAccCo
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(LinkingType.HAZ_ACC_LINK, hazard.getId())) {
         linkString += getAccident(id).getIdString() + ", "; //$NON-NLS-1$
+      }
+      if (isUseHazardConstraints()) {
+        for (UUID id : linkController.getLinksFor(LinkingType.HAZ_S0_LINK, hazard.getId())) {
+          linkString += sdsController.getSafetyConstraint(id).getIdString() + ", "; //$NON-NLS-1$
+        }
       }
       if (linkString.length() > 2) {
         hazard.setLinks(linkString.substring(0, linkString.length() - 2));
@@ -366,6 +376,23 @@ public class HazAccController extends ATableModelController implements IHazAccCo
     return false;
   }
 
+  @Override
+  public boolean isUseHazardConstraints() {
+    if (useHazardConstraints != null) {
+      return useHazardConstraints;
+    }
+    return ASTPADefaultConfig.getInstance().USE_HAZ_SC_LINKING;
+  }
+
+  @Override
+  public boolean setUseHazardConstraints(boolean useHazardConstraints) {
+    if (this.useHazardConstraints == null || useHazardConstraints != this.useHazardConstraints) {
+      this.useHazardConstraints = useHazardConstraints;
+      return true;
+    }
+    return false;
+  }
+
   private List<Accident> getAccidents() {
     if (this.accidents == null) {
       this.accidents = new NumberedArrayList<>();
@@ -410,4 +437,5 @@ public class HazAccController extends ATableModelController implements IHazAccCo
       }
     }
   }
+
 }

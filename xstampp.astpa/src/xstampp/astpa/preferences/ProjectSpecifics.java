@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 
 import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.DataModelController;
@@ -38,6 +39,8 @@ public class ProjectSpecifics implements ISettingsPage {
   private BooleanSetting switchCFandUCA;
   private BooleanSetting useHazardSeverity;
   private ModalShell modalShell;
+  private BooleanSetting useHazardConstraints;
+  private BooleanSetting useAccidentConstraints;
 
   public ProjectSpecifics() {
   }
@@ -60,27 +63,47 @@ public class ProjectSpecifics implements ISettingsPage {
     Composite container = new Composite(control, SWT.None);
     container.setLayout(new GridLayout(2, false));
     container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
+
     // add boolean widget for choosing whether or not to use the scenarios to analyse the causal
     // factors
     String title = Messages.ProjectSpecifics_UseCausalScenarios;
     String description = Messages.ProjectSpecifics_UseCausalScenariosTip;
     this.useScenariosSetting = new BooleanSetting(container, title, description,
-        this.controller.isUseScenarios());
-    this.useScenariosSetting.setMessage(Messages.ProjectSpecifics_ReopenDesignRequirements);
+        this.controller.isUseScenarios(), SWT.CHECK);
+    this.useScenariosSetting
+        .setMessage(String.format(Messages.ProjectSpecifics_ReopenViews, "Hazards, Accidents, UCA Table"));
 
     // add boolean widget for choosing whether or not to Switch Causal Factor and UCA columns
     title = Messages.ProjectSpecifics_SwitchCFandUCATitle;
     description = Messages.ProjectSpecifics_SwitchCFandUCADesc;
     this.switchCFandUCA = new BooleanSetting(container, title, description,
-        this.controller.getCausalFactorController().analyseFactorsPerUCA());
-    this.switchCFandUCA.setMessage(Messages.ProjectSpecifics_ReopenCausalFactors);
+        this.controller.getCausalFactorController().analyseFactorsPerUCA(), SWT.CHECK);
+    this.switchCFandUCA.setMessage(String.format(Messages.ProjectSpecifics_ReopenViews, "Causal Factors"));
 
     // add a boolean widget for whether or not to use the severity analysis
     title = Messages.ProjectSpecifics_UseSeverity;
     description = Messages.ProjectSpecifics_UseSeverityTip;
     this.useHazardSeverity = new BooleanSetting(container, title, description,
-        this.controller.isUseSeverity());
-    this.useHazardSeverity.setMessage(Messages.ProjectSpecifics_ReopenHazardView);
+        this.controller.isUseSeverity(), SWT.CHECK);
+    this.useHazardSeverity.setMessage(String.format(Messages.ProjectSpecifics_ReopenViews, "Hazards"));
+
+    Group constraintLinkingGroup = new Group(container, SWT.None);
+    constraintLinkingGroup.setLayout(new GridLayout(2, false));
+    constraintLinkingGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 2, 1));
+
+    title = Messages.ProjectSpecifics_UseHazardConstraints;
+    description = Messages.ProjectSpecifics_UseHazardConstraintsLong;
+    this.useHazardConstraints = new BooleanSetting(constraintLinkingGroup, title, description,
+        this.controller.getHazAccController().isUseHazardConstraints(), SWT.RADIO);
+    this.useHazardConstraints
+        .setMessage(String.format(Messages.ProjectSpecifics_ReopenViews, "Hazards, Accidents, Safety Constraints"));
+
+    title = Messages.ProjectSpecifics_UseAccidentConstraints;
+    description = Messages.ProjectSpecifics_UseAccidentConstraintsLong;
+    this.useAccidentConstraints = new BooleanSetting(constraintLinkingGroup, title, description,
+        !this.controller.getHazAccController().isUseHazardConstraints(), SWT.RADIO);
+    this.useAccidentConstraints
+        .setMessage(String.format(Messages.ProjectSpecifics_ReopenViews, "Hazards, Accidents, Safety Constraints"));
     container.setSize(400, 400);
     return container;
   }
@@ -95,6 +118,7 @@ public class ProjectSpecifics implements ISettingsPage {
     this.controller.setUseScenarios(this.useScenariosSetting.selected);
     this.controller.setUseSeverity(this.useHazardSeverity.selected);
     this.controller.getCausalFactorController().setAnalyseFactorsPerUCA(this.switchCFandUCA.selected);
+    this.controller.getHazAccController().setUseHazardConstraints(useHazardConstraints.selected);
     return true;
   }
 
@@ -103,9 +127,9 @@ public class ProjectSpecifics implements ISettingsPage {
     private String message = null;
     private boolean useMessage = false;
 
-    public BooleanSetting(Composite parent, String title, String description, boolean initial) {
+    public BooleanSetting(Composite parent, String title, String description, boolean initial, int style) {
 
-      Button boolSetting = new Button(parent, SWT.CHECK);
+      Button boolSetting = new Button(parent, style);
       Composite comp = new Composite(parent, SWT.None);
       comp.setLayout(new GridLayout());
       boolSetting.setSelection(initial);

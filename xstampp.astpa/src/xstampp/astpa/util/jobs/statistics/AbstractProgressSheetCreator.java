@@ -45,9 +45,9 @@ abstract class AbstractProgressSheetCreator {
   private Styles defaultStyle = Styles.DEFAULT_UNEVEN;
 
   enum STEP {
-    TOTAL("Total"), STEP_0("Step 0"), STEP_1("Step 1"), STEP_1_HAZARD_CENTERED("Step 1"), STEP_2(
-        "Step 2"), STEP_2_HAZARD_CENTERED(
-            "Step 2");
+    TOTAL("Total"), STEP_1("Step 1"), STEP_2("Step 2"), STEP_3("Step 3"), STEP_3_HAZARD_CENTERED("Step 2"), STEP_4(
+        "Step 3"), STEP_4_HAZARD_CENTERED(
+            "Step 3");
 
     private String label;
 
@@ -78,11 +78,11 @@ abstract class AbstractProgressSheetCreator {
   static void initMap() {
     progressMap = new HashMap<>();
     progressMap.put(STEP.TOTAL, new HashMap<>());
-    progressMap.put(STEP.STEP_0, new HashMap<>());
     progressMap.put(STEP.STEP_1, new HashMap<>());
-    progressMap.put(STEP.STEP_2, new HashMap<>());
-    progressMap.put(STEP.STEP_1_HAZARD_CENTERED, new HashMap<>());
-    progressMap.put(STEP.STEP_2_HAZARD_CENTERED, new HashMap<>());
+    progressMap.put(STEP.STEP_3, new HashMap<>());
+    progressMap.put(STEP.STEP_4, new HashMap<>());
+    progressMap.put(STEP.STEP_3_HAZARD_CENTERED, new HashMap<>());
+    progressMap.put(STEP.STEP_4_HAZARD_CENTERED, new HashMap<>());
 
   }
 

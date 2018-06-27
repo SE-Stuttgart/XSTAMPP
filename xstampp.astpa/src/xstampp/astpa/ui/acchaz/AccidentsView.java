@@ -72,8 +72,10 @@ public class AccidentsView extends CommonTableView<IAccidentViewDataModel> {
   protected void addLinkSupports() {
     addLinkSupport(new HazardLinkSupport((DataModelController) getDataInterface(),
         LinkingType.HAZ_ACC_LINK));
-    addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
-        LinkingType.ACC_S0_LINK));
+    if (!((DataModelController) getDataInterface()).getHazAccController().isUseHazardConstraints()) {
+      addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
+          LinkingType.ACC_S0_LINK));
+    }
   }
 
   @Override

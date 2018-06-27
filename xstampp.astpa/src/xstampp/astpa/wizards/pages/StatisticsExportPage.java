@@ -1,12 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2018 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software Engineering Group University of Stuttgart, Germany.
+ * Copyright (C) 2018 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software Engineering Group University of Stuttgart, Germany - initial API and implementation
+ * Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software
+ * Engineering Group University of Stuttgart, Germany - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.wizards.pages;
 
@@ -20,12 +22,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.Severity;
+import xstampp.model.IDataModel;
+import xstampp.ui.common.ProjectManager;
 import xstampp.ui.wizards.AbstractExportPage;
 import xstampp.util.DefaultSelectionAdapter;
 
@@ -102,7 +106,12 @@ public class StatisticsExportPage extends AbstractExportPage {
     parameterPanel.setLayoutData(getDefaultFormData(pathChooser, 3));
     parameterPanel.setLayout(new GridLayout(4, false));
     new Label(parameterPanel, SWT.NONE);
-    new Label(parameterPanel, SWT.BORDER).setText("Safety Constraints per Accident");
+    IDataModel dataModel = ProjectManager.getContainerInstance().getDataModel(this.getProjectID());
+    if (((DataModelController) dataModel).getHazAccController().isUseHazardConstraints()) {
+      new Label(parameterPanel, SWT.BORDER).setText("Safety Constraints per Hazard");
+    } else {
+      new Label(parameterPanel, SWT.BORDER).setText("Safety Constraints per Accident");
+    }
     new Label(parameterPanel, SWT.BORDER).setText("UCAs per Control Action");
     new Label(parameterPanel, SWT.BORDER).setText("Causal Factors per UCA");
     new Label(parameterPanel, SWT.BORDER).setText("S0");

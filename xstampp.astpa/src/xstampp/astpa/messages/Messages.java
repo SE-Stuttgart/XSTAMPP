@@ -47,13 +47,15 @@ public class Messages extends NLS {
   public static String ListOfCAEditPart_ToolTip0;
   public static String NotGiven;
   public static String ProjectSpecifics_GeneralSettings;
-  public static String ProjectSpecifics_ReopenCausalFactors;
-  public static String ProjectSpecifics_ReopenDesignRequirements;
-  public static String ProjectSpecifics_ReopenHazardView;
+  public static String ProjectSpecifics_ReopenViews;
   public static String ProjectSpecifics_SwitchCFandUCADesc;
   public static String ProjectSpecifics_SwitchCFandUCATitle;
+  public static String ProjectSpecifics_UseAccidentConstraints;
+  public static String ProjectSpecifics_UseAccidentConstraintsLong;
   public static String ProjectSpecifics_UseCausalScenarios;
   public static String ProjectSpecifics_UseCausalScenariosTip;
+  public static String ProjectSpecifics_UseHazardConstraints;
+  public static String ProjectSpecifics_UseHazardConstraintsLong;
   public static String ProjectSpecifics_UseSeverity;
   public static String ProjectSpecifics_UseSeverityTip;
   public static String Severity_S0;

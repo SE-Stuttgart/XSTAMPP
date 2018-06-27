@@ -33,7 +33,7 @@ public class Step1Progress extends AbstractProgressSheetCreator {
   private int uca_per_ca;
 
   public Step1Progress(Workbook wb, DataModelController controller, int uca_per_ca) {
-    super(wb, controller, STEP.STEP_1);
+    super(wb, controller, STEP.STEP_3);
     this.uca_per_ca = uca_per_ca;
   }
 

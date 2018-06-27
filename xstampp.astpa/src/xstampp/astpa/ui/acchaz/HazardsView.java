@@ -21,6 +21,7 @@ import xstampp.astpa.model.interfaces.IHazardViewDataModel;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.AccidentLinkSupport;
+import xstampp.astpa.ui.linkingSupport.Step0ConstraintsLinkSupport;
 import xstampp.model.ObserverValue;
 
 /**
@@ -55,6 +56,10 @@ public class HazardsView extends CommonTableView<IHazardViewDataModel> {
   protected void addLinkSupports() {
     addLinkSupport(new AccidentLinkSupport((DataModelController) getDataInterface(),
         LinkingType.HAZ_ACC_LINK));
+    if (((DataModelController) getDataInterface()).getHazAccController().isUseHazardConstraints()) {
+      addLinkSupport(new Step0ConstraintsLinkSupport((DataModelController) getDataInterface(),
+          LinkingType.HAZ_S0_LINK));
+    }
   }
 
   @Override

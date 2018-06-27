@@ -542,6 +542,8 @@
         </xs:attribute>
         <xs:attribute name="useSeverity" type="xs:boolean" use="optional">
         </xs:attribute>
+        <xs:attribute name="useHazardConstraints" type="xs:boolean" use="optional">
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="controlActionController">

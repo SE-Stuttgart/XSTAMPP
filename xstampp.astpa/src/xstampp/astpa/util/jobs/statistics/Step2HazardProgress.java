@@ -42,7 +42,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
   private Map<Severity, Integer> cf_per_uca;
 
   public Step2HazardProgress(Workbook wb, DataModelController controller, Map<Severity, Integer> cf_per_uca) {
-    super(wb, controller, STEP.STEP_2_HAZARD_CENTERED);
+    super(wb, controller, STEP.STEP_4_HAZARD_CENTERED);
     this.cf_per_uca = cf_per_uca;
   }
 

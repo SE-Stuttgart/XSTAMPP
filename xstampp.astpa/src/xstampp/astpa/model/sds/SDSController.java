@@ -510,9 +510,15 @@ public class SDSController extends ATableModelController implements ISDSControll
     for (SafetyConstraint safetyConstraint : this.getSafetyConstraints()) {
       safetyConstraint.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
-      for (UUID id : linkController.getLinksFor(LinkingType.ACC_S0_LINK,
-          safetyConstraint.getId())) {
-        linkString += hazacc.getAccident(id).getIdString() + ", "; //$NON-NLS-1$
+      if (hazacc.isUseHazardConstraints()) {
+        for (UUID id : linkController.getLinksFor(LinkingType.HAZ_S0_LINK, safetyConstraint.getId())) {
+          linkString += hazacc.getHazard(id).getIdString() + ", "; //$NON-NLS-1$
+        }
+      } else {
+        for (UUID id : linkController.getLinksFor(LinkingType.ACC_S0_LINK,
+            safetyConstraint.getId())) {
+          linkString += hazacc.getAccident(id).getIdString() + ", "; //$NON-NLS-1$
+        }
       }
       for (UUID id : linkController.getLinksFor(LinkingType.DR0_SC_LINK,
           safetyConstraint.getId())) {

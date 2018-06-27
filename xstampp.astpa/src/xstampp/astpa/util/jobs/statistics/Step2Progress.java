@@ -36,7 +36,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
   private Map<Severity, Integer> cf_per_uca;
 
   public Step2Progress(Workbook wb, DataModelController controller, Map<Severity, Integer> cf_per_uca) {
-    super(wb, controller, STEP.STEP_2);
+    super(wb, controller, STEP.STEP_4);
     this.cf_per_uca = cf_per_uca;
   }
 

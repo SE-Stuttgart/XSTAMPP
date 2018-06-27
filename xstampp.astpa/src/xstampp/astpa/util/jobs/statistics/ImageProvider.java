@@ -1,12 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2018 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software Engineering Group University of Stuttgart, Germany.
+ * Copyright (C) 2018 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
+ * Software Engineering Group University of Stuttgart, Germany.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software Engineering Group University of Stuttgart, Germany - initial API and implementation
+ * Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology, Software
+ * Engineering Group University of Stuttgart, Germany - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.util.jobs.statistics;
 
@@ -63,20 +65,20 @@ public class ImageProvider {
         int stringY = segmY + rectHeight / 2 + fontHeight / 2;
         graphics.drawString(model.getIdString(), stringX, stringY);
         drawHorizontalStepBar(graphics, rect, model.getId(),
-            EnumSet.of(STEP.STEP_0, STEP.STEP_1_HAZARD_CENTERED, STEP.STEP_2_HAZARD_CENTERED));
+            EnumSet.of(STEP.STEP_1, STEP.STEP_3_HAZARD_CENTERED, STEP.STEP_4_HAZARD_CENTERED));
         segmY += rectHeight + horizontalMargin;
       }
 
       graphics.setColor(Color.lightGray);
 
       graphics.fillRect(width - 100, 50 + 4, 15, 15);
-      graphics.drawString("Step 0", width - 80, 50 + fontHeight * 1);
+      graphics.drawString("Step 1", width - 80, 50 + fontHeight * 1);
       graphics.setColor(Color.GRAY);
       graphics.fillRect(width - 100, 50 + fontHeight + 4, 15, 15);
-      graphics.drawString("Step 1", width - 80, 50 + fontHeight * 2);
+      graphics.drawString("Step 3", width - 80, 50 + fontHeight * 2);
       graphics.setColor(Color.darkGray);
       graphics.fillRect(width - 100, 50 + fontHeight * 2 + 4, 15, 15);
-      graphics.drawString("Step 2", width - 80, 50 + fontHeight * 3);
+      graphics.drawString("Step 4", width - 80, 50 + fontHeight * 3);
     });
   }
 
@@ -96,9 +98,9 @@ public class ImageProvider {
         int lineY = (int) (rect.y + (rect.height * factor));
         graphics.drawLine(rect.x, lineY, rect.x + rect.width, lineY);
       }
-      drawBar(graphics, rect, STEP.STEP_0, 1, 30);
-      drawBar(graphics, rect, STEP.STEP_1, 2, 30);
-      drawBar(graphics, rect, STEP.STEP_2, 3, 30);
+      drawBar(graphics, rect, STEP.STEP_1, 1, 30);
+      drawBar(graphics, rect, STEP.STEP_3, 2, 30);
+      drawBar(graphics, rect, STEP.STEP_4, 3, 30);
     });
   }
 

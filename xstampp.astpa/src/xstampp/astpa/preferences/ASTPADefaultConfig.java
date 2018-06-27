@@ -35,6 +35,14 @@ public class ASTPADefaultConfig {
   public final boolean USE_SEVERITY_ANALYSIS;
 
   /**
+   * Whether or not the System level Hazards defined in Step 1 should be linked directly to system
+   * level safety constraints as defined by Leveson et al. in the STPA_Handbook.
+   * <p>
+   * <i><b>Note</b> This can be changed in the project settings menu of the program</i>
+   */
+  public final boolean USE_HAZ_SC_LINKING;
+
+  /**
    * Whether or not it should be possible to define multiple control structure diagrams in an stpa
    * project for documentation reasons. Only the first control structure (Level 0) is used in the
    * causal analysis but all control structures can contribute control actions.
@@ -64,6 +72,7 @@ public class ASTPADefaultConfig {
     USE_MULTI_CONTROL_STRUCTURES = fetchSTPAConfig("stpa.defaults.useMultiControlStructures",
         false);
     USE_SEVERITY_ANALYSIS = fetchSTPAConfig("stpa.defaults.useSeverityAnalysis", true);
+    USE_HAZ_SC_LINKING = fetchSTPAConfig("stpa.defaults.useHazardsConstraintLinks", true);
     USE_FACTORS_PER_UCA = fetchSTPAConfig("stpa.defaults.switchUCAsPerFactorToFactorsPerUCA", true);
   }
 

@@ -70,11 +70,15 @@ public class STPAStatisticsJob extends XstamppJob {
       Sheet ws = wb.createSheet("Total");
       Sheet hazardTotalSheet = wb.createSheet("Hazard Progress");
       AbstractProgressSheetCreator.initMap();
-      new Step0Progress(wb, controller, sc_per_acc).createSheet("STPA Step 0");
-      new Step1Progress(wb, controller, uca_per_ca).createSheet("STPA Step 1");
-      new Step2Progress(wb, controller, cf_per_uca).createSheet("STPA Step 2");
-      new Step1HazardProgress(wb, controller).createSheet("STPA Step 1 Hazard Centered");
-      new Step2HazardProgress(wb, controller, cf_per_uca).createSheet("STPA Step 2 Hazard Centered");
+      if (controller.getHazAccController().isUseHazardConstraints()) {
+        new Step0ProgressWithHazConstraints(wb, controller, sc_per_acc).createSheet("STPA Step 1");
+      } else {
+        new Step0Progress(wb, controller, sc_per_acc).createSheet("STPA Step 1");
+      }
+      new Step1Progress(wb, controller, uca_per_ca).createSheet("STPA Step 2");
+      new Step2Progress(wb, controller, cf_per_uca).createSheet("STPA Step 3");
+      new Step1HazardProgress(wb, controller).createSheet("STPA Step 2 Hazard Centered");
+      new Step2HazardProgress(wb, controller, cf_per_uca).createSheet("STPA Step 3 Hazard Centered");
       new NumbersSheet(wb, controller, sc_per_acc, uca_per_ca, cf_per_uca).createSheet("Definitions");
       new SeveritySheet(wb, controller, null).createSheet("Severity Definitions");
       insertImage(wb, ws, imageProvider.createStepBars(600, 400), 1, 1);

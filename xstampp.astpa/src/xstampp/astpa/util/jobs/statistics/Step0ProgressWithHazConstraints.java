@@ -24,21 +24,22 @@ import org.apache.poi.ss.usermodel.Workbook;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
-import xstampp.astpa.model.hazacc.Accident;
+import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 
-public class Step0Progress extends AbstractProgressSheetCreator {
+public class Step0ProgressWithHazConstraints extends AbstractProgressSheetCreator {
 
   private static final String[] titles = new String[] {
-      "Hazard", "", "Severity",
       "Accident", "", "Severity",
+      "Hazard", "", "Severity",
       "Safety Constraint", "", "Design Requirements", "", "Completion[%]" };
   private Map<Severity, Integer> sc_per_acc;
 
-  public Step0Progress(Workbook wb, DataModelController controller, Map<Severity, Integer> sc_per_acc) {
+  public Step0ProgressWithHazConstraints(Workbook wb, DataModelController controller,
+      Map<Severity, Integer> sc_per_acc) {
     super(wb, controller, STEP.STEP_1);
     this.sc_per_acc = sc_per_acc;
   }
@@ -52,16 +53,16 @@ public class Step0Progress extends AbstractProgressSheetCreator {
 
     createCells(headerRow, titles, Styles.HEADER_STYLE, sheet);
     Row hazRow;
-    for (ITableModel hazModel : getController().getAllHazards()) {
+    for (ITableModel accModel : getController().getAllAccidents()) {
       triggerDefaultStyle();
       hazRow = createRow(sheet);
-      createCell(hazRow, 0, hazModel.getIdString());
-      createCell(hazRow, 1, hazModel.getTitle());
-      createCell(hazRow, 2, ((EntryWithSeverity) hazModel).getSeverity().name());
+      createCell(hazRow, 0, accModel.getIdString());
+      createCell(hazRow, 1, accModel.getTitle());
+      createCell(hazRow, 2, ((EntryWithSeverity) accModel).getSeverity().name());
       createSubRows(sheet, hazRow, new int[] { 0, 1, 2, 10 }, (row) -> {
-        return addAccidents(sheet, row, hazModel);
+        return addHazards(sheet, row, accModel);
       });
-      Float progress = getProgress(hazModel.getId(), 1);
+      Float progress = getProgress(accModel.getId(), 1);
       createCell(hazRow, 10, String.format("%.1f", progress) + "%");
       addProgress(getController().getProjectId(), progress);
     }
@@ -73,26 +74,26 @@ public class Step0Progress extends AbstractProgressSheetCreator {
   }
 
   /**
-   * Adds all accidents that are linked to the given {@link ITableModel}
+   * Adds all hazards that are linked to the given {@link ITableModel}
    * 
    * @return the index of the last added row (equal to row index if no line has been added)
    */
-  private int addAccidents(Sheet sheet, Row hazRow, ITableModel hazModel) {
-    int index = hazRow.getRowNum();
-    Row row = hazRow;
-    for (UUID accId : getController().getLinkController().getLinksFor(LinkingType.HAZ_ACC_LINK,
-        hazModel.getId())) {
+  private int addHazards(Sheet sheet, Row accRow, ITableModel accModel) {
+    int index = accRow.getRowNum();
+    Row row = accRow;
+    for (UUID hazId : getController().getLinkController().getLinksFor(LinkingType.HAZ_ACC_LINK,
+        accModel.getId())) {
       row = row == null ? createRow(sheet) : row;
-      ITableModel accModel = getController().getAccident(accId);
-      createCell(row, 3, accModel.getIdString());
-      createCell(row, 4, accModel.getTitle());
-      if (hazModel instanceof ATableModel && ((ATableModel) hazModel).getSeverity() != null) {
-        createCell(row, 5, ((ATableModel) accModel).getSeverity().name());
+      ITableModel haz = getController().getHazard(hazId);
+      createCell(row, 3, haz.getIdString());
+      createCell(row, 4, haz.getTitle());
+      if (accModel instanceof ATableModel && ((ATableModel) accModel).getSeverity() != null) {
+        createCell(row, 5, ((ATableModel) haz).getSeverity().name());
       }
       createSubRows(sheet, row, new int[] { 3, 4 }, (parentRow) -> {
-        return addSafetyConstraints(sheet, parentRow, accId);
+        return addSafetyConstraints(sheet, parentRow, hazId);
       });
-      addProgress(hazModel.getId(), getProgress(accId, this.sc_per_acc.get(((ATableModel) accModel).getSeverity())));
+      addProgress(accModel.getId(), getProgress(hazId, this.sc_per_acc.get(((ATableModel) haz).getSeverity())));
       index = row.getRowNum();
       row = null;
     }
@@ -100,14 +101,14 @@ public class Step0Progress extends AbstractProgressSheetCreator {
   }
 
   /**
-   * Adds all safety constraints that are linked to the given {@link Accident}'s id
+   * Adds all safety constraints that are linked to the given {@link Hazard}'s id
    * 
    * @return the index of the last added row (equal to row index if no line has been added)
    */
-  private int addSafetyConstraints(Sheet sheet, Row accRow, UUID accId) {
-    int index = accRow.getRowNum();
-    Row row = accRow;
-    for (UUID s0Id : getController().getLinkController().getLinksFor(LinkingType.ACC_S0_LINK,
+  private int addSafetyConstraints(Sheet sheet, Row hazRow, UUID accId) {
+    int index = hazRow.getRowNum();
+    Row row = hazRow;
+    for (UUID s0Id : getController().getLinkController().getLinksFor(LinkingType.HAZ_S0_LINK,
         accId)) {
       row = row == null ? createRow(sheet) : row;
       ITableModel s0Model = getController().getSafetyConstraint(s0Id);

@@ -169,6 +169,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="xstampp" autoStart="true" startLevel="5" />
       <property name="-Dosgi.configuration.area.default" value="null" />
       <property name="stpa.defaults.useCausalScenarioAnalysis" value="false" />
+      <property name="stpa.defaults.useHazardsConstraintLinks" value="false" />
       <property name="stpa.defaults.useMultiControlStructures" value="false" />
       <property name="stpa.defaults.useSeverityAnalysis" value="true" />
    </configurations>
