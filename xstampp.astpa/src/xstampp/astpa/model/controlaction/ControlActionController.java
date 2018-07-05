@@ -497,9 +497,11 @@ public class ControlActionController extends ATableModelController implements IC
         Severity severity = hazController.getHazard(hazLink).getSeverity();
         if (severity.compareTo(((UnsafeControlAction) uca).getSeverity()) > 0) {
           ((UnsafeControlAction) uca).setSeverity(severity);
+          setChanged();
         }
       }
     }
+    notifyObservers(ObserverValue.CONTROL_ACTION);
   }
 
   @SuppressWarnings("deprecation")

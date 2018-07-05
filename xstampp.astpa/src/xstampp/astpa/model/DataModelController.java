@@ -1810,7 +1810,7 @@ public class DataModelController extends AbstractDataModel
 
           @Override
           public void run() {
-            if (controlActionController != null) {
+            if (getControlActionController() != null) {
               controlActionController.fetchUCASeverity(linkController, hazAccController);
             }
           }

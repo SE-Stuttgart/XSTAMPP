@@ -9,6 +9,9 @@
  ******************************************************************************/
 package xstampp.astpa.ui;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -26,11 +29,12 @@ import xstampp.astpa.model.interfaces.ISeverityDataModel;
 import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.model.IDataModel;
+import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;
 import xstampp.ui.common.contentassist.LinkProposal;
 import xstampp.ui.common.grid.CellButton;
 
-public class SeverityButton extends CellButton implements Listener, PaintListener {
+public class SeverityButton extends CellButton implements Observer, Listener, PaintListener {
   private ISeverityDataModel model;
   private ISeverityEntry entry;
   private Severity currentSeverity;
@@ -155,5 +159,22 @@ public class SeverityButton extends CellButton implements Listener, PaintListene
 
   public interface SeverityCheck {
     boolean checkSeverity(Severity serverity);
+  }
+
+  @Override
+  public void update(Observable o, Object arg) {
+    ObserverValue type = (ObserverValue) arg;
+    switch (type) {
+    case SEVERITY:
+    case LINKING:
+      Severity severity = entry.getSeverity();
+      if (!severity.equals(currentSeverity)) {
+        currentSeverity = severity;
+        setText(severity.toString());
+        control.redraw();
+      }
+    default:
+      break;
+    }
   }
 }
