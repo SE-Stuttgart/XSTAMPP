@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
+ * # * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
  * Institute of Software Technology, Software Engineering Group
  * University of Stuttgart, Germany
  * 
@@ -37,6 +37,7 @@ import xstampp.model.AbstractLTLProvider;
 import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.IEntryFilter;
 import xstampp.model.IValueCombie;
+import xstampp.model.ObserverValue;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class ExtendedDataController extends Observable implements IExtendedDataController {
@@ -219,8 +220,10 @@ public class ExtendedDataController extends Observable implements IExtendedDataC
   public boolean updateRefinedRule(UUID ruleId, AbstractLtlProviderData data,
       UUID linkedControlActionID) {
     for (AbstractLTLProvider provider : getAllScenarios(true, true, true)) {
-      if (provider.getRuleId().equals(ruleId)) {
-        return updateRefinedRule(provider, data, linkedControlActionID);
+      if (provider.getRuleId().equals(ruleId) && updateRefinedRule(provider, data, linkedControlActionID)) {
+        setChanged();
+        notifyObservers(ObserverValue.Extended_DATA);
+        return true;
       }
     }
     return false;

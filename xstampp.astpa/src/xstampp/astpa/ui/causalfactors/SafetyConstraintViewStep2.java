@@ -22,7 +22,9 @@ import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
 import xstampp.astpa.ui.linkingSupport.DesignReq2LinkSupport;
 import xstampp.astpa.ui.linkingSupport.Step1ConstraintsLinkSupport;
+import xstampp.model.AbstractLtlProviderData;
 import xstampp.model.ObserverValue;
+import xstampp.usermanagement.api.AccessRights;
 
 /**
  * @author Jarkko Heidenwag
@@ -42,6 +44,7 @@ public class SafetyConstraintViewStep2 extends CommonTableView<ICausalFactorData
    */
   public SafetyConstraintViewStep2() {
     this(Messages.SafetyConstraints);
+    setUpdateValues(EnumSet.of(ObserverValue.CAUSAL_FACTOR, ObserverValue.Extended_DATA));
   }
 
   /**
@@ -111,12 +114,29 @@ public class SafetyConstraintViewStep2 extends CommonTableView<ICausalFactorData
   }
 
   @Override
+  protected boolean canEdit(ATableModel entry, AccessRights level) {
+    // if (entry.getIdString().startsWith("SC")) {
+    return super.canEdit(entry, level);
+    // } else {
+    // return false;
+    // }
+  }
+
+  @Override
   protected void updateDescription(UUID uuid, String description) {
-    getDataInterface().getCausalFactorController().setSafetyConstraintDescription(uuid, description);
+    if (!getDataInterface().isUseScenarios()) {
+      getDataInterface().getCausalFactorController().setSafetyConstraintDescription(uuid, description);
+    }
   }
 
   @Override
   protected void updateTitle(UUID id, String title) {
-    getDataInterface().getCausalFactorController().setSafetyConstraintText(id, title);
+    if (!getDataInterface().isUseScenarios()) {
+      getDataInterface().getCausalFactorController().setSafetyConstraintText(id, title);
+    } else {
+      AbstractLtlProviderData data = new AbstractLtlProviderData();
+      data.setRefinedConstraint(title);
+      getDataInterface().getExtendedDataController().updateRefinedRule(id, data, null);
+    }
   }
 }

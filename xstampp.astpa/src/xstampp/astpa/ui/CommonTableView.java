@@ -45,8 +45,8 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -177,14 +177,15 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         if (selection.getFirstElement() instanceof ATableModel) {
           selectedEntry = ((ATableModel) selection.getFirstElement());
+          ATableModel entry = selectedEntry;
           getDescriptionWidget()
-              .setText(((ATableModel) selection.getFirstElement()).getDescription());
+              .setText(selectedEntry.getDescription());
           if (deleteItemsButton != null) {
-            deleteItemsButton.setEnabled(canEdit(selectedEntry, AccessRights.CREATE));
+            deleteItemsButton.setEnabled(canEdit(entry, AccessRights.CREATE));
           }
-          boolean canEdit = canEdit(selectedEntry, AccessRights.WRITE);
+          boolean canEdit = canEdit(entry, AccessRights.WRITE);
           if (severityButton != null) {
-            severityButton.setEntry(selectedEntry);
+            severityButton.setEntry(entry);
             severityButton.getControl().redraw();
             severityButton.setEnabled(canEdit);
           }
@@ -578,7 +579,9 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       public void modifyText(ModifyEvent e) {
         internalUpdate = true;
         Text text = (Text) e.widget;
-        updateDescription(getCurrentSelection(), text.getText());
+        if (selectedEntry != null && !selectedEntry.getDescription().equals(text.getText())) {
+          updateDescription(getCurrentSelection(), text.getText());
+        }
       }
     });
     if (linkFields.size() > 0) {
@@ -610,17 +613,11 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     TableColumnLayout tableColumnLayout = new TableColumnLayout();
     tableComposite.setLayout(tableColumnLayout);
     setTableColumnLayout(tableColumnLayout);
-    tableComposite.addControlListener(new ControlListener() {
+    tableComposite.addControlListener(new ControlAdapter() {
 
       @Override
       public void controlResized(ControlEvent e) {
         getTableViewer().getTable().redraw();
-      }
-
-      @Override
-      public void controlMoved(ControlEvent e) {
-        // TODO Auto-generated method stub
-
       }
     });
     // Listener for showing the description of the selected accident
@@ -693,7 +690,7 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
 
       @Override
       public String getText(Object element) {
-        if (((ATableModel) element).getTitle().equals("")) {
+        if (((ATableModel) element).getTitle().equals("") && canEdit(((ATableModel) element))) {
           return Messages.DoubleClickToEditTitle;
         }
         return ((ATableModel) element).getTitle();
@@ -1195,8 +1192,12 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
       if (user != null && user.getUserId().equals(entryId.getCreatedBy())) {
         return true;
       } else {
-        return ((IUserProject) getDataInterface()).getUserSystem().checkAccess(entryId.getId(),
-            level);
+        try {
+          return ((IUserProject) getDataInterface()).getUserSystem().checkAccess(entryId.getId(),
+              level);
+        } catch (NullPointerException e) {
+          return false;
+        }
       }
     }
     return true;
