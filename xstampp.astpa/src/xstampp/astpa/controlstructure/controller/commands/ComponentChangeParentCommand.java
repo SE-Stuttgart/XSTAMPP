@@ -82,8 +82,9 @@ public class ComponentChangeParentCommand extends ControlStructureAbstractComman
     case PROCESS_MODEL:
       return this.newParent.getComponentType().equals(ComponentType.CONTROLLER);
     case CONTAINER:
-    case CONTROLACTION:
       return false;
+    case CONTROLACTION:
+      return this.newParent.getComponentType().equals(ComponentType.CONTAINER);
     default:
       break;
     }
