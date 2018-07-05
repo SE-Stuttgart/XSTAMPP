@@ -45,9 +45,9 @@ abstract class AbstractProgressSheetCreator {
   private Styles defaultStyle = Styles.DEFAULT_UNEVEN;
 
   enum STEP {
-    TOTAL("Total"), STEP_1("Step 1"), STEP_2("Step 2"), STEP_3("Step 3"), STEP_3_HAZARD_CENTERED("Step 2"), STEP_4(
-        "Step 3"), STEP_4_HAZARD_CENTERED(
-            "Step 3");
+    TOTAL("Total"), STEP_1("Step 1"), STEP_2("Step 2"), STEP_3("Step 3"), STEP_3_HAZARD_CENTERED("Step 3"), STEP_4(
+        "Step 4"), STEP_4_HAZARD_CENTERED(
+            "Step 4");
 
     private String label;
 
