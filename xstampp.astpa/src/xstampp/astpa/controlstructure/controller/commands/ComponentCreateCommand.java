@@ -189,7 +189,7 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 
   @Override
   public void redo() {
-    this.getDataModel().recoverComponent(this.parentId, this.compModel.getId());
+    this.getDataModel().recoverComponent(this.parentId, this.componentId);
   }
 
   /**

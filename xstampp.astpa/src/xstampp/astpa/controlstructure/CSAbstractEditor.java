@@ -1273,9 +1273,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     CSAbstractEditPart part = (CSAbstractEditPart) this.graphicalViewer.getContents();
     org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,
         this.mousePosition.y);
-    part.getFigure().translateToAbsolute(p);
     IControlStructureFigure figure = (IControlStructureFigure) part.getFigure().findFigureAt(p);
-    figure.translateFromParent(p);
+    figure.translateToRelative(p);
     this.copySelectionCommand.setPastePosition(figure.getId(), p.x, p.y);
     if (!this.copySelectionCommand.canExecute()) {
       Display.getDefault().beep();

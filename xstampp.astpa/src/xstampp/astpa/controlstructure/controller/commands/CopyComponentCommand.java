@@ -100,6 +100,12 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
     this.parentID = uuid;
   }
 
+  /**
+   * Setter for the absolute position of the copied figure
+   * 
+   * @param p
+   *          the absolute position of the pasted figure(s)
+   */
   public void setPosition(Point p) {
     this.position = p;
   }
@@ -107,7 +113,11 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
   @Override
   public boolean canExecute() {
     Collections.sort(this.copyList, new CopySorter());
-    ComponentType parentType = this.getDataModel().getComponent(parentID).getComponentType();
+    IRectangleComponent parent = this.getDataModel().getComponent(parentID);
+    if (parent == null) {
+      return false;
+    }
+    ComponentType parentType = parent.getComponentType();
     ComponentType childType = this.copyList.get(0).getComponentType();
 
     if (childType.equals(parentType)) {
@@ -137,16 +147,18 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
 
     for (IRectangleComponent comp : this.copyList) {
       UUID newParentId;
-      Rectangle rect = comp.getLayout(this.getStepID().equals(CSEditor.ID));
+      boolean step1 = this.getStepID().equals(CSEditor.ID);
+      Rectangle rect = comp.getLayout(step1);
       int x = rect.x;
       int y = rect.y;
       if (this.pasteIdToCopyId.containsKey(this.parentIdsToComponents.get(comp))) {
+        // if the parent of the component is one of the already pasted components
         newParentId = this.pasteIdToCopyId.get(this.parentIdsToComponents.get(comp));
 
       } else {
         newParentId = this.parentID;
-        x -= (this.position.x - this.pastePosition.x);
-        y -= this.position.y - this.pastePosition.y;
+        x = this.pastePosition.x;
+        y = this.pastePosition.y;
       }
 
       x = Math.max(x, 0);
@@ -156,9 +168,18 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
           new Rectangle(x, y, rect.width, rect.height),
           comp.getText(),
           comp.getComponentType(), 1);
+      for (IRectangleComponent child : comp.getChildren()) {
+        Rectangle childLayout = child.getLayout(step1);
+        UUID childId = this.getDataModel().addComponent(compId,
+            childLayout,
+            child.getText(),
+            child.getComponentType(), 1);
+        this.getDataModel().changeComponentLayout(childId, child.getLayout(!step1), !step1);
+      }
       this.pasteIdToCopyId.put(comp.getId(), compId);
       this.undoList.add(compId);
     }
+    copyList.clear();
     for (IConnection conn : this.connectionCopyList) {
       if (this.pasteIdToCopyId.containsKey(conn.getSourceAnchor().getOwnerId()) &&
           this.pasteIdToCopyId.containsKey(conn.getTargetAnchor().getOwnerId())) {
