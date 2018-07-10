@@ -16,6 +16,7 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.model.IDataModel;
 
@@ -36,6 +37,16 @@ public interface ICorrespondingSafetyConstraintDataModel extends IDataModel, ICo
    * @return the list of all corresponding safety constraints
    */
   List<ICorrespondingUnsafeControlAction> getAllUnsafeControlActions();
+
+  /**
+   * {@link IUnsafeControlActionDataModel#getControlActionController()}
+   */
+  IControlActionController getControlActionController();
+
+  /**
+   * {@link IHazardModel#getHazards(List)}
+   */
+  List<ITableModel> getHazards(List<UUID> ids);
 
   /**
    * Sets the corresponding safety constraint of the unsafe control action

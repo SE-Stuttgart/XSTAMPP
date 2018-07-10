@@ -20,6 +20,7 @@ import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
 import xstampp.astpa.model.interfaces.ISTPADataModel;
+import xstampp.astpa.model.interfaces.ISeverityEntry;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.ATableFilter;
@@ -58,8 +59,9 @@ public class CSCView extends AbstractFilteredTableView {
       @Override
       protected Object getEditingValue(Object element) {
         if (element instanceof ICorrespondingUnsafeControlAction) {
-          return ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint()
+          String text = ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint()
               .getText();
+          return text == null ? "" : text;
         }
         return null;
       }
@@ -69,6 +71,29 @@ public class CSCView extends AbstractFilteredTableView {
         if (element instanceof ICorrespondingUnsafeControlAction) {
           getDataInterface().setCorrespondingSafetyConstraint(
               ((ICorrespondingUnsafeControlAction) element).getId(), String.valueOf(value));
+        }
+      }
+    });
+    addEditingSupport(1, new EditSupportProvider() {
+      @Override
+      protected boolean canEdit(Object element) {
+        return CSCView.this.canEdit(element);
+      }
+
+      @Override
+      protected Object getEditingValue(Object element) {
+        if (element instanceof ICorrespondingUnsafeControlAction) {
+          String text = ((ICorrespondingUnsafeControlAction) element).getDescription();
+          return text == null ? "" : text;
+        }
+        return null;
+      }
+
+      @Override
+      protected void setEditValue(Object element, Object value) {
+        if (element instanceof ICorrespondingUnsafeControlAction) {
+          getDataInterface().getControlActionController()
+              .setUcaDescription(((ICorrespondingUnsafeControlAction) element).getId(), String.valueOf(value));
         }
       }
     });
@@ -132,6 +157,25 @@ public class CSCView extends AbstractFilteredTableView {
         @Override
         public String getText(Object element) {
           return ((ICorrespondingUnsafeControlAction) element).getDescription();
+        }
+
+        @Override
+        public String getToolTipText(Object element) {
+          ISeverityEntry entry = (ISeverityEntry) element;
+          List<UUID> hazLinkIds = getDataInterface().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
+              entry.getId());
+          boolean first = true;
+          String links = "";
+          for (ITableModel haz : getDataInterface().getHazards(hazLinkIds)) {
+            if (first) {
+              first = false;
+            } else {
+              links += ", ";
+            }
+            links += "H-" + haz.getNumber();
+          }
+          return "UCA1." + CSCView.this.getDataInterface()
+              .getUCANumber(entry.getId()) + " - " + entry.getSeverity().toString() + "\n" + links;
         }
       };
     case 2:

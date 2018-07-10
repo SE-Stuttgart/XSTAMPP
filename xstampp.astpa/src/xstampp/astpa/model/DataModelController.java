@@ -1562,13 +1562,16 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean setControlActionTitle(UUID controlActionId, String title) {
-    boolean result = getControlActionController().setControlActionTitle(controlActionId, title);
-    ITableModel controlAction = getControlActionController().getControlAction(controlActionId);
-    // if the control action is linked with a component in the control structure than the title is
-    // also synchronized with the components' text
-    if (result && changeComponentText(((ControlAction) controlAction).getComponentLink(), title)) {
-      this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
-      result = true;
+    boolean result = false;
+    if (controlActionId != null) {
+      result = getControlActionController().setControlActionTitle(controlActionId, title);
+      ITableModel controlAction = getControlActionController().getControlAction(controlActionId);
+      // if the control action is linked with a component in the control structure than the title is
+      // also synchronized with the components' text
+      if (result && changeComponentText(((ControlAction) controlAction).getComponentLink(), title)) {
+        this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
+        result = true;
+      }
     }
     return result;
   }

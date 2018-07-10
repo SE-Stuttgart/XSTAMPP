@@ -16,6 +16,7 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.interfaces.IConnection;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
@@ -51,6 +52,11 @@ public interface IControlActionViewDataModel extends IDataModel, ICommonTables {
    * @return String ID of the new control action
    */
   UUID addControlAction(String title, String description);
+
+  /**
+   * {@link IUnsafeControlActionDataModel#getControlActionController()}
+   */
+  IControlActionController getControlActionController();
 
   /**
    * Searches recursively for the component with the given id

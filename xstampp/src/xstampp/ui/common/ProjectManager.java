@@ -330,7 +330,8 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
    */
   public boolean saveDataModel(UUID projectId, boolean isUIcall, boolean saveAs) {
     assert (this.projectContainerToUuid.get(projectId) != null);
-
+    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().getShell()
+        .setCursor(PlatformUI.getWorkbench().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
     if (saveAs) {
       return this.saveDataModelAs(projectId);
     }
@@ -352,6 +353,10 @@ public class ProjectManager extends Observable implements IPropertyChangeListene
 
       @Override
       public void done(IJobChangeEvent event) {
+        Display.getDefault().asyncExec(() -> {
+          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().getShell()
+              .setCursor(null);
+        });
         projectFileContainer.setLock(false);
         if (event.getResult().isOK()) {
           try {

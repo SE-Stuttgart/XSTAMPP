@@ -36,6 +36,7 @@ import acast.ui.accidentDescription.Responsibility;
 import messages.Messages;
 import xstampp.astpa.model.controlaction.ControlAction;
 import xstampp.astpa.model.controlaction.ControlActionController;
+import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlstructure.ControlStructureController;
 import xstampp.astpa.model.controlstructure.components.Anchor;
@@ -1257,6 +1258,11 @@ public class Controller extends AbstractDataModel implements IDataModel,
   public ITableModel getAccident(UUID accidentId) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public IControlActionController getControlActionController() {
+    return controlActionController;
   }
 
 }

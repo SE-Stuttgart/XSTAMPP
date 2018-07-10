@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
@@ -127,7 +128,7 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
 
     @Override
     protected CellEditor getCellEditor(Object element) {
-      return new TextCellEditor(tableViewer.getTable(), SWT.NONE);
+      return new TextCellEditor(getTableViewer().getTable(), SWT.NONE);
     }
 
     @Override
@@ -138,8 +139,8 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
     @Override
     protected void setValue(Object element, Object value) {
       supportProvider.setEditValue(element, value);
-      tableViewer.refresh(true, true);
-      tableViewer.setInput(getInput());
+      getTableViewer().refresh(true, true);
+      getTableViewer().setInput(getInput());
     }
   }
 
@@ -155,7 +156,7 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
 
     @Override
     public Color getBackground(Object element) {
-      int index = ((List<?>) tableViewer.getInput()).indexOf(element);
+      int index = ((List<?>) getTableViewer().getInput()).indexOf(element);
       if (index % 2 == 0) {
         return ColorManager.registerColor("EVEN_TABLE_ENTRY", new RGB(230, 230, 230));
       }
@@ -262,8 +263,8 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
         AbstractFilteredTableView.this.filter
             .setSearchText(AbstractFilteredTableView.this.filterTextField
                 .getText());
-        AbstractFilteredTableView.this.tableViewer.refresh(true, true);
-        tableViewer.setInput(getInput());
+        AbstractFilteredTableView.this.getTableViewer().refresh(true, true);
+        getTableViewer().setInput(getInput());
       }
     });
 
@@ -275,18 +276,18 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
     TableColumnLayout tableColumnLayout = new TableColumnLayout();
     tableComposite.setLayout(tableColumnLayout);
     // setting up the table viewer
-    this.tableViewer = new TableViewer(tableComposite, SWT.BORDER
-        | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI);
-    this.tableViewer.setContentProvider(new ArrayContentProvider());
-    this.tableViewer.getTable().setLinesVisible(true);
-    this.tableViewer.getTable().setHeaderVisible(true);
+    this.setTableViewer(new TableViewer(tableComposite, SWT.BORDER
+        | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.MULTI));
+    this.getTableViewer().setContentProvider(new ArrayContentProvider());
+    this.getTableViewer().getTable().setLinesVisible(true);
+    this.getTableViewer().getTable().setHeaderVisible(true);
     if (this.filter != null) {
-      AbstractFilteredTableView.this.tableViewer.addFilter(this.filter);
+      AbstractFilteredTableView.this.getTableViewer().addFilter(this.filter);
     }
 
     for (int i = 0; i < headers.length; i++) {
       TableViewerColumn column = new TableViewerColumn(
-          this.tableViewer, SWT.NONE);
+          this.getTableViewer(), SWT.NONE);
       column.setLabelProvider(getColumnProvider(i));
       column.getColumn().setText(this.headers[i]);
       if (columnWeights[i] < 0) {
@@ -301,13 +302,13 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
       }
 
       if (editingSupports[i] != null) {
-        column.setEditingSupport(new CSCEditingSupport(tableViewer, editingSupports[i]));
+        column.setEditingSupport(new CSCEditingSupport(getTableViewer(), editingSupports[i]));
       }
     }
 
     // detecting a double click
     ColumnViewerEditorActivationStrategy activationSupport = new ColumnViewerEditorActivationStrategy(
-        this.tableViewer) {
+        this.getTableViewer()) {
 
       @Override
       protected boolean isEditorActivationEvent(
@@ -329,23 +330,23 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
       @Override
       public void handleEvent(Event event) {
         if ((event.type == SWT.KeyDown) && (event.keyCode == SWT.CR)
-            && (!AbstractFilteredTableView.this.tableViewer.getSelection().isEmpty())) {
-          int selected = AbstractFilteredTableView.this.tableViewer.getTable()
+            && (!AbstractFilteredTableView.this.getTableViewer().getSelection().isEmpty())) {
+          int selected = AbstractFilteredTableView.this.getTableViewer().getTable()
               .getSelectionIndex();
           AbstractFilteredTableView.this.safetyConstraintsColumn
               .getViewer()
               .editElement(
-                  AbstractFilteredTableView.this.tableViewer
+                  AbstractFilteredTableView.this.getTableViewer()
                       .getElementAt(selected),
                   1);
         }
       }
     };
 
-    this.tableViewer.getTable().addListener(SWT.KeyDown, returnListener);
+    this.getTableViewer().getTable().addListener(SWT.KeyDown, returnListener);
 
     if (hasEditSupport()) {
-      TableViewerEditor.create(this.tableViewer, null, activationSupport,
+      TableViewerEditor.create(this.getTableViewer(), null, activationSupport,
           ColumnViewerEditor.TABBING_HORIZONTAL
               | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
               | ColumnViewerEditor.TABBING_VERTICAL
@@ -356,10 +357,10 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
   }
 
   protected final void packColumns() {
-    this.tableViewer.refresh(true, true);
-    this.tableViewer.setInput(getInput());
+    this.getTableViewer().refresh(true, true);
+    this.getTableViewer().setInput(getInput());
     for (int i = 0; i < refreshVector.length; i++) {
-      TableColumn col = this.tableViewer.getTable().getColumn(i);
+      TableColumn col = this.getTableViewer().getTable().getColumn(i);
       if (refreshVector[i]) {
         col.pack();
       }
@@ -376,9 +377,9 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
   }
 
   protected void refresh() {
-    if (!this.tableViewer.getTable().isDisposed()) {
-      this.tableViewer.refresh(true, true);
-      this.tableViewer.setInput(getInput());
+    if (!this.getTableViewer().getTable().isDisposed()) {
+      this.getTableViewer().refresh(true, true);
+      this.getTableViewer().setInput(getInput());
     }
   }
 
@@ -391,8 +392,8 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
   private void emptyFilter() {
     this.filter.setSearchText(""); //$NON-NLS-1$
     this.filterTextField.setText(""); //$NON-NLS-1$
-    this.tableViewer.refresh(true, true);
-    this.tableViewer.setInput(getInput());
+    this.getTableViewer().refresh(true, true);
+    this.getTableViewer().setInput(getInput());
   }
 
   protected void addEditingSupport(int index, EditSupportProvider support) {
@@ -412,5 +413,14 @@ public abstract class AbstractFilteredTableView extends StandartEditorPart {
   abstract protected boolean hasEditSupport();
 
   abstract protected boolean canEdit(Object element);
+
+  public TableViewer getTableViewer() {
+    return tableViewer;
+  }
+
+  private void setTableViewer(TableViewer tableViewer) {
+    this.tableViewer = tableViewer;
+    ColumnViewerToolTipSupport.enableFor(tableViewer);
+  }
 
 }
