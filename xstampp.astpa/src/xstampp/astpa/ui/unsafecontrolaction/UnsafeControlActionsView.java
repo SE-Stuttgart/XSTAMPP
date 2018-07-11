@@ -24,10 +24,13 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
+import xstampp.astpa.model.controlstructure.interfaces.IConnection;
+import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.IUnsafeControlActionDataModel;
 import xstampp.astpa.ui.CommonGridView;
@@ -225,7 +228,22 @@ public class UnsafeControlActionsView extends CommonGridView<IUnsafeControlActio
       GridRow controlActionRow = new GridRow(columns.length, 3);
       addControlAction = false;
 
-      controlActionRow.addCell(0, new GridCellText(cAction.getTitle()));
+      GridCellText cell = new GridCellText(cAction.getTitle());
+      IRectangleComponent comp = ((DataModelController) getDataModel())
+          .getComponent(cAction.getComponentLink());
+      try {
+        IConnection conn = ((DataModelController) getDataModel())
+            .getConnection(comp.getRelative());
+        IRectangleComponent source = ((DataModelController) getDataModel())
+            .getComponent(conn.getSourceAnchor().getOwnerId());
+        IRectangleComponent target = ((DataModelController) getDataModel())
+            .getComponent(conn.getTargetAnchor().getOwnerId());
+        cell.setToolTip(cAction.getTitle() + "\n-\nSource: " + source.getText() +
+            "\nTarget: " + target.getText());
+      } catch (NullPointerException exc) {
+        cell.setToolTip(cAction.getTitle());
+      }
+      controlActionRow.addCell(0, cell);
 
       List<IUnsafeControlAction> allNotGiven = cAction
           .getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN);

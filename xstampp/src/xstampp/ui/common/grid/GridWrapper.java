@@ -507,7 +507,7 @@ public class GridWrapper {
     this.actualGrid.addMouseMoveListener(new GridMouseMoveListener(this));
     this.actualGrid.addFocusListener(new GridFocusListener(this));
     this.cellRenderer = new GridCellRenderer(this);
-    new DefaultToolTip(actualGrid) {
+    DefaultToolTip toolTip = new DefaultToolTip(actualGrid) {
       @Override
       protected String getText(Event event) {
         return getToolTip();
@@ -518,6 +518,7 @@ public class GridWrapper {
         return getToolTip() != null;
       }
     };
+    toolTip.setShift(new Point(12, 0));
     this.actualGrid.addPaintListener(new PaintListener() {
       private int indexAdaptionTrys = 0;
 
