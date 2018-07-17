@@ -92,9 +92,21 @@ public class CSConnection implements IConnection {
   /**
    * @param sourceAnchor
    *          the sourceFigureId to set
+   * @param withPm
+   *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
+   *          visualization of the control structure with process models<br>
+   *          <b><span style="color:blue;">false</span></b> otherwise
    */
-  public void setSourceAnchor(Anchor sourceAnchor) {
-    this.sourceAnchor = sourceAnchor;
+  public void setSourceAnchor(Anchor sourceAnchor, boolean withPm) {
+    this.sourceAnchor.setIsFlying(sourceAnchor.isFlying());
+    this.sourceAnchor.setOwnerId(sourceAnchor.getOwnerId());
+    this.sourceAnchor.setxOrientation(sourceAnchor.getxOrientation(withPm), withPm);
+    this.sourceAnchor.setyOrientation(sourceAnchor.getyOrientation(withPm), withPm);
+  }
+
+  public boolean synchronizeAnchors() {
+    boolean result = this.sourceAnchor.synchronizeOrientation();
+    return this.targetAnchor.synchronizeOrientation() || result;
   }
 
   @Override
@@ -103,11 +115,18 @@ public class CSConnection implements IConnection {
   }
 
   /**
+   * @param withPm
+   *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
+   *          visualization of the control structure with process models<br>
+   *          <b><span style="color:blue;">false</span></b> otherwise
    * @param targetAnchor
    *          the targetFigureId to set
    */
-  public void setTargetAnchor(Anchor target) {
-    this.targetAnchor = target;
+  public void setTargetAnchor(Anchor target, boolean withPm) {
+    this.targetAnchor.setIsFlying(target.isFlying());
+    this.targetAnchor.setOwnerId(target.getOwnerId());
+    this.targetAnchor.setxOrientation(target.getxOrientation(withPm), withPm);
+    this.targetAnchor.setyOrientation(target.getyOrientation(withPm), withPm);
   }
 
   @Override

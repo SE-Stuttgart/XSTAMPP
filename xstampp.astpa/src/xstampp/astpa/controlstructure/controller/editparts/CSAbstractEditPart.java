@@ -101,6 +101,7 @@ public abstract class CSAbstractEditPart extends AbstractGraphicalEditPart
   @Override
   protected IFigure createFigure() {
     CSFigure tmpFigure = new CSFigure(this.getId(), false);
+    tmpFigure.setStepId(getStepId());
     tmpFigure.setDeco((boolean) getViewer().getProperty(CSAbstractEditor.IS_DECORATED));
     tmpFigure.setPreferenceStore(store);
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getFigure());

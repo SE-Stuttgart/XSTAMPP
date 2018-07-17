@@ -16,6 +16,7 @@ package xstampp.astpa.controlstructure.controller.commands;
 import java.util.UUID;
 
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
 import xstampp.astpa.controlstructure.figure.IAnchorFigure;
@@ -160,10 +161,10 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
     super.execute();
     if (this.newSourceAnchorModel != null) {
       this.getDataModel().changeConnectionSource(this.connId,
-          this.newSourceAnchorModel);
+          this.newSourceAnchorModel, getStepID().equals(CSEditorWithPM.ID));
     } else if (this.newTargetAnchorModel != null) {
       this.getDataModel().changeConnectionTarget(this.connId,
-          this.newTargetAnchorModel);
+          this.newTargetAnchorModel, getStepID().equals(CSEditorWithPM.ID));
     } else {
       throw new IllegalStateException("Should not happen"); //$NON-NLS-1$
     }
@@ -172,9 +173,9 @@ public class ConnectionReconnectCommand extends ControlStructureAbstractCommand 
   @Override
   public void undo() {
     this.getDataModel().changeConnectionSource(this.connId,
-        this.oldSourceAnchorModel);
+        this.oldSourceAnchorModel, getStepID().equals(CSEditorWithPM.ID));
     this.getDataModel().changeConnectionTarget(this.connId,
-        this.oldTargetAnchorModel);
+        this.oldTargetAnchorModel, getStepID().equals(CSEditorWithPM.ID));
   }
 
 }

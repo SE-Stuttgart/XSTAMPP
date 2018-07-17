@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.eclipse.draw2d.geometry.Point;
 
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.figure.CSAnchor;
 import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.controlstructure.figure.CSFlyAnchor;
@@ -103,9 +104,9 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
       this.sourceAnchorFigure.getOwner().translateFromParent(targetPosition);
       x = targetPosition.x;
       y = targetPosition.y;
-      if (this.sourceAnchorModel.getxOrientation() == 100) {
+      if (this.sourceAnchorModel.getxOrientation(getStepID().equals(CSEditorWithPM.ID)) == 100) {
         x -= this.sourceAnchorFigure.getOwner().getBounds().width;
-      } else if (this.sourceAnchorModel.getyOrientation() == 100) {
+      } else if (this.sourceAnchorModel.getyOrientation(getStepID().equals(CSEditorWithPM.ID)) == 100) {
         y -= this.sourceAnchorFigure.getOwner().getBounds().height;
       }
       flys = true;
@@ -114,9 +115,9 @@ public class ConnectionCreateCommand extends ControlStructureAbstractCommand {
       ((CSFlyAnchor) this.sourceAnchorFigure)
           .setRelation((CSAnchor) target);
       this.sourceAnchorModel.setxOrientation(this.sourceAnchorFigure
-          .getAnchorFactor().x);
+          .getAnchorFactor().x, this.getStepID().equals(CSEditorWithPM.ID));
       this.sourceAnchorModel.setyOrientation(this.sourceAnchorFigure
-          .getAnchorFactor().y);
+          .getAnchorFactor().y, this.getStepID().equals(CSEditorWithPM.ID));
     }
     this.targetAnchorModel = new Anchor(flys, x, y, id);
 

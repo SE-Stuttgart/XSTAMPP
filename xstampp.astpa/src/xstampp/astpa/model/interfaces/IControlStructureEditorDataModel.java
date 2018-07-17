@@ -264,11 +264,15 @@ public interface IControlStructureEditorDataModel extends IDataModel {
    *          the id of the connection to change
    * @param targetAnchor
    *          the new source anchor
+   * @param withPm
+   *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
+   *          visualization of the control structure with process models<br>
+   *          <b><span style="color:blue;">false</span></b> otherwise
    * @return true if the targetId could be changed
    * 
    * @author Fabian Toth
    */
-  boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor);
+  boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor, boolean withPm);
 
   /**
    * Searches for the connection with the given id and changes the sourceId to the new value<br>
@@ -278,11 +282,15 @@ public interface IControlStructureEditorDataModel extends IDataModel {
    *          the id of the connection to change
    * @param sourceAnchor
    *          the new source anchor
+   * @param withPm
+   *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
+   *          visualization of the control structure with process models<br>
+   *          <b><span style="color:blue;">false</span></b> otherwise
    * @return true if the sourceId could be changed
    * 
    * @author Fabian Toth
    */
-  boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor);
+  boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor, boolean withPm);
 
   /**
    * Deletes the connection with the given id<br>
@@ -454,13 +462,13 @@ public interface IControlStructureEditorDataModel extends IDataModel {
    * @return the control action.
    */
   ITableModel getControlAction(UUID controlActionId);
-  
+
   /**
-	 * Getter for all existing control actions
-	 * 
-	 * @author Jarkko Heidenwag
-	 * 
-	 * @return All control actions
-	 */
-	List<IControlAction> getAllControlActions();
+   * Getter for all existing control actions
+   * 
+   * @author Jarkko Heidenwag
+   * 
+   * @return All control actions
+   */
+  List<IControlAction> getAllControlActions();
 }

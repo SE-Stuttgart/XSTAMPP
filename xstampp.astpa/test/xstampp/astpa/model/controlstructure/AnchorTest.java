@@ -36,18 +36,18 @@ public class AnchorTest {
 		// check parameterized constructor
 		Anchor anchor = new Anchor(true, 5, 10, id);
 		Assert.assertTrue(anchor.isFlying());
-		Assert.assertEquals(5, anchor.getxOrientation());
-		Assert.assertEquals(10, anchor.getyOrientation());
+		Assert.assertEquals(5, anchor.getxOrientation(false));
+		Assert.assertEquals(10, anchor.getyOrientation(false));
 		Assert.assertNotNull(anchor.getId());
 		
 		// check empty constructor
 		anchor = new Anchor();
 		anchor.setSource(false);
 		Assert.assertFalse(anchor.isFlying());
-		anchor.setxOrientation(5);
-		Assert.assertEquals(5, anchor.getxOrientation());
-		anchor.setyOrientation(10);
-		Assert.assertEquals(10, anchor.getyOrientation());
+		anchor.setxOrientation(5, false);
+		Assert.assertEquals(5, anchor.getxOrientation(false));
+		anchor.setyOrientation(10, false);
+		Assert.assertEquals(10, anchor.getyOrientation(false));
 		anchor.setOwnerId(id);
 		Assert.assertEquals(id, anchor.getOwnerId());
 		anchor.setId(id);

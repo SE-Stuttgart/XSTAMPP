@@ -55,6 +55,7 @@ public class ControlledProcessEditPart extends CSAbstractEditPart {
     Image img = imgDesc.createImage(null);
     CSFigure tmpFigure = new CSFigure(this.getId(), img,
         IControlStructureConstants.CONTROLSTRUCTURE_PROCESS_COLOR);
+    tmpFigure.setStepId(getStepId());
     tmpFigure.setDeco((boolean) getViewer().getProperty(CSAbstractEditor.IS_DECORATED));
     tmpFigure.setPreferenceStore(getStore());
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());

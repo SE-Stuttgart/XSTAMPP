@@ -67,6 +67,7 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
   private final CSTextLabel textLabel;
   private final Image image;
   private final UUID componentID;
+  private String stepId;
   private boolean canConnect = false;
   private boolean hasDeco;
   private boolean hideBorder = false;
@@ -483,5 +484,13 @@ public class CSFigure extends Figure implements IControlStructureFigure, IProper
     if (getParent() instanceof IControlStructureFigure) {
       ((IControlStructureFigure) getParent()).setDirty();
     }
+  }
+
+  public String getStepId() {
+    return stepId;
+  }
+
+  public void setStepId(String stepId) {
+    this.stepId = stepId;
   }
 }

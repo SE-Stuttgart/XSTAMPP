@@ -621,12 +621,12 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor) {
+  public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor, boolean withPm) {
     if ((connectionId == null) || (sourceAnchor == null)) {
       return false;
     }
 
-    if (this.controlStructureController.changeConnectionSource(connectionId, sourceAnchor)) {
+    if (this.controlStructureController.changeConnectionSource(connectionId, sourceAnchor, withPm)) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
       return true;
     }
@@ -634,12 +634,12 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor) {
+  public boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor, boolean withPm) {
     if ((connectionId == null) || (targetAnchor == null)) {
       return false;
     }
 
-    if (this.controlStructureController.changeConnectionTarget(connectionId, targetAnchor)) {
+    if (this.controlStructureController.changeConnectionTarget(connectionId, targetAnchor, withPm)) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
       return true;
     }

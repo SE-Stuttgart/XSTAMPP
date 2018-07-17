@@ -203,17 +203,17 @@ public class ControlStructureControllerTest {
 		Assert.assertEquals(id2, connection.getId());
 		
 		// change a connection
-		Assert.assertTrue(dataModel.changeConnectionSource(id2, target));
+		Assert.assertTrue(dataModel.changeConnectionSource(id2, target, false));
 		Assert.assertEquals(target, dataModel.getConnection(id2).getSourceAnchor());
-		Assert.assertTrue(dataModel.changeConnectionTarget(id2, source));
+		Assert.assertTrue(dataModel.changeConnectionTarget(id2, source, false));
 		Assert.assertEquals(source, dataModel.getConnection(id2).getTargetAnchor());
 		Assert.assertTrue(dataModel.changeConnectionType(id2, ConnectionType.ARROW_DASHED));
 		Assert.assertEquals(ConnectionType.ARROW_DASHED, dataModel.getConnection(id2).getConnectionType());
 		
 		// change a connection that does not exist
 		UUID id3 = UUID.randomUUID();
-		Assert.assertFalse(dataModel.changeConnectionSource(id3, target));
-		Assert.assertFalse(dataModel.changeConnectionTarget(id3, source));
+		Assert.assertFalse(dataModel.changeConnectionSource(id3, target, false));
+		Assert.assertFalse(dataModel.changeConnectionTarget(id3, source, false));
 		Assert.assertFalse(dataModel.changeConnectionType(id3, ConnectionType.ARROW_DASHED));
 		
 		// remove both connections and check the Trash function
@@ -260,10 +260,10 @@ public class ControlStructureControllerTest {
 		Assert.assertNull(dataModel.addConnection(new Anchor(), new Anchor(), null));
 		Assert.assertFalse(dataModel.changeConnectionType(null, null));
 		Assert.assertFalse(dataModel.changeConnectionType(UUID.randomUUID(), null));
-		Assert.assertFalse(dataModel.changeConnectionSource(null, null));
-		Assert.assertFalse(dataModel.changeConnectionSource(UUID.randomUUID(), null));
-		Assert.assertFalse(dataModel.changeConnectionTarget(null, null));
-		Assert.assertFalse(dataModel.changeConnectionTarget(UUID.randomUUID(), null));
+		Assert.assertFalse(dataModel.changeConnectionSource(null, null, false));
+		Assert.assertFalse(dataModel.changeConnectionSource(UUID.randomUUID(), null, false));
+		Assert.assertFalse(dataModel.changeConnectionTarget(null, null, false));
+		Assert.assertFalse(dataModel.changeConnectionTarget(UUID.randomUUID(), null, false));
 		Assert.assertFalse(dataModel.removeConnection(null));
 		Assert.assertNull(dataModel.getConnection(null));
 	}

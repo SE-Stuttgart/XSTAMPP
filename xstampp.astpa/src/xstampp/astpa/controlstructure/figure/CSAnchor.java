@@ -22,6 +22,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.controlstructure.controller.editparts.CSAbstractEditPart;
 import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 import xstampp.preferences.IControlStructureConstants;
@@ -206,8 +207,8 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
     this(owner);
 
     ((CSFigure) this.getOwner()).removeHighlighter();
-    this.anchorFactor.x = model.getxOrientation();
-    this.anchorFactor.y = model.getyOrientation();
+    this.anchorFactor.x = model.getxOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID));
+    this.anchorFactor.y = model.getyOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID));
     this.calcReferencePoint();
 
   }
@@ -215,8 +216,8 @@ public class CSAnchor extends AbstractConnectionAnchor implements IAnchorFigure 
   @Override
   public void updateAnchor(IAnchor model, Object owner) {
     ((CSFigure) this.getOwner()).removeHighlighter();
-    this.anchorFactor.x = model.getxOrientation();
-    this.anchorFactor.y = model.getyOrientation();
+    this.anchorFactor.x = model.getxOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID));
+    this.anchorFactor.y = model.getyOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID));
     if (owner instanceof CSAbstractEditPart
         && ((CSAbstractEditPart) owner).getFigure() != getOwner()) {
       this.setOwner(((CSAbstractEditPart) owner).getFigure());

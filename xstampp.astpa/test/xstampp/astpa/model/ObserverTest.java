@@ -180,9 +180,9 @@ public class ObserverTest implements Observer {
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
 		UUID connection = this.dataModel.addConnection(new Anchor(), new Anchor(), ConnectionType.ARROW_DASHED);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
-		this.dataModel.changeConnectionSource(connection, new Anchor());
+		this.dataModel.changeConnectionSource(connection, new Anchor(), false);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
-		this.dataModel.changeConnectionTarget(connection, new Anchor());
+		this.dataModel.changeConnectionTarget(connection, new Anchor(), false);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);
 		this.dataModel.changeConnectionType(connection, ConnectionType.ARROW_SIMPLE);
 		this.addToNominal(ObserverValue.CONTROL_STRUCTURE);

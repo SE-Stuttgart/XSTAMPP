@@ -61,6 +61,7 @@ public class RootEditPart extends CSAbstractEditPart {
       return null;
     }
     RootFigure figureTemp = new RootFigure(this.getId());
+    figureTemp.setStepId(getStepId());
     figureTemp.setPreferenceStore(getStore());
     figureTemp.setFocusTraversable(false);
     ConnectionLayer connLayer = (ConnectionLayer) this

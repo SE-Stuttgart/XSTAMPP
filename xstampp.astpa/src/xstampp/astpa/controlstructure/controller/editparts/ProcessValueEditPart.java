@@ -13,12 +13,13 @@
 
 package xstampp.astpa.controlstructure.controller.editparts;
 
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Translatable;
 
 import messages.Messages;
-import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
+import xstampp.astpa.controlstructure.figure.CSFigure;
 import xstampp.astpa.controlstructure.figure.ProcessValueFigure;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 
@@ -45,11 +46,11 @@ public class ProcessValueEditPart extends CSAbstractEditPart {
 
   @Override
   protected IFigure createFigure() {
-    IControlStructureFigure tmpFigure = new ProcessValueFigure(this.getId(),
+    CSFigure tmpFigure = new ProcessValueFigure(this.getId(),
         ProcessValueEditPart.TOP_OFFSET);
-
+    tmpFigure.setStepId(getStepId());
     tmpFigure.setPreferenceStore(getStore());
-    tmpFigure.setBorder(null);
+    tmpFigure.setBorder((Border) null);
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
     tmpFigure.setToolTip(new Label(Messages.ProcessValue));
     return tmpFigure;

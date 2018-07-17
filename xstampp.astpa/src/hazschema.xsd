@@ -273,12 +273,15 @@
         </xs:all>
     </xs:complexType>
     <xs:complexType name="anchorType">
-        <xs:sequence>
+        <xs:all>
             <xs:element type="xs:string" name="id" />
+            <xs:element type="xs:string" name="isFlying" />
             <xs:element type="xs:string" name="ownerId" />
             <xs:element type="xs:integer" name="xOrientation" />
             <xs:element type="xs:integer" name="yOrientation" />
-        </xs:sequence>
+            <xs:element name="xOrientationWithPm" type="xs:int" maxOccurs="1" minOccurs="0"></xs:element>
+            <xs:element name="yOrientationWithPm" type="xs:int" maxOccurs="1" minOccurs="0"></xs:element>
+        </xs:all>
     </xs:complexType>
 
     <xs:complexType name="combieType1">

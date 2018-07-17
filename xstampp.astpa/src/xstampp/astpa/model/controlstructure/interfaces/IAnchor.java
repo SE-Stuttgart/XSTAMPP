@@ -19,9 +19,9 @@ public interface IAnchor {
 
   void setIsFlying(boolean isFlying);
 
-  int getxOrientation();
+  int getxOrientation(boolean withPm);
 
-  int getyOrientation();
+  int getyOrientation(boolean withPm);
 
   UUID getOwnerId();
 

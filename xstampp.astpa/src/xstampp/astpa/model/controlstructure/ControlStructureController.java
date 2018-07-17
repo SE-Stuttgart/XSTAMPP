@@ -471,14 +471,18 @@ public class ControlStructureController extends Observable {
    *          the id of the connection to change
    * @param targetAnchor
    *          the new source anchor
+   * @param withPm
+   *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
+   *          visualization of the control structure with process models<br>
+   *          <b><span style="color:blue;">false</span></b> otherwise
    * @return true if the targetId could be changed
    * 
    * @author Fabian Toth
    */
-  public boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor) {
+  public boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor, boolean withPm) {
     IConnection connection = this.getConnection(connectionId);
     if (connection != null) {
-      ((CSConnection) connection).setTargetAnchor(targetAnchor);
+      ((CSConnection) connection).setTargetAnchor(targetAnchor, withPm);
       changed = true;
       return true;
     }
@@ -492,14 +496,18 @@ public class ControlStructureController extends Observable {
    *          the id of the connection to change
    * @param sourceAnchor
    *          the new source anchor
+   * @param withPm
+   *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
+   *          visualization of the control structure with process models<br>
+   *          <b><span style="color:blue;">false</span></b> otherwise
    * @return true if the sourceId could be changed
    * 
    * @author Fabian Toth
    */
-  public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor) {
+  public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor, boolean withPm) {
     IConnection connection = this.getConnection(connectionId);
     if (connection != null) {
-      ((CSConnection) connection).setSourceAnchor(sourceAnchor);
+      ((CSConnection) connection).setSourceAnchor(sourceAnchor, withPm);
       return true;
     }
     return false;
@@ -623,6 +631,9 @@ public class ControlStructureController extends Observable {
    */
   public boolean sychronizeLayout() {
     boolean result = false;
+    for (CSConnection connection : this.connections) {
+      result = connection.synchronizeAnchors() || result;
+    }
     for (Component child : this._getActiveRoot().getInternalChildren()) {
       result = child.sychronizeLayout() || result;
     }

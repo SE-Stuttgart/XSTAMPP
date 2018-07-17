@@ -51,6 +51,7 @@ public class ProcessVariableEditPart extends CSAbstractEditPart {
   protected IFigure createFigure() {
     ProcessValueFigure tmpFigure = new ProcessValueFigure(this.getId(),
         ProcessVariableEditPart.TOP_OFFSET);
+    tmpFigure.setStepId(getStepId());
     tmpFigure.setAutoPositioning(false);
     tmpFigure.setPreferenceStore(getStore());
     LineBorder border = new LineBorder(1) {

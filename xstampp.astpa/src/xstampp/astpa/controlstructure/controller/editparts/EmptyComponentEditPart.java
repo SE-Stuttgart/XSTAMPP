@@ -45,6 +45,7 @@ public class EmptyComponentEditPart extends CSAbstractEditPart {
   @Override
   protected IFigure createFigure() {
     TextFieldFigure tmpFigure = new TextFieldFigure(this.getId(), true, true);
+    tmpFigure.setStepId(getStepId());
     tmpFigure.setPreferenceStore(getStore());
     tmpFigure.setParent(((IControlStructureEditPart) this.getParent()).getContentPane());
     tmpFigure.setToolTip(new Label("Undefined Component"));

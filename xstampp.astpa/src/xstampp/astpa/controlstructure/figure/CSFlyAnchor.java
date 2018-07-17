@@ -19,6 +19,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 
 /**
@@ -73,8 +74,8 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
     model.setIsFlying(true);
     this.relatedAnchor = (CSAnchor) relation;
     this.lastRef = new Point();
-    int xOffset = model.getxOrientation();
-    int yOffset = model.getyOrientation();
+    int xOffset = model.getxOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID));
+    int yOffset = model.getyOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID));
 
     this.offset = new Dimension(xOffset, yOffset);
 
@@ -82,8 +83,8 @@ public class CSFlyAnchor extends AbstractConnectionAnchor implements
 
   @Override
   public void updateAnchor(IAnchor model, Object owner) {
-    this.offset.setWidth(model.getxOrientation());
-    this.offset.setHeight(model.getyOrientation());
+    this.offset.setWidth(model.getxOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID)));
+    this.offset.setHeight(model.getyOrientation(((CSFigure) this.getOwner()).getStepId().equals(CSEditorWithPM.ID)));
     if (this.getOwner() != null) {
       this.getOwner().repaint();
     }

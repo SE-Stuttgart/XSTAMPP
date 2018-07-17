@@ -564,25 +564,25 @@ public class Controller extends AbstractDataModel implements IDataModel,
   }
 
   @Override
-  public boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor) {
+  public boolean changeConnectionTarget(UUID connectionId, Anchor targetAnchor, boolean withPm) {
     if ((connectionId == null) || (targetAnchor == null)) {
       return false;
     }
 
     boolean result = this.controlStructureController
-        .changeConnectionTarget(connectionId, targetAnchor);
+        .changeConnectionTarget(connectionId, targetAnchor, withPm);
     this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
     return result;
   }
 
   @Override
-  public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor) {
+  public boolean changeConnectionSource(UUID connectionId, Anchor sourceAnchor, boolean withPm) {
     if ((connectionId == null) || (sourceAnchor == null)) {
       return false;
     }
 
     boolean result = this.controlStructureController
-        .changeConnectionSource(connectionId, sourceAnchor);
+        .changeConnectionSource(connectionId, sourceAnchor, false);
     this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
     return result;
   }

@@ -22,6 +22,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
+import xstampp.astpa.controlstructure.CSEditorWithPM;
 import xstampp.astpa.model.controlstructure.components.Anchor;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.components.ConnectionType;
@@ -184,14 +185,14 @@ public class CopyComponentCommand extends ControlStructureAbstractCommand {
       if (this.pasteIdToCopyId.containsKey(conn.getSourceAnchor().getOwnerId()) &&
           this.pasteIdToCopyId.containsKey(conn.getTargetAnchor().getOwnerId())) {
         ConnectionType type = conn.getConnectionType();
-        int xOrientation = conn.getSourceAnchor().getxOrientation();
-        int yOrientation = conn.getSourceAnchor().getyOrientation();
+        int xOrientation = conn.getSourceAnchor().getxOrientation(getStepID().equals(CSEditorWithPM.ID));
+        int yOrientation = conn.getSourceAnchor().getyOrientation(getStepID().equals(CSEditorWithPM.ID));
         boolean isFlying = conn.getSourceAnchor().isFlying();
         UUID ownerId = this.pasteIdToCopyId.get(conn.getSourceAnchor().getOwnerId());
         Anchor source = new Anchor(isFlying, xOrientation, yOrientation, ownerId);
 
-        xOrientation = conn.getTargetAnchor().getxOrientation();
-        yOrientation = conn.getTargetAnchor().getyOrientation();
+        xOrientation = conn.getTargetAnchor().getxOrientation(false);
+        yOrientation = conn.getTargetAnchor().getyOrientation(false);
         isFlying = conn.getTargetAnchor().isFlying();
         ownerId = this.pasteIdToCopyId.get(conn.getTargetAnchor().getOwnerId());
         Anchor target = new Anchor(isFlying, xOrientation, yOrientation, ownerId);

@@ -53,6 +53,7 @@ public class FeedbackEditPart extends AbstractMemberEditPart {
         .getImageDescriptor("/icons/buttons/controlstructure/Feedback_80.png"); //$NON-NLS-1$
     Image img = imgDesc.createImage(null);
     CSFigure tmpFigure = new CSFigure(this.getId(), img, "");
+    tmpFigure.setStepId(getStepId());
     tmpFigure.setDeco((boolean) getViewer().getProperty(CSAbstractEditor.IS_DECORATED));
     tmpFigure.hideBorder();
     tmpFigure.setPreferenceStore(getStore());
