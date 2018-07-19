@@ -11,30 +11,37 @@
  ******************************************************************************/
 package xstampp.astpa.ui.linkingSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkingType;
 
-public class Step2ScenarioConstraintsLinkSupport extends LinkSupport<DataModelController> {
+public class StepConstraintsLinkSupport extends LinkSupport<DataModelController> {
 
-  public Step2ScenarioConstraintsLinkSupport(DataModelController dataInterface, LinkingType type) {
+  public StepConstraintsLinkSupport(DataModelController dataInterface, LinkingType type) {
     super(dataInterface, type);
   }
 
   @Override
   protected List<ITableModel> getModels() {
-    return getDataInterface().getExtendedDataController().getSafetyConstraints(false, true, false);
+    List<ITableModel> list = new ArrayList<>();
+    list.addAll(getDataInterface().getAllSafetyConstraints());
+    list.addAll(getDataInterface().getCorrespondingSafetyConstraints());
+    list.addAll(getDataInterface().getCausalFactorController().getSafetyConstraints());
+    list.addAll(getDataInterface().getExtendedDataController().getSafetyConstraints(false, true, false));
+    return list;
   }
 
   @Override
   protected String getLiteral() {
-    return "S2.";
+    return "";
   }
 
   @Override
   public String getTitle() {
-    return "Causal Scenario Safety Constraint Links";
+    return "Safety Constraint Links";
   }
+
 }

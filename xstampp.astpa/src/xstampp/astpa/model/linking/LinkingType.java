@@ -43,6 +43,14 @@ public enum LinkingType {
 
   /**
    * <ol>
+   * <li>A should be the UUID of a Design Requirement in STPA
+   * <li>B should be the UUID of a Safety Constraint in STPA
+   * </ol>
+   */
+  DR_SC_LINK,
+
+  /**
+   * <ol>
    * <li>A should be the UUID of a Design Requirement in STPA Step 0
    * <li>B should be the UUID of a Safety Constraint in STPA Step 0
    * </ol>

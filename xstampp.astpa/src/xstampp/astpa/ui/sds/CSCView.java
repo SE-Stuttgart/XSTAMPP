@@ -208,6 +208,15 @@ public class CSCView extends AbstractFilteredTableView {
               links += constraint.getIdString();
             }
           }
+          for (UUID uuid : dataModel.getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
+              ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint().getId())) {
+            ITableModel requirement = dataModel.getSdsController().getDesignRequirement(uuid,
+                ObserverValue.DESIGN_REQUIREMENT_STEP1);
+            if (requirement != null) {
+              links += links.isEmpty() ? "" : ", ";
+              links += requirement.getIdString();
+            }
+          }
           return links;
         }
       };

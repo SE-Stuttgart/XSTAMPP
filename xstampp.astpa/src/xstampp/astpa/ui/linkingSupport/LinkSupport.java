@@ -270,6 +270,9 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    */
   protected abstract List<ITableModel> getModels();
 
+  /**
+   * @deprecated the {@link LinkSupport} uses {@link ITableModel#getIdString()}
+   */
   protected abstract String getLiteral();
 
   protected abstract String getTitle();
